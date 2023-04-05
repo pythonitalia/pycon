@@ -12,6 +12,7 @@ from api.page.blocks.schedule_preview_section import SchedulePreviewSection
 from api.page.blocks.keynoters_section import KeynotersSection
 from api.page.blocks.socials_section import SocialsSection
 from api.page.blocks.special_guest_section import SpecialGuestSection
+from api.page.blocks.information_section import InformationSection
 
 
 REGISTRY = {
@@ -24,6 +25,7 @@ REGISTRY = {
     "schedule_preview_section": SchedulePreviewSection,
     "socials_section": SocialsSection,
     "special_guest_section": SpecialGuestSection,
+    "information_section": InformationSection,
 }
 
 Block = strawberry.union(

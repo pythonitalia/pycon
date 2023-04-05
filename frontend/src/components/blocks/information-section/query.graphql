@@ -1,0 +1,22 @@
+query InformationSection($code: String!) {
+  conference(code: $code) {
+    id
+    cfp: deadline(type: "cfp") {
+      id
+      start
+      end
+    }
+
+    voting: deadline(type: "voting") {
+      id
+      start
+      end
+    }
+
+    grants: deadline(type: "grants") {
+      id
+      start
+      end
+    }
+  }
+}

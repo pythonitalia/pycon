@@ -5,6 +5,7 @@ import { TextSection } from "~/components/blocks/text-section";
 import { Block } from "~/types";
 
 import { HomeIntroSection } from "../blocks/home-intro-section";
+import { InformationSection } from "../blocks/information-section";
 import { KeynotersSection } from "../blocks/keynotes-section";
 import { SchedulePreviewSection } from "../blocks/schedule-preview-section";
 import { SliderCardsSection } from "../blocks/slider-cards-section";
@@ -26,6 +27,7 @@ const REGISTRY: Registry = {
   SponsorsSection,
   SocialsSection,
   SpecialGuestSection,
+  InformationSection,
 };
 
 type Props = {

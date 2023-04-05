@@ -4,6 +4,7 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import {
   queryIndexPage,
+  queryInformationSection,
   queryKeynotesSection,
   queryMapWithLink,
 } from "~/types";
@@ -22,6 +23,9 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     }),
     queryIndexPage(client, {
       language: locale,
+      code: process.env.conferenceCode,
+    }),
+    queryInformationSection(client, {
       code: process.env.conferenceCode,
     }),
   ]);
