@@ -4,6 +4,7 @@ from page.blocks.keynoters_section import KeynotersSection
 from page.blocks.schedule_preview_section import SchedulePreviewSection
 from page.blocks.socials_section import SocialsSection
 from page.blocks.special_guest_section import SpecialGuestSection
+from page.blocks.information_section import InformationSection
 from wagtail.models import Page
 from wagtail.admin.panels import FieldPanel
 
@@ -26,6 +27,7 @@ class BodyBlock(blocks.StreamBlock):
     schedule_preview_section = SchedulePreviewSection()
     socials_section = SocialsSection()
     special_guest_section = SpecialGuestSection()
+    information_section = InformationSection()
 
 
 class GenericPage(Page):

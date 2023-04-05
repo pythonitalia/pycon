@@ -10,7 +10,6 @@ import {
   VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
-import { FormattedMessage } from "react-intl";
 
 import { useCurrentLanguage } from "~/locale/context";
 import { Cta, useKeynotesSectionQuery } from "~/types";

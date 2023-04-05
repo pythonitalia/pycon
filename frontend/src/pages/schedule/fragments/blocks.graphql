@@ -102,6 +102,18 @@ fragment Blocks on Block {
       ...CTAInfo
     }
   }
+
+  ... on InformationSection {
+    title
+    body
+    backgroundColor
+    illustration
+    countdownToDatetime
+    countdownToDeadline
+    cta {
+      ...CTAInfo
+    }
+  }
 }
 
 fragment CTAInfo on CTA {
