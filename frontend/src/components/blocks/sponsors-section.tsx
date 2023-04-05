@@ -10,15 +10,31 @@ import {
   SponsorsGrid,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
-import { FormattedMessage } from "react-intl";
 
-import { IndexPageQuery } from "~/types";
+import { useCurrentLanguage } from "~/locale/context";
+import { Cta, SponsorsSectionLayout, useIndexPageQuery } from "~/types";
+
+import { createHref } from "../link";
 
 type Props = {
-  sponsorsByLevel: IndexPageQuery["conference"]["sponsorsByLevel"];
+  title: string;
+  body: string;
+  layout: SponsorsSectionLayout;
+  cta: Cta | null;
 };
 
-export const SponsorsSection = ({ sponsorsByLevel }: Props) => {
+export const SponsorsSection = ({ title, body, cta }: Props) => {
+  const language = useCurrentLanguage();
+  const {
+    data: { conference },
+  } = useIndexPageQuery({
+    variables: {
+      code: process.env.conferenceCode,
+      language,
+    },
+  });
+  const sponsorsByLevel = conference.sponsorsByLevel;
+
   if (sponsorsByLevel.length === 0) {
     return null;
   }
@@ -30,7 +46,7 @@ export const SponsorsSection = ({ sponsorsByLevel }: Props) => {
           <GridColumn colSpan={5} mdColSpan={5}>
             <div className="sticky top-[10px]">
               <Heading size="display2" className="text-center md:text-left">
-                <FormattedMessage id="homepage.sponsors" />
+                {title}
               </Heading>
               <Spacer size="large" />
               <Text
@@ -39,13 +55,24 @@ export const SponsorsSection = ({ sponsorsByLevel }: Props) => {
                 color="grey-900"
                 className="text-center md:text-left"
               >
-                <FormattedMessage id="homepage.sponsorsSectionText" />
+                {body}
               </Text>
-              <Spacer size="large" />
-              <Button href="/sponsor" size="small" role="secondary">
-                <FormattedMessage id="homepage.sponsorsSectionCTAText" />
-              </Button>
-              <Spacer size="large" />
+              {cta && (
+                <>
+                  <Spacer size="large" />
+                  <Button
+                    href={createHref({
+                      path: cta.link,
+                      locale: language,
+                    })}
+                    size="small"
+                    role="secondary"
+                  >
+                    {cta.label}
+                  </Button>
+                  <Spacer size="large" />
+                </>
+              )}
             </div>
           </GridColumn>
           <GridColumn mdColStart={7} colStart={7} colSpan={6} mdColSpan={6}>

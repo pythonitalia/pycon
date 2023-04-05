@@ -17,22 +17,38 @@ import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { IndexPageQuery } from "~/types";
+import { Cta, IndexPageQuery, useIndexPageQuery } from "~/types";
 
 import { createHref } from "../link";
 
 type Props = {
-  days: IndexPageQuery["conference"]["days"];
+  title: string;
+  primaryCta: Cta | null;
+  secondaryCta: Cta | null;
 };
-export const SchedulePreviewSection = ({ days }: Props) => {
-  const [selectedDay, setSelectedDay] = useState(days[1]);
+export const SchedulePreviewSection = ({
+  title,
+  primaryCta,
+  secondaryCta,
+}: Props) => {
   const language = useCurrentLanguage();
+  const {
+    data: { conference },
+  } = useIndexPageQuery({
+    variables: {
+      code: process.env.conferenceCode,
+      language,
+    },
+  });
+  const days = conference.days;
+
+  const [selectedDay, setSelectedDay] = useState(days[1]);
 
   return (
     <Section noContainer>
       <Container>
         <Heading align="center" size="display2">
-          <FormattedMessage id="header.schedule" />
+          {title}
         </Heading>
       </Container>
       <Spacer size="2xl" />
@@ -57,23 +73,27 @@ export const SchedulePreviewSection = ({ days }: Props) => {
       <Spacer size="xl" />
       <Container>
         <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
-          <Button
-            role="secondary"
-            href={createHref({
-              path: "/schedule",
-              locale: language,
-            })}
-          >
-            <FormattedMessage id="homepage.schedulePreviewSection.goToSchedule" />
-          </Button>
-          <BasicButton
-            href={createHref({
-              path: "/tickets",
-              locale: language,
-            })}
-          >
-            <FormattedMessage id="tickets.buyTickets" />
-          </BasicButton>
+          {primaryCta && (
+            <Button
+              role="secondary"
+              href={createHref({
+                path: primaryCta.link,
+                locale: language,
+              })}
+            >
+              {primaryCta.label}
+            </Button>
+          )}
+          {secondaryCta && (
+            <BasicButton
+              href={createHref({
+                path: secondaryCta.link,
+                locale: language,
+              })}
+            >
+              {secondaryCta.label}
+            </BasicButton>
+          )}
         </div>
       </Container>
     </Section>

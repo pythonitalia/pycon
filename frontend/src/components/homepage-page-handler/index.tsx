@@ -9,15 +9,9 @@ import { FormattedMessage } from "react-intl";
 import { HomepageHero } from "~/components/homepage-hero";
 import { MetaTags } from "~/components/meta-tags";
 import { useCurrentLanguage } from "~/locale/context";
-import { useIndexPageQuery } from "~/types";
+import { GenericPage, useIndexPageQuery } from "~/types";
 
-import { KeynotersSection } from "../keynoters-section";
-import { FollowUsSection } from "./follow-us-section";
-import { IntroSection } from "./intro-section";
-import { SchedulePreviewSection } from "./schedule-preview-section";
-import { SpecialGuest } from "./special-guest";
-import { SponsorsSection } from "./sponsors-section";
-import { TicketsOverviewSection } from "./tickets-overview-section";
+import { BlocksRenderer } from "../blocks-renderer";
 
 type Props = {
   cycle: "day" | "night";
@@ -26,13 +20,17 @@ type Props = {
 export const HomePagePageHandler = ({ cycle }: Props) => {
   const language = useCurrentLanguage();
   const {
-    data: { conference },
+    data: { cmsPage },
   } = useIndexPageQuery({
     variables: {
       code: process.env.conferenceCode,
       language,
     },
   });
+
+  if (!cmsPage) {
+    return null;
+  }
 
   return (
     <Fragment>
@@ -45,21 +43,7 @@ export const HomePagePageHandler = ({ cycle }: Props) => {
       </LayoutContent>
 
       <Page startSeparator={false}>
-        <IntroSection conference={conference} />
-
-        <SchedulePreviewSection days={conference.days} />
-
-        <KeynotersSection />
-
-        <SpecialGuest />
-
-        <TicketsOverviewSection />
-
-        {/* <InformationSection conference={conference} /> */}
-
-        <SponsorsSection sponsorsByLevel={conference.sponsorsByLevel} />
-
-        <FollowUsSection />
+        <BlocksRenderer blocks={(cmsPage as GenericPage).body} />
       </Page>
     </Fragment>
   );

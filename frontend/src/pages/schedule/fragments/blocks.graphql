@@ -1,0 +1,110 @@
+fragment Blocks on Block {
+  ... on TextSection {
+    id
+    body
+    bodyTextSize
+    illustration
+    subtitle
+    title
+    isMainTitle
+    accordions {
+      title
+      body
+      isOpen
+    }
+    cta {
+      ...CTAInfo
+    }
+  }
+
+  ... on CMSMap {
+    id
+    latitude
+    longitude
+    link
+    image
+  }
+
+  ... on SliderCardsSection {
+    id
+    title
+    spacing
+    snakeBackground
+    cards {
+      ... on SimpleTextCard {
+        title
+        body
+        cta {
+          ...CTAInfo
+        }
+      }
+
+      ... on PriceCard {
+        title
+        body
+        price
+        priceTier
+        cta {
+          ...CTAInfo
+        }
+      }
+    }
+  }
+
+  ... on SponsorsSection {
+    id
+    title
+    body
+    cta {
+      ...CTAInfo
+    }
+    layout
+  }
+
+  ... on HomeIntroSection {
+    id
+    pretitle
+    title
+  }
+
+  ... on KeynotersSection {
+    id
+    title
+    cta {
+      ...CTAInfo
+    }
+  }
+
+  ... on SchedulePreviewSection {
+    id
+    title
+    primaryCta {
+      ...CTAInfo
+    }
+    secondaryCta {
+      ...CTAInfo
+    }
+  }
+
+  ... on SocialsSection {
+    id
+    label
+    hashtag
+  }
+
+  ... on SpecialGuestSection {
+    title
+    guestName
+    guestJobTitle
+    guestPhoto
+    eventDate
+    cta {
+      ...CTAInfo
+    }
+  }
+}
+
+fragment CTAInfo on CTA {
+  label
+  link
+}
