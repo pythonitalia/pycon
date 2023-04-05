@@ -168,6 +168,50 @@ jobs:
           path: email-templates/build_production
 
   # Apply infrastructure changes
+  azure-terraform:
+    runs-on: ubuntu-latest
+    needs: [build-emails, build-and-push-service, create-db]
+    environment:
+      name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
+    defaults:
+      run:
+        working-directory: ./infrastructure/azure-applications
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_CLOUD_TOKEN }}
+      - name: Terraform Init
+        run: terraform init
+        env:
+          TF_WORKSPACE: applications-${{ fromJSON('["staging", "production"]')[github.ref == 'refs/heads/main'] }}
+      - name: Terraform Validate
+        run: terraform validate -no-color
+        env:
+          TF_WORKSPACE: applications-${{ fromJSON('["staging", "production"]')[github.ref == 'refs/heads/main'] }}
+      - name: Githash
+        id: githash
+        run: |
+          echo "TF_VAR_githash_users_backend=$(git rev-list -1 HEAD -- $GITHUB_WORKSPACE/users-backend/)" >> "$GITHUB_OUTPUT"
+          echo "TF_VAR_githash_association_backend=$(git rev-list -1 HEAD -- $GITHUB_WORKSPACE/association-backend/)" >> "$GITHUB_OUTPUT"
+          echo "TF_VAR_githash_pycon_backend=$(git rev-list -1 HEAD -- $GITHUB_WORKSPACE/backend/)" >> "$GITHUB_OUTPUT"
+          echo "TF_VAR_githash_cms=$(git rev-list -1 HEAD -- $GITHUB_WORKSPACE/cms/)" >> "$GITHUB_OUTPUT"
+        env:
+          TF_WORKSPACE: applications-${{ fromJSON('["staging", "production"]')[github.ref == 'refs/heads/main'] }}
+      - name: Terraform apply
+        run: terraform apply -no-color -auto-approve &> /dev/null
+        env:
+          TF_VAR_githash_users_backend: ${{ steps.githash.outputs.TF_VAR_githash_users_backend }}
+          TF_VAR_githash_association_backend: ${{ steps.githash.outputs.TF_VAR_githash_association_backend }}
+          TF_VAR_githash_pycon_backend: ${{ steps.githash.outputs.TF_VAR_githash_pycon_backend }}
+          TF_VAR_githash_cms: ${{ steps.githash.outputs.TF_VAR_githash_cms }}
+          TF_WORKSPACE: applications-${{ fromJSON('["staging", "production"]')[github.ref == 'refs/heads/main'] }}
+
+
   terraform:
     runs-on: ubuntu-latest
     needs: [build-emails, build-and-push-service, create-db]
@@ -213,7 +257,7 @@ jobs:
   # e.g lambda versions?
   wait-aws-update:
     runs-on: ubuntu-latest
-    needs: [terraform]
+    needs: [terraform, azure-terraform]
     steps:
       - name: Sleep for 20 seconds
         run: sleep 20s
