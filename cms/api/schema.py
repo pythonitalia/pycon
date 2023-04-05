@@ -32,6 +32,10 @@ class Query:
             .filter(locale__language_code=language)
             .first()
         )
+
+        if not translated_page:
+            return None
+
         return GenericPage.from_model(translated_page)
 
     @strawberry.field
