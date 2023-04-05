@@ -66,7 +66,7 @@ type Props = {
   containerSize?: ContainerSize;
   illustration?: Illustration;
   background?: Color | "none";
-  spacingSize?: "xl" | "2xl" | "3xl";
+  spacingSize?: "none" | "xl" | "2xl" | "3xl";
 };
 
 const getCols = (illustration?: Illustration) => {
