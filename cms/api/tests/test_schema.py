@@ -53,6 +53,42 @@ def test_page(graphql_client, generic_page_factory, locale, site_factory):
     }
 
 
+def test_page_for_unknown_locale(
+    graphql_client, generic_page_factory, locale, site_factory
+):
+    parent = generic_page_factory()
+    page = generic_page_factory(
+        slug="bubble-tea",
+        locale=locale("en"),
+        parent=parent,
+        title="Bubble",
+        body__0__text_section__title__value="I've Got a Lovely Bunch of Coconuts",
+        body__1__map__longitude=Decimal(3.14),
+    )
+    site_factory(hostname="pycon", root_page=parent)
+    page.copy_for_translation(locale=locale("it"))
+    query = """
+    query Page ($hostname: String!, $language: String!, $slug: String!) {
+        cmsPage(hostname: $hostname, language: $language, slug: $slug){
+            ...on GenericPage {
+                title
+                body {
+                    ...on TextSection {
+                        title
+                    }
+                }
+            }
+        }
+    }
+    """
+
+    response = graphql_client.query(
+        query, variables={"hostname": "pycon", "slug": "bubble-tea", "language": "de"}
+    )
+
+    assert response.data == {"cmsPage": None}
+
+
 def test_page_not_found(graphql_client, site_factory):
     site_factory(hostname="not-found")
     query = """
