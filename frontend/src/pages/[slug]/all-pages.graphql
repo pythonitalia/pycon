@@ -1,0 +1,6 @@
+query AllPages($code: String!, $language: String!) {
+  cmsPages(hostname: $code, language: $language) {
+    id
+    slug
+  }
+}

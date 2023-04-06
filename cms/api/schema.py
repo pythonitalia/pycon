@@ -46,8 +46,9 @@ class Query:
         return [
             GenericPage.from_model(page)
             for page in GenericPageModel.objects.in_site(site).filter(
-                locale__language_code=language
+                locale__language_code=language,
             )
+            if page.slug != "homepage"
         ]
 
 

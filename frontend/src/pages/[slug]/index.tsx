@@ -1,28 +1,15 @@
-import { Section, Page as BasePage } from "@python-italia/pycon-styleguide";
+import { Page as BasePage } from "@python-italia/pycon-styleguide";
 import React, { Fragment } from "react";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { Article } from "~/components/article";
 import { BlocksRenderer } from "~/components/blocks-renderer";
 import { MetaTags } from "~/components/meta-tags";
-import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
-import {
-  GenericPage,
-  PageQuery,
-  queryAllPages,
-  queryPage,
-  usePageQuery,
-} from "~/types";
-
-const isPageFound = (data: PageQuery) => {
-  const { page, cmsPage } = data;
-  return page || (cmsPage && cmsPage.__typename === "GenericPage");
-};
+import { GenericPage, queryAllPages, queryPage, usePageQuery } from "~/types";
 
 export const Page = () => {
   const router = useRouter();
@@ -37,19 +24,15 @@ export const Page = () => {
     },
   });
 
-  const { page, cmsPage } = data;
+  const { cmsPage } = data;
+  const page = cmsPage as GenericPage;
 
   return (
     <Fragment>
-      <MetaTags title={page.title} />
+      <MetaTags title={page.title} description={page.searchDescription} />
 
       <BasePage endSeparator={false}>
-        {cmsPage && <BlocksRenderer blocks={(cmsPage as GenericPage).body} />}
-        {!cmsPage && (
-          <Section>
-            <Article title={page.title}>{compile(page.content).tree}</Article>
-          </Section>
-        )}
+        <BlocksRenderer blocks={page.body} />
       </BasePage>
     </Fragment>
   );
@@ -69,7 +52,7 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
     }),
   ]);
 
-  if (!isPageFound(pageQuery.data)) {
+  if (pageQuery.data.cmsPage?.__typename !== "GenericPage") {
     return {
       notFound: true,
     };
@@ -84,13 +67,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const client = getApolloClient();
 
   const {
-    data: { pages: italianPages },
+    data: { cmsPages: italianPages },
   } = await queryAllPages(client, {
     code: process.env.conferenceCode,
     language: "it",
   });
   const {
-    data: { pages: englishPages },
+    data: { cmsPages: englishPages },
   } = await queryAllPages(client, {
     code: process.env.conferenceCode,
     language: "en",

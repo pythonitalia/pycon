@@ -21,6 +21,7 @@ def test_page(graphql_client, generic_page_factory, locale, site_factory):
         cmsPage(hostname: $hostname, language: $language, slug: $slug){
             ...on GenericPage {
                 title
+                slug
                 body {
                     ...on TextSection {
                         title
@@ -42,6 +43,7 @@ def test_page(graphql_client, generic_page_factory, locale, site_factory):
     assert response.data == {
         "cmsPage": {
             "title": "Bubble",
+            "slug": "bubble-tea",
             "body": [
                 {"title": "I've Got a Lovely Bunch of " "Coconuts"},
                 {

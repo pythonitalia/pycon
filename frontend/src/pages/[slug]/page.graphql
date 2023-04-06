@@ -1,16 +1,11 @@
 #import "../../fragments/blocks.graphql"
 
 query Page($code: String!, $slug: String!, $language: String!) {
-  page(code: $code, slug: $slug) {
-    id
-    title(language: $language)
-    content(language: $language)
-    image
-  }
-
   cmsPage(hostname: $code, slug: $slug, language: $language) {
     ... on GenericPage {
       id
+      title
+      searchDescription
       body {
         ...Blocks
       }
