@@ -717,7 +717,7 @@ summary = "A Python image library that sits on top of Pillow, Wand and OpenCV"
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:f424fe725bac88674e3b71ec534630b49a05c90e38356ce1d98994e7e1ff527d"
+content_hash = "sha256:6ba10023e2dfd91229ce92797cb66addc796e97a373f891622733284c386fef5"
 
 [metadata.files]
 "anyascii 0.3.1" = [

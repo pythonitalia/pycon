@@ -33,6 +33,7 @@ dependencies = [
     "whitenoise>=6.4.0",
     "sentry-sdk[django]>=1.17.0",
     "respx>=0.18.2",
+    "httpx>=0.20.0",
 ]
 requires-python = ">=3.11"
 license = {text = "MIT"}
