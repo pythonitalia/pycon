@@ -25,7 +25,7 @@ DEBUG = env("DEBUG")
 
 INSTALLED_APPS = [
     "home",
-    "page",
+    "page.apps.PageConfig",
     "wagtail_localize",
     "wagtail_localize.locales",
     "wagtail.contrib.forms",
@@ -156,6 +156,8 @@ MAPBOX_PUBLIC_API_KEY = env("MAPBOX_PUBLIC_API_KEY", default="")
 
 SENTRY_DSN = env("SENTRY_DSN", default="")
 ENVIRONMENT = env("ENVIRONMENT", default="local")
+REVALIDATE_SECRET = env("REVALIDATE_SECRET", default="")
+PYCON_FRONTEND_SERVICE = env("PYCON_FRONTEND_SERVICE", default="")
 
 if SENTRY_DSN:
     sentry_sdk.init(
