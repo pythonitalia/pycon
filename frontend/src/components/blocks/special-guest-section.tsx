@@ -76,7 +76,10 @@ export const SpecialGuestSection = ({
               </Heading>
               <Spacer size="medium" />
               <Text size="label1" color="coral">
-                {format(new Date(eventDate), "EEEE - d MMMM yyyy")}
+                {format(
+                  new Date(`${eventDate}T00:00:00`),
+                  "EEEE - d MMMM yyyy",
+                )}
               </Text>
 
               {cta && (
