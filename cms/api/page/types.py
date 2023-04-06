@@ -38,13 +38,17 @@ Block = strawberry.union(
 class GenericPage:
     id: strawberry.ID
     title: str
+    search_description: str
+    slug: str
     body: list[Block]
 
     @classmethod
     def from_model(cls, obj: GenericPageModel) -> Self:
         return cls(
             id=obj.id,
-            title=obj.title,
+            title=obj.seo_title or obj.title,
+            search_description=obj.search_description,
+            slug=obj.slug,
             body=[
                 REGISTRY.get(block.block_type).from_block(block) for block in obj.body
             ],

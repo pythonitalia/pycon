@@ -1,6 +1,0 @@
-query AllPages($code: String!, $language: String) {
-  pages(code: $code) {
-    id
-    slug(language: $language)
-  }
-}
