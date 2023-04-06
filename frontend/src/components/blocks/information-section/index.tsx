@@ -82,7 +82,9 @@ export const InformationSection = ({
         {IllustrationComponent && (
           <>
             <Spacer size="large" />
-            <IllustrationComponent />
+            <div className="max-w-[360px] lg:max-w-[488px] w-full">
+              <IllustrationComponent className="w-full h-full mt-auto" />
+            </div>
           </>
         )}
         {!IllustrationComponent && <Spacer size="3xl" />}
