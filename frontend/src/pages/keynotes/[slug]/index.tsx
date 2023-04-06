@@ -67,6 +67,7 @@ const KeynotePage = () => {
           linkedinUrl: speaker.participant.linkedinUrl,
           facebookUrl: speaker.participant.facebookUrl,
           mastodonHandle: speaker.participant.mastodonHandle,
+          website: speaker.participant.website,
         }))}
       />
     </Page>
