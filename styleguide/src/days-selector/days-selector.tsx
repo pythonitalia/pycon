@@ -45,7 +45,7 @@ export const DaysSelector = ({
           )}
         >
           {days.map(({ date, selected }) => {
-            const parsedDate = new Date(date);
+            const parsedDate = new Date(`${date}T00:00:00`);
             return (
               <div
                 onClick={() => onClick?.(date)}
