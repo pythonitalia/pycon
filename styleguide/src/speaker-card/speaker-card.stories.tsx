@@ -32,12 +32,17 @@ export const Primary = (args: any) => <SpeakerCard {...args} />;
 export const MultipleCards = (args: any) => {
   return (
     <Grid cols={3}>
-      <SpeakerCard {...args} />
+      <SpeakerCard
+        talkInfoLeft="27 July"
+        talkInfoRight="English, Lemon"
+        {...args}
+      />
       <SpeakerCard
         {...args}
+        talkInfoLeft="Left"
         talkTitle="Longer talk title Longer talk title Longer talk title Longer talk title "
       />
-      <SpeakerCard {...args} />
+      <SpeakerCard {...args} talkInfoRight="Right" />
       <SpeakerCard {...args} />
       <SpeakerCard {...args} />
       <SpeakerCard {...args} />
