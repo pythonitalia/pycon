@@ -11,6 +11,7 @@ import {
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 
+import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import { Cta, useKeynotesSectionQuery } from "~/types";
 
@@ -37,6 +38,12 @@ export const KeynotersSection = ({ title, cta }: Props) => {
     conference: { keynotes },
   } = data;
 
+  const englishText = useTranslatedMessage("global.english");
+  const dateFormatter = new Intl.DateTimeFormat(language, {
+    day: "numeric",
+    month: "long",
+  });
+
   if (keynotes.length === 0) {
     return null;
   }
@@ -61,6 +68,12 @@ export const KeynotersSection = ({ title, cta }: Props) => {
           >
             <SpeakerCard
               talkTitle={keynote.title}
+              talkInfoLeft={
+                keynote.start
+                  ? dateFormatter.format(new Date(keynote.start))
+                  : null
+              }
+              talkInfoRight={englishText}
               portraitUrl={keynote.speakers[0].participant.photo}
               speakerName={keynote.speakers[0].fullName}
             />

@@ -5,6 +5,7 @@ query KeynotesSection($code: String!, $language: String!) {
       id
       title(language: $language)
       slug(language: $language)
+      start
       speakers {
         id
         fullName

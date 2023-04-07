@@ -24,6 +24,7 @@ query Keynote($conference: String!, $slug: String!, $language: String!) {
           linkedinUrl
           facebookUrl
           mastodonHandle
+          website
         }
       }
     }
