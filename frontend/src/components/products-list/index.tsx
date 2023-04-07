@@ -47,10 +47,10 @@ export const ProductsList = ({
 
   return (
     <Section>
-      {tickets.map((ticket, index) => (
+      {tickets.map((ticket) => (
         <Fragment key={ticket.id}>
           <TicketRow
-            openByDefault={index === 0}
+            openByDefault={true}
             icon="tickets"
             iconBackground="pink"
             ticket={ticket}
