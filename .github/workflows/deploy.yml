@@ -134,6 +134,8 @@ jobs:
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/build-push-action@v4.0.0
         with:
+          build-args: |
+              GRAPHQL_SCHEMA_URL=https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}beri.python.it/graphql/
           context: ./${{ matrix.service.dir }}
           file: ./${{ matrix.service.dir }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}

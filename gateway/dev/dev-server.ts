@@ -17,6 +17,7 @@ const server = new ApolloServer({
       "http://localhost:3020",
       "http://localhost:3010",
       "http://localhost:3000",
+      "http://localhost:3002",
       "https://studio.apollographql.com",
     ],
     credentials: true,

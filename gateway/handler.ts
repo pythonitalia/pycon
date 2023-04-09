@@ -35,9 +35,12 @@ exports.graphqlHandler = ServerlessSentry.AWSLambda.wrapHandler(
             origin: [
               /python-italia\.vercel\.app$/,
               "http://localhost:3000",
+              "http://localhost:3002",
               "https://associazione.python.it",
               "https://pycon.it",
               "https://studio.apollographql.com",
+              "https://pastaporto-admin.pycon.it",
+              "https://admin.pycon.it",
             ],
           },
         },

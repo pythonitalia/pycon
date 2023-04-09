@@ -1,0 +1,7 @@
+#import "./schedule-slot.graphql"
+
+mutation MoveItem($itemId: ID!) {
+  moveTest(itemId: $itemId) {
+    ...ScheduleSlot
+  }
+}

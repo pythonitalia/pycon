@@ -1,5 +1,25 @@
 ARG FUNCTION_DIR="/home/app/"
 
+FROM node:18.12.1 as js-stage
+
+ARG FUNCTION_DIR
+ARG GRAPHQL_SCHEMA_URL
+
+RUN mkdir -p ${FUNCTION_DIR}
+WORKDIR ${FUNCTION_DIR}
+
+RUN npm install -g pnpm
+
+COPY custom_admin/js/package.json custom_admin/js/pnpm-lock.yaml ./
+
+RUN pnpm install
+
+COPY custom_admin/js/ .
+
+ENV GRAPHQL_SCHEMA_URL ${GRAPHQL_SCHEMA_URL}
+
+RUN pnpm codegen && pnpm build
+
 FROM python:3.9-slim as build-stage
 
 ARG FUNCTION_DIR
@@ -58,9 +78,13 @@ COPY . ${FUNCTION_DIR}
 
 ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod
 
+COPY --from=js-stage ${FUNCTION_DIR}/dist/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/
+COPY --from=js-stage ${FUNCTION_DIR}/dist/_astro ${FUNCTION_DIR}/custom_admin/static/_astro/
+
 RUN USERS_SERVICE=empty \
     ASSOCIATION_BACKEND_SERVICE=empty \
     SERVICE_TO_SERVICE_SECRET=empty \
+    GATEWAY_SERVICE=empty \
     AWS_MEDIA_BUCKET=example \
     AWS_REGION_NAME=eu-central-1 \
     SECRET_KEY=DEMO \

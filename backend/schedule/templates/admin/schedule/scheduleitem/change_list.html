@@ -3,6 +3,9 @@
 {% block object-tools-items %}
 {{ block.super }}
 <li>
+  <a class="historylink" href="{% url 'admin:schedule-builder' %}">Schedule builder</a>
+</li>
+<li>
   <a class="historylink" href="{% url 'admin:schedule-email-speakers' %}">Email speakers</a>
 </li>
 {% endblock %}

@@ -1,0 +1,16 @@
+---
+import { Providers } from "../components/calendar/providers";
+---
+
+<html>
+  <head>
+    <title>Schedule Builder</title>
+  </head>
+  <body>
+    <Providers client:load client:only="react" />
+    <script>
+      (window as any).apolloGraphQLUrl = "{{ GATEWAY_GRAPHQL_URL }}";
+      (window as any).conferenceCode = "{{ CONFERENCE_CODE }}";
+    </script>
+  </body>
+</html>

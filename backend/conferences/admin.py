@@ -1,3 +1,4 @@
+from django.template.response import TemplateResponse
 from django import forms
 from django.contrib import admin, messages
 from django.core import exceptions
@@ -10,6 +11,7 @@ from ordered_model.admin import (
     OrderedStackedInline,
     OrderedTabularInline,
 )
+from django.urls import path
 
 from conferences.models import SpeakerVoucher
 from domain_events.publisher import send_speaker_voucher_email
@@ -169,6 +171,23 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
         ),
     )
     inlines = [DeadlineInline, DurationInline, SponsorLevelInline, IncludedEventInline]
+
+    def get_urls(self):
+        return [
+            path(
+                "<str:conference_id>/builder/",
+                self.admin_site.admin_view(self.schedule_builder),
+                name="schedule-builder",
+            ),
+        ] + super().get_urls()
+
+    def schedule_builder(self, request, conference_id: str):
+        conference = Conference.objects.get(id=conference_id)
+        context = dict(
+            self.admin_site.each_context(request),
+            CONFERENCE_CODE=conference.code,
+        )
+        return TemplateResponse(request, "astro/schedule-builder.html", context)
 
 
 @admin.register(Topic)

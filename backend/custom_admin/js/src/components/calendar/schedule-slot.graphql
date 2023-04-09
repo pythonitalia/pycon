@@ -1,0 +1,9 @@
+#import "./schedule-item.graphql"
+fragment ScheduleSlot on ScheduleSlot {
+  id
+  hour
+  duration
+  items {
+    ...ScheduleItem
+  }
+}

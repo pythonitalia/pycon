@@ -1,0 +1,6 @@
+#import "./schedule-item.graphql"
+query UnassignedScheduleItems($code: String!) {
+  unassignedScheduleItems(code: $code) {
+    ...ScheduleItem
+  }
+}

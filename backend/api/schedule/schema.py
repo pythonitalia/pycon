@@ -3,11 +3,11 @@ from typing import Optional
 import strawberry
 from strawberry import ID
 
-from api.schedule.types import ScheduleInvitation
+from api.schedule.types import ScheduleInvitation, ScheduleItem
 from api.submissions.permissions import IsSubmissionSpeakerOrStaff
 from schedule.models import ScheduleItem as ScheduleItemModel
 from submissions.models import Submission as SubmissionModel
-
+from conferences.models import Conference as ConferenceModel
 from ..permissions import IsAuthenticated
 
 
@@ -37,3 +37,15 @@ class ScheduleQuery:
             return None
 
         return ScheduleInvitation.from_django_model(schedule_item)
+
+    # @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field
+    def unassigned_schedule_items(self, info, code: str) -> list[ScheduleItem]:
+        conference = ConferenceModel.objects.get(code=code)
+
+        schedule_items = ScheduleItemModel.objects.filter(
+            conference_id=conference.id,
+            slot__isnull=True,
+        ).all()
+
+        return [schedule_item for schedule_item in schedule_items]

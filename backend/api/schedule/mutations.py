@@ -250,6 +250,19 @@ class ScheduleMutations:
         return Day.from_db(day)
 
     @strawberry.mutation(permission_classes=[IsStaffPermission])
+    def move_test(self, info, item_id: strawberry.ID) -> ScheduleSlot:
+        schedule_item = ScheduleItem.objects.get(id=item_id)
+        old_slot = schedule_item.slot
+        schedule_item.slot = None
+        schedule_item.save()
+        return ScheduleSlot(
+            hour=old_slot.hour,
+            duration=old_slot.duration,
+            type=old_slot.type,
+            id=old_slot.id,
+        )
+
+    @strawberry.mutation(permission_classes=[IsStaffPermission])
     def update_or_create_slot_item(
         self, info, input: UpdateOrCreateSlotItemInput
     ) -> typing.Union[UpdateOrCreateSlotItemError, UpdateOrCreateSlotItemResult]:
@@ -278,12 +291,13 @@ class ScheduleMutations:
             schedule_item = ScheduleItem.objects.select_related("slot").get(
                 id=input.item_id
             )
+            schedule_slot = schedule_item.slot or slot
             updated_slots.append(
                 ScheduleSlot(
-                    hour=schedule_item.slot.hour,
-                    duration=schedule_item.slot.duration,
-                    id=schedule_item.slot.id,
-                    type=schedule_item.slot.type,
+                    hour=schedule_slot.hour,
+                    duration=schedule_slot.duration,
+                    id=schedule_slot.id,
+                    type=schedule_slot.type,
                 )
             )
 

@@ -1,4 +1,4 @@
-FROM amazon/aws-lambda-nodejs:14 as build
+FROM amazon/aws-lambda-nodejs:16 as build
 
 RUN npm install -g pnpm; \
     pnpm --version; \
@@ -20,7 +20,7 @@ COPY . .
 
 RUN pnpm run tsc
 
-FROM amazon/aws-lambda-nodejs:14
+FROM amazon/aws-lambda-nodejs:16
 
 WORKDIR ${LAMBDA_TASK_ROOT}
 

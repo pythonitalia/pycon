@@ -121,3 +121,6 @@ cms/static/
 cms/media/
 .venv
 .pdm.toml
+
+backend/custom_admin/templates/astro/
+backend/custom_admin/templates/special/

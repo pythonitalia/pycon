@@ -1,0 +1,36 @@
+fragment ScheduleItem on ScheduleItem {
+  id
+  title
+  duration
+  type
+  audienceLevel {
+    id
+    name
+  }
+  keynote {
+    id
+  }
+  submission {
+    id
+    duration {
+      id
+      duration
+    }
+    audienceLevel {
+      id
+      name
+    }
+  }
+  speakers {
+    id
+    fullName
+  }
+  rooms {
+    ...Room
+  }
+}
+
+fragment Room on Room {
+  id
+  name
+}
