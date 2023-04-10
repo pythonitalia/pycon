@@ -6,7 +6,7 @@ from sites.models import VercelFrontendSettings
 logger = logging.getLogger(__name__)
 
 
-def revalidate_pycon_frontend(sender, **kwargs):
+def revalidate_vercel_frontend(sender, **kwargs):
     instance = kwargs["instance"]
 
     site = kwargs["instance"].get_site()
@@ -14,11 +14,16 @@ def revalidate_pycon_frontend(sender, **kwargs):
     settings = VercelFrontendSettings.for_site(site)
 
     if not settings:
-        logger.debug("No vercel frontend settings")
+        # not configured for this site
         return
 
     url = settings.revalidate_url
     secret = settings.revalidate_secret
+
+    if not url or not secret:
+        # not configured for this site
+        return
+
     language_code = instance.locale.language_code
 
     if language_code != "en":

@@ -1,5 +1,6 @@
 import os
 from api.tests.factories import *  # noqa
+from sites.tests.factories import *  # noqa
 import pytest
 from wagtail.models import Locale
 from strawberry.django.test.client import GraphQLTestClient
