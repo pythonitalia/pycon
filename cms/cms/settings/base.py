@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "wagtail_localize.locales",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
+    "wagtail.contrib.settings",
     "wagtail.embeds",
     "wagtail.sites",
     "wagtail.users",
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     "wagtail",
     "modelcluster",
     "taggit",
+    "sites.apps.SitesConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -156,8 +158,6 @@ MAPBOX_PUBLIC_API_KEY = env("MAPBOX_PUBLIC_API_KEY", default="")
 
 SENTRY_DSN = env("SENTRY_DSN", default="")
 ENVIRONMENT = env("ENVIRONMENT", default="local")
-REVALIDATE_SECRET = env("REVALIDATE_SECRET", default="")
-PYCON_FRONTEND_SERVICE = env("PYCON_FRONTEND_SERVICE", default="")
 
 if SENTRY_DSN:
     sentry_sdk.init(

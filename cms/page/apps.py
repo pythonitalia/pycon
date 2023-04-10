@@ -8,4 +8,4 @@ class PageConfig(AppConfig):
     def ready(self):
         from . import signals
 
-        page_published.connect(signals.revalidate_pycon_frontend)
+        page_published.connect(signals.revalidate_vercel_frontend)
