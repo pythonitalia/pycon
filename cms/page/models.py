@@ -5,6 +5,7 @@ from page.blocks.schedule_preview_section import SchedulePreviewSection
 from page.blocks.socials_section import SocialsSection
 from page.blocks.special_guest_section import SpecialGuestSection
 from page.blocks.information_section import InformationSection
+from news.blocks.news_grid_section import NewsGridSection
 from wagtail.models import Page
 from wagtail.admin.panels import FieldPanel
 
@@ -28,6 +29,7 @@ class BodyBlock(blocks.StreamBlock):
     socials_section = SocialsSection()
     special_guest_section = SpecialGuestSection()
     information_section = InformationSection()
+    news_grid_section = NewsGridSection()
 
 
 class GenericPage(Page):
