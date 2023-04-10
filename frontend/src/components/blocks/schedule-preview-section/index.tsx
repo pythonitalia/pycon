@@ -17,9 +17,14 @@ import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { Cta, IndexPageQuery, useIndexPageQuery } from "~/types";
+import {
+  Cta,
+  SchedulePreviewSectionQuery,
+  querySchedulePreviewSection,
+  useSchedulePreviewSectionQuery,
+} from "~/types";
 
-import { createHref } from "../link";
+import { createHref } from "../../link";
 
 type Props = {
   title: string;
@@ -34,14 +39,13 @@ export const SchedulePreviewSection = ({
   const language = useCurrentLanguage();
   const {
     data: { conference },
-  } = useIndexPageQuery({
+  } = useSchedulePreviewSectionQuery({
     variables: {
       code: process.env.conferenceCode,
-      language,
     },
   });
-  const days = conference.days;
 
+  const days = conference.days;
   const [selectedDay, setSelectedDay] = useState(days[1]);
 
   return (
@@ -103,7 +107,7 @@ export const SchedulePreviewSection = ({
 const ScheduleEventPreviewCard = ({
   event,
 }: {
-  event: IndexPageQuery["conference"]["days"][number]["randomEvents"][number];
+  event: SchedulePreviewSectionQuery["conference"]["days"][number]["randomEvents"][number];
 }) => {
   const language = useCurrentLanguage();
   const audienceLevel =
@@ -177,4 +181,12 @@ const ScheduleEventPreviewCard = ({
       </MultiplePartsCard>
     </div>
   );
+};
+
+SchedulePreviewSection.dataFetching = (client) => {
+  return [
+    querySchedulePreviewSection(client, {
+      code: process.env.conferenceCode,
+    }),
+  ];
 };

@@ -12,9 +12,14 @@ import {
 import React from "react";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { Cta, SponsorsSectionLayout, useIndexPageQuery } from "~/types";
+import {
+  Cta,
+  SponsorsSectionLayout,
+  querySponsorsSection,
+  useSponsorsSectionQuery,
+} from "~/types";
 
-import { createHref } from "../link";
+import { createHref } from "../../link";
 
 type Props = {
   title: string;
@@ -27,10 +32,9 @@ export const SponsorsSection = ({ title, body, cta }: Props) => {
   const language = useCurrentLanguage();
   const {
     data: { conference },
-  } = useIndexPageQuery({
+  } = useSponsorsSectionQuery({
     variables: {
       code: process.env.conferenceCode,
-      language,
     },
   });
   const sponsorsByLevel = conference.sponsorsByLevel;
@@ -87,6 +91,14 @@ export const SponsorsSection = ({ title, body, cta }: Props) => {
       </Section>
     </LayoutContent>
   );
+};
+
+SponsorsSection.dataFetching = (client) => {
+  return [
+    querySponsorsSection(client, {
+      code: process.env.conferenceCode,
+    }),
+  ];
 };
 
 const getSponsorsPerRow = (level: string) => {

@@ -5,7 +5,10 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { BlocksRenderer } from "~/components/blocks-renderer";
+import {
+  BlocksRenderer,
+  blocksDataFetching,
+} from "~/components/blocks-renderer";
 import { MetaTags } from "~/components/meta-tags";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
@@ -57,6 +60,8 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
       notFound: true,
     };
   }
+
+  await blocksDataFetching(client, pageQuery.data.cmsPage.body, locale);
 
   return addApolloState(client, {
     props: {},
