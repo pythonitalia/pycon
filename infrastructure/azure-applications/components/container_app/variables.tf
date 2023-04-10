@@ -12,10 +12,10 @@ variable "resource_group_name" {
 
 variable "env_vars" {
   type = list(object({
-    name      = string
-    value     = string
-    secret    = bool
-    deprecated = optional(bool)
+    name       = string
+    value      = string
+    secret     = bool
+    deprecated = optional(bool, false)
   }))
 }
 
