@@ -44,11 +44,13 @@ export const JobListingAccordion = ({ job }: { job: JobListing }) => {
         <MultiplePartsCard>
           <CardPart size="small" contentAlign="left">
             <HorizontalStack alignItems="center" gap="small">
-              <Image
+              <img
                 width={48}
                 height={48}
                 alt={`${job.company}'s logo`}
                 src={job.companyLogo}
+                loading="lazy"
+                className="border border-black aspect-square object-scale-down bg-white p-[0.1rem]"
               />
               <Heading size={5}>{job.title}</Heading>
             </HorizontalStack>
