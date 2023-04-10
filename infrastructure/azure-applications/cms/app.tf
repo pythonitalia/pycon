@@ -43,6 +43,6 @@ module "app" {
     { name = "AZURE_ACCOUNT_NAME", value = azurerm_storage_account.storage.name, secret = false },
     { name = "AZURE_ACCOUNT_KEY", value = azurerm_storage_account.storage.primary_access_key, secret = true },
     { name = "AZURE_CONTAINER", value = azurerm_storage_container.media.name, secret = false },
-    { name = "REVALIDATE_SECRET", value = random_password.revalidate_secret.result, secret = true },
+    { name = "REVALIDATE_SECRET", value = random_password.revalidate_secret.result, secret = true, deprecated = true },
   ]
 }

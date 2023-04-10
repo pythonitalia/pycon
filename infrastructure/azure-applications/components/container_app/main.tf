@@ -64,7 +64,7 @@ resource "azurerm_container_app" "ca_app" {
       memory  = "2Gi"
 
       dynamic "env" {
-        for_each = var.env_vars
+        for_each = { for k, v in var.env_vars : k => v if !v.deprecated }
 
         content {
           name        = env.value.name
