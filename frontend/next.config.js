@@ -44,6 +44,16 @@ module.exports = withSentryConfig({
         destination: "https://discord.gg/XAS3ZgRKDq",
         permanent: false,
       },
+      {
+        source: "/blog",
+        destination: "/news",
+        permanent: true,
+      },
+      {
+        source: "/blog/:match*",
+        destination: "/news/:match*",
+        permanent: true,
+      },
     ];
   },
   async rewrites() {

@@ -1,0 +1,6 @@
+query AllNewsArticles($code: String!, $language: String!) {
+  newsArticles(hostname: $code, language: $language) {
+    id
+    slug
+  }
+}

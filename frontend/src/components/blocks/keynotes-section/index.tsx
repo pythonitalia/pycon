@@ -13,9 +13,9 @@ import React from "react";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
-import { Cta, useKeynotesSectionQuery } from "~/types";
+import { Cta, queryKeynotesSection, useKeynotesSectionQuery } from "~/types";
 
-import { createHref } from "../link";
+import { createHref } from "../../link";
 
 type Props = {
   title: string;
@@ -98,4 +98,13 @@ export const KeynotersSection = ({ title, cta }: Props) => {
       )}
     </Section>
   );
+};
+
+KeynotersSection.dataFetching = (client, language) => {
+  return [
+    queryKeynotesSection(client, {
+      code: process.env.conferenceCode,
+      language: language,
+    }),
+  ];
 };

@@ -23,10 +23,11 @@ def test_revalidate_vercel_frontend_disabled_if_not_configured(
 def test_revalidate_vercel_frontend(
     page_factory, site_factory, respx_mock, vercel_frontend_settings_factory
 ):
-    site = site_factory()
+    parent = page_factory()
     page = page_factory(slug="test-page123")
-    site.root_page = page
-    site.save()
+    page.set_url_path(parent)
+
+    site = site_factory(root_page=parent)
 
     settings = vercel_frontend_settings_factory(
         revalidate_url="https://test.com", revalidate_secret="test", site=site
@@ -45,10 +46,11 @@ def test_revalidate_vercel_frontend(
 def test_revalidate_vercel_frontend_special_case_for_homepage(
     page_factory, site_factory, respx_mock, vercel_frontend_settings_factory
 ):
-    site = site_factory()
+    parent = page_factory()
     page = page_factory(slug="homepage")
-    site.root_page = page
-    site.save()
+    page.set_url_path(parent)
+
+    site = site_factory(root_page=parent)
 
     settings = vercel_frontend_settings_factory(
         revalidate_url="https://test.com", revalidate_secret="test", site=site
@@ -68,13 +70,15 @@ def test_revalidate_vercel_frontend_for_different_language(
     page_factory, site_factory, respx_mock, vercel_frontend_settings_factory, locale
 ):
     parent = page_factory()
+    site = site_factory(hostname="pycon", root_page=parent)
 
     page = page_factory(slug="test123", locale=locale("en"), parent=parent)
-    site = site_factory(hostname="pycon", root_page=page)
+    page.set_url_path(parent)
 
     italian_page = page.copy_for_translation(locale=locale("it"))
     italian_page.slug = "something-else"
     italian_page.save()
+    italian_page.set_url_path(parent)
 
     settings = vercel_frontend_settings_factory(
         revalidate_url="https://test.com", revalidate_secret="test", site=site

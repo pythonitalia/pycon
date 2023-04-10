@@ -7,7 +7,7 @@ import { ImageResponse } from "@vercel/og";
 import type { NextRequest } from "next/server";
 
 import { createClient } from "~/apollo/create-client";
-import { queryPost } from "~/types";
+import { queryNewsArticle } from "~/types";
 
 export const config = {
   runtime: "edge",
@@ -36,13 +36,15 @@ const handler = async (req: NextRequest) => {
   const slug = searchParams.get("slug");
 
   const {
-    data: {
-      blogPost: { title, excerpt },
-    },
-  } = await queryPost(client, {
+    data: { newsArticle, blogPost },
+  } = await queryNewsArticle(client, {
     slug,
     language,
+    code: process.env.conferenceCode,
   });
+
+  const title = newsArticle?.title ?? blogPost?.title;
+  const excerpt = newsArticle?.excerpt ?? blogPost?.excerpt;
 
   return new ImageResponse(
     (

@@ -1,0 +1,14 @@
+query SponsorsSection($code: String!) {
+  conference(code: $code) {
+    id
+    sponsorsByLevel {
+      name: level
+      sponsors {
+        id
+        name
+        url: link
+        logo: image
+      }
+    }
+  }
+}

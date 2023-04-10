@@ -36,13 +36,17 @@ def revalidate_vercel_frontend(sender, **kwargs):
         )
 
         slug = english_page.slug
+        _, _, page_path = english_page.get_url_parts()
     else:
         slug = instance.slug
+        _, _, page_path = instance.get_url_parts()
+
+    page_path = page_path[:-1]
 
     if slug == "homepage":
         path = f"/{language_code}"
     else:
-        path = f"/{language_code}/{slug}"
+        path = f"/{language_code}{page_path}"
 
     try:
         response = httpx.post(
