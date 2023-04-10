@@ -1,6 +1,8 @@
 import os
 from api.tests.factories import *  # noqa
 from sites.tests.factories import *  # noqa
+from news.tests.factories import *  # noqa
+
 import pytest
 from wagtail.models import Locale
 from strawberry.django.test.client import GraphQLTestClient
@@ -8,6 +10,12 @@ from io import BytesIO
 
 import PIL.Image
 from django.core.files.images import ImageFile
+from django.contrib.auth import get_user_model
+
+
+@pytest.fixture
+def create_user():
+    return lambda **kwargs: get_user_model().objects.create_user(**kwargs)
 
 
 @pytest.fixture

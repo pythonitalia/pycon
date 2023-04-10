@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "modelcluster",
     "taggit",
     "sites.apps.SitesConfig",
+    "news.apps.NewsConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
