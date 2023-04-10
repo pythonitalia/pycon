@@ -1,23 +1,24 @@
 import httpx
-from django.conf import settings
 import logging
+
+from sites.models import VercelFrontendSettings
 
 logger = logging.getLogger(__name__)
 
 
 def revalidate_pycon_frontend(sender, **kwargs):
-    secret = settings.REVALIDATE_SECRET
-    frontend_url = settings.PYCON_FRONTEND_SERVICE
-
-    if not secret:
-        logger.debug("No secret set for revalidating pycon frontend")
-        return
-
-    if not frontend_url:
-        logger.debug("No frontend url set for revalidating pycon frontend")
-        return
-
     instance = kwargs["instance"]
+
+    site = kwargs["instance"].get_site()
+    site_name = site.site_name
+    settings = VercelFrontendSettings.for_site(site)
+
+    if not settings:
+        logger.debug("No vercel frontend settings")
+        return
+
+    url = settings.revalidate_url
+    secret = settings.revalidate_secret
     language_code = instance.locale.language_code
 
     if language_code != "en":
@@ -40,7 +41,7 @@ def revalidate_pycon_frontend(sender, **kwargs):
 
     try:
         response = httpx.post(
-            f"{frontend_url}/api/revalidate",
+            url,
             timeout=None,
             json={
                 "secret": secret,
@@ -49,7 +50,7 @@ def revalidate_pycon_frontend(sender, **kwargs):
         )
         response.raise_for_status()
     except httpx.HTTPError as e:
-        logger.error(f"Error while revalidating {path} on pycon frontend: {e}")
+        logger.error(f"Error while revalidating {path} on {site_name}: {e}")
         return
 
-    logger.info(f"Revalidated {path} on pycon frontend")
+    logger.info(f"Revalidated {path} on {site_name}")

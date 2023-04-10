@@ -22,9 +22,6 @@ x-defaults:
     USERS_SERVICE: http://users-backend:8050
     ASSOCIATION_BACKEND_SERVICE: http://association-backend:8060
     CMS_SERVICE: http://cms:8070
-    PYCON_FRONTEND_SERVICE: http://pycon-frontend:3000
-    # CMS <-> Frontend
-    REVALIDATE_SECRET: test123
 
 services:
   pycon-backend:

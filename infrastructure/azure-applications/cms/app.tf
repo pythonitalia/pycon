@@ -2,7 +2,6 @@ locals {
   database_url      = "psql://${data.azurerm_key_vault_secret.db_username.value}:${data.azurerm_key_vault_secret.db_password.value}@${data.azurerm_postgresql_flexible_server.db.fqdn}:5432/cms?sslmode=require"
   users_backend_url = var.is_prod ? "https://users-api.python.it" : "https://pastaporto-users-api.python.it"
   domain            = var.is_prod ? "cms.python.it" : "${var.workspace}-cms.python.it"
-  pycon_frontend_url = var.is_prod ? "https://pycon.it" : ""
 }
 
 resource "random_password" "secret_key" {
@@ -45,6 +44,5 @@ module "app" {
     { name = "AZURE_ACCOUNT_KEY", value = azurerm_storage_account.storage.primary_access_key, secret = true },
     { name = "AZURE_CONTAINER", value = azurerm_storage_container.media.name, secret = false },
     { name = "REVALIDATE_SECRET", value = random_password.revalidate_secret.result, secret = true },
-    { name = "PYCON_FRONTEND_SERVICE", value = local.pycon_frontend_url, secret = false }
   ]
 }
