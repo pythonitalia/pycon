@@ -1,4 +1,11 @@
-query BlogIndex($language: String!) {
+query NewsGridSection($code: String!, $language: String!) {
+  newsArticles(hostname: $code, language: $language) {
+    id
+    slug
+    title
+    publishedAt
+  }
+
   blogPosts {
     id
     slug

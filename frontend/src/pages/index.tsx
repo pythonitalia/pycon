@@ -16,11 +16,13 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     }),
   ]);
 
-  await blocksDataFetching(
-    client,
-    (pageQuery.data.cmsPage as GenericPage).body,
-    locale,
-  );
+  if (pageQuery.data.cmsPage) {
+    await blocksDataFetching(
+      client,
+      (pageQuery.data.cmsPage as GenericPage).body,
+      locale,
+    );
+  }
 
   const utcHours = new Date().getUTCHours();
   const cycle = utcHours > 5 && utcHours < 17 ? "day" : "night";

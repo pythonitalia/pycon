@@ -16,6 +16,11 @@ from api.page.blocks.information_section import InformationSection
 from api.news.blocks.news_grid_section import NewsGridSection
 
 
+@strawberry.type
+class SiteNotFoundError:
+    message: str
+
+
 REGISTRY = {
     "text_section": TextSection,
     "map": CMSMap,

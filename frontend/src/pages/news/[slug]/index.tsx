@@ -1,5 +1,6 @@
 import {
   Container,
+  DynamicHTMLText,
   Heading,
   Page,
   Section,
@@ -13,14 +14,18 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { Article } from "~/components/article";
 import { MetaTags } from "~/components/meta-tags";
-import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
-import { queryBlogIndex, queryPost, usePostQuery } from "~/types";
+import {
+  queryAllNewsArticles,
+  queryNewsArticle,
+  useNewsArticleQuery,
+} from "~/types";
+import { Article } from "~/components/article";
+import { compile } from "~/helpers/markdown";
 
-export const BlogArticlePage = () => {
+export const NewsArticlePage = () => {
   const language = useCurrentLanguage();
   const router = useRouter();
   const slug = router.query.slug as string;
@@ -30,14 +35,22 @@ export const BlogArticlePage = () => {
     year: "numeric",
   });
 
-  const { data } = usePostQuery({
+  const { data } = useNewsArticleQuery({
     variables: {
       language,
       slug,
+      code: process.env.conferenceCode,
     },
   });
 
-  const post = data.blogPost;
+  const newsArticle = data.newsArticle;
+  const blogPost = data.blogPost;
+  const post = newsArticle || {
+    ...blogPost,
+    publishedAt: blogPost.published,
+    authorFullname: blogPost.author.fullName,
+    body: blogPost.content,
+  };
 
   return (
     <Page endSeparator={false}>
@@ -53,8 +66,8 @@ export const BlogArticlePage = () => {
           <FormattedMessage
             id="blog.publishedOn"
             values={{
-              date: dateFormatter.format(parseISO(post.published)),
-              author: post.author.fullName,
+              date: dateFormatter.format(parseISO(post.publishedAt)),
+              author: post.authorFullname,
             }}
           />
         </Text>
@@ -64,7 +77,8 @@ export const BlogArticlePage = () => {
 
       <Section illustration="snakeTail">
         <Container noPadding center={false} size="medium">
-          <Article>{compile(post.content).tree}</Article>
+          {newsArticle && <DynamicHTMLText text={post.body} baseTextSize={2} />}
+          {blogPost && <Article>{compile(blogPost.content).tree}</Article>}
         </Container>
       </Section>
     </Page>
@@ -75,15 +89,19 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const slug = params.slug as string;
   const client = getApolloClient();
 
-  const [_, post] = await Promise.all([
+  const [_, newsArticle] = await Promise.all([
     prefetchSharedQueries(client, locale),
-    queryPost(client, {
+    queryNewsArticle(client, {
       slug,
+      code: process.env.conferenceCode,
       language: locale,
     }),
   ]);
 
-  if (!post.data || !post.data.blogPost) {
+  if (
+    !newsArticle.data ||
+    (!newsArticle.data.newsArticle && !newsArticle.data.blogPost)
+  ) {
     return {
       notFound: true,
     };
@@ -99,28 +117,30 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   const [
     {
-      data: { blogPosts: italianBlogPosts },
+      data: { newsArticles: italianNewsArticles },
     },
     {
-      data: { blogPosts: englishBlogPosts },
+      data: { newsArticles: englishNewsArticles },
     },
   ] = await Promise.all([
-    queryBlogIndex(client, {
+    queryAllNewsArticles(client, {
       language: "it",
+      code: process.env.conferenceCode,
     }),
-    queryBlogIndex(client, {
+    queryAllNewsArticles(client, {
       language: "en",
+      code: process.env.conferenceCode,
     }),
   ]);
 
   const paths = [
-    ...italianBlogPosts.map((blogPost) => ({
+    ...italianNewsArticles.map((blogPost) => ({
       params: {
         slug: blogPost.slug,
       },
       locale: "it",
     })),
-    ...englishBlogPosts.map((blogPost) => ({
+    ...englishNewsArticles.map((blogPost) => ({
       params: {
         slug: blogPost.slug,
       },
@@ -134,4 +154,4 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export default BlogArticlePage;
+export default NewsArticlePage;
