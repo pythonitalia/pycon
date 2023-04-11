@@ -74,3 +74,41 @@ def test_get_user_tickets(
     assert ticket.item.questions[2].name == "Intollerances / Allergies"
     assert ticket.item.questions[2].required is False
     assert ticket.item.questions[2].answer.answer == "Cat"
+
+
+@override_settings(PRETIX_API="https://pretix/api/")
+def test_get_user_tickets_doesnt_return_non_admission(
+    user,
+    conference_factory,
+    requests_mock,
+    pretix_user_tickets,
+    pretix_user_non_admission_ticket,
+    pretix_categories,
+    pretix_questions,
+):
+    conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
+
+    requests_mock.get(
+        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets?attendee_email={user.email}",
+        json=[
+            pretix_user_tickets[0],
+            pretix_user_non_admission_ticket,
+        ],
+    )
+
+    requests_mock.get(
+        "https://pretix/api/organizers/org/events/event/categories",
+        json=pretix_categories,
+    )
+
+    requests_mock.get(
+        "https://pretix/api/organizers/org/events/event/questions",
+        json=pretix_questions,
+    )
+    user = User.resolve_reference(user.id, user.email)
+    tickets = user.tickets(info=None, conference=conference.code, language="en")
+
+    assert len(tickets) == 1
+    ticket = tickets[0]
+
+    assert ticket.item.admission
