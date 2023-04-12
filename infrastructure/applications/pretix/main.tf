@@ -61,6 +61,16 @@ data "aws_db_proxy" "proxy" {
   name  = "pythonit-${terraform.workspace}-database-proxy"
 }
 
+resource "aws_ebs_volume" "data" {
+  availability_zone = "eu-central-1a"
+  size              = 20
+  type              = "gp3"
+
+  tags = {
+    Name = "pretix-data"
+  }
+}
+
 resource "aws_ecs_task_definition" "pretix_service" {
   family = "${terraform.workspace}-pretix"
   container_definitions = jsonencode([
