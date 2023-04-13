@@ -46,6 +46,9 @@ resource "aws_instance" "pretix" {
   tags = {
     Name = "${terraform.workspace}-pretix-instance"
   }
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_eip" "ip" {
