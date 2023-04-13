@@ -21,7 +21,14 @@ module.exports = {
         presets: [["react-app", { flow: false, typescript: true }]],
       },
     });
-    config.resolve.extensions.push(".ts", ".tsx");
+
+    config.module.rules.push({
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: "javascript/auto",
+    });
+
+    config.resolve.extensions.push(".ts", ".tsx", ".mjs");
 
     return config;
   },

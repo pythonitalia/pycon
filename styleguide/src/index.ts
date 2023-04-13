@@ -62,6 +62,7 @@ export { AvatarGroup } from "./avatar-group";
 export { Checkbox } from "./checkbox";
 export { DynamicHTMLText } from "./dynamic-html-text";
 export { FilterBar } from "./filter-bar";
+export { HeroIllustration } from "./hero-illustration";
 
 // tailwind config
 export { default as tailwindConfig } from "../tailwind.config";
