@@ -51,6 +51,13 @@ resource "aws_instance" "pretix" {
   }
 }
 
+resource "aws_volume_attachment" "data_attachment" {
+  device_name = "/dev/sdf"
+  volume_id   = aws_ebs_volume.data.id
+  instance_id = aws_instance.pretix.id
+}
+
+
 resource "aws_eip" "ip" {
   instance = aws_instance.pretix.id
   vpc      = true
