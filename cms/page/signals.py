@@ -1,23 +1,29 @@
 import httpx
-from django.conf import settings
 import logging
+
+from sites.models import VercelFrontendSettings
 
 logger = logging.getLogger(__name__)
 
 
-def revalidate_pycon_frontend(sender, **kwargs):
-    secret = settings.REVALIDATE_SECRET
-    frontend_url = settings.PYCON_FRONTEND_SERVICE
-
-    if not secret:
-        logger.debug("No secret set for revalidating pycon frontend")
-        return
-
-    if not frontend_url:
-        logger.debug("No frontend url set for revalidating pycon frontend")
-        return
-
+def revalidate_vercel_frontend(sender, **kwargs):
     instance = kwargs["instance"]
+
+    site = kwargs["instance"].get_site()
+    site_name = site.site_name
+    settings = VercelFrontendSettings.for_site(site)
+
+    if not settings:
+        # not configured for this site
+        return
+
+    url = settings.revalidate_url
+    secret = settings.revalidate_secret
+
+    if not url or not secret:
+        # not configured for this site
+        return
+
     language_code = instance.locale.language_code
 
     if language_code != "en":
@@ -30,17 +36,21 @@ def revalidate_pycon_frontend(sender, **kwargs):
         )
 
         slug = english_page.slug
+        _, _, page_path = english_page.get_url_parts()
     else:
         slug = instance.slug
+        _, _, page_path = instance.get_url_parts()
+
+    page_path = page_path[:-1]
 
     if slug == "homepage":
         path = f"/{language_code}"
     else:
-        path = f"/{language_code}/{slug}"
+        path = f"/{language_code}{page_path}"
 
     try:
         response = httpx.post(
-            f"{frontend_url}/api/revalidate",
+            url,
             timeout=None,
             json={
                 "secret": secret,
@@ -49,7 +59,7 @@ def revalidate_pycon_frontend(sender, **kwargs):
         )
         response.raise_for_status()
     except httpx.HTTPError as e:
-        logger.error(f"Error while revalidating {path} on pycon frontend: {e}")
+        logger.error(f"Error while revalidating {path} on {site_name}: {e}")
         return
 
-    logger.info(f"Revalidated {path} on pycon frontend")
+    logger.info(f"Revalidated {path} on {site_name}")

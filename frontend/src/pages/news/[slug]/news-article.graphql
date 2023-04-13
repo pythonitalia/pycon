@@ -1,0 +1,21 @@
+query NewsArticle($code: String!, $slug: String!, $language: String!) {
+  newsArticle(hostname: $code, slug: $slug, language: $language) {
+    id
+    title
+    excerpt
+    body
+    publishedAt
+    authorFullname
+  }
+
+  blogPost(slug: $slug) {
+    id
+    title(language: $language)
+    content(language: $language)
+    excerpt(language: $language)
+    author {
+      fullName
+    }
+    published
+  }
+}

@@ -1,0 +1,19 @@
+query NewsGridSection($code: String!, $language: String!) {
+  newsArticles(hostname: $code, language: $language) {
+    id
+    slug
+    title
+    publishedAt
+  }
+
+  blogPosts {
+    id
+    slug
+    title(language: $language)
+    excerpt(language: $language)
+    author {
+      fullName
+    }
+    published
+  }
+}

@@ -11,7 +11,11 @@ import { Illustration } from "@python-italia/pycon-styleguide/dist/illustrations
 import { Color } from "@python-italia/pycon-styleguide/dist/types";
 import { getIllustration } from "@python-italia/pycon-styleguide/illustrations";
 
-import { Cta, useInformationSectionQuery } from "~/types";
+import {
+  Cta,
+  queryInformationSection,
+  useInformationSectionQuery,
+} from "~/types";
 
 type Props = {
   title: string;
@@ -91,4 +95,12 @@ export const InformationSection = ({
       </VerticalStack>
     </Section>
   );
+};
+
+InformationSection.dataFetching = (client) => {
+  return [
+    queryInformationSection(client, {
+      code: process.env.conferenceCode,
+    }),
+  ];
 };

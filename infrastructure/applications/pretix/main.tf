@@ -46,7 +46,17 @@ resource "aws_instance" "pretix" {
   tags = {
     Name = "${terraform.workspace}-pretix-instance"
   }
+  lifecycle {
+    prevent_destroy = true
+  }
 }
+
+resource "aws_volume_attachment" "data_attachment" {
+  device_name = "/dev/sdf"
+  volume_id   = aws_ebs_volume.data.id
+  instance_id = aws_instance.pretix.id
+}
+
 
 resource "aws_eip" "ip" {
   instance = aws_instance.pretix.id
@@ -59,6 +69,16 @@ resource "aws_eip" "ip" {
 data "aws_db_proxy" "proxy" {
   count = var.enable_proxy ? 1 : 0
   name  = "pythonit-${terraform.workspace}-database-proxy"
+}
+
+resource "aws_ebs_volume" "data" {
+  availability_zone = "eu-central-1a"
+  size              = 20
+  type              = "gp3"
+
+  tags = {
+    Name = "pretix-data"
+  }
 }
 
 resource "aws_ecs_task_definition" "pretix_service" {

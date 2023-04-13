@@ -93,6 +93,7 @@ fragment Blocks on Block {
   }
 
   ... on SpecialGuestSection {
+    id
     title
     guestName
     guestJobTitle
@@ -104,6 +105,7 @@ fragment Blocks on Block {
   }
 
   ... on InformationSection {
+    id
     title
     body
     backgroundColor
@@ -113,6 +115,10 @@ fragment Blocks on Block {
     cta {
       ...CTAInfo
     }
+  }
+
+  ... on NewsGridSection {
+    id
   }
 }
 

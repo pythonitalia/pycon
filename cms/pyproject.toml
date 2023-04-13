@@ -40,4 +40,5 @@ license = {text = "MIT"}
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE="cms.settings.dev"
-addopts = "--failed-first -vv -s -l --cov-report term-missing --cov=."
+addopts = "--failed-first -vv -s -l --cov-report term-missing --cov=. --reuse-db --no-migrations"
+norecursedirs = ".git htmlcov tmp*"

@@ -7,6 +7,7 @@ import { Block } from "~/types";
 import { HomeIntroSection } from "../blocks/home-intro-section";
 import { InformationSection } from "../blocks/information-section";
 import { KeynotersSection } from "../blocks/keynotes-section";
+import { NewsGridSection } from "../blocks/news-grid-section";
 import { SchedulePreviewSection } from "../blocks/schedule-preview-section";
 import { SliderCardsSection } from "../blocks/slider-cards-section";
 import { SocialsSection } from "../blocks/socials-section";
@@ -28,6 +29,7 @@ const REGISTRY: Registry = {
   SocialsSection,
   SpecialGuestSection,
   InformationSection,
+  NewsGridSection,
 };
 
 type Props = {
@@ -46,4 +48,19 @@ export const BlocksRenderer = ({ blocks }: Props) => {
       })}
     </>
   );
+};
+
+export const blocksDataFetching = (client, blocks, language) => {
+  const promises = [];
+
+  for (const block of blocks) {
+    const component = REGISTRY[block.__typename];
+    const dataFetching = component.dataFetching;
+
+    if (dataFetching) {
+      promises.push(...dataFetching(client, language));
+    }
+  }
+
+  return Promise.all(promises);
 };
