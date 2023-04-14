@@ -10,7 +10,7 @@ USER pretixuser
 RUN cd /pretix/src && DATABASE_HOST=demo make staticfiles
 RUN cd /pretix/src && DATABASE_HOST=demo make compress
 
-RUN pip install pretix-plugin-extended-api==0.1.10 pretix-plugin-attendance-certificate==0.1.4
+RUN pip install pretix-plugin-extended-api==0.1.10 pretix-plugin-attendance-certificate==0.1.5
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "all" ]
