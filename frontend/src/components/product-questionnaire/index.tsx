@@ -50,6 +50,7 @@ export const ProductQuestionnaire = ({
                 value: e.target.value,
               })
             }
+            autoComplete="name"
             placeholder={inputPlaceholder}
             value={productUserInformation.attendeeName}
             errors={
@@ -69,6 +70,7 @@ export const ProductQuestionnaire = ({
         >
           <Input
             required={true}
+            autoComplete="email"
             type="email"
             placeholder={inputPlaceholder}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -99,6 +101,8 @@ export const ProductQuestionnaire = ({
             <Input
               required={question.required}
               placeholder={inputPlaceholder}
+              autoComplete="off"
+              type="text"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateQuestionAnswer({
                   id: productUserInformation.id,
