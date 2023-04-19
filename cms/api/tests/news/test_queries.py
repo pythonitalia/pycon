@@ -119,6 +119,47 @@ def test_get_news_article(
     }
 
 
+def test_get_news_article_another_locale(
+    graphql_client,
+    generic_page_factory,
+    news_article_factory,
+    site_factory,
+    create_user,
+    locale,
+):
+    user = create_user(username="test", first_name="marco", last_name="world")
+    parent = generic_page_factory()
+    article_1 = news_article_factory(
+        title="Article 1",
+        parent=parent,
+        owner=user,
+        slug="slug",
+        first_published_at=datetime.datetime(2010, 1, 1, 10, 0, 0),
+    )
+    site_factory(hostname="pycon", root_page=parent)
+    it_article = article_1.copy_for_translation(locale=locale("it"))
+    it_article.title = "test"
+    it_article.save()
+
+    query = """query NewsArticle(
+        $hostname: String!,
+        $slug: String!,
+        $language: String!
+    ) {
+        newsArticle(hostname: $hostname, slug: $slug, language: $language) {
+            id
+            title
+            authorFullname
+        }
+    }"""
+
+    response = graphql_client.query(
+        query, variables={"hostname": "pycon", "slug": article_1.slug, "language": "it"}
+    )
+
+    assert response.data["newsArticle"]["title"] == "test"
+
+
 def test_get_news_article_with_unknown_slug(
     graphql_client,
     generic_page_factory,
