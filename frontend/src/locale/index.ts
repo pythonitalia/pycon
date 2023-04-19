@@ -10,6 +10,8 @@ export const messages = {
     "global.yes": "Yes",
     "global.no": "No",
 
+    "tickets.productsList.guidedToursTitle": "Guided Tours",
+
     "global.italian": "Italian",
     "global.english": "English",
     "global.all": "All",
@@ -1818,6 +1820,8 @@ Affrettati a comprare il biglietto!`,
 
     "schedule.listView": "Vista lista",
     "schedule.gridView": "Vista griglia",
+
+    "tickets.productsList.guidedToursTitle": "Tour Guidati",
   },
 };
 
