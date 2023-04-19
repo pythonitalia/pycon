@@ -21,6 +21,7 @@ type Props = {
   conference: TicketsQuery["conference"];
   me: CurrentUserQueryResult["data"]["me"];
   business: boolean;
+  ignoreSoldOut: boolean;
 };
 
 export const ProductsList = ({
@@ -29,6 +30,7 @@ export const ProductsList = ({
   conference,
   business,
   me,
+  ignoreSoldOut,
 }: Props) => {
   const ticketType = business ? TicketType.Business : TicketType.Standard;
   const tickets = products.filter(
@@ -54,6 +56,7 @@ export const ProductsList = ({
             icon="tickets"
             iconBackground="pink"
             ticket={ticket}
+            ignoreSoldOut={ignoreSoldOut}
           />
           <Spacer size="small" />
         </Fragment>
