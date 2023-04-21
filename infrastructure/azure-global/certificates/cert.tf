@@ -11,6 +11,10 @@ data "aws_route53_zone" "python_it" {
   name = "python.it"
 }
 
+data "aws_route53_zone" "pycon_it" {
+  name = "pycon.it"
+}
+
 resource "acme_certificate" "python_it" {
   account_key_pem           = acme_registration.registration.account_key_pem
   common_name               = data.aws_route53_zone.python_it.name
@@ -21,6 +25,22 @@ resource "acme_certificate" "python_it" {
 
     config = {
       AWS_HOSTED_ZONE_ID = data.aws_route53_zone.python_it.zone_id
+    }
+  }
+
+  depends_on = [acme_registration.registration]
+}
+
+resource "acme_certificate" "pycon_it" {
+  account_key_pem           = acme_registration.registration.account_key_pem
+  common_name               = data.aws_route53_zone.pycon_it.name
+  subject_alternative_names = ["*.${data.aws_route53_zone.pycon_it.name}"]
+
+  dns_challenge {
+    provider = "route53"
+
+    config = {
+      AWS_HOSTED_ZONE_ID = data.aws_route53_zone.pycon_it.zone_id
     }
   }
 

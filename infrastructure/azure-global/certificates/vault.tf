@@ -70,3 +70,13 @@ resource "azurerm_key_vault_certificate" "pythonit_cert" {
     password = ""
   }
 }
+
+resource "azurerm_key_vault_certificate" "pyconit_cert" {
+  name         = "pyconit"
+  key_vault_id = azurerm_key_vault.certs.id
+
+  certificate {
+    contents = acme_certificate.pycon_it.certificate_p12
+    password = ""
+  }
+}
