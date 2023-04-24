@@ -1,4 +1,4 @@
-import { BasicButton, Button } from "@python-italia/pycon-styleguide";
+import { BasicButton, Button, Text } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
@@ -13,6 +13,7 @@ type Props = {
   ticket: MyProfileWithTicketsQuery["me"]["tickets"][0];
   productUserInformation: any;
   updatingTicket: boolean;
+  updateTicketError: any;
   saveChanges: (updatedProductUserInformation: any) => void;
   errors: { [key: string]: string };
 };
@@ -29,6 +30,7 @@ export const CustomizeTicketModal = ({
   openModal,
   ticket,
   updatingTicket,
+  updateTicketError,
   saveChanges,
   productUserInformation,
   errors,
@@ -85,6 +87,11 @@ export const CustomizeTicketModal = ({
           });
         }}
       />
+      {updateTicketError && (
+        <Text size="label4" color="red">
+          <FormattedMessage id="global.somethingWentWrong" />
+        </Text>
+      )}
     </Modal>
   );
 };
