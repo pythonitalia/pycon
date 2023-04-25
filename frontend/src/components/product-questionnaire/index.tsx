@@ -14,7 +14,7 @@ import { ProductState } from "../tickets-page/types";
 
 type Props = {
   index: number;
-  product: TicketItem;
+  product: Omit<TicketItem, "variations">;
   productUserInformation: ProductState;
   updateTicketInfo: ({ id, index, key, value }) => void;
   updateQuestionAnswer: ({ id, index, question, answer }) => void;

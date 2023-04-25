@@ -73,7 +73,7 @@ class User:
     def tickets(self, info, conference: str, language: str) -> List[AttendeeTicket]:
         conference = Conference.objects.get(code=conference)
         attendee_tickets = get_user_tickets(conference, self.email, language)
-        return [ticket for ticket in attendee_tickets if ticket.item.admission]
+        return [ticket for ticket in attendee_tickets]
 
     @strawberry.field
     def submissions(self, info, conference: str) -> List[Submission]:

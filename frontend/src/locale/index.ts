@@ -9,8 +9,10 @@ export const messages = {
     "global.here": "here",
     "global.yes": "Yes",
     "global.no": "No",
-
+    "profile.tickets.size": "Size",
     "tickets.productsList.guidedToursTitle": "Guided Tours",
+
+    "profile.tickets.noDetails": "Have fun! 🍻",
 
     "global.italian": "Italian",
     "global.english": "English",
@@ -1174,6 +1176,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "order.inclVat": "(incl. {taxRate}% IVA)",
     "order.hotelNoVat": "(incl. 0% IVA)",
     "order.selectSize": "Taglia...",
+    "profile.tickets.size": "Taglia",
     "order.hotelRooms": "Stanze hotel",
     "order.availableUntil": "Disponibile fino al {date}",
     "order.ticketsLeft":
@@ -1822,6 +1825,8 @@ Affrettati a comprare il biglietto!`,
     "schedule.gridView": "Vista griglia",
 
     "tickets.productsList.guidedToursTitle": "Tour Guidati",
+
+    "profile.tickets.noDetails": "Divertiti! 🍻",
   },
 };
 
