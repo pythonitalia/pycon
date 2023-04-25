@@ -883,24 +883,24 @@ Django = ">=1.11"
 
 [[package]]
 name = "django-ses"
-version = "1.0.3"
+version = "3.4.0"
 description = "A Django email backend for Amazon's Simple Email Service"
 category = "main"
 optional = false
-python-versions = ">=2.7"
+python-versions = ">=3.7,<4.0"
 files = [
-    {file = "django-ses-1.0.3.tar.gz", hash = "sha256:9c0a3e59e1e2424093820fa7cd519aa35f9ba978c26917a97a30c682449f0df6"},
-    {file = "django_ses-1.0.3-py2.py3-none-any.whl", hash = "sha256:45f041acb9f2f8df85f3fddd63b04f1d381982bdc7730a3dc1f88e5795758bdd"},
+    {file = "django_ses-3.4.0-py3-none-any.whl", hash = "sha256:9ee09d191f65f21924d42f474f0cb832e2fadf158df1e1227824b0934de84356"},
+    {file = "django_ses-3.4.0.tar.gz", hash = "sha256:f22215398104dc94468aae1c633a02f8fa94c44e990945862cbeeb9acb683575"},
 ]
 
 [package.dependencies]
 boto3 = ">=1.0.0"
-django = ">1.10"
-future = ">=0.16.0"
+django = ">=2.2"
 pytz = ">=2016.10"
 
 [package.extras]
-bounce = ["M2Crypto", "requests (<3)"]
+bounce = ["cryptography (>=36.0.2)", "requests (>=2.27.1)"]
+events = ["cryptography (>=36.0.2)", "requests (>=2.27.1)"]
 
 [[package]]
 name = "django-storages"
@@ -1034,17 +1034,6 @@ files = [
 mccabe = ">=0.6.0,<0.7.0"
 pycodestyle = ">=2.7.0,<2.8.0"
 pyflakes = ">=2.3.0,<2.4.0"
-
-[[package]]
-name = "future"
-version = "0.18.3"
-description = "Clean single-source support for Python 3 and 2"
-category = "main"
-optional = false
-python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
-files = [
-    {file = "future-0.18.3.tar.gz", hash = "sha256:34a17436ed1e96697a86f9de3d15a3b0be01d8bc8de9c1dffd59fb8234ed5307"},
-]
 
 [[package]]
 name = "graphql-core"
@@ -3167,4 +3156,4 @@ lambda = ["awslambdaric"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "1e0e8d0f4baf4fcbe5e9c77543b4dc0e79f8e696d6054375e1a662b9c60c85d2"
+content-hash = "b5b3717aff46d7f620b34599e5da7a895d46bd2e20d1b29779c3370a85dab572"
