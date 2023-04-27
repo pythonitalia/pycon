@@ -17,7 +17,8 @@ data "azurerm_postgresql_flexible_server" "db" {
 
 module "app" {
   source              = "../components/container_app"
-  service_name        = "users"
+  service_name        = "users-backend"
+  service_resource_name = "users"
   resource_group_name = var.resource_group_name
   workspace           = var.workspace
   githash             = var.githash

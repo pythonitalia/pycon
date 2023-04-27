@@ -6,7 +6,8 @@ locals {
     }
     if env_var.secret
   ]
-  sld_tld = join(".", slice(split(".", var.domain), 1, 3))
+  sld_tld            = join(".", slice(split(".", var.domain), 1, 3))
+  container_app_name = var.service_resource_name != null ? var.service_resource_name : var.service_name
 }
 
 data "azurerm_container_app_environment" "env" {
@@ -31,7 +32,7 @@ data "azurerm_container_app_environment_certificate" "certificate" {
 }
 
 resource "azurerm_container_app" "ca_app" {
-  name                         = "pythonit-${var.workspace}-${var.service_name}"
+  name                         = "pythonit-${var.workspace}-${local.container_app_name}"
   container_app_environment_id = data.azurerm_container_app_environment.env.id
   resource_group_name          = var.resource_group_name
   revision_mode                = "Single"
