@@ -16,19 +16,20 @@ data "azurerm_postgresql_flexible_server" "db" {
 }
 
 module "app" {
-  source              = "../components/container_app"
-  service_name        = "users-backend"
+  source                = "../components/container_app"
+  service_name          = "users-backend"
   service_resource_name = "users"
-  resource_group_name = var.resource_group_name
-  workspace           = var.workspace
-  githash             = var.githash
-  environment_name    = "pythonit-${var.workspace}-env"
-  healthcheck_path    = "/graphql"
-  port                = 8000
-  domain              = local.domain
-  command             = ["/home/app/.venv/bin/python", "-m", "gunicorn", "main:wrapped_app"]
+  resource_group_name   = var.resource_group_name
+  workspace             = var.workspace
+  githash               = var.githash
+  environment_name      = "pythonit-${var.workspace}-env"
+  healthcheck_path      = "/graphql"
+  port                  = 8000
+  domain                = local.domain
+  command               = ["/home/app/.venv/bin/python", "-m", "gunicorn", "main:wrapped_app"]
   env_vars = [
     { name = "DEBUG", value = "false", secret = false },
+    { name = "ENVIRONMENT", value = var.workspace, secret = false },
     { name = "SECRET_KEY", value = random_password.secret_key.result, secret = true },
     { name = "DATABASE_URL", value = local.database_url, secret = true },
     { name = "SENTRY_DSN", value = data.azurerm_key_vault_secret.sentry_dsn.value, secret = true },
