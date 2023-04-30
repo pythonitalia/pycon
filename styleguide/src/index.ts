@@ -60,7 +60,7 @@ export { DaysSelector } from "./days-selector";
 export { Avatar } from "./avatar";
 export { AvatarGroup } from "./avatar-group";
 export { Checkbox } from "./checkbox";
-export { DynamicHTMLText } from "./dynamic-html-text";
+export { StyledHTMLText, StyledText } from "./styled-text";
 export { FilterBar } from "./filter-bar";
 export { HeroIllustration } from "./hero-illustration";
 

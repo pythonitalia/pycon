@@ -8,11 +8,28 @@ export default {
 };
 
 export const Story = ({ text, size, disabled, role }) => (
-  <>
-    <Button onClick={() => {}} disabled={disabled} role={role}>
-      {text}
-    </Button>
-  </>
+  <div>
+    <div>
+      <Button onClick={() => {}} disabled={disabled} role={role}>
+        {text}
+      </Button>
+    </div>
+    <div>
+      <Button onClick={() => {}} fullWidth disabled={disabled} role={role}>
+        {text} - Full width
+      </Button>
+    </div>
+    <div>
+      <Button
+        onClick={() => {}}
+        fullWidthMobile
+        disabled={disabled}
+        role={role}
+      >
+        {text} - Full width mobile
+      </Button>
+    </div>
+  </div>
 );
 
 Story.argTypes = {

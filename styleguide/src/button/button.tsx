@@ -11,6 +11,7 @@ export const Button = ({
   icon = null,
   size = "default",
   fullWidth = false,
+  fullWidthMobile = false,
   background,
   disabled = false,
   href = undefined,
@@ -27,6 +28,7 @@ export const Button = ({
   ) => void;
   href?: string;
   fullWidth?: boolean;
+  fullWidthMobile?: boolean;
 }) => {
   const Wrapper = href ? "a" : "button";
   return (
@@ -54,6 +56,8 @@ export const Button = ({
 
           "justify-center md:justify-start": !fullWidth,
           "justify-center w-full": fullWidth,
+
+          "w-full md:w-auto": fullWidthMobile,
         }
       )}
       href={href}

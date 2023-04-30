@@ -1,9 +1,18 @@
 import clsx from "clsx";
 import React from "react";
+type Props = {
+  baseTextSize?: 1 | 2;
+  children?: React.ReactNode;
+  dangerouslySetInnerHTML?: {
+    __html: string;
+  };
+};
 
-type Props = { text: string; baseTextSize?: 1 | 2 };
-
-export const DynamicHTMLText = ({ text, baseTextSize = 1 }: Props) => {
+export const StyledText = ({
+  baseTextSize = 1,
+  children,
+  dangerouslySetInnerHTML,
+}: Props) => {
   return (
     <div
       className={clsx(
@@ -35,9 +44,9 @@ export const DynamicHTMLText = ({ text, baseTextSize = 1 }: Props) => {
         "prose-ol:list-outside prose-ol:pl-5",
         "first:prose-li:mt-0 last:prose-li:mb-0"
       )}
-      dangerouslySetInnerHTML={{
-        __html: text,
-      }}
-    />
+      dangerouslySetInnerHTML={dangerouslySetInnerHTML}
+    >
+      {children}
+    </div>
   );
 };
