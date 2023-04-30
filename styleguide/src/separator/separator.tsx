@@ -4,7 +4,7 @@ import React from "react";
 type Props = {
   mobileOnly?: boolean;
   hidden?: boolean;
-  escapeContainer?: boolean;
+  escapeContainer?: boolean | "mobile";
   orientation?: "horizontal" | "vertical";
 };
 
@@ -18,8 +18,10 @@ export const Separator = ({
     className={clsx("bg-black", {
       "lg:hidden": mobileOnly,
       hidden,
-      "w-screen -ml-4": escapeContainer,
-      "w-full": orientation === "horizontal" && !escapeContainer,
+
+      "w-screen -ml-4": escapeContainer === true,
+      "w-screen -ml-4 md:w-auto md:ml-0": escapeContainer === "mobile",
+      "w-full": orientation === "horizontal" && escapeContainer === false,
 
       "h-separator": orientation === "horizontal",
       "w-separator": orientation === "vertical",
