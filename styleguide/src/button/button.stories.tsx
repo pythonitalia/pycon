@@ -22,7 +22,7 @@ export const Story = ({ text, size, disabled, role }) => (
     <div>
       <Button
         onClick={() => {}}
-        fullWidthMobile
+        fullWidth="mobile"
         disabled={disabled}
         role={role}
       >

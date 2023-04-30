@@ -11,7 +11,6 @@ export const Button = ({
   icon = null,
   size = "default",
   fullWidth = false,
-  fullWidthMobile = false,
   background,
   disabled = false,
   href = undefined,
@@ -27,8 +26,7 @@ export const Button = ({
     e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLAnchorElement>
   ) => void;
   href?: string;
-  fullWidth?: boolean;
-  fullWidthMobile?: boolean;
+  fullWidth?: boolean | "mobile";
 }) => {
   const Wrapper = href ? "a" : "button";
   return (
@@ -54,10 +52,9 @@ export const Button = ({
           "py-5 px-8": size === "small",
           "py-5 px-8 lg:py-6 lg:px-12": size === "default",
 
-          "justify-center md:justify-start": !fullWidth,
-          "justify-center w-full": fullWidth,
-
-          "w-full md:w-auto": fullWidthMobile,
+          "justify-center md:justify-start": fullWidth === false,
+          "justify-center w-full": fullWidth === true,
+          "justify-center w-full lg:w-auto": fullWidth === "mobile",
         }
       )}
       href={href}
