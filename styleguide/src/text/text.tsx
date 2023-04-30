@@ -31,9 +31,9 @@ export const getStyleClassesForTextSize = (size: Props["size"]) => {
     case 3:
       return "text-base leading-4";
     case "label1":
-      return "text-2md leading-4";
+      return "text-base leading-1 lg:text-2md lg:leading-4";
     case "label2":
-      return "text-md leading-2";
+      return "text-base leading-1 lg:text-md lg:leading-2";
     case "label3":
       return "text-base leading-1";
     case "label4":
