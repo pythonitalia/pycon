@@ -106,6 +106,7 @@ export const RequestResetPasswordPageHandler = () => {
                 disabled={loading}
                 onClick={onSubmit}
                 data-testid="login-button"
+                fullWidth="mobile"
               >
                 <FormattedMessage id="requestResetPassword.button" />
               </Button>

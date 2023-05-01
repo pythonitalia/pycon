@@ -1,6 +1,6 @@
 import {
   CardPart,
-  DynamicHTMLText,
+  StyledHTMLText,
   Text,
   Heading,
   MultiplePartsCard,
@@ -89,7 +89,7 @@ const SimpleTextCard = ({ card }: { card: SimpleTextCardType }) => {
         <Heading size={3}>{card.title}</Heading>
       </CardPart>
       <CardPart fullHeight background="milk" contentAlign="left">
-        <DynamicHTMLText text={card.body} baseTextSize={2} />
+        <StyledHTMLText text={card.body} baseTextSize={2} />
       </CardPart>
     </MultiplePartsCard>
   );
@@ -112,7 +112,7 @@ const PriceCard = ({ card }: { card: PriceCardType }) => {
       <CardPart>
         <Heading size={2}>{card.title}</Heading>
         <Spacer size="xs" />
-        <DynamicHTMLText text={card.body} baseTextSize={2} />
+        <StyledHTMLText text={card.body} baseTextSize={2} />
       </CardPart>
 
       <CardPart>

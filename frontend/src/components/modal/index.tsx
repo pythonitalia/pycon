@@ -30,7 +30,7 @@ export const Modal = ({
   return (
     <div
       className={clsx(
-        "fixed overflow-y-auto inset-0 z-[2050] flex items-center justify-center",
+        "fixed overflow-y-auto inset-0 z-[2050] flex items-center justify-center !border-t-0 !border-b-0",
         {
           block: show,
           hidden: !show,

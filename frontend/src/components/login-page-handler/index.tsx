@@ -122,7 +122,12 @@ export const LoginPageHandler = () => {
                   }}
                 />
               </Text>
-              <Button role="secondary" onClick={onLogin} disabled={loading}>
+              <Button
+                role="secondary"
+                onClick={onLogin}
+                disabled={loading}
+                fullWidth="mobile"
+              >
                 <FormattedMessage id="login.loginButton" />
               </Button>
             </>

@@ -18,7 +18,7 @@ specifiers:
   '@mdx-js/loader': ^1.6.19
   '@next/mdx': ^10.0.0
   '@python-italia/eslint-config': ^1.0.13
-  '@python-italia/pycon-styleguide': 0.1.163
+  '@python-italia/pycon-styleguide': 0.1.169
   '@sentry/nextjs': ^7.38.0
   '@tailwindcss/typography': ^0.5.9
   '@testing-library/dom': ^8.1.0
@@ -95,7 +95,7 @@ dependencies:
   '@graphql-codegen/typescript-react-apollo': 3.3.5_sy4knu3obj4ys7pjcqbyfxmqle
   '@mdx-js/loader': 1.6.22_react@18.2.0
   '@next/mdx': 10.2.3_@mdx-js+loader@1.6.22
-  '@python-italia/pycon-styleguide': 0.1.163_o4scbtliisanygemawej7x2d6i
+  '@python-italia/pycon-styleguide': 0.1.169_o4scbtliisanygemawej7x2d6i
   '@sentry/nextjs': 7.38.0_next@13.1.6+react@18.2.0
   '@theme-ui/core': 0.15.3_hp5f5nkljdiwilp4rgxyefcplu
   '@theme-ui/css': 0.15.3_@emotion+react@11.10.5
@@ -2435,14 +2435,15 @@ packages:
       - supports-color
     dev: true
 
-  /@python-italia/pycon-styleguide/0.1.163_o4scbtliisanygemawej7x2d6i:
-    resolution: {integrity: sha512-7BZ0nhjgJpXaOchKOriZmCw2eO8nY+d5miLkqPVB++z1obMpJ0p/6JVRNtnpcJ/rjmtcRdoGEhoT1YHfoZfMUg==}
+  /@python-italia/pycon-styleguide/0.1.169_o4scbtliisanygemawej7x2d6i:
+    resolution: {integrity: sha512-IqKKTzcwj7BYsXiZPS0i2UlhM1tNEa/njltNgaabAKAmtGTHVq/f7qiMbUOyn80aBRG64KttVm37cZiHKlhmjw==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
       clsx: 1.2.1
       date-fns: 2.29.3
+      framer-motion: 10.12.4_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-intl: 6.2.5_o77wnou4wwnegu5woljtklrzru
@@ -5516,6 +5517,24 @@ packages:
   /fraction.js/4.2.0:
     resolution: {integrity: sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==}
     dev: true
+
+  /framer-motion/10.12.4_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-9gLtv8T6dui0tujHROR+VM3kdJyKiFCFiD94IQE+0OuX6LaIyXtdVpviokVdrHSb1giWhmmX4yzoucALMx6mtw==}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      tslib: 2.4.1
+    optionalDependencies:
+      '@emotion/is-prop-valid': 0.8.8
+    dev: false
 
   /fs.realpath/1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}

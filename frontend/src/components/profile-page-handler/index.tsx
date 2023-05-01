@@ -168,7 +168,7 @@ export const ProfilePageHandler = () => {
         onClose={() => openLogoutModal(false)}
         show={showLogoutModal}
         actions={
-          <div className="flex flex-col md:flex-row gap-6 justify-end items-center">
+          <div className="flex flex-col-reverse md:flex-row gap-6 justify-end items-center">
             <BasicButton onClick={() => openLogoutModal(false)}>
               <FormattedMessage id="profile.tickets.cancel" />
             </BasicButton>
@@ -177,6 +177,7 @@ export const ProfilePageHandler = () => {
               role="alert"
               onClick={onLogout}
               size="small"
+              fullWidth="mobile"
             >
               <FormattedMessage id="profile.logout" />
             </Button>
