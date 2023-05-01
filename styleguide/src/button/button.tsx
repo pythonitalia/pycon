@@ -54,7 +54,8 @@ export const Button = ({
 
           "justify-center md:justify-start": fullWidth === false,
           "justify-center w-full": fullWidth === true,
-          "justify-center w-full lg:w-auto": fullWidth === "mobile",
+          "justify-center w-full md:w-auto md:justify-start":
+            fullWidth === "mobile",
         }
       )}
       href={href}
