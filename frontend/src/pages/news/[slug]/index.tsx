@@ -1,6 +1,6 @@
 import {
   Container,
-  DynamicHTMLText,
+  StyledHTMLText,
   Heading,
   Page,
   Section,
@@ -14,7 +14,9 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
+import { Article } from "~/components/article";
 import { MetaTags } from "~/components/meta-tags";
+import { compile } from "~/helpers/markdown";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import {
@@ -22,8 +24,6 @@ import {
   queryNewsArticle,
   useNewsArticleQuery,
 } from "~/types";
-import { Article } from "~/components/article";
-import { compile } from "~/helpers/markdown";
 
 export const NewsArticlePage = () => {
   const language = useCurrentLanguage();
@@ -77,7 +77,7 @@ export const NewsArticlePage = () => {
 
       <Section illustration="snakeTail">
         <Container noPadding center={false} size="medium">
-          {newsArticle && <DynamicHTMLText text={post.body} baseTextSize={2} />}
+          {newsArticle && <StyledHTMLText text={post.body} baseTextSize={2} />}
           {blogPost && <Article>{compile(blogPost.content).tree}</Article>}
         </Container>
       </Section>

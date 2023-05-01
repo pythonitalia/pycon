@@ -1,4 +1,5 @@
 import {
+  StyledText,
   Grid,
   GridColumn,
   Heading,
@@ -107,9 +108,9 @@ export const ScheduleEventDetail = ({
                   <FormattedMessage id="scheduleEventDetail.elevatorPitch" />
                 </Title>
                 <Spacer size="small" />
-                <Text size={1} color="grey-900">
+                <StyledText baseTextSize={1}>
                   {compile(elevatorPitch).tree}
-                </Text>
+                </StyledText>
                 <Spacer size="large" />
               </>
             )}
@@ -119,9 +120,9 @@ export const ScheduleEventDetail = ({
                   <FormattedMessage id="scheduleEventDetail.abstract" />
                 </Title>
                 <Spacer size="small" />
-                <Text size={2} color="grey-900">
+                <StyledText baseTextSize={2}>
                   {compile(abstract).tree}
-                </Text>
+                </StyledText>
                 <Spacer size="large" />
               </>
             )}

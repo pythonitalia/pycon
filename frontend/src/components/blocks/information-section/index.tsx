@@ -5,7 +5,7 @@ import {
   Section,
   VerticalStack,
   Spacer,
-  DynamicHTMLText,
+  StyledHTMLText,
 } from "@python-italia/pycon-styleguide";
 import { Illustration } from "@python-italia/pycon-styleguide/dist/illustrations/types";
 import { Color } from "@python-italia/pycon-styleguide/dist/types";
@@ -62,7 +62,7 @@ export const InformationSection = ({
           <>
             <Spacer size="large" />
             <div className="text-center">
-              <DynamicHTMLText text={body} />
+              <StyledHTMLText text={body} />
             </div>
           </>
         )}
