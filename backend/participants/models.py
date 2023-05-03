@@ -16,6 +16,7 @@ class Participant(models.Model):
     )
     user_id = models.IntegerField(verbose_name=_("user_id"))
 
+    public_profile = models.BooleanField(_("public profile"), default=False)
     photo = models.TextField(_("photo"))
     bio = models.TextField(max_length=2048)
     website = models.URLField(max_length=2048, blank=True)

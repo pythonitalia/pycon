@@ -24,7 +24,9 @@ export const getServerSideProps: GetServerSideProps = async ({
     await Promise.all([
       prefetchSharedQueries(client, locale),
       queryCountries(client),
-      queryMyEditProfile(client),
+      queryMyEditProfile(client, {
+        conference: process.env.conferenceCode,
+      }),
     ]);
   } catch (e) {
     return {

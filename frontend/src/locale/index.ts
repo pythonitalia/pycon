@@ -446,6 +446,15 @@ export const messages = {
     "tickets.checkout.voucher.fetching": "Fetching voucher...",
     "tickets.checkout.voucher.noProductsAffected": "No products affected",
 
+    "profile.publicProfile.optInDescription":
+      "You can make your profile public and let other attendee see your personal details when they scan your badge's QR Code!",
+
+    "profile.publicProfile.optedOut":
+      "Your profile is currently private. Tick here to make it public.",
+    "profile.publicProfile.optedIn":
+      "Your profile is currently public. Tick here to make it private.",
+    "profile.publicProfile.heading": "Your public profile",
+
     "tickets.checkout.title": "Checkout",
     "tickets.title": "Buy Tickets",
 

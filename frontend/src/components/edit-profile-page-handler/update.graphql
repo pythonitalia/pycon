@@ -1,4 +1,7 @@
-mutation UpdateProfile($input: UpdateProfileInput!) {
+mutation UpdateProfile(
+  $input: UpdateProfileInput!
+  $updateParticipantInput: UpdateParticipantInput!
+) {
   updateProfile(input: $input) {
     __typename
 
@@ -39,6 +42,36 @@ mutation UpdateProfile($input: UpdateProfileInput!) {
         country {
           message
         }
+      }
+    }
+  }
+
+  updateParticipant(input: $updateParticipantInput) {
+    __typename
+
+    ... on Participant {
+      id
+      bio
+      website
+      photo
+      publicProfile
+      twitterHandle
+      instagramHandle
+      linkedinUrl
+      facebookUrl
+      mastodonHandle
+    }
+
+    ... on UpdateParticipantValidationError {
+      errors {
+        bio
+        website
+        photo
+        twitterHandle
+        instagramHandle
+        linkedinUrl
+        facebookUrl
+        mastodonHandle
       }
     }
   }

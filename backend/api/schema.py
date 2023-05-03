@@ -2,6 +2,7 @@ import strawberry
 from strawberry.extensions.tracing.sentry import SentryTracingExtensionSync
 
 from api.users.types import User
+from api.participants.mutations import ParticipantMutations
 
 from .blob.schema import BlobMutation
 from .blog.schema import BlogQuery
@@ -51,6 +52,7 @@ class Mutation(
     AttendeeTicketMutation,
     VolunteersNotificationsMutation,
     BlobMutation,
+    ParticipantMutations,
 ):
     pass
 
