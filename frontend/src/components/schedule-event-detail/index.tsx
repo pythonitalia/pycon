@@ -27,7 +27,7 @@ type Props = {
   eventTitle: string;
   elevatorPitch?: string;
   abstract?: string;
-  speakers: Speaker[];
+  speakers: Participant[];
   tags?: string[];
   language: string;
   audienceLevel?: string;

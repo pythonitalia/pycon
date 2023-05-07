@@ -21,12 +21,7 @@ export const PublicProfilePageHandler = () => {
   return (
     <Page endSeparator={false}>
       <Section>
-        <ParticipantInfoSection
-          participant={{
-            ...participant,
-            name: "John Doe",
-          }}
-        />
+        <ParticipantInfoSection participant={participant} />
       </Section>
     </Page>
   );

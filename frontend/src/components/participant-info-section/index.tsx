@@ -23,7 +23,7 @@ import React from "react";
 import { compile } from "~/helpers/markdown";
 
 export type Participant = {
-  name: string;
+  fullname: string;
   bio: string;
   photo: string;
 
@@ -118,7 +118,7 @@ export const ParticipantInfoSection = ({
         </LayoutContent>
       </GridColumn>
       <GridColumn colSpan={8} mdColSpan={8}>
-        <Heading size="display2">{participant.name}</Heading>
+        <Heading size="display2">{participant.fullname}</Heading>
         <Spacer size="2md" />
         {participant.bio && (
           <Text size={2}>{compile(participant.bio).tree}</Text>

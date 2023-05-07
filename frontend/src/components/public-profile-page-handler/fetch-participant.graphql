@@ -1,6 +1,7 @@
 query ParticipantPublicProfile($userId: ID!, $conference: String!) {
   participant(userId: $userId, conference: $conference) {
     id
+    fullname
     publicProfile
     bio
     website
