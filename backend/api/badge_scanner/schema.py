@@ -22,11 +22,6 @@ class BadgeScan:
 
 
 @strawberry.type
-class ScanSuccess:
-    badge_scan: BadgeScan
-
-
-@strawberry.type
 class ScanError:
     message: str
 
@@ -36,5 +31,8 @@ class BadgeScannerMutation:
     @strawberry.mutation(
         permission_classes=[IsAuthenticated],
     )
-    def scan_badge(self, input: ScanBadgeInput) -> Union[ScanSuccess, ScanError]:
-        pass
+    def scan_badge(self, input: ScanBadgeInput) -> Union[BadgeScan, ScanError]:
+        return BadgeScan(
+            attendee=Attendee(full_name="Test User", email="some@email.com"),
+            notes=None,
+        )
