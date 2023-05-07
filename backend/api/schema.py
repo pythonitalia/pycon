@@ -23,6 +23,7 @@ from .submissions.schema import SubmissionsQuery
 from .volunteers_notifications.mutations import VolunteersNotificationsMutation
 from .volunteers_notifications.query import VolunteersNotificationsQuery
 from .voting.mutations import VotesMutations
+from .participants.queries import ParticipantQueries
 
 
 @strawberry.type
@@ -37,6 +38,7 @@ class Query(
     ScheduleQuery,
     VolunteersNotificationsQuery,
     ChecklistQuery,
+    ParticipantQueries,
 ):
     pass
 

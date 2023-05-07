@@ -83,7 +83,6 @@ const toTileCase = (word: string) =>
   word.charAt(0).toUpperCase() + word.slice(1);
 
 export const EditProfilePageHandler = () => {
-  const router = useRouter();
   const [formState, formOptions] = useFormState<MeUserFields>(
     {},
     {
@@ -170,7 +169,7 @@ export const EditProfilePageHandler = () => {
               bio: formState.values.participantBio,
               website: formState.values.participantWebsite,
               speakerLevel: formState.values.participantSpeakerLevel,
-              previousTalkVideo: profileData.me.participant.previousTalkVideo,
+              previousTalkVideo: formState.values.participantPreviousTalkVideo,
               twitterHandle: formState.values.participantTwitterHandle,
               instagramHandle: formState.values.participantInstagramHandle,
               linkedinUrl: formState.values.participantLinkedinUrl,
@@ -212,6 +211,7 @@ export const EditProfilePageHandler = () => {
           <Spacer size="medium" />
 
           <PublicProfileCard
+            me={profileData.me}
             participant={profileData.me.participant}
             formState={formState}
             formOptions={formOptions}

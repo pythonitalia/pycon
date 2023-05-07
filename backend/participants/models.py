@@ -1,6 +1,9 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from api.helpers.ids import encode_hashid
+from django.conf import settings
+
 
 class Participant(models.Model):
     class SpeakerLevels(models.TextChoices):
@@ -32,6 +35,10 @@ class Participant(models.Model):
     previous_talk_video = models.URLField(
         _("previous talk video"), blank=True, max_length=2049
     )
+
+    @property
+    def hashid(self):
+        return encode_hashid(self.pk, salt=settings.USER_ID_HASH_SALT, min_length=6)
 
     def __str__(self) -> str:
         return f"Participant {self.user_id} for {self.conference}"

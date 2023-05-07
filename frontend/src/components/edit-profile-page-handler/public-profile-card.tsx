@@ -10,27 +10,33 @@ import {
   InputWrapper,
   Textarea,
   Input,
+  Link,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 import { FormState, Inputs, StateErrors } from "react-use-form-state";
 
-import { Participant } from "~/types";
+import { useCurrentLanguage } from "~/locale/context";
+import { MyEditProfileQuery, Participant } from "~/types";
 
 import { FileInput } from "../file-input";
+import { createHref } from "../link";
 import { MeUserFields } from "./types";
 
 type Props = {
   formState: FormState<MeUserFields, StateErrors<MeUserFields, string>>;
   formOptions: Inputs<MeUserFields>;
   participant: Participant;
+  me: MyEditProfileQuery["me"];
 };
 
 export const PublicProfileCard = ({
+  me,
   formState,
   formOptions: { checkbox, raw, url, text },
   participant,
 }: Props) => {
-  console.log("participant", participant);
+  const language = useCurrentLanguage();
+  console.log("me", me);
 
   return (
     <MultiplePartsCard>
@@ -45,6 +51,14 @@ export const PublicProfileCard = ({
             <Text size={2}>
               <FormattedMessage id="profile.publicProfile.optInDescription" />
             </Text>
+            <Link
+              href={createHref({
+                path: `/profile/${me.hashid}`,
+                locale: language,
+              })}
+            >
+              go
+            </Link>
           </GridColumn>
           <GridColumn colSpan={3}>
             <label>

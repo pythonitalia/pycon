@@ -13,9 +13,12 @@ import { FormattedMessage } from "react-intl";
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 
+import {
+  Participant,
+  ParticipantInfoSection,
+} from "../participant-info-section";
 import { EventTag } from "./event-tag";
 import { Sidebar } from "./sidebar";
-import { Speaker, SpeakerSection } from "./speaker-section";
 
 type Props = {
   id?: string;
@@ -144,7 +147,7 @@ export const ScheduleEventDetail = ({
         <Section>
           {speakers.map((speaker, index) => (
             <>
-              <SpeakerSection speaker={speaker} />
+              <ParticipantInfoSection participant={speaker} />
               {index !== speakers.length - 1 && <Spacer size="2xl" />}
             </>
           ))}

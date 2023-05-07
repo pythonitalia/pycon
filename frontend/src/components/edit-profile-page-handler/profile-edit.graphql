@@ -1,6 +1,7 @@
 query MyEditProfile($conference: String!) {
   me {
     id
+    hashid
     email
     name
     fullName
