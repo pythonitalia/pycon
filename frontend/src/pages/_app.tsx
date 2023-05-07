@@ -57,6 +57,15 @@ const MyApp = (props) => {
 
   const enableOlark = false;
 
+  if (router.pathname === "/badge") {
+    return (
+      <Flex>
+        <GlobalStyles />
+        <Component {...pageProps} err={err} />
+      </Flex>
+    );
+  }
+
   return (
     <ThemeProvider theme={theme}>
       {enableOlark && (
