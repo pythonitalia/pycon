@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Union
 
-from mypy_extensions import TypedDict
+from typing_extensions import TypedDict
 
 ProductSummary = TypedDict(
     "ProductSummary",
