@@ -8,9 +8,6 @@ from api.submissions.permissions import CanSeeSubmissionPrivateFields
 
 @strawberry.federation.type(keys=["userId"])
 class Participant:
-    # todo need to expose the user name
-    # expose User? -> add user_id as field
-    # use federation to add `user` field from the users service
     id: ID
     user_id: ID
     bio: str
