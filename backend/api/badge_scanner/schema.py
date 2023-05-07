@@ -32,6 +32,7 @@ class BadgeScannerMutation:
         permission_classes=[IsAuthenticated],
     )
     def scan_badge(self, input: ScanBadgeInput) -> Union[BadgeScan, ScanError]:
+        # TODO: validate input
         return BadgeScan(
             attendee=Attendee(full_name="Test User", email="some@email.com"),
             notes=None,
