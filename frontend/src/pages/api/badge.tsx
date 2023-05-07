@@ -1,6 +1,4 @@
-import PDFDocument from "pdfkit";
 import satori from "satori";
-import SVGtoPDF from "svg-to-pdfkit";
 
 import type { NextRequest } from "next/server";
 
@@ -54,12 +52,6 @@ const handler = async (req: NextRequest) => {
       ],
     },
   );
-
-  const doc = new PDFDocument();
-  doc.addPage({
-    size: "A4",
-  });
-  SVGtoPDF(doc, svg, 0, 0);
 
   return new Response(svg);
 };
