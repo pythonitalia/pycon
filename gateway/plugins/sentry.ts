@@ -1,5 +1,6 @@
 import * as NodeSentry from "@sentry/node";
 import * as ServerlessSentry from "@sentry/serverless";
+import { CaptureConsole } from "@sentry/integrations";
 import { ApolloError } from "apollo-server";
 import { ApolloServerPlugin } from "apollo-server-plugin-base";
 import { GraphQLRequestContextDidEncounterErrors } from "apollo-server-types";
@@ -20,6 +21,11 @@ export const initSentry = (isServerless: boolean) => {
     dsn: SENTRY_DSN,
     environment: ENV,
     tracesSampleRate: 0.1,
+    integrations: [
+      new CaptureConsole({
+        levels: ["error"],
+      }),
+    ],
   });
 };
 
