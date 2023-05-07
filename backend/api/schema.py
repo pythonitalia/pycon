@@ -22,6 +22,7 @@ from .submissions.schema import SubmissionsQuery
 from .volunteers_notifications.mutations import VolunteersNotificationsMutation
 from .volunteers_notifications.query import VolunteersNotificationsQuery
 from .voting.mutations import VotesMutations
+from .badge_scanner.schema import BadgeScannerMutation
 
 
 @strawberry.type
@@ -51,6 +52,7 @@ class Mutation(
     AttendeeTicketMutation,
     VolunteersNotificationsMutation,
     BlobMutation,
+    BadgeScannerMutation,
 ):
     pass
 
