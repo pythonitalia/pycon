@@ -19,6 +19,7 @@ class Participant:
     linkedin_url: str
     facebook_url: str
     mastodon_handle: str
+    speaker_id: strawberry.Private[int]
 
     _speaker_level: strawberry.Private[str]
     _previous_talk_video: strawberry.Private[str]
@@ -42,6 +43,7 @@ class Participant:
         return cls(
             id=instance.hashid,
             user_id=instance.user_id,
+            speaker_id=instance.user_id,
             photo=instance.photo,
             bio=instance.bio,
             website=instance.website,
