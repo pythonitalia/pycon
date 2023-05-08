@@ -96,11 +96,11 @@ export const Badge = ({
         <div
           style={{
             fontSize: "32px",
-            color: "#34B4A1",
+            color: "#F17A5D",
             fontWeight: 600,
           }}
         >
-          Speaker
+          Attendee
         </div>
         <div
           style={{
