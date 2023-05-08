@@ -70,7 +70,7 @@
     "styled-system": "^5.1.5",
     "svg-to-pdfkit": "^0.1.8",
     "theme-ui": "0.15.3",
-    "use-local-storage-state": "^6.0.0",
+    "use-local-storage-state": "^18.3.2",
     "use-onclickoutside": "^0.4.0",
     "xstate": "^4.35.1",
     "yup": "^0.29.3"
