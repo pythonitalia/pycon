@@ -1,5 +1,6 @@
 import {
   Heading,
+  Text,
   Page,
   Section,
   Button,
@@ -127,14 +128,24 @@ export const EditProfilePageHandler = () => {
     return validationError;
   };
 
-  const [update, { loading: updateProfileLoading, data: updateProfileData }] =
-    useUpdateProfileMutation({
-      onCompleted: (data) => {
-        // if (data?.updateProfile?.__typename === "User") {
-        //   router.push("/profile");
-        // }
-      },
-    });
+  const getParticipantValidationError = (key: str) => {
+    const validationError =
+      (updateProfileData &&
+        updateProfileData.updateParticipant.__typename ===
+          "UpdateParticipantValidationError" &&
+        (updateProfileData.updateParticipant as any).errors[key]) ||
+      [];
+    return validationError;
+  };
+
+  const [
+    update,
+    {
+      loading: updateProfileLoading,
+      data: updateProfileData,
+      error: updateProfileError,
+    },
+  ] = useUpdateProfileMutation();
 
   useEffect(() => {
     if (profileData && !loading) {
@@ -212,9 +223,9 @@ export const EditProfilePageHandler = () => {
 
           <PublicProfileCard
             me={profileData.me}
-            participant={profileData.me.participant}
             formState={formState}
             formOptions={formOptions}
+            getParticipantValidationError={getParticipantValidationError}
           />
 
           <Spacer size="medium" />
@@ -232,11 +243,25 @@ export const EditProfilePageHandler = () => {
             justifyContent="spaceBetween"
           >
             <div>
-              <ErrorsList errors={[]} />
+              <ErrorsList errors={[updateProfileError?.message]} />
             </div>
-            <Button role="secondary" disabled={updateProfileLoading}>
-              <FormattedMessage id="buttons.save" />
-            </Button>
+            <HorizontalStack
+              wrap="wrap"
+              alignItems="center"
+              gap="medium"
+              justifyContent="spaceBetween"
+            >
+              {updateProfileData?.updateProfile?.__typename === "User" &&
+                updateProfileData?.updateParticipant?.__typename ===
+                  "Participant" && (
+                  <Text size="label2">
+                    <FormattedMessage id="profile.edit.success" />
+                  </Text>
+                )}
+              <Button role="secondary" disabled={updateProfileLoading}>
+                <FormattedMessage id="buttons.save" />
+              </Button>
+            </HorizontalStack>
           </HorizontalStack>
         </form>
       </Section>

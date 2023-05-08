@@ -86,7 +86,7 @@ export const Badge = () => {
             color: "#FAF5F3",
             fontSize: "40px",
             fontWeight: 600,
-            lineHeight: "35px",
+            lineHeight: "38px",
           }}
         >
           Jessica Bandini

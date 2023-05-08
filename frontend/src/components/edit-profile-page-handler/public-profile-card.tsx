@@ -15,8 +15,9 @@ import {
 import { FormattedMessage } from "react-intl";
 import { FormState, Inputs, StateErrors } from "react-use-form-state";
 
+import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
-import { MyEditProfileQuery, Participant } from "~/types";
+import { MyEditProfileQuery } from "~/types";
 
 import { FileInput } from "../file-input";
 import { createHref } from "../link";
@@ -25,19 +26,18 @@ import { MeUserFields } from "./types";
 type Props = {
   formState: FormState<MeUserFields, StateErrors<MeUserFields, string>>;
   formOptions: Inputs<MeUserFields>;
-  participant: Participant;
   me: MyEditProfileQuery["me"];
+  getParticipantValidationError: (key: string) => string[] | null;
 };
 
 export const PublicProfileCard = ({
   me,
   formState,
   formOptions: { checkbox, raw, url, text },
-  participant,
+  getParticipantValidationError,
 }: Props) => {
   const language = useCurrentLanguage();
-  console.log("me", me);
-
+  const inputPlaceholder = useTranslatedMessage("input.placeholder");
   return (
     <MultiplePartsCard>
       <CardPart contentAlign="left">
@@ -49,16 +49,22 @@ export const PublicProfileCard = ({
         <Grid cols={3}>
           <GridColumn colSpan={3}>
             <Text size={2}>
-              <FormattedMessage id="profile.publicProfile.optInDescription" />
+              <FormattedMessage
+                id="profile.publicProfile.optInDescription"
+                values={{
+                  viewProfile: (
+                    <Link
+                      href={createHref({
+                        path: `/profile/${me.hashid}`,
+                        locale: language,
+                      })}
+                    >
+                      <FormattedMessage id="profile.publicProfile.viewProfile" />
+                    </Link>
+                  ),
+                }}
+              />
             </Text>
-            <Link
-              href={createHref({
-                path: `/profile/${me.hashid}`,
-                locale: language,
-              })}
-            >
-              go
-            </Link>
           </GridColumn>
           <GridColumn colSpan={3}>
             <label>
@@ -86,59 +92,77 @@ export const PublicProfileCard = ({
             <>
               <GridColumn colSpan={3}>
                 <InputWrapper
-                  title="Your photo"
-                  description="Your photo will make your personal page look more like yours!"
+                  title={
+                    <FormattedMessage id="profile.publicProfile.yourPhoto" />
+                  }
+                  description={
+                    <FormattedMessage id="profile.publicProfile.yourPhoto.description" />
+                  }
                 >
                   <FileInput {...raw("participantPhoto")} />
                 </InputWrapper>
               </GridColumn>
               <GridColumn colSpan={3}>
                 <InputWrapper
-                  title="Your bio"
-                  description="Write a brief description about yourself! Your interests, hobbies, occupation and more!"
+                  title={
+                    <FormattedMessage id="profile.publicProfile.yourBio" />
+                  }
+                  description={
+                    <FormattedMessage id="profile.publicProfile.yourBio.description" />
+                  }
                 >
                   <Textarea
                     {...text("participantBio")}
                     maxLength={1000}
                     rows={4}
-                    placeholder="Type here..."
+                    placeholder={inputPlaceholder}
+                    errors={getParticipantValidationError("bio")}
                   />
                 </InputWrapper>
               </GridColumn>
               <GridColumn colSpan={3}>
                 <InputWrapper
-                  title="Your socials"
-                  description="Where can people find you online? Add your socials here!"
+                  title={
+                    <FormattedMessage id="profile.publicProfile.yourSocials" />
+                  }
                 >
                   {null}
                 </InputWrapper>
               </GridColumn>
-              <InputWrapper title="Your website">
+              <InputWrapper title="Website">
                 <Input
                   {...url("participantWebsite")}
                   required={false}
                   maxLength={2048}
+                  placeholder={inputPlaceholder}
+                  errors={getParticipantValidationError("website")}
                 />
               </InputWrapper>
-              <InputWrapper title="Twitter handle">
+              <InputWrapper title="Twitter">
                 <Input
                   {...text("participantTwitterHandle")}
                   required={false}
                   maxLength={15}
+                  placeholder={inputPlaceholder}
+                  errors={getParticipantValidationError("twitterHandle")}
                 />
               </InputWrapper>
-              <InputWrapper title="Mastodon handle">
+              <InputWrapper title="Mastodon">
                 <Input
                   {...text("participantMastodonHandle")}
                   required={false}
                   maxLength={2048}
+                  placeholder={inputPlaceholder}
+                  errors={getParticipantValidationError("mastodonHandle")}
                 />
               </InputWrapper>
-              <InputWrapper title="Instagram handle">
+              <InputWrapper title="Instagram">
                 <Input
                   {...text("participantInstagramHandle")}
                   required={false}
                   maxLength={30}
+                  placeholder={inputPlaceholder}
+                  errors={getParticipantValidationError("instagramHandle")}
                 />
               </InputWrapper>
               <InputWrapper title="LinkedIn URL">
@@ -146,6 +170,8 @@ export const PublicProfileCard = ({
                   {...url("participantLinkedinUrl")}
                   required={false}
                   maxLength={2048}
+                  placeholder={inputPlaceholder}
+                  errors={getParticipantValidationError("linkedinUrl")}
                 />
               </InputWrapper>
               <InputWrapper title="Facebook URL">
@@ -153,6 +179,8 @@ export const PublicProfileCard = ({
                   {...url("participantFacebookUrl")}
                   required={false}
                   maxLength={2048}
+                  placeholder={inputPlaceholder}
+                  errors={getParticipantValidationError("facebookUrl")}
                 />
               </InputWrapper>
             </>
