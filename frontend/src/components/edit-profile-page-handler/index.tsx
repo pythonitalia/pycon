@@ -58,25 +58,37 @@ const onMyProfileFetched = (data: MyEditProfileQuery, formState) => {
   );
 
   // Public profile - participant
-  formState.setField("participantPublicProfile", me.participant.publicProfile);
-  formState.setField("participantPhoto", me.participant.photo);
-  formState.setField("participantBio", me.participant.bio);
-  formState.setField("participantWebsite", me.participant.website);
-  formState.setField("participantSpeakerLevel", me.participant.speakerLevel);
+  formState.setField("participantPublicProfile", me.participant?.publicProfile);
+  formState.setField("participantPhoto", me.participant?.photo ?? "");
+  formState.setField("participantBio", me.participant?.bio ?? "");
+  formState.setField("participantWebsite", me.participant?.website ?? "");
+  formState.setField(
+    "participantSpeakerLevel",
+    me.participant?.speakerLevel ?? "",
+  );
   formState.setField(
     "participantPreviousTalkVideo",
-    me.participant.previousTalkVideo,
+    me.participant?.previousTalkVideo ?? "",
   );
-  formState.setField("participantTwitterHandle", me.participant.twitterHandle);
+  formState.setField(
+    "participantTwitterHandle",
+    me.participant?.twitterHandle ?? "",
+  );
   formState.setField(
     "participantInstagramHandle",
-    me.participant.instagramHandle,
+    me.participant?.instagramHandle ?? "",
   );
-  formState.setField("participantLinkedinUrl", me.participant.linkedinUrl);
-  formState.setField("participantFacebookUrl", me.participant.facebookUrl);
+  formState.setField(
+    "participantLinkedinUrl",
+    me.participant?.linkedinUrl ?? "",
+  );
+  formState.setField(
+    "participantFacebookUrl",
+    me.participant?.facebookUrl ?? "",
+  );
   formState.setField(
     "participantMastodonHandle",
-    me.participant.mastodonHandle,
+    me.participant?.mastodonHandle ?? "",
   );
 };
 
