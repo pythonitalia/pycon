@@ -61,8 +61,8 @@ export const Modal = ({
             className={clsx(
               "bg-milk px-4 md:px-6 py-8 overflow-x-scroll grow",
               {
-                "max-h-[400px]": size === "medium",
-                "max-h-[800px]": size === "large",
+                "md:max-h-[400px]": size === "medium",
+                "md:max-h-[800px]": size === "large",
               },
             )}
           >

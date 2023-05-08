@@ -2,6 +2,7 @@ import {
   BasicButton,
   Button,
   Grid,
+  GridColumn,
   Text,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
@@ -88,8 +89,8 @@ export const CustomizeTicketModal = ({
         </div>
       }
     >
-      <Grid cols={2}>
-        <div>
+      <Grid cols={3}>
+        <GridColumn colSpan={2}>
           <ProductQuestionnaire
             product={ticket.item}
             index={0}
@@ -114,15 +115,15 @@ export const CustomizeTicketModal = ({
               <FormattedMessage id="global.somethingWentWrong" />
             </Text>
           )}
-        </div>
-        <div className="max-w-[302px] max-h-[453px]">
+        </GridColumn>
+        <GridColumn className="max-w-[302px] max-h-[453px]">
           <Badge
             name={formState.values.attendeeName}
             pronouns={pronounsAnswer}
             tagline={taglineAnswer}
             cutLines={false}
           />
-        </div>
+        </GridColumn>
       </Grid>
     </Modal>
   );
