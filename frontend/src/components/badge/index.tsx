@@ -12,7 +12,6 @@ type Props = {
   pronouns?: string;
   tagline?: string;
   name?: string;
-  ticketId?: number;
 };
 
 export const Badge = ({
@@ -20,7 +19,6 @@ export const Badge = ({
   name = "Example",
   pronouns = "they/them",
   tagline = "Example tagline",
-  ticketId,
 }: Props) => {
   return (
     <div

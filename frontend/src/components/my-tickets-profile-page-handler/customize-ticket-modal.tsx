@@ -127,7 +127,6 @@ export const CustomizeTicketModal = ({
               name={formState.values.attendeeName}
               pronouns={pronounsAnswer}
               tagline={taglineAnswer}
-              ticketId={ticket.id}
               cutLines={false}
             />
           </div>
