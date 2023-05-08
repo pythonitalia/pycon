@@ -51,14 +51,7 @@ export const CustomizeTicketModal = ({
     id: productUserInformation.id,
     attendeeName: productUserInformation.attendeeName,
     attendeeEmail: productUserInformation.attendeeEmail,
-    answers: ticket.item.questions.reduce((acc, question) => {
-      acc[question.id] =
-        question.options.length > 0
-          ? question.options.find((o) => o.id === question.answer?.options[0])
-              ?.id
-          : question.answer?.answer;
-      return acc;
-    }, {}),
+    answers: productUserInformation.answers,
   });
 
   const taglineQuestion = ticket.item.questions.find(
