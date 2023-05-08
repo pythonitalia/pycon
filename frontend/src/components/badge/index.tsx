@@ -124,7 +124,7 @@ export const Badge = ({
             {tagline}
           </div>
 
-          <QRCode value={`https://pycon.it/badge/${ticketId}`} size={60} />
+          <QRCode value={`https://pycon.it/badge/nothing`} size={60} />
         </div>
       </div>
     </div>
