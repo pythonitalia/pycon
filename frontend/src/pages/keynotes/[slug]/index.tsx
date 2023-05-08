@@ -31,7 +31,9 @@ const KeynotePage = () => {
     },
   });
 
-  const speakersName = speakers.map((speaker) => speaker.fullName).join(" & ");
+  const speakersName = speakers
+    .map((speaker) => speaker.participant.fullname)
+    .join(" & ");
 
   return (
     <Page endSeparator={false}>
