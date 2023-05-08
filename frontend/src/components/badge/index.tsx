@@ -12,6 +12,7 @@ type Props = {
   pronouns?: string;
   tagline?: string;
   name?: string;
+  ticketId?: number;
 };
 
 export const Badge = ({
@@ -19,6 +20,7 @@ export const Badge = ({
   name = "Example",
   pronouns = "they/them",
   tagline = "Example tagline",
+  ticketId,
 }: Props) => {
   return (
     <div
@@ -122,7 +124,7 @@ export const Badge = ({
             {tagline}
           </div>
 
-          <QRCode value="hello" size={60} />
+          <QRCode value={`https://pycon.it/badge/${ticketId}`} size={60} />
         </div>
       </div>
     </div>

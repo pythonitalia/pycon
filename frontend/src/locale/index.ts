@@ -27,6 +27,10 @@ export const messages = {
     "profile.publicProfile.yourBio.description":
       "Write something about yourself: your interests, your current occupation and more!",
     "profile.publicProfile.yourSocials": "Your socials",
+    "profile.ticketsEdit.qrCodeDescription":
+      "The QR Code links to your public profile and can be used to quickly share contact details with fellow attendees and sponsors!",
+    "profile.ticketsEdit.editProfile":
+      "Click here to enable and customize your public profile.",
 
     "orderQuestions.emailsDontMatch": "Emails do not match",
     "specialGuest.title": "Join us for a special Q&A!",
@@ -1865,6 +1869,10 @@ Affrettati a comprare il biglietto!`,
     "profile.publicProfile.yourBio.description":
       "Scrivi qualcosa su di te: i tuoi interessi, il tuo lavoro attuale e cosi via!",
     "profile.publicProfile.yourSocials": "I tuoi social",
+    "profile.ticketsEdit.qrCodeDescription":
+      "Il QR Code porta al tuo profilo e può essere utilizzato per condividere rapidamente i tuoi contatti con altri partecipanti o sponsors!",
+    "profile.ticketsEdit.editProfile":
+      "Clicca qui per attivare e personalizzare il tuo profilo.",
   },
 };
 

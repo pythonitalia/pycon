@@ -3,14 +3,18 @@ import {
   Button,
   Grid,
   GridColumn,
+  Link,
+  Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
+import { useCurrentLanguage } from "~/locale/context";
 import { MyProfileWithTicketsQuery } from "~/types";
 
 import { Badge } from "../badge";
+import { createHref } from "../link";
 import { Modal } from "../modal";
 import { ProductQuestionnaire } from "../product-questionnaire";
 
@@ -42,6 +46,7 @@ export const CustomizeTicketModal = ({
   productUserInformation,
   errors,
 }: Props) => {
+  const language = useCurrentLanguage();
   const [formState] = useFormState<Form>({
     id: productUserInformation.id,
     attendeeName: productUserInformation.attendeeName,
@@ -116,13 +121,34 @@ export const CustomizeTicketModal = ({
             </Text>
           )}
         </GridColumn>
-        <GridColumn className="max-w-[302px] max-h-[453px]">
-          <Badge
-            name={formState.values.attendeeName}
-            pronouns={pronounsAnswer}
-            tagline={taglineAnswer}
-            cutLines={false}
-          />
+        <GridColumn>
+          <div className="max-w-[302px] max-h-[453px]">
+            <Badge
+              name={formState.values.attendeeName}
+              pronouns={pronounsAnswer}
+              tagline={taglineAnswer}
+              ticketId={ticket.id}
+              cutLines={false}
+            />
+          </div>
+          <div>
+            <Spacer size="small" />
+            <Text size="label3" as="p">
+              <FormattedMessage id="profile.ticketsEdit.qrCodeDescription" />
+            </Text>
+            <Spacer size="small" />
+            <Link
+              href={createHref({
+                path: "/profile/edit",
+                locale: language,
+              })}
+              target="_blank"
+            >
+              <Text size="label3" as="p" color="none">
+                <FormattedMessage id="profile.ticketsEdit.editProfile" />
+              </Text>
+            </Link>
+          </div>
         </GridColumn>
       </Grid>
     </Modal>
