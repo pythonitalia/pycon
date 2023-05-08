@@ -54,7 +54,8 @@ export const CustomizeTicketModal = ({
     answers: ticket.item.questions.reduce((acc, question) => {
       acc[question.id] =
         question.options.length > 0
-          ? question.options.find((o) => o.id === question.answer?.answer)?.id
+          ? question.options.find((o) => o.id === question.answer?.options[0])
+              ?.id
           : question.answer?.answer;
       return acc;
     }, {}),

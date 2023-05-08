@@ -45,7 +45,7 @@ export const TicketCard = ({ ticket }: Props) => {
     answers: ticket.item.questions.reduce((acc, question) => {
       acc[question.id] =
         question.options.length > 0
-          ? question.options[0].id
+          ? question.answer?.options[0] ?? question.options[0].id
           : question.answer?.answer;
       return acc;
     }, {}),
