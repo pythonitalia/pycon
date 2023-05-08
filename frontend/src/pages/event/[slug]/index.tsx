@@ -45,17 +45,7 @@ export const TalkPage = () => {
         audienceLevel={talk.submission?.audienceLevel.name}
         startTime={talk.start}
         endTime={talk.end}
-        speakers={talk.speakers.map((speaker) => ({
-          name: speaker.fullName,
-          photo: speaker.participant?.photo,
-          bio: speaker.participant?.bio,
-          twitterHandle: speaker.participant?.twitterHandle,
-          instagramHandle: speaker.participant?.instagramHandle,
-          linkedinUrl: speaker.participant?.linkedinUrl,
-          facebookUrl: speaker.participant?.facebookUrl,
-          mastodonHandle: speaker.participant?.mastodonHandle,
-          website: speaker.participant?.website,
-        }))}
+        speakers={talk.speakers.map((speaker) => speaker.participant)}
         bookable={talk.hasLimitedCapacity}
         spacesLeft={talk.spacesLeft}
       />

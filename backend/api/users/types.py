@@ -1,5 +1,6 @@
 from logging import getLogger
 from typing import List, Optional
+from django.conf import settings
 
 import strawberry
 from strawberry.types import Info
@@ -12,6 +13,7 @@ from api.submissions.types import Submission
 from conferences.models import Conference
 from grants.models import Grant as GrantModel
 from participants.models import Participant as ParticipantModel
+from api.helpers.ids import encode_hashid
 from schedule.models import ScheduleItemStar as ScheduleItemStarModel
 from submissions.models import Submission as SubmissionModel
 
@@ -35,6 +37,12 @@ class User:
         cls, id: strawberry.ID, email: str = "", isStaff: bool = False
     ):
         return cls(id=id, email=email, isStaff=isStaff)
+
+    @strawberry.field
+    def hashid(self, info: Info) -> str:
+        return encode_hashid(
+            int(self.id), salt=settings.USER_ID_HASH_SALT, min_length=6
+        )
 
     @strawberry.field
     def starred_schedule_items(self, info, conference: str) -> List[strawberry.ID]:

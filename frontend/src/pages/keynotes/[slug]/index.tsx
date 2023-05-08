@@ -58,17 +58,7 @@ const KeynotePage = () => {
         startTime={start}
         endTime={end}
         bookable={false}
-        speakers={speakers.map((speaker) => ({
-          name: speaker.fullName,
-          photo: speaker.participant.photo,
-          bio: speaker.participant.bio,
-          twitterHandle: speaker.participant.twitterHandle,
-          instagramHandle: speaker.participant.instagramHandle,
-          linkedinUrl: speaker.participant.linkedinUrl,
-          facebookUrl: speaker.participant.facebookUrl,
-          mastodonHandle: speaker.participant.mastodonHandle,
-          website: speaker.participant.website,
-        }))}
+        speakers={speakers.map((speaker) => speaker.participant)}
       />
     </Page>
   );

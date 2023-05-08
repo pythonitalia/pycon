@@ -19,6 +19,7 @@ type Props = {
   updateTicketInfo: ({ id, index, key, value }) => void;
   updateQuestionAnswer: ({ id, index, question, answer }) => void;
   hideAttendeeEmail?: boolean;
+  cols?: number;
 };
 
 export const ProductQuestionnaire = ({
@@ -28,12 +29,13 @@ export const ProductQuestionnaire = ({
   updateTicketInfo,
   updateQuestionAnswer,
   hideAttendeeEmail = false,
+  cols = 3,
 }: Props) => {
   const answers = productUserInformation.answers;
   const inputPlaceholder = useTranslatedMessage("input.placeholder");
 
   return (
-    <Grid cols={3} alignItems="end">
+    <Grid cols={cols} alignItems="end">
       {product.admission && (
         <InputWrapper
           key="attendeeName"

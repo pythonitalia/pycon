@@ -22,8 +22,8 @@ import React from "react";
 
 import { compile } from "~/helpers/markdown";
 
-export type Speaker = {
-  name: string;
+export type Participant = {
+  fullname: string;
   bio: string;
   photo: string;
 
@@ -35,18 +35,22 @@ export type Speaker = {
   website?: string;
 };
 
-export const SpeakerSection = ({ speaker }: { speaker: Speaker }) => (
+export const ParticipantInfoSection = ({
+  participant,
+}: {
+  participant: Participant;
+}) => (
   <>
     <Grid cols={12} mdCols={12}>
       <GridColumn colSpan={4} mdColSpan={4}>
         <LayoutContent position="relative">
           <VerticalStack>
-            {speaker.photo && (
+            {participant.photo && (
               <>
                 <img
-                  alt="speaker photo"
+                  alt="participant photo"
                   className="aspect-square border-black border z-10 object-cover"
-                  src={speaker.photo}
+                  src={participant.photo}
                 />
                 <LayoutContent
                   zIndex={1}
@@ -65,47 +69,47 @@ export const SpeakerSection = ({ speaker }: { speaker: Speaker }) => (
               justifyContent="end"
               gap="medium"
             >
-              {speaker.twitterHandle && (
+              {participant.twitterHandle && (
                 <Link
                   target="_blank"
-                  href={`https://twitter.com/${speaker.twitterHandle}`}
+                  href={`https://twitter.com/${participant.twitterHandle}`}
                 >
                   <TwitterIcon className="w-6 h-6" />
                 </Link>
               )}
 
-              {speaker.instagramHandle && (
+              {participant.instagramHandle && (
                 <Link
                   target="_blank"
-                  href={`https://instagram.com/${speaker.instagramHandle}`}
+                  href={`https://instagram.com/${participant.instagramHandle}`}
                 >
                   <InstagramIcon className="w-6 h-6" />
                 </Link>
               )}
 
-              {speaker.mastodonHandle && (
+              {participant.mastodonHandle && (
                 <Link
                   target="_blank"
-                  href={convertMastodonHandle(speaker.mastodonHandle)}
+                  href={convertMastodonHandle(participant.mastodonHandle)}
                 >
                   <MastodonIcon className="w-6 h-6" />
                 </Link>
               )}
 
-              {speaker.linkedinUrl && (
-                <Link target="_blank" href={speaker.linkedinUrl}>
+              {participant.linkedinUrl && (
+                <Link target="_blank" href={participant.linkedinUrl}>
                   <LinkedinIcon className="w-6 h-6" />
                 </Link>
               )}
 
-              {speaker.facebookUrl && (
-                <Link target="_blank" href={speaker.facebookUrl}>
+              {participant.facebookUrl && (
+                <Link target="_blank" href={participant.facebookUrl}>
                   <FacebookIcon className="w-6 h-6" />
                 </Link>
               )}
 
-              {speaker.website && (
-                <Link target="_blank" href={speaker.website}>
+              {participant.website && (
+                <Link target="_blank" href={participant.website}>
                   <WebIcon className="w-6 h-6" />
                 </Link>
               )}
@@ -114,9 +118,11 @@ export const SpeakerSection = ({ speaker }: { speaker: Speaker }) => (
         </LayoutContent>
       </GridColumn>
       <GridColumn colSpan={8} mdColSpan={8}>
-        <Heading size="display2">{speaker.name}</Heading>
+        <Heading size="display2">{participant.fullname}</Heading>
         <Spacer size="2md" />
-        {speaker.bio && <Text size={2}>{compile(speaker.bio).tree}</Text>}
+        {participant.bio && (
+          <Text size={2}>{compile(participant.bio).tree}</Text>
+        )}
       </GridColumn>
     </Grid>
   </>

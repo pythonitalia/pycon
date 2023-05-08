@@ -12,6 +12,10 @@ export const GlobalStyles = (): React.ReactElement => (
         margin: 0,
         padding: 0,
       },
+      body: {
+        WebkitPrintColorAdjust: "exact !important",
+        printColorAdjust: "exact !important",
+      },
       ".article ol, .article ul, .article li": {
         listStyleType: "disc",
         listStylePosition: "inside",
