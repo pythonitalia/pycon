@@ -81,6 +81,7 @@ export const Badge = ({
             fontSize: "40px",
             fontWeight: 600,
             lineHeight: "38px",
+            wordBreak: "break-word",
           }}
         >
           {name}
