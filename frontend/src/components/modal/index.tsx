@@ -9,6 +9,7 @@ type ModalProps = {
   onClose: () => void;
   children: React.ReactNode;
   actions?: React.ReactNode;
+  size?: "medium" | "large";
 };
 
 export const Modal = ({
@@ -17,6 +18,7 @@ export const Modal = ({
   onClose,
   children,
   actions,
+  size = "medium",
 }: ModalProps) => {
   useEffect(() => {
     if (show) {
@@ -39,7 +41,12 @@ export const Modal = ({
       role="dialog"
     >
       <div className="fixed inset-0 bg-caramel/90" onClick={onClose}></div>
-      <div className="md:px-4 z-10 w-full h-screen md:h-auto md:max-w-3xl">
+      <div
+        className={clsx("md:px-4 z-10 w-full h-screen md:h-auto", {
+          "md:max-w-3xl": size === "medium",
+          "md:max-w-6xl": size === "large",
+        })}
+      >
         <div className="md:border md:border-black divide-y flex flex-col h-screen md:h-auto bg-milk">
           <div className="bg-coral px-4 py-6 md:px-6 md:py-8 flex justify-between items-center">
             <Heading size={3}>{title}</Heading>
@@ -50,7 +57,15 @@ export const Modal = ({
               <CloseIcon full />
             </div>
           </div>
-          <div className="bg-milk px-4 md:px-6 py-8 max-h-[400px] overflow-x-scroll grow">
+          <div
+            className={clsx(
+              "bg-milk px-4 md:px-6 py-8 overflow-x-scroll grow",
+              {
+                "max-h-[400px]": size === "medium",
+                "max-h-[800px]": size === "large",
+              },
+            )}
+          >
             {children}
           </div>
           {actions && (

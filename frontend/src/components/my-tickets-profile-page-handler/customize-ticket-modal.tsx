@@ -1,9 +1,15 @@
-import { BasicButton, Button, Text } from "@python-italia/pycon-styleguide";
+import {
+  BasicButton,
+  Button,
+  Grid,
+  Text,
+} from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
 import { MyProfileWithTicketsQuery } from "~/types";
 
+import { Badge } from "../badge";
 import { Modal } from "../modal";
 import { ProductQuestionnaire } from "../product-questionnaire";
 
@@ -48,8 +54,21 @@ export const CustomizeTicketModal = ({
     }, {}),
   });
 
+  const taglineQuestion = ticket.item.questions.find(
+    (question) => question.name.toLowerCase() === "tagline",
+  );
+  const taglineAnswer = formState.values.answers[taglineQuestion.id];
+
+  const pronounsQuestion = ticket.item.questions.find(
+    (question) => question.name.toLowerCase() === "pronouns",
+  );
+  const pronounsAnswer = pronounsQuestion.options.find(
+    (option) => option.id === formState.values.answers[pronounsQuestion.id],
+  )?.name;
+
   return (
     <Modal
+      size="large"
       title={<FormattedMessage id="profile.ticketsEdit.modalTitle" />}
       onClose={() => openModal(false)}
       show={open}
@@ -69,29 +88,42 @@ export const CustomizeTicketModal = ({
         </div>
       }
     >
-      <ProductQuestionnaire
-        product={ticket.item}
-        index={0}
-        hideAttendeeEmail={true}
-        productUserInformation={{
-          ...formState.values,
-          errors,
-        }}
-        updateTicketInfo={({ key, value }) => {
-          formState.setField(key, value);
-        }}
-        updateQuestionAnswer={({ question, answer }) => {
-          formState.setField("answers", {
-            ...formState.values.answers,
-            [question]: answer,
-          });
-        }}
-      />
-      {updateTicketError && (
-        <Text size="label4" color="red">
-          <FormattedMessage id="global.somethingWentWrong" />
-        </Text>
-      )}
+      <Grid cols={2}>
+        <div>
+          <ProductQuestionnaire
+            product={ticket.item}
+            index={0}
+            cols={1}
+            hideAttendeeEmail={true}
+            productUserInformation={{
+              ...formState.values,
+              errors,
+            }}
+            updateTicketInfo={({ key, value }) => {
+              formState.setField(key, value);
+            }}
+            updateQuestionAnswer={({ question, answer }) => {
+              formState.setField("answers", {
+                ...formState.values.answers,
+                [question]: answer,
+              });
+            }}
+          />
+          {updateTicketError && (
+            <Text size="label4" color="red">
+              <FormattedMessage id="global.somethingWentWrong" />
+            </Text>
+          )}
+        </div>
+        <div className="max-w-[302px] max-h-[453px]">
+          <Badge
+            name={formState.values.attendeeName}
+            pronouns={pronounsAnswer}
+            tagline={taglineAnswer}
+            cutLines={false}
+          />
+        </div>
+      </Grid>
     </Modal>
   );
 };

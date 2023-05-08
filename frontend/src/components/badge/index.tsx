@@ -1,4 +1,4 @@
-import { Text } from "@python-italia/pycon-styleguide";
+import QRCode from "react-qr-code";
 
 import {
   BADGE_INSIDE_WIDTH_PX,
@@ -7,9 +7,19 @@ import {
   CUT_LINE_SIZE_2_PX,
 } from "~/pages/badge";
 
-// import satori from 'satori'
+type Props = {
+  cutLines?: boolean;
+  pronouns?: string;
+  tagline?: string;
+  name?: string;
+};
 
-export const Badge = () => {
+export const Badge = ({
+  cutLines = true,
+  name = "Example",
+  pronouns = "they/them",
+  tagline = "Example tagline",
+}: Props) => {
   return (
     <div
       style={{
@@ -29,57 +39,41 @@ export const Badge = () => {
           display: "flex",
           flexDirection: "column",
           textAlign: "left",
-          paddingLeft: "20px",
-          paddingRight: "20px",
-          paddingBottom: "20px",
+          paddingLeft: "25px",
+          paddingRight: "25px",
+          paddingBottom: "25px",
           position: "relative",
-          // border: "1px solid blue",
         }}
       >
-        <CutLines position="topLeft" />
-        <CutLines position="topRight" />
-        <CutLines position="bottomLeft" />
-        <CutLines position="bottomRight" />
+        {cutLines && (
+          <>
+            <CutLines position="topLeft" />
+            <CutLines position="topRight" />
+            <CutLines position="bottomLeft" />
+            <CutLines position="bottomRight" />
+          </>
+        )}
 
         {/* badge */}
-
-        {/*<div
-          style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: "20px",
-          }}
-        >
-          <div
-            style={{
-              width: "16px",
-              height: "16px",
-              backgroundColor: "#ffffff",
-              borderRadius: "100%",
-            }}
-          ></div>
-          </div>*/}
 
         <img
           style={{
             width: "113px",
             height: "34px",
-            marginBottom: "34px",
-            marginTop: "50px",
+            marginBottom: "40px",
+            marginTop: "55px",
           }}
           src="https://pythonit-email-assets.s3.eu-central-1.amazonaws.com/logo-pycon-2023.png"
         />
         <div
           style={{
-            fontSize: "20px",
+            fontSize: "14px",
             fontWeight: 400,
-            color: "#FAF5F3",
-            marginBottom: "4px",
+            color: "#FCE8DE",
+            marginBottom: "10px",
           }}
         >
-          She/Her
+          {pronouns}
         </div>
         <div
           style={{
@@ -89,24 +83,24 @@ export const Badge = () => {
             lineHeight: "38px",
           }}
         >
-          Jessica Bandini
+          {name}
         </div>
         <div
           style={{
             width: "100%",
-            marginTop: "16px",
-            marginBottom: "16px",
+            marginTop: "20px",
+            marginBottom: "15px",
             border: "1px solid #FAF5F3",
           }}
         />
         <div
           style={{
-            fontSize: "20px",
-            fontWeight: 400,
-            color: "#FAF5F3",
+            fontSize: "32px",
+            color: "#34B4A1",
+            fontWeight: 600,
           }}
         >
-          Guy with impostor syndrome during oce hours, DS in the remaining time
+          Speaker
         </div>
         <div
           style={{
@@ -114,16 +108,20 @@ export const Badge = () => {
             width: "100%",
             display: "flex",
             alignItems: "flex-end",
-            justifyContent: "flex-end",
+            justifyContent: "space-between",
           }}
         >
-          <img
+          <div
             style={{
-              height: "70px",
-              width: "70px",
+              fontSize: "11px",
+              fontWeight: 400,
+              color: "#FCE8DE",
             }}
-            src="https://cdn.britannica.com/17/155017-050-9AC96FC8/Example-QR-code.jpg"
-          />
+          >
+            {tagline}
+          </div>
+
+          <QRCode value="hello" size={60} />
         </div>
       </div>
     </div>
