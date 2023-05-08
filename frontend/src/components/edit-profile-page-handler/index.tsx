@@ -128,7 +128,7 @@ export const EditProfilePageHandler = () => {
     return validationError;
   };
 
-  const getParticipantValidationError = (key: str) => {
+  const getParticipantValidationError = (key: string) => {
     const validationError =
       (updateProfileData &&
         updateProfileData.updateParticipant.__typename ===
