@@ -12,13 +12,19 @@ export const getServerSideProps: GetServerSideProps = async ({
   const client = getApolloClient(null, req.cookies);
 
   try {
-    await Promise.all([
+    const [_, participantQuery] = await Promise.all([
       prefetchSharedQueries(client, locale),
       queryParticipantPublicProfile(client, {
         conference: process.env.conferenceCode,
         userId: params.hashid as string,
       }),
     ]);
+
+    if (participantQuery.data.participant === null) {
+      return {
+        notFound: true,
+      };
+    }
   } catch (e) {
     return {
       notFound: true,
