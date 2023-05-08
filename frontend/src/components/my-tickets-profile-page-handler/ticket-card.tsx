@@ -24,13 +24,14 @@ import { ReassignTicketModal } from "./reassign-ticket-modal";
 
 type Props = {
   ticket: MyProfileWithTicketsQuery["me"]["tickets"][0];
+  userEmail: string;
 };
 
 const snakeToCamel = (str: string) => {
   return str.replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
 };
 
-export const TicketCard = ({ ticket }: Props) => {
+export const TicketCard = ({ ticket, userEmail }: Props) => {
   const [showEditTicketModal, openEditTicketModal] = useState(false);
   const [showReassignTicketModal, openReassignTicketModal] = useState(false);
   const [showQRCodeModal, openQRCodeModal] = useState(false);
@@ -166,6 +167,9 @@ export const TicketCard = ({ ticket }: Props) => {
     !isAdmissionTicket &&
     !ticket.variation &&
     ticket.item.questions.length === 0;
+
+  const ticketReassigned = isAdmissionTicket && ticket.email !== userEmail;
+
   return (
     <>
       <MultiplePartsCard>
@@ -174,93 +178,121 @@ export const TicketCard = ({ ticket }: Props) => {
         </CardPart>
         <CardPart contentAlign="left" background="milk" fullHeight>
           <Grid cols={2} mdCols={2}>
-            {isAdmissionTicket && (
-              <Item
-                label={<FormattedMessage id="profile.tickets.attendeeName" />}
-                value={ticket.name}
-              />
-            )}
-            {ticket.variation && (
-              <Item
-                label={<FormattedMessage id="profile.tickets.size" />}
-                value={
-                  ticket.item.variations.find(
-                    (variation) => variation.id === ticket.variation,
-                  ).value
-                }
-              />
-            )}
-            {ticket.item.questions
-              .filter((question) => question.id !== taglineQuestion?.id)
-              .map((question) => (
-                <Item
-                  key={question.id}
-                  label={question.name}
-                  value={
-                    question.answer?.answer ?? (
-                      <FormattedMessage id="profile.tickets.noAnswer" />
-                    )
-                  }
-                />
-              ))}
-            {taglineQuestion && (
-              <GridColumn colSpan={2}>
-                <Item
-                  label={taglineQuestion.name}
-                  value={
-                    taglineQuestion.answer?.answer ?? (
-                      <FormattedMessage id="profile.tickets.noAnswer" />
-                    )
-                  }
-                />
+            {ticketReassigned && (
+              <GridColumn colSpan={2} className="break-words">
+                <Text size={3}>
+                  <FormattedMessage
+                    id="profile.tickets.ticketReassigned"
+                    values={{
+                      to: (
+                        <Text weight="strong" size={3}>
+                          {ticket.email}
+                        </Text>
+                      ),
+                    }}
+                  />
+                </Text>
               </GridColumn>
             )}
-            {emptyDetails && (
-              <Heading color="black" size={5}>
-                <FormattedMessage id="profile.tickets.noDetails" />
-              </Heading>
+            {!ticketReassigned && (
+              <>
+                {isAdmissionTicket && (
+                  <Item
+                    label={
+                      <FormattedMessage id="profile.tickets.attendeeName" />
+                    }
+                    value={ticket.name}
+                  />
+                )}
+                {ticket.variation && (
+                  <Item
+                    label={<FormattedMessage id="profile.tickets.size" />}
+                    value={
+                      ticket.item.variations.find(
+                        (variation) => variation.id === ticket.variation,
+                      ).value
+                    }
+                  />
+                )}
+                {ticket.item.questions
+                  .filter((question) => question.id !== taglineQuestion?.id)
+                  .map((question) => (
+                    <Item
+                      key={question.id}
+                      label={question.name}
+                      value={
+                        question.answer?.answer ?? (
+                          <FormattedMessage id="profile.tickets.noAnswer" />
+                        )
+                      }
+                    />
+                  ))}
+                {taglineQuestion && (
+                  <GridColumn colSpan={2}>
+                    <Item
+                      label={taglineQuestion.name}
+                      value={
+                        taglineQuestion.answer?.answer ?? (
+                          <FormattedMessage id="profile.tickets.noAnswer" />
+                        )
+                      }
+                    />
+                  </GridColumn>
+                )}
+                {emptyDetails && (
+                  <Heading color="black" size={5}>
+                    <FormattedMessage id="profile.tickets.noDetails" />
+                  </Heading>
+                )}
+              </>
             )}
           </Grid>
         </CardPart>
-        <CardPart size="none" contentAlign="left" shrink={false}>
-          <div className="flex justify-between">
-            <div className="flex divide-x">
-              {isAdmissionTicket && (
+        {!ticketReassigned && (
+          <CardPart size="none" contentAlign="left" shrink={false}>
+            <div className="flex justify-between">
+              <div className="flex divide-x">
+                {isAdmissionTicket && !ticketReassigned && (
+                  <div
+                    className="p-5 flex flex-col items-center justify-center cursor-pointer"
+                    onClick={() => openEditTicketModal(true)}
+                  >
+                    <GearIcon className="w-10 h-10 shrink-0" />
+                  </div>
+                )}
+                {isAdmissionTicket && !ticketReassigned && (
+                  <div
+                    onClick={() => openReassignTicketModal(true)}
+                    className="p-5 flex items-center justify-center cursor-pointer"
+                  >
+                    <TicketsIcon className="w-10 h-10 shrink-0" />
+                  </div>
+                )}
+              </div>
+              {!ticketReassigned && (
                 <div
-                  className="p-5 flex flex-col items-center justify-center cursor-pointer"
-                  onClick={() => openEditTicketModal(true)}
+                  className="p-2 shrink-0 cursor-pointer"
+                  onClick={() => openQRCodeModal(true)}
                 >
-                  <GearIcon className="w-10 h-10 shrink-0" />
-                </div>
-              )}
-              {isAdmissionTicket && (
-                <div
-                  onClick={() => openReassignTicketModal(true)}
-                  className="p-5 flex items-center justify-center cursor-pointer"
-                >
-                  <TicketsIcon className="w-10 h-10 shrink-0" />
+                  <QRCode
+                    className="w-full h-full"
+                    bgColor="none"
+                    size={64}
+                    value={ticket.secret}
+                  />
                 </div>
               )}
             </div>
-            <div
-              className="p-2 shrink-0 cursor-pointer"
-              onClick={() => openQRCodeModal(true)}
-            >
-              <QRCode
-                className="w-full h-full"
-                bgColor="none"
-                size={64}
-                value={ticket.secret}
-              />
-            </div>
-          </div>
-        </CardPart>
+          </CardPart>
+        )}
       </MultiplePartsCard>
-      <QRCodeModal
-        qrCodeValue={ticket.secret}
-        open={showQRCodeModal}
-        openModal={openQRCodeModal}
-      />
+      {!ticketReassigned && (
+        <QRCodeModal
+          qrCodeValue={ticket.secret}
+          open={showQRCodeModal}
+          openModal={openQRCodeModal}
+        />
+      )}
       {isAdmissionTicket && (
         <CustomizeTicketModal
           ticket={ticket}
