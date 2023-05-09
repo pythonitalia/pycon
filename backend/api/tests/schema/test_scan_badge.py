@@ -1,5 +1,8 @@
 from badge_scanner.models import BadgeScan
 
+import pytest
+
+pytestmark = pytest.mark.django_db
 
 def _scan_badge_mutation(graphql_client, variables):
     return graphql_client.query(
@@ -80,7 +83,7 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
     assert badge_scan.badge_url == "https://pycon.it/b/this-is-a-test"
 
 
-def test_fails_when_url_is_wrong(user, graphql_client):
+def test_fails_when_conference_is_wrong(user, graphql_client):
     graphql_client.force_login(user)
 
     resp = _scan_badge_mutation(
@@ -88,6 +91,22 @@ def test_fails_when_url_is_wrong(user, graphql_client):
         variables={
             "url": "https://clearly-wrong-url.com",
             "conferenceCode": "pycon2023",
+        },
+    )
+
+    assert "errors" not in resp
+    assert resp["data"]["scanBadge"]["__typename"] == "ScanError"
+    assert resp["data"]["scanBadge"]["message"] == "Conference not found"
+
+
+def test_when_url_is_wrong(user, graphql_client, conference):
+    graphql_client.force_login(user)
+
+    resp = _scan_badge_mutation(
+        graphql_client,
+        variables={
+            "url": "https://clearly-wrong-url.com",
+            "conferenceCode": conference.code,
         },
     )
 
