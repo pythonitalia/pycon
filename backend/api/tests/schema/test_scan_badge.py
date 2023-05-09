@@ -1,3 +1,6 @@
+from badge_scanner.models import BadgeScan
+
+
 def _scan_badge_mutation(graphql_client, variables):
     return graphql_client.query(
         """
@@ -45,6 +48,15 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
         },
     )
 
+    mocker.patch(
+        "api.badge_scanner.schema.get_user_by_email",
+        return_value={
+            "id": 1,
+            "email": "barko@marco.pizza",
+            "full_name": "Test User",
+        },
+    )
+
     resp = _scan_badge_mutation(
         graphql_client,
         variables={
@@ -57,7 +69,15 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
     assert resp["data"]["scanBadge"]["__typename"] == "BadgeScan"
     assert resp["data"]["scanBadge"]["attendee"]["fullName"] == "Test User"
     assert resp["data"]["scanBadge"]["attendee"]["email"] == "barko@marco.pizza"
-    assert resp["data"]["scanBadge"]["notes"] is None
+    assert resp["data"]["scanBadge"]["notes"] == ""
+
+    badge_scan = BadgeScan.objects.get()
+
+    assert badge_scan.scanned_by_id == user.id
+    assert badge_scan.scanned_user_id == 1
+    assert badge_scan.notes == ""
+    assert badge_scan.conference == conference
+    assert badge_scan.badge_url == "https://pycon.it/b/this-is-a-test"
 
 
 def test_fails_when_url_is_wrong(user, graphql_client):

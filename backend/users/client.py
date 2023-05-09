@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 from asgiref.sync import async_to_sync
 from django.conf import settings
@@ -66,7 +66,7 @@ def get_users_data_by_ids(ids: list[int]) -> dict[str, dict[str, Any]]:
     return users_by_id
 
 
-def get_users_full_data(ids: list[int]) -> dict[str, dict[str, any]]:
+def get_users_full_data(ids: list[int]) -> dict[str, dict[str, Any]]:
     client = ServiceClient(
         url=f"{settings.USERS_SERVICE_URL}/internal-api",
         service_name="users-backend",
@@ -90,3 +90,19 @@ def get_user_data_by_query(query: str):
     users_data = client_execute(SEARCH_USERS, {"query": query}).data
 
     return [user["id"] for user in users_data["searchUsers"]]
+
+
+def get_user_by_email(email: str) -> Optional[dict[str, str]]:
+    client = ServiceClient(
+        url=f"{settings.USERS_SERVICE_URL}/internal-api",
+        service_name="users-backend",
+        caller="pycon-backend",
+        jwt_secret=settings.SERVICE_TO_SERVICE_SECRET,
+    )
+    client_execute = async_to_sync(client.execute)
+    users_data = client_execute(GET_USERS_BY_EMAILS, {"emails": [email]}).data
+
+    if not users_data["usersByEmails"]:
+        return None
+
+    return users_data["usersByEmails"][0]
