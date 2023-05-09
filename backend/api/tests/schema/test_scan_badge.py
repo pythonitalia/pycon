@@ -37,7 +37,7 @@ def test_works_when_user_is_logged_in(user, graphql_client):
     # TODO: mock the pretix API ?
 
     resp = _scan_badge_mutation(
-        graphql_client, variables={"url": "https://pycon.it/profile/this-is-a-test"}
+        graphql_client, variables={"url": "https://pycon.it/b/this-is-a-test"}
     )
 
     assert "errors" not in resp
@@ -45,3 +45,15 @@ def test_works_when_user_is_logged_in(user, graphql_client):
     assert resp["data"]["scanBadge"]["attendee"]["fullName"] == "Test User"
     assert resp["data"]["scanBadge"]["attendee"]["email"] == "some@email.com"
     assert resp["data"]["scanBadge"]["notes"] is None
+
+
+def test_fails_when_url_is_wrong(user, graphql_client):
+    graphql_client.force_login(user)
+
+    resp = _scan_badge_mutation(
+        graphql_client, variables={"url": "https://clearly-wrong-url.com"}
+    )
+
+    assert "errors" not in resp
+    assert resp["data"]["scanBadge"]["__typename"] == "ScanError"
+    assert resp["data"]["scanBadge"]["message"] == "URL is not valid"
