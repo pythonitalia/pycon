@@ -69,7 +69,7 @@ export const KeynotesListPageHandler = () => {
                 }
                 talkInfoRight={englishText}
                 speakerName={keynote.speakers
-                  .map((speaker) => speaker.fullName)
+                  .map((speaker) => speaker.participant.fullname)
                   .join(", ")}
               />
             </Link>

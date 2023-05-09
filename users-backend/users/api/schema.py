@@ -5,6 +5,7 @@ from users.api.types import (
     BlogPostAuthor,
     ScheduleItemUser,
     SubmissionSpeaker,
+    Participant,
 )
 
 from .mutation import Mutation
@@ -17,6 +18,7 @@ schema = strawberry.federation.Schema(
         ScheduleItemUser,
         SubmissionSpeaker,
         BlogPostAuthor,
+        Participant,
     ],
     extensions=[SentryExtension],
 )

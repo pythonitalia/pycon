@@ -11,10 +11,10 @@ query KeynotesPage($conference: String!, $language: String!) {
       start
       speakers {
         id
-        fullName
         participant {
           id
           photo
+          fullname
           twitterHandle
           instagramHandle
           linkedinUrl

@@ -3,11 +3,9 @@ import re
 from typing import Optional
 
 import strawberry
-from django.conf import settings
 from strawberry import ID
 from strawberry.types import Info
 
-from api.helpers.ids import encode_hashid
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType, MultiLingualInput
 from blob.confirmation import confirm_blob_upload_usage
@@ -18,6 +16,7 @@ from domain_events.publisher import notify_new_submission
 from i18n.strings import LazyI18nString
 from languages.models import Language
 from participants.models import Participant
+from api.participants.mutations import _participant_avatar_blob_name
 from submissions.models import Submission as SubmissionModel
 
 from .types import Submission
@@ -433,8 +432,3 @@ class SubmissionsMutations:
         # hack because we return django models
         instance._type_definition = Submission._type_definition
         return instance
-
-
-def _participant_avatar_blob_name(conference: Conference, user_id: int) -> str:
-    hashed_id = encode_hashid(user_id, salt=settings.USER_ID_HASH_SALT, min_length=6)
-    return f"{conference.code}/{hashed_id}.jpg"

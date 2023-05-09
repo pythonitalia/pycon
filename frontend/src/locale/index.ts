@@ -21,6 +21,17 @@ export const messages = {
     "schedule.listView": "List View",
     "schedule.gridView": "Grid View",
 
+    "profile.publicProfile.yourPhoto": "Your photo",
+    "profile.publicProfile.yourPhoto.description": "Customise your profile",
+    "profile.publicProfile.yourBio": "Your bio",
+    "profile.publicProfile.yourBio.description":
+      "Write something about yourself: your interests, your current occupation and more!",
+    "profile.publicProfile.yourSocials": "Your socials",
+    "profile.ticketsEdit.qrCodeDescription":
+      "The QR Code links to your public profile and can be used to quickly share contact details with fellow attendees and sponsors!",
+    "profile.ticketsEdit.editProfile":
+      "Click here to enable and customize your public profile.",
+
     "orderQuestions.emailsDontMatch": "Emails do not match",
     "specialGuest.title": "Join us for a special Q&A!",
     "global.learnMore": "Learn more",
@@ -445,6 +456,17 @@ export const messages = {
 
     "tickets.checkout.voucher.fetching": "Fetching voucher...",
     "tickets.checkout.voucher.noProductsAffected": "No products affected",
+
+    "profile.publicProfile.optInDescription":
+      "You can make your profile public and let other attendee see your personal details when they scan your badge's QR Code. {viewProfile}",
+    "profile.publicProfile.viewProfile": "Click here to view your profile!",
+    "profile.edit.success": "Profile updated!",
+
+    "profile.publicProfile.optedOut":
+      "Your profile is currently private. Tick here to make it public.",
+    "profile.publicProfile.optedIn":
+      "Your profile is currently public. Tick here to make it private.",
+    "profile.publicProfile.heading": "Your public profile",
 
     "tickets.checkout.title": "Checkout",
     "tickets.title": "Buy Tickets",
@@ -1827,6 +1849,30 @@ Affrettati a comprare il biglietto!`,
     "tickets.productsList.guidedToursTitle": "Tour Guidati",
 
     "profile.tickets.noDetails": "Divertiti! 🍻",
+
+    "profile.publicProfile.optInDescription":
+      "Puoi rendere il tuo profilo pubblico cosi da farlo vedere ai partecipanti quando scannerizzato il tuo QR Code. {viewProfile}",
+    "profile.publicProfile.viewProfile":
+      "Clicca qui per vedere il tuo profilo!",
+    "profile.edit.success": "Profilo aggiornato!",
+
+    "profile.publicProfile.optedOut":
+      "Il tuo profilo è privato. Clicca qui per renderlo pubblico.",
+    "profile.publicProfile.optedIn":
+      "Il tuo profilo è pubblico. Clicca qui per renderlo privato.",
+    "profile.publicProfile.heading": "Profilo pubblico",
+
+    "profile.publicProfile.yourPhoto": "La tua foto",
+    "profile.publicProfile.yourPhoto.description":
+      "Personalizza il tuo profilo",
+    "profile.publicProfile.yourBio": "La tua bio",
+    "profile.publicProfile.yourBio.description":
+      "Scrivi qualcosa su di te: i tuoi interessi, il tuo lavoro attuale e cosi via!",
+    "profile.publicProfile.yourSocials": "I tuoi social",
+    "profile.ticketsEdit.qrCodeDescription":
+      "Il QR Code porta al tuo profilo e può essere utilizzato per condividere rapidamente i tuoi contatti con altri partecipanti o sponsors!",
+    "profile.ticketsEdit.editProfile":
+      "Clicca qui per attivare e personalizzare il tuo profilo.",
   },
 };
 

@@ -1,47 +1,31 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
 import {
-  CardPart,
-  Grid,
   Heading,
-  Link,
-  InputWrapper,
-  MultiplePartsCard,
+  Text,
   Page,
   Section,
-  Input,
-  Text,
-  Select,
   Button,
   HorizontalStack,
   Spacer,
-  Checkbox,
-  GridColumn,
 } from "@python-italia/pycon-styleguide";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { jsx } from "theme-ui";
 import * as yup from "yup";
 
 import { useRouter } from "next/router";
 
 import { MetaTags } from "~/components/meta-tags";
-import { useCountries } from "~/helpers/use-countries";
-import { useMyEditProfileQuery, useUpdateProfileMutation } from "~/types";
+import {
+  MyEditProfileQuery,
+  useMyEditProfileQuery,
+  useUpdateProfileMutation,
+} from "~/types";
 
 import { ErrorsList } from "../errors-list";
-
-type MeUserFields = {
-  name: string;
-  fullName: string;
-  gender: string;
-  dateBirth: Date;
-  country: string;
-  openToRecruiting: boolean;
-  openToNewsletter: boolean;
-};
+import { EmailPreferencesCard } from "./email-preferences-card";
+import { MainProfileCard } from "./main-profile-card";
+import { PublicProfileCard } from "./public-profile-card";
+import { MeUserFields } from "./types";
 
 const schema = yup.object().shape({
   name: yup.string().required().ensure(),
@@ -53,7 +37,7 @@ const schema = yup.object().shape({
   openToNewsletter: yup.boolean(),
 });
 
-const onMyProfileFetched = (data, formState) => {
+const onMyProfileFetched = (data: MyEditProfileQuery, formState) => {
   const { me } = data;
 
   formState.setField("name", me.name ? me.name : "");
@@ -72,30 +56,63 @@ const onMyProfileFetched = (data, formState) => {
     "openToNewsletter",
     me.openToNewsletter ? me.openToNewsletter : false,
   );
+
+  // Public profile - participant
+  formState.setField("participantPublicProfile", me.participant?.publicProfile);
+  formState.setField("participantPhoto", me.participant?.photo ?? "");
+  formState.setField("participantBio", me.participant?.bio ?? "");
+  formState.setField("participantWebsite", me.participant?.website ?? "");
+  formState.setField(
+    "participantSpeakerLevel",
+    me.participant?.speakerLevel ?? "",
+  );
+  formState.setField(
+    "participantPreviousTalkVideo",
+    me.participant?.previousTalkVideo ?? "",
+  );
+  formState.setField(
+    "participantTwitterHandle",
+    me.participant?.twitterHandle ?? "",
+  );
+  formState.setField(
+    "participantInstagramHandle",
+    me.participant?.instagramHandle ?? "",
+  );
+  formState.setField(
+    "participantLinkedinUrl",
+    me.participant?.linkedinUrl ?? "",
+  );
+  formState.setField(
+    "participantFacebookUrl",
+    me.participant?.facebookUrl ?? "",
+  );
+  formState.setField(
+    "participantMastodonHandle",
+    me.participant?.mastodonHandle ?? "",
+  );
 };
 
 const toTileCase = (word: string) =>
   word.charAt(0).toUpperCase() + word.slice(1);
 
 export const EditProfilePageHandler = () => {
-  const router = useRouter();
-  const [formState, { text, select, checkbox, raw }] =
-    useFormState<MeUserFields>(
-      {},
-      {
-        withIds: true,
-      },
-    );
+  const [formState, formOptions] = useFormState<MeUserFields>(
+    {},
+    {
+      withIds: true,
+    },
+  );
 
   const {
     data: profileData,
     loading,
     error,
   } = useMyEditProfileQuery({
+    variables: {
+      conference: process.env.conferenceCode,
+    },
     onCompleted: (data) => onMyProfileFetched(data, formState),
   });
-
-  const countries = useCountries();
 
   if (error) {
     throw new Error(`Unable to fetch profile, ${error}`);
@@ -123,14 +140,24 @@ export const EditProfilePageHandler = () => {
     return validationError;
   };
 
-  const [update, { loading: updateProfileLoading, data: updateProfileData }] =
-    useUpdateProfileMutation({
-      onCompleted: (data) => {
-        if (data?.updateProfile?.__typename === "User") {
-          router.push("/profile");
-        }
-      },
-    });
+  const getParticipantValidationError = (key: string) => {
+    const validationError =
+      (updateProfileData &&
+        updateProfileData.updateParticipant.__typename ===
+          "UpdateParticipantValidationError" &&
+        (updateProfileData.updateParticipant as any).errors[key]) ||
+      [];
+    return validationError;
+  };
+
+  const [
+    update,
+    {
+      loading: updateProfileLoading,
+      data: updateProfileData,
+      error: updateProfileError,
+    },
+  ] = useUpdateProfileMutation();
 
   useEffect(() => {
     if (profileData && !loading) {
@@ -158,6 +185,20 @@ export const EditProfilePageHandler = () => {
               openToRecruiting: formState.values.openToRecruiting,
               openToNewsletter: formState.values.openToNewsletter,
             },
+            updateParticipantInput: {
+              conference: process.env.conferenceCode,
+              publicProfile: formState.values.participantPublicProfile,
+              photo: formState.values.participantPhoto,
+              bio: formState.values.participantBio,
+              website: formState.values.participantWebsite,
+              speakerLevel: formState.values.participantSpeakerLevel,
+              previousTalkVideo: formState.values.participantPreviousTalkVideo,
+              twitterHandle: formState.values.participantTwitterHandle,
+              instagramHandle: formState.values.participantInstagramHandle,
+              linkedinUrl: formState.values.participantLinkedinUrl,
+              facebookUrl: formState.values.participantFacebookUrl,
+              mastodonHandle: formState.values.participantMastodonHandle,
+            },
           },
         });
       } catch (err) {
@@ -183,220 +224,28 @@ export const EditProfilePageHandler = () => {
 
       <Section>
         <form onSubmit={onFormSubmit}>
-          <MultiplePartsCard>
-            <CardPart contentAlign="left">
-              <Heading size={3}>
-                <FormattedMessage id="profile.editProfile.generalInformation" />
-              </Heading>
-            </CardPart>
-            <CardPart background="milk" contentAlign="left">
-              <Grid cols={3}>
-                <InputWrapper
-                  required={true}
-                  title={<FormattedMessage id="profile.name" />}
-                >
-                  <Input
-                    errors={[
-                      formState.errors?.name || getValidationError("name"),
-                    ]}
-                    {...text("name")}
-                    required={true}
-                  />
-                </InputWrapper>
+          <MainProfileCard
+            formState={formState}
+            formOptions={formOptions}
+            getValidationError={getValidationError}
+            profileData={profileData}
+          />
 
-                <InputWrapper
-                  required={true}
-                  title={<FormattedMessage id="profile.fullName" />}
-                >
-                  <Input
-                    {...text("fullName")}
-                    errors={[
-                      formState.errors?.fullName ||
-                        getValidationError("fullName"),
-                    ]}
-                    required={true}
-                  />
-                </InputWrapper>
-
-                <InputWrapper
-                  required={true}
-                  title={<FormattedMessage id="profile.dateBirth" />}
-                >
-                  <Input
-                    {...raw({
-                      name: "dateBirth",
-                      onChange: (
-                        event: React.ChangeEvent<HTMLInputElement>,
-                      ) => {
-                        const timestamp = Date.parse(event.target.value);
-
-                        if (!isNaN(timestamp)) {
-                          const date = new Date(timestamp);
-                          formState.setField("dateBirth", date);
-                          return date;
-                        }
-
-                        return formState.values.dateBirth;
-                      },
-                    })}
-                    value={
-                      formState.values.dateBirth &&
-                      formState.values.dateBirth.toISOString().split("T")[0]
-                    }
-                    type="date"
-                    required={true}
-                    errors={[
-                      formState.errors?.dateBirth ||
-                        getValidationError("dateBirth"),
-                    ]}
-                  />
-                </InputWrapper>
-
-                <InputWrapper
-                  required={true}
-                  title={<FormattedMessage id="profile.gender" />}
-                >
-                  <Select
-                    errors={[
-                      formState.errors?.gender || getValidationError("gender"),
-                    ]}
-                    {...select("gender")}
-                  >
-                    <FormattedMessage id="profile.gender.selectGender">
-                      {(msg) => <option value="">{msg}</option>}
-                    </FormattedMessage>
-                    <FormattedMessage id="profile.gender.male">
-                      {(msg) => (
-                        <option key="male" value="male">
-                          {msg}
-                        </option>
-                      )}
-                    </FormattedMessage>
-                    <FormattedMessage id="profile.gender.female">
-                      {(msg) => (
-                        <option key="female" value="female">
-                          {msg}
-                        </option>
-                      )}
-                    </FormattedMessage>
-                    <FormattedMessage id="profile.gender.other">
-                      {(msg) => (
-                        <option key="other" value="other">
-                          {msg}
-                        </option>
-                      )}
-                    </FormattedMessage>
-                    <FormattedMessage id="profile.gender.not_say">
-                      {(msg) => (
-                        <option key="notSay" value="not_say">
-                          {msg}
-                        </option>
-                      )}
-                    </FormattedMessage>
-                  </Select>
-                </InputWrapper>
-
-                <InputWrapper
-                  required={true}
-                  title={
-                    <FormattedMessage id="profile.country">
-                      {(msg) => <b>{msg}</b>}
-                    </FormattedMessage>
-                  }
-                >
-                  <Select
-                    {...select("country")}
-                    required={true}
-                    value={formState.values.country}
-                    errors={[
-                      formState.errors?.country ||
-                        getValidationError("country"),
-                    ]}
-                  >
-                    {countries.map((c) => (
-                      <option key={c.value} value={c.value}>
-                        {c.label}
-                      </option>
-                    ))}
-                  </Select>
-                </InputWrapper>
-
-                <GridColumn colSpan={3}>
-                  <Text size={2}>
-                    <FormattedMessage
-                      id="profile.editProfile.emailInfo"
-                      values={{
-                        email: (
-                          <Text size={2} weight="strong">
-                            {profileData?.me?.email}
-                          </Text>
-                        ),
-                        contact: (
-                          <Link
-                            target="_blank"
-                            rel="noreferrer noopener"
-                            href="mailto:help@pycon.it"
-                          >
-                            <Text
-                              decoration="underline"
-                              size={2}
-                              weight="strong"
-                              color="none"
-                            >
-                              help@pycon.it
-                            </Text>
-                          </Link>
-                        ),
-                      }}
-                    />
-                  </Text>
-                </GridColumn>
-              </Grid>
-            </CardPart>
-          </MultiplePartsCard>
           <Spacer size="medium" />
 
-          <MultiplePartsCard>
-            <CardPart contentAlign="left">
-              <Heading size={3}>
-                <FormattedMessage id="profile.editProfile.emailPreferences" />
-              </Heading>
-            </CardPart>
-            <CardPart background="milk" contentAlign="left">
-              <Grid cols={1}>
-                <label>
-                  <HorizontalStack
-                    wrap="wrap"
-                    gap="small"
-                    justifyContent="spaceBetween"
-                  >
-                    <Text size={2} weight="strong">
-                      <FormattedMessage id="profile.openToRecruiting" />
-                    </Text>
-                    <Checkbox
-                      {...checkbox("openToRecruiting")}
-                      checked={formState.values.openToRecruiting}
-                    />
-                  </HorizontalStack>
-                </label>
-                <label>
-                  <HorizontalStack
-                    wrap="wrap"
-                    gap="small"
-                    justifyContent="spaceBetween"
-                  >
-                    <Text size={2} weight="strong">
-                      <FormattedMessage id="profile.openToNewsletter" />
-                    </Text>
-                    <Checkbox
-                      {...checkbox("openToNewsletter")}
-                      checked={formState.values.openToNewsletter}
-                    />
-                  </HorizontalStack>
-                </label>
-              </Grid>
-            </CardPart>
-          </MultiplePartsCard>
+          <PublicProfileCard
+            me={profileData.me}
+            formState={formState}
+            formOptions={formOptions}
+            getParticipantValidationError={getParticipantValidationError}
+          />
+
+          <Spacer size="medium" />
+
+          <EmailPreferencesCard
+            formState={formState}
+            formOptions={formOptions}
+          />
           <Spacer size="large" />
 
           <HorizontalStack
@@ -406,11 +255,25 @@ export const EditProfilePageHandler = () => {
             justifyContent="spaceBetween"
           >
             <div>
-              <ErrorsList errors={[]} />
+              <ErrorsList errors={[updateProfileError?.message]} />
             </div>
-            <Button role="secondary" disabled={updateProfileLoading}>
-              <FormattedMessage id="buttons.save" />
-            </Button>
+            <HorizontalStack
+              wrap="wrap"
+              alignItems="center"
+              gap="medium"
+              justifyContent="spaceBetween"
+            >
+              {updateProfileData?.updateProfile?.__typename === "User" &&
+                updateProfileData?.updateParticipant?.__typename ===
+                  "Participant" && (
+                  <Text size="label2">
+                    <FormattedMessage id="profile.edit.success" />
+                  </Text>
+                )}
+              <Button role="secondary" disabled={updateProfileLoading}>
+                <FormattedMessage id="buttons.save" />
+              </Button>
+            </HorizontalStack>
           </HorizontalStack>
         </form>
       </Section>

@@ -48,6 +48,25 @@ class OperationSuccess:
     ok: bool
 
 
+@strawberry.federation.type(keys=["userId"], extend=True)
+class Participant:
+    user_id: strawberry.ID = strawberry.federation.field(external=True)
+    fullname: str
+
+    @classmethod
+    async def resolve_reference(cls, info: Info, userId: str):
+        user = await info.context.users_dataloader.load(int(userId))
+
+        # TODO improve error
+        if not user:
+            raise ValueError("No user found")
+
+        return cls(
+            user_id=userId,
+            fullname=user.fullname,
+        )
+
+
 @strawberry.federation.type(keys=["id"], extend=True)
 class ScheduleItemUser:
     id: strawberry.ID = strawberry.federation.field(external=True)
