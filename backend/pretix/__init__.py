@@ -485,3 +485,15 @@ def update_ticket(conference: Conference, attendee_ticket: UpdateAttendeeTicketI
     response.raise_for_status()
 
     return response.json()
+
+
+def get_order_position(conference: Conference, id: str):
+    response = pretix(
+        conference=conference,
+        endpoint=f"orderpositions/{id}/",
+        method="GET",
+    )
+
+    response.raise_for_status()
+
+    return response.json()
