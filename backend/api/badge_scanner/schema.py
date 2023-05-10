@@ -5,7 +5,6 @@ import re
 from typing import Any
 import strawberry
 from strawberry.types.info import Info
-from typing import Optional, Union
 
 from api.permissions import IsAuthenticated
 from badge_scanner import models
@@ -51,7 +50,7 @@ class Attendee:
 @strawberry.type
 class BadgeScan:
     attendee: Attendee
-    notes: Optional[str]
+    notes: str
 
 
 @strawberry.type
@@ -61,7 +60,7 @@ class BadgeScannerMutation:
     )
     def scan_badge(
         self, info: Info[Any, None], input: ScanBadgeInput
-    ) -> Union[BadgeScan, ScanError]:
+    ) -> BadgeScan | ScanError:
         conference = Conference.objects.filter(code=input.conference_code).first()
 
         if not conference:
