@@ -1,6 +1,7 @@
-query MyEditProfile {
+query MyEditProfile($conference: String!) {
   me {
     id
+    hashid
     email
     name
     fullName
@@ -9,5 +10,19 @@ query MyEditProfile {
     openToNewsletter
     dateBirth
     country
+    participant(conference: $conference) {
+      id
+      publicProfile
+      photo
+      bio
+      website
+      speakerLevel
+      previousTalkVideo
+      twitterHandle
+      instagramHandle
+      linkedinUrl
+      facebookUrl
+      mastodonHandle
+    }
   }
 }

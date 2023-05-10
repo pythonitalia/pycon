@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 import strawberry
 from requests import HTTPError
@@ -17,7 +17,8 @@ logger = logging.getLogger(__name__)
 @strawberry.type
 class TicketReassigned:
     id: strawberry.ID
-    email: str
+    # optional because AttendeeTicket.email is optional
+    email: Optional[str]
 
 
 @strawberry.type

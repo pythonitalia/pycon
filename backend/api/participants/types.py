@@ -6,21 +6,23 @@ from strawberry import ID
 from api.submissions.permissions import CanSeeSubmissionPrivateFields
 
 
-@strawberry.type
+@strawberry.federation.type(keys=["userId"])
 class Participant:
     id: ID
+    user_id: ID
     bio: str
     website: str
     photo: str
+    public_profile: bool
     twitter_handle: str
     instagram_handle: str
     linkedin_url: str
     facebook_url: str
     mastodon_handle: str
+    speaker_id: strawberry.Private[int]
 
     _speaker_level: strawberry.Private[str]
     _previous_talk_video: strawberry.Private[str]
-    speaker_id: strawberry.Private[int]
 
     @strawberry.field
     def speaker_level(self, info) -> Optional[str]:
@@ -39,11 +41,13 @@ class Participant:
     @classmethod
     def from_model(cls, instance):
         return cls(
-            id=instance.id,
+            id=instance.hashid,
+            user_id=instance.user_id,
+            speaker_id=instance.user_id,
             photo=instance.photo,
             bio=instance.bio,
             website=instance.website,
-            speaker_id=instance.user_id,
+            public_profile=instance.public_profile,
             _speaker_level=instance.speaker_level,
             _previous_talk_video=instance.previous_talk_video,
             twitter_handle=instance.twitter_handle,

@@ -165,6 +165,7 @@ export const SignupPageHandler = () => {
                 role="secondary"
                 onClick={onFormSubmit}
                 disabled={loading}
+                fullWidth="mobile"
               >
                 <FormattedMessage id="signup.signupButton" />
               </Button>

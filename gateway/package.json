@@ -6,9 +6,10 @@
   "dependencies": {
     "@apollo/federation": "^0.36.1",
     "@apollo/gateway": "2.0.5",
-    "@sentry/node": "^7.3.0",
-    "@sentry/serverless": "^7.3.0",
-    "@sentry/tracing": "^7.3.0",
+    "@sentry/integrations": "^7.51.0",
+    "@sentry/node": "^7.51.0",
+    "@sentry/serverless": "^7.51.0",
+    "@sentry/tracing": "^7.51.0",
     "apollo-server": "3.9.0",
     "apollo-server-errors": "^3.3.1",
     "apollo-server-lambda": "3.9.0",

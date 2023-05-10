@@ -1,0 +1,16 @@
+query ParticipantPublicProfile($userId: ID!, $conference: String!) {
+  participant(userId: $userId, conference: $conference) {
+    id
+    fullname
+    publicProfile
+    bio
+    website
+    photo
+    publicProfile
+    twitterHandle
+    instagramHandle
+    linkedinUrl
+    facebookUrl
+    mastodonHandle
+  }
+}

@@ -1,6 +1,6 @@
 FROM amazon/aws-lambda-nodejs:14 as build
 
-RUN npm install -g pnpm; \
+RUN npm install -g pnpm@7.3.0; \
     pnpm --version; \
     pnpm setup; \
     mkdir -p /usr/local/share/pnpm &&\
@@ -12,7 +12,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml .npmrc ./
 
 RUN pnpm install
 

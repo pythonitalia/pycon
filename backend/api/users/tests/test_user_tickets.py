@@ -77,7 +77,7 @@ def test_get_user_tickets(
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-def test_get_user_tickets_doesnt_return_non_admission(
+def test_get_user_tickets_returns_all_tickets(
     user,
     conference_factory,
     requests_mock,
@@ -108,7 +108,4 @@ def test_get_user_tickets_doesnt_return_non_admission(
     user = User.resolve_reference(user.id, user.email)
     tickets = user.tickets(info=None, conference=conference.code, language="en")
 
-    assert len(tickets) == 1
-    ticket = tickets[0]
-
-    assert ticket.item.admission
+    assert len(tickets) == 2

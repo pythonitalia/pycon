@@ -6,7 +6,8 @@ locals {
     }
     if env_var.secret
   ]
-  sld_tld = join(".", slice(split(".", var.domain), 1, 3))
+  sld_tld            = join(".", slice(split(".", var.domain), 1, 3))
+  container_app_name = var.service_resource_name != null ? var.service_resource_name : var.service_name
 }
 
 data "azurerm_container_app_environment" "env" {
@@ -14,16 +15,28 @@ data "azurerm_container_app_environment" "env" {
   resource_group_name = var.resource_group_name
 }
 
+data "azurerm_resource_group" "rg" {
+  name = var.resource_group_name
+}
+
+data "azapi_resource" "env" {
+  type                   = "Microsoft.App/managedEnvironments@2022-10-01"
+  resource_id            = data.azurerm_container_app_environment.env.id
+  response_export_values = ["properties.customDomainConfiguration.customDomainVerificationId"]
+}
+
+
 data "azurerm_container_app_environment_certificate" "certificate" {
   name                         = replace(local.sld_tld, ".", "")
   container_app_environment_id = data.azurerm_container_app_environment.env.id
 }
 
 resource "azurerm_container_app" "ca_app" {
-  name                         = "pythonit-${var.workspace}-${var.service_name}"
+  name                         = "pythonit-${var.workspace}-${local.container_app_name}"
   container_app_environment_id = data.azurerm_container_app_environment.env.id
   resource_group_name          = var.resource_group_name
   revision_mode                = "Single"
+  depends_on                   = [aws_route53_record.txt_verification]
 
   dynamic "secret" {
     for_each = local.secret_env_vars
@@ -110,7 +123,7 @@ resource "aws_route53_record" "txt_verification" {
   name    = "asuid.${var.domain}"
   type    = "TXT"
   ttl     = "30"
-  records = [azurerm_container_app.ca_app.custom_domain_verification_id]
+  records = [jsondecode(data.azapi_resource.env.output).properties.customDomainConfiguration.customDomainVerificationId]
 }
 
 resource "aws_route53_record" "domain" {

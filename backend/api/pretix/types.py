@@ -125,6 +125,7 @@ class Question:
     id: strawberry.ID
     name: str
     required: Optional[bool]
+    hidden: bool
     options: Optional[List[Option]]
     answer: Optional[Answer]
 
@@ -134,6 +135,7 @@ class Question:
             id=data["id"],
             name=_get_by_language(data, "question", language),
             required=data["required"],
+            hidden=data["hidden"],
             options=[Option.from_data(option, language) for option in data["options"]],
             answer=Answer.from_data(data, language) if data.get("answer") else None,
         )
@@ -270,11 +272,32 @@ class TicketItem:
             )
 
 
+def get_questions_with_answers(questions: List[QuestionDict], data: OrderPositionDict):
+    def get_answer(question_id: int) -> Optional[AnswerDict]:
+        return next(
+            filter(lambda a: a["question"]["id"] == question_id, data["answers"]),
+            None,
+        )
+
+    questions_with_answers = []
+    for question in questions:
+        if data["item"]["id"] not in question["items"]:
+            continue
+        answer = get_answer(question["id"])
+        question["answer"] = answer
+
+        questions_with_answers.append(question)
+
+    return questions_with_answers
+
+
 @strawberry.type
 class AttendeeTicket:
     id: strawberry.ID
-    name: str
-    email: str
+    name: Optional[str]
+    email: Optional[str]
+    secret: str
+    variation: Optional[strawberry.ID]
     item: TicketItem
 
     @classmethod
@@ -285,25 +308,17 @@ class AttendeeTicket:
         categories: Dict[str, CategoryDict],
         questions: List[QuestionDict],
     ):
-        def get_answer(question_id: int) -> Optional[AnswerDict]:
-            return next(
-                filter(lambda a: a["question"]["id"] == question_id, data["answers"]),
-                None,
-            )
-
-        data["item"]["questions"] = []
-        for question in questions:
-            if data["item"]["id"] not in question["items"]:
-                continue
-            answer = get_answer(question["id"])
-            question["answer"] = answer
-
-            data["item"]["questions"].append(question)
+        data["item"]["questions"] = get_questions_with_answers(
+            questions,
+            data,
+        )
 
         return cls(
             id=data["id"],
             name=data["attendee_name"],
             email=data["attendee_email"],
+            secret=data["secret"],
+            variation=data["variation"],
             item=TicketItem.from_data(
                 data["item"],
                 language=language,

@@ -47,10 +47,6 @@ export const Header = () => {
     setIsReady(true);
   }, []);
 
-  if (!data) {
-    return null;
-  }
-
   const {
     conference: {
       conferenceMenuEn,
@@ -58,14 +54,14 @@ export const Header = () => {
       conferenceMenuIt,
       programMenuIt,
     },
-  } = data;
+  } = data || { conference: {} };
 
   const conferenceMenu =
     language === "it" ? conferenceMenuIt : conferenceMenuEn;
   const programMenu = language === "it" ? programMenuIt : programMenuEn;
 
-  const mainLinks = conferenceMenu.links;
-  const secondaryLinks = programMenu.links;
+  const mainLinks = conferenceMenu?.links ?? [];
+  const secondaryLinks = programMenu?.links ?? [];
 
   const languageSwitchHref = createHref({
     path: route,

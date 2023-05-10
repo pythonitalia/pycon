@@ -23,6 +23,7 @@ type Props = {
   icon: Parameters<typeof CardPart>[0]["icon"];
   iconBackground: Parameters<typeof CardPart>[0]["iconBackground"];
   openByDefault?: boolean;
+  ignoreSoldOut?: boolean;
 };
 
 export const TicketRow = ({
@@ -30,6 +31,7 @@ export const TicketRow = ({
   icon,
   iconBackground,
   openByDefault,
+  ignoreSoldOut = false,
 }: Props) => {
   const {
     state: { selectedProducts },
@@ -97,7 +99,7 @@ export const TicketRow = ({
           price={Number(ticket.defaultPrice)}
           onIncrement={() => addProduct(ticket.id)}
           onDecrement={() => removeProduct(ticket.id)}
-          soldOut={ticket.soldOut}
+          soldOut={ignoreSoldOut ? false : ticket.soldOut}
           quantity={selectedProducts[ticket.id]?.length ?? 0}
         />
       )}

@@ -9,6 +9,8 @@ query MyProfileWithTickets($conference: String!, $language: String!) {
       id
       name
       email
+      secret
+      variation
       item {
         id
         name
@@ -16,8 +18,13 @@ query MyProfileWithTickets($conference: String!, $language: String!) {
         description
         category
         admission
+        variations {
+          id
+          value
+        }
         questions {
           id
+          hidden
           answer {
             answer
             options

@@ -13,6 +13,7 @@ import {
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
+import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import { useKeynotesPageQuery } from "~/types";
 
@@ -30,6 +31,11 @@ export const KeynotesListPageHandler = () => {
       conference: process.env.conferenceCode,
       language,
     },
+  });
+  const englishText = useTranslatedMessage("global.english");
+  const dateFormatter = new Intl.DateTimeFormat(language, {
+    day: "numeric",
+    month: "long",
   });
 
   return (
@@ -56,8 +62,14 @@ export const KeynotesListPageHandler = () => {
               <SpeakerCard
                 talkTitle={keynote.title}
                 portraitUrl={keynote.speakers[0].participant.photo}
+                talkInfoLeft={
+                  keynote.start
+                    ? dateFormatter.format(new Date(keynote.start))
+                    : null
+                }
+                talkInfoRight={englishText}
                 speakerName={keynote.speakers
-                  .map((speaker) => speaker.fullName)
+                  .map((speaker) => speaker.participant.fullname)
                   .join(", ")}
               />
             </Link>

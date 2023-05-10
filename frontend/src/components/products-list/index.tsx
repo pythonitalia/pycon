@@ -21,6 +21,7 @@ type Props = {
   conference: TicketsQuery["conference"];
   me: CurrentUserQueryResult["data"]["me"];
   business: boolean;
+  ignoreSoldOut: boolean;
 };
 
 export const ProductsList = ({
@@ -29,6 +30,7 @@ export const ProductsList = ({
   conference,
   business,
   me,
+  ignoreSoldOut,
 }: Props) => {
   const ticketType = business ? TicketType.Business : TicketType.Standard;
   const tickets = products.filter(
@@ -44,6 +46,9 @@ export const ProductsList = ({
   const socialEvents = products.filter(
     (product) => product.type === TicketType.SocialEvent,
   );
+  const guidedTours = products.filter(
+    (product) => product.categoryInternalName === "Guided Tours",
+  );
 
   return (
     <Section>
@@ -54,6 +59,7 @@ export const ProductsList = ({
             icon="tickets"
             iconBackground="pink"
             ticket={ticket}
+            ignoreSoldOut={ignoreSoldOut}
           />
           <Spacer size="small" />
         </Fragment>
@@ -83,6 +89,25 @@ export const ProductsList = ({
       {socialEvents.map((socialEvent, index) => (
         <Fragment key={socialEvent.id}>
           <SocialEventRow ticket={socialEvent} openByDefault={index === 0} />
+          <Spacer size="small" />
+        </Fragment>
+      ))}
+
+      {guidedTours.length > 0 && (
+        <GroupHeading>
+          <FormattedMessage id="tickets.productsList.guidedToursTitle" />
+        </GroupHeading>
+      )}
+
+      {guidedTours.map((guidedTour) => (
+        <Fragment key={guidedTour.id}>
+          <TicketRow
+            openByDefault={true}
+            key={guidedTour.id}
+            icon="star"
+            iconBackground="neutral"
+            ticket={guidedTour}
+          />
           <Spacer size="small" />
         </Fragment>
       ))}

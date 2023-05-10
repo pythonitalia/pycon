@@ -30,7 +30,8 @@ data "aws_ami" "ecs" {
 }
 
 resource "aws_instance" "pretix" {
-  ami               = data.aws_ami.ecs.id
+  # ami               = data.aws_ami.ecs.id
+  ami               = "ami-0d24d62eae192fc54"
   instance_type     = "t3.small"
   subnet_id         = data.aws_subnet.public.id
   availability_zone = "eu-central-1a"

@@ -36,8 +36,9 @@ export const Tickets = ({
       invoiceInformation: { isBusiness },
     },
   } = useCart();
-  const { push } = useRouter();
+  const { push, query } = useRouter();
   const [loggedIn] = useLoginState();
+  const voucherCode = query.voucher;
 
   const onCheckout = () => {
     if (loggedIn) {
@@ -66,6 +67,7 @@ export const Tickets = ({
         hotelRooms={hotelRooms}
         conference={conference}
         business={business}
+        ignoreSoldOut={!!voucherCode}
         me={me}
       />
       <CheckoutBar

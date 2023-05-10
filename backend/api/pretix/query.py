@@ -42,9 +42,13 @@ def get_user_tickets(
 
     categories = pretix.get_categories(conference)
     questions = pretix.get_questions(conference).values()
+
     return [
         AttendeeTicket.from_data(
-            ticket, language=language, categories=categories, questions=questions
+            ticket,
+            language=language,
+            categories=categories,
+            questions=questions,
         )
         for ticket in tickets
     ]

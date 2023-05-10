@@ -1,4 +1,5 @@
 import {
+  StyledText,
   Grid,
   GridColumn,
   Heading,
@@ -12,9 +13,12 @@ import { FormattedMessage } from "react-intl";
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 
+import {
+  Participant,
+  ParticipantInfoSection,
+} from "../participant-info-section";
 import { EventTag } from "./event-tag";
 import { Sidebar } from "./sidebar";
-import { Speaker, SpeakerSection } from "./speaker-section";
 
 type Props = {
   id?: string;
@@ -23,7 +27,7 @@ type Props = {
   eventTitle: string;
   elevatorPitch?: string;
   abstract?: string;
-  speakers: Speaker[];
+  speakers: Participant[];
   tags?: string[];
   language: string;
   audienceLevel?: string;
@@ -107,9 +111,9 @@ export const ScheduleEventDetail = ({
                   <FormattedMessage id="scheduleEventDetail.elevatorPitch" />
                 </Title>
                 <Spacer size="small" />
-                <Text size={1} color="grey-900">
+                <StyledText baseTextSize={1}>
                   {compile(elevatorPitch).tree}
-                </Text>
+                </StyledText>
                 <Spacer size="large" />
               </>
             )}
@@ -119,9 +123,9 @@ export const ScheduleEventDetail = ({
                   <FormattedMessage id="scheduleEventDetail.abstract" />
                 </Title>
                 <Spacer size="small" />
-                <Text size={2} color="grey-900">
+                <StyledText baseTextSize={2}>
                   {compile(abstract).tree}
-                </Text>
+                </StyledText>
                 <Spacer size="large" />
               </>
             )}
@@ -143,7 +147,7 @@ export const ScheduleEventDetail = ({
         <Section>
           {speakers.map((speaker, index) => (
             <>
-              <SpeakerSection speaker={speaker} />
+              <ParticipantInfoSection participant={speaker} />
               {index !== speakers.length - 1 && <Spacer size="2xl" />}
             </>
           ))}

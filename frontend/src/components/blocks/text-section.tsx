@@ -1,6 +1,6 @@
 import {
   Heading,
-  DynamicHTMLText,
+  StyledHTMLText,
   Spacer,
   Section,
   Container,
@@ -45,7 +45,7 @@ export const TextSection = ({
         )}
         {body && (
           <>
-            <DynamicHTMLText
+            <StyledHTMLText
               text={body}
               baseTextSize={bodyTextSize === BodyTextSize.Text_1 ? 1 : 2}
             />
@@ -54,7 +54,7 @@ export const TextSection = ({
         )}
         {cta && (
           <>
-            <Button href={cta.link} role="secondary">
+            <Button href={cta.link} role="secondary" fullWidth="mobile">
               {cta.label}
             </Button>
           </>
@@ -76,7 +76,7 @@ export const TextSection = ({
                     <Heading size={3}>{accordion.title}</Heading>
                   </CardPart>
                   <CardPart id="content" contentAlign="left" background="milk">
-                    <DynamicHTMLText text={accordion.body} baseTextSize={2} />
+                    <StyledHTMLText text={accordion.body} baseTextSize={2} />
                   </CardPart>
                 </MultiplePartsCard>
                 {/* todo replace with MultiplePartsCardCollection */}

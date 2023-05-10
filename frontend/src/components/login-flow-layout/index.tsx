@@ -38,7 +38,7 @@ export const LoginFlowLayout = ({
         {bottomSection && (
           <div className="mt-auto w-full">
             <Spacer size="3xl" />
-            <Separator />
+            <Separator escapeContainer="mobile" />
             <Spacer size="2md" />
             <div className="flex flex-col-reverse gap-4 text-center md:text-left md:flex-row justify-between items-center">
               {bottomSection}

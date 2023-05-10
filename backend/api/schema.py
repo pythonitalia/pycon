@@ -2,6 +2,7 @@ import strawberry
 from strawberry.extensions.tracing.sentry import SentryTracingExtensionSync
 
 from api.users.types import User
+from api.participants.mutations import ParticipantMutations
 
 from .blob.schema import BlobMutation
 from .blog.schema import BlogQuery
@@ -22,6 +23,7 @@ from .submissions.schema import SubmissionsQuery
 from .volunteers_notifications.mutations import VolunteersNotificationsMutation
 from .volunteers_notifications.query import VolunteersNotificationsQuery
 from .voting.mutations import VotesMutations
+from .participants.queries import ParticipantQueries
 
 
 @strawberry.type
@@ -36,6 +38,7 @@ class Query(
     ScheduleQuery,
     VolunteersNotificationsQuery,
     ChecklistQuery,
+    ParticipantQueries,
 ):
     pass
 
@@ -51,6 +54,7 @@ class Mutation(
     AttendeeTicketMutation,
     VolunteersNotificationsMutation,
     BlobMutation,
+    ParticipantMutations,
 ):
     pass
 

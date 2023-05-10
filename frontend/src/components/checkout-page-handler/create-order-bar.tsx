@@ -130,26 +130,33 @@ export const CreateOrderBar = ({
     <BottomBar
       action={
         <div>
-          <BasicButton
-            disabled={createOrderState.matches("creating")}
-            onClick={(e) => {
-              onCreateOrder(e, "banktransfer");
-            }}
-          >
-            <FormattedMessage id="tickets.checkout.payWithBankTransfer" />
-          </BasicButton>
-          <Spacer size="xs" showOnlyOn="mobile" />
-          <Spacer size="medium" showOnlyOn="tablet" />
-          <Spacer size="large" showOnlyOn="desktop" orientation="horizontal" />
-          <Button
-            disabled={createOrderState.matches("creating")}
-            role="secondary"
-            onClick={(e) => {
-              onCreateOrder(e, "stripe");
-            }}
-          >
-            <FormattedMessage id="tickets.checkout.payWithCard" />
-          </Button>
+          <div className="flex flex-col-reverse lg:flex-row">
+            <BasicButton
+              disabled={createOrderState.matches("creating")}
+              onClick={(e) => {
+                onCreateOrder(e, "banktransfer");
+              }}
+            >
+              <FormattedMessage id="tickets.checkout.payWithBankTransfer" />
+            </BasicButton>
+            <Spacer size="xs" showOnlyOn="mobile" />
+            <Spacer size="medium" showOnlyOn="tablet" />
+            <Spacer
+              size="large"
+              showOnlyOn="desktop"
+              orientation="horizontal"
+            />
+            <Button
+              disabled={createOrderState.matches("creating")}
+              role="secondary"
+              onClick={(e) => {
+                onCreateOrder(e, "stripe");
+              }}
+              fullWidth="mobile"
+            >
+              <FormattedMessage id="tickets.checkout.payWithCard" />
+            </Button>
+          </div>
           <div>
             {createOrderState.matches("failed") && (
               <>
