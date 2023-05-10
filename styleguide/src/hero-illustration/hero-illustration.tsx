@@ -10,7 +10,6 @@ import {
 
 import React, { useEffect, useState } from "react";
 import { Stars } from "./stars";
-import { type } from "os";
 
 const Hills1 = ({ isNight }: { isNight: boolean }) => {
   const fill = isNight ? "#1C475F" : "#47E2B9";
