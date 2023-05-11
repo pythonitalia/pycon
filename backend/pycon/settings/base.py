@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "reviews.apps.ReviewsConfig",
     "markdownify.apps.MarkdownifyConfig",
     "imagekit",
+    "badge_scanner",
 ]
 
 MIDDLEWARE = [
