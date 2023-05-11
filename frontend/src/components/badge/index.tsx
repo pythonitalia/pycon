@@ -122,11 +122,13 @@ export const Badge = ({
             {tagline}
           </div>
 
-          <QRCode
-            className="shrink-0"
-            value={`https://pycon.it/badge/nothing`}
-            size={60}
-          />
+          <div className="p-[2px] bg-white">
+            <QRCode
+              className="shrink-0"
+              value={`https://pycon.it/badge/nothing`}
+              size={70}
+            />
+          </div>
         </div>
       </div>
     </div>
