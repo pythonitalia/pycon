@@ -5,9 +5,6 @@ import {
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 
-import { Landscape } from "./landscape";
-import { LandscapeNight } from "./landscape-night";
-
 type Props = {
   cycle: "day" | "night";
 };
@@ -18,7 +15,7 @@ export const HomepageHero = ({ cycle }: Props) => {
   return (
     <div className="h-screen relative mt-[-158px]">
       <div className="h-[calc(100vh-60px)]">
-        <Illustration />
+        <Illustration cycle={cycle} />
       </div>
 
       <LayoutContent
