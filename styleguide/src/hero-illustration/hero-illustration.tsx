@@ -771,12 +771,8 @@ const Cocktail = () => (
 
 const staggerItems = stagger(0.2, { startDelay: 0 });
 
-export const HeroIllustration = ({}) => {
-  const now = new Date();
-  const hours = now.getHours();
-  const isLaterThan5pm = hours >= 17;
-
-  const [isNight, setIsNight] = useState(isLaterThan5pm);
+export const HeroIllustration = ({ cycle }: { cycle: "day" | "night" }) => {
+  const [isNight, setIsNight] = useState(cycle === "night");
 
   const [scope, animate] = useAnimate();
   const snakeX = useMotionValue(400);

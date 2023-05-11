@@ -22,9 +22,9 @@ const LineArrow = () => (
         <path
           d="M2 2H10.2632H15.8901H21.517H31"
           stroke="#0E1116"
-          stroke-width="4"
-          stroke-linecap="square"
-          stroke-linejoin="round"
+          strokeWidth="4"
+          strokeLinecap="square"
+          strokeLinejoin="round"
         />
       </pattern>
     </defs>
