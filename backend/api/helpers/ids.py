@@ -14,7 +14,7 @@ def get_hashids(salt: Optional[str] = None, min_length: int = 4):
     )
 
 
-def decode_hashid(hashid, salt: Optional[str] = None, min_length: int = 4):
+def decode_hashid(hashid: str, salt: Optional[str] = None, min_length: int = 4):
     hashids = get_hashids(salt=salt, min_length=min_length)
 
     return hashids.decode(hashid)[0]

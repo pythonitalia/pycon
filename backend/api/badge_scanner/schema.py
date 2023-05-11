@@ -1,4 +1,5 @@
 from __future__ import annotations
+from api.helpers.ids import decode_hashid
 
 import pretix
 import re
@@ -38,7 +39,7 @@ class ScanBadgeInput:
 
         assert match
 
-        return match.group(1)
+        return str(decode_hashid(match.group(1)))
 
 
 @strawberry.type
