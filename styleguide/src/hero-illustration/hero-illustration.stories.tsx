@@ -8,7 +8,15 @@ export default {
 export const Primary = () => {
   return (
     <div className="h-screen w-screen">
-      <HeroIllustration />
+      <HeroIllustration cycle="day" />
+    </div>
+  );
+};
+
+export const Night = () => {
+  return (
+    <div className="h-screen w-screen">
+      <HeroIllustration cycle="night" />
     </div>
   );
 };
