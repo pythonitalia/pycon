@@ -187,7 +187,7 @@ const Hills4 = ({ isNight }: { isNight: boolean }) => {
   );
 };
 
-const Cathedral = () => (
+const Cathedral = ({ onClick }: { onClick: () => void }) => (
   <svg
     width="787"
     height="555"
@@ -356,6 +356,7 @@ const Cathedral = () => (
       stroke="#0E1116"
       strokeWidth="4"
       strokeMiterlimit={10}
+      onClick={onClick}
     />
     <path
       d="M224.811 403.253C231.281 403.253 236.527 398.008 236.527 391.537C236.527 385.066 231.281 379.82 224.811 379.82C218.34 379.82 213.094 385.066 213.094 391.537C213.094 398.008 218.34 403.253 224.811 403.253Z"
@@ -937,10 +938,10 @@ export const HeroIllustration = ({}) => {
         <div className="landmark absolute -bottom-full min-w-full flex justify-center z-20 left-1/2 -translate-x-1/2">
           <Hills2 isNight={isNight} />
         </div>
-        <div className="landmark absolute -bottom-full min-w-full flex justify-center z-30 left-1/2 -translate-x-1/2">
+        <div className="landmark absolute -bottom-full min-w-full flex justify-center z-30 left-1/2 -translate-x-1/2 pointer-events-none">
           <Hills3 isNight={isNight} />
         </div>
-        <div className="landmark absolute -bottom-full min-w-full flex justify-center z-30 left-1/2 -translate-x-1/2">
+        <div className="landmark absolute -bottom-full min-w-full flex justify-center z-30 left-1/2 -translate-x-1/2 pointer-events-none">
           <Hills4 isNight={isNight} />
         </div>
 
@@ -956,7 +957,7 @@ export const HeroIllustration = ({}) => {
             <Cocktail />
           </motion.div>
           <div className="relative z-20">
-            <Cathedral />
+            <Cathedral onClick={toggle} />
           </div>
 
           <motion.div
