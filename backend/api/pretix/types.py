@@ -23,6 +23,7 @@ from pretix.types import (
 from api.context import Info
 from conferences.models.conference import Conference
 from badges.roles import ConferenceRole, get_conference_roles_for_ticket_data
+from api.helpers.ids import encode_hashid
 
 
 @strawberry.enum
@@ -297,6 +298,7 @@ def get_questions_with_answers(questions: List[QuestionDict], data: OrderPositio
 @strawberry.type
 class AttendeeTicket:
     id: strawberry.ID
+    hashid: strawberry.ID
     name: Optional[str]
     email: Optional[str]
     secret: str
@@ -332,6 +334,7 @@ class AttendeeTicket:
 
         return cls(
             id=data["id"],
+            hashid=encode_hashid(data["id"]),
             name=data["attendee_name"],
             email=data["attendee_email"],
             secret=data["secret"],

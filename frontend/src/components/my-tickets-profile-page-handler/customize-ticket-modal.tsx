@@ -123,6 +123,7 @@ export const CustomizeTicketModal = ({
               tagline={taglineAnswer}
               cutLines={false}
               role={ticket.role}
+              hashedTicketId={ticket.hashid}
             />
           </div>
           <div>
