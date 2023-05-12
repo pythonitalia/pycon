@@ -150,6 +150,14 @@ resource "aws_route53_record" "milano_python_it_a" {
   ttl     = "3600"
 }
 
+resource "aws_route53_record" "pescara_python_it_a" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "pescara.python.it"
+  type    = "CNAME"
+  records = ["pythonpescara.github.io"]
+  ttl     = "3600"
+}
+
 resource "aws_route53_record" "roma_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "roma.python.it"
