@@ -6,7 +6,7 @@ from django.utils.dateparse import parse_datetime
 import requests
 import strawberry
 from django.conf import settings
-
+from django.core.cache import cache
 from api.pretix.types import UpdateAttendeeTicketInput, Voucher
 from conferences.models.conference import Conference
 from hotels.models import BedLayout, HotelRoom
@@ -167,6 +167,29 @@ def get_items(conference: Conference, params: Optional[Dict[str, Any]] = None):
     return {str(result["id"]): result for result in data["results"]}
 
 
+def cache_pretix(name: str):
+    def factory(func):
+        def wrapper(*args, **kwargs):
+            conference = args[0]
+            cache_key = (
+                f"pretix:"
+                f"{conference.pretix_organizer_id}:{conference.pretix_event_id}:"
+                f"{name}"
+            )
+
+            if cache.has_key(cache_key):
+                return cache.get(cache_key)
+
+            value = func(*args, **kwargs)
+            cache.set(cache_key, value, timeout=60 * 60 * 24 * 7)
+            return value
+
+        return wrapper
+
+    return factory
+
+
+@cache_pretix(name="questions")
 def get_questions(conference: Conference) -> Dict[str, Question]:
     response = pretix(conference, "questions")
     response.raise_for_status()
@@ -175,6 +198,7 @@ def get_questions(conference: Conference) -> Dict[str, Question]:
     return {str(result["id"]): result for result in data["results"]}
 
 
+@cache_pretix(name="categories")
 def get_categories(conference: Conference) -> Dict[str, Category]:
     response = pretix(conference, "categories")
     response.raise_for_status()
@@ -450,6 +474,13 @@ def get_user_tickets(conference: Conference, email: str):
     response.raise_for_status()
 
     return response.json()
+
+
+@cache_pretix(name="all_vouchers")
+def get_all_vouchers(conference: Conference):
+    vouchers = _get_paginated(conference, "vouchers")
+    vouchers_by_id = {voucher["id"]: voucher for voucher in vouchers}
+    return vouchers_by_id
 
 
 def get_user_ticket(conference: Conference, email: str, id: str):

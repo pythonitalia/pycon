@@ -35,6 +35,8 @@ services:
       touch /.ready &&
       python manage.py runserver 0.0.0.0:8000"
     depends_on:
+      redis:
+        condition: service_healthy
       pycon-backend-db:
         condition: service_healthy
     tty: true
@@ -45,6 +47,7 @@ services:
       - ./backend:/home/app/
     environment:
       <<: *enviroment_defaults
+      CACHE_URL: redis://redis:6379/0
       DATABASE_URL: psql://pycon:pycon@pycon-backend-db/pycon
       DJANGO_SETTINGS_MODULE: pycon.settings.dev
       ALLOWED_HOSTS: "*"
@@ -328,6 +331,12 @@ services:
     volumes:
       - ./email-templates/:/home/node/app
       - /home/node/app/node_modules/
+
+  redis:
+    image: redis:6
+    networks: [pycon_net]
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
 
 
 networks:
