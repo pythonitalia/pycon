@@ -476,17 +476,10 @@ def get_user_tickets(conference: Conference, email: str):
     return response.json()
 
 
+@cache_pretix(name="all_vouchers")
 def get_all_vouchers(conference: Conference):
-    cache_key = (
-        f"{conference.pretix_organizer_id}:{conference.pretix_event_id}:pretix_vouchers"
-    )
-
-    if cache.has_key(cache_key):
-        return cache.get(cache_key)
-
-    vouchers = list(_get_paginated(conference, "vouchers"))
+    vouchers = _get_paginated(conference, "vouchers")
     vouchers_by_id = {voucher["id"]: voucher for voucher in vouchers}
-    cache.set(cache_key, vouchers_by_id, timeout=60 * 60 * 24 * 7)
     return vouchers_by_id
 
 
