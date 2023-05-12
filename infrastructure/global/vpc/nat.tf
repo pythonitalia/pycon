@@ -1,13 +1,13 @@
-data "aws_ami" "nat" {
-  most_recent = true
+# data "aws_ami" "nat" {
+#   most_recent = true
 
-  filter {
-    name   = "name"
-    values = ["amzn-ami-vpc-nat-2018.03.0.20190826-x86_64-ebs"]
-  }
+#   filter {
+#     name   = "name"
+#     values = ["amzn-ami-vpc-nat-2018.03.0.20190826-x86_64-ebs"]
+#   }
 
-  owners = ["137112412989"] # Amazon
-}
+#   owners = ["137112412989"] # Amazon
+# }
 
 resource "aws_eip" "nat" {
   for_each = toset(keys(local.public_azs_cidr))
@@ -25,7 +25,7 @@ resource "aws_eip_association" "nat_ip_assoc" {
 
 resource "aws_instance" "nat" {
   for_each               = toset(keys(local.public_azs_cidr))
-  ami                    = data.aws_ami.nat.id
+  ami                    = "ami-001b36cbc16911c13"
   instance_type          = "t3.nano"
   subnet_id              = aws_subnet.public[each.key].id
   availability_zone      = each.key
