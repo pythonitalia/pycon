@@ -14,10 +14,12 @@ from conferences.models import Conference
 from grants.models import Grant as GrantModel
 from participants.models import Participant as ParticipantModel
 from api.helpers.ids import encode_hashid
+from badges.roles import ConferenceRole, get_conference_roles_for_user
 from schedule.models import ScheduleItemStar as ScheduleItemStarModel
 from submissions.models import Submission as SubmissionModel
 
 logger = getLogger(__name__)
+
 PRETIX_ORDERS_STATUS_ORDER = [
     PretixOrderStatus.PAID,
     PretixOrderStatus.PENDING,
@@ -42,6 +44,17 @@ class User:
     def hashid(self, info: Info) -> str:
         return encode_hashid(
             int(self.id), salt=settings.USER_ID_HASH_SALT, min_length=6
+        )
+
+    @strawberry.federation.field(requires=["email"])
+    def conference_roles(
+        self, info: Info, conference_code: str
+    ) -> List[ConferenceRole]:
+        conference = Conference.objects.get(code=conference_code)
+        return get_conference_roles_for_user(
+            conference=conference,
+            user_id=self.id,
+            user_email=self.email,
         )
 
     @strawberry.field

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import strawberry
 
@@ -20,6 +20,9 @@ from pretix.types import (
     Question as QuestionDict,
     Quota as QuotaDict,
 )
+from api.context import Info
+from conferences.models.conference import Conference
+from badges.roles import ConferenceRole, get_conference_roles_for_ticket_data
 
 
 @strawberry.enum
@@ -299,6 +302,19 @@ class AttendeeTicket:
     secret: str
     variation: Optional[strawberry.ID]
     item: TicketItem
+    _conference: strawberry.Private[Conference]
+    _data: strawberry.Private[Any]
+
+    @strawberry.field
+    def role(self, info: Info) -> ConferenceRole | None:
+        if not self.item.admission:
+            return None
+
+        return get_conference_roles_for_ticket_data(
+            conference=self._conference,
+            user_id=info.context.request.user.id,
+            data=self._data,
+        )[0]
 
     @classmethod
     def from_data(
@@ -307,6 +323,7 @@ class AttendeeTicket:
         language: str,
         categories: Dict[str, CategoryDict],
         questions: List[QuestionDict],
+        conference: Conference,
     ):
         data["item"]["questions"] = get_questions_with_answers(
             questions,
@@ -325,6 +342,8 @@ class AttendeeTicket:
                 categories=categories,
                 questions=data["item"]["questions"],
             ),
+            _conference=conference,
+            _data=data,
         )
 
 

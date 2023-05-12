@@ -49,6 +49,7 @@ def get_user_tickets(
             language=language,
             categories=categories,
             questions=questions,
+            conference=conference,
         )
         for ticket in tickets
     ]

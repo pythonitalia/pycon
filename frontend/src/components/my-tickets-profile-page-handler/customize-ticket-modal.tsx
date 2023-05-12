@@ -122,6 +122,7 @@ export const CustomizeTicketModal = ({
               pronouns={pronounsAnswer}
               tagline={taglineAnswer}
               cutLines={false}
+              role={ticket.role}
             />
           </div>
           <div>

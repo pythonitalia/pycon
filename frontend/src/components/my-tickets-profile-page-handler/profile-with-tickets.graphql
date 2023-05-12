@@ -11,6 +11,7 @@ query MyProfileWithTickets($conference: String!, $language: String!) {
       email
       secret
       variation
+      role
       item {
         id
         name

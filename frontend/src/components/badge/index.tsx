@@ -6,12 +6,22 @@ import {
   CUT_LINE_SIZE_PX,
   CUT_LINE_SIZE_2_PX,
 } from "~/pages/badge";
+import { ConferenceRole } from "~/types";
+
+const BADGE_TYPE_TO_COLOR = {
+  [ConferenceRole.Attendee]: "#F17A5D",
+  [ConferenceRole.Speaker]: "#34B4A1",
+  [ConferenceRole.Sponsor]: "#9473B0",
+  [ConferenceRole.Staff]: "#F8B03D",
+  [ConferenceRole.Keynoter]: "#79CDE0",
+};
 
 type Props = {
   cutLines?: boolean;
   pronouns?: string;
   tagline?: string;
   name?: string;
+  role?: ConferenceRole;
 };
 
 export const Badge = ({
@@ -19,6 +29,7 @@ export const Badge = ({
   name = "Example",
   pronouns = "they/them",
   tagline = "Example tagline",
+  role = ConferenceRole.Attendee,
 }: Props) => {
   return (
     <div
@@ -97,11 +108,12 @@ export const Badge = ({
         <div
           style={{
             fontSize: "32px",
-            color: "#F17A5D",
+            color: BADGE_TYPE_TO_COLOR[role],
             fontWeight: 600,
+            textTransform: "capitalize",
           }}
         >
-          Attendee
+          {role.toLowerCase()}
         </div>
         <div
           style={{
