@@ -51,7 +51,7 @@ data "aws_acm_certificate" "cert" {
 }
 
 data "aws_elasticache_cluster" "redis" {
-  cluster_id = "${terraform.workspace}-pretix"
+  cluster_id = "production-pretix"
 }
 
 module "lambda" {
