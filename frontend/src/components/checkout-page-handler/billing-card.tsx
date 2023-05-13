@@ -45,7 +45,13 @@ export const BillingCard = () => {
 
   const inputPlaceholder = useTranslatedMessage("input.placeholder");
 
-  useEffect(() => updateInformation(formState.values), [formState.values]);
+  useEffect(() => {
+    if (invoiceInformation.isBusiness && !formState.values.isBusiness) {
+      formState.setField("companyName", "");
+      formState.setField("vatId", "");
+    }
+    updateInformation(formState.values);
+  }, [formState.values]);
 
   return (
     <>
