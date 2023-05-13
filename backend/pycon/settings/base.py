@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "markdownify.apps.MarkdownifyConfig",
     "imagekit",
     "badge_scanner",
+    "badges.apps.BadgesConfig",
 ]
 
 MIDDLEWARE = [
