@@ -1,10 +1,9 @@
-import { Heading, Section } from "@python-italia/pycon-styleguide";
 import React, { useEffect } from "react";
-import { FormattedMessage } from "react-intl";
 
 import { useRouter } from "next/router";
 
 import {
+  CheckoutCategory,
   CurrentUserQueryResult,
   TicketItem,
   TicketsQueryResult,
