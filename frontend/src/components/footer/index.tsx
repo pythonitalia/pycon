@@ -33,12 +33,17 @@ export const Footer = () => {
     conference: { footerEn, footerIt },
   } = data || {
     conference: {
-      footerEn: [],
-      footerIt: [],
+      footerEn: { links: [] },
+      footerIt: { links: [] },
     },
   };
 
-  const menu = language === "en" ? footerEn : footerIt;
+  const menu: {
+    links: {
+      text: string;
+      link: string;
+    }[];
+  } = language === "en" ? footerEn : footerIt;
 
   return (
     <>
