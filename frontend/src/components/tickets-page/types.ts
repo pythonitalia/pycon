@@ -40,7 +40,7 @@ export type ProductState = {
   answers: { [id: string]: string };
   attendeeName: string;
   attendeeEmail: string;
-  admission: boolean;
+  admission?: boolean;
   voucher?: Voucher | null;
   errors?: { [id: string]: string };
 };
