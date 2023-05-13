@@ -5,38 +5,13 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
-import { TicketItem } from "~/types";
-
-import { ProductQuestionnaire } from "../product-questionnaire";
-import { ProductState } from "../tickets-page/types";
-import { useCart } from "../tickets-page/use-cart";
-
 type Props = {
   openByDefault: boolean;
-  productUserInformation: ProductState;
-  product: TicketItem;
-  index: number;
+  title: string;
+  children: React.ReactNode;
 };
 
-export const AnswersCard = ({
-  openByDefault,
-  productUserInformation,
-  product,
-  index,
-}: Props) => {
-  const { updateTicketInfo, updateQuestionAnswer } = useCart();
-  const cardTitle =
-    product.admission && productUserInformation.attendeeName ? (
-      <FormattedMessage
-        id="tickets.checkout.answerCardAdmissionTitle"
-        values={{
-          attendeeName: productUserInformation.attendeeName,
-        }}
-      />
-    ) : (
-      product.name
-    );
-
+export const AnswersCard = ({ openByDefault, children, title }: Props) => {
   return (
     <MultiplePartsCard
       openByDefault={openByDefault}
@@ -50,16 +25,10 @@ export const AnswersCard = ({
         id="heading"
         openLabel={<FormattedMessage id="tickets.checkout.openAnswerCard" />}
       >
-        <Heading size={2}>{cardTitle}</Heading>
+        <Heading size={2}>{title}</Heading>
       </CardPart>
       <CardPart id="content" contentAlign="left" background="milk">
-        <ProductQuestionnaire
-          index={index}
-          productUserInformation={productUserInformation}
-          product={product}
-          updateTicketInfo={updateTicketInfo}
-          updateQuestionAnswer={updateQuestionAnswer}
-        />
+        {children}
       </CardPart>
     </MultiplePartsCard>
   );

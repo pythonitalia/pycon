@@ -21,6 +21,8 @@ type Props = {
   conference: TicketsQueryResult["data"]["conference"];
   me: CurrentUserQueryResult["data"]["me"];
   business: boolean;
+  visibleCategories: CheckoutCategory[];
+  showHeadings: boolean;
 };
 
 export const Tickets = ({
@@ -29,6 +31,8 @@ export const Tickets = ({
   conference,
   business,
   me,
+  visibleCategories,
+  showHeadings = true,
 }: Props) => {
   const {
     updateIsBusiness,
@@ -57,11 +61,6 @@ export const Tickets = ({
 
   return (
     <>
-      <Section spacingSize="xl" illustration="snakeTailUp">
-        <Heading size="display2">
-          <FormattedMessage id="tickets.title" />
-        </Heading>
-      </Section>
       <ProductsList
         products={products}
         hotelRooms={hotelRooms}
@@ -69,6 +68,8 @@ export const Tickets = ({
         business={business}
         ignoreSoldOut={!!voucherCode}
         me={me}
+        visibleCategories={visibleCategories}
+        showHeadings={showHeadings}
       />
       <CheckoutBar
         onCheckout={onCheckout}

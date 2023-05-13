@@ -11,7 +11,7 @@ import { InvoiceInformationState, OrderState, Voucher } from "./types";
 
 type CartContextType = {
   state: OrderState;
-  addProduct: (id: string, variation?: string) => void;
+  addProduct: (id: string, variation?: string, admission?: boolean) => void;
   removeProduct: (id: string, variation?: string) => void;
   addHotelRoom: (
     id: string,
@@ -64,6 +64,7 @@ export const createCartContext = () => {
     selectedHotelRooms: {},
     voucherCode: "",
     voucherUsed: false,
+    hasAdmissionTicket: false,
   };
 
   let storedCart = null;
@@ -86,11 +87,12 @@ export const createCartContext = () => {
     );
   }, [state]);
 
-  const addProduct = (id: string, variation?: string) =>
+  const addProduct = (id: string, variation?: string, admission?: boolean) =>
     dispatcher({
       type: "incrementProduct",
       id,
       variation,
+      admission,
     });
 
   const removeProduct = (id: string, variation?: string) =>

@@ -1,12 +1,16 @@
 import {
   Grid,
   CardPart,
+  Text,
   MultiplePartsCard,
   Heading,
   InputWrapper,
   Input,
   Textarea,
   Select,
+  GridColumn,
+  Checkbox,
+  HorizontalStack,
 } from "@python-italia/pycon-styleguide";
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
@@ -23,7 +27,7 @@ const FISCAL_CODE_REGEX =
 
 export const BillingCard = () => {
   const {
-    state: { invoiceInformation },
+    state: { invoiceInformation, hasAdmissionTicket },
     updateInformation,
   } = useCart();
 
@@ -32,7 +36,7 @@ export const BillingCard = () => {
   );
 
   const countries = useCountries();
-  const [formState, { text, select, textarea }] =
+  const [formState, { text, select, textarea, checkbox }] =
     useFormState<InvoiceInformationState>({ ...invoiceInformation });
 
   const isBusiness = invoiceInformation.isBusiness;
@@ -57,6 +61,27 @@ export const BillingCard = () => {
         </CardPart>
         <CardPart background="milk" contentAlign="left" id="content">
           <Grid cols={3}>
+            {!hasAdmissionTicket && (
+              <GridColumn colSpan={3}>
+                <InputWrapper
+                  title={
+                    <FormattedMessage id="checkout.billing.businessInvoice" />
+                  }
+                >
+                  <HorizontalStack
+                    wrap="wrap"
+                    gap="small"
+                    alignItems="center"
+                    justifyContent="spaceBetween"
+                  >
+                    <Text size={2}>
+                      <FormattedMessage id="checkout.billing.businessInvoice.description" />
+                    </Text>
+                    <Checkbox {...checkbox("isBusiness")} />
+                  </HorizontalStack>
+                </InputWrapper>
+              </GridColumn>
+            )}
             {isBusiness && (
               <InputWrapper
                 required={true}

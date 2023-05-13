@@ -1,0 +1,58 @@
+fragment ConferenceProducts on Conference {
+  id
+  start
+  end
+  timeZone: timezone
+  pretixEventUrl
+
+  tickets(language: $language) {
+    id
+    language
+    name
+    description
+    defaultPrice
+    availableUntil
+    quantityLeft
+    soldOut
+    type
+    category
+    categoryInternalName
+    taxRate
+    admission
+
+    variations {
+      id
+      defaultPrice
+      value
+      soldOut
+      active
+      description
+    }
+
+    questions {
+      id
+      name
+      required
+      hidden
+      options {
+        id
+        name
+      }
+    }
+  }
+
+  hotelRooms {
+    id
+    name(language: $language)
+    description(language: $language)
+    price
+    isSoldOut
+    capacityLeft
+    availableBedLayouts {
+      id
+      name(language: $language)
+    }
+    checkInDates
+    checkOutDates
+  }
+}

@@ -3,6 +3,7 @@ import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 
 import {
+  CheckoutCategory,
   CurrentUserQueryResult,
   HotelRoom,
   TicketItem,
@@ -22,6 +23,8 @@ type Props = {
   me: CurrentUserQueryResult["data"]["me"];
   business: boolean;
   ignoreSoldOut: boolean;
+  visibleCategories: CheckoutCategory[];
+  showHeadings: boolean;
 };
 
 export const ProductsList = ({
@@ -31,6 +34,8 @@ export const ProductsList = ({
   business,
   me,
   ignoreSoldOut,
+  visibleCategories,
+  showHeadings,
 }: Props) => {
   const ticketType = business ? TicketType.Business : TicketType.Standard;
   const tickets = products.filter(
@@ -52,24 +57,27 @@ export const ProductsList = ({
 
   return (
     <Section>
-      {tickets.map((ticket) => (
-        <Fragment key={ticket.id}>
-          <TicketRow
-            openByDefault={true}
-            icon="tickets"
-            iconBackground="pink"
-            ticket={ticket}
-            ignoreSoldOut={ignoreSoldOut}
-          />
-          <Spacer size="small" />
-        </Fragment>
-      ))}
+      {visibleCategories.includes(CheckoutCategory.Tickets) &&
+        tickets.map((ticket) => (
+          <Fragment key={ticket.id}>
+            <TicketRow
+              openByDefault={true}
+              icon="tickets"
+              iconBackground="pink"
+              ticket={ticket}
+              ignoreSoldOut={ignoreSoldOut}
+            />
+            <Spacer size="small" />
+          </Fragment>
+        ))}
 
-      {tshirt && (
+      {visibleCategories.includes(CheckoutCategory.Gadgets) && tshirt && (
         <>
-          <GroupHeading>
-            <FormattedMessage id="tickets.productsList.tshirtTitle" />
-          </GroupHeading>
+          {showHeadings && (
+            <GroupHeading>
+              <FormattedMessage id="tickets.productsList.tshirtTitle" />
+            </GroupHeading>
+          )}
           <TicketRow
             key={tshirt.id}
             icon="tshirt"
@@ -80,56 +88,78 @@ export const ProductsList = ({
         </>
       )}
 
-      {socialEvents.length > 0 && (
-        <GroupHeading>
-          <FormattedMessage id="tickets.productsList.socialEventsTitle" />
-        </GroupHeading>
+      {visibleCategories.includes(CheckoutCategory.SocialEvents) &&
+        socialEvents.length > 0 && (
+          <>
+            {showHeadings && (
+              <GroupHeading>
+                <FormattedMessage id="tickets.productsList.socialEventsTitle" />
+              </GroupHeading>
+            )}
+            {socialEvents.map((socialEvent, index) => (
+              <Fragment key={index}>
+                <SocialEventRow
+                  ticket={socialEvent}
+                  openByDefault={index === 0}
+                />
+                <Spacer size="small" />
+              </Fragment>
+            ))}
+          </>
+        )}
+
+      {visibleCategories.includes(CheckoutCategory.Tours) &&
+        guidedTours.length > 0 && (
+          <>
+            {showHeadings && (
+              <GroupHeading>
+                <FormattedMessage id="tickets.productsList.guidedToursTitle" />
+              </GroupHeading>
+            )}
+
+            {guidedTours.map((guidedTour) => (
+              <Fragment key={guidedTour.id}>
+                <TicketRow
+                  openByDefault={true}
+                  key={guidedTour.id}
+                  icon="star"
+                  iconBackground="neutral"
+                  ticket={guidedTour}
+                />
+                <Spacer size="small" />
+              </Fragment>
+            ))}
+          </>
+        )}
+
+      {visibleCategories.includes(CheckoutCategory.Hotel) &&
+        sortedHotelRooms.length > 0 && (
+          <>
+            {showHeadings && (
+              <GroupHeading>
+                <FormattedMessage id="tickets.productsList.hotelRoomsTitle" />
+              </GroupHeading>
+            )}
+            {sortedHotelRooms.map((hotelRoom, index) => (
+              <Fragment key={hotelRoom.id}>
+                <HotelRow openByDefault={index === 0} hotelRoom={hotelRoom} />
+                <Spacer size="small" />
+              </Fragment>
+            ))}
+          </>
+        )}
+
+      {visibleCategories.includes(CheckoutCategory.Membership) && (
+        <>
+          {showHeadings && (
+            <GroupHeading>
+              <FormattedMessage id="tickets.productsList.joinPythonItalia" />
+            </GroupHeading>
+          )}
+
+          <MembershipRow membership={membership} me={me} />
+        </>
       )}
-
-      {socialEvents.map((socialEvent, index) => (
-        <Fragment key={socialEvent.id}>
-          <SocialEventRow ticket={socialEvent} openByDefault={index === 0} />
-          <Spacer size="small" />
-        </Fragment>
-      ))}
-
-      {guidedTours.length > 0 && (
-        <GroupHeading>
-          <FormattedMessage id="tickets.productsList.guidedToursTitle" />
-        </GroupHeading>
-      )}
-
-      {guidedTours.map((guidedTour) => (
-        <Fragment key={guidedTour.id}>
-          <TicketRow
-            openByDefault={true}
-            key={guidedTour.id}
-            icon="star"
-            iconBackground="neutral"
-            ticket={guidedTour}
-          />
-          <Spacer size="small" />
-        </Fragment>
-      ))}
-
-      {sortedHotelRooms.length > 0 && (
-        <GroupHeading>
-          <FormattedMessage id="tickets.productsList.hotelRoomsTitle" />
-        </GroupHeading>
-      )}
-
-      {sortedHotelRooms.map((hotelRoom, index) => (
-        <Fragment key={hotelRoom.id}>
-          <HotelRow openByDefault={index === 0} hotelRoom={hotelRoom} />
-          <Spacer size="small" />
-        </Fragment>
-      ))}
-
-      <GroupHeading>
-        <FormattedMessage id="tickets.productsList.joinPythonItalia" />
-      </GroupHeading>
-
-      <MembershipRow membership={membership} me={me} />
     </Section>
   );
 };
