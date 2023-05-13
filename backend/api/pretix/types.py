@@ -79,7 +79,7 @@ class ProductVariation:
         return cls(
             id=data["id"],
             value=_get_by_language(data, "value", language),
-            description=_get_by_language(data, "description", language),
+            description=_get_by_language(data, "description", language) or "",
             active=data["active"],
             default_price=data["default_price"],
             sold_out=sold_out,

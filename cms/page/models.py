@@ -13,6 +13,7 @@ from wagtail.fields import StreamField
 
 from page.blocks.text_section import TextSection
 from page.blocks.slider_cards_section import SliderCardsSection
+from page.blocks.checkout_section import CheckoutSection
 from base.blocks.map import Map
 from wagtail import blocks
 
@@ -30,6 +31,7 @@ class BodyBlock(blocks.StreamBlock):
     special_guest_section = SpecialGuestSection()
     information_section = InformationSection()
     news_grid_section = NewsGridSection()
+    checkout_section = CheckoutSection()
 
 
 class GenericPage(Page):

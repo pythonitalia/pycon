@@ -4,6 +4,7 @@ import { Map } from "~/components/blocks/map";
 import { TextSection } from "~/components/blocks/text-section";
 import { Block } from "~/types";
 
+import { CheckoutSection } from "../blocks/checkout-section";
 import { HomeIntroSection } from "../blocks/home-intro-section";
 import { InformationSection } from "../blocks/information-section";
 import { KeynotersSection } from "../blocks/keynotes-section";
@@ -30,6 +31,7 @@ const REGISTRY: Registry = {
   SpecialGuestSection,
   InformationSection,
   NewsGridSection,
+  CheckoutSection,
 };
 
 type Props = {

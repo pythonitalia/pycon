@@ -21,6 +21,7 @@ const updateProductReducer = (
       productItems.push({
         id: action.id,
         variation: action.variation,
+        admission: action.admission,
         answers: {},
         attendeeName: "",
         attendeeEmail: "",
@@ -52,6 +53,9 @@ const updateProductReducer = (
   return {
     ...state,
     selectedProducts,
+    hasAdmissionTicket: Object.values(selectedProducts)
+      .flat()
+      .some((product) => product.admission),
   };
 };
 

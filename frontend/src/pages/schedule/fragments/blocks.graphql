@@ -120,6 +120,11 @@ fragment Blocks on Block {
   ... on NewsGridSection {
     id
   }
+
+  ... on CheckoutSection {
+    id
+    visibleCategories
+  }
 }
 
 fragment CTAInfo on CTA {

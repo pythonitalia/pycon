@@ -14,6 +14,7 @@ from api.page.blocks.socials_section import SocialsSection
 from api.page.blocks.special_guest_section import SpecialGuestSection
 from api.page.blocks.information_section import InformationSection
 from api.news.blocks.news_grid_section import NewsGridSection
+from api.page.blocks.checkout_section import CheckoutSection
 
 
 @strawberry.type
@@ -33,6 +34,7 @@ REGISTRY = {
     "special_guest_section": SpecialGuestSection,
     "information_section": InformationSection,
     "news_grid_section": NewsGridSection,
+    "checkout_section": CheckoutSection,
 }
 
 Block = strawberry.union(

@@ -12,6 +12,10 @@ export const messages = {
     "profile.tickets.size": "Size",
     "tickets.productsList.guidedToursTitle": "Guided Tours",
 
+    "checkout.billing.businessInvoice": "Do you need an invoice?",
+    "checkout.billing.businessInvoice.description":
+      "Turn this option on if your company, university or similar is paying for you or if you need an invoice.",
+
     "profile.tickets.noDetails": "Have fun! 🍻",
 
     "global.italian": "Italian",
@@ -409,6 +413,7 @@ export const messages = {
     "homepage.schedulePreviewSection.goToSchedule": "Go to schedule",
 
     "tickets.buyTickets": "Buy Tickets",
+    "tickets.buyNow": "Buy now",
     "tickets.hotelRow.totalPrice": "{value}",
     "tickets.hotelRow.pricePerNight":
       "{nights, plural, =0 {/night} =1 {{price} x # night} other {{price} x # nights}}",
@@ -901,7 +906,7 @@ reflects what everyone wants to see!`,
 
     "tickets.buyTicketsSubtitle": "Conference ticket, social events and more!",
 
-    "tickets.landing.title": "What can you buy?",
+    "tickets.landing.title": "What else you can buy?",
     "tickets.landing.ticketsCopy": `Tickets to join the conference! PyCon Italia is a fun 4 days event, where every year we are joined by more than 600 people, have more than 110+ sessions (talks and workshops) and social events where you can meet new people and have fun in the beautiful Florence.
 The sooner you buy your ticket, the more you save!`,
     "tickets.landing.hotelCopy": `Take the stress out of your trip and book your hotel room with us! You can stay in the same hotel as the conference, the Grand Hotel Mediterraneo!
@@ -914,7 +919,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
 
     "tickets.landing.ticketsTitle": "Tickets",
     "tickets.landing.hotelTitle": "Hotel",
-    "tickets.landing.socialEvents.title": "Social Events & more",
+    "tickets.landing.socialEvents.title": "Social Events & tours",
     "tickets.landing.membershipTitle": "Membership",
     "blog.publishedOn": "{date} - {author}",
 
@@ -1636,7 +1641,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "tickets.checkout.title": "Checkout",
     "tickets.title": "Biglietti",
 
-    "tickets.productsList.joinPythonItalia": "Diventa membro",
+    "tickets.productsList.joinPythonItalia": "Unisciti a noi",
     "tickets.productsList.hotelRoomsTitle": "Stanze d'albergo",
     "tickets.productsList.openDescription": "Scopri di più",
 
@@ -1675,7 +1680,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
 Affrettati a comprare il biglietto!`,
     "tickets.landing.hotelCopy": `Organizza il tuo viaggio con tranquillità e soggiorna al Grand Hotel Mediterraneo! Abbiamo un numero limitato di stanze scontate al Grand Hotel Mediterraneo, dove la conferenza avviene!`,
 
-    "tickets.landing.membership.cta": "Diventa membro!",
+    "tickets.landing.membership.cta": "Unisciti a noi!",
 
     "tickets.landing.ticketsTitle": "Biglietti",
     "tickets.landing.hotelTitle": "Hotel",
@@ -1879,6 +1884,11 @@ Affrettati a comprare il biglietto!`,
 
     "profile.tickets.ticketReassigned":
       'Questo biglietto è assegnato a {to}. Email sbagliata? Puoi riassegnarla all\'interno di "I miei ordini"',
+    "tickets.buyNow": "Compra ora",
+
+    "checkout.billing.businessInvoice": "Hai bisogno di fattura?",
+    "checkout.billing.businessInvoice.description":
+      "Attiva questa opzione se hai la necessità di fattura",
   },
 };
 

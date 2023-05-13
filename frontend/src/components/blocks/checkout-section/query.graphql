@@ -1,5 +1,5 @@
 #import "../../fragments/conference-products.graphql"
-query Tickets($conference: String!, $language: String!) {
+query CheckoutSection($conference: String!, $language: String!) {
   conference(code: $conference) {
     ...ConferenceProducts
   }

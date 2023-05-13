@@ -97,7 +97,7 @@ export const TicketRow = ({
       {!ticket.variations.length && (
         <AddRemoveRow
           price={Number(ticket.defaultPrice)}
-          onIncrement={() => addProduct(ticket.id)}
+          onIncrement={() => addProduct(ticket.id, undefined, ticket.admission)}
           onDecrement={() => removeProduct(ticket.id)}
           soldOut={ignoreSoldOut ? false : ticket.soldOut}
           quantity={selectedProducts[ticket.id]?.length ?? 0}
