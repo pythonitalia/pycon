@@ -5,6 +5,8 @@ import pretix
 from conferences.models import Conference
 from schedule.models import ScheduleItem
 from django.core.cache import cache
+from badges.models import AttendeeConferenceRole
+from django.db.models import Q
 
 
 class Role(Enum):
@@ -13,6 +15,10 @@ class Role(Enum):
     SPEAKER = "speaker"
     SPONSOR = "sponsor"
     KEYNOTER = "keynoter"
+
+    @staticmethod
+    def choices():
+        return ((role.value, role.name) for role in Role)
 
 
 ConferenceRole = strawberry.enum(Role, name="ConferenceRole")
@@ -85,6 +91,26 @@ def get_conference_roles_for_user(
 
 
 def _get_roles(conference: Conference, user_id: int, ticket: dict) -> List[Role]:
+    ticket_id = ticket["id"]
+
+    # check if we have overrides for this ticket / user
+    manual_role = AttendeeConferenceRole.objects.filter(
+        Q(order_position_id=ticket_id) | Q(user_id=user_id),
+        conference=conference,
+    ).first()
+
+    roles = (
+        manual_role.roles
+        if manual_role
+        else _calculate_roles(conference, user_id, ticket)
+    )
+    return sorted(
+        roles,
+        key=lambda role: ROLES_PRIORITY.index(Role(role)),
+    )
+
+
+def _calculate_roles(conference: Conference, user_id: int, ticket: dict) -> List[Role]:
     roles = [
         Role.ATTENDEE,
     ]
@@ -115,7 +141,4 @@ def _get_roles(conference: Conference, user_id: int, ticket: dict) -> List[Role]
     if Role.SPEAKER not in roles and user_is_in_schedule_item:
         roles.append(Role.SPEAKER)
 
-    return sorted(
-        roles,
-        key=lambda role: ROLES_PRIORITY.index(role),
-    )
+    return roles
