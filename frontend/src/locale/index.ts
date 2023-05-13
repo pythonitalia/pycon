@@ -21,7 +21,8 @@ export const messages = {
     "schedule.listView": "List View",
     "schedule.gridView": "Grid View",
 
-    "profile.tickets.ticketReassigned": "You assigned this ticket to {to}.",
+    "profile.tickets.ticketReassigned":
+      'You assigned this ticket to {to}. Wrong email? You can change it inside "My orders"',
 
     "profile.publicProfile.yourPhoto": "Your photo",
     "profile.publicProfile.yourPhoto.description": "Customise your profile",
@@ -1876,7 +1877,8 @@ Affrettati a comprare il biglietto!`,
     "profile.ticketsEdit.editProfile":
       "Clicca qui per attivare e personalizzare il tuo profilo.",
 
-    "profile.tickets.ticketReassigned": "Questo biglietto è assegnato a {to}.",
+    "profile.tickets.ticketReassigned":
+      'Questo biglietto è assegnato a {to}. Email sbagliata? Puoi riassegnarla all\'interno di "I miei ordini"',
   },
 };
 
