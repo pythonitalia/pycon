@@ -29,13 +29,14 @@ export const Footer = () => {
     openNewsletterModal(true);
   };
 
-  if (!data) {
-    return null;
-  }
-
   const {
     conference: { footerEn, footerIt },
-  } = data;
+  } = data || {
+    conference: {
+      footerEn: [],
+      footerIt: [],
+    },
+  };
 
   const menu = language === "en" ? footerEn : footerIt;
 
