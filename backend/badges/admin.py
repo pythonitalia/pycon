@@ -27,5 +27,10 @@ class AttendeeConferenceRoleForm(forms.ModelForm):
 
 @admin.register(AttendeeConferenceRole)
 class AttendeeConferenceRoleAdmin(AdminUsersMixin):
+    list_display = ("user_id", "order_position_id", "conference", "roles")
+    list_filter = (
+        "conference",
+        "roles",
+    )
     form = AttendeeConferenceRoleForm
     user_fk = "user_id"

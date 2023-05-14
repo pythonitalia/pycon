@@ -274,7 +274,7 @@ def normalize_answers(ticket: CreateOrderTicket, questions: dict):
     for answer in ticket.answers or []:
         question = questions[answer.question_id]
 
-        if not answer.value and not question["required"]:
+        if not answer.value and not question.get("required", False):
             continue
 
         answer_data = {
