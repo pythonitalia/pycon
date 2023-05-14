@@ -4,6 +4,7 @@ import pytest
 
 pytestmark = pytest.mark.django_db
 
+
 def _scan_badge_mutation(graphql_client, variables):
     return graphql_client.query(
         """
@@ -57,6 +58,17 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
             "id": 1,
             "email": "barko@marco.pizza",
             "full_name": "Test User",
+        },
+    )
+
+    mocker.patch(
+        "api.badge_scanner.schema.get_users_data_by_ids",
+        return_value={
+            1: {
+                "id": 1,
+                "email": "barko@marco.pizza",
+                "full_name": "Test User",
+            }
         },
     )
 
