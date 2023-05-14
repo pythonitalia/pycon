@@ -18,6 +18,11 @@ export const messages = {
 
     "profile.tickets.noDetails": "Have fun! 🍻",
 
+    "streaming.roomName": "Room {name}",
+    "streaming.eventName": "Current: {name}",
+    "streaming.noStreaming":
+      "The conference is not live right now, why you don't check our YouTube channel?",
+
     "global.italian": "Italian",
     "global.english": "English",
     "global.all": "All",
@@ -847,7 +852,7 @@ reflects what everyone wants to see!`,
     "schedule.invitation.invitationNotValid":
       "Unable to find this invitation. Please contact us if you think this is a mistake",
     "schedule.invitation.currentAnswer": "Your current answer is: {answer}",
-    "streaming.qa": "Click here to ask questions",
+    "streaming.qa": "Ask Questions",
 
     "talk.bookToAttend":
       "This event has limited capacity, you need to book a seat to attend.",
@@ -1515,7 +1520,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "schedule.invitation.invitationNotValid":
       "Impossibile trovare questo invito",
     "schedule.invitation.currentAnswer": "Risposta attuale: {answer}",
-    "streaming.qa": "Clicca qui per fare domande",
+    "streaming.qa": "Invia domanda",
 
     "talk.bookToAttend":
       "Questo evento ha una capacità limitata, è necessario prenotare un posto per partecipare.",
@@ -1889,6 +1894,10 @@ Affrettati a comprare il biglietto!`,
     "checkout.billing.businessInvoice": "Hai bisogno di fattura?",
     "checkout.billing.businessInvoice.description":
       "Attiva questa opzione se hai la necessità di fattura",
+    "streaming.roomName": "Stanza {name}",
+    "streaming.eventName": "In corso: {name}",
+    "streaming.noStreaming":
+      "La conferenza non è attualmente live, perchè non dai uno sguardo al nostro account YouTube?",
   },
 };
 

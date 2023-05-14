@@ -357,6 +357,12 @@ class Conference:
         return self.days.order_by("day").prefetch_related("slots", "slots__items").all()
 
     @strawberry.field
+    def current_day(self, info) -> Optional[Day]:
+        start = timezone.now().replace(hour=0, minute=0, second=0)
+        end = start.replace(hour=23, minute=59, second=59)
+        return self.days.filter(day__gte=start, day__lte=end).first()
+
+    @strawberry.field
     def is_running(self, info) -> bool:
         now = timezone.now()
         return self.start <= now <= self.end
