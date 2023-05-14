@@ -55,7 +55,7 @@ class BadgeScan:
 
     @strawberry.field
     def attendee(self) -> Attendee:
-        user_data = get_users_data_by_ids([self.attendee_id]).get(self.attendee_id)
+        user_data = get_users_data_by_ids([self.attendee_id]).get(str(self.attendee_id))
 
         assert user_data
 
