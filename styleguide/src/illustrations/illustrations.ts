@@ -19,6 +19,7 @@ import { SnakeTail } from "./snake-tail";
 import { SnakeTailUp } from "./snake-tail-up";
 import { SnakeWithBalloon } from "./snake-with-balloon";
 import { SnakeWithContacts } from "./snake-with-contacts";
+import { SnakeWithPopcorn } from "./snake-with-popcorn";
 import { SnakesWithBanner } from "./snakes-with-banner";
 import { SnakesWithCocktail } from "./snakes-with-cocktail";
 import { SnakesWithDirections } from "./snakes-with-directions";
@@ -80,6 +81,8 @@ export const getIllustration = (name: Illustration | undefined) => {
       return TripleSnakes;
     case "snakeTailUp":
       return SnakeTailUp;
+    case "snakeWithPopcorn":
+      return SnakeWithPopcorn;
   }
   return null;
 };
