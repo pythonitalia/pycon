@@ -13,6 +13,7 @@ def _scan_badge_mutation(graphql_client, variables):
             scanBadge(input: { url: $url, conferenceCode: $conferenceCode }) {
                 __typename
                 ... on BadgeScan {
+                    id
                     attendee {
                         fullName
                         email
@@ -67,7 +68,7 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
     mocker.patch(
         "api.badge_scanner.schema.get_users_data_by_ids",
         return_value={
-            1: {
+            "1": {
                 "id": 1,
                 "email": "barko@marco.pizza",
                 "fullname": "Test User",
@@ -98,6 +99,8 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
     assert badge_scan.notes == ""
     assert badge_scan.conference == conference
     assert badge_scan.badge_url == f"https://pycon.it/b/{fake_id}"
+
+    assert resp["data"]["scanBadge"]["id"] == str(badge_scan.id)
 
 
 def test_fails_when_conference_is_wrong(user, graphql_client):

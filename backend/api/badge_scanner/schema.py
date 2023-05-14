@@ -50,6 +50,7 @@ class Attendee:
 
 @strawberry.type
 class BadgeScan:
+    id: strawberry.ID
     notes: str
     attendee_id: strawberry.Private[int]
 
@@ -67,6 +68,7 @@ class BadgeScan:
     @classmethod
     def from_db(cls, db_scan: models.BadgeScan) -> BadgeScan:
         return BadgeScan(
+            id=strawberry.ID(str(db_scan.pk)),
             attendee_id=db_scan.scanned_user_id,
             notes=db_scan.notes,
         )

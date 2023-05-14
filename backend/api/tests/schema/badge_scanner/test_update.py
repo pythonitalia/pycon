@@ -12,6 +12,7 @@ def _update_notes_mutation(graphql_client, variables):
             updateBadgeScan(input: $input) {
                 __typename
                 ... on BadgeScan {
+                    id
                     notes
                 }
                 ... on ScanError {
@@ -67,6 +68,7 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference):
 
     assert resp["data"]["updateBadgeScan"]["__typename"] == "BadgeScan"
     assert resp["data"]["updateBadgeScan"]["notes"] == "This is a test"
+    assert resp["data"]["updateBadgeScan"]["id"] == str(badge_scan.id)
 
     badge_scan.refresh_from_db()
 
