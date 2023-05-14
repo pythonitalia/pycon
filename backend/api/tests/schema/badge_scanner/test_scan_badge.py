@@ -60,7 +60,7 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
         return_value={
             "id": 1,
             "email": "barko@marco.pizza",
-            "full_name": "Test User",
+            "fullname": "Test User",
         },
     )
 
@@ -70,7 +70,7 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
             1: {
                 "id": 1,
                 "email": "barko@marco.pizza",
-                "full_name": "Test User",
+                "fullname": "Test User",
             }
         },
     )

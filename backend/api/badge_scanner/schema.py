@@ -60,7 +60,7 @@ class BadgeScan:
         assert user_data
 
         return Attendee(
-            full_name=user_data["full_name"],
+            full_name=user_data["fullname"],
             email=user_data["email"],
         )
 
