@@ -53,11 +53,15 @@ class BadgeScan:
     notes: str
 
 
+@strawberry.input
+class UpdateBadgeScanInput:
+    id: str
+    notes: str
+
+
 @strawberry.type
 class BadgeScannerMutation:
-    @strawberry.mutation(
-        permission_classes=[IsAuthenticated],
-    )
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     def scan_badge(
         self, info: Info[Any, None], input: ScanBadgeInput
     ) -> BadgeScan | ScanError:
@@ -91,4 +95,23 @@ class BadgeScannerMutation:
                 full_name=data["attendee_name"], email=data["attendee_email"]
             ),
             notes=scanned_badge.notes,
+        )
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    def update_badge_scan(
+        self, info: Info[Any, None], input: UpdateBadgeScanInput
+    ) -> BadgeScan | ScanError:
+        badge_scan = models.BadgeScan.objects.filter(
+            scanned_by_id=info.context.request.user.id, id=input.id
+        ).first()
+
+        if not badge_scan:
+            return ScanError(message="Badge scan not found")
+
+        badge_scan.notes = input.notes
+        badge_scan.save()
+
+        return BadgeScan(
+            attendee=Attendee(full_name="TODO", email="TODO"),
+            notes=badge_scan.notes,
         )
