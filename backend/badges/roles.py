@@ -49,7 +49,9 @@ def speakers_user_ids(conference: Conference) -> Set[int]:
         .distinct()
     )
     additional_speakers = list(
-        ScheduleItem.objects.filter(conference=conference)
+        ScheduleItem.objects.filter(
+            conference=conference, additional_speakers__user_id__isnull=False
+        )
         .values_list("additional_speakers__user_id", flat=True)
         .distinct()
     )
@@ -100,13 +102,13 @@ def _get_roles(conference: Conference, user_id: int, ticket: dict) -> List[Role]
     ).first()
 
     roles = (
-        manual_role.roles
+        [Role(role) for role in manual_role.roles]
         if manual_role
         else _calculate_roles(conference, user_id, ticket)
     )
     return sorted(
         roles,
-        key=lambda role: ROLES_PRIORITY.index(Role(role)),
+        key=lambda role: ROLES_PRIORITY.index(role),
     )
 
 
