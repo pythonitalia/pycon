@@ -24,4 +24,5 @@ export type Icon =
   | "circle"
   | "web"
   | "drink"
-  | "forks";
+  | "forks"
+  | "live-circle";

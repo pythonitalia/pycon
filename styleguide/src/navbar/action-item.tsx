@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Text } from "../text";
 import { Action } from "./types";
 import { getIcon } from "../icons/icons";
+import { getBackgroundClasses } from "../colors-utils";
 
 type ActionProps = Action & {
   className?: string;
@@ -14,6 +15,7 @@ export const ActionItem = ({
   onClick,
   link,
   icon,
+  background = "cream",
 }: ActionProps) => {
   const Component = link ? "a" : "div";
   const [widths, setWidths] = useState<{
@@ -107,8 +109,9 @@ export const ActionItem = ({
   return (
     <Component
       className={clsx(
-        `bg-cream h-full p-3 lg:p-5 border-3 border-black flex items-center uppercase cursor-pointer overflow-hidden`,
+        `h-full p-3 lg:p-5 border-3 border-black flex items-center uppercase cursor-pointer overflow-hidden`,
         className,
+        getBackgroundClasses(background),
         "navbar-actionitem",
         {
           "hover:bg-green": icon !== "close",

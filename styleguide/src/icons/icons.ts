@@ -25,6 +25,7 @@ import { CircleIcon } from "./circle";
 import { WebIcon } from "./web";
 import { DrinkIcon } from "./drink";
 import { ForksIcon } from "./forks";
+import { LiveCircleIcon } from "./live-circle";
 
 export const getIcon = (name: Icon) => {
   switch (name) {
@@ -80,5 +81,7 @@ export const getIcon = (name: Icon) => {
       return DrinkIcon;
     case "forks":
       return ForksIcon;
+    case "live-circle":
+      return LiveCircleIcon;
   }
 };

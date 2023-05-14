@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { HeartIcon } from "./heart";
 import { LiveIcon } from "./live";
+import { LiveCircleIcon } from "./live-circle";
 
 export default {
   title: "Icons",
@@ -18,6 +19,10 @@ export const Primary = () => {
         onClick={() => setToggleFill((value) => !value)}
       />
       <LiveIcon />
+      Live circle:
+      <div className="bg-red p-3">
+        <LiveCircleIcon />
+      </div>
     </div>
   );
 };
