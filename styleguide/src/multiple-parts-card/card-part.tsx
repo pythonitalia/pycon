@@ -67,9 +67,8 @@ export const CardPart = ({
       className={clsx(
         "overflow-hidden transition-all",
         getHoverBackgroundColor(hoverColor),
+        getBackgroundClasses(background),
         {
-          ...getBackgroundClasses(background),
-
           "text-right": contentAlign === "right",
           "text-left": contentAlign === "left",
           "text-center": contentAlign === "center",
