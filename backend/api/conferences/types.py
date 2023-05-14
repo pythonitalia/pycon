@@ -112,9 +112,18 @@ class ScheduleSlot:
     id: strawberry.ID
 
     @strawberry.field
+    def is_live(self) -> bool:
+        with timezone.override(self.day.conference.timezone):
+            now = timezone.localtime(timezone.now())
+            end = (
+                datetime.combine(now, self.hour) + timedelta(minutes=self.duration)
+            ).time()
+            return self.hour < now.time() < end
+
+    @strawberry.field
     def end_hour(self, info) -> time:
         return (
-            datetime.combine(datetime.today(), self.hour)
+            datetime.combine(timezone.datetime.today(), self.hour)
             + timedelta(minutes=self.duration)
         ).time()
 

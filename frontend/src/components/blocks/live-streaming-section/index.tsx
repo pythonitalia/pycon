@@ -8,14 +8,19 @@ import {
   Link,
   Button,
 } from "@python-italia/pycon-styleguide";
+import { LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import { SnakeWithPopcorn } from "@python-italia/pycon-styleguide/illustrations";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import {
+  DayRoom,
+  LiveStreamingSectionQuery,
   queryLiveStreamingSection,
   useLiveStreamingSectionQuery,
 } from "~/types";
+
+import { BreakIcon } from "./break-icon";
 
 export const LiveStreamingSection = () => {
   const {
@@ -62,38 +67,48 @@ export const LiveStreamingSection = () => {
             <ul>
               {currentDay.rooms
                 .filter((room) => room.streamingUrl)
-                .map((room) => (
-                  <li
-                    className="border-b py-8 cursor-pointer"
-                    onClick={(_) => changeRoom(room)}
-                  >
-                    <Heading
-                      size={4}
-                      color={room.id === currentRoom?.id ? "black" : "grey-500"}
-                      className="hover:text-black transition-colors"
+                .map((room) => {
+                  const isLive = isRoomStreaming(
+                    room,
+                    currentDay.runningEvents,
+                  );
+                  return (
+                    <li
+                      className="border-b py-8 cursor-pointer flex justify-between items-center gap-3"
+                      onClick={(_) => changeRoom(room)}
                     >
-                      <FormattedMessage
-                        id="streaming.roomName"
-                        values={{
-                          name: room.name,
-                        }}
-                      />
-                    </Heading>
-                  </li>
-                ))}
+                      <Heading
+                        size={4}
+                        color={
+                          room.id === currentRoom?.id ? "black" : "grey-500"
+                        }
+                        className="hover:text-black transition-colors"
+                      >
+                        <FormattedMessage
+                          id="streaming.roomName"
+                          values={{
+                            name: room.name,
+                          }}
+                        />
+                      </Heading>
+                      {isLive && <LiveIcon className="shrink-0" />}
+                      {!isLive && <BreakIcon className="shrink-0" />}
+                    </li>
+                  );
+                })}
             </ul>
           </GridColumn>
           <GridColumn colSpan={8} className="relative">
-            <SnakeWithPopcorn className="absolute top-0 -translate-y-[78%] right-0 z-10" />
+            <SnakeWithPopcorn className="absolute top-0 -translate-y-[78%] right-0 z-10 hidden lg:block" />
             <div>
-              <div className="z-20 relative">
+              <div className="z-20 relative mt-8 lg:mt-0">
                 {currentRoom && (
                   <iframe
-                    height="320px"
+                    height="500px"
                     src={currentRoom.streamingUrl}
                     allowFullScreen
                     scrolling="no"
-                    className="aspect-video p-[3px] pt-[4px] top-0 left-0 w-full h-full bg-black"
+                    className="aspect-video p-[3px] top-0 left-0 w-full h-full bg-black"
                   />
                 )}
                 {runningEvent && (
@@ -136,4 +151,15 @@ LiveStreamingSection.dataFetching = (client) => {
       code: process.env.conferenceCode,
     }),
   ];
+};
+
+const isRoomStreaming = (
+  room: DayRoom,
+  runningEvents: LiveStreamingSectionQuery["conference"]["currentDay"]["runningEvents"],
+) => {
+  return runningEvents.some(
+    (event) =>
+      event.rooms.map((room) => room.id).includes(room.id) &&
+      event.type !== "custom",
+  );
 };
