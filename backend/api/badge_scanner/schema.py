@@ -9,7 +9,7 @@ from strawberry.types.info import Info
 from api.permissions import IsAuthenticated
 from badge_scanner import models
 from conferences.models import Conference
-from users.client import get_user_by_email
+from users.client import get_user_by_email, get_users_data_by_ids
 
 
 @strawberry.type
@@ -49,8 +49,26 @@ class Attendee:
 
 @strawberry.type
 class BadgeScan:
-    attendee: Attendee
     notes: str
+    attendee_id: strawberry.Private[int]
+
+    @strawberry.field
+    def attendee(self) -> Attendee:
+        user_data = get_users_data_by_ids([self.attendee_id]).get(self.attendee_id)
+
+        assert user_data
+
+        return Attendee(
+            full_name=user_data["full_name"],
+            email=user_data["email"],
+        )
+
+    @classmethod
+    def from_db(cls, db_scan: models.BadgeScan) -> BadgeScan:
+        return BadgeScan(
+            attendee_id=db_scan.scanned_user_id,
+            notes=db_scan.notes,
+        )
 
 
 @strawberry.input
@@ -73,9 +91,11 @@ class BadgeScannerMutation:
         if error := input.validate():
             return error
 
-        data = pretix.get_order_position(conference, input.order_position_id)
+        order_position_data = pretix.get_order_position(
+            conference, input.order_position_id
+        )
 
-        user = get_user_by_email(data["attendee_email"])
+        user = get_user_by_email(order_position_data["attendee_email"])
 
         if user is None:
             return ScanError(message="User not found")
@@ -90,12 +110,7 @@ class BadgeScannerMutation:
             },
         )
 
-        return BadgeScan(
-            attendee=Attendee(
-                full_name=data["attendee_name"], email=data["attendee_email"]
-            ),
-            notes=scanned_badge.notes,
-        )
+        return BadgeScan.from_db(scanned_badge)
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def update_badge_scan(
@@ -111,7 +126,4 @@ class BadgeScannerMutation:
         badge_scan.notes = input.notes
         badge_scan.save()
 
-        return BadgeScan(
-            attendee=Attendee(full_name="TODO", email="TODO"),
-            notes=badge_scan.notes,
-        )
+        return BadgeScan.from_db(badge_scan)
