@@ -97,9 +97,10 @@ export const Countdown = ({
         />
       )}
       <div
-        className={clsx("grid grid-cols-2 border-3 border-black divide-x-3", {
-          ...getBackgroundClasses(background),
-        })}
+        className={clsx(
+          "grid grid-cols-2 border-3 border-black divide-x-3",
+          getBackgroundClasses(background)
+        )}
       >
         {boxes.map(({ value, label }, i) => (
           <CountdownBox key={i} value={value} label={label} />

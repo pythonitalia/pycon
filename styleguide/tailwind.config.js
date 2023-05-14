@@ -98,6 +98,10 @@ module.exports= {
         light: '#D75353',
         DEFAULT: '#D75353',
       },
+      error: {
+        light: '#D75353',
+        DEFAULT: '#D75353',
+      },
       success: {
         light: '#33BC8B',
         DEFAULT: '#33BC8B',

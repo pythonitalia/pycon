@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Text } from "../text";
 import { Action } from "./types";
 import { getIcon } from "../icons/icons";
-import { getBackgroundClasses } from "../colors-utils";
+import { getBackgroundClasses, getHoverBackgroundColor } from "../colors-utils";
 
 type ActionProps = Action & {
   className?: string;
@@ -16,6 +16,7 @@ export const ActionItem = ({
   link,
   icon,
   background = "cream",
+  hoverBackground = "green",
 }: ActionProps) => {
   const Component = link ? "a" : "div";
   const [widths, setWidths] = useState<{
@@ -113,8 +114,8 @@ export const ActionItem = ({
         className,
         getBackgroundClasses(background),
         "navbar-actionitem",
+        icon !== "close" ? getHoverBackgroundColor(hoverBackground) : "",
         {
-          "hover:bg-green": icon !== "close",
           "hover:bg-coral": icon === "close",
         }
       )}
@@ -139,13 +140,11 @@ export const ActionItem = ({
         <Text
           size={1}
           weight="strong"
-          className={clsx(
-            "ml-[52px] absolute navbar-actionitem-text whitespace-nowrap",
-            {
-              "visible opacity-100": isHovering,
-              "invisible opacity-0": !isHovering,
-            }
-          )}
+          noWrap
+          className={clsx("ml-[52px] absolute navbar-actionitem-text", {
+            "opacity-100": isHovering,
+            "opacity-0": !isHovering,
+          })}
           ref={textElement}
         >
           {text}

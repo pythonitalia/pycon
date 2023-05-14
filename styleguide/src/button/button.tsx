@@ -35,6 +35,7 @@ export const Button = ({
       disabled={disabled}
       className={clsx(
         "inline-flex items-center uppercase select-none border-black border cursor-pointer transition-colors",
+        background ? getBackgroundClasses(background) : "",
         {
           "opacity-30": disabled,
           // primary
@@ -44,7 +45,6 @@ export const Button = ({
           // secondary
           "bg-milk": role === "primary" && !background,
           "bg-cream": (role === "alert" || role === "secondary") && !background,
-          ...(background ? getBackgroundClasses(background) : {}),
 
           "border-black": role !== "alert",
           "border-red": role === "alert",

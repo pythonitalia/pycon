@@ -32,9 +32,7 @@ export const LayoutContent = ({
 }: Props) => {
   return (
     <Component
-      className={clsx({
-        ...getBackgroundClasses(background),
-
+      className={clsx(getBackgroundClasses(background), {
         "hidden lg:block": showFrom === "desktop",
         "hidden md:block": showFrom === "tablet",
 

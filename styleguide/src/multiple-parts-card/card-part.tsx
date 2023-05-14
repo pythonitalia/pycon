@@ -64,27 +64,30 @@ export const CardPart = ({
 
   return (
     <div
-      className={clsx("overflow-hidden transition-all", {
-        ...getBackgroundClasses(background),
-        ...getHoverBackgroundColor(hoverColor),
+      className={clsx(
+        "overflow-hidden transition-all",
+        getHoverBackgroundColor(hoverColor),
+        {
+          ...getBackgroundClasses(background),
 
-        "text-right": contentAlign === "right",
-        "text-left": contentAlign === "left",
-        "text-center": contentAlign === "center",
+          "text-right": contentAlign === "right",
+          "text-left": contentAlign === "left",
+          "text-center": contentAlign === "center",
 
-        "py-4 lg:py-6": (!canBeOpened || open) && size === "large",
-        "py-4": (!canBeOpened || open) && size === "small",
+          "py-4 lg:py-6": (!canBeOpened || open) && size === "large",
+          "py-4": (!canBeOpened || open) && size === "small",
 
-        "px-4 lg:px-6": size === "large",
-        "px-4": size === "small",
+          "px-4 lg:px-6": size === "large",
+          "px-4": size === "small",
 
-        "h-0 py-0 -mb-0.6": canBeOpened && !open,
+          "h-0 py-0 -mb-0.6": canBeOpened && !open,
 
-        "cursor-pointer": isClickToExpandElement,
+          "cursor-pointer": isClickToExpandElement,
 
-        "h-full": fullHeight,
-        "shrink-0": !shrink,
-      })}
+          "h-full": fullHeight,
+          "shrink-0": !shrink,
+        }
+      )}
       onClick={onToggleExpand}
       data-expand-own-id={id}
     >
@@ -184,22 +187,24 @@ const SideIcon = ({
 
   return (
     <div
-      className={clsx("inline-flex items-center justify-center", {
-        "border-r": side === "left",
-        "ml-auto border-l": side === "right",
+      className={clsx(
+        "inline-flex items-center justify-center",
+        {
+          "border-r": side === "left",
+          "ml-auto border-l": side === "right",
 
-        "-m-4 lg:-m-6": side === "left" && containerSize === "large",
-        "-m-4": side === "left" && containerSize === "small",
+          "-m-4 lg:-m-6": side === "left" && containerSize === "large",
+          "-m-4": side === "left" && containerSize === "small",
 
-        "-mr-4 lg:-mr-6 -my-4 lg:-my-6":
-          side === "right" && containerSize === "large",
-        "-mr-4 -my-4": side === "right" && containerSize === "small",
+          "-mr-4 lg:-mr-6 -my-4 lg:-my-6":
+            side === "right" && containerSize === "large",
+          "-mr-4 -my-4": side === "right" && containerSize === "small",
 
-        "p-4 lg:p-6": size === "large",
-        "p-4": size === "small",
-
-        ...getBackgroundClasses(iconBackground),
-      })}
+          "p-4 lg:p-6": size === "large",
+          "p-4": size === "small",
+        },
+        getBackgroundClasses(iconBackground)
+      )}
     >
       <div
         className={clsx({

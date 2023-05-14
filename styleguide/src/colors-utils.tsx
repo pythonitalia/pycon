@@ -1,59 +1,109 @@
 import { Color } from "./types";
 
 export const getBackgroundClasses = (background: Color) => {
-  return {
-    "bg-coral": background === "coral",
-    "bg-caramel": background === "caramel",
-    "bg-cream": background === "cream",
-    "bg-yellow": background === "yellow",
-    "bg-green": background === "green",
-    "bg-purple": background === "purple",
-    "bg-pink": background === "pink",
-    "bg-blue": background === "blue",
-    "bg-red": background === "red",
-    "bg-success": background === "success",
-    "bg-warning": background === "warning",
-    "bg-neutral": background === "neutral",
-    "bg-error": background === "error",
-    "bg-black": background === "black",
-    "bg-grey": background === "grey",
-    "bg-grey-900": background === "grey-900",
-    "bg-grey-700": background === "grey-700",
-    "bg-grey-500": background === "grey-500",
-    "bg-grey-250": background === "grey-250",
-    "bg-grey-100": background === "grey-100",
-    "bg-grey-50": background === "grey-50",
-    "bg-white": background === "white",
-    "bg-milk": background === "milk",
-  };
+  switch (background) {
+    case "coral":
+      return "bg-coral";
+    case "caramel":
+      return "bg-caramel";
+    case "cream":
+      return "bg-cream";
+    case "yellow":
+      return "bg-yellow";
+    case "green":
+      return "bg-green";
+    case "purple":
+      return "bg-purple";
+    case "pink":
+      return "bg-pink";
+    case "blue":
+      return "bg-blue";
+    case "red":
+      return "bg-red";
+    case "success":
+      return "bg-success";
+    case "warning":
+      return "bg-warning";
+    case "neutral":
+      return "bg-neutral";
+    case "error":
+      return "bg-error";
+    case "black":
+      return "bg-black";
+    case "grey":
+      return "bg-grey";
+    case "grey-900":
+      return "bg-grey-900";
+    case "grey-700":
+      return "bg-grey-700";
+    case "grey-500":
+      return "bg-grey-500";
+    case "grey-250":
+      return "bg-grey-250";
+    case "grey-100":
+      return "bg-grey-100";
+    case "grey-50":
+      return "bg-grey-50";
+    case "white":
+      return "bg-white";
+    case "milk":
+      return "bg-milk";
+    default:
+      return ""
+  }
 };
 
 export const getHoverBackgroundColor = (background?: Color | "none") => {
-  return {
-    "hover:bg-coral": background === "coral",
-    "hover:bg-caramel": background === "caramel",
-    "hover:bg-cream": background === "cream",
-    "hover:bg-yellow": background === "yellow",
-    "hover:bg-green": background === "green",
-    "hover:bg-purple": background === "purple",
-    "hover:bg-pink": background === "pink",
-    "hover:bg-blue": background === "blue",
-    "hover:bg-red": background === "red",
-    "hover:bg-success": background === "success",
-    "hover:bg-warning": background === "warning",
-    "hover:bg-neutral": background === "neutral",
-    "hover:bg-error": background === "error",
-    "hover:bg-black": background === "black",
-    "hover:bg-grey": background === "grey",
-    "hover:bg-grey-900": background === "grey-900",
-    "hover:bg-grey-700": background === "grey-700",
-    "hover:bg-grey-500": background === "grey-500",
-    "hover:bg-grey-250": background === "grey-250",
-    "hover:bg-grey-100": background === "grey-100",
-    "hover:bg-grey-50": background === "grey-50",
-    "hover:bg-white": background === "white",
-    "hover:bg-milk": background === "milk",
-  };
+  switch (background) {
+    case "coral":
+      return "hover:bg-coral";
+    case "caramel":
+      return "hover:bg-caramel";
+    case "cream":
+      return "hover:bg-cream";
+    case "yellow":
+      return "hover:bg-yellow";
+    case "green":
+      return "hover:bg-green";
+    case "purple":
+      return "hover:bg-purple";
+    case "pink":
+      return "hover:bg-pink";
+    case "blue":
+      return "hover:bg-blue";
+    case "red":
+      return "hover:bg-red";
+    case "success":
+      return "hover:bg-success";
+    case "warning":
+      return "hover:bg-warning";
+    case "neutral":
+      return "hover:bg-neutral";
+    case "error":
+      return "hover:bg-error";
+    case "black":
+      return "hover:bg-black";
+    case "grey":
+      return "hover:bg-grey";
+    case "grey-900":
+      return "hover:bg-grey-900";
+    case "grey-700":
+      return "hover:bg-grey-700";
+    case "grey-500":
+      return "hover:bg-grey-500";
+    case "grey-250":
+      return "hover:bg-grey-250";
+    case "grey-100":
+      return "hover:bg-grey-100";
+    case "grey-50":
+      return "hover:bg-grey-50";
+    case "white":
+      return "hover:bg-white";
+    case "milk":
+      return "hover:bg-milk";
+    default:
+      return "";
+  }
 };
 
 export const getStyleClassesTextColor = (color: Color | "none" | "default") => {

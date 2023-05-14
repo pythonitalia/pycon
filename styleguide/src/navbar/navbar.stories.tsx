@@ -13,7 +13,8 @@ export const Standard = (props) => (
       {
         text: "Dashboard",
         icon: "user",
-        background: "red",
+        background: "error",
+        hoverBackground: "error",
       },
     ]}
     mainLinks={[

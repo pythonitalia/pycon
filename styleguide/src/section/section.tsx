@@ -99,11 +99,7 @@ export const Section = ({
   const [contentCols, illustrationCols] = getCols(illustration);
 
   return (
-    <div
-      className={clsx({
-        ...getBackgroundClasses(background),
-      })}
-    >
+    <div className={clsx(getBackgroundClasses(background))}>
       <Wrapper className="relative" {...wrapperProps}>
         <Grid
           cols={12}

@@ -31,9 +31,7 @@ export const Avatar = ({
         <div
           className={clsx(
             "w-full h-full rounded-full border-1 flex items-center justify-center",
-            {
-              ...getBackgroundClasses(letterBackgroundColor),
-            }
+            getBackgroundClasses(letterBackgroundColor)
           )}
         >
           <Text weight="strong" size="label3">
