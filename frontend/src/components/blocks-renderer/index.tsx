@@ -20,18 +20,18 @@ type Registry = {
 };
 
 const REGISTRY: Registry = {
-  TextSection: TextSection,
-  CMSMap: Map,
-  SliderCardsSection,
-  HomeIntroSection,
-  SchedulePreviewSection,
-  KeynotersSection,
-  SponsorsSection,
-  SocialsSection,
-  SpecialGuestSection,
-  InformationSection,
-  NewsGridSection,
-  CheckoutSection,
+  // TextSection: TextSection,
+  // CMSMap: Map,
+  // SliderCardsSection,
+  // HomeIntroSection,
+  // SchedulePreviewSection,
+  // KeynotersSection,
+  // SponsorsSection,
+  // SocialsSection,
+  // SpecialGuestSection,
+  // InformationSection,
+  // NewsGridSection,
+  // CheckoutSection,
 };
 
 type Props = {

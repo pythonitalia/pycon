@@ -6,6 +6,7 @@ module.exports = {
   ...tailwindConfig,
   content: [
     "./src/**/*.{js,ts,jsx,tsx}",
+    "./app/**/*.{js,ts,jsx,tsx}",
     "./node_modules/@python-italia/pycon-styleguide/**/*.{js,ts,jsx,tsx}",
   ],
 };

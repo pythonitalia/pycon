@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Footer as FooterStyleguide,
   Heading,
@@ -6,9 +8,9 @@ import {
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 
-import { useCurrentLanguage } from "~/locale/context";
 import { useFooterQuery } from "~/types";
 
 import { FooterLogo } from "../icons/footer-logo";
@@ -21,9 +23,9 @@ export const Footer = () => {
       code: process.env.conferenceCode,
     },
   });
-  const { pathname } = useRouter();
+  const pathname = usePathname();
 
-  const language = useCurrentLanguage();
+  const language = "en";
 
   const openNewsletter = () => {
     openNewsletterModal(true);

@@ -1,4 +1,15 @@
-import { ApolloClient, Operation } from "@apollo/client/core";
+import {
+  ApolloClient,
+  ApolloLink,
+  HttpLink,
+  SuspenseCache,
+} from "@apollo/client";
+import { Operation } from "@apollo/client/core";
+import {
+  ApolloNextAppProvider,
+  NextSSRInMemoryCache,
+  SSRMultipartLink,
+} from "@apollo/experimental-nextjs-app-support/ssr";
 import merge from "deepmerge";
 import { DefinitionNode } from "graphql";
 
@@ -17,6 +28,25 @@ export const getQueryType = (operation: Operation): string | undefined => {
     Boolean(definition.operation),
   )?.operation;
   return queryType;
+};
+
+export const makeApolloClient = () => {
+  const httpLink = new HttpLink({
+    uri: process.env.API_URL,
+  });
+
+  return new ApolloClient({
+    cache: new NextSSRInMemoryCache(),
+    link:
+      typeof window === "undefined"
+        ? ApolloLink.from([
+            new SSRMultipartLink({
+              stripDefer: true,
+            }),
+            httpLink,
+          ])
+        : httpLink,
+  });
 };
 
 let cachedClient: ApolloClient<any> | null = null;

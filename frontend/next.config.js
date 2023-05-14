@@ -13,11 +13,11 @@ const {
 } = process.env;
 
 module.exports = withSentryConfig({
-  i18n: {
-    locales: ["default", "en", "it"],
-    defaultLocale: "default",
-    localeDetection: false,
-  },
+  // i18n: {
+  //   locales: ["default", "en", "it"],
+  //   defaultLocale: "default",
+  //   localeDetection: false,
+  // },
   trailingSlash: false,
   async headers() {
     return [

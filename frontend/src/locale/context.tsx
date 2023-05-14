@@ -1,8 +1,8 @@
 import React from "react";
 
 import cookies from "next-cookies";
-import { useRouter } from "next/router";
 
+// import { useRouter } from "next/navigation";
 import { Language } from "~/locale/languages";
 
 export const LocaleProvider = ({
@@ -23,6 +23,7 @@ export const LocaleProvider = ({
 };
 
 export const useCurrentLanguage = () => {
-  const { locale } = useRouter();
-  return locale as Language;
+  // const { locale } = useRouter();
+  // return locale as Language;
+  return "en";
 };

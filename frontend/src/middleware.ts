@@ -20,28 +20,34 @@ const handleLocale = (req: NextRequest) => {
 
   const url = req.nextUrl.clone();
   url.pathname = `${locale}${url.pathname}`;
+  console.log("redirect to:", url);
 
   return NextResponse.redirect(url);
 };
 
 export async function middleware(req: NextRequest) {
   const isLoggedIn = req.cookies.has("identity_v2");
+  const pathname = req.nextUrl.pathname;
 
   const shouldHandleLocale =
-    !PUBLIC_FILE.test(req.nextUrl.pathname) &&
-    !req.nextUrl.pathname.includes("/api/") &&
-    !req.nextUrl.pathname.includes("/admin") &&
-    !req.nextUrl.pathname.includes("/graphql") &&
-    !req.nextUrl.pathname.includes("/_next/image") &&
-    req.nextUrl.locale === "default";
+    !PUBLIC_FILE.test(pathname) &&
+    !pathname.includes("/api/") &&
+    !pathname.includes("/admin") &&
+    !pathname.includes("/graphql") &&
+    !pathname.includes("/_next/image") &&
+    VALID_LOCALES.every(
+      (locale) =>
+        !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`,
+    );
 
   if (shouldHandleLocale) {
+    console.log("pathname", pathname);
     return handleLocale(req);
   }
 
-  if (LOGIN_REDIRECT_URL.includes(req.nextUrl.pathname) && !isLoggedIn) {
+  if (LOGIN_REDIRECT_URL.includes(pathname) && !isLoggedIn) {
     const url = req.nextUrl.clone();
-    url.search = `?next=${req.nextUrl.pathname}`;
+    url.search = `?next=${pathname}`;
     url.pathname = `/login`;
     return NextResponse.redirect(url);
   }

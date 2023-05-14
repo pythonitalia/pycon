@@ -1,16 +1,11 @@
-/** @jsxRuntime classic */
+"use client";
 
-/** @jsx jsx */
 import { NavBar } from "@python-italia/pycon-styleguide";
 import { Action } from "@python-italia/pycon-styleguide/dist/navbar/types";
 import { useEffect, useState } from "react";
-import { jsx } from "theme-ui";
-
-import { useRouter } from "next/router";
 
 import { useLoginState } from "~/components/profile/hooks";
 import { getTranslatedMessage } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
 import { useHeaderQuery } from "~/types";
 
 import { createHref } from "../link";
@@ -18,14 +13,14 @@ import { Logo, MobileLogo } from "../logo";
 
 export const Header = () => {
   const [isReady, setIsReady] = useState(false);
-  const [loggedIn] = useLoginState();
-  const language = useCurrentLanguage();
+  // const [loggedIn] = useLoginState();
+  const loggedIn = false;
+  const language = "en";
   const { data } = useHeaderQuery({
     variables: {
       code: process.env.conferenceCode!,
     },
   });
-  const { route, query } = useRouter();
 
   const actions: Action[] = [
     {
@@ -64,8 +59,8 @@ export const Header = () => {
   const secondaryLinks = programMenu?.links ?? [];
 
   const languageSwitchHref = createHref({
-    path: route,
-    params: query,
+    path: "route",
+    params: {},
     locale: language === "it" ? "en" : "it",
     external: false,
   });
