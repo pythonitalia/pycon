@@ -18,6 +18,8 @@ export const messages = {
 
     "profile.tickets.noDetails": "Have fun! 🍻",
 
+    "header.streaming": "Watch live",
+
     "streaming.roomName": "Room {name}",
     "streaming.eventName": "Current: {name}",
     "streaming.noStreaming":
@@ -1898,6 +1900,7 @@ Affrettati a comprare il biglietto!`,
     "streaming.eventName": "In corso: {name}",
     "streaming.noStreaming":
       "La conferenza non è attualmente live, perchè non dai uno sguardo al nostro account YouTube?",
+    "header.streaming": "Guarda live",
   },
 };
 

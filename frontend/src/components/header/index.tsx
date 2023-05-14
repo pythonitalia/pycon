@@ -27,22 +27,6 @@ export const Header = () => {
   });
   const { route, query } = useRouter();
 
-  const actions: Action[] = [
-    {
-      text: getTranslatedMessage("header.tickets", language),
-      icon: "tickets",
-      link: "/tickets",
-    },
-    {
-      text:
-        isReady && loggedIn
-          ? getTranslatedMessage("header.dashboard", language)
-          : getTranslatedMessage("header.login", language),
-      icon: "user",
-      link: isReady && loggedIn ? "/profile" : "/login",
-    },
-  ];
-
   useEffect(() => {
     setIsReady(true);
   }, []);
@@ -53,8 +37,33 @@ export const Header = () => {
       programMenuEn,
       conferenceMenuIt,
       programMenuIt,
+      isRunning,
     },
   } = data || { conference: {} };
+
+  const actions: Action[] = [
+    isRunning
+      ? {
+          text: getTranslatedMessage("header.streaming", language),
+          icon: "live-circle",
+          link: "/streaming",
+          background: "red",
+          hoverBackground: "red",
+        }
+      : {
+          text: getTranslatedMessage("header.tickets", language),
+          icon: "tickets",
+          link: "/tickets",
+        },
+    {
+      text:
+        isReady && loggedIn
+          ? getTranslatedMessage("header.dashboard", language)
+          : getTranslatedMessage("header.login", language),
+      icon: "user",
+      link: isReady && loggedIn ? "/profile" : "/login",
+    },
+  ];
 
   const conferenceMenu =
     language === "it" ? conferenceMenuIt : conferenceMenuEn;
