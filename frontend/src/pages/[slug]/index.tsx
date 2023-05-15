@@ -14,7 +14,7 @@ import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import { GenericPage, queryAllPages, queryPage, usePageQuery } from "~/types";
 
-export const Page = () => {
+export const FrontendPage = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
   const language = useCurrentLanguage();
@@ -109,4 +109,4 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export default Page;
+export default FrontendPage;
