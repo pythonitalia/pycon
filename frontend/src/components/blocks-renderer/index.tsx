@@ -8,6 +8,7 @@ import { CheckoutSection } from "../blocks/checkout-section";
 import { HomeIntroSection } from "../blocks/home-intro-section";
 import { InformationSection } from "../blocks/information-section";
 import { KeynotersSection } from "../blocks/keynotes-section";
+import { LiveStreamingSection } from "../blocks/live-streaming-section";
 import { NewsGridSection } from "../blocks/news-grid-section";
 import { SchedulePreviewSection } from "../blocks/schedule-preview-section";
 import { SliderCardsSection } from "../blocks/slider-cards-section";
@@ -20,7 +21,7 @@ type Registry = {
 };
 
 const REGISTRY: Registry = {
-  TextSection: TextSection,
+  TextSection,
   CMSMap: Map,
   SliderCardsSection,
   HomeIntroSection,
@@ -32,6 +33,7 @@ const REGISTRY: Registry = {
   InformationSection,
   NewsGridSection,
   CheckoutSection,
+  LiveStreamingSection,
 };
 
 type Props = {
