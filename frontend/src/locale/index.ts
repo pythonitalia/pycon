@@ -1899,7 +1899,7 @@ Affrettati a comprare il biglietto!`,
     "streaming.roomName": "Stanza {name}",
     "streaming.eventName": "In corso: {name}",
     "streaming.noStreaming":
-      "La conferenza non è attualmente live, perchè non dai uno sguardo al nostro account YouTube?",
+      "La conferenza non è attualmente live, perchè non dai uno sguardo al nostro canale YouTube?",
     "header.streaming": "Guarda live",
   },
 };
