@@ -1,37 +1,31 @@
 import {
   LayoutContent,
   ScrollDownArrowBar,
+  HeroIllustration,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
-
-import { Landscape } from "./landscape";
-import { LandscapeNight } from "./landscape-night";
 
 type Props = {
   cycle: "day" | "night";
 };
 
+const Illustration = React.memo(HeroIllustration);
+
 export const HomepageHero = ({ cycle }: Props) => {
-  const Illustration = cycle === "day" ? Landscape : LandscapeNight;
   return (
-    <div
-      style={{
-        marginTop: -158,
-        position: "relative",
-      }}
-    >
-      <Illustration
-        style={{
-          left: 0,
-          top: 0,
-          height: "100vh",
-          width: "100%",
-        }}
-      />
+    <div className="h-screen relative mt-[-158px]">
+      <div className="h-[calc(100vh-60px)]">
+        <Illustration cycle={cycle} />
+      </div>
 
       <LayoutContent
         showFrom="desktop"
-        style={{ position: "absolute", bottom: "-1px", width: "100%" }}
+        style={{
+          position: "absolute",
+          bottom: "-1px",
+          width: "100%",
+          zIndex: 100,
+        }}
       >
         <ScrollDownArrowBar />
       </LayoutContent>
