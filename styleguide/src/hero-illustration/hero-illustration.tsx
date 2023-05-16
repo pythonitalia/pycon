@@ -857,7 +857,7 @@ export const HeroIllustration = ({ cycle }: { cycle: "day" | "night" }) => {
       {
         opacity: [0, 1],
       },
-      { duration: 0.5, delay: 0.5 }
+      { duration: 0.3, delay: 0.1 }
     );
   };
 
@@ -887,7 +887,11 @@ export const HeroIllustration = ({ cycle }: { cycle: "day" | "night" }) => {
     await Promise.all([
       animate(snakeY, 600, { duration: 0.5, ease: "linear" }),
       animate(snakeTailY, 600, { duration: 0.5, ease: "linear" }),
-      animate(".cathedral", { y: 600 }, { duration: 0.5, ease: "linear" }),
+      animate(
+        ".cathedral",
+        { y: 600, x: "-50%" },
+        { duration: 0.5, ease: "linear" }
+      ),
     ]);
 
     nightTailOpacity.set(isNight ? 0 : 1);
@@ -897,7 +901,11 @@ export const HeroIllustration = ({ cycle }: { cycle: "day" | "night" }) => {
 
     await Promise.all([
       animate(snakeY, -40, { duration: 0.5, ease: "linear" }),
-      animate(".cathedral", { y: 0 }, { duration: 0.5, ease: "linear" }),
+      animate(
+        ".cathedral",
+        { y: 0, x: "-50%" },
+        { duration: 0.5, ease: "linear" }
+      ),
       isNight && animate(snakeTailY, 100, { duration: 0.5, ease: "linear" }),
     ]);
   };
@@ -941,7 +949,12 @@ export const HeroIllustration = ({ cycle }: { cycle: "day" | "night" }) => {
           <Hills4 isNight={isNight} />
         </div>
 
-        <div className="landmark cathedral absolute -bottom-full min-w-full flex justify-center z-20">
+        <motion.div
+          className="landmark cathedral absolute -bottom-full min-w-full flex justify-center z-20 left-1/2 -translate-x-1/2"
+          animate={{
+            x: "-50%",
+          }}
+        >
           <motion.div
             className="absolute z-10"
             style={{
@@ -966,7 +979,7 @@ export const HeroIllustration = ({ cycle }: { cycle: "day" | "night" }) => {
               <NightTail />
             </div>
           </motion.div>
-        </div>
+        </motion.div>
 
         <div className="cloud absolute bottom-[700px] -right-full z-10">
           <Cloud />
