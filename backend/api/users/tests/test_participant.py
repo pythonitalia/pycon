@@ -21,7 +21,7 @@ def test_user_participant(user, participant_factory):
         info=None, conference=participant.conference.code
     )
 
-    assert participant_type.id == participant.id
+    assert participant_type.id == participant.hashid
     assert participant_type.bio == "biiiiio"
     assert (
         participant_type.photo

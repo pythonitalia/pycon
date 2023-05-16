@@ -1,8 +1,8 @@
-query Streaming($code: String!) {
+query LiveStreamingSection($code: String!) {
   conference(code: $code) {
     id
     timezone
-    days {
+    currentDay {
       day
 
       runningEvents {
@@ -10,6 +10,7 @@ query Streaming($code: String!) {
         slidoUrl
         duration
         title
+        type
         rooms {
           id
           name

@@ -39,3 +39,16 @@ resource "aws_security_group_rule" "allow_redis" {
   security_group_id        = aws_security_group.instance.id
   source_security_group_id = aws_security_group.instance.id
 }
+
+data "aws_security_group" "lambda" {
+  name = "pythonit-lambda-security-group"
+}
+
+resource "aws_security_group_rule" "allow_redis_from_lambda" {
+  type                     = "ingress"
+  from_port                = 6379
+  to_port                  = 6379
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.instance.id
+  source_security_group_id = data.aws_security_group.lambda.id
+}

@@ -1,0 +1,6 @@
+#import "../../fragments/conference-products.graphql"
+query CheckoutSection($conference: String!, $language: String!) {
+  conference(code: $conference) {
+    ...ConferenceProducts
+  }
+}

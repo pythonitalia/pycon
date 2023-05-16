@@ -37,7 +37,7 @@ export const MyTicketsProfilePageHandler = () => {
         <Section>
           <Grid cols={3} mdCols={2} equalHeight>
             {tickets.map((ticket) => (
-              <TicketCard key={ticket.id} ticket={ticket} />
+              <TicketCard key={ticket.id} ticket={ticket} userEmail={email} />
             ))}
           </Grid>
         </Section>

@@ -60,7 +60,9 @@ export const CustomizeTicketModal = ({
   const taglineAnswer = formState.values.answers[taglineQuestion.id];
 
   const pronounsQuestion = ticket.item.questions.find(
-    (question) => question.name.toLowerCase() === "pronouns",
+    (question) =>
+      question.name.toLowerCase() === "pronouns" ||
+      question.name.toLowerCase() === "pronomi",
   );
   const pronounsAnswer = pronounsQuestion.options.find(
     (option) => option.id === formState.values.answers[pronounsQuestion.id],
@@ -122,6 +124,8 @@ export const CustomizeTicketModal = ({
               pronouns={pronounsAnswer}
               tagline={taglineAnswer}
               cutLines={false}
+              role={ticket.role}
+              hashedTicketId={ticket.hashid}
             />
           </div>
           <div>

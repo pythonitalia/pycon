@@ -63,6 +63,8 @@ INSTALLED_APPS = [
     "reviews.apps.ReviewsConfig",
     "markdownify.apps.MarkdownifyConfig",
     "imagekit",
+    "badge_scanner",
+    "badges.apps.BadgesConfig",
 ]
 
 MIDDLEWARE = [
@@ -220,3 +222,7 @@ PLAIN_API = env("PLAIN_API", default="")
 PLAIN_API_TOKEN = env("PLAIN_API_TOKEN", default="")
 
 IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "imagekit.cachefiles.strategies.Optimistic"
+
+CACHES = {
+    "default": env.cache(default="locmemcache://snowflake"),
+}

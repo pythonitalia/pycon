@@ -25,12 +25,11 @@ export const CheckoutBar = ({ products, hotelRooms, onCheckout }: Props) => {
   );
 
   const totalAmount = calculateTotalAmount(state, productsById, hotelRoomsById);
+  const moneyFormatter = useMoneyFormatter();
 
   if (totalAmount === 0) {
     return null;
   }
-
-  const moneyFormatter = useMoneyFormatter();
 
   return (
     <BottomBar

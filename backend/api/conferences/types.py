@@ -112,9 +112,18 @@ class ScheduleSlot:
     id: strawberry.ID
 
     @strawberry.field
+    def is_live(self) -> bool:
+        with timezone.override(self.day.conference.timezone):
+            now = timezone.localtime(timezone.now())
+            end = (
+                datetime.combine(now, self.hour) + timedelta(minutes=self.duration)
+            ).time()
+            return self.hour < now.time() < end
+
+    @strawberry.field
     def end_hour(self, info) -> time:
         return (
-            datetime.combine(datetime.today(), self.hour)
+            datetime.combine(timezone.datetime.today(), self.hour)
             + timedelta(minutes=self.duration)
         ).time()
 
@@ -355,6 +364,12 @@ class Conference:
     @strawberry.field
     def days(self, info) -> List[Day]:
         return self.days.order_by("day").prefetch_related("slots", "slots__items").all()
+
+    @strawberry.field
+    def current_day(self, info) -> Optional[Day]:
+        start = timezone.now().replace(hour=0, minute=0, second=0)
+        end = start.replace(hour=23, minute=59, second=59)
+        return self.days.filter(day__gte=start, day__lte=end).first()
 
     @strawberry.field
     def is_running(self, info) -> bool:

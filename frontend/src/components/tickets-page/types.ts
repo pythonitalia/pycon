@@ -40,6 +40,7 @@ export type ProductState = {
   answers: { [id: string]: string };
   attendeeName: string;
   attendeeEmail: string;
+  admission?: boolean;
   voucher?: Voucher | null;
   errors?: { [id: string]: string };
 };
@@ -66,10 +67,16 @@ export type OrderState = {
   selectedHotelRooms: SelectedHotelRooms;
   voucherCode: string;
   voucherUsed: boolean;
+  hasAdmissionTicket: boolean;
 };
 
 export type UpdateProductAction =
-  | { type: "incrementProduct"; id: string; variation?: string }
+  | {
+      type: "incrementProduct";
+      id: string;
+      variation?: string;
+      admission?: boolean;
+    }
   | { type: "decrementProduct"; id: string; variation?: string };
 
 export type UpdateHotelRoomAction =

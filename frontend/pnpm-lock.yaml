@@ -18,7 +18,7 @@ specifiers:
   '@mdx-js/loader': ^1.6.19
   '@next/mdx': ^10.0.0
   '@python-italia/eslint-config': ^1.0.13
-  '@python-italia/pycon-styleguide': 0.1.172
+  '@python-italia/pycon-styleguide': 0.1.177
   '@sentry/nextjs': ^7.38.0
   '@tailwindcss/typography': ^0.5.9
   '@testing-library/dom': ^8.1.0
@@ -43,6 +43,7 @@ specifiers:
   clsx: ^1.2.1
   concurrently: ^5.2.0
   date-fns: ^2.29.3
+  date-fns-tz: ^2.0.0
   deepmerge: ^4.2.2
   dotenv: ^16.0.3
   eslint-config-next: ^13.0.5
@@ -98,7 +99,7 @@ dependencies:
   '@graphql-codegen/typescript-react-apollo': 3.3.7_sy4knu3obj4ys7pjcqbyfxmqle
   '@mdx-js/loader': 1.6.22_react@18.2.0
   '@next/mdx': 10.2.3_@mdx-js+loader@1.6.22
-  '@python-italia/pycon-styleguide': 0.1.172_ygqkwb4gg3aean7xjfdauovyqq
+  '@python-italia/pycon-styleguide': 0.1.177_ygqkwb4gg3aean7xjfdauovyqq
   '@sentry/nextjs': 7.51.2_next@13.1.6+react@18.2.0
   '@theme-ui/core': 0.15.7_s2jwwd4ifzjofup7sguc5tked4
   '@theme-ui/css': 0.15.7_@emotion+react@11.11.0
@@ -110,6 +111,7 @@ dependencies:
   clsx: 1.2.1
   concurrently: 5.3.0
   date-fns: 2.30.0
+  date-fns-tz: 2.0.0_date-fns@2.30.0
   deepmerge: 4.3.1
   dotenv: 16.0.3
   eslint-config-next: 13.4.1_typescript@4.9.5
@@ -2466,15 +2468,15 @@ packages:
       - supports-color
     dev: true
 
-  /@python-italia/pycon-styleguide/0.1.172_ygqkwb4gg3aean7xjfdauovyqq:
-    resolution: {integrity: sha512-AYJa87kdhOhiudS1ZikVu3ZFm2iq0t+P+qR/R3053s/cvgvJwXkItyUw7AsNiol29DBJPtXIt+uIT0WJDRrb4g==}
+  /@python-italia/pycon-styleguide/0.1.177_ygqkwb4gg3aean7xjfdauovyqq:
+    resolution: {integrity: sha512-c8u+brXmMRnVDVlyTimtCCIsFu6bv6BHSBA7JlFaFDEdOV46yocUAZg6DEqOQ8XAsM9cbl6m7yamdLgat4RecQ==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
       clsx: 1.2.1
       date-fns: 2.30.0
-      framer-motion: 10.12.10_biqbaboplfbrettd7655fr4n2y
+      framer-motion: 10.12.12_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-intl: 6.4.2_j5ip3o3v6sktjzl5cxtjyfbuo4
@@ -4543,6 +4545,14 @@ packages:
     resolution: {integrity: sha512-8YnDaaf7N3k/q5HnTJVuzSyLETjoZjVmHc4AeKAzOvKHEFQKcn64OKBfzHYtE9zGjctNM7V9I0MfnUVLpi7M5g==}
     dev: false
 
+  /date-fns-tz/2.0.0_date-fns@2.30.0:
+    resolution: {integrity: sha512-OAtcLdB9vxSXTWHdT8b398ARImVwQMyjfYGkKD2zaGpHseG2UPHbHjXELReErZFxWdSLph3c2zOaaTyHfOhERQ==}
+    peerDependencies:
+      date-fns: '>=2.0.0'
+    dependencies:
+      date-fns: 2.30.0
+    dev: false
+
   /date-fns/2.30.0:
     resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
     engines: {node: '>=0.11'}
@@ -5682,6 +5692,24 @@ packages:
 
   /framer-motion/10.12.10_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-f/VkrpxfG4xSmBi105/NCfcTt219IgglQEUR0BsuFZAg+be6N3QAcujFyBEvBvbDOSP9Ccv6OMiaY0HFMnBoMA==}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      tslib: 2.5.0
+    optionalDependencies:
+      '@emotion/is-prop-valid': 0.8.8
+    dev: false
+
+  /framer-motion/10.12.12_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-DDCqp60U6hR7aUrXj/BXc/t0Sd/U4ep6w/NZQkw898K+u7s+Vv/P8yxq4WTNA86kU9QCsqOgn1Qhz2DpYK0Oag==}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0

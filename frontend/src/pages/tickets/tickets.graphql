@@ -1,57 +1,6 @@
+#import "../../fragments/conference-products.graphql"
 query Tickets($conference: String!, $language: String!) {
   conference(code: $conference) {
-    id
-    start
-    end
-    timeZone: timezone
-    pretixEventUrl
-
-    tickets(language: $language) {
-      id
-      language
-      name
-      description
-      defaultPrice
-      availableUntil
-      quantityLeft
-      soldOut
-      type
-      category
-      categoryInternalName
-      taxRate
-      admission
-
-      variations {
-        id
-        defaultPrice
-        value
-        soldOut
-      }
-
-      questions {
-        id
-        name
-        required
-        options {
-          id
-          name
-        }
-      }
-    }
-
-    hotelRooms {
-      id
-      name(language: $language)
-      description(language: $language)
-      price
-      isSoldOut
-      capacityLeft
-      availableBedLayouts {
-        id
-        name(language: $language)
-      }
-      checkInDates
-      checkOutDates
-    }
+    ...ConferenceProducts
   }
 }

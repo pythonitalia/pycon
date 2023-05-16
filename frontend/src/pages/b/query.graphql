@@ -1,0 +1,3 @@
+query TicketIdToUserHashid($ticketId: ID!, $conference: String!) {
+  ticketIdToUserHashid(ticketId: $ticketId, conferenceCode: $conference)
+}

@@ -6,6 +6,7 @@ from page.blocks.socials_section import SocialsSection
 from page.blocks.special_guest_section import SpecialGuestSection
 from page.blocks.information_section import InformationSection
 from news.blocks.news_grid_section import NewsGridSection
+from page.blocks.live_streaming_section import LiveStreamingSection
 from wagtail.models import Page
 from wagtail.admin.panels import FieldPanel
 
@@ -13,6 +14,7 @@ from wagtail.fields import StreamField
 
 from page.blocks.text_section import TextSection
 from page.blocks.slider_cards_section import SliderCardsSection
+from page.blocks.checkout_section import CheckoutSection
 from base.blocks.map import Map
 from wagtail import blocks
 
@@ -30,6 +32,8 @@ class BodyBlock(blocks.StreamBlock):
     special_guest_section = SpecialGuestSection()
     information_section = InformationSection()
     news_grid_section = NewsGridSection()
+    checkout_section = CheckoutSection()
+    live_streaming_section = LiveStreamingSection()
 
 
 class GenericPage(Page):

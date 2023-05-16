@@ -50,6 +50,10 @@ data "aws_acm_certificate" "cert" {
   provider = aws.us
 }
 
+data "aws_elasticache_cluster" "redis" {
+  cluster_id = "production-pretix"
+}
+
 module "lambda" {
   source = "../../components/application_lambda"
 
@@ -92,6 +96,7 @@ module "lambda" {
     AZURE_STORAGE_ACCOUNT_KEY                 = module.secrets.value.azure_storage_account_key
     PLAIN_API                                 = "https://core-api.uk.plain.com/graphql/v1"
     PLAIN_API_TOKEN                           = module.secrets.value.plain_api_token
+    CACHE_URL                                 = local.is_prod ? "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/8" : ""
   }
 }
 

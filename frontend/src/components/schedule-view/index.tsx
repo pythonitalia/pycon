@@ -9,6 +9,7 @@ import {
 } from "@python-italia/pycon-styleguide";
 import va from "@vercel/analytics";
 import { isAfter, isBefore, parseISO } from "date-fns";
+import { zonedTimeToUtc, format } from "date-fns-tz";
 import React, {
   Fragment,
   useCallback,
@@ -168,18 +169,25 @@ export const ScheduleView = ({
 
   useEffect(() => {
     const listener = () => {
-      if (!document.hidden) {
-        const liveSlot = findLiveSlot({ currentDay, slots: day.slots });
+      const liveSlot = findLiveSlot({ currentDay, slots: day.slots });
+      setLiveSlot(liveSlot);
+    };
 
-        if (liveSlot) {
-          setLiveSlot(liveSlot);
-        }
+    const updateTimer = setInterval(listener, 1000 * 60);
+    listener();
+    const visibilityListener = () => {
+      if (!document.hidden) {
+        listener();
       }
     };
-    document.addEventListener("visibilitychange", listener);
+    document.addEventListener("visibilitychange", visibilityListener);
 
     return () => {
-      document.removeEventListener("visibilitychange", listener);
+      if (updateTimer) {
+        clearInterval(updateTimer);
+      }
+
+      document.removeEventListener("visibilitychange", visibilityListener);
     };
   }, []);
 
@@ -539,8 +547,14 @@ export const findLiveSlot = ({
 }): Slot | undefined => {
   const now = new Date();
   return slots.find((slot) => {
-    const startHour = parseISO(`${currentDay}T${slot.hour}`);
-    const endHour = parseISO(`${currentDay}T${slot.endHour}`);
+    const startHour = zonedTimeToUtc(
+      parseISO(`${currentDay}T${slot.hour}`),
+      "Europe/Rome",
+    );
+    const endHour = zonedTimeToUtc(
+      parseISO(`${currentDay}T${slot.endHour}`),
+      "Europe/Rome",
+    );
 
     return isAfter(now, startHour) && isBefore(now, endHour);
   });
