@@ -1,4 +1,7 @@
-import { SnakeHead } from "@python-italia/pycon-styleguide/illustrations";
+import {
+  SnakeHead,
+  SnakeLongNeck,
+} from "@python-italia/pycon-styleguide/illustrations";
 import QRCode from "react-qr-code";
 
 import {
@@ -127,6 +130,7 @@ export const Badge = ({
             display: "flex",
             alignItems: "flex-end",
             justifyContent: "space-between",
+            marginRight: "25px",
           }}
         >
           <div
@@ -149,7 +153,10 @@ export const Badge = ({
             </div>
           )}
           {side === "back" && (
-            <SnakeHead className="w-[70px] top-[30px] relative" />
+            <div className="p-[2px] relative">
+              <div className="w-[70px] h-[70px] bg-white" />
+              <SnakeLongNeck className="w-[70px] top-[-35px] absolute" />
+            </div>
           )}
         </div>
       </div>
