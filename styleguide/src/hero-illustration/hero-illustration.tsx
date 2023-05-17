@@ -907,6 +907,7 @@ export const HeroIllustration = ({ cycle }: { cycle: "day" | "night" }) => {
         { duration: 0.5, ease: "linear" }
       ),
       isNight && animate(snakeTailY, 100, { duration: 0.5, ease: "linear" }),
+      !isNight && animate(cocktailX, 0, { duration: 0.5, delay: 0.6 }),
     ]);
   };
 
