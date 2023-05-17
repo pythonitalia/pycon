@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import { Badge } from "~/components/badge";
 
 const cmToPx = (cm: number) => cm * (96 / 2.54);
@@ -22,20 +24,25 @@ export const BADGE_INSIDE_WIDTH_PX = BADGE_WIDTH_PX - CUT_SPACE_PX;
 export const BADGE_INSIDE_HEIGHT_PX = BADGE_HEIGHT_PX - CUT_SPACE_PX;
 
 const BadgePage = () => {
-  // useEffect(() => {
-  //   document.body.classList.remove("bg-milk");
-  // }, []);
+  // name, pronouns, tagline, role, hashedTicketId
+  const [badgesData, setBadgesData] = useState([{}, {}, {}, {}]);
+  useEffect(() => {
+    document.body.classList.remove("bg-milk");
+    (window as any).setBadgeData = (badgeData) => {
+      setBadgesData(badgeData);
+    };
+  }, []);
   return (
     <div className="grid grid-cols-2 gap-3 w-full h-screen items-center justify-center justify-items-center">
-      <PageBadge />
-      <PageBadge />
-      <PageBadge />
-      <PageBadge />
+      <PageBadge {...badgesData[0]} />
+      <PageBadge {...badgesData[1]} />
+      <PageBadge {...badgesData[2]} />
+      <PageBadge {...badgesData[3]} />
     </div>
   );
 };
 
-const PageBadge = () => {
+const PageBadge = (props) => {
   return (
     <div
       style={{
@@ -45,7 +52,7 @@ const PageBadge = () => {
         fontFamily: '"GeneralSans-Variable"',
       }}
     >
-      <Badge />
+      <Badge {...props} />
     </div>
   );
 };

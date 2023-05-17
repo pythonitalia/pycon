@@ -1,3 +1,4 @@
+import { SnakeHead } from "@python-italia/pycon-styleguide/illustrations";
 import QRCode from "react-qr-code";
 
 import {
@@ -23,6 +24,7 @@ type Props = {
   name?: string;
   role?: ConferenceRole;
   hashedTicketId?: string;
+  side?: "front" | "back";
 };
 
 export const Badge = ({
@@ -32,6 +34,7 @@ export const Badge = ({
   tagline = "Example tagline",
   role = ConferenceRole.Attendee,
   hashedTicketId = "",
+  side = "front",
 }: Props) => {
   return (
     <div
@@ -136,13 +139,18 @@ export const Badge = ({
             {tagline}
           </div>
 
-          <div className="p-[2px] bg-white">
-            <QRCode
-              className="shrink-0"
-              value={`https://pycon.it/b/${hashedTicketId}`}
-              size={70}
-            />
-          </div>
+          {side === "front" && (
+            <div className="p-[2px] bg-white">
+              <QRCode
+                className="shrink-0"
+                value={`https://pycon.it/b/${hashedTicketId}`}
+                size={70}
+              />
+            </div>
+          )}
+          {side === "back" && (
+            <SnakeHead className="w-[70px] top-[26px] relative" />
+          )}
         </div>
       </div>
     </div>
