@@ -149,7 +149,7 @@ export const Badge = ({
             </div>
           )}
           {side === "back" && (
-            <SnakeHead className="w-[70px] top-[26px] relative" />
+            <SnakeHead className="w-[70px] top-[30px] relative" />
           )}
         </div>
       </div>
