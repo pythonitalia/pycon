@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import strawberry
 from enum import Enum
 from typing import Dict, List, Set
@@ -61,7 +63,7 @@ def speakers_user_ids(conference: Conference) -> Set[int]:
 
 
 def get_conference_roles_for_ticket_data(
-    conference: Conference, user_id: int, data: Dict
+    conference: Conference, user_id: int | None, data: Dict
 ) -> List[Role]:
     return _get_roles(
         conference=conference,
@@ -71,7 +73,7 @@ def get_conference_roles_for_ticket_data(
 
 
 def get_conference_roles_for_user(
-    conference: Conference, user_id: int, user_email: str
+    conference: Conference, user_id: int | None, user_email: str
 ) -> List[Role]:
     user_tickets = pretix.get_user_tickets(conference, user_email)
     admission_tickets = [
@@ -92,12 +94,16 @@ def get_conference_roles_for_user(
     )
 
 
-def _get_roles(conference: Conference, user_id: int, ticket: dict) -> List[Role]:
+def _get_roles(conference: Conference, user_id: int | None, ticket: dict) -> List[Role]:
     ticket_id = ticket["id"]
 
     # check if we have overrides for this ticket / user
+    filters = Q(order_position_id=ticket_id)
+    if user_id is not None:
+        filters |= Q(user_id=user_id)
+
     manual_role = AttendeeConferenceRole.objects.filter(
-        Q(order_position_id=ticket_id) | Q(user_id=user_id),
+        filters,
         conference=conference,
     ).first()
 
@@ -112,7 +118,9 @@ def _get_roles(conference: Conference, user_id: int, ticket: dict) -> List[Role]
     )
 
 
-def _calculate_roles(conference: Conference, user_id: int, ticket: dict) -> List[Role]:
+def _calculate_roles(
+    conference: Conference, user_id: int | None, ticket: dict
+) -> List[Role]:
     roles = [
         Role.ATTENDEE,
     ]
@@ -139,7 +147,7 @@ def _calculate_roles(conference: Conference, user_id: int, ticket: dict) -> List
     # so we check if there is a schedule item where they are a speaker
     # this has the effect of tagging non-speakers as speakers if their ticket
     # was purchased by a speaker (I know only one case of this happening right now)
-    user_is_in_schedule_item = user_id in speakers_user_ids(conference)
+    user_is_in_schedule_item = user_id and user_id in speakers_user_ids(conference)
     if Role.SPEAKER not in roles and user_is_in_schedule_item:
         roles.append(Role.SPEAKER)
 

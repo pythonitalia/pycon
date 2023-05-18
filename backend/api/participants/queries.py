@@ -71,7 +71,7 @@ def conference_role_for_ticket_data(
     ticket_data = json.loads(raw_ticket_data)
     attendee_email = ticket_data["attendee_email"]
     attendee_user = get_user_by_email(attendee_email)
-    user_id = attendee_user["id"]
+    user_id = attendee_user["id"] if attendee_user else None
 
     roles = get_conference_roles_for_ticket_data(
         conference,
