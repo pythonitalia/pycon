@@ -1,3 +1,4 @@
+import json
 from typing import Optional
 from django.conf import settings
 import strawberry
@@ -7,6 +8,8 @@ from api.participants.types import Participant
 from participants.models import Participant as ParticipantModel
 from api.context import Info
 from api.helpers.ids import decode_hashid, encode_hashid
+from api.permissions import HasTokenPermission
+from badges.roles import ConferenceRole, get_conference_roles_for_ticket_data
 from users.client import get_user_by_email
 from conferences.models import Conference
 
@@ -51,10 +54,39 @@ def ticket_id_to_user_hashid(
     return encode_hashid(int(user_id), salt=settings.USER_ID_HASH_SALT, min_length=6)
 
 
+# TODO: move this to a badge app :)
+@strawberry.type
+class TicketDataConferenceRole:
+    role: ConferenceRole
+    ticket_hashid: str
+
+
+@strawberry.type(permission_classes=[HasTokenPermission])
+def conference_role_for_ticket_data(
+    conference_code: str, raw_ticket_data: str
+) -> TicketDataConferenceRole:
+    conference = Conference.objects.filter(code=conference_code).first()
+    assert conference
+
+    ticket_data = json.loads(raw_ticket_data)
+    attendee_email = ticket_data["attendee_email"]
+    attendee_user = get_user_by_email(attendee_email)
+    user_id = attendee_user["id"]
+
+    roles = get_conference_roles_for_ticket_data(
+        conference,
+        user_id=user_id,
+        data=ticket_data,
+    )
+    return TicketDataConferenceRole(
+        role=roles[0],
+        ticket_hashid=encode_hashid(
+            ticket_data["id"],
+        ),
+    )
+
+
 ParticipantQueries = create_type(
     "ParticipantQueries",
-    (
-        participant,
-        ticket_id_to_user_hashid,
-    ),
+    (participant, ticket_id_to_user_hashid, conference_role_for_ticket_data),
 )

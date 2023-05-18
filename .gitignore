@@ -121,3 +121,8 @@ cms/static/
 cms/media/
 .venv
 .pdm.toml
+
+
+generated-badges/
+!generated-badges/.gitkeep
+badge-service/badges.zip
