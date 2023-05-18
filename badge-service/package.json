@@ -1,0 +1,17 @@
+{
+  "name": "badge-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "lodash.chunk": "^4.2.0",
+    "puppeteer": "^20.1.1"
+  }
+}
