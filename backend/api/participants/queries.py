@@ -61,7 +61,7 @@ class TicketDataConferenceRole:
     ticket_hashid: str
 
 
-@strawberry.type(permission_classes=[HasTokenPermission])
+@strawberry.field(permission_classes=[HasTokenPermission])
 def conference_role_for_ticket_data(
     conference_code: str, raw_ticket_data: str
 ) -> TicketDataConferenceRole:
