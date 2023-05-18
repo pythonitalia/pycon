@@ -154,7 +154,7 @@ export const Badge = ({
           )}
           {side === "back" && (
             <div className="p-[2px] relative">
-              <div className="w-[70px] h-[70px] bg-white" />
+              <div className="w-[70px] h-[70px]" />
               <SnakeLongNeck className="w-[70px] top-[-35px] absolute" />
             </div>
           )}
