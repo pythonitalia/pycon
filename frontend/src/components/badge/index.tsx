@@ -90,9 +90,10 @@ export const Badge = ({
             fontWeight: 400,
             color: "#FCE8DE",
             marginBottom: "10px",
+            opacity: pronouns ? 1 : 0,
           }}
         >
-          {pronouns}
+          {pronouns || "empty"}
         </div>
         <div
           style={{
@@ -130,7 +131,6 @@ export const Badge = ({
             display: "flex",
             alignItems: "flex-end",
             justifyContent: "space-between",
-            marginRight: "25px",
           }}
         >
           <div
@@ -138,6 +138,7 @@ export const Badge = ({
               fontSize: "11px",
               fontWeight: 400,
               color: "#FCE8DE",
+              marginRight: "25px",
             }}
           >
             {tagline}
@@ -154,7 +155,7 @@ export const Badge = ({
           )}
           {side === "back" && (
             <div className="p-[2px] relative">
-              <div className="w-[70px] h-[70px] bg-white" />
+              <div className="w-[70px] h-[70px]" />
               <SnakeLongNeck className="w-[70px] top-[-35px] absolute" />
             </div>
           )}
