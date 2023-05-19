@@ -109,7 +109,8 @@ export const Badge = ({
           <div
             style={{
               color: "#FAF5F3",
-              fontSize: "40px",
+              // fontSize: "40px",
+              fontSize: "32px",
               fontWeight: 600,
               lineHeight: "38px",
               wordBreak: "break-word",
@@ -155,7 +156,7 @@ export const Badge = ({
         >
           <div
             style={{
-              fontSize: "11px",
+              fontSize: "13px",
               fontWeight: 400,
               color: "#FCE8DE",
               marginRight: "25px",
