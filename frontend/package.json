@@ -69,6 +69,7 @@
     "react-select": "^3.1.0",
     "react-use-form-state": "^0.13.2",
     "react-use-sync-scroll": "^0.1.0",
+    "react-wrap-balancer": "^0.5.0",
     "styled-system": "^5.1.5",
     "svg-to-pdfkit": "^0.1.8",
     "theme-ui": "0.15.3",

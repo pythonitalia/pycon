@@ -1,5 +1,6 @@
 import { SnakeLongNeck } from "@python-italia/pycon-styleguide/illustrations";
 import QRCode from "react-qr-code";
+import Balancer from "react-wrap-balancer";
 
 import {
   BADGE_INSIDE_WIDTH_PX,
@@ -110,13 +111,14 @@ export const Badge = ({
             style={{
               color: "#FAF5F3",
               // fontSize: "40px",
-              fontSize: "32px",
+              // fontSize: "32px",
               fontWeight: 600,
               lineHeight: "38px",
               wordBreak: "break-word",
             }}
+            className="!text-[32px] [&>span]:text-[32px]"
           >
-            {name}
+            <Balancer>{name}</Balancer>
           </div>
         )}
         {empty && (
@@ -156,14 +158,14 @@ export const Badge = ({
         >
           <div
             style={{
-              fontSize: "13px",
               fontWeight: 400,
               color: "#FCE8DE",
               marginRight: "25px",
               maxWidth: "153px",
             }}
+            className="!text-[13px] [&>span]:text-[13px]"
           >
-            {tagline.substring(0, 400)}
+            <Balancer>{tagline.substring(0, 400)}</Balancer>
           </div>
 
           {!empty && side === "front" && (
