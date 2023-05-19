@@ -15,6 +15,7 @@ const BADGE_TYPE_TO_COLOR = {
   [ConferenceRole.Sponsor]: "#9473B0",
   [ConferenceRole.Staff]: "#F8B03D",
   [ConferenceRole.Keynoter]: "#79CDE0",
+  [ConferenceRole.DjangoGirls]: "#E94135",
 };
 
 const BADGE_TYPE_TO_NAME = {
@@ -23,6 +24,7 @@ const BADGE_TYPE_TO_NAME = {
   [ConferenceRole.Sponsor]: "Sponsor",
   [ConferenceRole.Staff]: "Staff",
   [ConferenceRole.Keynoter]: "Keynoter",
+  [ConferenceRole.DjangoGirls]: "Django Girls",
 };
 
 type Props = {

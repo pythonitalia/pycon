@@ -11,6 +11,7 @@ const EMPTY_BADGES_COUNT = {
   STAFF: 20,
   SPONSOR: 20,
   KEYNOTER: 5,
+  DJANGO_GIRLS: 25,
 };
 
 const getAllQuestions = async () => {
