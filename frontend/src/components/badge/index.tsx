@@ -57,6 +57,7 @@ export const Badge = ({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        overflow: "hidden",
       }}
     >
       <div
@@ -158,9 +159,10 @@ export const Badge = ({
               fontWeight: 400,
               color: "#FCE8DE",
               marginRight: "25px",
+              maxWidth: "153px",
             }}
           >
-            {tagline.substring(0, 163)}
+            {tagline.substring(0, 400)}
           </div>
 
           {!empty && side === "front" && (

@@ -195,7 +195,9 @@ const createEmptyBadgeOrderPositions = () => {
         window.setBadgeData(badgeData);
       }, badgeData);
 
-      const filename = `${String(counter).padStart(3, "0")}-${side}.pdf`;
+      const filename = `${String(counter).padStart(3, "0")}-${
+        side === "front" ? "fronte" : "retro"
+      }.pdf`;
       const buffer = await page.pdf({
         path: `generated-badges/${filename}`,
         width: "23cm",
