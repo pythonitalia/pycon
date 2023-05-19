@@ -118,7 +118,7 @@ export const Badge = ({
             }}
             className="!text-[32px] [&>span]:text-[32px]"
           >
-            <Balancer ratio={0.5}>{name}</Balancer>
+            <Balancer ratio={0.3}>{name}</Balancer>
           </div>
         )}
         {empty && (
