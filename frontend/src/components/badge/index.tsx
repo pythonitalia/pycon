@@ -1,7 +1,4 @@
-import {
-  SnakeHead,
-  SnakeLongNeck,
-} from "@python-italia/pycon-styleguide/illustrations";
+import { SnakeLongNeck } from "@python-italia/pycon-styleguide/illustrations";
 import QRCode from "react-qr-code";
 
 import {
@@ -20,6 +17,14 @@ const BADGE_TYPE_TO_COLOR = {
   [ConferenceRole.Keynoter]: "#79CDE0",
 };
 
+const BADGE_TYPE_TO_NAME = {
+  [ConferenceRole.Attendee]: "Attendee",
+  [ConferenceRole.Speaker]: "Speaker",
+  [ConferenceRole.Sponsor]: "Sponsor",
+  [ConferenceRole.Staff]: "Staff",
+  [ConferenceRole.Keynoter]: "Keynoter",
+};
+
 type Props = {
   cutLines?: boolean;
   pronouns?: string;
@@ -28,6 +33,7 @@ type Props = {
   role?: ConferenceRole;
   hashedTicketId?: string;
   side?: "front" | "back";
+  empty?: boolean;
 };
 
 export const Badge = ({
@@ -38,6 +44,7 @@ export const Badge = ({
   role = ConferenceRole.Attendee,
   hashedTicketId = "",
   side = "front",
+  empty = false,
 }: Props) => {
   return (
     <div
@@ -79,8 +86,8 @@ export const Badge = ({
           style={{
             width: "113px",
             height: "34px",
-            marginBottom: "40px",
-            marginTop: "55px",
+            marginBottom: "20px",
+            marginTop: "25px",
           }}
           src="https://pythonit-email-assets.s3.eu-central-1.amazonaws.com/logo-pycon-2023.png"
         />
@@ -95,17 +102,27 @@ export const Badge = ({
         >
           {pronouns || "empty"}
         </div>
-        <div
-          style={{
-            color: "#FAF5F3",
-            fontSize: "40px",
-            fontWeight: 600,
-            lineHeight: "38px",
-            wordBreak: "break-word",
-          }}
-        >
-          {name}
-        </div>
+        {!empty && (
+          <div
+            style={{
+              color: "#FAF5F3",
+              fontSize: "40px",
+              fontWeight: 600,
+              lineHeight: "38px",
+              wordBreak: "break-word",
+            }}
+          >
+            {name}
+          </div>
+        )}
+        {empty && (
+          <div
+            style={{
+              height: "150px",
+              background: "#ffffff",
+            }}
+          ></div>
+        )}
         <div
           style={{
             width: "100%",
@@ -122,7 +139,7 @@ export const Badge = ({
             textTransform: "capitalize",
           }}
         >
-          {role.toLowerCase()}
+          {BADGE_TYPE_TO_NAME[role]}
         </div>
         <div
           style={{
@@ -141,10 +158,10 @@ export const Badge = ({
               marginRight: "25px",
             }}
           >
-            {tagline}
+            {tagline.substring(0, 163)}
           </div>
 
-          {side === "front" && (
+          {!empty && side === "front" && (
             <div className="p-[2px] bg-white">
               <QRCode
                 className="shrink-0"
@@ -153,10 +170,10 @@ export const Badge = ({
               />
             </div>
           )}
-          {side === "back" && (
+          {(empty || side === "back") && (
             <div className="p-[2px] relative">
               <div className="w-[70px] h-[70px]" />
-              <SnakeLongNeck className="w-[70px] top-[-35px] absolute" />
+              <SnakeLongNeck className="w-[70px] top-[-30px] absolute" />
             </div>
           )}
         </div>

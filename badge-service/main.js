@@ -5,6 +5,14 @@ const assert = require("assert");
 const fs = require("fs");
 const archiver = require("archiver");
 
+const EMPTY_BADGES_COUNT = {
+  ATTENDEE: 100,
+  SPEAKER: 25,
+  STAFF: 20,
+  SPONSOR: 20,
+  KEYNOTER: 5,
+};
+
 const getAllQuestions = async () => {
   const request = await fetch(
     "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2023/questions/",
@@ -16,6 +24,33 @@ const getAllQuestions = async () => {
   );
   const response = await request.json();
   return response.results;
+};
+
+const getConferenceRoleForTicketData = async (orderPosition) => {
+  const request = await fetch("https://beri.python.it/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Backend-Token": process.env.BERI_API_TOKEN,
+    },
+    body: JSON.stringify({
+      query: `query ConferenceRole($ticketData: String!, $conferenceCode: String!) {
+          conferenceRoleForTicketData(
+            rawTicketData: $ticketData
+            conferenceCode: $conferenceCode
+          ) {
+            role
+            ticketHashid
+          }
+        }`,
+      variables: {
+        ticketData: JSON.stringify(orderPosition),
+        conferenceCode: "pycon2023",
+      },
+    }),
+  });
+  const response = await request.json();
+  return response.data.conferenceRoleForTicketData;
 };
 
 const getAllOrderPositions = async () => {
@@ -32,18 +67,31 @@ const getAllOrderPositions = async () => {
     next = response.next;
 
     positions.push(...response.results);
-    break;
   }
 
-  console.log("response", positions.length);
   return positions;
+};
+
+const createEmptyBadgeOrderPositions = () => {
+  return Object.entries(EMPTY_BADGES_COUNT).flatMap(([role, count]) => {
+    return Array.from({ length: count }, (_, i) => ({
+      attendee_name: ``,
+      empty: true,
+      role,
+      answers: [],
+    }));
+  });
 };
 
 (async () => {
   fs.rmSync("generated-badges", { recursive: true });
   fs.mkdirSync("generated-badges");
 
-  const allOrderPositions = await getAllOrderPositions();
+  const allOrderPositions = [
+    ...(await getAllOrderPositions()),
+    ...createEmptyBadgeOrderPositions(),
+  ];
+
   const questions = await getAllQuestions();
 
   const pronounsQuestion = questions.find((q) => q.identifier === "SMZHLTGP");
@@ -58,9 +106,27 @@ const getAllOrderPositions = async () => {
   const page = await browser.newPage();
   let counter = 0;
 
-  const createBadgeData = (orderPosition, side) => {
+  const createBadgeData = async (orderPosition, side) => {
     if (!orderPosition) {
-      return {};
+      return {
+        name: "",
+        pronouns: "",
+        tagline: "",
+        empty: true,
+        role: "ATTENDEE",
+        side,
+      };
+    }
+
+    if (orderPosition.empty) {
+      return {
+        name: "",
+        pronouns: "",
+        tagline: "",
+        empty: true,
+        role: orderPosition.role,
+        side,
+      };
     }
 
     const answers = orderPosition.answers;
@@ -68,13 +134,18 @@ const getAllOrderPositions = async () => {
       answers.find((a) => a.question === pronounsQuestion.id)?.answer ?? "";
     const tagline =
       answers.find((a) => a.question === taglineQuestion.id)?.answer ?? "";
+
+    const { role, ticketHashid } = await getConferenceRoleForTicketData(
+      orderPosition,
+    );
     return {
       name: orderPosition.attendee_name,
       pronouns,
       tagline,
-      role: "staff",
-      hashedTicketId: "1",
+      role,
+      hashedTicketId: ticketHashid,
       side,
+      empty: false,
     };
   };
 
@@ -109,10 +180,10 @@ const getAllOrderPositions = async () => {
 
   for (const group of chunk(allOrderPositions, 4)) {
     for (const side of ["front", "back"]) {
-      const item1 = createBadgeData(group[0], side);
-      const item2 = createBadgeData(group[1], side);
-      const item3 = createBadgeData(group[2], side);
-      const item4 = createBadgeData(group[3], side);
+      const item1 = await createBadgeData(group[0], side);
+      const item2 = await createBadgeData(group[1], side);
+      const item3 = await createBadgeData(group[2], side);
+      const item4 = await createBadgeData(group[3], side);
 
       const badgeData =
         side === "front"

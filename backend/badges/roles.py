@@ -17,6 +17,7 @@ class Role(Enum):
     SPEAKER = "speaker"
     SPONSOR = "sponsor"
     KEYNOTER = "keynoter"
+    DJANGO_GIRLS = "django_girls"
 
     @staticmethod
     def choices():
@@ -30,6 +31,7 @@ ROLES_PRIORITY = [
     Role.SPEAKER,
     Role.KEYNOTER,
     Role.SPONSOR,
+    Role.DJANGO_GIRLS,
     Role.ATTENDEE,
 ]
 
