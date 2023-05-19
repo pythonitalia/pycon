@@ -5,7 +5,7 @@ export default {
   title: "Hero Illustration",
 };
 
-export const Primary = () => {
+export const Day = () => {
   return (
     <div className="h-screen w-screen">
       <HeroIllustration cycle="day" />
