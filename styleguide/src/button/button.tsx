@@ -14,6 +14,7 @@ export const Button = ({
   background,
   disabled = false,
   href = undefined,
+  target = undefined,
   ...props
 }: {
   background?: Color | "none";
@@ -26,6 +27,7 @@ export const Button = ({
     e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLAnchorElement>
   ) => void;
   href?: string;
+  target?: string;
   fullWidth?: boolean | "mobile";
 }) => {
   const Wrapper = href ? "a" : "button";
@@ -59,6 +61,7 @@ export const Button = ({
         }
       )}
       href={href}
+      target={target}
       onClick={onClick}
     >
       {icon && <span className="mr-2">{icon}</span>}
