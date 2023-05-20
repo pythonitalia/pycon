@@ -9,7 +9,7 @@ import {
 } from "@python-italia/pycon-styleguide";
 import va from "@vercel/analytics";
 import { isAfter, isBefore, parseISO } from "date-fns";
-import { zonedTimeToUtc, format } from "date-fns-tz";
+import { zonedTimeToUtc } from "date-fns-tz";
 import React, {
   Fragment,
   useCallback,
@@ -173,7 +173,7 @@ export const ScheduleView = ({
       setLiveSlot(liveSlot);
     };
 
-    const updateTimer = setInterval(listener, 1000 * 60);
+    const updateTimer = setInterval(listener, 1000 * 30);
     listener();
     const visibilityListener = () => {
       if (!document.hidden) {
