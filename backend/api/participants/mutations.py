@@ -77,7 +77,7 @@ class UpdateParticipantInput:
                 "facebook_url", "Facebook URL should be a facebook.com link"
             )
 
-        if not verify_azure_storage_url(
+        if self.photo and not verify_azure_storage_url(
             url=self.photo,
             allowed_containers=[
                 BlobContainer.TEMPORARY_UPLOADS,
@@ -112,7 +112,7 @@ def update_participant(
     conference = Conference.objects.get(code=input.conference)
 
     photo = input.photo
-    if verify_azure_storage_url(
+    if photo and verify_azure_storage_url(
         url=photo, allowed_containers=[BlobContainer.TEMPORARY_UPLOADS]
     ):
         photo = confirm_blob_upload_usage(
