@@ -65,15 +65,51 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
         },
     )
 
-    mocker.patch(
-        "api.badge_scanner.types.get_users_data_by_ids",
-        return_value={
-            "1": {
-                "id": 1,
-                "email": "barko@marco.pizza",
-                "fullname": "Test User",
-            }
+    resp = _scan_badge_mutation(
+        graphql_client,
+        variables={
+            "url": f"https://pycon.it/b/{fake_id}",
+            "conferenceCode": conference.code,
         },
+    )
+
+    assert "errors" not in resp
+    assert resp["data"]["scanBadge"]["__typename"] == "BadgeScan"
+    assert resp["data"]["scanBadge"]["attendee"]["fullName"] == "Test User"
+    assert resp["data"]["scanBadge"]["attendee"]["email"] == "barko@marco.pizza"
+    assert resp["data"]["scanBadge"]["notes"] == ""
+
+    get_order_position_mock.assert_called_once_with(conference, "1")
+
+    badge_scan = BadgeScan.objects.get()
+
+    assert badge_scan.scanned_by_id == user.id
+    assert badge_scan.scanned_user_id == 1
+    assert badge_scan.notes == ""
+    assert badge_scan.conference == conference
+    assert badge_scan.badge_url == f"https://pycon.it/b/{fake_id}"
+
+    assert resp["data"]["scanBadge"]["id"] == str(badge_scan.id)
+
+
+def test_works_when_user_is_logged_in_but_no_user_on_service(
+    user, graphql_client, conference, mocker
+):
+    fake_id = encode_hashid(1)
+
+    graphql_client.force_login(user)
+
+    get_order_position_mock = mocker.patch(
+        "api.badge_scanner.mutation.pretix.get_order_position",
+        return_value={
+            "attendee_name": "Test User",
+            "attendee_email": "barko@marco.pizza",
+        },
+    )
+
+    mocker.patch(
+        "api.badge_scanner.mutation.get_user_by_email",
+        return_value=None,
     )
 
     resp = _scan_badge_mutation(
@@ -95,7 +131,7 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
     badge_scan = BadgeScan.objects.get()
 
     assert badge_scan.scanned_by_id == user.id
-    assert badge_scan.scanned_user_id == 1
+    assert badge_scan.scanned_user_id is None
     assert badge_scan.notes == ""
     assert badge_scan.conference == conference
     assert badge_scan.badge_url == f"https://pycon.it/b/{fake_id}"
