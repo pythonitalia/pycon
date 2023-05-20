@@ -41,7 +41,11 @@ export const ProfilePageHandler = () => {
   const [loggedIn, setLoginState] = useLoginState();
   const language = useCurrentLanguage();
 
-  const { error, data: profileData } = useMyProfileQuery();
+  const { error, data: profileData } = useMyProfileQuery({
+    variables: {
+      conferenceCode: process.env.conferenceCode,
+    },
+  });
 
   useEffect(() => {
     const loginUrl = `/login`;
@@ -69,7 +73,11 @@ export const ProfilePageHandler = () => {
     window.location.href = `/${language}`;
   };
 
-  const availableActions: Action[] = [
+  const isStaffOrSponsor = profileData.me.conferenceRoles.some((role) =>
+    ["STAFF", "SPONSOR"].indexOf(role),
+  );
+
+  const availableActions = [
     {
       id: "profile",
       link: createHref({
@@ -110,6 +118,18 @@ export const ProfilePageHandler = () => {
       icon: "circle",
       iconBackground: "purple",
     },
+    isStaffOrSponsor
+      ? {
+          id: "sponsors",
+          link: createHref({
+            path: "/profile/sponsors",
+            locale: language,
+          }),
+          label: <FormattedMessage id="profile.sponsorSection" />,
+          icon: "web",
+          iconBackground: "purple",
+        }
+      : null,
     {
       id: "logout",
       link: undefined,
@@ -118,7 +138,7 @@ export const ProfilePageHandler = () => {
       rightSideIcon: "sign-out",
       rightSideIconBackground: "milk",
     },
-  ];
+  ].filter((action) => action !== null) as Action[];
 
   return (
     <Page endSeparator={false}>

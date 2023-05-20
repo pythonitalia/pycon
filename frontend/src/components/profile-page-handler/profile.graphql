@@ -1,7 +1,8 @@
-query MyProfile {
+query MyProfile($conferenceCode: String!) {
   me {
     id
     name
     fullName
+    conferenceRoles(conferenceCode: $conferenceCode)
   }
 }

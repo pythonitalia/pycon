@@ -180,6 +180,7 @@ export const messages = {
     "profile.mySubmissionsHeader": "My Submissions",
     "profile.editProfile": "Edit your profile",
     "profile.myOrders": "My Orders",
+    "profile.sponsorSection": "Sponsor section",
     "profile.orderId": "Order #",
     "profile.status": "Status",
     "profile.price": "Price",
@@ -991,6 +992,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "profile.manageOrder": "Gestisci ordine",
     "profile.mySubmissionsHeader": "Le mie submissions",
     "profile.myOrders": "I miei ordini",
+    "profile.sponsorSection": "Sezione sponsor",
     "profile.myTickets": "I miei biglietti",
     "profile.myTickets.notickets": `
       Non sono stati trovati biglietti assegnati alla tua email: {email}.
