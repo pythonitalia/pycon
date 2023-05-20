@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import strawberry
+from datetime import datetime
 
 from badge_scanner import models
 
@@ -16,6 +17,7 @@ class BadgeScan:
     id: strawberry.ID
     notes: str
     attendee: Attendee
+    created: datetime
 
     @classmethod
     def from_db(cls, db_scan: models.BadgeScan) -> BadgeScan:
@@ -25,4 +27,5 @@ class BadgeScan:
             attendee=Attendee(
                 full_name=db_scan.attendee_name, email=db_scan.attendee_email
             ),
+            created=db_scan.created,
         )
