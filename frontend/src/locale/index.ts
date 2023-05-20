@@ -181,6 +181,9 @@ export const messages = {
     "profile.editProfile": "Edit your profile",
     "profile.myOrders": "My Orders",
     "profile.sponsorSection": "Sponsor section",
+    "profile.sponsorSection.title": "Sponsor section",
+    "profile.sponsorSection.loading": "Loading...",
+    "profile.sponsorSection.loadMore": "Load more",
     "profile.orderId": "Order #",
     "profile.status": "Status",
     "profile.price": "Price",
@@ -993,6 +996,9 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "profile.mySubmissionsHeader": "Le mie submissions",
     "profile.myOrders": "I miei ordini",
     "profile.sponsorSection": "Sezione sponsor",
+    "profile.sponsorSection.title": "Sezione sponsor",
+    "profile.sponsorSection.loading": "Caricamento...",
+    "profile.sponsorSection.loadMore": "Carica altri",
     "profile.myTickets": "I miei biglietti",
     "profile.myTickets.notickets": `
       Non sono stati trovati biglietti assegnati alla tua email: {email}.
