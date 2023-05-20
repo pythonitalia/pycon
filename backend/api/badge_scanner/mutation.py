@@ -68,14 +68,13 @@ class BadgeScannerMutation:
 
         user = get_user_by_email(order_position_data["attendee_email"])
 
-        if user is None:
-            return ScanError(message="User not found")
-
         scanned_badge, _ = models.BadgeScan.objects.get_or_create(
             scanned_by_id=info.context.request.user.id,
-            scanned_user_id=user["id"],
+            scanned_user_id=user["id"] if user else None,
             badge_url=input.url,
             conference=conference,
+            attendee_name=order_position_data["attendee_name"],
+            attendee_email=order_position_data["attendee_email"],
             defaults={
                 "notes": "",
             },
