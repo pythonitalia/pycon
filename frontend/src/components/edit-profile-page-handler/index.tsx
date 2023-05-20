@@ -12,8 +12,6 @@ import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import * as yup from "yup";
 
-import { useRouter } from "next/router";
-
 import { MetaTags } from "~/components/meta-tags";
 import {
   MyEditProfileQuery,
@@ -174,7 +172,7 @@ export const EditProfilePageHandler = () => {
 
         formState.errors = {};
 
-        update({
+        const updateProfileResponse = await update({
           variables: {
             input: {
               name: formState.values.name,
@@ -201,6 +199,15 @@ export const EditProfilePageHandler = () => {
             },
           },
         });
+
+        const updateParticipantResult =
+          updateProfileResponse.data?.updateParticipant;
+        if (updateParticipantResult?.__typename == "Participant") {
+          formState.setField(
+            "participantPhoto",
+            updateParticipantResult.photo ?? "",
+          );
+        }
       } catch (err) {
         err.inner.forEach((item) => {
           formState.setFieldError(item.path, item.message);
