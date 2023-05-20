@@ -122,7 +122,7 @@ export const ProfilePageHandler = () => {
       ? {
           id: "sponsors",
           link: createHref({
-            path: "/profile/sponsors",
+            path: "/profile/sponsor",
             locale: language,
           }),
           label: <FormattedMessage id="profile.sponsorSection" />,
