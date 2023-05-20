@@ -23,7 +23,7 @@ from .submissions.schema import SubmissionsQuery
 from .volunteers_notifications.mutations import VolunteersNotificationsMutation
 from .volunteers_notifications.query import VolunteersNotificationsQuery
 from .voting.mutations import VotesMutations
-from .badge_scanner.schema import BadgeScannerMutation
+from .badge_scanner.schema import BadgeScannerQuery, BadgeScannerMutation
 from .participants.queries import ParticipantQueries
 
 
@@ -40,6 +40,7 @@ class Query(
     VolunteersNotificationsQuery,
     ChecklistQuery,
     ParticipantQueries,
+    BadgeScannerQuery,
 ):
     pass
 

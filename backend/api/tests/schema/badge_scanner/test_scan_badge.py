@@ -49,7 +49,7 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
     graphql_client.force_login(user)
 
     get_order_position_mock = mocker.patch(
-        "api.badge_scanner.schema.pretix.get_order_position",
+        "api.badge_scanner.mutation.pretix.get_order_position",
         return_value={
             "attendee_name": "Test User",
             "attendee_email": "barko@marco.pizza",
@@ -57,7 +57,7 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
     )
 
     mocker.patch(
-        "api.badge_scanner.schema.get_user_by_email",
+        "api.badge_scanner.mutation.get_user_by_email",
         return_value={
             "id": 1,
             "email": "barko@marco.pizza",
@@ -66,7 +66,7 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
     )
 
     mocker.patch(
-        "api.badge_scanner.schema.get_users_data_by_ids",
+        "api.badge_scanner.types.get_users_data_by_ids",
         return_value={
             "1": {
                 "id": 1,
