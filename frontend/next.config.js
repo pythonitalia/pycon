@@ -41,7 +41,7 @@ module.exports = withSentryConfig({
       },
       {
         source: "/discord",
-        destination: "https://discord.gg/XAS3ZgRKDq",
+        destination: "https://discord.gg/2WYMZdbv9j",
         permanent: false,
       },
       {
