@@ -25,7 +25,11 @@ class BadgeScannerQuery:
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     def badge_scans(
-        self, info: Info, conference_code: str, page: int | None = 1
+        self,
+        info: Info,
+        conference_code: str,
+        page: int | None = 1,
+        page_size: int = 100,
     ) -> Paginated[BadgeScan]:
         scans = models.BadgeScan.objects.filter(
             conference__code=conference_code,
@@ -34,7 +38,8 @@ class BadgeScannerQuery:
 
         page = page or 1
         total_scans = scans.count()
-        page_size = 100
+
+        scans = scans[(page - 1) * page_size : page * page_size]
 
         return Paginated.paginate_list(
             items=[BadgeScan.from_db(scan) for scan in scans],
