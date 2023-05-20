@@ -5,7 +5,7 @@ import pretix
 import re
 from typing import Any
 import strawberry
-from strawberry.types.info import Info
+from api.context import Info
 
 from api.permissions import IsAuthenticated
 from badge_scanner import models
@@ -53,9 +53,7 @@ class UpdateBadgeScanInput:
 @strawberry.type
 class BadgeScannerMutation:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    def scan_badge(
-        self, info: Info[Any, None], input: ScanBadgeInput
-    ) -> BadgeScan | ScanError:
+    def scan_badge(self, info: Info, input: ScanBadgeInput) -> BadgeScan | ScanError:
         conference = Conference.objects.filter(code=input.conference_code).first()
 
         if not conference:
@@ -87,7 +85,7 @@ class BadgeScannerMutation:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def update_badge_scan(
-        self, info: Info[Any, None], input: UpdateBadgeScanInput
+        self, info: Info, input: UpdateBadgeScanInput
     ) -> BadgeScan | ScanError:
         badge_scan = models.BadgeScan.objects.filter(
             scanned_by_id=info.context.request.user.id, id=input.id
