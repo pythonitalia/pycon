@@ -131,8 +131,13 @@ const createEmptyBadgeOrderPositions = () => {
     }
 
     const answers = orderPosition.answers;
-    const pronouns =
+    let pronouns =
       answers.find((a) => a.question === pronounsQuestion.id)?.answer ?? "";
+
+    if (pronouns === "--") {
+      pronouns = "";
+    }
+
     const tagline =
       answers.find((a) => a.question === taglineQuestion.id)?.answer ?? "";
 
