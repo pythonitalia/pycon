@@ -45,6 +45,7 @@ export const Footer = () => {
     }[];
   } = language === "en" ? footerEn : footerIt;
 
+  return null;
   return (
     <>
       <FooterStyleguide

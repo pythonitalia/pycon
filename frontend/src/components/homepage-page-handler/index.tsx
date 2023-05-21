@@ -3,7 +3,7 @@ import {
   Separator,
   LayoutContent,
 } from "@python-italia/pycon-styleguide";
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { HomepageHero } from "~/components/homepage-hero";
@@ -31,6 +31,18 @@ export const HomePagePageHandler = ({ cycle }: Props) => {
   if (!cmsPage) {
     return null;
   }
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return null;
+    }
+    const introSection = document.getElementById("homeIntroSection");
+    setTimeout(() => {
+      introSection.scrollIntoView({
+        behavior: "smooth",
+      });
+    }, 6 * 1000);
+  }, []);
 
   return (
     <Fragment>

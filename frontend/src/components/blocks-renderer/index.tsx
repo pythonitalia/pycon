@@ -20,20 +20,20 @@ type Registry = {
   [key in Block["__typename"]]: any;
 };
 
-const REGISTRY: Registry = {
-  TextSection,
-  CMSMap: Map,
-  SliderCardsSection,
+const REGISTRY = {
+  // TextSection,
+  // CMSMap: Map,
+  // SliderCardsSection,
   HomeIntroSection,
-  SchedulePreviewSection,
-  KeynotersSection,
-  SponsorsSection,
-  SocialsSection,
-  SpecialGuestSection,
-  InformationSection,
-  NewsGridSection,
-  CheckoutSection,
-  LiveStreamingSection,
+  // SchedulePreviewSection,
+  // KeynotersSection,
+  // SponsorsSection,
+  // SocialsSection,
+  // SpecialGuestSection,
+  // InformationSection,
+  // NewsGridSection,
+  // CheckoutSection,
+  // LiveStreamingSection,
 };
 
 type Props = {
@@ -46,7 +46,8 @@ export const BlocksRenderer = ({ blocks }: Props) => {
       {blocks.map((block) => {
         const Component = REGISTRY[block.__typename];
         if (!Component) {
-          return <div>Invalid component: {block.__typename}</div>;
+          // return <div>Invalid component: {block.__typename}</div>;
+          return null;
         }
         return <Component key={block.id} {...block} />;
       })}
@@ -59,7 +60,7 @@ export const blocksDataFetching = (client, blocks, language) => {
 
   for (const block of blocks) {
     const component = REGISTRY[block.__typename];
-    const dataFetching = component.dataFetching;
+    const dataFetching = component?.dataFetching;
 
     if (dataFetching) {
       promises.push(...dataFetching(client, language));

@@ -79,6 +79,8 @@ export const Header = () => {
     external: false,
   });
 
+  return <div style={{ height: "158px" }} />;
+
   return (
     <NavBar
       mainLinks={mainLinks}
