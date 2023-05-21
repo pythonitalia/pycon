@@ -29,3 +29,15 @@ class BadgeScan:
             ),
             created=db_scan.created,
         )
+
+
+@strawberry.type
+class BadgeScanExport:
+    id: strawberry.ID
+    url: str
+
+    @classmethod
+    def from_db(cls, db_scan_export: models.BadgeScanExport) -> BadgeScanExport:
+        return BadgeScanExport(
+            id=strawberry.ID(str(db_scan_export.pk)), url=db_scan_export.file.url
+        )

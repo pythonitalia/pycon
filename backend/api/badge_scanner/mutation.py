@@ -1,9 +1,9 @@
 from __future__ import annotations
 from api.helpers.ids import decode_hashid
+from django.core.files.base import ContentFile
 
 import pretix
 import re
-from typing import Any
 import strawberry
 from api.context import Info
 
@@ -12,7 +12,7 @@ from badge_scanner import models
 from conferences.models import Conference
 from users.client import get_user_by_email
 
-from .types import BadgeScan
+from .types import BadgeScan, BadgeScanExport
 
 
 @strawberry.type
@@ -97,3 +97,30 @@ class BadgeScannerMutation:
         badge_scan.save()
 
         return BadgeScan.from_db(badge_scan)
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    def export_badge_scans(self, info: Info, conference_code: str) -> BadgeScanExport:
+        current_user_scans = models.BadgeScan.objects.filter(
+            scanned_by_id=info.context.request.user.id, conference__code=conference_code
+        )
+
+        import tablib
+
+        data = tablib.Dataset(
+            headers=["Created", "Attendee Name", "Attendee Email", "Notes"]
+        )
+
+        for scan in current_user_scans:
+            data.append(
+                [scan.created, scan.attendee_name, scan.attendee_email, scan.notes]
+            )
+
+        csv_data = data.export("csv")
+
+        badge_scan_export = models.BadgeScanExport.objects.create(
+            conference_id=scan.conference_id,
+            requested_by_id=info.context.request.user.id,
+            file=ContentFile(csv_data, name="badge_scans.csv"),
+        )
+
+        return BadgeScanExport.from_db(badge_scan_export)
