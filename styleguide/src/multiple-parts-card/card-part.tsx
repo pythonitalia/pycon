@@ -28,6 +28,7 @@ type CardPartProps = {
   closeLabel?: string | React.ReactNode;
   fullHeight?: boolean;
   shrink?: boolean;
+  overflow?: boolean;
 };
 
 export const CardPart = ({
@@ -47,6 +48,7 @@ export const CardPart = ({
   closeLabel,
   fullHeight = false,
   shrink = true,
+  overflow = false,
 }: CardPartProps) => {
   const { isClickablePart, isTargetPart, open, toggleOpen } =
     useMultiPartsCardContext();
@@ -65,10 +67,12 @@ export const CardPart = ({
   return (
     <div
       className={clsx(
-        "overflow-hidden transition-all",
+        "transition-all",
         getHoverBackgroundColor(hoverColor),
         getBackgroundClasses(background),
         {
+          "overflow-hidden": !overflow,
+
           "text-right": contentAlign === "right",
           "text-left": contentAlign === "left",
           "text-center": contentAlign === "center",
