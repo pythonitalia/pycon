@@ -13,6 +13,7 @@ import { useBadgeScansQuery } from "~/types";
 
 import { MetaTags } from "../meta-tags";
 import { Table } from "../table";
+import { ExportBadgeScansButton } from "./export-button";
 
 export const MyProfileSponsorSection = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -63,18 +64,29 @@ export const MyProfileSponsorSection = () => {
       </Section>
 
       <Section>
+        <Heading size="display2">
+          <FormattedMessage id="profile.sponsorSection.badgeScans" />
+        </Heading>
+
+        <Spacer size="small" />
+
         {data?.badgeScans.items ? (
-          <Table
-            data={data.badgeScans.items}
-            rowGetter={(item) => [
-              format(parseISO(item.created), "dd MMM yyyy '@' HH:mm"),
-              item.attendee.fullName,
-              item.attendee.email,
-              item.notes,
-            ]}
-            keyGetter={(item) => item.id}
-            cols={4}
-          ></Table>
+          <>
+            <ExportBadgeScansButton />
+            <Spacer size="small" />
+
+            <Table
+              data={data.badgeScans.items}
+              rowGetter={(item) => [
+                format(parseISO(item.created), "dd MMM yyyy '@' HH:mm"),
+                item.attendee.fullName,
+                item.attendee.email,
+                item.notes,
+              ]}
+              keyGetter={(item) => item.id}
+              cols={4}
+            ></Table>
+          </>
         ) : null}
 
         {!data && loading && (
