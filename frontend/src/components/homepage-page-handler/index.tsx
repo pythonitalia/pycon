@@ -41,7 +41,7 @@ export const HomePagePageHandler = ({ cycle }: Props) => {
       introSection.scrollIntoView({
         behavior: "smooth",
       });
-    }, 6 * 1000);
+    }, 4 * 1000);
   }, []);
 
   return (
