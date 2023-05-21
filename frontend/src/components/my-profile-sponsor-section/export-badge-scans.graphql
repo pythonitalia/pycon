@@ -1,0 +1,6 @@
+mutation ExportBadgeScans($conferenceCode: String!) {
+  exportBadgeScans(conferenceCode: $conferenceCode) {
+    id
+    url
+  }
+}
