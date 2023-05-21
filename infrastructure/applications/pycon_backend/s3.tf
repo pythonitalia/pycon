@@ -10,3 +10,18 @@ resource "aws_s3_bucket" "backend_media" {
     max_age_seconds = 3000
   }
 }
+
+resource "aws_s3_bucket_lifecycle_configuration" "badge_scanner_lifecycle" {
+  rule {
+    id      = "delete-badge-scanner-files"
+    status  = "Enabled"
+
+    expiration {
+      days = 1
+    }
+
+    filter {
+      prefix = "badge_scan_exports/"
+    }
+  }
+}
