@@ -1,0 +1,22 @@
+query BadgeScans($conferenceCode: String!, $page: Int, $pageSize: Int!) {
+  badgeScans(
+    conferenceCode: $conferenceCode
+    page: $page
+    pageSize: $pageSize
+  ) {
+    pageInfo {
+      pageSize
+      totalItems
+      totalPages
+    }
+    items {
+      id
+      attendee {
+        email
+        fullName
+      }
+      created
+      notes
+    }
+  }
+}

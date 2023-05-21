@@ -2,7 +2,6 @@ import { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { queryCountries, queryMyProfile } from "~/types";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -21,13 +20,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   const client = getApolloClient(null, req.cookies);
 
   try {
-    await Promise.all([
-      prefetchSharedQueries(client, locale),
-      queryCountries(client),
-      queryMyProfile(client, {
-        conferenceCode: process.env.conferenceCode,
-      }),
-    ]);
+    await Promise.all([prefetchSharedQueries(client, locale)]);
   } catch (e) {
     return {
       redirect: {
@@ -46,4 +39,4 @@ export const getServerSideProps: GetServerSideProps = async ({
   );
 };
 
-export { ProfilePageHandler as default } from "~/components/profile-page-handler";
+export { MyProfileSponsorSection as default } from "~/components/my-profile-sponsor-section";
