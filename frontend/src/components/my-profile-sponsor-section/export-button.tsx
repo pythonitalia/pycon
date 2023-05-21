@@ -11,9 +11,14 @@ export const ExportBadgeScansButton = () => {
   });
 
   const handleExport = async () => {
-    const data = await exportBadges();
+    const { data } = await exportBadges();
 
-    window.open(data.data.exportBadgeScans.url);
+    const link = document.createElement("a");
+    link.download = "badge_scans.csv";
+    link.href = data.exportBadgeScans.url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
