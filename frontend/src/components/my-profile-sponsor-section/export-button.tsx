@@ -3,6 +3,8 @@ import { FormattedMessage } from "react-intl";
 
 import { useExportBadgeScansMutation } from "~/types";
 
+import { Alert } from "../alert";
+
 export const ExportBadgeScansButton = () => {
   const [exportBadges, { loading, error }] = useExportBadgeScansMutation({
     variables: {
@@ -30,6 +32,15 @@ export const ExportBadgeScansButton = () => {
           <FormattedMessage id="profile.sponsorSection.badgeScansExport" />
         )}
       </Button>
+
+      {error && (
+        <Alert sx={{ mb: 4 }} variant="alert">
+          <FormattedMessage
+            id="global.tryAgain"
+            values={{ error: error.message }}
+          />
+        </Alert>
+      )}
     </div>
   );
 };
