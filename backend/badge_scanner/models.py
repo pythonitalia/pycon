@@ -20,3 +20,14 @@ class BadgeScan(TimeStampedModel):
         verbose_name=_("conference"),
         related_name="badge_scans",
     )
+
+
+class BadgeScanExport(TimeStampedModel):
+    conference = models.ForeignKey(
+        "conferences.Conference",
+        on_delete=models.CASCADE,
+        verbose_name=_("conference"),
+        related_name="badge_scan_exports",
+    )
+    requested_by_id = models.IntegerField(_("requested_by"))
+    file = models.FileField(_("file"), upload_to="badge_scan_exports")
