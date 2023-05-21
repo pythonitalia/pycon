@@ -115,7 +115,7 @@ class BadgeScannerMutation:
                 [scan.created, scan.attendee_name, scan.attendee_email, scan.notes]
             )
 
-        csv_data = data.export("csv")
+        csv_data = data.export("csv").encode("utf-8")
 
         badge_scan_export = models.BadgeScanExport.objects.create(
             conference_id=scan.conference_id,
