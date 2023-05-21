@@ -100,6 +100,11 @@ class BadgeScannerMutation:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def export_badge_scans(self, info: Info, conference_code: str) -> BadgeScanExport:
+        conference = Conference.objects.filter(code=conference_code).first()
+
+        if conference is None:
+            raise ValueError("Unable to find conference")
+
         current_user_scans = models.BadgeScan.objects.filter(
             scanned_by_id=info.context.request.user.id, conference__code=conference_code
         )
@@ -118,7 +123,7 @@ class BadgeScannerMutation:
         csv_data = data.export("csv").encode("utf-8")
 
         badge_scan_export = models.BadgeScanExport.objects.create(
-            conference_id=scan.conference_id,
+            conference_id=conference.id,
             requested_by_id=info.context.request.user.id,
             file=ContentFile(csv_data, name="badge_scans.csv"),
         )
