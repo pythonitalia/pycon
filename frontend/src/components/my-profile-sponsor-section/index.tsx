@@ -70,7 +70,7 @@ export const MyProfileSponsorSection = () => {
 
         <Spacer size="small" />
 
-        {data?.badgeScans.items ? (
+        {data?.badgeScans.items.length > 0 && (
           <>
             <ExportBadgeScansButton />
             <Spacer size="small" />
@@ -81,13 +81,14 @@ export const MyProfileSponsorSection = () => {
                 format(parseISO(item.created), "dd MMM yyyy '@' HH:mm"),
                 item.attendee.fullName,
                 item.attendee.email,
-                item.notes,
+                item.notes || "No notes",
               ]}
               keyGetter={(item) => item.id}
               cols={4}
             ></Table>
           </>
-        ) : (
+        )}
+        {data?.badgeScans.items.length === 0 && !loading && (
           <p>
             <FormattedMessage id="profile.sponsorSection.noScan" />
           </p>
