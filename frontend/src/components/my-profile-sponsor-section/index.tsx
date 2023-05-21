@@ -87,7 +87,11 @@ export const MyProfileSponsorSection = () => {
               cols={4}
             ></Table>
           </>
-        ) : null}
+        ) : (
+          <p>
+            <FormattedMessage id="profile.sponsorSection.noScan" />
+          </p>
+        )}
 
         {!data && loading && (
           <p>
