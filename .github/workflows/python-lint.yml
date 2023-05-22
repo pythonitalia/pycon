@@ -27,21 +27,15 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: "3.9.15"
-      - run: pip install poetry
-        if: steps.changed.outputs.changed.${{ matrix.service.name }} == 'true'
+      - run: pipx install poetry
       - name: Set Poetry config
         if: steps.changed.outputs.changed.${{ matrix.service.name }} == 'true'
         run: poetry config virtualenvs.path ~/.virtualenvs
-      - name: Cache Poetry
-        if: steps.changed.outputs.changed.${{ matrix.service.name }} == 'true'
-        uses: actions/cache@v1
-        id: cache
+      - uses: actions/setup-python@v4
         with:
-          path: ~/.virtualenvs
-          key: poetry-${{ matrix.service.name }}-${{ hashFiles('**/poetry.lock') }}-v2
+          cache: 'poetry'
+          python-version: "3.9.15"
+        if: steps.changed.outputs.changed.${{ matrix.service.name }} == 'true'
       - name: Install deps
         if: steps.changed.outputs.changed.${{ matrix.service.name }} == 'true'
         run: poetry install
