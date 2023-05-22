@@ -25,29 +25,23 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: "3.9.15"
-      - run: pip install poetry==1.4.2
-
-      - name: Cache Poetry
-        uses: actions/cache@v1
-        id: cache
-        with:
-          path: ~/.virtualenvs
-          key: poetry-${{ hashFiles('**/poetry.lock') }}-v2
-          restore-keys: |
-            poetry-${{ hashFiles('**/poetry.lock') }}-v2
-
+      - name: Install poetry
+        run: pipx install poetry
       - name: Set Poetry config
         run: |
           poetry config virtualenvs.create false
           poetry config virtualenvs.path ~/.virtualenvs
 
+      - uses: actions/setup-python@v4
+        id: setup-python
+        with:
+          python-version: "3.9.15"
+          cache: 'poetry'
+
       - name: Install python dependencies
         working-directory: backend
         run: poetry install
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.setup-python.outputs.cache-hit != 'true'
 
       - name: Install codecov
         working-directory: backend
