@@ -135,8 +135,8 @@ const GridContainer = React.forwardRef<
         className={clsx(
           "bg-milk md:bg-black px-4 md:px-0 block md:grid gap-[3px] py-[3px]",
           {
-            "md:min-w-[2860px]": totalRooms > 2,
-            "md:min-w-[100vw]": totalRooms <= 2,
+            "md:min-w-[2860px]": totalRooms > 3,
+            "md:min-w-[100vw]": totalRooms <= 3,
           },
         )}
         style={{
