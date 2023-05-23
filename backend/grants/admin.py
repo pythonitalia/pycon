@@ -49,6 +49,7 @@ EXPORT_GRANTS_FIELDS = (
 class GrantResource(ResourceUsersByIdsMixin):
     search_field = "user_id"
     age_group = Field()
+    email = Field()
     has_sent_submission = Field()
     submission_title = Field()
     submission_tags = Field()
@@ -56,6 +57,14 @@ class GrantResource(ResourceUsersByIdsMixin):
     submission_pycon_link = Field()
     grant_admin_link = Field()
     USERS_SUBMISSIONS: Dict[int, List[Submission]] = {}
+
+    def dehydrate_email(self, obj: Grant):
+        user = self.get_user_data(obj.user_id)
+        if user:
+            return user["email"]
+
+        # old grants have email in the model.
+        return self.email
 
     def dehydrate_age_group(self, obj: Grant):
         return Grant.AgeGroup(obj.age_group).label
