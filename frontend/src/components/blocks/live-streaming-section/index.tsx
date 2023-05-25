@@ -44,11 +44,13 @@ export const LiveStreamingSection = () => {
     event.rooms.map((room) => room.id).includes(currentRoom.id),
   )?.[0];
 
+  const hasLiveVideos = currentDay?.rooms?.some((room) => room.streamingUrl);
+
   return (
     <Section>
       <Heading size="display1">Live</Heading>
       <Spacer size="2xl" />
-      {!currentDay && (
+      {(!currentDay || !hasLiveVideos) && (
         <>
           <Heading size={4}>
             <FormattedMessage id="streaming.noStreaming" />
@@ -61,7 +63,7 @@ export const LiveStreamingSection = () => {
           </Link>
         </>
       )}
-      {currentDay && (
+      {currentDay && hasLiveVideos && (
         <Grid cols={12}>
           <GridColumn colSpan={4}>
             <ul>
