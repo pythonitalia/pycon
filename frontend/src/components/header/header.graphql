@@ -2,6 +2,13 @@ query Header($code: String!) {
   conference(code: $code) {
     id
     isRunning
+    currentDay {
+      day
+      rooms {
+        id
+        streamingUrl
+      }
+    }
     conferenceMenuEn: menu(identifier: "conference-nav") {
       links {
         text: title(language: "en")

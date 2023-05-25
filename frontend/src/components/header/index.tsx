@@ -38,11 +38,15 @@ export const Header = () => {
       conferenceMenuIt,
       programMenuIt,
       isRunning,
+      currentDay,
     },
   } = data || { conference: {} };
+  const hasSomethingLive = currentDay?.rooms?.some(
+    (room) => !!room.streamingUrl,
+  );
 
   const actions: Action[] = [
-    isRunning
+    isRunning && hasSomethingLive
       ? {
           text: getTranslatedMessage("header.streaming", language),
           icon: "live-circle",
