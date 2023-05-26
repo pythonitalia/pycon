@@ -276,7 +276,9 @@ export const ScheduleEntry = ({
       adminMode={adminMode}
       type={type}
       metadata={{ itemId: item.id }}
-      className={clsx("relative z-20 border-r border-l md:border-0")}
+      className={clsx("relative z-20 border-r border-l md:border-0", {
+        "hidden md:block": filteredOut,
+      })}
       {...props}
     >
       <ScheduleItemCard
@@ -287,7 +289,7 @@ export const ScheduleEntry = ({
           className={clsx(
             "flex flex-col md:max-h-[352px] md:h-full justify-between transition-opacity",
             {
-              "opacity-20": filteredOut,
+              "md:flex md:opacity-20": filteredOut,
             },
           )}
         >
