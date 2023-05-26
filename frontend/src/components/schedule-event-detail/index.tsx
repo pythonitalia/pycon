@@ -4,10 +4,13 @@ import {
   GridColumn,
   Heading,
   Section,
+  Button,
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import { parseISO } from "date-fns";
+import { LiveIcon } from "@python-italia/pycon-styleguide/icons";
+import { parseISO, isAfter, isBefore } from "date-fns";
+import { zonedTimeToUtc } from "date-fns-tz";
 import { FormattedMessage } from "react-intl";
 
 import { compile } from "~/helpers/markdown";
@@ -35,6 +38,14 @@ type Props = {
   endTime?: string;
   bookable?: boolean;
   spacesLeft?: number;
+  slidoUrl?: string;
+};
+
+const isEventLive = (startTime: string, endTime: string) => {
+  const now = new Date();
+  const utcStart = zonedTimeToUtc(parseISO(startTime), "Europe/Rome");
+  const utcEnd = zonedTimeToUtc(parseISO(endTime), "Europe/Rome");
+  return isAfter(now, utcStart) && isBefore(now, utcEnd);
 };
 
 export const ScheduleEventDetail = ({
@@ -51,6 +62,7 @@ export const ScheduleEventDetail = ({
   startTime,
   endTime,
   bookable = false,
+  slidoUrl,
   spacesLeft,
 }: Props) => {
   const lang = useCurrentLanguage();
@@ -66,6 +78,7 @@ export const ScheduleEventDetail = ({
     minute: "2-digit",
     hour12: false,
   });
+  const isLive = isEventLive(startTime, endTime);
 
   return (
     <>
@@ -89,6 +102,19 @@ export const ScheduleEventDetail = ({
                 }}
               />
             </Heading>
+            {isLive && (
+              <>
+                <Spacer size="medium" />
+                <LiveIcon />
+                <Spacer size="medium" />
+
+                {slidoUrl && (
+                  <Button size="small" role="secondary" href={slidoUrl}>
+                    <FormattedMessage id="streaming.qa" />
+                  </Button>
+                )}
+              </>
+            )}
           </>
         )}
       </Section>

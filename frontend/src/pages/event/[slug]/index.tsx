@@ -48,6 +48,7 @@ export const TalkPage = () => {
         speakers={talk.speakers.map((speaker) => speaker.participant)}
         bookable={talk.hasLimitedCapacity}
         spacesLeft={talk.spacesLeft}
+        slidoUrl={talk.slidoUrl}
       />
     </Page>
   );
