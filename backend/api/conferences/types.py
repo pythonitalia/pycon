@@ -187,6 +187,15 @@ class Day:
         if not current_slot:
             return []
 
+        items = list(current_slot.items.all())
+        if len(items) == 1:
+            first_item = items[0]
+            if first_item.rooms.first().name.lower() == "recruiting":
+                current_slot = self.slots.filter(
+                    hour__lte=timezone.now().astimezone(self.conference.timezone)
+                    - timedelta(minutes=current_slot.duration)
+                ).last()
+
         return [item for item in current_slot.items.all()]
 
     @strawberry.field
