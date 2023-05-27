@@ -14,7 +14,7 @@ const Illustration = React.memo(HeroIllustration);
 export const HomepageHero = ({ cycle }: Props) => {
   return (
     <div className="h-screen relative mt-[-158px]">
-      <div className="h-[calc(100vh-60px)]">
+      <div className="h-screen lg:h-[calc(100vh-60px)]">
         <Illustration cycle={cycle} />
       </div>
 
