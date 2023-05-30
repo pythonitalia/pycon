@@ -197,3 +197,19 @@ resource "aws_route53_record" "pycon_2022" {
   records = ["cname.vercel-dns.com"]
   ttl     = "3600"
 }
+
+resource "aws_route53_record" "pycon_2023" {
+  zone_id = aws_route53_zone.pyconit.id
+  name    = "2023.pycon.it"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com"]
+  ttl     = "3600"
+}
+
+resource "aws_route53_record" "pycon_2024" {
+  zone_id = aws_route53_zone.pyconit.id
+  name    = "2024.pycon.it"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com"]
+  ttl     = "3600"
+}
