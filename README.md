@@ -2,7 +2,7 @@
     <img src="https://avatars1.githubusercontent.com/u/3573467?s=96" alt="Python Italia Logo" />
 </p>
 
-# PyCon Italia website
+# PyCon Italia website 2024
 
 > The monorepo for the new PyCon Italia website, based on Django, Strawberry,
 > Next.js and React.
