@@ -71,18 +71,23 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
 export const getStaticPaths: GetStaticPaths = async () => {
   const client = getApolloClient();
 
-  const {
-    data: { cmsPages: italianPages },
-  } = await queryAllPages(client, {
-    code: process.env.conferenceCode,
-    language: "it",
-  });
-  const {
-    data: { cmsPages: englishPages },
-  } = await queryAllPages(client, {
-    code: process.env.conferenceCode,
-    language: "en",
-  });
+  const [
+    {
+      data: { cmsPages: italianPages },
+    },
+    {
+      data: { cmsPages: englishPages },
+    },
+  ] = await Promise.all([
+    queryAllPages(client, {
+      code: process.env.conferenceCode,
+      language: "it",
+    }),
+    queryAllPages(client, {
+      code: process.env.conferenceCode,
+      language: "en",
+    }),
+  ]);
 
   const paths = [
     ...italianPages.map((page) => ({

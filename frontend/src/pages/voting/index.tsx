@@ -1,11 +1,7 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
 import {
   MultiplePartsCardCollection,
   Heading,
   Section,
-  Grid,
   Text,
   Page,
   Link,
@@ -15,11 +11,10 @@ import {
   MultiplePartsCard,
   Button,
   HorizontalStack,
+  FilterBar,
 } from "@python-italia/pycon-styleguide";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { useFormState } from "react-use-form-state";
-import { jsx, Select } from "theme-ui";
 
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
@@ -27,7 +22,6 @@ import { useRouter } from "next/router";
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { MetaTags } from "~/components/meta-tags";
-import { TagsFilter } from "~/components/tags-filter";
 import { VotingCard } from "~/components/voting-card";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -39,12 +33,11 @@ import {
 } from "~/types";
 
 type Filters = {
-  language: string;
-  vote: string;
-  tags: string[];
-  type: string;
-  audienceLevel: string;
-  page: number;
+  language?: string;
+  voted?: string;
+  tags?: string[];
+  type?: string;
+  audienceLevel?: string;
 };
 
 const getAsArray = (value: string | string[]): string[] => {
@@ -76,6 +69,12 @@ const toBoolean = (value: string): boolean | null => {
 export const VotingPage = () => {
   const router = useRouter();
   const language = useCurrentLanguage();
+  const [currentFilters, setCurrentFilters] = useState<
+    Record<string, string[]>
+  >({
+    tags: [],
+  });
+  const [currentPage, setCurrentPage] = useState(1);
 
   const onUpdateFilters = (nextStateValues) => {
     const qs = new URLSearchParams();
@@ -94,48 +93,23 @@ export const VotingPage = () => {
     const currentPath = router.pathname;
     router.replace("/voting", `${currentPath}?${qs.toString()}`);
 
-    refetch({
-      conference: process.env.conferenceCode,
-      page: parseInt(nextStateValues.page),
-      language: nextStateValues.language,
-      voted: toBoolean(nextStateValues.vote),
-      tags: nextStateValues.tags,
-      type: nextStateValues.type,
-      audienceLevel: nextStateValues.audienceLevel,
-    });
+    setCurrentFilters(nextStateValues);
   };
-
-  const [filters, { select, raw }] = useFormState<Filters>(
-    {
-      tags: [],
-      language: "",
-    },
-    {
-      onChange(e, stateValues, nextStateValues) {
-        filters.setField("page", 1);
-        onUpdateFilters({
-          ...nextStateValues,
-          page: 1,
-        });
-      },
-    },
-  );
-  const currentPage = parseInt(filters.values.page);
 
   useEffect(() => {
     if (!router.isReady) {
       return;
     }
 
-    filters.setField("vote", router.query.vote as string);
-    filters.setField("language", (router.query.language as string) ?? "");
-    filters.setField("tags", getAsArray(router.query.tags));
-    filters.setField("type", (router.query.type as string) ?? "");
-    filters.setField("page", parseInt(router.query.page as string) || 1);
-    filters.setField(
-      "audienceLevel",
-      (router.query.audienceLevel as string) ?? "",
-    );
+    setCurrentFilters({
+      languages: getAsArray(router.query.language) ?? [],
+      voted: router.query.voted ? [router.query.voted.toString()] : [],
+      tags: getAsArray(router.query.tags),
+      types: getAsArray(router.query.type) ?? [],
+      audienceLevels: getAsArray(router.query.audienceLevel) ?? [],
+    });
+
+    setCurrentPage(parseInt(router.query.page as string) || 1);
   }, [router.isReady]);
 
   const { data: votingMetadata } = useVotingMetadataQuery({
@@ -144,26 +118,23 @@ export const VotingPage = () => {
     },
   });
 
-  const { loading, error, data, refetch } = useVotingSubmissionsQuery({
+  const { loading, error, data } = useVotingSubmissionsQuery({
     variables: {
       conference: process.env.conferenceCode,
       page: currentPage,
-      language: filters.values.language,
-      voted: toBoolean(filters.values.vote),
-      tags: filters.values.tags,
-      type: filters.values.type,
-      audienceLevel: filters.values.audienceLevel,
+      language,
+      languages: currentFilters.languages,
+      voted: toBoolean(currentFilters.voted?.[0]),
+      tags: currentFilters.tags,
+      types: currentFilters.types,
+      audienceLevels: currentFilters.audienceLevels,
     },
     skip: !router.isReady || isNaN(currentPage),
     errorPolicy: "all",
   });
 
   const navigateToPage = (page: number) => {
-    filters.setField("page", page);
-    onUpdateFilters({
-      ...filters.values,
-      page: page,
-    });
+    setCurrentPage(page);
   };
 
   const cannotVoteErrors =
@@ -179,6 +150,87 @@ export const VotingPage = () => {
   const votingDeadline = votingMetadata?.conference?.isVotingOpen
     ? votingMetadata?.conference.votingDeadline?.end
     : undefined;
+
+  const availableFilters = [
+    {
+      id: "languages",
+      label: <FormattedMessage id="scheduleView.filter.byLanguage" />,
+      options: [
+        {
+          label: <FormattedMessage id="global.all" />,
+          value: "",
+        },
+        {
+          label: <FormattedMessage id="global.english" />,
+          value: "en",
+        },
+        {
+          label: <FormattedMessage id="global.italian" />,
+          value: "it",
+        },
+      ],
+    },
+    {
+      id: "voted",
+      label: "By Voted",
+      options: [
+        {
+          label: <FormattedMessage id="global.all" />,
+          value: "",
+        },
+        {
+          label: <FormattedMessage id="voting.notVoted" />,
+          value: "false",
+        },
+        {
+          label: <FormattedMessage id="voting.votedOnly" />,
+          value: "true",
+        },
+      ],
+    },
+    {
+      id: "types",
+      label: <FormattedMessage id="scheduleView.filter.byType" />,
+      options: [
+        {
+          label: <FormattedMessage id="global.all" />,
+          value: "",
+        },
+        ...votingMetadata?.conference.submissionTypes.map((type) => ({
+          label: type.name,
+          value: type.id,
+        })),
+      ],
+    },
+    {
+      id: "audienceLevels",
+      label: <FormattedMessage id="scheduleView.filter.byAudience" />,
+      options: [
+        {
+          label: <FormattedMessage id="global.all" />,
+          value: "",
+        },
+        ...votingMetadata?.conference.audienceLevels.map((a) => ({
+          label: a.name,
+          value: a.id,
+        })),
+      ],
+    },
+    {
+      id: "tags",
+      label: <FormattedMessage id="voting.filter.byTag" />,
+      options: [
+        {
+          label: <FormattedMessage id="global.all" />,
+          value: "",
+        },
+        ...votingMetadata?.votingTags.map((tag) => ({
+          label: tag.name,
+          value: tag.id,
+        })),
+      ],
+    },
+  ];
 
   return (
     <Page endSeparator={false}>
@@ -213,60 +265,6 @@ export const VotingPage = () => {
         <BasicButton href="/voting-info">
           <FormattedMessage id="global.learnMore" />
         </BasicButton>
-        <Spacer size="large" />
-
-        <Grid cols={2}>
-          <Select {...select("language")} disabled={userCannotVote}>
-            <FormattedMessage id="voting.allLanguages">
-              {(text) => <option value="">{text}</option>}
-            </FormattedMessage>
-            {votingMetadata?.conference.languages.map((language) => (
-              <option key={language.id} value={language.code}>
-                {language.name}
-              </option>
-            ))}
-          </Select>
-
-          <Select {...select("vote")} disabled={userCannotVote}>
-            <FormattedMessage id="voting.allSubmissions">
-              {(text) => <option value={null}>{text}</option>}
-            </FormattedMessage>
-            <FormattedMessage id="voting.notVoted">
-              {(text) => <option value="false">{text}</option>}
-            </FormattedMessage>
-            <FormattedMessage id="voting.votedOnly">
-              {(text) => <option value="true">{text}</option>}
-            </FormattedMessage>
-          </Select>
-
-          <TagsFilter
-            {...raw("tags")}
-            tags={votingMetadata?.votingTags ?? []}
-            disabled={userCannotVote}
-          />
-
-          <Select {...select("audienceLevel")} disabled={userCannotVote}>
-            <FormattedMessage id="voting.allAudienceLevels">
-              {(txt) => <option value="">{txt}</option>}
-            </FormattedMessage>
-            {votingMetadata?.conference.audienceLevels.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.name}
-              </option>
-            ))}
-          </Select>
-
-          <Select {...select("type")} disabled={userCannotVote}>
-            <FormattedMessage id="voting.allSubmissionTypes">
-              {(txt) => <option value="">{txt}</option>}
-            </FormattedMessage>
-            {votingMetadata?.conference.submissionTypes.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.name}
-              </option>
-            ))}
-          </Select>
-        </Grid>
       </Section>
 
       <Section>
@@ -314,9 +312,10 @@ export const VotingPage = () => {
 
         {isVotingClosed && (
           <>
-            <Heading sx={{ mb: 3 }}>
+            <Heading>
               <FormattedMessage id="voting.closed.heading" />
             </Heading>
+            <Spacer size="small" />
             <Text>
               <FormattedMessage
                 id="voting.closed.body"
@@ -340,10 +339,21 @@ export const VotingPage = () => {
           <>
             <MultiplePartsCardCollection>
               <MultiplePartsCard>
-                <CardPart contentAlign="left">
-                  <Heading size={2}>
-                    <FormattedMessage id="voting.proposals" />
-                  </Heading>
+                <CardPart contentAlign="left" overflow={true}>
+                  <HorizontalStack
+                    justifyContent="spaceBetween"
+                    alignItems="center"
+                  >
+                    <Heading size={2}>
+                      <FormattedMessage id="voting.proposals" />
+                    </Heading>
+                    <FilterBar
+                      placement="left"
+                      onApply={onUpdateFilters}
+                      appliedFilters={currentFilters}
+                      filters={availableFilters}
+                    />
+                  </HorizontalStack>
                 </CardPart>
               </MultiplePartsCard>
               {data.submissions.items.map((submission) => (
