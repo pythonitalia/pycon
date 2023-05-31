@@ -210,7 +210,7 @@ resource "aws_route53_record" "trento_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "trento.python.it"
   type    = "CNAME"
-  records = ["python.it."]
+  records = ["pythonitalia.github.io."]
   ttl     = "3600"
 }
 
