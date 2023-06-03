@@ -781,6 +781,7 @@ reflects what everyone wants to see!`,
     "voting.errors.cannotVote.linkVotingInfo.text": "voting guidelines",
     "voting.errors.cannotVote.linkTicket.text": "here",
     "voting.loading": "Loading",
+    "voting.filter.byTag": "By Tag",
     "voting.fullDetails": "Full details",
     "voting.allTopics": "All topics",
     "voting.allLanguages": "All languages",
@@ -1915,6 +1916,7 @@ Affrettati a comprare il biglietto!`,
     "streaming.noStreaming":
       "La conferenza non è attualmente live, perchè non dai uno sguardo al nostro canale YouTube?",
     "header.streaming": "Guarda live",
+    "voting.filter.byTag": "Per Tag",
   },
 };
 

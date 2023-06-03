@@ -364,7 +364,7 @@ export const VotingPage = () => {
         )}
         <Spacer size="xl" />
 
-        {data?.submissions?.pageInfo.totalPages && (
+        {data?.submissions?.pageInfo.totalPages > 0 && (
           <Text as="p" size="label1" align="center">
             <FormattedMessage
               id="voting.pagination"
