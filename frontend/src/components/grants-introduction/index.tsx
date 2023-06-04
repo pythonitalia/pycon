@@ -1,12 +1,13 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { Link } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Grid, Heading, jsx, Text } from "theme-ui";
 
 import { CFPIllustration } from "~/components/illustrations/cfp";
-import { Link } from "~/components/link";
+import { createHref } from "~/components/link";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { useCurrentLanguage } from "~/locale/context";
 
@@ -73,7 +74,13 @@ export const Introduction = ({ end }: { end: string | null }) => {
             </Text>
           )}
 
-          <Link path="/grants-info" variant="button" sx={{ mt: 4 }}>
+          <Link
+            href={createHref({
+              path: `/grants-info`,
+              locale: language,
+            })}
+            sx={{ mt: 4 }}
+          >
             <FormattedMessage id="global.learnMore" />
           </Link>
         </Box>

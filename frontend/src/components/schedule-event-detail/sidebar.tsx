@@ -28,6 +28,7 @@ type Props = {
   audienceLevel?: string;
   bookable: boolean;
   spacesLeft?: number;
+  children?: React.ReactNode;
 };
 
 export const Sidebar = ({
@@ -37,6 +38,7 @@ export const Sidebar = ({
   bookable,
   language,
   audienceLevel,
+  children,
 }: Props) => {
   const lang = useCurrentLanguage();
   const [isLoggedIn] = useLoginState();
@@ -137,7 +139,6 @@ export const Sidebar = ({
               ),
             ]}
           />
-
           {!isLoadingBookingState &&
             isLoggedIn &&
             (spacesLeft > 0 || userHasSpot) && (
@@ -153,6 +154,7 @@ export const Sidebar = ({
             )}
         </VerticalStack>
       )}
+      {children}
     </>
   );
 };

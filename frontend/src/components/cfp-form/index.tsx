@@ -2,7 +2,7 @@
 
 /** @jsx jsx */
 import { ApolloError } from "@apollo/client";
-import { Link } from "@python-italia/pycon-styleguide";
+import { Button, Link } from "@python-italia/pycon-styleguide";
 import React, { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
@@ -29,7 +29,6 @@ import {
 } from "~/types";
 
 import { Alert } from "../alert";
-import { Button } from "../button/button";
 import { FileInput } from "../file-input";
 import { TagLine } from "../input-tag";
 import { InputWrapper } from "../input-wrapper";
@@ -741,7 +740,7 @@ export const CfpForm = ({
             />
           }
         />
-        <Button loading={submissionLoading}>
+        <Button role="secondary">
           <FormattedMessage id="cfp.submit" />
         </Button>
       </form>

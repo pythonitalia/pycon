@@ -1,89 +1,26 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
-import { Fragment } from "react";
+import {
+  Button,
+  Page,
+  Text,
+  VerticalStack,
+} from "@python-italia/pycon-styleguide";
+import React from "react";
 import { FormattedMessage } from "react-intl";
-import { Container, jsx } from "theme-ui";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { Alert } from "~/components/alert";
-import { MetaTags } from "~/components/meta-tags";
-import { useLoginState } from "~/components/profile/hooks";
-import { Submission } from "~/components/submission";
+import { createHref } from "~/components/link";
+import { ScheduleEventDetail } from "~/components/schedule-event-detail";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
+import { getType } from "~/pages/event/[slug]";
 import {
   queryIsVotingClosed,
-  SubmissionQuery,
-  useIsVotingClosedQuery,
+  querySubmission,
   useSubmissionQuery,
 } from "~/types";
-
-const NotLoggedIn = ({ title }: { title?: string }) => (
-  <Container>
-    {title ? (
-      <MetaTags title={title} />
-    ) : (
-      <FormattedMessage id="submission.notFound">
-        {(text) => <MetaTags title={text} />}
-      </FormattedMessage>
-    )}
-
-    <Alert variant="info">
-      You need to logged in and have a ticket to see this submission
-    </Alert>
-  </Container>
-);
-
-const Loading = () => (
-  <FormattedMessage id="submission.loading">
-    {(text) => (
-      <Fragment>
-        <MetaTags title={text} />
-
-        <Alert variant="info">{text}</Alert>
-      </Fragment>
-    )}
-  </FormattedMessage>
-);
-
-const NotFound = () => (
-  <FormattedMessage id="submission.notFound">
-    {(text) => (
-      <Fragment>
-        <MetaTags title={text} />
-
-        <Alert variant="alert">{text}</Alert>
-      </Fragment>
-    )}
-  </FormattedMessage>
-);
-
-const Content = ({
-  submission,
-}: {
-  submission?: SubmissionQuery["submission"];
-}) => {
-  const [loggedIn, _] = useLoginState();
-  const code = process.env.conferenceCode;
-
-  const { data } = useIsVotingClosedQuery({
-    variables: { conference: code },
-  });
-
-  if (!data?.conference.isVotingClosed && !loggedIn) {
-    return <NotLoggedIn title={submission?.title} />;
-  }
-
-  if (!submission) {
-    return <NotFound />;
-  }
-
-  return <Submission submission={submission} />;
-};
 
 export const SubmissionPage = () => {
   const router = useRouter();
@@ -91,42 +28,140 @@ export const SubmissionPage = () => {
 
   const id = router.query.id as string;
 
-  const { loading, data } = useSubmissionQuery({
+  const {
+    data: { submission: englishSubmission },
+  } = useSubmissionQuery({
     errorPolicy: "all",
     variables: {
       id,
-      language,
+      language: "en",
     },
-    skip: typeof window === "undefined",
   });
 
+  const {
+    data: { submission: italianSubmission },
+  } = useSubmissionQuery({
+    errorPolicy: "all",
+    variables: {
+      id,
+      language: "it",
+    },
+  });
+
+  const [viewInLanguage, setViewInLanguage] = React.useState<string>(language);
+  const submission =
+    viewInLanguage === "it" ? italianSubmission : englishSubmission;
+
+  const otherLanguage = viewInLanguage === "it" ? "en" : "it";
+
   return (
-    <Container sx={{ maxWidth: "container", px: 3 }}>
-      {loading && <Loading />}
-      {!loading && <Content submission={data?.submission} />}
-    </Container>
+    <Page endSeparator={false}>
+      <ScheduleEventDetail
+        id={submission.id}
+        type={getType(submission.type.name)}
+        eventTitle={submission.title}
+        elevatorPitch={submission.elevatorPitch}
+        abstract={submission.abstract}
+        tags={submission?.tags.map((tag) => tag.name)}
+        language={
+          submission.languages.length > 1
+            ? viewInLanguage
+            : submission.languages[0].code
+        }
+        audienceLevel={submission?.audienceLevel.name}
+        startTime={null}
+        endTime={null}
+        speakers={[]}
+        bookable={false}
+        spacesLeft={0}
+        sidebarExtras={
+          <VerticalStack alignItems="start" gap="small">
+            {submission.canEdit ? (
+              <Button
+                size="small"
+                role="primary"
+                href={createHref({
+                  path: `/submission/[id]/edit`,
+                  params: {
+                    id: submission.id,
+                  },
+                  locale: language,
+                })}
+              >
+                <FormattedMessage id="profile.myProposals.edit" />
+              </Button>
+            ) : null}
+
+            {submission.languages.length > 1 && (
+              <>
+                <Text as="p" size="label3">
+                  <FormattedMessage
+                    id="submission.languageSwitch"
+                    values={{
+                      language: (
+                        <FormattedMessage
+                          id={`talk.language.${otherLanguage}`}
+                        />
+                      ),
+                    }}
+                  />
+                </Text>
+                <Button
+                  size="small"
+                  role="secondary"
+                  onClick={(_) => {
+                    setViewInLanguage(otherLanguage);
+                  }}
+                >
+                  <FormattedMessage
+                    id="profile.myProposals.viewIn"
+                    values={{
+                      language: (
+                        <FormattedMessage
+                          id={`talk.language.${otherLanguage}`}
+                        />
+                      ),
+                    }}
+                  />
+                </Button>
+              </>
+            )}
+          </VerticalStack>
+        }
+      />
+    </Page>
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  const client = getApolloClient();
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  locale,
+  params,
+}) => {
+  const client = getApolloClient(null, req.cookies);
 
   await Promise.all([
     prefetchSharedQueries(client, locale),
     queryIsVotingClosed(client, {
       conference: process.env.conferenceCode,
     }),
+    querySubmission(client, {
+      id: params.id as string,
+      language: "en",
+    }),
+    querySubmission(client, {
+      id: params.id as string,
+      language: "it",
+    }),
   ]);
 
-  return addApolloState(client, {
-    props: {},
-  });
+  return addApolloState(
+    client,
+    {
+      props: {},
+    },
+    null,
+  );
 };
-
-export const getStaticPaths: GetStaticPaths = async () =>
-  Promise.resolve({
-    paths: [],
-    fallback: "blocking",
-  });
 
 export default SubmissionPage;

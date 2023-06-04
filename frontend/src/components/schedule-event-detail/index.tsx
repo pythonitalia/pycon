@@ -11,6 +11,7 @@ import {
 import { LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import { parseISO, isAfter, isBefore } from "date-fns";
 import { zonedTimeToUtc } from "date-fns-tz";
+import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { compile } from "~/helpers/markdown";
@@ -39,6 +40,7 @@ type Props = {
   bookable?: boolean;
   spacesLeft?: number;
   slidoUrl?: string;
+  sidebarExtras?: React.ReactNode;
 };
 
 const isEventLive = (startTime: string, endTime: string) => {
@@ -46,7 +48,7 @@ const isEventLive = (startTime: string, endTime: string) => {
   const utcStart = zonedTimeToUtc(parseISO(startTime), "Europe/Rome");
   const utcEnd = zonedTimeToUtc(parseISO(endTime), "Europe/Rome");
   return isAfter(now, utcStart) && isBefore(now, utcEnd);
-};
+}
 
 export const ScheduleEventDetail = ({
   id,
@@ -64,6 +66,7 @@ export const ScheduleEventDetail = ({
   bookable = false,
   slidoUrl,
   spacesLeft,
+  sidebarExtras,
 }: Props) => {
   const lang = useCurrentLanguage();
   const parsedStartTime = parseISO(startTime);
@@ -128,7 +131,9 @@ export const ScheduleEventDetail = ({
               spacesLeft={spacesLeft}
               language={language}
               audienceLevel={audienceLevel}
-            />
+            >
+              {sidebarExtras}
+            </Sidebar>
           </GridColumn>
           <GridColumn colSpan={8}>
             {elevatorPitch && (

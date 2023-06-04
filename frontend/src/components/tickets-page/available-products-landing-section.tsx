@@ -4,7 +4,6 @@ import {
   Spacer,
   Section,
   Heading,
-  Grid,
   Text,
   Button,
 } from "@python-italia/pycon-styleguide";
