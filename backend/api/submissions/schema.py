@@ -29,11 +29,11 @@ class SubmissionsQuery:
         self,
         info,
         code: str,
-        language: typing.Optional[str] = None,
+        languages: typing.Optional[list[str]] = None,
         voted: typing.Optional[bool] = None,
         tags: typing.Optional[list[str]] = None,
-        type: typing.Optional[str] = None,
-        audience_level: typing.Optional[str] = None,
+        types: typing.Optional[list[str]] = None,
+        audience_levels: typing.Optional[list[str]] = None,
         page: typing.Optional[int] = 1,
         page_size: typing.Optional[int] = 50,
     ) -> typing.Optional[Paginated[Submission]]:
@@ -67,8 +67,8 @@ class SubmissionsQuery:
             .filter(status=SubmissionModel.STATUS.proposed)
         )
 
-        if language:
-            qs = qs.filter(languages__code=language)
+        if languages:
+            qs = qs.filter(languages__code__in=languages)
 
         if tags:
             qs = qs.filter(tags__id__in=tags)
@@ -80,11 +80,11 @@ class SubmissionsQuery:
                 id__in=[s.id for s in qs.filter(votes__user_id=request.user.id)]
             )
 
-        if type:
-            qs = qs.filter(type__id=type)
+        if types:
+            qs = qs.filter(type__id__in=types)
 
-        if audience_level:
-            qs = qs.filter(audience_level__id=audience_level)
+        if audience_levels:
+            qs = qs.filter(audience_level__id__in=audience_levels)
 
         qs = qs.distinct()
         total_items = qs.count()
