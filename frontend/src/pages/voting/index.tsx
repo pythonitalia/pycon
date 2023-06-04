@@ -76,12 +76,12 @@ export const VotingPage = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
 
-  const onUpdateFilters = (nextStateValues) => {
+  const updateUrl = (filters, page) => {
     const qs = new URLSearchParams();
-    const keys = Object.keys(nextStateValues) as (keyof Filters)[];
+    const keys = Object.keys(filters) as (keyof Filters)[];
 
     keys.forEach((key) => {
-      const value = nextStateValues[key];
+      const value = filters[key];
 
       if (Array.isArray(value)) {
         value.forEach((item) => qs.append(key, item));
@@ -89,10 +89,15 @@ export const VotingPage = () => {
         qs.append(key, value);
       }
     });
+    qs.append("page", page.toString());
 
     const currentPath = router.pathname;
     router.replace("/voting", `${currentPath}?${qs.toString()}`);
+  };
 
+  const onUpdateFilters = (nextStateValues) => {
+    updateUrl(nextStateValues, 1);
+    setCurrentPage(1);
     setCurrentFilters(nextStateValues);
   };
 
@@ -135,6 +140,7 @@ export const VotingPage = () => {
 
   const navigateToPage = (page: number) => {
     setCurrentPage(page);
+    updateUrl(currentFilters, page);
   };
 
   const cannotVoteErrors =

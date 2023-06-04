@@ -70,7 +70,6 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const client = getApolloClient();
-  // test
   const [
     {
       data: { cmsPages: italianPages },
