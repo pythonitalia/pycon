@@ -214,6 +214,14 @@ resource "aws_route53_record" "trento_python_it_cname" {
   ttl     = "3600"
 }
 
+resource "aws_route53_record" "campania_python_it_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "campania.python.it"
+  type    = "CNAME"
+  records = ["pycampania.it."]
+  ttl     = "3600"
+}
+
 resource "aws_route53_record" "wiki_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "wiki.python.it"
