@@ -166,6 +166,22 @@ resource "aws_route53_record" "roma_python_it_cname" {
   ttl     = "3600"
 }
 
+resource "aws_route53_record" "testcommunity_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "testcommunity.python.it"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com."]
+  ttl     = "3600"
+}
+
+resource "aws_route53_record" "anothercommunity_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "anothercommunity.python.it"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com."]
+  ttl     = "3600"
+}
+
 resource "aws_route53_record" "smtp_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "smtp.python.it"
