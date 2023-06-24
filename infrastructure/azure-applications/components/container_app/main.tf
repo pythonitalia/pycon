@@ -133,5 +133,5 @@ resource "aws_route53_record" "domain" {
   name    = var.domain
   type    = "CNAME"
   ttl     = "30"
-  records = [data.azurerm_container_app.ca_app.ingress[0].fqdn]
+  records = [azurerm_container_app.ca_app.ingress[0].fqdn]
 }
