@@ -200,6 +200,15 @@ resource "aws_route53_record" "bari_cname" {
 }
 
 
+resource "aws_route53_record" "varese_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "varese.python.it"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com."]
+  ttl     = "3600"
+}
+
+
 resource "aws_route53_record" "smtp_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "smtp.python.it"
