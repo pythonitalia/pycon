@@ -199,6 +199,14 @@ resource "aws_route53_record" "bari_cname" {
   ttl     = "3600"
 }
 
+resource "aws_route53_record" "trento_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "trento.python.it"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com."]
+  ttl     = "3600"
+}
+
 
 resource "aws_route53_record" "varese_cname" {
   zone_id = aws_route53_zone.pythonit.id
