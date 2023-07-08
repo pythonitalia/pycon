@@ -25,10 +25,3 @@ module "anonymizer" {
 
   resource_group_name = local.resource_group_name
 }
-
-module "certificates" {
-  source = "./certificates"
-
-  resource_group_name     = local.resource_group_name
-  resource_group_location = local.resource_group_location
-}

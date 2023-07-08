@@ -1,3 +1,10 @@
+locals {
+  cms = var.is_prod ? "cms.python.it" : "${var.workspace}-cms.python.it"
+  apps_domains = [
+    local.cms,
+  ]
+}
+
 resource "azurerm_container_app_environment" "env" {
   name                       = "pythonit-${var.workspace}-env"
   location                   = "westeurope"
@@ -6,19 +13,18 @@ resource "azurerm_container_app_environment" "env" {
   infrastructure_subnet_id   = azurerm_subnet.apps.id
 }
 
-data "azurerm_key_vault" "certs" {
-  name                = "pythonit-certs"
-  resource_group_name = "pythonit-global"
+data "azapi_resource" "env" {
+  type                   = "Microsoft.App/managedEnvironments@2022-10-01"
+  resource_id            = data.azurerm_container_app_environment.env.id
+  response_export_values = ["properties.customDomainConfiguration.customDomainVerificationId"]
 }
 
-data "azurerm_key_vault_certificate_data" "pythonit" {
-  name         = "pythonit"
-  key_vault_id = data.azurerm_key_vault.certs.id
-}
+resource "aws_route53_record" "txt_verification" {
+  for_each = local.apps_domains
 
-resource "azurerm_container_app_environment_certificate" "pythonit" {
-  name                         = "pythonit"
-  container_app_environment_id = azurerm_container_app_environment.env.id
-  certificate_blob_base64      = base64encode("${data.azurerm_key_vault_certificate_data.pythonit.pem}\n${data.azurerm_key_vault_certificate_data.pythonit.key}")
-  certificate_password         = ""
+  zone_id = data.aws_route53_zone.zone.zone_id
+  name    = "asuid.${each.key}"
+  type    = "TXT"
+  ttl     = "30"
+  records = [jsondecode(data.azapi_resource.env.output).properties.customDomainConfiguration.customDomainVerificationId]
 }

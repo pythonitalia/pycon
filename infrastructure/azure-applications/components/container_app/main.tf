@@ -19,24 +19,11 @@ data "azurerm_resource_group" "rg" {
   name = var.resource_group_name
 }
 
-data "azapi_resource" "env" {
-  type                   = "Microsoft.App/managedEnvironments@2022-10-01"
-  resource_id            = data.azurerm_container_app_environment.env.id
-  response_export_values = ["properties.customDomainConfiguration.customDomainVerificationId"]
-}
-
-
-data "azurerm_container_app_environment_certificate" "certificate" {
-  name                         = replace(local.sld_tld, ".", "")
-  container_app_environment_id = data.azurerm_container_app_environment.env.id
-}
-
 resource "azurerm_container_app" "ca_app" {
   name                         = "pythonit-${var.workspace}-${local.container_app_name}"
   container_app_environment_id = data.azurerm_container_app_environment.env.id
   resource_group_name          = var.resource_group_name
   revision_mode                = "Single"
-  depends_on                   = [aws_route53_record.txt_verification]
 
   dynamic "secret" {
     for_each = local.secret_env_vars
@@ -54,8 +41,7 @@ resource "azurerm_container_app" "ca_app" {
       for_each = var.domain != null ? [1] : []
 
       content {
-        name           = var.domain
-        certificate_id = data.azurerm_container_app_environment_certificate.certificate.id
+        name = var.domain
       }
     }
 
@@ -85,45 +71,18 @@ resource "azurerm_container_app" "ca_app" {
           secret_name = env.value.secret ? lower(replace(env.value.name, "_", "-")) : null
         }
       }
-
-      # liveness_probe {
-      #   transport        = "HTTP"
-      #   path             = var.healthcheck_path
-      #   port             = var.port
-      #   interval_seconds = 1
-      #   initial_delay    = 3
-      # }
-
-      # startup_probe {
-      #   transport        = "HTTP"
-      #   path             = var.healthcheck_path
-      #   port             = var.port
-      #   interval_seconds = 1
-      # }
-
-      # readiness_probe {
-      #   transport               = "HTTP"
-      #   path                    = var.healthcheck_path
-      #   port                    = var.port
-      #   interval_seconds        = 1
-      #   success_count_threshold = 1
-      # }
     }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      ingress.custom_domain.certificate_id
+    ]
   }
 }
 
 data "aws_route53_zone" "zone" {
   name = local.sld_tld
-}
-
-resource "aws_route53_record" "txt_verification" {
-  count = var.domain != null ? 1 : 0
-
-  zone_id = data.aws_route53_zone.zone.zone_id
-  name    = "asuid.${var.domain}"
-  type    = "TXT"
-  ttl     = "30"
-  records = [jsondecode(data.azapi_resource.env.output).properties.customDomainConfiguration.customDomainVerificationId]
 }
 
 resource "aws_route53_record" "domain" {
