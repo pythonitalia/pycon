@@ -42,7 +42,7 @@ resource "aws_route53_record" "python_it_txt" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "python.it"
   type    = "TXT"
-  records = ["v=spf1 include:pycon.it ~all", "google-site-verification=iuDKJUkUK41L-cG5bU3IcNrBeCmnvV1BlCX2m4W5LJY"]
+  records = ["v=spf1 include:pycon.it ~all", "google-site-verification=iuDKJUkUK41L-cG5bU3IcNrBeCmnvV1BlCX2m4W5LJY", "protonmail-verification=aa66b78b1ea723283e5525cdb1000567c801c72b"]
   ttl     = "172800"
 }
 
