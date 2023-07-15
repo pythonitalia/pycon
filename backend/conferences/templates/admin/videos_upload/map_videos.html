@@ -13,7 +13,7 @@
     <p>If you want to clear your manual changes, you can run the automatic matcher again.</p>
     <label>
       <input type="checkbox" name="ignore_cache" value="1" />
-      Check here if you want to fetch the list of files again from Storage. Otherwise, if possible, it will use a cached list.
+      Check here if you uploaded new videos files. Otherwise a cached list file will be used.
     </label>
     <div>
       <input type="submit" value="Run Automatic matcher" name="run_matcher" />
@@ -21,7 +21,7 @@
   </div>
   {% csrf_token %}
 
-  <table class="full">
+  <table style="width: 100%">
     <thead>
       <tr>
         <th>
@@ -62,7 +62,7 @@
             {% endif %}
           </td>
           <td>
-            <input type="text" name="video_uploaded_path_{{event.id}}" value="{{ event.video_uploaded_path }}" />
+            <input style="width: 400px" type="text" name="video_uploaded_path_{{event.id}}" value="{{ event.video_uploaded_path }}" />
           </td>
         </tr>
       {% endfor %}
