@@ -227,7 +227,12 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
         all_events = ScheduleItem.objects.filter(conference_id=object_id)
 
         for event in all_events:
-            video_uploaded_path = data.get(f"video_uploaded_path_{event.id}", "")
+            key_name = f"video_uploaded_path_{event.id}"
+
+            if key_name not in data:
+                continue
+
+            video_uploaded_path = data.get(f"video_uploaded_path_{event.id}")
             event.video_uploaded_path = video_uploaded_path
             event.save(update_fields=["video_uploaded_path"])
 
