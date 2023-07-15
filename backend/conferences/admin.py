@@ -197,7 +197,7 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                     ignore_cache=data.get("ignore_cache", False) == "1",
                 )
             elif "manual_changes" in data:
-                self.save_manual_changes(object_id, data)
+                self.save_manual_changes(request, object_id, data)
 
             return redirect(
                 reverse("admin:map_videos", kwargs={"object_id": object_id})
@@ -223,7 +223,7 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
 
         return render(request, "admin/videos_upload/map_videos.html", context)
 
-    def save_manual_changes(self, object_id, data):
+    def save_manual_changes(self, request, object_id, data):
         conference = Conference.objects.get(pk=object_id)
         all_events = conference.schedule_items.all()
 
@@ -231,6 +231,12 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
             video_uploaded_path = data.get(f"video_uploaded_path_{event.id}", "")
             event.video_uploaded_path = video_uploaded_path
             event.save(update_fields=["video_uploaded_path"])
+
+        self.message_user(
+            request,
+            "Manual changes saved.",
+            messages.SUCCESS,
+        )
 
     def run_video_uploaded_path_matcher(self, request, object_id, ignore_cache):
         conference = Conference.objects.get(pk=object_id)
