@@ -3,6 +3,8 @@ from django.contrib import admin, messages
 from django.core import exceptions
 from django.forms import BaseInlineFormSet
 from django.forms.models import ModelForm
+from django.shortcuts import render
+from django.urls import path
 from django.utils.translation import gettext_lazy as _
 from ordered_model.admin import (
     OrderedInlineModelAdminMixin,
@@ -169,6 +171,18 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
         ),
     )
     inlines = [DeadlineInline, DurationInline, SponsorLevelInline, IncludedEventInline]
+
+    def get_urls(self):
+        return super().get_urls() + [
+            path(
+                "<object_id:int>/video-upload/map-videos",
+                self.admin_site.admin_view(self.map_videos),
+                name="map_videos",
+            )
+        ]
+
+    def map_videos(self, request):
+        return render(request, "admin/videos_upload/map_videos.html")
 
 
 @admin.register(Topic)

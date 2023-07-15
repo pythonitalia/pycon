@@ -813,6 +813,7 @@ files = [
 ]
 
 [package.dependencies]
+azure-storage-blob = {version = ">=12.0.0", optional = true, markers = "extra == \"azure\""}
 Django = ">=3.2"
 
 [package.extras]
@@ -3028,4 +3029,4 @@ lambda = ["awslambdaric"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "908779384f426d26fcae4fcd741541d9b421f2dbd3b613ff0dd130d1d20a74c9"
+content-hash = "7d6b0119fc8a87d46c8dcc9fc191634ac0397d306a1325077f312aeaf195d479"

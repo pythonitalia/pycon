@@ -216,6 +216,13 @@ class ScheduleItem(TimeStampedModel):
 
     slido_url = models.URLField(_("Sli.do URL"), blank=True, default="")
 
+    video_uploaded_path = models.CharField(
+        _("video upload path"),
+        max_length=1024,
+        blank=True,
+        default="",
+    )
+
     @cached_property
     def speakers(self):
         speakers = [speaker.user_id for speaker in self.additional_speakers.all()]
