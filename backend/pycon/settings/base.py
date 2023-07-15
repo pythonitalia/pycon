@@ -162,6 +162,9 @@ STORAGES = {
             "DEFAULT_FILE_STORAGE", default="pycon.storages.CustomS3Boto3Storage"
         )
     },
+    "conferencevideos": {
+        "BACKEND": "pycon.storages.ConferenceVideosStorage",
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
@@ -219,8 +222,12 @@ VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN = env(
     "VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN", default=""
 ).strip()
 
-AZURE_STORAGE_ACCOUNT_NAME = env("AZURE_STORAGE_ACCOUNT_NAME", default="")
-AZURE_STORAGE_ACCOUNT_KEY = env("AZURE_STORAGE_ACCOUNT_KEY", default="")
+AZURE_ACCOUNT_NAME = AZURE_STORAGE_ACCOUNT_NAME = env(
+    "AZURE_STORAGE_ACCOUNT_NAME", default=""
+)
+AZURE_ACCOUNT_KEY = AZURE_STORAGE_ACCOUNT_KEY = env(
+    "AZURE_STORAGE_ACCOUNT_KEY", default=""
+)
 
 USER_ID_HASH_SALT = env("USER_ID_HASH_SALT", default="")
 

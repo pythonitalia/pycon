@@ -87,7 +87,8 @@ class Slot(models.Model):
     TYPES = Choices(
         # Type of slot where something is happening in the conference
         ("default", _("Default")),
-        # Free time, that can used to change rooms or represent time between social events
+        # Free time, that can used to change rooms
+        # or represent time between social events
         ("free_time", _("Free Time")),
     )
 
@@ -217,7 +218,7 @@ class ScheduleItem(TimeStampedModel):
     slido_url = models.URLField(_("Sli.do URL"), blank=True, default="")
 
     video_uploaded_path = models.CharField(
-        _("video upload path"),
+        _("path in the storage where the video file is uploaded"),
         max_length=1024,
         blank=True,
         default="",
