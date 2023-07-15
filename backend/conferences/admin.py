@@ -1,4 +1,3 @@
-from collections import Counter
 from pathlib import Path
 from django.core.files.storage import storages
 from django import forms
@@ -248,7 +247,7 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
             cache.set(cache_key, files, 60 * 60 * 24 * 7)
 
         users_data = self._get_speakers_data_for_events(all_events)
-        counter = Counter()
+        matched_videos = 0
         used_files = set()
 
         for event in all_events:
@@ -259,12 +258,12 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
             event.save(update_fields=["video_uploaded_path"])
 
             if video_uploaded_path:
-                counter["matched"] += 1
+                matched_videos += 1
                 used_files.add(video_uploaded_path)
 
         self.message_user(
             request,
-            f"Matched {counter['matched']} videos to events.",
+            f"Matched {matched_videos} videos to events.",
             messages.SUCCESS,
         )
 
