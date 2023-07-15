@@ -243,12 +243,11 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
         all_events = conference.schedule_items.prefetch_related(
             "submission", "additional_speakers"
         ).all()
-        storage = storages["conferencevideos"]
 
         cache_key = f"{conference.code}:video-upload-files-cache"
         files = cache.get(cache_key)
-
         if not files or ignore_cache:
+            storage = storages["conferencevideos"]
             files = list(walk_conference_videos_folder(storage, f"{conference.code}/"))
             cache.set(cache_key, files, 60 * 60 * 24 * 7)
 
@@ -282,30 +281,37 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
             )
 
     def match_event_to_video_file(self, event, files, users_data):
-        possible_file_names = None
+        possible_file_names = []
+        speaker_name = None
+
+        def best_name(speaker_data):
+            return (speaker_data["fullname"] or speaker_data["name"]).lower()
 
         if not event.submission_id:
-            possible_file_names = [event.title.lower()]
+            possible_file_names.append(event.title.lower())
         else:
-
-            def best_name(speaker_data):
-                return (speaker_data["fullname"] or speaker_data["name"]).lower()
-
             speaker_data = users_data[str(event.submission.speaker_id)]
             speaker_name = best_name(speaker_data)
-            co_speakers_ids = [
-                co_speaker.user_id for co_speaker in event.additional_speakers.all()
-            ]
-            co_speakers_data = [
-                users_data[str(co_speaker_id)] for co_speaker_id in co_speakers_ids
-            ]
-            co_speakers_names = [
-                best_name(co_speaker_data) for co_speaker_data in co_speakers_data
-            ]
-            possible_file_names = [
-                ", ".join(permutation)
-                for permutation in permutations([speaker_name] + co_speakers_names)
-            ]
+
+        co_speakers_ids = [
+            co_speaker.user_id for co_speaker in event.additional_speakers.all()
+        ]
+        co_speakers_data = [
+            users_data[str(co_speaker_id)] for co_speaker_id in co_speakers_ids
+        ]
+        co_speakers_names = [
+            best_name(co_speaker_data) for co_speaker_data in co_speakers_data
+        ]
+        if speaker_name:
+            co_speakers_names.append(speaker_name)
+
+        if co_speakers_names:
+            possible_file_names.extend(
+                [
+                    ", ".join(permutation)
+                    for permutation in permutations(co_speakers_names)
+                ]
+            )
 
         for video_file in files:
             video_file_lower = video_file.lower()
