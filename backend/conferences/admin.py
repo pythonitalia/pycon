@@ -224,8 +224,7 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
         return render(request, "admin/videos_upload/map_videos.html", context)
 
     def save_manual_changes(self, request, object_id, data):
-        conference = Conference.objects.get(pk=object_id)
-        all_events = conference.schedule_items.all()
+        all_events = ScheduleItem.objects.filter(conference_id=object_id)
 
         for event in all_events:
             video_uploaded_path = data.get(f"video_uploaded_path_{event.id}", "")
