@@ -62,39 +62,31 @@ class LazyI18nString:
         if self.data is None:
             return ""
 
-        data = self.data
-
-        if isinstance(data, str):
-            try:
-                data = json.loads(data)
-            except ValueError:
-                pass
-
-        if isinstance(data, dict):
+        if isinstance(self.data, dict):
             firstpart = lng.split("-")[0]
             similar = [
                 l
-                for l in data.keys()
+                for l in self.data.keys()
                 if (l.startswith(firstpart + "-") or firstpart == l) and l != lng
             ]
-            if data.get(lng):
-                return data[lng]
-            elif data.get(firstpart):
-                return data[firstpart]
-            elif similar and any([data.get(s) for s in similar]):
+            if self.data.get(lng):
+                return self.data[lng]
+            elif self.data.get(firstpart):
+                return self.data[firstpart]
+            elif similar and any([self.data.get(s) for s in similar]):
                 for s in similar:
-                    if data.get(s):
-                        return data.get(s)
-            elif data.get(settings.LANGUAGE_CODE):
-                return data[settings.LANGUAGE_CODE]
+                    if self.data.get(s):
+                        return self.data.get(s)
+            elif self.data.get(settings.LANGUAGE_CODE):
+                return self.data[settings.LANGUAGE_CODE]
             else:
-                filled = [f for f in data.values() if f]
+                filled = [f for f in self.data.values() if f]
                 if filled:
                     return filled[0]
                 else:
                     return ""
         else:
-            return str(data)
+            return str(self.data)
 
     def map(self, f):
         """
