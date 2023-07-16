@@ -484,7 +484,6 @@ def get_all_vouchers(conference: Conference):
 
 
 def get_user_ticket(conference: Conference, email: str, id: str):
-
     # TODO: filter by orderposition in the PretixAPI
     tickets = get_user_tickets(conference, email)
 
