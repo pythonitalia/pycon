@@ -1,5 +1,3 @@
-import json
-
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
@@ -17,12 +15,10 @@ class KeynoteManager(OrderedModelManager):
         return super().get_queryset().filter(published__lte=timezone.now())
 
     def by_slug(self, slug):
-        term = json.dumps(slug)
-
         filters = Q()
 
         for lang, __ in settings.LANGUAGES:
-            filters |= Q(**{f"slug__{lang}": term})
+            filters |= Q(**{f"slug__{lang}": slug})
 
         return self.get_queryset().filter(filters)
 
