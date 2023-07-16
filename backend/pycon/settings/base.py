@@ -159,7 +159,7 @@ PRETIX_API_TOKEN = None
 STORAGES = {
     "default": {
         "BACKEND": env(
-            "DEFAULT_FILE_STORAGE", default="pycon.storages.CustomS3Boto3Storage"
+            "MEDIA_FILES_STORAGE_BACKEND", default="pycon.storages.CustomS3Boto3Storage"
         )
     },
     "conferencevideos": {
