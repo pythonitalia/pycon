@@ -20,7 +20,6 @@ RUN tar -czvf /libs.tar.gz /usr/lib/x86_64-linux-gnu/libpq* \
   /usr/lib/x86_64-linux-gnu/libpq* \
   /usr/lib/x86_64-linux-gnu/libldap_r* \
   /usr/lib/x86_64-linux-gnu/libldap* \
-  /usr/lib/x86_64-linux-gnu/libldap2* \
   /usr/lib/x86_64-linux-gnu/liblber* \
   /usr/lib/x86_64-linux-gnu/libsasl* \
   /usr/lib/x86_64-linux-gnu/libxml2* \
