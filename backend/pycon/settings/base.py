@@ -169,6 +169,9 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+IMAGEKIT_DEFAULT_FILE_STORAGE = env(
+    "MEDIA_FILES_STORAGE_BACKEND", default="pycon.storages.CustomS3Boto3Storage"
+)
 
 if PRETIX_API:
     PRETIX_API_TOKEN = env("PRETIX_API_TOKEN")
