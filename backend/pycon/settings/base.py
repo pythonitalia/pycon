@@ -136,10 +136,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
-
 STATICFILES_DIRS = [root("assets")]
 
 STATIC_URL = "/django-static/"
@@ -152,7 +148,6 @@ AUTH_USER_MODEL = "users.User"
 
 AUTHENTICATION_BACKENDS = ("custom_auth.backend.UsersAuthBackend",)
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MAPBOX_PUBLIC_API_KEY = env("MAPBOX_PUBLIC_API_KEY", default="")
 
 SERIALIZATION_MODULES = {"json": "i18n.serializers"}
@@ -160,6 +155,20 @@ USE_X_FORWARDED_HOST = False
 
 PRETIX_API = env("PRETIX_API", default="")
 PRETIX_API_TOKEN = None
+
+STORAGES = {
+    "default": {
+        "BACKEND": env(
+            "DEFAULT_FILE_STORAGE", default="pycon.storages.CustomS3Boto3Storage"
+        )
+    },
+    "conferencevideos": {
+        "BACKEND": "pycon.storages.ConferenceVideosStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 if PRETIX_API:
     PRETIX_API_TOKEN = env("PRETIX_API_TOKEN")
@@ -213,8 +222,12 @@ VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN = env(
     "VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN", default=""
 ).strip()
 
-AZURE_STORAGE_ACCOUNT_NAME = env("AZURE_STORAGE_ACCOUNT_NAME", default="")
-AZURE_STORAGE_ACCOUNT_KEY = env("AZURE_STORAGE_ACCOUNT_KEY", default="")
+AZURE_ACCOUNT_NAME = AZURE_STORAGE_ACCOUNT_NAME = env(
+    "AZURE_STORAGE_ACCOUNT_NAME", default=""
+)
+AZURE_ACCOUNT_KEY = AZURE_STORAGE_ACCOUNT_KEY = env(
+    "AZURE_STORAGE_ACCOUNT_KEY", default=""
+)
 
 USER_ID_HASH_SALT = env("USER_ID_HASH_SALT", default="")
 

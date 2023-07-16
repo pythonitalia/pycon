@@ -1,4 +1,3 @@
-import json
 from copy import copy
 
 from django.conf import settings
@@ -17,12 +16,10 @@ class PostManager(models.Manager):
         return super().get_queryset().filter(published__lte=timezone.now())
 
     def by_slug(self, slug):
-        term = json.dumps(slug)
-
         filters = Q()
 
         for lang, __ in settings.LANGUAGES:
-            filters |= Q(**{f"slug__{lang}": term})
+            filters |= Q(**{f"slug__{lang}": slug})
 
         return self.get_queryset().filter(filters)
 

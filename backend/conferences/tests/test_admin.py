@@ -1,15 +1,18 @@
 from unittest.mock import call
-
+import respx
 import time_machine
 from django.core import exceptions
 from django.forms.fields import BooleanField
 from pytest import fixture, mark, raises
+from django.contrib.admin.sites import AdminSite
 
 from conferences.admin import (
+    ConferenceAdmin,
     DeadlineForm,
     create_speaker_vouchers_on_pretix,
     send_voucher_via_email,
     validate_deadlines_form,
+    walk_conference_videos_folder,
 )
 from conferences.models import SpeakerVoucher
 from schedule.models import ScheduleItem
@@ -501,3 +504,179 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
 
     assert voucher_1.pretix_voucher_id is None
     assert voucher_2.pretix_voucher_id is None
+
+
+def test_video_uploaded_path_matcher(
+    rf,
+    conference_factory,
+    schedule_item_factory,
+    mocker,
+    settings,
+    schedule_item_additional_speaker_factory,
+):
+    conference = conference_factory(code="conf")
+
+    mocker.patch(
+        "conferences.admin.walk_conference_videos_folder",
+        return_value=[
+            "conf/video-1/1-Kim Kitsuragi.mp4",
+            "conf/video-2/2-Opening.mp4",
+            "conf/video-2/5-Klaasje, Harrier Du Bois.mp4",
+            "conf/video-2/5-Testing Name.mp4",
+        ],
+    )
+
+    request = rf.post("/", data={"run_matcher": "1"})
+    event_1 = schedule_item_factory(
+        conference=conference,
+        title="Opening",
+        type=ScheduleItem.TYPES.custom,
+        submission=None,
+    )
+    event_2 = schedule_item_factory(
+        conference=conference,
+        title="Talk about something",
+        type=ScheduleItem.TYPES.talk,
+        submission__speaker_id=5,
+    )
+
+    event_3 = schedule_item_factory(
+        conference=conference,
+        title="Talk about something",
+        type=ScheduleItem.TYPES.talk,
+        submission=None,
+    )
+    event_3.additional_speakers.add(
+        schedule_item_additional_speaker_factory(user_id=10)
+    )
+    event_3.additional_speakers.add(
+        schedule_item_additional_speaker_factory(user_id=20)
+    )
+
+    admin = ConferenceAdmin(
+        model=conference.__class__,
+        admin_site=AdminSite(),
+    )
+    admin.message_user = mocker.Mock()
+
+    with respx.mock as mock:
+        mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
+            json={
+                "data": {
+                    "usersByIds": [
+                        {
+                            "id": str(event_2.submission.speaker_id),
+                            "name": "Kim",
+                            "fullname": "Kim Kitsuragi",
+                        },
+                        {
+                            "id": "10",
+                            "name": "Klaasje",
+                            "fullname": "",
+                        },
+                        {
+                            "id": "20",
+                            "name": "Harrier",
+                            "fullname": "Harrier Du Bois",
+                        },
+                    ]
+                }
+            }
+        )
+
+        ret = admin.map_videos(request, conference.id)
+
+    assert ret.status_code == 302
+
+    event_1.refresh_from_db()
+    event_2.refresh_from_db()
+    event_3.refresh_from_db()
+
+    assert event_1.video_uploaded_path == "conf/video-2/2-Opening.mp4"
+    assert event_2.video_uploaded_path == "conf/video-1/1-Kim Kitsuragi.mp4"
+    assert event_3.video_uploaded_path == "conf/video-2/5-Klaasje, Harrier Du Bois.mp4"
+
+    assert (
+        "Some files were not used: conf/video-2/5-Testing Name.mp4"
+        == admin.message_user.mock_calls[1].args[1]
+    )
+
+
+def test_storage_walk_conference_videos_folder(mocker):
+    mock_storage = mocker.Mock()
+    mock_storage.listdir.side_effect = [
+        (["test"], ["file1.txt", "file2.txt"]),
+        ([""], ["file3.txt", "file4.txt"]),
+    ]
+
+    output = walk_conference_videos_folder(mock_storage, "")
+
+    assert output == [
+        "file1.txt",
+        "file2.txt",
+        "test/file3.txt",
+        "test/file4.txt",
+    ]
+
+
+def test_save_manual_changes(
+    rf,
+    conference_factory,
+    schedule_item_factory,
+    mocker,
+    schedule_item_additional_speaker_factory,
+):
+    conference = conference_factory(code="conf")
+
+    event_1 = schedule_item_factory(
+        conference=conference,
+        title="Opening",
+        type=ScheduleItem.TYPES.custom,
+        submission=None,
+    )
+    event_2 = schedule_item_factory(
+        conference=conference,
+        title="Talk about something",
+        type=ScheduleItem.TYPES.talk,
+        submission__speaker_id=5,
+    )
+
+    event_3 = schedule_item_factory(
+        conference=conference,
+        title="Talk about something",
+        type=ScheduleItem.TYPES.talk,
+        submission=None,
+    )
+    event_3.additional_speakers.add(
+        schedule_item_additional_speaker_factory(user_id=10)
+    )
+    event_3.additional_speakers.add(
+        schedule_item_additional_speaker_factory(user_id=20)
+    )
+
+    request = rf.post(
+        "/",
+        data={
+            "manual_changes": "1",
+            f"video_uploaded_path_{event_1.id}": "test",
+            f"video_uploaded_path_{event_2.id}": "another-2",
+            f"video_uploaded_path_{event_3.id}": "another-3",
+        },
+    )
+
+    admin = ConferenceAdmin(
+        model=conference.__class__,
+        admin_site=AdminSite(),
+    )
+    admin.message_user = mocker.Mock()
+    response = admin.map_videos(request, conference.id)
+
+    assert response.status_code == 302
+
+    event_1.refresh_from_db()
+    event_2.refresh_from_db()
+    event_3.refresh_from_db()
+
+    assert event_1.video_uploaded_path == "test"
+    assert event_2.video_uploaded_path == "another-2"
+    assert event_3.video_uploaded_path == "another-3"

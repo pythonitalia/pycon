@@ -211,9 +211,7 @@ class I18nFormField(forms.MultiValueField):
         out = self.compress(clean_data)
         self.validate(out)
         self.run_validators(out)
-        import json
-
-        return json.dumps(out.data)
+        return out.data
 
     def __init__(self, *args, **kwargs):
         fields = []
