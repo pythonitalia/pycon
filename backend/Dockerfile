@@ -12,7 +12,7 @@ RUN apt-get update -y && apt-get install -y \
     # Pillow
     libtiff5-dev libjpeg62 libopenjp2-7-dev zlib1g-dev \
     libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python3-tk \
-    libharfbuzz-dev libfribidi-dev libxcb1-dev
+    libharfbuzz-dev libfribidi-dev libxcb1-dev libldap2-dev
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 
