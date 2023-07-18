@@ -5,13 +5,13 @@ description = ""
 authors = ["Python Italia"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 starlette = "^0.14.1"
 uvicorn = {extras = ["standard"], version = "^0.21.1"}
 strawberry-graphql = "^0.90"
 SQLAlchemy = "1.4.2"
 alembic = "^1.5.2"
-asyncpg = "^0.21.0"
+asyncpg = "^0.28.0"
 PyJWT = "2.0.1"
 pydantic = "^1.7.3"
 email-validator = "^1.1.2"

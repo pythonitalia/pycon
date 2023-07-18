@@ -5,14 +5,14 @@ description = "Association Backend Service"
 authors = ["Python Italia"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 starlette = "^0.14.1"
 uvicorn = "^0.13.3"
 click = "7.1.2"
 invoke = "1.5.0"
 strawberry-graphql = "^0.90"
 alembic = "^1.5.2"
-asyncpg = "^0.21.0"
+asyncpg = "^0.28.0"
 PyJWT = "2.0.1"
 pydantic = "^1.7.3"
 httpx = "0.20.0"

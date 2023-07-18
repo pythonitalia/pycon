@@ -1,6 +1,6 @@
 ARG FUNCTION_DIR="/home/app/"
 
-FROM python:3.9
+FROM python:3.11
 
 ARG FUNCTION_DIR
 

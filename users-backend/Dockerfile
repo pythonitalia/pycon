@@ -1,6 +1,6 @@
 ARG FUNCTION_DIR="/home/app/"
 
-FROM python:3.9-slim as build-stage
+FROM python:3.11-slim as build-stage
 
 ARG FUNCTION_DIR
 
@@ -19,7 +19,7 @@ RUN pip3 install poetry==1.3.2
 RUN poetry config virtualenvs.in-project true
 RUN poetry install --no-dev -E lambda
 
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 ARG FUNCTION_DIR
 

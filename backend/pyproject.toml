@@ -6,7 +6,7 @@ authors = ["Python Italia"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 Django = "4.2.3"
 django-environ = "0.10.0"
 django-model-utils = "=4.1.1"
@@ -83,4 +83,4 @@ line-length = 88
 exclude = [
     "migrations"
 ]
-target-version = "py39"
+target-version = "py311"
