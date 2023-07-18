@@ -54,11 +54,8 @@ lambda = ["awslambdaric"]
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.2.0"
 pytest = "^7.4.0"
-pylint = "=2.6.0"
-pylint-django = "=2.0.13"
 pytest-cov = "^4.1.0"
 pytest-django = "^4.5.2"
-pytest-pylint = "^0.19.0"
 pytest-factoryboy = "^2.5.1"
 factory-boy = "^3.2.1"
 pdbpp = "^0.10.2"
