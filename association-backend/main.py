@@ -24,8 +24,8 @@ from src.webhooks.views import pretix_webhook, stripe_webhook
 if SENTRY_DSN:
     configure_sentry(dsn=str(SENTRY_DSN), env=ENV)
 
-logging.getLogger().setLevel(logging.INFO)
-logging.basicConfig(level=logging.INFO)
+logging.getLogger().setLevel(logging.CRITICAL)
+logging.basicConfig(level=logging.CRITICAL)
 logging.getLogger("sqlalchemy.engine.Engine").disabled = True
 
 
