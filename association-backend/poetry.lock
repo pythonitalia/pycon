@@ -57,14 +57,14 @@ trio = ["trio (>=0.16)"]
 
 [[package]]
 name = "asgi-lifespan"
-version = "1.0.1"
+version = "2.1.0"
 description = "Programmatic startup/shutdown of ASGI apps."
 category = "dev"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "asgi-lifespan-1.0.1.tar.gz", hash = "sha256:9a33e7da2073c4764bc79bd6136501d6c42f60e3d2168ba71235e84122eadb7f"},
-    {file = "asgi_lifespan-1.0.1-py3-none-any.whl", hash = "sha256:9ea969dc5eb5cf08e52c08dce6f61afcadd28112e72d81c972b1d8eb8691ab53"},
+    {file = "asgi-lifespan-2.1.0.tar.gz", hash = "sha256:5e2effaf0bfe39829cf2d64e7ecc47c7d86d676a6599f7afba378c31f5e3a308"},
+    {file = "asgi_lifespan-2.1.0-py3-none-any.whl", hash = "sha256:ed840706680e28428c01e14afb3875d7d76d3206f3d5b2f2294e059b5c23804f"},
 ]
 
 [package.dependencies]
@@ -440,38 +440,37 @@ idna = ">=2.0.0"
 
 [[package]]
 name = "factory-boy"
-version = "3.2.1"
+version = "3.3.0"
 description = "A versatile test fixtures replacement based on thoughtbot's factory_bot for Ruby."
 category = "dev"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "factory_boy-3.2.1-py2.py3-none-any.whl", hash = "sha256:eb02a7dd1b577ef606b75a253b9818e6f9eaf996d94449c9d5ebb124f90dc795"},
-    {file = "factory_boy-3.2.1.tar.gz", hash = "sha256:a98d277b0c047c75eb6e4ab8508a7f81fb03d2cb21986f627913546ef7a2a55e"},
+    {file = "factory_boy-3.3.0-py2.py3-none-any.whl", hash = "sha256:a2cdbdb63228177aa4f1c52f4b6d83fab2b8623bf602c7dedd7eb83c0f69c04c"},
+    {file = "factory_boy-3.3.0.tar.gz", hash = "sha256:bc76d97d1a65bbd9842a6d722882098eb549ec8ee1081f9fb2e8ff29f0c300f1"},
 ]
 
 [package.dependencies]
 Faker = ">=0.7.0"
 
 [package.extras]
-dev = ["Django", "Pillow", "SQLAlchemy", "coverage", "flake8", "isort", "mongoengine", "tox", "wheel (>=0.32.0)", "zest.releaser[recommended]"]
+dev = ["Django", "Pillow", "SQLAlchemy", "coverage", "flake8", "isort", "mongoengine", "sqlalchemy-utils", "tox", "wheel (>=0.32.0)", "zest.releaser[recommended]"]
 doc = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-spelling"]
 
 [[package]]
 name = "faker"
-version = "8.16.0"
+version = "19.2.0"
 description = "Faker is a Python package that generates fake data for you."
 category = "dev"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.8"
 files = [
-    {file = "Faker-8.16.0-py3-none-any.whl", hash = "sha256:bb10913b9d3ac2aa37180f816c82040e81f9e0c32cb08445533f293cec8930bf"},
-    {file = "Faker-8.16.0.tar.gz", hash = "sha256:d70b375d0af0e4c3abd594003691a1055a96281a414884e623d27bccc7d781da"},
+    {file = "Faker-19.2.0-py3-none-any.whl", hash = "sha256:c6c1218482faf79ae1d791bb7124067d12339e0b8f400de855e2c281bcf78c77"},
+    {file = "Faker-19.2.0.tar.gz", hash = "sha256:78840b94843f3aa32a34a220b2b5e8b309e3ffff3a231b0c54e841bb68e0757d"},
 ]
 
 [package.dependencies]
 python-dateutil = ">=2.4"
-text-unidecode = "1.3"
 
 [[package]]
 name = "fancycompleter"
@@ -1143,18 +1142,18 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
 name = "respx"
-version = "0.18.2"
+version = "0.20.2"
 description = "A utility for mocking out the Python HTTPX and HTTP Core libraries."
 category = "dev"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "respx-0.18.2-py2.py3-none-any.whl", hash = "sha256:09fb4fc49f3900fb124d13b188c90355a45efde29fd18c5e2f513804cf7f84c6"},
-    {file = "respx-0.18.2.tar.gz", hash = "sha256:d39ff874f514dc4293b2e1f7c5e6c8c2ad871ee02ef49b3f57535257008495d8"},
+    {file = "respx-0.20.2-py2.py3-none-any.whl", hash = "sha256:ab8e1cf6da28a5b2dd883ea617f8130f77f676736e6e9e4a25817ad116a172c9"},
+    {file = "respx-0.20.2.tar.gz", hash = "sha256:07cf4108b1c88b82010f67d3c831dae33a375c7b436e54d87737c7f9f99be643"},
 ]
 
 [package.dependencies]
-httpx = ">=0.20.0"
+httpx = ">=0.21.0"
 
 [[package]]
 name = "rich"
@@ -1481,33 +1480,21 @@ requests = {version = ">=2.20", markers = "python_version >= \"3.0\""}
 
 [[package]]
 name = "taskipy"
-version = "1.10.1"
+version = "1.11.0"
 description = "tasks runner for python projects"
 category = "dev"
 optional = false
 python-versions = ">=3.6,<4.0"
 files = [
-    {file = "taskipy-1.10.1-py3-none-any.whl", hash = "sha256:9b38333654da487b6d16de6fa330b7629d1935d1e74819ba4c5f17a1c372d37b"},
-    {file = "taskipy-1.10.1.tar.gz", hash = "sha256:6fa0b11c43d103e376063e90be31d87b435aad50fb7dc1c9a2de9b60a85015ed"},
+    {file = "taskipy-1.11.0-py3-none-any.whl", hash = "sha256:4e40cd41747a54bc8a9b3c21057c25cac645309c2d8ac897bdc1e7235e9c900e"},
+    {file = "taskipy-1.11.0.tar.gz", hash = "sha256:521e8b3b65dc1ff9bb036cae989dbe5aec1626a61cf4744e5c0d0d2450c7fcb4"},
 ]
 
 [package.dependencies]
 colorama = ">=0.4.4,<0.5.0"
 mslex = {version = ">=0.3.0,<0.4.0", markers = "sys_platform == \"win32\""}
 psutil = ">=5.7.2,<6.0.0"
-tomli = ">=1.2.3,<2.0.0"
-
-[[package]]
-name = "text-unidecode"
-version = "1.3"
-description = "The most basic Text::Unidecode port"
-category = "dev"
-optional = false
-python-versions = "*"
-files = [
-    {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
-    {file = "text_unidecode-1.3-py2.py3-none-any.whl", hash = "sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8"},
-]
+tomli = {version = ">=2.0.1,<3.0.0", markers = "python_version >= \"3.7\" and python_version < \"4.0\""}
 
 [[package]]
 name = "time-machine"
@@ -1569,14 +1556,14 @@ python-dateutil = "*"
 
 [[package]]
 name = "tomli"
-version = "1.2.3"
+version = "2.0.1"
 description = "A lil' TOML parser"
 category = "dev"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "tomli-1.2.3-py3-none-any.whl", hash = "sha256:e3069e4be3ead9668e21cb9b074cd948f7b3113fd9c8bba083f48247aab8b11c"},
-    {file = "tomli-1.2.3.tar.gz", hash = "sha256:05b6166bff487dc068d322585c7ea4ef78deed501cc124060e0f238e89a9231f"},
+    {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
+    {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
 ]
 
 [[package]]
@@ -1698,4 +1685,4 @@ lambda = ["awslambdaric"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "7f1fbbe170934e675e283d9369c24ff54f91fb192f19dabd93abfd6b990d8f69"
+content-hash = "17af095ce052219d25e0f015c2a00805682163dd97f81989bd1f2a10939e34cf"
