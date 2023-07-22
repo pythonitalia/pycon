@@ -6,22 +6,22 @@ authors = ["Python Italia"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-starlette = "^0.14.1"
+starlette = "^0.30.0"
 uvicorn = "^0.13.3"
 click = "7.1.2"
 invoke = "1.5.0"
 strawberry-graphql = "^0.90"
 alembic = "^1.5.2"
 asyncpg = "^0.28.0"
-PyJWT = "2.0.1"
+PyJWT = "^2.8.0"
 pydantic = "^1.7.3"
-httpx = "0.20.0"
+httpx = "^0.24.1"
 stripe = "^2.55.2"
 email-validator = "^1.1.2"
 websockets = "^8.1"
 time-machine = "^2.1.0"
 python-dateutil = "^2.8.1"
-pythonit-toolkit = "0.1.81"
+pythonit-toolkit = "0.1.88"
 ormar = "0.11.1"
 mangum = "^0.11.0"
 sentry-sdk = "^1.1.0"
@@ -29,22 +29,20 @@ awslambdaric = {version = "^2.0.4", optional = true}
 psycopg2 = "^2.9.5"
 
 
-[tool.poetry.dev-dependencies]
-factory-boy = "^3.2.0"
-isort = "^5.7.0"
-flake8 = "^3.8.4"
-ward = "^0.65.0b0"
-requests = "^2.25.1"
-taskipy = "^1.6.0"
-asgi-lifespan = "^1.0.1"
-coverage = "^5.4"
-time-machine = "^2.0.1"
-pdbpp = "^0.10.2"
-Faker = "^8.1.0"
-respx = "0.18.2"
-
 [tool.poetry.extras]
 lambda = ["awslambdaric"]
+
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.2.7"
+ward = "^0.67.2b0"
+time-machine = "^2.11.0"
+pdbpp = "^0.10.3"
+requests = "^2.31.0"
+factory-boy = "^3.2.0"
+taskipy = "^1.6.0"
+asgi-lifespan = "^1.0.1"
+Faker = "^8.1.0"
+respx = "0.18.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
