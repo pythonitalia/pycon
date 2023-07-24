@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "imagekit",
     "badge_scanner",
     "badges.apps.BadgesConfig",
+    "google_api.apps.GoogleApiConfig",
 ]
 
 MIDDLEWARE = [
@@ -242,3 +243,5 @@ IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "imagekit.cachefiles.strategies.Optimistic
 CACHES = {
     "default": env.cache(default="locmemcache://snowflake"),
 }
+
+TEMPORAL_ADDRESS = env("TEMPORAL_ADDRESS", default="")

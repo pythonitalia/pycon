@@ -25,6 +25,10 @@ from domain_events.publisher import (
     send_speaker_communication_email,
 )
 from pretix import user_has_admission_ticket
+from video_upload.workflows.upload_schedule_item_video import (
+    UploadScheduleItemVideoWorkflow,
+)
+from temporal.sdk import start_workflow
 from schedule.forms import EmailSpeakersForm
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin, SearchUsersMixin
@@ -189,6 +193,21 @@ def _send_invitations(
         schedule_item.save()
 
 
+@admin.action(description="Upload video to YouTube")
+def upload_video_to_youtube(modeladmin, request, queryset):
+    for video in queryset:
+        start_workflow(
+            workflow=UploadScheduleItemVideoWorkflow.run,
+            id=f"schedule-item-{video.id}-video-upload",
+            task_queue="default",
+            arg=UploadScheduleItemVideoWorkflow.input(
+                schedule_item_id=video.id,
+            ),
+        )
+
+    pass
+
+
 class SlotInline(admin.TabularInline):
     model = Slot
 
@@ -344,6 +363,7 @@ class ScheduleItemAdmin(SearchUsersMixin):
         send_schedule_invitation_to_uninvited,
         send_schedule_invitation_reminder_to_waiting,
         mark_speakers_to_receive_vouchers,
+        upload_video_to_youtube,
     ]
     readonly_fields = ("spaces_left",)
 
