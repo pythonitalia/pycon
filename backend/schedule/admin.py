@@ -193,9 +193,12 @@ def _send_invitations(
         schedule_item.save()
 
 
-@admin.action(description="Upload video to YouTube")
-def upload_video_to_youtube(modeladmin, request, queryset):
-    for video in queryset:
+@admin.action(description="Upload videos to YouTube")
+def upload_videos_to_youtube(modeladmin, request, queryset):
+    videos = queryset.filter(youtube_video_id__exact="").exclude(
+        video_uploaded_path__exact=""
+    )
+    for video in videos:
         start_workflow(
             workflow=UploadScheduleItemVideoWorkflow.run,
             id=f"schedule-item-{video.id}-video-upload",
@@ -205,7 +208,9 @@ def upload_video_to_youtube(modeladmin, request, queryset):
             ),
         )
 
-    pass
+    messages.add_message(
+        request, messages.INFO, f"Scheduled {videos.count()} videos to upload"
+    )
 
 
 class SlotInline(admin.TabularInline):
@@ -363,7 +368,7 @@ class ScheduleItemAdmin(SearchUsersMixin):
         send_schedule_invitation_to_uninvited,
         send_schedule_invitation_reminder_to_waiting,
         mark_speakers_to_receive_vouchers,
-        upload_video_to_youtube,
+        upload_videos_to_youtube,
     ]
     readonly_fields = ("spaces_left",)
 
