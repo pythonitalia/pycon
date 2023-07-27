@@ -5,7 +5,6 @@ from import_export.admin import ImportExportModelAdmin
 from google_api.models import GoogleCloudOAuthCredential, GoogleCloudToken
 import google_auth_oauthlib.flow
 from django.utils.safestring import mark_safe
-from django.core.cache import cache
 
 from google_api.sdk import GOOGLE_CLOUD_SCOPES
 
@@ -30,14 +29,14 @@ class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
 
     def authorize_client(self, obj, request):
         flow = self.build_google_flow(request, obj)
-        authorization_url, state = flow.authorization_url(
+        authorization_url, _ = flow.authorization_url(
             # Enable offline access so that you can refresh an access token without
             # re-prompting the user for permission. Recommended for web server apps.
             access_type="offline",
             # Enable incremental authorization. Recommended as a best practice.
             include_granted_scopes="true",
         )
-        cache.set(self.google_state_key(obj.id), state, 60 * 5)
+        # cache.set(self.google_state_key(obj.id), state, 60 * 5)
 
         return mark_safe(f'<a href="{authorization_url}" target="_blank">Authorize</a>')
 
@@ -62,11 +61,11 @@ class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
         return flow
 
     def auth_redirect(self, request, object_id):
-        stored_state = cache.get(self.google_state_key(object_id))
+        # stored_state = cache.get(self.google_state_key(object_id))
         param_state = request.GET.get("state")
 
-        if stored_state != param_state:
-            return
+        # if stored_state != param_state:
+        #     return
 
         obj = self.get_object(request, object_id)
         flow = self.build_google_flow(request, obj, state=param_state)

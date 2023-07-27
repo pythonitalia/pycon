@@ -66,7 +66,7 @@ async def youtube_videos_insert(
                 "tags": tags,
             },
             "status": {
-                "privacyStatus": "private",
+                "privacyStatus": "public",
                 "selfDeclaredMadeForKids": False,
             },
         },
@@ -82,3 +82,13 @@ async def youtube_videos_insert(
         return response
     else:
         raise ValueError("The upload failed with an unexpected response: %s" % response)
+
+
+@count_quota("youtube", 50)
+async def youtube_videos_set_thumbnail(
+    *, video_id: str, thumbnail_path: str, credentials: Credentials
+):
+    youtube = build("youtube", "v3", credentials=credentials)
+    youtube.thumbnails().set(
+        videoId=video_id, media_body=MediaFileUpload(thumbnail_path)
+    ).execute()

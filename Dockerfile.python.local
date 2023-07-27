@@ -2,6 +2,8 @@ ARG FUNCTION_DIR="/home/app/"
 
 FROM python:3.9
 
+RUN apt update -y && apt install -y ffmpeg libsm6 libxext6
+
 ARG FUNCTION_DIR
 
 RUN mkdir -p ${FUNCTION_DIR}

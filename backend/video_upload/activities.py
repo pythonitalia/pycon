@@ -1,8 +1,9 @@
+import cv2
 import logging
 from dataclasses import dataclass
 from typing import Any
 from django.db.models import Prefetch
-from google_api.sdk import youtube_videos_insert
+from google_api.sdk import youtube_videos_insert, youtube_videos_set_thumbnail
 from users.client import get_users_data_by_ids_async
 from temporalio import activity
 from schedule.models import ScheduleItem
@@ -18,7 +19,9 @@ local_storage.base_location = "/tmp/"
 @dataclass
 class ScheduleItemData:
     id: int
+    slug: str
     title: str
+    type: str
     description: str
     abstract: str
     elevator_pitch: str
@@ -26,6 +29,7 @@ class ScheduleItemData:
     tags: list[str]
     speakers_ids: list[int]
     conference_name: str
+    conference_youtube_video_bottom_text: str
     has_submission: bool
 
 
@@ -49,6 +53,8 @@ async def fetch_schedule_item(schedule_item_id: int) -> ScheduleItemData:
 
     return ScheduleItemData(
         id=schedule_item.id,
+        slug=schedule_item.slug,
+        type=schedule_item.type,
         title=schedule_item.title.strip(),
         description=schedule_item.description.strip(),
         abstract=schedule_item.submission.abstract.localize(language_code).strip()
@@ -59,12 +65,13 @@ async def fetch_schedule_item(schedule_item_id: int) -> ScheduleItemData:
         ).strip()
         if schedule_item.submission_id
         else "",
-        tags=list(schedule_item.submission.tags.all().values_list("name", flat=True))
+        tags=[tag.name for tag in schedule_item.submission.tags.all()]
         if schedule_item.submission_id
         else [],
         video_uploaded_path=schedule_item.video_uploaded_path,
         speakers_ids=speakers_ids,
         conference_name=schedule_item.conference.name.localize(language_code),
+        conference_youtube_video_bottom_text=schedule_item.conference.youtube_video_bottom_text,
         has_submission=schedule_item.submission_id is not None,
     )
 
@@ -132,4 +139,42 @@ async def upload_video_to_youtube(input: UploadVideoToYouTubeInput):
         description=input.description,
         tags=input.tags_as_str,
         file_path=input.file_path,
+    )
+
+
+@dataclass
+class ExtractVideoThumbnailInput:
+    file_path: str
+    schedule_item_id: int
+
+
+@activity.defn
+async def extract_video_thumbnail(input: ExtractVideoThumbnailInput):
+    thumbnail_file_name = f"{input.schedule_item_id}-thumbnail.jpg"
+    file_path = local_storage.path(thumbnail_file_name)
+
+    if local_storage.exists(thumbnail_file_name):
+        return file_path
+
+    video_capture = cv2.VideoCapture(input.file_path)
+    success, image = video_capture.read()
+
+    if not success:
+        raise ValueError("Unable to extract frame")
+
+    cv2.imwrite(file_path, image)
+    return file_path
+
+
+@dataclass
+class SetThumbnailToYouTubeVideoInput:
+    youtube_id: str
+    thumbnail_path: str
+
+
+@activity.defn
+async def set_thumbnail_to_youtube_video(input: SetThumbnailToYouTubeVideoInput):
+    return await youtube_videos_set_thumbnail(
+        video_id=input.youtube_id,
+        thumbnail_path=input.thumbnail_path,
     )

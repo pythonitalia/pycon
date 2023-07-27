@@ -10,8 +10,14 @@ with workflow.unsafe.imports_passed_through():
         add_youtube_id_to_schedule_item,
         fetch_speakers_data,
         UploadVideoToYouTubeInput,
+        extract_video_thumbnail,
+        set_thumbnail_to_youtube_video,
+        SetThumbnailToYouTubeVideoInput,
     )
-    from video_upload.activities import AddYouTubeIDToScheduleItemInput
+    from video_upload.activities import (
+        AddYouTubeIDToScheduleItemInput,
+        ExtractVideoThumbnailInput,
+    )
     from video_upload.activities import ScheduleItemData
     from video_upload.activities import DownloadVideoFileInput
 
@@ -63,6 +69,12 @@ class UploadScheduleItemVideoWorkflow:
             media_file_path=media_file_path,
         )
 
+        if len(upload_video_input.title) > 100:
+            raise ValueError("YouTube title is too long")
+
+        if len(upload_video_input.description) > 5000:
+            raise ValueError("YouTube description is too long")
+
         response = await workflow.execute_activity(
             upload_video_to_youtube,
             upload_video_input,
@@ -71,6 +83,7 @@ class UploadScheduleItemVideoWorkflow:
                 maximum_attempts=1,
             ),
         )
+
         await workflow.execute_activity(
             add_youtube_id_to_schedule_item,
             AddYouTubeIDToScheduleItemInput(
@@ -79,6 +92,31 @@ class UploadScheduleItemVideoWorkflow:
             schedule_to_close_timeout=timedelta(seconds=5),
             retry_policy=RetryPolicy(
                 maximum_attempts=3,
+            ),
+        )
+
+        thumbnail_path = await workflow.execute_activity(
+            extract_video_thumbnail,
+            ExtractVideoThumbnailInput(
+                file_path=media_file_path,
+                schedule_item_id=schedule_item.id,
+            ),
+            schedule_to_close_timeout=timedelta(minutes=20),
+            retry_policy=RetryPolicy(
+                maximum_attempts=3,
+            ),
+        )
+
+        await workflow.execute_activity(
+            set_thumbnail_to_youtube_video,
+            SetThumbnailToYouTubeVideoInput(
+                youtube_id=response["id"],
+                thumbnail_path=thumbnail_path,
+            ),
+            schedule_to_close_timeout=timedelta(minutes=20),
+            retry_policy=RetryPolicy(
+                maximum_attempts=5,
+                backoff_coefficient=2.0,
             ),
         )
 
@@ -102,13 +140,20 @@ class UploadScheduleItemVideoWorkflow:
         else:
             title = f"{schedule_item.title} - {speakers_names}"
 
-        description = f"{title} - {schedule_item.conference_name}\n\n"
+        description = f"{schedule_item.title} - {schedule_item.conference_name}\n\n"
 
         if schedule_item.elevator_pitch:
             description += f"{schedule_item.elevator_pitch}\n\n"
 
+        if schedule_item.type.lower() != "custom":
+            description += (
+                f"Full Abstract: https://2023.pycon.it/event/{schedule_item.slug}\n"
+            )
+
         if count_speakers:
-            description += f"Speakers: {speakers_names}"
+            description += f"Speakers: {speakers_names}\n\n"
+
+        description += schedule_item.conference_youtube_video_bottom_text
 
         return UploadVideoToYouTubeInput(
             title=title,
