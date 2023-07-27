@@ -5,7 +5,7 @@ from import_export.admin import ImportExportModelAdmin
 from google_api.models import GoogleCloudOAuthCredential, GoogleCloudToken
 import google_auth_oauthlib.flow
 from django.utils.safestring import mark_safe
-
+from django.core.cache import cache
 from google_api.sdk import GOOGLE_CLOUD_SCOPES
 
 
@@ -28,16 +28,9 @@ class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
         return obj.googlecloudtoken_set.exists()
 
     def authorize_client(self, obj, request):
-        flow = self.build_google_flow(request, obj)
-        authorization_url, _ = flow.authorization_url(
-            # Enable offline access so that you can refresh an access token without
-            # re-prompting the user for permission. Recommended for web server apps.
-            access_type="offline",
-            # Enable incremental authorization. Recommended as a best practice.
-            include_granted_scopes="true",
+        authorization_url = request.build_absolute_uri(
+            reverse("admin:google-api-oauth-auth", args=(obj.id,))
         )
-        # cache.set(self.google_state_key(obj.id), state, 60 * 5)
-
         return mark_safe(f'<a href="{authorization_url}" target="_blank">Authorize</a>')
 
     def build_google_flow(self, request, obj, *, state=None):
@@ -56,16 +49,16 @@ class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
             state=state,
         )
         flow.redirect_uri = request.build_absolute_uri(
-            reverse("admin:auth-redirect", args=(obj.id,))
+            reverse("admin:google-api-oauth-callback", args=(obj.id,))
         )
         return flow
 
-    def auth_redirect(self, request, object_id):
-        # stored_state = cache.get(self.google_state_key(object_id))
+    def auth_callback(self, request, object_id):
+        stored_state = cache.get(self.google_state_key(object_id))
         param_state = request.GET.get("state")
 
-        # if stored_state != param_state:
-        #     return
+        if stored_state != param_state:
+            return
 
         obj = self.get_object(request, object_id)
         flow = self.build_google_flow(request, obj, state=param_state)
@@ -87,14 +80,30 @@ class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
 
         return redirect("admin:google_api_googlecloudoauthcredential_changelist")
 
-    def google_state_key(self, object_id):
+    def auth(self, request, object_id):
+        obj = self.get_object(request, object_id)
+        flow = self.build_google_flow(request, obj)
+        authorization_url, state = flow.authorization_url(
+            access_type="offline",
+            include_granted_scopes="true",
+        )
+        cache.set(self.google_oauth_state_key(obj.id), state, 60 * 5)
+
+        return redirect(authorization_url)
+
+    def google_oauth_state_key(self, object_id):
         return f"google_api:flow:{object_id}"
 
     def get_urls(self):
         return super().get_urls() + [
             path(
-                "<int:object_id>/auth-redirect",
-                self.admin_site.admin_view(self.auth_redirect),
-                name="auth-redirect",
-            )
+                "<int:object_id>/auth",
+                self.admin_site.admin_view(self.auth),
+                name="google-api-oauth-auth",
+            ),
+            path(
+                "<int:object_id>/auth-callback",
+                self.admin_site.admin_view(self.auth_callback),
+                name="google-api-oauth-callback",
+            ),
         ]
