@@ -151,6 +151,8 @@ class UploadScheduleItemVideoWorkflow:
 
         if schedule_item.elevator_pitch:
             description += f"{schedule_item.elevator_pitch}\n\n"
+        elif schedule_item.description:
+            description += f"{schedule_item.description}\n\n"
 
         if schedule_item.type.lower() != "custom":
             description += (
