@@ -127,7 +127,7 @@ resource "aws_ecs_task_definition" "temporal_service" {
     #   environment = [
     #     {
     #       name  = "DJANGO_SETTINGS_MODULE",
-    #       value = "pycon.settings.temporal"
+    #       value = "pycon.settings.prod"
     #     },
     #     {
     #       name  = "TEMPORAL_ADDRESS",
