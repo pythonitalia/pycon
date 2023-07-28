@@ -124,6 +124,7 @@ class UploadScheduleItemVideoWorkflow:
         await workflow.execute_activity(
             cleanup_local_video_files,
             schedule_item.id,
+            start_to_close_timeout=timedelta(seconds=30),
         )
 
     def create_youtube_video_input(

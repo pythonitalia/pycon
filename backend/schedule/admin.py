@@ -353,6 +353,7 @@ class ScheduleItemAdmin(SearchUsersMixin):
         ),
         (_("Booking"), {"fields": ("attendees_total_capacity", "spaces_left")}),
         (_("Voucher"), {"fields": ("exclude_from_voucher_generation",)}),
+        (_("YouTube"), {"fields": ("youtube_video_id", "video_uploaded_path")}),
     )
     autocomplete_fields = ("submission",)
     prepopulated_fields = {"slug": ("title",)}
