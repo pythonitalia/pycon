@@ -178,3 +178,9 @@ async def set_thumbnail_to_youtube_video(input: SetThumbnailToYouTubeVideoInput)
         video_id=input.youtube_id,
         thumbnail_path=input.thumbnail_path,
     )
+
+
+@activity.defn
+async def cleanup_local_video_files(schedule_item_id: int):
+    local_storage.delete(f"{input.schedule_item_id}-thumbnail.jpg")
+    local_storage.delete(f"yt_upload_{input.id}")

@@ -13,6 +13,7 @@ with workflow.unsafe.imports_passed_through():
         extract_video_thumbnail,
         set_thumbnail_to_youtube_video,
         SetThumbnailToYouTubeVideoInput,
+        cleanup_local_video_files,
     )
     from video_upload.activities import (
         AddYouTubeIDToScheduleItemInput,
@@ -118,6 +119,11 @@ class UploadScheduleItemVideoWorkflow:
                 maximum_attempts=5,
                 backoff_coefficient=2.0,
             ),
+        )
+
+        await workflow.execute_activity(
+            cleanup_local_video_files,
+            schedule_item.id,
         )
 
     def create_youtube_video_input(

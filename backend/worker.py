@@ -17,6 +17,7 @@ async def main():
         add_youtube_id_to_schedule_item,
         extract_video_thumbnail,
         set_thumbnail_to_youtube_video,
+        cleanup_local_video_files,
     )
     from video_upload.workflows.upload_schedule_item_video import (
         UploadScheduleItemVideoWorkflow,
@@ -35,6 +36,7 @@ async def main():
             add_youtube_id_to_schedule_item,
             extract_video_thumbnail,
             set_thumbnail_to_youtube_video,
+            cleanup_local_video_files,
         ],
     )
     print("Starting worker")
