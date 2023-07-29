@@ -70,17 +70,13 @@ class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
                 reverse("admin:google-api-oauth-callback")
             )
 
-        flow.redirect_uri = flow.redirect_uri + f"?obj_id={obj.id}"
+        # flow.redirect_uri = flow.redirect_uri + f"?obj_id={obj.id}"
 
         return flow
 
     def auth_callback(self, request):
-        object_id = request.GET.get("obj_id")
-        stored_state = cache.get(self.google_oauth_state_key(object_id))
         param_state = request.GET.get("state")
-
-        if stored_state != param_state:
-            return
+        object_id = cache.get(self.google_oauth_obj_id_for_state(param_state))
 
         obj = self.get_object(request, object_id)
         flow = self.build_google_flow(request, obj, state=param_state)
@@ -109,12 +105,12 @@ class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
             access_type="offline",
             include_granted_scopes="true",
         )
-        cache.set(self.google_oauth_state_key(obj.id), state, 60 * 5)
+        cache.set(self.google_oauth_obj_id_for_state(state), obj.id, 60 * 5)
 
         return redirect(authorization_url)
 
-    def google_oauth_state_key(self, object_id):
-        return f"google_api:flow:{object_id}"
+    def google_oauth_obj_id_for_state(self, state):
+        return f"google_api:data:{state}"
 
     def get_urls(self):
         return super().get_urls() + [
