@@ -1,3 +1,4 @@
+import inspect
 from google_api.models import GoogleCloudOAuthCredential, UsedRequestQuota
 from googleapiclient.discovery import build
 from apiclient.http import MediaFileUpload
@@ -24,21 +25,33 @@ async def get_available_credentials(service, min_quota):
 
 
 def count_quota(service: str, quota: int):
+    async def _add_quota(credentials):
+        credential_object = await GoogleCloudOAuthCredential.objects.get_by_client_id(
+            credentials.client_id
+        )
+
+        await UsedRequestQuota.objects.acreate(
+            credentials=credential_object,
+            cost=quota,
+            service=service,
+        )
+
     def wrapper(func):
-        async def wrapped(*args, **kwargs):
-            credentials = await get_available_credentials(service, quota)
-            ret_value = await func(*args, credentials=credentials, **kwargs)
-            credential_object = (
-                await GoogleCloudOAuthCredential.objects.get_by_client_id(
-                    credentials.client_id
-                )
-            )
-            await UsedRequestQuota.objects.acreate(
-                credentials=credential_object,
-                cost=quota,
-                service=service,
-            )
-            return ret_value
+        if inspect.isasyncgenfunction(func):
+
+            async def wrapped(*args, **kwargs):
+                credentials = await get_available_credentials(service, quota)
+                async for value in func(*args, credentials=credentials, **kwargs):
+                    yield value
+                await _add_quota(credentials)
+
+        else:
+
+            async def wrapped(*args, **kwargs):
+                credentials = await get_available_credentials(service, quota)
+                ret_value = await func(*args, credentials=credentials, **kwargs)
+                await _add_quota(credentials)
+                return ret_value
 
         return wrapped
 
@@ -77,9 +90,10 @@ async def youtube_videos_insert(
 
     while response is None:
         status, response = upload_request.next_chunk()
+        yield status
 
     if "id" in response:
-        return response
+        yield response
     else:
         raise ValueError("The upload failed with an unexpected response: %s" % response)
 

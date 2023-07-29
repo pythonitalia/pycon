@@ -138,12 +138,15 @@ class UploadVideoToYouTubeInput:
 
 @activity.defn
 async def upload_video_to_youtube(input: UploadVideoToYouTubeInput):
-    return await youtube_videos_insert(
+    async for response in youtube_videos_insert(
         title=input.title,
         description=input.description,
         tags=input.tags_as_str,
         file_path=input.file_path,
-    )
+    ):
+        activity.heartbeat("video uploading")
+
+    return response
 
 
 @dataclass
