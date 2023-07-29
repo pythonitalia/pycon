@@ -162,11 +162,14 @@ class UploadScheduleItemVideoWorkflow:
         if count_speakers:
             description += f"Speakers: {speakers_names}\n\n"
 
-        description += schedule_item.conference_youtube_video_bottom_text
+        description += f"{schedule_item.conference_youtube_video_bottom_text}\n\n"
+
+        if schedule_item.clean_tags:
+            description += " ".join(schedule_item.hashtags)
 
         return UploadVideoToYouTubeInput(
             title=title,
             description=description,
             file_path=media_file_path,
-            tags=schedule_item.tags,
+            tags=schedule_item.clean_tags,
         )

@@ -32,6 +32,14 @@ class ScheduleItemData:
     conference_youtube_video_bottom_text: str
     has_submission: bool
 
+    @property
+    def clean_tags(self) -> list[str]:
+        return [tag.replace(" ", "").lower() for tag in self.tags]
+
+    @property
+    def hashtags(self) -> list[str]:
+        return [f"#{tag}" for tag in self.clean_tags]
+
 
 @activity.defn
 async def fetch_schedule_item(schedule_item_id: int) -> ScheduleItemData:
@@ -124,12 +132,8 @@ class UploadVideoToYouTubeInput:
     tags: list[str]
 
     @property
-    def clean_tags(self) -> list[str]:
-        return [tag.replace(" ", "").lower() for tag in self.tags]
-
-    @property
     def tags_as_str(self) -> list[str]:
-        return ",".join(self.clean_tags)
+        return ",".join(self.tags)
 
 
 @activity.defn
