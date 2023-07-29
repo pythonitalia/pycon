@@ -80,7 +80,9 @@ class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
 
         obj = self.get_object(request, object_id)
         flow = self.build_google_flow(request, obj, state=param_state)
-        flow.fetch_token(authorization_response=request.get_full_path())
+        flow.fetch_token(
+            code=request.GET.get("code"),
+        )
         credentials = flow.credentials
 
         GoogleCloudToken.objects.filter(oauth_credential=obj).delete()
