@@ -1,4 +1,7 @@
+from typing import Any
 from django.contrib import admin
+from django.db.models.query import QuerySet
+from django.http.request import HttpRequest
 from django.shortcuts import redirect
 from django.urls import path, reverse
 from import_export.admin import ImportExportModelAdmin
@@ -21,7 +24,13 @@ class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
         def authorize_client(obj):
             return self.authorize_client(obj, request)
 
-        return ("project_id", authorize_client, "has_token")
+        return ("project_id", authorize_client, "has_token", "youtube_quota_left")
+
+    def youtube_quota_left(self, obj):
+        return obj.youtube_quota_left
+
+    def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
+        return super().get_queryset(request).with_quota_left("youtube")
 
     @admin.display(boolean=True)
     def has_token(self, obj):
