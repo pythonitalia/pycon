@@ -60,20 +60,23 @@ class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
         )
         if settings.DEBUG:
             flow.redirect_uri = request.build_absolute_uri(
-                reverse("admin:google-api-oauth-callback", args=(obj.id,))
+                reverse("admin:google-api-oauth-callback")
             )
         else:
             # TODO: this is an hack because we have a middleware that forces
             # the host to be "pycon.it"
             # once we remove the middleware we can remove this if
             flow.redirect_uri = "https://admin.pycon.it" + (
-                reverse("admin:google-api-oauth-callback", args=(obj.id,))
+                reverse("admin:google-api-oauth-callback")
             )
+
+        flow.redirect_uri = flow.redirect_uri + f"?obj_id={obj.id}"
 
         return flow
 
-    def auth_callback(self, request, object_id):
-        stored_state = cache.get(self.google_state_key(object_id))
+    def auth_callback(self, request):
+        object_id = request.GET.get("obj_id")
+        stored_state = cache.get(self.google_oauth_state_key(object_id))
         param_state = request.GET.get("state")
 
         if stored_state != param_state:
@@ -121,7 +124,7 @@ class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
                 name="google-api-oauth-auth",
             ),
             path(
-                "<int:object_id>/auth-callback",
+                "auth-callback",
                 self.admin_site.admin_view(self.auth_callback),
                 name="google-api-oauth-callback",
             ),
