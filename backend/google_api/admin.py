@@ -1,4 +1,5 @@
 from typing import Any
+from django.conf import settings
 from django.contrib import admin
 from django.db.models.query import QuerySet
 from django.http.request import HttpRequest
@@ -57,9 +58,18 @@ class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
             scopes=GOOGLE_CLOUD_SCOPES,
             state=state,
         )
-        flow.redirect_uri = request.build_absolute_uri(
-            reverse("admin:google-api-oauth-callback", args=(obj.id,))
-        )
+        if settings.DEBUG:
+            flow.redirect_uri = request.build_absolute_uri(
+                reverse("admin:google-api-oauth-callback", args=(obj.id,))
+            )
+        else:
+            # TODO: this is an hack because we have a middleware that forces
+            # the host to be "pycon.it"
+            # once we remove the middleware we can remove this if
+            flow.redirect_uri = "https://admin.pycon.it" + (
+                reverse("admin:google-api-oauth-callback", args=(obj.id,))
+            )
+
         return flow
 
     def auth_callback(self, request, object_id):

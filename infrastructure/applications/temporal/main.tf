@@ -1,6 +1,9 @@
 locals {
   is_prod                = terraform.workspace == "production"
   db_connection_pycon_be = var.enable_proxy ? "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/pycon" : "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/pycon"
+
+  users_backend_url       = local.is_prod ? "https://users-api.python.it" : "https://${terraform.workspace}-users-api.python.it"
+  association_backend_url = local.is_prod ? "https://association-api.python.it" : "https://${terraform.workspace}-association-api.python.it"
 }
 
 data "aws_db_instance" "database" {
@@ -53,7 +56,6 @@ resource "aws_instance" "temporal" {
     volume_size = 30
   }
 }
-
 
 resource "aws_ecs_task_definition" "temporal_service" {
   family = "${terraform.workspace}-temporal"
@@ -119,38 +121,104 @@ resource "aws_ecs_task_definition" "temporal_service" {
         }
       ]
     },
-    # {
-    #   name   = "pycon-backend-worker",
-    #   cpu    = 512
-    #   memory = 512
-    #   image  = local.pycon_be_image_uri
-    #   environment = [
-    #     {
-    #       name  = "DJANGO_SETTINGS_MODULE",
-    #       value = "pycon.settings.prod"
-    #     },
-    #     {
-    #       name  = "TEMPORAL_ADDRESS",
-    #       value = "172.17.0.1:7233"
-    #     },
-    #     {
-    #       name  = "DATABASE_URL"
-    #       value = local.db_connection_pycon_be
-    #     },
-    #     {
-    #       name = "DEBUG",
-    #       value = "False"
-    #     },
-    #     {
-    #       name = "SECRET_KEY",
-    #       value = module.pycon_be_secrets.value.secret_key
-    #     },
-    #     {
-    #       name = "CACHE_URL",
-    #       value = local.is_prod ? "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/8" : "locmemcache://snowflake"
-    #     }
-    #   ]
-    # }
+    {
+      name   = "admin-tools"
+      cpu    = 100
+      memory = 100
+      image  = "temporalio/admin-tools:1.21.2.0"
+      environment = [
+        {
+          name  = "TEMPORAL_ADDRESS",
+          value = "172.17.0.1:7233"
+        },
+        {
+          name  = "TEMPORAL_CLI_ADDRESS",
+          value = "172.17.0.1:7233"
+        }
+      ]
+    },
+    {
+      name       = "pycon-backend-worker",
+      cpu        = 512
+      memory     = 512
+      image      = local.pycon_be_image_uri
+      entrypoint = ["/home/app/.venv/bin/python"]
+      command    = ["worker.py"]
+      environment = [
+        {
+          name  = "DJANGO_SETTINGS_MODULE",
+          value = "pycon.settings.prod"
+        },
+        {
+          name  = "TEMPORAL_ADDRESS",
+          value = "172.17.0.1:7233"
+        },
+        {
+          name  = "DATABASE_URL"
+          value = local.db_connection_pycon_be
+        },
+        {
+          name  = "DEBUG",
+          value = "False"
+        },
+        {
+          name  = "SECRET_KEY",
+          value = module.pycon_be_secrets.value.secret_key
+        },
+        {
+          name  = "SENTRY_DSN",
+          value = module.pycon_be_secrets.value.sentry_dsn
+        },
+        {
+          name  = "SPEAKERS_EMAIL_ADDRESS",
+          value = module.pycon_be_secrets.value.speakers_email_address
+        },
+        {
+          name  = "EMAIL_BACKEND",
+          value = "django_ses.SESBackend"
+        },
+        {
+          name  = "PYTHONIT_EMAIL_BACKEND",
+          value = "pythonit_toolkit.emails.backends.ses.SESEmailBackend"
+        },
+        {
+          name  = "PRETIX_API",
+          value = "https://tickets.pycon.it/api/v1/"
+        },
+        {
+          name  = "PRETIX_API_TOKEN",
+          value = module.pycon_be_secrets.value.pretix_api_token
+        },
+        {
+          name  = "ASSOCIATION_BACKEND_SERVICE",
+          value = local.association_backend_url
+        },
+        {
+          name  = "USERS_SERVICE",
+          value = local.users_backend_url
+        },
+        {
+          name  = "SERVICE_TO_SERVICE_SECRET",
+          value = module.common_secrets.value.service_to_service_secret
+        },
+        {
+          name  = "PASTAPORTO_SECRET",
+          value = module.common_secrets.value.pastaporto_secret
+        },
+        {
+          name  = "AZURE_STORAGE_ACCOUNT_NAME",
+          value = module.pycon_be_secrets.value.azure_storage_account_name
+        },
+        {
+          name  = "AZURE_STORAGE_ACCOUNT_KEY",
+          value = module.pycon_be_secrets.value.azure_storage_account_key
+        },
+        {
+          name  = "CACHE_URL",
+          value = local.is_prod ? "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/8" : "locmemcache://snowflake"
+        }
+      ]
+    }
   ])
 
   requires_compatibilities = []
