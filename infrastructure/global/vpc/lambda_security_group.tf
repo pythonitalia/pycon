@@ -34,3 +34,12 @@ resource "aws_security_group_rule" "allow_outbound_redis" {
   security_group_id = aws_security_group.lambda.id
   cidr_blocks       = ["0.0.0.0/0"]
 }
+
+resource "aws_security_group_rule" "allow_outbound_temporal" {
+  type              = "egress"
+  from_port         = 7233
+  to_port           = 7233
+  protocol          = "tcp"
+  security_group_id = aws_security_group.lambda.id
+  cidr_blocks       = ["0.0.0.0/0"]
+}

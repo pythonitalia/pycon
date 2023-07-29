@@ -510,6 +510,8 @@ def test_video_uploaded_path_matcher(
     rf,
     conference_factory,
     schedule_item_factory,
+    keynote_factory,
+    keynote_speaker_factory,
     mocker,
     settings,
     schedule_item_additional_speaker_factory,
@@ -523,6 +525,9 @@ def test_video_uploaded_path_matcher(
             "conf/video-2/2-Opening.mp4",
             "conf/video-2/5-Klaasje, Harrier Du Bois.mp4",
             "conf/video-2/5-Testing Name.mp4",
+            "conf/video-2/12-Klaasje.mp4",
+            "conf/video-2/55-Cuno.mp4",
+            "conf/video-2/5-Marcsed Cazzęfa.mp4",
         ],
     )
 
@@ -540,6 +545,13 @@ def test_video_uploaded_path_matcher(
         submission__speaker_id=5,
     )
 
+    event_klaasje_alone = schedule_item_factory(
+        conference=conference,
+        title="Klaasje smokes",
+        type=ScheduleItem.TYPES.talk,
+        submission__speaker_id=10,
+    )
+
     event_3 = schedule_item_factory(
         conference=conference,
         title="Talk about something",
@@ -551,6 +563,26 @@ def test_video_uploaded_path_matcher(
     )
     event_3.additional_speakers.add(
         schedule_item_additional_speaker_factory(user_id=20)
+    )
+
+    keynote_object = keynote_factory()
+    keynote_speaker_factory(
+        keynote=keynote_object,
+        user_id=23,
+    )
+    keynote_schedule = schedule_item_factory(
+        conference=conference,
+        title="Keynote",
+        type=ScheduleItem.TYPES.keynote,
+        submission=None,
+        keynote=keynote_object,
+    )
+
+    special_char_speaker = schedule_item_factory(
+        conference=conference,
+        title="Special char",
+        type=ScheduleItem.TYPES.talk,
+        submission__speaker_id=99,
     )
 
     admin = ConferenceAdmin(
@@ -579,6 +611,16 @@ def test_video_uploaded_path_matcher(
                             "name": "Harrier",
                             "fullname": "Harrier Du Bois",
                         },
+                        {
+                            "id": "23",
+                            "name": "Cuno",
+                            "fullname": "Cuno",
+                        },
+                        {
+                            "id": "99",
+                            "name": "Marcsed",
+                            "fullname": "Marcsed Cazzęfa",
+                        },
                     ]
                 }
             }
@@ -591,10 +633,19 @@ def test_video_uploaded_path_matcher(
     event_1.refresh_from_db()
     event_2.refresh_from_db()
     event_3.refresh_from_db()
+    event_klaasje_alone.refresh_from_db()
+    keynote_schedule.refresh_from_db()
+    special_char_speaker.refresh_from_db()
 
     assert event_1.video_uploaded_path == "conf/video-2/2-Opening.mp4"
     assert event_2.video_uploaded_path == "conf/video-1/1-Kim Kitsuragi.mp4"
     assert event_3.video_uploaded_path == "conf/video-2/5-Klaasje, Harrier Du Bois.mp4"
+    assert event_klaasje_alone.video_uploaded_path == "conf/video-2/12-Klaasje.mp4"
+    assert keynote_schedule.video_uploaded_path == "conf/video-2/55-Cuno.mp4"
+    assert (
+        special_char_speaker.video_uploaded_path
+        == "conf/video-2/5-Marcsed Cazzęfa.mp4"
+    )
 
     assert (
         "Some files were not used: conf/video-2/5-Testing Name.mp4"
