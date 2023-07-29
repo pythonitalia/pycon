@@ -39,3 +39,12 @@ resource "aws_security_group_rule" "temporal_ui" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.instance.id
 }
+
+resource "aws_security_group_rule" "temporal" {
+  type              = "ingress"
+  from_port         = 7233
+  to_port           = 7233
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.instance.id
+}

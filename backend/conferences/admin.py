@@ -287,16 +287,26 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
 
     def match_event_to_video_file(self, event, files, users_data):
         possible_file_names = []
-        speaker_name = None
 
         def best_name(speaker_data):
             return (speaker_data["fullname"] or speaker_data["name"]).lower()
 
-        if not event.submission_id:
+        all_speakers_names = []
+
+        if event.type == ScheduleItem.TYPES.custom:
             possible_file_names.append(event.title.lower())
-        else:
+
+        if event.submission_id:
             speaker_data = users_data[str(event.submission.speaker_id)]
-            speaker_name = best_name(speaker_data)
+            all_speakers_names.append(best_name(speaker_data))
+
+        if event.keynote_id:
+            all_speakers_names.extend(
+                [
+                    best_name(users_data[str(speaker.user_id)])
+                    for speaker in event.keynote.speakers.all()
+                ]
+            )
 
         co_speakers_ids = [
             co_speaker.user_id for co_speaker in event.additional_speakers.all()
@@ -304,22 +314,27 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
         co_speakers_data = [
             users_data[str(co_speaker_id)] for co_speaker_id in co_speakers_ids
         ]
-        co_speakers_names = [
-            best_name(co_speaker_data) for co_speaker_data in co_speakers_data
-        ]
-        if speaker_name:
-            co_speakers_names.append(speaker_name)
+        all_speakers_names.extend(
+            [best_name(co_speaker_data) for co_speaker_data in co_speakers_data]
+        )
 
-        if co_speakers_names:
+        single_speaker = len(all_speakers_names) <= 1
+
+        if all_speakers_names:
             possible_file_names.extend(
                 [
                     ", ".join(permutation)
-                    for permutation in permutations(co_speakers_names)
+                    for permutation in permutations(all_speakers_names)
                 ]
             )
 
         for video_file in files:
             video_file_lower = video_file.lower()
+
+            # if video contains a comma, it's a multi-speaker video
+            # so we skip it if the event has a single speaker
+            if "," in video_file_lower and single_speaker:
+                continue
 
             for possible_file_name in possible_file_names:
                 if possible_file_name in video_file_lower:
@@ -328,13 +343,21 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
         return ""
 
     def _get_speakers_data_for_events(self, events):
-        all_users_ids = list(
-            events.filter(submission__isnull=False).values_list(
-                "submission__speaker_id", flat=True
+        all_users_ids = (
+            list(
+                events.filter(submission__isnull=False).values_list(
+                    "submission__speaker_id", flat=True
+                )
             )
-        ) + list(
-            events.filter(additional_speakers__user_id__isnull=False).values_list(
-                "additional_speakers__user_id", flat=True
+            + list(
+                events.filter(additional_speakers__user_id__isnull=False).values_list(
+                    "additional_speakers__user_id", flat=True
+                )
+            )
+            + list(
+                events.filter(keynote__isnull=False).values_list(
+                    "keynote__speakers__user_id", flat=True
+                )
             )
         )
         return get_users_data_by_ids(all_users_ids)
