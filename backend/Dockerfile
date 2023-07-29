@@ -17,6 +17,8 @@ RUN apt-get update -y && apt-get install -y \
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 
+RUN pip3 install poetry==1.3.2
+
 RUN tar -czvf /libs.tar.gz /usr/lib/x86_64-linux-gnu/libpq* \
     /usr/lib/x86_64-linux-gnu/libpq* \
     /usr/lib/x86_64-linux-gnu/libldap_r* \
@@ -34,9 +36,14 @@ RUN tar -czvf /libs.tar.gz /usr/lib/x86_64-linux-gnu/libpq* \
     /usr/lib/x86_64-linux-gnu/libwebp* \
     /usr/lib/x86_64-linux-gnu/libtiff* \
     /usr/lib/x86_64-linux-gnu/libGL* \
-    /usr/lib/x86_64-linux-gnu/libgthread*
-
-RUN pip3 install poetry==1.3.2
+    /usr/lib/x86_64-linux-gnu/libgthread* \
+    /usr/lib/x86_64-linux-gnu/libglib-* \
+    /usr/lib/x86_64-linux-gnu/libX11* \
+    /usr/lib/x86_64-linux-gnu/libxcb* \
+    /usr/lib/x86_64-linux-gnu/libXau* \
+    /usr/lib/x86_64-linux-gnu/libXdmcp* \
+    /usr/lib/x86_64-linux-gnu/libXext* \
+    /usr/lib/x86_64-linux-gnu/libbsd*
 
 COPY poetry.lock ${FUNCTION_DIR}
 COPY pyproject.toml ${FUNCTION_DIR}
