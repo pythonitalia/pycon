@@ -66,3 +66,4 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
           STRIPE_SECRET_KEY: fake-key
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          MEDIA_FILES_STORAGE_BACKEND: django.core.files.storage.FileSystemStorage

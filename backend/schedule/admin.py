@@ -25,6 +25,10 @@ from domain_events.publisher import (
     send_speaker_communication_email,
 )
 from pretix import user_has_admission_ticket
+from video_upload.workflows.upload_schedule_item_video import (
+    UploadScheduleItemVideoWorkflow,
+)
+from temporal.sdk import start_workflow
 from schedule.forms import EmailSpeakersForm
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin, SearchUsersMixin
@@ -189,6 +193,26 @@ def _send_invitations(
         schedule_item.save()
 
 
+@admin.action(description="Upload videos to YouTube")
+def upload_videos_to_youtube(modeladmin, request, queryset):
+    videos = queryset.filter(youtube_video_id__exact="").exclude(
+        video_uploaded_path__exact=""
+    )
+    for video in videos:
+        start_workflow(
+            workflow=UploadScheduleItemVideoWorkflow.run,
+            id=f"schedule-item-{video.id}-video-upload",
+            task_queue="default",
+            arg=UploadScheduleItemVideoWorkflow.input(
+                schedule_item_id=video.id,
+            ),
+        )
+
+    messages.add_message(
+        request, messages.INFO, f"Scheduled {videos.count()} videos to upload"
+    )
+
+
 class SlotInline(admin.TabularInline):
     model = Slot
 
@@ -329,6 +353,7 @@ class ScheduleItemAdmin(SearchUsersMixin):
         ),
         (_("Booking"), {"fields": ("attendees_total_capacity", "spaces_left")}),
         (_("Voucher"), {"fields": ("exclude_from_voucher_generation",)}),
+        (_("YouTube"), {"fields": ("youtube_video_id", "video_uploaded_path")}),
     )
     autocomplete_fields = ("submission",)
     prepopulated_fields = {"slug": ("title",)}
@@ -344,6 +369,7 @@ class ScheduleItemAdmin(SearchUsersMixin):
         send_schedule_invitation_to_uninvited,
         send_schedule_invitation_reminder_to_waiting,
         mark_speakers_to_receive_vouchers,
+        upload_videos_to_youtube,
     ]
     readonly_fields = ("spaces_left",)
 

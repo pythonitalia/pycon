@@ -223,6 +223,9 @@ class ScheduleItem(TimeStampedModel):
         blank=True,
         default="",
     )
+    youtube_video_id = models.CharField(
+        _("Youtube video ID"), max_length=1024, blank=True, default=""
+    )
 
     @cached_property
     def speakers(self):

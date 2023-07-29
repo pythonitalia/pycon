@@ -127,6 +127,11 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         default=None,
     )
 
+    youtube_video_bottom_text = models.TextField(
+        default="",
+        blank=True,
+    )
+
     @property
     def is_cfp_open(self):
         try:

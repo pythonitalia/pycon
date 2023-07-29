@@ -53,14 +53,18 @@ GET_USERS_BY_EMAILS = """
 
 
 def get_users_data_by_ids(ids: list[int]) -> dict[str, dict[str, Any]]:
+    return async_to_sync(get_users_data_by_ids_async)(ids)
+
+
+async def get_users_data_by_ids_async(ids: list[int]) -> dict[str, dict[str, Any]]:
     client = ServiceClient(
         url=f"{settings.USERS_SERVICE_URL}/internal-api",
         service_name="users-backend",
         caller="pycon-backend",
         jwt_secret=settings.SERVICE_TO_SERVICE_SECRET,
     )
-    client_execute = async_to_sync(client.execute)
-    users_data = client_execute(GET_USERS_BY_IDS, {"ids": ids}).data
+    response = await client.execute(GET_USERS_BY_IDS, {"ids": ids})
+    users_data = response.data
     users_by_id = {user["id"]: user for user in users_data["usersByIds"]}
 
     return users_by_id

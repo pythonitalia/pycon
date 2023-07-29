@@ -12,6 +12,12 @@ module "pretix" {
   enable_proxy = local.enable_proxy
 }
 
+module "temporal" {
+  source       = "./temporal"
+  count        = local.deploy_pretix ? 1 : 0
+  enable_proxy = local.enable_proxy
+}
+
 module "pycon_backend" {
   source       = "./pycon_backend"
   enable_proxy = local.enable_proxy
