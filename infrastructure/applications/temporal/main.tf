@@ -57,7 +57,6 @@ resource "aws_instance" "temporal" {
   }
 }
 
-
 resource "aws_ecs_task_definition" "temporal_service" {
   family = "${terraform.workspace}-temporal"
   container_definitions = jsonencode([
@@ -123,10 +122,28 @@ resource "aws_ecs_task_definition" "temporal_service" {
       ]
     },
     {
-      name   = "pycon-backend-worker",
-      cpu    = 512
-      memory = 512
-      image  = local.pycon_be_image_uri
+      name   = "admin-tools"
+      cpu    = 100
+      memory = 100
+      image  = "temporalio/admin-tools:1.21.2.0"
+      environment = [
+        {
+          name  = "TEMPORAL_ADDRESS",
+          value = "172.17.0.1:7233"
+        },
+        {
+          name  = "TEMPORAL_CLI_ADDRESS",
+          value = "172.17.0.1:7233"
+        }
+      ]
+    },
+    {
+      name       = "pycon-backend-worker",
+      cpu        = 512
+      memory     = 512
+      image      = local.pycon_be_image_uri
+      entrypoint = ["/home/app/.venv/bin/python"]
+      command    = ["worker.py"]
       environment = [
         {
           name  = "DJANGO_SETTINGS_MODULE",
@@ -183,6 +200,10 @@ resource "aws_ecs_task_definition" "temporal_service" {
         {
           name  = "SERVICE_TO_SERVICE_SECRET",
           value = module.common_secrets.value.service_to_service_secret
+        },
+        {
+          name  = "PASTAPORTO_SECRET",
+          value = module.common_secrets.value.pastaporto_secret
         },
         {
           name  = "AZURE_STORAGE_ACCOUNT_NAME",

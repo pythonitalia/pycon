@@ -54,6 +54,13 @@ data "aws_elasticache_cluster" "redis" {
   cluster_id = "production-pretix"
 }
 
+data "aws_instance" "temporal_machine" {
+  filter {
+    name   = "tag:Name"
+    values = ["production-temporal-instance"]
+  }
+}
+
 module "lambda" {
   source = "../../components/application_lambda"
 
@@ -97,6 +104,7 @@ module "lambda" {
     PLAIN_API                                 = "https://core-api.uk.plain.com/graphql/v1"
     PLAIN_API_TOKEN                           = module.secrets.value.plain_api_token
     CACHE_URL                                 = local.is_prod ? "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/8" : "locmemcache://snowflake"
+    TEMPORAL_ADDRESS = "${data.aws_instance.temporal_machine.private_ip}:7233"
   }
 }
 
