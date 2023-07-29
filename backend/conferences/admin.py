@@ -1,4 +1,5 @@
 from pathlib import Path
+from itertools import chain
 from django.core.files.storage import storages
 from django import forms
 from django.contrib import admin, messages
@@ -16,7 +17,7 @@ from ordered_model.admin import (
     OrderedTabularInline,
 )
 from itertools import permutations
-
+from unicodedata import normalize
 from conferences.models import SpeakerVoucher
 from domain_events.publisher import send_speaker_voucher_email
 from pretix import create_voucher
@@ -251,6 +252,7 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
 
         cache_key = f"{conference.code}:video-upload-files-cache"
         files = cache.get(cache_key)
+
         if not files or ignore_cache:
             storage = storages["conferencevideos"]
             files = list(walk_conference_videos_folder(storage, f"{conference.code}/"))
@@ -289,12 +291,11 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
         possible_file_names = []
 
         def best_name(speaker_data):
-            return (speaker_data["fullname"] or speaker_data["name"]).lower()
+            return normalize(
+                "NFKD", speaker_data["fullname"] or speaker_data["name"]
+            ).lower()
 
         all_speakers_names = []
-
-        if event.type == ScheduleItem.TYPES.custom:
-            possible_file_names.append(event.title.lower())
 
         if event.submission_id:
             speaker_data = users_data[str(event.submission.speaker_id)]
@@ -318,7 +319,11 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
             [best_name(co_speaker_data) for co_speaker_data in co_speakers_data]
         )
 
-        single_speaker = len(all_speakers_names) <= 1
+        count_speakers = len(all_speakers_names)
+        single_speaker = count_speakers <= 1
+
+        if count_speakers == 0:
+            possible_file_names.append(normalize("NFKD", event.title).lower())
 
         if all_speakers_names:
             possible_file_names.extend(
@@ -329,7 +334,7 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
             )
 
         for video_file in files:
-            video_file_lower = video_file.lower()
+            video_file_lower = normalize("NFKD", video_file).lower()
 
             # if video contains a comma, it's a multi-speaker video
             # so we skip it if the event has a single speaker
@@ -343,23 +348,7 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
         return ""
 
     def _get_speakers_data_for_events(self, events):
-        all_users_ids = (
-            list(
-                events.filter(submission__isnull=False).values_list(
-                    "submission__speaker_id", flat=True
-                )
-            )
-            + list(
-                events.filter(additional_speakers__user_id__isnull=False).values_list(
-                    "additional_speakers__user_id", flat=True
-                )
-            )
-            + list(
-                events.filter(keynote__isnull=False).values_list(
-                    "keynote__speakers__user_id", flat=True
-                )
-            )
-        )
+        all_users_ids = list(chain.from_iterable(event.speakers for event in events))
         return get_users_data_by_ids(all_users_ids)
 
 
