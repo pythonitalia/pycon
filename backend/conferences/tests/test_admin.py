@@ -620,7 +620,7 @@ def test_video_uploaded_path_matcher(
                         },
                         {
                             "id": "23",
-                            "name": "",
+                            "name": "  ",
                             "fullname": "Anwesha Das",
                         },
                         {

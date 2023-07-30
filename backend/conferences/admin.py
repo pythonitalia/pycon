@@ -269,6 +269,13 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
             event.video_uploaded_path = video_uploaded_path
             event.save(update_fields=["video_uploaded_path"])
 
+            if video_uploaded_path in used_files:
+                self.message_user(
+                    request,
+                    f"File {video_uploaded_path} was used more than once.",
+                    messages.WARNING,
+                )
+
             if video_uploaded_path:
                 matched_videos += 1
                 used_files.add(video_uploaded_path)
@@ -291,38 +298,24 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
         possible_file_names = []
 
         def best_name(speaker_data):
-            return cleanup_string(speaker_data["fullname"] or speaker_data["name"])
-
-        all_speakers_names = []
-
-        if event.submission_id:
-            speaker_data = users_data[str(event.submission.speaker_id)]
-            all_speakers_names.append(best_name(speaker_data))
-
-        if event.keynote_id:
-            all_speakers_names.extend(
-                [
-                    best_name(users_data[str(speaker.user_id)])
-                    for speaker in event.keynote.speakers.all()
-                ]
+            return cleanup_string(
+                speaker_data["fullname"].strip() or speaker_data["name"].strip()
             )
 
-        co_speakers_ids = [
-            co_speaker.user_id for co_speaker in event.additional_speakers.all()
+        normalized_files = [
+            (cleanup_string(video_file), video_file) for video_file in files
         ]
-        co_speakers_data = [
-            users_data[str(co_speaker_id)] for co_speaker_id in co_speakers_ids
+
+        all_speakers_names = [
+            best_name(users_data[str(speaker_id)]) for speaker_id in event.speakers
         ]
-        all_speakers_names.extend(
-            [best_name(co_speaker_data) for co_speaker_data in co_speakers_data]
-        )
 
         count_speakers = len(all_speakers_names)
         single_speaker = count_speakers <= 1
         multi_speaker_exact_match = None
 
         if count_speakers == 0:
-            possible_file_names.append(normalize("NFKD", event.title).lower())
+            possible_file_names.append(cleanup_string(event.title))
         elif count_speakers > 1:
             # together with the permutation of all speakers names,
             # we also store the exact match of names in the same order as our event
@@ -338,10 +331,6 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                     for permutation in permutations(all_speakers_names)
                 ]
             )
-
-        normalized_files = [
-            (cleanup_string(video_file), video_file) for video_file in files
-        ]
 
         if multi_speaker_exact_match:
             exact_match_found = next(
