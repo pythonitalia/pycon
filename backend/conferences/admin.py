@@ -27,7 +27,7 @@ from sponsors.models import SponsorLevel
 from users.autocomplete import UsersBackendAutocomplete
 from users.mixins import AdminUsersMixin, SearchUsersMixin
 from voting.models import IncludedEvent
-
+import re
 from .models import (
     AudienceLevel,
     Conference,
@@ -574,6 +574,8 @@ class SpeakerVoucherAdmin(AdminUsersMixin, SearchUsersMixin):
 
 
 def cleanup_string(string: str) -> str:
-    return normalize(
+    new_string = normalize(
         "NFKD", "".join(char for char in string if char.isprintable())
     ).lower()
+    new_string = re.sub(r"\s+", " ", new_string)
+    return new_string.strip()
