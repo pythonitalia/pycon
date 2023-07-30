@@ -143,12 +143,18 @@ class UploadScheduleItemVideoWorkflow:
             ]
         )
 
-        if count_speakers >= 3 or not schedule_item.has_submission:
+        if count_speakers == 0 or count_speakers > 2:
             title = f"{schedule_item.title} - {schedule_item.conference_name}"
         else:
             title = f"{schedule_item.title} - {speakers_names}"
 
-        description = f"{schedule_item.title} - {schedule_item.conference_name}\n\n"
+        if len(title) > 100:
+            title = schedule_item.title
+
+        description = (
+            f"{schedule_item.title} - "
+            f"{speakers_names} - {schedule_item.conference_name}\n\n"
+        )
 
         if schedule_item.elevator_pitch:
             description += f"{schedule_item.elevator_pitch}\n\n"
