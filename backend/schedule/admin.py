@@ -17,7 +17,6 @@ from ordered_model.admin import (
     OrderedModelAdmin,
     OrderedTabularInline,
 )
-
 from conferences.models import SpeakerVoucher
 from domain_events.publisher import (
     send_new_submission_time_slot,
@@ -25,8 +24,8 @@ from domain_events.publisher import (
     send_speaker_communication_email,
 )
 from pretix import user_has_admission_ticket
-from video_upload.workflows.upload_schedule_item_video import (
-    UploadScheduleItemVideoWorkflow,
+from video_upload.workflows.batch_multiple_schedule_items_video_upload import (
+    BatchMultipleScheduleItemsVideoUpload,
 )
 from temporal.sdk import start_workflow
 from schedule.forms import EmailSpeakersForm
@@ -198,15 +197,15 @@ def upload_videos_to_youtube(modeladmin, request, queryset):
     videos = queryset.filter(youtube_video_id__exact="").exclude(
         video_uploaded_path__exact=""
     )
-    for video in videos:
-        start_workflow(
-            workflow=UploadScheduleItemVideoWorkflow.run,
-            id=f"schedule-item-{video.id}-video-upload",
-            task_queue="default",
-            arg=UploadScheduleItemVideoWorkflow.input(
-                schedule_item_id=video.id,
-            ),
-        )
+    conference_id = queryset.first().conference_id
+    start_workflow(
+        workflow=BatchMultipleScheduleItemsVideoUpload.run,
+        id=f"batch-upload-video-conference-{conference_id}",
+        task_queue="default",
+        arg=BatchMultipleScheduleItemsVideoUpload.input(
+            schedule_items_ids=list(videos.values_list("id", flat=True))
+        ),
+    )
 
     messages.add_message(
         request, messages.INFO, f"Scheduled {videos.count()} videos to upload"

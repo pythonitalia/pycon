@@ -22,12 +22,18 @@ async def main():
     from video_upload.workflows.upload_schedule_item_video import (
         UploadScheduleItemVideoWorkflow,
     )
+    from video_upload.workflows.batch_multiple_schedule_items_video_upload import (
+        BatchMultipleScheduleItemsVideoUpload,
+    )
 
     client = await Client.connect(os.getenv("TEMPORAL_ADDRESS"))
     worker = Worker(
         client,
         task_queue="default",
-        workflows=[UploadScheduleItemVideoWorkflow],
+        workflows=[
+            UploadScheduleItemVideoWorkflow,
+            BatchMultipleScheduleItemsVideoUpload,
+        ],
         activities=[
             fetch_schedule_item,
             download_video_file,

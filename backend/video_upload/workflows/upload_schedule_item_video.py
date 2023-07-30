@@ -104,7 +104,8 @@ class UploadScheduleItemVideoWorkflow:
             ),
             schedule_to_close_timeout=timedelta(minutes=20),
             retry_policy=RetryPolicy(
-                maximum_attempts=3,
+                maximum_attempts=30,
+                backoff_coefficient=1,
             ),
         )
 
@@ -114,7 +115,7 @@ class UploadScheduleItemVideoWorkflow:
                 youtube_id=response["id"],
                 thumbnail_path=thumbnail_path,
             ),
-            schedule_to_close_timeout=timedelta(minutes=20),
+            schedule_to_close_timeout=timedelta(minutes=1),
             retry_policy=RetryPolicy(
                 maximum_attempts=5,
                 backoff_coefficient=2.0,
