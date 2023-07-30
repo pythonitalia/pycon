@@ -163,11 +163,8 @@ class UploadScheduleItemVideoWorkflow:
 
         if schedule_item.type.lower() != "custom":
             description += (
-                f"Full Abstract: https://2023.pycon.it/event/{schedule_item.slug}\n"
+                f"Full Abstract: https://2023.pycon.it/event/{schedule_item.slug}\n\n"
             )
-
-        if count_speakers:
-            description += f"Speakers: {speakers_names}\n\n"
 
         description += f"{schedule_item.conference_youtube_video_bottom_text}\n\n"
 

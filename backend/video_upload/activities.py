@@ -34,7 +34,7 @@ class ScheduleItemData:
 
     @property
     def clean_tags(self) -> list[str]:
-        return [tag.replace(" ", "").lower() for tag in self.tags]
+        return [tag.replace(" ", "").replace("-", "").lower() for tag in self.tags]
 
     @property
     def hashtags(self) -> list[str]:
