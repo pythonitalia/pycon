@@ -28,6 +28,9 @@
           Event title
         </th>
         <th>
+          Type
+        </th>
+        <th>
           Start
         </th>
         <th>
@@ -45,30 +48,18 @@
             {{ event.title }}
           </td>
           <td>
+            {{ event.type }}
+          </td>
+          <td>
             {{ event.slot.day.day }} {{ event.slot.hour }}
           </td>
           <td>
-            {% if event.submission %}
-              {% with speaker_id=event.submission.speaker_id|stringformat:"i" %}
+            {% for speaker in event.speakers %}
+              {% with speaker_id=speaker|stringformat:"i" %}
                 {{ users_data|get_item:speaker_id|get_item:'fullname' }}
-                ({{ users_data|get_item:speaker_id|get_item:'name' }}) /
+                  ({{ users_data|get_item:speaker_id|get_item:'name' }}) /
               {% endwith %}
-              {% for speaker in event.additional_speakers.all %}
-                {% with speaker_id=speaker.user_id|stringformat:"i" %}
-                  {{ users_data|get_item:speaker_id|get_item:'fullname' }}
-                  ({{ users_data|get_item:speaker_id|get_item:'name' }}) /
-                {% endwith %}
-              {% endfor %}
-            {% endif %}
-
-            {% if event.keynote_id %}
-              {% for speaker in event.keynote.speakers.all %}
-                {% with speaker_id=speaker.user_id|stringformat:"i" %}
-                  {{ users_data|get_item:speaker_id|get_item:'fullname' }}
-                  ({{ users_data|get_item:speaker_id|get_item:'name' }}) /
-                {% endwith %}
-              {% endfor %}
-            {% endif %}
+            {% endfor %}
           </td>
           <td>
             <input style="width: 400px" type="text" name="video_uploaded_path_{{event.id}}" value="{{ event.video_uploaded_path }}" />
