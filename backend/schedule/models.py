@@ -229,10 +229,12 @@ class ScheduleItem(TimeStampedModel):
 
     @cached_property
     def speakers(self):
-        speakers = [speaker.user_id for speaker in self.additional_speakers.all()]
+        speakers = []
 
         if self.submission_id:
             speakers.append(self.submission.speaker_id)
+
+        speakers.extend([speaker.user_id for speaker in self.additional_speakers.all()])
 
         if self.keynote_id:
             for speaker_keynote in self.keynote.speakers.all():

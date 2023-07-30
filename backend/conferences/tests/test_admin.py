@@ -524,9 +524,10 @@ def test_video_uploaded_path_matcher(
             "conf/video-1/1-Kim Kitsuragi.mp4",
             "conf/video-2/2-Opening.mp4",
             "conf/video-2/5-Klaasje, Harrier Du Bois.mp4",
+            "conf/video-2/2-Harrier Du Bois, Klaasje.mp4",
             "conf/video-2/5-Testing Name.mp4",
             "conf/video-2/12-Klaasje.mp4",
-            "conf/video-2/55-Cuno.mp4",
+            "conf/9-Anwesha Das.mp4",
             "conf/video-2/5-Marcsed Cazzęfa.mp4",
         ],
     )
@@ -558,11 +559,17 @@ def test_video_uploaded_path_matcher(
         type=ScheduleItem.TYPES.talk,
         submission=None,
     )
-    event_3.additional_speakers.add(
-        schedule_item_additional_speaker_factory(user_id=10)
+    schedule_item_additional_speaker_factory(scheduleitem=event_3, user_id=10)
+    schedule_item_additional_speaker_factory(scheduleitem=event_3, user_id=20)
+
+    event_ord_speakers = schedule_item_factory(
+        conference=conference,
+        title="Ordered",
+        type=ScheduleItem.TYPES.talk,
+        submission__speaker_id=20,
     )
-    event_3.additional_speakers.add(
-        schedule_item_additional_speaker_factory(user_id=20)
+    schedule_item_additional_speaker_factory(
+        scheduleitem=event_ord_speakers, user_id=10
     )
 
     keynote_object = keynote_factory()
@@ -613,8 +620,8 @@ def test_video_uploaded_path_matcher(
                         },
                         {
                             "id": "23",
-                            "name": "Cuno",
-                            "fullname": "Cuno",
+                            "name": "",
+                            "fullname": "Anwesha Das",
                         },
                         {
                             "id": "99",
@@ -636,12 +643,17 @@ def test_video_uploaded_path_matcher(
     event_klaasje_alone.refresh_from_db()
     keynote_schedule.refresh_from_db()
     special_char_speaker.refresh_from_db()
+    event_ord_speakers.refresh_from_db()
 
     assert event_1.video_uploaded_path == "conf/video-2/2-Opening.mp4"
     assert event_2.video_uploaded_path == "conf/video-1/1-Kim Kitsuragi.mp4"
     assert event_3.video_uploaded_path == "conf/video-2/5-Klaasje, Harrier Du Bois.mp4"
     assert event_klaasje_alone.video_uploaded_path == "conf/video-2/12-Klaasje.mp4"
-    assert keynote_schedule.video_uploaded_path == "conf/video-2/55-Cuno.mp4"
+    assert keynote_schedule.video_uploaded_path == "conf/9-Anwesha Das.mp4"
+    assert (
+        event_ord_speakers.video_uploaded_path
+        == "conf/video-2/2-Harrier Du Bois, Klaasje.mp4"
+    )
     assert (
         special_char_speaker.video_uploaded_path
         == "conf/video-2/5-Marcsed Cazzęfa.mp4"

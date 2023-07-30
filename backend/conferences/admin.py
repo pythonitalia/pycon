@@ -291,9 +291,7 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
         possible_file_names = []
 
         def best_name(speaker_data):
-            return normalize(
-                "NFKD", speaker_data["fullname"] or speaker_data["name"]
-            ).lower()
+            return cleanup_string(speaker_data["fullname"] or speaker_data["name"])
 
         all_speakers_names = []
 
@@ -321,9 +319,17 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
 
         count_speakers = len(all_speakers_names)
         single_speaker = count_speakers <= 1
+        multi_speaker_exact_match = None
 
         if count_speakers == 0:
             possible_file_names.append(normalize("NFKD", event.title).lower())
+        elif count_speakers > 1:
+            # together with the permutation of all speakers names,
+            # we also store the exact match of names in the same order as our event
+            # this allows us to match the right file
+            # when we have 2 events with the same speakers
+            # but in a different order
+            multi_speaker_exact_match = ", ".join(all_speakers_names)
 
         if all_speakers_names:
             possible_file_names.extend(
@@ -333,17 +339,32 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                 ]
             )
 
-        for video_file in files:
-            video_file_lower = normalize("NFKD", video_file).lower()
+        normalized_files = [
+            (cleanup_string(video_file), video_file) for video_file in files
+        ]
 
-            # if video contains a comma, it's a multi-speaker video
-            # so we skip it if the event has a single speaker
-            if "," in video_file_lower and single_speaker:
+        if multi_speaker_exact_match:
+            exact_match_found = next(
+                (
+                    original_video_file
+                    for video_file, original_video_file in normalized_files
+                    if multi_speaker_exact_match in video_file
+                ),
+                None,
+            )
+
+            if exact_match_found:
+                return exact_match_found
+
+        for video_file, original_video_file in normalized_files:
+            is_multi_speakers_video = "," in video_file
+
+            if is_multi_speakers_video and single_speaker:
                 continue
 
             for possible_file_name in possible_file_names:
-                if possible_file_name in video_file_lower:
-                    return video_file
+                if possible_file_name in video_file:
+                    return original_video_file
 
         return ""
 
@@ -561,3 +582,9 @@ class SpeakerVoucherAdmin(AdminUsersMixin, SearchUsersMixin):
 
     def user_display_name(self, obj):
         return self.get_user_display_name(obj.user_id)
+
+
+def cleanup_string(string: str) -> str:
+    return normalize(
+        "NFKD", "".join(char for char in string if char.isprintable())
+    ).lower()
