@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import timedelta
 from temporalio import workflow
+from temporalio.exceptions import ActivityError
 from temporalio.common import RetryPolicy
 
 with workflow.unsafe.imports_passed_through():
@@ -14,7 +15,6 @@ with workflow.unsafe.imports_passed_through():
         set_thumbnail_to_youtube_video,
         SetThumbnailToYouTubeVideoInput,
         cleanup_local_video_files,
-        DailyThumbnailLimitException,
         CleanupLocalVideoFilesInput,
     )
     from video_upload.workflows.delayed_upload_video_thumbnail import (
@@ -128,17 +128,20 @@ class UploadScheduleItemVideoWorkflow:
                     backoff_coefficient=2.0,
                 ),
             )
-        except DailyThumbnailLimitException:
-            workflow.start_child_workflow(
-                DelayedUploadVideoThumbnail.run,
-                DelayedUploadVideoThumbnail.input(
-                    schedule_item_id=schedule_item.id,
-                    youtube_id=response["id"],
-                    thumbnail_path=thumbnail_path,
-                ),
-                id=f"upload_video_thumbnail-{schedule_item.id}",
-            )
-            delete_thumbnail = False
+        except ActivityError as exc:
+            if exc.cause == "DailyThumbnailLimitException":
+                workflow.start_child_workflow(
+                    DelayedUploadVideoThumbnail.run,
+                    DelayedUploadVideoThumbnail.input(
+                        schedule_item_id=schedule_item.id,
+                        youtube_id=response["id"],
+                        thumbnail_path=thumbnail_path,
+                    ),
+                    id=f"upload_video_thumbnail-{schedule_item.id}",
+                )
+                delete_thumbnail = False
+            else:
+                raise
 
         await workflow.execute_activity(
             cleanup_local_video_files,
