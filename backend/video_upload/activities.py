@@ -214,4 +214,4 @@ async def cleanup_local_video_files(input: CleanupLocalVideoFilesInput):
 
     video_name = f"yt_upload_{input.schedule_item_id}"
     if local_storage.exists(video_name):
-        local_storage.delete()
+        local_storage.delete(video_name)
