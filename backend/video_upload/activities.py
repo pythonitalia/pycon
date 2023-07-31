@@ -2,7 +2,6 @@ import cv2
 import logging
 from dataclasses import dataclass
 from typing import Any
-from django.db.models import Prefetch
 from google_api.sdk import youtube_videos_insert, youtube_videos_set_thumbnail
 from users.client import get_users_data_by_ids_async
 from temporalio import activity
@@ -48,15 +47,11 @@ async def fetch_schedule_item(schedule_item_id: int) -> ScheduleItemData:
         "submission__tags",
         "conference",
         "language",
-        Prefetch("additional_speakers", to_attr="_additional_speakers"),
+        "additional_speakers",
+        "keynote__speakers",
     ).aget(id=schedule_item_id)
 
-    speakers_ids = list(
-        [speaker.user_id for speaker in schedule_item._additional_speakers]
-    )
-    if schedule_item.submission_id:
-        speakers_ids.append(schedule_item.submission.speaker_id)
-
+    speakers_ids = schedule_item.speakers
     language_code = schedule_item.language.code
 
     return ScheduleItemData(
