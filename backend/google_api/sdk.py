@@ -41,16 +41,20 @@ def count_quota(service: str, quota: int):
 
             async def wrapped(*args, **kwargs):
                 credentials = await get_available_credentials(service, quota)
-                async for value in func(*args, credentials=credentials, **kwargs):
-                    yield value
-                await _add_quota(credentials)
+                try:
+                    async for value in func(*args, credentials=credentials, **kwargs):
+                        yield value
+                finally:
+                    await _add_quota(credentials)
 
         else:
 
             async def wrapped(*args, **kwargs):
                 credentials = await get_available_credentials(service, quota)
-                ret_value = await func(*args, credentials=credentials, **kwargs)
-                await _add_quota(credentials)
+                try:
+                    ret_value = await func(*args, credentials=credentials, **kwargs)
+                finally:
+                    await _add_quota(credentials)
                 return ret_value
 
         return wrapped

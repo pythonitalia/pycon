@@ -25,6 +25,9 @@ async def main():
     from video_upload.workflows.batch_multiple_schedule_items_video_upload import (
         BatchMultipleScheduleItemsVideoUpload,
     )
+    from video_upload.workflows.delayed_upload_video_thumbnail import (
+        DelayedUploadVideoThumbnail,
+    )
 
     client = await Client.connect(os.getenv("TEMPORAL_ADDRESS"))
     worker = Worker(
@@ -33,6 +36,7 @@ async def main():
         workflows=[
             UploadScheduleItemVideoWorkflow,
             BatchMultipleScheduleItemsVideoUpload,
+            DelayedUploadVideoThumbnail,
         ],
         activities=[
             fetch_schedule_item,

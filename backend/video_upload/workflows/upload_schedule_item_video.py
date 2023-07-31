@@ -14,6 +14,11 @@ with workflow.unsafe.imports_passed_through():
         set_thumbnail_to_youtube_video,
         SetThumbnailToYouTubeVideoInput,
         cleanup_local_video_files,
+        DailyThumbnailLimitException,
+        CleanupLocalVideoFilesInput,
+    )
+    from video_upload.workflows.delayed_upload_video_thumbnail import (
+        DelayedUploadVideoThumbnail,
     )
     from video_upload.activities import (
         AddYouTubeIDToScheduleItemInput,
@@ -109,22 +114,37 @@ class UploadScheduleItemVideoWorkflow:
             ),
         )
 
-        await workflow.execute_activity(
-            set_thumbnail_to_youtube_video,
-            SetThumbnailToYouTubeVideoInput(
-                youtube_id=response["id"],
-                thumbnail_path=thumbnail_path,
-            ),
-            schedule_to_close_timeout=timedelta(minutes=1),
-            retry_policy=RetryPolicy(
-                maximum_attempts=5,
-                backoff_coefficient=2.0,
-            ),
-        )
+        delete_thumbnail = True
+        try:
+            await workflow.execute_activity(
+                set_thumbnail_to_youtube_video,
+                SetThumbnailToYouTubeVideoInput(
+                    youtube_id=response["id"],
+                    thumbnail_path=thumbnail_path,
+                ),
+                schedule_to_close_timeout=timedelta(minutes=1),
+                retry_policy=RetryPolicy(
+                    maximum_attempts=1,
+                    backoff_coefficient=2.0,
+                ),
+            )
+        except DailyThumbnailLimitException:
+            workflow.start_child_workflow(
+                DelayedUploadVideoThumbnail.run,
+                DelayedUploadVideoThumbnail.input(
+                    schedule_item_id=schedule_item.id,
+                    youtube_id=response["id"],
+                    thumbnail_path=thumbnail_path,
+                ),
+                id=f"upload_video_thumbnail-{schedule_item.id}",
+            )
+            delete_thumbnail = False
 
         await workflow.execute_activity(
             cleanup_local_video_files,
-            schedule_item.id,
+            CleanupLocalVideoFilesInput(
+                schedule_item_id=schedule_item.id, delete_thumbnail=delete_thumbnail
+            ),
             start_to_close_timeout=timedelta(seconds=30),
         )
 

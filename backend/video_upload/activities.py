@@ -1,3 +1,4 @@
+from googleapiclient.errors import HttpError
 import cv2
 import logging
 from dataclasses import dataclass
@@ -13,6 +14,10 @@ logger = logging.getLogger(__name__)
 
 local_storage = FileSystemStorage()
 local_storage.base_location = "/tmp/"
+
+
+class DailyThumbnailLimitException(Exception):
+    pass
 
 
 @dataclass
@@ -182,13 +187,31 @@ class SetThumbnailToYouTubeVideoInput:
 
 @activity.defn
 async def set_thumbnail_to_youtube_video(input: SetThumbnailToYouTubeVideoInput):
-    return await youtube_videos_set_thumbnail(
-        video_id=input.youtube_id,
-        thumbnail_path=input.thumbnail_path,
-    )
+    try:
+        return await youtube_videos_set_thumbnail(
+            video_id=input.youtube_id,
+            thumbnail_path=input.thumbnail_path,
+        )
+    except HttpError as e:
+        if e.status_code == 429:
+            # we reached the daily thumbnail limit
+            raise DailyThumbnailLimitException()
+        raise
+
+
+@dataclass
+class CleanupLocalVideoFilesInput:
+    schedule_item_id: int
+    delete_thumbnail: bool
 
 
 @activity.defn
-async def cleanup_local_video_files(schedule_item_id: int):
-    local_storage.delete(f"{schedule_item_id}-thumbnail.jpg")
-    local_storage.delete(f"yt_upload_{schedule_item_id}")
+async def cleanup_local_video_files(input: CleanupLocalVideoFilesInput):
+    thumbnail_name = f"{input.schedule_item_id}-thumbnail.jpg"
+
+    if input.delete_thumbnail and local_storage.exists(thumbnail_name):
+        local_storage.delete(thumbnail_name)
+
+    video_name = f"yt_upload_{input.schedule_item_id}"
+    if local_storage.exists(video_name):
+        local_storage.delete()
