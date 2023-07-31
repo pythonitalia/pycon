@@ -22,6 +22,7 @@ class ScheduleItemData:
     title: str
     type: str
     description: str
+    keynote_description: str
     abstract: str
     elevator_pitch: str
     video_uploaded_path: str
@@ -62,6 +63,11 @@ async def fetch_schedule_item(schedule_item_id: int) -> ScheduleItemData:
         description=schedule_item.description.strip(),
         abstract=schedule_item.submission.abstract.localize(language_code).strip()
         if schedule_item.submission_id
+        else "",
+        keynote_description=schedule_item.keynote.description.localize(
+            language_code
+        ).strip()
+        if schedule_item.keynote_id
         else "",
         elevator_pitch=schedule_item.submission.elevator_pitch.localize(
             language_code
