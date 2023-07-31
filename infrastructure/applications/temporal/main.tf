@@ -218,8 +218,19 @@ resource "aws_ecs_task_definition" "temporal_service" {
           value = local.is_prod ? "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/8" : "locmemcache://snowflake"
         }
       ]
+      mountPoints = [
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
+        }
+      ]
     }
   ])
+
+  volume {
+    name      = "tmp"
+    host_path = "/tmp"
+  }
 
   requires_compatibilities = []
   tags                     = {}

@@ -104,8 +104,7 @@ class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
         obj = self.get_object(request, object_id)
         flow = self.build_google_flow(request, obj)
         authorization_url, state = flow.authorization_url(
-            access_type="offline",
-            include_granted_scopes="true",
+            access_type="offline", include_granted_scopes="true", prompt="consent"
         )
         cache.set(self.google_oauth_obj_id_for_state(state), obj.id, 60 * 5)
 
