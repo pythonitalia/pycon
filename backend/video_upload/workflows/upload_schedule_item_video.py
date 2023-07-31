@@ -174,8 +174,18 @@ class UploadScheduleItemVideoWorkflow:
             description += " ".join(schedule_item.hashtags)
 
         return UploadVideoToYouTubeInput(
-            title=title,
-            description=description,
+            title=replace_invalid_chars_with_lookalikes(title),
+            description=replace_invalid_chars_with_lookalikes(description),
             file_path=media_file_path,
             tags=schedule_item.clean_tags,
         )
+
+
+def replace_invalid_chars_with_lookalikes(text: str) -> str:
+    homoglyphs = {
+        "<": "\u1438",
+        ">": "\u1433",
+    }
+    for char, homoglyph in homoglyphs.items():
+        text = text.replace(char, homoglyph)
+    return text
