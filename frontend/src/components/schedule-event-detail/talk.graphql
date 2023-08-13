@@ -16,6 +16,11 @@ query Talk($slug: String!, $code: String!, $language: String!) {
       start
       end
 
+      rooms {
+        id
+        name
+      }
+
       language {
         code
       }

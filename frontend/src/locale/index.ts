@@ -146,6 +146,8 @@ export const messages = {
 
     "scheduleEventDetail.eventTime": "{start} - {end}",
     "scheduleEventDetail.sidebar.spacesLeft": "Seats left",
+    "eventDetail.rooms":
+      "{countRooms, plural, =0 {Rooms} one {Room} other {Rooms}}",
     "scheduleEvent.soldout": "Sold-out",
 
     "homepage.followUs": "Follow us on",
@@ -1575,6 +1577,9 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "scheduleEasy.saveAsPdf": "Salva come pdf / stampa",
     "scheduleEasy.bookingInstructions":
       "Questo evento ha capacità limitata. Usa il link sotto per prenotarti.",
+
+    "eventDetail.rooms":
+      "{countRooms, plural, =0 {Stanza} one {Stanza} other {Stanze}}",
 
     "react-intl-formatted-duration.longFormatting": "{minutes} {seconds}",
     "react-intl-formatted-duration.duration": "{value} {unit}",

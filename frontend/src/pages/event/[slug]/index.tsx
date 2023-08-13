@@ -49,6 +49,7 @@ export const TalkPage = () => {
         bookable={talk.hasLimitedCapacity}
         spacesLeft={talk.spacesLeft}
         slidoUrl={talk.slidoUrl}
+        rooms={talk.rooms.map((room) => room.name)}
       />
     </Page>
   );

@@ -41,6 +41,7 @@ type Props = {
   spacesLeft?: number;
   slidoUrl?: string;
   sidebarExtras?: React.ReactNode;
+  rooms?: string[];
 };
 
 const isEventLive = (startTime: string, endTime: string) => {
@@ -48,7 +49,7 @@ const isEventLive = (startTime: string, endTime: string) => {
   const utcStart = zonedTimeToUtc(parseISO(startTime), "Europe/Rome");
   const utcEnd = zonedTimeToUtc(parseISO(endTime), "Europe/Rome");
   return isAfter(now, utcStart) && isBefore(now, utcEnd);
-}
+};
 
 export const ScheduleEventDetail = ({
   id,
@@ -67,6 +68,7 @@ export const ScheduleEventDetail = ({
   slidoUrl,
   spacesLeft,
   sidebarExtras,
+  rooms,
 }: Props) => {
   const lang = useCurrentLanguage();
   const parsedStartTime = parseISO(startTime);
@@ -131,6 +133,7 @@ export const ScheduleEventDetail = ({
               spacesLeft={spacesLeft}
               language={language}
               audienceLevel={audienceLevel}
+              rooms={rooms}
             >
               {sidebarExtras}
             </Sidebar>
