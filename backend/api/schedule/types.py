@@ -67,6 +67,7 @@ class ScheduleItem:
     audience_level: Optional[
         Annotated["AudienceLevel", strawberry.lazy("api.conferences.types")]
     ]
+    youtube_video_id: Optional[str]
 
     @strawberry.field
     def has_limited_capacity(self) -> bool:

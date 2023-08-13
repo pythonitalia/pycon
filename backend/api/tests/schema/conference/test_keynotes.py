@@ -197,6 +197,7 @@ def test_keynote_schedule_info(
             duration=30,
         ),
         rooms=[room, room_2],
+        youtube_video_id="abc123",
     )
     DayRoomThroughModel.objects.create(
         day=schedule_item.slot.day,
@@ -214,6 +215,7 @@ def test_keynote_schedule_info(
                 keynote(slug: $slug) {
                     start
                     end
+                    youtubeVideoId
                     rooms {
                         name
                     }
@@ -229,4 +231,5 @@ def test_keynote_schedule_info(
     keynote_data = resp["data"]["conference"]["keynote"]
     assert keynote_data["start"] == "2023-10-10T10:00:00"
     assert keynote_data["end"] == "2023-10-10T10:30:00"
+    assert keynote_data["youtubeVideoId"] == "abc123"
     assert [room["name"] for room in keynote_data["rooms"]] == ["Room 1", "Room 2"]
