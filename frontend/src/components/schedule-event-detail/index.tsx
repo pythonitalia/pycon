@@ -183,7 +183,7 @@ export const ScheduleEventDetail = ({
       {youtubeVideoId && (
         <Section>
           <div className="relative max-w-[1060px] mx-auto">
-            <SnakeWithPopcorn className="absolute top-0 right-14 z-10 w-[130px] -translate-y-[63%] hidden md:block" />
+            <SnakeWithPopcorn className="absolute top-0 right-14 z-10 w-[130px] -translate-y-[63%] lg:w-[180px] lg:-translate-y-[68%] hidden md:block" />
             <div className="z-20 relative">
               <iframe
                 src={`https://www.youtube.com/embed/${youtubeVideoId}`}
