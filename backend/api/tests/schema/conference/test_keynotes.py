@@ -1,8 +1,10 @@
+import datetime
 import time_machine
 from django.utils import timezone
 from pytest import mark
 
 from i18n.strings import LazyI18nString
+from schedule.models import DayRoomThroughModel, ScheduleItem
 
 
 @mark.django_db
@@ -154,3 +156,77 @@ def test_get_single_conference_keynote(
     assert len(keynote_data["speakers"]) == 1
 
     assert {"participant": {"bio": "test"}} in keynote_data["speakers"]
+
+
+@mark.django_db
+def test_keynote_schedule_info(
+    conference_factory,
+    keynote_factory,
+    keynote_speaker_factory,
+    graphql_client,
+    topic_factory,
+    participant_factory,
+    schedule_item_factory,
+    slot_factory,
+    day_factory,
+    room_factory,
+):
+    conference = conference_factory()
+
+    keynote = keynote_factory(
+        slug=LazyI18nString({"en": "title", "it": "titolo"}),
+        title=LazyI18nString({"en": "title", "it": "titolo"}),
+        conference=conference,
+        topic=topic_factory(),
+    )
+    speaker = keynote_speaker_factory(keynote=keynote)
+    participant_factory(
+        user_id=speaker.user_id, conference_id=conference.id, bio="test"
+    )
+
+    room = room_factory(name="Room 1")
+    room_2 = room_factory(name="Room 2")
+    schedule_item = schedule_item_factory(
+        conference=conference,
+        type=ScheduleItem.TYPES.keynote,
+        keynote=keynote,
+        submission=None,
+        slot=slot_factory(
+            day=day_factory(day=datetime.date(2023, 10, 10), conference=conference),
+            hour="10:00",
+            duration=30,
+        ),
+        rooms=[room, room_2],
+    )
+    DayRoomThroughModel.objects.create(
+        day=schedule_item.slot.day,
+        room=room,
+    )
+    DayRoomThroughModel.objects.create(
+        day=schedule_item.slot.day,
+        room=room_2,
+    )
+
+    resp = graphql_client.query(
+        """
+        query($code: String!, $slug: String!) {
+            conference(code: $code) {
+                keynote(slug: $slug) {
+                    start
+                    end
+                    rooms {
+                        name
+                    }
+                }
+            }
+        }
+        """,
+        variables={"code": conference.code, "slug": "title"},
+    )
+
+    assert "errors" not in resp
+
+    keynote_data = resp["data"]["conference"]["keynote"]
+    assert keynote_data["start"] == "2023-10-10T10:00:00"
+    assert keynote_data["end"] == "2023-10-10T10:30:00"
+    assert [room["name"] for room in keynote_data["rooms"]] == ["Room 1", "Room 2"]

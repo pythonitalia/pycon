@@ -29,6 +29,7 @@ type Props = {
   bookable: boolean;
   spacesLeft?: number;
   children?: React.ReactNode;
+  rooms?: string[];
 };
 
 export const Sidebar = ({
@@ -39,6 +40,7 @@ export const Sidebar = ({
   language,
   audienceLevel,
   children,
+  rooms,
 }: Props) => {
   const lang = useCurrentLanguage();
   const [isLoggedIn] = useLoginState();
@@ -88,6 +90,20 @@ export const Sidebar = ({
         {audienceLevel && (
           <EventInfo label={<FormattedMessage id="talk.audienceLevel" />}>
             {audienceLevel}
+          </EventInfo>
+        )}
+        {rooms && (
+          <EventInfo
+            label={
+              <FormattedMessage
+                id="eventDetail.rooms"
+                values={{
+                  countRooms: rooms.length,
+                }}
+              />
+            }
+          >
+            {rooms.join(", ")}
           </EventInfo>
         )}
         {bookable && (

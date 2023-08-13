@@ -13,7 +13,7 @@ from api.hotels.types import HotelRoom
 from api.languages.types import Language
 from api.pretix.query import get_conference_tickets, get_voucher
 from api.pretix.types import TicketItem, Voucher
-from api.schedule.types import DayRoom, ScheduleItem, ScheduleItemUser
+from api.schedule.types import DayRoom, Room, ScheduleItem, ScheduleItemUser
 from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
 from api.voting.types import RankRequest
@@ -57,6 +57,7 @@ class Keynote:
     speakers: List[ScheduleItemUser]
     start: Optional[datetime]
     end: Optional[datetime]
+    rooms: List[Room]
 
     def __init__(
         self,
@@ -68,6 +69,7 @@ class Keynote:
         speakers: List[ScheduleItemUser],
         start: Optional[datetime],
         end: Optional[datetime],
+        rooms: List[Room],
     ):
         self.id = id
         self.title = title
@@ -77,6 +79,7 @@ class Keynote:
         self.speakers = speakers
         self.start = start
         self.end = end
+        self.rooms = rooms
 
     @classmethod
     def from_django_model(cls, instance):
@@ -95,6 +98,7 @@ class Keynote:
             ],
             start=schedule_item.start if schedule_item else None,
             end=schedule_item.end if schedule_item else None,
+            rooms=schedule_item.rooms.all() if schedule_item else [],
         )
 
 
