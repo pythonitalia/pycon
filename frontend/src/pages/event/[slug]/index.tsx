@@ -50,6 +50,7 @@ export const TalkPage = () => {
         spacesLeft={talk.spacesLeft}
         slidoUrl={talk.slidoUrl}
         rooms={talk.rooms.map((room) => room.name)}
+        youtubeVideoId={talk.youtubeVideoId}
       />
     </Page>
   );

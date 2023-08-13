@@ -12,6 +12,7 @@ query Talk($slug: String!, $code: String!, $language: String!) {
       spacesLeft
       hasSpacesLeft
       slidoUrl
+      youtubeVideoId
 
       start
       end

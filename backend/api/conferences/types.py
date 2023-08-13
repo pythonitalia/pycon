@@ -58,6 +58,7 @@ class Keynote:
     start: Optional[datetime]
     end: Optional[datetime]
     rooms: List[Room]
+    youtube_video_id: Optional[str]
 
     def __init__(
         self,
@@ -70,6 +71,7 @@ class Keynote:
         start: Optional[datetime],
         end: Optional[datetime],
         rooms: List[Room],
+        youtube_video_id: Optional[str],
     ):
         self.id = id
         self.title = title
@@ -80,6 +82,7 @@ class Keynote:
         self.start = start
         self.end = end
         self.rooms = rooms
+        self.youtube_video_id = youtube_video_id
 
     @classmethod
     def from_django_model(cls, instance):
@@ -99,6 +102,7 @@ class Keynote:
             start=schedule_item.start if schedule_item else None,
             end=schedule_item.end if schedule_item else None,
             rooms=schedule_item.rooms.all() if schedule_item else [],
+            youtube_video_id=schedule_item.youtube_video_id if schedule_item else None,
         )
 
 

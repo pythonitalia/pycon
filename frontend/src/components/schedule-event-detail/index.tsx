@@ -9,6 +9,7 @@ import {
   Text,
 } from "@python-italia/pycon-styleguide";
 import { LiveIcon } from "@python-italia/pycon-styleguide/icons";
+import { SnakeWithPopcorn } from "@python-italia/pycon-styleguide/illustrations";
 import { parseISO, isAfter, isBefore } from "date-fns";
 import { zonedTimeToUtc } from "date-fns-tz";
 import React from "react";
@@ -42,6 +43,7 @@ type Props = {
   slidoUrl?: string;
   sidebarExtras?: React.ReactNode;
   rooms?: string[];
+  youtubeVideoId?: string;
 };
 
 const isEventLive = (startTime: string, endTime: string) => {
@@ -69,6 +71,7 @@ export const ScheduleEventDetail = ({
   spacesLeft,
   sidebarExtras,
   rooms,
+  youtubeVideoId,
 }: Props) => {
   const lang = useCurrentLanguage();
   const parsedStartTime = parseISO(startTime);
@@ -177,6 +180,20 @@ export const ScheduleEventDetail = ({
           </GridColumn>
         </Grid>
       </Section>
+      {youtubeVideoId && (
+        <Section>
+          <div className="relative max-w-[1060px] mx-auto">
+            <SnakeWithPopcorn className="absolute top-0 right-14 z-10 w-[130px] -translate-y-[63%] hidden md:block" />
+            <div className="z-20 relative">
+              <iframe
+                src={`https://www.youtube.com/embed/${youtubeVideoId}`}
+                allowFullScreen
+                className="aspect-video p-[3px] top-0 left-0 w-full bg-black"
+              />
+            </div>
+          </div>
+        </Section>
+      )}
       {speakers.length > 0 && (
         <Section>
           {speakers.map((speaker, index) => (
