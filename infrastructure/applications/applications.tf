@@ -14,7 +14,7 @@ module "pretix" {
 
 module "temporal" {
   source       = "./temporal"
-  count        = local.deploy_pretix ? 1 : 0
+  count        = 0
   enable_proxy = local.enable_proxy
 }
 
