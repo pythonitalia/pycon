@@ -84,14 +84,6 @@ export const Sidebar = ({
   return (
     <>
       <MultiplePartsCard>
-        <EventInfo label={<FormattedMessage id="talk.language" />}>
-          <FormattedMessage id={`talk.language.${language}`} />
-        </EventInfo>
-        {audienceLevel && (
-          <EventInfo label={<FormattedMessage id="talk.audienceLevel" />}>
-            {audienceLevel}
-          </EventInfo>
-        )}
         {rooms && (
           <EventInfo
             label={
@@ -104,6 +96,14 @@ export const Sidebar = ({
             }
           >
             {rooms.join(", ")}
+          </EventInfo>
+        )}
+        <EventInfo label={<FormattedMessage id="talk.language" />}>
+          <FormattedMessage id={`talk.language.${language}`} />
+        </EventInfo>
+        {audienceLevel && (
+          <EventInfo label={<FormattedMessage id="talk.audienceLevel" />}>
+            {audienceLevel}
           </EventInfo>
         )}
         {bookable && (
