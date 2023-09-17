@@ -2,6 +2,7 @@ import { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { queryBadgeScans } from "~/types";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -20,7 +21,14 @@ export const getServerSideProps: GetServerSideProps = async ({
   const client = getApolloClient(null, req.cookies);
 
   try {
-    await Promise.all([prefetchSharedQueries(client, locale)]);
+    await Promise.all([
+      prefetchSharedQueries(client, locale),
+      queryBadgeScans(client, {
+        conferenceCode: process.env.conferenceCode,
+        page: 1,
+        pageSize: 20,
+      }),
+    ]);
   } catch (e) {
     return {
       redirect: {
