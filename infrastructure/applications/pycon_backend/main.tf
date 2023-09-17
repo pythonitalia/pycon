@@ -55,6 +55,8 @@ data "aws_elasticache_cluster" "redis" {
 }
 
 data "aws_instance" "temporal_machine" {
+  count = var.deploy_temporal ? 1 : 0
+
   filter {
     name   = "tag:Name"
     values = ["production-temporal-instance"]
@@ -104,7 +106,7 @@ module "lambda" {
     PLAIN_API                                 = "https://core-api.uk.plain.com/graphql/v1"
     PLAIN_API_TOKEN                           = module.secrets.value.plain_api_token
     CACHE_URL                                 = local.is_prod ? "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/8" : "locmemcache://snowflake"
-    TEMPORAL_ADDRESS = "${data.aws_instance.temporal_machine.private_ip}:7233"
+    TEMPORAL_ADDRESS                          = var.deploy_temporal ? "${data.aws_instance.temporal_machine[0].private_ip}:7233" : ""
   }
 }
 
