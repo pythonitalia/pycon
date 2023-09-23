@@ -128,3 +128,4 @@ generated-badges/
 badge-service/badges.zip
 
 .virtualenv/
+.pdm-python
