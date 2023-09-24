@@ -24,6 +24,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(_("active"), default=True)
     is_staff = models.BooleanField(_("is staff"), default=False)
 
+    jwt_auth_id = models.IntegerField(_("jwt auth id"), default=1)
+
     objects = UserManager()
 
     USERNAME_FIELD = "email"
