@@ -46,7 +46,7 @@ mutation UpdateProfile(
       mastodonHandle
     }
 
-    ... on UpdateParticipantValidationError {
+    ... on UpdateParticipantErrors {
       errors {
         bio
         website

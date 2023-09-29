@@ -19,21 +19,23 @@ mutation UpdateGrant($input: UpdateGrantInput!) {
     }
 
     ... on GrantErrors {
-      validationConference: conference
-      validationName: name
-      validationFullName: fullName
-      validationGender: gender
-      validationGrantType: grantType
-      validationOccupation: occupation
-      validationAgeGroup: ageGroup
-      validationPythonUsage: pythonUsage
-      validationBeenToOtherEvents: beenToOtherEvents
-      validationInterestedInVolunteering: interestedInVolunteering
-      validationNeedsFundsForTravel: needsFundsForTravel
-      validationWhy: why
-      validationNotes: notes
-      validationTravellingFrom: travellingFrom
-      nonFieldErrors
+      errors {
+        validationConference: conference
+        validationName: name
+        validationFullName: fullName
+        validationGender: gender
+        validationGrantType: grantType
+        validationOccupation: occupation
+        validationAgeGroup: ageGroup
+        validationPythonUsage: pythonUsage
+        validationBeenToOtherEvents: beenToOtherEvents
+        validationInterestedInVolunteering: interestedInVolunteering
+        validationNeedsFundsForTravel: needsFundsForTravel
+        validationWhy: why
+        validationNotes: notes
+        validationTravellingFrom: travellingFrom
+        nonFieldErrors
+      }
     }
   }
 }

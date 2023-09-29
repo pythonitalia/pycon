@@ -336,7 +336,7 @@ export const CfpForm = ({
       | "nonFieldErrors",
   ): string[] =>
     (submissionData?.mutationOp.__typename === "SendSubmissionErrors" &&
-      submissionData!.mutationOp[key]) ||
+      submissionData!.mutationOp.errors[key]) ||
     [];
 
   return (

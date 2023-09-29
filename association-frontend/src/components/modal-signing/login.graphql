@@ -8,16 +8,10 @@ mutation Login($input: LoginInput!) {
       }
     }
 
-    ... on LoginValidationError {
+    ... on LoginErrors {
       errors {
-        email {
-          message
-          type
-        }
-        password {
-          message
-          type
-        }
+        email
+        password
       }
     }
   }

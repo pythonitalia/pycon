@@ -92,16 +92,11 @@ class UpdateParticipantInput:
         ):
             errors.add_error("photo", "Invalid photo")
 
-        return errors
-
-
-@strawberry.type
-class UpdateParticipantValidationError:
-    errors: UpdateParticipantErrors
+        return errors.if_has_errors
 
 
 UpdateParticipantResult = strawberry.union(
-    "UpdateParticipantResult", (Participant, UpdateParticipantValidationError)
+    "UpdateParticipantResult", (Participant, UpdateParticipantErrors)
 )
 
 
@@ -110,10 +105,9 @@ def update_participant(
     info: Info, input: UpdateParticipantInput
 ) -> UpdateParticipantResult:
     request = info.context.request
-    errors = input.validate()
 
-    if errors.has_errors:
-        return UpdateParticipantValidationError(errors=errors)
+    if error_validation := input.validate():
+        return error_validation
 
     conference = Conference.objects.get(code=input.conference)
 

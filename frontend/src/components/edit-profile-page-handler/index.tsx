@@ -142,7 +142,7 @@ export const EditProfilePageHandler = () => {
     const validationError =
       (updateProfileData &&
         updateProfileData.updateParticipant.__typename ===
-          "UpdateParticipantValidationError" &&
+          "UpdateParticipantErrors" &&
         (updateProfileData.updateParticipant as any).errors[key]) ||
       [];
     return validationError;
