@@ -8,10 +8,7 @@ class IsAuthenticated(BasePermission):
     message = "User not logged in"
 
     def has_permission(self, source, info, **kwargs):
-        return (
-            info.context.request.user.is_authenticated
-            or info.context.request.pastaporto.is_authenticated
-        )
+        return info.context.request.user.is_authenticated
 
 
 class HasTokenPermission(BasePermission):

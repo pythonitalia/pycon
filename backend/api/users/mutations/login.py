@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 import strawberry
 from django.contrib.auth import (
     authenticate,
@@ -24,8 +25,13 @@ class WrongEmailOrPassword:
 
 @strawberry.type
 class LoginErrors(BaseErrorType):
-    email: list[str] = strawberry.field(default_factory=list)
-    password: list[str] = strawberry.field(default_factory=list)
+    @strawberry.type
+    class _LoginErrors:
+        email: list[str] = strawberry.field(default_factory=list)
+        password: list[str] = strawberry.field(default_factory=list)
+
+    _error_class = _LoginErrors
+    errors: Optional[_LoginErrors] = None
 
 
 @strawberry.input
@@ -35,6 +41,7 @@ class LoginInput:
 
     def validate(self):
         errors = LoginErrors()
+
         if not self.email:
             errors.add_error("email", "Email is required")
 
@@ -46,7 +53,7 @@ class LoginInput:
 
 @strawberry.type
 class EmailAlreadyUsed:
-    message = "Email already used"
+    message: str = "Email already used"
 
 
 LoginResult = strawberry.union(

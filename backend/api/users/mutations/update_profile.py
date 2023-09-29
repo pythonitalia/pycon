@@ -10,13 +10,18 @@ from api.users.types import User
 
 @strawberry.type
 class UpdateProfileErrors(BaseErrorType):
-    name: list[str] = strawberry.field(default_factory=list)
-    full_name: list[str] = strawberry.field(default_factory=list)
-    gender: list[str] = strawberry.field(default_factory=list)
-    open_to_recruiting: list[str] = strawberry.field(default_factory=list)
-    open_to_newsletter: list[str] = strawberry.field(default_factory=list)
-    date_birth: list[str] = strawberry.field(default_factory=list)
-    country: list[str] = strawberry.field(default_factory=list)
+    @strawberry.type
+    class _UpdateProfileErrors:
+        name: list[str] = strawberry.field(default_factory=list)
+        full_name: list[str] = strawberry.field(default_factory=list)
+        gender: list[str] = strawberry.field(default_factory=list)
+        open_to_recruiting: list[str] = strawberry.field(default_factory=list)
+        open_to_newsletter: list[str] = strawberry.field(default_factory=list)
+        date_birth: list[str] = strawberry.field(default_factory=list)
+        country: list[str] = strawberry.field(default_factory=list)
+
+    _error_class = _UpdateProfileErrors
+    errors: Optional[_UpdateProfileErrors] = None
 
 
 @strawberry.input
@@ -26,7 +31,7 @@ class UpdateProfileInput:
     gender: str
     open_to_recruiting: bool
     open_to_newsletter: bool
-    date_birth: Optional[date]
+    date_birth: Optional[date] = None
     country: str
 
     def validate(self):
@@ -38,7 +43,6 @@ class UpdateProfileInput:
             "gender",
             "open_to_recruiting",
             "open_to_newsletter",
-            "date_birth",
             "country",
         ]
 

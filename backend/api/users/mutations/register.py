@@ -1,3 +1,4 @@
+from typing import Optional
 import strawberry
 from django.contrib.auth import (
     login as django_login,
@@ -17,9 +18,14 @@ class RegisterSuccess:
 
 @strawberry.type
 class RegisterErrors(BaseErrorType):
-    fullname: list[str] = strawberry.field(default_factory=list)
-    email: list[str] = strawberry.field(default_factory=list)
-    password: list[str] = strawberry.field(default_factory=list)
+    @strawberry.type
+    class _RegisterErrors:
+        fullname: list[str] = strawberry.field(default_factory=list)
+        email: list[str] = strawberry.field(default_factory=list)
+        password: list[str] = strawberry.field(default_factory=list)
+
+    _error_class = _RegisterErrors
+    errors: Optional[_RegisterErrors] = None
 
 
 @strawberry.input

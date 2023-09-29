@@ -1,3 +1,4 @@
+from typing import Optional
 from django.db.models import F
 from users.models import User as UserModel
 from django.utils.functional import cached_property
@@ -13,8 +14,13 @@ logger = logging.getLogger(__file__)
 
 @strawberry.type
 class ResetPasswordErrors(BaseErrorType):
-    token: list[str] = strawberry.field(default_factory=list)
-    new_password: list[str] = strawberry.field(default_factory=list)
+    @strawberry.type
+    class _ResetPasswordErrors:
+        token: list[str] = strawberry.field(default_factory=list)
+        new_password: list[str] = strawberry.field(default_factory=list)
+
+    _error_class = _ResetPasswordErrors
+    errors: Optional[_ResetPasswordErrors] = None
 
 
 @strawberry.input

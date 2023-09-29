@@ -14,10 +14,12 @@ class BaseErrorType:
 
     def add_error(self, field: str, message: str):
         self._has_errors = True
+        if not self.errors:
+            self.errors = self._error_class()
 
-        existing_errors = getattr(self, field, [])
+        existing_errors = getattr(self.errors, field, [])
         existing_errors.append(message)
-        setattr(self, field, existing_errors)
+        setattr(self.errors, field, existing_errors)
 
     @property
     def has_errors(self) -> bool:
@@ -26,7 +28,9 @@ class BaseErrorType:
     @classmethod
     def with_error(cls, field: str, message: str):
         instance = cls()
-        setattr(instance, field, [message])
+        parent = cls._error_class()
+        setattr(parent, field, [message])
+        instance.errors = parent
         return instance
 
     @property

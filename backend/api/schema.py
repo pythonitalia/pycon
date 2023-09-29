@@ -24,6 +24,7 @@ from .volunteers_notifications.query import VolunteersNotificationsQuery
 from .voting.mutations import VotesMutations
 from .badge_scanner.schema import BadgeScannerQuery, BadgeScannerMutation
 from .participants.queries import ParticipantQueries
+from .users.queries import UserQuery
 
 
 @strawberry.type
@@ -40,6 +41,7 @@ class Query(
     ChecklistQuery,
     ParticipantQueries,
     BadgeScannerQuery,
+    UserQuery,
 ):
     pass
 

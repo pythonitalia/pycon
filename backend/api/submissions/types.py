@@ -53,9 +53,11 @@ class SubmissionTag:
     name: str
 
 
-@strawberry.federation.type(keys=["id"])
+@strawberry.type
 class SubmissionSpeaker:
     id: strawberry.ID
+    full_name: str
+    gender: str
 
 
 @strawberry.type

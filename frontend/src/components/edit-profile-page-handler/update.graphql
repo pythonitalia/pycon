@@ -16,32 +16,16 @@ mutation UpdateProfile(
       dateBirth
     }
 
-    ... on UpdateProfileValidationError {
+    ... on UpdateProfileErrors {
       errors {
-        name {
-          message
-        }
-        dateBirth {
-          message
-        }
-        fullName {
-          message
-        }
-        gender {
-          message
-        }
-        name {
-          message
-        }
-        openToRecruiting {
-          message
-        }
-        openToNewsletter {
-          message
-        }
-        country {
-          message
-        }
+        name
+        dateBirth
+        fullName
+        gender
+        name
+        openToRecruiting
+        openToNewsletter
+        country
       }
     }
   }

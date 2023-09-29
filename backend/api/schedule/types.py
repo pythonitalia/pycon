@@ -31,10 +31,15 @@ class DayRoom:
     slido_url: str
 
 
-@strawberry.federation.type(keys=["id"])
+@strawberry.type
 class ScheduleItemUser:
     id: strawberry.ID
     conference_code: strawberry.Private[str]
+    fullname: str
+
+    @strawberry.field
+    def full_name(self) -> str:
+        return self.fullname
 
     @strawberry.field
     def participant(self) -> Optional[Participant]:

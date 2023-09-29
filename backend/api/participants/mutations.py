@@ -1,4 +1,5 @@
 import re
+from typing import Optional
 from api.context import Info
 from api.helpers.ids import encode_hashid
 from django.conf import settings
@@ -21,15 +22,20 @@ LINKEDIN_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?linkedin\.com\/")
 
 @strawberry.type
 class UpdateParticipantErrors(BaseErrorType):
-    bio: list[str] = strawberry.field(default_factory=list)
-    photo: list[str] = strawberry.field(default_factory=list)
-    website: list[str] = strawberry.field(default_factory=list)
-    level: list[str] = strawberry.field(default_factory=list)
-    twitter_handle: list[str] = strawberry.field(default_factory=list)
-    instagram_handle: list[str] = strawberry.field(default_factory=list)
-    linkedin_url: list[str] = strawberry.field(default_factory=list)
-    facebook_url: list[str] = strawberry.field(default_factory=list)
-    mastodon_handle: list[str] = strawberry.field(default_factory=list)
+    @strawberry.type
+    class _UpdateParticipantErrors:
+        bio: list[str] = strawberry.field(default_factory=list)
+        photo: list[str] = strawberry.field(default_factory=list)
+        website: list[str] = strawberry.field(default_factory=list)
+        level: list[str] = strawberry.field(default_factory=list)
+        twitter_handle: list[str] = strawberry.field(default_factory=list)
+        instagram_handle: list[str] = strawberry.field(default_factory=list)
+        linkedin_url: list[str] = strawberry.field(default_factory=list)
+        facebook_url: list[str] = strawberry.field(default_factory=list)
+        mastodon_handle: list[str] = strawberry.field(default_factory=list)
+
+    _error_class = _UpdateParticipantErrors
+    errors: Optional[_UpdateParticipantErrors] = None
 
 
 @strawberry.input

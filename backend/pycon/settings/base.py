@@ -75,10 +75,9 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "pycon.middleware.CustomAuthenticationMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "pycon.middleware.pastaporto_auth",
     "qinspect.middleware.QueryInspectMiddleware",
 ]
 
@@ -148,7 +147,7 @@ MEDIA_ROOT = root("media")
 AUTH_USER_MODEL = "users.User"
 
 AUTHENTICATION_BACKENDS = (
-    "custom_auth.backend.UsersAuthBackend",
+    # "custom_auth.backend.UsersAuthBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
 
