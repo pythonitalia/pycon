@@ -38,8 +38,8 @@ class OperationSuccess:
 class User:
     id: strawberry.ID
     email: str
-    fullname: str
-    full_name: str
+    fullname: str = "todo"
+    full_name: str = "todo"
     name: str
     username: str
     gender: str

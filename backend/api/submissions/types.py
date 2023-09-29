@@ -158,7 +158,7 @@ class Submission:
     def my_vote(self, info) -> Optional[VoteType]:
         request = info.context.request
 
-        if not request.pastaporto.is_authenticated:
+        if not request.user.is_authenticated:
             return None
 
         if info.context._my_votes is not None:

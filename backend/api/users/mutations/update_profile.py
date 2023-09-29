@@ -41,8 +41,6 @@ class UpdateProfileInput:
             "name",
             "full_name",
             "gender",
-            "open_to_recruiting",
-            "open_to_newsletter",
             "country",
         ]
 

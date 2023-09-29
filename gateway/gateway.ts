@@ -18,6 +18,7 @@ class ServiceRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
     if (context.pastaporto) {
       request!.http!.headers.set(PASTAPORTO_X_HEADER, context.pastaporto);
     }
+    request!.http!.headers.set("cookie", context.cookies);
 
     const gatewayRequestHeaders = context.allHeaders;
     if (

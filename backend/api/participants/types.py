@@ -20,7 +20,7 @@ class Participant:
     facebook_url: str
     mastodon_handle: str
     speaker_id: strawberry.Private[int]
-    fullname: str
+    fullname: str = "todo"
 
     _speaker_level: strawberry.Private[str]
     _previous_talk_video: strawberry.Private[str]

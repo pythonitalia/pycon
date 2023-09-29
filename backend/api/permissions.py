@@ -27,21 +27,21 @@ class IsStaffPermission(BasePermission):
     message = "You need to be a staff user"
 
     def has_permission(self, source, info, **kwargs):
-        pastaporto = info.context.request.pastaporto
+        user = info.context.request.user
 
-        if not pastaporto.is_authenticated:
+        if not user.is_authenticated:
             return False
 
-        return pastaporto.user_info.is_staff
+        return user.is_staff
 
 
 class CanSeeSubmissions(BasePermission):
     message = "You need to have a ticket to see submissions"
 
     def has_permission(self, conference, info):
-        pastaporto = info.context.request.pastaporto
+        user = info.context.request.user
 
-        if not pastaporto.is_authenticated:
+        if not user.is_authenticated:
             return False
 
-        return pastaporto_user_info_can_vote(pastaporto, conference)
+        return pastaporto_user_info_can_vote(user, conference)
