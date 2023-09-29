@@ -20,7 +20,6 @@ class Participant:
     facebook_url: str
     mastodon_handle: str
     speaker_id: strawberry.Private[int]
-    fullname: str = "todo"
 
     _speaker_level: strawberry.Private[str]
     _previous_talk_video: strawberry.Private[str]
@@ -45,8 +44,7 @@ class Participant:
             id=instance.hashid,
             user_id=instance.user_id,
             speaker_id=instance.user_id,
-            # fullname=instance.user.fullname,
-            fullname="todo",
+            fullname=instance.user.fullname,
             photo=instance.photo,
             bio=instance.bio,
             website=instance.website,

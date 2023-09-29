@@ -35,7 +35,7 @@ class DayRoom:
 class ScheduleItemUser:
     id: strawberry.ID
     conference_code: strawberry.Private[str]
-    fullname: str = "todo"
+    fullname: str
 
     @strawberry.field
     def full_name(self) -> str:
