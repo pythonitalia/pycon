@@ -147,7 +147,10 @@ MEDIA_ROOT = root("media")
 
 AUTH_USER_MODEL = "users.User"
 
-AUTHENTICATION_BACKENDS = ("custom_auth.backend.UsersAuthBackend",)
+AUTHENTICATION_BACKENDS = (
+    "custom_auth.backend.UsersAuthBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
 
 MAPBOX_PUBLIC_API_KEY = env("MAPBOX_PUBLIC_API_KEY", default="")
 

@@ -29,6 +29,13 @@ class BaseErrorType:
         setattr(instance, field, [message])
         return instance
 
+    @property
+    def if_has_errors(self):
+        if self.has_errors:
+            return self
+
+        return None
+
 
 @strawberry.input
 class MultiLingualInput:

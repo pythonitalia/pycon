@@ -30,6 +30,11 @@ PRETIX_ORDERS_STATUS_ORDER = [
 
 
 @strawberry.type
+class OperationSuccess:
+    ok: bool
+
+
+@strawberry.type
 class User:
     id: strawberry.ID
     email: str

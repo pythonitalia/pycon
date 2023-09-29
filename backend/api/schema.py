@@ -1,9 +1,8 @@
 import strawberry
 from strawberry.extensions.tracing.sentry import SentryTracingExtensionSync
 
-from api.users.types import User
 from api.participants.mutations import ParticipantMutations
-from .users.mutations import LoginMutation
+from .users.mutations import UsersMutations
 from .blob.schema import BlobMutation
 from .blog.schema import BlogQuery
 from .checklist.query import ChecklistQuery
@@ -58,7 +57,7 @@ class Mutation(
     BlobMutation,
     BadgeScannerMutation,
     ParticipantMutations,
-    LoginMutation,
+    UsersMutations,
 ):
     pass
 
@@ -66,6 +65,6 @@ class Mutation(
 schema = strawberry.federation.Schema(
     query=Query,
     mutation=Mutation,
-    types=[User],
+    # types=[User],
     extensions=[SentryTracingExtensionSync],
 )
