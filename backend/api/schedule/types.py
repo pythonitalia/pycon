@@ -35,8 +35,8 @@ class DayRoom:
 class ScheduleItemUser:
     id: strawberry.ID
     conference_code: strawberry.Private[str]
-    fullname: str = "test"
-    full_name: str = "test"
+    fullname: str
+    full_name: str
 
     @strawberry.field
     def participant(self) -> Optional[Participant]:
