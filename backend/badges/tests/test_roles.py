@@ -7,6 +7,7 @@ from badges.roles import (
 )
 import pytest
 from badges.models import AttendeeConferenceRole
+from users.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -219,6 +220,7 @@ def test_get_conference_roles_for_user(conference_factory, requests_mock):
 
 
 def test_get_conference_roles_for_user_as_sponsor(conference_factory, requests_mock):
+    user = UserFactory()
     conference = conference_factory()
     requests_mock.get(
         f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
@@ -242,7 +244,7 @@ def test_get_conference_roles_for_user_as_sponsor(conference_factory, requests_m
             {
                 "id": 1,
                 "voucher": 1,
-                "attendee_email": "test@email.it",
+                "attendee_email": user.email,
                 "item": {
                     "admission": True,
                 },
@@ -251,6 +253,7 @@ def test_get_conference_roles_for_user_as_sponsor(conference_factory, requests_m
     )
 
     roles = get_conference_roles_for_user(
-        conference=conference, user_id=1, user_email="test@email.it"
+        conference=conference, user_id=user.id, user_email=user.email
     )
+
     assert roles == [Role.SPONSOR, Role.ATTENDEE]

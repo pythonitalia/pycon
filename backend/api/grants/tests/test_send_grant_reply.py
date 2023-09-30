@@ -3,12 +3,12 @@ from unittest.mock import ANY
 import pytest
 
 from grants.models import Grant
+from users.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
 
 
 def _send_grant_reply(graphql_client, grant, *, status, message=""):
-
     document = """
     mutation sendGrantReply ($input: SendGrantReplyInput!) {
         sendGrantReply(input: $input) {
@@ -34,9 +34,9 @@ def _send_grant_reply(graphql_client, grant, *, status, message=""):
     return graphql_client.query(document, variables={"input": variables})
 
 
-def test_user_is_not_the_owner(graphql_client, user, grant_factory, user_factory):
+def test_user_is_not_the_owner(graphql_client, user, grant_factory):
     graphql_client.force_login(user)
-    other_user = user_factory()
+    other_user = UserFactory()
     grant = grant_factory(user_id=other_user.id)
 
     response = _send_grant_reply(graphql_client, grant, status="refused")

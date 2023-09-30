@@ -1,3 +1,5 @@
+from users.tests.factories import UserFactory
+
 import factory
 import factory.fuzzy
 from factory.django import DjangoModelFactory
@@ -91,6 +93,7 @@ class ScheduleItemFactory(DjangoModelFactory):
 @register
 class ScheduleItemAdditionalSpeakerFactory(DjangoModelFactory):
     scheduleitem = factory.SubFactory(ScheduleItemFactory)
+    user = factory.SubFactory(UserFactory)
 
     class Meta:
         model = ScheduleItemAdditionalSpeaker
@@ -99,6 +102,7 @@ class ScheduleItemAdditionalSpeakerFactory(DjangoModelFactory):
 @register
 class ScheduleItemAttendeeFactory(DjangoModelFactory):
     schedule_item = factory.SubFactory(ScheduleItemFactory)
+    user = factory.SubFactory(UserFactory)
 
     class Meta:
         model = ScheduleItemAttendee

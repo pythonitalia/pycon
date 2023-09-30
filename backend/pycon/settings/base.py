@@ -20,7 +20,6 @@ FRONTEND_URL = env("FRONTEND_URL")
 # Application definition
 
 INSTALLED_APPS = [
-    "custom_auth",
     "schedule.apps.ScheduleConfig",
     "custom_admin",
     "dal",

@@ -366,7 +366,7 @@ def pretix_user_non_admission_ticket():
         "canceled": False,
         "city": None,
         "company": None,
-        "id": 2,
+        "id": 999,
         "positionid": 5,
         "price": "500.00",
         "pseudonymization_id": "KXZTCRLAHK",

@@ -1,3 +1,4 @@
+from users.tests.factories import UserFactory
 import factory
 import factory.fuzzy
 from factory.django import DjangoModelFactory
@@ -28,6 +29,7 @@ class HotelRoomReservationFactory(DjangoModelFactory):
     room = factory.SubFactory(HotelRoomFactory)
     checkin = factory.Faker("past_date")
     checkout = factory.Faker("future_date")
+    user = factory.SubFactory(UserFactory)
 
     class Meta:
         model = HotelRoomReservation

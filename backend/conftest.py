@@ -1,7 +1,5 @@
 import pytest
 from django.test.client import Client
-from faker import Faker
-from pythonit_toolkit.api.graphql_test_client import SimulatedUser
 
 from api.tests.factories import *  # noqa
 from api.tests.fixtures import *  # noqa
@@ -26,27 +24,28 @@ from submissions.tests.factories import *  # noqa
 from users.tests.factories import *  # noqa
 from voting.tests.factories import *  # noqa
 from voting.tests.fixtures import *  # noqa
+from users.tests.factories import UserFactory
 
 
 @pytest.fixture()
 def user(db):
-    return SimulatedUser(id=10, email="simulated@user.it", is_staff=False)
+    return UserFactory(email="simulated@user.it", is_staff=False)
 
 
-@pytest.fixture()
-def user_factory(db):
-    def func(is_staff=False, email=None):
-        faker = Faker()
-        return SimulatedUser(
-            id=faker.pyint(), email=email or faker.email(), is_staff=is_staff
-        )
+# @pytest.fixture()
+# def user_factory(db):
+#     def func(is_staff=False, email=None):
+#         faker = Faker()
+#         return SimulatedUser(
+#             id=faker.pyint(), email=email or faker.email(), is_staff=is_staff
+#         )
 
-    return func
+#     return func
 
 
 @pytest.fixture()
 def admin_user(db):
-    return SimulatedUser(id=Faker().pyint(), email="admin@user.it", is_staff=True)
+    return UserFactory(email="admin@user.it", is_staff=True)
 
 
 @pytest.fixture
