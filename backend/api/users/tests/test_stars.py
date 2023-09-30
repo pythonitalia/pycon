@@ -2,7 +2,6 @@ import datetime
 
 import pytest
 
-from api.users.types import User
 from schedule.models import ScheduleItem, ScheduleItemStar
 
 pytestmark = pytest.mark.django_db
@@ -35,7 +34,14 @@ def test_get_starred_schedule_items(
     )
     ScheduleItemStar.objects.create(schedule_item=schedule_item, user_id=user.id)
 
-    starred_schedule_items = User.resolve_reference(user.id).starred_schedule_items(
-        None, submission.conference.code
+    response = graphql_client.query(
+        """query($conference: String!) {
+            me {
+                starredScheduleItems(conference: $conference)
+            }
+        }""",
+        variables={"conference": submission.conference.code},
     )
-    assert list(starred_schedule_items) == [schedule_item.id]
+
+    starred_schedule_items = response["data"]["me"]["starredScheduleItems"]
+    assert list(starred_schedule_items) == [str(schedule_item.id)]
