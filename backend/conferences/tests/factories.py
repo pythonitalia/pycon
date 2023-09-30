@@ -17,6 +17,7 @@ from conferences.models import (
 )
 from i18n.tests.factories import LanguageFactory
 from languages.models import Language
+from users.tests.factories import UserFactory
 from submissions.models import SubmissionType
 
 
@@ -209,6 +210,7 @@ class KeynoteSpeakerFactory(DjangoModelFactory):
     keynote = factory.SubFactory(KeynoteFactory)
     bio = "{}"
     pronouns = "{}"
+    user = factory.SubFactory(UserFactory)
 
     class Meta:
         model = KeynoteSpeaker

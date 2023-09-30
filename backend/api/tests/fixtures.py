@@ -74,16 +74,12 @@ def graphql_client(async_client):
 
 
 @pytest.fixture()
-def admin_graphql_client(async_client):
-    raise ValueError("fix me")
-    # graphql_client = GraphQLClient(
-    #     DjangoAsyncClientWrapper(async_client),
-    #     pastaporto_secret=settings.PASTAPORTO_SECRET,
-    # )
-    # graphql_client.force_login(
-    # SimulatedUser(id=1, email="test@user.it", is_staff=True)
-    # )
-    # return graphql_client
+def admin_graphql_client(graphql_client):
+    from users.tests.factories import UserFactory
+
+    admin_user = UserFactory(is_staff=True, is_superuser=True)
+    graphql_client.force_login(admin_user)
+    return graphql_client
 
 
 @pytest.fixture

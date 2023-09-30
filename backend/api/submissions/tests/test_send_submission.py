@@ -433,18 +433,20 @@ def test_submit_talk_with_missing_data_fails(graphql_client, user, conference_fa
 
     assert (
         "Italian: Cannot be empty"
-        in resp["data"]["sendSubmission"]["validationAbstract"]
+        in resp["data"]["sendSubmission"]["errors"]["validationAbstract"]
     )
     assert (
         "English: Cannot be empty"
-        in resp["data"]["sendSubmission"]["validationAbstract"]
+        in resp["data"]["sendSubmission"]["errors"]["validationAbstract"]
     )
 
     assert (
-        "Italian: Cannot be empty" in resp["data"]["sendSubmission"]["validationTitle"]
+        "Italian: Cannot be empty"
+        in resp["data"]["sendSubmission"]["errors"]["validationTitle"]
     )
     assert (
-        "English: Cannot be empty" in resp["data"]["sendSubmission"]["validationTitle"]
+        "English: Cannot be empty"
+        in resp["data"]["sendSubmission"]["errors"]["validationTitle"]
     )
 
 
@@ -1062,11 +1064,12 @@ def test_submit_talk_with_too_long_title_fails(
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
 
     assert (
-        "Italian: Cannot be empty" in resp["data"]["sendSubmission"]["validationTitle"]
+        "Italian: Cannot be empty"
+        in resp["data"]["sendSubmission"]["errors"]["validationTitle"]
     )
     assert (
         "English: Cannot be more than 100 chars"
-        in resp["data"]["sendSubmission"]["validationTitle"]
+        in resp["data"]["sendSubmission"]["errors"]["validationTitle"]
     )
 
 
@@ -1091,12 +1094,12 @@ def test_submit_talk_with_no_languages_and_no_tags_is_not_allowed(
 
     assert (
         "You need to add at least one language"
-        in resp["data"]["sendSubmission"]["validationLanguages"]
+        in resp["data"]["sendSubmission"]["errors"]["validationLanguages"]
     )
 
     assert (
         "You need to add at least one tag"
-        in resp["data"]["sendSubmission"]["validationTags"]
+        in resp["data"]["sendSubmission"]["errors"]["validationTags"]
     )
 
 
@@ -1118,7 +1121,8 @@ def test_submit_talk_with_no_conference(graphql_client, user, conference_factory
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
 
     assert (
-        "Invalid conference" in resp["data"]["sendSubmission"]["validationConference"]
+        "Invalid conference"
+        in resp["data"]["sendSubmission"]["errors"]["validationConference"]
     )
 
 
@@ -1147,7 +1151,7 @@ def test_submit_talk_with_too_long_notes_fails(
 
     assert (
         "Cannot be more than 1000 chars"
-        in resp["data"]["sendSubmission"]["validationNotes"]
+        in resp["data"]["sendSubmission"]["errors"]["validationNotes"]
     )
 
 
@@ -1176,7 +1180,7 @@ def test_submit_talk_with_too_long_summary_fails(
 
     assert (
         "Cannot be more than 128 chars"
-        in resp["data"]["sendSubmission"]["validationShortSocialSummary"]
+        in resp["data"]["sendSubmission"]["errors"]["validationShortSocialSummary"]
     )
 
 
@@ -1211,7 +1215,7 @@ def test_submit_talk_only_allows_5_tags(graphql_client, user, conference_factory
 
     assert (
         "You can only add up to 5 tags"
-        in resp["data"]["sendSubmission"]["validationTags"]
+        in resp["data"]["sendSubmission"]["errors"]["validationTags"]
     )
 
 
@@ -1236,5 +1240,5 @@ def test_submit_talk_with_no_tags_fails(graphql_client, user, conference_factory
 
     assert (
         "You need to add at least one tag"
-        in resp["data"]["sendSubmission"]["validationTags"]
+        in resp["data"]["sendSubmission"]["errors"]["validationTags"]
     )

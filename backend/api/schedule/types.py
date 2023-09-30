@@ -101,7 +101,7 @@ class ScheduleItem:
         for speaker in self.speakers:
             speakers.append(
                 ScheduleItemUser(
-                    id=speaker,
+                    id=speaker.id,
                     fullname=speaker.fullname,
                     full_name=speaker.full_name,
                     conference_code=self.conference.code,
