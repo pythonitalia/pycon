@@ -1,4 +1,5 @@
 from __future__ import annotations
+import tablib
 from api.helpers.ids import decode_hashid
 from django.core.files.base import ContentFile
 
@@ -10,7 +11,7 @@ from api.context import Info
 from api.permissions import IsAuthenticated
 from badge_scanner import models
 from conferences.models import Conference
-from users.client import get_user_by_email
+from users.models import User
 
 from .types import BadgeScan, BadgeScanExport
 
@@ -66,11 +67,11 @@ class BadgeScannerMutation:
             conference, input.order_position_id
         )
 
-        user = get_user_by_email(order_position_data["attendee_email"])
+        user = User.objects.filter(email=order_position_data["attendee_email"]).first()
 
         scanned_badge, _ = models.BadgeScan.objects.get_or_create(
             scanned_by_id=info.context.request.user.id,
-            scanned_user_id=user["id"] if user else None,
+            scanned_user_id=user.id if user else None,
             badge_url=input.url,
             conference=conference,
             attendee_name=order_position_data["attendee_name"],
@@ -108,8 +109,6 @@ class BadgeScannerMutation:
         current_user_scans = models.BadgeScan.objects.filter(
             scanned_by_id=info.context.request.user.id, conference__code=conference_code
         )
-
-        import tablib
 
         data = tablib.Dataset(
             headers=["Created", "Attendee Name", "Attendee Email", "Notes"]

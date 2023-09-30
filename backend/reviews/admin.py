@@ -13,7 +13,6 @@ from grants.models import Grant
 from participants.models import Participant
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
 from submissions.models import Submission, SubmissionTag
-from users.client import get_users_full_data
 from users.models import User
 
 
@@ -188,22 +187,34 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                 )
             )
             .order_by(F("score").desc(nulls_last=True))
-            .prefetch_related("userreview_set", "audience_level", "languages")
+            .prefetch_related(
+                "userreview_set",
+                "userreview_set__user",
+                "userreview_set__score",
+                "audience_level",
+                "languages",
+                "speaker",
+                "tags",
+                "type",
+                "rankings",
+                "rankings__tag",
+            )
             .all()
         )
+
         speakers_ids = items.values_list("speaker_id", flat=True)
+
         grants = {
             str(grant.user_id): grant
             for grant in Grant.objects.filter(
                 conference=conference, user_id__in=speakers_ids
             ).all()
         }
-        speakers_data = get_users_full_data(list(speakers_ids))
+
         context = dict(
             self.admin_site.each_context(request),
             items=items,
             grants=grants,
-            speakers=speakers_data,
             review_session_id=review_session_id,
             audience_levels=conference.audience_levels.all(),
         )
@@ -228,8 +239,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                 **filter_options,
             ).first()
             languages = list(proposal.languages.all())
-            speakers_data = get_users_full_data([proposal.speaker_id])
-            speaker = speakers_data[str(proposal.speaker_id)]
+            speaker = proposal.speaker
             grant = Grant.objects.filter(
                 conference=proposal.conference_id,
                 user_id=proposal.speaker_id,
@@ -314,7 +324,9 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                                 "review_item_id": review_item_id,
                             },
                         )
-                        + f"?exclude={','.join(exclude)}&seen={','.join(seen)}&comment={comment}"
+                        + f"?exclude={','.join(exclude)}"
+                        + f"&seen={','.join(seen)}"
+                        + f"&comment={comment}"
                     )
 
                 # User is saving their vote

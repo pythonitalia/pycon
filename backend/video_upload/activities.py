@@ -4,7 +4,6 @@ import logging
 from dataclasses import dataclass
 from typing import Any
 from google_api.sdk import youtube_videos_insert, youtube_videos_set_thumbnail
-from users.client import get_users_data_by_ids_async
 from temporalio import activity
 from schedule.models import ScheduleItem
 from django.core.files.storage import FileSystemStorage
@@ -94,7 +93,7 @@ async def fetch_schedule_item(schedule_item_id: int) -> ScheduleItemData:
 async def fetch_speakers_data(
     speakers_ids: list[int],
 ) -> dict[str, dict[str, Any]]:
-    return await get_users_data_by_ids_async(speakers_ids)
+    raise ValueError("update me :)")
 
 
 @dataclass

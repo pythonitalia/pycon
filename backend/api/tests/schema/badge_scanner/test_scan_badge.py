@@ -1,5 +1,6 @@
 from api.helpers.ids import encode_hashid
 from badge_scanner.models import BadgeScan
+from users.tests.factories import UserFactory
 
 import pytest
 
@@ -44,6 +45,7 @@ def test_raises_an_error_when_user_is_not_authenticated(graphql_client, conferen
 
 
 def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
+    scanned_user = UserFactory.create(email="barko@marco.pizza", full_name="Test User")
     fake_id = encode_hashid(1)
 
     graphql_client.force_login(user)
@@ -53,15 +55,6 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
         return_value={
             "attendee_name": "Test User",
             "attendee_email": "barko@marco.pizza",
-        },
-    )
-
-    mocker.patch(
-        "api.badge_scanner.mutation.get_user_by_email",
-        return_value={
-            "id": 1,
-            "email": "barko@marco.pizza",
-            "fullname": "Test User",
         },
     )
 
@@ -84,7 +77,7 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
     badge_scan = BadgeScan.objects.get()
 
     assert badge_scan.scanned_by_id == user.id
-    assert badge_scan.scanned_user_id == 1
+    assert badge_scan.scanned_user_id == scanned_user.id
     assert badge_scan.notes == ""
     assert badge_scan.conference == conference
     assert badge_scan.badge_url == f"https://pycon.it/b/{fake_id}"
@@ -105,11 +98,6 @@ def test_works_when_user_is_logged_in_but_no_user_on_service(
             "attendee_name": "Test User",
             "attendee_email": "barko@marco.pizza",
         },
-    )
-
-    mocker.patch(
-        "api.badge_scanner.mutation.get_user_by_email",
-        return_value=None,
     )
 
     resp = _scan_badge_mutation(
