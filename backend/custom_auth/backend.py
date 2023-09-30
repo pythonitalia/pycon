@@ -23,6 +23,7 @@ LOGIN_QUERY = """mutation($input: LoginInput!) {
 
 class UsersAuthBackend(BaseBackend):
     def authenticate(self, request, username=None, password=None):
+        raise ValueError("Do not use.")
         client = ServiceClient(
             url=f"{settings.USERS_SERVICE_URL}/internal-api",
             service_name="users-backend",

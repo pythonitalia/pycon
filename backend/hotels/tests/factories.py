@@ -26,7 +26,6 @@ class HotelRoomFactory(DjangoModelFactory):
 class HotelRoomReservationFactory(DjangoModelFactory):
     order_code = "AAAABB"
     room = factory.SubFactory(HotelRoomFactory)
-    user_id = factory.Faker("pyint", min_value=1)
     checkin = factory.Faker("past_date")
     checkout = factory.Faker("future_date")
 

@@ -1,5 +1,5 @@
+from users.tests.factories import UserFactory
 from unittest.mock import call
-import respx
 import time_machine
 from django.core import exceptions
 from django.forms.fields import BooleanField
@@ -518,6 +518,12 @@ def test_video_uploaded_path_matcher(
 ):
     conference = conference_factory(code="conf")
 
+    kim = UserFactory(id=5, name="Kim", full_name="Kim Kitsuragi")
+    klaasje = UserFactory(id=10, name="Klaasje")
+    harrier = UserFactory(id=20, name="Harrier", full_name="Harrier Du Bois")
+    anwesha = UserFactory(id=23, full_name="Anwesha Das")
+    marcsed = UserFactory(id=99, name="Marcsed", full_name="Marcsed Cazzęfa")
+
     mocker.patch(
         "conferences.admin.walk_conference_videos_folder",
         return_value=[
@@ -543,14 +549,14 @@ def test_video_uploaded_path_matcher(
         conference=conference,
         title="Talk about something",
         type=ScheduleItem.TYPES.talk,
-        submission__speaker_id=5,
+        submission__speaker=kim,
     )
 
     event_klaasje_alone = schedule_item_factory(
         conference=conference,
         title="Klaasje smokes",
         type=ScheduleItem.TYPES.talk,
-        submission__speaker_id=10,
+        submission__speaker=klaasje,
     )
 
     event_3 = schedule_item_factory(
@@ -559,23 +565,23 @@ def test_video_uploaded_path_matcher(
         type=ScheduleItem.TYPES.talk,
         submission=None,
     )
-    schedule_item_additional_speaker_factory(scheduleitem=event_3, user_id=10)
-    schedule_item_additional_speaker_factory(scheduleitem=event_3, user_id=20)
+    schedule_item_additional_speaker_factory(scheduleitem=event_3, user=klaasje)
+    schedule_item_additional_speaker_factory(scheduleitem=event_3, user=harrier)
 
     event_ord_speakers = schedule_item_factory(
         conference=conference,
         title="Ordered",
         type=ScheduleItem.TYPES.talk,
-        submission__speaker_id=20,
+        submission__speaker=harrier,
     )
     schedule_item_additional_speaker_factory(
-        scheduleitem=event_ord_speakers, user_id=10
+        scheduleitem=event_ord_speakers, user=klaasje
     )
 
     keynote_object = keynote_factory()
     keynote_speaker_factory(
         keynote=keynote_object,
-        user_id=23,
+        user=anwesha,
     )
     keynote_schedule = schedule_item_factory(
         conference=conference,
@@ -589,7 +595,7 @@ def test_video_uploaded_path_matcher(
         conference=conference,
         title="Special char",
         type=ScheduleItem.TYPES.talk,
-        submission__speaker_id=99,
+        submission__speaker=marcsed,
     )
 
     admin = ConferenceAdmin(
@@ -598,42 +604,7 @@ def test_video_uploaded_path_matcher(
     )
     admin.message_user = mocker.Mock()
 
-    with respx.mock as mock:
-        mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
-            json={
-                "data": {
-                    "usersByIds": [
-                        {
-                            "id": str(event_2.submission.speaker_id),
-                            "name": "Kim",
-                            "fullname": "Kim Kitsuragi",
-                        },
-                        {
-                            "id": "10",
-                            "name": "Klaasje",
-                            "fullname": "",
-                        },
-                        {
-                            "id": "20",
-                            "name": "Harrier",
-                            "fullname": "Harrier Du Bois",
-                        },
-                        {
-                            "id": "23",
-                            "name": "",
-                            "fullname": "Anwesha  Das",
-                        },
-                        {
-                            "id": "99",
-                            "name": "Marcsed",
-                            "fullname": "Marcsed Cazzęfa",
-                        },
-                    ]
-                }
-            }
-        )
-
-        ret = admin.map_videos(request, conference.id)
+    ret = admin.map_videos(request, conference.id)
 
     assert ret.status_code == 302
 

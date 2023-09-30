@@ -16,4 +16,3 @@ class VoteFactory(DjangoModelFactory):
         Vote.VALUES.not_interested, Vote.VALUES.must_see, 1
     )
     submission = factory.SubFactory(SubmissionFactory)
-    user_id = factory.Faker("pyint", min_value=1)

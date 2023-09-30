@@ -52,7 +52,6 @@ class SubmissionFactory(DjangoModelFactory):
     notes = factory.Faker("text")
     type = factory.SubFactory(SubmissionTypeFactory)
     duration = factory.SubFactory(DurationFactory)
-    speaker_id = factory.Faker("pyint", min_value=1)
     topic = factory.SubFactory(TopicFactory)
     audience_level = factory.SubFactory(AudienceLevelFactory)
     speaker_level = factory.fuzzy.FuzzyChoice(

@@ -7,7 +7,7 @@ from users.models import User
 
 
 @register
-class DjangoAdminUserFactory(DjangoModelFactory):
+class UserFactory(DjangoModelFactory):
     class Meta:
         model = User
 

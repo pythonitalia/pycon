@@ -90,7 +90,6 @@ class ScheduleItemFactory(DjangoModelFactory):
 
 @register
 class ScheduleItemAdditionalSpeakerFactory(DjangoModelFactory):
-    user_id = factory.Faker("pyint", min_value=1)
     scheduleitem = factory.SubFactory(ScheduleItemFactory)
 
     class Meta:
@@ -99,7 +98,6 @@ class ScheduleItemAdditionalSpeakerFactory(DjangoModelFactory):
 
 @register
 class ScheduleItemAttendeeFactory(DjangoModelFactory):
-    user_id = factory.Faker("pyint", min_value=1)
     schedule_item = factory.SubFactory(ScheduleItemFactory)
 
     class Meta:
