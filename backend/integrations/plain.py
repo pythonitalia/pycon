@@ -2,7 +2,6 @@ import logging
 
 import requests
 from django.conf import settings
-from domain_events.handler import get_name
 
 from users.models import User
 
@@ -43,6 +42,8 @@ def _execute(query, variables):
 
 
 def create_customer(user: User) -> str:
+    from domain_events.handler import get_name
+
     document = """
     mutation createCustomer ($input: UpsertCustomerInput!) {
         upsertCustomer (input: $input) {
