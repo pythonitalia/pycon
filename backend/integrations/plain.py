@@ -1,32 +1,19 @@
 import logging
-from typing import TypedDict
 
 import requests
 from django.conf import settings
+from domain_events.handler import get_name
+
+from users.models import User
 
 logger = logging.getLogger(__name__)
-
-
-class UserData(TypedDict):
-    id: str
-    fullname: str
-    name: str
-    username: str
-    email: str
 
 
 class PlainError(Exception):
     pass
 
 
-def get_name(user_data: UserData, fallback: str = "<no name specified>"):
-    return (
-        user_data["fullname"] or user_data["name"] or user_data["username"] or fallback
-    )
-
-
 def _raise_mutation_error(data, key: str):
-
     if data[key]["error"]:
         message = data[key]["error"]["message"]
         if data[key]["error"].get("fields"):
@@ -55,7 +42,7 @@ def _execute(query, variables):
         raise PlainError(data["errors"][0]["message"]) from e
 
 
-def create_customer(user_data: UserData) -> str:
+def create_customer(user: User) -> str:
     document = """
     mutation createCustomer ($input: UpsertCustomerInput!) {
         upsertCustomer (input: $input) {
@@ -81,20 +68,20 @@ def create_customer(user_data: UserData) -> str:
         document,
         variables={
             "input": {
-                "identifier": {"emailAddress": user_data["email"]},
+                "identifier": {"emailAddress": user.email},
                 "onCreate": {
-                    "externalId": user_data["id"],
-                    "fullName": get_name(user_data),
+                    "externalId": user.id,
+                    "fullName": get_name(user),
                     "email": {
-                        "email": user_data["email"],
+                        "email": user.email,
                         "isVerified": True,
                     },
                 },
                 "onUpdate": {
-                    "externalId": {"value": user_data["id"]},
-                    "fullName": {"value": get_name(user_data)},
+                    "externalId": {"value": user.id},
+                    "fullName": {"value": get_name(user)},
                     "email": {
-                        "email": user_data["email"],
+                        "email": user.email,
                         "isVerified": True,
                     },
                 },
@@ -104,7 +91,7 @@ def create_customer(user_data: UserData) -> str:
 
     _raise_mutation_error(response, "upsertCustomer")
 
-    logger.info("Created new customer for %s on Plain", get_name(user_data))
+    logger.info("Created new customer for %s on Plain", get_name(user))
     return response["upsertCustomer"]["customer"]["id"]
 
 
@@ -179,7 +166,7 @@ def _send_chat(customer_id: str, title: str, message: str):
     logger.info("Custom timeline entry added on Plain with title '%s'", title)
 
 
-def send_message(user_data: UserData, title: str, message: str):
-    customer_id = create_customer(user_data)
+def send_message(user: User, title: str, message: str):
+    customer_id = create_customer(user)
     change_customer_status(customer_id)
     _send_chat(customer_id, title, message)
