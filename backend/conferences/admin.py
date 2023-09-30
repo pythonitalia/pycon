@@ -1,5 +1,4 @@
 from pathlib import Path
-from itertools import chain
 from django.core.files.storage import storages
 from django import forms
 from django.contrib import admin, messages
@@ -22,10 +21,7 @@ from conferences.models import SpeakerVoucher
 from domain_events.publisher import send_speaker_voucher_email
 from pretix import create_voucher
 from schedule.models import ScheduleItem
-from users.client import get_users_data_by_ids
 from sponsors.models import SponsorLevel
-from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin, SearchUsersMixin
 from voting.models import IncludedEvent
 import re
 from .models import (
@@ -215,12 +211,10 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
             .order_by("slot__day__day", "slot__hour", "id")
             .all()
         )
-        users_data = self._get_speakers_data_for_events(all_events)
 
         context = dict(
             self.admin_site.each_context(request),
             events=all_events,
-            users_data=users_data,
         )
 
         return render(request, "admin/videos_upload/map_videos.html", context)
@@ -258,14 +252,11 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
             files = list(walk_conference_videos_folder(storage, f"{conference.code}/"))
             cache.set(cache_key, files, 60 * 60 * 24 * 7)
 
-        users_data = self._get_speakers_data_for_events(all_events)
         matched_videos = 0
         used_files = set()
 
         for event in all_events:
-            video_uploaded_path = self.match_event_to_video_file(
-                event, files, users_data
-            )
+            video_uploaded_path = self.match_event_to_video_file(event, files)
             event.video_uploaded_path = video_uploaded_path
             event.save(update_fields=["video_uploaded_path"])
 
@@ -294,21 +285,17 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                 messages.WARNING,
             )
 
-    def match_event_to_video_file(self, event, files, users_data):
+    def match_event_to_video_file(self, event, files):
         possible_file_names = []
 
-        def best_name(speaker_data):
-            return cleanup_string(
-                speaker_data["fullname"].strip() or speaker_data["name"].strip()
-            )
+        def best_name(speaker):
+            return cleanup_string(speaker.full_name.strip() or speaker.name.strip())
 
         normalized_files = [
             (cleanup_string(video_file), video_file) for video_file in files
         ]
 
-        all_speakers_names = [
-            best_name(users_data[str(speaker_id)]) for speaker_id in event.speakers
-        ]
+        all_speakers_names = [best_name(speaker) for speaker in event.speakers]
 
         count_speakers = len(all_speakers_names)
         single_speaker = count_speakers <= 1
@@ -357,10 +344,6 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
 
         return ""
 
-    def _get_speakers_data_for_events(self, events):
-        all_users_ids = list(chain.from_iterable(event.speakers for event in events))
-        return get_users_data_by_ids(all_users_ids)
-
 
 def walk_conference_videos_folder(storage, base_path):
     folders, files = storage.listdir(base_path)
@@ -399,11 +382,8 @@ class KeynoteSpeakerForm(forms.ModelForm):
         model = KeynoteSpeaker
         fields = (
             "keynote",
-            "user_id",
+            "user",
         )
-        widgets = {
-            "user_id": UsersBackendAutocomplete(admin.site),
-        }
 
 
 class KeynoteSpeakerInline(OrderedStackedInline):
@@ -412,7 +392,7 @@ class KeynoteSpeakerInline(OrderedStackedInline):
     extra = 1
     fields = (
         "keynote",
-        "user_id",
+        "user",
         "order",
         "move_up_down_links",
     )
@@ -523,12 +503,9 @@ def create_speaker_vouchers_on_pretix(modeladmin, request, queryset):
 class SpeakerVoucherForm(forms.ModelForm):
     class Meta:
         model = SpeakerVoucher
-        widgets = {
-            "user_id": UsersBackendAutocomplete(admin.site),
-        }
         fields = [
             "conference",
-            "user_id",
+            "user",
             "voucher_type",
             "voucher_code",
             "pretix_voucher_id",
@@ -537,9 +514,9 @@ class SpeakerVoucherForm(forms.ModelForm):
 
 
 @admin.register(SpeakerVoucher)
-class SpeakerVoucherAdmin(AdminUsersMixin, SearchUsersMixin):
+class SpeakerVoucherAdmin(admin.ModelAdmin):
     form = SpeakerVoucherForm
-    search_fields = ("voucher_code",)
+    search_fields = ("voucher_code", "user__name", "user__full_name")
     list_filter = (
         "conference",
         "voucher_type",
@@ -554,7 +531,6 @@ class SpeakerVoucherAdmin(AdminUsersMixin, SearchUsersMixin):
         "voucher_email_sent_at",
         "created",
     )
-    user_fk = "user_id"
     actions = [
         create_speaker_vouchers_on_pretix,
         send_voucher_via_email,
@@ -570,7 +546,7 @@ class SpeakerVoucherAdmin(AdminUsersMixin, SearchUsersMixin):
         return {"voucher_code": SpeakerVoucher.generate_code()}
 
     def user_display_name(self, obj):
-        return self.get_user_display_name(obj.user_id)
+        return obj.user.display_name
 
 
 def cleanup_string(string: str) -> str:

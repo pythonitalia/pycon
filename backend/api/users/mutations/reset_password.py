@@ -1,5 +1,6 @@
 from typing import Optional
 from django.db.models import F
+from api.users.mutations.request_reset_password import create_reset_password_jti
 from users.models import User as UserModel
 from django.utils.functional import cached_property
 import jwt
@@ -52,7 +53,7 @@ class ResetPasswordInput:
             errors.add_error("new_password", "Password must be at least 8 characters")
 
         try:
-            self.decode_token
+            self.decoded_token
         except jwt.ExpiredSignatureError:
             errors.add_error("token", "Token has expired")
         except (jwt.InvalidAudienceError, jwt.MissingRequiredClaimError):
@@ -78,7 +79,7 @@ def reset_password(input: ResetPasswordInput) -> ResetPasswordResult:
     if not user or not user.is_active:
         return OperationSuccess(ok=False)
 
-    if decoded_token["jti"] != user.jwt_auth_id:
+    if decoded_token["jti"] != create_reset_password_jti(user):
         return ResetPasswordErrors.with_error("token", "Invalid token")
 
     logger.info("Resetting password of user_id=%s", user.id)

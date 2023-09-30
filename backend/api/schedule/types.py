@@ -35,11 +35,8 @@ class DayRoom:
 class ScheduleItemUser:
     id: strawberry.ID
     conference_code: strawberry.Private[str]
-    fullname: str
-
-    @strawberry.field
-    def full_name(self) -> str:
-        return self.fullname
+    fullname: str = "test"
+    full_name: str = "test"
 
     @strawberry.field
     def participant(self) -> Optional[Participant]:
@@ -103,7 +100,12 @@ class ScheduleItem:
 
         for speaker in self.speakers:
             speakers.append(
-                ScheduleItemUser(id=speaker, conference_code=self.conference.code)
+                ScheduleItemUser(
+                    id=speaker,
+                    fullname=speaker.fullname,
+                    full_name=speaker.full_name,
+                    conference_code=self.conference.code,
+                )
             )
 
         return speakers

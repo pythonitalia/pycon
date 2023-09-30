@@ -13,6 +13,7 @@ SEARCH_USERS = """query SearchUsers($query: String!) {
 
 
 def users_autocomplete(request):
+    raise ValueError("Check usages")
     term = request.GET.get("term", "")
     client = ServiceClient(
         url=f"{settings.USERS_SERVICE_URL}/internal-api",

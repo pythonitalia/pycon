@@ -232,13 +232,13 @@ class ScheduleItem(TimeStampedModel):
         speakers = []
 
         if self.submission_id:
-            speakers.append(self.submission.speaker_id)
+            speakers.append(self.submission.speaker)
 
-        speakers.extend([speaker.user_id for speaker in self.additional_speakers.all()])
+        speakers.extend([speaker.user for speaker in self.additional_speakers.all()])
 
         if self.keynote_id:
             for speaker_keynote in self.keynote.speakers.all():
-                speakers.append(speaker_keynote.user_id)
+                speakers.append(speaker_keynote.user)
 
         return speakers
 
@@ -315,27 +315,41 @@ class ScheduleItemAdditionalSpeaker(models.Model):
         verbose_name=_("schedule item"),
         related_name="additional_speakers",
     )
-    user_id = models.IntegerField(verbose_name=_("user"))
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name=_("user"),
+        related_name="+",
+    )
 
     class Meta:
         verbose_name = _("Schedule item additional speaker")
         verbose_name_plural = _("Schedule item additional speakers")
-        unique_together = ("user_id", "scheduleitem")
+        unique_together = ("user", "scheduleitem")
         db_table = "schedule_scheduleitem_additional_speakers"
 
 
 class ScheduleItemAttendee(TimeStampedModel):
-    user_id = models.IntegerField(verbose_name=_("user"))
     schedule_item = models.ForeignKey(
         ScheduleItem,
         on_delete=models.CASCADE,
         verbose_name=_("schedule item"),
         related_name="attendees",
     )
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name=_("user"),
+        related_name="+",
+    )
 
     class Meta:
         unique_together = (
-            "user_id",
+            "user",
             "schedule_item",
         )
 
@@ -348,7 +362,14 @@ class ScheduleItemInvitation(ScheduleItem):
 
 
 class ScheduleItemStar(TimeStampedModel):
-    user_id = models.IntegerField(verbose_name=_("user"), db_index=True)
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name=_("user"),
+        related_name="+",
+    )
     schedule_item = models.ForeignKey(
         ScheduleItem,
         on_delete=models.CASCADE,
@@ -358,6 +379,6 @@ class ScheduleItemStar(TimeStampedModel):
 
     class Meta:
         unique_together = (
-            "user_id",
+            "user",
             "schedule_item",
         )

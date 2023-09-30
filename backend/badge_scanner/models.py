@@ -4,10 +4,22 @@ from django.utils.translation import gettext_lazy as _
 
 
 class BadgeScan(TimeStampedModel):
-    scanned_by_id = models.IntegerField(verbose_name=_("Scanned By"))
+    scanned_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name=_("Scanned By"),
+        related_name="+",
+    )
     badge_url = models.URLField(_("Badge URL"), max_length=2048)
-    scanned_user_id = models.IntegerField(
-        verbose_name=_("Attendee"), null=True, blank=True
+    scanned_user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name=_("Scanned User"),
+        related_name="+",
     )
     notes = models.TextField(_("Notes"), blank=True)
 
@@ -29,5 +41,12 @@ class BadgeScanExport(TimeStampedModel):
         verbose_name=_("conference"),
         related_name="badge_scan_exports",
     )
-    requested_by_id = models.IntegerField(_("requested_by"))
+    requested_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name=_("Requested By"),
+        related_name="+",
+    )
     file = models.FileField(_("file"), upload_to="badge_scan_exports")

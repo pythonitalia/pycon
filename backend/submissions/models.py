@@ -57,7 +57,14 @@ class Submission(TimeStampedModel):
         _("previous talk video"), blank=True, max_length=2049
     )
 
-    speaker_id = models.IntegerField(verbose_name=_("speaker"))
+    speaker = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name=_("speaker"),
+        related_name="+",
+    )
 
     topic = models.ForeignKey(
         "conferences.Topic",
@@ -140,7 +147,6 @@ class Submission(TimeStampedModel):
                 id=self.type_id
             ).exists()
         ):
-
             raise exceptions.ValidationError(
                 {
                     "duration": _(
@@ -199,7 +205,14 @@ class SubmissionComment(TimeStampedModel):
         related_name="comments",
     )
 
-    author_id = models.IntegerField(verbose_name=_("author"))
+    author = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name=_("author"),
+        related_name="+",
+    )
 
     text = models.CharField(_("text"), max_length=500)
 

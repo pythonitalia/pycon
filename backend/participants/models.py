@@ -17,7 +17,14 @@ class Participant(models.Model):
         verbose_name=_("conference"),
         related_name="participants",
     )
-    user_id = models.IntegerField(verbose_name=_("user_id"))
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name=_("user"),
+        related_name="+",
+    )
 
     public_profile = models.BooleanField(_("public profile"), default=False)
     photo = models.TextField(_("photo"))
@@ -44,4 +51,4 @@ class Participant(models.Model):
         return f"Participant {self.user_id} for {self.conference}"
 
     class Meta:
-        unique_together = ("conference", "user_id")
+        unique_together = ("conference", "user")

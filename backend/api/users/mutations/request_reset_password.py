@@ -49,7 +49,7 @@ def _create_reset_password_token(user: UserModel) -> str:
 
     return jwt.encode(
         {
-            "jti": f"reset-password:{user.id}:{user.jwt_auth_id}",
+            "jti": create_reset_password_jti(user),
             "user_id": user.id,
             "exp": now + timedelta(hours=1),
             "iat": now,
@@ -59,3 +59,7 @@ def _create_reset_password_token(user: UserModel) -> str:
         str(settings.SECRET_KEY),
         algorithm="HS256",
     )
+
+
+def create_reset_password_jti(user):
+    return f"reset-password:{user.id}:{user.jwt_auth_id}"

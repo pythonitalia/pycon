@@ -55,10 +55,7 @@
           </td>
           <td>
             {% for speaker in event.speakers %}
-              {% with speaker_id=speaker|stringformat:"i" %}
-                {{ users_data|get_item:speaker_id|get_item:'fullname' }}
-                  ({{ users_data|get_item:speaker_id|get_item:'name' }}) /
-              {% endwith %}
+              {{ speaker.full_name }} ({{ speaker.name }}) /
             {% endfor %}
           </td>
           <td>

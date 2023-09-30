@@ -144,7 +144,12 @@ class Submission:
             self, info, is_speaker_data=True
         ):
             return None
-        return SubmissionSpeaker(id=self.speaker_id)
+
+        return SubmissionSpeaker(
+            id=self.speaker_id,
+            full_name=self.speaker.full_name,
+            gender=self.speaker.gender,
+        )
 
     @strawberry.field
     def id(self, info) -> strawberry.ID:
