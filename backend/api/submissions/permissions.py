@@ -1,7 +1,7 @@
 from strawberry.permission import BasePermission
 
 from api.permissions import HasTokenPermission
-from voting.helpers import pastaporto_user_info_can_vote
+from voting.helpers import check_if_user_can_vote
 from voting.models.ranking import RankRequest
 
 
@@ -41,7 +41,7 @@ class CanSeeSubmissionRestrictedFields(BasePermission):
         if info.context._user_can_vote is not None:
             return info.context._user_can_vote
 
-        return pastaporto_user_info_can_vote(user, conference)
+        return check_if_user_can_vote(user, conference)
 
 
 class CanSeeSubmissionPrivateFields(BasePermission):

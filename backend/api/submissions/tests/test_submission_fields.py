@@ -68,7 +68,7 @@ def test_voting_open_and_user_cannot_vote(
     submission = _submission(submission_factory, user)
     graphql_client.force_login(other_user)
     can_vote_mock = mocker.patch(
-        "api.submissions.permissions.pastaporto_user_info_can_vote", return_value=False
+        "api.submissions.permissions.check_if_user_can_vote", return_value=False
     )
 
     data = _query(graphql_client, submission)
@@ -101,7 +101,7 @@ def test_voting_open_and_user_can_vote(
     submission = _submission(submission_factory, user)
     graphql_client.force_login(other_user)
     can_vote_mock = mocker.patch(
-        "api.submissions.permissions.pastaporto_user_info_can_vote", return_value=True
+        "api.submissions.permissions.check_if_user_can_vote", return_value=True
     )
 
     data = _query(graphql_client, submission)

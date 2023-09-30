@@ -1,7 +1,7 @@
 from strawberry.permission import BasePermission
 
 from api.models import APIToken
-from voting.helpers import pastaporto_user_info_can_vote
+from voting.helpers import check_if_user_can_vote
 
 
 class IsAuthenticated(BasePermission):
@@ -44,4 +44,4 @@ class CanSeeSubmissions(BasePermission):
         if not user.is_authenticated:
             return False
 
-        return pastaporto_user_info_can_vote(user, conference)
+        return check_if_user_can_vote(user, conference)
