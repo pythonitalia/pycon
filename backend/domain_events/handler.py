@@ -5,12 +5,10 @@ from urllib.parse import urljoin
 from pretix import user_has_admission_ticket
 
 import boto3
-from asgiref.sync import async_to_sync
 from django.conf import settings
 from django.utils import timezone
 from pythonit_toolkit.emails.templates import EmailTemplate
 from pythonit_toolkit.emails.utils import mark_safe
-from pythonit_toolkit.service_client import ServiceClient
 
 from users.models import User
 from grants.models import Grant
@@ -18,26 +16,6 @@ from integrations import plain, slack
 from notifications.emails import send_email
 
 logger = logging.getLogger(__name__)
-
-USERS_NAMES_FROM_IDS = """query UserNamesFromIds($ids: [ID!]!) {
-    usersByIds(ids: $ids) {
-        id
-        fullname
-        name
-        username
-        email
-    }
-}"""
-
-
-def execute_service_client_query(query, variables):
-    client = ServiceClient(
-        url=f"{settings.USERS_SERVICE_URL}/internal-api",
-        service_name="users-backend",
-        caller="pycon-backend",
-        jwt_secret=settings.SERVICE_TO_SERVICE_SECRET,
-    )
-    return async_to_sync(client.execute)(query, variables)
 
 
 def get_name(user: User, fallback: str = "<no name specified>"):
