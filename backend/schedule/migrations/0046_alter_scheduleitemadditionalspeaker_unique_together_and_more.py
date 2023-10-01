@@ -14,6 +14,14 @@ class Migration(migrations.Migration):
     operations = [
         migrations.SeparateDatabaseAndState(
             database_operations=[
+                migrations.RunSQL(
+                    sql="DROP INDEX schedule_scheduleitem_additional_speakers_user_id_ecd7e435;",
+                    reverse_sql="CREATE INDEX schedule_scheduleitem_additional_speakers_user_id_ecd7e435 ON schedule_scheduleitem_additional_speakers USING btree (user_id);",
+                ),
+                migrations.RunSQL(
+                    sql="DROP INDEX schedule_scheduleitemstar_user_id_0f52424d;",
+                    reverse_sql="CREATE INDEX schedule_scheduleitemstar_user_id_0f52424d ON schedule_scheduleitemstar USING btree (user_id);",
+                ),
                 migrations.AlterField(
                     model_name="scheduleitemadditionalspeaker",
                     name="user_id",

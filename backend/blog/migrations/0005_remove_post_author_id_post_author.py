@@ -14,6 +14,10 @@ class Migration(migrations.Migration):
     operations = [
         migrations.SeparateDatabaseAndState(
             database_operations=[
+                migrations.RunSQL(
+                    sql="DROP INDEX blog_post_author_id_dd7a8485;",
+                    reverse_sql="CREATE INDEX blog_post_author_id_dd7a8485 ON blog_post USING btree (author_id);",
+                ),
                 migrations.AlterField(
                     model_name="post",
                     name="author_id",

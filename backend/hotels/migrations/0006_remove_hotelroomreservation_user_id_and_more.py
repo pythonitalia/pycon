@@ -14,6 +14,10 @@ class Migration(migrations.Migration):
     operations = [
         migrations.SeparateDatabaseAndState(
             database_operations=[
+                migrations.RunSQL(
+                    sql="DROP INDEX hotels_hotelroomreservation_user_id_6109bb14;",
+                    reverse_sql="CREATE INDEX hotels_hotelroomreservation_user_id_6109bb14 ON hotels_hotelroomreservation USING btree (user_id);",
+                ),
                 migrations.AlterField(
                     model_name="hotelroomreservation",
                     name="user_id",

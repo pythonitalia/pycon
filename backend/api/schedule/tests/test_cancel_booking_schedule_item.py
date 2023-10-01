@@ -12,9 +12,7 @@ pytestmark = mark.django_db
 def simple_schedule_item(
     schedule_item_factory, submission_factory, slot_factory, day_factory
 ):
-    submission = submission_factory(
-        speaker_id=200,
-    )
+    submission = submission_factory()
 
     return schedule_item_factory(
         status=ScheduleItem.STATUS.confirmed,
