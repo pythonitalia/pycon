@@ -7,6 +7,9 @@ from integrations.plain import (
     create_customer,
     send_message,
 )
+from users.tests.factories import UserFactory
+
+pytestmark = pytest.mark.django_db
 
 
 def test_create_user_successful(settings, requests_mock):
@@ -24,15 +27,14 @@ def test_create_user_successful(settings, requests_mock):
         },
     )
 
-    customer_id = create_customer(
-        {
-            "id": "1",
-            "name": "Ester",
-            "fullname": "Ester",
-            "email": "ester@example.com",
-            "username": "",
-        }
+    user = UserFactory(
+        name="Ester",
+        full_name="Ester",
+        email="ester@example.com",
+        username="",
     )
+
+    customer_id = create_customer(user)
 
     assert customer_id == "c_ABC25904A1DA4E0A82934234F2"
 
@@ -53,16 +55,15 @@ def test_create_user_failed(settings, requests_mock):
         },
     )
 
+    user = UserFactory(
+        name="Ester",
+        full_name="Ester",
+        email="ester@example.com",
+        username="",
+    )
+
     with pytest.raises(PlainError, match="something went wrong"):
-        create_customer(
-            {
-                "id": "1",
-                "name": "Ester",
-                "fullname": "Ester",
-                "email": "ester@example.com",
-                "username": "",
-            }
-        )
+        create_customer(user)
 
 
 def test_change_customer_status_successful(settings, requests_mock):
@@ -163,7 +164,10 @@ def test_send_chat_failed(settings, requests_mock):
 
     with pytest.raises(
         PlainError,
-        match="There was a validation error. customerId: ID does not match expected format",
+        match=(
+            "There was a validation error. "
+            "customerId: ID does not match expected format"
+        ),
     ):
         _send_chat("c_ABC25904A1DA4E0A82934234F2", title="wtf", message="hello world")
 
@@ -208,14 +212,14 @@ def test_send_message(settings, requests_mock):
         ],
     )
 
+    user = UserFactory(
+        name="Ester",
+        full_name="Ester",
+        email="ester@example.com",
+        username="",
+    )
     send_message(
-        {
-            "id": "1",
-            "name": "Ester",
-            "fullname": "Ester",
-            "email": "ester@example.com",
-            "username": "",
-        },
+        user,
         title="User has replied",
         message="Hello World!",
     )

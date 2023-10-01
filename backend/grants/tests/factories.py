@@ -5,6 +5,7 @@ from pytest_factoryboy import register
 from conferences.tests.factories import ConferenceFactory
 from grants.models import Grant
 from helpers.constants import GENDERS
+from users.tests.factories import UserFactory
 
 
 @register
@@ -16,7 +17,7 @@ class GrantFactory(DjangoModelFactory):
     full_name = factory.Faker("name")
     conference = factory.SubFactory(ConferenceFactory)
     email = factory.Faker("email")
-    user_id = factory.Faker("pyint")
+    user = factory.SubFactory(UserFactory)
     age_group = factory.fuzzy.FuzzyChoice(Grant.AgeGroup)
     gender = factory.fuzzy.FuzzyChoice([gender[0] for gender in GENDERS])
     occupation = factory.fuzzy.FuzzyChoice(Grant.Occupation)

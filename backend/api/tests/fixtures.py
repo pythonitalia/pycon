@@ -3,8 +3,6 @@ import json
 from typing import Any, Dict, Optional
 
 import pytest
-import respx
-from django.conf import settings
 from django.test import Client as DjangoTestClient
 
 
@@ -80,26 +78,3 @@ def admin_graphql_client(graphql_client):
     admin_user = UserFactory(is_staff=True, is_superuser=True)
     graphql_client.force_login(admin_user)
     return graphql_client
-
-
-@pytest.fixture
-def mock_users_by_ids(mocker):
-    with respx.mock as mock:
-        mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
-            json={
-                "data": {
-                    "usersByIds": [
-                        {
-                            "id": 10,
-                            "fullname": "Marco Acierno",
-                            "name": "Marco",
-                            "username": "marco",
-                            "gender": "male",
-                            "email": "marco@placeholder.it",
-                        }
-                    ]
-                }
-            }
-        )
-
-        yield
