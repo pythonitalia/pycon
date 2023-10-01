@@ -1,7 +1,7 @@
 import { Heading, Page, Section } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { GrantForm } from "~/components/grant-form";
@@ -10,6 +10,9 @@ import {
   useMyGrantQuery,
   useUpdateGrantMutation,
   UpdateGrantInput,
+  queryMyGrant,
+  queryGrantDeadline,
+  queryCurrentUser,
 } from "~/types";
 
 const GrantPage = (): JSX.Element => {
@@ -65,14 +68,49 @@ const GrantPage = (): JSX.Element => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  const client = getApolloClient();
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  locale,
+}) => {
+  const identityToken = req.cookies["pythonitalia_sessionid"];
+  if (!identityToken) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
-  await Promise.all([prefetchSharedQueries(client, locale)]);
+  const client = getApolloClient(null, req.cookies);
 
-  return addApolloState(client, {
-    props: {},
-  });
+  try {
+    await Promise.all([
+      prefetchSharedQueries(client, locale),
+      queryGrantDeadline(client, {
+        conference: process.env.conferenceCode,
+      }),
+      queryMyGrant(client, {
+        conference: process.env.conferenceCode,
+      }),
+      queryCurrentUser(client),
+    ]);
+  } catch (e) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return addApolloState(
+    client,
+    {
+      props: {},
+    },
+    null,
+  );
 };
 
 export default GrantPage;
