@@ -100,6 +100,10 @@ class IncludedEventInline(admin.TabularInline):
 
 @admin.register(Conference)
 class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
+    search_fields = (
+        "name",
+        "code",
+    )
     readonly_fields = ("created", "modified")
     filter_horizontal = ("topics", "languages", "audience_levels", "submission_types")
     fieldsets = (
@@ -517,6 +521,7 @@ class SpeakerVoucherForm(forms.ModelForm):
 class SpeakerVoucherAdmin(admin.ModelAdmin):
     form = SpeakerVoucherForm
     search_fields = ("voucher_code", "user__name", "user__full_name")
+    autocomplete_fields = ("user",)
     list_filter = (
         "conference",
         "voucher_type",

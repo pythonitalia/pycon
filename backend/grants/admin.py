@@ -408,6 +408,7 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
         send_voucher_via_email,
         "delete_selected",
     ]
+    autocomplete_fields = ("user",)
 
     fieldsets = (
         (

@@ -153,6 +153,7 @@ class RankSubmissionAdmin(ExportMixin, admin.ModelAdmin):
         "submission__topic",
         "submission__duration",
     )
+    autocomplete_fields = ("submission",)
 
     def title(self, obj):
         return obj.submission.title

@@ -5,5 +5,9 @@ from .models import BadgeScan
 
 
 @admin.register(BadgeScan)
-class PostAdmin(admin.ModelAdmin):
-    pass
+class BadgeScanAdmin(admin.ModelAdmin):
+    autocomplete_fields = (
+        "scanned_by",
+        "scanned_user",
+        "conference",
+    )

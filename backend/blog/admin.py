@@ -23,6 +23,7 @@ class PostAdmin(admin.ModelAdmin):
     form = PostAdminForm
     list_display = ("title", "published", "author_display_name")
     user_fk = "author_id"
+    autocomplete_fields = ("author",)
 
     @admin.display(
         description="Author",
