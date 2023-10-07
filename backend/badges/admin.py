@@ -27,5 +27,6 @@ class AttendeeConferenceRoleAdmin(admin.ModelAdmin):
         "conference",
         "roles",
     )
+    autocomplete_fields = ("user",)
     form = AttendeeConferenceRoleForm
     user_fk = "user_id"

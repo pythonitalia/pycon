@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.SeparateDatabaseAndState(
             database_operations=[
                 migrations.RunSQL(
-                    sql="DROP INDEX voting_vote_user_id_c15f54ee;",
+                    sql="DROP INDEX IF EXISTS voting_vote_user_id_c15f54ee;",
                     reverse_sql="CREATE INDEX voting_vote_user_id_c15f54ee ON voting_vote USING btree (user_id);",
                 ),
                 migrations.AlterField(

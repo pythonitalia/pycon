@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.SeparateDatabaseAndState(
             database_operations=[
                 migrations.RunSQL(
-                    sql="DROP INDEX blog_post_author_id_dd7a8485;",
+                    sql="DROP INDEX IF EXISTS blog_post_author_id_dd7a8485;",
                     reverse_sql="CREATE INDEX blog_post_author_id_dd7a8485 ON blog_post USING btree (author_id);",
                 ),
                 migrations.AlterField(

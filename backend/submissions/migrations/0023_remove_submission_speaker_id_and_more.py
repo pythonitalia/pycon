@@ -15,11 +15,11 @@ class Migration(migrations.Migration):
         migrations.SeparateDatabaseAndState(
             database_operations=[
                 migrations.RunSQL(
-                    sql="DROP INDEX submissions_submission_speaker_id_9f7da519;",
+                    sql="DROP INDEX IF EXISTS submissions_submission_speaker_id_9f7da519;",
                     reverse_sql="CREATE INDEX submissions_submission_speaker_id_9f7da519 ON submissions_submission USING btree (speaker_id);",
                 ),
                 migrations.RunSQL(
-                    sql="DROP INDEX submissions_submissioncomment_author_id_f5be2cbf;",
+                    sql="DROP INDEX IF EXISTS submissions_submissioncomment_author_id_f5be2cbf;",
                     reverse_sql="CREATE INDEX submissions_submissioncomment_author_id_f5be2cbf ON submissions_submissioncomment USING btree (author_id);",
                 ),
                 migrations.AlterField(
