@@ -36,8 +36,9 @@ class DjangoAsyncClientWrapper:
 
 
 class NewGraphQLClient:
-    def __init__(self):
+    def __init__(self, *, include_full_response: bool = False):
         self.client = DjangoTestClient()
+        self.include_full_response = include_full_response
 
     def query(
         self,
@@ -55,7 +56,9 @@ class NewGraphQLClient:
             "/graphql", data=body, headers=headers, content_type="application/json"
         )
         data = json.loads(resp.content.decode())
-        # return GraphQLResponse(errors=data.get("errors"), data=data.get("data"))
+
+        if self.include_full_response:
+            return data, resp
         return data
 
     def force_login(self, user):
@@ -63,12 +66,13 @@ class NewGraphQLClient:
 
 
 @pytest.fixture()
-def graphql_client(async_client):
+def graphql_client():
     return NewGraphQLClient()
-    # return GraphQLClient(
-    #     DjangoAsyncClientWrapper(async_client),
-    #     pastaporto_secret=settings.PASTAPORTO_SECRET,
-    # )
+
+
+@pytest.fixture()
+def full_response_graphql_client():
+    return NewGraphQLClient(include_full_response=True)
 
 
 @pytest.fixture()

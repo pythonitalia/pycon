@@ -36,3 +36,4 @@ CACHES = {
         "BACKEND": "django.core.cache.backends.dummy.DummyCache",
     }
 }
+PYTHONIT_EMAIL_BACKEND = "conftest.TestEmailBackend"

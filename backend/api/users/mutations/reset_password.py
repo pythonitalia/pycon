@@ -43,21 +43,25 @@ class ResetPasswordInput:
     def validate(self):
         errors = ResetPasswordErrors()
 
-        if not self.token:
-            errors.add_error("token", "Token is required")
-
         if not self.new_password:
             errors.add_error("new_password", "New password is required")
-
-        if len(self.new_password) < 8:
+        elif len(self.new_password) < 8:
             errors.add_error("new_password", "Password must be at least 8 characters")
 
-        try:
-            self.decoded_token
-        except jwt.ExpiredSignatureError:
-            errors.add_error("token", "Token has expired")
-        except (jwt.InvalidAudienceError, jwt.MissingRequiredClaimError):
-            errors.add_error("token", "Invalid token")
+        if not self.token:
+            errors.add_error("token", "Token is required")
+        else:
+            try:
+                self.decoded_token
+            except jwt.ExpiredSignatureError:
+                errors.add_error("token", "Token has expired")
+            except (
+                jwt.InvalidAudienceError,
+                jwt.MissingRequiredClaimError,
+                ValueError,
+                jwt.DecodeError,
+            ):
+                errors.add_error("token", "Invalid token")
 
         return errors.if_has_errors
 

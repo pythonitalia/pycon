@@ -32,17 +32,6 @@ def user(db):
     return UserFactory(email="simulated@user.it", is_staff=False)
 
 
-# @pytest.fixture()
-# def user_factory(db):
-#     def func(is_staff=False, email=None):
-#         faker = Faker()
-#         return SimulatedUser(
-#             id=faker.pyint(), email=email or faker.email(), is_staff=is_staff
-#         )
-
-#     return func
-
-
 @pytest.fixture()
 def admin_user(db):
     return UserFactory(email="admin@user.it", is_staff=True)
@@ -76,3 +65,19 @@ def pytest_runtest_setup(item):
 @pytest.fixture(autouse=True)
 def change_azure_account_to_test_name(settings):
     settings.AZURE_STORAGE_ACCOUNT_NAME = "pytest-fakestorageaccount"
+
+
+class TestEmailBackend:
+    ALL_EMAIL_BACKEND_CALLS = []
+
+    def __init__(self, *args, **kwargs) -> None:
+        pass
+
+    def send_email(self, **kwargs):
+        TestEmailBackend.ALL_EMAIL_BACKEND_CALLS.append(kwargs)
+
+
+@pytest.fixture
+def sent_emails():
+    TestEmailBackend.ALL_EMAIL_BACKEND_CALLS = []
+    yield TestEmailBackend.ALL_EMAIL_BACKEND_CALLS

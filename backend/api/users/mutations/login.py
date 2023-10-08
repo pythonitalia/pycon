@@ -5,10 +5,11 @@ from django.contrib.auth import (
     authenticate,
     login as django_login,
 )
-
+from django.core.validators import validate_email
 from api.users.types import User
 from api.context import Info
 from api.types import BaseErrorType
+from django.core.exceptions import ValidationError
 
 logger = logging.getLogger(__file__)
 
@@ -44,16 +45,16 @@ class LoginInput:
 
         if not self.email:
             errors.add_error("email", "Email is required")
+        else:
+            try:
+                validate_email(self.email)
+            except ValidationError:
+                errors.add_error("email", "Email is not valid")
 
         if not self.password:
             errors.add_error("password", "Password is required")
 
         return errors.if_has_errors
-
-
-@strawberry.type
-class EmailAlreadyUsed:
-    message: str = "Email already used"
 
 
 LoginResult = strawberry.union(
