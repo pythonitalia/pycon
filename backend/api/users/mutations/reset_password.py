@@ -1,4 +1,3 @@
-from typing import Optional
 from django.db.models import F
 from api.users.mutations.request_reset_password import create_reset_password_jti
 from users.models import User as UserModel
@@ -20,8 +19,7 @@ class ResetPasswordErrors(BaseErrorType):
         token: list[str] = strawberry.field(default_factory=list)
         new_password: list[str] = strawberry.field(default_factory=list)
 
-    _error_class = _ResetPasswordErrors
-    errors: Optional[_ResetPasswordErrors] = None
+    errors: _ResetPasswordErrors = None
 
 
 @strawberry.input

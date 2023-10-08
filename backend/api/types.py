@@ -14,8 +14,9 @@ class BaseErrorType:
 
     def add_error(self, field: str, message: str):
         self._has_errors = True
+
         if not self.errors:
-            self.errors = self._error_class()
+            self.errors = self.__annotations__["errors"]()
 
         existing_errors = getattr(self.errors, field, [])
         existing_errors.append(message)

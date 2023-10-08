@@ -1,5 +1,4 @@
 from django.core.validators import validate_email
-from typing import Optional
 from django.core.exceptions import ValidationError
 import strawberry
 from django.contrib.auth import (
@@ -30,8 +29,7 @@ class RegisterErrors(BaseErrorType):
         email: list[str] = strawberry.field(default_factory=list)
         password: list[str] = strawberry.field(default_factory=list)
 
-    _error_class = _RegisterErrors
-    errors: Optional[_RegisterErrors] = None
+    errors: _RegisterErrors = None
 
 
 @strawberry.input

@@ -68,8 +68,7 @@ class SendSubmissionErrors(BaseErrorType):
 
         non_field_errors: list[str] = strawberry.field(default_factory=list)
 
-    _error_class = _SendSubmissionErrors
-    errors: Optional[_SendSubmissionErrors] = None
+    errors: _SendSubmissionErrors = None
 
 
 class BaseSubmissionInput:

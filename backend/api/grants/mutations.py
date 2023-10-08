@@ -41,8 +41,7 @@ class GrantErrors(BaseErrorType):
         travelling_from: list[str] = strawberry.field(default_factory=list)
         non_field_errors: list[str] = strawberry.field(default_factory=list)
 
-    _error_class = _GrantErrors
-    errors: Optional[_GrantErrors] = None
+    errors: _GrantErrors = None
 
 
 class BaseGrantInput:

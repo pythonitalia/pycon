@@ -1,5 +1,4 @@
 import re
-from typing import Optional
 from api.context import Info
 from api.helpers.ids import encode_hashid
 from django.conf import settings
@@ -34,8 +33,7 @@ class UpdateParticipantErrors(BaseErrorType):
         facebook_url: list[str] = strawberry.field(default_factory=list)
         mastodon_handle: list[str] = strawberry.field(default_factory=list)
 
-    _error_class = _UpdateParticipantErrors
-    errors: Optional[_UpdateParticipantErrors] = None
+    errors: _UpdateParticipantErrors = None
 
 
 @strawberry.input

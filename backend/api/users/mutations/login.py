@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 import strawberry
 from django.contrib.auth import (
     authenticate,
@@ -31,8 +30,7 @@ class LoginErrors(BaseErrorType):
         email: list[str] = strawberry.field(default_factory=list)
         password: list[str] = strawberry.field(default_factory=list)
 
-    _error_class = _LoginErrors
-    errors: Optional[_LoginErrors] = None
+    errors: _LoginErrors = None
 
 
 @strawberry.input

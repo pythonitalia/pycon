@@ -20,8 +20,7 @@ class UpdateProfileErrors(BaseErrorType):
         date_birth: list[str] = strawberry.field(default_factory=list)
         country: list[str] = strawberry.field(default_factory=list)
 
-    _error_class = _UpdateProfileErrors
-    errors: Optional[_UpdateProfileErrors] = None
+    errors: _UpdateProfileErrors = None
 
 
 @strawberry.input
