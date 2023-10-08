@@ -224,6 +224,7 @@ class ScheduleItemAdditionalSpeakerInlineForm(forms.ModelForm):
 class ScheduleItemAdditionalSpeakerInline(admin.TabularInline):
     model = ScheduleItemAdditionalSpeaker
     form = ScheduleItemAdditionalSpeakerInlineForm
+    autocomplete_fields = ("user",)
 
 
 class ScheduleItemAttendeeInlineForm(forms.ModelForm):
@@ -235,6 +236,7 @@ class ScheduleItemAttendeeInlineForm(forms.ModelForm):
 class ScheduleItemAttendeeInline(admin.TabularInline):
     model = ScheduleItemAttendee
     form = ScheduleItemAttendeeInlineForm
+    autocomplete_fields = ("user",)
 
 
 class ScheduleItemAdminForm(forms.ModelForm):
@@ -249,12 +251,14 @@ class ScheduleItemAdminForm(forms.ModelForm):
             self.fields["slot"]
             .queryset.filter(day__conference_id=self.instance.conference_id)
             .order_by("day__day", "hour")
+            .prefetch_related("day")
         )
 
         self.fields["new_slot"].queryset = (
             self.fields["new_slot"]
             .queryset.filter(day__conference_id=self.instance.conference_id)
             .order_by("day__day", "hour")
+            .prefetch_related("day")
         )
 
         self.fields["submission"].queryset = self.fields["submission"].queryset.filter(
@@ -263,6 +267,12 @@ class ScheduleItemAdminForm(forms.ModelForm):
 
         self.fields["keynote"].queryset = self.fields["keynote"].queryset.filter(
             conference_id=self.instance.conference_id
+        )
+
+        self.fields["rooms"].queryset = self.fields["rooms"].queryset.filter(
+            id__in=DayRoomThroughModel.objects.filter(
+                day__conference_id=self.instance.conference_id
+            ).values_list("room_id", flat=True)
         )
 
     class Meta:

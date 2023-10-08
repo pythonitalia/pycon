@@ -39,6 +39,11 @@ class UserReviewAdmin(admin.ModelAdmin):
     list_display = ("edit_vote", "proposal", "score", "review_session")
     list_filter = ("review_session",)
     list_display_links = ()
+    autocomplete_fields = (
+        "user",
+        "proposal",
+        "grant",
+    )
 
     def edit_vote(self, obj):
         url = reverse(

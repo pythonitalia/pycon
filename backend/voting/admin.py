@@ -52,6 +52,7 @@ class VoteAdmin(ExportMixin, admin.ModelAdmin):
         "submission__title",
         "user__email",
     )
+    autocomplete_fields = ("user", "submission")
 
     user_fk = "user_id"
 

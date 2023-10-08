@@ -101,17 +101,6 @@ class SubmissionResource(ModelResource):
         export_order = EXPORT_SUBMISSION_FIELDS
 
 
-class SubmissionCommentInlineForm(forms.ModelForm):
-    class Meta:
-        model = SubmissionComment
-        fields = ["submission", "author", "text"]
-
-
-class SubmissionCommentInline(admin.TabularInline):
-    model = SubmissionComment
-    form = SubmissionCommentInlineForm
-
-
 class SubmissionAdminForm(forms.ModelForm):
     class Meta:
         model = Submission
@@ -217,13 +206,13 @@ class SubmissionAdmin(ExportMixin, admin.ModelAdmin):
     )
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("tags",)
-    inlines = [SubmissionCommentInline]
     user_fk = "speaker_id"
     actions = [
         move_to_waiting_list,
         move_to_rejected,
         send_proposal_rejected_email_action,
     ]
+    autocomplete_fields = ("speaker",)
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         extra_context = extra_context or {}

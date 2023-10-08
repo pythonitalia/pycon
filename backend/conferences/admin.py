@@ -406,6 +406,7 @@ class KeynoteSpeakerInline(OrderedStackedInline):
     )
     extra = 1
     ordering = ("order",)
+    autocomplete_fields = ("user",)
 
 
 @admin.register(Keynote)

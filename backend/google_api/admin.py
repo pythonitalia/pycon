@@ -15,6 +15,7 @@ from google_api.sdk import GOOGLE_CLOUD_SCOPES
 
 class GoogleCloudTokenInline(admin.StackedInline):
     model = GoogleCloudToken
+    autocomplete_fields = ("admin_user",)
 
 
 @admin.register(GoogleCloudOAuthCredential)

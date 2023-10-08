@@ -58,6 +58,7 @@ class ParticipantAdmin(admin.ModelAdmin):
         "photo_preview",
         "user_display_name",
     )
+    autocomplete_fields = ("user",)
 
     def user_display_name(self, obj):
         if obj:
