@@ -68,7 +68,7 @@ class HotelRoomReservation(models.Model):
 
     user = models.ForeignKey(
         "users.User",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=False,
         blank=False,
         verbose_name=_("user"),

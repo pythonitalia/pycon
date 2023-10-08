@@ -69,7 +69,7 @@ class Grant(TimeStampedModel):
     )
     user = models.ForeignKey(
         "users.User",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=True,
         blank=True,
         verbose_name=_("user"),
