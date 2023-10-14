@@ -29,7 +29,7 @@ class BaseErrorType:
     @classmethod
     def with_error(cls, field: str, message: str):
         instance = cls()
-        parent = cls._error_class()
+        parent = cls.__annotations__["errors"]()
         setattr(parent, field, [message])
         instance.errors = parent
         return instance

@@ -510,9 +510,9 @@ def test_video_uploaded_path_matcher(
     conference = conference_factory(code="conf")
 
     kim = UserFactory(id=5, name="Kim", full_name="Kim Kitsuragi")
-    klaasje = UserFactory(id=10, name="Klaasje")
+    klaasje = UserFactory(id=10, name="Klaasje", full_name="")
     harrier = UserFactory(id=20, name="Harrier", full_name="Harrier Du Bois")
-    anwesha = UserFactory(id=23, full_name="Anwesha Das")
+    anwesha = UserFactory(id=23, name="", full_name="Anwesha Das")
     marcsed = UserFactory(id=99, name="Marcsed", full_name="Marcsed Cazzęfa")
 
     mocker.patch(
@@ -552,7 +552,7 @@ def test_video_uploaded_path_matcher(
 
     event_3 = schedule_item_factory(
         conference=conference,
-        title="Talk about something",
+        title="Event 3 Talk about something",
         type=ScheduleItem.TYPES.talk,
         submission=None,
     )
