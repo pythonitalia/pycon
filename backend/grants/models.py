@@ -67,7 +67,14 @@ class Grant(TimeStampedModel):
         verbose_name=_("conference"),
         related_name="grants",
     )
-    user_id = models.IntegerField(verbose_name=_("user"), null=True)
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        verbose_name=_("user"),
+        related_name="+",
+    )
     status = models.CharField(
         _("status"), choices=Status.choices, max_length=30, default=Status.pending
     )

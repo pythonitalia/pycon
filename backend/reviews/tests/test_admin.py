@@ -1,4 +1,5 @@
 import pytest
+from users.tests.factories import UserFactory
 
 from reviews.admin import get_next_to_review_item_id
 from reviews.models import ReviewSession
@@ -12,13 +13,12 @@ def test_next_item_to_review_prefers_items_with_fewer_votes(
     user_review_factory,
     submission_factory,
     conference_factory,
-    django_admin_user_factory,
     submission_tag_factory,
 ):
     tag = submission_tag_factory()
 
-    user_1 = django_admin_user_factory()
-    user_2 = django_admin_user_factory()
+    user_1 = UserFactory(is_staff=True, is_superuser=True)
+    user_2 = UserFactory(is_staff=True, is_superuser=True)
 
     conference = conference_factory()
 

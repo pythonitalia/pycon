@@ -67,7 +67,15 @@ class KeynoteSpeaker(TimeStampedModel, OrderedModel):
         related_name="speakers",
         null=False,
     )
-    user_id = models.IntegerField(verbose_name=_("user"), null=True)
+
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name=_("user"),
+        related_name="+",
+    )
 
     name = models.CharField(
         _("fullname"),

@@ -2,7 +2,7 @@ import { Page, Text } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { MyGrantOrForm } from "~/components/grant-form";
@@ -12,7 +12,9 @@ import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import {
   DeadlineStatus,
+  queryCurrentUser,
   queryGrantDeadline,
+  queryMyGrant,
   useGrantDeadlineQuery,
 } from "~/types";
 
@@ -83,19 +85,49 @@ export const GrantsPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  const client = getApolloClient();
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  locale,
+}) => {
+  const identityToken = req.cookies["pythonitalia_sessionid"];
+  if (!identityToken) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
-  await Promise.all([
-    prefetchSharedQueries(client, locale),
-    queryGrantDeadline(client, {
-      conference: process.env.conferenceCode,
-    }),
-  ]);
+  const client = getApolloClient(null, req.cookies);
 
-  return addApolloState(client, {
-    props: {},
-  });
+  try {
+    await Promise.all([
+      prefetchSharedQueries(client, locale),
+      queryGrantDeadline(client, {
+        conference: process.env.conferenceCode,
+      }),
+      queryMyGrant(client, {
+        conference: process.env.conferenceCode,
+      }),
+      queryCurrentUser(client),
+    ]);
+  } catch (e) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return addApolloState(
+    client,
+    {
+      props: {},
+    },
+    null,
+  );
 };
 
 export default GrantsPage;

@@ -8,8 +8,6 @@ from import_export.fields import Field
 from import_export.resources import ModelResource
 from import_export.widgets import DecimalWidget
 
-from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin, ResourceUsersMixin
 from voting.models import RankRequest, RankStat, RankSubmission, Vote
 
 
@@ -28,10 +26,7 @@ class ConferenceFilter(AutocompleteFilter):
 class VoteAdminForm(forms.ModelForm):
     class Meta:
         model = Vote
-        widgets = {
-            "user_id": UsersBackendAutocomplete(admin.site),
-        }
-        fields = ["value", "user_id", "submission"]
+        fields = ["value", "user", "submission"]
 
 
 class VoteResource(ModelResource):
@@ -40,14 +35,14 @@ class VoteResource(ModelResource):
         fields = (
             "id",
             "value",
-            "user_id",
+            "user",
             "submission",
             "submission__conference__code",
         )
 
 
 @admin.register(Vote)
-class VoteAdmin(ExportMixin, AdminUsersMixin):
+class VoteAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = VoteResource
     form = VoteAdminForm
     readonly_fields = ("created", "modified")
@@ -55,8 +50,9 @@ class VoteAdmin(ExportMixin, AdminUsersMixin):
     list_filter = ("submission__conference", SubmissionFilter, "value")
     search_fields = (
         "submission__title",
-        "user_id",
+        "user__email",
     )
+    autocomplete_fields = ("user", "submission")
 
     user_fk = "user_id"
 
@@ -64,7 +60,7 @@ class VoteAdmin(ExportMixin, AdminUsersMixin):
         description="User",
     )
     def user_display_name(self, obj):
-        return self.get_user_display_name(obj.user_id)
+        return obj.user.display_name
 
     class Media:
         js = ["admin/js/jquery.init.js"]
@@ -89,9 +85,8 @@ EXPORT_RANK_SUBMISSION_FIELDS = (
 )
 
 
-class RankSubmissionResource(ResourceUsersMixin):
+class RankSubmissionResource(ModelResource):
     conference_filter_by = "rank_request__conference"
-    user_fk = "submission__speaker_id"
     submission__hashid = Field()
     submission__title = Field()
     submission__language = Field()
@@ -112,10 +107,10 @@ class RankSubmissionResource(ResourceUsersMixin):
         return ", ".join([lang.code for lang in obj.submission.languages.all()])
 
     def dehydrate_gender(self, obj):
-        return self.get_user_data(obj.submission.speaker_id)["gender"]
+        return obj.submission.speaker.gender
 
     def dehydrate_full_name(self, obj):
-        return self.get_user_display_name(obj.submission.speaker_id)
+        return obj.submission.speaker.display_name
 
     def dehydrate_tags(self, obj):
         return "\n".join([t.name for t in obj.submission.tags.all()])
@@ -130,9 +125,8 @@ class RankSubmissionResource(ResourceUsersMixin):
 
 
 @admin.register(RankSubmission)
-class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
+class RankSubmissionAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = RankSubmissionResource
-    user_fk = "submission__speaker_id"
     list_display = (
         "tag",
         "position",
@@ -160,6 +154,7 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
         "submission__topic",
         "submission__duration",
     )
+    autocomplete_fields = ("submission",)
 
     def title(self, obj):
         return obj.submission.title
@@ -182,7 +177,7 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
         return " ".join(langs)
 
     def speaker(self, obj):
-        return self.get_user_display_name(obj.submission.speaker_id)
+        return obj.submission.speaker.display_name
 
     @admin.display(
         description="Gender",
@@ -196,7 +191,7 @@ class RankSubmissionAdmin(ExportMixin, AdminUsersMixin):
             "not_say": "⛔️",
         }
 
-        speaker_gender = self.get_user_data(obj.submission.speaker_id)["gender"]
+        speaker_gender = obj.submission.speaker.gender
         return emoji[speaker_gender]
 
     def tags(self, obj):

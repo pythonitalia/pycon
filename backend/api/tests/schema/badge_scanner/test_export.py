@@ -1,6 +1,6 @@
 import tablib
 from badge_scanner.models import BadgeScan, BadgeScanExport
-
+from users.tests.factories import UserFactory
 import pytest
 
 pytestmark = pytest.mark.django_db
@@ -37,7 +37,7 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference):
 
     badge_scan = BadgeScan.objects.create(
         scanned_by_id=user.id,
-        scanned_user_id=1,
+        scanned_user=UserFactory(),
         badge_url="https://pycon.it/b/this-is-a-test",
         attendee_email="example@example.com",
         conference=conference,
@@ -45,8 +45,8 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference):
     )
 
     BadgeScan.objects.create(
-        scanned_by_id=888,
-        scanned_user_id=1,
+        scanned_by=UserFactory(),
+        scanned_user=UserFactory(),
         badge_url="https://pycon.it/b/this-is-a-test",
         attendee_email="another_example@example.com",
         conference=conference,

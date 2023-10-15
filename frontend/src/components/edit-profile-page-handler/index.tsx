@@ -129,8 +129,7 @@ export const EditProfilePageHandler = () => {
     const validationKey = "validation" + toTileCase(key);
     const validationError =
       (updateProfileData &&
-        updateProfileData.updateProfile.__typename ===
-          "UpdateProfileValidationError" &&
+        updateProfileData.updateProfile.__typename === "UpdateProfileErrors" &&
         (updateProfileData.updateProfile as any).errors[validationKey]
           .map((e) => e.message)
           .join(", ")) ||
@@ -142,7 +141,7 @@ export const EditProfilePageHandler = () => {
     const validationError =
       (updateProfileData &&
         updateProfileData.updateParticipant.__typename ===
-          "UpdateParticipantValidationError" &&
+          "UpdateParticipantErrors" &&
         (updateProfileData.updateParticipant as any).errors[key]) ||
       [];
     return validationError;

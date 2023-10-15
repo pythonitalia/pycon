@@ -20,7 +20,6 @@ FRONTEND_URL = env("FRONTEND_URL")
 # Application definition
 
 INSTALLED_APPS = [
-    "custom_auth",
     "schedule.apps.ScheduleConfig",
     "custom_admin",
     "dal",
@@ -75,10 +74,9 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "pycon.middleware.CustomAuthenticationMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "pycon.middleware.pastaporto_auth",
     "qinspect.middleware.QueryInspectMiddleware",
 ]
 
@@ -147,7 +145,10 @@ MEDIA_ROOT = root("media")
 
 AUTH_USER_MODEL = "users.User"
 
-AUTHENTICATION_BACKENDS = ("custom_auth.backend.UsersAuthBackend",)
+AUTHENTICATION_BACKENDS = (
+    # "custom_auth.backend.UsersAuthBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
 
 MAPBOX_PUBLIC_API_KEY = env("MAPBOX_PUBLIC_API_KEY", default="")
 
@@ -245,3 +246,7 @@ CACHES = {
 }
 
 TEMPORAL_ADDRESS = env("TEMPORAL_ADDRESS", default="")
+
+SESSION_COOKIE_NAME = "pythonitalia_sessionid"
+CSRF_USE_SESSIONS = True
+CSRF_COOKIE_SECURE = DEBUG is False

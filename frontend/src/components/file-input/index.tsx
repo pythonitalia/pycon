@@ -14,7 +14,13 @@ import { ErrorsList } from "../errors-list";
 
 const MAX_UPLOAD_SIZE_IN_MB = 1 * 1024 * 1024;
 
-export const FileInput = ({ onChange: baseOnChange, name, onBlur, value }) => {
+export const FileInput = ({
+  onChange: baseOnChange,
+  name,
+  onBlur,
+  value,
+  errors,
+}) => {
   const fileInput = useRef<HTMLInputElement>();
   const canvas = useRef<HTMLCanvasElement>();
   const language = useCurrentLanguage();
@@ -137,7 +143,9 @@ export const FileInput = ({ onChange: baseOnChange, name, onBlur, value }) => {
           display: "none",
         }}
       />
-      {error && <ErrorsList sx={{ mt: 2 }} errors={[error]} />}
+      {(error || errors) && (
+        <ErrorsList sx={{ mt: 2 }} errors={[error, ...errors]} />
+      )}
 
       {previewAvailable && (
         <img

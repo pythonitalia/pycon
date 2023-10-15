@@ -8,7 +8,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
   locale,
 }) => {
-  const identityToken = req.cookies["identity_v2"];
+  const identityToken = req.cookies["pythonitalia_sessionid"];
   if (!identityToken) {
     return {
       redirect: {

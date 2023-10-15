@@ -39,32 +39,36 @@ class SubmissionMutation:
 
 @strawberry.type
 class SendSubmissionErrors(BaseErrorType):
-    instance: list[str] = strawberry.field(default_factory=list)
-    title: list[str] = strawberry.field(default_factory=list)
-    abstract: list[str] = strawberry.field(default_factory=list)
-    topic: list[str] = strawberry.field(default_factory=list)
-    languages: list[str] = strawberry.field(default_factory=list)
-    conference: list[str] = strawberry.field(default_factory=list)
-    type: list[str] = strawberry.field(default_factory=list)
-    duration: list[str] = strawberry.field(default_factory=list)
-    elevator_pitch: list[str] = strawberry.field(default_factory=list)
-    notes: list[str] = strawberry.field(default_factory=list)
-    audience_level: list[str] = strawberry.field(default_factory=list)
-    tags: list[str] = strawberry.field(default_factory=list)
-    short_social_summary: list[str] = strawberry.field(default_factory=list)
+    @strawberry.type
+    class _SendSubmissionErrors:
+        instance: list[str] = strawberry.field(default_factory=list)
+        title: list[str] = strawberry.field(default_factory=list)
+        abstract: list[str] = strawberry.field(default_factory=list)
+        topic: list[str] = strawberry.field(default_factory=list)
+        languages: list[str] = strawberry.field(default_factory=list)
+        conference: list[str] = strawberry.field(default_factory=list)
+        type: list[str] = strawberry.field(default_factory=list)
+        duration: list[str] = strawberry.field(default_factory=list)
+        elevator_pitch: list[str] = strawberry.field(default_factory=list)
+        notes: list[str] = strawberry.field(default_factory=list)
+        audience_level: list[str] = strawberry.field(default_factory=list)
+        tags: list[str] = strawberry.field(default_factory=list)
+        short_social_summary: list[str] = strawberry.field(default_factory=list)
 
-    speaker_bio: list[str] = strawberry.field(default_factory=list)
-    speaker_photo: list[str] = strawberry.field(default_factory=list)
-    speaker_website: list[str] = strawberry.field(default_factory=list)
-    speaker_level: list[str] = strawberry.field(default_factory=list)
-    previous_talk_video: list[str] = strawberry.field(default_factory=list)
-    speaker_twitter_handle: list[str] = strawberry.field(default_factory=list)
-    speaker_instagram_handle: list[str] = strawberry.field(default_factory=list)
-    speaker_linkedin_url: list[str] = strawberry.field(default_factory=list)
-    speaker_facebook_url: list[str] = strawberry.field(default_factory=list)
-    speaker_mastodon_handle: list[str] = strawberry.field(default_factory=list)
+        speaker_bio: list[str] = strawberry.field(default_factory=list)
+        speaker_photo: list[str] = strawberry.field(default_factory=list)
+        speaker_website: list[str] = strawberry.field(default_factory=list)
+        speaker_level: list[str] = strawberry.field(default_factory=list)
+        previous_talk_video: list[str] = strawberry.field(default_factory=list)
+        speaker_twitter_handle: list[str] = strawberry.field(default_factory=list)
+        speaker_instagram_handle: list[str] = strawberry.field(default_factory=list)
+        speaker_linkedin_url: list[str] = strawberry.field(default_factory=list)
+        speaker_facebook_url: list[str] = strawberry.field(default_factory=list)
+        speaker_mastodon_handle: list[str] = strawberry.field(default_factory=list)
 
-    non_field_errors: list[str] = strawberry.field(default_factory=list)
+        non_field_errors: list[str] = strawberry.field(default_factory=list)
+
+    errors: _SendSubmissionErrors = None
 
 
 class BaseSubmissionInput:

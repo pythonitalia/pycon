@@ -1,5 +1,5 @@
+from users.tests.factories import UserFactory
 from unittest.mock import call
-import respx
 import time_machine
 from django.core import exceptions
 from django.forms.fields import BooleanField
@@ -186,25 +186,25 @@ def test_send_voucher_via_email(
     mock_send_email = mocker.patch("conferences.admin.send_speaker_voucher_email")
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
-    schedule_item_factory(
+    schedule_item_1 = schedule_item_factory(
         type=ScheduleItem.TYPES.talk,
         conference=conference,
-        submission=submission_factory(conference=conference, speaker_id=500),
+        submission=submission_factory(conference=conference),
     )
-    schedule_item_factory(
+    schedule_item_2 = schedule_item_factory(
         type=ScheduleItem.TYPES.talk,
         conference=conference,
-        submission=submission_factory(conference=conference, speaker_id=600),
+        submission=submission_factory(conference=conference),
     )
 
     speaker_voucher_1 = speaker_voucher_factory(
         conference=conference,
-        user_id=500,
+        user_id=schedule_item_1.submission.speaker_id,
         pretix_voucher_id=1,
     )
     speaker_voucher_2 = speaker_voucher_factory(
         conference=conference,
-        user_id=600,
+        user_id=schedule_item_2.submission.speaker_id,
         pretix_voucher_id=2,
     )
 
@@ -235,25 +235,25 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
     conference_2 = conference_factory(pretix_speaker_voucher_quota_id=123)
 
-    schedule_item_factory(
+    schedule_item_1 = schedule_item_factory(
         type=ScheduleItem.TYPES.talk,
         conference=conference,
-        submission=submission_factory(conference=conference, speaker_id=500),
+        submission=submission_factory(conference=conference),
     )
-    schedule_item_factory(
+    schedule_item_2 = schedule_item_factory(
         type=ScheduleItem.TYPES.talk,
         conference=conference_2,
-        submission=submission_factory(conference=conference_2, speaker_id=600),
+        submission=submission_factory(conference=conference_2),
     )
 
     speaker_voucher_factory(
         conference=conference,
-        user_id=500,
+        user_id=schedule_item_1.submission.speaker_id,
         pretix_voucher_id=1,
     )
     speaker_voucher_factory(
         conference=conference_2,
-        user_id=600,
+        user_id=schedule_item_2.submission.speaker_id,
         pretix_voucher_id=2,
     )
 
@@ -289,21 +289,18 @@ def test_create_speaker_vouchers_on_pretix(
 
     voucher_1 = speaker_voucher_factory(
         conference=conference,
-        user_id=500,
         voucher_code="SPEAKER-123",
         pretix_voucher_id=None,
     )
 
     voucher_2 = speaker_voucher_factory(
         conference=conference,
-        user_id=600,
         voucher_code="SPEAKER-456",
         pretix_voucher_id=None,
     )
 
     voucher_3 = speaker_voucher_factory(
         conference=conference,
-        user_id=700,
         voucher_code="SPEAKER-999",
         pretix_voucher_id=None,
         voucher_type=SpeakerVoucher.VoucherType.CO_SPEAKER,
@@ -320,7 +317,7 @@ def test_create_speaker_vouchers_on_pretix(
             call(
                 conference=conference,
                 code="SPEAKER-123",
-                comment="Voucher for user_id=500",
+                comment=f"Voucher for user_id={voucher_1.user_id}",
                 tag="speakers",
                 quota_id=123,
                 price_mode="set",
@@ -329,7 +326,7 @@ def test_create_speaker_vouchers_on_pretix(
             call(
                 conference=conference,
                 code="SPEAKER-456",
-                comment="Voucher for user_id=600",
+                comment=f"Voucher for user_id={voucher_2.user_id}",
                 tag="speakers",
                 quota_id=123,
                 price_mode="set",
@@ -338,7 +335,7 @@ def test_create_speaker_vouchers_on_pretix(
             call(
                 conference=conference,
                 code="SPEAKER-999",
-                comment="Voucher for user_id=700",
+                comment=f"Voucher for user_id={voucher_3.user_id}",
                 tag="speakers",
                 quota_id=123,
                 price_mode="percent",
@@ -371,14 +368,12 @@ def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(
 
     voucher_1 = speaker_voucher_factory(
         conference=conference,
-        user_id=500,
         voucher_code="SPEAKER-123",
         pretix_voucher_id=None,
     )
 
     voucher_2 = speaker_voucher_factory(
         conference=conference,
-        user_id=600,
         voucher_code="SPEAKER-456",
         pretix_voucher_id=1155,
     )
@@ -392,7 +387,7 @@ def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(
     mock_create_voucher.assert_called_once_with(
         conference=conference,
         code="SPEAKER-123",
-        comment="Voucher for user_id=500",
+        comment=f"Voucher for user_id={voucher_1.user_id}",
         tag="speakers",
         quota_id=123,
         price_mode="set",
@@ -423,14 +418,12 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences
 
     voucher_1 = speaker_voucher_factory(
         conference=conference,
-        user_id=500,
         voucher_code="SPEAKER-123",
         pretix_voucher_id=None,
     )
 
     voucher_2 = speaker_voucher_factory(
         conference=conference_2,
-        user_id=600,
         voucher_code="SPEAKER-456",
         pretix_voucher_id=None,
     )
@@ -473,14 +466,12 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
 
     voucher_1 = speaker_voucher_factory(
         conference=conference,
-        user_id=500,
         voucher_code="SPEAKER-123",
         pretix_voucher_id=None,
     )
 
     voucher_2 = speaker_voucher_factory(
         conference=conference,
-        user_id=600,
         voucher_code="SPEAKER-456",
         pretix_voucher_id=None,
     )
@@ -518,6 +509,12 @@ def test_video_uploaded_path_matcher(
 ):
     conference = conference_factory(code="conf")
 
+    kim = UserFactory(id=5, name="Kim", full_name="Kim Kitsuragi")
+    klaasje = UserFactory(id=10, name="Klaasje", full_name="")
+    harrier = UserFactory(id=20, name="Harrier", full_name="Harrier Du Bois")
+    anwesha = UserFactory(id=23, name="", full_name="Anwesha Das")
+    marcsed = UserFactory(id=99, name="Marcsed", full_name="Marcsed Cazzęfa")
+
     mocker.patch(
         "conferences.admin.walk_conference_videos_folder",
         return_value=[
@@ -543,39 +540,39 @@ def test_video_uploaded_path_matcher(
         conference=conference,
         title="Talk about something",
         type=ScheduleItem.TYPES.talk,
-        submission__speaker_id=5,
+        submission__speaker=kim,
     )
 
     event_klaasje_alone = schedule_item_factory(
         conference=conference,
         title="Klaasje smokes",
         type=ScheduleItem.TYPES.talk,
-        submission__speaker_id=10,
+        submission__speaker=klaasje,
     )
 
     event_3 = schedule_item_factory(
         conference=conference,
-        title="Talk about something",
+        title="Event 3 Talk about something",
         type=ScheduleItem.TYPES.talk,
         submission=None,
     )
-    schedule_item_additional_speaker_factory(scheduleitem=event_3, user_id=10)
-    schedule_item_additional_speaker_factory(scheduleitem=event_3, user_id=20)
+    schedule_item_additional_speaker_factory(scheduleitem=event_3, user=klaasje)
+    schedule_item_additional_speaker_factory(scheduleitem=event_3, user=harrier)
 
     event_ord_speakers = schedule_item_factory(
         conference=conference,
         title="Ordered",
         type=ScheduleItem.TYPES.talk,
-        submission__speaker_id=20,
+        submission__speaker=harrier,
     )
     schedule_item_additional_speaker_factory(
-        scheduleitem=event_ord_speakers, user_id=10
+        scheduleitem=event_ord_speakers, user=klaasje
     )
 
     keynote_object = keynote_factory()
     keynote_speaker_factory(
         keynote=keynote_object,
-        user_id=23,
+        user=anwesha,
     )
     keynote_schedule = schedule_item_factory(
         conference=conference,
@@ -589,7 +586,7 @@ def test_video_uploaded_path_matcher(
         conference=conference,
         title="Special char",
         type=ScheduleItem.TYPES.talk,
-        submission__speaker_id=99,
+        submission__speaker=marcsed,
     )
 
     admin = ConferenceAdmin(
@@ -598,42 +595,7 @@ def test_video_uploaded_path_matcher(
     )
     admin.message_user = mocker.Mock()
 
-    with respx.mock as mock:
-        mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
-            json={
-                "data": {
-                    "usersByIds": [
-                        {
-                            "id": str(event_2.submission.speaker_id),
-                            "name": "Kim",
-                            "fullname": "Kim Kitsuragi",
-                        },
-                        {
-                            "id": "10",
-                            "name": "Klaasje",
-                            "fullname": "",
-                        },
-                        {
-                            "id": "20",
-                            "name": "Harrier",
-                            "fullname": "Harrier Du Bois",
-                        },
-                        {
-                            "id": "23",
-                            "name": "",
-                            "fullname": "Anwesha  Das",
-                        },
-                        {
-                            "id": "99",
-                            "name": "Marcsed",
-                            "fullname": "Marcsed Cazzęfa",
-                        },
-                    ]
-                }
-            }
-        )
-
-        ret = admin.map_videos(request, conference.id)
+    ret = admin.map_videos(request, conference.id)
 
     assert ret.status_code == 302
 
@@ -701,7 +663,6 @@ def test_save_manual_changes(
         conference=conference,
         title="Talk about something",
         type=ScheduleItem.TYPES.talk,
-        submission__speaker_id=5,
     )
 
     event_3 = schedule_item_factory(
@@ -710,12 +671,8 @@ def test_save_manual_changes(
         type=ScheduleItem.TYPES.talk,
         submission=None,
     )
-    event_3.additional_speakers.add(
-        schedule_item_additional_speaker_factory(user_id=10)
-    )
-    event_3.additional_speakers.add(
-        schedule_item_additional_speaker_factory(user_id=20)
-    )
+    event_3.additional_speakers.add(schedule_item_additional_speaker_factory())
+    event_3.additional_speakers.add(schedule_item_additional_speaker_factory())
 
     request = rf.post(
         "/",

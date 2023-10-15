@@ -99,7 +99,10 @@ export const PublicProfileCard = ({
                     <FormattedMessage id="profile.publicProfile.yourPhoto.description" />
                   }
                 >
-                  <FileInput {...raw("participantPhoto")} />
+                  <FileInput
+                    {...raw("participantPhoto")}
+                    errors={getParticipantValidationError("photo")}
+                  />
                 </InputWrapper>
               </GridColumn>
               <GridColumn colSpan={3}>

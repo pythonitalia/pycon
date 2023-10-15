@@ -95,7 +95,10 @@ class Keynote:
             topic=Topic.from_django_model(instance.topic) if instance.topic else None,
             speakers=[
                 ScheduleItemUser(
-                    id=speaker.user_id, conference_code=instance.conference.code
+                    id=speaker.user_id,
+                    fullname=speaker.user.full_name,
+                    full_name=speaker.user.full_name,
+                    conference_code=instance.conference.code,
                 )
                 for speaker in instance.speakers.all()
             ],

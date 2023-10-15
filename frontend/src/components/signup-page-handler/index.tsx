@@ -119,7 +119,7 @@ export const SignupPageHandler = () => {
 
   const getFieldErrors = (field: "email" | "password" | "fullname") =>
     (data &&
-      data.register.__typename === "RegisterValidationError" &&
+      data.register.__typename === "RegisterErrors" &&
       (data.register.errors[field] ?? []).map((e) => e.message)) ||
     [];
 

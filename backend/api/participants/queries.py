@@ -10,7 +10,7 @@ from api.context import Info
 from api.helpers.ids import decode_hashid, encode_hashid
 from api.permissions import HasTokenPermission
 from badges.roles import ConferenceRole, get_conference_roles_for_ticket_data
-from users.client import get_user_by_email
+from users.models import User
 from conferences.models import Conference
 
 
@@ -46,7 +46,8 @@ def ticket_id_to_user_hashid(
         return None
 
     attendee_email = order_position["attendee_email"]
-    attendee_user = get_user_by_email(attendee_email)
+    attendee_user = User.objects.filter(email=attendee_email).first()
+
     if not attendee_user:
         return None
 
@@ -70,8 +71,8 @@ def conference_role_for_ticket_data(
 
     ticket_data = json.loads(raw_ticket_data)
     attendee_email = ticket_data["attendee_email"]
-    attendee_user = get_user_by_email(attendee_email)
-    user_id = attendee_user["id"] if attendee_user else None
+    attendee_user = User.objects.filter(email=attendee_email).first()
+    user_id = attendee_user.id if attendee_user else None
 
     roles = get_conference_roles_for_ticket_data(
         conference,

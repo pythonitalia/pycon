@@ -68,7 +68,7 @@ def test_voting_open_and_user_cannot_vote(
     submission = _submission(submission_factory, user)
     graphql_client.force_login(other_user)
     can_vote_mock = mocker.patch(
-        "api.submissions.permissions.pastaporto_user_info_can_vote", return_value=False
+        "api.submissions.permissions.check_if_user_can_vote", return_value=False
     )
 
     data = _query(graphql_client, submission)
@@ -101,7 +101,7 @@ def test_voting_open_and_user_can_vote(
     submission = _submission(submission_factory, user)
     graphql_client.force_login(other_user)
     can_vote_mock = mocker.patch(
-        "api.submissions.permissions.pastaporto_user_info_can_vote", return_value=True
+        "api.submissions.permissions.check_if_user_can_vote", return_value=True
     )
 
     data = _query(graphql_client, submission)
@@ -307,9 +307,7 @@ def test_ranked_submission_user_can_see_public_and_restricted_fields(
     user,
     submission_factory,
     rank_request_factory,
-    mocker,
 ):
-    mocker.patch("voting.models.ranking.get_users_data_by_ids", return_value={})
     submission = _submission(submission_factory, user=user, conference=conference)
     rank_request_factory(
         conference=conference, submissions=[submission], is_public=True
@@ -346,9 +344,8 @@ def test_ranked_submission_user_can_see_public_and_restricted_fields(
 
 
 def test_ranking_is_not_public_cannot_see_restricted_and_private_fields(
-    graphql_client, rank_request_factory, conference, user, submission_factory, mocker
+    graphql_client, rank_request_factory, conference, user, submission_factory
 ):
-    mocker.patch("voting.models.ranking.get_users_data_by_ids", return_value={})
     submission = _submission(submission_factory, user=user, conference=conference)
     rank_request_factory(
         conference=conference, submissions=[submission], is_public=False

@@ -290,9 +290,9 @@
                   <hr />
                   <div>
                     {% with speaker_id=item.speaker_id|stringformat:"i" %}
-                      <p>Speaker name: {{ speakers|get_item:speaker_id|get_item:'fullname' }}</ps>
-                      <p>Speaker country: {{ speakers|get_item:speaker_id|get_item:'country'|countryname }}</p>
-                      <p>Speaker gender: {{ speakers|get_item:speaker_id|get_item:'gender' }}</p>
+                      <p>Speaker name: {{ item.speaker.fullname }}</ps>
+                      <p>Speaker country: {{ item.speaker.country|countryname }}</p>
+                      <p>Speaker gender: {{ item.speaker.gender }}</p>
                       {% if speaker_id in grants %}
                         {% with grant=grants|get_item:speaker_id %}
                           <p>💰 Requested a grant ({{ grant.status }})</p>

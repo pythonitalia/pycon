@@ -17,6 +17,7 @@ from conferences.models import (
 )
 from i18n.tests.factories import LanguageFactory
 from languages.models import Language
+from users.tests.factories import UserFactory
 from submissions.models import SubmissionType
 
 
@@ -135,7 +136,6 @@ class ConferenceFactory(DjangoModelFactory):
 
     @factory.post_generation
     def audience_levels(self, create, extracted, **kwargs):
-
         if not create:
             return
 
@@ -208,9 +208,9 @@ class KeynoteFactory(DjangoModelFactory):
 @register
 class KeynoteSpeakerFactory(DjangoModelFactory):
     keynote = factory.SubFactory(KeynoteFactory)
-    user_id = factory.Faker("pyint", min_value=1)
     bio = "{}"
     pronouns = "{}"
+    user = factory.SubFactory(UserFactory)
 
     class Meta:
         model = KeynoteSpeaker
@@ -218,9 +218,9 @@ class KeynoteSpeakerFactory(DjangoModelFactory):
 
 @register
 class SpeakerVoucherFactory(DjangoModelFactory):
-    user_id = factory.Faker("pyint", min_value=1)
     conference = factory.SubFactory(ConferenceFactory)
     voucher_type = SpeakerVoucher.VoucherType.SPEAKER
+    user = factory.SubFactory(UserFactory)
 
     class Meta:
         model = SpeakerVoucher

@@ -17,7 +17,7 @@ def test_fetch_an_invitation(
 ):
     graphql_client.force_login(user)
     submission = submission_factory(
-        speaker_id=user.id,
+        speaker=user,
     )
 
     schedule_item_factory(
@@ -66,9 +66,7 @@ def test_random_user_cannot_fetch_the_invite(
     day_factory,
 ):
     graphql_client.force_login(user)
-    submission = submission_factory(
-        speaker_id=50000,
-    )
+    submission = submission_factory()
 
     schedule_item_factory(
         status=ScheduleItem.STATUS.confirmed,
@@ -112,9 +110,7 @@ def test_staff_can_fetch_the_invite(
     day_factory,
 ):
     graphql_client.force_login(admin_user)
-    submission = submission_factory(
-        speaker_id=50000,
-    )
+    submission = submission_factory()
 
     schedule_item_factory(
         status=ScheduleItem.STATUS.confirmed,
@@ -155,9 +151,7 @@ def test_requires_authentication(
     slot_factory,
     day_factory,
 ):
-    submission = submission_factory(
-        speaker_id=50000,
-    )
+    submission = submission_factory()
 
     schedule_item_factory(
         status=ScheduleItem.STATUS.confirmed,

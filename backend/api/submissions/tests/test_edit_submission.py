@@ -89,24 +89,26 @@ def _update_submission(
             }
 
             ... on SendSubmissionErrors {
-                nonFieldErrors
-                validationTitle: title
-                validationNotes: notes
-                validationTopic: topic
-                validationAbstract: abstract
-                validationDuration: duration
-                validationAudienceLevel: audienceLevel
-                validationType: type
-                validationLanguages: languages
-                validationPreviousTalkVideo: previousTalkVideo
-                validationPreviousSpeakerLevel: speakerLevel
-                validationSpeakerBio: speakerBio
-                validationSpeakerPhoto: speakerPhoto
-                validationSpeakerWebsite: speakerWebsite
-                validationSpeakerTwitterHandle: speakerTwitterHandle
-                validationSpeakerInstagramHandle: speakerInstagramHandle
-                validationSpeakerLinkedinUrl: speakerLinkedinUrl
-                validationSpeakerFacebookUrl: speakerFacebookUrl
+                errors {
+                    nonFieldErrors
+                    validationTitle: title
+                    validationNotes: notes
+                    validationTopic: topic
+                    validationAbstract: abstract
+                    validationDuration: duration
+                    validationAudienceLevel: audienceLevel
+                    validationType: type
+                    validationLanguages: languages
+                    validationPreviousTalkVideo: previousTalkVideo
+                    validationPreviousSpeakerLevel: speakerLevel
+                    validationSpeakerBio: speakerBio
+                    validationSpeakerPhoto: speakerPhoto
+                    validationSpeakerWebsite: speakerWebsite
+                    validationSpeakerTwitterHandle: speakerTwitterHandle
+                    validationSpeakerInstagramHandle: speakerInstagramHandle
+                    validationSpeakerLinkedinUrl: speakerLinkedinUrl
+                    validationSpeakerFacebookUrl: speakerFacebookUrl
+                }
             }
         }
     }
@@ -247,9 +249,9 @@ def test_update_submission_with_invalid_facebook_social_url(
     submission.refresh_from_db()
 
     assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert response["data"]["updateSubmission"]["validationSpeakerFacebookUrl"] == [
-        "Facebook URL should be a facebook.com link"
-    ]
+    assert response["data"]["updateSubmission"]["errors"][
+        "validationSpeakerFacebookUrl"
+    ] == ["Facebook URL should be a facebook.com link"]
 
 
 def test_update_submission_with_invalid_linkedin_social_url(
@@ -302,9 +304,9 @@ def test_update_submission_with_invalid_linkedin_social_url(
     submission.refresh_from_db()
 
     assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert response["data"]["updateSubmission"]["validationSpeakerLinkedinUrl"] == [
-        "Linkedin URL should be a linkedin.com link"
-    ]
+    assert response["data"]["updateSubmission"]["errors"][
+        "validationSpeakerLinkedinUrl"
+    ] == ["Linkedin URL should be a linkedin.com link"]
 
 
 def test_update_submission_with_photo_to_upload(
@@ -320,7 +322,7 @@ def test_update_submission_with_photo_to_upload(
         return_value="https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg",
     )
 
-    speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/temporary-uploads/participants-avatars/my-photo.jpg"
+    speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/temporary-uploads/participants-avatars/my-photo.jpg"  # noqa
 
     conference = conference_factory(
         topics=("life", "diy"),
@@ -373,7 +375,7 @@ def test_update_submission_with_photo_to_upload(
     participant = Participant.objects.get(conference=conference, user_id=user.id)
     assert (
         participant.photo
-        == "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"
+        == "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"  # noqa
     )
 
 
@@ -421,7 +423,7 @@ def test_cannot_update_submission_with_lang_outside_allowed_values(
 
     assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
 
-    assert response["data"]["updateSubmission"]["validationLanguages"] == [
+    assert response["data"]["updateSubmission"]["errors"]["validationLanguages"] == [
         "Language (it) is not allowed"
     ]
 
@@ -516,7 +518,7 @@ def test_cannot_edit_submission_if_not_the_owner(
 
     assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
 
-    assert response["data"]["updateSubmission"]["nonFieldErrors"] == [
+    assert response["data"]["updateSubmission"]["errors"]["nonFieldErrors"] == [
         "You cannot edit this submission"
     ]
 
@@ -654,10 +656,10 @@ def test_edit_submission_multi_lingual_fields_required(
     submission.refresh_from_db()
 
     assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert response["data"]["updateSubmission"]["validationAbstract"] == [
+    assert response["data"]["updateSubmission"]["errors"]["validationAbstract"] == [
         "Italian: Cannot be empty"
     ]
-    assert response["data"]["updateSubmission"]["validationTitle"] == [
+    assert response["data"]["updateSubmission"]["errors"]["validationTitle"] == [
         "Italian: Cannot be empty"
     ]
 

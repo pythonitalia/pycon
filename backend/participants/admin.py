@@ -3,19 +3,14 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from participants.models import Participant
-from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin, SearchUsersMixin
 
 
 class ParticipantForm(forms.ModelForm):
     class Meta:
         model = Participant
-        widgets = {
-            "user_id": UsersBackendAutocomplete(admin.site),
-        }
         fields = [
             "conference",
-            "user_id",
+            "user",
             "photo",
             "bio",
             "website",
@@ -30,8 +25,7 @@ class ParticipantForm(forms.ModelForm):
 
 
 @admin.register(Participant)
-class ParticipantAdmin(AdminUsersMixin, SearchUsersMixin):
-    user_fk = "user_id"
+class ParticipantAdmin(admin.ModelAdmin):
     form = ParticipantForm
     list_display = (
         "user_display_name",
@@ -44,7 +38,7 @@ class ParticipantAdmin(AdminUsersMixin, SearchUsersMixin):
             {
                 "fields": (
                     "conference",
-                    "user_id",
+                    "user",
                     "photo",
                     "photo_preview",
                     "bio",
@@ -64,10 +58,11 @@ class ParticipantAdmin(AdminUsersMixin, SearchUsersMixin):
         "photo_preview",
         "user_display_name",
     )
+    autocomplete_fields = ("user",)
 
     def user_display_name(self, obj):
         if obj:
-            return self.get_user_display_name(obj.user_id)
+            return obj.user.display_name
 
     def photo_preview(self, obj):
         if obj:

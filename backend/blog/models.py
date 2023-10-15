@@ -25,7 +25,15 @@ class PostManager(models.Manager):
 
 
 class Post(TimeStampedModel):
-    author_id = models.IntegerField(verbose_name=_("author"))
+    author = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name=_("author"),
+        related_name="+",
+    )
+
     title = I18nCharField(_("title"), max_length=200)
     slug = I18nCharField(_("slug"), max_length=200, blank=True)
     content = I18nTextField(_("content"), blank=True)

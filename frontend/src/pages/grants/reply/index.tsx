@@ -11,8 +11,7 @@ import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Radio, Label, Flex, Textarea } from "theme-ui";
 
-import { GetStaticProps } from "next";
-import Error from "next/error";
+import { GetServerSideProps } from "next";
 
 import { getApolloClient, addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
@@ -20,11 +19,15 @@ import { PageLoading } from "~/components/page-loading";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
+import NotFoundPage from "~/pages/404";
 import {
   useGrantQuery,
   StatusOption,
   Status as GrantStatus,
   useSendGrantReplyMutation,
+  queryGrantDeadline,
+  queryCurrentUser,
+  queryGrant,
 } from "~/types";
 
 type GrantReplyFrom = {
@@ -130,7 +133,7 @@ const GrantReply = () => {
     !error &&
     (data!.me!.grant === null || !ALLOWED_STATUSES.includes(grant.status))
   ) {
-    return <Error statusCode={404} />;
+    return <NotFoundPage />;
   }
 
   return (
@@ -250,14 +253,49 @@ const GrantReply = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  const client = getApolloClient();
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  locale,
+}) => {
+  const identityToken = req.cookies["pythonitalia_sessionid"];
+  if (!identityToken) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
-  await Promise.all([prefetchSharedQueries(client, locale)]);
+  const client = getApolloClient(null, req.cookies);
 
-  return addApolloState(client, {
-    props: {},
-  });
+  try {
+    await Promise.all([
+      prefetchSharedQueries(client, locale),
+      queryGrantDeadline(client, {
+        conference: process.env.conferenceCode,
+      }),
+      queryGrant(client, {
+        conference: process.env.conferenceCode,
+      }),
+      queryCurrentUser(client),
+    ]);
+  } catch (e) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return addApolloState(
+    client,
+    {
+      props: {},
+    },
+    null,
+  );
 };
 
 export default GrantReply;

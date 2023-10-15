@@ -90,11 +90,10 @@ class SubmissionsQuery:
         total_items = qs.count()
 
         # Randomize the order of the submissions
-        pastaporto = info.context.request.pastaporto
-        user_info = pastaporto.user_info
+        user = info.context.request.user
 
         submissions = list(qs[(page - 1) * page_size : page * page_size])
-        random.Random(user_info.id).shuffle(submissions)
+        random.Random(user.id).shuffle(submissions)
 
         info.context._my_votes = {
             vote.submission_id: vote

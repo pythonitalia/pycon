@@ -214,9 +214,7 @@ def test_random_user_cannot_update_an_invitation(
     )
 
     graphql_client.force_login(user)
-    submission = submission_factory(
-        speaker_id=5000,
-    )
+    submission = submission_factory()
 
     schedule_item = schedule_item_factory(
         status=ScheduleItem.STATUS.waiting_confirmation,
@@ -303,9 +301,7 @@ def test_reqires_authentication(
         "api.schedule.mutations.send_new_schedule_invitation_answer"
     )
 
-    submission = submission_factory(
-        speaker_id=5000,
-    )
+    submission = submission_factory()
 
     schedule_item = schedule_item_factory(
         status=ScheduleItem.STATUS.waiting_confirmation,
@@ -357,9 +353,7 @@ def test_staff_can_update_invitation_answer(
     )
 
     graphql_client.force_login(admin_user)
-    submission = submission_factory(
-        speaker_id=300000,
-    )
+    submission = submission_factory()
 
     schedule_item = schedule_item_factory(
         submission=submission,

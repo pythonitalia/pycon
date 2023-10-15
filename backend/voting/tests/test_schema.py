@@ -7,7 +7,7 @@ def test_get_logged_user_vote_on_a_submission(
     graphql_client, user, vote_factory, settings, requests_mock
 ):
     vote = vote_factory(user_id=user.id, value=1)
-    vote_factory(user_id=user.id + 50, value=3)
+    vote_factory(value=3)
     conference = vote.submission.conference
 
     requests_mock.post(

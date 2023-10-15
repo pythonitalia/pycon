@@ -123,7 +123,6 @@ def test_send_schedule_invitation_email(
 @pytest.mark.django_db
 def test_send_speaker_voucher_email(speaker_voucher_factory):
     speaker_voucher = speaker_voucher_factory(
-        user_id=123,
         voucher_code="ABC123",
         pretix_voucher_id=2,
     )
@@ -205,7 +204,6 @@ def test_send_grant_reply_rejected_email(grant_factory):
 @pytest.mark.django_db
 def test_send_grant_voucher_email(grant_factory):
     grant = grant_factory(
-        user_id=123,
         voucher_code="ABC123",
         pretix_voucher_id=2,
     )

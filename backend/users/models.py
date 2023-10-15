@@ -36,3 +36,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.email
+
+    @property
+    def fullname(self):
+        return self.full_name
+
+    @property
+    def display_name(self):
+        return self.full_name or self.name or self.email

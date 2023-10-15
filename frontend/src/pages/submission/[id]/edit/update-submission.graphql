@@ -54,28 +54,30 @@ mutation UpdateSubmission($input: UpdateSubmissionInput!, $language: String!) {
     }
 
     ... on SendSubmissionErrors {
-      validationTitle: title
-      validationAbstract: abstract
-      validationTopic: topic
-      validationLanguages: languages
-      validationType: type
-      validationDuration: duration
-      validationElevatorPitch: elevatorPitch
-      validationNotes: notes
-      validationAudienceLevel: audienceLevel
-      validationTags: tags
-      validationPreviousTalkVideo: previousTalkVideo
-      validationSpeakerLevel: speakerLevel
-      validationShortSocialSummary: shortSocialSummary
-      validationSpeakerBio: speakerBio
-      validationSpeakerWebsite: speakerWebsite
-      validationSpeakerPhoto: speakerPhoto
-      validationSpeakerTwitterHandle: speakerTwitterHandle
-      validationSpeakerInstagramHandle: speakerInstagramHandle
-      validationSpeakerLinkedinUrl: speakerLinkedinUrl
-      validationSpeakerFacebookUrl: speakerFacebookUrl
-      validationSpeakerMastodonHandle: speakerMastodonHandle
-      nonFieldErrors
+      errors {
+        validationTitle: title
+        validationAbstract: abstract
+        validationTopic: topic
+        validationLanguages: languages
+        validationType: type
+        validationDuration: duration
+        validationElevatorPitch: elevatorPitch
+        validationNotes: notes
+        validationAudienceLevel: audienceLevel
+        validationTags: tags
+        validationPreviousTalkVideo: previousTalkVideo
+        validationSpeakerLevel: speakerLevel
+        validationShortSocialSummary: shortSocialSummary
+        validationSpeakerBio: speakerBio
+        validationSpeakerWebsite: speakerWebsite
+        validationSpeakerPhoto: speakerPhoto
+        validationSpeakerTwitterHandle: speakerTwitterHandle
+        validationSpeakerInstagramHandle: speakerInstagramHandle
+        validationSpeakerLinkedinUrl: speakerLinkedinUrl
+        validationSpeakerFacebookUrl: speakerFacebookUrl
+        validationSpeakerMastodonHandle: speakerMastodonHandle
+        nonFieldErrors
+      }
     }
   }
 }

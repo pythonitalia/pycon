@@ -14,7 +14,14 @@ class Vote(TimeStampedModel):
 
     value = models.IntegerField(_("vote"), choices=VALUES)
 
-    user_id = models.IntegerField(verbose_name=_("user"))
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name=_("user"),
+        related_name="+",
+    )
 
     submission = models.ForeignKey(
         "submissions.Submission",
@@ -30,4 +37,4 @@ class Vote(TimeStampedModel):
         verbose_name = _("Vote")
         verbose_name_plural = _("Votes")
 
-        unique_together = ("user_id", "submission")
+        unique_together = ("user", "submission")
