@@ -13,7 +13,7 @@ from users.domain import entities
 class User:
     id: strawberry.ID
     email: str
-    fullname: str
+    fullname: str = strawberry.field(deprecation_reason="Use fullName instead")
     full_name: str
     name: str
 
