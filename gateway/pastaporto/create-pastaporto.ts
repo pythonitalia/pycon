@@ -33,5 +33,6 @@ export const createPastaporto = async (
   `;
 
   const data = await client.request(query, { identityToken });
+  // @ts-ignore
   return data.createPastaporto.pastaportoToken;
 };
