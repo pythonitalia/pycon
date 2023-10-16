@@ -1,15 +1,10 @@
 import {
   ASSOCIATION_BACKEND_SERVICE,
   PYCON_BACKEND_SERVICE,
-  USERS_SERVICE,
   CMS_SERVICE,
 } from "./config";
 
 const DEFAULT_SERVICES = [
-  {
-    name: "users",
-    url: `${USERS_SERVICE}/graphql`,
-  },
   {
     name: "association-backend",
     url: `${ASSOCIATION_BACKEND_SERVICE}/graphql`,
