@@ -115,7 +115,7 @@ export const INTERESTED_IN_VOLUNTEERING_OPTIONS = [
 
 export const AGE_GROUPS_OPTIONS = [
   {
-    value: "",
+    value: "" as AgeGroup,
     disabled: true,
     messageId: "grants.form.fields.ageGroup.values.selectOption",
   },

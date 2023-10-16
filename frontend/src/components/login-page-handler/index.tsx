@@ -77,7 +77,7 @@ export const LoginPageHandler = () => {
   const getFieldErrors = (field: "email" | "password") =>
     (loginData &&
       loginData.login.__typename === "LoginErrors" &&
-      (loginData.login.errors[field] ?? []).map((e) => e.message)) ||
+      (loginData.login.errors[field] ?? [])) ||
     [];
 
   const wrongCredentialsMessage = useTranslatedMessage(

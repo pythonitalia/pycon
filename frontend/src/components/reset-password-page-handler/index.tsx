@@ -42,8 +42,8 @@ export const ResetPasswordPageHandler = () => {
     },
   );
   const getErrors = (key: "token" | "newPassword") =>
-    (data?.resetPassword.__typename === "ResetPasswordValidationError" &&
-      (data?.resetPassword.errors[key] ?? []).map((e) => e.message)) ||
+    (data?.resetPassword.__typename === "ResetPasswordErrors" &&
+      (data?.resetPassword.errors[key] ?? [])) ||
     [];
 
   const onSubmit = async (e) => {
