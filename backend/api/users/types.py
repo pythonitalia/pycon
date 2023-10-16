@@ -115,6 +115,11 @@ class User:
     def can_edit_schedule(self) -> bool:
         return self.is_staff
 
+    @strawberry.field
+    def is_python_italia_member(self) -> bool:
+        # TODO: Implement is_python_italia_member
+        return False
+
     @classmethod
     def from_django_model(cls, user):
         return cls(
