@@ -19,7 +19,7 @@ export const FileInput = ({
   name,
   onBlur,
   value,
-  errors,
+  errors = null,
 }) => {
   const fileInput = useRef<HTMLInputElement>();
   const canvas = useRef<HTMLCanvasElement>();
