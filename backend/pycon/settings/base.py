@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "badge_scanner",
     "badges.apps.BadgesConfig",
     "google_api.apps.GoogleApiConfig",
+    "association_membership.apps.AssociationMembershipConfig",
 ]
 
 MIDDLEWARE = [
