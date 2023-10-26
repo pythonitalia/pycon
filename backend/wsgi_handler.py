@@ -19,6 +19,7 @@ from django.apps import apps
 from django.conf import settings
 from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.strawberry import StrawberryIntegration
 
 # imports serverless_wsgi from the root
 import serverless_wsgi
@@ -30,11 +31,14 @@ logger = getLogger(__name__)
 SENTRY_DSN = settings.SENTRY_DSN
 
 if SENTRY_DSN:
+
+
     sentry_sdk.init(
         dsn=SENTRY_DSN,
         integrations=[
             DjangoIntegration(),
             AwsLambdaIntegration(),
+            StrawberryIntegration(async_execution=False),
         ],
         traces_sample_rate=0.2,
         send_default_pii=True,
