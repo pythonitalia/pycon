@@ -13,6 +13,7 @@ from conferences.models.conference import Conference
 from participants.models import Participant as ParticipantModel
 
 from .types import Participant
+from typing import Annotated, Union
 
 
 FACEBOOK_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?facebook\.com\/")
@@ -93,9 +94,7 @@ class UpdateParticipantInput:
         return errors.if_has_errors
 
 
-UpdateParticipantResult = strawberry.union(
-    "UpdateParticipantResult", (Participant, UpdateParticipantErrors)
-)
+UpdateParticipantResult = Annotated[Union[Participant, UpdateParticipantErrors], strawberry.union(name="UpdateParticipantResult")]
 
 
 @strawberry.field(permission_classes=[IsAuthenticated])

@@ -9,6 +9,7 @@ from api.users.types import User
 from api.context import Info
 from api.types import BaseErrorType
 from django.core.exceptions import ValidationError
+from typing import Annotated, Union
 
 logger = logging.getLogger(__file__)
 
@@ -55,9 +56,7 @@ class LoginInput:
         return errors.if_has_errors
 
 
-LoginResult = strawberry.union(
-    "LoginResult", (LoginSuccess, LoginErrors, WrongEmailOrPassword)
-)
+LoginResult = Annotated[Union[LoginSuccess, LoginErrors, WrongEmailOrPassword], strawberry.union(name="LoginResult")]
 
 
 @strawberry.mutation()

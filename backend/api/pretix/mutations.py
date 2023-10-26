@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional
+from typing import Annotated, Union, List, Optional
 
 import strawberry
 from requests import HTTPError
@@ -33,10 +33,7 @@ class UpdateAttendeeTicketErrors:
     errors: List[UpdateAttendeeTicketError]
 
 
-UpdateAttendeeTicketResult = strawberry.union(
-    "UpdateAttendeeTicketResult",
-    (TicketReassigned, AttendeeTicket, UpdateAttendeeTicketErrors),
-)
+UpdateAttendeeTicketResult = Annotated[Union[TicketReassigned, AttendeeTicket, UpdateAttendeeTicketErrors], strawberry.union(name="UpdateAttendeeTicketResult")]
 
 
 @strawberry.type

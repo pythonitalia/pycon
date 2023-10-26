@@ -6,6 +6,7 @@ from django.forms import ModelForm
 from graphql import GraphQLError
 
 from .utils import convert_form_fields_to_fields, create_error_type, create_input_type
+from typing import Annotated, Union
 
 
 def convert_enums_to_values(d) -> dict:
@@ -44,9 +45,10 @@ class FormMutation:
             cls.Meta.output_types if hasattr(cls.Meta, "output_types") else ()
         )
 
-        output = strawberry.union(
-            f"{name}Output", (error_type, *output_types), description="Output"
-        )
+        output = Annotated[
+            Union[error_type, Union[output_types]],
+            strawberry.union(name=f"{name}Output", description="Output"),
+        ]
 
         def _mutate(root, info, input: input_type) -> output:
             # Add the mutation input in the context so we can access it inside the permissions

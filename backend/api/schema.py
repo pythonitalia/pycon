@@ -67,6 +67,4 @@ class Mutation(
 schema = strawberry.federation.Schema(
     query=Query,
     mutation=Mutation,
-    # types=[User],
-    extensions=[SentryTracingExtensionSync],
 )

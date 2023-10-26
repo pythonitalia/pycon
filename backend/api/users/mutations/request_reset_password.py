@@ -8,11 +8,10 @@ from pythonit_toolkit.emails import get_email_backend
 from django.conf import settings
 import jwt
 import logging
+from typing import Annotated, Union
 
 logger = logging.getLogger(__file__)
-RequestResetPasswordResult = strawberry.union(
-    "RequestResetPasswordResult", (OperationSuccess,)
-)
+RequestResetPasswordResult = Annotated[Union[OperationSuccess], strawberry.union(name="RequestResetPasswordResult")]
 
 
 @strawberry.mutation

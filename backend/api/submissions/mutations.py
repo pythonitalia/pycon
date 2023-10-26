@@ -1,6 +1,6 @@
 import math
 import re
-from typing import Optional
+from typing import Annotated, Union, Optional
 
 import strawberry
 from strawberry import ID
@@ -29,7 +29,7 @@ class SubmissionMutation:
     @classmethod
     def transform(cls, result):
         # lie to strawberry to make it think that the return value is a proper type
-        result._type_definition = Submission._type_definition
+        result.__strawberry_definition__ = Submission.__strawberry_definition__
         return result
 
     class Meta:
@@ -263,21 +263,9 @@ class UpdateSubmissionInput(BaseSubmissionInput):
     tags: list[ID] = strawberry.field(default_factory=list)
 
 
-SendSubmissionOutput = strawberry.union(
-    "SendSubmissionOutput",
-    (
-        Submission,
-        SendSubmissionErrors,
-    ),
-)
+SendSubmissionOutput = Annotated[Union[Submission, SendSubmissionErrors], strawberry.union(name="SendSubmissionOutput")]
 
-UpdateSubmissionOutput = strawberry.union(
-    "UpdateSubmissionOutput",
-    (
-        Submission,
-        SendSubmissionErrors,
-    ),
-)
+UpdateSubmissionOutput = Annotated[Union[Submission, SendSubmissionErrors], strawberry.union(name="UpdateSubmissionOutput")]
 
 
 @strawberry.type
@@ -349,7 +337,7 @@ class SubmissionsMutations:
             },
         )
 
-        instance._type_definition = Submission._type_definition
+        instance.__strawberry_definition__ = Submission.__strawberry_definition__
         return instance
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -434,5 +422,5 @@ class SubmissionsMutations:
         )
 
         # hack because we return django models
-        instance._type_definition = Submission._type_definition
+        instance.__strawberry_definition__ = Submission.__strawberry_definition__
         return instance

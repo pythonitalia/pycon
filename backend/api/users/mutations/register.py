@@ -9,6 +9,7 @@ from api.users.types import User
 from api.context import Info
 from api.types import BaseErrorType
 from users.models import User as UserModel
+from typing import Annotated, Union
 
 
 @strawberry.type
@@ -61,9 +62,7 @@ class RegisterInput:
         return errors.if_has_errors
 
 
-RegisterResult = strawberry.union(
-    "RegisterResult", (RegisterSuccess, RegisterErrors, EmailAlreadyUsed)
-)
+RegisterResult = Annotated[Union[RegisterSuccess, RegisterErrors, EmailAlreadyUsed], strawberry.union(name="RegisterResult")]
 
 
 @strawberry.mutation()

@@ -8,6 +8,7 @@ from django.conf import settings
 from api.types import BaseErrorType
 from api.users.types import OperationSuccess
 import logging
+from typing import Annotated, Union
 
 logger = logging.getLogger(__file__)
 
@@ -64,9 +65,7 @@ class ResetPasswordInput:
         return errors.if_has_errors
 
 
-ResetPasswordResult = strawberry.union(
-    "ResetPasswordResult", (ResetPasswordErrors, OperationSuccess)
-)
+ResetPasswordResult = Annotated[Union[ResetPasswordErrors, OperationSuccess], strawberry.union(name="ResetPasswordResult")]
 
 
 @strawberry.mutation
