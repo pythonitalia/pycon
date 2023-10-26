@@ -29,7 +29,7 @@ class SubmissionMutation:
     @classmethod
     def transform(cls, result):
         # lie to strawberry to make it think that the return value is a proper type
-        result._type_definition = Submission._type_definition
+        result.__strawberry_definition__ = Submission.__strawberry_definition__
         return result
 
     class Meta:
@@ -337,7 +337,7 @@ class SubmissionsMutations:
             },
         )
 
-        instance._type_definition = Submission._type_definition
+        instance.__strawberry_definition__ = Submission.__strawberry_definition__
         return instance
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -422,5 +422,5 @@ class SubmissionsMutations:
         )
 
         # hack because we return django models
-        instance._type_definition = Submission._type_definition
+        instance.__strawberry_definition__ = Submission.__strawberry_definition__
         return instance

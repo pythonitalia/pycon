@@ -153,7 +153,7 @@ class ScheduleMutations:
         ScheduleItemAttendee.objects.create(
             schedule_item=schedule_item, user_id=user_id
         )
-        schedule_item._type_definition = ScheduleItemType._type_definition
+        schedule_item.__strawberry_definition__ = ScheduleItemType.__strawberry_definition__
         return schedule_item
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -172,7 +172,7 @@ class ScheduleMutations:
         ScheduleItemAttendee.objects.filter(
             schedule_item=schedule_item, user_id=user_id
         ).delete()
-        schedule_item._type_definition = ScheduleItemType._type_definition
+        schedule_item.__strawberry_definition__ = ScheduleItemType.__strawberry_definition__
         return schedule_item
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])

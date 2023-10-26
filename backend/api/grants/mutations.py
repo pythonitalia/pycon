@@ -183,7 +183,7 @@ class GrantMutation:
         )
 
         # hack because we return django models
-        instance._type_definition = Grant._type_definition
+        instance.__strawberry_definition__ = Grant.__strawberry_definition__
         return instance
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -205,7 +205,7 @@ class GrantMutation:
             setattr(instance, attr, value)
         instance.save()
 
-        instance._type_definition = Grant._type_definition
+        instance.__strawberry_definition__ = Grant.__strawberry_definition__
         return instance
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
