@@ -45,7 +45,10 @@ class FormMutation:
             cls.Meta.output_types if hasattr(cls.Meta, "output_types") else ()
         )
 
-        output = Annotated[Union[error_type, output_types], strawberry.union(name=f"{name}Output", description="Output")]
+        output = Annotated[
+            Union[error_type, Union[output_types]],
+            strawberry.union(name=f"{name}Output", description="Output"),
+        ]
 
         def _mutate(root, info, input: input_type) -> output:
             # Add the mutation input in the context so we can access it inside the permissions
