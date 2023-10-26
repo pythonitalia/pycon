@@ -1,6 +1,6 @@
 import math
 import re
-from typing import Optional
+from typing import Annotated, Union, Optional
 
 import strawberry
 from strawberry import ID
@@ -263,21 +263,9 @@ class UpdateSubmissionInput(BaseSubmissionInput):
     tags: list[ID] = strawberry.field(default_factory=list)
 
 
-SendSubmissionOutput = strawberry.union(
-    "SendSubmissionOutput",
-    (
-        Submission,
-        SendSubmissionErrors,
-    ),
-)
+SendSubmissionOutput = Annotated[Union[Submission, SendSubmissionErrors], strawberry.union(name="SendSubmissionOutput")]
 
-UpdateSubmissionOutput = strawberry.union(
-    "UpdateSubmissionOutput",
-    (
-        Submission,
-        SendSubmissionErrors,
-    ),
-)
+UpdateSubmissionOutput = Annotated[Union[Submission, SendSubmissionErrors], strawberry.union(name="UpdateSubmissionOutput")]
 
 
 @strawberry.type

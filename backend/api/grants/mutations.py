@@ -1,6 +1,6 @@
 from dataclasses import asdict
 from enum import Enum
-from typing import Optional
+from typing import Annotated, Union, Optional
 
 import strawberry
 from strawberry.types import Info
@@ -132,21 +132,9 @@ class UpdateGrantInput(BaseGrantInput):
     travelling_from: str
 
 
-SendGrantResult = strawberry.union(
-    "SendGrantResult",
-    (
-        Grant,
-        GrantErrors,
-    ),
-)
+SendGrantResult = Annotated[Union[Grant, GrantErrors], strawberry.union(name="SendGrantResult")]
 
-UpdateGrantResult = strawberry.union(
-    "UpdateGrantResult",
-    (
-        Grant,
-        GrantErrors,
-    ),
-)
+UpdateGrantResult = Annotated[Union[Grant, GrantErrors], strawberry.union(name="UpdateGrantResult")]
 
 
 @strawberry.enum
@@ -171,9 +159,7 @@ class SendGrantReplyError:
     message: str
 
 
-SendGrantReplyResult = strawberry.union(
-    "SendGrantReplyResult", (Grant, SendGrantReplyError)
-)
+SendGrantReplyResult = Annotated[Union[Grant, SendGrantReplyError], strawberry.union(name="SendGrantReplyResult")]
 
 
 @strawberry.type

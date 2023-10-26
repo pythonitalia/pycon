@@ -80,6 +80,7 @@ lambda = ["awslambdaric"]
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.2.0"
+typer = "^0.9.0"
 
 [build-system]
 requires = ["poetry>=0.12"]

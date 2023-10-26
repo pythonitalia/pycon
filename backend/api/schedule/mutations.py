@@ -27,6 +27,7 @@ from schedule.models import (
 from submissions.models import Submission
 
 from ..permissions import IsAuthenticated, IsStaffPermission
+from typing import Annotated, Union
 
 
 @strawberry.type
@@ -104,21 +105,9 @@ class ScheduleItemIsFull:
     message: str = "This event is full"
 
 
-BookScheduleItemResult = strawberry.union(
-    "BookScheduleItemResult",
-    (
-        ScheduleItemType,
-        ScheduleItemIsFull,
-        UserNeedsConferenceTicket,
-        UserIsAlreadyBooked,
-        ScheduleItemNotBookable,
-    ),
-)
+BookScheduleItemResult = Annotated[Union[ScheduleItemType, ScheduleItemIsFull, UserNeedsConferenceTicket, UserIsAlreadyBooked, ScheduleItemNotBookable], strawberry.union(name="BookScheduleItemResult")]
 
-CancelBookingScheduleItemResult = strawberry.union(
-    "CancelBookingScheduleItemResult",
-    (ScheduleItemType, UserIsNotBooked, ScheduleItemNotBookable),
-)
+CancelBookingScheduleItemResult = Annotated[Union[ScheduleItemType, UserIsNotBooked, ScheduleItemNotBookable], strawberry.union(name="CancelBookingScheduleItemResult")]
 
 
 @strawberry.type

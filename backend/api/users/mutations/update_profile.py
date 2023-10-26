@@ -1,7 +1,7 @@
 from api.permissions import IsAuthenticated
 from api.context import Info
 from datetime import date
-from typing import Optional
+from typing import Annotated, Union, Optional
 import strawberry
 
 from api.types import BaseErrorType
@@ -50,9 +50,7 @@ class UpdateProfileInput:
         return errors.if_has_errors
 
 
-UpdateProfileResult = strawberry.union(
-    "UpdateProfileResult", (UpdateProfileErrors, User)
-)
+UpdateProfileResult = Annotated[Union[UpdateProfileErrors, User], strawberry.union(name="UpdateProfileResult")]
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
