@@ -50,24 +50,24 @@ class Subscription(models.Model):
         period_start: datetime,
         period_end: datetime,
     ):
-        self._payments_to_add.append(
-            PretixPayment(
-                payment=Payment(
-                    idempotency_key=PretixPayment.generate_idempotency_key(
-                        organizer, event, order_code
-                    ),
-                    total=total,
-                    status=status,
-                    payment_date=payment_date,
-                    period_start=period_start,
-                    period_end=period_end,
-                    subscription=self.id,
-                ),
-                order_code=order_code,
-                event_organizer=organizer,
-                event_id=event,
-            )
+        payment = Payment.objects.create(
+            idempotency_key=PretixPayment.generate_idempotency_key(
+                organizer, event, order_code
+            ),
+            total=total,
+            status=status,
+            payment_date=payment_date,
+            period_start=period_start,
+            period_end=period_end,
+            subscription_id=self.id,
         )
+        pretix_payment = PretixPayment.objects.create(
+            payment=payment,
+            order_code=order_code,
+            event_organizer=organizer,
+            event_id=event,
+        )
+        return pretix_payment
 
     def add_stripe_subscription_payment(
         self,
@@ -80,22 +80,22 @@ class Subscription(models.Model):
         stripe_invoice_id: str,
         invoice_pdf: str,
     ):
-        self._payments_to_add.append(
-            StripeSubscriptionPayment(
-                payment=Payment(
-                    idempotency_key=stripe_invoice_id,
-                    total=total,
-                    status=status,
-                    payment_date=payment_date,
-                    period_start=period_start,
-                    period_end=period_end,
-                    subscription=self.id,
-                ),
-                stripe_subscription_id=stripe_subscription_id,
-                stripe_invoice_id=stripe_invoice_id,
-                invoice_pdf=invoice_pdf,
-            )
+        payment = Payment.objects.create(
+            idempotency_key=stripe_invoice_id,
+            total=total,
+            status=status,
+            payment_date=payment_date,
+            period_start=period_start,
+            period_end=period_end,
+            subscription=self.id,
         )
+        stripe_subscription_payment = StripeSubscriptionPayment.objects.create(
+            payment=payment,
+            stripe_subscription_id=stripe_subscription_id,
+            stripe_invoice_id=stripe_invoice_id,
+            invoice_pdf=invoice_pdf,
+        )
+        return stripe_subscription_payment
 
 
 class Payment(models.Model):
@@ -116,6 +116,10 @@ class Payment(models.Model):
         choices=PaymentStatus.as_choices(),
         null=False,
     )
+
+    @staticmethod
+    def is_payment_already_processed(idempotency_key: str) -> bool:
+        return Payment.objects.filter(idempotency_key=idempotency_key).exists()
 
 
 class PretixPayment(models.Model):

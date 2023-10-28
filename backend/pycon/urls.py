@@ -17,4 +17,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("graphql", csrf_exempt(GraphQLView.as_view(schema=schema)), name="graphql"),
     path("user/", include("users.urls")),
+    path("", include("association_membership.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

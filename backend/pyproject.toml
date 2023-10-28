@@ -54,6 +54,8 @@ google-auth-httplib2 = "^0.1.0"
 temporalio = "^1.2.0"
 opencv-python = "^4.8.0.74"
 argon2-cffi = "^23.1.0"
+stripe = "^7.0.0"
+djangorestframework = "^3.14.0"
 
 [tool.poetry.dev-dependencies]
 pylint = "=2.6.0"
