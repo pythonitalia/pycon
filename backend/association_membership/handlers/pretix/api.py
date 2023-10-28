@@ -12,7 +12,7 @@ class PretixAPI:
         self.organizer = organizer
         self.event = event
         self.base_url = (
-            f"{settings.PRETIX_API_URL}organizers/{self.organizer}/events/{self.event}"
+            f"{settings.PRETIX_API}organizers/{self.organizer}/events/{self.event}"
         )
 
     def _request(

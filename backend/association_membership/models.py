@@ -87,7 +87,7 @@ class Subscription(models.Model):
             payment_date=payment_date,
             period_start=period_start,
             period_end=period_end,
-            subscription=self.id,
+            subscription_id=self.id,
         )
         stripe_subscription_payment = StripeSubscriptionPayment.objects.create(
             payment=payment,
@@ -100,7 +100,7 @@ class Subscription(models.Model):
 
 class Payment(models.Model):
     subscription: Subscription = models.ForeignKey(
-        Subscription, null=False, on_delete=models.PROTECT
+        Subscription, null=False, on_delete=models.PROTECT, related_name="payments"
     )
     # idempotency_key is used as a generic method
     # to keep track of "already handled payments"
@@ -123,7 +123,9 @@ class Payment(models.Model):
 
 
 class PretixPayment(models.Model):
-    payment: Payment = models.ForeignKey(Payment, null=False, on_delete=models.PROTECT)
+    payment: Payment = models.ForeignKey(
+        Payment, null=False, on_delete=models.PROTECT, related_name="pretix_payments"
+    )
     order_code: str = models.CharField(max_length=256, unique=True)
     event_organizer: str = models.CharField(max_length=512)
     event_id: str = models.CharField(max_length=512)
@@ -134,7 +136,12 @@ class PretixPayment(models.Model):
 
 
 class StripeSubscriptionPayment(models.Model):
-    payment: Payment = models.ForeignKey(Payment, null=False, on_delete=models.PROTECT)
+    payment: Payment = models.ForeignKey(
+        Payment,
+        null=False,
+        on_delete=models.PROTECT,
+        related_name="stripe_subscription_payments",
+    )
     stripe_subscription_id: str = models.CharField(max_length=256)
     stripe_invoice_id: str = models.CharField(max_length=256, unique=True)
     invoice_pdf: str = models.TextField()

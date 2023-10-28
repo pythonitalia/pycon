@@ -36,7 +36,7 @@ def stripe_webhook(request):
 
     event_type = event["type"]
     run_handler("stripe", event_type, event)
-    return Response(status_code=200)
+    return Response(status=200)
 
 
 @api_view(["POST"])
@@ -46,4 +46,4 @@ def pretix_webhook(request):
     payload = request.data
     action = payload["action"]
     run_handler("pretix", action, payload)
-    return Response(status_code=200)
+    return Response(status=200)

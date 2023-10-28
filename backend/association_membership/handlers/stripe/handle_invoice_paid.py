@@ -25,10 +25,17 @@ def handle_invoice_paid(event):
         invoice.status == "paid"
     ), f"event_id={event.id} has invoice_status={invoice.status}"
 
-    stripe_customer = StripeCustomer.objects.get(stripe_customer_id=stripe_customer_id)
-    subscription = Subscription.objects.get(user_id=stripe_customer.user_id)
+    stripe_customer = StripeCustomer.objects.filter(
+        stripe_customer_id=stripe_customer_id
+    ).first()
 
-    if not subscription:
+    subscription = (
+        Subscription.objects.filter(user_id=stripe_customer.user_id).first()
+        if stripe_customer
+        else None
+    )
+
+    if not subscription or not stripe_customer:
         logger.error(
             "Unable to process stripe event_id=%s invoice paid "
             "because stripe_customer_id=%s "

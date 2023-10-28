@@ -122,7 +122,7 @@ def pretix_event_order_paid(payload):
         )
         return
 
-    subscription = Subscription.objects.get(user_id=user_id)
+    subscription = Subscription.objects.filter(user_id=user_id).first()
 
     if not subscription:
         subscription = Subscription.objects.create(user_id=user_id)
