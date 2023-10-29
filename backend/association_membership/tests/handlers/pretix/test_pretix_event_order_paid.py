@@ -56,7 +56,7 @@ def test_receive_order_paid_with_membership():
     created_subscription = Subscription.objects.get(user_id=user.id)
 
     assert created_subscription.status == SubscriptionStatus.ACTIVE
-    assert created_subscription.user_id == 1
+    assert created_subscription.user_id == user.id
     assert created_subscription.payments.count() == 1
 
     payment = created_subscription.payments.all()[0]

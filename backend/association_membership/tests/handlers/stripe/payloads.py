@@ -51,10 +51,7 @@ RAW_INVOICE_PAID_PAYLOAD = json.loads(
           {
             "amount": 1000,
             "currency": "gbp",
-            "description": (
-                "1 \u00d7 Iscrizione Associazione Python"
-                " Italia (at \u00a310.00 / year)",
-            ),
+            "description": "Python Italia",
             "discount_amounts": [],
             "discountable": true,
             "discounts": [],
