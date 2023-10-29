@@ -27,6 +27,7 @@ SubscribeUserResult = Annotated[
 def subscribe_user_to_association(info: Info) -> SubscribeUserResult:
     user = info.context.request.user
     membership = Membership.objects.of_user(user).first()
+    local_stripe_customer = None
 
     if not membership:
         membership = Membership.objects.create(user=user)

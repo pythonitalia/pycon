@@ -30,7 +30,7 @@ CustomerPortalResult = Annotated[
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 def manage_user_subscription(info: Info) -> CustomerPortalResult:
-    membership = Membership.objects.of_user(info.context.request.user).first()
+    membership = Membership.objects.active().of_user(info.context.request.user).first()
 
     if not membership:
         return NoSubscription()
@@ -38,7 +38,7 @@ def manage_user_subscription(info: Info) -> CustomerPortalResult:
     stripe_customer = StripeCustomer.objects.of_user(info.context.request.user).first()
 
     if not stripe_customer:
-        return NoSubscription()
+        return NotSubscribedViaStripe()
 
     session = stripe.billing_portal.Session.create(
         customer=stripe_customer.stripe_customer_id
