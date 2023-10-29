@@ -3,33 +3,42 @@ import logging
 
 from django.db import models
 
-from association_membership.enums import PaymentStatus, SubscriptionStatus
+from association_membership.enums import PaymentStatus, MembershipStatus
 
 logger = logging.getLogger(__name__)
 
 
-class Subscription(models.Model):
+class MembershipQuerySet(models.QuerySet):
+    def active(self):
+        return self.filter(status=MembershipStatus.ACTIVE)
+
+    def of_user(self, user):
+        return self.filter(user=user)
+
+
+class Membership(models.Model):
     user = models.ForeignKey("users.User", on_delete=models.PROTECT)
-    status: SubscriptionStatus = models.CharField(
+    status: MembershipStatus = models.CharField(
         max_length=20,
-        choices=SubscriptionStatus.as_choices(),
-        default=SubscriptionStatus.PENDING,
+        choices=MembershipStatus.as_choices(),
+        default=MembershipStatus.PENDING,
         null=False,
     )
+    objects = MembershipQuerySet().as_manager()
 
     def mark_as_canceled(self):
-        self._change_state(SubscriptionStatus.CANCELED)
+        self._change_state(MembershipStatus.CANCELED)
 
     def mark_as_active(self):
-        self._change_state(SubscriptionStatus.ACTIVE)
+        self._change_state(MembershipStatus.ACTIVE)
 
     @property
     def is_active(self) -> bool:
-        return self.status == SubscriptionStatus.ACTIVE
+        return self.status == MembershipStatus.ACTIVE
 
-    def _change_state(self, to: SubscriptionStatus):
+    def _change_state(self, to: MembershipStatus):
         logger.info(
-            "Switching subscription_id=%s of user_id=%s"
+            "Switching membership_id=%s of user_id=%s"
             " from old_status=%s to status=%s",
             self.id,
             self.user_id,
@@ -59,7 +68,7 @@ class Subscription(models.Model):
             payment_date=payment_date,
             period_start=period_start,
             period_end=period_end,
-            subscription_id=self.id,
+            membership_id=self.id,
         )
         pretix_payment = PretixPayment.objects.create(
             payment=payment,
@@ -87,7 +96,7 @@ class Subscription(models.Model):
             payment_date=payment_date,
             period_start=period_start,
             period_end=period_end,
-            subscription_id=self.id,
+            membership_id=self.id,
         )
         stripe_subscription_payment = StripeSubscriptionPayment.objects.create(
             payment=payment,
@@ -99,8 +108,8 @@ class Subscription(models.Model):
 
 
 class Payment(models.Model):
-    subscription: Subscription = models.ForeignKey(
-        Subscription, null=False, on_delete=models.PROTECT, related_name="payments"
+    membership = models.ForeignKey(
+        Membership, null=False, on_delete=models.PROTECT, related_name="payments"
     )
     # idempotency_key is used as a generic method
     # to keep track of "already handled payments"
@@ -147,6 +156,12 @@ class StripeSubscriptionPayment(models.Model):
     invoice_pdf: str = models.TextField()
 
 
+class StripeCustomerQuerySet(models.QuerySet):
+    def of_user(self, user):
+        return self.filter(user=user)
+
+
 class StripeCustomer(models.Model):
     user = models.ForeignKey("users.User", on_delete=models.PROTECT)
     stripe_customer_id: str = models.CharField(max_length=256, unique=True)
+    objects = StripeCustomerQuerySet().as_manager()

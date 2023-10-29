@@ -6,13 +6,13 @@ import respx
 import time_machine
 from django.conf import settings
 from association_membership.models import (
-    Subscription,
+    Membership,
 )
 from association_membership.enums import (
     PaymentStatus,
-    SubscriptionStatus,
+    MembershipStatus,
 )
-from association_membership.tests.factories import SubscriptionFactory
+from association_membership.tests.factories import MembershipFactory
 from association_membership.exceptions import (
     NotEnoughPaid,
     NoUserFoundWithEmail,
@@ -53,13 +53,13 @@ def test_receive_order_paid_with_membership():
         )
         pretix_event_order_paid(ORDER_PAID)
 
-    created_subscription = Subscription.objects.get(user_id=user.id)
+    created_membership = Membership.objects.get(user_id=user.id)
 
-    assert created_subscription.status == SubscriptionStatus.ACTIVE
-    assert created_subscription.user_id == user.id
-    assert created_subscription.payments.count() == 1
+    assert created_membership.status == MembershipStatus.ACTIVE
+    assert created_membership.user_id == user.id
+    assert created_membership.payments.count() == 1
 
-    payment = created_subscription.payments.all()[0]
+    payment = created_membership.payments.all()[0]
     assert payment.total == 1000
     assert payment.payment_date == datetime.datetime(
         2021, 12, 16, 1, 4, 43, tzinfo=timezone.utc
@@ -96,17 +96,17 @@ def test_receive_order_paid_twice_doesnt_process_the_payment_twice():
         )
         pretix_event_order_paid(ORDER_PAID)
 
-        created_subscription = Subscription.objects.get(user_id=user.id)
+        created_membership = Membership.objects.get(user_id=user.id)
 
-        assert created_subscription.status == SubscriptionStatus.ACTIVE
-        assert created_subscription.payments.count() == 1
+        assert created_membership.status == MembershipStatus.ACTIVE
+        assert created_membership.payments.count() == 1
 
         pretix_event_order_paid(ORDER_PAID)
 
-        created_subscription = Subscription.objects.get(user_id=user.id)
+        created_membership = Membership.objects.get(user_id=user.id)
 
-        assert created_subscription.status == SubscriptionStatus.ACTIVE
-        assert created_subscription.payments.count() == 1
+        assert created_membership.status == MembershipStatus.ACTIVE
+        assert created_membership.payments.count() == 1
 
 
 def test_receive_order_paid_without_membership_purchase():
@@ -125,7 +125,7 @@ def test_receive_order_paid_without_membership_purchase():
         )
         pretix_event_order_paid(ORDER_PAID)
 
-    assert not Subscription.objects.filter(user_id=1).exists()
+    assert not Membership.objects.filter(user_id=1).exists()
 
 
 def test_receive_order_paid_fails_if_no_user_maps_to_the_email():
@@ -149,7 +149,7 @@ def test_receive_order_paid_fails_if_no_user_maps_to_the_email():
         ):
             pretix_event_order_paid(ORDER_PAID)
 
-    assert not Subscription.objects.exists()
+    assert not Membership.objects.exists()
 
 
 def test_receive_order_paid_with_canceled_subscription():
@@ -157,8 +157,8 @@ def test_receive_order_paid_with_canceled_subscription():
     Test receiving an order paid with a canceled subscription.
     """
     user = UserFactory(email="pretix@example.org")
-    existing_subscription = SubscriptionFactory(
-        user=user, status=SubscriptionStatus.CANCELED
+    existing_subscription = MembershipFactory(
+        user=user, status=MembershipStatus.CANCELED
     )
 
     with respx.mock as mock, time_machine.travel("2021-12-16 01:04:50Z", tick=False):
@@ -176,12 +176,12 @@ def test_receive_order_paid_with_canceled_subscription():
         )
         pretix_event_order_paid(ORDER_PAID)
 
-    created_subscription = Subscription.objects.get(user=user)
+    created_membership = Membership.objects.get(user=user)
 
-    assert created_subscription.id == existing_subscription.id
-    assert created_subscription.status == SubscriptionStatus.ACTIVE
-    assert created_subscription.user_id == user.id
-    assert created_subscription.payments.count() == 1
+    assert created_membership.id == existing_subscription.id
+    assert created_membership.status == MembershipStatus.ACTIVE
+    assert created_membership.user_id == user.id
+    assert created_membership.payments.count() == 1
 
 
 def test_receive_order_paid_of_period_outside_current_one():
@@ -205,12 +205,12 @@ def test_receive_order_paid_of_period_outside_current_one():
         )
         pretix_event_order_paid(ORDER_PAID)
 
-    created_subscription = Subscription.objects.get(user_id=user.id)
+    created_membership = Membership.objects.get(user_id=user.id)
 
     # We still accept the payment but we don't change to ACTIVE
-    assert created_subscription.status == SubscriptionStatus.PENDING
-    assert created_subscription.user_id == user.id
-    assert created_subscription.payments.count() == 1
+    assert created_membership.status == MembershipStatus.PENDING
+    assert created_membership.user_id == user.id
+    assert created_membership.payments.count() == 1
 
 
 def test_receive_order_paid_of_already_subscribed_fails_with_error_message():
@@ -218,7 +218,7 @@ def test_receive_order_paid_of_already_subscribed_fails_with_error_message():
     Test receiving an order paid of a user who is already subscribed to the association.
     """
     user = UserFactory(email="pretix@example.org")
-    SubscriptionFactory(user=user, status=SubscriptionStatus.ACTIVE)
+    MembershipFactory(user=user, status=MembershipStatus.ACTIVE)
 
     with respx.mock as mock, time_machine.travel("2023-12-16 01:04:50Z", tick=False):
         mock.get(
@@ -239,11 +239,11 @@ def test_receive_order_paid_of_already_subscribed_fails_with_error_message():
         ):
             pretix_event_order_paid(ORDER_PAID)
 
-    created_subscription = Subscription.objects.get(user_id=user.id)
+    created_membership = Membership.objects.get(user_id=user.id)
 
     # We still accept the payment but we don't change ACTIVE
-    assert created_subscription.status == SubscriptionStatus.ACTIVE
-    assert created_subscription.payments.count() == 0
+    assert created_membership.status == MembershipStatus.ACTIVE
+    assert created_membership.payments.count() == 0
 
 
 def test_can_subscribe_with_mix_of_manual_and_refunds():
@@ -268,13 +268,13 @@ def test_can_subscribe_with_mix_of_manual_and_refunds():
 
         pretix_event_order_paid(ORDER_PAID)
 
-    created_subscription = Subscription.objects.get(user_id=user.id)
+    created_membership = Membership.objects.get(user_id=user.id)
 
-    assert created_subscription.status == SubscriptionStatus.ACTIVE
-    assert created_subscription.user_id == user.id
-    assert created_subscription.payments.count() == 1
+    assert created_membership.status == MembershipStatus.ACTIVE
+    assert created_membership.user_id == user.id
+    assert created_membership.payments.count() == 1
 
-    payment = created_subscription.payments.all()[0]
+    payment = created_membership.payments.all()[0]
     assert payment.total == 1000
 
 
@@ -301,13 +301,13 @@ def test_receive_order_paid_with_refunds_but_enough_to_cover_membership():
 
         pretix_event_order_paid(ORDER_PAID)
 
-    created_subscription = Subscription.objects.get(user_id=user.id)
+    created_membership = Membership.objects.get(user_id=user.id)
 
-    assert created_subscription.status == SubscriptionStatus.ACTIVE
-    assert created_subscription.user_id == user.id
-    assert created_subscription.payments.count() == 1
+    assert created_membership.status == MembershipStatus.ACTIVE
+    assert created_membership.user_id == user.id
+    assert created_membership.payments.count() == 1
 
-    payment = created_subscription.payments.all()[0]
+    payment = created_membership.payments.all()[0]
     assert payment.total == 1000
 
 
@@ -333,8 +333,8 @@ def test_order_rejected_if_not_enough_paid():
         with pytest.raises(NotEnoughPaid):
             pretix_event_order_paid(ORDER_PAID)
 
-    created_subscription = Subscription.objects.get(user_id=user.id)
+    created_membership = Membership.objects.get(user_id=user.id)
 
-    assert created_subscription.status == SubscriptionStatus.PENDING
-    assert created_subscription.user_id == user.id
-    assert created_subscription.payments.count() == 0
+    assert created_membership.status == MembershipStatus.PENDING
+    assert created_membership.user_id == user.id
+    assert created_membership.payments.count() == 0

@@ -6,14 +6,14 @@ from stripe import util
 
 from association_membership.enums import (
     PaymentStatus,
-    SubscriptionStatus,
+    MembershipStatus,
 )
 from association_membership.models import (
-    Subscription,
+    Membership,
 )
 from association_membership.tests.factories import (
     StripeCustomerFactory,
-    SubscriptionFactory,
+    MembershipFactory,
 )
 from association_membership.exceptions import NoCustomerFoundForEvent
 from association_membership.handlers.stripe.handle_invoice_paid import (
@@ -28,22 +28,22 @@ from users.tests.factories import UserFactory
 pytestmark = pytest.mark.django_db
 
 
-def test_receive_a_paid_stripe_subscription_invoice():
+def test_receive_a_paid_stripe_membership_invoice():
     user = UserFactory(email="stripe@example.org")
-    subscription = SubscriptionFactory(user=user)
+    membership = MembershipFactory(user=user)
     StripeCustomerFactory(user=user, stripe_customer_id="cus_customer_id")
 
     with time_machine.travel("2022-02-10 12:00:00", tick=False):
         handle_invoice_paid(INVOICE_PAID_PAYLOAD)
 
-    subscription = Subscription.objects.get(user=user)
+    membership = Membership.objects.get(user=user)
 
-    assert subscription.status == SubscriptionStatus.ACTIVE
+    assert membership.status == MembershipStatus.ACTIVE
 
-    payment = subscription.payments.first()
+    payment = membership.payments.first()
     assert payment.status == PaymentStatus.PAID
     assert payment.total == 1000
-    assert payment.subscription.id == subscription.id
+    assert payment.membership.id == membership.id
     assert payment.payment_date == datetime.fromtimestamp(1618062032, tz=timezone.utc)
     assert payment.period_start == datetime.fromtimestamp(1618062031, tz=timezone.utc)
     assert payment.period_end == datetime.fromtimestamp(1649598031, tz=timezone.utc)
@@ -61,26 +61,26 @@ def test_receive_a_paid_stripe_subscription_invoice():
 
 def test_receive_same_paid_invoice_twice_does_not_record_payment_twice():
     user = UserFactory(email="stripe@example.org")
-    subscription = SubscriptionFactory(user_id=user.id)
+    membership = MembershipFactory(user_id=user.id)
     StripeCustomerFactory(user_id=user.id, stripe_customer_id="cus_customer_id")
 
     with time_machine.travel("2022-02-10 12:00:00", tick=False):
         handle_invoice_paid(INVOICE_PAID_PAYLOAD)
 
-    subscription = Subscription.objects.get(user_id=user.id)
-    assert subscription.status == SubscriptionStatus.ACTIVE
-    assert subscription.payments.count() == 1
+    membership = Membership.objects.get(user_id=user.id)
+    assert membership.status == MembershipStatus.ACTIVE
+    assert membership.payments.count() == 1
 
     handle_invoice_paid(INVOICE_PAID_PAYLOAD)
 
-    subscription = Subscription.objects.get(user_id=user.id)
-    assert subscription.status == SubscriptionStatus.ACTIVE
-    assert subscription.payments.count() == 1
+    membership = Membership.objects.get(user_id=user.id)
+    assert membership.status == MembershipStatus.ACTIVE
+    assert membership.payments.count() == 1
 
 
 def test_receive_a_paid_invoice_for_the_past_doesnt_mark_it_as_active():
     user = UserFactory(email="stripe@example.org")
-    subscription = SubscriptionFactory(user_id=user.id)
+    membership = MembershipFactory(user_id=user.id)
     StripeCustomerFactory(user_id=user.id, stripe_customer_id="cus_customer_id")
 
     with time_machine.travel("2021-10-10 12:00:00", tick=False):
@@ -113,11 +113,11 @@ def test_receive_a_paid_invoice_for_the_past_doesnt_mark_it_as_active():
             )
         )
 
-    subscription = Subscription.objects.get(user_id=user.id)
-    assert subscription.status == SubscriptionStatus.PENDING
-    assert subscription.payments.count() == 1
+    membership = Membership.objects.get(user_id=user.id)
+    assert membership.status == MembershipStatus.PENDING
+    assert membership.payments.count() == 1
 
 
-def test_receiving_a_paid_invoice_for_a_customer_without_subscription_throws_an_error():
+def test_receiving_a_paid_invoice_for_a_customer_without_membership_throws_an_error():
     with pytest.raises(NoCustomerFoundForEvent):
         handle_invoice_paid(INVOICE_PAID_PAYLOAD)

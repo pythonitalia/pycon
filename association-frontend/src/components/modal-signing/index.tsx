@@ -77,8 +77,7 @@ export const ModalSigning: React.FC<ModalSigningProps> = ({
   const mutationResultTypename = mutationData?.__typename;
   const operationFailed = isErrorTypename(mutationResultTypename);
   const mutationErrors =
-    mutationData?.__typename === "RegisterValidationError" &&
-    mutationData.errors;
+    mutationData?.__typename === "RegisterErrors" && mutationData.errors;
   console.log(mutationErrors);
 
   const getFieldsError = (errors: RegisterErrors) => {

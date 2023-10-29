@@ -94,7 +94,10 @@ class UpdateParticipantInput:
         return errors.if_has_errors
 
 
-UpdateParticipantResult = Annotated[Union[Participant, UpdateParticipantErrors], strawberry.union(name="UpdateParticipantResult")]
+UpdateParticipantResult = Annotated[
+    Union[Participant, UpdateParticipantErrors],
+    strawberry.union(name="UpdateParticipantResult"),
+]
 
 
 @strawberry.field(permission_classes=[IsAuthenticated])

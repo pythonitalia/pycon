@@ -4,10 +4,10 @@ from typing import Any
 
 from association_membership.enums import (
     PaymentStatus,
-    SubscriptionStatus,
+    MembershipStatus,
 )
 from association_membership.models import (
-    Subscription,
+    Membership,
 )
 
 logger = logging.getLogger(__file__)
@@ -21,8 +21,8 @@ def membership_check_status(payload: Any):
 def update_now_active_subscriptions():
     now = datetime.now(timezone.utc)
     # Ideally in the future we should use the psql NOW() function
-    qs = Subscription.objects.filter(
-        status=SubscriptionStatus.CANCELED,
+    qs = Membership.objects.filter(
+        status=MembershipStatus.CANCELED,
         payments__status=PaymentStatus.PAID,
         payments__period_start__lte=now,
         payments__period_end__gte=now,
@@ -44,7 +44,7 @@ def update_expired_subscriptions():
     now = datetime.now(timezone.utc)
 
     # Ideally in the future we should use the psql NOW() function
-    subscriptions_with_payment_qs = Subscription.objects.filter(
+    subscriptions_with_payment_qs = Membership.objects.filter(
         payments__status=PaymentStatus.PAID,
         payments__period_start__lte=now,
         payments__period_end__gte=now,
@@ -53,7 +53,7 @@ def update_expired_subscriptions():
         subscriptions_with_payment_qs.values_list("id", flat=True)
     )
 
-    qs = Subscription.objects.filter(status=SubscriptionStatus.ACTIVE).exclude(
+    qs = Membership.objects.filter(status=MembershipStatus.ACTIVE).exclude(
         payments__status=PaymentStatus.PAID,
         payments__period_start__lte=now,
         payments__period_end__gte=now,

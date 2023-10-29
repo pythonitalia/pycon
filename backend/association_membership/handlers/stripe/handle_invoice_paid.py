@@ -1,7 +1,7 @@
 from django.db import transaction
 import logging
 from datetime import datetime, timezone
-from association_membership.models import Payment, StripeCustomer, Subscription
+from association_membership.models import Payment, StripeCustomer, Membership
 from association_membership.enums import PaymentStatus
 from association_membership.exceptions import NoCustomerFoundForEvent
 
@@ -29,17 +29,17 @@ def handle_invoice_paid(event):
         stripe_customer_id=stripe_customer_id
     ).first()
 
-    subscription = (
-        Subscription.objects.filter(user_id=stripe_customer.user_id).first()
+    membership = (
+        Membership.objects.filter(user_id=stripe_customer.user_id).first()
         if stripe_customer
         else None
     )
 
-    if not subscription or not stripe_customer:
+    if not membership or not stripe_customer:
         logger.error(
             "Unable to process stripe event_id=%s invoice paid "
             "because stripe_customer_id=%s "
-            "doesn't have an associated Customer locally or a subscription",
+            "doesn't have an associated Customer locally or a membership",
             event.id,
             stripe_customer_id,
         )
@@ -61,7 +61,7 @@ def handle_invoice_paid(event):
     now = datetime.now(timezone.utc)
 
     with transaction.atomic():
-        subscription.add_stripe_subscription_payment(
+        membership.add_stripe_subscription_payment(
             total=invoice.total,
             status=PaymentStatus.PAID,
             payment_date=datetime.fromtimestamp(
@@ -77,6 +77,6 @@ def handle_invoice_paid(event):
         # If the payment we just received is for the current
         # period, we mark the subscription as active
         if period_start <= now <= period_end:
-            subscription.mark_as_active()
+            membership.mark_as_active()
 
-        subscription.save(update_fields=["status"])
+        membership.save(update_fields=["status"])

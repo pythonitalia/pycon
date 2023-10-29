@@ -8,7 +8,7 @@ from dateutil import parser
 from dateutil.relativedelta import relativedelta
 from users.models import User
 from association_membership.enums import PaymentStatus
-from association_membership.models import Payment, PretixPayment, Subscription
+from association_membership.models import Payment, PretixPayment, Membership
 from association_membership.exceptions import (
     NoConfirmedPaymentFound,
     NotEnoughPaid,
@@ -122,12 +122,12 @@ def pretix_event_order_paid(payload):
         )
         return
 
-    subscription = Subscription.objects.filter(user_id=user_id).first()
+    membership = Membership.objects.filter(user_id=user_id).first()
 
-    if not subscription:
-        subscription = Subscription.objects.create(user_id=user_id)
+    if not membership:
+        membership = Membership.objects.create(user_id=user_id)
 
-    if subscription.is_active:
+    if membership.is_active:
         logger.error(
             "user_id=%s is already subscribed to the association "
             "but paid a subscription via order_code=%s (organizer=%s event=%s)!",
@@ -213,7 +213,7 @@ def pretix_event_order_paid(payload):
     )
 
     with transaction.atomic():
-        subscription.add_pretix_payment(
+        membership.add_pretix_payment(
             organizer=organizer,
             event=event,
             order_code=order_code,
@@ -228,6 +228,6 @@ def pretix_event_order_paid(payload):
         # period, we mark the subscription as active
         now = datetime.now(timezone.utc)
         if period_start <= now <= period_end:
-            subscription.mark_as_active()
+            membership.mark_as_active()
 
-        subscription.save(update_fields=["status"])
+        membership.save(update_fields=["status"])

@@ -3,7 +3,7 @@ from django.contrib import admin
 from association_membership.models import (
     Payment,
     PretixPayment,
-    Subscription,
+    Membership,
     StripeSubscriptionPayment,
 )
 
@@ -36,8 +36,8 @@ class PaymentInline(admin.TabularInline):
     )
 
 
-@admin.register(Subscription)
-class SubscriptionAdmin(admin.ModelAdmin):
+@admin.register(Membership)
+class MembershipAdmin(admin.ModelAdmin):
     list_display = ("user", "status")
     list_filter = ("status",)
     search_fields = ("user__email", "user__first_name", "user__last_name")

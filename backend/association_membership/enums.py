@@ -7,7 +7,7 @@ class ChoiceEnum(Enum):
         return [(e.value, e.name) for e in list(cls)]
 
 
-class SubscriptionStatus(str, ChoiceEnum):
+class MembershipStatus(str, ChoiceEnum):
     PENDING = "pending"
     ACTIVE = "active"
     CANCELED = "canceled"

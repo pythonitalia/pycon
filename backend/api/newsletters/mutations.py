@@ -5,20 +5,20 @@ from api.types import OperationResult
 from integrations.mailchimp import SubscriptionResult as MailchimpSubscriptionResult
 from strawberry_forms.mutations import FormMutation
 
-NewsletterSubscriptionStatus = strawberry.enum(
+NewsletterMembershipStatus = strawberry.enum(
     MailchimpSubscriptionResult, name="NewsletterSubscriptionResult"
 )
 
 
 @strawberry.type
 class NewsletterSubscribeResult:
-    status: NewsletterSubscriptionStatus
+    status: NewsletterMembershipStatus
 
 
 class SubscribeToNewsletter(FormMutation):
     @classmethod
     def transform(cls, result):
-        return NewsletterSubscribeResult(status=NewsletterSubscriptionStatus(result))
+        return NewsletterSubscribeResult(status=NewsletterMembershipStatus(result))
 
     class Meta:
         form_class = SubscribeToNewsletterForm
