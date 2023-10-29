@@ -43,4 +43,4 @@ jobs:
           DJANGO_SETTINGS_MODULE: pycon.settings.test
           STRIPE_SECRET_API_KEY: ""
           STRIPE_SUBSCRIPTION_PRICE_ID: ""
-          STRIPE_WEBHOOK_SECRET: ""
+          STRIPE_WEBHOOK_SIGNATURE_SECRET: ""

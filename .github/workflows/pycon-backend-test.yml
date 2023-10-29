@@ -68,4 +68,4 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
           MEDIA_FILES_STORAGE_BACKEND: django.core.files.storage.FileSystemStorage
           STRIPE_SUBSCRIPTION_PRICE_ID: ""
-          STRIPE_WEBHOOK_SECRET: ""
+          STRIPE_WEBHOOK_SIGNATURE_SECRET: ""
