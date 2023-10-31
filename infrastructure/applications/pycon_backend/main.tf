@@ -107,6 +107,10 @@ module "lambda" {
     PLAIN_API_TOKEN                           = module.secrets.value.plain_api_token
     CACHE_URL                                 = local.is_prod ? "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/8" : "locmemcache://snowflake"
     TEMPORAL_ADDRESS                          = var.deploy_temporal ? "${data.aws_instance.temporal_machine[0].private_ip}:7233" : ""
+    STRIPE_WEBHOOK_SIGNATURE_SECRET           = module.secrets.value.stripe_webhook_secret
+    STRIPE_SUBSCRIPTION_PRICE_ID              = module.secrets.value.stripe_membership_price_id
+    STRIPE_SECRET_API_KEY                     = module.secrets.value.stripe_secret_api_key
+    PRETIX_WEBHOOK_SECRET                     = module.secrets.value.pretix_webhook_secret
   }
 }
 
