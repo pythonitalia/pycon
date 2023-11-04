@@ -1,3 +1,4 @@
+import stripe
 import environ
 from django.utils.translation import gettext_lazy as _
 
@@ -65,6 +66,8 @@ INSTALLED_APPS = [
     "badge_scanner",
     "badges.apps.BadgesConfig",
     "google_api.apps.GoogleApiConfig",
+    "association_membership.apps.AssociationMembershipConfig",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -250,3 +253,14 @@ TEMPORAL_ADDRESS = env("TEMPORAL_ADDRESS", default="")
 SESSION_COOKIE_NAME = "pythonitalia_sessionid"
 CSRF_USE_SESSIONS = True
 CSRF_COOKIE_SECURE = DEBUG is False
+
+# Stripe
+STRIPE_SECRET_API_KEY = env("STRIPE_SECRET_API_KEY")
+STRIPE_SUBSCRIPTION_PRICE_ID = env("STRIPE_SUBSCRIPTION_PRICE_ID")
+STRIPE_WEBHOOK_SECRET = env("STRIPE_WEBHOOK_SIGNATURE_SECRET")
+
+stripe.api_key = STRIPE_SECRET_API_KEY
+
+PRETIX_WEBHOOK_SECRET = env("PRETIX_WEBHOOK_SECRET", default="")
+
+ASSOCIATION_FRONTEND_URL = env("ASSOCIATION_FRONTEND_URL", default="")

@@ -8,7 +8,7 @@ const Home = () => (
   <>
     <SectionPythonIta />
     <SectionPyConIta />
-    {/* <SectionJoin /> */}
+    <SectionJoin />
   </>
 );
 

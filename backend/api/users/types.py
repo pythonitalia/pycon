@@ -16,6 +16,7 @@ from grants.models import Grant as GrantModel
 from participants.models import Participant as ParticipantModel
 from api.helpers.ids import encode_hashid
 from badges.roles import ConferenceRole, get_conference_roles_for_user
+from association_membership.models import Membership
 from schedule.models import ScheduleItemStar as ScheduleItemStarModel
 from submissions.models import Submission as SubmissionModel
 
@@ -117,8 +118,7 @@ class User:
 
     @strawberry.field
     def is_python_italia_member(self) -> bool:
-        # TODO: Implement is_python_italia_member
-        return False
+        return Membership.objects.active().of_user(self.id).exists()
 
     @classmethod
     def from_django_model(cls, user):

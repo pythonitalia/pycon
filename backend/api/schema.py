@@ -1,5 +1,4 @@
 import strawberry
-from strawberry.extensions.tracing.sentry import SentryTracingExtensionSync
 
 from api.participants.mutations import ParticipantMutations
 from .users.mutations import UsersMutations
@@ -25,6 +24,7 @@ from .voting.mutations import VotesMutations
 from .badge_scanner.schema import BadgeScannerQuery, BadgeScannerMutation
 from .participants.queries import ParticipantQueries
 from .users.queries import UserQuery
+from .association_membership.mutation import AssociationMembershipMutation
 
 
 @strawberry.type
@@ -60,6 +60,7 @@ class Mutation(
     BadgeScannerMutation,
     ParticipantMutations,
     UsersMutations,
+    AssociationMembershipMutation,
 ):
     pass
 

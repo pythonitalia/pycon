@@ -15,8 +15,10 @@ mutation Register($input: RegisterInput!) {
     }
 
     ... on RegisterErrors {
-      email
-      password
+      errors {
+        email
+        password
+      }
     }
   }
 }

@@ -1,3 +1,6 @@
+import base64
+from rest_framework.test import APIClient
+
 import pytest
 from django.test.client import Client
 
@@ -45,6 +48,16 @@ def language():
 @pytest.fixture
 def http_client():
     return Client()
+
+
+@pytest.fixture
+def rest_api_client():
+    api_client = APIClient()
+    api_client.basic_auth = lambda username, password: api_client.credentials(
+        HTTP_AUTHORIZATION="Basic "
+        + base64.b64encode(f"{username}:{password}".encode("utf-8")).decode("utf-8")
+    )
+    return api_client
 
 
 def pytest_addoption(parser):
