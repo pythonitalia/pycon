@@ -76,6 +76,9 @@ RUN USERS_SERVICE=empty \
     AWS_REGION_NAME=eu-central-1 \
     SECRET_KEY=DEMO \
     PASTAPORTO_SECRET=demo \
+    STRIPE_SECRET_API_KEY=demo \
+    STRIPE_SUBSCRIPTION_PRICE_ID=demo \
+    STRIPE_WEBHOOK_SECRET=demo \
     ${FUNCTION_DIR}/.venv/bin/python manage.py collectstatic --noinput
 
 ENTRYPOINT ["/home/app/.venv/bin/python", "-m", "awslambdaric"]
