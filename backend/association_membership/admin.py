@@ -40,6 +40,6 @@ class PaymentInline(admin.TabularInline):
 class MembershipAdmin(admin.ModelAdmin):
     list_display = ("user", "status")
     list_filter = ("status",)
-    search_fields = ("user__email", "user__first_name", "user__last_name")
+    search_fields = ("user__email", "user__full_name", "user__name")
     autocomplete_fields = ("user",)
     inlines = [PaymentInline]
