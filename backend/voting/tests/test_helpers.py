@@ -2,6 +2,7 @@ from association_membership.tests.factories import (
     MembershipFactory,
 )
 import pytest
+from association_membership.enums import MembershipStatus
 
 from voting.helpers import check_if_user_can_vote
 
@@ -43,7 +44,10 @@ def test_user_can_vote_if_is_a_member_of_python_italia(
     user, conference, mocker, is_member
 ):
     mocker.patch("voting.helpers.user_has_admission_ticket", return_value=False)
-    MembershipFactory(user=user, status="ACTIVE" if is_member else "PENDING")
+    MembershipFactory(
+        user=user,
+        status=MembershipStatus.ACTIVE if is_member else MembershipStatus.PENDING,
+    )
 
     assert check_if_user_can_vote(user, conference) == is_member
 
