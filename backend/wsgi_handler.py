@@ -77,7 +77,8 @@ def handler(event, context):
         apps.populate(settings.INSTALLED_APPS)
         from association_membership.handlers import run_handler
 
-        run_handler("crons", event["name"], event["payload"])
+        received_event = event["cronEvent"]
+        run_handler("crons", received_event["name"], received_event["payload"])
         return
 
     """Lambda event handler, invokes the WSGI wrapper and handles command invocation"""
