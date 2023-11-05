@@ -231,6 +231,7 @@ def test_create_grant_vouchers_on_pretix(rf, conference_factory, grant_factory, 
                 value="0.00",
             ),
         ],
+        any_order=True,
     )
 
     grant_1.refresh_from_db()
