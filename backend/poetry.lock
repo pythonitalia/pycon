@@ -2874,21 +2874,6 @@ requests = ">=2.0.0"
 rsa = ["oauthlib[signedtoken] (>=3.0.0)"]
 
 [[package]]
-name = "respx"
-version = "0.20.2"
-description = "A utility for mocking out the Python HTTPX and HTTP Core libraries."
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "respx-0.20.2-py2.py3-none-any.whl", hash = "sha256:ab8e1cf6da28a5b2dd883ea617f8130f77f676736e6e9e4a25817ad116a172c9"},
-    {file = "respx-0.20.2.tar.gz", hash = "sha256:07cf4108b1c88b82010f67d3c831dae33a375c7b436e54d87737c7f9f99be643"},
-]
-
-[package.dependencies]
-httpx = ">=0.21.0"
-
-[[package]]
 name = "rich"
 version = "13.6.0"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
@@ -3545,4 +3530,4 @@ lambda = ["awslambdaric"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "fd5f2b7706347553338aaa7c15f75b3567e87f3601c60d5dd2a0c0184b15ea4d"
+content-hash = "4d88292ae7bf91f4576ee4645e0d71d64b9c43efb7bfc33e8792a3b4120272a8"

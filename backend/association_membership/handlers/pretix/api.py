@@ -1,6 +1,6 @@
 from typing import Literal
 
-import httpx
+import requests
 
 from django.conf import settings
 
@@ -24,8 +24,7 @@ class PretixAPI:
         if qs:
             url = f"{url}?" + "&".join([f"{key}={value}" for key, value in qs.items()])
 
-        with httpx.Client(headers=headers) as client:
-            response = getattr(client, method)(url)
+        response = getattr(requests, method)(url, headers=headers)
 
         response.raise_for_status()
         return response

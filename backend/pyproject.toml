@@ -79,7 +79,6 @@ requests-mock = "^1.11.0"
 pytest-mock = "^3.12.0"
 pytest-cache = "^1.0"
 time-machine = "^2.13.0"
-respx = "0.20.2"
 rich = "^13.6.0"
 libcst = "^1.1.0"
 

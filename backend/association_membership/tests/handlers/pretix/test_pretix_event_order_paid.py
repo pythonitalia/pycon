@@ -2,7 +2,6 @@ import pytest
 import datetime
 from datetime import timezone
 
-import respx
 import time_machine
 from django.conf import settings
 from association_membership.models import (
@@ -36,20 +35,20 @@ from users.tests.factories import UserFactory
 pytestmark = pytest.mark.django_db
 
 
-def test_receive_order_paid_with_membership():
+def test_receive_order_paid_with_membership(requests_mock):
     user = UserFactory(email="pretix@example.org")
-    with respx.mock as mock, time_machine.travel("2021-12-16 01:04:50Z", tick=False):
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
-        ).respond(json=ORDER_DATA_WITH_MEMBERSHIP)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
-        ).respond(json=ITEMS_WITH_CATEGORY)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/"
-        ).respond(json=CATEGORIES)
-        mock.post("http://users-backend-url/internal-api").respond(
-            json={"data": {"userByEmail": {"id": 1}}}
+    with time_machine.travel("2021-12-16 01:04:50Z", tick=False):
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/",
+            json=ORDER_DATA_WITH_MEMBERSHIP,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25",
+            json=ITEMS_WITH_CATEGORY,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/",
+            json=CATEGORIES,
         )
         pretix_event_order_paid(ORDER_PAID)
 
@@ -78,21 +77,21 @@ def test_receive_order_paid_with_membership():
     assert pretix_payment.event_id == "local-conf-test"
 
 
-def test_receive_order_paid_twice_doesnt_process_the_payment_twice():
+def test_receive_order_paid_twice_doesnt_process_the_payment_twice(requests_mock):
     user = UserFactory(email="pretix@example.org")
 
-    with respx.mock as mock, time_machine.travel("2021-12-16 01:04:50Z", tick=False):
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
-        ).respond(json=ORDER_DATA_WITH_MEMBERSHIP)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
-        ).respond(json=ITEMS_WITH_CATEGORY)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/"
-        ).respond(json=CATEGORIES)
-        mock.post("http://users-backend-url/internal-api").respond(
-            json={"data": {"userByEmail": {"id": 1}}}
+    with time_machine.travel("2021-12-16 01:04:50Z", tick=False):
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/",
+            json=ORDER_DATA_WITH_MEMBERSHIP,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25",
+            json=ITEMS_WITH_CATEGORY,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/",
+            json=CATEGORIES,
         )
         pretix_event_order_paid(ORDER_PAID)
 
@@ -109,38 +108,38 @@ def test_receive_order_paid_twice_doesnt_process_the_payment_twice():
         assert created_membership.payments.count() == 1
 
 
-def test_receive_order_paid_without_membership_purchase():
-    with respx.mock as mock, time_machine.travel("2021-12-16 01:04:50Z", tick=False):
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
-        ).respond(json=ORDER_DATA_WITHOUT_MEMBERSHIP)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
-        ).respond(json=ITEMS_WITH_CATEGORY)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/"
-        ).respond(json=CATEGORIES)
-        mock.post("http://users-backend-url/internal-api").respond(
-            json={"data": {"userByEmail": {"id": 1}}}
+def test_receive_order_paid_without_membership_purchase(requests_mock):
+    with time_machine.travel("2021-12-16 01:04:50Z", tick=False):
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/",
+            json=ORDER_DATA_WITHOUT_MEMBERSHIP,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25",
+            json=ITEMS_WITH_CATEGORY,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/",
+            json=CATEGORIES,
         )
         pretix_event_order_paid(ORDER_PAID)
 
     assert not Membership.objects.filter(user_id=1).exists()
 
 
-def test_receive_order_paid_fails_if_no_user_maps_to_the_email():
-    with respx.mock as mock, time_machine.travel("2021-12-16 01:04:50Z", tick=False):
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
-        ).respond(json=ORDER_DATA_WITH_MEMBERSHIP)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
-        ).respond(json=ITEMS_WITH_CATEGORY)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/"
-        ).respond(json=CATEGORIES)
-        mock.post("http://users-backend-url/internal-api").respond(
-            json={"data": {"userByEmail": None}}
+def test_receive_order_paid_fails_if_no_user_maps_to_the_email(requests_mock):
+    with time_machine.travel("2021-12-16 01:04:50Z", tick=False):
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/",
+            json=ORDER_DATA_WITH_MEMBERSHIP,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25",
+            json=ITEMS_WITH_CATEGORY,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/",
+            json=CATEGORIES,
         )
 
         with pytest.raises(
@@ -152,7 +151,7 @@ def test_receive_order_paid_fails_if_no_user_maps_to_the_email():
     assert not Membership.objects.exists()
 
 
-def test_receive_order_paid_with_canceled_subscription():
+def test_receive_order_paid_with_canceled_subscription(requests_mock):
     """
     Test receiving an order paid with a canceled subscription.
     """
@@ -161,19 +160,20 @@ def test_receive_order_paid_with_canceled_subscription():
         user=user, status=MembershipStatus.CANCELED
     )
 
-    with respx.mock as mock, time_machine.travel("2021-12-16 01:04:50Z", tick=False):
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
-        ).respond(json=ORDER_DATA_WITH_MEMBERSHIP)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
-        ).respond(json=ITEMS_WITH_CATEGORY)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/"
-        ).respond(json=CATEGORIES)
-        mock.post("http://users-backend-url/internal-api").respond(
-            json={"data": {"userByEmail": {"id": 1}}}
+    with time_machine.travel("2021-12-16 01:04:50Z", tick=False):
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/",
+            json=ORDER_DATA_WITH_MEMBERSHIP,
         )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25",
+            json=ITEMS_WITH_CATEGORY,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/",
+            json=CATEGORIES,
+        )
+
         pretix_event_order_paid(ORDER_PAID)
 
     created_membership = Membership.objects.get(user=user)
@@ -184,24 +184,24 @@ def test_receive_order_paid_with_canceled_subscription():
     assert created_membership.payments.count() == 1
 
 
-def test_receive_order_paid_of_period_outside_current_one():
+def test_receive_order_paid_of_period_outside_current_one(requests_mock):
     """
     Test receiving an order paid of a period outside the current one.
     """
     user = UserFactory(email="pretix@example.org")
 
-    with respx.mock as mock, time_machine.travel("2023-12-16 01:04:50Z", tick=False):
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
-        ).respond(json=ORDER_DATA_WITH_MEMBERSHIP)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
-        ).respond(json=ITEMS_WITH_CATEGORY)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/"
-        ).respond(json=CATEGORIES)
-        mock.post("http://users-backend-url/internal-api").respond(
-            json={"data": {"userByEmail": {"id": 1}}}
+    with time_machine.travel("2023-12-16 01:04:50Z", tick=False):
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/",
+            json=ORDER_DATA_WITH_MEMBERSHIP,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25",
+            json=ITEMS_WITH_CATEGORY,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/",
+            json=CATEGORIES,
         )
         pretix_event_order_paid(ORDER_PAID)
 
@@ -213,25 +213,27 @@ def test_receive_order_paid_of_period_outside_current_one():
     assert created_membership.payments.count() == 1
 
 
-def test_receive_order_paid_of_already_subscribed_fails_with_error_message():
+def test_receive_order_paid_of_already_subscribed_fails_with_error_message(
+    requests_mock,
+):
     """
     Test receiving an order paid of a user who is already subscribed to the association.
     """
     user = UserFactory(email="pretix@example.org")
     MembershipFactory(user=user, status=MembershipStatus.ACTIVE)
 
-    with respx.mock as mock, time_machine.travel("2023-12-16 01:04:50Z", tick=False):
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
-        ).respond(json=ORDER_DATA_WITH_MEMBERSHIP)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
-        ).respond(json=ITEMS_WITH_CATEGORY)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/"
-        ).respond(json=CATEGORIES)
-        mock.post("http://users-backend-url/internal-api").respond(
-            json={"data": {"userByEmail": {"id": 1}}}
+    with time_machine.travel("2023-12-16 01:04:50Z", tick=False):
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/",
+            json=ORDER_DATA_WITH_MEMBERSHIP,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25",
+            json=ITEMS_WITH_CATEGORY,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/",
+            json=CATEGORIES,
         )
 
         with pytest.raises(
@@ -246,24 +248,28 @@ def test_receive_order_paid_of_already_subscribed_fails_with_error_message():
     assert created_membership.payments.count() == 0
 
 
-def test_can_subscribe_with_mix_of_manual_and_refunds():
+def test_can_subscribe_with_mix_of_manual_and_refunds(requests_mock):
     """
     Test subscribing with a mix of manual and refunds.
     """
     user = UserFactory(email="pretix@example.org")
 
-    with respx.mock as mock, time_machine.travel("2021-12-16 01:04:50Z", tick=False):
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
-        ).respond(json=ORDER_DATA_WITH_REFUNDS)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
-        ).respond(json=ITEMS_WITH_CATEGORY)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/"
-        ).respond(json=CATEGORIES)
-        mock.post("http://users-backend-url/internal-api").respond(
-            json={"data": {"userByEmail": {"id": 1}}}
+    with time_machine.travel("2021-12-16 01:04:50Z", tick=False):
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/",
+            json=ORDER_DATA_WITH_REFUNDS,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25",
+            json=ITEMS_WITH_CATEGORY,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/",
+            json=CATEGORIES,
+        )
+        requests_mock.post(
+            "http://users-backend-url/internal-api",
+            json={"data": {"userByEmail": {"id": 1}}},
         )
 
         pretix_event_order_paid(ORDER_PAID)
@@ -278,25 +284,29 @@ def test_can_subscribe_with_mix_of_manual_and_refunds():
     assert payment.total == 1000
 
 
-def test_receive_order_paid_with_refunds_but_enough_to_cover_membership():
+def test_receive_order_paid_with_refunds_but_enough_to_cover_membership(requests_mock):
     """
     If some has been refunded but the user paid enough to cover
     the membership price it gets accepted.
     """
     user = UserFactory(email="pretix@example.org")
 
-    with respx.mock as mock, time_machine.travel("2021-12-16 01:04:50Z", tick=False):
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
-        ).respond(json=ORDER_DATA_WITH_REFUND_EVERYTHING_BUT_MEMBERSHIP)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
-        ).respond(json=ITEMS_WITH_CATEGORY)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/"
-        ).respond(json=CATEGORIES)
-        mock.post("http://users-backend-url/internal-api").respond(
-            json={"data": {"userByEmail": {"id": 1}}}
+    with time_machine.travel("2021-12-16 01:04:50Z", tick=False):
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/",
+            json=ORDER_DATA_WITH_REFUND_EVERYTHING_BUT_MEMBERSHIP,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25",
+            json=ITEMS_WITH_CATEGORY,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/",
+            json=CATEGORIES,
+        )
+        requests_mock.post(
+            "http://users-backend-url/internal-api",
+            json={"data": {"userByEmail": {"id": 1}}},
         )
 
         pretix_event_order_paid(ORDER_PAID)
@@ -311,23 +321,21 @@ def test_receive_order_paid_with_refunds_but_enough_to_cover_membership():
     assert payment.total == 1000
 
 
-def test_order_rejected_if_not_enough_paid():
+def test_order_rejected_if_not_enough_paid(requests_mock):
     user = UserFactory(email="pretix@example.org")
 
-    with respx.mock as mock, time_machine.travel("2021-12-16 01:04:50Z", tick=False):
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/"
-        ).respond(
-            json=ORDER_DATA_WITH_REFUND_EVERYTHING_AND_NOT_ENOUGH_TO_COVER_MEMBERSHIP
+    with time_machine.travel("2021-12-16 01:04:50Z", tick=False):
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/orders/9YKZK/",
+            json=ORDER_DATA_WITH_REFUND_EVERYTHING_AND_NOT_ENOUGH_TO_COVER_MEMBERSHIP,
         )
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25"
-        ).respond(json=ITEMS_WITH_CATEGORY)
-        mock.get(
-            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/"
-        ).respond(json=CATEGORIES)
-        mock.post("http://users-backend-url/internal-api").respond(
-            json={"data": {"userByEmail": {"id": 1}}}
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/items/?active=true&category=25",
+            json=ITEMS_WITH_CATEGORY,
+        )
+        requests_mock.get(
+            f"{settings.PRETIX_API}organizers/test-organizer/events/local-conf-test/categories/",
+            json=CATEGORIES,
         )
 
         with pytest.raises(NotEnoughPaid):

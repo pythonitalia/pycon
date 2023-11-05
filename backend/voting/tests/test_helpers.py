@@ -2,7 +2,6 @@ from association_membership.tests.factories import (
     MembershipFactory,
 )
 import pytest
-import respx
 
 from voting.helpers import check_if_user_can_vote
 
@@ -65,5 +64,4 @@ def test_user_can_vote_if_has_ticket_for_a_previous_conference(
         pretix_event_id="event-slug",
     )
 
-    with respx.mock:
-        assert check_if_user_can_vote(user, conference) is True
+    assert check_if_user_can_vote(user, conference) is True
