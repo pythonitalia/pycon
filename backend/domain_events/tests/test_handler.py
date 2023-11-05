@@ -7,7 +7,6 @@ from conferences.models.speaker_voucher import SpeakerVoucher
 from grants.tests.factories import GrantFactory
 from users.tests.factories import UserFactory
 from schedule.models import ScheduleItem
-import respx
 from django.utils import timezone
 from pythonit_toolkit.emails.templates import EmailTemplate
 
@@ -139,7 +138,7 @@ def test_handle_submission_time_slot_changed():
         "submission_title": "Title title",
     }
 
-    with patch("domain_events.handler.send_email") as email_mock, respx.mock:
+    with patch("domain_events.handler.send_email") as email_mock:
         handle_submission_time_slot_changed(data)
 
     email_mock.assert_called_once_with(
@@ -237,9 +236,7 @@ def test_handle_speaker_voucher_email_sent_cospeaker(settings, speaker_voucher_f
         "speaker_voucher_id": speaker_voucher.id,
     }
 
-    with patch(
-        "domain_events.handler.send_email"
-    ) as email_mock, respx.mock, time_machine.travel(
+    with patch("domain_events.handler.send_email") as email_mock, time_machine.travel(
         "2020-10-10 10:00:00Z", tick=False
     ):
         handle_speaker_voucher_email_sent(data)
@@ -539,7 +536,7 @@ def test_handle_speaker_communication_sent_to_speakers_without_ticket(
         json={"user_has_admission_ticket": has_ticket},
     )
 
-    with patch("domain_events.handler.send_email") as email_mock, respx.mock:
+    with patch("domain_events.handler.send_email") as email_mock:
         handle_speaker_communication_sent(data)
 
     if not has_ticket:

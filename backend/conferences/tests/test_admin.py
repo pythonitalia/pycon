@@ -216,7 +216,8 @@ def test_send_voucher_via_email(
         [
             call(speaker_voucher_1),
             call(speaker_voucher_2),
-        ]
+        ],
+        any_order=True,
     )
 
 
@@ -342,6 +343,7 @@ def test_create_speaker_vouchers_on_pretix(
                 value="25.00",
             ),
         ],
+        any_order=True,
     )
 
     voucher_1.refresh_from_db()

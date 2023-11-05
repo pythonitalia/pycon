@@ -1,4 +1,3 @@
-import respx
 from django.conf import settings
 from pytest import mark, raises
 
@@ -165,11 +164,7 @@ def test_cannot_vote_without_a_ticket_or_membership(
         json={"user_has_admission_ticket": False},
     )
 
-    with respx.mock as mock:
-        mock.post(f"{settings.ASSOCIATION_BACKEND_SERVICE}/internal-api").respond(
-            json={"data": {"userIdIsMember": False}}
-        )
-        resp, _ = _submit_vote(graphql_client, submission, value_index=3)
+    resp, _ = _submit_vote(graphql_client, submission, value_index=3)
 
     assert not resp.get("errors")
     assert resp["data"]["sendVote"]["__typename"] == "SendVoteErrors"
