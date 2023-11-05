@@ -3,7 +3,8 @@
 """
 Copied from: https://github.com/dougmoscrop/serverless-http
 
-This module loads the WSGI application specified by FQN in `.serverless-wsgi` and invokes
+This module loads the WSGI application specified by FQN
+in `.serverless-wsgi` and invokes
 the request when the handler is called by AWS Lambda.
 Author: Logan Raarup <logan@logan.dk>
 """
@@ -31,8 +32,6 @@ logger = getLogger(__name__)
 SENTRY_DSN = settings.SENTRY_DSN
 
 if SENTRY_DSN:
-
-
     sentry_sdk.init(
         dsn=SENTRY_DSN,
         integrations=[
@@ -71,6 +70,14 @@ def handler(event, context):
         from sqs_messages import process_sqs_messages
 
         process_sqs_messages(event)
+        return
+
+    if "cronEvent" in event:
+        logger.info("Received cronEvent from lambda")
+        apps.populate(settings.INSTALLED_APPS)
+        from association_membership.handlers import run_handler
+
+        run_handler("crons", event["name"], event["payload"])
         return
 
     """Lambda event handler, invokes the WSGI wrapper and handles command invocation"""
