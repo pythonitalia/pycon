@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_event_rule" "membership_check_status" {
-  name                = "${terraform.workspace}-association-backend-membership-check-status"
+  name                = "${terraform.workspace}-pycon-backend-membership-check-status"
   description         = "Cronjob checking daily that people have a valid payment for their subscription"
   schedule_expression = "rate(1 day)"
 }
