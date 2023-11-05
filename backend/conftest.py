@@ -1,3 +1,8 @@
+from wagtail.models import Locale
+from django.core.files.images import ImageFile
+import os
+from io import BytesIO
+import PIL.Image
 import base64
 from rest_framework.test import APIClient
 
@@ -28,6 +33,7 @@ from users.tests.factories import *  # noqa
 from voting.tests.factories import *  # noqa
 from voting.tests.fixtures import *  # noqa
 from users.tests.factories import UserFactory
+from api.cms.tests.factories import *  # noqa
 
 
 @pytest.fixture()
@@ -94,3 +100,22 @@ class TestEmailBackend:
 def sent_emails():
     TestEmailBackend.ALL_EMAIL_BACKEND_CALLS = []
     yield TestEmailBackend.ALL_EMAIL_BACKEND_CALLS
+
+
+@pytest.fixture
+def image_file():
+    def wrapper(filename: str = "test.jpg"):
+        file = BytesIO()
+        image = PIL.Image.new("RGB", (640, 480), "white")
+        image.save(file, "JPEG")
+
+        yield ImageFile(file, name=filename)
+
+        os.remove(filename)
+
+    return wrapper
+
+
+@pytest.fixture
+def locale():
+    return lambda code: Locale.objects.get_or_create(language_code=code)[0]

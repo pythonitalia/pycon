@@ -1,6 +1,7 @@
 from pytest import mark
 
 from i18n.strings import LazyI18nString
+from api.cms.tests.factories import PageFactory
 
 
 def _query_pages(client, conference_code):
@@ -26,10 +27,13 @@ def _get_image_url(request, image):
 
 
 @mark.django_db
-def test_query_pages(rf, graphql_client, user_factory, page_factory):
-    page_factory(published=False, conference__code="pycon11")
-    page_factory(published=True, conference__code="pycon10")
-    page = page_factory(published=True, conference__code="pycon11")
+def test_query_pages(
+    rf,
+    graphql_client,
+):
+    PageFactory(published=False, conference__code="pycon11")
+    PageFactory(published=True, conference__code="pycon10")
+    page = PageFactory(published=True, conference__code="pycon11")
 
     request = rf.get("/")
 
@@ -49,9 +53,12 @@ def test_query_pages(rf, graphql_client, user_factory, page_factory):
 
 
 @mark.django_db
-def test_query_single_page(rf, graphql_client, user_factory, page_factory):
+def test_query_single_page(
+    rf,
+    graphql_client,
+):
     request = rf.get("/")
-    page = page_factory(
+    page = PageFactory(
         slug=LazyI18nString({"en": "demo"}),
         published=True,
         image=None,
@@ -91,8 +98,10 @@ def test_query_single_page(rf, graphql_client, user_factory, page_factory):
 
 
 @mark.django_db
-def test_passing_language(graphql_client, page_factory):
-    page_factory(
+def test_passing_language(
+    graphql_client,
+):
+    PageFactory(
         title=LazyI18nString({"en": "this is a test", "it": "questa è una prova"}),
         slug=LazyI18nString({"en": "slug", "it": "lumaca"}),
         content=LazyI18nString({"en": "content", "it": "contenuto"}),
@@ -116,8 +125,10 @@ def test_passing_language(graphql_client, page_factory):
 
 @mark.django_db
 @mark.skip(reason="disabled for now")
-def test_defaults_on_browser_language(graphql_client, page_factory):
-    page_factory(
+def test_defaults_on_browser_language(
+    graphql_client,
+):
+    PageFactory(
         title=LazyI18nString({"en": "this is a test", "it": "questa è una prova"}),
         slug=LazyI18nString({"en": "slug", "it": "lumaca"}),
         content=LazyI18nString({"en": "content", "it": "contenuto"}),
