@@ -1,6 +1,8 @@
+from association_membership.tests.factories import (
+    MembershipFactory,
+)
 import pytest
 import respx
-from django.conf import settings
 
 from voting.helpers import check_if_user_can_vote
 
@@ -11,11 +13,7 @@ def test_normal_user_cannot_vote(submission_factory, user, mocker):
     submission = submission_factory()
     mocker.patch("voting.helpers.user_has_admission_ticket", return_value=False)
 
-    with respx.mock as mock:
-        mock.post(f"{settings.ASSOCIATION_BACKEND_SERVICE}/internal-api").respond(
-            json={"data": {"userIdIsMember": False}}
-        )
-        assert check_if_user_can_vote(user, submission.conference) is False
+    assert check_if_user_can_vote(user, submission.conference) is False
 
 
 def test_user_can_vote_if_has_sent_a_submission(submission_factory, user):
@@ -46,12 +44,9 @@ def test_user_can_vote_if_is_a_member_of_python_italia(
     user, conference, mocker, is_member
 ):
     mocker.patch("voting.helpers.user_has_admission_ticket", return_value=False)
+    MembershipFactory(user=user, status="ACTIVE" if is_member else "PENDING")
 
-    with respx.mock as mock:
-        mock.post(f"{settings.ASSOCIATION_BACKEND_SERVICE}/internal-api").respond(
-            json={"data": {"userIdIsMember": is_member}}
-        )
-        assert check_if_user_can_vote(user, conference) == is_member
+    assert check_if_user_can_vote(user, conference) == is_member
 
 
 def test_user_can_vote_if_has_ticket_for_a_previous_conference(
@@ -70,9 +65,5 @@ def test_user_can_vote_if_has_ticket_for_a_previous_conference(
         pretix_event_id="event-slug",
     )
 
-    with respx.mock as mock:
-        mock.post(f"{settings.ASSOCIATION_BACKEND_SERVICE}/internal-api").respond(
-            json={"data": {"userIdIsMember": False}}
-        )
-
+    with respx.mock:
         assert check_if_user_can_vote(user, conference) is True
