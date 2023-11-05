@@ -8,7 +8,7 @@ pytestmark = pytest.mark.django_db
 
 def test_cannot_call_pretix_webhook_without_auth(rest_api_client):
     response = rest_api_client.post(reverse("pretix-webhook"))
-    assert response.status_code == 403
+    assert response.status_code == 401
 
 
 @override_settings(PRETIX_WEBHOOK_SECRET="secret")
@@ -26,7 +26,7 @@ def test_cannot_call_pretix_webhook_with_incorrect_basic_auth(rest_api_client):
     rest_api_client.basic_auth("pretix", "incorrect")
     response = rest_api_client.post(reverse("pretix-webhook"))
 
-    assert response.status_code == 403
+    assert response.status_code == 401
     assert "Incorrect authentication credentials." in response.json()["detail"]
 
 
