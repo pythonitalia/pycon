@@ -51,7 +51,7 @@ def ticket_id_to_user_hashid(
     if not attendee_user:
         return None
 
-    user_id = attendee_user["id"]
+    user_id = attendee_user.id
     return encode_hashid(int(user_id), salt=settings.USER_ID_HASH_SALT, min_length=6)
 
 
