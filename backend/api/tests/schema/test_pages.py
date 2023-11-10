@@ -1,7 +1,7 @@
 from pytest import mark
 
 from i18n.strings import LazyI18nString
-from api.cms.tests.factories import PageFactory
+from pages.tests.factories import PageFactory
 
 
 def _query_pages(client, conference_code):

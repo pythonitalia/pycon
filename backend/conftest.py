@@ -22,7 +22,6 @@ from job_board.tests.factories import *  # noqa
 from languages.models import Language
 from languages.tests.factories import *  # noqa
 from newsletters.tests.factories import *  # noqa
-from pages.tests.factories import *  # noqa
 from participants.tests.factories import *  # noqa
 from pretix.tests.fixtures import *  # noqa
 from reviews.tests.factories import *  # noqa
