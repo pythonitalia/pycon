@@ -1,4 +1,3 @@
-import json
 import pytest
 from cms.components.page.signals import revalidate_vercel_frontend
 from cms.components.sites.tests.factories import VercelFrontendSettingsFactory
@@ -22,11 +21,13 @@ def test_revalidate_vercel_frontend_disabled_if_not_configured(requests_mock):
 def test_revalidate_vercel_frontend(
     requests_mock,
 ):
+    site = SiteFactory()
     parent = PageFactory()
     page = PageFactory(slug="test-page123")
     page.set_url_path(parent)
 
-    site = SiteFactory(root_page=parent)
+    site.root_page = parent
+    site.save()
 
     settings = VercelFrontendSettingsFactory(
         revalidate_url="https://test.com", revalidate_secret="test", site=site
@@ -36,20 +37,22 @@ def test_revalidate_vercel_frontend(
     revalidate_vercel_frontend("test_revalidate_vercel_frontend", instance=page)
 
     assert mock_call.called
-
-    body = json.loads(mock_call.calls[0].request.content)
+    body = mock_call.last_request.json()
     assert body["secret"] == "test"
     assert body["path"] == "/en/test-page123"
 
 
-def test_revalidate_vercel_frontend_special_case_for_homepage(
+def test_revalidate_vercel_frontend_special_case_for_landing_page(
     requests_mock,
 ):
-    parent = PageFactory()
-    page = PageFactory(slug="homepage")
-    page.set_url_path(parent)
+    site = SiteFactory()
 
-    site = SiteFactory(root_page=parent)
+    parent = PageFactory()
+    page = PageFactory(slug=site.hostname)
+    page.set_url_path(parent)
+    site.root_page = parent
+
+    site.save()
 
     settings = VercelFrontendSettingsFactory(
         revalidate_url="https://test.com", revalidate_secret="test", site=site
@@ -60,7 +63,7 @@ def test_revalidate_vercel_frontend_special_case_for_homepage(
 
     assert mock_call.called
 
-    body = json.loads(mock_call.calls[0].request.content)
+    body = mock_call.last_request.json()
     assert body["secret"] == "test"
     assert body["path"] == "/en"
 
@@ -86,7 +89,7 @@ def test_revalidate_vercel_frontend_for_different_language(requests_mock, locale
 
     assert mock_call.called
 
-    body = json.loads(mock_call.calls[0].request.content)
+    body = mock_call.last_request.json()
     assert body["secret"] == "test"
     assert body["path"] == "/it/test123"
 
@@ -113,6 +116,4 @@ def test_revalidate_vercel_frontend_when_vercel_is_down_doesnt_crash(
     revalidate_vercel_frontend("test_revalidate_vercel_frontend", instance=italian_page)
 
     assert mock_call.called
-
-    json.loads(mock_call.calls[0].request.content)
     assert "Error while revalidating" in caplog.records[0].message

@@ -9,6 +9,7 @@ from api.views import GraphQLView
 from submissions.views import SubmissionAutocomplete
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
+from wagtail import urls as wagtail_urls
 
 urlpatterns = [
     path(
@@ -23,3 +24,7 @@ urlpatterns = [
     path("cms-documents/", include(wagtaildocs_urls)),
     path("", include("association_membership.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns = urlpatterns + [
+    path("", include(wagtail_urls)),
+]
