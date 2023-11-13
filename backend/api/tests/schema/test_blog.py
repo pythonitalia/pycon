@@ -5,6 +5,7 @@ from pytest import mark
 
 from helpers.tests import get_image_url_from_request
 from i18n.strings import LazyI18nString
+from blog.tests.factories import PostFactory
 
 
 def _query_blog_posts(client):
@@ -29,13 +30,16 @@ def _query_blog_posts(client):
 
 
 @mark.django_db
-def test_query_blog_posts(rf, graphql_client, user_factory, post_factory):
-    past_post = post_factory(published=timezone.now() - timedelta(days=1), image=None)
-    present_post = post_factory()
+def test_query_blog_posts(
+    rf,
+    graphql_client,
+):
+    past_post = PostFactory(published=timezone.now() - timedelta(days=1), image=None)
+    present_post = PostFactory()
 
     request = rf.get("/")
 
-    post_factory(published=timezone.now() + timedelta(days=1))
+    PostFactory(published=timezone.now() + timedelta(days=1))
 
     resp = _query_blog_posts(graphql_client)
 
@@ -67,9 +71,12 @@ def test_query_blog_posts(rf, graphql_client, user_factory, post_factory):
 
 
 @mark.django_db
-def test_query_single_post(rf, graphql_client, user_factory, post_factory):
+def test_query_single_post(
+    rf,
+    graphql_client,
+):
     request = rf.get("/")
-    post = post_factory(
+    post = PostFactory(
         slug=LazyI18nString({"en": "demo", "it": "esempio"}),
         published=timezone.now() - timedelta(days=1),
         image=None,
@@ -115,8 +122,8 @@ def test_query_single_post(rf, graphql_client, user_factory, post_factory):
 
 
 @mark.django_db
-def test_passing_language(graphql_client, post_factory):
-    post_factory(
+def test_passing_language(graphql_client):
+    PostFactory(
         title=LazyI18nString({"en": "this is a test", "it": "questa è una prova"}),
         slug=LazyI18nString({"en": "slug", "it": "lumaca"}),
         content=LazyI18nString({"en": "content", "it": "contenuto"}),

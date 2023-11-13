@@ -43,4 +43,4 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @property
     def display_name(self):
-        return self.full_name or self.name or self.email
+        return self.full_name or self.name

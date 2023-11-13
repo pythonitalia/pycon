@@ -21,6 +21,30 @@ FRONTEND_URL = env("FRONTEND_URL")
 # Application definition
 
 INSTALLED_APPS = [
+    # CMS parts
+    "cms.components.base",
+    "cms.components.home",
+    "cms.components.news",
+    "cms.components.page",
+    "cms.components.sites",
+    # CMS
+    "wagtail_localize",
+    "wagtail_localize.locales",
+    "wagtail.contrib.forms",
+    "wagtail.contrib.redirects",
+    "wagtail.contrib.settings",
+    "wagtail.embeds",
+    "wagtail.sites",
+    "wagtail.users",
+    "wagtail.snippets",
+    "wagtail.documents",
+    "wagtail.images",
+    "wagtail.search",
+    "wagtail.admin",
+    "wagtail",
+    "modelcluster",
+    "taggit",
+    # --
     "schedule.apps.ScheduleConfig",
     "custom_admin",
     "dal",
@@ -80,7 +104,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "qinspect.middleware.QueryInspectMiddleware",
+    # "qinspect.middleware.QueryInspectMiddleware",
 ]
 
 ROOT_URLCONF = "pycon.urls"
@@ -264,3 +288,22 @@ stripe.api_key = STRIPE_SECRET_API_KEY
 PRETIX_WEBHOOK_SECRET = env("PRETIX_WEBHOOK_SECRET", default="")
 
 ASSOCIATION_FRONTEND_URL = env("ASSOCIATION_FRONTEND_URL", default="")
+
+# Wagtail CMS
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
+    ("en", "English"),
+    ("it", "Italian"),
+]
+
+# Base URL to use when referring to full URLs within the Wagtail admin backend -
+# e.g. in notification emails. Don't include '/admin' or a trailing slash
+WAGTAILADMIN_BASE_URL = "http://cms.python.it"
+
+WAGTAILSEARCH_BACKENDS = {
+    "default": {
+        "BACKEND": "wagtail.search.backends.database",
+    }
+}
+
+WAGTAIL_SITE_NAME = "cms"
+WAGTAIL_I18N_ENABLED = True

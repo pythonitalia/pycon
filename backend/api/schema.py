@@ -25,6 +25,7 @@ from .badge_scanner.schema import BadgeScannerQuery, BadgeScannerMutation
 from .participants.queries import ParticipantQueries
 from .users.queries import UserQuery
 from .association_membership.mutation import AssociationMembershipMutation
+from .cms.schema import CMSQuery
 
 
 @strawberry.type
@@ -42,6 +43,7 @@ class Query(
     ParticipantQueries,
     BadgeScannerQuery,
     UserQuery,
+    CMSQuery,
 ):
     pass
 

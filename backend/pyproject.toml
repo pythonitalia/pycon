@@ -10,7 +10,7 @@ python = "^3.11"
 Django = "4.2.3"
 django-environ = "0.10.0"
 django-model-utils = "=4.1.1"
-pytz = "=2019.3"
+pytz = "2023.3.post1"
 django-timezone-field = "=4.0"
 django-fsm = "=2.6.1"
 certifi = "=2021.10.8"
@@ -56,6 +56,9 @@ opencv-python = "^4.8.0.74"
 argon2-cffi = "^23.1.0"
 stripe = "^7.0.0"
 djangorestframework = "^3.14.0"
+l18n = "^2021.3"
+wagtail = "5.1.1"
+wagtail-localize = "1.5.2"
 
 
 [tool.poetry.extras]
@@ -81,6 +84,7 @@ pytest-cache = "^1.0"
 time-machine = "^2.13.0"
 rich = "^13.6.0"
 libcst = "^1.1.0"
+wagtail-factories = "^4.1.0"
 
 [build-system]
 requires = ["poetry>=0.12"]
