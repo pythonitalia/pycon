@@ -21,6 +21,7 @@ FRONTEND_URL = env("FRONTEND_URL")
 # Application definition
 
 INSTALLED_APPS = [
+    "users",
     # CMS parts
     "cms.components.base",
     "cms.components.home",
@@ -59,7 +60,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "api.apps.ApiConfig",
     "timezone_field",
-    "users",
     "strawberry.django",
     "conferences.apps.ConferencesConfig",
     "languages.apps.LanguagesConfig",
