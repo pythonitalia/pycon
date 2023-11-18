@@ -10,6 +10,10 @@ def revalidate_vercel_frontend(sender, **kwargs):
     instance = kwargs["instance"]
 
     site = kwargs["instance"].get_site()
+    if not site:
+        # page doesn't belong to any site
+        return
+
     site_name = site.site_name
     hostname = site.hostname
     settings = VercelFrontendSettings.for_site(site)
