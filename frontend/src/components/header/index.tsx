@@ -59,14 +59,14 @@ export const Header = () => {
           icon: "tickets",
           link: "/tickets",
         },
-    // {
-    //   text:
-    //     isReady && loggedIn
-    //       ? getTranslatedMessage("header.dashboard", language)
-    //       : getTranslatedMessage("header.login", language),
-    //   icon: "user",
-    //   link: isReady && loggedIn ? "/profile" : "/login",
-    // },
+    {
+      text:
+        isReady && loggedIn
+          ? getTranslatedMessage("header.dashboard", language)
+          : getTranslatedMessage("header.login", language),
+      icon: "user",
+      link: isReady && loggedIn ? "/profile" : "/login",
+    },
   ];
 
   const conferenceMenu =
