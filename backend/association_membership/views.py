@@ -21,7 +21,7 @@ def stripe_webhook(request):
     try:
         signature = request.headers.get("stripe-signature")
         event = stripe.Webhook.construct_event(
-            payload=request.data,
+            payload=request.body,
             sig_header=signature,
             secret=settings.STRIPE_WEBHOOK_SECRET,
         )
