@@ -5,15 +5,4 @@ query NewsGridSection($code: String!, $language: String!) {
     title
     publishedAt
   }
-
-  blogPosts {
-    id
-    slug
-    title(language: $language)
-    excerpt(language: $language)
-    author {
-      fullName
-    }
-    published
-  }
 }
