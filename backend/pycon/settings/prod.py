@@ -7,14 +7,11 @@ SECRET_KEY = env("SECRET_KEY")
 #     raise ImproperlyConfigured("Please configure FRONTEND_URL for production")
 SENTRY_DSN = env("SENTRY_DSN", default="")
 
-DEFAULT_FILE_STORAGE = env(
-    "DEFAULT_FILE_STORAGE", default="pycon.storages.CustomS3Boto3Storage"
-)
-
 AWS_STORAGE_BUCKET_NAME = env("AWS_MEDIA_BUCKET", default=None)
 AWS_S3_REGION_NAME = env("AWS_REGION_NAME", default="eu-central-1")
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID", default=None)
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default=None)
+AWS_SESSION_TOKEN = env("AWS_SESSION_TOKEN", default=None)
 
 AWS_QUERYSTRING_AUTH = False
 AWS_S3_FILE_OVERWRITE = False

@@ -14,7 +14,7 @@ import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import { GenericPage, queryAllPages, queryPage, usePageQuery } from "~/types";
 
-export const Page = () => {
+export const FrontendPage = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
   const language = useCurrentLanguage();
@@ -70,19 +70,23 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const client = getApolloClient();
-
-  const {
-    data: { cmsPages: italianPages },
-  } = await queryAllPages(client, {
-    code: process.env.conferenceCode,
-    language: "it",
-  });
-  const {
-    data: { cmsPages: englishPages },
-  } = await queryAllPages(client, {
-    code: process.env.conferenceCode,
-    language: "en",
-  });
+  const [
+    {
+      data: { cmsPages: italianPages },
+    },
+    {
+      data: { cmsPages: englishPages },
+    },
+  ] = await Promise.all([
+    queryAllPages(client, {
+      code: process.env.conferenceCode,
+      language: "it",
+    }),
+    queryAllPages(client, {
+      code: process.env.conferenceCode,
+      language: "en",
+    }),
+  ]);
 
   const paths = [
     ...italianPages.map((page) => ({
@@ -105,4 +109,4 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export default Page;
+export default FrontendPage;

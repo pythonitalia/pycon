@@ -1,14 +1,14 @@
 from strawberry.permission import BasePermission
 
 from api.models import APIToken
-from voting.helpers import pastaporto_user_info_can_vote
+from voting.helpers import check_if_user_can_vote
 
 
 class IsAuthenticated(BasePermission):
     message = "User not logged in"
 
     def has_permission(self, source, info, **kwargs):
-        return info.context.request.pastaporto.is_authenticated
+        return info.context.request.user.is_authenticated
 
 
 class HasTokenPermission(BasePermission):
@@ -27,21 +27,21 @@ class IsStaffPermission(BasePermission):
     message = "You need to be a staff user"
 
     def has_permission(self, source, info, **kwargs):
-        pastaporto = info.context.request.pastaporto
+        user = info.context.request.user
 
-        if not pastaporto.is_authenticated:
+        if not user.is_authenticated:
             return False
 
-        return pastaporto.user_info.is_staff
+        return user.is_staff
 
 
 class CanSeeSubmissions(BasePermission):
     message = "You need to have a ticket to see submissions"
 
     def has_permission(self, conference, info):
-        pastaporto = info.context.request.pastaporto
+        user = info.context.request.user
 
-        if not pastaporto.is_authenticated:
+        if not user.is_authenticated:
             return False
 
-        return pastaporto_user_info_can_vote(pastaporto, conference)
+        return check_if_user_can_vote(user, conference)

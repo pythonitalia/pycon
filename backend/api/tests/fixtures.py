@@ -1,11 +1,9 @@
 import dataclasses
 import json
+from typing import Any, Dict, Optional
 
 import pytest
-import respx
-from asgiref.sync import async_to_sync
-from django.conf import settings
-from pythonit_toolkit.api.graphql_test_client import GraphQLClient, SimulatedUser
+from django.test import Client as DjangoTestClient
 
 
 def query_wrapper(original):
@@ -21,7 +19,7 @@ def query_wrapper(original):
     return call
 
 
-GraphQLClient.query = query_wrapper(async_to_sync(GraphQLClient.query))
+# GraphQLClient.query = query_wrapper(async_to_sync(GraphQLClient.query))
 
 
 class DjangoAsyncClientWrapper:
@@ -37,43 +35,50 @@ class DjangoAsyncClientWrapper:
         )
 
 
-@pytest.fixture()
-def graphql_client(async_client):
-    return GraphQLClient(
-        DjangoAsyncClientWrapper(async_client),
-        pastaporto_secret=settings.PASTAPORTO_SECRET,
-    )
+class NewGraphQLClient:
+    def __init__(self, *, include_full_response: bool = False):
+        self.client = DjangoTestClient()
+        self.include_full_response = include_full_response
 
+    def query(
+        self,
+        query: str,
+        variables: Optional[Dict[str, Any]] = None,
+        headers: Optional[Dict[str, Any]] = None,
+    ):
+        body = {"query": query}
+        headers = headers or {}
 
-@pytest.fixture()
-def admin_graphql_client(async_client):
-    graphql_client = GraphQLClient(
-        DjangoAsyncClientWrapper(async_client),
-        pastaporto_secret=settings.PASTAPORTO_SECRET,
-    )
-    graphql_client.force_login(SimulatedUser(id=1, email="test@user.it", is_staff=True))
-    return graphql_client
+        if variables:
+            body["variables"] = variables
 
-
-@pytest.fixture
-def mock_users_by_ids(mocker):
-
-    with respx.mock as mock:
-        mock.post(f"{settings.USERS_SERVICE_URL}/internal-api").respond(
-            json={
-                "data": {
-                    "usersByIds": [
-                        {
-                            "id": 10,
-                            "fullname": "Marco Acierno",
-                            "name": "Marco",
-                            "username": "marco",
-                            "gender": "male",
-                            "email": "marco@placeholder.it",
-                        }
-                    ]
-                }
-            }
+        resp = self.client.post(
+            "/graphql", data=body, headers=headers, content_type="application/json"
         )
+        data = json.loads(resp.content.decode())
 
-        yield
+        if self.include_full_response:
+            return data, resp
+        return data
+
+    def force_login(self, user):
+        self.client.force_login(user)
+
+
+@pytest.fixture()
+def graphql_client():
+    return NewGraphQLClient()
+
+
+@pytest.fixture()
+def full_response_graphql_client():
+    return NewGraphQLClient(include_full_response=True)
+
+
+@pytest.fixture()
+def admin_graphql_client(graphql_client):
+    from users.tests.factories import UserFactory
+
+    admin_user = UserFactory(is_staff=True, is_superuser=True)
+    graphql_client.force_login(admin_user)
+    return graphql_client

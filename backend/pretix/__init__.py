@@ -202,7 +202,6 @@ def get_questions(conference: Conference) -> Dict[str, Question]:
 def get_categories(conference: Conference) -> Dict[str, Category]:
     response = pretix(conference, "categories")
     response.raise_for_status()
-
     data = response.json()
     return {str(result["id"]): result for result in data["results"]}
 
@@ -484,7 +483,6 @@ def get_all_vouchers(conference: Conference):
 
 
 def get_user_ticket(conference: Conference, email: str, id: str):
-
     # TODO: filter by orderposition in the PretixAPI
     tickets = get_user_tickets(conference, email)
 

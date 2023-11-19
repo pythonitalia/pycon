@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { Link } from "@python-italia/pycon-styleguide";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, Container, Heading, jsx, Text } from "theme-ui";
@@ -11,7 +12,6 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { Introduction } from "~/components/cfp-introduction";
 import { CfpSendSubmission } from "~/components/cfp-send-submission";
-import { Link } from "~/components/link";
 import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -43,7 +43,7 @@ const CfpSectionOrClosedMessage = ({ open }: { open: boolean }) => {
 
       <Text>
         <FormattedMessage id="cfp.closed.voting" />{" "}
-        <Link path="/tickets">
+        <Link href="/tickets">
           <FormattedMessage id="cfp.closed.buyTicket" />
         </Link>
       </Text>

@@ -1,3 +1,4 @@
+from import_export.resources import ModelResource
 from collections import Counter
 from datetime import timedelta
 from itertools import groupby
@@ -22,8 +23,6 @@ from domain_events.publisher import (
 from pretix import create_voucher
 from schedule.models import ScheduleItem
 from submissions.models import Submission
-from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin, SearchUsersMixin
 
 from .models import Grant, GrantRecap
 
@@ -46,7 +45,7 @@ EXPORT_GRANTS_FIELDS = (
 )
 
 
-class GrantResource(ResourceUsersByIdsMixin):
+class GrantResource(ModelResource):
     search_field = "user_id"
     age_group = Field()
     email = Field()
@@ -59,14 +58,16 @@ class GrantResource(ResourceUsersByIdsMixin):
     USERS_SUBMISSIONS: Dict[int, List[Submission]] = {}
 
     def dehydrate_email(self, obj: Grant):
-        user = self.get_user_data(obj.user_id)
-        if user:
-            return user["email"]
+        if obj.user_id:
+            return obj.user.email
 
         # old grants have email in the model.
-        return self.email
+        return obj.email
 
     def dehydrate_age_group(self, obj: Grant):
+        if not obj.age_group:
+            return ""
+
         return Grant.AgeGroup(obj.age_group).label
 
     def dehydrate_has_sent_submission(self, obj: Grant) -> str:
@@ -131,7 +132,7 @@ class GrantResource(ResourceUsersByIdsMixin):
         submissions = Submission.objects.prefetch_related(
             "rankings__tag", "rankings__submission"
         ).filter(
-            speaker_id__in=self._PREFETCHED_USERS_BY_ID.keys(),
+            speaker_id__in=queryset.values_list("user_id", flat=True),
             conference_id=conference_id,
         )
 
@@ -328,9 +329,6 @@ def create_grant_vouchers_on_pretix(modeladmin, request, queryset):
 class GrantAdminForm(forms.ModelForm):
     class Meta:
         model = Grant
-        widgets = {
-            "user_id": UsersBackendAutocomplete(admin.site),
-        }
         fields = (
             "id",
             "name",
@@ -342,7 +340,7 @@ class GrantAdminForm(forms.ModelForm):
             "total_amount",
             "full_name",
             "conference",
-            "user_id",
+            "user",
             "age_group",
             "gender",
             "occupation",
@@ -363,7 +361,7 @@ class GrantAdminForm(forms.ModelForm):
 
 
 @admin.register(Grant)
-class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
+class GrantAdmin(ExportMixin, admin.ModelAdmin):
     speaker_ids = []
     resource_class = GrantResource
     form = GrantAdminForm
@@ -410,6 +408,7 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         send_voucher_via_email,
         "delete_selected",
     ]
+    autocomplete_fields = ("user",)
 
     fieldsets = (
         (
@@ -439,7 +438,7 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
                     "name",
                     "full_name",
                     "conference",
-                    "user_id",
+                    "user",
                     "age_group",
                     "gender",
                     "occupation",
@@ -469,7 +468,7 @@ class GrantAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
     )
     def user_display_name(self, obj):
         if obj.user_id:
-            return self.get_user_display_name(obj.user_id)
+            return obj.user.display_name
         return obj.email
 
     @admin.display(

@@ -1,3 +1,5 @@
+from import_export.resources import ModelResource
+
 from django import forms
 from django.contrib import admin, messages
 from django.utils.html import mark_safe
@@ -7,8 +9,6 @@ from import_export.fields import Field
 
 from participants.models import Participant
 from domain_events.publisher import send_proposal_rejected_email
-from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin, SearchUsersMixin
 
 from .models import Submission, SubmissionComment, SubmissionTag, SubmissionType
 
@@ -34,7 +34,7 @@ EXPORT_SUBMISSION_FIELDS = (
 )
 
 
-class SubmissionResource(ResourceUsersByIdsMixin):
+class SubmissionResource(ModelResource):
     search_field = "speaker_id"
     title_en = Field()
     title_it = Field()
@@ -84,19 +84,16 @@ class SubmissionResource(ResourceUsersByIdsMixin):
         return ", ".join([lang.name for lang in obj.languages.all()])
 
     def dehydrate_speaker_name(self, obj: Submission):
-        return self.get_user_display_name(obj.speaker_id)
+        return obj.speaker.display_name
 
     def dehydrate_speaker_email(self, obj: Submission):
-        user_data = self.get_user_data(obj.speaker_id)
-        return user_data["email"]
+        return obj.speaker.email
 
     def dehydrate_speaker_country(self, obj: Submission):
-        user_data = self.get_user_data(obj.speaker_id)
-        return user_data["country"]
+        return obj.speaker.country
 
     def dehydrate_speaker_gender(self, obj: Submission):
-        user_data = self.get_user_data(obj.speaker_id)
-        return user_data["gender"]
+        return obj.speaker.gender
 
     class Meta:
         model = Submission
@@ -104,30 +101,13 @@ class SubmissionResource(ResourceUsersByIdsMixin):
         export_order = EXPORT_SUBMISSION_FIELDS
 
 
-class SubmissionCommentInlineForm(forms.ModelForm):
-    class Meta:
-        model = SubmissionComment
-        fields = ["submission", "author_id", "text"]
-        widgets = {
-            "author_id": UsersBackendAutocomplete(admin.site),
-        }
-
-
-class SubmissionCommentInline(admin.TabularInline):
-    model = SubmissionComment
-    form = SubmissionCommentInlineForm
-
-
 class SubmissionAdminForm(forms.ModelForm):
     class Meta:
         model = Submission
-        widgets = {
-            "speaker_id": UsersBackendAutocomplete(admin.site),
-        }
         fields = [
             "title",
             "slug",
-            "speaker_id",
+            "speaker",
             "status",
             "type",
             "duration",
@@ -174,7 +154,7 @@ def send_proposal_rejected_email_action(modeladmin, request, queryset):
 
 
 @admin.register(Submission)
-class SubmissionAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
+class SubmissionAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = SubmissionResource
     form = SubmissionAdminForm
     list_display = (
@@ -198,7 +178,7 @@ class SubmissionAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
                 "fields": (
                     "title",
                     "slug",
-                    "speaker_id",
+                    "speaker",
                     "status",
                     "created",
                     "modified",
@@ -221,16 +201,18 @@ class SubmissionAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         "abstract",
         "notes",
         "previous_talk_video",
+        "speaker__email",
+        "speaker__full_name",
     )
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("tags",)
-    inlines = [SubmissionCommentInline]
     user_fk = "speaker_id"
     actions = [
         move_to_waiting_list,
         move_to_rejected,
         send_proposal_rejected_email_action,
     ]
+    autocomplete_fields = ("speaker",)
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         extra_context = extra_context or {}
@@ -252,7 +234,7 @@ class SubmissionAdmin(ExportMixin, AdminUsersMixin, SearchUsersMixin):
         description="Speaker",
     )
     def speaker_display_name(self, obj):
-        return self.get_user_display_name(obj.speaker_id)
+        return obj.speaker.display_name
 
     @admin.display(
         description="Tags",
@@ -290,4 +272,4 @@ class SubmissionTagAdmin(admin.ModelAdmin):
 
 @admin.register(SubmissionComment)
 class SubmissionCommentAdmin(admin.ModelAdmin):
-    list_display = ("submission", "author_id", "text")
+    list_display = ("submission", "author", "text")

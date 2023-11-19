@@ -6,11 +6,12 @@ from pytest_factoryboy import register
 
 from blog.models import Post
 from i18n.tests.factories import LanguageFactory
+from users.tests.factories import UserFactory
 
 
 @register
 class PostFactory(DjangoModelFactory):
-    author_id = factory.Faker("pyint", min_value=1)
+    author = factory.SubFactory(UserFactory)
     title = LanguageFactory("sentence")
     slug = LanguageFactory("slug")
     excerpt = LanguageFactory("sentence")

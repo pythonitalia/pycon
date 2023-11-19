@@ -20,7 +20,15 @@ const KeynotePage = () => {
   const {
     data: {
       conference: {
-        keynote: { title, description, speakers, start, end },
+        keynote: {
+          title,
+          description,
+          speakers,
+          start,
+          end,
+          rooms,
+          youtubeVideoId,
+        },
       },
     },
   } = useKeynoteQuery({
@@ -61,6 +69,8 @@ const KeynotePage = () => {
         endTime={end}
         bookable={false}
         speakers={speakers.map((speaker) => speaker.participant)}
+        rooms={rooms.map((room) => room.name)}
+        youtubeVideoId={youtubeVideoId}
       />
     </Page>
   );

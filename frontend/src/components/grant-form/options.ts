@@ -35,7 +35,7 @@ export const GENDER_OPTIONS = [
 
 export const OCCUPATION_OPTIONS = [
   {
-    value: null,
+    value: "",
     disabled: true,
     messageId: "grants.form.fields.occupation.values.selectOption",
   },
@@ -68,7 +68,7 @@ export const OCCUPATION_OPTIONS = [
 
 export const GRANT_TYPE_OPTIONS = [
   {
-    value: null,
+    value: "",
     disabled: true,
     messageId: "grants.form.fields.grantType.values.selectOption",
   },
@@ -91,7 +91,7 @@ export const GRANT_TYPE_OPTIONS = [
 
 export const INTERESTED_IN_VOLUNTEERING_OPTIONS = [
   {
-    value: null,
+    value: "",
     disabled: true,
     messageId:
       "grants.form.fields.interestedInVolunteering.values.selectOption",
@@ -115,7 +115,7 @@ export const INTERESTED_IN_VOLUNTEERING_OPTIONS = [
 
 export const AGE_GROUPS_OPTIONS = [
   {
-    value: null,
+    value: "" as AgeGroup,
     disabled: true,
     messageId: "grants.form.fields.ageGroup.values.selectOption",
   },

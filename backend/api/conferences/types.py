@@ -13,7 +13,7 @@ from api.hotels.types import HotelRoom
 from api.languages.types import Language
 from api.pretix.query import get_conference_tickets, get_voucher
 from api.pretix.types import TicketItem, Voucher
-from api.schedule.types import DayRoom, ScheduleItem, ScheduleItemUser
+from api.schedule.types import DayRoom, Room, ScheduleItem, ScheduleItemUser
 from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
 from api.voting.types import RankRequest
@@ -57,6 +57,8 @@ class Keynote:
     speakers: List[ScheduleItemUser]
     start: Optional[datetime]
     end: Optional[datetime]
+    rooms: List[Room]
+    youtube_video_id: Optional[str]
 
     def __init__(
         self,
@@ -68,6 +70,8 @@ class Keynote:
         speakers: List[ScheduleItemUser],
         start: Optional[datetime],
         end: Optional[datetime],
+        rooms: List[Room],
+        youtube_video_id: Optional[str],
     ):
         self.id = id
         self.title = title
@@ -77,6 +81,8 @@ class Keynote:
         self.speakers = speakers
         self.start = start
         self.end = end
+        self.rooms = rooms
+        self.youtube_video_id = youtube_video_id
 
     @classmethod
     def from_django_model(cls, instance):
@@ -89,12 +95,17 @@ class Keynote:
             topic=Topic.from_django_model(instance.topic) if instance.topic else None,
             speakers=[
                 ScheduleItemUser(
-                    id=speaker.user_id, conference_code=instance.conference.code
+                    id=speaker.user_id,
+                    fullname=speaker.user.full_name,
+                    full_name=speaker.user.full_name,
+                    conference_code=instance.conference.code,
                 )
                 for speaker in instance.speakers.all()
             ],
             start=schedule_item.start if schedule_item else None,
             end=schedule_item.end if schedule_item else None,
+            rooms=schedule_item.rooms.all() if schedule_item else [],
+            youtube_video_id=schedule_item.youtube_video_id if schedule_item else None,
         )
 
 

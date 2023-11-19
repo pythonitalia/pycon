@@ -15,9 +15,12 @@ class BaseErrorType:
     def add_error(self, field: str, message: str):
         self._has_errors = True
 
-        existing_errors = getattr(self, field, [])
+        if not self.errors:
+            self.errors = self.__annotations__["errors"]()
+
+        existing_errors = getattr(self.errors, field, [])
         existing_errors.append(message)
-        setattr(self, field, existing_errors)
+        setattr(self.errors, field, existing_errors)
 
     @property
     def has_errors(self) -> bool:
@@ -26,8 +29,17 @@ class BaseErrorType:
     @classmethod
     def with_error(cls, field: str, message: str):
         instance = cls()
-        setattr(instance, field, [message])
+        parent = cls.__annotations__["errors"]()
+        setattr(parent, field, [message])
+        instance.errors = parent
         return instance
+
+    @property
+    def if_has_errors(self):
+        if self.has_errors:
+            return self
+
+        return None
 
 
 @strawberry.input

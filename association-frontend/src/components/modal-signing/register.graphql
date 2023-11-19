@@ -9,19 +9,15 @@ mutation Register($input: RegisterInput!) {
         name
       }
     }
+
     ... on EmailAlreadyUsed {
       message
     }
-    ... on RegisterValidationError {
+
+    ... on RegisterErrors {
       errors {
-        email {
-          message
-          type
-        }
-        password {
-          message
-          type
-        }
+        email
+        password
       }
     }
   }

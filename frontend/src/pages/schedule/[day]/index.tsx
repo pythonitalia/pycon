@@ -13,7 +13,6 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { formatDay } from "~/components/day-selector/format-day";
 import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { ScheduleView } from "~/components/schedule-view";
@@ -33,6 +32,20 @@ export const getDayUrl = (day: string, language: Language | null = null) => {
     return `/${language}/schedule/${day}`;
   }
   return `/schedule/${day}`;
+};
+
+export const formatDay = (
+  day: string,
+  language: Language,
+  timezone: string,
+) => {
+  const d = new Date(day);
+  const formatter = new Intl.DateTimeFormat(language, {
+    weekday: "long",
+    day: "numeric",
+    timeZone: timezone,
+  });
+  return formatter.format(d);
 };
 
 const Meta = ({

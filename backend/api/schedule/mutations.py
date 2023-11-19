@@ -27,6 +27,7 @@ from schedule.models import (
 from submissions.models import Submission
 
 from ..permissions import IsAuthenticated, IsStaffPermission
+from typing import Annotated, Union
 
 
 @strawberry.type
@@ -104,21 +105,9 @@ class ScheduleItemIsFull:
     message: str = "This event is full"
 
 
-BookScheduleItemResult = strawberry.union(
-    "BookScheduleItemResult",
-    (
-        ScheduleItemType,
-        ScheduleItemIsFull,
-        UserNeedsConferenceTicket,
-        UserIsAlreadyBooked,
-        ScheduleItemNotBookable,
-    ),
-)
+BookScheduleItemResult = Annotated[Union[ScheduleItemType, ScheduleItemIsFull, UserNeedsConferenceTicket, UserIsAlreadyBooked, ScheduleItemNotBookable], strawberry.union(name="BookScheduleItemResult")]
 
-CancelBookingScheduleItemResult = strawberry.union(
-    "CancelBookingScheduleItemResult",
-    (ScheduleItemType, UserIsNotBooked, ScheduleItemNotBookable),
-)
+CancelBookingScheduleItemResult = Annotated[Union[ScheduleItemType, UserIsNotBooked, ScheduleItemNotBookable], strawberry.union(name="CancelBookingScheduleItemResult")]
 
 
 @strawberry.type
@@ -164,7 +153,7 @@ class ScheduleMutations:
         ScheduleItemAttendee.objects.create(
             schedule_item=schedule_item, user_id=user_id
         )
-        schedule_item._type_definition = ScheduleItemType._type_definition
+        schedule_item.__strawberry_definition__ = ScheduleItemType.__strawberry_definition__
         return schedule_item
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -183,7 +172,7 @@ class ScheduleMutations:
         ScheduleItemAttendee.objects.filter(
             schedule_item=schedule_item, user_id=user_id
         ).delete()
-        schedule_item._type_definition = ScheduleItemType._type_definition
+        schedule_item.__strawberry_definition__ = ScheduleItemType.__strawberry_definition__
         return schedule_item
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])

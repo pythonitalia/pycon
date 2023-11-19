@@ -29,11 +29,10 @@ class I18nFieldMixin:
         if isinstance(value, LazyI18nString):
             value = value.data
         if isinstance(value, dict):
-            return json.dumps({k: v for k, v in value.items() if v}, sort_keys=True)
+            return {k: v for k, v in value.items() if v}
         if isinstance(value, LazyI18nString.LazyGettextProxy):
-            return json.dumps(
+            return (
                 {lng: value[lng] for lng, lngname in settings.LANGUAGES if value[lng]},
-                sort_keys=True,
             )
         return value
 

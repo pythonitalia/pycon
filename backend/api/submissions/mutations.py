@@ -1,6 +1,6 @@
 import math
 import re
-from typing import Optional
+from typing import Annotated, Union, Optional
 
 import strawberry
 from strawberry import ID
@@ -29,7 +29,7 @@ class SubmissionMutation:
     @classmethod
     def transform(cls, result):
         # lie to strawberry to make it think that the return value is a proper type
-        result._type_definition = Submission._type_definition
+        result.__strawberry_definition__ = Submission.__strawberry_definition__
         return result
 
     class Meta:
@@ -39,32 +39,36 @@ class SubmissionMutation:
 
 @strawberry.type
 class SendSubmissionErrors(BaseErrorType):
-    instance: list[str] = strawberry.field(default_factory=list)
-    title: list[str] = strawberry.field(default_factory=list)
-    abstract: list[str] = strawberry.field(default_factory=list)
-    topic: list[str] = strawberry.field(default_factory=list)
-    languages: list[str] = strawberry.field(default_factory=list)
-    conference: list[str] = strawberry.field(default_factory=list)
-    type: list[str] = strawberry.field(default_factory=list)
-    duration: list[str] = strawberry.field(default_factory=list)
-    elevator_pitch: list[str] = strawberry.field(default_factory=list)
-    notes: list[str] = strawberry.field(default_factory=list)
-    audience_level: list[str] = strawberry.field(default_factory=list)
-    tags: list[str] = strawberry.field(default_factory=list)
-    short_social_summary: list[str] = strawberry.field(default_factory=list)
+    @strawberry.type
+    class _SendSubmissionErrors:
+        instance: list[str] = strawberry.field(default_factory=list)
+        title: list[str] = strawberry.field(default_factory=list)
+        abstract: list[str] = strawberry.field(default_factory=list)
+        topic: list[str] = strawberry.field(default_factory=list)
+        languages: list[str] = strawberry.field(default_factory=list)
+        conference: list[str] = strawberry.field(default_factory=list)
+        type: list[str] = strawberry.field(default_factory=list)
+        duration: list[str] = strawberry.field(default_factory=list)
+        elevator_pitch: list[str] = strawberry.field(default_factory=list)
+        notes: list[str] = strawberry.field(default_factory=list)
+        audience_level: list[str] = strawberry.field(default_factory=list)
+        tags: list[str] = strawberry.field(default_factory=list)
+        short_social_summary: list[str] = strawberry.field(default_factory=list)
 
-    speaker_bio: list[str] = strawberry.field(default_factory=list)
-    speaker_photo: list[str] = strawberry.field(default_factory=list)
-    speaker_website: list[str] = strawberry.field(default_factory=list)
-    speaker_level: list[str] = strawberry.field(default_factory=list)
-    previous_talk_video: list[str] = strawberry.field(default_factory=list)
-    speaker_twitter_handle: list[str] = strawberry.field(default_factory=list)
-    speaker_instagram_handle: list[str] = strawberry.field(default_factory=list)
-    speaker_linkedin_url: list[str] = strawberry.field(default_factory=list)
-    speaker_facebook_url: list[str] = strawberry.field(default_factory=list)
-    speaker_mastodon_handle: list[str] = strawberry.field(default_factory=list)
+        speaker_bio: list[str] = strawberry.field(default_factory=list)
+        speaker_photo: list[str] = strawberry.field(default_factory=list)
+        speaker_website: list[str] = strawberry.field(default_factory=list)
+        speaker_level: list[str] = strawberry.field(default_factory=list)
+        previous_talk_video: list[str] = strawberry.field(default_factory=list)
+        speaker_twitter_handle: list[str] = strawberry.field(default_factory=list)
+        speaker_instagram_handle: list[str] = strawberry.field(default_factory=list)
+        speaker_linkedin_url: list[str] = strawberry.field(default_factory=list)
+        speaker_facebook_url: list[str] = strawberry.field(default_factory=list)
+        speaker_mastodon_handle: list[str] = strawberry.field(default_factory=list)
 
-    non_field_errors: list[str] = strawberry.field(default_factory=list)
+        non_field_errors: list[str] = strawberry.field(default_factory=list)
+
+    errors: _SendSubmissionErrors = None
 
 
 class BaseSubmissionInput:
@@ -259,21 +263,9 @@ class UpdateSubmissionInput(BaseSubmissionInput):
     tags: list[ID] = strawberry.field(default_factory=list)
 
 
-SendSubmissionOutput = strawberry.union(
-    "SendSubmissionOutput",
-    (
-        Submission,
-        SendSubmissionErrors,
-    ),
-)
+SendSubmissionOutput = Annotated[Union[Submission, SendSubmissionErrors], strawberry.union(name="SendSubmissionOutput")]
 
-UpdateSubmissionOutput = strawberry.union(
-    "UpdateSubmissionOutput",
-    (
-        Submission,
-        SendSubmissionErrors,
-    ),
-)
+UpdateSubmissionOutput = Annotated[Union[Submission, SendSubmissionErrors], strawberry.union(name="UpdateSubmissionOutput")]
 
 
 @strawberry.type
@@ -345,7 +337,7 @@ class SubmissionsMutations:
             },
         )
 
-        instance._type_definition = Submission._type_definition
+        instance.__strawberry_definition__ = Submission.__strawberry_definition__
         return instance
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -430,5 +422,5 @@ class SubmissionsMutations:
         )
 
         # hack because we return django models
-        instance._type_definition = Submission._type_definition
+        instance.__strawberry_definition__ = Submission.__strawberry_definition__
         return instance

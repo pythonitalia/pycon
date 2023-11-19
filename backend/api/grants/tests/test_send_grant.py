@@ -15,22 +15,24 @@ def _send_grant(client, grant_factory, conference, **kwargs):
                 }
 
                 ... on GrantErrors {
-                    validationConference: conference
-                    validationName: name
-                    validationFullName: fullName
-                    validationGender: gender
-                    validationGrantType: grantType
-                    validationOccupation: occupation
-                    validationOccupation: occupation
-                    validationAgeGroup: ageGroup
-                    validationPythonUsage: pythonUsage
-                    validationBeenToOtherEvents: beenToOtherEvents
-                    validationInterestedInVolunteering: interestedInVolunteering
-                    validationNeedsFundsForTravel: needsFundsForTravel
-                    validationWhy: why
-                    validationNotes: notes
-                    validationTravellingFrom: travellingFrom
-                    nonFieldErrors
+                    errors {
+                        validationConference: conference
+                        validationName: name
+                        validationFullName: fullName
+                        validationGender: gender
+                        validationGrantType: grantType
+                        validationOccupation: occupation
+                        validationOccupation: occupation
+                        validationAgeGroup: ageGroup
+                        validationPythonUsage: pythonUsage
+                        validationBeenToOtherEvents: beenToOtherEvents
+                        validationInterestedInVolunteering: interestedInVolunteering
+                        validationNeedsFundsForTravel: needsFundsForTravel
+                        validationWhy: why
+                        validationNotes: notes
+                        validationTravellingFrom: travellingFrom
+                        nonFieldErrors
+                    }
                 }
             }
         }
@@ -80,7 +82,7 @@ def test_cannot_send_a_grant_if_grants_are_closed(
 
     assert not response.get("errors")
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
-    assert response["data"]["sendGrant"]["nonFieldErrors"] == [
+    assert response["data"]["sendGrant"]["errors"]["nonFieldErrors"] == [
         "The grants form is not open!"
     ]
 
@@ -95,7 +97,7 @@ def test_cannot_send_a_grant_if_grants_deadline_do_not_exists(
 
     assert not response.get("errors")
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
-    assert response["data"]["sendGrant"]["nonFieldErrors"] == [
+    assert response["data"]["sendGrant"]["errors"]["nonFieldErrors"] == [
         "The grants form is not open!"
     ]
 
@@ -119,7 +121,7 @@ def test_cannot_send_two_grants(
 
     assert not response.get("errors")
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
-    assert response["data"]["sendGrant"]["nonFieldErrors"] == [
+    assert response["data"]["sendGrant"]["errors"]["nonFieldErrors"] == [
         "Grant already submitted!"
     ]
 
@@ -132,7 +134,7 @@ def test_invalid_conference(graphql_client, user, conference_factory, grant_fact
 
     assert not response.get("errors")
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
-    assert response["data"]["sendGrant"]["validationConference"] == [
+    assert response["data"]["sendGrant"]["errors"]["validationConference"] == [
         "Invalid conference"
     ]
 
@@ -157,10 +159,10 @@ def test_cannot_send_grant_outside_allowed_values(
     )
 
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
-    assert response["data"]["sendGrant"]["validationName"] == [
+    assert response["data"]["sendGrant"]["errors"]["validationName"] == [
         "name: Cannot be more than 300 chars"
     ]
-    assert response["data"]["sendGrant"]["validationTravellingFrom"] == [
+    assert response["data"]["sendGrant"]["errors"]["validationTravellingFrom"] == [
         "travelling_from: Cannot be more than 200 chars"
     ]
 
@@ -188,7 +190,9 @@ def test_cannot_send_grant_with_empty_values(
     )
 
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
-    assert response["data"]["sendGrant"]["validationName"] == ["name: Cannot be empty"]
-    assert response["data"]["sendGrant"]["validationFullName"] == [
+    assert response["data"]["sendGrant"]["errors"]["validationName"] == [
+        "name: Cannot be empty"
+    ]
+    assert response["data"]["sendGrant"]["errors"]["validationFullName"] == [
         "full_name: Cannot be empty"
     ]

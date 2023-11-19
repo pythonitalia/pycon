@@ -50,7 +50,7 @@ def _submit_proposal(client, conference, submission, **kwargs):
         "previousTalkVideo": submission.previous_talk_video,
         "shortSocialSummary": "",
         "speakerBio": "bio",
-        "speakerPhoto": "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/fake.jpg",
+        "speakerPhoto": "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/fake.jpg",  # noqa
         "speakerWebsite": "http://website.it",
         "speakerTwitterHandle": "handle",
         "speakerInstagramHandle": "handleinsta",
@@ -95,28 +95,30 @@ def _submit_proposal(client, conference, submission, **kwargs):
                     }
 
                     ... on SendSubmissionErrors {
-                        validationConference: conference
-                        validationTopic: topic
-                        validationTitle: title
-                        validationAbstract: abstract
-                        validationLanguages: languages
-                        validationNotes: notes
-                        validationType: type
-                        validationDuration: duration
-                        validationAudienceLevel: audienceLevel
-                        validationTags: tags
-                        validationPreviousTalkVideo: previousTalkVideo
-                        validationPreviousSpeakerLevel: speakerLevel
-                        validationShortSocialSummary: shortSocialSummary
-                        validationSpeakerBio: speakerBio
-                        validationSpeakerPhoto: speakerPhoto
-                        validationSpeakerWebsite: speakerWebsite
-                        validationSpeakerTwitterHandle: speakerTwitterHandle
-                        validationSpeakerInstagramHandle: speakerInstagramHandle
-                        validationSpeakerLinkedinUrl: speakerLinkedinUrl
-                        validationSpeakerFacebookUrl: speakerFacebookUrl
-                        validationSpeakerMastodonHandle: speakerMastodonHandle
-                        nonFieldErrors
+                        errors {
+                            validationConference: conference
+                            validationTopic: topic
+                            validationTitle: title
+                            validationAbstract: abstract
+                            validationLanguages: languages
+                            validationNotes: notes
+                            validationType: type
+                            validationDuration: duration
+                            validationAudienceLevel: audienceLevel
+                            validationTags: tags
+                            validationPreviousTalkVideo: previousTalkVideo
+                            validationPreviousSpeakerLevel: speakerLevel
+                            validationShortSocialSummary: shortSocialSummary
+                            validationSpeakerBio: speakerBio
+                            validationSpeakerPhoto: speakerPhoto
+                            validationSpeakerWebsite: speakerWebsite
+                            validationSpeakerTwitterHandle: speakerTwitterHandle
+                            validationSpeakerInstagramHandle: speakerInstagramHandle
+                            validationSpeakerLinkedinUrl: speakerLinkedinUrl
+                            validationSpeakerFacebookUrl: speakerFacebookUrl
+                            validationSpeakerMastodonHandle: speakerMastodonHandle
+                            nonFieldErrors
+                        }
                     }
                 }
             }""",
@@ -139,7 +141,7 @@ def test_submit_talk(graphql_client, user, conference_factory):
         audience_levels=("Beginner",),
     )
 
-    speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"
+    speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"  # noqa
 
     resp, variables = _submit_talk(
         graphql_client,
@@ -199,7 +201,7 @@ def test_submit_talk_with_photo_to_upload(
         audience_levels=("Beginner",),
     )
 
-    speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/temporary-uploads/participants-avatars/my-photo.jpg"
+    speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/temporary-uploads/participants-avatars/my-photo.jpg"  # noqa
 
     resp, variables = _submit_talk(
         graphql_client,
@@ -220,7 +222,7 @@ def test_submit_talk_with_photo_to_upload(
     participant = Participant.objects.get(conference=conference, user_id=user.id)
     assert (
         participant.photo
-        == "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"
+        == "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"  # noqa
     )
 
 
@@ -252,7 +254,7 @@ def test_submit_talk_without_photo_fails(
     )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationSpeakerPhoto"] == [
+    assert resp["data"]["sendSubmission"]["errors"]["validationSpeakerPhoto"] == [
         "This is required"
     ]
 
@@ -272,7 +274,7 @@ def test_submit_talk_with_invalid_speaker_photo(
     settings.AZURE_STORAGE_ACCOUNT_NAME = "pytest-fakestorageaccount"
 
     graphql_client.force_login(user)
-    valid_speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"
+    valid_speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"  # noqa
 
     conference = conference_factory(
         topics=("my-topic",),
@@ -303,7 +305,7 @@ def test_submit_talk_with_invalid_speaker_photo(
     )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationSpeakerPhoto"] == [
+    assert resp["data"]["sendSubmission"]["errors"]["validationSpeakerPhoto"] == [
         "Invalid speaker photo"
     ]
 
@@ -329,7 +331,7 @@ def test_submit_talk_with_existing_participant(
         conference=conference, user_id=user.id, bio="old bio"
     )
 
-    speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"
+    speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"  # noqa
 
     resp, variables = _submit_talk(
         graphql_client,
@@ -396,10 +398,10 @@ def test_submit_talk_with_missing_data_of_other_language_fails(
     )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationAbstract"] == [
+    assert resp["data"]["sendSubmission"]["errors"]["validationAbstract"] == [
         "Italian: Cannot be empty"
     ]
-    assert resp["data"]["sendSubmission"]["validationTitle"] == [
+    assert resp["data"]["sendSubmission"]["errors"]["validationTitle"] == [
         "Italian: Cannot be empty"
     ]
 
@@ -431,18 +433,20 @@ def test_submit_talk_with_missing_data_fails(graphql_client, user, conference_fa
 
     assert (
         "Italian: Cannot be empty"
-        in resp["data"]["sendSubmission"]["validationAbstract"]
+        in resp["data"]["sendSubmission"]["errors"]["validationAbstract"]
     )
     assert (
         "English: Cannot be empty"
-        in resp["data"]["sendSubmission"]["validationAbstract"]
+        in resp["data"]["sendSubmission"]["errors"]["validationAbstract"]
     )
 
     assert (
-        "Italian: Cannot be empty" in resp["data"]["sendSubmission"]["validationTitle"]
+        "Italian: Cannot be empty"
+        in resp["data"]["sendSubmission"]["errors"]["validationTitle"]
     )
     assert (
-        "English: Cannot be empty" in resp["data"]["sendSubmission"]["validationTitle"]
+        "English: Cannot be empty"
+        in resp["data"]["sendSubmission"]["errors"]["validationTitle"]
     )
 
 
@@ -508,7 +512,7 @@ def test_submit_talk_with_not_valid_conf_language(
     resp, _ = _submit_talk(graphql_client, conference, languages=["en"])
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationLanguages"] == [
+    assert resp["data"]["sendSubmission"]["errors"]["validationLanguages"] == [
         "Language (en) is not allowed"
     ]
 
@@ -529,7 +533,7 @@ def test_submit_talk_with_not_valid_duration(graphql_client, user, conference_fa
     resp, _ = _submit_talk(graphql_client, conference, duration=8)
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationDuration"] == [
+    assert resp["data"]["sendSubmission"]["errors"]["validationDuration"] == [
         "Select a valid choice. That choice is not one of the available choices."
     ]
 
@@ -562,7 +566,7 @@ def test_cannot_use_duration_if_submission_type_is_not_allowed(
     )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationDuration"] == [
+    assert resp["data"]["sendSubmission"]["errors"]["validationDuration"] == [
         "Duration is not an allowed for the submission type"
     ]
 
@@ -589,7 +593,7 @@ def test_submit_talk_with_duration_id_of_another_conf(
     )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationDuration"] == [
+    assert resp["data"]["sendSubmission"]["errors"]["validationDuration"] == [
         "Select a valid choice. That choice is not one of the available choices."
     ]
 
@@ -613,7 +617,9 @@ def test_submit_talk_with_not_valid_conf_topic(
     resp, _ = _submit_talk(graphql_client, conference, topic=topic.id)
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationTopic"] == ["Not a valid topic"]
+    assert resp["data"]["sendSubmission"]["errors"]["validationTopic"] == [
+        "Not a valid topic"
+    ]
 
 
 @mark.django_db
@@ -634,7 +640,7 @@ def test_submit_talk_with_not_valid_allowed_submission_type_in_the_conference(
     resp, _ = _submit_talk(graphql_client, conference)
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationType"] == [
+    assert resp["data"]["sendSubmission"]["errors"]["validationType"] == [
         "Not allowed submission type"
     ]
 
@@ -657,7 +663,7 @@ def test_submit_talk_with_not_valid_submission_type_id(
     resp, _ = _submit_talk(graphql_client, conference, type=5)
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationType"] == [
+    assert resp["data"]["sendSubmission"]["errors"]["validationType"] == [
         "Not allowed submission type"
     ]
 
@@ -680,7 +686,7 @@ def test_submit_talk_with_not_valid_language_code(
     resp, _ = _submit_talk(graphql_client, conference, languages=["fit"])
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationLanguages"] == [
+    assert resp["data"]["sendSubmission"]["errors"]["validationLanguages"] == [
         "Language (fit) is not allowed"
     ]
 
@@ -703,7 +709,7 @@ def test_submit_talk_with_not_valid_audience_level(
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     # assert resp["data"]["sendSubmission"]["submission"] is None
-    assert resp["data"]["sendSubmission"]["validationAudienceLevel"] == [
+    assert resp["data"]["sendSubmission"]["errors"]["validationAudienceLevel"] == [
         "Not a valid audience level"
     ]
     # assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "audience_level"
@@ -727,7 +733,7 @@ def test_submit_talk_with_not_valid_conf_audience_level(
     resp, _ = _submit_talk(graphql_client, conference, audienceLevel=audience_level.id)
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationAudienceLevel"] == [
+    assert resp["data"]["sendSubmission"]["errors"]["validationAudienceLevel"] == [
         "Not a valid audience level"
     ]
 
@@ -765,7 +771,7 @@ def test_cannot_propose_a_talk_if_the_cfp_is_not_open(
     resp, _ = _submit_talk(graphql_client, conference)
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["nonFieldErrors"] == [
+    assert resp["data"]["sendSubmission"]["errors"]["nonFieldErrors"] == [
         "The call for paper is not open!"
     ]
 
@@ -787,7 +793,7 @@ def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(
     resp, _ = _submit_talk(graphql_client, conference)
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["nonFieldErrors"] == [
+    assert resp["data"]["sendSubmission"]["errors"]["nonFieldErrors"] == [
         "The call for paper is not open!"
     ]
 
@@ -1005,9 +1011,9 @@ def test_speaker_level_is_required(graphql_client, user, conference_factory):
 
     resp, _ = _submit_tutorial(graphql_client, conference, speakerLevel="")
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationPreviousSpeakerLevel"] == [
-        "You need to specify what is your speaker experience"
-    ]
+    assert resp["data"]["sendSubmission"]["errors"][
+        "validationPreviousSpeakerLevel"
+    ] == ["You need to specify what is your speaker experience"]
 
 
 def test_speaker_level_only_allows_the_predefined_levels(
@@ -1026,9 +1032,9 @@ def test_speaker_level_only_allows_the_predefined_levels(
 
     resp, _ = _submit_tutorial(graphql_client, conference, speakerLevel="just_started")
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["validationPreviousSpeakerLevel"] == [
-        "Select a valid choice"
-    ]
+    assert resp["data"]["sendSubmission"]["errors"][
+        "validationPreviousSpeakerLevel"
+    ] == ["Select a valid choice"]
 
 
 @mark.django_db
@@ -1058,11 +1064,12 @@ def test_submit_talk_with_too_long_title_fails(
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
 
     assert (
-        "Italian: Cannot be empty" in resp["data"]["sendSubmission"]["validationTitle"]
+        "Italian: Cannot be empty"
+        in resp["data"]["sendSubmission"]["errors"]["validationTitle"]
     )
     assert (
         "English: Cannot be more than 100 chars"
-        in resp["data"]["sendSubmission"]["validationTitle"]
+        in resp["data"]["sendSubmission"]["errors"]["validationTitle"]
     )
 
 
@@ -1087,12 +1094,12 @@ def test_submit_talk_with_no_languages_and_no_tags_is_not_allowed(
 
     assert (
         "You need to add at least one language"
-        in resp["data"]["sendSubmission"]["validationLanguages"]
+        in resp["data"]["sendSubmission"]["errors"]["validationLanguages"]
     )
 
     assert (
         "You need to add at least one tag"
-        in resp["data"]["sendSubmission"]["validationTags"]
+        in resp["data"]["sendSubmission"]["errors"]["validationTags"]
     )
 
 
@@ -1114,7 +1121,8 @@ def test_submit_talk_with_no_conference(graphql_client, user, conference_factory
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
 
     assert (
-        "Invalid conference" in resp["data"]["sendSubmission"]["validationConference"]
+        "Invalid conference"
+        in resp["data"]["sendSubmission"]["errors"]["validationConference"]
     )
 
 
@@ -1143,7 +1151,7 @@ def test_submit_talk_with_too_long_notes_fails(
 
     assert (
         "Cannot be more than 1000 chars"
-        in resp["data"]["sendSubmission"]["validationNotes"]
+        in resp["data"]["sendSubmission"]["errors"]["validationNotes"]
     )
 
 
@@ -1172,7 +1180,7 @@ def test_submit_talk_with_too_long_summary_fails(
 
     assert (
         "Cannot be more than 128 chars"
-        in resp["data"]["sendSubmission"]["validationShortSocialSummary"]
+        in resp["data"]["sendSubmission"]["errors"]["validationShortSocialSummary"]
     )
 
 
@@ -1207,7 +1215,7 @@ def test_submit_talk_only_allows_5_tags(graphql_client, user, conference_factory
 
     assert (
         "You can only add up to 5 tags"
-        in resp["data"]["sendSubmission"]["validationTags"]
+        in resp["data"]["sendSubmission"]["errors"]["validationTags"]
     )
 
 
@@ -1232,5 +1240,5 @@ def test_submit_talk_with_no_tags_fails(graphql_client, user, conference_factory
 
     assert (
         "You need to add at least one tag"
-        in resp["data"]["sendSubmission"]["validationTags"]
+        in resp["data"]["sendSubmission"]["errors"]["validationTags"]
     )

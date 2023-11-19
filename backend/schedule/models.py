@@ -87,7 +87,8 @@ class Slot(models.Model):
     TYPES = Choices(
         # Type of slot where something is happening in the conference
         ("default", _("Default")),
-        # Free time, that can used to change rooms or represent time between social events
+        # Free time, that can used to change rooms
+        # or represent time between social events
         ("free_time", _("Free Time")),
     )
 
@@ -216,16 +217,28 @@ class ScheduleItem(TimeStampedModel):
 
     slido_url = models.URLField(_("Sli.do URL"), blank=True, default="")
 
+    video_uploaded_path = models.CharField(
+        _("path in the storage where the video file is uploaded"),
+        max_length=1024,
+        blank=True,
+        default="",
+    )
+    youtube_video_id = models.CharField(
+        _("Youtube video ID"), max_length=1024, blank=True, default=""
+    )
+
     @cached_property
     def speakers(self):
-        speakers = [speaker.user_id for speaker in self.additional_speakers.all()]
+        speakers = []
 
         if self.submission_id:
-            speakers.append(self.submission.speaker_id)
+            speakers.append(self.submission.speaker)
+
+        speakers.extend([speaker.user for speaker in self.additional_speakers.all()])
 
         if self.keynote_id:
             for speaker_keynote in self.keynote.speakers.all():
-                speakers.append(speaker_keynote.user_id)
+                speakers.append(speaker_keynote.user)
 
         return speakers
 
@@ -302,27 +315,41 @@ class ScheduleItemAdditionalSpeaker(models.Model):
         verbose_name=_("schedule item"),
         related_name="additional_speakers",
     )
-    user_id = models.IntegerField(verbose_name=_("user"))
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.PROTECT,
+        null=False,
+        blank=False,
+        verbose_name=_("user"),
+        related_name="+",
+    )
 
     class Meta:
         verbose_name = _("Schedule item additional speaker")
         verbose_name_plural = _("Schedule item additional speakers")
-        unique_together = ("user_id", "scheduleitem")
+        unique_together = ("user", "scheduleitem")
         db_table = "schedule_scheduleitem_additional_speakers"
 
 
 class ScheduleItemAttendee(TimeStampedModel):
-    user_id = models.IntegerField(verbose_name=_("user"))
     schedule_item = models.ForeignKey(
         ScheduleItem,
         on_delete=models.CASCADE,
         verbose_name=_("schedule item"),
         related_name="attendees",
     )
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name=_("user"),
+        related_name="+",
+    )
 
     class Meta:
         unique_together = (
-            "user_id",
+            "user",
             "schedule_item",
         )
 
@@ -335,7 +362,14 @@ class ScheduleItemInvitation(ScheduleItem):
 
 
 class ScheduleItemStar(TimeStampedModel):
-    user_id = models.IntegerField(verbose_name=_("user"), db_index=True)
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name=_("user"),
+        related_name="+",
+    )
     schedule_item = models.ForeignKey(
         ScheduleItem,
         on_delete=models.CASCADE,
@@ -345,6 +379,6 @@ class ScheduleItemStar(TimeStampedModel):
 
     class Meta:
         unique_together = (
-            "user_id",
+            "user",
             "schedule_item",
         )

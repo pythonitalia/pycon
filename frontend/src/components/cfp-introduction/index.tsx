@@ -1,13 +1,15 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
+import { Link } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 import { Box, Grid, jsx, Text, Heading } from "theme-ui";
 
 import { CFPIllustration } from "~/components/illustrations/cfp";
-import { Link } from "~/components/link";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { useCurrentLanguage } from "~/locale/context";
+
+import { createHref } from "../link";
 
 export const Introduction = ({ deadline }: { deadline?: string }) => {
   const language = useCurrentLanguage();
@@ -72,9 +74,11 @@ export const Introduction = ({ deadline }: { deadline?: string }) => {
           )}
 
           <Link
-            path="/call-for-proposals"
-            variant="arrow-button"
-            sx={{ mt: 4 }}
+            href={createHref({
+              path: "/call-for-proposals",
+              locale: language,
+            })}
+            className="mt-[4px]"
           >
             <FormattedMessage id="global.learnMore" />
           </Link>

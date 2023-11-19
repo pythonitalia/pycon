@@ -13,6 +13,7 @@ from conferences.tests.factories import (
 )
 from i18n.tests.factories import LanguageFactory
 from languages.models import Language
+from users.tests.factories import UserFactory
 from submissions.models import (
     Submission,
     SubmissionComment,
@@ -51,8 +52,8 @@ class SubmissionFactory(DjangoModelFactory):
     elevator_pitch = LanguageFactory("text")
     notes = factory.Faker("text")
     type = factory.SubFactory(SubmissionTypeFactory)
+    speaker = factory.SubFactory(UserFactory)
     duration = factory.SubFactory(DurationFactory)
-    speaker_id = factory.Faker("pyint", min_value=1)
     topic = factory.SubFactory(TopicFactory)
     audience_level = factory.SubFactory(AudienceLevelFactory)
     speaker_level = factory.fuzzy.FuzzyChoice(
@@ -131,4 +132,4 @@ class SubmissionCommentFactory(DjangoModelFactory):
 
     submission = factory.SubFactory(SubmissionFactory)
     text = factory.Faker("text")
-    author_id = factory.Faker("pyint", min_value=1)
+    author = factory.SubFactory(UserFactory)

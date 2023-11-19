@@ -49,6 +49,8 @@ export const TalkPage = () => {
         bookable={talk.hasLimitedCapacity}
         spacesLeft={talk.spacesLeft}
         slidoUrl={talk.slidoUrl}
+        rooms={talk.rooms.map((room) => room.name)}
+        youtubeVideoId={talk.youtubeVideoId}
       />
     </Page>
   );
@@ -110,7 +112,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-const getType = (
+export const getType = (
   type: string,
 ): Parameters<typeof ScheduleEventDetail>[0]["type"] => {
   switch (type.toLowerCase()) {

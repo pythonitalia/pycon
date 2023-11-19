@@ -11,9 +11,7 @@ pytestmark = pytest.mark.django_db
 def simple_schedule_item(
     schedule_item_factory, submission_factory, slot_factory, day_factory
 ):
-    submission = submission_factory(
-        speaker_id=200,
-    )
+    submission = submission_factory()
 
     return schedule_item_factory(
         status=ScheduleItem.STATUS.confirmed,
@@ -28,6 +26,7 @@ def simple_schedule_item(
             hour=datetime.time(10, 10, 0),
             duration=30,
         ),
+        youtube_video_id="AbCdEfGhIjK",
     )
 
 
@@ -39,6 +38,7 @@ def test_fetch_schedule_talk(simple_schedule_item, graphql_client, user):
         """query($slug: String!, $code: String!) {
             conference(code: $code) {
                 talk(slug: $slug) {
+                    youtubeVideoId
                     userHasSpot
                     hasSpacesLeft
                     spacesLeft
@@ -49,6 +49,7 @@ def test_fetch_schedule_talk(simple_schedule_item, graphql_client, user):
     )
 
     assert response["data"]["conference"]["talk"] == {
+        "youtubeVideoId": "AbCdEfGhIjK",
         "userHasSpot": False,
         "hasSpacesLeft": True,
         "spacesLeft": 0,

@@ -1,8 +1,13 @@
+from pathlib import Path
+from django.core.files.storage import storages
 from django import forms
 from django.contrib import admin, messages
 from django.core import exceptions
+from django.core.cache import cache
 from django.forms import BaseInlineFormSet
 from django.forms.models import ModelForm
+from django.shortcuts import redirect, render
+from django.urls import path, reverse
 from django.utils.translation import gettext_lazy as _
 from ordered_model.admin import (
     OrderedInlineModelAdminMixin,
@@ -10,15 +15,15 @@ from ordered_model.admin import (
     OrderedStackedInline,
     OrderedTabularInline,
 )
-
+from itertools import permutations
+from unicodedata import normalize
 from conferences.models import SpeakerVoucher
 from domain_events.publisher import send_speaker_voucher_email
 from pretix import create_voucher
+from schedule.models import ScheduleItem
 from sponsors.models import SponsorLevel
-from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin, SearchUsersMixin
 from voting.models import IncludedEvent
-
+import re
 from .models import (
     AudienceLevel,
     Conference,
@@ -95,6 +100,10 @@ class IncludedEventInline(admin.TabularInline):
 
 @admin.register(Conference)
 class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
+    search_fields = (
+        "name",
+        "code",
+    )
     readonly_fields = ("created", "modified")
     filter_horizontal = ("topics", "languages", "audience_levels", "submission_types")
     fieldsets = (
@@ -167,8 +176,191 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                 )
             },
         ),
+        ("YouTube", {"fields": ("youtube_video_bottom_text",)}),
     )
     inlines = [DeadlineInline, DurationInline, SponsorLevelInline, IncludedEventInline]
+
+    def get_urls(self):
+        return super().get_urls() + [
+            path(
+                "<int:object_id>/video-upload/map-videos",
+                self.admin_site.admin_view(self.map_videos),
+                name="map_videos",
+            )
+        ]
+
+    def map_videos(self, request, object_id):
+        if request.method == "POST":
+            data = request.POST
+            if "run_matcher" in data:
+                self.run_video_uploaded_path_matcher(
+                    request,
+                    object_id,
+                    ignore_cache=data.get("ignore_cache", False) == "1",
+                )
+            elif "manual_changes" in data:
+                self.save_manual_changes(request, object_id, data)
+
+            return redirect(
+                reverse("admin:map_videos", kwargs={"object_id": object_id})
+            )
+
+        all_events = (
+            ScheduleItem.objects.filter(conference_id=object_id)
+            .prefetch_related(
+                "slot__day",
+                "submission",
+                "additional_speakers",
+            )
+            .order_by("slot__day__day", "slot__hour", "id")
+            .all()
+        )
+
+        context = dict(
+            self.admin_site.each_context(request),
+            events=all_events,
+        )
+
+        return render(request, "admin/videos_upload/map_videos.html", context)
+
+    def save_manual_changes(self, request, object_id, data):
+        all_events = ScheduleItem.objects.filter(conference_id=object_id)
+
+        for event in all_events:
+            key_name = f"video_uploaded_path_{event.id}"
+
+            if key_name not in data:
+                continue
+
+            video_uploaded_path = data.get(f"video_uploaded_path_{event.id}")
+            event.video_uploaded_path = video_uploaded_path
+            event.save(update_fields=["video_uploaded_path"])
+
+        self.message_user(
+            request,
+            "Manual changes saved.",
+            messages.SUCCESS,
+        )
+
+    def run_video_uploaded_path_matcher(self, request, object_id, ignore_cache):
+        conference = Conference.objects.get(pk=object_id)
+        all_events = conference.schedule_items.prefetch_related(
+            "submission", "additional_speakers"
+        ).all()
+
+        cache_key = f"{conference.code}:video-upload-files-cache"
+        files = cache.get(cache_key)
+
+        if not files or ignore_cache:
+            storage = storages["conferencevideos"]
+            files = list(walk_conference_videos_folder(storage, f"{conference.code}/"))
+            cache.set(cache_key, files, 60 * 60 * 24 * 7)
+
+        matched_videos = 0
+        used_files = set()
+
+        for event in all_events:
+            video_uploaded_path = self.match_event_to_video_file(event, files)
+            event.video_uploaded_path = video_uploaded_path
+            event.save(update_fields=["video_uploaded_path"])
+
+            if video_uploaded_path in used_files:
+                self.message_user(
+                    request,
+                    f"File {video_uploaded_path} was used more than once.",
+                    messages.WARNING,
+                )
+
+            if video_uploaded_path:
+                matched_videos += 1
+                used_files.add(video_uploaded_path)
+
+        self.message_user(
+            request,
+            f"Matched {matched_videos} videos to events.",
+            messages.SUCCESS,
+        )
+
+        unused_files = set(files).difference(used_files)
+        if unused_files:
+            self.message_user(
+                request,
+                f"Some files were not used: {', '.join(unused_files)}",
+                messages.WARNING,
+            )
+
+    def match_event_to_video_file(self, event, files):
+        possible_file_names = []
+
+        def best_name(speaker):
+            return cleanup_string(speaker.full_name.strip() or speaker.name.strip())
+
+        normalized_files = [
+            (cleanup_string(video_file), video_file) for video_file in files
+        ]
+
+        all_speakers_names = [best_name(speaker) for speaker in event.speakers]
+
+        count_speakers = len(all_speakers_names)
+        single_speaker = count_speakers <= 1
+        multi_speaker_exact_match = None
+
+        if count_speakers == 0:
+            possible_file_names.append(cleanup_string(event.title))
+        elif count_speakers > 1:
+            # together with the permutation of all speakers names,
+            # we also store the exact match of names in the same order as our event
+            # this allows us to match the right file
+            # when we have 2 events with the same speakers
+            # but in a different order
+            multi_speaker_exact_match = ", ".join(all_speakers_names)
+
+        if all_speakers_names:
+            possible_file_names.extend(
+                [
+                    ", ".join(permutation)
+                    for permutation in permutations(all_speakers_names)
+                ]
+            )
+
+        if multi_speaker_exact_match:
+            exact_match_found = next(
+                (
+                    original_video_file
+                    for video_file, original_video_file in normalized_files
+                    if multi_speaker_exact_match in video_file
+                ),
+                None,
+            )
+
+            if exact_match_found:
+                return exact_match_found
+
+        for video_file, original_video_file in normalized_files:
+            is_multi_speakers_video = "," in video_file
+
+            if is_multi_speakers_video and single_speaker:
+                continue
+
+            for possible_file_name in possible_file_names:
+                if possible_file_name in video_file:
+                    return original_video_file
+
+        return ""
+
+
+def walk_conference_videos_folder(storage, base_path):
+    folders, files = storage.listdir(base_path)
+    all_files = [f"{base_path}{file_}" for file_ in files]
+
+    for folder in folders:
+        if not folder:
+            continue
+
+        new_path = str(Path(base_path, folder)) + "/"
+        all_files.extend(walk_conference_videos_folder(storage, new_path))
+
+    return all_files
 
 
 @admin.register(Topic)
@@ -194,11 +386,8 @@ class KeynoteSpeakerForm(forms.ModelForm):
         model = KeynoteSpeaker
         fields = (
             "keynote",
-            "user_id",
+            "user",
         )
-        widgets = {
-            "user_id": UsersBackendAutocomplete(admin.site),
-        }
 
 
 class KeynoteSpeakerInline(OrderedStackedInline):
@@ -207,7 +396,7 @@ class KeynoteSpeakerInline(OrderedStackedInline):
     extra = 1
     fields = (
         "keynote",
-        "user_id",
+        "user",
         "order",
         "move_up_down_links",
     )
@@ -217,6 +406,7 @@ class KeynoteSpeakerInline(OrderedStackedInline):
     )
     extra = 1
     ordering = ("order",)
+    autocomplete_fields = ("user",)
 
 
 @admin.register(Keynote)
@@ -318,12 +508,9 @@ def create_speaker_vouchers_on_pretix(modeladmin, request, queryset):
 class SpeakerVoucherForm(forms.ModelForm):
     class Meta:
         model = SpeakerVoucher
-        widgets = {
-            "user_id": UsersBackendAutocomplete(admin.site),
-        }
         fields = [
             "conference",
-            "user_id",
+            "user",
             "voucher_type",
             "voucher_code",
             "pretix_voucher_id",
@@ -332,9 +519,10 @@ class SpeakerVoucherForm(forms.ModelForm):
 
 
 @admin.register(SpeakerVoucher)
-class SpeakerVoucherAdmin(AdminUsersMixin, SearchUsersMixin):
+class SpeakerVoucherAdmin(admin.ModelAdmin):
     form = SpeakerVoucherForm
-    search_fields = ("voucher_code",)
+    search_fields = ("voucher_code", "user__name", "user__full_name")
+    autocomplete_fields = ("user",)
     list_filter = (
         "conference",
         "voucher_type",
@@ -349,7 +537,6 @@ class SpeakerVoucherAdmin(AdminUsersMixin, SearchUsersMixin):
         "voucher_email_sent_at",
         "created",
     )
-    user_fk = "user_id"
     actions = [
         create_speaker_vouchers_on_pretix,
         send_voucher_via_email,
@@ -365,4 +552,12 @@ class SpeakerVoucherAdmin(AdminUsersMixin, SearchUsersMixin):
         return {"voucher_code": SpeakerVoucher.generate_code()}
 
     def user_display_name(self, obj):
-        return self.get_user_display_name(obj.user_id)
+        return obj.user.display_name
+
+
+def cleanup_string(string: str) -> str:
+    new_string = normalize(
+        "NFKD", "".join(char for char in string if char.isprintable())
+    ).lower()
+    new_string = re.sub(r"\s+", " ", new_string)
+    return new_string.strip()

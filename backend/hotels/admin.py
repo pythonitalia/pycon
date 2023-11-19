@@ -4,8 +4,6 @@ from django.utils.translation import gettext_lazy as _
 
 from pretix.db import get_orders_status
 from pretix.utils import order_status_to_text
-from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin
 
 from .models import BedLayout, HotelRoom, HotelRoomReservation
 
@@ -24,14 +22,11 @@ class HotelRoomAdmin(admin.ModelAdmin):
 class HotelRoomReservationForm(forms.ModelForm):
     class Meta:
         model = HotelRoomReservation
-        widgets = {
-            "user_id": UsersBackendAutocomplete(admin.site),
-        }
         fields = ["order_code", "room", "checkin", "checkout"]
 
 
 @admin.register(HotelRoomReservation)
-class HotelRoomReservationAdmin(AdminUsersMixin):
+class HotelRoomReservationAdmin(admin.ModelAdmin):
     form = HotelRoomReservationForm
     list_display = (
         "order_code",
@@ -59,16 +54,15 @@ class HotelRoomReservationAdmin(AdminUsersMixin):
         return False
 
     def user_display_name(self, obj):
-        return self.get_user_display_name(obj.user_id)
+        return obj.user.display_name
 
     @admin.display(
         description="User",
     )
     def user_info(self, obj):
-        user_data = self.get_user_data(obj.user_id)
-        display_name = user_data["displayName"]
-        email = user_data["email"]
-        id = user_data["id"]
+        display_name = obj.user.display_name
+        email = obj.user.email
+        id = obj.user_id
         return f"{display_name} ({email}) #{id}"
 
     def order_status(self, obj):

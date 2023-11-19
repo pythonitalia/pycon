@@ -3,19 +3,20 @@
 query VotingSubmissions(
   $conference: String!
   $language: String!
+  $languages: [String!]
   $voted: Boolean
   $tags: [String!]
-  $type: String
-  $audienceLevel: String
+  $types: [String!]
+  $audienceLevels: [String!]
   $page: Int
 ) {
   submissions(
     code: $conference
-    language: $language
+    languages: $languages
     voted: $voted
     tags: $tags
-    type: $type
-    audienceLevel: $audienceLevel
+    types: $types
+    audienceLevels: $audienceLevels
     page: $page
     pageSize: 100
   ) {

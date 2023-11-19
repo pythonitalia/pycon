@@ -4,7 +4,6 @@ pytestmark = pytest.mark.django_db
 
 
 def _update_grant(graphql_client, grant, **kwargs):
-
     query = """
     mutation updateGrant($input: UpdateGrantInput!){
         updateGrant(input: $input) {
@@ -15,23 +14,25 @@ def _update_grant(graphql_client, grant, **kwargs):
             }
 
             ... on GrantErrors {
-                validationConference: conference
-                validationName: name
-                validationFullName: fullName
-                validationAgeGroup: ageGroup
-                validationGender: gender
-                validationGrantType: grantType
-                validationOccupation: occupation
-                validationOccupation: occupation
-                validationAgeGroup: ageGroup
-                validationPythonUsage: pythonUsage
-                validationBeenToOtherEvents: beenToOtherEvents
-                validationInterestedInVolunteering: interestedInVolunteering
-                validationNeedsFundsForTravel: needsFundsForTravel
-                validationWhy: why
-                validationNotes: notes
-                validationTravellingFrom: travellingFrom
-                nonFieldErrors
+                errors {
+                    validationConference: conference
+                    validationName: name
+                    validationFullName: fullName
+                    validationAgeGroup: ageGroup
+                    validationGender: gender
+                    validationGrantType: grantType
+                    validationOccupation: occupation
+                    validationOccupation: occupation
+                    validationAgeGroup: ageGroup
+                    validationPythonUsage: pythonUsage
+                    validationBeenToOtherEvents: beenToOtherEvents
+                    validationInterestedInVolunteering: interestedInVolunteering
+                    validationNeedsFundsForTravel: needsFundsForTravel
+                    validationWhy: why
+                    validationNotes: notes
+                    validationTravellingFrom: travellingFrom
+                    nonFieldErrors
+                }
             }
         }
     }
@@ -114,7 +115,7 @@ def test_cannot_update_a_grant_if_user_is_not_owner(
     )
 
     assert response["data"]["updateGrant"]["__typename"] == "GrantErrors"
-    assert response["data"]["updateGrant"]["nonFieldErrors"] == [
+    assert response["data"]["updateGrant"]["errors"]["nonFieldErrors"] == [
         "You cannot edit this grant"
     ]
 
@@ -133,7 +134,7 @@ def test_cannot_update_a_grant_if_grants_are_closed(
     )
 
     assert response["data"]["updateGrant"]["__typename"] == "GrantErrors"
-    assert response["data"]["updateGrant"]["nonFieldErrors"] == [
+    assert response["data"]["updateGrant"]["errors"]["nonFieldErrors"] == [
         "The grants form is not open!"
     ]
 
@@ -149,7 +150,7 @@ def test_cannot_update_a_grant_if_grants_deadline_do_not_exists(
 
     assert not response.get("errors")
     assert response["data"]["updateGrant"]["__typename"] == "GrantErrors"
-    assert response["data"]["updateGrant"]["nonFieldErrors"] == [
+    assert response["data"]["updateGrant"]["errors"]["nonFieldErrors"] == [
         "The grants form is not open!"
     ]
 
@@ -184,9 +185,9 @@ def test_cannot_update_submission_with_lang_outside_allowed_values(
     )
 
     assert response["data"]["updateGrant"]["__typename"] == "GrantErrors"
-    assert response["data"]["updateGrant"]["validationName"] == [
+    assert response["data"]["updateGrant"]["errors"]["validationName"] == [
         "name: Cannot be more than 300 chars"
     ]
-    assert response["data"]["updateGrant"]["validationTravellingFrom"] == [
+    assert response["data"]["updateGrant"]["errors"]["validationTravellingFrom"] == [
         "travelling_from: Cannot be more than 200 chars"
     ]

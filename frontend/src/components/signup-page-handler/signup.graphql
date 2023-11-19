@@ -14,20 +14,11 @@ mutation Signup($input: RegisterInput!) {
       message
     }
 
-    ... on RegisterValidationError {
+    ... on RegisterErrors {
       errors {
-        email {
-          message
-          type
-        }
-        password {
-          message
-          type
-        }
-        fullname {
-          message
-          type
-        }
+        email
+        password
+        fullname
       }
     }
   }

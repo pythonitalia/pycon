@@ -1,4 +1,6 @@
-from storages.backends.s3boto3 import S3Boto3Storage, SpooledTemporaryFile
+from storages.backends.s3boto3 import S3Boto3Storage
+from tempfile import SpooledTemporaryFile
+from storages.backends.azure_storage import AzureStorage
 
 
 class CustomS3Boto3Storage(S3Boto3Storage):
@@ -7,3 +9,7 @@ class CustomS3Boto3Storage(S3Boto3Storage):
         with SpooledTemporaryFile() as tmp:
             tmp.write(content.read())
             return super()._save(name, tmp)
+
+
+class ConferenceVideosStorage(AzureStorage):
+    azure_container = "conference-videos"

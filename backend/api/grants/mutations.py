@@ -1,8 +1,6 @@
-from __future__ import annotations
-
 from dataclasses import asdict
 from enum import Enum
-from typing import Optional
+from typing import Annotated, Union, Optional
 
 import strawberry
 from strawberry.types import Info
@@ -24,23 +22,26 @@ from users.models import User
 
 @strawberry.type
 class GrantErrors(BaseErrorType):
-    instance: list[str] = strawberry.field(default_factory=list)
-    name: list[str] = strawberry.field(default_factory=list)
-    full_name: list[str] = strawberry.field(default_factory=list)
-    conference: list[str] = strawberry.field(default_factory=list)
-    age_group: list[str] = strawberry.field(default_factory=list)
-    gender: list[str] = strawberry.field(default_factory=list)
-    occupation: list[str] = strawberry.field(default_factory=list)
-    grant_type: list[str] = strawberry.field(default_factory=list)
-    python_usage: list[str] = strawberry.field(default_factory=list)
-    been_to_other_events: list[str] = strawberry.field(default_factory=list)
-    interested_in_volunteering: list[str] = strawberry.field(default_factory=list)
-    needs_funds_for_travel: list[str] = strawberry.field(default_factory=list)
-    why: list[str] = strawberry.field(default_factory=list)
-    notes: list[str] = strawberry.field(default_factory=list)
-    travelling_from: list[str] = strawberry.field(default_factory=list)
+    @strawberry.type
+    class _GrantErrors:
+        instance: list[str] = strawberry.field(default_factory=list)
+        name: list[str] = strawberry.field(default_factory=list)
+        full_name: list[str] = strawberry.field(default_factory=list)
+        conference: list[str] = strawberry.field(default_factory=list)
+        age_group: list[str] = strawberry.field(default_factory=list)
+        gender: list[str] = strawberry.field(default_factory=list)
+        occupation: list[str] = strawberry.field(default_factory=list)
+        grant_type: list[str] = strawberry.field(default_factory=list)
+        python_usage: list[str] = strawberry.field(default_factory=list)
+        been_to_other_events: list[str] = strawberry.field(default_factory=list)
+        interested_in_volunteering: list[str] = strawberry.field(default_factory=list)
+        needs_funds_for_travel: list[str] = strawberry.field(default_factory=list)
+        why: list[str] = strawberry.field(default_factory=list)
+        notes: list[str] = strawberry.field(default_factory=list)
+        travelling_from: list[str] = strawberry.field(default_factory=list)
+        non_field_errors: list[str] = strawberry.field(default_factory=list)
 
-    non_field_errors: list[str] = strawberry.field(default_factory=list)
+    errors: _GrantErrors = None
 
 
 class BaseGrantInput:
@@ -131,21 +132,9 @@ class UpdateGrantInput(BaseGrantInput):
     travelling_from: str
 
 
-SendGrantResult = strawberry.union(
-    "SendGrantResult",
-    (
-        Grant,
-        GrantErrors,
-    ),
-)
+SendGrantResult = Annotated[Union[Grant, GrantErrors], strawberry.union(name="SendGrantResult")]
 
-UpdateGrantResult = strawberry.union(
-    "UpdateGrantResult",
-    (
-        Grant,
-        GrantErrors,
-    ),
-)
+UpdateGrantResult = Annotated[Union[Grant, GrantErrors], strawberry.union(name="UpdateGrantResult")]
 
 
 @strawberry.enum
@@ -170,9 +159,7 @@ class SendGrantReplyError:
     message: str
 
 
-SendGrantReplyResult = strawberry.union(
-    "SendGrantReplyResult", (Grant, SendGrantReplyError)
-)
+SendGrantReplyResult = Annotated[Union[Grant, SendGrantReplyError], strawberry.union(name="SendGrantReplyResult")]
 
 
 @strawberry.type
@@ -196,7 +183,7 @@ class GrantMutation:
         )
 
         # hack because we return django models
-        instance._type_definition = Grant._type_definition
+        instance.__strawberry_definition__ = Grant.__strawberry_definition__
         return instance
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -218,7 +205,7 @@ class GrantMutation:
             setattr(instance, attr, value)
         instance.save()
 
-        instance._type_definition = Grant._type_definition
+        instance.__strawberry_definition__ = Grant.__strawberry_definition__
         return instance
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])

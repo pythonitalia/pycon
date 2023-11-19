@@ -1,0 +1,69 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% load get_item %}
+
+{% block content %}
+<form method="post">
+  <div>
+    <p>If you manually changed any path, click here to save</p>
+    <input type="submit" value="Save manual changes" name="manual_changes" />
+  </div>
+
+  <div style="margin-top: 10px; margin-bottom: 20px;">
+    <p>If you want to clear your manual changes, you can run the automatic matcher again.</p>
+    <label>
+      <input type="checkbox" name="ignore_cache" value="1" />
+      Check here if you uploaded new videos files. Otherwise a cached list file will be used.
+    </label>
+    <div>
+      <input type="submit" value="Run Automatic matcher" name="run_matcher" />
+    </div>
+  </div>
+  {% csrf_token %}
+
+  <table style="width: 100%">
+    <thead>
+      <tr>
+        <th>
+          Event title
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Start
+        </th>
+        <th>
+          Speakers
+        </th>
+        <th>
+          Video Uploaded path
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for event in events %}
+        <tr>
+          <td>
+            {{ event.title }}
+          </td>
+          <td>
+            {{ event.type }}
+          </td>
+          <td>
+            {{ event.slot.day.day }} {{ event.slot.hour }}
+          </td>
+          <td>
+            {% for speaker in event.speakers %}
+              {{ speaker.full_name }} ({{ speaker.name }}) /
+            {% endfor %}
+          </td>
+          <td>
+            <input style="width: 400px" type="text" name="video_uploaded_path_{{event.id}}" value="{{ event.video_uploaded_path }}" />
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</form>
+{% endblock %}

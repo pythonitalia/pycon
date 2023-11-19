@@ -8,6 +8,11 @@ query Keynote($conference: String!, $slug: String!, $language: String!) {
       slug(language: $language)
       start
       end
+      youtubeVideoId
+      rooms {
+        id
+        name
+      }
       topic {
         id
         name

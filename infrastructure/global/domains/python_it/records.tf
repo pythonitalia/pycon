@@ -10,7 +10,7 @@ resource "aws_route53_record" "python_it_mx" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "python.it"
   type    = "MX"
-  records = ["10 mail0.develer.com.", "60 mail3.develer.com.", "50 mail2.bertos.org.", "20 mail.python.it."]
+  records = ["10 mail0.develer.com.", "60 mail3.develer.com.", "50 mail2.bertos.org.", "20 mail.python.it.", "70 mail.protonmail.ch", "80 mailsec.protonmail.ch"]
   ttl     = "172800"
 }
 
@@ -34,7 +34,7 @@ resource "aws_route53_record" "python_it_spf" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "python.it"
   type    = "SPF"
-  records = ["v=spf1 include:pycon.it ~all"]
+  records = ["v=spf1 include:pycon.it include:_spf.protonmail.ch mx ~all"]
   ttl     = "3600"
 }
 
@@ -42,8 +42,40 @@ resource "aws_route53_record" "python_it_txt" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "python.it"
   type    = "TXT"
-  records = ["v=spf1 include:pycon.it ~all", "google-site-verification=iuDKJUkUK41L-cG5bU3IcNrBeCmnvV1BlCX2m4W5LJY"]
+  records = ["v=spf1 include:pycon.it include:_spf.protonmail.ch mx ~all", "google-site-verification=iuDKJUkUK41L-cG5bU3IcNrBeCmnvV1BlCX2m4W5LJY", "protonmail-verification=aa66b78b1ea723283e5525cdb1000567c801c72b"]
   ttl     = "172800"
+}
+
+resource "aws_route53_record" "_dmarc" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "_dmarc"
+  type    = "TXT"
+  records = ["v=DMARC1; p=none"]
+  ttl     = "172800"
+}
+
+resource "aws_route53_record" "protonmail_dkim" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "protonmail._domainkey"
+  type    = "CNAME"
+  records = ["protonmail.domainkey.d7lcpn4eod4w6f4h2xu7f4fi52dbkgmbkavzr23vendi2w23tmemq.domains.proton.ch."]
+  ttl     = "3600"
+}
+
+resource "aws_route53_record" "protonmail2_dkim" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "protonmail2._domainkey"
+  type    = "CNAME"
+  records = ["protonmail2.domainkey.d7lcpn4eod4w6f4h2xu7f4fi52dbkgmbkavzr23vendi2w23tmemq.domains.proton.ch."]
+  ttl     = "3600"
+}
+
+resource "aws_route53_record" "protonmail3_dkim" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "protonmail3._domainkey"
+  type    = "CNAME"
+  records = ["protonmail3.domainkey.d7lcpn4eod4w6f4h2xu7f4fi52dbkgmbkavzr23vendi2w23tmemq.domains.proton.ch."]
+  ttl     = "3600"
 }
 
 resource "aws_route53_record" "_matrix__tcp_python_it_srv" {
@@ -166,6 +198,57 @@ resource "aws_route53_record" "roma_python_it_cname" {
   ttl     = "3600"
 }
 
+resource "aws_route53_record" "testcommunity_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "testcommunity.python.it"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com."]
+  ttl     = "3600"
+}
+
+resource "aws_route53_record" "anothercommunity_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "anothercommunity.python.it"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com."]
+  ttl     = "3600"
+}
+
+resource "aws_route53_record" "firenze_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "firenze.python.it"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com."]
+  ttl     = "3600"
+}
+
+
+resource "aws_route53_record" "bari_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "bari.python.it"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com."]
+  ttl     = "3600"
+}
+
+resource "aws_route53_record" "torino_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "torino.python.it"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com."]
+  ttl     = "3600"
+}
+
+
+resource "aws_route53_record" "varese_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "varese.python.it"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com."]
+  ttl     = "3600"
+}
+
+
 resource "aws_route53_record" "smtp_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "smtp.python.it"
@@ -210,7 +293,23 @@ resource "aws_route53_record" "trento_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "trento.python.it"
   type    = "CNAME"
-  records = ["python.it."]
+  records = ["pythonitalia.github.io."]
+  ttl     = "3600"
+}
+
+resource "aws_route53_record" "catania_python_it_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "catania.python.it"
+  type    = "CNAME"
+  records = ["pythonitalia.github.io."]
+  ttl     = "3600"
+}
+
+resource "aws_route53_record" "campania_python_it_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "campania.python.it"
+  type    = "CNAME"
+  records = ["pycampania.it."]
   ttl     = "3600"
 }
 

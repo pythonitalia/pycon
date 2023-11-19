@@ -8,9 +8,9 @@ class IsTicketOwner(BasePermission):
     message = "You are not allowed to update this ticket."
 
     def has_permission(self, source, info, **kwargs):
-        pastaporto = info.context.request.pastaporto
+        user = info.context.request.user
 
-        if not pastaporto.is_authenticated:
+        if not user.is_authenticated:
             return False
 
         conference = Conference.objects.get(code=kwargs["conference"])

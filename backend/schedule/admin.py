@@ -1,3 +1,4 @@
+from import_export.resources import ModelResource
 from django.db.models import Prefetch
 from typing import Dict
 from django import forms
@@ -17,7 +18,6 @@ from ordered_model.admin import (
     OrderedModelAdmin,
     OrderedTabularInline,
 )
-
 from conferences.models import SpeakerVoucher
 from domain_events.publisher import (
     send_new_submission_time_slot,
@@ -25,9 +25,11 @@ from domain_events.publisher import (
     send_speaker_communication_email,
 )
 from pretix import user_has_admission_ticket
+from video_upload.workflows.batch_multiple_schedule_items_video_upload import (
+    BatchMultipleScheduleItemsVideoUpload,
+)
+from temporal.sdk import start_workflow
 from schedule.forms import EmailSpeakersForm
-from users.autocomplete import UsersBackendAutocomplete
-from users.mixins import AdminUsersMixin, ResourceUsersByIdsMixin, SearchUsersMixin
 
 from .models import (
     Day,
@@ -189,6 +191,26 @@ def _send_invitations(
         schedule_item.save()
 
 
+@admin.action(description="Upload videos to YouTube")
+def upload_videos_to_youtube(modeladmin, request, queryset):
+    videos = queryset.filter(youtube_video_id__exact="").exclude(
+        video_uploaded_path__exact=""
+    )
+    conference_id = queryset.first().conference_id
+    start_workflow(
+        workflow=BatchMultipleScheduleItemsVideoUpload.run,
+        id=f"batch-upload-video-conference-{conference_id}",
+        task_queue="default",
+        arg=BatchMultipleScheduleItemsVideoUpload.input(
+            schedule_items_ids=list(videos.values_list("id", flat=True))
+        ),
+    )
+
+    messages.add_message(
+        request, messages.INFO, f"Scheduled {videos.count()} videos to upload"
+    )
+
+
 class SlotInline(admin.TabularInline):
     model = Slot
 
@@ -196,29 +218,25 @@ class SlotInline(admin.TabularInline):
 class ScheduleItemAdditionalSpeakerInlineForm(forms.ModelForm):
     class Meta:
         model = ScheduleItemAdditionalSpeaker
-        widgets = {
-            "user_id": UsersBackendAutocomplete(admin.site),
-        }
-        fields = ["scheduleitem", "user_id"]
+        fields = ["scheduleitem", "user"]
 
 
 class ScheduleItemAdditionalSpeakerInline(admin.TabularInline):
     model = ScheduleItemAdditionalSpeaker
     form = ScheduleItemAdditionalSpeakerInlineForm
+    autocomplete_fields = ("user",)
 
 
 class ScheduleItemAttendeeInlineForm(forms.ModelForm):
     class Meta:
         model = ScheduleItemAttendee
-        widgets = {
-            "user_id": UsersBackendAutocomplete(admin.site),
-        }
-        fields = ["schedule_item", "user_id"]
+        fields = ["schedule_item", "user"]
 
 
 class ScheduleItemAttendeeInline(admin.TabularInline):
     model = ScheduleItemAttendee
     form = ScheduleItemAttendeeInlineForm
+    autocomplete_fields = ("user",)
 
 
 class ScheduleItemAdminForm(forms.ModelForm):
@@ -233,12 +251,14 @@ class ScheduleItemAdminForm(forms.ModelForm):
             self.fields["slot"]
             .queryset.filter(day__conference_id=self.instance.conference_id)
             .order_by("day__day", "hour")
+            .prefetch_related("day")
         )
 
         self.fields["new_slot"].queryset = (
             self.fields["new_slot"]
             .queryset.filter(day__conference_id=self.instance.conference_id)
             .order_by("day__day", "hour")
+            .prefetch_related("day")
         )
 
         self.fields["submission"].queryset = self.fields["submission"].queryset.filter(
@@ -247,6 +267,12 @@ class ScheduleItemAdminForm(forms.ModelForm):
 
         self.fields["keynote"].queryset = self.fields["keynote"].queryset.filter(
             conference_id=self.instance.conference_id
+        )
+
+        self.fields["rooms"].queryset = self.fields["rooms"].queryset.filter(
+            id__in=DayRoomThroughModel.objects.filter(
+                day__conference_id=self.instance.conference_id
+            ).values_list("room_id", flat=True)
         )
 
     class Meta:
@@ -277,7 +303,7 @@ class ScheduleItemAdminForm(forms.ModelForm):
 
 
 @admin.register(ScheduleItem)
-class ScheduleItemAdmin(SearchUsersMixin):
+class ScheduleItemAdmin(admin.ModelAdmin):
     list_display = (
         "title",
         "conference",
@@ -329,12 +355,17 @@ class ScheduleItemAdmin(SearchUsersMixin):
         ),
         (_("Booking"), {"fields": ("attendees_total_capacity", "spaces_left")}),
         (_("Voucher"), {"fields": ("exclude_from_voucher_generation",)}),
+        (_("YouTube"), {"fields": ("youtube_video_id", "video_uploaded_path")}),
     )
     autocomplete_fields = ("submission",)
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("rooms",)
-    search_fields = ("title",)
-    user_fk = "submission__speaker_id"
+    search_fields = (
+        "title",
+        "submission__title",
+        "submission__speaker__full_name",
+        "submission__speaker__email",
+    )
     inlines = [
         ScheduleItemAdditionalSpeakerInline,
         ScheduleItemAttendeeInline,
@@ -344,6 +375,7 @@ class ScheduleItemAdmin(SearchUsersMixin):
         send_schedule_invitation_to_uninvited,
         send_schedule_invitation_reminder_to_waiting,
         mark_speakers_to_receive_vouchers,
+        upload_videos_to_youtube,
     ]
     readonly_fields = ("spaces_left",)
 
@@ -455,7 +487,7 @@ SCHEDULE_ITEM_INVITATION_FIELDS = [
 ]
 
 
-class ScheduleItemInvitationResource(ResourceUsersByIdsMixin):
+class ScheduleItemInvitationResource(ModelResource):
     search_field = "submission__speaker_id"
 
     speaker_display_name = Field()
@@ -463,24 +495,20 @@ class ScheduleItemInvitationResource(ResourceUsersByIdsMixin):
     speaker_has_ticket = Field()
 
     def dehydrate_speaker_display_name(self, obj):
-        return self.get_user_display_name(obj.submission.speaker_id)
+        return obj.submission.speaker.display_name
 
     def dehydrate_speaker_email(self, obj):
-        user = self.get_user_data(obj.submission.speaker_id)
-
-        if not user:
+        if not obj.submission.speaker_id:
             return "<no user>"
 
-        return user["email"]
+        return obj.submission.speaker.email
 
     def dehydrate_speaker_has_ticket(self, obj):
-        user = self.get_user_data(obj.submission.speaker_id)
-
-        if not user:
+        if not obj.submission.speaker_id:
             return "<no user>"
 
         return user_has_admission_ticket(
-            email=user["email"],
+            email=obj.submission.speaker.email,
             event_organizer=obj.conference.pretix_organizer_id,
             event_slug=obj.conference.pretix_event_id,
         )
@@ -498,7 +526,7 @@ SCHEDULE_ITEM_ATTENDEE_FIELDS = [
 ]
 
 
-class ScheduleItemAttendeeResource(ResourceUsersByIdsMixin):
+class ScheduleItemAttendeeResource(ModelResource):
     search_field = "user_id"
 
     full_name = Field()
@@ -506,28 +534,22 @@ class ScheduleItemAttendeeResource(ResourceUsersByIdsMixin):
     email = Field()
 
     def dehydrate_email(self, obj):
-        user = self.get_user_data(obj.user_id)
-
-        if not user:
+        if not obj.user_id:
             return "<no user>"
 
-        return user["email"]
+        return obj.user.email
 
     def dehydrate_full_name(self, obj):
-        user = self.get_user_data(obj.user_id)
-
-        if not user:
+        if not obj.user_id:
             return "<no user>"
 
-        return user["fullname"]
+        return obj.user.full_name
 
     def dehydrate_name(self, obj):
-        user = self.get_user_data(obj.user_id)
-
-        if not user:
+        if not obj.user_id:
             return "<no user>"
 
-        return user["name"]
+        return obj.user.name
 
     class Meta:
         model = ScheduleItemAttendee
@@ -536,7 +558,7 @@ class ScheduleItemAttendeeResource(ResourceUsersByIdsMixin):
 
 
 @admin.register(ScheduleItemInvitation)
-class ScheduleItemInvitationAdmin(ExportMixin, AdminUsersMixin):
+class ScheduleItemInvitationAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ScheduleItemInvitationResource
     list_display = (
         "slot",
@@ -571,22 +593,19 @@ class ScheduleItemInvitationAdmin(ExportMixin, AdminUsersMixin):
             },
         ),
     )
-    user_fk = "submission__speaker_id"
 
     def speaker_display_name(self, obj):
-        return self.get_user_display_name(obj.submission.speaker_id)
+        return obj.submission.speaker.display_name
 
     @admin.display(
         boolean=True,
     )
     def speaker_has_ticket(self, obj) -> bool:
-        user = self.get_user_data(obj.submission.speaker_id)
-
-        if not user:
+        if not obj.submission.speaker_id:
             return None
 
         return user_has_admission_ticket(
-            email=user["email"],
+            email=obj.submission.speaker.email,
             event_organizer=obj.conference.pretix_organizer_id,
             event_slug=obj.conference.pretix_event_id,
         )

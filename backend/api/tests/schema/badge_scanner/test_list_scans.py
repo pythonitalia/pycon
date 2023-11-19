@@ -1,5 +1,6 @@
 import pytest
 from badge_scanner.models import BadgeScan
+from users.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -44,15 +45,15 @@ def test_returns_only_scans_by_current_user(user, graphql_client, conference):
     scan = BadgeScan.objects.create(
         scanned_by_id=user.id,
         conference=conference,
-        scanned_user_id=1,
+        scanned_user=UserFactory(),
         badge_url="https://foo.bar",
         notes="",
     )
 
     BadgeScan.objects.create(
-        scanned_by_id=2,
+        scanned_by=UserFactory(),
         conference=conference,
-        scanned_user_id=1,
+        scanned_user=UserFactory(),
         badge_url="https://foo.bar",
         notes="",
     )
@@ -74,7 +75,7 @@ def test_can_paginate(user, graphql_client, conference):
     scan_a = BadgeScan.objects.create(
         scanned_by_id=user.id,
         conference=conference,
-        scanned_user_id=1,
+        scanned_user=UserFactory(),
         badge_url="https://foo.bar",
         notes="",
     )
@@ -82,7 +83,7 @@ def test_can_paginate(user, graphql_client, conference):
     scan_b = BadgeScan.objects.create(
         scanned_by_id=user.id,
         conference=conference,
-        scanned_user_id=1,
+        scanned_user=UserFactory(),
         badge_url="https://foo.bar",
         notes="",
     )

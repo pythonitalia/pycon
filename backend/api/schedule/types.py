@@ -31,10 +31,12 @@ class DayRoom:
     slido_url: str
 
 
-@strawberry.federation.type(keys=["id"])
+@strawberry.type
 class ScheduleItemUser:
     id: strawberry.ID
     conference_code: strawberry.Private[str]
+    fullname: str
+    full_name: str
 
     @strawberry.field
     def participant(self) -> Optional[Participant]:
@@ -67,6 +69,7 @@ class ScheduleItem:
     audience_level: Optional[
         Annotated["AudienceLevel", strawberry.lazy("api.conferences.types")]
     ]
+    youtube_video_id: Optional[str]
 
     @strawberry.field
     def has_limited_capacity(self) -> bool:
@@ -97,7 +100,12 @@ class ScheduleItem:
 
         for speaker in self.speakers:
             speakers.append(
-                ScheduleItemUser(id=speaker, conference_code=self.conference.code)
+                ScheduleItemUser(
+                    id=speaker.id,
+                    fullname=speaker.fullname,
+                    full_name=speaker.full_name,
+                    conference_code=self.conference.code,
+                )
             )
 
         return speakers

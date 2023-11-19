@@ -13,6 +13,7 @@ from conferences.models.conference import Conference
 from participants.models import Participant as ParticipantModel
 
 from .types import Participant
+from typing import Annotated, Union
 
 
 FACEBOOK_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?facebook\.com\/")
@@ -21,15 +22,19 @@ LINKEDIN_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?linkedin\.com\/")
 
 @strawberry.type
 class UpdateParticipantErrors(BaseErrorType):
-    bio: list[str] = strawberry.field(default_factory=list)
-    photo: list[str] = strawberry.field(default_factory=list)
-    website: list[str] = strawberry.field(default_factory=list)
-    level: list[str] = strawberry.field(default_factory=list)
-    twitter_handle: list[str] = strawberry.field(default_factory=list)
-    instagram_handle: list[str] = strawberry.field(default_factory=list)
-    linkedin_url: list[str] = strawberry.field(default_factory=list)
-    facebook_url: list[str] = strawberry.field(default_factory=list)
-    mastodon_handle: list[str] = strawberry.field(default_factory=list)
+    @strawberry.type
+    class _UpdateParticipantErrors:
+        bio: list[str] = strawberry.field(default_factory=list)
+        photo: list[str] = strawberry.field(default_factory=list)
+        website: list[str] = strawberry.field(default_factory=list)
+        level: list[str] = strawberry.field(default_factory=list)
+        twitter_handle: list[str] = strawberry.field(default_factory=list)
+        instagram_handle: list[str] = strawberry.field(default_factory=list)
+        linkedin_url: list[str] = strawberry.field(default_factory=list)
+        facebook_url: list[str] = strawberry.field(default_factory=list)
+        mastodon_handle: list[str] = strawberry.field(default_factory=list)
+
+    errors: _UpdateParticipantErrors = None
 
 
 @strawberry.input
@@ -86,17 +91,13 @@ class UpdateParticipantInput:
         ):
             errors.add_error("photo", "Invalid photo")
 
-        return errors
+        return errors.if_has_errors
 
 
-@strawberry.type
-class UpdateParticipantValidationError:
-    errors: UpdateParticipantErrors
-
-
-UpdateParticipantResult = strawberry.union(
-    "UpdateParticipantResult", (Participant, UpdateParticipantValidationError)
-)
+UpdateParticipantResult = Annotated[
+    Union[Participant, UpdateParticipantErrors],
+    strawberry.union(name="UpdateParticipantResult"),
+]
 
 
 @strawberry.field(permission_classes=[IsAuthenticated])
@@ -104,10 +105,9 @@ def update_participant(
     info: Info, input: UpdateParticipantInput
 ) -> UpdateParticipantResult:
     request = info.context.request
-    errors = input.validate()
 
-    if errors.has_errors:
-        return UpdateParticipantValidationError(errors=errors)
+    if error_validation := input.validate():
+        return error_validation
 
     conference = Conference.objects.get(code=input.conference)
 

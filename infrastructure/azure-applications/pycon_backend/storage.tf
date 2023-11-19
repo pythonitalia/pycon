@@ -29,6 +29,12 @@ resource "azurerm_storage_container" "participants_avatars" {
   container_access_type = "blob"
 }
 
+resource "azurerm_storage_container" "conference_videos" {
+  name                  = "conference-videos"
+  storage_account_name  = azurerm_storage_account.storage.name
+  container_access_type = "private"
+}
+
 resource "azurerm_storage_management_policy" "policy" {
   storage_account_id = azurerm_storage_account.storage.id
 

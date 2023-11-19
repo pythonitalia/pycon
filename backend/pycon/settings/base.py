@@ -1,3 +1,4 @@
+import stripe
 import environ
 from django.utils.translation import gettext_lazy as _
 
@@ -20,7 +21,31 @@ FRONTEND_URL = env("FRONTEND_URL")
 # Application definition
 
 INSTALLED_APPS = [
-    "custom_auth",
+    "users",
+    # CMS parts
+    "cms.components.base",
+    "cms.components.home",
+    "cms.components.news",
+    "cms.components.page",
+    "cms.components.sites",
+    # CMS
+    "wagtail_localize",
+    "wagtail_localize.locales",
+    "wagtail.contrib.forms",
+    "wagtail.contrib.redirects",
+    "wagtail.contrib.settings",
+    "wagtail.embeds",
+    "wagtail.sites",
+    "wagtail.users",
+    "wagtail.snippets",
+    "wagtail.documents",
+    "wagtail.images",
+    "wagtail.search",
+    "wagtail.admin",
+    "wagtail",
+    "modelcluster",
+    "taggit",
+    # --
     "schedule.apps.ScheduleConfig",
     "custom_admin",
     "dal",
@@ -35,7 +60,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "api.apps.ApiConfig",
     "timezone_field",
-    "users",
     "strawberry.django",
     "conferences.apps.ConferencesConfig",
     "languages.apps.LanguagesConfig",
@@ -65,6 +89,9 @@ INSTALLED_APPS = [
     "imagekit",
     "badge_scanner",
     "badges.apps.BadgesConfig",
+    "google_api.apps.GoogleApiConfig",
+    "association_membership.apps.AssociationMembershipConfig",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -74,11 +101,10 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "pycon.middleware.CustomAuthenticationMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "pycon.middleware.pastaporto_auth",
-    "qinspect.middleware.QueryInspectMiddleware",
+    # "qinspect.middleware.QueryInspectMiddleware",
 ]
 
 ROOT_URLCONF = "pycon.urls"
@@ -136,10 +162,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
-
 STATICFILES_DIRS = [root("assets")]
 
 STATIC_URL = "/django-static/"
@@ -150,9 +172,11 @@ MEDIA_ROOT = root("media")
 
 AUTH_USER_MODEL = "users.User"
 
-AUTHENTICATION_BACKENDS = ("custom_auth.backend.UsersAuthBackend",)
+AUTHENTICATION_BACKENDS = (
+    # "custom_auth.backend.UsersAuthBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MAPBOX_PUBLIC_API_KEY = env("MAPBOX_PUBLIC_API_KEY", default="")
 
 SERIALIZATION_MODULES = {"json": "i18n.serializers"}
@@ -160,6 +184,23 @@ USE_X_FORWARDED_HOST = False
 
 PRETIX_API = env("PRETIX_API", default="")
 PRETIX_API_TOKEN = None
+
+STORAGES = {
+    "default": {
+        "BACKEND": env(
+            "MEDIA_FILES_STORAGE_BACKEND", default="pycon.storages.CustomS3Boto3Storage"
+        )
+    },
+    "conferencevideos": {
+        "BACKEND": "pycon.storages.ConferenceVideosStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+IMAGEKIT_DEFAULT_FILE_STORAGE = env(
+    "MEDIA_FILES_STORAGE_BACKEND", default="pycon.storages.CustomS3Boto3Storage"
+)
 
 if PRETIX_API:
     PRETIX_API_TOKEN = env("PRETIX_API_TOKEN")
@@ -213,8 +254,12 @@ VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN = env(
     "VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN", default=""
 ).strip()
 
-AZURE_STORAGE_ACCOUNT_NAME = env("AZURE_STORAGE_ACCOUNT_NAME", default="")
-AZURE_STORAGE_ACCOUNT_KEY = env("AZURE_STORAGE_ACCOUNT_KEY", default="")
+AZURE_ACCOUNT_NAME = AZURE_STORAGE_ACCOUNT_NAME = env(
+    "AZURE_STORAGE_ACCOUNT_NAME", default=""
+)
+AZURE_ACCOUNT_KEY = AZURE_STORAGE_ACCOUNT_KEY = env(
+    "AZURE_STORAGE_ACCOUNT_KEY", default=""
+)
 
 USER_ID_HASH_SALT = env("USER_ID_HASH_SALT", default="")
 
@@ -226,3 +271,39 @@ IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "imagekit.cachefiles.strategies.Optimistic
 CACHES = {
     "default": env.cache(default="locmemcache://snowflake"),
 }
+
+TEMPORAL_ADDRESS = env("TEMPORAL_ADDRESS", default="")
+
+SESSION_COOKIE_NAME = "pythonitalia_sessionid"
+CSRF_USE_SESSIONS = True
+CSRF_COOKIE_SECURE = DEBUG is False
+
+# Stripe
+STRIPE_SECRET_API_KEY = env("STRIPE_SECRET_API_KEY")
+STRIPE_SUBSCRIPTION_PRICE_ID = env("STRIPE_SUBSCRIPTION_PRICE_ID")
+STRIPE_WEBHOOK_SECRET = env("STRIPE_WEBHOOK_SIGNATURE_SECRET")
+
+stripe.api_key = STRIPE_SECRET_API_KEY
+
+PRETIX_WEBHOOK_SECRET = env("PRETIX_WEBHOOK_SECRET", default="")
+
+ASSOCIATION_FRONTEND_URL = env("ASSOCIATION_FRONTEND_URL", default="")
+
+# Wagtail CMS
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
+    ("en", "English"),
+    ("it", "Italian"),
+]
+
+# Base URL to use when referring to full URLs within the Wagtail admin backend -
+# e.g. in notification emails. Don't include '/admin' or a trailing slash
+WAGTAILADMIN_BASE_URL = "http://cms.python.it"
+
+WAGTAILSEARCH_BACKENDS = {
+    "default": {
+        "BACKEND": "wagtail.search.backends.database",
+    }
+}
+
+WAGTAIL_SITE_NAME = "cms"
+WAGTAIL_I18N_ENABLED = True

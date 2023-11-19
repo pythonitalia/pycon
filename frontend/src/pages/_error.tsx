@@ -1,36 +1,20 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
+import { Heading, Page, Section } from "@python-italia/pycon-styleguide";
 import * as Sentry from "@sentry/nextjs";
-import { FormattedMessage } from "react-intl";
-import { Box, Heading, jsx, Text } from "theme-ui";
 
 import { GetStaticProps } from "next";
 import NextErrorComponent from "next/error";
 
 import { getApolloClient, addApolloState } from "~/apollo/client";
-import { Link } from "~/components/link";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 
 const ErrorPage = ({ statusCode }) => (
-  <Box sx={{ mt: 4, mx: "auto", maxWidth: "container", px: 3, pb: 6 }}>
-    <Heading as="h2" sx={{ mb: 2 }}>
-      Ops {statusCode}
-    </Heading>
-
-    {statusCode === 404 && (
-      <Text>
-        <FormattedMessage id="404.message" />
-        <Link path="/" sx={{ display: "block", mt: 2 }}>
-          <FormattedMessage id="error404.goToHomepage" />
-        </Link>
-      </Text>
-    )}
+  <Page>
+    <Section>
+      <Heading size={4}>Ops {statusCode}</Heading>
+    </Section>
 
     <video
-      sx={{
+      style={{
         position: "absolute",
         top: 0,
         left: 0,
@@ -46,7 +30,7 @@ const ErrorPage = ({ statusCode }) => (
       muted={true}
       loop={true}
     />
-  </Box>
+  </Page>
 );
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {

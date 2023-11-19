@@ -126,3 +126,6 @@ cms/media/
 generated-badges/
 !generated-badges/.gitkeep
 badge-service/badges.zip
+
+.virtualenv/
+.pdm-python

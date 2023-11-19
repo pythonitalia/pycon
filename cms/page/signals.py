@@ -11,6 +11,7 @@ def revalidate_vercel_frontend(sender, **kwargs):
 
     site = kwargs["instance"].get_site()
     site_name = site.site_name
+    hostname = site.hostname
     settings = VercelFrontendSettings.for_site(site)
 
     if not settings:
@@ -43,7 +44,7 @@ def revalidate_vercel_frontend(sender, **kwargs):
 
     page_path = page_path[:-1]
 
-    if slug == "homepage":
+    if slug == hostname:
         path = f"/{language_code}"
     else:
         path = f"/{language_code}{page_path}"

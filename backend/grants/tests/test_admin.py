@@ -73,7 +73,6 @@ def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
 
 
 def test_send_reply_emails_waiting_list(rf, grant_factory, mocker):
-
     mock_messages = mocker.patch("grants.admin.messages")
     grant = grant_factory(
         status=Grant.Status.waiting_list,
@@ -122,14 +121,12 @@ def test_send_voucher_via_email(
     conference_factory,
     mocker,
 ):
-
     mocker.patch("grants.admin.messages")
     mock_send_email = mocker.patch("grants.admin.send_grant_voucher_email")
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
 
     grant = grant_factory(
-        user_id=200,
         status=Grant.Status.confirmed,
         conference=conference,
         pretix_voucher_id=2345,
@@ -158,12 +155,10 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     mock_messages = mocker.patch("grants.admin.messages")
     mock_send_email = mocker.patch("grants.admin.send_grant_voucher_email")
     grant_factory(
-        user_id=100,
         status=Grant.Status.confirmed,
         conference=conference,
     )
     grant_factory(
-        user_id=200,
         status=Grant.Status.confirmed,
         conference=conference_2,
     )
@@ -198,13 +193,11 @@ def test_create_grant_vouchers_on_pretix(rf, conference_factory, grant_factory, 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
 
     grant_1 = grant_factory(
-        user_id=500,
         status=Grant.Status.confirmed,
         conference=conference,
         pretix_voucher_id=None,
     )
     grant_2 = grant_factory(
-        user_id=600,
         status=Grant.Status.confirmed,
         conference=conference,
         pretix_voucher_id=None,
@@ -222,7 +215,7 @@ def test_create_grant_vouchers_on_pretix(rf, conference_factory, grant_factory, 
             call(
                 conference=conference,
                 code="GRANT-123ZYZ",
-                comment="Voucher for user_id=500",
+                comment=f"Voucher for user_id={grant_1.user_id}",
                 tag="grants",
                 quota_id=123,
                 price_mode="set",
@@ -231,13 +224,14 @@ def test_create_grant_vouchers_on_pretix(rf, conference_factory, grant_factory, 
             call(
                 conference=conference,
                 code="GRANT-468ADG",
-                comment="Voucher for user_id=600",
+                comment=f"Voucher for user_id={grant_2.user_id}",
                 tag="grants",
                 quota_id=123,
                 price_mode="set",
                 value="0.00",
             ),
         ],
+        any_order=True,
     )
 
     grant_1.refresh_from_db()
@@ -268,14 +262,12 @@ def test_create_grant_vouchers_on_pretix_only_for_missing_ones(
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
 
     grant_1 = grant_factory(
-        user_id=100,
         status=Grant.Status.confirmed,
         conference=conference,
         pretix_voucher_id=None,
     )
 
     grant_2 = grant_factory(
-        user_id=200,
         status=Grant.Status.confirmed,
         conference=conference,
         pretix_voucher_id=2345,
@@ -291,7 +283,7 @@ def test_create_grant_vouchers_on_pretix_only_for_missing_ones(
     mock_create_voucher.assert_called_once_with(
         conference=conference,
         code="GRANT-123ZYZ",
-        comment="Voucher for user_id=100",
+        comment=f"Voucher for user_id={grant_1.user_id}",
         tag="grants",
         quota_id=123,
         price_mode="set",
@@ -321,12 +313,10 @@ def test_create_grant_vouchers_on_pretix_doesnt_work_with_multiple_conferences(
         ],
     )
     grant_1 = grant_factory(
-        user_id=100,
         status=Grant.Status.confirmed,
         conference=conference,
     )
     grant_2 = grant_factory(
-        user_id=200,
         status=Grant.Status.confirmed,
         conference=conference_2,
     )
@@ -367,12 +357,10 @@ def test_create_grant_vouchers_on_pretix_doesnt_work_without_pretix_config(
     conference = conference_factory(pretix_speaker_voucher_quota_id=None)
 
     grant_1 = grant_factory(
-        user_id=200,
         status=Grant.Status.confirmed,
         conference=conference,
     )
     grant_2 = grant_factory(
-        user_id=300,
         status=Grant.Status.confirmed,
         conference=conference,
     )
@@ -413,12 +401,10 @@ def test_create_grant_vouchers_only_for_confirmed_grants(
     mock_messages = mocker.patch("grants.admin.messages")
     conference = conference_factory(pretix_speaker_voucher_quota_id=1223)
     grant_1 = grant_factory(
-        user_id=200,
         status=Grant.Status.refused,
         conference=conference,
     )
     grant_2 = grant_factory(
-        user_id=400,
         status=Grant.Status.confirmed,
         conference=conference,
     )

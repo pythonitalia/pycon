@@ -130,8 +130,8 @@ def test_filter_submissions_by_language(
     submission_factory(conference=submission.conference, languages=["it"])
     mock_has_ticket(submission.conference)
 
-    query = """query Submissions($code: String!, $language: String!) {
-        submissions(code: $code, language: $language) {
+    query = """query Submissions($code: String!, $languages: [String!]) {
+        submissions(code: $code, languages: $languages) {
             items {
                 id
             }
@@ -140,7 +140,7 @@ def test_filter_submissions_by_language(
 
     resp = graphql_client.query(
         query,
-        variables={"code": submission.conference.code, "language": "en"},
+        variables={"code": submission.conference.code, "languages": ["en"]},
     )
 
     assert not resp.get("errors")
@@ -243,8 +243,8 @@ def test_filter_by_type(
     submission_factory(conference=conference, custom_submission_type="workshop")
     mock_has_ticket(conference)
 
-    query = """query Submissions($code: String!, $type: String!) {
-        submissions(code: $code, type: $type) {
+    query = """query Submissions($code: String!, $types: [String!]) {
+        submissions(code: $code, types: $types) {
             items {
                 id
             }
@@ -253,7 +253,7 @@ def test_filter_by_type(
 
     resp = graphql_client.query(
         query,
-        variables={"code": conference.code, "type": str(submission.type.id)},
+        variables={"code": conference.code, "types": [str(submission.type.id)]},
     )
 
     assert not resp.get("errors")
@@ -273,8 +273,8 @@ def test_filter_by_audience_level(
     submission_factory(conference=conference, custom_audience_level="senior")
     mock_has_ticket(conference)
 
-    query = """query Submissions($code: String!, $audienceLevel: String!) {
-        submissions(code: $code, audienceLevel: $audienceLevel) {
+    query = """query Submissions($code: String!, $audienceLevels: [String!]) {
+        submissions(code: $code, audienceLevels: $audienceLevels) {
             items {
                 id
             }
@@ -285,7 +285,7 @@ def test_filter_by_audience_level(
         query,
         variables={
             "code": conference.code,
-            "audienceLevel": str(submission.audience_level.id),
+            "audienceLevels": [str(submission.audience_level.id)],
         },
     )
 

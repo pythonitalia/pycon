@@ -131,7 +131,7 @@ resource "aws_route53_record" "domain" {
 
   zone_id = data.aws_route53_zone.zone.zone_id
   name    = var.domain
-  type    = "A"
+  type    = "CNAME"
   ttl     = "30"
-  records = [data.azurerm_container_app_environment.env.static_ip_address]
+  records = [azurerm_container_app.ca_app.ingress[0].fqdn]
 }

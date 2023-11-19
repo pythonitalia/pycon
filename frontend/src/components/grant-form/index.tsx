@@ -225,7 +225,7 @@ export const GrantForm = ({
         errorKey = `validation${capitalized}`;
       }
 
-      return (grantData.mutationOp as any)[errorKey];
+      return (grantData.mutationOp as any).errors[errorKey];
     }
 
     return [];

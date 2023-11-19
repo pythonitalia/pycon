@@ -5,44 +5,21 @@ from urllib.parse import urljoin
 from pretix import user_has_admission_ticket
 
 import boto3
-from asgiref.sync import async_to_sync
 from django.conf import settings
 from django.utils import timezone
 from pythonit_toolkit.emails.templates import EmailTemplate
 from pythonit_toolkit.emails.utils import mark_safe
-from pythonit_toolkit.service_client import ServiceClient
 
+from users.models import User
 from grants.models import Grant
 from integrations import plain, slack
 from notifications.emails import send_email
 
 logger = logging.getLogger(__name__)
 
-USERS_NAMES_FROM_IDS = """query UserNamesFromIds($ids: [ID!]!) {
-    usersByIds(ids: $ids) {
-        id
-        fullname
-        name
-        username
-        email
-    }
-}"""
 
-
-def execute_service_client_query(query, variables):
-    client = ServiceClient(
-        url=f"{settings.USERS_SERVICE_URL}/internal-api",
-        service_name="users-backend",
-        caller="pycon-backend",
-        jwt_secret=settings.SERVICE_TO_SERVICE_SECRET,
-    )
-    return async_to_sync(client.execute)(query, variables)
-
-
-def get_name(user_data, fallback: str = "<no name specified>"):
-    return (
-        user_data["fullname"] or user_data["name"] or user_data["username"] or fallback
-    )
+def get_name(user: User, fallback: str = "<no name specified>"):
+    return user.full_name or user.name or user.username or fallback
 
 
 def handle_grant_reply_approved_sent(data):
@@ -143,20 +120,17 @@ def handle_grant_reply_rejected_sent(data):
 
 def _send_grant_email(template: EmailTemplate, subject: str, grant: Grant, **kwargs):
     try:
-        users_result = execute_service_client_query(
-            USERS_NAMES_FROM_IDS, {"ids": [grant.user_id]}
-        )
+        user = grant.user
 
-        user_data = users_result.data["usersByIds"][0]
         conference_name = grant.conference.name.localize("en")
         subject_prefix = f"[{conference_name}]"
 
         send_email(
             template=template,
-            to=user_data["email"],
+            to=user.email,
             subject=f"{subject_prefix} {subject}",
             variables={
-                "firstname": get_name(user_data, "there"),
+                "firstname": get_name(user, "there"),
                 "conferenceName": conference_name,
                 **kwargs,
             },
@@ -214,22 +188,18 @@ def handle_new_grant_reply(data):
 def handle_grant_voucher_email_sent(data):
     grant = Grant.objects.get(id=data["grant_id"])
 
-    user_id = grant.user_id
+    user = grant.user
     voucher_code = grant.voucher_code
 
-    users_result = execute_service_client_query(
-        USERS_NAMES_FROM_IDS, {"ids": [user_id]}
-    )
-    grant_data = users_result.data["usersByIds"][0]
     conference_name = grant.conference.name.localize("en")
     subject_prefix = f"[{conference_name}]"
 
     send_email(
         template=EmailTemplate.GRANT_VOUCHER_CODE,
-        to=grant_data["email"],
+        to=user.email,
         subject=f"{subject_prefix} Your Grant Voucher Code",
         variables={
-            "firstname": get_name(grant_data, "there"),
+            "firstname": get_name(user, "there"),
             "voucherCode": voucher_code,
         },
         reply_to=[
@@ -245,13 +215,10 @@ def handle_new_plain_chat_sent(data):
     user_id = data["user_id"]
     message = data["message"]
 
-    users_result = execute_service_client_query(
-        USERS_NAMES_FROM_IDS, {"ids": [user_id]}
-    )
+    user = User.objects.get(id=user_id)
 
-    user_data = users_result.data["usersByIds"][0]
-    name = get_name(user_data, "Financial Aid Appicant")
-    plain.send_message(user_data, title=f"{name} has some questions:", message=message)
+    name = get_name(user, "Financial Aid Appicant")
+    plain.send_message(user, title=f"{name} has some questions:", message=message)
 
 
 def handle_new_cfp_submission(data):
@@ -264,13 +231,10 @@ def handle_new_cfp_submission(data):
     tags = data["tags"]
     speaker_id = data["speaker_id"]
 
+    speaker = User.objects.get(id=speaker_id)
     conference = Conference.objects.get(id=data["conference_id"])
 
-    user_result = execute_service_client_query(
-        USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
-    )
-    user_data = user_result.data["usersByIds"][0]
-    user_name = get_name(user_data)
+    user_name = get_name(speaker)
 
     slack.send_message(
         [
@@ -310,10 +274,8 @@ def handle_schedule_invitation_sent(data):
     submission_title = data["submission_title"]
     is_reminder = data.get("is_reminder", False)
 
-    users_result = execute_service_client_query(
-        USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
-    )
-    speaker_data = users_result.data["usersByIds"][0]
+    speaker = User.objects.get(id=speaker_id)
+
     prefix = "[PyCon Italia 2023]"
     subject = (
         f"{prefix} Reminder: Your submission was accepted, confirm your presence"
@@ -323,11 +285,11 @@ def handle_schedule_invitation_sent(data):
 
     send_email(
         template=EmailTemplate.SUBMISSION_ACCEPTED,
-        to=speaker_data["email"],
+        to=speaker.email,
         subject=subject,
         variables={
             "submissionTitle": submission_title,
-            "firstname": get_name(speaker_data, "there"),
+            "firstname": get_name(speaker, "there"),
             "invitationlink": invitation_url,
         },
     )
@@ -338,18 +300,15 @@ def handle_submission_time_slot_changed(data):
     invitation_url = data["invitation_url"]
     submission_title = data["submission_title"]
 
-    users_result = execute_service_client_query(
-        USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
-    )
-    speaker_data = users_result.data["usersByIds"][0]
+    speaker = User.objects.get(id=speaker_id)
 
     send_email(
         template=EmailTemplate.SUBMISSION_SCHEDULE_TIME_CHANGED,
-        to=speaker_data["email"],
+        to=speaker.email,
         subject="[PyCon Italia 2023] Your Submission time slot has been changed!",
         variables={
             "submissionTitle": submission_title,
-            "firstname": get_name(speaker_data, "there"),
+            "firstname": get_name(speaker, "there"),
             "invitationlink": invitation_url,
         },
     )
@@ -360,13 +319,9 @@ def handle_new_schedule_invitation_answer(data):
 
     schedule_item = ScheduleItem.objects.get(id=data["schedule_item_id"])
     conference = schedule_item.conference
-    speaker_id = schedule_item.submission.speaker_id
+    speaker = schedule_item.submission.speaker
 
-    user_result = execute_service_client_query(
-        USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
-    )
-    user_data = user_result.data["usersByIds"][0]
-    user_name = get_name(user_data)
+    user_name = get_name(speaker)
 
     invitation_admin_url = data["invitation_admin_url"]
     schedule_item_admin_url = data["schedule_item_admin_url"]
@@ -426,20 +381,17 @@ def handle_speaker_voucher_email_sent(data):
 
     speaker_voucher = SpeakerVoucher.objects.get(id=data["speaker_voucher_id"])
 
-    speaker_id = speaker_voucher.user_id
+    speaker = speaker_voucher.user
     voucher_code = speaker_voucher.voucher_code
 
-    users_result = execute_service_client_query(
-        USERS_NAMES_FROM_IDS, {"ids": [speaker_id]}
-    )
-    speaker_data = users_result.data["usersByIds"][0]
+    conference_name = speaker_voucher.conference.name.localize("en")
 
     send_email(
         template=EmailTemplate.SPEAKER_VOUCHER_CODE,
-        to=speaker_data["email"],
-        subject="[PyCon Italia 2023] Your Speaker Voucher Code",
+        to=speaker.email,
+        subject=f"[{conference_name}] Your Speaker Voucher Code",
         variables={
-            "firstname": get_name(speaker_data, "there"),
+            "firstname": get_name(speaker, "there"),
             "voucherCode": voucher_code,
             "is_speaker_voucher": speaker_voucher.voucher_type
             == SpeakerVoucher.VoucherType.SPEAKER,
@@ -457,6 +409,8 @@ def handle_speaker_communication_sent(data):
     from conferences.models import Conference
 
     user_id = data["user_id"]
+    user = User.objects.get(id=user_id)
+
     subject = data["subject"]
     body = data["body"]
     only_speakers_without_ticket = data["only_speakers_without_ticket"]
@@ -464,13 +418,8 @@ def handle_speaker_communication_sent(data):
     conference_id = data["conference_id"]
     conference = Conference.objects.get(id=conference_id)
 
-    users_result = execute_service_client_query(
-        USERS_NAMES_FROM_IDS, {"ids": [user_id]}
-    )
-    speaker_data = users_result.data["usersByIds"][0]
-
     if only_speakers_without_ticket and user_has_admission_ticket(
-        email=speaker_data["email"],
+        email=user.email,
         event_organizer=conference.pretix_organizer_id,
         event_slug=conference.pretix_event_id,
     ):
@@ -478,10 +427,10 @@ def handle_speaker_communication_sent(data):
 
     send_email(
         template=EmailTemplate.SPEAKER_COMMUNICATION,
-        to=speaker_data["email"],
+        to=user.email,
         subject=f"[{conference.name.localize('en')}] {subject}",
         variables={
-            "firstname": get_name(speaker_data, "there"),
+            "firstname": get_name(user, "there"),
             "body": mark_safe(body.replace("\n", "<br />")),
         },
         reply_to=[
@@ -572,22 +521,17 @@ def handle_proposal_rejected_sent(data):
     from submissions.models import Submission
 
     submission = Submission.objects.get(id=data["proposal_id"])
-    user_id = submission.speaker_id
-
-    users_result = execute_service_client_query(
-        USERS_NAMES_FROM_IDS, {"ids": [user_id]}
-    )
-    speaker_data = users_result.data["usersByIds"][0]
+    submission_speaker = submission.speaker
 
     language_code = submission.languages.first().code
     conference_name = submission.conference.name.localize(language_code)
 
     send_email(
         template=EmailTemplate.SUBMISSION_REJECTED,
-        to=speaker_data["email"],
+        to=submission_speaker.email,
         subject=f"[{conference_name}] Update about your proposal",
         variables={
-            "firstname": get_name(speaker_data, "there"),
+            "firstname": get_name(submission_speaker, "there"),
             "conferenceName": conference_name,
             "submissionTitle": submission.title.localize(language_code),
             "submissionType": submission.type.name,

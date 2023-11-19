@@ -12,9 +12,7 @@ pytestmark = mark.django_db
 def simple_schedule_item(
     schedule_item_factory, submission_factory, slot_factory, day_factory
 ):
-    submission = submission_factory(
-        speaker_id=200,
-    )
+    submission = submission_factory()
 
     return schedule_item_factory(
         status=ScheduleItem.STATUS.confirmed,
@@ -102,7 +100,7 @@ def test_cannot_overbook(
     schedule_item.attendees_total_capacity = 1
     schedule_item.save()
 
-    schedule_item_attendee_factory(schedule_item=schedule_item, user_id=5000)
+    schedule_item_attendee_factory(schedule_item=schedule_item)
 
     response = graphql_client.query(
         """mutation($id: ID!) {

@@ -194,7 +194,7 @@ resource "aws_route53_record" "pycon_2022" {
   zone_id = aws_route53_zone.pyconit.id
   name    = "2022.pycon.it"
   type    = "CNAME"
-  records = ["cname.vercel-dns.com"]
+  records = ["2022.pycon.it.s3-website.eu-central-1.amazonaws.com"]
   ttl     = "3600"
 }
 

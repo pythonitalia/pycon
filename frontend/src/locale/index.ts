@@ -11,10 +11,12 @@ export const messages = {
     "global.no": "No",
     "profile.tickets.size": "Size",
     "tickets.productsList.guidedToursTitle": "Guided Tours",
-
     "checkout.billing.businessInvoice": "Do you need an invoice?",
     "checkout.billing.businessInvoice.description":
       "Turn this option on if your company, university or similar is paying for you or if you need an invoice.",
+
+    "submission.languageSwitch":
+      "This proposal is in multiple languages, click here to see it in {language}",
 
     "profile.tickets.noDetails": "Have fun! 🍻",
 
@@ -68,6 +70,7 @@ export const messages = {
     "profile.myProposals.notScheduled": "Not added to the schedule",
     "profile.myProposals.viewInvitation": "Invitation",
     "profile.myProposals.edit": "Edit",
+    "profile.myProposals.viewIn": "View in {language}",
     "schedule.entry.endsAt": "Ends at {time}",
     "homepage.sponsors": "Sponsors",
     "homepage.eventPreviewCard.time": "{start} - {end}",
@@ -143,6 +146,8 @@ export const messages = {
 
     "scheduleEventDetail.eventTime": "{start} - {end}",
     "scheduleEventDetail.sidebar.spacesLeft": "Seats left",
+    "eventDetail.rooms":
+      "{countRooms, plural, =0 {Rooms} one {Room} other {Rooms}}",
     "scheduleEvent.soldout": "Sold-out",
 
     "homepage.followUs": "Follow us on",
@@ -781,6 +786,7 @@ reflects what everyone wants to see!`,
     "voting.errors.cannotVote.linkVotingInfo.text": "voting guidelines",
     "voting.errors.cannotVote.linkTicket.text": "here",
     "voting.loading": "Loading",
+    "voting.filter.byTag": "By Tag",
     "voting.fullDetails": "Full details",
     "voting.allTopics": "All topics",
     "voting.allLanguages": "All languages",
@@ -1556,6 +1562,9 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "talk.language.en": "Inglese",
     "talk.duration": "Durata",
 
+    "submission.languageSwitch":
+      "Questa proposta è in più lingue, clicca qui per vederla in {language}",
+
     "scheduleEasy.title": "Titolo",
     "scheduleEasy.day": "Giorno {day}",
     "scheduleEasy.duration": "Durata",
@@ -1568,6 +1577,9 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "scheduleEasy.saveAsPdf": "Salva come pdf / stampa",
     "scheduleEasy.bookingInstructions":
       "Questo evento ha capacità limitata. Usa il link sotto per prenotarti.",
+
+    "eventDetail.rooms":
+      "{countRooms, plural, =0 {Stanza} one {Stanza} other {Stanze}}",
 
     "react-intl-formatted-duration.longFormatting": "{minutes} {seconds}",
     "react-intl-formatted-duration.duration": "{value} {unit}",
@@ -1915,6 +1927,9 @@ Affrettati a comprare il biglietto!`,
     "streaming.noStreaming":
       "La conferenza non è attualmente live, perchè non dai uno sguardo al nostro canale YouTube?",
     "header.streaming": "Guarda live",
+    "profile.myProposals.viewIn": "Preview in {language}",
+
+    "voting.filter.byTag": "Per Tags",
   },
 };
 

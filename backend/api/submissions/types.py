@@ -53,9 +53,11 @@ class SubmissionTag:
     name: str
 
 
-@strawberry.federation.type(keys=["id"])
+@strawberry.type
 class SubmissionSpeaker:
     id: strawberry.ID
+    full_name: str
+    gender: str
 
 
 @strawberry.type
@@ -142,7 +144,12 @@ class Submission:
             self, info, is_speaker_data=True
         ):
             return None
-        return SubmissionSpeaker(id=self.speaker_id)
+
+        return SubmissionSpeaker(
+            id=self.speaker_id,
+            full_name=self.speaker.full_name,
+            gender=self.speaker.gender,
+        )
 
     @strawberry.field
     def id(self, info) -> strawberry.ID:
@@ -156,7 +163,7 @@ class Submission:
     def my_vote(self, info) -> Optional[VoteType]:
         request = info.context.request
 
-        if not request.pastaporto.is_authenticated:
+        if not request.user.is_authenticated:
             return None
 
         if info.context._my_votes is not None:

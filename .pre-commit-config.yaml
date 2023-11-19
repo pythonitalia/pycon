@@ -14,8 +14,8 @@ repos:
         - <<: *python_settings
           id: black
           language_version: python3.11
-    - repo: https://github.com/charliermarsh/ruff-pre-commit
-      rev: 'v0.0.253'
+    - repo: https://github.com/astral-sh/ruff-pre-commit
+      rev: 'v0.0.291'
       hooks:
         - id: ruff
           args: [--fix, --exit-non-zero-on-fix]

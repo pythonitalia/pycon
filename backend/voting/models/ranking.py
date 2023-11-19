@@ -8,8 +8,8 @@ from model_utils.fields import AutoCreatedField
 
 from conferences.models import Conference
 from helpers.constants import GENDERS
+from users.models import User
 from submissions.models import Submission
-from users.client import get_users_data_by_ids
 
 
 class RankStat(models.Model):
@@ -33,7 +33,10 @@ class RankStat(models.Model):
     )
 
     def __str__(self):
-        return f"{self.type} ({self.name}) at <{self.rank_request.conference.code}> | {self.value}"
+        return (
+            f"{self.type} ({self.name}) at "
+            f"<{self.rank_request.conference.code}> | {self.value}"
+        )
 
 
 class Rank(TypedDict):
@@ -42,7 +45,6 @@ class Rank(TypedDict):
 
 
 class RankRequest(models.Model):
-
     conference = models.OneToOneField(
         "conferences.Conference", on_delete=models.CASCADE, verbose_name=_("conference")
     )
@@ -207,13 +209,14 @@ class RankRequest(models.Model):
         speaker_ids = [
             i["rank_submissions__submission__speaker_id"] for i in distinct_speakers
         ]
-        PREFETCHED_USERS_BY_ID = get_users_data_by_ids(list(speaker_ids))
 
         def filter_by_gender(user):
-            return user["gender"] == key
+            return user.gender == key
+
+        speakers_users = User.objects.filter(id__in=speaker_ids)
 
         for key, value in GENDERS:
-            count = len(list(filter(filter_by_gender, PREFETCHED_USERS_BY_ID.values())))
+            count = len(list(filter(filter_by_gender, speakers_users)))
 
             RankStat.objects.create(
                 name=f"{value}",
@@ -268,7 +271,6 @@ class RankRequest(models.Model):
 
 
 class RankSubmission(models.Model):
-
     rank_request = models.ForeignKey(
         RankRequest,
         on_delete=models.CASCADE,

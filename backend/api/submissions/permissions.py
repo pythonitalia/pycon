@@ -1,7 +1,7 @@
 from strawberry.permission import BasePermission
 
 from api.permissions import HasTokenPermission
-from voting.helpers import pastaporto_user_info_can_vote
+from voting.helpers import check_if_user_can_vote
 from voting.models.ranking import RankRequest
 
 
@@ -24,14 +24,12 @@ class CanSeeSubmissionRestrictedFields(BasePermission):
         if source.schedule_items.exists():  # pragma: no cover
             return True
 
-        pastaporto = info.context.request.pastaporto
+        user = info.context.request.user
 
-        if not pastaporto.is_authenticated:
+        if not user.is_authenticated:
             return False
 
-        user_info = info.context.request.user
-
-        if user_info.is_staff or source.speaker_id == user_info.id:
+        if user.is_staff or source.speaker_id == user.id:
             return True
 
         if conference.is_voting_closed:
@@ -43,31 +41,28 @@ class CanSeeSubmissionRestrictedFields(BasePermission):
         if info.context._user_can_vote is not None:
             return info.context._user_can_vote
 
-        return pastaporto_user_info_can_vote(pastaporto, conference)
+        return check_if_user_can_vote(user, conference)
 
 
 class CanSeeSubmissionPrivateFields(BasePermission):
     message = "You can't see the private fields for this submission"
 
     def has_permission(self, source, info):
-        pastaporto = info.context.request.pastaporto
+        user = info.context.request.user
 
-        if not pastaporto.is_authenticated:
+        if not user.is_authenticated:
             return False
 
-        return (
-            pastaporto.user_info.is_staff
-            or source.speaker_id == pastaporto.user_info.id
-        )
+        return user.is_staff or source.speaker_id == user.id
 
 
 class IsSubmissionSpeakerOrStaff(BasePermission):
     message = "Not authorized"
 
     def has_object_permission(self, info, submission):
-        pastaporto = info.context.request.pastaporto
-        user_info = pastaporto.user_info
-        if user_info.is_staff:
+        user = info.context.request.user
+
+        if user.is_staff:
             return True
 
-        return submission.speaker_id == user_info.id
+        return submission.speaker_id == user.id

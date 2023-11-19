@@ -7,6 +7,7 @@ from badges.roles import (
 )
 import pytest
 from badges.models import AttendeeConferenceRole
+from users.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -18,26 +19,25 @@ def test_get_all_speakers_user_ids(
     schedule_item_additional_speaker_factory,
 ):
     schedule_item_1 = schedule_item_factory(
-        type="talk", submission=submission_factory(speaker_id=1)
+        type="talk", submission=submission_factory()
     )
     schedule_item_2 = schedule_item_factory(
         type="talk",
         conference=schedule_item_1.conference,
-        submission=submission_factory(speaker_id=2),
+        submission=submission_factory(),
     )
     schedule_item_3 = schedule_item_factory(
         type="talk",
         conference=schedule_item_1.conference,
-        submission=submission_factory(speaker_id=3),
+        submission=submission_factory(),
     )
-    schedule_item_3.additional_speakers.add(
-        schedule_item_additional_speaker_factory(user_id=10)
-    )
+    additional_speaker = schedule_item_additional_speaker_factory()
+    schedule_item_3.additional_speakers.add(additional_speaker)
 
     schedule_item_different_conf = schedule_item_factory(
         type="talk",
         conference=conference_factory(),
-        submission=submission_factory(speaker_id=9999),
+        submission=submission_factory(),
     )
 
     speaker_ids = speakers_user_ids(schedule_item_1.conference)
@@ -45,7 +45,7 @@ def test_get_all_speakers_user_ids(
     assert schedule_item_1.submission.speaker_id in speaker_ids
     assert schedule_item_2.submission.speaker_id in speaker_ids
     assert schedule_item_3.submission.speaker_id in speaker_ids
-    assert 10 in speaker_ids
+    assert additional_speaker.user_id in speaker_ids
 
     assert schedule_item_different_conf.submission.speaker_id not in speaker_ids
 
@@ -90,9 +90,8 @@ def test_get_roles_for_speaker_without_voucher(
 ):
     conference = conference_factory()
 
-    schedule_item_factory(
-        type="talk", conference=conference, submission=submission_factory(speaker_id=1)
-    )
+    submission = submission_factory()
+    schedule_item_factory(type="talk", conference=conference, submission=submission)
 
     requests_mock.get(
         f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
@@ -102,7 +101,7 @@ def test_get_roles_for_speaker_without_voucher(
 
     roles = _get_roles(
         conference=conference,
-        user_id=1,
+        user_id=submission.speaker_id,
         ticket={
             "id": 1,
             "voucher": None,
@@ -114,8 +113,9 @@ def test_get_roles_for_speaker_without_voucher(
 def test_get_roles_with_manual_user_id_override(conference_factory, requests_mock):
     conference = conference_factory()
 
+    attendee_user = UserFactory()
     AttendeeConferenceRole.objects.create(
-        user_id=12, conference=conference, roles=[Role.SPEAKER.value]
+        user_id=attendee_user.id, conference=conference, roles=[Role.SPEAKER.value]
     )
 
     requests_mock.get(
@@ -126,7 +126,7 @@ def test_get_roles_with_manual_user_id_override(conference_factory, requests_moc
 
     roles = _get_roles(
         conference=conference,
-        user_id=12,
+        user_id=attendee_user.id,
         ticket={
             "id": 1,
             "voucher": None,
@@ -152,7 +152,7 @@ def test_get_roles_with_manual_order_position_id_override(
 
     roles = _get_roles(
         conference=conference,
-        user_id=12,
+        user_id=UserFactory().id,
         ticket={
             "id": 10,
             "voucher": None,
@@ -168,8 +168,9 @@ def test_get_roles_with_unrelated_override(conference_factory, requests_mock):
         order_position_id=53, conference=conference, roles=[Role.KEYNOTER.value]
     )
 
+    attendee_user = UserFactory()
     AttendeeConferenceRole.objects.create(
-        user_id=100, conference=conference, roles=[Role.KEYNOTER.value]
+        user_id=attendee_user.id, conference=conference, roles=[Role.KEYNOTER.value]
     )
 
     requests_mock.get(
@@ -180,7 +181,7 @@ def test_get_roles_with_unrelated_override(conference_factory, requests_mock):
 
     roles = _get_roles(
         conference=conference,
-        user_id=9999,
+        user_id=UserFactory().id,
         ticket={
             "id": 2000,
             "voucher": None,
@@ -213,12 +214,15 @@ def test_get_conference_roles_for_user(conference_factory, requests_mock):
     )
 
     roles = get_conference_roles_for_user(
-        conference=conference, user_id=1, user_email="test@email.it"
+        conference=conference,
+        user_id=UserFactory(email="test@email.it").id,
+        user_email="test@email.it",
     )
     assert roles == [Role.ATTENDEE]
 
 
 def test_get_conference_roles_for_user_as_sponsor(conference_factory, requests_mock):
+    user = UserFactory()
     conference = conference_factory()
     requests_mock.get(
         f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
@@ -242,7 +246,7 @@ def test_get_conference_roles_for_user_as_sponsor(conference_factory, requests_m
             {
                 "id": 1,
                 "voucher": 1,
-                "attendee_email": "test@email.it",
+                "attendee_email": user.email,
                 "item": {
                     "admission": True,
                 },
@@ -251,6 +255,7 @@ def test_get_conference_roles_for_user_as_sponsor(conference_factory, requests_m
     )
 
     roles = get_conference_roles_for_user(
-        conference=conference, user_id=1, user_email="test@email.it"
+        conference=conference, user_id=user.id, user_email=user.email
     )
+
     assert roles == [Role.SPONSOR, Role.ATTENDEE]

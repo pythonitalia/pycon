@@ -6,9 +6,10 @@ import strawberry
 from ..helpers.i18n import make_localized_resolver
 
 
-@strawberry.federation.type(keys=["id"])
+@strawberry.type
 class BlogPostAuthor:
     id: strawberry.ID
+    full_name: str
 
 
 @strawberry.type

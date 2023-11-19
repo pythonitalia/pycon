@@ -1,5 +1,5 @@
 from badge_scanner.models import BadgeScan
-
+from users.tests.factories import UserFactory
 import pytest
 
 pytestmark = pytest.mark.django_db
@@ -48,7 +48,7 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference):
 
     badge_scan = BadgeScan.objects.create(
         scanned_by_id=user.id,
-        scanned_user_id=1,
+        scanned_user=UserFactory(),
         badge_url="https://pycon.it/b/this-is-a-test",
         conference=conference,
         notes="",
@@ -81,7 +81,7 @@ def test_fails_when_not_their_scan(user, user_factory, conference, graphql_clien
 
     badge_scan = BadgeScan.objects.create(
         scanned_by_id=other_user.id,
-        scanned_user_id=1,
+        scanned_user=UserFactory(),
         badge_url="https://pycon.it/b/this-is-a-test",
         conference=conference,
         notes="",

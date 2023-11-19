@@ -17,7 +17,14 @@ class SpeakerVoucher(TimeStampedModel):
         verbose_name=_("conference"),
         related_name="+",
     )
-    user_id = models.IntegerField(verbose_name=_("user"))
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name=_("user"),
+        related_name="+",
+    )
     voucher_type = models.CharField(
         max_length=20,
         choices=VoucherType.choices,
@@ -52,5 +59,5 @@ class SpeakerVoucher(TimeStampedModel):
         verbose_name_plural = _("Speakers Vouchers")
         unique_together = (
             "conference",
-            "user_id",
+            "user",
         )

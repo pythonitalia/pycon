@@ -1,3 +1,5 @@
 mutation Logout {
-  logout
+  logout {
+    ok
+  }
 }

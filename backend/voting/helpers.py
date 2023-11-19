@@ -1,29 +1,17 @@
-from asgiref.sync import async_to_sync
-from django.conf import settings
-from pythonit_toolkit.pastaporto.entities import Pastaporto
-from pythonit_toolkit.service_client import ServiceClient
-
 from conferences.models import Conference
 from pretix import user_has_admission_ticket
+from users.models import User
 from submissions.models import Submission
-
-IS_USER_MEMBER_OF_PYTHON_ITALIA = """query($userId: ID!) {
-    userIdIsMember(id: $userId)
-}
-"""
+from association_membership.models import Membership
 
 
-def pastaporto_user_info_can_vote(pastaporto: Pastaporto, conference: Conference):
-    user_info = pastaporto.user_info
-
+def check_if_user_can_vote(user: User, conference: Conference):
     # User is staff
-    if user_info.is_staff:
+    if user.is_staff:
         return True
 
     # User is a speaker
-    if Submission.objects.filter(
-        speaker_id=user_info.id, conference=conference
-    ).exists():
+    if Submission.objects.filter(speaker_id=user.id, conference=conference).exists():
         return True
 
     additional_events = [
@@ -34,9 +22,10 @@ def pastaporto_user_info_can_vote(pastaporto: Pastaporto, conference: Conference
         for included_voting_event in conference.included_voting_events.all()
     ]
 
-    # User has admission ticket for the current conference or for an included voting event
+    # User has admission ticket for the current conference
+    # or for an included voting event
     if user_has_admission_ticket(
-        email=user_info.email,
+        email=user.email,
         event_organizer=conference.pretix_organizer_id,
         event_slug=conference.pretix_event_id,
         additional_events=additional_events,
@@ -44,20 +33,11 @@ def pastaporto_user_info_can_vote(pastaporto: Pastaporto, conference: Conference
         return True
 
     # User is a member of Python Italia
-    if user_is_python_italia_member(user_info.id):
+    if user_is_python_italia_member(user.id):
         return True
 
     return False
 
 
 def user_is_python_italia_member(user_id: int) -> bool:
-    client = ServiceClient(
-        url=f"{settings.ASSOCIATION_BACKEND_SERVICE}/internal-api",
-        service_name="association-backend",
-        caller="pycon-backend",
-        jwt_secret=settings.SERVICE_TO_SERVICE_SECRET,
-    )
-    client_execute = async_to_sync(client.execute)
-    result = client_execute(IS_USER_MEMBER_OF_PYTHON_ITALIA, {"userId": user_id})
-    data = result.data
-    return data["userIdIsMember"]
+    return Membership.objects.active().of_user(user_id).exists()

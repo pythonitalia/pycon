@@ -15,7 +15,9 @@ class BlogQuery:
         return [
             PostType(
                 id=post.id,
-                author=BlogPostAuthor(id=post.author_id),
+                author=BlogPostAuthor(
+                    id=post.author_id, full_name=post.author.full_name
+                ),
                 title=post.title,
                 slug=post.slug,
                 excerpt=post.excerpt,
@@ -39,7 +41,7 @@ class BlogQuery:
 
         return PostType(
             id=post.id,
-            author=BlogPostAuthor(id=post.author_id),
+            author=BlogPostAuthor(id=post.author_id, full_name=post.author.full_name),
             title=post.title,
             slug=post.slug,
             excerpt=post.excerpt,

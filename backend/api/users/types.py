@@ -1,3 +1,4 @@
+from datetime import date
 from logging import getLogger
 from typing import List, Optional
 from django.conf import settings
@@ -15,6 +16,7 @@ from grants.models import Grant as GrantModel
 from participants.models import Participant as ParticipantModel
 from api.helpers.ids import encode_hashid
 from badges.roles import ConferenceRole, get_conference_roles_for_user
+from association_membership.models import Membership
 from schedule.models import ScheduleItemStar as ScheduleItemStarModel
 from submissions.models import Submission as SubmissionModel
 
@@ -28,17 +30,25 @@ PRETIX_ORDERS_STATUS_ORDER = [
 ]
 
 
-@strawberry.federation.type(keys=["id"], extend=True)
-class User:
-    id: strawberry.ID = strawberry.federation.field(external=True)
-    email: str = strawberry.federation.field(external=True)
-    isStaff: bool = strawberry.federation.field(external=True)
+@strawberry.type
+class OperationSuccess:
+    ok: bool
 
-    @classmethod
-    def resolve_reference(
-        cls, id: strawberry.ID, email: str = "", isStaff: bool = False
-    ):
-        return cls(id=id, email=email, isStaff=isStaff)
+
+@strawberry.type
+class User:
+    id: strawberry.ID
+    email: str
+    fullname: str
+    full_name: str
+    name: str
+    username: str
+    gender: str
+    open_to_recruiting: bool
+    open_to_newsletter: bool
+    date_birth: Optional[date]
+    country: str
+    is_staff: bool
 
     @strawberry.field
     def hashid(self, info: Info) -> str:
@@ -46,7 +56,7 @@ class User:
             int(self.id), salt=settings.USER_ID_HASH_SALT, min_length=6
         )
 
-    @strawberry.federation.field(requires=["email"])
+    @strawberry.field
     def conference_roles(
         self, info: Info, conference_code: str
     ) -> List[ConferenceRole]:
@@ -82,7 +92,7 @@ class User:
         ).first()
         return Participant.from_model(participant) if participant else None
 
-    @strawberry.federation.field(requires=["email"])
+    @strawberry.field
     def orders(self, info, conference: str) -> List[PretixOrder]:
         conference = Conference.objects.get(code=conference)
         return sorted(
@@ -90,7 +100,7 @@ class User:
             key=lambda order: PRETIX_ORDERS_STATUS_ORDER.index(order.status),
         )
 
-    @strawberry.federation.field(requires=["email"])
+    @strawberry.field
     def tickets(self, info, conference: str, language: str) -> List[AttendeeTicket]:
         conference = Conference.objects.get(code=conference)
         attendee_tickets = get_user_tickets(conference, self.email, language)
@@ -102,6 +112,27 @@ class User:
             speaker_id=self.id, conference__code=conference
         )
 
-    @strawberry.federation.field(requires=["isStaff"])
+    @strawberry.field
     def can_edit_schedule(self) -> bool:
-        return self.isStaff
+        return self.is_staff
+
+    @strawberry.field
+    def is_python_italia_member(self) -> bool:
+        return Membership.objects.active().of_user(self.id).exists()
+
+    @classmethod
+    def from_django_model(cls, user):
+        return cls(
+            id=user.id,
+            email=user.email,
+            fullname=user.full_name,
+            full_name=user.full_name,
+            name=user.name,
+            username=user.username,
+            gender=user.gender,
+            open_to_recruiting=user.open_to_recruiting,
+            open_to_newsletter=user.open_to_newsletter,
+            date_birth=user.date_birth,
+            country=user.country,
+            is_staff=user.is_staff,
+        )

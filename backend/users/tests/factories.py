@@ -7,9 +7,11 @@ from users.models import User
 
 
 @register
-class DjangoAdminUserFactory(DjangoModelFactory):
+class UserFactory(DjangoModelFactory):
     class Meta:
         model = User
 
     username = factory.Faker("word")
     email = factory.Faker("email")
+    full_name = factory.Faker("name")
+    password = factory.PostGenerationMethodCall("set_password", "test")

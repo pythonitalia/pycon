@@ -6,7 +6,7 @@ query Submission($id: ID!, $language: String!) {
     elevatorPitch(language: $language)
     notes
     canEdit
-    topic {
+    type {
       id
       name
     }
@@ -22,6 +22,7 @@ query Submission($id: ID!, $language: String!) {
     languages {
       id
       name
+      code
     }
     tags {
       id

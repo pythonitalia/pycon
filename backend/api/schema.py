@@ -1,9 +1,7 @@
 import strawberry
-from strawberry.extensions.tracing.sentry import SentryTracingExtensionSync
 
-from api.users.types import User
 from api.participants.mutations import ParticipantMutations
-
+from .users.mutations import UsersMutations
 from .blob.schema import BlobMutation
 from .blog.schema import BlogQuery
 from .checklist.query import ChecklistQuery
@@ -25,6 +23,9 @@ from .volunteers_notifications.query import VolunteersNotificationsQuery
 from .voting.mutations import VotesMutations
 from .badge_scanner.schema import BadgeScannerQuery, BadgeScannerMutation
 from .participants.queries import ParticipantQueries
+from .users.queries import UserQuery
+from .association_membership.mutation import AssociationMembershipMutation
+from .cms.schema import CMSQuery
 
 
 @strawberry.type
@@ -41,6 +42,8 @@ class Query(
     ChecklistQuery,
     ParticipantQueries,
     BadgeScannerQuery,
+    UserQuery,
+    CMSQuery,
 ):
     pass
 
@@ -58,6 +61,8 @@ class Mutation(
     BlobMutation,
     BadgeScannerMutation,
     ParticipantMutations,
+    UsersMutations,
+    AssociationMembershipMutation,
 ):
     pass
 
@@ -65,6 +70,4 @@ class Mutation(
 schema = strawberry.federation.Schema(
     query=Query,
     mutation=Mutation,
-    types=[User],
-    extensions=[SentryTracingExtensionSync],
 )

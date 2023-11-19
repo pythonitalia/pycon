@@ -1,5 +1,3 @@
-import moment from "moment";
-
 export type HotelRoom = {
   id: string;
   name: string;

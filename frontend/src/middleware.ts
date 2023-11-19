@@ -25,7 +25,7 @@ const handleLocale = (req: NextRequest) => {
 };
 
 export async function middleware(req: NextRequest) {
-  const isLoggedIn = req.cookies.has("identity_v2");
+  const isLoggedIn = req.cookies.has("pythonitalia_sessionid");
 
   const shouldHandleLocale =
     !PUBLIC_FILE.test(req.nextUrl.pathname) &&
