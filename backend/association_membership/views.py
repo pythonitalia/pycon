@@ -18,12 +18,12 @@ logger = logging.getLogger(__file__)
 
 @api_view(["POST"])
 def stripe_webhook(request):
-    payload = request.data
-
     try:
         signature = request.headers.get("stripe-signature")
         event = stripe.Webhook.construct_event(
-            payload=payload, sig_header=signature, secret=settings.STRIPE_WEBHOOK_SECRET
+            payload=request.data,
+            sig_header=signature,
+            secret=settings.STRIPE_WEBHOOK_SECRET,
         )
     except ValueError as e:
         logger.exception("Called stripe webhook but parsing failed!", exc_info=e)
