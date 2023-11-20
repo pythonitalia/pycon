@@ -111,6 +111,7 @@ module "lambda" {
     STRIPE_SUBSCRIPTION_PRICE_ID              = module.secrets.value.stripe_membership_price_id
     STRIPE_SECRET_API_KEY                     = module.secrets.value.stripe_secret_api_key
     PRETIX_WEBHOOK_SECRET                     = module.secrets.value.pretix_webhook_secret
+    DEEPL_AUTH_KEY                            = module.secrets.value.deepl_auth_key
   }
 }
 
