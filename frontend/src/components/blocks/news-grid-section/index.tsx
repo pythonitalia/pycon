@@ -24,15 +24,11 @@ export const NewsGridSection = () => {
   });
 
   const posts = data.newsArticles;
-  const blogPosts = data.blogPosts;
 
   return (
     <Section>
       <Grid cols={3}>
         {posts.map((post) => (
-          <BlogPost key={post.id} post={post} language={language} />
-        ))}
-        {blogPosts.map((post) => (
           <BlogPost key={post.id} post={post} language={language} />
         ))}
       </Grid>

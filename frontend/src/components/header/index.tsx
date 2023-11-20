@@ -46,7 +46,7 @@ export const Header = () => {
   );
 
   const actions: Action[] = [
-    isRunning && hasSomethingLive
+    /*isRunning && hasSomethingLive
       ? {
           text: getTranslatedMessage("header.streaming", language),
           icon: "live-circle",
@@ -58,15 +58,15 @@ export const Header = () => {
           text: getTranslatedMessage("header.tickets", language),
           icon: "tickets",
           link: "/tickets",
-        },
-    // {
-    //   text:
-    //     isReady && loggedIn
-    //       ? getTranslatedMessage("header.dashboard", language)
-    //       : getTranslatedMessage("header.login", language),
-    //   icon: "user",
-    //   link: isReady && loggedIn ? "/profile" : "/login",
-    // },
+        },*/
+    {
+      text:
+        isReady && loggedIn
+          ? getTranslatedMessage("header.dashboard", language)
+          : getTranslatedMessage("header.login", language),
+      icon: "user",
+      link: isReady && loggedIn ? "/profile" : "/login",
+    },
   ];
 
   const conferenceMenu =
