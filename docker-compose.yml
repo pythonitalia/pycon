@@ -136,6 +136,9 @@ services:
     stdin_open: true
     ports:
       - 3000:3000
+    depends_on:
+      pycon-backend:
+        condition: service_healthy
 
   association-frontend:
     build:
@@ -157,6 +160,9 @@ services:
     stdin_open: true
     ports:
       - 3020:3020
+    depends_on:
+      pycon-backend:
+        condition: service_healthy
 
   email-templates:
     build:
