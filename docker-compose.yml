@@ -8,7 +8,7 @@ x-defaults:
     PRETIX_API_TOKEN: None # ask for a token
     SECRET_KEY: secret-key
     API_URL: /graphql
-    API_URL_SERVER: http://localhost:8000/graphql
+    API_URL_SERVER: http://pycon-backend:8000/graphql
     # Stripe
     STRIPE_SUBSCRIPTION_PRICE_ID: price_1IkVzxD5MZ3GejSORRBZCvK6
     # URLs
