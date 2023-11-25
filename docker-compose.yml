@@ -8,7 +8,7 @@ x-defaults:
     PRETIX_API_TOKEN: None # ask for a token
     SECRET_KEY: secret-key
     API_URL: /graphql
-    API_URL_SERVER: http://gateway:4000/graphql
+    API_URL_SERVER: http://localhost:8000/graphql
     # Stripe
     STRIPE_SUBSCRIPTION_PRICE_ID: price_1IkVzxD5MZ3GejSORRBZCvK6
     # URLs
@@ -117,172 +117,6 @@ services:
       interval: 5s
       timeout: 5s
 
-  users-backend:
-    build:
-      context: ./users-backend
-      dockerfile: ../Dockerfile.python.local
-    networks: [pycon_net]
-    entrypoint: ""
-    command: sh -c "poetry run task migrate &&
-      touch /.ready &&
-      python -m uvicorn main:wrapped_app --host 0.0.0.0 --port 8050 --reload"
-    depends_on:
-      users-backend-db:
-        condition: service_healthy
-    environment:
-      <<: *enviroment_defaults
-      DATABASE_URL: postgresql+asyncpg://users:users@users-backend-db/users
-    volumes:
-      - ./users-backend:/home/app/
-    tty: true
-    stdin_open: true
-    ports:
-      - 8050:8050
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /.ready"]
-      interval: 10s
-      timeout: 10s
-      retries: 10
-
-  users-backend-db:
-    image: postgres:14.5
-    networks: [pycon_net]
-    ports:
-      - "15500:5432"
-    volumes:
-      - users-backend-db-data:/var/lib/postgresql/data
-      - ./db-superuser.sql:/docker-entrypoint-initdb.d/db-superuser.sql
-    environment:
-      POSTGRES_USER: users
-      POSTGRES_PASSWORD: users
-      POSTGRES_DB: users
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U users"]
-      interval: 5s
-      timeout: 5s
-
-  association-backend:
-    build:
-      context: ./association-backend
-      dockerfile: ../Dockerfile.python.local
-    networks: [pycon_net]
-    entrypoint: ""
-    command: sh -c "poetry run task migrate &&
-      touch /.ready &&
-      python -m uvicorn main:wrapped_app --host 0.0.0.0 --port 8060 --reload"
-    depends_on:
-      association-backend-db:
-        condition: service_healthy
-    environment:
-      <<: *enviroment_defaults
-      DATABASE_URL: postgresql://association:association@association-backend-db/association
-    volumes:
-      - ./association-backend:/home/app/
-    tty: true
-    stdin_open: true
-    ports:
-      - 8060:8060
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /.ready"]
-      interval: 10s
-      timeout: 10s
-      retries: 10
-
-  association-backend-db:
-    image: postgres:14.5
-    networks: [pycon_net]
-    ports:
-      - "15503:5432"
-    volumes:
-      - association-backend-db-data:/var/lib/postgresql/data
-      - ./db-superuser.sql:/docker-entrypoint-initdb.d/db-superuser.sql
-    environment:
-      POSTGRES_USER: association
-      POSTGRES_PASSWORD: association
-      POSTGRES_DB: association
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U association"]
-      interval: 5s
-      timeout: 5s
-
-  cms:
-    build:
-      context: ./cms
-      dockerfile: ../Dockerfile.python311.local
-    networks: [pycon_net]
-    command: sh -c "pdm run migrate &&
-      touch /.ready &&
-      pdm run python manage.py runserver 0.0.0.0:8070"
-    depends_on:
-      cms-db:
-        condition: service_healthy
-    environment:
-      <<: *enviroment_defaults
-      DATABASE_URL: postgresql://cms:cms@cms-db/cms
-      DJANGO_SETTINGS_MODULE: cms.settings.dev
-      MAPBOX_PUBLIC_API_KEY: ${MAPBOX_PUBLIC_API_KEY}
-    volumes:
-      - ./cms:/home/app/
-      - /home/app/.venv
-    tty: true
-    stdin_open: true
-    ports:
-      - 8070:8070
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /.ready"]
-      interval: 10s
-      timeout: 10s
-      retries: 10
-
-  cms-db:
-    image: postgres:14.5
-    networks: [pycon_net]
-    ports:
-      - "15504:5432"
-    volumes:
-      - cms-db-data:/var/lib/postgresql/data
-      - ./db-superuser.sql:/docker-entrypoint-initdb.d/db-superuser.sql
-    environment:
-      POSTGRES_USER: cms
-      POSTGRES_PASSWORD: cms
-      POSTGRES_DB: cms
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U cms"]
-      interval: 5s
-      timeout: 5s
-
-  gateway:
-    build:
-      context: ./gateway
-      dockerfile: ../Dockerfile.node.local
-    networks: [pycon_net]
-    entrypoint: ""
-    command: sh -c "pnpm install &&
-      touch /.ready &&
-      pnpm dev"
-    volumes:
-      - ./gateway/:/home/node/app
-      - /home/node/app/.pnpm-store/
-      - /home/node/app/node_modules/
-    environment:
-      <<: *enviroment_defaults
-    tty: true
-    stdin_open: true
-    ports:
-      - 4000:4000
-    depends_on:
-      pycon-backend:
-        condition: service_healthy
-      users-backend:
-        condition: service_healthy
-      association-backend:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /.ready"]
-      interval: 10s
-      timeout: 10s
-      retries: 10
-
   pycon-frontend:
     build:
       context: ./frontend
@@ -302,9 +136,6 @@ services:
     stdin_open: true
     ports:
       - 3000:3000
-    depends_on:
-      gateway:
-        condition: service_healthy
 
   association-frontend:
     build:
@@ -326,9 +157,6 @@ services:
     stdin_open: true
     ports:
       - 3020:3020
-    depends_on:
-      gateway:
-        condition: service_healthy
 
   email-templates:
     build:
@@ -405,7 +233,4 @@ networks:
 
 volumes:
   pycon-backend-db-data:
-  users-backend-db-data:
-  association-backend-db-data:
   temporal-db-data:
-  cms-db-data:
