@@ -68,16 +68,10 @@ jobs:
       fail-fast: false
       matrix:
         service:
-          - name: gateway
-            dir: gateway
-          - name: association-backend
-            dir: association-backend
           - name: pycon-backend
             dir: backend
           - name: pretix
             dir: pretix
-          - name: cms
-            dir: cms
 
     steps:
       - uses: actions/checkout@v2
