@@ -30,27 +30,6 @@ module "pycon_backend" {
   }
 }
 
-module "gateway" {
-  source = "./gateway"
-
-  providers = {
-    aws    = aws
-    aws.us = aws.us
-  }
-}
-
-module "users_backend" {
-  source       = "./users_backend"
-  depends_on   = [module.database]
-  enable_proxy = local.enable_proxy
-}
-
-module "association_backend" {
-  source       = "./association_backend"
-  depends_on   = [module.database]
-  enable_proxy = local.enable_proxy
-}
-
 module "email_templates" {
   source = "./email_templates"
 }
