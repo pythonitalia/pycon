@@ -2,8 +2,6 @@ locals {
   is_prod                 = terraform.workspace == "production"
   admin_domain            = "admin"
   full_admin_domain       = local.is_prod ? "${local.admin_domain}.pycon.it" : "${terraform.workspace}-${local.admin_domain}.pycon.it"
-  users_backend_url       = local.is_prod ? "https://users-api.python.it" : "https://${terraform.workspace}-users-api.python.it"
-  association_backend_url = local.is_prod ? "https://association-api.python.it" : "https://${terraform.workspace}-association-api.python.it"
   db_connection           = var.enable_proxy ? "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/pycon" : "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/pycon"
   cdn_url                 = local.is_prod ? "cdn.pycon.it" : "${terraform.workspace}-cdn.pycon.it"
 }
@@ -81,6 +79,7 @@ module "lambda" {
     VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN = module.secrets.value.volunteers_push_notifications_android_arn
     ALLOWED_HOSTS                             = "*"
     DJANGO_SETTINGS_MODULE                    = "pycon.settings.prod"
+    ASSOCIATION_FRONTEND_URL                  = "https://associazione.python.it"
     AWS_MEDIA_BUCKET                          = aws_s3_bucket.backend_media.id
     AWS_REGION_NAME                           = aws_s3_bucket.backend_media.region
     SPEAKERS_EMAIL_ADDRESS                    = module.secrets.value.speakers_email_address
@@ -91,11 +90,7 @@ module "lambda" {
     AWS_S3_CUSTOM_DOMAIN                      = local.cdn_url
     PRETIX_API_TOKEN                          = module.common_secrets.value.pretix_api_token
     PINPOINT_APPLICATION_ID                   = module.secrets.value.pinpoint_application_id
-    PASTAPORTO_SECRET                         = module.common_secrets.value.pastaporto_secret
     FORCE_PYCON_HOST                          = local.is_prod
-    ASSOCIATION_BACKEND_SERVICE               = local.association_backend_url
-    USERS_SERVICE                             = local.users_backend_url
-    SERVICE_TO_SERVICE_SECRET                 = module.common_secrets.value.service_to_service_secret
     SQS_QUEUE_URL                             = aws_sqs_queue.queue.id
     MAILCHIMP_SECRET_KEY                      = module.common_secrets.value.mailchimp_secret_key
     MAILCHIMP_DC                              = module.common_secrets.value.mailchimp_dc
