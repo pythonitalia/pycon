@@ -1,9 +1,0 @@
-**/node_modules/**
-.prettierrc
-.editorconfig
-Dockerfile
-dist
-.env
-**/__tests__/**
-dev/**
-dev-types.d.ts
