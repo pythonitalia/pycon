@@ -17,6 +17,12 @@ jobs:
           python-version: "3.11.6"
       - run: pip install pdm==2.10.4
 
+      - name: Cache PDM
+        uses: actions/cache@v1
+        with:
+          path: ./venv
+          key: pdm-${{ hashFiles('**/pdm.lock') }}
+
       - name: Install python dependencies
         working-directory: backend
         run: pdm install
