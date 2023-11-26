@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@stripe/stripe-js':
     specifier: ^1.32.0
@@ -781,6 +785,11 @@ packages:
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@fastify/busboy@2.1.0:
+    resolution: {integrity: sha512-+KpH+QxZU7O4675t3mnkQKcZZg56u+K/Ct2K+N2AZYNVK8kyeo/bI18tI8aPm3tvNNRyTWfj6s5tnGNlcbQRsA==}
+    engines: {node: '>=14'}
     dev: true
 
   /@graphql-codegen/add@3.1.1(graphql@16.5.0):
@@ -2498,7 +2507,7 @@ packages:
       form-data-encoder: 1.7.2
       formdata-node: 4.3.3
       node-fetch: 2.6.7
-      undici: 5.5.1
+      undici: 5.28.0
       web-streams-polyfill: 3.2.1
     transitivePeerDependencies:
       - encoding
@@ -5586,9 +5595,11 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /undici@5.5.1:
-    resolution: {integrity: sha512-MEvryPLf18HvlCbLSzCW0U00IMftKGI5udnjrQbC5D4P0Hodwffhv+iGfWuJwg16Y/TK11ZFK8i+BPVW2z/eAw==}
-    engines: {node: '>=12.18'}
+  /undici@5.28.0:
+    resolution: {integrity: sha512-gM12DkXhlAc5+/TPe60iy9P6ETgVfqTuRJ6aQ4w8RYu0MqKuXhaq3/b86GfzDQnNA3NUO6aUNdvevrKH59D0Nw==}
+    engines: {node: '>=14.0'}
+    dependencies:
+      '@fastify/busboy': 2.1.0
     dev: true
 
   /unixify@1.0.0:
