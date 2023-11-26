@@ -129,3 +129,4 @@ badge-service/badges.zip
 
 .virtualenv/
 .pdm-python
+.pdm-build/
