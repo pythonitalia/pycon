@@ -79,6 +79,7 @@ module "lambda" {
     VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN = module.secrets.value.volunteers_push_notifications_android_arn
     ALLOWED_HOSTS                             = "*"
     DJANGO_SETTINGS_MODULE                    = "pycon.settings.prod"
+    ASSOCIATION_FRONTEND_URL                  = "https://associazione.python.it"
     AWS_MEDIA_BUCKET                          = aws_s3_bucket.backend_media.id
     AWS_REGION_NAME                           = aws_s3_bucket.backend_media.region
     SPEAKERS_EMAIL_ADDRESS                    = module.secrets.value.speakers_email_address
