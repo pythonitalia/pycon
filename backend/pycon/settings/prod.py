@@ -3,8 +3,6 @@ from .base import DATABASES, MIDDLEWARE, env
 
 SECRET_KEY = env("SECRET_KEY")
 
-# if FRONTEND_URL == "http://testfrontend.it/":
-#     raise ImproperlyConfigured("Please configure FRONTEND_URL for production")
 SENTRY_DSN = env("SENTRY_DSN", default="")
 
 AWS_STORAGE_BUCKET_NAME = env("AWS_MEDIA_BUCKET", default=None)
@@ -42,9 +40,3 @@ CSRF_TRUSTED_ORIGINS = [
     "https://admin.pycon.it",
     "https://pycon.it",
 ]
-
-PASTAPORTO_SECRET = env("PASTAPORTO_SECRET")
-
-USERS_SERVICE_URL = env("USERS_SERVICE")
-ASSOCIATION_BACKEND_SERVICE = env("ASSOCIATION_BACKEND_SERVICE")
-SERVICE_TO_SERVICE_SECRET = env("SERVICE_TO_SERVICE_SECRET")
