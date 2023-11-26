@@ -97,6 +97,9 @@ version = "0.1.0"
 description = "PyCon Italia backend"
 license = {text = "MIT"}
 
+[tool.pdm.scripts]
+update-lock = "pdm lock -G :all"
+
 [project.optional-dependencies]
 lambda = [
     "awslambdaric<3.0.0,>=2.0.4",

@@ -2,7 +2,7 @@
 # It is not intended for manual editing.
 
 [metadata]
-groups = ["default", "dev"]
+groups = ["default", "dev", "lambda"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
 content_hash = "sha256:fb4d75871091d91350ba1a0c115d525a78a48832826027f4936ac957575ddaf9"
@@ -133,6 +133,30 @@ summary = "Classes Without Boilerplate"
 files = [
     {file = "attrs-23.1.0-py3-none-any.whl", hash = "sha256:1f28b4522cdc2fb4256ac1a020c78acf9cba2c6b461ccd2c126f3aa8e8335d04"},
     {file = "attrs-23.1.0.tar.gz", hash = "sha256:6279836d581513a26f1bf235f9acd333bc9115683f14f7e8fae46c98fc50e015"},
+]
+
+[[package]]
+name = "awslambdaric"
+version = "2.0.8"
+requires_python = ">=3.6"
+summary = "AWS Lambda Runtime Interface Client for Python"
+dependencies = [
+    "simplejson==3.17.2",
+]
+files = [
+    {file = "awslambdaric-2.0.8-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e798e8e9264758fe6f9d468e3ae161e578075a1f7412469a81325ee25483578e"},
+    {file = "awslambdaric-2.0.8-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e727ce87de98391dcd23aede1f294d380813e641819f968ce2053da5c11d1844"},
+    {file = "awslambdaric-2.0.8-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:344cec13462637e35925f520cc34ed3d8d66d72631bce6b4cb10c610f45f6793"},
+    {file = "awslambdaric-2.0.8-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2b37d3c5e0a0811362cfb88e573d1fcb82c1210c6c9019503bdf8d05dd38285b"},
+    {file = "awslambdaric-2.0.8-pp310-pypy310_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:bb912bc618cf4acee3e32b8f4c1ff9c3ad372bef3ef737564a6e7d87c05c0878"},
+    {file = "awslambdaric-2.0.8-pp310-pypy310_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:08140f5a922da004da2ca15322d324d69d4d17de92a0fba875f18ea5a486d854"},
+    {file = "awslambdaric-2.0.8-pp37-pypy37_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f496941acb3bcdd2988d1a78f0d17eb9fb282b1a6eae1ee3cc105a1d7788da43"},
+    {file = "awslambdaric-2.0.8-pp37-pypy37_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:06afcf91dc1661ec9695d480d8d1aceb77fc9fb626e1f3c93c8081c009fe01d8"},
+    {file = "awslambdaric-2.0.8-pp38-pypy38_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:67917bf30c23a0d8995818d44b5ce8f79753773b25168a60a6d73aabbb50c120"},
+    {file = "awslambdaric-2.0.8-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:33e11996f6c9c259289b631ac76e3093c0e9d7141efcb4265c4c1365d7ed39b9"},
+    {file = "awslambdaric-2.0.8-pp39-pypy39_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:07c3e3b6c8014084430a11a3ea9032fd5863376099b5bdbfaba26928fa36fa61"},
+    {file = "awslambdaric-2.0.8-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:efa64b8602f44389cda7aa1e4030d4234c3cbe6c17808206761449bd6f106b26"},
+    {file = "awslambdaric-2.0.8.tar.gz", hash = "sha256:1fb1b240208c339105670d5446bd9027b5536b625af3a6e9ec084a828a3c70c5"},
 ]
 
 [[package]]
@@ -2238,6 +2262,15 @@ files = [
 ]
 
 [[package]]
+name = "simplejson"
+version = "3.17.2"
+requires_python = ">=2.5, !=3.0.*, !=3.1.*, !=3.2.*"
+summary = "Simple, fast, extensible JSON encoder/decoder for Python"
+files = [
+    {file = "simplejson-3.17.2.tar.gz", hash = "sha256:75ecc79f26d99222a084fbdd1ce5aad3ac3a8bd535cd9059528452da38b68841"},
+]
+
+[[package]]
 name = "six"
 version = "1.16.0"
 requires_python = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
@@ -2619,7 +2652,7 @@ files = [
 
 [[package]]
 name = "willow"
-version = "1.6.2"
+version = "1.6.3"
 requires_python = ">=3.8"
 summary = "A Python image library that sits on top of Pillow, Wand and OpenCV"
 dependencies = [
@@ -2627,23 +2660,24 @@ dependencies = [
     "filetype!=1.1.0,>=1.0.10",
 ]
 files = [
-    {file = "willow-1.6.2-py3-none-any.whl", hash = "sha256:957a4af8a7733e116a65eca34da11afe3fd52ffdb397494c8823901c25863787"},
-    {file = "willow-1.6.2.tar.gz", hash = "sha256:e2d0450fd78ab19052d0478b888ef163e3264e8dcd1af002dd691458db98056f"},
+    {file = "willow-1.6.3-py3-none-any.whl", hash = "sha256:f4b17a16c6315864604dadb6cdf2987d0b685e295cca74c6da28b94167a3126e"},
+    {file = "willow-1.6.3.tar.gz", hash = "sha256:143cefd30d3bb816cdff857c454da24991dda35a0315ea795101675e0b14262f"},
 ]
 
 [[package]]
 name = "willow"
-version = "1.6.2"
+version = "1.6.3"
 extras = ["heif"]
 requires_python = ">=3.8"
 summary = "A Python image library that sits on top of Pillow, Wand and OpenCV"
 dependencies = [
-    "Willow==1.6.2",
-    "pillow-heif<1.0.0,>=0.10.0",
+    "Willow==1.6.3",
+    "pillow-heif<1.0.0,>=0.10.0; python_version < \"3.12\"",
+    "pillow-heif<1.0.0,>=0.13.0; python_version >= \"3.12\"",
 ]
 files = [
-    {file = "willow-1.6.2-py3-none-any.whl", hash = "sha256:957a4af8a7733e116a65eca34da11afe3fd52ffdb397494c8823901c25863787"},
-    {file = "willow-1.6.2.tar.gz", hash = "sha256:e2d0450fd78ab19052d0478b888ef163e3264e8dcd1af002dd691458db98056f"},
+    {file = "willow-1.6.3-py3-none-any.whl", hash = "sha256:f4b17a16c6315864604dadb6cdf2987d0b685e295cca74c6da28b94167a3126e"},
+    {file = "willow-1.6.3.tar.gz", hash = "sha256:143cefd30d3bb816cdff857c454da24991dda35a0315ea795101675e0b14262f"},
 ]
 
 [[package]]
