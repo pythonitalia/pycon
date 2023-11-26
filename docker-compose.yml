@@ -132,30 +132,6 @@ services:
       pycon-backend:
         condition: service_healthy
 
-  association-frontend:
-    build:
-      context: ./association-frontend
-      dockerfile: ../Dockerfile.node.local
-    networks: [pycon_net]
-    entrypoint: ""
-    working_dir: /home/node/app
-    command: sh -c "pnpm install && pnpm codegen && pnpm run dev"
-    volumes:
-      - ./association-frontend/:/home/node/app
-      - /home/node/app/.pnpm-store/
-      - /home/node/app/node_modules/
-      - /home/node/app/.next
-    environment:
-      <<: *enviroment_defaults
-      STRIPE_KEY: ${STRIPE_PUBLIC_KEY}
-    tty: true
-    stdin_open: true
-    ports:
-      - 3020:3020
-    depends_on:
-      pycon-backend:
-        condition: service_healthy
-
   email-templates:
     build:
       context: ./email-templates

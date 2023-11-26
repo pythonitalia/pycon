@@ -1,9 +1,0 @@
-query Me {
-  me {
-    id
-    email
-    fullname
-    name
-    isPythonItaliaMember
-  }
-}
