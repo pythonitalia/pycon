@@ -45,10 +45,11 @@ services:
       dockerfile: ../Dockerfile.python.local
     networks: [pycon_net]
     entrypoint: ""
-    command: sh -c "python manage.py migrate &&
-      python manage.py create_admin &&
+    command: sh -c "pdm install &&
+      pdm run python manage.py migrate &&
+      pdm run python manage.py create_admin &&
       touch /.ready &&
-      python manage.py runserver 0.0.0.0:8000"
+      pdm run python manage.py runserver 0.0.0.0:8000"
     depends_on:
       redis:
         condition: service_healthy
@@ -74,7 +75,7 @@ services:
       dockerfile: ../Dockerfile.python.local
     networks: [pycon_net]
     entrypoint: ""
-    command: sh -c "touch /.ready && python worker.py"
+    command: sh -c "touch /.ready && pdm install && pdm run python worker.py"
     depends_on:
       redis:
         condition: service_healthy

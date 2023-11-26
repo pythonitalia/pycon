@@ -17,7 +17,7 @@ RUN apt-get update -y && apt-get install -y \
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 
-RUN pip3 install poetry==1.3.2
+RUN pip install pdm==2.10.4
 
 RUN tar -czvf /libs.tar.gz /usr/lib/x86_64-linux-gnu/libpq* \
     /usr/lib/x86_64-linux-gnu/libpq* \
@@ -45,11 +45,9 @@ RUN tar -czvf /libs.tar.gz /usr/lib/x86_64-linux-gnu/libpq* \
     /usr/lib/x86_64-linux-gnu/libXext* \
     /usr/lib/x86_64-linux-gnu/libbsd*
 
-COPY poetry.lock ${FUNCTION_DIR}
-COPY pyproject.toml ${FUNCTION_DIR}
+COPY pyproject.toml pdm.lock ${FUNCTION_DIR}
 
-RUN poetry config virtualenvs.in-project true
-RUN poetry install --no-dev -E lambda
+RUN pdm install --no-dev -E lambda
 
 FROM python:3.11-slim
 
