@@ -4,9 +4,6 @@ pycon-frontend:
 backend:
 - backend/*
 
-association-frontend:
-- association-frontend/*
-
 infrastructure:
 - infrastructure/*
 
