@@ -47,7 +47,7 @@ RUN tar -czvf /libs.tar.gz /usr/lib/x86_64-linux-gnu/libpq* \
 
 COPY pyproject.toml pdm.lock ${FUNCTION_DIR}
 
-RUN pdm install --prod -s lambda
+RUN pdm install --prod --group lambda
 
 FROM python:3.11-slim
 
