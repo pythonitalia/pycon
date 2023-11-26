@@ -14,10 +14,6 @@ x-defaults:
     # URLs
     ASSOCIATION_FRONTEND_URL: http://localhost:3020
     # Services URLs
-    PYCON_BACKEND_SERVICE: http://pycon-backend:8000
-    USERS_SERVICE: http://users-backend:8050
-    ASSOCIATION_BACKEND_SERVICE: http://association-backend:8060
-    CMS_SERVICE: http://cms:8070
     TEMPORAL_ADDRESS: temporal:7233
     # stripe
     STRIPE_SECRET_API_KEY: ${STRIPE_SECRET_API_KEY}
