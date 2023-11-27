@@ -82,7 +82,7 @@ requests-mock = "^1.11.0"
 pytest-mock = "^3.12.0"
 pytest-cache = "^1.0"
 time-machine = "^2.13.0"
-rich = "^13.6.0"
+rich = "^13.7.0"
 libcst = "^1.1.0"
 wagtail-factories = "^4.1.0"
 
