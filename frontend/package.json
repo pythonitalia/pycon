@@ -50,7 +50,7 @@
     "dotenv": "^16.0.3",
     "eslint-config-next": "^13.0.5",
     "framer-motion": "^10.11.6",
-    "graphql": "^16.5.0",
+    "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
     "isomorphic-fetch": "^3.0.0",
     "marksy": "^8.0.0",
