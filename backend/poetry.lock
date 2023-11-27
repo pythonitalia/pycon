@@ -3523,12 +3523,12 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "uwsgi"
-version = "2.0.21"
+version = "2.0.23"
 description = "The uWSGI server"
 optional = false
 python-versions = "*"
 files = [
-    {file = "uwsgi-2.0.21.tar.gz", hash = "sha256:35a30d83791329429bc04fe44183ce4ab512fcf6968070a7bfba42fc5a0552a9"},
+    {file = "uwsgi-2.0.23.tar.gz", hash = "sha256:0cafda0c16f921db7fe42cfaf81b167cf884ee17350efbdd87d1ecece2d7de37"},
 ]
 
 [[package]]
@@ -3717,4 +3717,4 @@ lambda = ["awslambdaric"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "5c1dbae5712bd8ca45b081ba6df86f6af5e663e24cb362d9373d96978cbe090b"
+content-hash = "2608440963d033ba3768237641149c29d758d0a02fa5a4b0e5ec8c822c656a8b"
