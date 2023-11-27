@@ -798,13 +798,13 @@ async-rq = ["django-rq (>=0.6.0)"]
 
 [[package]]
 name = "django-import-export"
-version = "3.3.1"
+version = "3.3.3"
 description = "Django application and library for importing and exporting data with included admin integration."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "django-import-export-3.3.1.tar.gz", hash = "sha256:d02e31908c965d512cc6f7ef6e72935177647b15d3846050d0f094177fca0d86"},
-    {file = "django_import_export-3.3.1-py3-none-any.whl", hash = "sha256:88ecaf06be06bd95d97cf34f3c911c56c012a7a81712a8956740e5bfc2465162"},
+    {file = "django-import-export-3.3.3.tar.gz", hash = "sha256:2c1b16e1cf2ea5f62a165d8867e7c6dcff25673ab7201fd18aaf67c9ee90367e"},
+    {file = "django_import_export-3.3.3-py3-none-any.whl", hash = "sha256:78973202e93897326ab0411d64eaf89b72779fcb21ee9e5f64f3fb96571a5978"},
 ]
 
 [package.dependencies]
@@ -3717,4 +3717,4 @@ lambda = ["awslambdaric"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "5c1dbae5712bd8ca45b081ba6df86f6af5e663e24cb362d9373d96978cbe090b"
+content-hash = "84e545441c94ed2bc092f6762c854478d905a0e3d6922d8b73a4ad8d3cba5a22"
