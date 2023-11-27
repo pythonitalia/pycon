@@ -766,13 +766,13 @@ Django = ">=3.2"
 
 [[package]]
 name = "django-fsm"
-version = "2.6.1"
+version = "2.8.1"
 description = "Django friendly finite state machine support."
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-fsm-2.6.1.tar.gz", hash = "sha256:96f776736042b8cde03483cb4b27c3a62580da40fc9b942845349718afdf5d0f"},
-    {file = "django_fsm-2.6.1-py2.py3-none-any.whl", hash = "sha256:cacd5485c726b411c6728c9ae3120303c9badf8aa0edff2db3aecdbe3a906945"},
+    {file = "django-fsm-2.8.1.tar.gz", hash = "sha256:fd9f8de9f33188e50f876ce53908fbd7289e5031a44ffdb97d43909e56699ef8"},
+    {file = "django_fsm-2.8.1-py2.py3-none-any.whl", hash = "sha256:e2c02cbf273fb9691aa9a907c29990afdd21a4adea09c5640344c93fbe03f8d9"},
 ]
 
 [[package]]
@@ -3717,4 +3717,4 @@ lambda = ["awslambdaric"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "5c1dbae5712bd8ca45b081ba6df86f6af5e663e24cb362d9373d96978cbe090b"
+content-hash = "59f8f1f3743aff09cab9ea78e6a30740ab17fbb5578bc13dd77b481057faabec"
