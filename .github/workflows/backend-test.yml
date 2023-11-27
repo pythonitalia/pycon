@@ -34,7 +34,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ./.venv
-          key: pdm-${{ hashFiles('**/pdm.lock') }}
+          key: pdm-${{ hashFiles('**/pdm.lock') }}-1
 
       - name: Install python dependencies
         working-directory: backend
