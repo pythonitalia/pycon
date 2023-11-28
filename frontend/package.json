@@ -75,7 +75,7 @@
     "theme-ui": "0.15.3",
     "use-local-storage-state": "^6.0.0",
     "use-onclickoutside": "^0.4.0",
-    "xstate": "^4.35.1",
+    "xstate": "^4.38.3",
     "yup": "^0.29.3"
   },
   "devDependencies": {

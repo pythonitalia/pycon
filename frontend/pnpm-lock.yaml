@@ -79,7 +79,7 @@ dependencies:
     version: 0.5.4
   '@xstate/react':
     specifier: ^3.0.1
-    version: 3.2.2(@types/react@17.0.59)(react@18.2.0)(xstate@4.37.2)
+    version: 3.2.2(@types/react@17.0.59)(react@18.2.0)(xstate@4.38.3)
   clsx:
     specifier: ^1.2.1
     version: 1.2.1
@@ -180,8 +180,8 @@ dependencies:
     specifier: ^0.4.0
     version: 0.4.1(@types/react@17.0.59)(react@18.2.0)
   xstate:
-    specifier: ^4.35.1
-    version: 4.37.2
+    specifier: ^4.38.3
+    version: 4.38.3
   yup:
     specifier: ^0.29.3
     version: 0.29.3
@@ -225,7 +225,7 @@ devDependencies:
     version: 5.14.5
   '@xstate/inspect':
     specifier: ^0.7.0
-    version: 0.7.1(ws@8.13.0)(xstate@4.37.2)
+    version: 0.7.1(ws@8.13.0)(xstate@4.38.3)
   autoprefixer:
     specifier: ^10.4.13
     version: 10.4.14(postcss@8.4.23)
@@ -3500,7 +3500,7 @@ packages:
     resolution: {integrity: sha512-N8tkAACJx2ww8vFMneJmaAgmjAG1tnVBZJRLRcx061tmsLRZHSEZSLuGWnwPtunsSLvSqXQ2wfp7Mgqg1I+2dQ==}
     dev: false
 
-  /@xstate/inspect@0.7.1(ws@8.13.0)(xstate@4.37.2):
+  /@xstate/inspect@0.7.1(ws@8.13.0)(xstate@4.38.3):
     resolution: {integrity: sha512-lEIi6cSvzA9f+GzaJMRVe4xnNjPY/oKdU8rjb+qxqUYx2evLuqysFu0XbPmEjMCwpfdIvG4FFsZJ7Ng7+k9UHw==}
     peerDependencies:
       '@types/ws': ^8.0.0
@@ -3512,10 +3512,10 @@ packages:
     dependencies:
       fast-safe-stringify: 2.1.1
       ws: 8.13.0
-      xstate: 4.37.2
+      xstate: 4.38.3
     dev: true
 
-  /@xstate/react@3.2.2(@types/react@17.0.59)(react@18.2.0)(xstate@4.37.2):
+  /@xstate/react@3.2.2(@types/react@17.0.59)(react@18.2.0)(xstate@4.38.3):
     resolution: {integrity: sha512-feghXWLedyq8JeL13yda3XnHPZKwYDN5HPBLykpLeuNpr9178tQd2/3d0NrH6gSd0sG5mLuLeuD+ck830fgzLQ==}
     peerDependencies:
       '@xstate/fsm': ^2.0.0
@@ -3530,7 +3530,7 @@ packages:
       react: 18.2.0
       use-isomorphic-layout-effect: 1.1.2(@types/react@17.0.59)(react@18.2.0)
       use-sync-external-store: 1.2.0(react@18.2.0)
-      xstate: 4.37.2
+      xstate: 4.38.3
     transitivePeerDependencies:
       - '@types/react'
     dev: false
@@ -10163,8 +10163,8 @@ packages:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
     dev: true
 
-  /xstate@4.37.2:
-    resolution: {integrity: sha512-Qm337O49CRTZ3PRyRuK6b+kvI+D3JGxXIZCTul+xEsyFCVkTFDt5jixaL1nBWcUBcaTQ9um/5CRGVItPi7fveg==}
+  /xstate@4.38.3:
+    resolution: {integrity: sha512-SH7nAaaPQx57dx6qvfcIgqKRXIh4L0A1iYEqim4s1u7c9VoCgzZc+63FY90AKU4ZzOC2cfJzTnpO4zK7fCUzzw==}
 
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
