@@ -24,8 +24,8 @@ dependencies:
     specifier: '>=11.0.0 <12.0.0'
     version: 11.11.0(@types/react@17.0.59)(react@18.2.0)
   '@graphql-codegen/add':
-    specifier: ^3.2.0
-    version: 3.2.3(graphql@16.8.1)
+    specifier: ^5.0.0
+    version: 5.0.0(graphql@16.8.1)
   '@graphql-codegen/cli':
     specifier: ^2.11.3
     version: 2.16.5(@babel/core@7.21.8)(@types/node@14.18.47)(graphql@16.8.1)(typescript@4.9.5)
@@ -1403,6 +1403,16 @@ packages:
       tslib: 2.4.1
     dev: false
 
+  /@graphql-codegen/add@5.0.0(graphql@16.8.1):
+    resolution: {integrity: sha512-ynWDOsK2yxtFHwcJTB9shoSkUd7YXd6ZE57f0nk7W5cu/nAgxZZpEsnTPEpZB/Mjf14YRGe2uJHQ7AfElHjqUQ==}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      '@graphql-codegen/plugin-helpers': 5.0.1(graphql@16.8.1)
+      graphql: 16.8.1
+      tslib: 2.5.2
+    dev: false
+
   /@graphql-codegen/cli@2.16.5(@babel/core@7.21.8)(@types/node@14.18.47)(graphql@16.8.1)(typescript@4.9.5):
     resolution: {integrity: sha512-XYPIp+q7fB0xAGSAoRykiTe4oY80VU+z+dw5nuv4mLY0+pv7+pa2C6Nwhdw7a65lXOhFviBApWCCZeqd54SMnA==}
     hasBin: true
@@ -1539,6 +1549,20 @@ packages:
       import-from: 4.0.0
       lodash: 4.17.21
       tslib: 2.4.1
+    dev: false
+
+  /@graphql-codegen/plugin-helpers@5.0.1(graphql@16.8.1):
+    resolution: {integrity: sha512-6L5sb9D8wptZhnhLLBcheSPU7Tg//DGWgc5tQBWX46KYTOTQHGqDpv50FxAJJOyFVJrveN9otWk9UT9/yfY4ww==}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      '@graphql-tools/utils': 10.0.11(graphql@16.8.1)
+      change-case-all: 1.0.15
+      common-tags: 1.8.2
+      graphql: 16.8.1
+      import-from: 4.0.0
+      lodash: 4.17.21
+      tslib: 2.5.2
     dev: false
 
   /@graphql-codegen/schema-ast@2.6.1(graphql@16.8.1):
