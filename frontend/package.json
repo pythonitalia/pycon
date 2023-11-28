@@ -39,7 +39,7 @@
     "@theme-ui/css": "^0.15.3",
     "@theme-ui/match-media": "^0.15.3",
     "@types/styled-system": "^5.1.10",
-    "@vercel/analytics": "^1.0.0",
+    "@vercel/analytics": "^1.1.1",
     "@vercel/og": "^0.5.4",
     "@xstate/react": "^3.0.1",
     "clsx": "^1.2.1",

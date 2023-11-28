@@ -72,8 +72,8 @@ dependencies:
     specifier: ^5.1.10
     version: 5.1.16
   '@vercel/analytics':
-    specifier: ^1.0.0
-    version: 1.0.1
+    specifier: ^1.1.1
+    version: 1.1.1
   '@vercel/og':
     specifier: ^0.5.4
     version: 0.5.4
@@ -3411,8 +3411,10 @@ packages:
       eslint-visitor-keys: 3.4.1
     dev: false
 
-  /@vercel/analytics@1.0.1:
-    resolution: {integrity: sha512-Ux0c9qUfkcPqng3vrR0GTrlQdqNJ2JREn/2ydrVuKwM3RtMfF2mWX31Ijqo1opSjNAq6rK76PwtANw6kl6TAow==}
+  /@vercel/analytics@1.1.1:
+    resolution: {integrity: sha512-+NqgNmSabg3IFfxYhrWCfB/H+RCUOCR5ExRudNG2+pcRehq628DJB5e1u1xqwpLtn4pAYii4D98w7kofORAGQA==}
+    dependencies:
+      server-only: 0.0.1
     dev: false
 
   /@vercel/og@0.5.4:
@@ -8750,6 +8752,10 @@ packages:
       no-case: 3.0.4
       tslib: 2.6.2
       upper-case-first: 2.0.2
+    dev: false
+
+  /server-only@0.0.1:
+    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
     dev: false
 
   /set-blocking@2.0.0:
