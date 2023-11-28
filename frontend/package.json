@@ -47,7 +47,7 @@
     "date-fns": "^2.29.3",
     "date-fns-tz": "^2.0.0",
     "deepmerge": "^4.2.2",
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.3.1",
     "eslint-config-next": "^13.0.5",
     "framer-motion": "^10.11.6",
     "graphql": "^16.8.1",

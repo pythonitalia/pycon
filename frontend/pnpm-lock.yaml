@@ -96,8 +96,8 @@ dependencies:
     specifier: ^4.2.2
     version: 4.3.1
   dotenv:
-    specifier: ^16.0.3
-    version: 16.0.3
+    specifier: ^16.3.1
+    version: 16.3.1
   eslint-config-next:
     specifier: ^13.0.5
     version: 13.4.3(eslint@7.32.0)(typescript@4.9.5)
@@ -1899,7 +1899,7 @@ packages:
       '@whatwg-node/fetch': 0.8.8
       chalk: 4.1.2
       debug: 4.3.4
-      dotenv: 16.0.3
+      dotenv: 16.3.1
       graphql: 16.8.1
       graphql-request: 6.0.0(graphql@16.8.1)
       http-proxy-agent: 6.1.0
@@ -4811,8 +4811,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /dotenv@16.0.3:
-    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+  /dotenv@16.3.1:
+    resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
     engines: {node: '>=12'}
     dev: false
 
@@ -8448,14 +8448,14 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /react-universal-interface@0.6.2(react@18.2.0)(tslib@2.5.2):
+  /react-universal-interface@0.6.2(react@18.2.0)(tslib@2.6.2):
     resolution: {integrity: sha512-dg8yXdcQmvgR13RIlZbTRQOoUrDciFVoSBZILwjE2LFISxZZ8loVJKAkuzswl5js8BHda79bIb2b84ehU8IjXw==}
     peerDependencies:
       react: '*'
       tslib: '*'
     dependencies:
       react: 18.2.0
-      tslib: 2.5.2
+      tslib: 2.6.2
     dev: false
 
   /react-use-form-state@0.13.2(react-dom@18.2.0)(react@18.2.0):
@@ -8491,13 +8491,13 @@ packages:
       nano-css: 5.3.5(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      react-universal-interface: 0.6.2(react@18.2.0)(tslib@2.5.2)
+      react-universal-interface: 0.6.2(react@18.2.0)(tslib@2.6.2)
       resize-observer-polyfill: 1.5.1
       screenfull: 5.2.0
       set-harmonic-interval: 1.0.1
       throttle-debounce: 3.0.1
       ts-easing: 0.2.0
-      tslib: 2.5.2
+      tslib: 2.6.2
     dev: false
 
   /react-wrap-balancer@0.5.0(react@18.2.0):
