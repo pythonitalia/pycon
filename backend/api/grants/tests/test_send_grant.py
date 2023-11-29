@@ -22,15 +22,22 @@ def _send_grant(client, grant_factory, conference, **kwargs):
                         validationGender: gender
                         validationGrantType: grantType
                         validationOccupation: occupation
-                        validationOccupation: occupation
                         validationAgeGroup: ageGroup
                         validationPythonUsage: pythonUsage
+                        validationCommunityContribution: communityContribution
                         validationBeenToOtherEvents: beenToOtherEvents
                         validationInterestedInVolunteering: interestedInVolunteering
                         validationNeedsFundsForTravel: needsFundsForTravel
+                        validationNeedVisa: needVisa
+                        validationNeedAccommodation: needAccommodation
                         validationWhy: why
                         validationNotes: notes
                         validationTravellingFrom: travellingFrom
+                        validationWebsite: website
+                        validationTwitterHandle: twitterHandle
+                        validationGithubHandle: githubHandle
+                        validationLinkedinUrl: linkedinUrl
+                        validationMastodonHandle: mastodonHandle
                         nonFieldErrors
                     }
                 }
@@ -47,12 +54,21 @@ def _send_grant(client, grant_factory, conference, **kwargs):
         "occupation": grant.occupation,
         "grantType": grant.grant_type,
         "pythonUsage": grant.python_usage,
+        "communityContribution": grant.community_contribution,
         "beenToOtherEvents": grant.been_to_other_events,
         "interestedInVolunteering": grant.interested_in_volunteering,
         "needsFundsForTravel": grant.needs_funds_for_travel,
+        "need_visa": grant.need_visa,
+        "need_accommodation": grant.need_accommodation,
         "why": grant.why,
         "notes": grant.notes,
         "travellingFrom": grant.travelling_from,
+        "website": grant.website,
+        "twitter_handle": grant.twitter_handle,
+        "github_handle": grant.github_handle,
+        "instagram_handle": grant.instagram_handle,
+        "linkedin_url": grant.linkedin_url,
+        "mastodon_handle": grant.mastodon_handle,
     }
 
     variables = {**defaults, **kwargs}
