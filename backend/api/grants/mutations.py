@@ -67,6 +67,7 @@ class BaseGrantInput:
             "full_name": 300,
             "travelling_from": 200,
             "twitter_handle": 15,
+            "github_handle": 39,
         }
         for field, max_length in max_length_fields.items():
             value = getattr(self, field, "")

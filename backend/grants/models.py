@@ -121,7 +121,9 @@ class Grant(TimeStampedModel):
     notes = models.TextField(_("Notes"), blank=True)
     website = models.URLField(_("Website"), max_length=2048, blank=True)
     twitter_handle = models.CharField(_("Twitter handle"), max_length=15, blank=True)
-    github_handle = models.CharField(_("GitHub handle"), blank=True, null=True)
+    github_handle = models.CharField(
+        _("GitHub handle"), blank=True, null=True, max_length=39
+    )
     linkedin_url = models.URLField(_("LinkedIn url"), max_length=2048, blank=True)
     mastodon_handle = models.CharField(
         _("Mastodon handle"), max_length=2048, blank=True
