@@ -25,6 +25,7 @@ import { jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import { MyGrant } from "~/components/profile/my-grant";
+import { useCountries } from "~/helpers/use-countries";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
@@ -60,12 +61,20 @@ export type GrantFormFields = {
   occupation: Occupation;
   grantType: GrantType;
   pythonUsage: string;
+  communityContribution: string;
   beenToOtherEvents: string;
   interestedInVolunteering: InterestedInVolunteering;
   needsFundsForTravel: string;
+  needVisa: string;
+  needAccommodation: string;
   why: string;
   notes: string;
   travellingFrom: string;
+  website: string;
+  twitterHandle: string;
+  githubHandle: string;
+  linkedinUrl: string;
+  mastodonHandle: string;
 };
 
 export const MyGrantOrForm = () => {
@@ -81,7 +90,11 @@ export const MyGrantOrForm = () => {
   const grant = data && data?.me?.grant;
 
   const [submitGrant, { loading, error: grantError, data: grantData }] =
-    useSendGrantMutation();
+    useSendGrantMutation({
+      onError(err) {
+        console.log(err.message);
+      },
+    });
 
   const onSubmit = async (input: SendGrantInput) => {
     submitGrant({
@@ -105,6 +118,10 @@ export const MyGrantOrForm = () => {
         <Heading size="display2">
           <FormattedMessage id="grants.form.title" />
         </Heading>
+        <Spacer size="medium" />
+        <Text size={2}>
+          <FormattedMessage id="grants.form.description" />
+        </Text>
       </Section>
       <Section>
         <GrantForm
@@ -137,6 +154,8 @@ export const GrantForm = ({
   data: grantData,
 }: GrantFormProps) => {
   const language = useCurrentLanguage();
+  const countries = useCountries();
+
   const inputPlaceholderText = useTranslatedMessage("input.placeholder");
   const { user, loading: loadingUser } = useCurrentUser({});
   const [formState, { text, textarea, select }] = useFormState<GrantFormFields>(
@@ -176,6 +195,7 @@ export const GrantForm = ({
       formState.setField("occupation", grant.occupation);
       formState.setField("ageGroup", grant.ageGroup);
       formState.setField("pythonUsage", grant.pythonUsage);
+      formState.setField("communityContribution", grant.communityContribution);
       formState.setField("beenToOtherEvents", grant.beenToOtherEvents);
       formState.setField(
         "interestedInVolunteering",
@@ -185,9 +205,19 @@ export const GrantForm = ({
         "needsFundsForTravel",
         grant.needsFundsForTravel.toString(),
       );
+      formState.setField("needVisa", grant.needVisa.toString());
+      formState.setField(
+        "needAccommodation",
+        grant.needAccommodation.toString(),
+      );
       formState.setField("why", grant.why);
       formState.setField("notes", grant.notes);
       formState.setField("travellingFrom", grant.travellingFrom);
+      formState.setField("website", grant.website);
+      formState.setField("twitterHandle", grant.twitterHandle);
+      formState.setField("githubHandle", grant.githubHandle);
+      formState.setField("linkedinUrl", grant.linkedinUrl);
+      formState.setField("mastodonHandle", grant.mastodonHandle);
     }
   }, [grant]);
 
@@ -209,6 +239,14 @@ export const GrantForm = ({
         travellingFrom: formState.values.travellingFrom,
         occupation: formState.values.occupation,
         pythonUsage: formState.values.pythonUsage,
+        communityContribution: formState.values.communityContribution,
+        needVisa: formState.values.needVisa === "true",
+        needAccommodation: formState.values.needAccommodation === "true",
+        website: formState.values.website,
+        twitterHandle: formState.values.twitterHandle,
+        githubHandle: formState.values.githubHandle,
+        linkedinUrl: formState.values.linkedinUrl,
+        mastodonHandle: formState.values.mastodonHandle,
       });
     },
     [formState.values],
@@ -295,7 +333,7 @@ export const GrantForm = ({
             </InputWrapper>
 
             <InputWrapper
-              required={true}
+              required={false}
               title={<FormattedMessage id="grants.form.fields.name" />}
               description={
                 <FormattedMessage id="grants.form.fields.name.description" />
@@ -305,12 +343,15 @@ export const GrantForm = ({
                 {...text("name")}
                 errors={getErrors("name")}
                 placeholder={inputPlaceholderText}
-                required={true}
+                required={false}
               />
             </InputWrapper>
             <InputWrapper
               required={true}
               title={<FormattedMessage id="grants.form.fields.ageGroup" />}
+              description={
+                <FormattedMessage id="grants.form.fields.ageGroup.description" />
+              }
             >
               <Select
                 {...select("ageGroup")}
@@ -332,6 +373,9 @@ export const GrantForm = ({
             <InputWrapper
               required={true}
               title={<FormattedMessage id="grants.form.fields.occupation" />}
+              description={
+                <FormattedMessage id="grants.form.fields.occupation.description" />
+              }
             >
               <Select
                 {...select("occupation")}
@@ -365,6 +409,9 @@ export const GrantForm = ({
             <InputWrapper
               required={true}
               title={<FormattedMessage id="grants.form.fields.grantType" />}
+              description={
+                <FormattedMessage id="grants.form.fields.grantType.description" />
+              }
             >
               <Select
                 {...select("grantType")}
@@ -388,13 +435,28 @@ export const GrantForm = ({
               title={
                 <FormattedMessage id="grants.form.fields.travellingFrom" />
               }
+              description={
+                <FormattedMessage id="grants.form.fields.travellingFrom.description" />
+              }
             >
-              <Input
-                {...text("travellingFrom")}
-                errors={getErrors("travellingFrom")}
+              <Select
+                {...select("travellingFrom")}
                 required={true}
-                placeholder={inputPlaceholderText}
-              />
+                errors={getErrors("travellingFrom")}
+              >
+                <FormattedMessage id="input.selectCountryPlaceholder">
+                  {(msg) => (
+                    <option value="" disabled>
+                      {msg}
+                    </option>
+                  )}
+                </FormattedMessage>
+                {countries.map((c) => (
+                  <option key={c.value} value={c.value}>
+                    {c.label}
+                  </option>
+                ))}
+              </Select>
             </InputWrapper>
 
             <InputWrapper
@@ -402,14 +464,48 @@ export const GrantForm = ({
                 <FormattedMessage id="grants.form.fields.needsFundsForTravel" />
               }
               description={
-                <FormattedMessage id="grants.form.fields.needsFundsForTravel.label" />
+                <FormattedMessage id="grants.form.fields.needsFundsForTravel.description" />
               }
             >
               <Select {...select("needsFundsForTravel")}>
-                <FormattedMessage id="grants.form.fields.needsFundsForTravel.no">
+                <FormattedMessage id="global.no">
                   {(msg) => <option value="false">{msg}</option>}
                 </FormattedMessage>
-                <FormattedMessage id="grants.form.fields.needsFundsForTravel.yes">
+                <FormattedMessage id="global.yes">
+                  {(msg) => <option value="true">{msg}</option>}
+                </FormattedMessage>
+              </Select>
+            </InputWrapper>
+
+            <InputWrapper
+              title={<FormattedMessage id="grants.form.fields.needVisa" />}
+              description={
+                <FormattedMessage id="grants.form.fields.needVisa.description" />
+              }
+            >
+              <Select {...select("needVisa")}>
+                <FormattedMessage id="global.no">
+                  {(msg) => <option value="false">{msg}</option>}
+                </FormattedMessage>
+                <FormattedMessage id="global.yes">
+                  {(msg) => <option value="true">{msg}</option>}
+                </FormattedMessage>
+              </Select>
+            </InputWrapper>
+
+            <InputWrapper
+              title={
+                <FormattedMessage id="grants.form.fields.needAccommodation" />
+              }
+              description={
+                <FormattedMessage id="grants.form.fields.needAccommodation.description" />
+              }
+            >
+              <Select {...select("needAccommodation")}>
+                <FormattedMessage id="global.no">
+                  {(msg) => <option value="false">{msg}</option>}
+                </FormattedMessage>
+                <FormattedMessage id="global.yes">
                   {(msg) => <option value="true">{msg}</option>}
                 </FormattedMessage>
               </Select>
@@ -418,6 +514,9 @@ export const GrantForm = ({
             <InputWrapper
               required={true}
               title={<FormattedMessage id="grants.form.fields.why" />}
+              description={
+                <FormattedMessage id="grants.form.fields.why.description" />
+              }
             >
               <Textarea
                 {...textarea("why")}
@@ -483,10 +582,14 @@ export const GrantForm = ({
                 errors={getErrors("pythonUsage")}
               />
             </InputWrapper>
+
             <InputWrapper
               required={true}
               title={
                 <FormattedMessage id="grants.form.fields.beenToOtherEvents" />
+              }
+              description={
+                <FormattedMessage id="grants.form.fields.beenToOtherEvents.description" />
               }
             >
               <Textarea
@@ -497,10 +600,30 @@ export const GrantForm = ({
                 placeholder={inputPlaceholderText}
               />
             </InputWrapper>
+
+            <InputWrapper
+              required={false}
+              title={
+                <FormattedMessage id="grants.form.fields.communityContribution" />
+              }
+              description={
+                <FormattedMessage id="grants.form.fields.communityContribution.description" />
+              }
+            >
+              <Textarea
+                {...textarea("communityContribution")}
+                rows={2}
+                required={false}
+                errors={getErrors("communityContribution")}
+                placeholder={inputPlaceholderText}
+              />
+            </InputWrapper>
           </Grid>
         </CardPart>
       </MultiplePartsCard>
+
       <Spacer size="medium" />
+
       <MultiplePartsCard>
         <CardPart contentAlign="left">
           <Heading size={3}>
@@ -511,6 +634,9 @@ export const GrantForm = ({
           <Grid cols={1}>
             <InputWrapper
               title={<FormattedMessage id="grants.form.fields.gender" />}
+              description={
+                <FormattedMessage id="grants.form.fields.gender.description" />
+              }
             >
               <Select {...select("gender")} errors={getErrors("gender")}>
                 {GENDER_OPTIONS.map(({ value, disabled, messageId }) => (
@@ -527,10 +653,64 @@ export const GrantForm = ({
 
             <InputWrapper
               title={<FormattedMessage id="grants.form.fields.notes" />}
+              description={
+                <FormattedMessage id="grants.form.fields.notes.description" />
+              }
             >
               <Textarea
                 {...textarea("notes")}
                 errors={getErrors("notes")}
+                placeholder={inputPlaceholderText}
+              />
+            </InputWrapper>
+
+            <InputWrapper
+              title={<FormattedMessage id="grants.form.fields.website" />}
+            >
+              <Input
+                {...text("website")}
+                errors={getErrors("website")}
+                placeholder={inputPlaceholderText}
+              />
+            </InputWrapper>
+
+            <InputWrapper
+              title={<FormattedMessage id="grants.form.fields.linkedinUrl" />}
+            >
+              <Input
+                {...text("linkedinUrl")}
+                errors={getErrors("linkedinUrl")}
+                placeholder={inputPlaceholderText}
+              />
+            </InputWrapper>
+
+            <InputWrapper
+              title={<FormattedMessage id="grants.form.fields.githubHandle" />}
+            >
+              <Input
+                {...text("githubHandle")}
+                errors={getErrors("githubHandle")}
+                placeholder={inputPlaceholderText}
+              />
+            </InputWrapper>
+
+            <InputWrapper
+              title={<FormattedMessage id="grants.form.fields.twitterHandle" />}
+            >
+              <Input
+                {...text("twitterHandle")}
+                errors={getErrors("twitterHandle")}
+                placeholder={inputPlaceholderText}
+              />
+            </InputWrapper>
+            <InputWrapper
+              title={
+                <FormattedMessage id="grants.form.fields.mastodonHandle" />
+              }
+            >
+              <Input
+                {...text("mastodonHandle")}
+                errors={getErrors("mastodonHandle")}
                 placeholder={inputPlaceholderText}
               />
             </InputWrapper>

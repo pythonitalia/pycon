@@ -61,7 +61,7 @@ services:
       - 8000:8000
     volumes:
       - ./backend:/home/app/
-      - ./backend/.venv/
+      # - ./backend/.venv/
     environment:
       <<: *pycon_backend_envs
     healthcheck:
@@ -86,7 +86,7 @@ services:
     stdin_open: true
     volumes:
       - ./backend:/home/app/
-      - ./backend/.venv/
+      # - ./backend/.venv/
     environment:
       <<: *pycon_backend_envs
     healthcheck:

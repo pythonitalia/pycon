@@ -12,12 +12,20 @@ query MyGrant($conference: String!) {
       occupation
       ageGroup
       pythonUsage
+      communityContribution
       beenToOtherEvents
       interestedInVolunteering
       needsFundsForTravel
+      needVisa
+      needAccommodation
       why
       notes
       travellingFrom
+      website
+      twitterHandle
+      githubHandle
+      linkedinUrl
+      mastodonHandle
     }
   }
 }

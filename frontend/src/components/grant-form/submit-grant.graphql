@@ -16,12 +16,20 @@ mutation SendGrant($input: SendGrantInput!) {
         validationOccupation: occupation
         validationAgeGroup: ageGroup
         validationPythonUsage: pythonUsage
+        validationCommunityContribution: communityContribution
         validationBeenToOtherEvents: beenToOtherEvents
         validationInterestedInVolunteering: interestedInVolunteering
         validationNeedsFundsForTravel: needsFundsForTravel
+        validationNeedVisa: needVisa
+        validationNeedAccommodation: needAccommodation
         validationWhy: why
         validationNotes: notes
         validationTravellingFrom: travellingFrom
+        validationWebsite: website
+        validationTwitterHandle: twitterHandle
+        validationGithubHandle: githubHandle
+        validationLinkedinUrl: linkedinUrl
+        validationMastodonHandle: mastodonHandle
         nonFieldErrors
       }
     }

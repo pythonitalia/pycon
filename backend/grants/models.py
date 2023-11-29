@@ -9,6 +9,7 @@ from users.models import User
 
 
 class Grant(TimeStampedModel):
+    # TextChoices
     class Status(models.TextChoices):
         pending = "pending", _("Pending")
         rejected = "rejected", _("Rejected")
@@ -59,8 +60,6 @@ class Grant(TimeStampedModel):
         ticket_accommodation = "ticket_accommodation", _("Ticket + Accommodation")
         ticket_travel_accommodation = "Ticket", _("Ticket + Travel + Accommodation")
 
-    name = models.CharField(_("name"), max_length=300)
-    full_name = models.CharField(_("full name"), max_length=300)
     conference = models.ForeignKey(
         "conferences.Conference",
         on_delete=models.CASCADE,
@@ -75,6 +74,60 @@ class Grant(TimeStampedModel):
         verbose_name=_("user"),
         related_name="+",
     )
+    email = models.EmailField(_("email address"))  # OLD FIELD
+
+    # About You Section
+    full_name = models.CharField(_("full name"), max_length=300)
+    name = models.CharField(_("name"), max_length=300)
+    age_group = models.CharField(
+        _("Age group"), max_length=20, choices=AgeGroup.choices, blank=True
+    )
+    occupation = models.CharField(
+        _("occupation"), choices=Occupation.choices, max_length=10
+    )
+
+    # Your Grant Section
+    grant_type = models.CharField(
+        _("grant type"), choices=GrantType.choices, max_length=10
+    )
+    traveling_from = models.CharField(
+        _("Traveling from"),
+        max_length=100,
+        blank=True,
+        null=True,
+        choices=[(country.code, country.name) for country in countries],
+    )
+    travelling_from = models.CharField(
+        _("Travelling from"), max_length=200
+    )  # OLD FIELD
+    needs_funds_for_travel = models.BooleanField(_("Needs funds for travel"))
+    need_visa = models.BooleanField(_("Need visa/invitation letter?"), default=False)
+    need_accommodation = models.BooleanField(_("Need accommodation"), default=False)
+
+    why = models.TextField(_("Why are you asking for a grant?"))
+    interested_in_volunteering = models.CharField(
+        _("interested in volunteering"),
+        choices=InterestedInVolunteering.choices,
+        max_length=10,
+    )
+
+    # You and Python Section
+    python_usage = models.TextField(_("How do they use python"))
+    been_to_other_events = models.TextField(_("Have they been to other events?"))
+    community_contribution = models.TextField(_("Community contribution"), blank=True)
+
+    # Optional Information Section
+    gender = models.CharField(_("gender"), choices=GENDERS, max_length=10, blank=True)
+    notes = models.TextField(_("Notes"), blank=True)
+    website = models.URLField(_("Website"), max_length=2048, blank=True)
+    twitter_handle = models.CharField(_("Twitter handle"), max_length=15, blank=True)
+    github_handle = models.CharField(_("GitHub handle"), blank=True, null=True)
+    linkedin_url = models.URLField(_("LinkedIn url"), max_length=2048, blank=True)
+    mastodon_handle = models.CharField(
+        _("Mastodon handle"), max_length=2048, blank=True
+    )
+
+    # Grant Management and Processing
     status = models.CharField(
         _("status"), choices=Status.choices, max_length=30, default=Status.pending
     )
@@ -85,6 +138,8 @@ class Grant(TimeStampedModel):
         blank=True,
         null=True,
     )
+
+    # Financial amounts
     ticket_amount = models.DecimalField(
         verbose_name=_("ticket amount"),
         null=True,
@@ -113,35 +168,7 @@ class Grant(TimeStampedModel):
         decimal_places=2,
         default=0,
     )
-    email = models.EmailField(_("email address"))
-    age_group = models.CharField(
-        _("Age group"), max_length=20, choices=AgeGroup.choices, blank=True
-    )
-    gender = models.CharField(_("gender"), choices=GENDERS, max_length=10, blank=True)
-    occupation = models.CharField(
-        _("occupation"), choices=Occupation.choices, max_length=10
-    )
-    grant_type = models.CharField(
-        _("grant type"), choices=GrantType.choices, max_length=10
-    )
-    python_usage = models.TextField(_("How do they use python"))
-    been_to_other_events = models.TextField(_("Have they been to other events?"))
-    interested_in_volunteering = models.CharField(
-        _("interested in volunteering"),
-        choices=InterestedInVolunteering.choices,
-        max_length=10,
-    )
-    needs_funds_for_travel = models.BooleanField(_("Needs funds for travel"))
-    why = models.TextField(_("Why are you asking for a grant?"))
-    notes = models.TextField(_("Notes"), blank=True)
-    travelling_from = models.CharField(_("Travelling from"), max_length=200)
-    traveling_from = models.CharField(
-        _("Traveling from"),
-        max_length=100,
-        blank=True,
-        null=True,
-        choices=[(country.code, country.name) for country in countries],
-    )
+
     country_type = models.CharField(
         _("Country type"),
         max_length=10,
@@ -149,6 +176,8 @@ class Grant(TimeStampedModel):
         null=True,
         blank=True,
     )
+
+    # Applicant Communication Tracking
     applicant_reply_sent_at = models.DateTimeField(
         _("applicant reply sent at"), null=True, blank=True
     )
@@ -156,6 +185,8 @@ class Grant(TimeStampedModel):
         _("applicant reply deadline"), null=True, blank=True
     )
     applicant_message = models.TextField(_("applicant message"), null=True, blank=True)
+
+    # Voucher Management
     voucher_code = models.TextField(
         help_text=_("Voucher code generated for this grant."),
         blank=True,
