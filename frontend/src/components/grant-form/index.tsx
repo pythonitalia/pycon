@@ -221,6 +221,7 @@ export const GrantForm = ({
       formState.setField("githubHandle", grant.githubHandle);
       formState.setField("linkedinUrl", grant.linkedinUrl);
       formState.setField("mastodonHandle", grant.mastodonHandle);
+      formState.setField("acceptedPrivacyPolicy", true);
     }
   }, [grant]);
 
