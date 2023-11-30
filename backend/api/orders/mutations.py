@@ -146,8 +146,11 @@ def validate_order_invoice_information(
     if invoice_information.is_business:
         required_fields += ["vat_id", "company"]
 
-    if not invoice_information.is_business and invoice_information.country == "IT":
-        required_fields += ["fiscal_code"]
+    if invoice_information.country == "IT":
+        if invoice_information.is_business:
+            required_fields += ["sdi"]
+        else:
+            required_fields += ["fiscal_code"]
 
     for required_field in required_fields:
         value = getattr(invoice_information, required_field)
