@@ -11,6 +11,7 @@ from api.pretix.types import UpdateAttendeeTicketInput, Voucher
 from conferences.models.conference import Conference
 from hotels.models import BedLayout, HotelRoom
 from pretix.types import Category, Question, Quota
+import sentry_sdk
 
 from .exceptions import PretixError
 
@@ -426,6 +427,33 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     response.raise_for_status()
 
     data = response.json()
+
+    if order_data.invoice_information.country == "IT":
+        response = pretix(
+            conference,
+            f"orders/{data['code']}/update_invoice_information/",
+            method="post",
+            json={
+                "pec": order_data.invoice_information.pec,
+                "codice_fiscale": order_data.invoice_information.fiscal_code,
+                "sdi": order_data.invoice_information.sdi,
+            },
+        )
+
+        if response.status_code != 200:
+            with sentry_sdk.push_scope() as scope:
+                scope.user = {"email": order_data.email}
+                scope.set_extra("order-code", data["code"])
+                scope.set_extra("pec", order_data.invoice_information.pec)
+                scope.set_extra(
+                    "codice_fiscale", order_data.invoice_information.fiscal_code
+                )
+                scope.set_extra("sdi", order_data.invoice_information.sdi)
+
+                sentry_sdk.capture_message(
+                    f"Unable to update invoice information for order {data['code']}",
+                    level="error",
+                )
 
     return Order(code=data["code"], payment_url=data["payments"][0]["payment_url"])
 
