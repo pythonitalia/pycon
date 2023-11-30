@@ -22,6 +22,11 @@ export const messages = {
 
     "header.streaming": "Watch live",
 
+    "grants.form.acceptPrivacyPolicy":
+      "I have read and understood the {link} of Python Italia APS",
+    "grants.form.privacyPolicyHeading":
+      "It is important that all those who register for the event read the Processing of Personal Data ({link}) by the Italian organizer Python Italia APS and authorize the processing of their personal data to enable the collection of registrations and the organization of the event.",
+
     "streaming.roomName": "Room {name}",
     "streaming.eventName": "Current: {name}",
     "streaming.noStreaming":
@@ -596,6 +601,15 @@ export const messages = {
     "grants.form.needToBeLoggedIn":
       "Login or create an account to send a grant",
     "grants.form.title": "Request a grant",
+    "grants.form.description": `Welcome to the PyCon Italia 2024 Grant Application Form!
+
+As we’ve had many applications in the past and operate with a limited budget, we kindly ask you to take a moment to tell us about yourself and the reasons you're seeking a grant. Your insights are valuable to us. There’s no wrong answer, and a thoughtful response can truly make a difference.
+
+We are continually striving to increase our budget through the support of our diversity sponsors, including the Python Software Foundation and the EuroPython Society. If your company is interested in contributing, please visit our sponsor page for more information.
+
+We look forward to reading about you and hope to see you at PyCon Italia 2024!
+    `,
+
     "grants.form.sendingRequest": "Sending grant request",
     "grants.form.sent":
       "Grant request sent! We will send you an email as soon as we have updates! Cick {linkGrant} to edit it.",
@@ -609,14 +623,16 @@ export const messages = {
       "Providing this information will help us making sure that the event is as inclusive as possible.",
     "grants.form.fields.fullName": "Legal name",
     "grants.form.fields.fullName.description":
-      "The name that appears on your passport, ID and other legal documents. Will be useful in case we give you a grant.",
+      "The name as it appears on your passport, ID, and other legal documents. This information is essential for processing any grant awarded.",
     "grants.form.fields.name": "Name",
     "grants.form.fields.name.description":
-      "The name you use daily and how you prefer to be called in case we need to contact you.",
+      "The name you use daily and how you prefer to be addressed in case we need to contact you.",
     "grants.form.fields.email": "Email",
     "grants.form.fields.email.description":
       "Here you will receive a notification about your application.",
-    "grants.form.fields.ageGroup": "Age",
+    "grants.form.fields.ageGroup": "Age group",
+    "grants.form.fields.ageGroup.description":
+      "Select your age group. This helps us understand the demographic distribution of our applicants.",
     "grants.form.fields.ageGroup.values.selectOption": "Select Option",
     "grants.form.fields.ageGroup.values.range_less_than_10":
       "10 years old or under",
@@ -628,20 +644,41 @@ export const messages = {
     "grants.form.fields.ageGroup.values.range_55_64": "55 - 64 years old",
     "grants.form.fields.ageGroup.values.range_more_than_65":
       "65 years or older",
-    "grants.form.fields.gender": "Gender",
     "grants.form.fields.occupation": "Occupation",
+    "grants.form.fields.occupation.description":
+      "Select your current occupation.",
     "grants.form.fields.occupation.values.selectOption": "Select Option",
     "grants.form.fields.occupation.values.developer": "Developer",
     "grants.form.fields.occupation.values.student": "Student",
     "grants.form.fields.occupation.values.researcher": "Researcher",
     "grants.form.fields.occupation.values.unemployed": "Unemployed",
     "grants.form.fields.occupation.values.other": "Other",
-    "grants.form.fields.grantType":
-      "Are you asking for a diversity grant or for an unemployed grant?",
+    "grants.form.fields.grantType": "What type of grant are you applying for?",
+    "grants.form.fields.grantType.description":
+      "Note: If you have submitted a talk/workshop proposal, you do not need to apply for a grant to receive a refund. If your proposal is accepted, we will contact you regarding the ticket refund.",
     "grants.form.fields.grantType.values.selectOption": "Select Option",
     "grants.form.fields.grantType.values.diversity": "Diversity",
     "grants.form.fields.grantType.values.unemployed": "Unemployed",
     "grants.form.fields.grantType.values.speaker": "Speaker",
+    "grants.form.fields.travellingFrom": "Where are you travelling from?",
+    "grants.form.fields.travellingFrom.description":
+      "Please indicate the city and country you will be traveling from to attend the conference.",
+    "grants.form.fields.needsFundsForTravel":
+      "Do you need financial aid for travelling to PyCon Italia?",
+    "grants.form.fields.needsFundsForTravel.description":
+      "We don’t have many funds but we will try to help as many people as we can, ask for this help only if absolutely needed!",
+    "grants.form.fields.needVisa":
+      "Do you require an invitation letter for a visa application?",
+    "grants.form.fields.needVisa.description":
+      "We can provide an invitation letter to support your visa application. While we cannot influence the visa decision, we're here to help facilitate your application process.",
+    "grants.form.fields.needAccommodation":
+      "Do you need an accommodation for the duration of the conference?",
+    "grants.form.fields.needAccommodation.description":
+      "We aim to assist as many attendees as possible with accommodation, within our budget constraints. Upon approval of your grant application, we will take care of arranging your accommodation.",
+    "grants.form.fields.why":
+      "Why are you asking for a grant for PyCon Italia?",
+    "grants.form.fields.why.description":
+      "Briefly describe why you're applying for a grant. Please limit your response to approximately 200 words.",
     "grants.form.fields.interestedInVolunteering":
       "Would you like to help PyCon Italia for this and/or upcoming events?",
     "grants.form.validationErrors": "The form submitted is not valid",
@@ -655,19 +692,26 @@ export const messages = {
       "My soul is yours to take!",
     "grants.form.fields.pythonUsage": "What's your use of python?",
     "grants.form.fields.pythonUsage.description":
-      "How do you use Python? Are you studying it or using it for work or for a hobby?",
+      "How do you use Python? Are you studying it or using it for work or for a hobby? Please, limit your response to approximately 200 words.",
     "grants.form.fields.beenToOtherEvents":
-      "Have you ever been to PyCon Italia or other python related events? If yes, what event?",
-    "grants.form.fields.why": "Why are you asking a grant for PyCon Italia?",
+      "Have you ever been to PyCon Italia or other Python-related events? If yes, which events?",
+    "grants.form.fields.beenToOtherEvents.description":
+      "Please, limit your response to approximately 200 words.",
+    "grants.form.fields.communityContribution":
+      "Have you been involved in contributing to the Python community or in organizing Python-related events, conferences, meetups?",
+    "grants.form.fields.communityContribution.description":
+      "Whether it's coding, teaching, writing, speaking at events, or simply being an enthusiastic learner, we'd love to hear about your engagement with Python. This information helps us understand your connection to the community, but it's completely okay if you're new to Python or haven't had these opportunities. Please, limit your response to approximately 200 words.",
+    "grants.form.fields.gender": "Gender",
+    "grants.form.fields.gender.description":
+      "We respect your privacy. If you are comfortable sharing, please indicate your gender. This is optional and helps us ensure diversity and inclusivity.",
     "grants.form.fields.notes": "Would you like to say something more?",
-    "grants.form.fields.travellingFrom": "Where are you travelling from?",
-    "grants.form.fields.needsFundsForTravel":
-      "Do you need financial aid for travelling to PyCon Italia?",
-    "grants.form.fields.needsFundsForTravel.label":
-      "We don’t have many funds but we will try to help as many people as we can, ask for this help only if absolutely needed!",
-
-    "grants.form.fields.needsFundsForTravel.no": "No",
-    "grants.form.fields.needsFundsForTravel.yes": "Yes",
+    "grants.form.fields.notes.description":
+      "Feel free to share any additional information or comments you think might be relevant to your application. Please, limit your response to approximately 200 words.",
+    "grants.form.fields.website": "Website URL",
+    "grants.form.fields.twitterHandle": "Twitter handle",
+    "grants.form.fields.githubHandle": "GitHub profile",
+    "grants.form.fields.linkedinUrl": "LinkedIn profile URL",
+    "grants.form.fields.mastodonHandle": "Mastodon handle",
 
     "grants.form.submit": "Submit",
 
@@ -1300,6 +1344,14 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "grants.form.needToBeLoggedIn":
       "Devi effettuare l'accesso per chiedere un grant",
     "grants.form.title": "Chiedi un grant",
+    "grants.form.description": `Benvenuto/a al modulo di domanda per il grant di PyCon Italia 2024!
+
+Avendo ricevuto molte domande in passato e operando con un budget limitato, ti chiediamo di dedicare un momento per raccontarci di te e le ragioni per cui stai cercando un grant. Le tue riflessioni sono preziose per noi. Non esiste una risposta sbagliata, e una risposta ben ponderata può fare davvero la differenza.
+
+Stiamo continuamente lavorando per aumentare il nostro budget grazie al supporto dei nostri sponsor per la diversità, inclusi la Python Software Foundation e la EuroPython Society. Se la tua azienda è interessata a contribuire, visita la nostra pagina degli sponsor per maggiori informazioni.
+
+Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 2024!
+    `,
     "grants.form.sendingRequest": "Invio richiesta in corso",
     "grants.form.sent":
       "Richiesta inviata! Ti contatteremo via email appena ci saranno novità! Clicca {linkGrant} per editarlo.",
@@ -1311,14 +1363,16 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
 
     "grants.form.fields.fullName": "Nome legale",
     "grants.form.fields.fullName.description":
-      "Il nome che appare sul passaporto, Carta di Identità o altri documenti legali. Sarà utile nel caso in cui ti daremo un grant.",
+      "Il nome come appare sul passaporto, sulla carta d'identità e su altri documenti legali. Questa informazione è essenziale per l'elaborazione dell'eventuale grant assegnato.",
     "grants.form.fields.name": "Nome",
     "grants.form.fields.name.description":
-      "Il nome che usi quotidianamente e come preferisci essere chiamato nel caso in cui abbiamo bisogno di contattarti.",
+      "Il nome che usi quotidianamente o come preferisci essere chiamato/a nel caso in cui abbiamo bisogno di contattarti.",
     "grants.form.fields.email": "Email",
     "grants.form.fields.email.description":
       "Qui riceverai una notifica sulla tua richiesta",
-    "grants.form.fields.ageGroup": "Età",
+    "grants.form.fields.ageGroup": "Fascia d'età",
+    "grants.form.fields.ageGroup.description":
+      "Seleziona la tua fascia d'età. Questo ci aiuta a comprendere la distribuzione demografica dei nostri candidati.",
     "grants.form.fields.ageGroup.values.selectOption": "Seleziona un'opzione",
     "grants.form.fields.ageGroup.values.range_less_than_10": "meno di 10 anni",
     "grants.form.fields.ageGroup.values.range_11_18": "11 - 18 anni",
@@ -1328,8 +1382,9 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "grants.form.fields.ageGroup.values.range_45_54": "45 - 54 anni",
     "grants.form.fields.ageGroup.values.range_55_64": "55 - 64 anni",
     "grants.form.fields.ageGroup.values.range_more_than_65": "65 anni o più",
-    "grants.form.fields.gender": "Sesso",
     "grants.form.fields.occupation": "Occupazione",
+    "grants.form.fields.occupation.description":
+      "Seleziona la propria attuale occupazione.",
     "grants.form.fields.occupation.values.selectOption": "Seleziona un'opzione",
     "grants.form.fields.occupation.values.developer": "Sviluppatore",
     "grants.form.fields.occupation.values.student": "Studente",
@@ -1337,10 +1392,31 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "grants.form.fields.occupation.values.unemployed": "Disoccupato",
     "grants.form.fields.occupation.values.other": "Altro",
     "grants.form.fields.grantType": "Che tipo di grant stai richiedendo?",
+    "grants.form.fields.grantType.description":
+      "Nota: Se hai inviato una proposta di talk/workshop, non è necessario fare domanda per un grant per ricevere un rimborso. Se la tua proposta viene accettata, ti contatteremo riguardo al rimborso del biglietto.",
     "grants.form.fields.grantType.values.selectOption": "Seleziona un'opzione",
     "grants.form.fields.grantType.values.diversity": "Diversity",
     "grants.form.fields.grantType.values.unemployed": "Disoccupato",
     "grants.form.fields.grantType.values.speaker": "Speaker",
+    "grants.form.fields.travellingFrom": "Da dove partirai?",
+    "grants.form.fields.travellingFrom.description":
+      "Indica la città e il paese da cui partirai per partecipare alla conferenza.",
+    "grants.form.fields.needsFundsForTravel":
+      "Hai bisogno di aiuti finanziari per le spese di viaggio a Pycon Italia?",
+    "grants.form.fields.needsFundsForTravel.description":
+      "I fondi a nostra disposizione sono limitati, ma faremo il possibile per aiutare tutti i richiedenti. Richiedi questo aiuto solo se ti è strettamente necessario!",
+    "grants.form.fields.needVisa":
+      "Hai bisogno di una lettera d'invito per la domanda di visto?",
+    "grants.form.fields.needVisa.description":
+      "Possiamo fornire una lettera d'invito a supporto della tua domanda di visto. Anche se non possiamo influenzare la decisione sul visto, siamo qui per aiutare a facilitare il processo di domanda.",
+    "grants.form.fields.needAccommodation":
+      "Hai bisogno di un alloggio per la durata della conferenza?",
+    "grants.form.fields.needAccommodation.description":
+      "Il nostro obiettivo è assistere il maggior numero possibile di partecipanti con l'alloggio, tenendo conto delle nostre limitazioni di budget. In caso di approvazione della tua domanda di grant, ci occuperemo di organizzare il tuo alloggio all’Hotel Mediterraneo dove la conferenza avrà luogo.",
+    "grants.form.fields.why":
+      "Perché stai richiedendo un grant per PyCon Italia?",
+    "grants.form.fields.why.description":
+      "Descrivere brevemente perché si sta richiedendo un grant. Per favore, limita la risposta a 200 parole circa.",
     "grants.form.fields.interestedInVolunteering":
       "Vuoi aiutare PyCon Italia in questo e futuri eventi?",
     "grants.form.fields.interestedInVolunteering.description":
@@ -1353,24 +1429,34 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
       "La mia anima è vostra!",
     "grants.form.fields.pythonUsage": "Per cosa usi Python?",
     "grants.form.fields.pythonUsage.description":
-      "Come usi Python? Lo stai studiano, lo usi per lavoro o come hobby?",
+      "Come usi Python? Lo stai studiando, lo usi per lavoro o come hobby? Per favore, limita la risposta a circa 200 parole.",
     "grants.form.fields.beenToOtherEvents":
-      "Hai participato ad altre edizioni di PyCon Italia o eventi simili? Se sì, quali?",
-    "grants.form.fields.why":
-      "Perché stai richiedendo un grant per PyCon Italia?",
+      "Hai partecipato a PyCon Italia o ad altri eventi legati a Python? Se sì, quali?",
+    "grants.form.fields.beenToOtherEvents.description":
+      "Per favore, limita la risposta a circa 200 parole.",
+    "grants.form.fields.communityContribution":
+      "Sei stato coinvolto/a nel contribuire alla comunità Python o nell'organizzare eventi, conferenze o meetup legati a Python?",
+    "grants.form.fields.communityContribution.description":
+      "Che si tratti di programmazione, insegnamento, scrittura, parlare a eventi, o semplicemente essere un appassionato/a apprendista, ci piacerebbe sentire del tuo impegno con Python. Queste informazioni ci aiutano a comprendere la tua connessione con la comunità, ma è completamente normale se sei nuovo/a a Python o non hai avuto queste opportunità. Si prega di limitare la risposta a circa 200 parole.",
+    "grants.form.fields.gender": "Sesso",
+    "grants.form.fields.gender.description":
+      "Rispettiamo la tua privacy. Se sei a tuo agio nel condividerlo, indica il tuo genere. Questo è facoltativo e ci aiuta a garantire diversità e inclusività.",
     "grants.form.fields.notes": "Qualcos'altro da aggiungere?",
-    "grants.form.fields.travellingFrom": "Da dove partirai?",
-    "grants.form.fields.needsFundsForTravel":
-      "Hai bisogno di aiuti finanziari per venire a Pycon Italia?",
-    "grants.form.fields.needsFundsForTravel.label":
-      "I fondi a nostra disposizione sono limitati, ma faremo il possibile per aiutare tutti i richiedenti. Richiedi questo aiuto solo se ti è strettamente necessario!",
+    "grants.form.fields.notes.description":
+      "Sentiti libero/a di condividere qualsiasi informazione aggiuntiva o commento che ritieni possa essere rilevante per la tua candidatura. Per favore, limita la risposta a circa 200 parole.",
+    "grants.form.fields.website": "URL del sito web",
+    "grants.form.fields.twitterHandle": "Handle Twitter",
+    "grants.form.fields.githubHandle": "Profilo GitHub",
+    "grants.form.fields.linkedinUrl": "URL del profilo LinkedIn",
+    "grants.form.fields.mastodonHandle": "Handle Mastodon",
+
     "grants.form.submit": "Invia",
     "grants.form.edit.title": "Modifica il tuo Grant",
 
     "grants.reply.title": "Gestisci il tuo Grant",
     "grants.reply.titleApproved":
       "Congratulazioni! Il tuo Grant e' stato approvato! ",
-    "grants.reply.descriptionApproved": `Perfavore, conferma la tua presenza entro il {replyDeadline}!
+    "grants.reply.descriptionApproved": `Per favore, conferma la tua presenza entro il {replyDeadline}!
 Se non riceveremo una conferma da te prima del {replyDeadlilne}, assegneremo il tuo grant ad un'altra persona.`,
     "grants.reply.confirmed": "Conferma",
     "grants.reply.refused": "Rifiuta",
@@ -1728,8 +1814,6 @@ Affrettati a comprare il biglietto!`,
     "tickets.landing.membershipTitle": "Associazione",
     "blog.publishedOn": "{date} - {author}",
 
-    "grants.form.fields.needsFundsForTravel.no": "No",
-    "grants.form.fields.needsFundsForTravel.yes": "Si",
     "grants.form.yourGrant": "Grant",
     "grants.form.youAndPython": "Tu e Python",
     "grants.form.validationErrors": "Il form inviato non è valido",
@@ -1938,6 +2022,11 @@ Affrettati a comprare il biglietto!`,
     "profile.myProposals.viewIn": "Preview in {language}",
 
     "voting.filter.byTag": "Per Tags",
+
+    "grants.form.acceptPrivacyPolicy":
+      "Ho letto e compreso l'Informativa sulla {link} di Python Italia APS.",
+    "grants.form.privacyPolicyHeading":
+      "È importante che tutti coloro che si registrano all'evento leggano l'Elaborazione dei Dati Personali ({link}) da parte dell'organizzatore italiano Python Italia APS e autorizzino il trattamento dei loro dati personali per consentire la raccolta delle registrazioni e l'organizzazione dell'evento.",
   },
 };
 

@@ -25,14 +25,22 @@ class Grant:
     occupation: Occupation
     grant_type: GrantType
     python_usage: str
+    community_contribution: str
     been_to_other_events: str
     interested_in_volunteering: InterestedInVolunteering
     needs_funds_for_travel: bool
+    need_visa: bool
+    need_accommodation: bool
     why: str
     notes: str
     travelling_from: str
     applicant_reply_deadline: Optional[datetime]
     applicant_message: Optional[str]
+    website: str
+    twitter_handle: str
+    github_handle: str
+    linkedin_url: str
+    mastodon_handle: str
 
     @classmethod
     def from_model(cls, grant: GrantModel) -> Grant:
@@ -46,14 +54,22 @@ class Grant:
             occupation=Occupation(grant.occupation),
             grant_type=GrantType(grant.grant_type),
             python_usage=grant.python_usage,
+            community_contribution=grant.community_contribution,
             been_to_other_events=grant.been_to_other_events,
             interested_in_volunteering=InterestedInVolunteering(
                 grant.interested_in_volunteering
             ),
             needs_funds_for_travel=grant.needs_funds_for_travel,
+            need_visa=grant.need_visa,
+            need_accommodation=grant.need_accommodation,
             why=grant.why,
             notes=grant.notes,
             travelling_from=grant.travelling_from,
             applicant_reply_deadline=grant.applicant_reply_deadline,
             applicant_message=grant.applicant_message,
+            website=grant.website,
+            twitter_handle=grant.twitter_handle,
+            github_handle=grant.github_handle,
+            linkedin_url=grant.linkedin_url,
+            mastodon_handle=grant.mastodon_handle,
         )
