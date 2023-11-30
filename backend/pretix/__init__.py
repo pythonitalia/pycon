@@ -249,6 +249,8 @@ class InvoiceInformation:
     country: str
     vat_id: str
     fiscal_code: str
+    pec: str | None = None
+    sdi: str | None = None
 
 
 @strawberry.input
