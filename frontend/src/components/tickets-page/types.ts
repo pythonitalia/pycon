@@ -12,8 +12,6 @@ export type InvoiceInformationState = {
   companyName: string;
   name: string;
   fiscalCode: string;
-  pec: string;
-  sdi: string;
   vatId: string;
   address: string;
   zipCode: string;
