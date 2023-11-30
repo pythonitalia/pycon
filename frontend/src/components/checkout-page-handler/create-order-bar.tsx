@@ -91,6 +91,8 @@ export const CreateOrderBar = ({
                 country: state.invoiceInformation.country,
                 vatId: state.invoiceInformation.vatId,
                 fiscalCode: state.invoiceInformation.fiscalCode,
+                pec: state.invoiceInformation.pec,
+                sdi: state.invoiceInformation.sdi,
               },
             },
           },

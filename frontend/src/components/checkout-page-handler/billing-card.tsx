@@ -11,6 +11,7 @@ import {
   GridColumn,
   Checkbox,
   HorizontalStack,
+  Spacer,
 } from "@python-italia/pycon-styleguide";
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
@@ -34,14 +35,14 @@ export const BillingCard = () => {
   const invalidFiscalCodeMessage = useTranslatedMessage(
     "orderInformation.invalidFiscalCode",
   );
+  const invalidSDIMessage = useTranslatedMessage("orderInformation.invalidSDI");
 
   const countries = useCountries();
-  const [formState, { text, select, textarea, checkbox }] =
+  const [formState, { text, email, select, textarea, checkbox }] =
     useFormState<InvoiceInformationState>({ ...invoiceInformation });
 
   const isBusiness = invoiceInformation.isBusiness;
   const isItalian = formState.values.country === "IT";
-  const shouldAskForFiscalCode = !isBusiness && isItalian;
 
   const inputPlaceholder = useTranslatedMessage("input.placeholder");
 
@@ -173,34 +174,85 @@ export const BillingCard = () => {
                 ))}
               </Select>
             </InputWrapper>
-
-            {shouldAskForFiscalCode && (
-              <InputWrapper
-                required={true}
-                title={<FormattedMessage id="orderInformation.fiscalCode" />}
-              >
-                <Input
-                  {...text({
-                    name: "fiscalCode",
-                    validate: (value) => {
-                      const isValid = FISCAL_CODE_REGEX.test(value);
-
-                      if (!isValid) {
-                        return invalidFiscalCodeMessage;
-                      }
-                    },
-                    validateOnBlur: true,
-                  })}
-                  required={true}
-                  errors={
-                    formState.errors.fiscalCode
-                      ? [formState.errors.fiscalCode]
-                      : null
-                  }
-                />
-              </InputWrapper>
-            )}
           </Grid>
+
+          {isItalian && (
+            <>
+              <Spacer size="medium" />
+              <Heading size={3}>
+                <FormattedMessage id="orderInformation.italianInvoice" />
+              </Heading>
+              <Spacer size="medium" />
+
+              <Grid cols={3}>
+                {isBusiness ? (
+                  <InputWrapper
+                    required={true}
+                    title={<FormattedMessage id="orderInformation.sdi" />}
+                  >
+                    <Input
+                      {...text({
+                        name: "sdi",
+                        validate: (value) => {
+                          const isValid = value.length === 7;
+
+                          if (!isValid) {
+                            return invalidSDIMessage;
+                          }
+                        },
+                        validateOnBlur: true,
+                      })}
+                      required={true}
+                      errors={
+                        formState.errors.sdi
+                          ? [formState.errors.sdi]
+                          : null
+                      }
+                    />
+                  </InputWrapper>
+                ) : (
+                  <InputWrapper
+                    required={true}
+                    title={
+                      <FormattedMessage id="orderInformation.fiscalCode" />
+                    }
+                  >
+                    <Input
+                      {...text({
+                        name: "fiscalCode",
+                        validate: (value) => {
+                          const isValid = FISCAL_CODE_REGEX.test(value);
+
+                          if (!isValid) {
+                            return invalidFiscalCodeMessage;
+                          }
+                        },
+                        validateOnBlur: true,
+                      })}
+                      required={true}
+                      errors={
+                        formState.errors.fiscalCode
+                          ? [formState.errors.fiscalCode]
+                          : null
+                      }
+                    />
+                  </InputWrapper>
+                )}
+                <InputWrapper
+                  title={<FormattedMessage id="orderInformation.pec" />}
+                >
+                  <Input
+                    {...email({
+                      name: "pec",
+                    })}
+                    errors={
+                      formState.errors.pec ? [formState.errors.pec] : null
+                    }
+                  />
+                </InputWrapper>
+              </Grid>
+            </>
+          )}
         </CardPart>
       </MultiplePartsCard>
     </>
