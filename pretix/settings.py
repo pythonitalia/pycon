@@ -38,5 +38,14 @@ EMAIL_SUBJECT_PREFIX = "[PyCon Tickets] "
 
 PRETIX_INSTANCE_NAME = "Python Italia"
 
+# this is is needed for our hack that updates the order view
+# without having to rewrite the whole template
+CSP_ADDITIONAL_HEADER = "script-src 'self' 'unsafe-inline'"
+
 # Config
 PRETIX_REGISTRATION = False
+
+if "pretix_fattura_elettronica" in INSTALLED_APPS:  # noqa
+    INSTALLED_APPS.remove("pretix_fattura_elettronica")  # noqa
+
+    INSTALLED_APPS.insert(0, "pretix_fattura_elettronica")  # noqa
