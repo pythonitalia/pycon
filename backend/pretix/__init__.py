@@ -25,6 +25,22 @@ def get_api_url(conference: Conference, endpoint: str) -> str:
     )
 
 
+def _pretix_request(
+    conference: Conference,
+    url: str,
+    qs: Optional[Dict[str, Any]] = None,
+    method="get",
+    **kwargs,
+):
+    return requests.request(
+        method,
+        url,
+        params=qs or {},
+        headers={"Authorization": f"Token {settings.PRETIX_API_TOKEN}"},
+        **kwargs,
+    )
+
+
 def pretix(
     conference: Conference,
     endpoint: str,
@@ -32,13 +48,9 @@ def pretix(
     method="get",
     **kwargs,
 ):
-    return requests.request(
-        method,
-        get_api_url(conference, endpoint),
-        params=qs or {},
-        headers={"Authorization": f"Token {settings.PRETIX_API_TOKEN}"},
-        **kwargs,
-    )
+    url = get_api_url(conference, endpoint)
+
+    return _pretix_request(conference, url, qs, method, **kwargs)
 
 
 def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
@@ -429,9 +441,12 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     data = response.json()
 
     if order_data.invoice_information.country == "IT":
-        response = pretix(
+        response = _pretix_request(
             conference,
-            f"orders/{data['code']}/update_invoice_information/",
+            urljoin(
+                settings.PRETIX_API,
+                f"orders/{data['code']}/update_invoice_information/",
+            ),
             method="post",
             json={
                 "pec": order_data.invoice_information.pec,
