@@ -32,3 +32,8 @@ class GrantFactory(DjangoModelFactory):
     why = factory.Faker("text")
     notes = factory.Faker("text")
     travelling_from = factory.Faker("country")
+    website = factory.Faker("url")
+    twitter_handle = "@handle"
+    github_handle = factory.Faker("user_name")
+    linkedin_url = factory.Faker("user_name")
+    mastodon_handle = factory.Faker("user_name")

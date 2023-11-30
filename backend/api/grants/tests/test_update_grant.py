@@ -57,17 +57,16 @@ def _update_grant(graphql_client, grant, **kwargs):
         "beenToOtherEvents": grant.been_to_other_events,
         "interestedInVolunteering": grant.interested_in_volunteering,
         "needsFundsForTravel": grant.needs_funds_for_travel,
-        "need_visa": grant.need_visa,
-        "need_accommodation": grant.need_accommodation,
+        "needVisa": grant.need_visa,
+        "needAccommodation": grant.need_accommodation,
         "why": grant.why,
         "notes": grant.notes,
         "travellingFrom": grant.travelling_from,
         "website": grant.website,
-        "twitter_handle": grant.twitter_handle,
-        "github_handle": grant.github_handle,
-        "instagram_handle": grant.instagram_handle,
-        "linkedin_url": grant.linkedin_url,
-        "mastodon_handle": grant.mastodon_handle,
+        "twitterHandle": grant.twitter_handle,
+        "githubHandle": grant.github_handle,
+        "linkedinUrl": grant.linkedin_url,
+        "mastodonHandle": grant.mastodon_handle,
     }
 
     variables = {
