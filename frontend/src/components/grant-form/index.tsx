@@ -17,6 +17,7 @@ import {
   Button,
   HorizontalStack,
   Link,
+  Checkbox,
 } from "@python-italia/pycon-styleguide";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
@@ -75,6 +76,7 @@ export type GrantFormFields = {
   githubHandle: string;
   linkedinUrl: string;
   mastodonHandle: string;
+  acceptedPrivacyPolicy: boolean;
 };
 
 export const MyGrantOrForm = () => {
@@ -158,14 +160,15 @@ export const GrantForm = ({
 
   const inputPlaceholderText = useTranslatedMessage("input.placeholder");
   const { user, loading: loadingUser } = useCurrentUser({});
-  const [formState, { text, textarea, select }] = useFormState<GrantFormFields>(
-    {
-      needsFundsForTravel: "false",
-    },
-    {
-      withIds: true,
-    },
-  );
+  const [formState, { text, textarea, select, checkbox }] =
+    useFormState<GrantFormFields>(
+      {
+        needsFundsForTravel: "false",
+      },
+      {
+        withIds: true,
+      },
+    );
 
   useEffect(() => {
     // to not override if we are editing the grant
@@ -717,6 +720,61 @@ export const GrantForm = ({
           </Grid>
         </CardPart>
       </MultiplePartsCard>
+
+      {!grant && (
+        <>
+          <Spacer size="small" />
+          <Text size={2}>
+            <FormattedMessage
+              id="grants.form.privacyPolicyHeading"
+              values={{
+                link: (
+                  <Link
+                    className="underline"
+                    target="_blank"
+                    href={createHref({
+                      path: "/privacy-policy",
+                      locale: language,
+                    })}
+                  >
+                    Privacy Policy
+                  </Link>
+                ),
+              }}
+            />
+          </Text>
+          <Spacer size="small" />
+
+          <label>
+            <HorizontalStack gap="small" alignItems="center">
+              <Checkbox
+                {...checkbox("acceptedPrivacyPolicy")}
+                checked={formState.values.acceptedPrivacyPolicy}
+              />
+              <Text size={2} weight="strong">
+                <FormattedMessage
+                  id="grants.form.acceptPrivacyPolicy"
+                  values={{
+                    link: (
+                      <Link
+                        className="underline"
+                        target="_blank"
+                        href={createHref({
+                          path: "/privacy-policy",
+                          locale: language,
+                        })}
+                      >
+                        Privacy Policy
+                      </Link>
+                    ),
+                  }}
+                />
+              </Text>
+            </HorizontalStack>
+          </label>
+        </>
+      )}
+
       <Spacer size="large" />
 
       <HorizontalStack
@@ -737,7 +795,10 @@ export const GrantForm = ({
             ]}
           />
         </div>
-        <Button role="secondary" disabled={grantLoading}>
+        <Button
+          role="secondary"
+          disabled={grantLoading || !formState.values.acceptedPrivacyPolicy}
+        >
           <FormattedMessage id="grants.form.submit" />
         </Button>
       </HorizontalStack>

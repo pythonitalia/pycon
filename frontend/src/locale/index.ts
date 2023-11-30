@@ -22,6 +22,11 @@ export const messages = {
 
     "header.streaming": "Watch live",
 
+    "grants.form.acceptPrivacyPolicy":
+      "I have read and understood the {link} of Python Italia APS",
+    "grants.form.privacyPolicyHeading":
+      "It is important that all those who register for the event read the Processing of Personal Data ({link}) by the Italian organizer Python Italia APS and authorize the processing of their personal data to enable the collection of registrations and the organization of the event.",
+
     "streaming.roomName": "Room {name}",
     "streaming.eventName": "Current: {name}",
     "streaming.noStreaming":
@@ -2009,6 +2014,11 @@ Affrettati a comprare il biglietto!`,
     "profile.myProposals.viewIn": "Preview in {language}",
 
     "voting.filter.byTag": "Per Tags",
+
+    "grants.form.acceptPrivacyPolicy":
+      "Ho letto e compreso l'Informativa sulla {link} di Python Italia APS.",
+    "grants.form.privacyPolicyHeading":
+      "È importante che tutti coloro che si registrano all'evento leggano l'Elaborazione dei Dati Personali ({link}) da parte dell'organizzatore italiano Python Italia APS e autorizzino il trattamento dei loro dati personali per consentire la raccolta delle registrazioni e l'organizzazione dell'evento.",
   },
 };
 
