@@ -33,7 +33,7 @@ export const CheckoutSection = ({ visibleCategories }: Props) => {
   const { user: me } = useCurrentUser({
     skip: !isLoggedIn,
   });
-  const cartContext = createCartContext();
+  const cartContext = createCartContext({});
 
   return (
     <CartContext.Provider value={cartContext}>

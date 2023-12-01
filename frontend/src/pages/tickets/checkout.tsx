@@ -1,16 +1,16 @@
 import React from "react";
 
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { CheckoutPageHandler } from "~/components/checkout-page-handler";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { queryTickets } from "~/types";
+import { queryCurrentUser, queryTickets } from "~/types";
 
-export const TicketsCheckoutPage = () => {
+export const TicketsCheckoutPage = ({ cartCookie }) => {
   return (
-    <TicketsPageWrapper>
+    <TicketsPageWrapper cartCookie={cartCookie}>
       {({ tickets, hotelRooms, conference, me }) => (
         <CheckoutPageHandler
           me={me}
@@ -23,24 +23,54 @@ export const TicketsCheckoutPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  const client = getApolloClient();
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  locale,
+}) => {
+  const identityToken = req.cookies["pythonitalia_sessionid"];
+  if (!identityToken) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
-  await Promise.all([
-    prefetchSharedQueries(client, locale),
-    queryTickets(client, {
-      conference: process.env.conferenceCode,
-      language: "it",
-    }),
-    queryTickets(client, {
-      conference: process.env.conferenceCode,
-      language: "en",
-    }),
-  ]);
+  const client = getApolloClient(null, req.cookies);
 
-  return addApolloState(client, {
-    props: {},
-  });
+  try {
+    await Promise.all([
+      prefetchSharedQueries(client, locale),
+      queryTickets(client, {
+        conference: process.env.conferenceCode,
+        language: "it",
+      }),
+      queryTickets(client, {
+        conference: process.env.conferenceCode,
+        language: "en",
+      }),
+      queryCurrentUser(client),
+    ]);
+  } catch (e) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  const cartCookie = req.cookies["tickets-cart-v5"];
+  return addApolloState(
+    client,
+    {
+      props: {
+        cartCookie,
+      },
+    },
+    null,
+  );
 };
 
 export default TicketsCheckoutPage;

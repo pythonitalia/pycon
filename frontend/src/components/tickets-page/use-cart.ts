@@ -47,7 +47,11 @@ export const useCart = () => {
   return useContext(CartContext);
 };
 
-export const createCartContext = () => {
+export const createCartContext = ({
+  cartCookie = "",
+}: {
+  cartCookie?: string;
+}) => {
   const emptyInitialCartReducer = {
     selectedProducts: {},
     invoiceInformation: {
@@ -69,10 +73,17 @@ export const createCartContext = () => {
 
   let storedCart = null;
 
-  if (typeof window !== "undefined") {
-    storedCart = JSON.parse(
-      window.sessionStorage.getItem("tickets-cart-v4")!,
-    ) as OrderState | null;
+  try {
+    if (typeof window !== "undefined") {
+      storedCart = JSON.parse(
+        window.sessionStorage.getItem("tickets-cart-v5")!,
+      ) as OrderState | null;
+    } else if (cartCookie) {
+      storedCart = JSON.parse(cartCookie) as OrderState | null;
+    }
+  } catch (e) {
+    console.error("unable to restore cart", e);
+    storedCart = null;
   }
 
   const [state, dispatcher] = useReducer(
@@ -81,10 +92,9 @@ export const createCartContext = () => {
   );
 
   useEffect(() => {
-    window.sessionStorage.setItem(
-      "tickets-cart-v4",
-      JSON.stringify(state, cartReplacer),
-    );
+    const cartAsJson = JSON.stringify(state, cartReplacer);
+    window.sessionStorage.setItem("tickets-cart-v5", cartAsJson);
+    document.cookie = `tickets-cart-v5=${cartAsJson}; path=/;`;
   }, [state]);
 
   const addProduct = (id: string, variation?: string, admission?: boolean) =>

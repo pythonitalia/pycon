@@ -43,6 +43,7 @@ export type ProductState = {
   admission?: boolean;
   voucher?: Voucher | null;
   errors?: { [id: string]: string };
+  isMe: boolean;
 };
 
 export type SelectedProducts = {

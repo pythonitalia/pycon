@@ -34,6 +34,7 @@ type Form = {
   attendeeName: string;
   attendeeEmail: string;
   answers: { [key: string]: string };
+  isMe: boolean;
 };
 
 export const CustomizeTicketModal = ({
@@ -52,6 +53,7 @@ export const CustomizeTicketModal = ({
     attendeeName: productUserInformation.attendeeName,
     attendeeEmail: productUserInformation.attendeeEmail,
     answers: productUserInformation.answers,
+    isMe: productUserInformation.isMe,
   });
 
   const taglineQuestion = ticket.item.questions.find(
