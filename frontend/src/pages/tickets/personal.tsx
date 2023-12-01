@@ -61,7 +61,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     }),
   ]);
 
-  const cartCookie = req.cookies["tickets-cart-v5"];
+  const cartCookie = req.cookies["tickets-cart-v6"];
   return addApolloState(
     client,
     {

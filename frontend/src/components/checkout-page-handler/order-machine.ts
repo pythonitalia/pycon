@@ -41,8 +41,8 @@ export const createOrderMachine = createMachine<Context>(
         if (!context.paymentUrl) {
           return;
         }
-        window.sessionStorage.removeItem("tickets-cart-v5");
-        document.cookie = `tickets-cart-v5=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+        window.sessionStorage.removeItem("tickets-cart-v6");
+        document.cookie = `tickets-cart-v6=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
         window.location.href = context.paymentUrl;
       },
     },
