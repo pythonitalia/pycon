@@ -73,6 +73,7 @@ export const ProductQuestionnaire = ({
             required={true}
             type="email"
             placeholder={inputPlaceholder}
+            disabled={productUserInformation.isMe}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               updateTicketInfo({
                 id: productUserInformation.id,

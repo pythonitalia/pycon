@@ -20,6 +20,8 @@ export const messages = {
 
     "profile.tickets.noDetails": "Have fun! 🍻",
 
+    "productQuestions.thisIsMyTicket": "This is for me",
+
     "header.streaming": "Watch live",
 
     "grants.form.acceptPrivacyPolicy":
@@ -2027,6 +2029,8 @@ Affrettati a comprare il biglietto!`,
       "Ho letto e compreso l'Informativa sulla {link} di Python Italia APS.",
     "grants.form.privacyPolicyHeading":
       "È importante che tutti coloro che si registrano all'evento leggano l'Elaborazione dei Dati Personali ({link}) da parte dell'organizzatore italiano Python Italia APS e autorizzino il trattamento dei loro dati personali per consentire la raccolta delle registrazioni e l'organizzazione dell'evento.",
+
+    "productQuestions.thisIsMyTicket": "Questo biglietto è mio",
   },
 };
 
