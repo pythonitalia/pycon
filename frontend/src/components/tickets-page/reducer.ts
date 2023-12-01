@@ -25,6 +25,7 @@ const updateProductReducer = (
         answers: {},
         attendeeName: "",
         attendeeEmail: "",
+        isMe: false,
       });
       break;
     }
