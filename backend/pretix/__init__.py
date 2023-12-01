@@ -194,7 +194,7 @@ def cache_pretix(name: str):
                 return cache.get(cache_key)
 
             value = func(*args, **kwargs)
-            cache.set(cache_key, value, timeout=60 * 60 * 24 * 7)
+            cache.set(cache_key, value, timeout=60 * 3)
             return value
 
         return wrapper
