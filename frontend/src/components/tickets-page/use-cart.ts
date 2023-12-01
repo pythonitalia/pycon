@@ -47,7 +47,11 @@ export const useCart = () => {
   return useContext(CartContext);
 };
 
-export const createCartContext = ({ cartCookie }: { cartCookie?: string }) => {
+export const createCartContext = ({
+  cartCookie = "",
+}: {
+  cartCookie?: string;
+}) => {
   const emptyInitialCartReducer = {
     selectedProducts: {},
     invoiceInformation: {
