@@ -11,6 +11,8 @@ def test_flodesk_not_configured(settings):
 
 def test_subscribe_with_not_existent_email(settings, requests_mock):
     settings.FLODESK_API_KEY = "fake"
+    settings.FLODESK_SEGMENT_ID = "segment-123"
+
     email = "example@example.org"
 
     requests_mock.get(
@@ -19,6 +21,11 @@ def test_subscribe_with_not_existent_email(settings, requests_mock):
     )
     requests_mock.post(
         "https://api.flodesk.com/v1/subscribers",
+        json={"email": email, "status": "active", "segments": []},
+    )
+
+    mock_segments = requests_mock.post(
+        f"https://api.flodesk.com/v1/subscribers/{email}/segments",
         json={
             "email": email,
             "status": "active",
@@ -29,6 +36,42 @@ def test_subscribe_with_not_existent_email(settings, requests_mock):
 
     assert resp == SubscriptionResult.SUBSCRIBED
 
+    payload_sent = mock_segments.last_request.json()
+    assert payload_sent == {"segment_ids": [settings.FLODESK_SEGMENT_ID]}
+
+
+def test_subscribe_with_existent_email_but_not_added_to_segment(
+    settings, requests_mock
+):
+    settings.FLODESK_API_KEY = "fake"
+    settings.FLODESK_SEGMENT_ID = "segment-123"
+
+    email = "example@example.org"
+
+    requests_mock.get(
+        f"https://api.flodesk.com/v1/subscribers/{email}",
+        status_code=200,
+        json={
+            "status": "active",
+            "segments": [{"id": "segment-456", "name": "Segment 456"}],
+        },
+    )
+
+    mock_segments = requests_mock.post(
+        f"https://api.flodesk.com/v1/subscribers/{email}/segments",
+        json={
+            "email": email,
+            "status": "active",
+        },
+    )
+
+    resp = subscribe(email, ip="127.0.0.1")
+
+    assert resp == SubscriptionResult.SUBSCRIBED
+
+    payload_sent = mock_segments.last_request.json()
+    assert payload_sent == {"segment_ids": [settings.FLODESK_SEGMENT_ID]}
+
 
 def test_subscribe_with_existing_email(settings, requests_mock):
     settings.FLODESK_API_KEY = "fake"
@@ -37,7 +80,10 @@ def test_subscribe_with_existing_email(settings, requests_mock):
     requests_mock.get(
         f"https://api.flodesk.com/v1/subscribers/{email}",
         status_code=200,
-        json={"status": "active"},
+        json={
+            "status": "active",
+            "segments": [{"id": settings.FLODESK_SEGMENT_ID, "name": "Segment 123"}],
+        },
     )
 
     resp = subscribe(email, ip="127.0.0.1")

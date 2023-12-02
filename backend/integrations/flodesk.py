@@ -27,10 +27,20 @@ def subscribe(email: str, ip: str) -> SubscriptionResult:
     if not settings.FLODESK_API_KEY:
         raise ValueError("Flodesk integration is not configured")
 
-    email_status = get_email_status(email)
+    subscriber = get_subscriber(email)
+
+    if not subscriber:
+        return subscribe_email(email, ip)
+
+    email_status = subscriber.get("status")
+    segments = subscriber.get("segments")
 
     if email_status == "active":
-        # User is already a member, so nothing to do
+        if not is_in_segment(segments):
+            # if the user is added to our flodesk audience
+            # but not to the segment of this integration, we add them
+            add_to_segment(email, settings.FLODESK_SEGMENT_ID)
+
         return SubscriptionResult.SUBSCRIBED
 
     if email_status == "bounced":
@@ -40,9 +50,13 @@ def subscribe(email: str, ip: str) -> SubscriptionResult:
         return SubscriptionResult.WAITING_CONFIRMATION
 
     if email_status and email_status in OPT_IN_REQUIRED_STATUSES:
+        # we can't automatically subscribe them again via API.
+        # flodesk requires us to redirect them to a hosted opt-in form
         return SubscriptionResult.OPT_IN_FORM_REQUIRED
 
-    return subscribe_email(email, ip)
+
+def is_in_segment(segments: list[dict[str, any]]) -> bool:
+    return any(segment["id"] == settings.FLODESK_SEGMENT_ID for segment in segments)
 
 
 def subscribe_email(raw_email: str, ip: str) -> SubscriptionResult:
@@ -58,21 +72,33 @@ def subscribe_email(raw_email: str, ip: str) -> SubscriptionResult:
 
     response.raise_for_status()
 
+    add_to_segment(raw_email, settings.FLODESK_SEGMENT_ID)
+
     return SubscriptionResult.SUBSCRIBED
 
 
-def get_email_status(email: str) -> Optional[str]:
+def add_to_segment(email: str, segment_id: str) -> None:
+    response = call_flodesk_api(
+        f"subscribers/{email}/segments",
+        "POST",
+        json={"segment_ids": [segment_id]},
+    )
+
+    response.raise_for_status()
+
+
+def get_subscriber(email: str):
     response = call_flodesk_api(f"subscribers/{email}", "GET")
 
     try:
         response.raise_for_status()
     except HTTPError:
         # If the request fails, assume it is because of a 404
-        # or similar. If mailchimp is down we will fail later anyway
+        # or similar. If flodesk is down we will fail later anyway
         return None
 
     data = response.json()
-    return data["status"]
+    return data
 
 
 def call_flodesk_api(
