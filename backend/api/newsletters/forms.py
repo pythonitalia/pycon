@@ -1,6 +1,7 @@
 import logging
 
 from django import forms
+import requests
 
 from integrations.flodesk import SubscriptionResult, subscribe
 from newsletters.models import Subscription
@@ -18,13 +19,21 @@ class SubscribeToNewsletterForm(FormWithContext):
 
         try:
             return subscribe(email, ip=get_ip(request))
+        except requests.exceptions.HTTPError as e:
+            logger.error(
+                "Unable to subscribe the user due to flodesk API error %s %s",
+                e,
+                e.response.text,
+                exc_info=True,
+            )
         except Exception as e:
             logger.error(
                 "Unable to subscribe the user to flodesk due to an error %s",
                 e,
                 exc_info=True,
             )
-            return SubscriptionResult.UNABLE_TO_SUBSCRIBE
+
+        return SubscriptionResult.UNABLE_TO_SUBSCRIBE
 
 
 class UnsubscribeToNewsletterForm(FormWithContext):

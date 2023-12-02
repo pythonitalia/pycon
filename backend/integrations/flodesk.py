@@ -1,4 +1,5 @@
-from datetime import datetime
+from django.utils import timezone
+
 import enum
 import logging
 from typing import Literal, Optional
@@ -66,7 +67,7 @@ def subscribe_email(raw_email: str, ip: str) -> SubscriptionResult:
         json={
             "email": raw_email,
             "optin_ip": ip,
-            "optin_timestamp": datetime.now().isoformat(),
+            "optin_timestamp": timezone.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         },
     )
 

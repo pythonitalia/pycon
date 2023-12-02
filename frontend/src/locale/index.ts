@@ -255,7 +255,11 @@ export const messages = {
     "newsletter.success": "Thanks for subscribing! 🎉",
     "newsletter.confirmViaEmail":
       "Thanks for subscribing! 🎉 Check your emails to confirm your subscription!",
-    "newsletter.error": "Something went wrong, please try again.",
+    "newsletter.error":
+      "Something went wrong, make sure your email is correct and try again.",
+    "newsletter.optinFormRequired":
+      "Your email is currently unsubscribed. If you changed your mind, please confirm your subscription by {link}.",
+    "newsletter.optinFormRequired.link": "going to this link",
     "signup.title": "Signup",
     "signup.email": "Email",
     "signup.password": "Password",
@@ -1110,10 +1114,15 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "newsletter.text":
       "Rimani aggiornato, iscriviti per ricevere aggiornamenti via email su eventi, novità e offerte!",
     "newsletter.button": "Iscriviti",
-    "newsletter.success": "Grazie per esserti iscritto! 🎉",
+    "newsletter.success": "Iscrizione completata con successo! 🎉",
     "newsletter.confirmViaEmail":
-      "Grazie per esserti iscritto! 🎉 Controlla le tue email per confermare l'iscrizione!",
-    "newsletter.error": "Si è verificato un errore, riprova più tardi.",
+      "Iscrizione completata con successo! 🎉 Controlla le tue email per confermarla!",
+    "newsletter.error":
+      "Si è verificato un errore, controlla la tua email sia corretta e riprova.",
+    "newsletter.optinFormRequired":
+      "Questa email è stata rimossa su richiesta. Se hai cambiato idea, puoi andare su {link}.",
+    "newsletter.optinFormRequired.link":
+      "questo link per iscriverti nuovamente",
     "signup.title": "Registrati",
     "signup.email": "Email",
     "signup.password": "Password",
