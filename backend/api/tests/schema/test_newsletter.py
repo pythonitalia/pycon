@@ -3,7 +3,7 @@ from unittest.mock import patch
 import pytest
 from pytest import mark
 
-from pycon.backend.integrations.flodesk import SubscriptionResult
+from integrations.flodesk import SubscriptionResult
 from newsletters.models import Subscription
 
 
