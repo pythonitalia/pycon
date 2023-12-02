@@ -2,7 +2,7 @@ import logging
 
 from django import forms
 
-from integrations.mailchimp import SubscriptionResult, subscribe
+from integrations.flodesk import SubscriptionResult, subscribe
 from newsletters.models import Subscription
 from strawberry_forms.forms import FormWithContext
 
@@ -14,12 +14,13 @@ class SubscribeToNewsletterForm(FormWithContext):
 
     def save(self):
         email = self.cleaned_data.get("email")
+        request = self.context.request
 
         try:
-            return subscribe(email)
+            return subscribe(email, ip=get_ip(request))
         except Exception as e:
             logger.error(
-                "Unable to subscribe the user to mailchimp due to an error %s",
+                "Unable to subscribe the user to flodesk due to an error %s",
                 e,
                 exc_info=True,
             )
@@ -42,3 +43,10 @@ class UnsubscribeToNewsletterForm(FormWithContext):
             pass
 
         return True
+
+
+def get_ip(request):
+    x_forwarded_for = request.headers.get("x-forwarded-for")
+    if x_forwarded_for:
+        return x_forwarded_for.split(", ")[0]
+    return request.META.get("REMOTE_ADDR")
