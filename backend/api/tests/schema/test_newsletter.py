@@ -3,7 +3,7 @@ from unittest.mock import patch
 import pytest
 from pytest import mark
 
-from integrations.mailchimp import SubscriptionResult
+from integrations.flodesk import SubscriptionResult
 from newsletters.models import Subscription
 
 

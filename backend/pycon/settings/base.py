@@ -317,3 +317,6 @@ if DEEPL_AUTH_KEY:
             "AUTH_KEY": DEEPL_AUTH_KEY,
         },
     }
+
+FLODESK_API_KEY = env("FLODESK_API_KEY", default="")
+FLODESK_SEGMENT_ID = env("FLODESK_SEGMENT_ID", default="")
