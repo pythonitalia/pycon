@@ -1,6 +1,9 @@
 name: Backend tests
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     paths:
       - "backend/**/*"
