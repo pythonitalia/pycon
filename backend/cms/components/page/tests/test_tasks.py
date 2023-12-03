@@ -1,7 +1,8 @@
 import pytest
 from cms.components.page.tasks import revalidate_vercel_frontend_task
 from cms.components.sites.tests.factories import VercelFrontendSettingsFactory
-from wagtail_factories import PageFactory, SiteFactory
+from wagtail_factories import SiteFactory, PageFactory
+from cms.components.page.models import GenericPage
 
 pytestmark = pytest.mark.django_db
 
@@ -11,9 +12,8 @@ def test_revalidate_vercel_frontend(
 ):
     site = SiteFactory()
     parent = PageFactory()
-    page = PageFactory(slug="test-page123")
-    page.set_url_path(parent)
-
+    page = GenericPage(title="Test Page123", slug="test-page123")
+    parent.add_child(instance=page)
     site.root_page = parent
     site.save()
 
@@ -34,12 +34,10 @@ def test_revalidate_vercel_frontend_special_case_for_landing_page(
     requests_mock,
 ):
     site = SiteFactory()
-
     parent = PageFactory()
-    page = PageFactory(slug=site.hostname)
-    page.set_url_path(parent)
+    page = GenericPage(title="Test Page123", slug=site.hostname)
+    parent.add_child(instance=page)
     site.root_page = parent
-
     site.save()
 
     settings = VercelFrontendSettingsFactory(

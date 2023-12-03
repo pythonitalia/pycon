@@ -23,7 +23,7 @@ def revalidate_vercel_frontend_task(page_id):
     if not url or not secret:
         # not configured for this site
         return
-    breakpoint()
+
     language_code = page.locale.language_code
 
     if language_code != "en":
