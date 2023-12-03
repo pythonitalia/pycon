@@ -1,16 +1,16 @@
 import requests
 import logging
 from pycon.celery import app
-from wagtail.models import Site, Page
+from wagtail.models import Page
 from cms.components.sites.models import VercelFrontendSettings
 
 logger = logging.getLogger(__name__)
 
 
 @app.task
-def revalidate_vercel_frontend_task(site_id, page_id):
-    site = Site.objects.get(id=site_id)
+def revalidate_vercel_frontend_task(page_id):
     page = Page.objects.get(id=page_id)
+    site = page.get_site()
 
     settings = VercelFrontendSettings.for_site(site)
 
@@ -23,7 +23,7 @@ def revalidate_vercel_frontend_task(site_id, page_id):
     if not url or not secret:
         # not configured for this site
         return
-
+    breakpoint()
     language_code = page.locale.language_code
 
     if language_code != "en":

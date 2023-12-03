@@ -16,8 +16,7 @@ def revalidate_vercel_frontend(sender, **kwargs):
 
     settings = VercelFrontendSettings.for_site(site)
 
-    if not settings:
-        # not configured for this site
+    if not settings.revalidate_url:
         return
 
-    revalidate_vercel_frontend_task.delay(site_id=site.id, page_id=instance.id)
+    revalidate_vercel_frontend_task.delay(page_id=instance.id)
