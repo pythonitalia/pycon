@@ -1120,9 +1120,9 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "newsletter.error":
       "Si è verificato un errore, controlla la tua email sia corretta e riprova.",
     "newsletter.optinFormRequired":
-      "Questa email è stata rimossa su richiesta. Se hai cambiato idea, puoi andare su {link}.",
+      "Questo indirizzo email è stato rimosso su richiesta. Se hai cambiato idea, {link}.",
     "newsletter.optinFormRequired.link":
-      "questo link per iscriverti nuovamente",
+      "clicca questo link per iscriverti nuovamente",
     "signup.title": "Registrati",
     "signup.email": "Email",
     "signup.password": "Password",
