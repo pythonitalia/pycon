@@ -25,6 +25,9 @@ jobs:
           - 5432/tcp
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:7.2.3
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - uses: actions/checkout@v2
@@ -59,6 +62,7 @@ jobs:
           exit $STATUS
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
+          CELERY_BROKER_URL: redis://redis:6379/0
           STRIPE_SECRET_API_KEY: fake-key
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
           MEDIA_FILES_STORAGE_BACKEND: django.core.files.storage.FileSystemStorage
