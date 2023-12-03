@@ -401,7 +401,7 @@ def test_creates_order_with_additional_info_for_e_invoice(
     )
 
     requests_mock.post(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/orders/123/update_invoice_information/",
+        "https://pretix/api/orders/123/update_invoice_information/",
         json={},
     )
 
@@ -479,7 +479,7 @@ def test_creates_order_with_additional_info_for_e_invoice_does_not_break_on_erro
     )
 
     requests_mock.post(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/orders/123/update_invoice_information/",
+        "https://pretix/api/orders/123/update_invoice_information/",
         json={},
         status_code=400,
     )
