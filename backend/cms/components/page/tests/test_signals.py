@@ -1,3 +1,4 @@
+from cms.components.sites.tests.factories import VercelFrontendSettingsFactory
 from unittest import mock
 import pytest
 from cms.components.page.signals import revalidate_vercel_frontend
@@ -24,6 +25,10 @@ def test_revalidate_vercel_frontend(mock_task):
     page = PageFactory()
     site.root_page = page
     site.save()
+
+    VercelFrontendSettingsFactory(
+        revalidate_url="https://test.com", revalidate_secret="test", site=site
+    )
 
     revalidate_vercel_frontend("test_revalidate_vercel_frontend", instance=page)
 
