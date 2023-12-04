@@ -464,7 +464,6 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
                     "website",
                     "twitter_handle",
                     "github_handle",
-                    "instagram_handle",
                     "linkedin_url",
                     "mastodon_handle",
                 )
