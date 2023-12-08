@@ -5,6 +5,7 @@ import { ApolloProvider } from "@apollo/client";
 import { getMessagesForLocale } from "@python-italia/pycon-styleguide";
 import "@python-italia/pycon-styleguide/custom-style";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { useEffect } from "react";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";
 import { Box, Flex, jsx, ThemeProvider } from "theme-ui";
@@ -94,6 +95,7 @@ window.dispatchEvent(olarkLoadedEvent);
       <ApolloProvider client={apolloClient}>
         <RawIntlProvider value={intl}>
           <LocaleProvider lang={locale}>
+            <SpeedInsights />
             <GlobalStyles />
             {isSocial(router.pathname) ? (
               <Component {...pageProps} />
