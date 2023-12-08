@@ -77,6 +77,9 @@ dependencies:
   '@vercel/og':
     specifier: ^0.5.4
     version: 0.5.4
+  '@vercel/speed-insights':
+    specifier: ^1.0.0
+    version: 1.0.0
   '@xstate/react':
     specifier: ^3.0.1
     version: 3.2.2(@types/react@17.0.59)(react@18.2.0)(xstate@4.38.3)
@@ -3424,6 +3427,11 @@ packages:
       '@resvg/resvg-wasm': 2.4.1
       satori: 0.7.2
       yoga-wasm-web: 0.3.3
+    dev: false
+
+  /@vercel/speed-insights@1.0.0:
+    resolution: {integrity: sha512-5blmCVGGPn+3BqwBPb1jc3OnzRozNuLgJVr7xH6XjxCTvocs7z/Bml7lo+JzLKUXR1Q35qI/PlEllmNbZmP9Ew==}
+    requiresBuild: true
     dev: false
 
   /@whatwg-node/events@0.0.2:
