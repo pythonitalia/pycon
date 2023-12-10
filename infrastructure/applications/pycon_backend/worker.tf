@@ -95,11 +95,11 @@ resource "aws_ecs_task_definition" "worker_service" {
           },
         {
           name= "VOLUNTEERS_PUSH_NOTIFICATIONS_IOS_ARN",
-          value =     = module.secrets.value.volunteers_push_notifications_ios_arn
+          value =     module.secrets.value.volunteers_push_notifications_ios_arn
           },
         {
           name= "VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN",
-          value = = module.secrets.value.volunteers_push_notifications_android_arn
+          value = module.secrets.value.volunteers_push_notifications_android_arn
           },
         {
           name= "ALLOWED_HOSTS",
