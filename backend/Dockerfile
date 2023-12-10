@@ -67,7 +67,8 @@ COPY . ${FUNCTION_DIR}
 
 ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod
 
-RUN AWS_MEDIA_BUCKET=example \
+RUN DJANGO_SETTINGS_MODULE=pycon.settings.test \
+    AWS_MEDIA_BUCKET=example \
     AWS_REGION_NAME=eu-central-1 \
     SECRET_KEY=DEMO \
     STRIPE_SECRET_API_KEY=demo \
