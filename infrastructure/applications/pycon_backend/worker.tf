@@ -1,4 +1,4 @@
-resource "aws_ecs_cluster" "pretix" {
+resource "aws_ecs_cluster" "worker" {
   name = "pythonit-${terraform.workspace}-worker"
 }
 
@@ -18,10 +18,25 @@ data "aws_ami" "ecs" {
   owners = ["amazon"]
 }
 
+data "aws_subnet" "private_1a" {
+  vpc_id = data.aws_vpc.default.id
+
+  filter {
+    name   = "tag:Type"
+    values = ["private"]
+  }
+
+  filter {
+    name   = "tag:AZ"
+    values = ["eu-central-1a"]
+  }
+}
+
+
 data "template_file" "user_data" {
   template = file("${path.module}/user_data.sh")
   vars = {
-    ecs_cluster = aws_ecs_cluster.pretix.name
+    ecs_cluster = aws_ecs_cluster.worker.name
   }
 }
 
@@ -29,7 +44,7 @@ data "template_file" "user_data" {
 resource "aws_instance" "pretix" {
   ami               = data.aws_ami.ecs.id
   instance_type     = "t4g.micro"
-  subnet_id         = data.aws_subnet.private.id
+  subnet_id         = data.aws_subnet.private_1a.id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [
     data.aws_security_group.rds.id,
@@ -49,7 +64,7 @@ resource "aws_instance" "pretix" {
   }
 }
 
-resource "aws_ecs_task_definition" "worker_service" {
+resource "aws_ecs_task_definition" "worker" {
   family = "pythonit-${terraform.workspace}-worker"
   container_definitions = jsonencode([
     {
@@ -244,8 +259,8 @@ resource "aws_ecs_task_definition" "worker_service" {
 
 resource "aws_ecs_service" "worker" {
   name                               = "pythonit-${terraform.workspace}-worker"
-  cluster                            = aws_ecs_cluster.pretix.id
-  task_definition                    = aws_ecs_task_definition.pretix_service.arn
+  cluster                            = aws_ecs_cluster.worker.id
+  task_definition                    = aws_ecs_task_definition.worker.arn
   desired_count                      = 1
   deployment_minimum_healthy_percent = 0
   deployment_maximum_percent         = 100
