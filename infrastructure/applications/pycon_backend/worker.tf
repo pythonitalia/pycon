@@ -43,7 +43,7 @@ data "template_file" "user_data" {
 
 resource "aws_instance" "pretix" {
   ami               = data.aws_ami.ecs.id
-  instance_type     = "t4g.micro"
+  instance_type     = "t3a.micro"
   subnet_id         = data.aws_subnet.private_1a.id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [

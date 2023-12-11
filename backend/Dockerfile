@@ -19,32 +19,6 @@ ENV LIBRARY_PATH=/lib:/usr/lib
 
 RUN pip install pdm==2.10.4
 
-RUN tar -czvf /libs.tar.gz /usr/lib/x86_64-linux-gnu/libpq* \
-    /usr/lib/x86_64-linux-gnu/libpq* \
-    /usr/lib/x86_64-linux-gnu/libldap_r* \
-    /usr/lib/x86_64-linux-gnu/libldap* \
-    /usr/lib/x86_64-linux-gnu/liblber* \
-    /usr/lib/x86_64-linux-gnu/libsasl* \
-    /usr/lib/x86_64-linux-gnu/libxml2* \
-    /usr/lib/x86_64-linux-gnu/libgcrypt* \
-    /usr/lib/x86_64-linux-gnu/libstdc++* \
-    /usr/lib/x86_64-linux-gnu/libjpeg* \
-    /usr/lib/x86_64-linux-gnu/libopenjp2* \
-    /usr/lib/x86_64-linux-gnu/libdeflate* \
-    /usr/lib/x86_64-linux-gnu/libjbig* \
-    /usr/lib/x86_64-linux-gnu/liblcms2* \
-    /usr/lib/x86_64-linux-gnu/libwebp* \
-    /usr/lib/x86_64-linux-gnu/libtiff* \
-    /usr/lib/x86_64-linux-gnu/libGL* \
-    /usr/lib/x86_64-linux-gnu/libgthread* \
-    /usr/lib/x86_64-linux-gnu/libglib-* \
-    /usr/lib/x86_64-linux-gnu/libX11* \
-    /usr/lib/x86_64-linux-gnu/libxcb* \
-    /usr/lib/x86_64-linux-gnu/libXau* \
-    /usr/lib/x86_64-linux-gnu/libXdmcp* \
-    /usr/lib/x86_64-linux-gnu/libXext* \
-    /usr/lib/x86_64-linux-gnu/libbsd*
-
 COPY pyproject.toml pdm.lock ${FUNCTION_DIR}
 
 RUN pdm install --prod --group lambda
@@ -56,10 +30,9 @@ ARG FUNCTION_DIR
 WORKDIR ${FUNCTION_DIR}
 
 COPY --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
+RUN ls -al /home/app/.venv/lib/python3.11/site-packages/temporalio/bridge/
 COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
-COPY --from=build-stage /libs.tar.gz /libs.tar.gz
-
-RUN tar -xvf /libs.tar.gz -C / && rm /libs.tar.gz && ldconfig
+COPY --from=build-stage /usr/lib/*.so* /usr/lib/
 
 RUN mkdir -p ${FUNCTION_DIR}/assets
 

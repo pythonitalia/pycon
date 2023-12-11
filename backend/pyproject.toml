@@ -83,7 +83,7 @@ dependencies = [
     "google-auth<3.0.0,>=2.22.0",
     "google-auth-oauthlib<2.0.0,>=1.0.0",
     "google-auth-httplib2<1.0.0,>=0.1.0",
-    "temporalio<2.0.0,>=1.2.0",
+    "temporalio==1.4.0",
     "opencv-python<5.0.0.0,>=4.8.0.74",
     "argon2-cffi<24.0.0,>=23.1.0",
     "stripe<8.0.0,>=7.0.0",
