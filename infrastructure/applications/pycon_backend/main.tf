@@ -109,6 +109,8 @@ module "lambda" {
     DEEPL_AUTH_KEY                            = module.secrets.value.deepl_auth_key
     FLODESK_API_KEY                           = module.secrets.value.flodesk_api_key
     FLODESK_SEGMENT_ID                        = module.secrets.value.flodesk_segment_id
+    CELERY_BROKER_URL = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/5"
+    CELERY_RESULT_BACKEND = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/6"
   }
 }
 

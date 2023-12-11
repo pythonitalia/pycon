@@ -71,16 +71,14 @@ resource "aws_ecs_task_definition" "worker" {
       name      = "worker"
       image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_image.image_digest}"
       cpu       = 2048
-      memory    = 1000
+      memory    = 900
       essential = true
       entrypoint = [
         "/home/app/.venv/bin/python",
-        "-m",
-        "celery"
       ]
 
       command = [
-        "multi", "start", "2", "-c", "2",
+        "-m", "celery", "-A", "pycon", "worker", "-c", "2",
       ]
 
       environment = [
@@ -166,7 +164,7 @@ resource "aws_ecs_task_definition" "worker" {
           },
         {
           name= "FORCE_PYCON_HOST",
-          value =                 local.is_prod
+          value =                 local.is_prod?"true":"false"
           },
         {
           name= "SQS_QUEUE_URL",
@@ -239,7 +237,15 @@ resource "aws_ecs_task_definition" "worker" {
         {
           name= "FLODESK_SEGMENT_ID",
           value =               module.secrets.value.flodesk_segment_id
-          }
+          },
+          {
+            name = "CELERY_BROKER_URL",
+            value = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/5"
+          },
+          {
+            name = "CELERY_RESULT_BACKEND",
+            value = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/6"
+          },
 
       ]
 
@@ -250,6 +256,15 @@ resource "aws_ecs_task_definition" "worker" {
           "value" : "4096"
         }
       ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group" = "/ecs/pythonit-${terraform.workspace}-worker"
+          "awslogs-region" = "eu-central-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
     },
   ])
 
