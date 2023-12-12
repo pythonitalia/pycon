@@ -64,6 +64,12 @@ resource "aws_instance" "pretix" {
   }
 }
 
+resource "aws_cloudwatch_log_group" "worker_logs" {
+  name = "/ecs/pythonit-${terraform.workspace}-worker"
+  retention_in_days = 1
+}
+
+
 resource "aws_ecs_task_definition" "worker" {
   family = "pythonit-${terraform.workspace}-worker"
   container_definitions = jsonencode([
@@ -260,7 +266,7 @@ resource "aws_ecs_task_definition" "worker" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group" = "/ecs/pythonit-${terraform.workspace}-worker"
+          "awslogs-group" = aws_cloudwatch_log_group.worker_logs.name
           "awslogs-region" = "eu-central-1"
           "awslogs-stream-prefix" = "ecs"
         }
