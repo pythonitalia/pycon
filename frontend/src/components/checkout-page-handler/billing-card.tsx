@@ -96,6 +96,7 @@ export const BillingCard = () => {
               >
                 <Input
                   {...text("companyName")}
+                  autoComplete="organization"
                   required={isBusiness}
                   placeholder={inputPlaceholder}
                 />
@@ -118,6 +119,7 @@ export const BillingCard = () => {
               >
                 <Input
                   {...text("vatId")}
+                  autoComplete="off"
                   required={true}
                   placeholder={inputPlaceholder}
                 />
@@ -151,6 +153,7 @@ export const BillingCard = () => {
               <Textarea
                 rows={3}
                 {...textarea("address")}
+                autoComplete="street-address"
                 required={true}
                 placeholder={inputPlaceholder}
               />
