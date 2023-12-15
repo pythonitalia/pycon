@@ -77,8 +77,7 @@ export const NewsArticlePage = () => {
 
       <Section illustration="snakeTail">
         <Container noPadding center={false} size="medium">
-          {newsArticle && <StyledHTMLText text={post.body} baseTextSize={2} />}
-          {blogPost && <Article>{compile(blogPost.content).tree}</Article>}
+          <StyledHTMLText text={post.body} baseTextSize={2} />
         </Container>
       </Section>
     </Page>
