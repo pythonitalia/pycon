@@ -77,7 +77,7 @@ resource "aws_ecs_task_definition" "worker" {
       name      = "worker"
       image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_image.image_digest}"
       cpu       = 2048
-      memory    = 900
+      memory    = 500
       essential = true
       entrypoint = [
         "/home/app/.venv/bin/python",
@@ -283,6 +283,6 @@ resource "aws_ecs_service" "worker" {
   cluster                            = aws_ecs_cluster.worker.id
   task_definition                    = aws_ecs_task_definition.worker.arn
   desired_count                      = 1
-  deployment_minimum_healthy_percent = 0
+  deployment_minimum_healthy_percent = 1
   deployment_maximum_percent         = 100
 }
