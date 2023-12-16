@@ -233,13 +233,13 @@ jobs:
         id: validate
         run: terraform validate -no-color
 
-      - name: Terraform apply
-        run: terraform apply -no-color -auto-approve &> /dev/null
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: eu-central-1
+      # - name: Terraform apply
+      #   run: terraform apply -no-color -auto-approve &> /dev/null
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_DEFAULT_REGION: eu-central-1
 
   # TODO Temporary workaround the fact that the lambda takes a bit to update
   # so to avoid calling the old deployment, we want 20 seconds

@@ -68,12 +68,12 @@ def revalidate_vercel_frontend_task(page_id):
 
 @app.task
 def test_task(a, b):
-    print("3a")
+    print("4a")
     sleep(60)
-    print("3b")
+    print("4b")
     sleep(60)
-    print("3c")
+    print("4c")
     sleep(60)
-    print("3d")
+    print("4d")
     sleep(60)
     return a + b
