@@ -67,7 +67,7 @@ resource "aws_instance" "pretix" {
 
 resource "aws_cloudwatch_log_group" "worker_logs" {
   name              = "/ecs/pythonit-${terraform.workspace}-worker"
-  retention_in_days = 1
+  retention_in_days = 7
 }
 
 

@@ -1,3 +1,4 @@
+from time import sleep
 import requests
 import logging
 from pycon.celery import app
@@ -67,4 +68,12 @@ def revalidate_vercel_frontend_task(page_id):
 
 @app.task
 def test_task(a, b):
+    print("a")
+    sleep(60)
+    print("b")
+    sleep(60)
+    print("c")
+    sleep(60)
+    print("d")
+    sleep(60)
     return a + b
