@@ -253,7 +253,6 @@ resource "aws_ecs_task_definition" "worker" {
           name  = "CELERY_RESULT_BACKEND",
           value = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/6"
         },
-
       ]
 
       mountPoints = []
@@ -282,6 +281,8 @@ resource "aws_ecs_task_definition" "worker" {
         timeout = 3
         interval = 10
       }
+
+      stopTimeout = 300
     },
   ])
 

@@ -10,8 +10,11 @@ data "aws_vpc" "default" {
   }
 }
 
-data "aws_subnet_ids" "private" {
-  vpc_id = data.aws_vpc.default.id
+data "aws_subnets" "private" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
 
   tags = {
     Type = "private"
@@ -28,7 +31,7 @@ resource "aws_db_proxy" "proxy" {
   require_tls            = false
   role_arn               = aws_iam_role.proxy_role[0].arn
   vpc_security_group_ids = [data.aws_security_group.rds.id]
-  vpc_subnet_ids         = data.aws_subnet_ids.private.ids
+  vpc_subnet_ids         = data.aws_subnets.private.ids
 
   auth {
     auth_scheme = "SECRETS"

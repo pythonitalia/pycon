@@ -19,7 +19,7 @@ resource "aws_db_instance" "database" {
   allow_major_version_upgrade = true
   engine_version              = "14.7"
   instance_class              = local.is_prod ? "db.t3.small" : "db.t3.micro"
-  name                        = "${local.normalized_workspace}backend"
+  db_name                     = "${local.normalized_workspace}backend"
   username                    = "root"
   password                    = module.common_secrets.value.database_password
   multi_az                    = "false"
