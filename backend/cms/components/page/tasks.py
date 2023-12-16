@@ -63,3 +63,8 @@ def revalidate_vercel_frontend_task(page_id):
         return
 
     logger.info(f"Revalidated {path} on {site_name}")
+
+
+@app.task
+def test_task(a, b):
+    return a + b
