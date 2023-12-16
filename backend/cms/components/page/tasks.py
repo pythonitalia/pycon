@@ -74,6 +74,5 @@ def test_task(a, b):
     sleep(60)
     print("4c")
     sleep(60)
-    print("4d")
-    sleep(60)
+    print("end")
     return a + b
