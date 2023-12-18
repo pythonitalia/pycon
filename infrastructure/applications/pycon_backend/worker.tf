@@ -41,7 +41,7 @@ data "template_file" "user_data" {
 }
 
 
-resource "aws_instance" "pretix" {
+resource "aws_instance" "instance" {
   ami               = "ami-05ff3e0fe4cf2c226"
   instance_type     = "t3a.micro"
   subnet_id         = data.aws_subnet.private_1a.id
