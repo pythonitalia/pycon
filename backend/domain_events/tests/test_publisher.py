@@ -6,14 +6,9 @@ import pytest
 from domain_events.publisher import (
     notify_new_submission,
     publish_message,
-    send_grant_reply_approved_email,
-    send_grant_reply_rejected_email,
-    send_grant_reply_waiting_list_email,
-    send_grant_voucher_email,
     send_schedule_invitation_email,
     send_speaker_voucher_email,
 )
-from grants.models import Grant
 from schedule.models import ScheduleItem
 
 
@@ -134,87 +129,6 @@ def test_send_speaker_voucher_email(speaker_voucher_factory):
         "SpeakerVoucherEmailSent",
         body={
             "speaker_voucher_id": speaker_voucher.id,
-        },
-        deduplication_id=ANY,
-    )
-
-
-@pytest.mark.django_db
-def test_send_grant_reply_approved_email(grant_factory):
-    grant = grant_factory(status=Grant.Status.approved)
-    with patch("domain_events.publisher.publish_message") as mock_publish:
-        send_grant_reply_approved_email(grant)
-
-    mock_publish.assert_called_once_with(
-        "GrantReplyApprovedSent",
-        body={
-            "grant_id": grant.id,
-            "is_reminder": False,
-        },
-        deduplication_id=ANY,
-    )
-
-
-@pytest.mark.django_db
-def test_send_grant_reply_approved_email_reminder(grant_factory):
-    grant = grant_factory(status=Grant.Status.approved)
-    with patch("domain_events.publisher.publish_message") as mock_publish:
-        send_grant_reply_approved_email(grant, is_reminder=True)
-
-    mock_publish.assert_called_once_with(
-        "GrantReplyApprovedReminderSent",
-        body={
-            "grant_id": grant.id,
-            "is_reminder": True,
-        },
-        deduplication_id=ANY,
-    )
-
-
-@pytest.mark.django_db
-def test_send_grant_reply_waiting_list_email(grant_factory):
-    grant = grant_factory(status=Grant.Status.waiting_list)
-    with patch("domain_events.publisher.publish_message") as mock_publish:
-        send_grant_reply_waiting_list_email(grant)
-
-    mock_publish.assert_called_once_with(
-        "GrantReplyWaitingListSent",
-        body={
-            "grant_id": grant.id,
-        },
-        deduplication_id=str(grant.id),
-    )
-
-
-@pytest.mark.django_db
-def test_send_grant_reply_rejected_email(grant_factory):
-    grant = grant_factory(status=Grant.Status.rejected)
-    with patch("domain_events.publisher.publish_message") as mock_publish:
-        send_grant_reply_rejected_email(grant)
-
-    mock_publish.assert_called_once_with(
-        "GrantReplyRejectedSent",
-        body={
-            "grant_id": grant.id,
-        },
-        deduplication_id=str(grant.id),
-    )
-
-
-@pytest.mark.django_db
-def test_send_grant_voucher_email(grant_factory):
-    grant = grant_factory(
-        voucher_code="ABC123",
-        pretix_voucher_id=2,
-    )
-
-    with patch("domain_events.publisher.publish_message") as mock_publish:
-        send_grant_voucher_email(grant)
-
-    mock_publish.assert_called_once_with(
-        "GrantVoucherEmailSent",
-        body={
-            "grant_id": grant.id,
         },
         deduplication_id=ANY,
     )
