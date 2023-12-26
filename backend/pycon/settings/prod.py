@@ -40,3 +40,6 @@ CSRF_TRUSTED_ORIGINS = [
     "https://admin.pycon.it",
     "https://pycon.it",
 ]
+
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")

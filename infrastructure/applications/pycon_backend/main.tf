@@ -1,9 +1,9 @@
 locals {
-  is_prod                 = terraform.workspace == "production"
-  admin_domain            = "admin"
-  full_admin_domain       = local.is_prod ? "${local.admin_domain}.pycon.it" : "${terraform.workspace}-${local.admin_domain}.pycon.it"
-  db_connection           = var.enable_proxy ? "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/pycon" : "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/pycon"
-  cdn_url                 = local.is_prod ? "cdn.pycon.it" : "${terraform.workspace}-cdn.pycon.it"
+  is_prod           = terraform.workspace == "production"
+  admin_domain      = "admin"
+  full_admin_domain = local.is_prod ? "${local.admin_domain}.pycon.it" : "${terraform.workspace}-${local.admin_domain}.pycon.it"
+  db_connection     = var.enable_proxy ? "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/pycon" : "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/pycon"
+  cdn_url           = local.is_prod ? "cdn.pycon.it" : "${terraform.workspace}-cdn.pycon.it"
 }
 
 data "aws_vpc" "default" {
@@ -17,8 +17,11 @@ data "aws_iam_role" "lambda" {
   name = "pythonit-lambda-role"
 }
 
-data "aws_subnet_ids" "private" {
-  vpc_id = data.aws_vpc.default.id
+data "aws_subnets" "private" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
 
   tags = {
     Type = "private"
@@ -67,7 +70,7 @@ module "lambda" {
   application        = local.application
   local_path         = local.local_path
   role_arn           = data.aws_iam_role.lambda.arn
-  subnet_ids         = [for subnet in data.aws_subnet_ids.private.ids : subnet]
+  subnet_ids         = [for subnet in data.aws_subnets.private.ids : subnet]
   security_group_ids = [data.aws_security_group.rds.id, data.aws_security_group.lambda.id]
   env_vars = {
     DATABASE_URL                              = local.db_connection
@@ -109,6 +112,8 @@ module "lambda" {
     DEEPL_AUTH_KEY                            = module.secrets.value.deepl_auth_key
     FLODESK_API_KEY                           = module.secrets.value.flodesk_api_key
     FLODESK_SEGMENT_ID                        = module.secrets.value.flodesk_segment_id
+    CELERY_BROKER_URL                         = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/5"
+    CELERY_RESULT_BACKEND                     = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/6"
   }
 }
 

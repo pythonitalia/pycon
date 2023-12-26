@@ -1,7 +1,7 @@
 resource "aws_elasticache_subnet_group" "default" {
   name        = "${terraform.workspace}-pretix-redis-subnet"
   description = "${terraform.workspace} pretix redis subnet"
-  subnet_ids  = [for subnet in data.aws_subnet_ids.private.ids : subnet]
+  subnet_ids  = [for subnet in data.aws_subnets.private.ids : subnet]
 }
 
 resource "aws_elasticache_cluster" "cache" {
