@@ -67,13 +67,14 @@ COPY . ${FUNCTION_DIR}
 
 ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod
 
-RUN DJANGO_SETTINGS_MODULE=pycon.settings.test \
-    AWS_MEDIA_BUCKET=example \
+RUN AWS_MEDIA_BUCKET=example \
     AWS_REGION_NAME=eu-central-1 \
     SECRET_KEY=DEMO \
     STRIPE_SECRET_API_KEY=demo \
     STRIPE_SUBSCRIPTION_PRICE_ID=demo \
     STRIPE_WEBHOOK_SIGNATURE_SECRET=demo \
+    CELERY_BROKER_URL=demo \
+    CELERY_RESULT_BACKEND=demo \
     ${FUNCTION_DIR}/.venv/bin/python manage.py collectstatic --noinput
 
 ENTRYPOINT ["/home/app/.venv/bin/python", "-m", "awslambdaric"]
