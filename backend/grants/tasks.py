@@ -99,7 +99,7 @@ def send_grant_reply_rejected_email(grant_id):
 
 
 @app.task
-def send_new_grant_reply(*, grant_id, admin_url):
+def notify_new_grant_reply_slack(*, grant_id, admin_url):
     grant = Grant.objects.get(id=grant_id)
 
     actions = []

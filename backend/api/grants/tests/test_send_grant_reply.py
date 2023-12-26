@@ -117,22 +117,24 @@ def test_send_plain_when_user_send_a_message(
 ):
     graphql_client.force_login(user)
     grant = grant_factory(user_id=user.id, status=Grant.Status.waiting_for_confirmation)
-    mock_publisher = mocker.patch("api.grants.mutations.send_message_to_plain")
+    mock_publisher = mocker.patch("api.grants.mutations.send_new_plain_chat")
 
     response = _send_grant_reply(
         graphql_client, grant, status="need_info", message="wtf"
     )
 
     assert response["data"]["sendGrantReply"]["__typename"] == "Grant"
-    mock_publisher.assert_called_once_with(grant, "wtf")
+    mock_publisher.delay.assert_called_once_with(user_id=grant.user.id, message="wtf")
 
 
 def test_call_notify_new_grant_reply(rf, graphql_client, user, grant_factory, mocker):
     graphql_client.force_login(user)
     grant = grant_factory(user_id=user.id, status=Grant.Status.waiting_for_confirmation)
-    mock_publisher = mocker.patch("api.grants.mutations.notify_new_grant_reply")
+    mock_publisher = mocker.patch("api.grants.mutations.notify_new_grant_reply_slack")
+    mock_plain_publisher = mocker.patch("api.grants.mutations.send_new_plain_chat")
 
     response = _send_grant_reply(graphql_client, grant, status="refused", message="wtf")
 
     assert response["data"]["sendGrantReply"]["__typename"] == "Grant"
-    mock_publisher.assert_called_once_with(grant, ANY)
+    mock_publisher.delay.assert_called_once_with(grant_id=grant.id, admin_url=ANY)
+    mock_plain_publisher.delay.assert_called()
