@@ -13,11 +13,11 @@ from import_export.fields import Field
 from django.utils.crypto import get_random_string
 
 from countries import countries
-from domain_events.publisher import (
+from grants.tasks import (
     send_grant_reply_approved_email,
-    send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
     send_grant_reply_waiting_list_update_email,
+    send_grant_reply_rejected_email,
     send_grant_voucher_email,
 )
 from pretix import create_voucher
@@ -191,7 +191,7 @@ def send_reply_emails(modeladmin, request, queryset):
                 now.year, now.month, now.day, 23, 59, 59
             ) + timedelta(days=14)
             grant.save()
-            send_grant_reply_approved_email(grant)
+            send_grant_reply_approved_email.delay(grant_id=grant.id, is_reminder=False)
 
             messages.info(request, f"Sent Approved reply email to {grant.name}")
 
@@ -199,11 +199,11 @@ def send_reply_emails(modeladmin, request, queryset):
             grant.status == Grant.Status.waiting_list
             or grant.status == Grant.Status.waiting_list_maybe
         ):
-            send_grant_reply_waiting_list_email(grant)
+            send_grant_reply_waiting_list_email.delay(grant_id=grant.id)
             messages.info(request, f"Sent Waiting List reply email to {grant.name}")
 
         if grant.status == Grant.Status.rejected:
-            send_grant_reply_rejected_email(grant)
+            send_grant_reply_rejected_email.delay(grant_id=grant.id)
             messages.info(request, f"Sent Rejected reply email to {grant.name}")
 
 
@@ -234,7 +234,7 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
             )
             return
 
-        send_grant_reply_approved_email(grant, is_reminder=True)
+        send_grant_reply_approved_email.delay(grant_id=grant.id, is_reminder=True)
 
         messages.info(request, f"Grant reminder sent to {grant.name}")
 
@@ -249,7 +249,7 @@ def send_reply_email_waiting_list_update(modeladmin, request, queryset):
     )
 
     for grant in queryset:
-        send_grant_reply_waiting_list_update_email(grant)
+        send_grant_reply_waiting_list_update_email.delay(grant_id=grant.id)
         messages.info(request, f"Sent Waiting List update reply email to {grant.name}")
 
 
@@ -265,7 +265,7 @@ def send_voucher_via_email(modeladmin, request, queryset):
 
     count = 0
     for grant in queryset.filter(pretix_voucher_id__isnull=False):
-        send_grant_voucher_email(grant)
+        send_grant_voucher_email.delay(grant_id=grant.id)
         count = count + 1
 
     messages.success(request, f"{count} Voucher emails scheduled!")
