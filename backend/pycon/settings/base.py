@@ -220,6 +220,16 @@ LOGGING = {
             "level": "WARNING",
             "propagate": True,
         },
+        "celery": {
+            "level": "INFO",
+            "handlers": ["console"],
+            "propagate": False,
+        },
+        "django": {
+            "level": "INFO",
+            "handlers": ["console"],
+            "propagate": False,
+        },
         "qinspect": {"handlers": ["console"], "level": "DEBUG", "propagate": True},
     },
 }
