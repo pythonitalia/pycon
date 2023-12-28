@@ -39,7 +39,7 @@ EXPORT_GRANTS_FIELDS = (
     "needs_funds_for_travel",
     "why",
     "notes",
-    "travelling_from",
+    "traveling_from",
     "conference__code",
     "created",
 )
@@ -351,7 +351,7 @@ class GrantAdminForm(forms.ModelForm):
             "needs_funds_for_travel",
             "why",
             "notes",
-            "travelling_from",
+            "traveling_from",
             "country_type",
             "applicant_message",
             "applicant_reply_sent_at",
@@ -388,12 +388,12 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
         "occupation",
         "grant_type",
         "interested_in_volunteering",
-        ("travelling_from", CountryFilter),
+        ("traveling_from", CountryFilter),
     )
     search_fields = (
         "email",
         "full_name",
-        "travelling_from",
+        "traveling_from",
         "been_to_other_events",
         "why",
         "notes",
@@ -452,7 +452,7 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
                     "needs_funds_for_travel",
                     "need_visa",
                     "need_accommodation",
-                    "travelling_from",
+                    "traveling_from",
                     "why",
                     "python_usage",
                     "been_to_other_events",
@@ -481,8 +481,8 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
         description="C",
     )
     def country(self, obj):
-        if obj.travelling_from:
-            country = countries.get(code=obj.travelling_from)
+        if obj.traveling_from:
+            country = countries.get(code=obj.traveling_from)
             if country:
                 return country.emoji
 
@@ -573,7 +573,7 @@ class GrantsRecap(admin.ModelAdmin):
         return self.qs
 
     def changelist_view(self, request, extra_context=None):
-        qs = self.get_queryset(request).order_by("travelling_from")
+        qs = self.get_queryset(request).order_by("traveling_from")
 
         results = []
         for country_code, group in groupby(list(qs), key=lambda k: k.traveling_from):

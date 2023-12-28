@@ -31,7 +31,7 @@ def _update_grant(graphql_client, grant, **kwargs):
                     validationNeedAccommodation: needAccommodation
                     validationWhy: why
                     validationNotes: notes
-                    validationTravellingFrom: travellingFrom
+                    validationTravellingFrom: travelingFrom
                     validationWebsite: website
                     validationTwitterHandle: twitterHandle
                     validationGithubHandle: githubHandle
@@ -61,7 +61,7 @@ def _update_grant(graphql_client, grant, **kwargs):
         "needAccommodation": grant.need_accommodation,
         "why": grant.why,
         "notes": grant.notes,
-        "travellingFrom": grant.travelling_from,
+        "travelingFrom": grant.traveling_from,
         "website": grant.website,
         "twitterHandle": grant.twitter_handle,
         "githubHandle": grant.github_handle,
@@ -104,7 +104,7 @@ def test_update_grant(graphql_client, user, conference_factory, grant_factory):
         needAccommodation=True,
         why="why not",
         notes="🧸",
-        travellingFrom="London",
+        travelingFrom="London",
         website="https://marcotte.house",
         twitterHandle="@marcottebear",
         githubHandle="marcottebear",
@@ -203,7 +203,7 @@ def test_cannot_update_submission_with_lang_outside_allowed_values(
         graphql_client,
         grant=grant,
         name="Marcotte" * 50,
-        travellingFrom="Very long location" * 50,
+        travelingFrom="Very long location" * 50,
     )
 
     assert response["data"]["updateGrant"]["__typename"] == "GrantErrors"
@@ -211,5 +211,5 @@ def test_cannot_update_submission_with_lang_outside_allowed_values(
         "name: Cannot be more than 300 chars"
     ]
     assert response["data"]["updateGrant"]["errors"]["validationTravellingFrom"] == [
-        "travelling_from: Cannot be more than 200 chars"
+        "traveling_from: Cannot be more than 200 chars"
     ]

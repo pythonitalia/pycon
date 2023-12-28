@@ -41,7 +41,7 @@ class GrantErrors(BaseErrorType):
         need_accommodation: list[str] = strawberry.field(default_factory=list)
         why: list[str] = strawberry.field(default_factory=list)
         notes: list[str] = strawberry.field(default_factory=list)
-        travelling_from: list[str] = strawberry.field(default_factory=list)
+        traveling_from: list[str] = strawberry.field(default_factory=list)
         non_field_errors: list[str] = strawberry.field(default_factory=list)
         website: list[str] = strawberry.field(default_factory=list)
         twitter_handle: list[str] = strawberry.field(default_factory=list)
@@ -65,7 +65,7 @@ class BaseGrantInput:
         max_length_fields = {
             "name": 300,
             "full_name": 300,
-            "travelling_from": 200,
+            "traveling_from": 200,
             "twitter_handle": 15,
             "github_handle": 39,
         }
@@ -114,7 +114,7 @@ class SendGrantInput(BaseGrantInput):
     need_accommodation: bool
     why: str
     notes: str
-    travelling_from: str
+    traveling_from: str
     website: str
     twitter_handle: str
     github_handle: str
@@ -149,7 +149,7 @@ class UpdateGrantInput(BaseGrantInput):
     need_accommodation: bool
     why: str
     notes: str
-    travelling_from: str
+    traveling_from: str
     website: str
     twitter_handle: str
     github_handle: str

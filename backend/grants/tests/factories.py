@@ -31,7 +31,7 @@ class GrantFactory(DjangoModelFactory):
     needs_funds_for_travel = factory.Faker("boolean")
     why = factory.Faker("text")
     notes = factory.Faker("text")
-    travelling_from = factory.Faker("country")
+    traveling_from = factory.Faker("country")
     website = factory.Faker("url")
     twitter_handle = "@handle"
     github_handle = factory.Faker("user_name")
