@@ -90,16 +90,13 @@ class Grant(TimeStampedModel):
     grant_type = models.CharField(
         _("grant type"), choices=GrantType.choices, max_length=10
     )
-    traveling_from = models.CharField(
-        _("Traveling from"),
+    travelling_from = models.CharField(
+        _("Travelling from"),
         max_length=100,
         blank=True,
         null=True,
         choices=[(country.code, country.name) for country in countries],
     )
-    travelling_from = models.CharField(
-        _("Travelling from"), max_length=200
-    )  # OLD FIELD
     needs_funds_for_travel = models.BooleanField(_("Needs funds for travel"))
     need_visa = models.BooleanField(_("Need visa/invitation letter?"), default=False)
     need_accommodation = models.BooleanField(_("Need accommodation"), default=False)
@@ -207,8 +204,8 @@ class Grant(TimeStampedModel):
         return f"{self.full_name}"
 
     def save(self, *args, **kwargs):
-        if self.traveling_from:
-            country = countries.get(code=self.traveling_from)
+        if self.travelling_from:
+            country = countries.get(code=self.travelling_from)
             assert country
             if country.code == "IT":
                 self.country_type = Grant.CountryType.italy

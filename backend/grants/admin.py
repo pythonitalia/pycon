@@ -39,7 +39,6 @@ EXPORT_GRANTS_FIELDS = (
     "why",
     "notes",
     "travelling_from",
-    "traveling_from",
     "conference__code",
     "created",
 )
@@ -352,7 +351,6 @@ class GrantAdminForm(forms.ModelForm):
             "why",
             "notes",
             "travelling_from",
-            "traveling_from",
             "country_type",
             "applicant_message",
             "applicant_reply_sent_at",
@@ -389,7 +387,6 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
         "occupation",
         "grant_type",
         "interested_in_volunteering",
-        "traveling_from",
     )
     search_fields = (
         "email",
@@ -454,7 +451,6 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
                     "need_visa",
                     "need_accommodation",
                     "travelling_from",
-                    "traveling_from",
                     "why",
                     "python_usage",
                     "been_to_other_events",
@@ -483,8 +479,8 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
         description="C",
     )
     def country(self, obj):
-        if obj.traveling_from:
-            country = countries.get(code=obj.traveling_from)
+        if obj.travelling_from:
+            country = countries.get(code=obj.travelling_from)
             if country:
                 return country.emoji
 
@@ -575,10 +571,10 @@ class GrantsRecap(admin.ModelAdmin):
         return self.qs
 
     def changelist_view(self, request, extra_context=None):
-        qs = self.get_queryset(request).order_by("traveling_from")
+        qs = self.get_queryset(request).order_by("travelling_from")
 
         results = []
-        for country_code, group in groupby(list(qs), key=lambda k: k.traveling_from):
+        for country_code, group in groupby(list(qs), key=lambda k: k.travelling_from):
             country = countries.get(code=country_code)
             if not country:
                 continue
