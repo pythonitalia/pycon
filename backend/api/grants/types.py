@@ -33,7 +33,7 @@ class Grant:
     need_accommodation: bool
     why: str
     notes: str
-    traveling_from: str
+    travelling_from: str
     applicant_reply_deadline: Optional[datetime]
     applicant_message: Optional[str]
     website: str
@@ -64,7 +64,7 @@ class Grant:
             need_accommodation=grant.need_accommodation,
             why=grant.why,
             notes=grant.notes,
-            traveling_from=grant.traveling_from,
+            travelling_from=grant.travelling_from,
             applicant_reply_deadline=grant.applicant_reply_deadline,
             applicant_message=grant.applicant_message,
             website=grant.website,

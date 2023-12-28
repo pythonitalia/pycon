@@ -90,8 +90,8 @@ class Grant(TimeStampedModel):
     grant_type = models.CharField(
         _("grant type"), choices=GrantType.choices, max_length=10
     )
-    traveling_from = models.CharField(
-        _("Traveling from"),
+    travelling_from = models.CharField(
+        _("Travelling from"),
         max_length=100,
         blank=True,
         null=True,
@@ -204,8 +204,8 @@ class Grant(TimeStampedModel):
         return f"{self.full_name}"
 
     def save(self, *args, **kwargs):
-        if self.traveling_from:
-            country = countries.get(code=self.traveling_from)
+        if self.travelling_from:
+            country = countries.get(code=self.travelling_from)
             assert country
             if country.code == "IT":
                 self.country_type = Grant.CountryType.italy

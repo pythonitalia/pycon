@@ -32,7 +32,7 @@ def _send_grant(client, grant_factory, conference, **kwargs):
                         validationNeedAccommodation: needAccommodation
                         validationWhy: why
                         validationNotes: notes
-                        validationTravellingFrom: travelingFrom
+                        validationTravellingFrom: travellingFrom
                         validationWebsite: website
                         validationTwitterHandle: twitterHandle
                         validationGithubHandle: githubHandle
@@ -62,7 +62,7 @@ def _send_grant(client, grant_factory, conference, **kwargs):
         "needAccommodation": grant.need_accommodation,
         "why": grant.why,
         "notes": grant.notes,
-        "travelingFrom": grant.traveling_from,
+        "travellingFrom": grant.travelling_from,
         "website": grant.website,
         "twitterHandle": grant.twitter_handle,
         "githubHandle": grant.github_handle,
@@ -170,7 +170,7 @@ def test_cannot_send_grant_outside_allowed_values(
         grant_factory,
         conference,
         name="Marcotte" * 50,
-        travelingFrom="Very long location" * 50,
+        travellingFrom="Very long location" * 50,
     )
 
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
@@ -178,7 +178,7 @@ def test_cannot_send_grant_outside_allowed_values(
         "name: Cannot be more than 300 chars"
     ]
     assert response["data"]["sendGrant"]["errors"]["validationTravellingFrom"] == [
-        "traveling_from: Cannot be more than 200 chars"
+        "travelling_from: Cannot be more than 200 chars"
     ]
 
 
