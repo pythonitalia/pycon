@@ -1,0 +1,65 @@
+{% extends "admin/base_site.html" %}
+{% load markdownify %}
+{% load localize countryname get_item %}
+{% load i18n admin_urls static admin_list %}
+
+{% block content %}
+
+  <h1>Grant Summary</h1>
+
+  <div>
+    <label><input type="checkbox" class="toggle-column" data-column="2" checked> Pending</label>
+    <label><input type="checkbox" class="toggle-column" data-column="3" checked> Approved</label>
+    <label><input type="checkbox" class="toggle-column" data-column="4" checked> Waiting List</label>
+    <label><input type="checkbox" class="toggle-column" data-column="5" checked> Waiting List, Maybe</label>
+    <label><input type="checkbox" class="toggle-column" data-column="6" checked> Waiting for confirmation</label>
+    <label><input type="checkbox" class="toggle-column" data-column="7" checked> Confirmed</label>
+    <label><input type="checkbox" class="toggle-column" data-column="8" checked> Refused</label>
+    <label><input type="checkbox" class="toggle-column" data-column="9" checked> Rejected</label>
+  </div>
+
+  <table id="grantSummaryTable">
+    <thead>
+      <tr>
+        <th>Continent</th>
+        <th>Pending</th>
+        <th>Approved</th>
+        <th>Waiting List</th>
+        <th>Waiting List, Maybe</th>
+        <th>Waiting for confirmation</th>
+        <th>Confirmed</th>
+        <th>Refused</th>
+        <th>Rejected</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for continent, statuses in summary.items %}
+        <tr>
+          <td>{{ continent }}</td>
+          <td>{{ statuses.pending }}</td>
+          <td>{{ statuses.approved }}</td>
+          <td>{{ statuses.waiting_list }}</td>
+          <td>{{ statuses.waiting_list_maybe }}</td>
+          <td>{{ statuses.waiting_for_confirmation }}</td>
+          <td>{{ statuses.confirmed }}</td>
+          <td>{{ statuses.refused }}</td>
+          <td>{{ statuses.rejected }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var checkboxes = document.querySelectorAll('.toggle-column');
+      checkboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+          var column = document.getElementById('grantSummaryTable').querySelectorAll('td:nth-child(' + checkbox.dataset.column + '),th:nth-child(' + checkbox.dataset.column + ')');
+          column.forEach(function(cell) {
+            cell.style.display = checkbox.checked ? '' : 'none';
+          });
+        });
+      });
+    });
+  </script>
+{% endblock %}

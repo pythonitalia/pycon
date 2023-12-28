@@ -4,6 +4,9 @@ from datetime import timedelta
 from itertools import groupby
 from typing import Dict, List, Optional
 from countries.filters import CountryFilter
+from django.urls import path
+from .views import grant_summary_view
+
 from django import forms
 from django.contrib import admin, messages
 from django.db.models.query import QuerySet
@@ -361,6 +364,8 @@ class GrantAdminForm(forms.ModelForm):
 
 @admin.register(Grant)
 class GrantAdmin(ExportMixin, admin.ModelAdmin):
+    change_list_template = "admin/grants/grant/change_list.html"
+
     speaker_ids = []
     resource_class = GrantResource
     form = GrantAdminForm
@@ -547,6 +552,13 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
         return_value = super().save_form(request, form, change)
 
         return return_value
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path("grant-summary/", grant_summary_view, name="grant-summary"),
+        ]
+        return custom_urls + urls
 
     class Media:
         js = ["admin/js/jquery.init.js"]
