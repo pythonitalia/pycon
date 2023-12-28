@@ -104,7 +104,7 @@ def test_update_grant(graphql_client, user, conference_factory, grant_factory):
         needAccommodation=True,
         why="why not",
         notes="🧸",
-        travellingFrom="London",
+        travellingFrom="GB",
         website="https://marcotte.house",
         twitterHandle="@marcottebear",
         githubHandle="marcottebear",

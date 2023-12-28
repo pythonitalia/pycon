@@ -668,7 +668,7 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
     "grants.form.fields.grantType.values.speaker": "Speaker",
     "grants.form.fields.travellingFrom": "Where are you travelling from?",
     "grants.form.fields.travellingFrom.description":
-      "Please indicate the city and country you will be traveling from to attend the conference.",
+      "Please indicate the city and country you will be travelling from to attend the conference.",
     "grants.form.fields.needsFundsForTravel":
       "Do you need financial aid for travelling to PyCon Italia?",
     "grants.form.fields.needsFundsForTravel.description":
