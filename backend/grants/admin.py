@@ -3,7 +3,7 @@ from collections import Counter
 from datetime import timedelta
 from itertools import groupby
 from typing import Dict, List, Optional
-
+from countries.filters import CountryFilter
 from django import forms
 from django.contrib import admin, messages
 from django.db.models.query import QuerySet
@@ -25,6 +25,7 @@ from schedule.models import ScheduleItem
 from submissions.models import Submission
 
 from .models import Grant, GrantRecap
+
 
 EXPORT_GRANTS_FIELDS = (
     "name",
@@ -387,6 +388,7 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
         "occupation",
         "grant_type",
         "interested_in_volunteering",
+        ("travelling_from", CountryFilter),
     )
     search_fields = (
         "email",
@@ -574,7 +576,7 @@ class GrantsRecap(admin.ModelAdmin):
         qs = self.get_queryset(request).order_by("travelling_from")
 
         results = []
-        for country_code, group in groupby(list(qs), key=lambda k: k.travelling_from):
+        for country_code, group in groupby(list(qs), key=lambda k: k.traveling_from):
             country = countries.get(code=country_code)
             if not country:
                 continue
