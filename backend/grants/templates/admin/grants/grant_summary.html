@@ -2,50 +2,59 @@
 {% load markdownify %}
 {% load localize countryname get_item %}
 {% load i18n admin_urls static admin_list %}
+{% load get_item %}
 {% block extrastyle %}
     {{ block.super }}
-    <link rel="stylesheet" href="{% static "admin/css/changelists.css" %}">
     <style>
-    .back-button {
-        margin-bottom: 20px;
-    }
+        .back-button {
+            margin-bottom: 20px;
+        }
 
-    .back-button a.button {
-        padding: 6px 12px;
-    }
+        .back-button a.button {
+            padding: 6px 12px;
+        }
 
-    .back-button a.button:hover {
-        background-color: #e6e6e6;
-    }
+        .back-button a.button:hover {
+            background-color: #e6e6e6;
+        }
 
-    </style>
-    <style>
-      .status-filter {
-          margin-bottom: 20px;
-          padding: 15px;
-          border: 1px solid #ddd;
-          background-color: #f9f9f9;
-      }
-      .status-filter h3 {
-          margin-top: 0;
-      }
-      .checkbox-list {
-          display: flex;
-          flex-wrap: wrap;
-          align-items: center;
-      }
-      .status-checkbox {
-          margin-right: 20px;
-          margin-bottom: 10px;
-      }
-      .status-checkbox input {
-          margin-right: 5px;
-      }
+
+        .status-filter {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+        .status-filter h3 {
+            margin-top: 0;
+        }
+
+        .checkbox-list {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .status-checkbox {
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+
+        .status-checkbox input {
+            margin-right: 5px;
+        }
+
+        .continent-total {
+            border-top: 2px solid #E8E8E8;
+            border-bottom: 2px solid #000;
+        }
     </style>
 {% endblock %}
 {% block content %}
     <div class="back-button">
-        <a href="{% url 'admin:grants_grant_changelist' %}" class="button">Back to List</a>
+        <a href="{% url 'admin:grants_grant_changelist' %}?{{ request.GET.urlencode }}"
+           class="button">Back to List</a>
     </div>
     <h1>Grant Summary</h1>
     <!-- Display Active Filters -->
@@ -73,7 +82,8 @@
             {% endfor %}
         </div>
     </div>
-    <table id="grantSummaryTable">
+    <h2>by Country</h2>
+    <table id="grantsByCountry">
         <thead>
             <tr>
                 <th>Continent</th>
@@ -82,32 +92,72 @@
             </tr>
         </thead>
         <tbody>
-            {% for row in template_data %}
+            <tbody>
+                {% for key, counts in summary.items %}
+                    {% with continent=key.0 country=key.1 %}
+                        {% ifchanged continent %}
+                            <tr class="continent-total">
+                                <td colspan="2">
+                                    <strong>Total for {{ continent }}:</strong>
+                                </td>
+                                {% for status in statuses %}
+                                    <td>
+                                        <strong>{{ totals_per_continent|get_item:continent|get_item:status.0|default:"0" }}</strong>
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endifchanged %}
+                        <tr>
+                            <td>{{ continent }}</td>
+                            <td>{{ country }}</td>
+                            {% for status in statuses %}<td>{{ counts|get_item:status.0|default:"0" }}</td>{% endfor %}
+                        </tr>
+                    {% endwith %}
+                {% endfor %}
+            </tbody>
+            <tfoot>
                 <tr>
-                    <td>{{ row.continent }}</td>
-                    <td>{{ row.country }}</td>
-                    {% for count in row.counts %}<td>{{ count }}</td>{% endfor %}
+                    <td colspan="2">Total Grants: {{ total }}</td>
+                    {% for count in totals_by_status.values %}<td>{{ count }}</td>{% endfor %}
                 </tr>
-            {% endfor %}
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="2 }}">Total Grants: {{ total }}</td>
-                {% for count in totals_by_status.values %}<td>{{ count }}</td>{% endfor %}
-            </tr>
-        </tfoot>
-    </table>
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var checkboxes = document.querySelectorAll('.toggle-column');
-      checkboxes.forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-          var column = document.getElementById('grantSummaryTable').querySelectorAll('td:nth-child(' + checkbox.dataset.column + '),th:nth-child(' + checkbox.dataset.column + ')');
-          column.forEach(function(cell) {
-            cell.style.display = checkbox.checked ? '' : 'none';
-          });
+            </tfoot>
+        </table>
+        <h2>by Gender</h2>
+        <table id="grantsByGender">
+            <thead>
+                <tr>
+                    <th>Gender</th>
+                    <th></th>
+                    {% for status in statuses %}<th>{{ status.1|title }}</th>{% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for gender, gender_data in gender_summary.items %}
+                    <tr>
+                        <td>{{ genders|get_item:gender|default:"Not Specified" }}</td>
+                        <td></td>
+                        {% for status in statuses %}<td>{{ gender_data|get_item:status.0|default:"0" }}</td>{% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var checkboxes = document.querySelectorAll('.toggle-column');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    var countryColumn = document.getElementById('grantsByCountry').querySelectorAll('td:nth-child(' + checkbox.dataset.column + '),th:nth-child(' + checkbox.dataset.column + ')');
+                    countryColumn.forEach(function(cell) {
+                        cell.style.display = checkbox.checked ? '' : 'none';
+                    });
+
+                    var genderColumn = document.getElementById('grantsByGender').querySelectorAll('td:nth-child(' + checkbox.dataset.column + '),th:nth-child(' + checkbox.dataset.column + ')');
+                    genderColumn.forEach(function(cell) {
+                        cell.style.display = checkbox.checked ? '' : 'none';
+                    });
+
+                });
+            });
         });
-      });
-    });
-    </script>
-{% endblock %}
+        </script>
+    {% endblock %}

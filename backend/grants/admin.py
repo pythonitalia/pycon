@@ -5,7 +5,7 @@ from countries.filters import CountryFilter
 from django.urls import path
 from django.template.response import TemplateResponse
 from django.db.models import Count
-
+from helpers.constants import GENDERS
 from django import forms
 from django.contrib import admin, messages
 from django.db.models.query import QuerySet
@@ -566,8 +566,7 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
     def summary_view(self, request):
         """
         Custom view for summarizing Grant data in the Django admin.
-        This view aggregates
-        grant data by country and status, applying filters from the request.
+        Aggregates data by country and status, and applies request filters.
         """
         # Initialize statuses
         statuses = Grant.Status.choices
@@ -582,32 +581,43 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
         )
 
         # Process and aggregate data for display
-        summary, totals_by_status = self._process_grant_data(grants_data, statuses)
+        (
+            summary,
+            totals_by_status,
+            totals_per_continent,
+        ) = self._aggregate_data_by_country(grants_data, statuses)
+        gender_summary = self._aggregate_data_by_gender(filtered_grants, statuses)
         human_readable_filters = self._format_filters_for_display(filter_params)
+        # Sort the summary data
+        sorted_summary = dict(sorted(summary.items(), key=lambda x: (x[0][0], x[0][2])))
 
         context = {
-            "template_data": self._prepare_template_data(summary, statuses),
+            "summary": sorted_summary,
             "statuses": statuses,
+            "genders": {code: name for code, name in GENDERS},
             "total": filtered_grants.count(),
             "totals_by_status": totals_by_status,
+            "totals_per_continent": totals_per_continent,
+            "gender_summary": gender_summary,
             "filters": human_readable_filters,
             **self.admin_site.each_context(request),
         }
         return TemplateResponse(request, "admin/grants/grant_summary.html", context)
 
-    def _process_grant_data(self, grants_data, statuses):
+    def _aggregate_data_by_country(self, grants_data, statuses):
         """
-        Processes grant data for aggregation.
+        Aggregates grant data by country and status.
         """
 
         summary = {}
         totals_by_status = {status[0]: 0 for status in statuses}
+        totals_per_continent = {}
+
         for data in grants_data:
             country = countries.get(code=data["travelling_from"])
             continent = country.continent.name if country else "Unknown"
             country_name = f"{country.name} {country.emoji}" if country else "Unknown"
             country_code = country.code if country else "Unknown"
-
             key = (continent, country_name, country_code)
 
             # Initialize country summary
@@ -617,24 +627,34 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
             summary[key][data["status"]] += data["total"]
             totals_by_status[data["status"]] += data["total"]
 
-        return summary, totals_by_status
+            # Update continent totals
+            if continent not in totals_per_continent:
+                totals_per_continent[continent] = {status[0]: 0 for status in statuses}
+            totals_per_continent[continent][data["status"]] += data["total"]
 
-    def _prepare_template_data(self, summary, statuses):
-        """
-        Prepares data for the summary view template.
-        """
-        # Sort summary data
-        sorted_keys = sorted(summary.keys(), key=lambda x: (x[0], x[2]))
+        return summary, totals_by_status, totals_per_continent
 
-        # Prepare data for template rendering
-        return [
-            {
-                "continent": key[0],
-                "country": key[1],
-                "counts": [summary[key].get(status[0], 0) for status in statuses],
-            }
-            for key in sorted_keys
-        ]
+    def _aggregate_data_by_gender(self, filtered_grants, statuses):
+        """
+        Aggregates grant data by gender and status.
+        """
+        gender_data = filtered_grants.values("user__gender", "status").annotate(
+            total=Count("id")
+        )
+        gender_summary = {
+            gender: {status[0]: 0 for status in statuses} for gender, _ in GENDERS
+        }
+        gender_summary[""] = {
+            status[0]: 0 for status in statuses
+        }  # For unspecified genders
+
+        for data in gender_data:
+            gender = data["user__gender"] if data["user__gender"] else ""
+            status = data["status"]
+            total = data["total"]
+            gender_summary[gender][status] += total
+
+        return gender_summary
 
     def _format_filters_for_display(self, filter_params):
         """
