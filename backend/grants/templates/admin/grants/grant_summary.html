@@ -2,54 +2,102 @@
 {% load markdownify %}
 {% load localize countryname get_item %}
 {% load i18n admin_urls static admin_list %}
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "admin/css/changelists.css" %}">
+    <style>
+    .back-button {
+        margin-bottom: 20px;
+    }
 
+    .back-button a.button {
+        padding: 6px 12px;
+    }
+
+    .back-button a.button:hover {
+        background-color: #e6e6e6;
+    }
+
+    </style>
+    <style>
+      .status-filter {
+          margin-bottom: 20px;
+          padding: 15px;
+          border: 1px solid #ddd;
+          background-color: #f9f9f9;
+      }
+      .status-filter h3 {
+          margin-top: 0;
+      }
+      .checkbox-list {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+      }
+      .status-checkbox {
+          margin-right: 20px;
+          margin-bottom: 10px;
+      }
+      .status-checkbox input {
+          margin-right: 5px;
+      }
+    </style>
+{% endblock %}
 {% block content %}
-
-  <h1>Grant Summary</h1>
-
-  <div>
-    <label><input type="checkbox" class="toggle-column" data-column="2" checked> Pending</label>
-    <label><input type="checkbox" class="toggle-column" data-column="3" checked> Approved</label>
-    <label><input type="checkbox" class="toggle-column" data-column="4" checked> Waiting List</label>
-    <label><input type="checkbox" class="toggle-column" data-column="5" checked> Waiting List, Maybe</label>
-    <label><input type="checkbox" class="toggle-column" data-column="6" checked> Waiting for confirmation</label>
-    <label><input type="checkbox" class="toggle-column" data-column="7" checked> Confirmed</label>
-    <label><input type="checkbox" class="toggle-column" data-column="8" checked> Refused</label>
-    <label><input type="checkbox" class="toggle-column" data-column="9" checked> Rejected</label>
-  </div>
-
-  <table id="grantSummaryTable">
-    <thead>
-      <tr>
-        <th>Continent</th>
-        <th>Pending</th>
-        <th>Approved</th>
-        <th>Waiting List</th>
-        <th>Waiting List, Maybe</th>
-        <th>Waiting for confirmation</th>
-        <th>Confirmed</th>
-        <th>Refused</th>
-        <th>Rejected</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for continent, statuses in summary.items %}
-        <tr>
-          <td>{{ continent }}</td>
-          <td>{{ statuses.pending }}</td>
-          <td>{{ statuses.approved }}</td>
-          <td>{{ statuses.waiting_list }}</td>
-          <td>{{ statuses.waiting_list_maybe }}</td>
-          <td>{{ statuses.waiting_for_confirmation }}</td>
-          <td>{{ statuses.confirmed }}</td>
-          <td>{{ statuses.refused }}</td>
-          <td>{{ statuses.rejected }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-
-  <script>
+    <div class="back-button">
+        <a href="{% url 'admin:grants_grant_changelist' %}" class="button">Back to List</a>
+    </div>
+    <h1>Grant Summary</h1>
+    <!-- Display Active Filters -->
+    <div class="active-filters">
+        <h3>Active Filters:</h3>
+        <ul>
+            {% for filter_name, value in filters.items %}
+                <li>{{ filter_name }}: {{ value }}</li>
+            {% empty %}
+                <li>No filters applied</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="status-filter">
+        <h3>Toggle Status Columns</h3>
+        <div class="checkbox-list">
+            {% for status in statuses %}
+                <label class="status-checkbox">
+                    <input type="checkbox"
+                           class="toggle-column"
+                           data-column="{{ forloop.counter|add:'2' }}"
+                           checked>
+                    {{ status.1|title }}
+                </label>
+            {% endfor %}
+        </div>
+    </div>
+    <table id="grantSummaryTable">
+        <thead>
+            <tr>
+                <th>Continent</th>
+                <th>Country</th>
+                {% for status in statuses %}<th>{{ status.1|title }}</th>{% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in template_data %}
+                <tr>
+                    <td>{{ row.continent }}</td>
+                    <td>{{ row.country }}</td>
+                    {% for count in row.counts %}<td>{{ count }}</td>{% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2 }}">Total Grants: {{ total }}</td>
+                {% for count in totals_by_status.values %}<td>{{ count }}</td>{% endfor %}
+            </tr>
+        </tfoot>
+    </table>
+    <script>
     document.addEventListener('DOMContentLoaded', function () {
       var checkboxes = document.querySelectorAll('.toggle-column');
       checkboxes.forEach(function(checkbox) {
@@ -61,5 +109,5 @@
         });
       });
     });
-  </script>
+    </script>
 {% endblock %}

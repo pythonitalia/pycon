@@ -5,7 +5,8 @@ from itertools import groupby
 from typing import Dict, List, Optional
 from countries.filters import CountryFilter
 from django.urls import path
-from .views import grant_summary_view
+from django.template.response import TemplateResponse
+from django.db.models import Count
 
 from django import forms
 from django.contrib import admin, messages
@@ -504,7 +505,7 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not self.speaker_ids:
-            conference_id = request.GET.get("conference__id__exact")
+            conference_id = request.GET.get("conference__id")
             self.speaker_ids = ScheduleItem.objects.filter(
                 conference__id=conference_id,
                 submission__speaker_id__isnull=False,
@@ -556,9 +557,97 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
-            path("grant-summary/", grant_summary_view, name="grant-summary"),
+            path(
+                "stats/",
+                self.admin_site.admin_view(self.stats_view),
+                name="grant_stats",
+            ),
         ]
         return custom_urls + urls
+
+    def stats_view(self, request):
+        # Initialize statuses
+        statuses = [status for status in Grant.Status.choices]
+
+        # Filter the grants from the request
+        filter_params = request.GET.dict()
+        grants = Grant.objects.filter(**filter_params)
+
+        # Fetch grant data
+        grants_data = grants.values("travelling_from", "status").annotate(
+            total=Count("id")
+        )
+
+        # Aggregate data
+        summary = {}
+        totals_by_status = {status[0]: 0 for status in statuses}
+        for data in grants_data:
+            country = countries.get(code=data["travelling_from"])
+            continent = country.continent.name if country else "Unknown"
+            country_name = f"{country.name} {country.emoji}" if country else "Unknown"
+            country_code = country.code if country else "Unknown"
+
+            key = (continent, country_name, country_code)
+
+            if key not in summary:
+                summary[key] = {status[0]: 0 for status in statuses}
+            summary[key][data["status"]] += data["total"]
+            totals_by_status[data["status"]] += data["total"]
+
+        # Sort by continent and country code
+        sorted_keys = sorted(summary.keys(), key=lambda x: (x[0], x[2]))
+
+        # Prepare data for the template
+        template_data = []
+        for key in sorted_keys:
+            continent, country_name, _ = key
+            counts = summary[key]
+            row = {
+                "continent": continent,
+                "country": country_name,
+                "counts": [counts.get(status[0], 0) for status in statuses],
+            }
+            template_data.append(row)
+
+        # Mapping of raw filter keys to user-friendly names
+        filter_mapping = {
+            "conference__id": "Conference ID",
+            "status": "Status",
+            "country_type": "Country Type",
+            "occupation": "Occupation",
+            "grant_type": "Grant Type",
+            "travelling_from": "Country",
+        }
+
+        # Function to strip filter suffixes and map to user-friendly names
+        def map_filter_key(key):
+            for suffix in [
+                "__exact",
+                "__in",
+                "__gt",
+                "__lt",
+                "__contains",
+                "__startswith",
+            ]:
+                if key.endswith(suffix):
+                    key = key[: -len(suffix)]  # Strip the suffix
+                    break
+            return filter_mapping.get(key, key)
+
+        # Format filters for display
+        human_readable_filters = {
+            map_filter_key(key): value for key, value in filter_params.items()
+        }
+
+        context = dict(
+            self.admin_site.each_context(request),
+            template_data=template_data,
+            statuses=statuses,
+            total=grants.count(),
+            totals_by_status=totals_by_status,
+            filters=human_readable_filters,
+        )
+        return TemplateResponse(request, "admin/grants/grant_summary.html", context)
 
     class Media:
         js = ["admin/js/jquery.init.js"]
