@@ -224,10 +224,3 @@ class Grant(TimeStampedModel):
             "admin:%s_%s_change" % (self._meta.app_label, self._meta.model_name),
             args=(self.pk,),
         )
-
-
-class GrantRecap(Grant):
-    class Meta:
-        proxy = True
-        verbose_name = _("Grant recap")
-        verbose_name_plural = _("Grants recap")

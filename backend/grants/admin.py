@@ -1,7 +1,5 @@
 from import_export.resources import ModelResource
-from collections import Counter
 from datetime import timedelta
-from itertools import groupby
 from typing import Dict, List, Optional
 from countries.filters import CountryFilter
 from django.urls import path
@@ -28,7 +26,7 @@ from pretix import create_voucher
 from schedule.models import ScheduleItem
 from submissions.models import Submission
 
-from .models import Grant, GrantRecap
+from .models import Grant
 
 
 EXPORT_GRANTS_FIELDS = (
@@ -558,27 +556,50 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
         urls = super().get_urls()
         custom_urls = [
             path(
-                "stats/",
-                self.admin_site.admin_view(self.stats_view),
-                name="grant_stats",
+                "summary/",
+                self.admin_site.admin_view(self.summary_view),
+                name="grants-summary",
             ),
         ]
         return custom_urls + urls
 
-    def stats_view(self, request):
+    def summary_view(self, request):
+        """
+        Custom view for summarizing Grant data in the Django admin.
+        This view aggregates
+        grant data by country and status, applying filters from the request.
+        """
         # Initialize statuses
-        statuses = [status for status in Grant.Status.choices]
+        statuses = Grant.Status.choices
 
-        # Filter the grants from the request
+        # Apply filters to the Grant queryset
         filter_params = request.GET.dict()
-        grants = Grant.objects.filter(**filter_params)
+        filtered_grants = Grant.objects.filter(**filter_params)
 
-        # Fetch grant data
-        grants_data = grants.values("travelling_from", "status").annotate(
+        # Aggregate grant data by 'travelling_from' and 'status'
+        grants_data = filtered_grants.values("travelling_from", "status").annotate(
             total=Count("id")
         )
 
-        # Aggregate data
+        # Process and aggregate data for display
+        summary, totals_by_status = self._process_grant_data(grants_data, statuses)
+        human_readable_filters = self._format_filters_for_display(filter_params)
+
+        context = {
+            "template_data": self._prepare_template_data(summary, statuses),
+            "statuses": statuses,
+            "total": filtered_grants.count(),
+            "totals_by_status": totals_by_status,
+            "filters": human_readable_filters,
+            **self.admin_site.each_context(request),
+        }
+        return TemplateResponse(request, "admin/grants/grant_summary.html", context)
+
+    def _process_grant_data(self, grants_data, statuses):
+        """
+        Processes grant data for aggregation.
+        """
+
         summary = {}
         totals_by_status = {status[0]: 0 for status in statuses}
         for data in grants_data:
@@ -589,27 +610,36 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
 
             key = (continent, country_name, country_code)
 
+            # Initialize country summary
             if key not in summary:
                 summary[key] = {status[0]: 0 for status in statuses}
+
             summary[key][data["status"]] += data["total"]
             totals_by_status[data["status"]] += data["total"]
 
-        # Sort by continent and country code
+        return summary, totals_by_status
+
+    def _prepare_template_data(self, summary, statuses):
+        """
+        Prepares data for the summary view template.
+        """
+        # Sort summary data
         sorted_keys = sorted(summary.keys(), key=lambda x: (x[0], x[2]))
 
-        # Prepare data for the template
-        template_data = []
-        for key in sorted_keys:
-            continent, country_name, _ = key
-            counts = summary[key]
-            row = {
-                "continent": continent,
-                "country": country_name,
-                "counts": [counts.get(status[0], 0) for status in statuses],
+        # Prepare data for template rendering
+        return [
+            {
+                "continent": key[0],
+                "country": key[1],
+                "counts": [summary[key].get(status[0], 0) for status in statuses],
             }
-            template_data.append(row)
+            for key in sorted_keys
+        ]
 
-        # Mapping of raw filter keys to user-friendly names
+    def _format_filters_for_display(self, filter_params):
+        """
+        Formats raw filter keys to user-friendly names.
+        """
         filter_mapping = {
             "conference__id": "Conference ID",
             "status": "Status",
@@ -619,7 +649,6 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
             "travelling_from": "Country",
         }
 
-        # Function to strip filter suffixes and map to user-friendly names
         def map_filter_key(key):
             for suffix in [
                 "__exact",
@@ -630,107 +659,10 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
                 "__startswith",
             ]:
                 if key.endswith(suffix):
-                    key = key[: -len(suffix)]  # Strip the suffix
-                    break
+                    return filter_mapping.get(key[: -len(suffix)], key)
             return filter_mapping.get(key, key)
 
-        # Format filters for display
-        human_readable_filters = {
-            map_filter_key(key): value for key, value in filter_params.items()
-        }
-
-        context = dict(
-            self.admin_site.each_context(request),
-            template_data=template_data,
-            statuses=statuses,
-            total=grants.count(),
-            totals_by_status=totals_by_status,
-            filters=human_readable_filters,
-        )
-        return TemplateResponse(request, "admin/grants/grant_summary.html", context)
+        return {map_filter_key(key): value for key, value in filter_params.items()}
 
     class Media:
         js = ["admin/js/jquery.init.js"]
-
-
-@admin.register(GrantRecap)
-class GrantsRecap(admin.ModelAdmin):
-    list_filter = ("conference",)
-    qs = None
-
-    def has_change_permission(self, *args, **kwargs) -> bool:
-        return False
-
-    def get_queryset(self, request):
-        if self.qs:
-            return self.qs
-
-        self.qs = super().get_queryset(request)
-        filters = dict(request.GET.items())
-
-        if filters:
-            self.qs = self.qs.filter(**filters)
-
-        return self.qs
-
-    def changelist_view(self, request, extra_context=None):
-        qs = self.get_queryset(request).order_by("travelling_from")
-
-        results = []
-        for country_code, group in groupby(list(qs), key=lambda k: k.travelling_from):
-            country = countries.get(code=country_code)
-            if not country:
-                continue
-            grants = list(group)
-            counter = Counter([g.status for g in grants])
-            results.append(
-                {
-                    "continent": country.continent.name,
-                    "country": country.name,
-                    "total": int(sum([g.total_amount for g in grants])),
-                    "count": len(grants),
-                    "rejected": counter.get(Grant.Status.rejected, 0),
-                    "approved": counter.get(Grant.Status.approved, 0),
-                    "waiting_list": counter.get(Grant.Status.waiting_list, 0)
-                    + counter.get(Grant.Status.waiting_list_maybe, 0),
-                    "waiting_for_confirmation": counter.get(
-                        Grant.Status.waiting_for_confirmation, 0
-                    ),
-                    "refused": counter.get(Grant.Status.refused, 0),
-                    "confirmed": counter.get(Grant.Status.confirmed, 0),
-                }
-            )
-
-        results = sorted(results, key=lambda k: (k["continent"], k["country"]))
-
-        counter = Counter([g.status for g in qs])
-        footer = {
-            "title": "Total",
-            "count": len(qs),
-            "total": int(
-                sum(
-                    [
-                        g.total_amount
-                        for g in qs
-                        if g.status
-                        in (
-                            Grant.Status.confirmed,
-                            Grant.Status.approved,
-                            Grant.Status.waiting_for_confirmation,
-                        )
-                    ]
-                )
-            ),
-            "rejected": counter.get(Grant.Status.rejected, 0),
-            "approved": counter.get(Grant.Status.approved, 0),
-            "waiting_list": counter.get(Grant.Status.waiting_list, 0)
-            + counter.get(Grant.Status.waiting_list_maybe, 0),
-            "waiting_for_confirmation": counter.get(
-                Grant.Status.waiting_for_confirmation, 0
-            ),
-            "refused": counter.get(Grant.Status.refused, 0),
-            "confirmed": counter.get(Grant.Status.confirmed, 0),
-        }
-
-        extra_context = {"results": results, "footer": footer}
-        return super().changelist_view(request, extra_context=extra_context)
