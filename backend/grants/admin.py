@@ -363,8 +363,6 @@ class GrantAdminForm(forms.ModelForm):
 
 @admin.register(Grant)
 class GrantAdmin(ExportMixin, admin.ModelAdmin):
-    change_list_template = "admin/grants/grant/change_list.html"
-
     speaker_ids = []
     resource_class = GrantResource
     form = GrantAdminForm

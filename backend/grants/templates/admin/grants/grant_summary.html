@@ -62,7 +62,7 @@
            class="button">Back to List</a>
     </div>
     <h1>Grant Summary</h1>
-    <!-- Display Active Filters -->
+
     <div class="active-filters">
         <h3>Active Filters:</h3>
         <ul>
@@ -168,7 +168,7 @@
 </table>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var checkboxes = document.querySelectorAll('.toggle-column');
+        const checkboxes = document.querySelectorAll('.toggle-column');
         checkboxes.forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
 
