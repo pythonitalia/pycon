@@ -17,11 +17,30 @@ env = environ.Env(
 
 environ.Env.read_env(root(".env"))
 
+ENVIRONMENT = env("ENV", default="local")
+
 DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
 FRONTEND_URL = env("FRONTEND_URL")
+
+SENTRY_DSN = env("SENTRY_DSN", default="")
+
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[
+            DjangoIntegration(),
+            AwsLambdaIntegration(),
+            StrawberryIntegration(async_execution=False),
+            CeleryIntegration(monitor_beat_tasks=True),
+        ],
+        traces_sample_rate=0.4,
+        profiles_sample_rate=0.4,
+        send_default_pii=True,
+        environment=ENVIRONMENT,
+    )
 
 # Application definition
 
@@ -212,8 +231,6 @@ if PRETIX_API:
 
 SIMULATE_PRETIX_DB = True
 
-ENVIRONMENT = env("ENV", default="local")
-
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -335,20 +352,3 @@ if DEEPL_AUTH_KEY:
 
 FLODESK_API_KEY = env("FLODESK_API_KEY", default="")
 FLODESK_SEGMENT_ID = env("FLODESK_SEGMENT_ID", default="")
-
-SENTRY_DSN = env("SENTRY_DSN", default="")
-
-if SENTRY_DSN:
-    sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        integrations=[
-            DjangoIntegration(),
-            AwsLambdaIntegration(),
-            StrawberryIntegration(async_execution=False),
-            CeleryIntegration(monitor_beat_tasks=True),
-        ],
-        traces_sample_rate=0.4,
-        profiles_sample_rate=0.4,
-        send_default_pii=True,
-        environment=ENVIRONMENT,
-    )
