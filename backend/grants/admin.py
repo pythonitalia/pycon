@@ -675,9 +675,7 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
     def _filter_and_format_grants(self, request):
         """
         Filters the Grant queryset based on request parameters and
-        formats the filter keys for display. It considers standard Django
-        field lookups to construct a safe list of allowed filters and
-        applies these filters to the queryset.
+        formats the filter keys for display.
         """
         field_lookups = [
             "__exact",
@@ -700,14 +698,13 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
             "travelling_from": "Country",
         }
 
-        # A safe set of allowed filters combining model fields with field lookups
+        # Construct a set of allowed filters
         allowed_filters = {
             f + lookup for f in filter_mapping.keys() for lookup in field_lookups
         }
 
         def map_filter_key(key):
             """Helper function to map raw filter keys to user-friendly names"""
-            # Strip the lookup part from the key and map to a user-friendly name
             base_key = next(
                 (
                     key[: -len(lookup)]
@@ -718,7 +715,7 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
             )
             return filter_mapping.get(base_key, base_key.capitalize())
 
-        # Filter raw GET parameters against the allowed list and format keys for display
+        # Apply filtered parameters and format filter keys for display
         raw_filter_params = {
             k: v for k, v in request.GET.items() if k in allowed_filters
         }
