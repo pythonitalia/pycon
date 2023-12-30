@@ -62,7 +62,6 @@
            class="button">Back to List</a>
     </div>
     <h1>Grant Summary</h1>
-
     <div class="active-filters">
         <h3>Active Filters:</h3>
         <ul>
@@ -80,7 +79,7 @@
                 <label class="status-checkbox">
                     <input type="checkbox"
                            class="toggle-column"
-                           data-column="{{ forloop.counter|add:'2' }}"
+                           data-column="status-column-{{ forloop.counter }}"
                            checked>
                     {{ status.1|title }}
                 </label>
@@ -94,7 +93,7 @@
             <tr>
                 <th>Total Amount</th>
                 <th></th>
-                {% for status in statuses %}<th>{{ status.1|title }}</th>{% endfor %}
+                {% for status in statuses %}<th class="status-column-{{ forloop.counter }}">{{ status.1|title }}</th>{% endfor %}
             </tr>
         </thead>
         <tbody>
@@ -102,7 +101,9 @@
                 <td>{{ total_amount|floatformat:"0" }}€</td>
                 <td></td>
                 {% for status in statuses %}
-                    <td>{{ financial_summary|get_item:status.0|default:"0"|floatformat:"0" }}€</td>
+                    <td class="status-column-{{ forloop.counter }}">
+                        {{ financial_summary|get_item:status.0|default:"0"|floatformat:"0" }}€
+                    </td>
                 {% endfor %}
             </tr>
         </tbody>
@@ -114,7 +115,7 @@
         <tr>
             <th>Continent</th>
             <th>Country</th>
-            {% for status in statuses %}<th>{{ status.1|title }}</th>{% endfor %}
+            {% for status in statuses %}<th class="status-column-{{ forloop.counter }}">{{ status.1|title }}</th>{% endfor %}
         </tr>
     </thead>
     <tbody>
@@ -126,7 +127,7 @@
                             <strong>Total for {{ continent }}: 👇</strong>
                         </td>
                         {% for status in statuses %}
-                            <td>
+                            <td class="status-column-{{ forloop.counter }}">
                                 <strong>{{ totals_per_continent|get_item:continent|get_item:status.0|default:"0" }}</strong>
                             </td>
                         {% endfor %}
@@ -135,7 +136,9 @@
                 <tr>
                     <td>{{ continent }}</td>
                     <td>{{ country }}</td>
-                    {% for status in statuses %}<td>{{ counts|get_item:status.0|default:"0" }}</td>{% endfor %}
+                    {% for status in statuses %}
+                        <td class="status-column-{{ forloop.counter }}">{{ counts|get_item:status.0|default:"0" }}</td>
+                    {% endfor %}
                 </tr>
             {% endwith %}
         {% endfor %}
@@ -143,7 +146,7 @@
     <tfoot>
         <tr>
             <td colspan="2">Total Grants: {{ total_grants }}</td>
-            {% for count in status_totals.values %}<td>{{ count }}</td>{% endfor %}
+            {% for count in status_totals.values %}<td class="status-column-{{ forloop.counter }}">{{ count }}</td>{% endfor %}
         </tr>
     </tfoot>
 </table>
@@ -153,7 +156,7 @@
         <tr>
             <th>Gender</th>
             <th></th>
-            {% for status in statuses %}<th>{{ status.1|title }}</th>{% endfor %}
+            {% for status in statuses %}<th class="status-column-{{ forloop.counter }}">{{ status.1|title }}</th>{% endfor %}
         </tr>
     </thead>
     <tbody>
@@ -161,34 +164,31 @@
             <tr>
                 <td>{{ genders|get_item:gender|default:"Not Specified" }}</td>
                 <td></td>
-                {% for status in statuses %}<td>{{ gender_data|get_item:status.0|default:"0" }}</td>{% endfor %}
+                {% for status in statuses %}
+                    <td class="status-column-{{ forloop.counter }}">{{ gender_data|get_item:status.0|default:"0" }}</td>
+                {% endfor %}
             </tr>
         {% endfor %}
     </tbody>
 </table>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkboxes = document.querySelectorAll('.toggle-column');
-        checkboxes.forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
+  document.addEventListener('DOMContentLoaded', function() {
+      // This script allows users to toggle the visibility of columns in the table
+      // based on the status they choose to show or hide.
+      const checkboxes = document.querySelectorAll('.toggle-column');
+      checkboxes.forEach(function(checkbox) {
+          checkbox.addEventListener('change', function() {
 
-                var financialSummaryColumn = document.getElementById('financialSummary').querySelectorAll('td:nth-child(' + checkbox.dataset.column + '),th:nth-child(' + checkbox.dataset.column + ')');
-                financialSummaryColumn.forEach(function(cell) {
-                    cell.style.display = checkbox.checked ? '' : 'none';
-                });
+              // Use data attributes to target columns.
+              // Each checkbox has a data attribute 'data-column' that corresponds to the column's class to show/hide.
+              const columnClass = checkbox.dataset.column;
+              const columnsToToggle = document.querySelectorAll(`.${columnClass}`);
 
-                var countryColumn = document.getElementById('grantsByCountry').querySelectorAll('td:nth-child(' + checkbox.dataset.column + '),th:nth-child(' + checkbox.dataset.column + ')');
-                countryColumn.forEach(function(cell) {
-                    cell.style.display = checkbox.checked ? '' : 'none';
-                });
-
-                var genderColumn = document.getElementById('grantsByGender').querySelectorAll('td:nth-child(' + checkbox.dataset.column + '),th:nth-child(' + checkbox.dataset.column + ')');
-                genderColumn.forEach(function(cell) {
-                    cell.style.display = checkbox.checked ? '' : 'none';
-                });
-
-            });
-        });
-    });
+              columnsToToggle.forEach(function(cell) {
+                  cell.style.display = checkbox.checked ? '' : 'none';
+              });
+          });
+      });
+  });
 </script>
 {% endblock %}
