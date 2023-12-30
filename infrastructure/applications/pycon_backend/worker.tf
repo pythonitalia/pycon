@@ -1,94 +1,5 @@
-resource "aws_ecs_cluster" "worker" {
-  name = "pythonit-${terraform.workspace}-worker"
-}
-
-data "aws_ami" "ecs" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["amzn-ami-*-amazon-ecs-optimized"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["amazon"]
-}
-
-data "aws_subnet" "private_1a" {
-  vpc_id = data.aws_vpc.default.id
-
-  filter {
-    name   = "tag:Type"
-    values = ["private"]
-  }
-
-  filter {
-    name   = "tag:AZ"
-    values = ["eu-central-1a"]
-  }
-}
-
-
-data "template_file" "user_data" {
-  template = file("${path.module}/user_data.sh")
-  vars = {
-    ecs_cluster = aws_ecs_cluster.worker.name
-  }
-}
-
-
-resource "aws_instance" "instance" {
-  ami               = "ami-05ff3e0fe4cf2c226"
-  instance_type     = "t3a.micro"
-  subnet_id         = data.aws_subnet.private_1a.id
-  availability_zone = "eu-central-1a"
-  vpc_security_group_ids = [
-    data.aws_security_group.rds.id,
-    data.aws_security_group.lambda.id,
-    aws_security_group.instance.id
-  ]
-  source_dest_check    = false
-  user_data            = data.template_file.user_data.rendered
-  iam_instance_profile = aws_iam_instance_profile.worker.name
-  key_name             = "pretix"
-
-  tags = {
-    Name = "pythonit-${terraform.workspace}-worker"
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "aws_cloudwatch_log_group" "worker_logs" {
-  name              = "/ecs/pythonit-${terraform.workspace}-worker"
-  retention_in_days = 7
-}
-
-
-resource "aws_ecs_task_definition" "worker" {
-  family = "pythonit-${terraform.workspace}-worker"
-  container_definitions = jsonencode([
-    {
-      name      = "worker"
-      image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_image.image_digest}"
-      cpu       = 2048
-      memory    = 951
-      essential = true
-      entrypoint = [
-        "/home/app/.venv/bin/python",
-      ]
-
-      command = [
-        "-m", "celery", "-A", "pycon", "worker", "-c", "2",
-      ]
-
-      environment = [
+locals {
+  env_vars = [
         {
           name  = "DATABASE_URL",
           value = local.db_connection
@@ -254,6 +165,98 @@ resource "aws_ecs_task_definition" "worker" {
           value = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/6"
         },
       ]
+}
+resource "aws_ecs_cluster" "worker" {
+  name = "pythonit-${terraform.workspace}-worker"
+}
+
+data "aws_ami" "ecs" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn-ami-*-amazon-ecs-optimized"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["amazon"]
+}
+
+data "aws_subnet" "private_1a" {
+  vpc_id = data.aws_vpc.default.id
+
+  filter {
+    name   = "tag:Type"
+    values = ["private"]
+  }
+
+  filter {
+    name   = "tag:AZ"
+    values = ["eu-central-1a"]
+  }
+}
+
+
+data "template_file" "user_data" {
+  template = file("${path.module}/user_data.sh")
+  vars = {
+    ecs_cluster = aws_ecs_cluster.worker.name
+  }
+}
+
+
+resource "aws_instance" "instance" {
+  ami               = "ami-05ff3e0fe4cf2c226"
+  instance_type     = "t3a.micro"
+  subnet_id         = data.aws_subnet.private_1a.id
+  availability_zone = "eu-central-1a"
+  vpc_security_group_ids = [
+    data.aws_security_group.rds.id,
+    data.aws_security_group.lambda.id,
+    aws_security_group.instance.id
+  ]
+  source_dest_check    = false
+  user_data            = data.template_file.user_data.rendered
+  iam_instance_profile = aws_iam_instance_profile.worker.name
+  key_name             = "pretix"
+
+  tags = {
+    Name = "pythonit-${terraform.workspace}-worker"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_cloudwatch_log_group" "worker_logs" {
+  name              = "/ecs/pythonit-${terraform.workspace}-worker"
+  retention_in_days = 7
+}
+
+
+resource "aws_ecs_task_definition" "worker" {
+  family = "pythonit-${terraform.workspace}-worker"
+  container_definitions = jsonencode([
+    {
+      name      = "worker"
+      image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_image.image_digest}"
+      cpu       = 1024
+      memory    = 800
+      essential = true
+      entrypoint = [
+        "/home/app/.venv/bin/python",
+      ]
+
+      command = [
+        "-m", "celery", "-A", "pycon", "worker", "-c", "2",
+      ]
+
+      environment = local.env_vars
 
       mountPoints = []
       systemControls = [
@@ -284,6 +287,51 @@ resource "aws_ecs_task_definition" "worker" {
 
       stopTimeout = 300
     },
+    {
+      name      = "beat"
+      image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_image.image_digest}"
+      cpu       = 1024
+      memory    = 100
+      essential = true
+      entrypoint = [
+        "/home/app/.venv/bin/python",
+      ]
+
+      command = [
+        "-m", "celery", "-A", "pycon", "beat",
+      ]
+
+      environment = local.env_vars
+
+      mountPoints = []
+      systemControls = [
+        {
+          "namespace" : "net.core.somaxconn",
+          "value" : "4096"
+        }
+      ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.worker_logs.name
+          "awslogs-region"        = "eu-central-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
+
+      healthCheck = {
+        retries = 3
+        command = [
+          "CMD-SHELL",
+          "echo 1"
+        ]
+        timeout = 3
+        interval = 10
+      }
+
+      stopTimeout = 30
+    }
   ])
 
   requires_compatibilities = []
