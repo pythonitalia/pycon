@@ -1,6 +1,11 @@
 import stripe
 import environ
+import sentry_sdk
 from django.utils.translation import gettext_lazy as _
+from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.strawberry import StrawberryIntegration
+from sentry_sdk.integrations.celery import CeleryIntegration
 
 root = environ.Path(__file__) - 3
 
@@ -330,3 +335,20 @@ if DEEPL_AUTH_KEY:
 
 FLODESK_API_KEY = env("FLODESK_API_KEY", default="")
 FLODESK_SEGMENT_ID = env("FLODESK_SEGMENT_ID", default="")
+
+SENTRY_DSN = env("SENTRY_DSN", default="")
+
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[
+            DjangoIntegration(),
+            AwsLambdaIntegration(),
+            StrawberryIntegration(async_execution=False),
+            CeleryIntegration(monitor_beat_tasks=True),
+        ],
+        traces_sample_rate=0.4,
+        profiles_sample_rate=0.4,
+        send_default_pii=True,
+        environment=ENVIRONMENT,
+    )
