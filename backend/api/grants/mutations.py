@@ -15,7 +15,7 @@ from api.grants.types import (
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType
 from conferences.models.conference import Conference
-from domain_events.publisher import notify_new_grant_reply, send_message_to_plain
+from grants.tasks import send_new_plain_chat, notify_new_grant_reply_slack
 from grants.models import Grant as GrantModel
 from users.models import User
 
@@ -253,7 +253,7 @@ class GrantMutation:
         if grant.status in (GrantModel.Status.pending, GrantModel.Status.rejected):
             return SendGrantReplyError(message="You cannot reply to this grant")
 
-        # do not update to need_info, otherwise we will lose the orignal status:
+        # do not update to need_info, otherwise we will lose the original status:
         # Approved, WaitingList
         if input.status != StatusOption.need_info:
             grant.status = input.status.to_grant_status()
@@ -261,9 +261,10 @@ class GrantMutation:
         grant.applicant_message = input.message
         grant.save()
 
-        notify_new_grant_reply(grant, request)
+        admin_url = request.build_absolute_uri(grant.get_admin_url())
+        notify_new_grant_reply_slack.delay(grant_id=grant.id, admin_url=admin_url)
 
         if grant.applicant_message:
-            send_message_to_plain(grant, input.message)
+            send_new_plain_chat.delay(user_id=grant.user.id, message=input.message)
 
         return Grant.from_model(grant)

@@ -78,12 +78,14 @@ def test_send_reply_emails_waiting_list(rf, grant_factory, mocker):
         status=Grant.Status.waiting_list,
     )
     request = rf.get("/")
+    mock_send = mocker.patch("grants.admin.send_grant_reply_waiting_list_email")
 
     send_reply_emails(None, request=request, queryset=Grant.objects.all())
 
     mock_messages.info.assert_called_once_with(
         request, f"Sent Waiting List reply email to {grant.name}"
     )
+    mock_send.delay.assert_called_once_with(grant_id=grant.id)
 
 
 def test_send_reply_emails_waiting_list_maybe(rf, grant_factory, mocker):
@@ -92,12 +94,14 @@ def test_send_reply_emails_waiting_list_maybe(rf, grant_factory, mocker):
         status=Grant.Status.waiting_list_maybe,
     )
     request = rf.get("/")
+    mock_send = mocker.patch("grants.admin.send_grant_reply_waiting_list_email")
 
     send_reply_emails(None, request=request, queryset=Grant.objects.all())
 
     mock_messages.info.assert_called_once_with(
         request, f"Sent Waiting List reply email to {grant.name}"
     )
+    mock_send.delay.assert_called_once_with(grant_id=grant.id)
 
 
 def test_send_reply_emails_rejected(rf, grant_factory, mocker):
@@ -137,9 +141,9 @@ def test_send_voucher_via_email(
         None, rf.get("/"), queryset=Grant.objects.filter(conference=conference)
     )
 
-    mock_send_email.assert_has_calls(
+    mock_send_email.delay.assert_has_calls(
         [
-            call(grant),
+            call(grant_id=grant.id),
         ]
     )
 
@@ -173,7 +177,7 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     mock_messages.error.assert_called_once_with(
         request, "Please select only one conference"
     )
-    mock_send_email.assert_not_called()
+    mock_send_email.delay.assert_not_called()
 
 
 def test_create_grant_vouchers_on_pretix(rf, conference_factory, grant_factory, mocker):
