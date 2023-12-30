@@ -1,7 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% load markdownify %}
 {% load localize countryname get_item %}
-{% load i18n admin_urls static admin_list %}
+{% load i18n l10n admin_urls static admin_list %}
 {% load get_item %}
 {% block extrastyle %}
     {{ block.super }}
@@ -18,6 +18,11 @@
             background-color: #e6e6e6;
         }
 
+
+        #financialSummary td,
+        #financialSummary th {
+            text-align: right;
+        }
 
         .status-filter {
             margin-bottom: 20px;
@@ -82,82 +87,108 @@
             {% endfor %}
         </div>
     </div>
-    <h2>by Country</h2>
-    <table id="grantsByCountry">
+    {% localize on %}
+    <h2>Financial Summary</h2>
+    <table id="financialSummary">
         <thead>
             <tr>
-                <th>Continent</th>
-                <th>Country</th>
+                <th>Total Amount</th>
+                <th></th>
                 {% for status in statuses %}<th>{{ status.1|title }}</th>{% endfor %}
             </tr>
         </thead>
         <tbody>
-            <tbody>
-                {% for key, counts in summary.items %}
-                    {% with continent=key.0 country=key.1 %}
-                        {% ifchanged continent %}
-                            <tr class="continent-total">
-                                <td colspan="2">
-                                    <strong>Total for {{ continent }}:</strong>
-                                </td>
-                                {% for status in statuses %}
-                                    <td>
-                                        <strong>{{ totals_per_continent|get_item:continent|get_item:status.0|default:"0" }}</strong>
-                                    </td>
-                                {% endfor %}
-                            </tr>
-                        {% endifchanged %}
-                        <tr>
-                            <td>{{ continent }}</td>
-                            <td>{{ country }}</td>
-                            {% for status in statuses %}<td>{{ counts|get_item:status.0|default:"0" }}</td>{% endfor %}
-                        </tr>
-                    {% endwith %}
+            <tr>
+                <td>{{ total_amount|floatformat:"0" }}€</td>
+                <td></td>
+                {% for status in statuses %}
+                    <td>{{ financial_summary|get_item:status.0|default:"0"|floatformat:"0" }}€</td>
                 {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="2">Total Grants: {{ total }}</td>
-                    {% for count in totals_by_status.values %}<td>{{ count }}</td>{% endfor %}
-                </tr>
-            </tfoot>
-        </table>
-        <h2>by Gender</h2>
-        <table id="grantsByGender">
-            <thead>
-                <tr>
-                    <th>Gender</th>
-                    <th></th>
-                    {% for status in statuses %}<th>{{ status.1|title }}</th>{% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for gender, gender_data in gender_summary.items %}
-                    <tr>
-                        <td>{{ genders|get_item:gender|default:"Not Specified" }}</td>
-                        <td></td>
-                        {% for status in statuses %}<td>{{ gender_data|get_item:status.0|default:"0" }}</td>{% endfor %}
+            </tr>
+        </tbody>
+    </table>
+{% endlocalize %}
+<h2>by Country</h2>
+<table id="grantsByCountry">
+    <thead>
+        <tr>
+            <th>Continent</th>
+            <th>Country</th>
+            {% for status in statuses %}<th>{{ status.1|title }}</th>{% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, counts in country_stats.items %}
+            {% with continent=key.0 country=key.1 %}
+                {% ifchanged continent %}
+                    <tr class="continent-total">
+                        <td colspan="2">
+                            <strong>Total for {{ continent }}: 👇</strong>
+                        </td>
+                        {% for status in statuses %}
+                            <td>
+                                <strong>{{ totals_per_continent|get_item:continent|get_item:status.0|default:"0" }}</strong>
+                            </td>
+                        {% endfor %}
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var checkboxes = document.querySelectorAll('.toggle-column');
-            checkboxes.forEach(function(checkbox) {
-                checkbox.addEventListener('change', function() {
-                    var countryColumn = document.getElementById('grantsByCountry').querySelectorAll('td:nth-child(' + checkbox.dataset.column + '),th:nth-child(' + checkbox.dataset.column + ')');
-                    countryColumn.forEach(function(cell) {
-                        cell.style.display = checkbox.checked ? '' : 'none';
-                    });
+                {% endifchanged %}
+                <tr>
+                    <td>{{ continent }}</td>
+                    <td>{{ country }}</td>
+                    {% for status in statuses %}<td>{{ counts|get_item:status.0|default:"0" }}</td>{% endfor %}
+                </tr>
+            {% endwith %}
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="2">Total Grants: {{ total_grants }}</td>
+            {% for count in status_totals.values %}<td>{{ count }}</td>{% endfor %}
+        </tr>
+    </tfoot>
+</table>
+<h2>by Gender</h2>
+<table id="grantsByGender">
+    <thead>
+        <tr>
+            <th>Gender</th>
+            <th></th>
+            {% for status in statuses %}<th>{{ status.1|title }}</th>{% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for gender, gender_data in gender_stats.items %}
+            <tr>
+                <td>{{ genders|get_item:gender|default:"Not Specified" }}</td>
+                <td></td>
+                {% for status in statuses %}<td>{{ gender_data|get_item:status.0|default:"0" }}</td>{% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var checkboxes = document.querySelectorAll('.toggle-column');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
 
-                    var genderColumn = document.getElementById('grantsByGender').querySelectorAll('td:nth-child(' + checkbox.dataset.column + '),th:nth-child(' + checkbox.dataset.column + ')');
-                    genderColumn.forEach(function(cell) {
-                        cell.style.display = checkbox.checked ? '' : 'none';
-                    });
-
+                var financialSummaryColumn = document.getElementById('financialSummary').querySelectorAll('td:nth-child(' + checkbox.dataset.column + '),th:nth-child(' + checkbox.dataset.column + ')');
+                financialSummaryColumn.forEach(function(cell) {
+                    cell.style.display = checkbox.checked ? '' : 'none';
                 });
+
+                var countryColumn = document.getElementById('grantsByCountry').querySelectorAll('td:nth-child(' + checkbox.dataset.column + '),th:nth-child(' + checkbox.dataset.column + ')');
+                countryColumn.forEach(function(cell) {
+                    cell.style.display = checkbox.checked ? '' : 'none';
+                });
+
+                var genderColumn = document.getElementById('grantsByGender').querySelectorAll('td:nth-child(' + checkbox.dataset.column + '),th:nth-child(' + checkbox.dataset.column + ')');
+                genderColumn.forEach(function(cell) {
+                    cell.style.display = checkbox.checked ? '' : 'none';
+                });
+
             });
         });
-        </script>
-    {% endblock %}
+    });
+</script>
+{% endblock %}
