@@ -246,7 +246,7 @@ resource "aws_ecs_task_definition" "worker" {
       name      = "worker"
       image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_image.image_digest}"
       cpu       = 1024
-      memory    = 1024
+      memory    = 975
       essential = true
       entrypoint = [
         "/home/app/.venv/bin/python",
@@ -291,7 +291,7 @@ resource "aws_ecs_task_definition" "worker" {
       name      = "beat"
       image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_image.image_digest}"
       cpu       = 1024
-      memory    = 1024
+      memory    = 975
       essential = true
       entrypoint = [
         "/home/app/.venv/bin/python",
