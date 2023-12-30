@@ -568,7 +568,6 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
         """
         statuses = Grant.Status.choices
 
-        # Apply filters to the Grant queryset
         filtered_grants, formatted_filters = self._filter_and_format_grants(request)
 
         # Aggregate grant data by 'travelling_from' and 'status'
