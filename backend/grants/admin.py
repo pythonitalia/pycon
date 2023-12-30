@@ -501,7 +501,7 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not self.speaker_ids:
-            conference_id = request.GET.get("conference__id")
+            conference_id = request.GET.get("conference__id__exact")
             self.speaker_ids = ScheduleItem.objects.filter(
                 conference__id=conference_id,
                 submission__speaker_id__isnull=False,
