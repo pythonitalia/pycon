@@ -164,9 +164,12 @@ def send_grant_voucher_email(*, grant_id):
 
 @app.task
 def send_new_plain_chat(*, user_id, message):
+    if not settings.PLAIN_API:
+        return
+
     user = User.objects.get(id=user_id)
 
-    name = get_name(user, "Financial Aid Appicant")
+    name = get_name(user, "Financial Aid Applicant")
     plain.send_message(user, title=f"{name} has some questions:", message=message)
 
 
