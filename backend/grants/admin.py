@@ -570,12 +570,10 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
 
         filtered_grants, formatted_filters = self._filter_and_format_grants(request)
 
-        # Aggregate grant data by 'travelling_from' and 'status'
         grants_by_country = filtered_grants.values(
             "travelling_from", "status"
         ).annotate(total=Count("id"))
 
-        # Process and aggregate data for display
         (
             country_stats,
             status_totals,
@@ -586,7 +584,6 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
             filtered_grants, statuses
         )
 
-        # Sort the summary data
         sorted_country_stats = dict(
             sorted(country_stats.items(), key=lambda x: (x[0][0], x[0][2]))
         )
@@ -622,7 +619,6 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
             country_code = country.code if country else "Unknown"
             key = (continent, country_name, country_code)
 
-            # Initialize country summary
             if key not in summary:
                 summary[key] = {status[0]: 0 for status in statuses}
 
