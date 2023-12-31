@@ -249,11 +249,11 @@ resource "aws_ecs_task_definition" "worker" {
       memory    = 975
       essential = true
       entrypoint = [
-        "/home/app/.venv/bin/python",
+        "/home/app/.venv/bin/celery",
       ]
 
       command = [
-        "-m", "celery", "-A", "pycon", "worker", "-c", "2",
+        "-A", "pycon", "worker", "-c", "2",
       ]
 
       environment = local.env_vars
@@ -294,11 +294,11 @@ resource "aws_ecs_task_definition" "worker" {
       memory    = 975
       essential = true
       entrypoint = [
-        "/home/app/.venv/bin/python",
+        "/home/app/.venv/bin/celery",
       ]
 
       command = [
-        "-m", "celery", "-A", "pycon", "beat",
+        "-A", "pycon", "beat", "--loglevel", "debug"
       ]
 
       environment = local.env_vars
