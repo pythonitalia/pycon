@@ -164,6 +164,10 @@ locals {
       name  = "CELERY_RESULT_BACKEND",
       value = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/6"
     },
+    {
+      name  = "ENV",
+      value = terraform.workspace
+    },
   ]
 }
 resource "aws_ecs_cluster" "worker" {
