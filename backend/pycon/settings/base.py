@@ -119,6 +119,7 @@ INSTALLED_APPS = [
     "google_api.apps.GoogleApiConfig",
     "association_membership.apps.AssociationMembershipConfig",
     "rest_framework",
+    "healthchecks.apps.HealthchecksConfig",
 ]
 
 MIDDLEWARE = [
@@ -355,3 +356,8 @@ if DEEPL_AUTH_KEY:
 
 FLODESK_API_KEY = env("FLODESK_API_KEY", default="")
 FLODESK_SEGMENT_ID = env("FLODESK_SEGMENT_ID", default="")
+
+CELERY_WORKER_SEND_TASK_EVENTS = True
+CELERY_TASK_SEND_SENT_EVENT = True
+
+GITHASH = env("GITHASH", default="")

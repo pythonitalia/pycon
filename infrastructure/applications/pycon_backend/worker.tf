@@ -261,7 +261,7 @@ resource "aws_ecs_task_definition" "worker" {
       ]
 
       command = [
-        "-A", "pycon", "worker", "-c", "2",
+        "-A", "pycon", "worker", "-c", "2", "-E"
       ]
 
       environment = local.env_vars
@@ -306,7 +306,7 @@ resource "aws_ecs_task_definition" "worker" {
       ]
 
       command = [
-        "-A", "pycon", "beat", "--loglevel", "debug"
+        "-A", "pycon", "beat", "--loglevel", "debug", "-S", "redbeat.RedBeatScheduler"
       ]
 
       environment = local.env_vars

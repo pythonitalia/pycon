@@ -23,6 +23,7 @@ urlpatterns = [
     path("cms-admin/", include(wagtailadmin_urls)),
     path("cms-documents/", include(wagtaildocs_urls)),
     path("", include("association_membership.urls")),
+    path("", include("healthchecks.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = urlpatterns + [

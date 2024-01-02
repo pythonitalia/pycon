@@ -80,7 +80,7 @@ services:
       dockerfile: ../Dockerfile.python.local
     networks: [pycon_net]
     entrypoint: ""
-    command: sh -c "touch /.ready && pdm install && pdm run python worker.py"
+    command: sh -c "touch /.ready && pdm install && pdm run celery -A pycon worker -l INFO"
     depends_on:
       redis:
         condition: service_healthy
