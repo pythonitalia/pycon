@@ -144,7 +144,7 @@ export const FileInput = ({
         }}
       />
       {(error || errors) && (
-        <ErrorsList sx={{ mt: 2 }} errors={[error, ...errors]} />
+        <ErrorsList sx={{ mt: 2 }} errors={[error, ...(errors || [])]} />
       )}
 
       {previewAvailable && (
