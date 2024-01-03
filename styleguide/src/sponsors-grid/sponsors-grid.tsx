@@ -59,7 +59,7 @@ const SponsorItem = ({ sponsor, cols }: { sponsor: Sponsor; cols: number }) => {
       className="bg-cream border border-black relative"
       href={sponsor.url}
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noopener"
     >
       <div>
         <div className="pb-[50%] lg:pb-[60%]"></div>
