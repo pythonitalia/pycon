@@ -19,12 +19,12 @@ from ordered_model.admin import (
     OrderedTabularInline,
 )
 from conferences.models import SpeakerVoucher
-from domain_events.publisher import (
-    send_new_submission_time_slot,
+from pretix import user_has_admission_ticket
+from schedule.tasks import (
     send_schedule_invitation_email,
     send_speaker_communication_email,
+    send_submission_time_slot_changed_email,
 )
-from pretix import user_has_admission_ticket
 from video_upload.workflows.batch_multiple_schedule_items_video_upload import (
     BatchMultipleScheduleItemsVideoUpload,
 )
@@ -187,7 +187,7 @@ def _send_invitations(
 
     for schedule_item in queryset:
         schedule_item.speaker_invitation_sent_at = timezone.now()
-        send_schedule_invitation_email(schedule_item, is_reminder=is_reminder)
+        send_schedule_invitation_email.delay(schedule_item, is_reminder=is_reminder)
         schedule_item.save()
 
 
@@ -431,12 +431,12 @@ class ScheduleItemAdmin(admin.ModelAdmin):
                     schedule_item.submission_id
                     and schedule_item.submission.speaker_id not in notified_ids
                 ):
-                    send_speaker_communication_email(
+                    send_speaker_communication_email.delay(
                         user_id=schedule_item.submission.speaker_id,
                         subject=subject,
                         body=body,
                         only_speakers_without_ticket=only_speakers_without_ticket,
-                        conference=conference,
+                        conference_id=conference.id,
                     )
                     notified_ids.add(schedule_item.submission.speaker_id)
 
@@ -446,7 +446,7 @@ class ScheduleItemAdmin(admin.ModelAdmin):
 
                     notified_ids.add(additional_speaker.user_id)
 
-                    send_speaker_communication_email(
+                    send_speaker_communication_email.delay(
                         user_id=additional_speaker.user_id,
                         subject=subject,
                         body=body,
@@ -471,7 +471,9 @@ class ScheduleItemAdmin(admin.ModelAdmin):
         return_value = super().save_form(request, form, change)
 
         if form.cleaned_data["notify_new_time_slot"]:
-            send_new_submission_time_slot(form.instance)
+            send_submission_time_slot_changed_email.delay(
+                schedule_item_id=form.instance.id
+            )
 
         return return_value
 

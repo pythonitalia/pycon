@@ -12,12 +12,12 @@ from blob.confirmation import confirm_blob_upload_usage
 from blob.enum import BlobContainer
 from blob.url_parsing import verify_azure_storage_url
 from conferences.models.conference import Conference
-from domain_events.publisher import notify_new_submission
 from i18n.strings import LazyI18nString
 from languages.models import Language
 from participants.models import Participant
 from api.participants.mutations import _participant_avatar_blob_name
 from submissions.models import Submission as SubmissionModel
+from submissions.tasks import notify_new_cfp_submission
 
 from .types import Submission
 
@@ -263,9 +263,15 @@ class UpdateSubmissionInput(BaseSubmissionInput):
     tags: list[ID] = strawberry.field(default_factory=list)
 
 
-SendSubmissionOutput = Annotated[Union[Submission, SendSubmissionErrors], strawberry.union(name="SendSubmissionOutput")]
+SendSubmissionOutput = Annotated[
+    Union[Submission, SendSubmissionErrors],
+    strawberry.union(name="SendSubmissionOutput"),
+]
 
-UpdateSubmissionOutput = Annotated[Union[Submission, SendSubmissionErrors], strawberry.union(name="UpdateSubmissionOutput")]
+UpdateSubmissionOutput = Annotated[
+    Union[Submission, SendSubmissionErrors],
+    strawberry.union(name="UpdateSubmissionOutput"),
+]
 
 
 @strawberry.type
@@ -408,17 +414,10 @@ class SubmissionsMutations:
             },
         )
 
-        notify_new_submission(
+        notify_new_cfp_submission.delay(
             submission_id=instance.id,
-            title=instance.title.localize("en"),
-            elevator_pitch=instance.elevator_pitch.localize("en"),
-            submission_type=instance.type.name,
-            admin_url=request.build_absolute_uri(instance.get_admin_url()),
-            duration=instance.duration.duration,
-            topic=instance.topic.name if instance.topic_id else "",
-            speaker_id=instance.speaker_id,
             conference_id=instance.conference_id,
-            tags=",".join(instance.tags.values_list("name", flat=True)),
+            admin_url=request.build_absolute_uri(instance.get_admin_url()),
         )
 
         # hack because we return django models

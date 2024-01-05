@@ -1,5 +1,6 @@
 import typing
 from datetime import date, datetime, time, timedelta
+from schedule.tasks import send_new_schedule_invitation_answer_slack
 
 import strawberry
 from django.db import transaction
@@ -14,7 +15,6 @@ from api.schedule.types import (
 )
 from api.submissions.permissions import IsSubmissionSpeakerOrStaff
 from conferences.models import Conference
-from domain_events.publisher import send_new_schedule_invitation_answer
 from languages.models import Language
 from pretix import user_has_admission_ticket
 from schedule.models import (
@@ -105,9 +105,21 @@ class ScheduleItemIsFull:
     message: str = "This event is full"
 
 
-BookScheduleItemResult = Annotated[Union[ScheduleItemType, ScheduleItemIsFull, UserNeedsConferenceTicket, UserIsAlreadyBooked, ScheduleItemNotBookable], strawberry.union(name="BookScheduleItemResult")]
+BookScheduleItemResult = Annotated[
+    Union[
+        ScheduleItemType,
+        ScheduleItemIsFull,
+        UserNeedsConferenceTicket,
+        UserIsAlreadyBooked,
+        ScheduleItemNotBookable,
+    ],
+    strawberry.union(name="BookScheduleItemResult"),
+]
 
-CancelBookingScheduleItemResult = Annotated[Union[ScheduleItemType, UserIsNotBooked, ScheduleItemNotBookable], strawberry.union(name="CancelBookingScheduleItemResult")]
+CancelBookingScheduleItemResult = Annotated[
+    Union[ScheduleItemType, UserIsNotBooked, ScheduleItemNotBookable],
+    strawberry.union(name="CancelBookingScheduleItemResult"),
+]
 
 
 @strawberry.type
@@ -153,7 +165,9 @@ class ScheduleMutations:
         ScheduleItemAttendee.objects.create(
             schedule_item=schedule_item, user_id=user_id
         )
-        schedule_item.__strawberry_definition__ = ScheduleItemType.__strawberry_definition__
+        schedule_item.__strawberry_definition__ = (
+            ScheduleItemType.__strawberry_definition__
+        )
         return schedule_item
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -172,7 +186,9 @@ class ScheduleMutations:
         ScheduleItemAttendee.objects.filter(
             schedule_item=schedule_item, user_id=user_id
         ).delete()
-        schedule_item.__strawberry_definition__ = ScheduleItemType.__strawberry_definition__
+        schedule_item.__strawberry_definition__ = (
+            ScheduleItemType.__strawberry_definition__
+        )
         return schedule_item
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -214,8 +230,18 @@ class ScheduleMutations:
             schedule_item.speaker_invitation_notes = new_notes
             schedule_item.save()
 
-        send_new_schedule_invitation_answer(
-            schedule_item=schedule_item, request=info.context.request
+        request = info.context.request
+        invitation_admin_url = request.build_absolute_uri(
+            schedule_item.get_invitation_admin_url()
+        )
+
+        schedule_item_admin_url = request.build_absolute_uri(
+            schedule_item.get_admin_url()
+        )
+        send_new_schedule_invitation_answer_slack.delay(
+            schedule_item=schedule_item,
+            invitation_admin_url=invitation_admin_url,
+            schedule_item_admin_url=schedule_item_admin_url,
         )
         return ScheduleInvitation.from_django_model(schedule_item)
 

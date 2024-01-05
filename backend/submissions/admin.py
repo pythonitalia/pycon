@@ -8,7 +8,8 @@ from import_export.admin import ExportMixin
 from import_export.fields import Field
 
 from participants.models import Participant
-from domain_events.publisher import send_proposal_rejected_email
+from submissions.tasks import send_proposal_rejected_email
+
 
 from .models import Submission, SubmissionComment, SubmissionTag, SubmissionType
 
@@ -144,7 +145,7 @@ def move_to_rejected(modeladmin, request, queryset):
 @admin.action(description="Send proposal rejected email")
 def send_proposal_rejected_email_action(modeladmin, request, queryset):
     for proposal in queryset:
-        send_proposal_rejected_email(proposal)
+        send_proposal_rejected_email.delay(proposal.id)
 
     messages.add_message(
         request,
