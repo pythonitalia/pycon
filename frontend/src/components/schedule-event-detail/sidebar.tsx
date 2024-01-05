@@ -50,7 +50,7 @@ export const Sidebar = ({
         code: process.env.conferenceCode,
         slug,
       },
-      skip: !isLoggedIn,
+      skip: !isLoggedIn || !bookable,
       fetchPolicy: "network-only",
       nextFetchPolicy: "cache-first",
     });
