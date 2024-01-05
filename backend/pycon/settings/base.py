@@ -27,6 +27,8 @@ FRONTEND_URL = env("FRONTEND_URL")
 
 SENTRY_DSN = env("SENTRY_DSN", default="")
 
+GITHASH = env("GITHASH", default="")
+
 if SENTRY_DSN:
     sentry_sdk.init(
         dsn=SENTRY_DSN,
@@ -40,6 +42,7 @@ if SENTRY_DSN:
         profiles_sample_rate=0.4,
         send_default_pii=True,
         environment=ENVIRONMENT,
+        release=GITHASH,
     )
 
 # Application definition

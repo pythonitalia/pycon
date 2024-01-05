@@ -168,6 +168,10 @@ locals {
       name  = "ENV",
       value = terraform.workspace
     },
+    {
+      name  = "GITHASH",
+      value = data.external.githash.result.githash
+    }
   ]
 }
 resource "aws_ecs_cluster" "worker" {
