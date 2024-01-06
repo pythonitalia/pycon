@@ -1,22 +1,12 @@
 import json
-import logging
-
 import boto3
-
-from users.models import User
+import logging
 
 logger = logging.getLogger(__name__)
 
 
-def get_name(user: User, fallback: str = "<no name specified>"):
-    return user.full_name or user.name or user.username or fallback
-
-
-def handle_volunteers_push_notification_sent(data):
+def send_volunteers_push_notification(*, notification_id, volunteers_device_id):
     from volunteers_notifications.models import Notification, VolunteerDevice
-
-    notification_id = data["notification_id"]
-    volunteers_device_id = data["volunteers_device_id"]
 
     notification = Notification.objects.get(id=notification_id)
     device = VolunteerDevice.objects.get(id=volunteers_device_id)
@@ -70,8 +60,3 @@ def handle_volunteers_push_notification_sent(data):
             exc_info=e,
         )
         raise
-
-
-HANDLERS = {
-    "VolunteersPushNotificationSent": handle_volunteers_push_notification_sent,
-}

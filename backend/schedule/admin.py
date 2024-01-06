@@ -187,7 +187,9 @@ def _send_invitations(
 
     for schedule_item in queryset:
         schedule_item.speaker_invitation_sent_at = timezone.now()
-        send_schedule_invitation_email.delay(schedule_item, is_reminder=is_reminder)
+        send_schedule_invitation_email.delay(
+            schedule_item_id=schedule_item.id, is_reminder=is_reminder
+        )
         schedule_item.save()
 
 

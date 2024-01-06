@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 @app.task
-def notify_new_cfp_submission(submission_id, conference_id, admin_url):
+def notify_new_cfp_submission(*, submission_id, conference_id, admin_url):
     from conferences.models import Conference
     from submissions.models import Submission
 

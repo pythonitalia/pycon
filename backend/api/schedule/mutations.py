@@ -1,6 +1,6 @@
 import typing
 from datetime import date, datetime, time, timedelta
-from schedule.tasks import send_new_schedule_invitation_answer_slack
+from schedule.tasks import notify_new_schedule_invitation_answer_slack
 
 import strawberry
 from django.db import transaction
@@ -238,7 +238,7 @@ class ScheduleMutations:
         schedule_item_admin_url = request.build_absolute_uri(
             schedule_item.get_admin_url()
         )
-        send_new_schedule_invitation_answer_slack.delay(
+        notify_new_schedule_invitation_answer_slack.delay(
             schedule_item=schedule_item,
             invitation_admin_url=invitation_admin_url,
             schedule_item_admin_url=schedule_item_admin_url,

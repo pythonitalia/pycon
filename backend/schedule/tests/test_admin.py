@@ -401,15 +401,15 @@ def test_send_schedule_invitation_to_all(
         queryset=ScheduleItem.objects.filter(conference=conference).all(),
     )
 
-    assert mock_send_invitation.call_count == 2
-    mock_send_invitation.assert_has_calls(
+    assert mock_send_invitation.delay.call_count == 2
+    mock_send_invitation.delay.assert_has_calls(
         [
             call(
-                schedule_item_1,
+                schedule_item_id=schedule_item_1.id,
                 is_reminder=False,
             ),
             call(
-                schedule_item_2,
+                schedule_item_id=schedule_item_2.id,
                 is_reminder=False,
             ),
         ],
@@ -450,8 +450,8 @@ def test_send_schedule_invitation_to_uninvited(
         queryset=ScheduleItem.objects.filter(conference=conference).all(),
     )
 
-    mock_send_invitation.assert_called_once_with(
-        schedule_item_1,
+    mock_send_invitation.delay.assert_called_once_with(
+        schedule_item_id=schedule_item_1.id,
         is_reminder=False,
     )
 
@@ -483,8 +483,8 @@ def test_send_schedule_invitation_reminder_to_waiting(
         queryset=ScheduleItem.objects.filter(conference=conference).all(),
     )
 
-    mock_send_invitation.assert_called_once_with(
-        schedule_item_1,
+    mock_send_invitation.delay.assert_called_once_with(
+        schedule_item_id=schedule_item_1.id,
         is_reminder=True,
     )
 
@@ -519,15 +519,15 @@ def test_send_schedule_invitation_reminder_to_all_waiting(
         queryset=ScheduleItem.objects.filter(conference=conference).all(),
     )
 
-    assert mock_send_invitation.call_count == 2
-    mock_send_invitation.assert_has_calls(
+    assert mock_send_invitation.delay.call_count == 2
+    mock_send_invitation.delay.assert_has_calls(
         [
             call(
-                schedule_item_1,
+                schedule_item_id=schedule_item_1.id,
                 is_reminder=True,
             ),
             call(
-                schedule_item_2,
+                schedule_item_id=schedule_item_2.id,
                 is_reminder=True,
             ),
         ],

@@ -18,9 +18,9 @@ from ordered_model.admin import (
 from itertools import permutations
 from unicodedata import normalize
 from conferences.models import SpeakerVoucher
-from domain_events.publisher import send_speaker_voucher_email
 from pretix import create_voucher
 from schedule.models import ScheduleItem
+from schedule.tasks import send_speaker_voucher_email
 from sponsors.models import SponsorLevel
 from voting.models import IncludedEvent
 import re
@@ -452,7 +452,7 @@ def send_voucher_via_email(modeladmin, request, queryset):
 
     count = 0
     for speaker_voucher in queryset.filter(pretix_voucher_id__isnull=False):
-        send_speaker_voucher_email(speaker_voucher)
+        send_speaker_voucher_email.delay(speaker_voucher)
         count = count + 1
 
     messages.success(request, f"{count} Voucher emails scheduled!")

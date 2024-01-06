@@ -16,11 +16,10 @@ logger = logging.getLogger(__name__)
 
 
 @app.task
-def send_schedule_invitation_email(schedule_item_id, is_reminder):
+def send_schedule_invitation_email(*, schedule_item_id, is_reminder):
     from schedule.models import ScheduleItem
 
     schedule_item = ScheduleItem.objects.get(id=schedule_item_id)
-
     submission = schedule_item.submission
     language_code = schedule_item.language.code
 
@@ -53,7 +52,7 @@ def send_schedule_invitation_email(schedule_item_id, is_reminder):
 
 
 @app.task
-def send_submission_time_slot_changed_email(schedule_item_id):
+def send_submission_time_slot_changed_email(*, schedule_item_id):
     from schedule.models import ScheduleItem
 
     schedule_item = ScheduleItem.objects.get(id=schedule_item_id)
@@ -67,7 +66,7 @@ def send_submission_time_slot_changed_email(schedule_item_id):
     )
 
     speaker = User.objects.get(id=speaker_id)
-    conference_name = submission.conference.name.localize("en")
+    conference_name = schedule_item.conference.name.localize("en")
 
     send_email(
         template=EmailTemplate.SUBMISSION_SCHEDULE_TIME_CHANGED,
@@ -82,7 +81,7 @@ def send_submission_time_slot_changed_email(schedule_item_id):
 
 
 @app.task
-def send_new_schedule_invitation_answer_slack(
+def notify_new_schedule_invitation_answer_slack(
     *, schedule_item_id, invitation_admin_url, schedule_item_admin_url
 ):
     from schedule.models import ScheduleItem
