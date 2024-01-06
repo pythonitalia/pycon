@@ -452,7 +452,7 @@ def send_voucher_via_email(modeladmin, request, queryset):
 
     count = 0
     for speaker_voucher in queryset.filter(pretix_voucher_id__isnull=False):
-        send_speaker_voucher_email.delay(speaker_voucher)
+        send_speaker_voucher_email.delay(speaker_voucher_id=speaker_voucher.id)
         count = count + 1
 
     messages.success(request, f"{count} Voucher emails scheduled!")

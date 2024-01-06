@@ -135,7 +135,7 @@ def test_saving_the_same_answer_does_not_trigger_event(
     assert schedule_item.status == ScheduleItem.STATUS.confirmed
     assert schedule_item.speaker_invitation_notes == "notes"
 
-    mock_event.assert_not_called()
+    mock_event.delay.assert_not_called()
 
 
 def test_changing_notes_triggers_a_new_event(
@@ -197,7 +197,7 @@ def test_changing_notes_triggers_a_new_event(
     assert schedule_item.status == ScheduleItem.STATUS.confirmed
     assert schedule_item.speaker_invitation_notes == "newnotes"
 
-    mock_event.assert_called()
+    mock_event.delay.assert_called()
 
 
 def test_random_user_cannot_update_an_invitation(
@@ -251,7 +251,7 @@ def test_random_user_cannot_update_an_invitation(
     assert schedule_item.status == ScheduleItem.STATUS.waiting_confirmation
     assert schedule_item.speaker_invitation_notes == ""
 
-    mock_event.assert_not_called()
+    mock_event.delay.assert_not_called()
 
 
 def test_cannot_update_schedule_if_submission_doesnt_have_a_matching_schedule(
@@ -286,7 +286,7 @@ def test_cannot_update_schedule_if_submission_doesnt_have_a_matching_schedule(
         "__typename": "ScheduleInvitationNotFound",
     }
 
-    mock_event.assert_not_called()
+    mock_event.delay.assert_not_called()
 
 
 def test_reqires_authentication(
@@ -336,7 +336,7 @@ def test_reqires_authentication(
     assert schedule_item.status == ScheduleItem.STATUS.waiting_confirmation
     assert schedule_item.speaker_invitation_notes == ""
 
-    mock_event.assert_not_called()
+    mock_event.delay.assert_not_called()
 
 
 def test_staff_can_update_invitation_answer(
