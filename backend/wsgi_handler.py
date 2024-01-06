@@ -44,14 +44,6 @@ def import_app(config):
 
 
 def handler(event, context):
-    if "Records" in event:
-        logger.info("Received Records from lambda")
-        apps.populate(settings.INSTALLED_APPS)
-        from sqs_messages import process_sqs_messages
-
-        process_sqs_messages(event)
-        return
-
     if "cronEvent" in event:
         logger.info("Received cronEvent from lambda")
         apps.populate(settings.INSTALLED_APPS)
