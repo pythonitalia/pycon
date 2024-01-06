@@ -129,6 +129,7 @@ def test_send_submission_time_slot_changed_email():
         ScheduleItem.STATUS.maybe,
         ScheduleItem.STATUS.rejected,
         ScheduleItem.STATUS.cant_attend,
+        ScheduleItem.STATUS.cancelled,
     ],
 )
 @override_settings(SPEAKERS_EMAIL_ADDRESS="speakers@placeholder.com")
