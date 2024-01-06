@@ -186,11 +186,9 @@ def _send_invitations(
         queryset = queryset.filter(speaker_invitation_sent_at__isnull=False)
 
     for schedule_item in queryset:
-        schedule_item.speaker_invitation_sent_at = timezone.now()
         send_schedule_invitation_email.delay(
             schedule_item_id=schedule_item.id, is_reminder=is_reminder
         )
-        schedule_item.save()
 
 
 @admin.action(description="Upload videos to YouTube")

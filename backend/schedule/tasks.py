@@ -50,6 +50,9 @@ def send_schedule_invitation_email(*, schedule_item_id, is_reminder):
         },
     )
 
+    schedule_item.speaker_invitation_sent_at = timezone.now()
+    schedule_item.save()
+
 
 @app.task
 def send_submission_time_slot_changed_email(*, schedule_item_id):

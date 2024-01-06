@@ -56,6 +56,10 @@ def test_send_schedule_invitation_email():
         },
     )
 
+    schedule_item.refresh_from_db()
+
+    assert schedule_item.speaker_invitation_sent_at is not None
+
 
 @override_settings(FRONTEND_URL="https://frontend/")
 def test_send_schedule_invitation_email_reminder():

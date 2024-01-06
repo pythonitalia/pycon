@@ -425,12 +425,6 @@ def test_send_schedule_invitation_to_all(
         any_order=True,
     )
 
-    schedule_item_1.refresh_from_db()
-    schedule_item_2.refresh_from_db()
-
-    assert schedule_item_1.speaker_invitation_sent_at is not None
-    assert schedule_item_2.speaker_invitation_sent_at is not None
-
 
 def test_send_schedule_invitation_to_uninvited(
     rf, schedule_item_factory, conference_factory, submission_factory, mocker
@@ -478,7 +472,7 @@ def test_send_schedule_invitation_reminder_to_waiting(
         submission=submission_factory(conference=conference),
         speaker_invitation_sent_at=timezone.now(),
     )
-    schedule_item_2 = schedule_item_factory(
+    schedule_item_factory(
         type=ScheduleItem.TYPES.talk,
         conference=conference,
         status=ScheduleItem.STATUS.waiting_confirmation,
@@ -496,9 +490,6 @@ def test_send_schedule_invitation_reminder_to_waiting(
         schedule_item_id=schedule_item_1.id,
         is_reminder=True,
     )
-
-    schedule_item_2.refresh_from_db()
-    assert schedule_item_2.speaker_invitation_sent_at is None
 
 
 def test_send_schedule_invitation_reminder_to_all_waiting(
