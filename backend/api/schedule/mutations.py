@@ -239,7 +239,7 @@ class ScheduleMutations:
             schedule_item.get_admin_url()
         )
         notify_new_schedule_invitation_answer_slack.delay(
-            schedule_item=schedule_item,
+            schedule_item_id=schedule_item.id,
             invitation_admin_url=invitation_admin_url,
             schedule_item_admin_url=schedule_item_admin_url,
         )

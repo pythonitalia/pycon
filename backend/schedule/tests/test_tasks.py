@@ -82,7 +82,7 @@ def test_send_schedule_invitation_email_reminder():
         template=EmailTemplate.SUBMISSION_ACCEPTED,
         to="marco@placeholder.it",
         subject=(
-            "[Conf] Reminder: Your submission was " "accepted, confirm your presence"
+            "[Conf] Reminder: Your submission was accepted, confirm your presence"
         ),
         variables={
             "submissionTitle": "Title Submission",
@@ -122,8 +122,17 @@ def test_send_submission_time_slot_changed_email():
     )
 
 
+@pytest.mark.parametrize(
+    "status",
+    [
+        ScheduleItem.STATUS.confirmed,
+        ScheduleItem.STATUS.maybe,
+        ScheduleItem.STATUS.rejected,
+        ScheduleItem.STATUS.cant_attend,
+    ],
+)
 @override_settings(SPEAKERS_EMAIL_ADDRESS="speakers@placeholder.com")
-def test_notify_new_schedule_invitation_answer_slack():
+def test_notify_new_schedule_invitation_answer_slack(status):
     user = UserFactory(
         full_name="Marco Acierno",
         email="marco@placeholder.it",
@@ -132,7 +141,7 @@ def test_notify_new_schedule_invitation_answer_slack():
     )
 
     schedule_item = ScheduleItemFactory(
-        type=ScheduleItem.TYPES.talk, submission__speaker=user
+        type=ScheduleItem.TYPES.talk, submission__speaker=user, status=status
     )
 
     with patch("schedule.tasks.slack") as slack_mock:

@@ -453,10 +453,14 @@ class ScheduleItemAdmin(admin.ModelAdmin):
                         subject=subject,
                         body=body,
                         only_speakers_without_ticket=only_speakers_without_ticket,
-                        conference=conference,
+                        conference_id=conference.id,
                     )
 
-            messages.success(request, f"Scheduled {len(notified_ids)} emails.")
+            self.message_user(
+                request,
+                f"Scheduled {len(notified_ids)} emails.",
+                messages.SUCCESS,
+            )
 
         return TemplateResponse(request, "email-speakers.html", context)
 

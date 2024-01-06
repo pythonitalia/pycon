@@ -172,6 +172,7 @@ def send_speaker_voucher_email(speaker_voucher_id):
     speaker_voucher.save()
 
 
+@app.task
 def send_speaker_communication_email(
     *,
     subject,

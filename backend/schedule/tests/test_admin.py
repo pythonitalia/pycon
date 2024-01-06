@@ -1,3 +1,6 @@
+from conferences.tests.factories import ConferenceFactory
+from django.contrib import messages
+from django.contrib.admin.sites import AdminSite
 from unittest.mock import call
 
 import pytest
@@ -5,12 +8,18 @@ from django.utils import timezone
 
 from conferences.models import SpeakerVoucher
 from schedule.admin import (
+    ScheduleItemAdmin,
     mark_speakers_to_receive_vouchers,
     send_schedule_invitation_reminder_to_waiting,
     send_schedule_invitation_to_all,
     send_schedule_invitation_to_uninvited,
 )
 from schedule.models import ScheduleItem
+from schedule.tests.factories import (
+    ScheduleItemAdditionalSpeakerFactory,
+    ScheduleItemFactory,
+)
+from users.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -532,4 +541,154 @@ def test_send_schedule_invitation_reminder_to_all_waiting(
             ),
         ],
         any_order=True,
+    )
+
+
+def test_email_speakers(rf, admin_user, mocker):
+    mock_send_comm = mocker.patch("schedule.admin.send_speaker_communication_email")
+    user = UserFactory()
+    conference = ConferenceFactory()
+
+    ScheduleItemFactory(
+        conference=conference, type=ScheduleItem.TYPES.talk, submission__speaker=user
+    )
+
+    admin = ScheduleItemAdmin(
+        model=ScheduleItem,
+        admin_site=AdminSite(),
+    )
+    admin.message_user = mocker.Mock()
+
+    request = rf.post(
+        "/",
+        data={
+            "conference": conference.id,
+            "subject": "Subject",
+            "body": "Body",
+            "only_speakers_without_ticket": False,
+        },
+    )
+    request.user = admin_user
+    admin.email_speakers(request)
+
+    mock_send_comm.delay.assert_has_calls(
+        [
+            call(
+                user_id=user.id,
+                conference_id=conference.id,
+                subject="Subject",
+                body="Body",
+                only_speakers_without_ticket=False,
+            )
+        ],
+        any_order=True,
+    )
+    admin.message_user.assert_called_once_with(
+        request, "Scheduled 1 emails.", messages.SUCCESS
+    )
+
+
+def test_email_speakers_with_multiple_talks_is_only_notified_once(
+    rf, admin_user, mocker
+):
+    mock_send_comm = mocker.patch("schedule.admin.send_speaker_communication_email")
+    user = UserFactory()
+    conference = ConferenceFactory()
+
+    ScheduleItemFactory(
+        conference=conference, type=ScheduleItem.TYPES.talk, submission__speaker=user
+    )
+
+    ScheduleItemFactory(
+        conference=conference, type=ScheduleItem.TYPES.talk, submission__speaker=user
+    )
+
+    admin = ScheduleItemAdmin(
+        model=ScheduleItem,
+        admin_site=AdminSite(),
+    )
+    admin.message_user = mocker.Mock()
+
+    request = rf.post(
+        "/",
+        data={
+            "conference": conference.id,
+            "subject": "Subject",
+            "body": "Body",
+            "only_speakers_without_ticket": False,
+        },
+    )
+    request.user = admin_user
+    admin.email_speakers(request)
+
+    mock_send_comm.delay.assert_has_calls(
+        [
+            call(
+                user_id=user.id,
+                conference_id=conference.id,
+                subject="Subject",
+                body="Body",
+                only_speakers_without_ticket=False,
+            )
+        ],
+        any_order=True,
+    )
+    admin.message_user.assert_called_once_with(
+        request, "Scheduled 1 emails.", messages.SUCCESS
+    )
+
+
+def test_email_speakers_with_co_speakers(rf, admin_user, mocker):
+    mock_send_comm = mocker.patch("schedule.admin.send_speaker_communication_email")
+    user = UserFactory()
+    additional_speaker = UserFactory()
+    conference = ConferenceFactory()
+
+    schedule_item = ScheduleItemFactory(
+        conference=conference, type=ScheduleItem.TYPES.talk, submission__speaker=user
+    )
+    ScheduleItemAdditionalSpeakerFactory(
+        user=additional_speaker, scheduleitem=schedule_item
+    )
+
+    admin = ScheduleItemAdmin(
+        model=ScheduleItem,
+        admin_site=AdminSite(),
+    )
+    admin.message_user = mocker.Mock()
+
+    request = rf.post(
+        "/",
+        data={
+            "conference": conference.id,
+            "subject": "Subject",
+            "body": "Body",
+            "only_speakers_without_ticket": False,
+        },
+    )
+    request.user = admin_user
+    admin.email_speakers(request)
+
+    assert mock_send_comm.delay.call_count == 2
+    mock_send_comm.delay.assert_has_calls(
+        [
+            call(
+                user_id=user.id,
+                conference_id=conference.id,
+                subject="Subject",
+                body="Body",
+                only_speakers_without_ticket=False,
+            ),
+            call(
+                user_id=additional_speaker.id,
+                conference_id=conference.id,
+                subject="Subject",
+                body="Body",
+                only_speakers_without_ticket=False,
+            ),
+        ],
+        any_order=True,
+    )
+    admin.message_user.assert_called_once_with(
+        request, "Scheduled 2 emails.", messages.SUCCESS
     )
