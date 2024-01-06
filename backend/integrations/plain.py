@@ -42,7 +42,7 @@ def _execute(query, variables):
 
 
 def create_customer(user: User) -> str:
-    from domain_events.handler import get_name
+    from grants.tasks import get_name
 
     document = """
     mutation createCustomer ($input: UpsertCustomerInput!) {
