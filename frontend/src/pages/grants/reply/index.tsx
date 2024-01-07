@@ -112,7 +112,7 @@ const GrantReply = () => {
   if (loading) {
     return <PageLoading titleId="global.loading" />;
   }
-  console.log(formState.values, grant.status);
+
   const hasSentAnswer = ANSWERS_STATUSES.includes(grant?.status) ?? false;
 
   const answerHasChanged =
