@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from django import forms
 from django.contrib import admin, messages
-from django.db.models import Count, F, OuterRef, Subquery, Sum
+from django.db.models import Count, F, OuterRef, Prefetch, Subquery, Sum
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
@@ -160,9 +160,12 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             )
             .order_by(F("score").desc(nulls_last=True))
             .prefetch_related(
-                "userreview_set",
-                "userreview_set__user",
-                "userreview_set__score",
+                Prefetch(
+                    "userreview_set",
+                    queryset=UserReview.objects.prefetch_related(
+                        "user", "score"
+                    ).filter(review_session_id=review_session_id),
+                ),
                 "user",
             )
             .all()
@@ -237,9 +240,12 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             )
             .order_by(F("score").desc(nulls_last=True))
             .prefetch_related(
-                "userreview_set",
-                "userreview_set__user",
-                "userreview_set__score",
+                Prefetch(
+                    "userreview_set",
+                    queryset=UserReview.objects.prefetch_related(
+                        "user", "score"
+                    ).filter(review_session_id=review_session_id),
+                ),
                 "audience_level",
                 "languages",
                 "speaker",
