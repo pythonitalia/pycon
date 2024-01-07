@@ -281,7 +281,7 @@
                     <li>No reviews yet</li>
                     {% endfor %}
                     <li>
-                      <a style="font-weight: bold" target="_blank" href="{% url 'admin:reviews-vote-proposal' review_session_id=review_session_id review_item_id=item.id %}">
+                      <a style="font-weight: bold" target="_blank" href="{% url 'admin:reviews-vote-view' review_session_id=review_session_id review_item_id=item.id %}">
                         Vote this proposal
                       </a>
                     </li>
