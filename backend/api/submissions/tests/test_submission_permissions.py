@@ -67,32 +67,13 @@ def test_voting_open_and_user_cannot_vote(
 ):
     submission = _submission(submission_factory, user)
     graphql_client.force_login(other_user)
-    can_vote_mock = mocker.patch(
+    mocker.patch(
         "api.submissions.permissions.check_if_user_can_vote", return_value=False
     )
 
     data = _query(graphql_client, submission)
 
-    # ✔️ public
-    assert data["submission"]["title"] == submission.title.localize("en")
-    assert data["submission"]["slug"] == submission.slug
-
-    # ❌ restricted
-    assert data["submission"]["elevatorPitch"] is None
-    assert data["submission"]["abstract"] is None
-    assert data["submission"]["topic"] is None
-    assert data["submission"]["type"] is None
-    assert data["submission"]["duration"] is None
-    assert data["submission"]["audienceLevel"] is None
-    assert data["submission"]["languages"] is None
-    assert data["submission"]["tags"] is None
-
-    # ❌ private
-    assert data["submission"]["speakerLevel"] is None
-    assert data["submission"]["previousTalkVideo"] is None
-    assert data["submission"]["notes"] is None
-
-    can_vote_mock.assert_called()
+    assert data["submission"] is None
 
 
 def test_voting_open_and_user_can_vote(
@@ -106,11 +87,8 @@ def test_voting_open_and_user_can_vote(
 
     data = _query(graphql_client, submission)
 
-    # ✔️ public
     assert data["submission"]["title"] == submission.title.localize("en")
     assert data["submission"]["slug"] == submission.slug
-
-    # ✔️ restricted
     assert data["submission"]["elevatorPitch"] == submission.elevator_pitch.localize(
         "en"
     )
@@ -136,7 +114,7 @@ def test_voting_open_and_user_can_vote(
     can_vote_mock.assert_called()
 
 
-def test_voring_closed_and_user_is_authenticated(
+def test_voting_closed_and_user_is_authenticated(
     graphql_client, other_user, submission_factory, user
 ):
     submission = _submission(submission_factory, user, conference__active_voting=False)
@@ -144,51 +122,17 @@ def test_voring_closed_and_user_is_authenticated(
 
     data = _query(graphql_client, submission)
 
-    # ✔️ public
-    assert data["submission"]["title"] == submission.title.localize("en")
-    assert data["submission"]["slug"] == submission.slug
-
-    # ❌ restricted
-    assert data["submission"]["elevatorPitch"] is None
-    assert data["submission"]["abstract"] is None
-    assert data["submission"]["topic"] is None
-    assert data["submission"]["type"] is None
-    assert data["submission"]["duration"] is None
-    assert data["submission"]["audienceLevel"] is None
-    assert data["submission"]["languages"] is None
-    assert data["submission"]["tags"] is None
-
-    # ❌ private
-    assert data["submission"]["speakerLevel"] is None
-    assert data["submission"]["previousTalkVideo"] is None
-    assert data["submission"]["notes"] is None
+    assert data["submission"] is None
 
 
-def test_voring_closed_and_user_is_not_authenticated(
+def test_voting_closed_and_user_is_not_authenticated(
     graphql_client, submission_factory, user
 ):
     submission = _submission(submission_factory, user, conference__active_voting=False)
 
     data = _query(graphql_client, submission)
 
-    # ✔️ public
-    assert data["submission"]["title"] == submission.title.localize("en")
-    assert data["submission"]["slug"] == submission.slug
-
-    # ❌ restricted
-    assert data["submission"]["elevatorPitch"] is None
-    assert data["submission"]["abstract"] is None
-    assert data["submission"]["topic"] is None
-    assert data["submission"]["type"] is None
-    assert data["submission"]["duration"] is None
-    assert data["submission"]["audienceLevel"] is None
-    assert data["submission"]["languages"] is None
-    assert data["submission"]["tags"] is None
-
-    # ❌ private
-    assert data["submission"]["speakerLevel"] is None
-    assert data["submission"]["previousTalkVideo"] is None
-    assert data["submission"]["notes"] is None
+    assert data["submission"] is None
 
 
 def test_accepted_submission_user_can_see_public_and_restricted_fields(
@@ -203,11 +147,8 @@ def test_accepted_submission_user_can_see_public_and_restricted_fields(
 
     data = _query(graphql_client, submission)
 
-    # ✔️ public
     assert data["submission"]["title"] == submission.title.localize("en")
     assert data["submission"]["slug"] == submission.slug
-
-    # ✔️ restricted
     assert data["submission"]["elevatorPitch"] == submission.elevator_pitch.localize(
         "en"
     )
@@ -239,11 +180,9 @@ def test_admin_user_can_see_everything(
 
     data = _query(graphql_client, submission)
 
-    # ✔️ public
     assert data["submission"]["title"] == submission.title.localize("en")
     assert data["submission"]["slug"] == submission.slug
 
-    # ✔️ restricted
     assert data["submission"]["elevatorPitch"] == submission.elevator_pitch.localize(
         "en"
     )
@@ -273,11 +212,9 @@ def test_submission_author_can_see_everything(graphql_client, submission_factory
 
     data = _query(graphql_client, submission)
 
-    # ✔️ public
     assert data["submission"]["title"] == submission.title.localize("en")
     assert data["submission"]["slug"] == submission.slug
 
-    # ✔️ restricted
     assert data["submission"]["elevatorPitch"] == submission.elevator_pitch.localize(
         "en"
     )
@@ -315,11 +252,9 @@ def test_ranked_submission_user_can_see_public_and_restricted_fields(
 
     data = _query(graphql_client, submission)
 
-    # ✔️ public
     assert data["submission"]["title"] == submission.title.localize("en")
     assert data["submission"]["slug"] == submission.slug
 
-    # ✔️ restricted
     assert data["submission"]["elevatorPitch"] == submission.elevator_pitch.localize(
         "en"
     )
@@ -353,24 +288,7 @@ def test_ranking_is_not_public_cannot_see_restricted_and_private_fields(
 
     data = _query(graphql_client, submission)
 
-    # ✔️ public
-    assert data["submission"]["title"] == submission.title.localize("en")
-    assert data["submission"]["slug"] == submission.slug
-
-    # ❌ restricted
-    assert data["submission"]["elevatorPitch"] is None
-    assert data["submission"]["abstract"] is None
-    assert data["submission"]["topic"] is None
-    assert data["submission"]["type"] is None
-    assert data["submission"]["duration"] is None
-    assert data["submission"]["audienceLevel"] is None
-    assert data["submission"]["languages"] is None
-    assert data["submission"]["tags"] is None
-
-    # ❌ private
-    assert data["submission"]["speakerLevel"] is None
-    assert data["submission"]["previousTalkVideo"] is None
-    assert data["submission"]["notes"] is None
+    assert data["submission"] is None
 
 
 def test_ranking_does_not_exists_cannot_see_restricted_and_private_fields(
@@ -384,21 +302,4 @@ def test_ranking_does_not_exists_cannot_see_restricted_and_private_fields(
 
     data = _query(graphql_client, submission)
 
-    # ✔️ public
-    assert data["submission"]["title"] == submission.title.localize("en")
-    assert data["submission"]["slug"] == submission.slug
-
-    # ❌ restricted
-    assert data["submission"]["elevatorPitch"] is None
-    assert data["submission"]["abstract"] is None
-    assert data["submission"]["topic"] is None
-    assert data["submission"]["type"] is None
-    assert data["submission"]["duration"] is None
-    assert data["submission"]["audienceLevel"] is None
-    assert data["submission"]["languages"] is None
-    assert data["submission"]["tags"] is None
-
-    # ❌ private
-    assert data["submission"]["speakerLevel"] is None
-    assert data["submission"]["previousTalkVideo"] is None
-    assert data["submission"]["notes"] is None
+    assert data["submission"] is None

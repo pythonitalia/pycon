@@ -18,18 +18,6 @@ if TYPE_CHECKING:
     from api.schedule.types import ScheduleItem
 
 
-def restricted_field() -> StrawberryField:
-    """Field that can only be seen by admin, the submitter or who has the ticket
-    until voting is not closed, after it will be public"""
-
-    def resolver(self, info: Info):
-        if CanSeeSubmissionRestrictedFields().has_permission(self, info):
-            return getattr(self, info.python_name)
-        return None
-
-    return strawberry.field(resolver=resolver)
-
-
 def private_field() -> StrawberryField:
     """Field that can only be seen by admin and the submitter"""
 
@@ -82,16 +70,12 @@ class Submission:
     speaker_level: Optional[str] = private_field()
     previous_talk_video: Optional[str] = private_field()
     short_social_summary: Optional[str] = private_field()
-    topic: Optional[
-        Annotated["Topic", strawberry.lazy("api.conferences.types")]
-    ] = restricted_field()
-    type: Optional[SubmissionType] = restricted_field()
-    duration: Optional[
-        Annotated["Duration", strawberry.lazy("api.conferences.types")]
-    ] = restricted_field()
+    topic: Optional[Annotated["Topic", strawberry.lazy("api.conferences.types")]]
+    type: Optional[SubmissionType]
+    duration: Optional[Annotated["Duration", strawberry.lazy("api.conferences.types")]]
     audience_level: Optional[
         Annotated["AudienceLevel", strawberry.lazy("api.conferences.types")]
-    ] = restricted_field()
+    ]
     notes: Optional[str] = private_field()
 
     @strawberry.field
@@ -102,22 +86,14 @@ class Submission:
 
     @strawberry.field
     def multilingual_elevator_pitch(self, info: Info) -> Optional[MultiLingualString]:
-        if not CanSeeSubmissionRestrictedFields().has_permission(self, info):
-            return None
         return MultiLingualString.create(self.elevator_pitch)
 
     @strawberry.field
     def multilingual_abstract(self, info: Info) -> Optional[MultiLingualString]:
-        if not CanSeeSubmissionRestrictedFields().has_permission(self, info):
-            return None
-
         return MultiLingualString.create(self.abstract)
 
     @strawberry.field
     def multilingual_title(self, info: Info) -> Optional[MultiLingualString]:
-        if not CanSeeSubmissionRestrictedFields().has_permission(self, info):
-            return None
-
         return MultiLingualString.create(self.title)
 
     @strawberry.field
@@ -126,16 +102,10 @@ class Submission:
 
     @strawberry.field()
     def elevator_pitch(self, language: str, info: Info) -> Optional[str]:
-        if not CanSeeSubmissionRestrictedFields().has_permission(self, info):
-            return None
-
         return self.elevator_pitch.localize(language)
 
     @strawberry.field()
     def abstract(self, language: str, info: Info) -> Optional[str]:
-        if not CanSeeSubmissionRestrictedFields().has_permission(self, info):
-            return None
-
         return self.abstract.localize(language)
 
     @strawberry.field
@@ -176,15 +146,11 @@ class Submission:
 
     @strawberry.field
     def languages(self, info) -> Optional[List[Language]]:
-        if CanSeeSubmissionRestrictedFields().has_permission(self, info):
-            return self.languages.all()
-        return None
+        return self.languages.all()
 
     @strawberry.field
     def tags(self, info) -> Optional[List[SubmissionTag]]:
-        if CanSeeSubmissionRestrictedFields().has_permission(self, info):
-            return self.tags.all()
-        return None
+        return self.tags.all()
 
 
 @strawberry.type
