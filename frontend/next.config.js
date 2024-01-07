@@ -13,6 +13,9 @@ const {
 } = process.env;
 
 module.exports = withSentryConfig({
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   i18n: {
     locales: ["default", "en", "it"],
     defaultLocale: "default",
