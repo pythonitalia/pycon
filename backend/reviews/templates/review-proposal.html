@@ -1,6 +1,15 @@
 {% extends "admin/base_site.html" %}
 {% load i18n markdownify %}
 {% load localize countryname %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+  &rsaquo; <a href="{% url 'admin:app_list' 'reviews' %}">Reviews</a>
+  &rsaquo; <a href="{% url 'admin:reviews_reviewsession_changelist' %}">Review sessions</a>
+  &rsaquo; <a href="{% url 'admin:reviews_reviewsession_change' review_session_id %}">{{review_session_repr}}</a>
+  &rsaquo; {{title}}
+</div>
+{% endblock %}
 {% block content %}
 
 <style>
@@ -79,7 +88,7 @@ window.addEventListener('load', function() {
   });
 });
 </script>
-<h1>{{proposal.title | localize:"en"}}</h1>
+
 <fieldset class="module aligned">
   <h2>Submission</h2>
 

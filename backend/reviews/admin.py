@@ -172,6 +172,8 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             self.admin_site.each_context(request),
             items=items,
             review_session_id=review_session_id,
+            review_session_repr=str(review_session),
+            title="Recap",
         )
         return TemplateResponse(request, "review-grants-recap.html", context)
 
@@ -264,6 +266,8 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             grants=grants,
             review_session_id=review_session_id,
             audience_levels=conference.audience_levels.all(),
+            review_session_repr=str(review_session),
+            title="Recap",
         )
         return TemplateResponse(request, "review-proposal-recap.html", context)
 
@@ -286,14 +290,14 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             if review_session.is_proposals_review:
                 response = self._render_proposal_review(
                     request,
-                    review_session_id=review_session_id,
+                    review_session=review_session,
                     review_item_id=review_item_id,
                     user_review=user_review,
                 )
             elif review_session.is_grants_review:
                 response = self._render_grant_review(
                     request,
-                    review_session_id=review_session_id,
+                    review_session=review_session,
                     review_item_id=review_item_id,
                     user_review=user_review,
                 )
@@ -392,22 +396,24 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             )
 
     def _render_grant_review(
-        self, request, review_session_id, review_item_id, user_review
+        self, request, review_session, review_item_id, user_review
     ):
         grant = Grant.objects.get(id=review_item_id)
         context = dict(
             self.admin_site.each_context(request),
             grant=grant,
             available_scores=AvailableScoreOption.objects.filter(
-                review_session_id=review_session_id
+                review_session_id=review_session.id
             ),
-            review_session_id=review_session_id,
+            review_session_id=review_session.id,
             user_review=user_review,
+            review_session_repr=str(review_session),
+            title=f"Grant Review: {grant.user.display_name}",
         )
         return TemplateResponse(request, "review-grant.html", context)
 
     def _render_proposal_review(
-        self, request, review_session_id, review_item_id, user_review
+        self, request, review_session, review_item_id, user_review
     ):
         proposal = Submission.objects.prefetch_related("rankings").get(
             id=review_item_id
@@ -443,10 +449,10 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             proposal=proposal,
             languages=proposal.languages.all(),
             available_scores=AvailableScoreOption.objects.filter(
-                review_session_id=review_session_id
+                review_session_id=review_session.id
             ),
             proposal_id=review_item_id,
-            review_session_id=review_session_id,
+            review_session_id=review_session.id,
             user_review=user_review,
             has_italian_language=any(
                 language for language in languages if language.code == "it"
@@ -465,6 +471,8 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             tags_already_excluded=tags_already_excluded,
             seen=request.GET.get("seen", "").split(","),
             existing_comment=existing_comment,
+            review_session_repr=str(review_session),
+            title=proposal.title.localize("en"),
         )
         return TemplateResponse(request, "review-proposal.html", context)
 
