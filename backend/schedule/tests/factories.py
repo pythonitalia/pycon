@@ -54,8 +54,14 @@ class ScheduleItemFactory(DjangoModelFactory):
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
-        _type = kwargs.get("type", None)
+        if "submission" in kwargs and "type" not in kwargs:
+            kwargs["type"] = (
+                ScheduleItem.TYPES.talk
+                if kwargs["submission"].type.name == "talk"
+                else ScheduleItem.TYPES.training
+            )
 
+        _type = kwargs.get("type", None)
         if _type == ScheduleItem.TYPES.custom:
             kwargs.pop("submission", None)
 

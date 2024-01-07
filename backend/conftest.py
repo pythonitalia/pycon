@@ -118,3 +118,14 @@ def image_file():
 @pytest.fixture
 def locale():
     return lambda code: Locale.objects.get_or_create(language_code=code)[0]
+
+
+@pytest.fixture
+def mock_has_ticket(requests_mock, settings):
+    def wrapper(conference):
+        requests_mock.post(
+            f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
+            json={"user_has_admission_ticket": True},
+        )
+
+    return wrapper

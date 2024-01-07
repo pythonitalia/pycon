@@ -15,6 +15,7 @@ import { createHref } from "~/components/link";
 import { ScheduleEventDetail } from "~/components/schedule-event-detail";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
+import NotFoundPage from "~/pages/404";
 import { getType } from "~/pages/event/[slug]";
 import {
   queryIsVotingClosed,
@@ -53,6 +54,10 @@ export const SubmissionPage = () => {
     viewInLanguage === "it" ? italianSubmission : englishSubmission;
 
   const otherLanguage = viewInLanguage === "it" ? "en" : "it";
+
+  if (!italianSubmission && !englishSubmission) {
+    return <NotFoundPage />;
+  }
 
   return (
     <Page endSeparator={false}>
@@ -140,7 +145,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
   const client = getApolloClient(null, req.cookies);
 
-  await Promise.all([
+  const [_, englishSubmission, italianSubmission] = await Promise.all([
     prefetchSharedQueries(client, locale),
     queryIsVotingClosed(client, {
       conference: process.env.conferenceCode,
@@ -154,6 +159,12 @@ export const getServerSideProps: GetServerSideProps = async ({
       language: "it",
     }),
   ]);
+
+  if (!englishSubmission && !italianSubmission) {
+    return {
+      notFound: true,
+    };
+  }
 
   return addApolloState(
     client,
