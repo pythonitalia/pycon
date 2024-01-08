@@ -1,5 +1,6 @@
 import random
 import typing
+from api.submissions.permissions import CanSeeSubmissionRestrictedFields
 
 import strawberry
 
@@ -20,9 +21,18 @@ class SubmissionsQuery:
     @strawberry.field
     def submission(self, info, id: strawberry.ID) -> typing.Optional[Submission]:
         try:
-            return SubmissionModel.objects.get_by_hashid(id)
+            submission = SubmissionModel.objects.get_by_hashid(id)
         except SubmissionModel.DoesNotExist:
             return None
+        except IndexError:
+            return None
+
+        if not CanSeeSubmissionRestrictedFields().has_permission(
+            source=submission, info=info
+        ):
+            return None
+
+        return submission
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     def submissions(
