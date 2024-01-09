@@ -1,3 +1,4 @@
+from django.db.models import Q
 import urllib.parse
 from typing import List, Optional
 
@@ -502,7 +503,10 @@ def get_next_to_review_item_id(
         allowed_tags = SubmissionTag.objects.exclude(id__in=exclude)
         unvoted_item = (
             review_session.conference.submissions.annotate(
-                votes_received=Count("userreview")
+                votes_received=Count(
+                    "userreview",
+                    filter=Q(userreview__review_session_id=review_session.id),
+                )
             )
             .exclude(
                 id__in=list(already_reviewed_ids) + [skip_item] + seen,
@@ -516,7 +520,10 @@ def get_next_to_review_item_id(
         already_reviewed_ids = already_reviewed.values_list("grant_id", flat=True)
         unvoted_item = (
             review_session.conference.grants.annotate(
-                votes_received=Count("userreview")
+                votes_received=Count(
+                    "userreview",
+                    filter=Q(userreview__review_session_id=review_session.id),
+                )
             )
             .exclude(
                 id__in=list(already_reviewed_ids) + [skip_item] + seen,
@@ -524,5 +531,5 @@ def get_next_to_review_item_id(
             .order_by("votes_received", "?")
             .first()
         )
-
+    breakpoint()
     return unvoted_item.id if unvoted_item else None
