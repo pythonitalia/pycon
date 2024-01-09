@@ -411,7 +411,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             grant=grant,
             available_scores=AvailableScoreOption.objects.filter(
                 review_session_id=review_session.id
-            ),
+            ).order_by("numeric_value"),
             review_session_id=review_session.id,
             user_review=user_review,
             review_session_repr=str(review_session),
@@ -531,5 +531,5 @@ def get_next_to_review_item_id(
             .order_by("votes_received", "?")
             .first()
         )
-    breakpoint()
+
     return unvoted_item.id if unvoted_item else None
