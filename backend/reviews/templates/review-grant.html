@@ -1,6 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% load i18n markdownify %}
 {% load localize countryname %}
+
 {% block breadcrumbs %}
 <div class="breadcrumbs">
   <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
@@ -10,6 +11,7 @@
   &rsaquo; {{title}}
 </div>
 {% endblock %}
+
 {% block content %}
 
 <style>
@@ -19,7 +21,7 @@
 
   .review-row {
     display: grid;
-    grid-template-columns: 100px 1fr;
+    grid-template-columns: 200px 1fr;
     padding: 10px;
     font-size: 13px;
     border-bottom: 1px solid var(--hairline-color);
@@ -88,74 +90,96 @@ window.addEventListener('load', function() {
   });
 });
 </script>
-
 <fieldset class="module aligned">
-  <h2>Submission</h2>
+  <h2>Grant</h2>
 
   <div class="review-row">
-    <label>Languages</label>
-    <div>{{proposal.languages.all|join:", "}}</div>
-  </div>
-  <div class="review-row">
-    <label>Type</label>
-    <div>{{proposal.type}}</div>
-  </div>
-  <div class="review-row">
-    <label>Audience Level</label>
-    <div>{{proposal.audience_level}}</div>
-  </div>
-  {% if has_english_language %}
-  <div class="review-row">
-    <label>Title [English]</label>
-    <div>{{proposal.title | localize:"en" }}</div>
-  </div>
-  <div class="review-row">
-    <label>Elevator Pitch [English]</label>
-    <div>{{proposal.elevator_pitch | localize:"en" | markdownify}}</div>
-  </div>
-  <div class="review-row">
-    <label>Abstract [English]</label>
-    <div>{{proposal.abstract | localize:"en" | markdownify}}</div>
-  </div>
-  {% endif %}
-  {% if has_italian_language %}
-  <div class="review-row">
-    <label>Title [Italian]</label>
-    <div>{{proposal.title | localize:"it" }}</div>
+    <label>Name</label>
+    <div>{{grant.name}}</div>
   </div>
 
   <div class="review-row">
-    <label>Elevator Pitch [Italian]</label>
-    <div>{{proposal.elevator_pitch | localize:"it" | markdownify}}</div>
+    <label>Fullname</label>
+    <div>{{grant.full_name}}</div>
   </div>
+
   <div class="review-row">
-    <label>Abstract [Italian]</label>
-    <div>{{proposal.abstract | localize:"it" | markdownify}}</div>
+    <label>Age Group</label>
+    <div>{{grant.age_group}}</div>
   </div>
-  {% endif %}
+
   <div class="review-row">
-    <label>Notes</label>
-    <div>{{proposal.notes}}</div>
+    <label>Gender</label>
+    <div>{{grant.gender}}</div>
   </div>
+
   <div class="review-row">
-    <label>Community Voting</label>
-    <div>
-      <ul>
-        {% for ranking in proposal.rankings.all %}
-        <li>
-          {{ ranking.tag.name }}: {{ ranking.rank }}/{{ ranking.total_submissions_per_tag }}
-        </li>
-        {% endfor %}
-      </ul>
-    </div>
+    <label>Occupation</label>
+    <div>{{grant.occupation}}</div>
   </div>
+
+  <div class="review-row">
+    <label>Grant type</label>
+    <div>{{grant.grant_type}}</div>
+  </div>
+
+  <div class="review-row">
+    <label>Travelling From</label>
+    <div>{{grant.travelling_from}}</div>
+  </div>
+
+  <div class="review-row">
+    <label>Needs funds for travel</label>
+    <div>{{grant.needs_funds_for_travel|yesno}}</div>
+  </div>
+
+  <div class="review-row">
+    <label>Needs visa</label>
+    <div>{{grant.need_visa|yesno}}</div>
+  </div>
+
+  <div class="review-row">
+    <label>Needs accommodation</label>
+    <div>{{grant.need_accommodation|yesno}}</div>
+  </div>
+
+  <div class="review-row">
+    <label>Interested in Volunteering</label>
+    <div>{{grant.interested_in_volunteering|yesno}}</div>
+  </div>
+
+  <div class="review-row">
+    <label>Why are you asking for a grant?</label>
+    <div>{{grant.why}}</div>
+  </div>
+
+  <div class="review-row">
+    <label>How do they use python:</label>
+    <div>{{grant.python_usage}}</div>
+  </div>
+
+  <div class="review-row">
+    <label>Have they been to other events?</label>
+    <div>{{grant.been_to_other_events}}</div>
+  </div>
+
+  <div class="review-row">
+    <label>Community contribution:</label>
+    <div>{{grant.community_contribution}}</div>
+  </div>
+
+  <div class="review-row">
+    <label>Notes:</label>
+    <div>{{grant.notes}}</div>
+  </div>
+
   <div class="review-row">
     <label>Voted by</label>
     <div>
       <details>
-        <summary>See votes ({{proposal.userreview_set.count}} votes)</summary>
+        <summary>See votes ({{grant.userreview_set.count}} votes)</summary>
         <ul>
-          {% for reviewer in proposal.userreview_set.all %}
+          {% for reviewer in grant.userreview_set.all %}
           <li>
             <strong>{{reviewer.user.full_name}}</strong> voted
             {{reviewer.score.label}}
@@ -170,73 +194,19 @@ window.addEventListener('load', function() {
     </div>
   </div>
   <div class="review-row">
-    <label>Open submission</label>
+    <label>Open Grant</label>
     <div>
-      <a target="_blank" href="{% url 'admin:submissions_submission_change' object_id=proposal.id %}">Open Submission</a>
+      <a target="_blank" href="{% url 'admin:grants_grant_change' object_id=grant.id %}">Open Grant</a>
     </div>
   </div>
 </fieldset>
-<fieldset class="module aligned">
-  <h2>Speaker</h2>
-  <div class="review-row">
-    <label>Name</label>
-    <div>{{speaker.fullname}}</div>
-  </div>
-  <div class="review-row">
-    <label>Country</label>
-    <div>{{speaker.country | countryname}}</div>
-  </div>
-  <div class="review-row">
-    <label>Speaker Experience</label>
-    <div>{{participant.speaker_level}}</div>
-  </div>
-  <div class="review-row">
-    <label>Previous Talk Video</label>
-    <div>
-      {% if participant.previous_talk_video %}
-        <a target="_blank" rel="noreferrer noopener" href="{{participant.previous_talk_video}}">
-          {{participant.previous_talk_video}}
-        </a>
-      {% endif%}
-    </div>
-  </div>
-  <div class="review-row">
-    <label>Requested a grant?</label>
-    {% if grant %}
-    <div>
-      <a target="_blank" href="{{grant_link}}">Yes, open grant</a>
-    </div>
-    {% else %}
-    <div>
-      No
-    </div>
-    {% endif %}
-  </div>
-  {% if grant %}
-  <div class="review-row">
-    <label>Grant status</label>
-    <div>
-      {{grant.status}}
-    </div>
-  </div>
-  {% endif %}
-  <div class="review-row">
-    <label>Bio</label>
-    <div>{{participant.bio}}</div>
-  </div>
-  <div class="review-row">
-    <label>Participant Info</label>
-    <div>
-      <a href="{% url 'admin:participants_participant_change' participant.id %}" target="_blank">Open Participant</a>
-    </div>
-  </div>
-</fieldset>
+
 <fieldset class="module aligned">
   <h2>Your vote</h2>
   <form
     class="my-vote"
     method="post"
-    action="{% url 'admin:reviews-vote-view' review_session_id proposal_id %}"
+    action="{% url 'admin:reviews-vote-view' review_session_id grant.id %}"
   >
     {% csrf_token %}
     <div class="score-label">Score</div>
@@ -258,24 +228,6 @@ window.addEventListener('load', function() {
       <input value="Vote and go to the next" type="submit" name="_next" />
       <input value="Skip for now" type="submit" name="_skip" />
     </div>
-
-    <br />
-    <div class="">
-      Exclude proposals with those tags:
-      <ul class="tags-to-exclude">
-        {% for tag in tags_to_filter %}
-          <li>
-            <label>
-              {% with tag_id=tag.id|stringformat:"i" %}
-                <input {% if tag_id in tags_already_excluded %} checked {% endif %} type="checkbox" value="{{tag.id}}" name="exclude" />
-                {{tag.name}}
-              {% endwith %}
-            </label>
-          </li>
-        {% endfor %}
-      </ul>
-      <button id="select-all-tags">Select all</button>
-      <button id="deselect-all-tags">De-select all</button>
     </div>
 
     <input type="hidden" name="seen" value="{% for id in seen %}{{id}},{% endfor %}" />

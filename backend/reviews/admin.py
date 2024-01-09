@@ -1,9 +1,10 @@
+from django.db.models import Q
 import urllib.parse
 from typing import List, Optional
 
 from django import forms
 from django.contrib import admin, messages
-from django.db.models import Count, F, OuterRef, Subquery, Sum
+from django.db.models import Count, F, OuterRef, Prefetch, Subquery, Sum
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
@@ -29,7 +30,7 @@ class SubmitVoteForm(forms.Form):
     score = forms.ModelChoiceField(queryset=AvailableScoreOption.objects.all())
     comment = forms.CharField(required=False)
     exclude = forms.MultipleChoiceField(choices=get_all_tags, required=False)
-    seen = forms.CharField()
+    seen = forms.CharField(required=False)
     _next = forms.CharField(required=False)
     _skip = forms.CharField(required=False)
 
@@ -47,7 +48,7 @@ class UserReviewAdmin(admin.ModelAdmin):
 
     def edit_vote(self, obj):
         url = reverse(
-            "admin:reviews-vote-proposal",
+            "admin:reviews-vote-view",
             kwargs={
                 "review_session_id": obj.review_session_id,
                 "review_item_id": obj.proposal_id,
@@ -115,7 +116,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             path(
                 "<int:review_session_id>/review/<int:review_item_id>/",
                 self.admin_site.admin_view(self.review_view),
-                name="reviews-vote-proposal",
+                name="reviews-vote-view",
             ),
         ] + super().get_urls()
 
@@ -125,7 +126,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
 
         return redirect(
             reverse(
-                "admin:reviews-vote-proposal",
+                "admin:reviews-vote-view",
                 kwargs={
                     "review_session_id": review_session_id,
                     "review_item_id": next_to_review,
@@ -135,6 +136,53 @@ class ReviewSessionAdmin(admin.ModelAdmin):
 
     def review_recap_view(self, request, review_session_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
+
+        if review_session.is_proposals_review:
+            return self._review_proposals_recap_view(request, review_session)
+
+        if review_session.is_grants_review:
+            return self._review_grants_recap_view(request, review_session)
+
+    def _review_grants_recap_view(self, request, review_session):
+        review_session_id = review_session.id
+
+        items = (
+            review_session.conference.grants.annotate(
+                score=Subquery(
+                    UserReview.objects.select_related("score")
+                    .filter(
+                        review_session_id=review_session_id,
+                        grant_id=OuterRef("id"),
+                    )
+                    .values("grant_id")
+                    .annotate(score=Sum("score__numeric_value"))
+                    .values("score")
+                )
+            )
+            .order_by(F("score").desc(nulls_last=True))
+            .prefetch_related(
+                Prefetch(
+                    "userreview_set",
+                    queryset=UserReview.objects.prefetch_related(
+                        "user", "score"
+                    ).filter(review_session_id=review_session_id),
+                ),
+                "user",
+            )
+            .all()
+        )
+
+        context = dict(
+            self.admin_site.each_context(request),
+            items=items,
+            review_session_id=review_session_id,
+            review_session_repr=str(review_session),
+            title="Recap",
+        )
+        return TemplateResponse(request, "review-grants-recap.html", context)
+
+    def _review_proposals_recap_view(self, request, review_session):
+        review_session_id = review_session.id
         conference = review_session.conference
 
         if request.method == "POST":
@@ -193,9 +241,12 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             )
             .order_by(F("score").desc(nulls_last=True))
             .prefetch_related(
-                "userreview_set",
-                "userreview_set__user",
-                "userreview_set__score",
+                Prefetch(
+                    "userreview_set",
+                    queryset=UserReview.objects.prefetch_related(
+                        "user", "score"
+                    ).filter(review_session_id=review_session_id),
+                ),
                 "audience_level",
                 "languages",
                 "speaker",
@@ -222,8 +273,10 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             grants=grants,
             review_session_id=review_session_id,
             audience_levels=conference.audience_levels.all(),
+            review_session_repr=str(review_session),
+            title="Recap",
         )
-        return TemplateResponse(request, "review-recap.html", context)
+        return TemplateResponse(request, "review-proposal-recap.html", context)
 
     def review_view(self, request, review_session_id, review_item_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
@@ -235,68 +288,28 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             filter_options["grant_id"] = review_item_id
 
         if request.method == "GET":
-            proposal = Submission.objects.prefetch_related("rankings").get(
-                id=review_item_id
-            )
             user_review = UserReview.objects.filter(
                 user_id=request.user.id,
                 review_session_id=review_session_id,
                 **filter_options,
             ).first()
-            languages = list(proposal.languages.all())
-            speaker = proposal.speaker
-            grant = Grant.objects.filter(
-                conference=proposal.conference_id,
-                user_id=proposal.speaker_id,
-            ).first()
-            grant_link = (
-                reverse("admin:grants_grant_change", args=(grant.id,)) if grant else ""
-            )
 
-            existing_comment = request.GET.get("comment", "")
-            tags_already_excluded = request.GET.get("exclude", "").split(",")
-
-            used_tags = (
-                Submission.objects.filter(
-                    conference_id=proposal.conference_id,
+            if review_session.is_proposals_review:
+                response = self._render_proposal_review(
+                    request,
+                    review_session=review_session,
+                    review_item_id=review_item_id,
+                    user_review=user_review,
                 )
-                .values_list("tags__id", flat=True)
-                .distinct()
-            )
+            elif review_session.is_grants_review:
+                response = self._render_grant_review(
+                    request,
+                    review_session=review_session,
+                    review_item_id=review_item_id,
+                    user_review=user_review,
+                )
 
-            tags_to_filter = (
-                SubmissionTag.objects.filter(id__in=used_tags).order_by("name").all()
-            )
-
-            context = dict(
-                self.admin_site.each_context(request),
-                proposal=proposal,
-                languages=proposal.languages.all(),
-                available_scores=AvailableScoreOption.objects.filter(
-                    review_session_id=review_session_id
-                ),
-                proposal_id=review_item_id,
-                review_session_id=review_session_id,
-                user_review=user_review,
-                has_italian_language=any(
-                    language for language in languages if language.code == "it"
-                ),
-                has_english_language=any(
-                    language for language in languages if language.code == "en"
-                ),
-                speaker=speaker,
-                grant=grant,
-                grant_link=grant_link,
-                participant=Participant.objects.filter(
-                    user_id=proposal.speaker_id,
-                    conference=proposal.conference,
-                ).first(),
-                tags_to_filter=tags_to_filter,
-                tags_already_excluded=tags_already_excluded,
-                seen=request.GET.get("seen", "").split(","),
-                existing_comment=existing_comment,
-            )
-            return TemplateResponse(request, "review-proposal.html", context)
+            return response
         elif request.method == "POST":
             form = SubmitVoteForm(request.POST)
             form.is_valid()
@@ -323,7 +336,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                     comment = urllib.parse.quote(form.cleaned_data["comment"])
                     return redirect(
                         reverse(
-                            "admin:reviews-vote-proposal",
+                            "admin:reviews-vote-view",
                             kwargs={
                                 "review_session_id": review_session_id,
                                 "review_item_id": review_item_id,
@@ -380,7 +393,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
 
             return redirect(
                 reverse(
-                    "admin:reviews-vote-proposal",
+                    "admin:reviews-vote-view",
                     kwargs={
                         "review_session_id": review_session_id,
                         "review_item_id": next_to_review,
@@ -388,6 +401,87 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                 )
                 + f"?exclude={','.join(exclude)}&seen={','.join(seen)}"
             )
+
+    def _render_grant_review(
+        self, request, review_session, review_item_id, user_review
+    ):
+        grant = Grant.objects.get(id=review_item_id)
+        context = dict(
+            self.admin_site.each_context(request),
+            grant=grant,
+            available_scores=AvailableScoreOption.objects.filter(
+                review_session_id=review_session.id
+            ).order_by("numeric_value"),
+            review_session_id=review_session.id,
+            user_review=user_review,
+            review_session_repr=str(review_session),
+            title=f"Grant Review: {grant.user.display_name}",
+        )
+        return TemplateResponse(request, "review-grant.html", context)
+
+    def _render_proposal_review(
+        self, request, review_session, review_item_id, user_review
+    ):
+        proposal = Submission.objects.prefetch_related("rankings").get(
+            id=review_item_id
+        )
+
+        languages = list(proposal.languages.all())
+        speaker = proposal.speaker
+        grant = Grant.objects.filter(
+            conference=proposal.conference_id,
+            user_id=proposal.speaker_id,
+        ).first()
+        grant_link = (
+            reverse("admin:grants_grant_change", args=(grant.id,)) if grant else ""
+        )
+
+        existing_comment = request.GET.get("comment", "")
+        tags_already_excluded = request.GET.get("exclude", "").split(",")
+
+        used_tags = (
+            Submission.objects.filter(
+                conference_id=proposal.conference_id,
+            )
+            .values_list("tags__id", flat=True)
+            .distinct()
+        )
+
+        tags_to_filter = (
+            SubmissionTag.objects.filter(id__in=used_tags).order_by("name").all()
+        )
+
+        context = dict(
+            self.admin_site.each_context(request),
+            proposal=proposal,
+            languages=proposal.languages.all(),
+            available_scores=AvailableScoreOption.objects.filter(
+                review_session_id=review_session.id
+            ),
+            proposal_id=review_item_id,
+            review_session_id=review_session.id,
+            user_review=user_review,
+            has_italian_language=any(
+                language for language in languages if language.code == "it"
+            ),
+            has_english_language=any(
+                language for language in languages if language.code == "en"
+            ),
+            speaker=speaker,
+            grant=grant,
+            grant_link=grant_link,
+            participant=Participant.objects.filter(
+                user_id=proposal.speaker_id,
+                conference=proposal.conference,
+            ).first(),
+            tags_to_filter=tags_to_filter,
+            tags_already_excluded=tags_already_excluded,
+            seen=request.GET.get("seen", "").split(","),
+            existing_comment=existing_comment,
+            review_session_repr=str(review_session),
+            title=proposal.title.localize("en"),
+        )
+        return TemplateResponse(request, "review-proposal.html", context)
 
 
 def get_next_to_review_item_id(
@@ -409,7 +503,10 @@ def get_next_to_review_item_id(
         allowed_tags = SubmissionTag.objects.exclude(id__in=exclude)
         unvoted_item = (
             review_session.conference.submissions.annotate(
-                votes_received=Count("userreview")
+                votes_received=Count(
+                    "userreview",
+                    filter=Q(userreview__review_session_id=review_session.id),
+                )
             )
             .exclude(
                 id__in=list(already_reviewed_ids) + [skip_item] + seen,
@@ -421,6 +518,18 @@ def get_next_to_review_item_id(
 
     elif review_session.is_grants_review:
         already_reviewed_ids = already_reviewed.values_list("grant_id", flat=True)
-        raise ValueError("implement me")
+        unvoted_item = (
+            review_session.conference.grants.annotate(
+                votes_received=Count(
+                    "userreview",
+                    filter=Q(userreview__review_session_id=review_session.id),
+                )
+            )
+            .exclude(
+                id__in=list(already_reviewed_ids) + [skip_item] + seen,
+            )
+            .order_by("votes_received", "?")
+            .first()
+        )
 
     return unvoted_item.id if unvoted_item else None
