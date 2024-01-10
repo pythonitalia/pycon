@@ -1,30 +1,36 @@
 import {
+  Checkbox,
   Button,
   Spacer,
   Text,
   Input,
   InputWrapper,
   BasicButton,
+  Link,
+  HorizontalStack,
 } from "@python-italia/pycon-styleguide";
 import React, { useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
+import { useCurrentLanguage } from "~/locale/context";
 import { useSendSponsorLeadMutation } from "~/types";
 
+import { createHref } from "../link";
 import { Modal } from "../modal";
 
 type SponsorLeadForm = {
   email: string;
   fullname: string;
   company: string;
+  acceptPrivacyPolicy: boolean;
 };
 export const SponsorLeadModal = ({ onClose }) => {
   const formRef = useRef<HTMLFormElement>();
-
+  const language = useCurrentLanguage();
   const [sendSponsorLeadMutation, { loading, data, error }] =
     useSendSponsorLeadMutation();
-  const [formState, { email, text }] = useFormState<SponsorLeadForm>({
+  const [formState, { email, text, checkbox }] = useFormState<SponsorLeadForm>({
     email: "",
     fullname: "",
     company: "",
@@ -33,6 +39,10 @@ export const SponsorLeadModal = ({ onClose }) => {
   const onSubmit = (e) => {
     e.preventDefault();
     if (!formRef.current.reportValidity()) {
+      return;
+    }
+
+    if (!formState.values.acceptPrivacyPolicy) {
       return;
     }
 
@@ -64,7 +74,9 @@ export const SponsorLeadModal = ({ onClose }) => {
           </BasicButton>
           <Button
             role="secondary"
-            disabled={loading || submitComplete}
+            disabled={
+              loading || submitComplete || !formState.values.acceptPrivacyPolicy
+            }
             onClick={onSubmit}
           >
             <FormattedMessage id="sponsorLeadModal.submit" />
@@ -109,6 +121,42 @@ export const SponsorLeadModal = ({ onClose }) => {
               required={true}
               {...email("email")}
             />
+          </InputWrapper>
+
+          <Spacer size="small" />
+
+          <InputWrapper
+            title={
+              <FormattedMessage id="sponsorLeadModal.acceptPrivacyPolicy.heading" />
+            }
+            required={true}
+          >
+            <HorizontalStack gap="small" alignItems="center">
+              <Checkbox
+                {...checkbox("acceptPrivacyPolicy")}
+                required
+                size="small"
+              />
+              <Text size={2} weight="strong">
+                <FormattedMessage
+                  id="grants.form.acceptPrivacyPolicy"
+                  values={{
+                    link: (
+                      <Link
+                        className="underline"
+                        target="_blank"
+                        href={createHref({
+                          path: "/privacy-policy",
+                          locale: language,
+                        })}
+                      >
+                        Privacy Policy
+                      </Link>
+                    ),
+                  }}
+                />
+              </Text>
+            </HorizontalStack>
           </InputWrapper>
           {error && (
             <Text size={1} color="red">

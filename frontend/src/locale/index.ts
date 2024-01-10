@@ -22,7 +22,9 @@ Let's get in touch to find the best solution for your business' needs!`,
     "sponsorLeadModal.company": "Company",
     "sponsorLeadModal.completed":
       "Thank you! We just sent the brochure via email. If you can't find it, check your spam folder or contact us at sponsor@pycon.it!",
-
+    "sponsorLeadModal.acceptPrivacyPolicy.heading": "Privacy Policy",
+    "sponsorLeadModal.acceptPrivacyPolicy":
+      "I have read and understood the {link} of Python Italia APS",
     "modal.cancel": "Cancel",
 
     "submission.languageSwitch":
@@ -2059,6 +2061,9 @@ Affrettati a comprare il biglietto!`,
     "sponsorLeadModal.body": `I nostri pacchetti ti danno un'idea di ciò che offriamo e di come puoi ottimizzare la tua presenza a PyCon Italia, ma non sono definitivi!
 
 Mettiamoci in contatto per trovare la soluzione migliore per le esigenze della tua azienda!`,
+    "sponsorLeadModal.acceptPrivacyPolicy.heading": "Privacy Policy",
+    "sponsorLeadModal.acceptPrivacyPolicy":
+      "Ho letto e compreso l'Informativa sulla {link} di Python Italia APS.",
   },
 };
 
