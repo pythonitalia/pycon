@@ -19,11 +19,13 @@ import { Modal } from "../modal";
 type SponsorLeadForm = {
   email: string;
   fullname: string;
+  company: string;
 };
 export const SponsorLeadModal = ({ onClose }) => {
   const [formValues, { email, text }] = useFormState<SponsorLeadForm>({
     email: "",
     fullname: "",
+    company: "",
   });
 
   return (
@@ -49,6 +51,14 @@ export const SponsorLeadModal = ({ onClose }) => {
       <form>
         <InputWrapper title={<FormattedMessage id="signup.email" />}>
           <Input placeholder="Jane Doe" required={true} {...text("fullname")} />
+        </InputWrapper>
+        <Spacer size="small" />
+        <InputWrapper title={<FormattedMessage id="signup.company" />}>
+          <Input
+            placeholder="Save the world with Python TLD"
+            required={true}
+            {...text("company")}
+          />
         </InputWrapper>
         <Spacer size="small" />
         <InputWrapper title={<FormattedMessage id="signup.email" />}>
