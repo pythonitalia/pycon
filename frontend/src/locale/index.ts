@@ -15,7 +15,7 @@ export const messages = {
     "checkout.billing.businessInvoice.description":
       "Turn this option on if your company, university or similar is paying for you or if you need an invoice.",
 
-    "sponsorLeadModal.title": "Get our brochure!",
+    "sponsorLeadModal.title": "Download our brochure",
     "sponsorLeadModal.submit": "Submit",
     "sponsorLeadModal.body": `Our packages gives you an idea of what we offer and how you can optimize your presence at PyCon Italia, but are not set in stone!
 Let's get in touch to find the best solution for your business' needs!`,
@@ -2064,6 +2064,7 @@ Mettiamoci in contatto per trovare la soluzione migliore per le esigenze della t
     "sponsorLeadModal.acceptPrivacyPolicy.heading": "Privacy Policy",
     "sponsorLeadModal.acceptPrivacyPolicy":
       "Ho letto e compreso l'Informativa sulla {link} di Python Italia APS.",
+    "sponsorLeadModal.title": "Scarica brochure",
   },
 };
 
