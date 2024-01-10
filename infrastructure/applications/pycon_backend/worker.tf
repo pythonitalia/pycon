@@ -49,7 +49,7 @@ locals {
       value = aws_s3_bucket.backend_media.region
     },
     {
-      name = "AWS_REGION",
+      name = "AWS_DEFAULT_REGION",
       value = "eu-central-1"
     },
     {
