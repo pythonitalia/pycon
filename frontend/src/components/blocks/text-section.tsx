@@ -26,7 +26,6 @@ export const TextSection = ({
   const setCurrentModal = useSetCurrentModal();
   const onlyAccordions = !title && !subtitle && !body && !cta;
   const isModalCTA = cta?.link?.startsWith("modal:");
-  console.log("isModalCTA", isModalCTA, cta?.link);
   const openModal = (e) => {
     if (!isModalCTA) {
       return;
