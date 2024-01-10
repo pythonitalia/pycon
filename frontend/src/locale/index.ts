@@ -15,6 +15,16 @@ export const messages = {
     "checkout.billing.businessInvoice.description":
       "Turn this option on if your company, university or similar is paying for you or if you need an invoice.",
 
+    "sponsorLeadModal.title": "Get our brochure!",
+    "sponsorLeadModal.submit": "Submit",
+    "sponsorLeadModal.body": `Our packages gives you an idea of what we offer and how you can optimize your presence at PyCon Italia, but are not set in stone!
+Let's get in touch to find the best solution for your business' needs!`,
+    "sponsorLeadModal.company": "Company",
+    "sponsorLeadModal.completed":
+      "Thank you! We just sent the brochure via email. If you can't find it, check your spam folder or contact us at help@pycon.it!",
+
+    "modal.cancel": "Cancel",
+
     "submission.languageSwitch":
       "This proposal is in multiple languages, click here to see it in {language}",
 
@@ -2040,6 +2050,15 @@ Affrettati a comprare il biglietto!`,
       "È importante che tutti coloro che si registrano all'evento leggano l'Elaborazione dei Dati Personali ({link}) da parte dell'organizzatore italiano Python Italia APS e autorizzino il trattamento dei loro dati personali per consentire la raccolta delle registrazioni e l'organizzazione dell'evento.",
 
     "productQuestions.thisIsMyTicket": "Questo biglietto è mio",
+
+    "modal.cancel": "Chiudi",
+    "sponsorLeadModal.submit": "Invia",
+    "sponsorLeadModal.company": "Azienda",
+    "sponsorLeadModal.completed":
+      "Grazie! Abbiamo appena inviato la brochure via email. Se non riesci a trovarla, controlla lo spam o contattaci a help@pycon.it!",
+    "sponsorLeadModal.body": `I nostri pacchetti ti danno un'idea di ciò che offriamo e di come puoi ottimizzare la tua presenza a PyCon Italia, ma non sono definitivi!
+
+Mettiamoci in contatto per trovare la soluzione migliore per le esigenze della tua azienda!`,
   },
 };
 

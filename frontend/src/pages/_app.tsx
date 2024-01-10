@@ -6,7 +6,7 @@ import { getMessagesForLocale } from "@python-italia/pycon-styleguide";
 import "@python-italia/pycon-styleguide/custom-style";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";
 import { Box, Flex, jsx, ThemeProvider } from "theme-ui";
 
@@ -16,6 +16,8 @@ import { APOLLO_STATE_PROP_NAME, getApolloClient } from "~/apollo/client";
 import { ErrorBoundary } from "~/components/error-boundary";
 import { Footer } from "~/components/footer";
 import { Header } from "~/components/header";
+import { ModalRenderer } from "~/components/modal-renderer";
+import { ModalStateContext } from "~/components/modal/context";
 import { GlobalStyles } from "~/components/styles";
 import { updateOlarkFields } from "~/helpers/olark";
 import messages from "~/locale";
@@ -30,8 +32,18 @@ const isSocial = (path: string) => path.endsWith("/social");
 
 const MyApp = (props) => {
   const { Component, pageProps, router, err } = props;
+  const [modalId, setCurrentModal] = useState<string | null>(null);
   const apolloClient = getApolloClient(props.pageProps[APOLLO_STATE_PROP_NAME]);
   const locale = useCurrentLanguage();
+
+  const modalContext = useMemo(
+    () => ({
+      modalId,
+      setCurrentModal,
+      closeCurrentModal: () => setCurrentModal(null),
+    }),
+    [modalId],
+  );
 
   const intl = createIntl(
     {
@@ -66,6 +78,7 @@ const MyApp = (props) => {
       </Flex>
     );
   }
+  console.log("!!! modalId", modalId);
 
   return (
     <ThemeProvider theme={theme}>
@@ -110,7 +123,10 @@ window.dispatchEvent(olarkLoadedEvent);
                   <Header />
 
                   <Box>
-                    <Component {...pageProps} err={err} />
+                    <ModalStateContext.Provider value={modalContext}>
+                      <Component {...pageProps} err={err} />
+                      <ModalRenderer />
+                    </ModalStateContext.Provider>
                     <Analytics />
                   </Box>
 
