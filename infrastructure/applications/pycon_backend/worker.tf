@@ -49,6 +49,10 @@ locals {
       value = aws_s3_bucket.backend_media.region
     },
     {
+      name = "AWS_REGION",
+      value = "eu-central-1"
+    },
+    {
       name  = "SPEAKERS_EMAIL_ADDRESS",
       value = module.secrets.value.speakers_email_address
     },
