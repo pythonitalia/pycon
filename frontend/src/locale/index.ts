@@ -21,7 +21,7 @@ export const messages = {
 Let's get in touch to find the best solution for your business' needs!`,
     "sponsorLeadModal.company": "Company",
     "sponsorLeadModal.completed":
-      "Thank you! We just sent the brochure via email. If you can't find it, check your spam folder or contact us at help@pycon.it!",
+      "Thank you! We just sent the brochure via email. If you can't find it, check your spam folder or contact us at sponsor@pycon.it!",
 
     "modal.cancel": "Cancel",
 
@@ -2055,7 +2055,7 @@ Affrettati a comprare il biglietto!`,
     "sponsorLeadModal.submit": "Invia",
     "sponsorLeadModal.company": "Azienda",
     "sponsorLeadModal.completed":
-      "Grazie! Abbiamo appena inviato la brochure via email. Se non riesci a trovarla, controlla lo spam o contattaci a help@pycon.it!",
+      "Grazie! Abbiamo appena inviato la brochure via email. Se non riesci a trovarla, controlla lo spam o contattaci a sponsor@pycon.it!",
     "sponsorLeadModal.body": `I nostri pacchetti ti danno un'idea di ciò che offriamo e di come puoi ottimizzare la tua presenza a PyCon Italia, ma non sono definitivi!
 
 Mettiamoci in contatto per trovare la soluzione migliore per le esigenze della tua azienda!`,
