@@ -15,6 +15,13 @@ export const messages = {
     "checkout.billing.businessInvoice.description":
       "Turn this option on if your company, university or similar is paying for you or if you need an invoice.",
 
+    "sponsorLeadModal.title": "Get our brochure!",
+    "sponsorLeadModal.submit": "Submit",
+    "sponsorLeadModal.body": `Our packages gives you an idea of what we offer and how you can optimize your presence at PyCon Italia, but are not set in stone!
+Let's get in touch to find the best solution for your business' needs!`,
+
+    "modal.cancel": "Cancel",
+
     "submission.languageSwitch":
       "This proposal is in multiple languages, click here to see it in {language}",
 
@@ -2040,6 +2047,9 @@ Affrettati a comprare il biglietto!`,
       "È importante che tutti coloro che si registrano all'evento leggano l'Elaborazione dei Dati Personali ({link}) da parte dell'organizzatore italiano Python Italia APS e autorizzino il trattamento dei loro dati personali per consentire la raccolta delle registrazioni e l'organizzazione dell'evento.",
 
     "productQuestions.thisIsMyTicket": "Questo biglietto è mio",
+
+    "modal.cancel": "Chiudi",
+    "sponsorLeadModal.submit": "Invia",
   },
 };
 

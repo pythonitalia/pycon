@@ -11,6 +11,8 @@ import {
 
 import { BodyTextSize, TextSection as TextSectionType } from "~/types";
 
+import { useSetCurrentModal } from "../modal/context";
+
 export const TextSection = ({
   title,
   isMainTitle,
@@ -21,7 +23,19 @@ export const TextSection = ({
   accordions,
   cta,
 }: TextSectionType) => {
+  const setCurrentModal = useSetCurrentModal();
   const onlyAccordions = !title && !subtitle && !body && !cta;
+  const isModalCTA = cta?.link?.startsWith("modal:");
+  console.log("isModalCTA", isModalCTA, cta?.link);
+  const openModal = (e) => {
+    if (!isModalCTA) {
+      return;
+    }
+    e.preventDefault();
+
+    const modalId = cta.link.replace("modal:", "");
+    setCurrentModal(modalId);
+  };
   return (
     <Section
       spacingSize={isMainTitle ? "2xl" : "xl"}
@@ -54,7 +68,12 @@ export const TextSection = ({
         )}
         {cta && (
           <>
-            <Button href={cta.link} role="secondary" fullWidth="mobile">
+            <Button
+              onClick={openModal}
+              href={isModalCTA ? null : cta.link}
+              role="secondary"
+              fullWidth="mobile"
+            >
               {cta.label}
             </Button>
           </>

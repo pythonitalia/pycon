@@ -125,6 +125,11 @@ fragment Blocks on Block {
     id
     visibleCategories
   }
+
+  ... on SponsorLeadSection {
+    title
+    body
+  }
 }
 
 fragment CTAInfo on CTA {

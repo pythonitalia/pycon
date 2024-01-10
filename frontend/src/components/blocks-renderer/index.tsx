@@ -14,6 +14,7 @@ import { SchedulePreviewSection } from "../blocks/schedule-preview-section";
 import { SliderCardsSection } from "../blocks/slider-cards-section";
 import { SocialsSection } from "../blocks/socials-section";
 import { SpecialGuestSection } from "../blocks/special-guest-section";
+import { SponsorLeadSection } from "../blocks/sponsor-lead-section";
 import { SponsorsSection } from "../blocks/sponsors-section";
 
 type Registry = {
@@ -34,6 +35,7 @@ const REGISTRY: Registry = {
   NewsGridSection,
   CheckoutSection,
   LiveStreamingSection,
+  SponsorLeadSection,
 };
 
 type Props = {
