@@ -41,7 +41,7 @@ def notify_new_sponsor_lead_via_slack(*, sponsor_lead_id, admin_absolute_uri):
             {
                 "type": "section",
                 "text": {
-                    "text": f"New Sponsor lead from {company}",
+                    "text": f"New Sponsor Lead: {company}",
                     "type": "plain_text",
                 },
             }
