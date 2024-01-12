@@ -59,6 +59,7 @@ def notify_new_sponsor_lead_via_slack(*, sponsor_lead_id, admin_absolute_uri):
                                     "text": "Open in Admin",
                                     "emoji": True,
                                 },
+                                "action_id": "ignore-action",
                                 "url": f"{admin_absolute_uri}{admin_path[1:]}",
                             }
                         ],
