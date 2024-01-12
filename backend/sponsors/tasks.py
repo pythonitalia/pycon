@@ -35,15 +35,27 @@ def notify_new_sponsor_lead_via_slack(*, sponsor_lead_id, admin_absolute_uri):
     sponsor_lead = SponsorLead.objects.get(id=sponsor_lead_id)
     conference = sponsor_lead.conference
     company = sponsor_lead.company
+
+    message = f"New Sponsor Lead: {company}"
     admin_path = reverse("admin:sponsors_sponsorlead_change", args=[sponsor_lead_id])
     slack.send_message(
         [
             {
                 "type": "section",
                 "text": {
-                    "text": f"New Sponsor Lead: {company}",
+                    "text": message,
                     "type": "plain_text",
                 },
+                "fields": [
+                    {"type": "mrkdwn", "text": "*Consent to email*"},
+                    {"type": "plain_text", "text": " "},
+                    {
+                        "type": "mrkdwn",
+                        "text": "Yes"
+                        if sponsor_lead.consent_to_contact_via_email
+                        else "No",
+                    },
+                ],
             }
         ],
         [
@@ -67,5 +79,6 @@ def notify_new_sponsor_lead_via_slack(*, sponsor_lead_id, admin_absolute_uri):
                 ]
             }
         ],
+        text=message,
         token=conference.slack_new_sponsor_lead_incoming_webhook_url,
     )
