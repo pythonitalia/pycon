@@ -24,11 +24,11 @@ Let's get in touch to find the best solution for your business' needs!`,
       "Thank you! We just sent the brochure via email. If you can't find it, check your spam folder or contact us at sponsor@pycon.it!",
     "sponsorLeadModal.acceptPrivacyPolicy.heading": "Privacy Policy",
     "sponsorLeadModal.acceptPrivacyPolicy":
-      "I have read and understood the {link} of Python Italia APS",
+      "I have read and understood the {link} of Python Italia APS.",
 
     "sponsorLeadModal.consentToContactViaEmail.heading": "Contact me via email",
     "sponsorLeadModal.consentToContactViaEmail.body":
-      "I am happy to be contacted via email to discuss sponsorship opportunities",
+      "I am happy to be contacted via email to discuss sponsorship opportunities.",
 
     "modal.cancel": "Cancel",
 
@@ -42,7 +42,7 @@ Let's get in touch to find the best solution for your business' needs!`,
     "header.streaming": "Watch live",
 
     "grants.form.acceptPrivacyPolicy":
-      "I have read and understood the {link} of Python Italia APS",
+      "I have read and understood the {link} of Python Italia APS.",
     "grants.form.privacyPolicyHeading":
       "It is important that all those who register for the event read the Processing of Personal Data ({link}) by the Italian organizer Python Italia APS and authorize the processing of their personal data to enable the collection of registrations and the organization of the event.",
 
@@ -2073,7 +2073,7 @@ Mettiamoci in contatto per trovare la soluzione migliore per le esigenze della t
 
     "sponsorLeadModal.consentToContactViaEmail.heading": "Contattami via email",
     "sponsorLeadModal.consentToContactViaEmail.body":
-      "Do il mio permesso per essere contattato/a via email per discutere opportunità di sponsorizzazione",
+      "Do il mio permesso per essere contattato/a via email per discutere opportunità di sponsorizzazione.",
   },
 };
 
