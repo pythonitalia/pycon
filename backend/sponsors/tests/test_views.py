@@ -14,6 +14,7 @@ def test_view_brochure_view_without_signature_fails(client):
 
     assert response.status_code == 403
     assert response.content.decode() == "Invalid signature."
+    assert sponsor_lead.brochure_viewed is False
 
 
 def test_view_brochure_view_with_wrong_signature_fails(client):
@@ -27,6 +28,7 @@ def test_view_brochure_view_with_wrong_signature_fails(client):
 
     assert response.status_code == 403
     assert response.content.decode() == "Invalid signature."
+    assert sponsor_lead.brochure_viewed is False
 
 
 def test_view_brochure_view(client):
