@@ -1,6 +1,7 @@
 from pytest import mark
 
 from api.helpers.ids import encode_hashid
+from schedule.models import ScheduleItem
 from schedule.tests.factories import ScheduleItemFactory
 
 pytestmark = mark.django_db
@@ -77,7 +78,11 @@ def test_cannot_edit_submission_if_not_the_owner(
 ):
     graphql_client.force_login(user)
     submission = submission_factory(conference__active_cfp=True)
-    ScheduleItemFactory(conference=submission.conference, submission=submission)
+    ScheduleItemFactory(
+        conference=submission.conference,
+        submission=submission,
+        type=ScheduleItem.TYPES.talk,
+    )
 
     response = graphql_client.query(
         """query Submission($id: ID!) {

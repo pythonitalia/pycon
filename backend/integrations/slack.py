@@ -10,7 +10,9 @@ class SlackIncomingWebhookError(Exception):
     pass
 
 
-def send_message(blocks: List[dict], attachments: List[dict], *, token: str):
+def send_message(
+    blocks: List[dict], attachments: List[dict], text: str = "", *, token: str
+):
     """
     Performs a HTTP post to the Incoming Webhooks slack api.
     Blocks reference: https://api.slack.com/reference/messaging/blocks
@@ -23,7 +25,7 @@ def send_message(blocks: List[dict], attachments: List[dict], *, token: str):
 
     response = post(
         url=token,
-        json={"blocks": blocks, "attachments": attachments},
+        json={"blocks": blocks, "attachments": attachments, "text": text},
     )
 
     if response.status_code != 200:
