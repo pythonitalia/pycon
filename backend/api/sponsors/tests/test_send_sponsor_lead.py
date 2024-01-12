@@ -32,6 +32,9 @@ def _send_sponsor_lead(client, input):
 @mark.parametrize("consent_to_contact_via_email", [True, False])
 def test_send_sponsor_lead(graphql_client, consent_to_contact_via_email, mocker):
     mock_send_brochure = mocker.patch("api.sponsors.schema.send_sponsor_brochure")
+    mock_notify_new_sponsor_lead_via_slack = mocker.patch(
+        "api.sponsors.schema.notify_new_sponsor_lead_via_slack"
+    )
 
     conference = ConferenceFactory()
 
@@ -59,6 +62,10 @@ def test_send_sponsor_lead(graphql_client, consent_to_contact_via_email, mocker)
     assert sponsor_lead.brochure_viewed is False
 
     mock_send_brochure.delay.assert_called_once_with(sponsor_lead_id=sponsor_lead.id)
+    mock_notify_new_sponsor_lead_via_slack.delay.assert_called_once_with(
+        sponsor_lead_id=sponsor_lead.id,
+        admin_absolute_uri="http://testserver/",
+    )
 
 
 def test_send_sponsor_lead_only_sends_the_brochure_once_to_email(

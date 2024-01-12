@@ -85,6 +85,12 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         blank=True,
         default="",
     )
+    slack_new_sponsor_lead_incoming_webhook_url = models.URLField(
+        _("New sponsor lead Slack incoming webhook for notification"),
+        max_length=1024,
+        blank=True,
+        default="",
+    )
 
     grants_default_ticket_amount = models.DecimalField(
         verbose_name=_("grants default ticket amount"),

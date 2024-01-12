@@ -77,7 +77,7 @@ def test_cannot_edit_submission_if_not_the_owner(
 ):
     graphql_client.force_login(user)
     submission = submission_factory(conference__active_cfp=True)
-    ScheduleItemFactory(submission=submission)
+    ScheduleItemFactory(conference=submission.conference, submission=submission)
 
     response = graphql_client.query(
         """query Submission($id: ID!) {

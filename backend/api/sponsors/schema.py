@@ -1,4 +1,5 @@
-from sponsors.tasks import send_sponsor_brochure
+from api.context import Info
+from sponsors.tasks import notify_new_sponsor_lead_via_slack, send_sponsor_brochure
 from conferences.models.conference import Conference
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -64,7 +65,9 @@ SendSponsorLeadOutput = Annotated[
 @strawberry.type
 class SponsorsMutation:
     @strawberry.field
-    def send_sponsor_lead(self, input: SendSponsorLeadInput) -> SendSponsorLeadOutput:
+    def send_sponsor_lead(
+        self, info: Info, input: SendSponsorLeadInput
+    ) -> SendSponsorLeadOutput:
         if errors := input.validate():
             return errors
 
@@ -87,5 +90,9 @@ class SponsorsMutation:
 
         if is_new_email and created:
             send_sponsor_brochure.delay(sponsor_lead_id=sponsor_lead.id)
+            notify_new_sponsor_lead_via_slack.delay(
+                sponsor_lead_id=sponsor_lead.id,
+                admin_absolute_uri=info.context.request.build_absolute_uri("/"),
+            )
 
         return OperationResult(ok=True)
