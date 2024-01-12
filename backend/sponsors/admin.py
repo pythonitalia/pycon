@@ -22,7 +22,14 @@ class SponsorLevelAdmin(OrderedModelAdmin):
 
 @admin.register(SponsorLead)
 class SponsorLeadAdmin(admin.ModelAdmin):
-    list_display = ("fullname", "email", "company", "conference")
+    list_display = (
+        "fullname",
+        "email",
+        "company",
+        "brochure_viewed",
+        "consent_to_contact_via_email",
+        "conference",
+    )
     search_fields = (
         "fullname",
         "email",
