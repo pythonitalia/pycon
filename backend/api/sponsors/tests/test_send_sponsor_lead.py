@@ -61,7 +61,7 @@ def test_send_sponsor_lead(graphql_client, consent_to_contact_via_email, mocker)
     mock_send_brochure.delay.assert_called_once_with(sponsor_lead_id=sponsor_lead.id)
 
 
-def test_send_sponsor_lead_only_sends_the_brochure_once_an_email(
+def test_send_sponsor_lead_only_sends_the_brochure_once_to_email(
     graphql_client, mocker
 ):
     mock_send_brochure = mocker.patch("api.sponsors.schema.send_sponsor_brochure")
@@ -73,6 +73,7 @@ def test_send_sponsor_lead_only_sends_the_brochure_once_an_email(
         company="Example",
         conference=conference,
         consent_to_contact_via_email=False,
+        brochure_viewed=False,
     )
 
     resp = _send_sponsor_lead(

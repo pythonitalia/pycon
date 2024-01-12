@@ -48,9 +48,9 @@ class SendSponsorLeadInput:
 
         if not self.conference_code:
             errors.add_error("conference_code", "Required")
-
-        if not Conference.objects.filter(code=self.conference_code).exists():
-            errors.add_error("conference_code", "Invalid conference code")
+        else:
+            if not Conference.objects.filter(code=self.conference_code).exists():
+                errors.add_error("conference_code", "Invalid conference code")
 
         return errors.if_has_errors
 
