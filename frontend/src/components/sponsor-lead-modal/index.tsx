@@ -23,6 +23,7 @@ type SponsorLeadForm = {
   email: string;
   fullname: string;
   company: string;
+  consentToContactViaEmail: boolean;
   acceptPrivacyPolicy: boolean;
 };
 export const SponsorLeadModal = ({ onClose }) => {
@@ -34,6 +35,8 @@ export const SponsorLeadModal = ({ onClose }) => {
     email: "",
     fullname: "",
     company: "",
+    consentToContactViaEmail: false,
+    acceptPrivacyPolicy: false,
   });
 
   const onSubmit = (e) => {
@@ -52,6 +55,7 @@ export const SponsorLeadModal = ({ onClose }) => {
           fullname: formState.values.fullname,
           company: formState.values.company,
           email: formState.values.email,
+          consentToContactViaEmail: formState.values.consentToContactViaEmail,
           conferenceCode: process.env.conferenceCode,
         },
       },
@@ -89,7 +93,7 @@ export const SponsorLeadModal = ({ onClose }) => {
       </Text>
       <Spacer size="medium" />
       {!submitComplete && (
-        <form onSubmit={onSubmit} ref={formRef}>
+        <form onSubmit={onSubmit} ref={formRef} autoComplete="off">
           <InputWrapper
             title={<FormattedMessage id="signup.email" />}
             required={true}
@@ -121,6 +125,24 @@ export const SponsorLeadModal = ({ onClose }) => {
               required={true}
               {...email("email")}
             />
+          </InputWrapper>
+
+          <Spacer size="small" />
+
+          <InputWrapper
+            title={
+              <FormattedMessage id="sponsorLeadModal.consentToContactViaEmail.heading" />
+            }
+          >
+            <HorizontalStack gap="small" alignItems="center">
+              <Checkbox
+                {...checkbox("consentToContactViaEmail")}
+                size="small"
+              />
+              <Text size={2} weight="strong">
+                <FormattedMessage id="sponsorLeadModal.consentToContactViaEmail.body" />
+              </Text>
+            </HorizontalStack>
           </InputWrapper>
 
           <Spacer size="small" />

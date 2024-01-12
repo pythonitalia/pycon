@@ -25,6 +25,11 @@ Let's get in touch to find the best solution for your business' needs!`,
     "sponsorLeadModal.acceptPrivacyPolicy.heading": "Privacy Policy",
     "sponsorLeadModal.acceptPrivacyPolicy":
       "I have read and understood the {link} of Python Italia APS",
+
+    "sponsorLeadModal.consentToContactViaEmail.heading": "Contact me via email",
+    "sponsorLeadModal.consentToContactViaEmail.body":
+      "I am happy to be contacted via email to discuss sponsorship opportunities",
+
     "modal.cancel": "Cancel",
 
     "submission.languageSwitch":
@@ -2065,6 +2070,10 @@ Mettiamoci in contatto per trovare la soluzione migliore per le esigenze della t
     "sponsorLeadModal.acceptPrivacyPolicy":
       "Ho letto e compreso l'Informativa sulla {link} di Python Italia APS.",
     "sponsorLeadModal.title": "Scarica brochure",
+
+    "sponsorLeadModal.consentToContactViaEmail.heading": "Contattami via email",
+    "sponsorLeadModal.consentToContactViaEmail.body":
+      "Do il mio permesso per essere contattato/a via email per discutere opportunità di sponsorizzazione",
   },
 };
 

@@ -66,3 +66,4 @@ class SponsorLead(TimeStampedModel):
     email = models.EmailField()
     company = models.CharField(max_length=500)
     brochure_viewed = models.BooleanField(default=False)
+    consent_to_contact_via_email = models.BooleanField(default=False)

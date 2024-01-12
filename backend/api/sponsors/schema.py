@@ -28,6 +28,7 @@ class SendSponsorLeadInput:
     email: str
     company: str
     conference_code: str
+    consent_to_contact_via_email: bool = False
 
     def validate(self):
         errors = SendSponsorLeadInputErrors()
@@ -75,11 +76,14 @@ class SponsorsMutation:
             .first()
         )
 
-        sponsor_lead, created = SponsorLead.objects.get_or_create(
+        sponsor_lead, created = SponsorLead.objects.update_or_create(
             fullname=input.fullname,
             email=input.email,
             company=input.company,
             conference_id=conference_id,
+            defaults={
+                "consent_to_contact_via_email": input.consent_to_contact_via_email,
+            },
         )
 
         if is_new_email and created:
