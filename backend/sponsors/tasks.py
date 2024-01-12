@@ -4,6 +4,7 @@ from django.core.signing import Signer
 from pycon.celery import app
 from sponsors.models import SponsorLead
 from notifications.emails import send_email
+from integrations import slack
 
 
 @app.task
@@ -26,4 +27,44 @@ def send_sponsor_brochure(sponsor_lead_id):
         reply_to=[
             "sponsor@pycon.it",
         ],
+    )
+
+
+@app.task
+def notify_new_sponsor_lead_via_slack(*, sponsor_lead_id, admin_absolute_uri):
+    sponsor_lead = SponsorLead.objects.get(id=sponsor_lead_id)
+    conference = sponsor_lead.conference
+    company = sponsor_lead.company
+    admin_path = reverse("admin:sponsors_sponsorlead_change", args=[sponsor_lead_id])
+    slack.send_message(
+        [
+            {
+                "type": "section",
+                "text": {
+                    "text": f"New Sponsor lead from {company}",
+                    "type": "plain_text",
+                },
+            }
+        ],
+        [
+            {
+                "blocks": [
+                    {
+                        "type": "actions",
+                        "elements": [
+                            {
+                                "type": "button",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "Open in Admin",
+                                    "emoji": True,
+                                },
+                                "url": f"{admin_absolute_uri}{admin_path[1:]}",
+                            }
+                        ],
+                    }
+                ]
+            }
+        ],
+        token=conference.slack_new_sponsor_lead_incoming_webhook_url,
     )

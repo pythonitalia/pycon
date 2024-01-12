@@ -137,6 +137,7 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                     "slack_new_proposal_comment_incoming_webhook_url",
                     "slack_new_grant_reply_incoming_incoming_webhook_url",
                     "slack_speaker_invitation_answer_incoming_webhook_url",
+                    "slack_new_sponsor_lead_incoming_webhook_url",
                 )
             },
         ),
