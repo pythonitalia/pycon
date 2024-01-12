@@ -5,7 +5,7 @@ from pytest_factoryboy import register
 
 from conferences.tests.factories import ConferenceFactory
 from pycon.constants import COLORS
-from sponsors.models import Sponsor, SponsorLevel
+from sponsors.models import Sponsor, SponsorLead, SponsorLevel
 
 
 @register
@@ -37,3 +37,16 @@ class SponsorLevelFactory(DjangoModelFactory):
         if extracted:
             for sponsor in extracted:
                 self.sponsors.add(sponsor)
+
+
+@register
+class SponsorLeadFactory(DjangoModelFactory):
+    fullname = factory.Faker("name")
+    email = factory.Faker("email")
+    company = factory.Faker("company")
+    conference = factory.SubFactory(ConferenceFactory)
+    consent_to_contact_via_email = factory.Faker("boolean")
+    brochure_viewed = factory.Faker("boolean")
+
+    class Meta:
+        model = SponsorLead

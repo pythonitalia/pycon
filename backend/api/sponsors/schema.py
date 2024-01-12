@@ -16,7 +16,6 @@ class SendSponsorLeadInputErrors(BaseErrorType):
         email: list[str] = strawberry.field(default_factory=list)
         company: list[str] = strawberry.field(default_factory=list)
         conference_code: list[str] = strawberry.field(default_factory=list)
-
         non_field_errors: list[str] = strawberry.field(default_factory=list)
 
     errors: _SendSponsorLeadInput = None
@@ -38,17 +37,17 @@ class SendSponsorLeadInput:
 
         if not self.email:
             errors.add_error("email", "Required")
+        else:
+            try:
+                validate_email(self.email)
+            except ValidationError:
+                errors.add_error("email", "Invalid email address")
 
         if not self.company:
             errors.add_error("company", "Required")
 
         if not self.conference_code:
             errors.add_error("conference_code", "Required")
-
-        try:
-            validate_email(self.email)
-        except ValidationError:
-            errors.add_error("email", "Invalid email address")
 
         if not Conference.objects.filter(code=self.conference_code).exists():
             errors.add_error("conference_code", "Invalid conference code")
