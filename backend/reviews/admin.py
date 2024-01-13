@@ -29,6 +29,7 @@ def get_all_tags():
 class SubmitVoteForm(forms.Form):
     score = forms.ModelChoiceField(queryset=AvailableScoreOption.objects.all())
     comment = forms.CharField(required=False)
+    private_comment = forms.CharField(required=False)
     exclude = forms.MultipleChoiceField(choices=get_all_tags, required=False)
     seen = forms.CharField(required=False)
     _next = forms.CharField(required=False)
@@ -345,6 +346,10 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                 if not form.is_valid():
                     messages.error(request, "Invalid vote")
                     comment = urllib.parse.quote(form.cleaned_data["comment"])
+                    private_comment = urllib.parse.quote(
+                        form.cleaned_data["private_comment"]
+                    )
+
                     return redirect(
                         reverse(
                             "admin:reviews-vote-view",
@@ -356,9 +361,9 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                         + f"?exclude={','.join(exclude)}"
                         + f"&seen={','.join(seen)}"
                         + f"&comment={comment}"
+                        + f"&private_comment={private_comment}"
                     )
 
-                # User is saving their vote
                 values = {
                     "user_id": request.user.id,
                     "review_session_id": review_session_id,
@@ -374,6 +379,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                     defaults={
                         "score_id": form.cleaned_data["score"].id,
                         "comment": form.cleaned_data["comment"],
+                        "private_comment": form.cleaned_data["private_comment"],
                     },
                 )
                 next_to_review = get_next_to_review_item_id(
@@ -416,6 +422,11 @@ class ReviewSessionAdmin(admin.ModelAdmin):
     def _render_grant_review(
         self, request, review_session, review_item_id, user_review
     ):
+        private_comment = request.GET.get(
+            "private_comment", user_review.private_comment if user_review else ""
+        )
+        comment = request.GET.get("comment", user_review.comment if user_review else "")
+
         grant = Grant.objects.get(id=review_item_id)
         context = dict(
             self.admin_site.each_context(request),
@@ -425,6 +436,8 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             ).order_by("numeric_value"),
             review_session_id=review_session.id,
             user_review=user_review,
+            private_comment=private_comment,
+            comment=comment,
             review_session_repr=str(review_session),
             title=f"Grant Review: {grant.user.display_name}",
         )

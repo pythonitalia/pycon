@@ -52,6 +52,10 @@
     width: 100%;
   }
 
+  .comments-wrapper + .comments-wrapper {
+    margin-top: 10px;
+  }
+
   .my-vote .actions {
     margin-top: 10px;
   }
@@ -196,24 +200,29 @@
   >
     {% csrf_token %}
     <div class="score-label">Score</div>
-    <div class="available-votes">
-      {% for available_score in available_scores %}
-      <label class="my-vote-radio-wrapper">
-        <input {% if user_review.score_id == available_score.id %} checked {% endif %} name="score" type="radio" value="{{ available_score.id }}" />
-        {{available_score.label}}
-      </label>
-      {% endfor %}
-    </div>
+      <div class="available-votes">
+        {% for available_score in available_scores %}
+        <label class="my-vote-radio-wrapper">
+          <input {% if user_review.score_id == available_score.id %} checked {% endif %} name="score" type="radio" value="{{ available_score.id }}" />
+          {{available_score.label}}
+        </label>
+        {% endfor %}
+      </div>
 
-    <div class="comments-wrapper">
-      <label class="comments-wrapper-label">Leave a comment?</label>
-      <textarea rows="5" name="comment">{% if existing_comment %}{{existing_comment}}{% else %}{{user_review.comment}}{% endif %}</textarea>
-    </div>
+      <div class="comments-wrapper">
+        <label class="comments-wrapper-label">Leave a comment?</label>
+        <textarea rows="5" name="comment">{{comment}}</textarea>
+      </div>
 
-    <div class="actions">
-      <input value="Vote and go to the next" type="submit" name="_next" />
-      <input value="Skip for now" type="submit" name="_skip" />
-    </div>
+      <div class="comments-wrapper">
+        <label class="comments-wrapper-label">Private comment? (Only visible to you)</label>
+        <textarea rows="5" name="private_comment">{{private_comment}}</textarea>
+      </div>
+
+      <div class="actions">
+        <input value="Vote and go to the next" type="submit" name="_next" />
+        <input value="Skip for now" type="submit" name="_skip" />
+      </div>
     </div>
 
     <input type="hidden" name="seen" value="{% for id in seen %}{{id}},{% endfor %}" />

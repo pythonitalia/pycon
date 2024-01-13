@@ -60,6 +60,7 @@ class UserReview(TimeStampedModel):
     )
     score = models.ForeignKey(AvailableScoreOption, on_delete=models.PROTECT)
     comment = models.TextField(blank=True)
+    private_comment = models.TextField(blank=True)
 
     @property
     def object_id(self):
