@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, Exists
 import urllib.parse
 from typing import List, Optional
 
@@ -157,7 +157,13 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                     .values("grant_id")
                     .annotate(score=Sum("score__numeric_value"))
                     .values("score")
-                )
+                ),
+                is_a_speaker=Exists(
+                    Submission.objects.filter(
+                        speaker_id=OuterRef("user_id"),
+                        conference_id=review_session.conference_id,
+                    )
+                ),
             )
             .order_by(F("score").desc(nulls_last=True))
             .prefetch_related(
@@ -177,6 +183,11 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             items=items,
             review_session_id=review_session_id,
             review_session_repr=str(review_session),
+            all_statuses=[
+                choice
+                for choice in Grant.Status.choices
+                if choice[0] in Grant.REVIEW_SESSION_STATUSES_OPTIONS
+            ],
             title="Recap",
         )
         return TemplateResponse(request, "grants-recap.html", context)

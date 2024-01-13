@@ -18,6 +18,31 @@
     box-sizing: border-box;
   }
 
+  .status-choices {
+    list-style: none;
+  }
+
+  .status-choices li {
+    list-style: none;
+  }
+
+  .needs-list {
+    display: inline-block;
+    margin-top: 0;
+  }
+
+  .needs-list li {
+    display: inline-block;
+  }
+
+  .needs-list li::after {
+    content: ',';
+  }
+
+  .needs-list li:last-child:after {
+    display: none;
+  }
+
   .results-table {
     width: 100%;
   }
@@ -78,8 +103,8 @@
     list-style-position: inside;
   }
 
-  .results-title ul {
-    margin-top: 20px;
+  .results-item ul li {
+    list-style: none;
   }
 
   .opt-filter {
@@ -101,111 +126,13 @@
   }
 </style>
 
-<script type="application/javascript">
-  const submissions = [];
-  const audienceLevels = [
-    {% for audience_level in audience_levels %}
-      "{{ audience_level.id }}",
-    {% endfor %}
-  ];
-
-  let acceptedProposalsNumRef;
-  let rejectedProposalsNumRef;
-
-  const getRefs = () => {
-    acceptedProposalsNumRef = document.querySelector("#accepted-proposals-num");
-    rejectedProposalsNumRef = document.querySelector("#rejected-proposals-num");
-  };
-
-  window.addEventListener("load", () => {
-    getRefs();
-    updateBottomBarUI();
-
-    submissions.forEach((submissionData) => {
-      const submissionId = submissionData.id;
-      const acceptInput = document.getElementById(
-        `decision-${submissionId}-accept`,
-      );
-      const rejectInput = document.getElementById(
-        `decision-${submissionId}-reject`,
-      );
-      const unsetInput = document.getElementById(
-        `decision-${submissionId}-unset`,
-      );
-
-      acceptInput.addEventListener("change", () => {
-        submissionData.status = "accepted";
-        updateBottomBarUI();
-      });
-
-      rejectInput.addEventListener("change", () => {
-        submissionData.status = "rejected";
-        updateBottomBarUI();
-      });
-
-      unsetInput.addEventListener("change", () => {
-        unsetInput.checked = false;
-        submissionData.status = "unknown";
-        updateBottomBarUI();
-      });
-    });
-
-    const filterWithReviewsSelect = document.querySelector('#filter-with-n-reviews');
-    filterWithReviewsSelect.addEventListener('change', e => {
-      e.preventDefault();
-
-      const filterValue = parseInt(e.target.value, 10);
-
-      document.querySelectorAll('.grant-item').forEach(
-        proposalItem => {
-          if (e.target.value === 'all') {
-            proposalItem.classList.remove('hidden')
-            return;
-          }
-
-          const numOfVotes = parseInt(proposalItem.dataset.numOfVotes, 10);
-          if (numOfVotes === filterValue) {
-            proposalItem.classList.remove('hidden')
-          } else {
-            proposalItem.classList.add('hidden')
-          }
-        }
-      )
-
-    })
-  });
-
-  const updateBottomBarUI = () => {
-    const acceptedAudienceLevels = {};
-    const rejectedAudienceLevels = {};
-
-    const results = submissions.reduce(
-      (acc, submission) => {
-        if (submission.status === "accepted") {
-          acc[0]++;
-          acceptedAudienceLevels[submission.audienceLevel] = (acceptedAudienceLevels[submission.audienceLevel] || 0) + 1;
-        } else if (submission.status === "rejected") {
-          acc[1]++;
-          rejectedAudienceLevels[submission.audienceLevel] = (rejectedAudienceLevels[submission.audienceLevel] || 0) + 1;
-        }
-        return acc;
-      },
-      [0, 0],
-    );
-
-    acceptedProposalsNumRef.innerText = results[0];
-    rejectedProposalsNumRef.innerText = results[1];
-
-    audienceLevels.forEach(
-      audienceLevel => {
-        const acceptedRef = document.querySelector(`#accepted-audience-level-${audienceLevel}`);
-        const rejectedRef = document.querySelector(`#rejected-audience-level-${audienceLevel}`);
-        acceptedRef.innerText = acceptedAudienceLevels[audienceLevel] || 0;
-        rejectedRef.innerText = rejectedAudienceLevels[audienceLevel] || 0;
-      }
-    );
-  };
-</script>
+<ul class="object-tools">
+  <li>
+    <a target="_blank" href="{% url 'admin:grants-summary' %}" class="change-list-object-tools-item">
+      Open Grants Summary
+    </a>
+  </li>
+</ul>
 
 <form id="changelist-form" method="post" novalidate="">
   {% csrf_token %}
@@ -218,7 +145,7 @@
             <thead>
               <tr>
                 <th scope="col">
-                  <div class="text"><a>Fullname</a></div>
+                  <div class="text"><span>Grant</span></div>
                   <div class="clear"></div>
                 </th>
                 <th scope="col">
@@ -226,7 +153,11 @@
                   <div class="clear"></div>
                 </th>
                 <th scope="col">
-                  <div class="text"><a>Votes</a></div>
+                  <div class="text"><span>Votes</span></div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
+                  <div class="text"><span>Decision</span></div>
                   <div class="clear"></div>
                 </th>
               </tr>
@@ -234,12 +165,56 @@
             <tbody>
               {% for item in items %}
               <tr class="grant-item" id="grant-{{item.id}}" data-type="{{item.type}}" data-num-of-votes="{{ item.userreview_set.count }}">
-                <td class="results-title">
+                <td class="results-item">
                   <a
                     target="_blank"
                     href="{% url 'admin:grants_grant_change' item.id %}">
-                    <strong>{{item.full_name}}</strong>
+                    <strong>{{item.name}} - {{item.full_name}}</strong>
                   </a>
+                  <ul>
+                    <li>
+                      <strong>Gender:</strong>
+                      <span>{{item.get_gender_display}}</span>
+                    </li>
+                    <li>
+                      <strong>Travelling From:</strong>
+                      <span>{{item.travelling_from}}</span>
+                    </li>
+                    <li>
+                      <strong>Country type:</strong>
+                      <span>{{item.get_country_type_display}}</span>
+                    </li>
+                    <li>
+                      <strong>Grant type:</strong>
+                      <span>{{item.get_grant_type_display}}</span>
+                    </li>
+                    <li>
+                      <strong>Needs:</strong>
+                      <ul class="needs-list">
+                        {% if item.need_visa %}
+                          <li>VISA</li>
+                        {% endif %}
+                        {% if item.need_accommodation %}
+                          <li>Accommodation</li>
+                        {% endif %}
+                        {% if item.needs_funds_for_travel %}
+                          <li>Funds for Travel</li>
+                        {% endif %}
+                        {% if not item.need_visa and not item.need_accommodation and not item.needs_funds_for_travel %}
+                          <li>Ticket only</li>
+                        {% endif %}
+                      </ul>
+                    </li>
+                    <li>
+                      <strong>Interested in Volunteering?</strong>
+                      <span>{{item.interested_in_volunteering|yesno}}</span>
+                    </li>
+                    <li>
+                      <strong>Is a speaker?</strong>
+                      <span>{{item.is_a_speaker|yesno}}</span>
+                    </li>
+                  </ul>
+                </td>
 
                 <td>{{ item.score }}</td>
 
@@ -257,9 +232,22 @@
                     {% endfor %}
                     <li>
                       <a style="font-weight: bold" target="_blank" href="{% url 'admin:reviews-vote-view' review_session_id=review_session_id review_item_id=item.id %}">
-                        Vote this proposal
+                        Vote this grant
                       </a>
                     </li>
+                  </ul>
+                </td>
+
+                <td>
+                  <ul class="status-choices">
+                    {% for status in all_statuses %}
+                      <li>
+                        <label>
+                          <input type="radio" name="decision-{{item.id}}" value="{{status.0}}" />
+                            {{status.1}}
+                        </label>
+                      </li>
+                    {% endfor %}
                   </ul>
                 </td>
               </tr>

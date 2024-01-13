@@ -73,23 +73,6 @@
     font-size: 17px;
   }
 </style>
-<script type="text/javascript">
-window.addEventListener('load', function() {
-  const selectAllTags = document.querySelector('#select-all-tags');
-  const deselectAllTags = document.querySelector('#deselect-all-tags');
-  const tags = document.querySelectorAll('.tags-to-exclude input[type="checkbox"]');
-
-  selectAllTags.addEventListener('click', function (e) {
-    e.preventDefault();
-    tags.forEach(tag => tag.checked = true);
-  });
-
-  deselectAllTags.addEventListener('click', function (e) {
-    e.preventDefault();
-    tags.forEach(tag => tag.checked = false);
-  });
-});
-</script>
 <fieldset class="module aligned">
   <h2>Grant</h2>
 
