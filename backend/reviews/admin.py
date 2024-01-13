@@ -51,7 +51,7 @@ class UserReviewAdmin(admin.ModelAdmin):
             "admin:reviews-vote-view",
             kwargs={
                 "review_session_id": obj.review_session_id,
-                "review_item_id": obj.proposal_id,
+                "review_item_id": obj.object_id,
             },
         )
         return mark_safe(f'<a href="{url}">Edit your vote</a>')
@@ -179,7 +179,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             review_session_repr=str(review_session),
             title="Recap",
         )
-        return TemplateResponse(request, "review-grants-recap.html", context)
+        return TemplateResponse(request, "grants-recap.html", context)
 
     def _review_proposals_recap_view(self, request, review_session):
         review_session_id = review_session.id
@@ -276,7 +276,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             review_session_repr=str(review_session),
             title="Recap",
         )
-        return TemplateResponse(request, "review-proposal-recap.html", context)
+        return TemplateResponse(request, "proposals-recap.html", context)
 
     def review_view(self, request, review_session_id, review_item_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
@@ -417,7 +417,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             review_session_repr=str(review_session),
             title=f"Grant Review: {grant.user.display_name}",
         )
-        return TemplateResponse(request, "review-grant.html", context)
+        return TemplateResponse(request, "grant-review.html", context)
 
     def _render_proposal_review(
         self, request, review_session, review_item_id, user_review
@@ -481,7 +481,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             review_session_repr=str(review_session),
             title=proposal.title.localize("en"),
         )
-        return TemplateResponse(request, "review-proposal.html", context)
+        return TemplateResponse(request, "proposal-review.html", context)
 
 
 def get_next_to_review_item_id(

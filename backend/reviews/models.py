@@ -60,3 +60,7 @@ class UserReview(TimeStampedModel):
     )
     score = models.ForeignKey(AvailableScoreOption, on_delete=models.PROTECT)
     comment = models.TextField(blank=True)
+
+    @property
+    def object_id(self):
+        return self.proposal_id or self.grant_id

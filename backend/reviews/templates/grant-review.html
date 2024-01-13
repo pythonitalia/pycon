@@ -105,22 +105,22 @@ window.addEventListener('load', function() {
 
   <div class="review-row">
     <label>Age Group</label>
-    <div>{{grant.age_group}}</div>
+    <div>{{grant.get_age_group_display}}</div>
   </div>
 
   <div class="review-row">
     <label>Gender</label>
-    <div>{{grant.gender}}</div>
+    <div>{{grant.get_gender_display}}</div>
   </div>
 
   <div class="review-row">
     <label>Occupation</label>
-    <div>{{grant.occupation}}</div>
+    <div>{{grant.get_occupation_display}}</div>
   </div>
 
   <div class="review-row">
     <label>Grant type</label>
-    <div>{{grant.grant_type}}</div>
+    <div>{{grant.get_grant_type_display}}</div>
   </div>
 
   <div class="review-row">
@@ -154,7 +154,7 @@ window.addEventListener('load', function() {
   </div>
 
   <div class="review-row">
-    <label>How do they use python:</label>
+    <label>How do they use python</label>
     <div>{{grant.python_usage}}</div>
   </div>
 
@@ -164,35 +164,38 @@ window.addEventListener('load', function() {
   </div>
 
   <div class="review-row">
-    <label>Community contribution:</label>
+    <label>Community contribution</label>
     <div>{{grant.community_contribution}}</div>
   </div>
 
   <div class="review-row">
-    <label>Notes:</label>
+    <label>Notes</label>
     <div>{{grant.notes}}</div>
   </div>
 
   <div class="review-row">
-    <label>Voted by</label>
+    <label>Socials</label>
     <div>
-      <details>
-        <summary>See votes ({{grant.userreview_set.count}} votes)</summary>
-        <ul>
-          {% for reviewer in grant.userreview_set.all %}
-          <li>
-            <strong>{{reviewer.user.full_name}}</strong> voted
-            {{reviewer.score.label}}
-            ({{reviewer.score.numeric_value}})<br />
-            {{reviewer.comment}}
-          </li>
-          {% empty %}
-          <li>No reviews yet</li>
-          {% endfor %}
-        </ul>
-      </details>
+      <ul>
+        {% if grant.website %}
+        <li><a target="_blank" rel="noopener noreferrer" href="{{grant.website}}">Website</a></li>
+        {% endif %}
+        {% if grant.twitter_handle %}
+        <li><a target="_blank" rel="noopener noreferrer" href="https://twitter.com/@{{grant.twitter_handle}}">Twitter</a></li>
+        {% endif %}
+        {% if grant.github %}
+        <li><a target="_blank" rel="noopener noreferrer" href="https://github.com/{{grant.github_handle}}">GitHub</a></li>
+        {% endif %}
+        {% if grant.linkedin %}
+        <li><a target="_blank" rel="noopener noreferrer" href="{{grant.linkedin_url}}">Linkedin</a></li>
+        {% endif %}
+        {% if grant.mastodon %}
+        <li><a target="_blank" rel="noopener noreferrer" href="{{grant.mastodon_handle}}">Mastodon</a></li>
+        {% endif %}
+      </ul>
     </div>
   </div>
+
   <div class="review-row">
     <label>Open Grant</label>
     <div>
