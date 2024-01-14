@@ -90,8 +90,8 @@ class ReviewSessionAdmin(admin.ModelAdmin):
     ]
 
     def get_fieldsets(self, request: HttpRequest, obj):
-        actions_fieldset = (
-            "Actions",
+        goto_fieldset = (
+            "Go To",
             {
                 "fields": (
                     "go_to_review_screen",
@@ -111,7 +111,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
         )
 
         if obj:
-            fieldsets = (actions_fieldset, config_fieldset)
+            fieldsets = (goto_fieldset, config_fieldset)
         else:
             fieldsets = (config_fieldset,)
 
@@ -142,6 +142,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
 
         return fields
 
+    @admin.display(description="Review Item Screen")
     def go_to_review_screen(self, obj):
         if not obj.id:
             return ""
@@ -157,6 +158,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
 """
         )
 
+    @admin.display(description="Recap Screen")
     def go_to_recap_screen(self, obj):
         if not obj.id:
             return ""
