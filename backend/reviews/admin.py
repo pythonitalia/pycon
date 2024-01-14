@@ -5,6 +5,7 @@ from typing import List, Optional
 from django import forms
 from django.contrib import admin, messages
 from django.db.models import Count, F, OuterRef, Prefetch, Subquery, Sum
+from django.http.request import HttpRequest
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
@@ -19,6 +20,12 @@ from users.models import User
 
 class AvailableScoreOptionInline(admin.TabularInline):
     model = AvailableScoreOption
+
+    def get_readonly_fields(self, request: HttpRequest, obj):
+        if obj and not obj.is_draft:
+            return ["numeric_value", "label"]
+
+        return super().get_readonly_fields(request, obj)
 
 
 def get_all_tags():
@@ -62,30 +69,90 @@ class UserReviewAdmin(admin.ModelAdmin):
         return qs.filter(user_id=request.user.id)
 
 
+class ReviewSessionForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        instance = kwargs.get("instance")
+
+        if instance and "status" in self.fields:
+            choices = ReviewSession.Status.choices
+            if instance.is_reviewing and instance.has_user_reviews:
+                choices = ReviewSession.Status.choices[1:]
+
+            self.fields["status"].choices = choices
+
+
 @admin.register(ReviewSession)
 class ReviewSessionAdmin(admin.ModelAdmin):
+    form = ReviewSessionForm
     inlines = [
         AvailableScoreOptionInline,
     ]
-    fields = (
-        "session_type",
-        "conference",
-        "go_to_review_screen",
-        "go_to_recap_screen",
-    )
-    readonly_fields = (
-        "go_to_review_screen",
-        "go_to_recap_screen",
-    )
+
+    def get_fieldsets(self, request: HttpRequest, obj):
+        actions_fieldset = (
+            "Actions",
+            {
+                "fields": (
+                    "go_to_review_screen",
+                    "go_to_recap_screen",
+                )
+            },
+        )
+        config_fieldset = (
+            "Config",
+            {
+                "fields": (
+                    "session_type",
+                    "conference",
+                    "status",
+                )
+            },
+        )
+
+        if obj:
+            fieldsets = (actions_fieldset, config_fieldset)
+        else:
+            fieldsets = (config_fieldset,)
+
+        return fieldsets
+
+    def get_readonly_fields(self, request: HttpRequest, obj):
+        fields = [
+            "go_to_review_screen",
+            "go_to_recap_screen",
+        ]
+
+        if obj:
+            if not obj.is_draft:
+                fields += [
+                    "session_type",
+                    "conference",
+                ]
+
+            if obj.is_completed and obj.has_user_reviews:
+                fields += [
+                    "status",
+                ]
+
+        if not obj:
+            fields += [
+                "status",
+            ]
+
+        return fields
 
     def go_to_review_screen(self, obj):
         if not obj.id:
             return ""
 
+        if not obj.can_review_items:
+            return "You cannot start reviewing yet."
+
         return mark_safe(
             f"""
     <a href="{reverse('admin:reviews-start', kwargs={'review_session_id': obj.id})}">
-        Start reviewing
+        Go to review screen
     </a>
 """
         )
@@ -93,6 +160,9 @@ class ReviewSessionAdmin(admin.ModelAdmin):
     def go_to_recap_screen(self, obj):
         if not obj.id:
             return ""
+
+        if not obj.can_see_recap_screen:
+            return "You cannot see the recap of this session yet."
 
         return mark_safe(
             f"""
@@ -138,6 +208,17 @@ class ReviewSessionAdmin(admin.ModelAdmin):
     def review_recap_view(self, request, review_session_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
 
+        if not review_session.can_see_recap_screen:
+            messages.error(request, "You cannot see the recap of this session yet.")
+            return redirect(
+                reverse(
+                    "admin:reviews_reviewsession_change",
+                    kwargs={
+                        "object_id": review_session_id,
+                    },
+                )
+            )
+
         if review_session.is_proposals_review:
             return self._review_proposals_recap_view(request, review_session)
 
@@ -181,6 +262,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
 
         context = dict(
             self.admin_site.each_context(request),
+            request=request,
             items=items,
             review_session_id=review_session_id,
             review_session_repr=str(review_session),
@@ -292,6 +374,18 @@ class ReviewSessionAdmin(admin.ModelAdmin):
 
     def review_view(self, request, review_session_id, review_item_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
+
+        if not review_session.can_review_items:
+            messages.error(request, "You cannot start reviewing yet.")
+            return redirect(
+                reverse(
+                    "admin:reviews_reviewsession_change",
+                    kwargs={
+                        "object_id": review_session_id,
+                    },
+                )
+            )
+
         filter_options = {}
 
         if review_session.is_proposals_review:
