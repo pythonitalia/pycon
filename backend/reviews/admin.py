@@ -293,7 +293,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                     output_field=FloatField(),
                 ),
                 is_a_speaker=Exists(
-                    Submission.objects.filter(
+                    Submission.objects.non_cancelled().filter(
                         speaker_id=OuterRef("user_id"),
                         conference_id=review_session.conference_id,
                     )
@@ -592,6 +592,12 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         context = dict(
             self.admin_site.each_context(request),
             grant=grant,
+            is_speaker=Submission.objects.non_cancelled()
+            .filter(
+                speaker_id=grant.user_id,
+                conference_id=grant.conference_id,
+            )
+            .exists(),
             available_scores=AvailableScoreOption.objects.filter(
                 review_session_id=review_session.id
             ).order_by("-numeric_value"),

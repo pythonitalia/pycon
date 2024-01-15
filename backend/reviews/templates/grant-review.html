@@ -81,87 +81,92 @@
   <h2>Grant</h2>
 
   <div class="review-row">
-    <label>Name</label>
+    <strong>Name</strong>
     <div>{{grant.name}}</div>
   </div>
 
   <div class="review-row">
-    <label>Fullname</label>
+    <strong>Fullname</strong>
     <div>{{grant.full_name}}</div>
   </div>
 
   <div class="review-row">
-    <label>Age Group</label>
+    <strong>Age Group</strong>
     <div>{{grant.get_age_group_display}}</div>
   </div>
 
   <div class="review-row">
-    <label>Gender</label>
+    <strong>Gender</strong>
     <div>{{grant.get_gender_display}}</div>
   </div>
 
   <div class="review-row">
-    <label>Occupation</label>
+    <strong>Occupation</strong>
     <div>{{grant.get_occupation_display}}</div>
   </div>
 
   <div class="review-row">
-    <label>Grant type</label>
+    <strong>Grant type</strong>
     <div>{{grant.get_grant_type_display}}</div>
   </div>
 
   <div class="review-row">
-    <label>Travelling From</label>
+    <strong>Travelling From</strong>
     <div>{{grant.travelling_from}}</div>
   </div>
 
   <div class="review-row">
-    <label>Needs funds for travel</label>
+    <strong>Needs funds for travel</strong>
     <div>{{grant.needs_funds_for_travel|yesno}}</div>
   </div>
 
   <div class="review-row">
-    <label>Needs visa</label>
+    <strong>Needs visa</strong>
     <div>{{grant.need_visa|yesno}}</div>
   </div>
 
   <div class="review-row">
-    <label>Needs accommodation</label>
+    <strong>Needs accommodation</strong>
     <div>{{grant.need_accommodation|yesno}}</div>
   </div>
 
   <div class="review-row">
-    <label>Interested in Volunteering</label>
-    <div>{{grant.interested_in_volunteering|yesno}}</div>
+    <strong>Interested in Volunteering</strong>
+    <div>{{grant.get_interested_in_volunteering_display}}</div>
   </div>
 
   <div class="review-row">
-    <label>Why are you asking for a grant?</label>
+    <strong>Is Speaker?</strong>
+    <div>{{is_speaker|yesno}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Why are you asking for a grant?</strong>
     <div>{{grant.why}}</div>
   </div>
 
   <div class="review-row">
-    <label>How do they use python</label>
+    <strong>How do they use python</strong>
     <div>{{grant.python_usage}}</div>
   </div>
 
   <div class="review-row">
-    <label>Have they been to other events?</label>
+    <strong>Have they been to other events?</strong>
     <div>{{grant.been_to_other_events}}</div>
   </div>
 
   <div class="review-row">
-    <label>Community contribution</label>
+    <strong>Community contribution</strong>
     <div>{{grant.community_contribution}}</div>
   </div>
 
   <div class="review-row">
-    <label>Notes</label>
+    <strong>Notes</strong>
     <div>{{grant.notes}}</div>
   </div>
 
   <div class="review-row">
-    <label>Socials</label>
+    <strong>Socials</strong>
     <div>
       <ul>
         {% if grant.website %}
@@ -184,7 +189,7 @@
   </div>
 
   <div class="review-row">
-    <label>Open Grant</label>
+    <strong>Open Grant</strong>
     <div>
       <a target="_blank" href="{% url 'admin:grants_grant_change' object_id=grant.id %}">Open Grant</a>
     </div>

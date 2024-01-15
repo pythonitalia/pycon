@@ -34,6 +34,13 @@ class Submission(TimeStampedModel):
         ("cancelled", _("Cancelled")),
     )
 
+    NON_CANCELLED_STATUSES = [
+        STATUS.proposed,
+        STATUS.accepted,
+        STATUS.waiting_list,
+        STATUS.rejected,
+    ]
+
     conference = models.ForeignKey(
         "conferences.Conference",
         on_delete=models.CASCADE,
