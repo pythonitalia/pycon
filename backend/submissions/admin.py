@@ -9,6 +9,7 @@ from import_export.fields import Field
 
 from participants.models import Participant
 from submissions.tasks import send_proposal_rejected_email
+from users.admin_mixins import ConferencePermissionMixin
 
 
 from .models import Submission, SubmissionComment, SubmissionTag, SubmissionType
@@ -155,7 +156,7 @@ def send_proposal_rejected_email_action(modeladmin, request, queryset):
 
 
 @admin.register(Submission)
-class SubmissionAdmin(ExportMixin, admin.ModelAdmin):
+class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     resource_class = SubmissionResource
     form = SubmissionAdminForm
     list_display = (

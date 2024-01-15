@@ -1,0 +1,293 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% load markdownify %}
+{% load localize countryname get_item %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+  &rsaquo; <a href="{% url 'admin:app_list' 'reviews' %}">Reviews</a>
+  &rsaquo; <a href="{% url 'admin:reviews_reviewsession_changelist' %}">Review sessions</a>
+  &rsaquo; <a href="{% url 'admin:reviews_reviewsession_change' review_session_id %}">{{review_session_repr}}</a>
+  &rsaquo; {{title}}
+</div>
+{% endblock %}
+{% block content %}
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  .status-choices {
+    list-style: none;
+  }
+
+  .status-choices li {
+    list-style: none;
+  }
+
+  .needs-list {
+    display: inline-block;
+    margin-top: 0;
+  }
+
+  .needs-list li {
+    display: inline-block;
+  }
+
+  .needs-list li::after {
+    content: ',';
+  }
+
+  .needs-list li:last-child:after {
+    display: none;
+  }
+
+  .results-table {
+    width: 100%;
+  }
+
+  .decision-input-wrapper label {
+    display: block;
+  }
+
+  .decision-input-wrapper input {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+  }
+
+  .reviews-bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 500;
+    background-color: #417690;
+    color: #fff;
+  }
+
+  .reviews-bottom-bar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .reviews-bottom-bar-stats {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 50px;
+  }
+
+  .reviews-bottom-bar-confirm-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    max-width: 800px;
+  }
+
+  .results-table ul {
+    margin-left: 0;
+    padding: 0;
+    list-style-type: none;
+    list-style-position: inside;
+  }
+
+  .results-item ul li {
+    list-style: none;
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>
+<script>
+  window.onload = () => {
+    document.querySelectorAll('.unset-radio').forEach(radio => {
+      radio.addEventListener('click', () => {
+        radio.checked = false;
+      });
+    });
+  };
+</script>
+
+<ul class="object-tools">
+  <li>
+    <a target="_blank" href="{% url 'admin:grants-summary' %}" class="change-list-object-tools-item">
+      Open Grants Summary
+    </a>
+  </li>
+</ul>
+
+<form id="changelist-form" method="post" novalidate="">
+  {% csrf_token %}
+
+  <div id="content-main">
+    <div class="module filtered" id="changelist">
+      <div class="changelist-form-container">
+        <div class="results">
+          <table id="result_list" class="results-table">
+            <thead>
+              <tr>
+                <th scope="col">
+                  <div class="text"><span>Grant</span></div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
+                  <div class="text"><a>Score</a></div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
+                  <div class="text"><span>Votes</span></div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
+                  <div class="text"><span>Status</span></div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
+                  <div class="text"><span>Decision</span></div>
+                  <div class="clear"></div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in items %}
+              <tr class="grant-item" id="grant-{{item.id}}" data-type="{{item.type}}" data-num-of-votes="{{ item.userreview_set.count }}">
+                <td class="results-item">
+                  <a
+                    target="_blank"
+                    href="{% url 'admin:grants_grant_change' item.id %}">
+                    <strong>{{item.name}} - {{item.full_name}}</strong>
+                  </a>
+                  <ul>
+                    <li>
+                      <strong>Gender:</strong>
+                      <span>{{item.get_gender_display}}</span>
+                    </li>
+                    <li>
+                      <strong>Age Group:</strong>
+                      <span>{{item.get_age_group_display}}</span>
+                    </li>
+                    <li>
+                      <strong>Occupation:</strong>
+                      <span>{{item.get_occupation_display}}</span>
+                    </li>
+                    <li>
+                      <strong>Travelling From:</strong>
+                      <span>{{item.travelling_from}}</span>
+                    </li>
+                    <li>
+                      <strong>Country type:</strong>
+                      <span>{{item.get_country_type_display}}</span>
+                    </li>
+                    <li>
+                      <strong>Grant type:</strong>
+                      <span>{{item.get_grant_type_display}}</span>
+                    </li>
+                    <li>
+                      <strong>Needs:</strong>
+                      <ul class="needs-list">
+                        {% if item.need_visa %}
+                          <li>VISA</li>
+                        {% endif %}
+                        {% if item.need_accommodation %}
+                          <li>Accommodation</li>
+                        {% endif %}
+                        {% if item.needs_funds_for_travel %}
+                          <li>Funds for Travel</li>
+                        {% endif %}
+                        {% if not item.need_visa and not item.need_accommodation and not item.needs_funds_for_travel %}
+                          <li>Ticket only</li>
+                        {% endif %}
+                      </ul>
+                    </li>
+                    <li>
+                      <strong>Interested in Volunteering?</strong>
+                      <span>{{item.get_interested_in_volunteering_display}}</span>
+                    </li>
+                    <li>
+                      <strong>Is a speaker?</strong>
+                      <span>{{item.is_a_speaker|yesno}}</span>
+                    </li>
+                  </ul>
+                </td>
+
+                <td>{{ item.score }}</td>
+
+                <td>
+                  <ul>
+                    {% for reviewer in item.userreview_set.all %}
+                    <li>
+                      <strong>{{reviewer.user.full_name}}</strong> voted
+                      {{reviewer.score.label}}
+                      ({{reviewer.score.numeric_value}})<br />
+                      {{reviewer.comment}}
+                    </li>
+                    {% empty %}
+                    <li>No reviews yet</li>
+                    {% endfor %}
+                    <li>
+                      <a style="font-weight: bold" target="_blank" href="{% url 'admin:reviews-vote-view' review_session_id=review_session_id review_item_id=item.id %}">
+                        Open Grant review screen
+                      </a>
+                    </li>
+                  </ul>
+                  {% if item.user_private_comment %}
+                    <strong>Your private comment</strong>
+                    <p>{{ item.user_private_comment }}</p>
+                  {% endif %}
+                </td>
+
+                <td>
+                  {{ item.get_status_display }}
+                </td>
+
+                <td>
+                  {% if perms.reviews.decision_reviewsession %}
+                    <ul class="status-choices">
+                      {% for status in all_statuses %}
+                        <li>
+                          <label>
+                            <input type="radio" name="decision-{{item.id}}" value="{{status.0}}" />
+                              {{status.1}}
+                          </label>
+                        </li>
+                      {% endfor %}
+                      <li>
+                        <label>
+                          <input class="unset-radio" type="radio" name="decision-{{item.id}}" value="unset" />
+                            Unset
+                        </label>
+                      </li>
+                    </ul>
+                  {% else %}
+                    No permission to change.
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div style="height: 100px"></div>
+  </div>
+  {% if perms.reviews.decision_reviewsession %}
+    <div id="content" class="reviews-bottom-bar colM">
+      <div class="reviews-bottom-bar-content">
+        <div class="submit-row reviews-bottom-bar-confirm-bar">
+          <p>
+            Once done, click the button to save your choices.
+            You can change as many times as you need, no emails will be sent.
+          </p>
+          <input value="Submit choices" type="submit" />
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</form>
+{% endblock %}

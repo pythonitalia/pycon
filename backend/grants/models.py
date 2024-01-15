@@ -22,6 +22,13 @@ class Grant(TimeStampedModel):
         refused = "refused", _("Refused")
         confirmed = "confirmed", _("Confirmed")
 
+    REVIEW_SESSION_STATUSES_OPTIONS = [
+        Status.rejected.value,
+        Status.approved.value,
+        Status.waiting_list.value,
+        Status.waiting_list_maybe.value,
+    ]
+
     class CountryType(models.TextChoices):
         italy = "italy", _("Italy")
         europe = "europe", _("Europe")

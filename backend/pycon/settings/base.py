@@ -200,7 +200,7 @@ MEDIA_ROOT = root("media")
 AUTH_USER_MODEL = "users.User"
 
 AUTHENTICATION_BACKENDS = (
-    # "custom_auth.backend.UsersAuthBackend",
+    "users.backends.PermissionsBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
 

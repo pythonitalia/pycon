@@ -1,10 +1,15 @@
-from django.db.models import Q
+from django.db.models.expressions import ExpressionWrapper
+from django.db.models import FloatField
+from users.admin_mixins import ConferencePermissionMixin
+from django.core.exceptions import PermissionDenied
+from django.db.models import Q, Exists
 import urllib.parse
 from typing import List, Optional
 
 from django import forms
 from django.contrib import admin, messages
 from django.db.models import Count, F, OuterRef, Prefetch, Subquery, Sum
+from django.http.request import HttpRequest
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
@@ -20,6 +25,12 @@ from users.models import User
 class AvailableScoreOptionInline(admin.TabularInline):
     model = AvailableScoreOption
 
+    def get_readonly_fields(self, request: HttpRequest, obj):
+        if obj and not obj.is_draft:
+            return ["numeric_value", "label"]
+
+        return super().get_readonly_fields(request, obj)
+
 
 def get_all_tags():
     # todo improve :)
@@ -29,6 +40,7 @@ def get_all_tags():
 class SubmitVoteForm(forms.Form):
     score = forms.ModelChoiceField(queryset=AvailableScoreOption.objects.all())
     comment = forms.CharField(required=False)
+    private_comment = forms.CharField(required=False)
     exclude = forms.MultipleChoiceField(choices=get_all_tags, required=False)
     seen = forms.CharField(required=False)
     _next = forms.CharField(required=False)
@@ -51,7 +63,7 @@ class UserReviewAdmin(admin.ModelAdmin):
             "admin:reviews-vote-view",
             kwargs={
                 "review_session_id": obj.review_session_id,
-                "review_item_id": obj.proposal_id,
+                "review_item_id": obj.object_id,
             },
         )
         return mark_safe(f'<a href="{url}">Edit your vote</a>')
@@ -61,37 +73,102 @@ class UserReviewAdmin(admin.ModelAdmin):
         return qs.filter(user_id=request.user.id)
 
 
+class ReviewSessionForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        instance = kwargs.get("instance")
+
+        if instance and "status" in self.fields:
+            choices = ReviewSession.Status.choices
+            if instance.is_reviewing and instance.has_user_reviews:
+                choices = ReviewSession.Status.choices[1:]
+
+            self.fields["status"].choices = choices
+
+
 @admin.register(ReviewSession)
-class ReviewSessionAdmin(admin.ModelAdmin):
+class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
+    form = ReviewSessionForm
     inlines = [
         AvailableScoreOptionInline,
     ]
-    fields = (
-        "session_type",
-        "conference",
-        "go_to_review_screen",
-        "go_to_recap_screen",
-    )
-    readonly_fields = (
-        "go_to_review_screen",
-        "go_to_recap_screen",
-    )
 
+    def get_fieldsets(self, request: HttpRequest, obj):
+        goto_fieldset = (
+            "Go To",
+            {
+                "fields": (
+                    "go_to_review_screen",
+                    "go_to_recap_screen",
+                )
+            },
+        )
+        config_fieldset = (
+            "Config",
+            {
+                "fields": (
+                    "session_type",
+                    "conference",
+                    "status",
+                )
+            },
+        )
+
+        if obj:
+            fieldsets = (goto_fieldset, config_fieldset)
+        else:
+            fieldsets = (config_fieldset,)
+
+        return fieldsets
+
+    def get_readonly_fields(self, request: HttpRequest, obj):
+        fields = [
+            "go_to_review_screen",
+            "go_to_recap_screen",
+        ]
+
+        if obj:
+            if not obj.is_draft:
+                fields += [
+                    "session_type",
+                    "conference",
+                ]
+
+            if obj.is_completed and obj.has_user_reviews:
+                fields += [
+                    "status",
+                ]
+
+        if not obj:
+            fields += [
+                "status",
+            ]
+
+        return fields
+
+    @admin.display(description="Review Item Screen")
     def go_to_review_screen(self, obj):
         if not obj.id:
             return ""
 
+        if not obj.can_review_items:
+            return "You cannot review."
+
         return mark_safe(
             f"""
     <a href="{reverse('admin:reviews-start', kwargs={'review_session_id': obj.id})}">
-        Start reviewing
+        Go to review screen
     </a>
 """
         )
 
+    @admin.display(description="Recap Screen")
     def go_to_recap_screen(self, obj):
         if not obj.id:
             return ""
+
+        if not obj.can_see_recap_screen:
+            return "You cannot see the recap of this session yet."
 
         return mark_safe(
             f"""
@@ -137,6 +214,20 @@ class ReviewSessionAdmin(admin.ModelAdmin):
     def review_recap_view(self, request, review_session_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
 
+        if not review_session.user_can_review(request.user):
+            raise PermissionDenied()
+
+        if not review_session.can_see_recap_screen:
+            messages.error(request, "You cannot see the recap of this session yet.")
+            return redirect(
+                reverse(
+                    "admin:reviews_reviewsession_change",
+                    kwargs={
+                        "object_id": review_session_id,
+                    },
+                )
+            )
+
         if review_session.is_proposals_review:
             return self._review_proposals_recap_view(request, review_session)
 
@@ -146,18 +237,74 @@ class ReviewSessionAdmin(admin.ModelAdmin):
     def _review_grants_recap_view(self, request, review_session):
         review_session_id = review_session.id
 
+        if request.method == "POST":
+            if not request.user.has_perm(
+                "reviews.decision_reviewsession", review_session
+            ):
+                raise PermissionDenied()
+            data = request.POST
+
+            decisions = {
+                int(key.split("-")[1]): value
+                for [key, value] in data.items()
+                if key.startswith("decision-")
+            }
+
+            grants = list(
+                review_session.conference.grants.filter(id__in=decisions.keys()).all()
+            )
+
+            for grant in grants:
+                decision = decisions[grant.id]
+                if decision not in Grant.REVIEW_SESSION_STATUSES_OPTIONS:
+                    continue
+
+                grant.status = decision
+
+            Grant.objects.bulk_update(
+                grants,
+                fields=["status"],
+            )
+
+            messages.success(
+                request, "Decisions saved. Check the Grants Summary for more info."
+            )
+            return redirect(
+                reverse(
+                    "admin:reviews-recap",
+                    kwargs={
+                        "review_session_id": review_session_id,
+                    },
+                )
+            )
+
         items = (
             review_session.conference.grants.annotate(
-                score=Subquery(
-                    UserReview.objects.select_related("score")
-                    .filter(
+                total_score=Sum(
+                    "userreview__score__numeric_value",
+                    filter=Q(userreview__review_session_id=review_session_id),
+                ),
+                vote_count=Count(
+                    "userreview",
+                    filter=Q(userreview__review_session_id=review_session_id),
+                ),
+                score=ExpressionWrapper(
+                    F("total_score") / F("vote_count"),
+                    output_field=FloatField(),
+                ),
+                is_a_speaker=Exists(
+                    Submission.objects.filter(
+                        speaker_id=OuterRef("user_id"),
+                        conference_id=review_session.conference_id,
+                    )
+                ),
+                user_private_comment=Subquery(
+                    UserReview.objects.filter(
                         review_session_id=review_session_id,
                         grant_id=OuterRef("id"),
-                    )
-                    .values("grant_id")
-                    .annotate(score=Sum("score__numeric_value"))
-                    .values("score")
-                )
+                        user_id=request.user.id,
+                    ).values("private_comment")[:1]
+                ),
             )
             .order_by(F("score").desc(nulls_last=True))
             .prefetch_related(
@@ -174,18 +321,29 @@ class ReviewSessionAdmin(admin.ModelAdmin):
 
         context = dict(
             self.admin_site.each_context(request),
+            request=request,
             items=items,
             review_session_id=review_session_id,
             review_session_repr=str(review_session),
+            all_statuses=[
+                choice
+                for choice in Grant.Status.choices
+                if choice[0] in Grant.REVIEW_SESSION_STATUSES_OPTIONS
+            ],
             title="Recap",
         )
-        return TemplateResponse(request, "review-grants-recap.html", context)
+        return TemplateResponse(request, "grants-recap.html", context)
 
     def _review_proposals_recap_view(self, request, review_session):
         review_session_id = review_session.id
         conference = review_session.conference
 
         if request.method == "POST":
+            if not request.user.has_perm(
+                "reviews.decision_reviewsession", review_session
+            ):
+                raise PermissionDenied()
+
             data = request.POST
             mark_as_confirmed = data.get("mark_as_confirmed", False)
 
@@ -276,10 +434,14 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             review_session_repr=str(review_session),
             title="Recap",
         )
-        return TemplateResponse(request, "review-proposal-recap.html", context)
+        return TemplateResponse(request, "proposals-recap.html", context)
 
     def review_view(self, request, review_session_id, review_item_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
+
+        if not review_session.user_can_review(request.user):
+            raise PermissionDenied()
+
         filter_options = {}
 
         if review_session.is_proposals_review:
@@ -311,6 +473,17 @@ class ReviewSessionAdmin(admin.ModelAdmin):
 
             return response
         elif request.method == "POST":
+            if not review_session.can_review_items:
+                messages.error(request, "You cannot vote yet/anymore.")
+                return redirect(
+                    reverse(
+                        "admin:reviews_reviewsession_change",
+                        kwargs={
+                            "object_id": review_session_id,
+                        },
+                    )
+                )
+
             form = SubmitVoteForm(request.POST)
             form.is_valid()
 
@@ -334,6 +507,10 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                 if not form.is_valid():
                     messages.error(request, "Invalid vote")
                     comment = urllib.parse.quote(form.cleaned_data["comment"])
+                    private_comment = urllib.parse.quote(
+                        form.cleaned_data["private_comment"]
+                    )
+
                     return redirect(
                         reverse(
                             "admin:reviews-vote-view",
@@ -345,9 +522,9 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                         + f"?exclude={','.join(exclude)}"
                         + f"&seen={','.join(seen)}"
                         + f"&comment={comment}"
+                        + f"&private_comment={private_comment}"
                     )
 
-                # User is saving their vote
                 values = {
                     "user_id": request.user.id,
                     "review_session_id": review_session_id,
@@ -363,6 +540,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
                     defaults={
                         "score_id": form.cleaned_data["score"].id,
                         "comment": form.cleaned_data["comment"],
+                        "private_comment": form.cleaned_data["private_comment"],
                     },
                 )
                 next_to_review = get_next_to_review_item_id(
@@ -405,6 +583,11 @@ class ReviewSessionAdmin(admin.ModelAdmin):
     def _render_grant_review(
         self, request, review_session, review_item_id, user_review
     ):
+        private_comment = request.GET.get(
+            "private_comment", user_review.private_comment if user_review else ""
+        )
+        comment = request.GET.get("comment", user_review.comment if user_review else "")
+
         grant = Grant.objects.get(id=review_item_id)
         context = dict(
             self.admin_site.each_context(request),
@@ -414,10 +597,13 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             ).order_by("numeric_value"),
             review_session_id=review_session.id,
             user_review=user_review,
+            private_comment=private_comment,
+            comment=comment,
             review_session_repr=str(review_session),
+            can_review_items=review_session.can_review_items,
             title=f"Grant Review: {grant.user.display_name}",
         )
-        return TemplateResponse(request, "review-grant.html", context)
+        return TemplateResponse(request, "grant-review.html", context)
 
     def _render_proposal_review(
         self, request, review_session, review_item_id, user_review
@@ -479,9 +665,9 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             seen=request.GET.get("seen", "").split(","),
             existing_comment=existing_comment,
             review_session_repr=str(review_session),
-            title=proposal.title.localize("en"),
+            title=f'Proposal Review: {proposal.title.localize("en")}',
         )
-        return TemplateResponse(request, "review-proposal.html", context)
+        return TemplateResponse(request, "proposal-review.html", context)
 
 
 def get_next_to_review_item_id(
