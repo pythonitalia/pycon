@@ -235,6 +235,47 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     def _review_grants_recap_view(self, request, review_session):
         review_session_id = review_session.id
 
+        if request.method == "POST":
+            if not request.user.has_perm(
+                "reviews.decision_reviewsession", review_session
+            ):
+                raise PermissionDenied()
+            data = request.POST
+
+            decisions = {
+                int(key.split("-")[1]): value
+                for [key, value] in data.items()
+                if key.startswith("decision-")
+            }
+
+            grants = list(
+                review_session.conference.grants.filter(id__in=decisions.keys()).all()
+            )
+
+            for grant in grants:
+                decision = decisions[grant.id]
+                if decision not in Grant.REVIEW_SESSION_STATUSES_OPTIONS:
+                    continue
+
+                grant.status = decision
+
+            Grant.objects.bulk_update(
+                grants,
+                fields=["status"],
+            )
+
+            messages.success(
+                request, "Decisions saved. Check the Grants Summary for more info."
+            )
+            return redirect(
+                reverse(
+                    "admin:reviews-recap",
+                    kwargs={
+                        "review_session_id": review_session_id,
+                    },
+                )
+            )
+
         items = (
             review_session.conference.grants.annotate(
                 score=Subquery(
@@ -252,6 +293,13 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                         speaker_id=OuterRef("user_id"),
                         conference_id=review_session.conference_id,
                     )
+                ),
+                user_private_comment=Subquery(
+                    UserReview.objects.filter(
+                        review_session_id=review_session_id,
+                        grant_id=OuterRef("id"),
+                        user_id=request.user.id,
+                    ).values("private_comment")[:1]
                 ),
             )
             .order_by(F("score").desc(nulls_last=True))
@@ -287,6 +335,11 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         conference = review_session.conference
 
         if request.method == "POST":
+            if not request.user.has_perm(
+                "reviews.decision_reviewsession", review_session
+            ):
+                raise PermissionDenied()
+
             data = request.POST
             mark_as_confirmed = data.get("mark_as_confirmed", False)
 

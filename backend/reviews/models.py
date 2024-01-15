@@ -77,17 +77,20 @@ class ReviewSession(TimeStampedModel):
     def user_can_review(self, user):
         if self.is_proposals_review:
             return user.has_perms(
-                ["reviews.review_reviewsession", "submissions.view_submission"]
+                ["reviews.review_reviewsession", "submissions.view_submission"], self
             )
 
         if self.is_grants_review:
-            return user.has_perms(["reviews.review_reviewsession", "grants.view_grant"])
+            return user.has_perms(
+                ["reviews.review_reviewsession", "grants.view_grant"], self
+            )
 
         return False
 
     class Meta:
         permissions = [
             ("review_reviewsession", "Can review items"),
+            ("decision_reviewsession", "Can make decisions on items"),
         ]
 
 

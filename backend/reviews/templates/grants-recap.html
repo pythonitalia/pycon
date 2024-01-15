@@ -103,6 +103,15 @@
     display: none;
   }
 </style>
+<script>
+  window.onload = () => {
+    document.querySelectorAll('.unset-radio').forEach(radio => {
+      radio.addEventListener('click', () => {
+        radio.checked = false;
+      });
+    });
+  };
+</script>
 
 <ul class="object-tools">
   <li>
@@ -132,6 +141,10 @@
                 </th>
                 <th scope="col">
                   <div class="text"><span>Votes</span></div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
+                  <div class="text"><span>Status</span></div>
                   <div class="clear"></div>
                 </th>
                 <th scope="col">
@@ -193,7 +206,7 @@
                     </li>
                     <li>
                       <strong>Interested in Volunteering?</strong>
-                      <span>{{item.interested_in_volunteering|yesno}}</span>
+                      <span>{{item.get_interested_in_volunteering_display}}</span>
                     </li>
                     <li>
                       <strong>Is a speaker?</strong>
@@ -218,23 +231,41 @@
                     {% endfor %}
                     <li>
                       <a style="font-weight: bold" target="_blank" href="{% url 'admin:reviews-vote-view' review_session_id=review_session_id review_item_id=item.id %}">
-                        Vote this grant
+                        Open Grant review screen
                       </a>
                     </li>
                   </ul>
+                  {% if item.user_private_comment %}
+                    <strong>Your private comment</strong>
+                    <p>{{ item.user_private_comment }}</p>
+                  {% endif %}
                 </td>
 
                 <td>
-                  <ul class="status-choices">
-                    {% for status in all_statuses %}
+                  {{ item.get_status_display }}
+                </td>
+
+                <td>
+                  {% if perms.reviews.decision_reviewsession %}
+                    <ul class="status-choices">
+                      {% for status in all_statuses %}
+                        <li>
+                          <label>
+                            <input type="radio" name="decision-{{item.id}}" value="{{status.0}}" />
+                              {{status.1}}
+                          </label>
+                        </li>
+                      {% endfor %}
                       <li>
                         <label>
-                          <input type="radio" name="decision-{{item.id}}" value="{{status.0}}" />
-                            {{status.1}}
+                          <input class="unset-radio" type="radio" name="decision-{{item.id}}" value="unset" />
+                            Unset
                         </label>
                       </li>
-                    {% endfor %}
-                  </ul>
+                    </ul>
+                  {% else %}
+                    No permission to change.
+                  {% endif %}
                 </td>
               </tr>
               {% endfor %}
@@ -245,6 +276,18 @@
     </div>
     <div style="height: 100px"></div>
   </div>
-
+  {% if perms.reviews.decision_reviewsession %}
+    <div id="content" class="reviews-bottom-bar colM">
+      <div class="reviews-bottom-bar-content">
+        <div class="submit-row reviews-bottom-bar-confirm-bar">
+          <p>
+            Once done, click the button to save your choices.
+            You can change as many times as you need, no emails will be sent.
+          </p>
+          <input value="Submit choices" type="submit" />
+        </div>
+      </div>
+    </div>
+  {% endif %}
 </form>
 {% endblock %}
