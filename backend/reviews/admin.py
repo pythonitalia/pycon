@@ -594,7 +594,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             grant=grant,
             available_scores=AvailableScoreOption.objects.filter(
                 review_session_id=review_session.id
-            ).order_by("numeric_value"),
+            ).order_by("-numeric_value"),
             review_session_id=review_session.id,
             user_review=user_review,
             private_comment=private_comment,
@@ -643,7 +643,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             languages=proposal.languages.all(),
             available_scores=AvailableScoreOption.objects.filter(
                 review_session_id=review_session.id
-            ),
+            ).order_by("-numeric_value"),
             proposal_id=review_item_id,
             review_session_id=review_session.id,
             user_review=user_review,
