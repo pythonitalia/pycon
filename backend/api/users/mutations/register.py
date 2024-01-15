@@ -2,6 +2,7 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 import strawberry
 from django.contrib.auth import (
+    authenticate,
     login as django_login,
 )
 
@@ -62,7 +63,10 @@ class RegisterInput:
         return errors.if_has_errors
 
 
-RegisterResult = Annotated[Union[RegisterSuccess, RegisterErrors, EmailAlreadyUsed], strawberry.union(name="RegisterResult")]
+RegisterResult = Annotated[
+    Union[RegisterSuccess, RegisterErrors, EmailAlreadyUsed],
+    strawberry.union(name="RegisterResult"),
+]
 
 
 @strawberry.mutation()
@@ -78,6 +82,9 @@ def register(info: Info, input: RegisterInput) -> RegisterResult:
         password=input.password,
         full_name=input.fullname,
     )
+    user = authenticate(email=input.email, password=input.password)
+    if not user:
+        raise Exception("Something went wrong")
 
     django_login(info.context.request, user)
     return RegisterSuccess(user=User.from_django_model(user))
