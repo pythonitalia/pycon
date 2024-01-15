@@ -1,3 +1,5 @@
+from django.db.models.expressions import ExpressionWrapper
+from django.db.models import FloatField
 from users.admin_mixins import ConferencePermissionMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q, Exists
@@ -278,15 +280,17 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
         items = (
             review_session.conference.grants.annotate(
-                score=Subquery(
-                    UserReview.objects.select_related("score")
-                    .filter(
-                        review_session_id=review_session_id,
-                        grant_id=OuterRef("id"),
-                    )
-                    .values("grant_id")
-                    .annotate(score=Sum("score__numeric_value"))
-                    .values("score")
+                total_score=Sum(
+                    "userreview__score__numeric_value",
+                    filter=Q(userreview__review_session_id=review_session_id),
+                ),
+                vote_count=Count(
+                    "userreview",
+                    filter=Q(userreview__review_session_id=review_session_id),
+                ),
+                score=ExpressionWrapper(
+                    F("total_score") / F("vote_count"),
+                    output_field=FloatField(),
                 ),
                 is_a_speaker=Exists(
                     Submission.objects.filter(
@@ -596,6 +600,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             private_comment=private_comment,
             comment=comment,
             review_session_repr=str(review_session),
+            can_review_items=review_session.can_review_items,
             title=f"Grant Review: {grant.user.display_name}",
         )
         return TemplateResponse(request, "grant-review.html", context)

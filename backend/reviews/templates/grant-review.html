@@ -220,7 +220,7 @@
       </div>
 
         <div class="actions">
-          {% if review_session.can_review_items %}
+          {% if can_review_items %}
             <input value="Vote and go to the next" type="submit" name="_next" />
             <input value="Skip for now" type="submit" name="_skip" />
           {% else %}
