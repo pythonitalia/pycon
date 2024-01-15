@@ -219,10 +219,14 @@
         <textarea rows="5" name="private_comment">{{private_comment}}</textarea>
       </div>
 
-      <div class="actions">
-        <input value="Vote and go to the next" type="submit" name="_next" />
-        <input value="Skip for now" type="submit" name="_skip" />
-      </div>
+        <div class="actions">
+          {% if review_session.can_review_items %}
+            <input value="Vote and go to the next" type="submit" name="_next" />
+            <input value="Skip for now" type="submit" name="_skip" />
+          {% else %}
+            <span>You cannot vote anymore. This is because the review session has been completed.</span>
+          {% endif %}
+        </div>
     </div>
 
     <input type="hidden" name="seen" value="{% for id in seen %}{{id}},{% endfor %}" />

@@ -26,6 +26,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     jwt_auth_id = models.IntegerField(_("jwt auth id"), default=1)
 
+    admin_all_conferences = models.BooleanField(
+        _("admin all conferences"), default=False
+    )
+    admin_conferences = models.ManyToManyField(
+        "conferences.Conference", verbose_name=_("admin conferences"), blank=True
+    )
+
     objects = UserManager()
 
     USERNAME_FIELD = "email"

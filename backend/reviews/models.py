@@ -66,7 +66,29 @@ class ReviewSession(TimeStampedModel):
 
     @property
     def can_review_items(self):
-        return self.is_reviewing
+        if self.is_proposals_review:
+            return True
+
+        if self.is_grants_review and self.is_reviewing:
+            return True
+
+        return False
+
+    def user_can_review(self, user):
+        if self.is_proposals_review:
+            return user.has_perms(
+                ["reviews.review_reviewsession", "submissions.view_submission"]
+            )
+
+        if self.is_grants_review:
+            return user.has_perms(["reviews.review_reviewsession", "grants.view_grant"])
+
+        return False
+
+    class Meta:
+        permissions = [
+            ("review_reviewsession", "Can review items"),
+        ]
 
 
 class AvailableScoreOption(TimeStampedModel, OrderedModel):

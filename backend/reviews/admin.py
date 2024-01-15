@@ -1,3 +1,5 @@
+from users.admin_mixins import ConferencePermissionMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q, Exists
 import urllib.parse
 from typing import List, Optional
@@ -83,7 +85,7 @@ class ReviewSessionForm(forms.ModelForm):
 
 
 @admin.register(ReviewSession)
-class ReviewSessionAdmin(admin.ModelAdmin):
+class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     form = ReviewSessionForm
     inlines = [
         AvailableScoreOptionInline,
@@ -148,7 +150,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             return ""
 
         if not obj.can_review_items:
-            return "You cannot start reviewing yet."
+            return "You cannot review."
 
         return mark_safe(
             f"""
@@ -209,6 +211,9 @@ class ReviewSessionAdmin(admin.ModelAdmin):
 
     def review_recap_view(self, request, review_session_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
+
+        if not review_session.user_can_review(request.user):
+            raise PermissionDenied()
 
         if not review_session.can_see_recap_screen:
             messages.error(request, "You cannot see the recap of this session yet.")
@@ -377,16 +382,8 @@ class ReviewSessionAdmin(admin.ModelAdmin):
     def review_view(self, request, review_session_id, review_item_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
 
-        if not review_session.can_review_items:
-            messages.error(request, "You cannot start reviewing yet.")
-            return redirect(
-                reverse(
-                    "admin:reviews_reviewsession_change",
-                    kwargs={
-                        "object_id": review_session_id,
-                    },
-                )
-            )
+        if not review_session.user_can_review(request.user):
+            raise PermissionDenied()
 
         filter_options = {}
 
@@ -419,6 +416,17 @@ class ReviewSessionAdmin(admin.ModelAdmin):
 
             return response
         elif request.method == "POST":
+            if not review_session.can_review_items:
+                messages.error(request, "You cannot vote yet/anymore.")
+                return redirect(
+                    reverse(
+                        "admin:reviews_reviewsession_change",
+                        kwargs={
+                            "object_id": review_session_id,
+                        },
+                    )
+                )
+
             form = SubmitVoteForm(request.POST)
             form.is_valid()
 
@@ -599,7 +607,7 @@ class ReviewSessionAdmin(admin.ModelAdmin):
             seen=request.GET.get("seen", "").split(","),
             existing_comment=existing_comment,
             review_session_repr=str(review_session),
-            title=proposal.title.localize("en"),
+            title=f'Proposal Review: {proposal.title.localize("en")}',
         )
         return TemplateResponse(request, "proposal-review.html", context)
 

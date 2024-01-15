@@ -13,7 +13,7 @@ from django.utils import timezone
 from import_export.admin import ExportMixin
 from import_export.fields import Field
 from django.utils.crypto import get_random_string
-
+from users.admin_mixins import ConferencePermissionMixin
 from countries import countries
 from grants.tasks import (
     send_grant_reply_approved_email,
@@ -362,7 +362,7 @@ class GrantAdminForm(forms.ModelForm):
 
 
 @admin.register(Grant)
-class GrantAdmin(ExportMixin, admin.ModelAdmin):
+class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     change_list_template = "admin/grants/grant/change_list.html"
     speaker_ids = []
     resource_class = GrantResource
