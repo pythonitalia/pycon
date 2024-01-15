@@ -607,6 +607,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             comment=comment,
             review_session_repr=str(review_session),
             can_review_items=review_session.can_review_items,
+            seen=request.GET.get("seen", "").split(","),
             title=f"Grant Review: {grant.user.display_name}",
         )
         return TemplateResponse(request, "grant-review.html", context)
