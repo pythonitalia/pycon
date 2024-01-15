@@ -96,6 +96,23 @@ export const VotingPage = () => {
   };
 
   const onUpdateFilters = (nextStateValues) => {
+    let voted = null;
+    if (nextStateValues.voted) {
+      if (nextStateValues.voted.length === 2) {
+        voted = null;
+      } else if (
+        nextStateValues.voted.length === 1 &&
+        nextStateValues.voted[0] === "true"
+      ) {
+        voted = true;
+      } else if (
+        nextStateValues.voted.length === 1 &&
+        nextStateValues.voted[0] === "false"
+      ) {
+        voted = false;
+      }
+    }
+    nextStateValues.voted = voted !== null ? [voted.toString()] : [];
     updateUrl(nextStateValues, 1);
     setCurrentPage(1);
     setCurrentFilters(nextStateValues);
@@ -107,10 +124,10 @@ export const VotingPage = () => {
     }
 
     setCurrentFilters({
-      languages: getAsArray(router.query.language) ?? [],
+      languages: getAsArray(router.query.languages) ?? [],
       voted: router.query.voted ? [router.query.voted.toString()] : [],
       tags: getAsArray(router.query.tags),
-      types: getAsArray(router.query.type) ?? [],
+      types: getAsArray(router.query.types) ?? [],
       audienceLevels: getAsArray(router.query.audienceLevel) ?? [],
     });
 
