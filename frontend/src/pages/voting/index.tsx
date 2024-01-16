@@ -128,7 +128,7 @@ export const VotingPage = () => {
       voted: router.query.voted ? [router.query.voted.toString()] : [],
       tags: getAsArray(router.query.tags),
       types: getAsArray(router.query.types) ?? [],
-      audienceLevels: getAsArray(router.query.audienceLevel) ?? [],
+      audienceLevels: getAsArray(router.query.audienceLevels) ?? [],
     });
 
     setCurrentPage(parseInt(router.query.page as string) || 1);
