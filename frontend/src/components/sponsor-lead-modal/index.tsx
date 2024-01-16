@@ -95,7 +95,7 @@ export const SponsorLeadModal = ({ onClose }) => {
       {!submitComplete && (
         <form onSubmit={onSubmit} ref={formRef} autoComplete="off">
           <InputWrapper
-            title={<FormattedMessage id="signup.email" />}
+            title={<FormattedMessage id="signup.fullname" />}
             required={true}
           >
             <Input
