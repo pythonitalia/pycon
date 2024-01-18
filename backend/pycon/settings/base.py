@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "wagtail",
     "modelcluster",
     "taggit",
+    "wagtail_headless_preview",
     # --
     "schedule.apps.ScheduleConfig",
     "custom_admin",
@@ -355,3 +356,10 @@ if DEEPL_AUTH_KEY:
 
 FLODESK_API_KEY = env("FLODESK_API_KEY", default="")
 FLODESK_SEGMENT_ID = env("FLODESK_SEGMENT_ID", default="")
+
+WAGTAIL_HEADLESS_PREVIEW = {
+    "CLIENT_URLS": {"default": "{SITE_ROOT_URL}"},
+    "SERVE_BASE_URL": None,
+    "REDIRECT_ON_PREVIEW": False,
+    "ENFORCE_TRAILING_SLASH": True,
+}

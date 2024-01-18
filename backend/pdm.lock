@@ -5,7 +5,7 @@
 groups = ["default", "dev", "lambda"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:0086f8f8392976cc6c44e7eb11554fcb04cd283c6806400fcc4ee1ef912db044"
+content_hash = "sha256:38badffd1a2512a3b9f6d1a4d632dbe324e87bd1f4e70e8e0ab23603635abfb9"
 
 [[package]]
 name = "amqp"
@@ -2298,6 +2298,19 @@ dependencies = [
 files = [
     {file = "pythonit_toolkit-0.1.92-py3-none-any.whl", hash = "sha256:9174afaddaf5572b13fb2b9357a3b530713f9346dd127e531281e532681e8b0c"},
     {file = "pythonit_toolkit-0.1.92.tar.gz", hash = "sha256:9563a287d9cae26ddb587301a025af8107ca93909f8bdcae4910ff6b8a303d6a"},
+]
+
+[[package]]
+name = "pythonitalia-wagtail-headless"
+version = "0.8.1"
+requires_python = ">=3.8"
+summary = "Enhance Wagtail previews in headless setups."
+dependencies = [
+    "Wagtail>=4.1",
+]
+files = [
+    {file = "pythonitalia_wagtail_headless-0.8.1-py3-none-any.whl", hash = "sha256:33b96e5ff88e28efa4a28be8c594c143f44ac3df727a1f227d47452d1fe609da"},
+    {file = "pythonitalia_wagtail_headless-0.8.1.tar.gz", hash = "sha256:2cce4b27dc682de1004a10aba41f263316a3d617ef83aa817a93f8258dcf01a3"},
 ]
 
 [[package]]

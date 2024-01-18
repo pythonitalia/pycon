@@ -92,6 +92,7 @@ dependencies = [
     "wagtail==5.1.3",
     "wagtail-localize==1.5.2",
     "celery>=5.3.6",
+    "pythonitalia-wagtail-headless>=0.8.1",
 ]
 name = "backend"
 version = "0.1.0"

@@ -1,0 +1,15 @@
+#import "../../fragments/blocks.graphql"
+
+query PagePreview($contentType: String!, $token: String!) {
+  pagePreview(contentType: $contentType, token: $token) {
+    __typename
+    ... on GenericPage {
+      id
+      title
+      searchDescription
+      body {
+        ...Blocks
+      }
+    }
+  }
+}

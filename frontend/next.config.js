@@ -28,6 +28,10 @@ module.exports = withSentryConfig({
             key: "X-Frame-Options",
             value: "DENY",
           },
+          {
+            key: "Content-Security-Policy",
+            value: "frame-ancestors localhost:8000;",
+          },
         ],
       },
     ];
