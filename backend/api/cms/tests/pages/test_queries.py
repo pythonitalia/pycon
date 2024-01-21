@@ -212,10 +212,12 @@ def test_page_filter_by_site_and_language(graphql_client, locale):
     )
     page_1.save_revision().publish()
     page_2.save_revision().publish()
-    SiteFactory(hostname="site1", root_page=root_site_1)
-    SiteFactory(hostname="site2", root_page=root_site_2)
-    page_1.copy_for_translation(locale=locale("it"))
-    page_2.copy_for_translation(locale=locale("it"))
+    SiteFactory(hostname="site1", port=80, root_page=root_site_1)
+    SiteFactory(hostname="site2", port=80, root_page=root_site_2)
+    page_1_it = page_1.copy_for_translation(locale=locale("it"))
+    page_1_it.save_revision().publish()
+    page_2_it = page_2.copy_for_translation(locale=locale("it"))
+    page_2_it.save_revision().publish()
 
     query = """
     query Page ($hostname: String!, $language: String!, $slug: String!) {
