@@ -1,17 +1,9 @@
 import { Page as BasePage } from "@python-italia/pycon-styleguide";
 import React, { Fragment } from "react";
 
-import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
-
-import { addApolloState, getApolloClient } from "~/apollo/client";
-import {
-  BlocksRenderer,
-  blocksDataFetching,
-} from "~/components/blocks-renderer";
+import { BlocksRenderer } from "~/components/blocks-renderer";
 import { MetaTags } from "~/components/meta-tags";
-import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { GenericPage, queryAllPages, queryPage, usePageQuery } from "~/types";
+import { GenericPage } from "~/types";
 
 import { usePageOrPreview } from "./use-page-or-preview";
 

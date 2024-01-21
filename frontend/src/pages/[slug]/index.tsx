@@ -1,19 +1,11 @@
-import { Page as BasePage } from "@python-italia/pycon-styleguide";
-import React, { Fragment } from "react";
+import React from "react";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 
-import { addApolloState, getApolloClient } from "~/apollo/client";
-import {
-  BlocksRenderer,
-  blocksDataFetching,
-} from "~/components/blocks-renderer";
-import { MetaTags } from "~/components/meta-tags";
+import { getApolloClient } from "~/apollo/client";
 import { PageHandler } from "~/components/page-handler";
-import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
-import { GenericPage, queryAllPages, queryPage, usePageQuery } from "~/types";
+import { queryAllPages } from "~/types";
 
 export const FrontendPage = ({ blocksProps, isPreview, previewData }) => {
   const router = useRouter();

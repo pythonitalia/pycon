@@ -1,11 +1,5 @@
 import { useCurrentLanguage } from "~/locale/context";
-import {
-  GenericPage,
-  queryAllPages,
-  queryPage,
-  usePagePreviewQuery,
-  usePageQuery,
-} from "~/types";
+import { usePagePreviewQuery, usePageQuery } from "~/types";
 
 export const usePageOrPreview = ({
   slug,
