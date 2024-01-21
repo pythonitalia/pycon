@@ -371,8 +371,8 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     list_display = (
         "user_display_name",
         "country",
-        "is_confirmed_speaker",
         "is_proposed_speaker",
+        "is_confirmed_speaker",
         "conference",
         "status",
         "approved_type",
