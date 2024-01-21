@@ -25,8 +25,8 @@ from grants.tasks import (
 from pretix import create_voucher
 from schedule.models import ScheduleItem
 from submissions.models import Submission
-from conferences.models import Conference
 from .models import Grant
+from django.db.models import Exists, OuterRef
 
 
 EXPORT_GRANTS_FIELDS = (
@@ -364,8 +364,6 @@ class GrantAdminForm(forms.ModelForm):
 @admin.register(Grant)
 class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     change_list_template = "admin/grants/grant/change_list.html"
-    confirmed_speaker_ids = []
-    proposed_speaker_ids = []
     resource_class = GrantResource
     form = GrantAdminForm
     list_display = (
@@ -493,39 +491,37 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
 
         return ""
 
-    @admin.display(description="🗣️")
-    def is_confirmed_speaker(self, obj):
-        if obj.user_id in self.confirmed_speaker_ids:
-            return "🗣️"
-        return ""
-
     @admin.display(description="✍️")
     def is_proposed_speaker(self, obj):
-        if obj.user_id in self.proposed_speaker_ids:
+        if obj.is_proposed_speaker:
             return "✍️"
         return ""
 
+    @admin.display(description="🗣️")
+    def is_confirmed_speaker(self, obj):
+        if obj.is_confirmed_speaker:
+            return "🗣️"
+        return ""
+
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        conference_id = request.GET.get("conference__id__exact")
-
-        # If a specific conference is not filtered, fetch all relevant conference IDs
-        if not conference_id:
-            all_conference_ids = Conference.objects.all().values_list("id", flat=True)
-        else:
-            all_conference_ids = [conference_id]
-
-        # Fetch confirmed speakers (those in the Schedule)
-        self.confirmed_speaker_ids = ScheduleItem.objects.filter(
-            conference__id__in=all_conference_ids,
-            submission__speaker_id__isnull=False,
-        ).values_list("submission__speaker_id", flat=True)
-
-        # Fetch speakers who proposed a submission (not confirmed)
-        self.proposed_speaker_ids = Submission.objects.filter(
-            conference__id__in=all_conference_ids,
-        ).values_list("speaker_id", flat=True)
-
+        qs = (
+            super()
+            .get_queryset(request)
+            .annotate(
+                is_proposed_speaker=Exists(
+                    Submission.objects.non_cancelled().filter(
+                        conference_id=OuterRef("conference_id"),
+                        speaker_id=OuterRef("user_id"),
+                    )
+                ),
+                is_confirmed_speaker=Exists(
+                    ScheduleItem.objects.filter(
+                        conference_id=OuterRef("conference_id"),
+                        submission__speaker_id=OuterRef("user_id"),
+                    )
+                ),
+            )
+        )
         return qs
 
     def save_form(self, request, form, change):
