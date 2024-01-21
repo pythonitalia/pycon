@@ -521,7 +521,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
             submission__speaker_id__isnull=False,
         ).values_list("submission__speaker_id", flat=True)
 
-        # Fetch speakers who proposed a talk (not confirmed)
+        # Fetch speakers who proposed a submission (not confirmed)
         self.proposed_speaker_ids = Submission.objects.filter(
             conference__id__in=all_conference_ids,
         ).values_list("speaker_id", flat=True)
