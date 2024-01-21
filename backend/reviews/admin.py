@@ -8,13 +8,23 @@ from typing import List, Optional
 
 from django import forms
 from django.contrib import admin, messages
-from django.db.models import Count, F, OuterRef, Prefetch, Subquery, Sum
+from django.db.models import (
+    Count,
+    F,
+    OuterRef,
+    Prefetch,
+    Subquery,
+    Sum,
+    CharField,
+    Value,
+)
+from django.db.models.functions import Concat, Cast, Coalesce
 from django.http.request import HttpRequest
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
-
+from django.contrib.postgres.aggregates import StringAgg
 from grants.models import Grant
 from participants.models import Participant
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
@@ -297,6 +307,33 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                         speaker_id=OuterRef("user_id"),
                         conference_id=review_session.conference_id,
                     )
+                ),
+                ranking=Coalesce(
+                    Subquery(
+                        Submission.objects.filter(
+                            speaker_id=OuterRef("user_id"),
+                            conference_id=OuterRef("conference_id"),
+                        )
+                        .annotate(
+                            ranking=StringAgg(
+                                Concat(
+                                    "rankings__tag__name",
+                                    Value(": "),
+                                    Cast("rankings__rank", CharField()),
+                                    Value("/"),
+                                    Cast(
+                                        "rankings__total_submissions_per_tag",
+                                        CharField(),
+                                    ),
+                                    output_field=CharField(),
+                                ),
+                                delimiter=", \n",
+                            )
+                        )
+                        .values("ranking")[:1]
+                    ),
+                    Value(""),
+                    output_field=CharField(),
                 ),
                 user_private_comment=Subquery(
                     UserReview.objects.filter(

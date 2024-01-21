@@ -144,6 +144,10 @@
                   <div class="clear"></div>
                 </th>
                 <th scope="col">
+                  <div class="text"><span>Ranking</span></div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
                   <div class="text"><span>Status</span></div>
                   <div class="clear"></div>
                 </th>
@@ -208,8 +212,8 @@
                       <strong>Interested in Volunteering?</strong>
                       <span>{{item.get_interested_in_volunteering_display}}</span>
                     </li>
-                    <li>
-                      <strong>Is a speaker?</strong>
+                    <li title="Has sent a proposal">
+                      <strong>Is a speaker? (proposed)</strong>
                       <span>{{item.is_a_speaker|yesno}}</span>
                     </li>
                   </ul>
@@ -240,6 +244,9 @@
                     <p>{{ item.user_private_comment }}</p>
                   {% endif %}
                 </td>
+
+                <td>{{ item.ranking|linebreaksbr }}
+                  </td>
 
                 <td>
                   {{ item.get_status_display }}
