@@ -1,9 +1,9 @@
 query NewsArticleSocialCard(
-  $code: String!
+  $hostname: String!
   $slug: String!
   $language: String!
 ) {
-  newsArticle(hostname: $code, slug: $slug, language: $language) {
+  newsArticle(hostname: $hostname, slug: $slug, language: $language) {
     id
     title
     authorFullname

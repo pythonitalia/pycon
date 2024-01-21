@@ -10,7 +10,7 @@ class NewsArticle:
     slug: str
     excerpt: str
     body: str
-    published_at: datetime.datetime
+    published_at: datetime.datetime | None
     author_fullname: str
 
     @classmethod
@@ -22,5 +22,5 @@ class NewsArticle:
             excerpt=model.excerpt,
             body=model.body,
             published_at=model.first_published_at,
-            author_fullname=model.owner.display_name,
+            author_fullname=model.owner.display_name if model.owner_id else "",
         )

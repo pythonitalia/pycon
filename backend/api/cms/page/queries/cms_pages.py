@@ -17,5 +17,4 @@ def cms_pages(hostname: str, language: str) -> list[GenericPage]:
         for page in GenericPageModel.objects.in_site(site).filter(
             locale__language_code=language, live=True
         )
-        if page.slug != "homepage"
     ]

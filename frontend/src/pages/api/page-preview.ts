@@ -21,10 +21,17 @@ export default async (req, res) => {
       token: token,
     },
     {
-      // very short age because we don't need to left it alive for long
-      // as wagtail will generate new token on each preview request
+      // very short age because we don't need to leave it alive for long
+      // as wagtail will recall this API every time the preview is loaded
       maxAge: 3,
     },
   );
-  res.redirect("/");
+
+  switch (contentType) {
+    case "news.newsarticle":
+      res.redirect(`/news/empty`);
+      break;
+    default:
+      res.redirect("/");
+  }
 };

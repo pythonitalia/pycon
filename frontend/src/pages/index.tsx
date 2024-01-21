@@ -1,6 +1,17 @@
-import { PageHandler } from "~/components/page-handler";
+import { GetStaticProps } from "next";
 
-export { getStaticProps } from "~/components/page-handler/page-static-props";
+import { PageHandler } from "~/components/page-handler";
+import { getStaticProps as baseGetStaticProps } from "~/components/page-handler/page-static-props";
+
+export const getStaticProps: GetStaticProps = async (args) => {
+  return baseGetStaticProps({
+    ...args,
+    params: {
+      ...args.params,
+      slug: process.env.conferenceCode,
+    },
+  });
+};
 
 export default ({ blocksProps, isPreview, previewData }) => {
   return (

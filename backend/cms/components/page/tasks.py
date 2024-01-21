@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 @app.task
 def revalidate_vercel_frontend_task(page_id):
-    page = Page.objects.get(id=page_id)
+    page = Page.objects.filter(id=page_id)
     site = page.get_site()
 
     settings = VercelFrontendSettings.for_site(site)

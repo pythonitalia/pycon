@@ -1,0 +1,8 @@
+fragment NewsArticleData on NewsArticle {
+  id
+  title
+  excerpt
+  body
+  publishedAt
+  authorFullname
+}

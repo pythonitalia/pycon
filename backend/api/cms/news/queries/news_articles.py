@@ -6,16 +6,19 @@ from cms.components.news.models import NewsArticle as NewsArticleModel
 
 @strawberry.field
 def news_articles(hostname: str, language: str) -> list[NewsArticle]:
-    site = Site.objects.filter(hostname=hostname).first()
+    hostname, port = hostname.split(":") if ":" in hostname else (hostname, 80)
+    site = Site.objects.filter(hostname=hostname, port=port).first()
 
     if not site:
         raise ValueError(f"Site {hostname} not found")
 
+    breakpoint()
     return [
-        NewsArticle.from_model(article)
+        NewsArticle.from_model(article.live_revision.as_object())
         for article in NewsArticleModel.objects.in_site(site)
         .order_by("-first_published_at")
         .filter(
             locale__language_code=language,
+            live=True,
         )
     ]

@@ -1,18 +1,38 @@
 import { useCurrentLanguage } from "~/locale/context";
-import { usePagePreviewQuery, usePageQuery } from "~/types";
+import {
+  useNewsArticleQuery,
+  usePagePreviewQuery,
+  usePageQuery,
+} from "~/types";
+
+const useFetch = (fetcher: "page" | "newsArticle") => {
+  let fetcherFunc = null;
+  switch (fetcher) {
+    case "page":
+      fetcherFunc = usePageQuery;
+      break;
+    case "newsArticle":
+      fetcherFunc = useNewsArticleQuery;
+      break;
+  }
+
+  return fetcherFunc;
+};
 
 export const usePageOrPreview = ({
+  fetcher,
   slug,
   isPreview,
   previewData,
 }: {
+  fetcher: "page" | "newsArticle";
   slug: string;
   isPreview: boolean;
   previewData: any;
 }) => {
   const language = useCurrentLanguage();
 
-  const { data: pageReqData } = usePageQuery({
+  const { data: pageData } = useFetch(fetcher)({
     variables: {
       hostname: process.env.cmsHostname,
       language,
@@ -20,6 +40,7 @@ export const usePageOrPreview = ({
     },
     skip: isPreview,
   });
+
   const { data: previewReqData } = usePagePreviewQuery({
     variables: {
       contentType: previewData?.contentType,
@@ -27,5 +48,20 @@ export const usePageOrPreview = ({
     },
     skip: !isPreview,
   });
-  return isPreview ? previewReqData.pagePreview : pageReqData.cmsPage;
+
+  if (isPreview) {
+    switch (previewReqData.pagePreview.__typename) {
+      case "GenericPagePreview":
+        return previewReqData?.pagePreview.genericPage;
+      case "NewsArticlePreview":
+        return previewReqData?.pagePreview.newsArticle;
+    }
+  }
+
+  switch (fetcher) {
+    case "page":
+      return pageData.cmsPage;
+    case "newsArticle":
+      return pageData.newsArticle;
+  }
 };

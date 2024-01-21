@@ -14,6 +14,7 @@ export const getStaticProps: GetStaticProps = async ({
   preview,
   previewData,
   locale,
+  params,
 }: {
   preview: boolean;
   previewData: {
@@ -21,8 +22,12 @@ export const getStaticProps: GetStaticProps = async ({
     token: string;
   };
   locale: string;
+  params: {
+    slug?: string;
+  };
 }) => {
   const client = getApolloClient();
+  const slug = params?.slug as string;
 
   const [_, pageDataQuery] = await Promise.all([
     prefetchSharedQueries(client, locale),
@@ -30,7 +35,7 @@ export const getStaticProps: GetStaticProps = async ({
       ? queryPage(client, {
           language: locale,
           hostname: process.env.cmsHostname,
-          slug: process.env.conferenceCode,
+          slug,
         })
       : queryPagePreview(client, {
           contentType: previewData?.contentType,
@@ -39,8 +44,9 @@ export const getStaticProps: GetStaticProps = async ({
   ]);
 
   const pageData = preview
-    ? (pageDataQuery.data as PagePreviewQuery).pagePreview
+    ? ((pageDataQuery.data as PagePreviewQuery).pagePreview as any).genericPage
     : (pageDataQuery.data as PageQuery).cmsPage;
+
   if (!pageData || pageData.__typename === "SiteNotFoundError") {
     return {
       notFound: true,

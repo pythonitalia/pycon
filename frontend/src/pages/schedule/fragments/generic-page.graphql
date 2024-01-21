@@ -1,0 +1,10 @@
+#import "./blocks.graphql"
+
+fragment GenericPageData on GenericPage {
+  id
+  title
+  searchDescription
+  body {
+    ...Blocks
+  }
+}

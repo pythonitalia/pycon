@@ -1,21 +1,7 @@
-query NewsArticle($code: String!, $slug: String!, $language: String!) {
-  newsArticle(hostname: $code, slug: $slug, language: $language) {
-    id
-    title
-    excerpt
-    body
-    publishedAt
-    authorFullname
-  }
+#import "../../fragments/news-article.graphql"
 
-  blogPost(slug: $slug) {
-    id
-    title(language: $language)
-    content(language: $language)
-    excerpt(language: $language)
-    author {
-      fullName
-    }
-    published
+query NewsArticle($hostname: String!, $slug: String!, $language: String!) {
+  newsArticle(hostname: $hostname, slug: $slug, language: $language) {
+    ...NewsArticleData
   }
 }

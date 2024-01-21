@@ -3,18 +3,16 @@ import React, { Fragment } from "react";
 
 import { BlocksRenderer } from "~/components/blocks-renderer";
 import { MetaTags } from "~/components/meta-tags";
-import { GenericPage } from "~/types";
 
 import { usePageOrPreview } from "./use-page-or-preview";
 
 export const PageHandler = ({ blocksProps, isPreview, previewData, slug }) => {
-  const cmsPage = usePageOrPreview({
+  const page = usePageOrPreview({
+    fetcher: "page",
     slug,
     isPreview,
     previewData,
   });
-
-  const page = cmsPage as GenericPage;
 
   return (
     <Fragment>
