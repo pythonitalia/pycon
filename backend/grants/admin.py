@@ -368,13 +368,13 @@ class IsProposedSpeakerFilter(SimpleListFilter):
 
     def lookups(self, request, model_admin):
         return (
-            ("Yes", "Yes"),
-            ("No", "No"),
+            (True, "Yes"),
+            (False, "No"),
         )
 
     def queryset(self, request, queryset):
-        if self.value() in ["Yes", "No"]:
-            return queryset.filter(is_proposed_speaker=self.value() == "Yes")
+        if self.value() is not None:
+            return queryset.filter(is_proposed_speaker=self.value())
         return queryset
 
 
@@ -384,13 +384,13 @@ class IsConfirmedSpeakerFilter(SimpleListFilter):
 
     def lookups(self, request, model_admin):
         return (
-            ("Yes", "Yes"),
-            ("No", "No"),
+            (True, "Yes"),
+            (False, "No"),
         )
 
     def queryset(self, request, queryset):
-        if self.value() in ["Yes", "No"]:
-            return queryset.filter(is_confirmed_speaker=self.value() == "Yes")
+        if self.value() is not None:
+            return queryset.filter(is_confirmed_speaker=self.value())
         return queryset
 
 
