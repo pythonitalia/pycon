@@ -12,7 +12,6 @@ def news_articles(hostname: str, language: str) -> list[NewsArticle]:
     if not site:
         raise ValueError(f"Site {hostname} not found")
 
-    breakpoint()
     return [
         NewsArticle.from_model(article.live_revision.as_object())
         for article in NewsArticleModel.objects.in_site(site)
