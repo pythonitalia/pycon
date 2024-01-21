@@ -16,7 +16,6 @@ import { SliderCardsSection } from "../blocks/slider-cards-section";
 import { SocialsSection } from "../blocks/socials-section";
 import { SpecialGuestSection } from "../blocks/special-guest-section";
 import { SponsorsSection } from "../blocks/sponsors-section";
-import { usePagePreview } from "./use-page-preview";
 
 type Registry = {
   [key in Block["__typename"]]: any;
@@ -45,11 +44,9 @@ type Props = {
 };
 
 export const BlocksRenderer = ({ blocks, blocksProps }: Props) => {
-  const { previewBlocks } = usePagePreview();
-
   return (
     <>
-      {(previewBlocks || blocks).map((block) => {
+      {blocks.map((block) => {
         const Component = REGISTRY[block.__typename];
         if (!Component) {
           return (

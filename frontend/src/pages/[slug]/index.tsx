@@ -10,71 +10,25 @@ import {
   blocksDataFetching,
 } from "~/components/blocks-renderer";
 import { MetaTags } from "~/components/meta-tags";
+import { PageHandler } from "~/components/page-handler";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import { GenericPage, queryAllPages, queryPage, usePageQuery } from "~/types";
 
-export const FrontendPage = ({ blocksProps }) => {
+export const FrontendPage = ({ blocksProps, isPreview, previewData }) => {
   const router = useRouter();
   const slug = router.query.slug as string;
-  const language = useCurrentLanguage();
-
-  const { data } = usePageQuery({
-    variables: {
-      hostname: process.env.cmsHostname,
-      language,
-      slug,
-    },
-  });
-
-  const { cmsPage } = data;
-  const page = cmsPage as GenericPage;
-
   return (
-    <Fragment>
-      <MetaTags title={page.title} description={page.searchDescription} />
-
-      <BasePage endSeparator={false}>
-        <BlocksRenderer blocks={page.body} blocksProps={blocksProps} />
-      </BasePage>
-    </Fragment>
+    <PageHandler
+      isPreview={isPreview}
+      previewData={previewData}
+      slug={slug}
+      blocksProps={blocksProps}
+    />
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
-  const language = locale;
-  const slug = params.slug as string;
-  const client = getApolloClient();
-
-  const [_, pageQuery] = await Promise.all([
-    prefetchSharedQueries(client, language),
-    queryPage(client, {
-      hostname: process.env.cmsHostname,
-      language,
-      slug,
-    }),
-  ]);
-
-  if (pageQuery.data.cmsPage?.__typename !== "GenericPage") {
-    return {
-      notFound: true,
-    };
-  }
-
-  const { dataFetching, staticProps } = blocksDataFetching(
-    client,
-    pageQuery.data.cmsPage.body,
-    locale,
-  );
-
-  await dataFetching;
-
-  return addApolloState(client, {
-    props: {
-      blocksProps: staticProps,
-    },
-  });
-};
+export { getStaticProps } from "~/components/page-handler/page-static-props";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const client = getApolloClient();

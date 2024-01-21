@@ -1,41 +1,14 @@
-import { GetStaticProps } from "next";
+import { PageHandler } from "~/components/page-handler";
 
-import { addApolloState, getApolloClient } from "~/apollo/client";
-import { blocksDataFetching } from "~/components/blocks-renderer";
-import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { GenericPage, queryIndexPage } from "~/types";
+export { getStaticProps } from "~/components/page-handler/page-static-props";
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  const client = getApolloClient();
-
-  const [_, pageQuery] = await Promise.all([
-    prefetchSharedQueries(client, locale),
-    queryIndexPage(client, {
-      language: locale,
-      hostname: process.env.cmsHostname,
-      code: process.env.conferenceCode,
-    }),
-  ]);
-
-  if (!pageQuery.data.cmsPage) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const { dataFetching, staticProps } = blocksDataFetching(
-    client,
-    (pageQuery.data.cmsPage as GenericPage).body,
-    locale,
+export default ({ blocksProps, isPreview, previewData }) => {
+  return (
+    <PageHandler
+      isPreview={isPreview}
+      previewData={previewData}
+      slug={process.env.conferenceCode}
+      blocksProps={blocksProps}
+    />
   );
-
-  await dataFetching;
-
-  return addApolloState(client, {
-    props: {
-      blocksProps: staticProps,
-    },
-  });
 };
-
-export { HomePagePageHandler as default } from "~/components/homepage-page-handler";

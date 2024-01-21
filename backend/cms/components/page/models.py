@@ -18,7 +18,7 @@ from cms.components.page.blocks.slider_cards_section import SliderCardsSection
 from cms.components.page.blocks.checkout_section import CheckoutSection
 from cms.components.base.blocks.map import Map
 from wagtail import blocks
-from wagtail_headless_preview.models import HeadlessMixin
+from .headless import CustomHeadlessMixin
 
 
 class BodyBlock(blocks.StreamBlock):
@@ -39,7 +39,7 @@ class BodyBlock(blocks.StreamBlock):
     homepage_hero = HomepageHero()
 
 
-class GenericPage(HeadlessMixin, Page):
+class GenericPage(CustomHeadlessMixin, Page):
     body = StreamField(
         BodyBlock(),
         use_json_field=True,
