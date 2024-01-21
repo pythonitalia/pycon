@@ -28,6 +28,7 @@ from submissions.models import Submission
 from .models import Grant
 from django.db.models import Exists, OuterRef
 
+from django.contrib.admin import SimpleListFilter
 
 EXPORT_GRANTS_FIELDS = (
     "name",
@@ -361,6 +362,38 @@ class GrantAdminForm(forms.ModelForm):
         )
 
 
+class IsProposedSpeakerFilter(SimpleListFilter):
+    title = "Is Proposed Speaker"
+    parameter_name = "is_proposed_speaker"
+
+    def lookups(self, request, model_admin):
+        return (
+            ("Yes", "Yes"),
+            ("No", "No"),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() in ["Yes", "No"]:
+            return queryset.filter(is_proposed_speaker=self.value() == "Yes")
+        return queryset
+
+
+class IsConfirmedSpeakerFilter(SimpleListFilter):
+    title = "Is Confirmed Speaker"
+    parameter_name = "is_confirmed_speaker"
+
+    def lookups(self, request, model_admin):
+        return (
+            ("Yes", "Yes"),
+            ("No", "No"),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() in ["Yes", "No"]:
+            return queryset.filter(is_confirmed_speaker=self.value() == "Yes")
+        return queryset
+
+
 @admin.register(Grant)
 class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     change_list_template = "admin/grants/grant/change_list.html"
@@ -383,6 +416,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "applicant_reply_deadline",
         "voucher_code",
         "voucher_email_sent_at",
+        "created",
     )
     list_filter = (
         "conference",
@@ -391,6 +425,8 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "occupation",
         "grant_type",
         "interested_in_volunteering",
+        IsProposedSpeakerFilter,
+        IsConfirmedSpeakerFilter,
         ("travelling_from", CountryFilter),
     )
     search_fields = (
@@ -401,7 +437,6 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "why",
         "notes",
     )
-    user_fk = "user_id"
     actions = [
         send_reply_emails,
         send_grant_reminder_to_waiting_for_confirmation,
