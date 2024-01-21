@@ -14,4 +14,5 @@ def page_preview(content_type: str, token: str) -> GenericPage:
     page = page_preview.as_page()
     if not page.id:
         page.id = 0
+
     return GenericPage.from_model(page)

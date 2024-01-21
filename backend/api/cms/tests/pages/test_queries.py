@@ -15,7 +15,8 @@ def test_page(graphql_client, locale):
         body__0__text_section__title__value="I've Got a Lovely Bunch of Coconuts",
         body__1__map__longitude=Decimal(3.14),
     )
-    SiteFactory(hostname="pycon", root_page=parent)
+    page.save_revision().publish()
+    SiteFactory(hostname="pycon", port=80, root_page=parent)
     page.copy_for_translation(locale=locale("it"))
     query = """
     query Page ($hostname: String!, $language: String!, $slug: String!) {
@@ -66,7 +67,8 @@ def test_page_for_unknown_locale(graphql_client, locale):
         body__0__text_section__title__value="I've Got a Lovely Bunch of Coconuts",
         body__1__map__longitude=Decimal(3.14),
     )
-    SiteFactory(hostname="pycon", root_page=parent)
+    page.save_revision().publish()
+    SiteFactory(hostname="pycon", port=80, root_page=parent)
     page.copy_for_translation(locale=locale("it"))
     query = """
     query Page ($hostname: String!, $language: String!, $slug: String!) {
@@ -91,7 +93,7 @@ def test_page_for_unknown_locale(graphql_client, locale):
 
 
 def test_page_not_found(graphql_client):
-    SiteFactory(hostname="not-found")
+    SiteFactory(hostname="not-found", port=80)
     query = """
     query Page ($hostname: String!, $language: String!, $slug: String!) {
         cmsPage(hostname: $hostname, language: $language, slug: $slug){
@@ -131,19 +133,22 @@ def test_page_site_not_found(graphql_client):
 
 def test_pages(graphql_client, locale):
     parent = GenericPageFactory()
-    GenericPageFactory(
+    parent.save_revision().publish()
+    page_1 = GenericPageFactory(
         slug="bubble-tea",
         locale=locale("en"),
         parent=parent,
         body__0__text_section__title__value="I've Got a Lovely Bunch of Coconuts",
     )
-    GenericPageFactory(
+    page_1.save_revision().publish()
+    page_2 = GenericPageFactory(
         slug="chocolate",
         locale=locale("en"),
         parent=parent,
         body__0__text_section__title__value="There they are, all standing in a row",
     )
-    SiteFactory(hostname="pycon", root_page=parent)
+    page_2.save_revision().publish()
+    SiteFactory(hostname="pycon", port=80, root_page=parent)
 
     query = """
     query Page ($hostname: String!, $language: String!) {
@@ -205,6 +210,8 @@ def test_page_filter_by_site_and_language(graphql_client, locale):
         parent=root_site_2,
         body__0__text_section__title__value="There they are, all standing in a row",
     )
+    page_1.save_revision().publish()
+    page_2.save_revision().publish()
     SiteFactory(hostname="site1", root_page=root_site_1)
     SiteFactory(hostname="site2", root_page=root_site_2)
     page_1.copy_for_translation(locale=locale("it"))

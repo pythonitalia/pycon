@@ -3,7 +3,12 @@ import { GetStaticProps } from "next";
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { blocksDataFetching } from "~/components/blocks-renderer";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { queryPage, queryPagePreview } from "~/types";
+import {
+  PagePreviewQuery,
+  PageQuery,
+  queryPage,
+  queryPagePreview,
+} from "~/types";
 
 export const getStaticProps: GetStaticProps = async ({
   preview,
@@ -19,27 +24,24 @@ export const getStaticProps: GetStaticProps = async ({
 }) => {
   const client = getApolloClient();
 
-  const [_, pageQuery, previewQuery] = await Promise.all([
+  const [_, pageDataQuery] = await Promise.all([
     prefetchSharedQueries(client, locale),
-    queryPage(client, {
-      language: locale,
-      hostname: process.env.cmsHostname,
-      slug: process.env.conferenceCode,
-    }),
-    preview
-      ? queryPagePreview(client, {
-          contentType: previewData.contentType,
-          token: previewData.token,
+    !preview
+      ? queryPage(client, {
+          language: locale,
+          hostname: process.env.cmsHostname,
+          slug: process.env.conferenceCode,
         })
-      : Promise.resolve(null),
+      : queryPagePreview(client, {
+          contentType: previewData?.contentType,
+          token: previewData?.token,
+        }),
   ]);
 
-  const pageData =
-    previewQuery === null
-      ? pageQuery.data.cmsPage
-      : previewQuery.data.pagePreview;
-
-  if (!pageData) {
+  const pageData = preview
+    ? (pageDataQuery.data as PagePreviewQuery).pagePreview
+    : (pageDataQuery.data as PageQuery).cmsPage;
+  if (!pageData || pageData.__typename === "SiteNotFoundError") {
     return {
       notFound: true,
     };

@@ -23,13 +23,11 @@ def cms_page(
 
     translated_page = (
         page.get_translations(inclusive=True)
-        .filter(locale__language_code=language)
+        .filter(locale__language_code=language, live=True)
         .first()
     )
 
     if not translated_page:
         return None
 
-    if not translated_page.live:
-        return None
     return GenericPage.from_model(translated_page.live_revision.as_object())
