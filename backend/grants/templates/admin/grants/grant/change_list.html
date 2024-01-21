@@ -6,24 +6,7 @@
     </li>
     {{ block.super }}
 {% endblock %}
-{% block extrastyle %}
-    <style>
-  th[title]:hover:after {
-      content: attr(title);
-      padding: 4px 8px;
-      color: #fff;
-      position: absolute;
-      left: 50%;
-      bottom: 100%;
-      white-space: nowrap;
-      z-index: 1000;
-      background-color: #333;
-      border-radius: 6px;
-      box-shadow: 0px 0px 10px #000;
-  }
-    </style>
-    {{ block.super }}
-{% endblock %}
+
 {% block extrahead %}
     {{ block.super }}
     <script type="text/javascript">
