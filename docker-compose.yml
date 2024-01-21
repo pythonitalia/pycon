@@ -132,6 +132,7 @@ services:
     environment:
       <<: *enviroment_defaults
       CMS_HOSTNAME: localhost:3000
+      CMS_ADMIN_HOST: localhost:8000
     tty: true
     stdin_open: true
     ports:

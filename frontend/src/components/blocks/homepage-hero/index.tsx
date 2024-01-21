@@ -12,7 +12,6 @@ type Props = {
 const Illustration = React.memo(HeroIllustration);
 
 export const HomepageHero = ({ cycle }: Props) => {
-  console.trace("homepage hero render?");
   return (
     <div className="h-screen relative mt-[-158px]">
       <div className="h-screen lg:h-[calc(100vh-60px)]">

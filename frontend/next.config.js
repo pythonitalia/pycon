@@ -11,6 +11,7 @@ const {
   NEXT_PUBLIC_VERCEL_URL,
   API_URL_SERVER,
   CMS_HOSTNAME,
+  CMS_ADMIN_HOST = "admin.pycon.it",
 } = process.env;
 
 module.exports = withSentryConfig({
@@ -31,7 +32,7 @@ module.exports = withSentryConfig({
           },
           {
             key: "Content-Security-Policy",
-            value: "frame-ancestors localhost:8000;",
+            value: `frame-ancestors ${CMS_ADMIN_HOST};`,
           },
         ],
       },
