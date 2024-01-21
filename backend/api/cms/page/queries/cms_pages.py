@@ -7,13 +7,15 @@ from api.cms.page.types import GenericPage
 
 @strawberry.field
 def cms_pages(hostname: str, language: str) -> list[GenericPage]:
-    if not (site := Site.objects.filter(hostname=hostname).first()):
+    hostname, port = hostname.split(":") if ":" in hostname else (hostname, 80)
+
+    if not (site := Site.objects.filter(hostname=hostname, port=port).first()):
         return []
 
     return [
-        GenericPage.from_model(page)
+        GenericPage.from_model(page.live_revision.as_object())
         for page in GenericPageModel.objects.in_site(site).filter(
-            locale__language_code=language,
+            locale__language_code=language, live=True
         )
         if page.slug != "homepage"
     ]

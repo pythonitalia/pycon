@@ -10,6 +10,7 @@ const {
   NEXT_PUBLIC_SOCIAL_CARD_SERVICE,
   NEXT_PUBLIC_VERCEL_URL,
   API_URL_SERVER,
+  CMS_HOSTNAME,
 } = process.env;
 
 module.exports = withSentryConfig({
@@ -74,6 +75,7 @@ module.exports = withSentryConfig({
   env: {
     API_URL: API_URL,
     conferenceCode: CONFERENCE_CODE || "pycon-demo",
+    cmsHostname: CMS_HOSTNAME,
     NEXT_PUBLIC_SOCIAL_CARD_SERVICE:
       NEXT_PUBLIC_SOCIAL_CARD_SERVICE ||
       "https://socialcards.python.it/api/card",

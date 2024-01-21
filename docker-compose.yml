@@ -66,6 +66,7 @@ services:
       - 8000:8000
     volumes:
       - ./backend:/home/app/
+      - /.venv/
     environment:
       <<: *pycon_backend_envs
     healthcheck:
@@ -130,6 +131,7 @@ services:
       - /home/node/app/.next
     environment:
       <<: *enviroment_defaults
+      CMS_HOSTNAME: localhost:3000
     tty: true
     stdin_open: true
     ports:

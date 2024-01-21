@@ -1,12 +1,12 @@
 import React from "react";
 
-import { getApolloClient } from "~/apollo/client";
 import { Map } from "~/components/blocks/map";
 import { TextSection } from "~/components/blocks/text-section";
-import { Block, queryPagePreview } from "~/types";
+import { Block } from "~/types";
 
 import { CheckoutSection } from "../blocks/checkout-section";
 import { HomeIntroSection } from "../blocks/home-intro-section";
+import { HomepageHero } from "../blocks/homepage-hero";
 import { InformationSection } from "../blocks/information-section";
 import { KeynotersSection } from "../blocks/keynotes-section";
 import { LiveStreamingSection } from "../blocks/live-streaming-section";
@@ -16,6 +16,7 @@ import { SliderCardsSection } from "../blocks/slider-cards-section";
 import { SocialsSection } from "../blocks/socials-section";
 import { SpecialGuestSection } from "../blocks/special-guest-section";
 import { SponsorsSection } from "../blocks/sponsors-section";
+import { usePagePreview } from "./use-page-preview";
 
 type Registry = {
   [key in Block["__typename"]]: any;
@@ -35,23 +36,29 @@ const REGISTRY: Registry = {
   NewsGridSection,
   CheckoutSection,
   LiveStreamingSection,
+  HomepageHero,
 };
 
 type Props = {
   blocks: Block[];
+  blocksProps: any;
 };
 
-export const BlocksRenderer = ({ blocks }: Props) => {
-  const { isPreview, previewBlocks } = usePagePreview();
-  console.log("isPreview", isPreview);
+export const BlocksRenderer = ({ blocks, blocksProps }: Props) => {
+  const { previewBlocks } = usePagePreview();
+
   return (
     <>
       {(previewBlocks || blocks).map((block) => {
         const Component = REGISTRY[block.__typename];
         if (!Component) {
-          return <div>Invalid component: {block.__typename}</div>;
+          return (
+            <div key={block.id}>Invalid component: {block.__typename}</div>
+          );
         }
-        return <Component key={block.id} {...block} />;
+        return (
+          <Component {...block} {...blocksProps[block.id]} key={block.id} />
+        );
       })}
     </>
   );
@@ -59,57 +66,31 @@ export const BlocksRenderer = ({ blocks }: Props) => {
 
 export const blocksDataFetching = (client, blocks, language) => {
   const promises = [];
+  let staticProps = {};
 
   for (const block of blocks) {
     const component = REGISTRY[block.__typename];
-    const dataFetching = component.dataFetching;
 
+    if (!component) {
+      return {};
+    }
+
+    const dataFetching = component.dataFetching;
     if (dataFetching) {
       promises.push(...dataFetching(client, language));
     }
+
+    const getStaticProps = component.getStaticProps;
+    if (getStaticProps) {
+      staticProps = {
+        ...staticProps,
+        [block.id]: getStaticProps(block),
+      };
+    }
   }
 
-  return Promise.all(promises);
-};
-
-const usePagePreview = () => {
-  const [previewState, setPreviewState] = React.useState({
-    content_type: "",
-    token: "",
-  });
-  const [previewBlocks, setPreviewBlocks] = React.useState<Block[]>([]);
-
-  React.useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    console.log(
-      "window.location.search",
-      params.get("content_type"),
-      params.get("token"),
-    );
-    // setIsPreview(params.has("content_type") && params.has("token"));
-    setPreviewState({
-      content_type: params.get("content_type") || "",
-      token: params.get("token") || "",
-    });
-  }, []);
-
-  React.useEffect(() => {
-    if (!previewState.token) {
-      return;
-    }
-
-    const fetchData = async () => {
-      const apolloClient = getApolloClient();
-      const response = await queryPagePreview(apolloClient, {
-        contentType: previewState.content_type,
-        token: previewState.token,
-      });
-      setPreviewBlocks(response.data.pagePreview.body);
-      console.log("data", response);
-    };
-
-    fetchData();
-  }, [previewState]);
-
-  return { isPreview: previewState.token !== "", previewBlocks };
+  return {
+    dataFetching: Promise.all(promises),
+    staticProps,
+  };
 };

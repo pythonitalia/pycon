@@ -29,6 +29,11 @@ export const KeynotersSection = ({ title, cta }: Props) => {
       language,
     },
   });
+  const englishText = useTranslatedMessage("global.english");
+  const dateFormatter = new Intl.DateTimeFormat(language, {
+    day: "numeric",
+    month: "long",
+  });
 
   if (!data) {
     return null;
@@ -37,12 +42,6 @@ export const KeynotersSection = ({ title, cta }: Props) => {
   const {
     conference: { keynotes },
   } = data;
-
-  const englishText = useTranslatedMessage("global.english");
-  const dateFormatter = new Intl.DateTimeFormat(language, {
-    day: "numeric",
-    month: "long",
-  });
 
   if (keynotes.length === 0) {
     return null;

@@ -12,24 +12,28 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     prefetchSharedQueries(client, locale),
     queryIndexPage(client, {
       language: locale,
+      hostname: process.env.cmsHostname,
       code: process.env.conferenceCode,
     }),
   ]);
 
-  if (pageQuery.data.cmsPage) {
-    await blocksDataFetching(
-      client,
-      (pageQuery.data.cmsPage as GenericPage).body,
-      locale,
-    );
+  if (!pageQuery.data.cmsPage) {
+    return {
+      notFound: true,
+    };
   }
 
-  const utcHours = new Date().getUTCHours();
-  const cycle = utcHours > 5 && utcHours < 17 ? "day" : "night";
+  const { dataFetching, staticProps } = blocksDataFetching(
+    client,
+    (pageQuery.data.cmsPage as GenericPage).body,
+    locale,
+  );
+
+  await dataFetching;
 
   return addApolloState(client, {
     props: {
-      cycle,
+      blocksProps: staticProps,
     },
   });
 };

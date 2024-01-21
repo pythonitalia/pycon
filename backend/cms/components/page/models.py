@@ -1,3 +1,4 @@
+from cms.components.page.blocks.homepage_hero import HomepageHero
 from cms.components.page.blocks.sponsors_section import SponsorsSection
 from cms.components.home.blocks.home_intro_section import HomeIntroSection
 from cms.components.page.blocks.keynoters_section import KeynotersSection
@@ -35,6 +36,7 @@ class BodyBlock(blocks.StreamBlock):
     news_grid_section = NewsGridSection()
     checkout_section = CheckoutSection()
     live_streaming_section = LiveStreamingSection()
+    homepage_hero = HomepageHero()
 
 
 class GenericPage(HeadlessMixin, Page):

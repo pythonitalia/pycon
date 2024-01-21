@@ -68,8 +68,6 @@ const MyApp = (props) => {
     };
   }, []);
 
-  console.log("pageProps", pageProps);
-
   const enableOlark = false;
 
   if (router.pathname === "/badge") {

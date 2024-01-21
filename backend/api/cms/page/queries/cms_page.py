@@ -12,7 +12,8 @@ def cms_page(
     slug: str,
     language: str,
 ) -> GenericPage | SiteNotFoundError | None:
-    if not (site := Site.objects.filter(hostname=hostname).first()):
+    hostname, port = hostname.split(":") if ":" in hostname else (hostname, 80)
+    if not (site := Site.objects.filter(hostname=hostname, port=port).first()):
         return SiteNotFoundError(message=f"Site `{hostname}` not found")
 
     page = GenericPageModel.objects.in_site(site).filter(slug=slug).first()
@@ -29,4 +30,6 @@ def cms_page(
     if not translated_page:
         return None
 
-    return GenericPage.from_model(translated_page)
+    if not translated_page.live:
+        return None
+    return GenericPage.from_model(translated_page.live_revision.as_object())

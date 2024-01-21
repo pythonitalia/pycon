@@ -1,4 +1,5 @@
 from typing import Self
+from api.cms.page.blocks.homepage_hero import HomepageHero
 from cms.components.page.models import GenericPage as GenericPageModel
 
 import strawberry
@@ -37,6 +38,7 @@ REGISTRY = {
     "news_grid_section": NewsGridSection,
     "checkout_section": CheckoutSection,
     "live_streaming_section": LiveStreamingSection,
+    "homepage_hero": HomepageHero,
 }
 
 Block = strawberry.union(

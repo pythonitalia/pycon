@@ -14,14 +14,14 @@ import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import { GenericPage, queryAllPages, queryPage, usePageQuery } from "~/types";
 
-export const FrontendPage = () => {
+export const FrontendPage = ({ blocksProps }) => {
   const router = useRouter();
   const slug = router.query.slug as string;
   const language = useCurrentLanguage();
 
   const { data } = usePageQuery({
     variables: {
-      code: process.env.conferenceCode,
+      hostname: process.env.cmsHostname,
       language,
       slug,
     },
@@ -35,7 +35,7 @@ export const FrontendPage = () => {
       <MetaTags title={page.title} description={page.searchDescription} />
 
       <BasePage endSeparator={false}>
-        <BlocksRenderer blocks={page.body} />
+        <BlocksRenderer blocks={page.body} blocksProps={blocksProps} />
       </BasePage>
     </Fragment>
   );
@@ -49,7 +49,7 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const [_, pageQuery] = await Promise.all([
     prefetchSharedQueries(client, language),
     queryPage(client, {
-      code: process.env.conferenceCode,
+      hostname: process.env.cmsHostname,
       language,
       slug,
     }),
@@ -61,10 +61,18 @@ export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
     };
   }
 
-  await blocksDataFetching(client, pageQuery.data.cmsPage.body, locale);
+  const { dataFetching, staticProps } = blocksDataFetching(
+    client,
+    pageQuery.data.cmsPage.body,
+    locale,
+  );
+
+  await dataFetching;
 
   return addApolloState(client, {
-    props: {},
+    props: {
+      blocksProps: staticProps,
+    },
   });
 };
 
@@ -79,11 +87,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
     },
   ] = await Promise.all([
     queryAllPages(client, {
-      code: process.env.conferenceCode,
+      hostname: process.env.cmsHostname,
       language: "it",
     }),
     queryAllPages(client, {
-      code: process.env.conferenceCode,
+      hostname: process.env.cmsHostname,
       language: "en",
     }),
   ]);
