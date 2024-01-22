@@ -21,11 +21,20 @@ class NewsArticlePreview:
 @strawberry.field
 def page_preview(
     content_type: str, token: str
-) -> Union[GenericPagePreview, NewsArticlePreview]:
+) -> Union[GenericPagePreview, NewsArticlePreview] | None:
     app_label, model = content_type.split(".")
+    content_type = ContentType.objects.filter(app_label=app_label, model=model).first()
 
-    content_type = ContentType.objects.get(app_label=app_label, model=model)
-    page_preview = PagePreview.objects.get(content_type=content_type, token=token)
+    if not content_type:
+        return None
+
+    page_preview = PagePreview.objects.filter(
+        content_type=content_type, token=token
+    ).first()
+
+    if not page_preview:
+        return None
+
     page = page_preview.as_page()
 
     if not page.id:
