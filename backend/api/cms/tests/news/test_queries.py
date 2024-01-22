@@ -121,6 +121,87 @@ def test_get_news_article(
     }
 
 
+def test_get_news_article_returns_live_revision(
+    graphql_client,
+):
+    user = UserFactory(full_name="marco world")
+    parent = GenericPageFactory()
+    article_1 = NewsArticleFactory(
+        title="Article 1",
+        parent=parent,
+        owner=user,
+        slug="slug",
+        first_published_at=datetime.datetime(2010, 1, 1, 10, 0, 0),
+    )
+    revision_1 = article_1.save_revision()
+    revision_1.publish()
+
+    article_1.title = "Better title"
+    revision_2 = article_1.save_revision(previous_revision=revision_1)
+
+    SiteFactory(hostname="pycon", port=80, root_page=parent)
+
+    query = """query NewsArticle(
+        $hostname: String!,
+        $slug: String!,
+        $language: String!
+    ) {
+        newsArticle(hostname: $hostname, slug: $slug, language: $language) {
+            id
+            title
+            authorFullname
+        }
+    }"""
+
+    response = graphql_client.query(
+        query, variables={"hostname": "pycon", "slug": article_1.slug, "language": "en"}
+    )
+
+    assert response["data"]["newsArticle"]["title"] == "Article 1"
+
+    revision_2.publish()
+
+    response = graphql_client.query(
+        query, variables={"hostname": "pycon", "slug": article_1.slug, "language": "en"}
+    )
+
+    assert response["data"]["newsArticle"]["title"] == "Better title"
+
+
+def test_cannot_get_draft_news_article(
+    graphql_client,
+):
+    user = UserFactory(full_name="marco world")
+    parent = GenericPageFactory()
+    article_1 = NewsArticleFactory(
+        title="Article 1",
+        parent=parent,
+        owner=user,
+        slug="slug",
+        first_published_at=None,
+        live=False,
+    )
+    SiteFactory(hostname="pycon", port=80, root_page=parent)
+
+    query = """query NewsArticle(
+        $hostname: String!,
+        $slug: String!,
+        $language: String!
+    ) {
+        newsArticle(hostname: $hostname, slug: $slug, language: $language) {
+            id
+            title
+            authorFullname
+        }
+    }"""
+
+    response = graphql_client.query(
+        query, variables={"hostname": "pycon", "slug": article_1.slug, "language": "en"}
+    )
+
+    assert response["data"]["newsArticle"] is None
+
+
 def test_get_news_article_another_locale(
     graphql_client,
     locale,

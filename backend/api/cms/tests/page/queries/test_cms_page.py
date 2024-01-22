@@ -57,6 +57,101 @@ def test_page(graphql_client, locale):
     }
 
 
+def test_page_returns_live_revision(graphql_client, locale):
+    parent = GenericPageFactory()
+    page = GenericPageFactory(
+        slug="bubble-tea",
+        locale=locale("en"),
+        parent=parent,
+        title="Bubble",
+        body__0__text_section__title__value="I've Got a Lovely Bunch of Coconuts",
+        body__1__map__longitude=Decimal(3.14),
+    )
+    revision_1 = page.save_revision()
+    revision_1.publish()
+
+    page.refresh_from_db()
+    page.title = "Bubble Tea is very good!"
+    revision_2 = page.save_revision(previous_revision=revision_1)
+
+    SiteFactory(hostname="pycon", port=80, root_page=parent)
+
+    query = """
+    query Page ($hostname: String!, $language: String!, $slug: String!) {
+        cmsPage(hostname: $hostname, language: $language, slug: $slug){
+            ...on GenericPage {
+                title
+                slug
+                body {
+                    ...on TextSection {
+                        title
+                    }
+                    ...on CMSMap {
+                        latitude
+                        longitude
+                    }
+                }
+            }
+        }
+    }
+    """
+
+    response = graphql_client.query(
+        query, variables={"hostname": "pycon", "slug": "bubble-tea", "language": "en"}
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["cmsPage"]["title"] == "Bubble"
+
+    revision_2.publish()
+    response = graphql_client.query(
+        query, variables={"hostname": "pycon", "slug": "bubble-tea", "language": "en"}
+    )
+    assert response["data"]["cmsPage"]["title"] == "Bubble Tea is very good!"
+
+
+def test_cannot_fetch_draft_pages(graphql_client, locale):
+    parent = GenericPageFactory()
+    GenericPageFactory(
+        slug="bubble-tea",
+        locale=locale("en"),
+        parent=parent,
+        title="Bubble",
+        body__0__text_section__title__value="I've Got a Lovely Bunch of Coconuts",
+        body__1__map__longitude=Decimal(3.14),
+        live=False,
+    )
+
+    SiteFactory(hostname="pycon", port=80, root_page=parent)
+
+    query = """
+    query Page ($hostname: String!, $language: String!, $slug: String!) {
+        cmsPage(hostname: $hostname, language: $language, slug: $slug){
+            ...on GenericPage {
+                title
+                slug
+                body {
+                    ...on TextSection {
+                        title
+                    }
+                    ...on CMSMap {
+                        latitude
+                        longitude
+                    }
+                }
+            }
+        }
+    }
+    """
+
+    response = graphql_client.query(
+        query, variables={"hostname": "pycon", "slug": "bubble-tea", "language": "en"}
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["cmsPage"] is None
+
+
 def test_page_for_unknown_locale(graphql_client, locale):
     parent = GenericPageFactory()
     page = GenericPageFactory(
