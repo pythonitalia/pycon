@@ -358,7 +358,7 @@ FLODESK_API_KEY = env("FLODESK_API_KEY", default="")
 FLODESK_SEGMENT_ID = env("FLODESK_SEGMENT_ID", default="")
 
 WAGTAIL_HEADLESS_PREVIEW = {
-    "CLIENT_URLS": {"default": "{SITE_ROOT_URL}"},
+    "CLIENT_URLS": {"default": "{SITE_ROOT_URL}/api/page-preview"},
     "SERVE_BASE_URL": None,
     "REDIRECT_ON_PREVIEW": False,
     "ENFORCE_TRAILING_SLASH": True,
