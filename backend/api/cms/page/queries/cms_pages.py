@@ -13,7 +13,7 @@ def cms_pages(hostname: str, language: str) -> list[GenericPage]:
         return []
 
     return [
-        GenericPage.from_model(page.live_revision.as_object())
+        GenericPage.from_model(page)
         for page in GenericPageModel.objects.in_site(site).filter(
             locale__language_code=language, live=True
         )

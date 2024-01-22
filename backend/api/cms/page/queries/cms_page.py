@@ -30,4 +30,4 @@ def cms_page(
     if not translated_page:
         return None
 
-    return GenericPage.from_model(translated_page.live_revision.as_object())
+    return GenericPage.from_model(translated_page)

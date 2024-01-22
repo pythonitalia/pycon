@@ -26,4 +26,4 @@ def news_article(hostname: str, slug: str, language: str) -> NewsArticle | None:
     if not translated_article:
         return None
 
-    return NewsArticle.from_model(translated_article.live_revision.as_object())
+    return NewsArticle.from_model(translated_article)

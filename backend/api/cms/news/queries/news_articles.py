@@ -13,7 +13,7 @@ def news_articles(hostname: str, language: str) -> list[NewsArticle]:
         raise ValueError(f"Site {hostname} not found")
 
     return [
-        NewsArticle.from_model(article.live_revision.as_object())
+        NewsArticle.from_model(article)
         for article in NewsArticleModel.objects.in_site(site)
         .order_by("-first_published_at")
         .filter(
