@@ -180,13 +180,13 @@
         {% if grant.twitter_handle %}
         <li><a target="_blank" rel="noopener noreferrer" href="https://twitter.com/@{{grant.twitter_handle}}">Twitter</a></li>
         {% endif %}
-        {% if grant.github %}
+        {% if grant.github_handle %}
         <li><a target="_blank" rel="noopener noreferrer" href="https://github.com/{{grant.github_handle}}">GitHub</a></li>
         {% endif %}
-        {% if grant.linkedin %}
+        {% if grant.linkedin_url %}
         <li><a target="_blank" rel="noopener noreferrer" href="{{grant.linkedin_url}}">Linkedin</a></li>
         {% endif %}
-        {% if grant.mastodon %}
+        {% if grant.mastodon_handle %}
         <li><a target="_blank" rel="noopener noreferrer" href="{{grant.mastodon_handle}}">Mastodon</a></li>
         {% endif %}
       </ul>
