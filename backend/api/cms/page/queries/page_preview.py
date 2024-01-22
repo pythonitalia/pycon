@@ -45,5 +45,3 @@ def page_preview(
             return GenericPagePreview(generic_page=GenericPage.from_model(page))
         case NewsArticleModel():
             return NewsArticlePreview(news_article=NewsArticle.from_model(page))
-        case _:
-            raise ValueError(f"Unknown content type {content_type}")
