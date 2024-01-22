@@ -109,6 +109,12 @@ def test_page_returns_live_revision(graphql_client, locale):
     )
     assert response["data"]["cmsPage"]["title"] == "Bubble Tea is very good!"
 
+    revision_1.publish()
+    response = graphql_client.query(
+        query, variables={"hostname": "pycon", "slug": "bubble-tea", "language": "en"}
+    )
+    assert response["data"]["cmsPage"]["title"] == "Bubble"
+
 
 def test_cannot_fetch_draft_pages(graphql_client, locale):
     parent = GenericPageFactory()
