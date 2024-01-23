@@ -244,10 +244,16 @@
                     <p>{{ item.user_private_comment }}</p>
                   {% endif %}
                 </td>
-
-                <td>{{ item.ranking|linebreaksbr }}
-                  </td>
-
+                <td>
+                  {% for submission in item.submissions.all %}
+                      {% for ranking in submission.rankings.all %}
+                          {{ ranking.tag.name }}: {{ ranking.rank }} / {{ ranking.total_submissions_per_tag }}<br>
+                      {% endfor %}
+                  {% empty %}
+                  -
+                      <!-- Display nothing or some placeholder if there are no submissions -->
+                  {% endfor %}
+              </td>
                 <td>
                   {{ item.get_status_display }}
                 </td>
