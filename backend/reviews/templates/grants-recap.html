@@ -95,6 +95,10 @@
     list-style-position: inside;
   }
 
+  .results-table .votes-list {
+    max-width: 800px;
+  }
+
   .results-item ul li {
     list-style: none;
   }
@@ -258,7 +262,7 @@
 
                 <td>{{ item.score }}</td>
 
-                <td>
+                <td class="votes-list">
                   <ul>
                     {% for reviewer in item.userreview_set.all %}
                     <li>
