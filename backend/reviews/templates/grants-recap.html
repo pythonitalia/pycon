@@ -95,12 +95,38 @@
     list-style-position: inside;
   }
 
+  .results-item {
+    max-width: 500px;
+  }
+
   .results-item ul li {
     list-style: none;
   }
 
   .hidden {
     display: none;
+  }
+
+  .grant-proposal-ranking {
+    display: inline;
+  }
+
+  .grant-proposal-ranking li {
+    display: inline;
+  }
+
+  .grant-proposal-ranking li:after {
+    content: ',';
+  }
+  .grant-proposal-ranking li:last-child:after {
+    display: none;
+  }
+
+  ul.proposals-ranking {
+    margin-left: 30px;
+  }
+  ul.proposals-ranking li {
+    list-style: square;
   }
 </style>
 <script>
@@ -177,7 +203,7 @@
                     </li>
                     <li>
                       <strong>Travelling From:</strong>
-                      <span>{{item.travelling_from}}</span>
+                      <span>{{item.get_travelling_from_display}}</span>
                     </li>
                     <li>
                       <strong>Country type:</strong>
@@ -209,9 +235,28 @@
                       <span>{{item.get_interested_in_volunteering_display}}</span>
                     </li>
                     <li>
-                      <strong>Is a speaker?</strong>
-                      <span>{{item.is_a_speaker|yesno}}</span>
+                      <strong>Has sent a proposal?</strong>
+                      <span>{{item.has_sent_a_proposal|yesno}}</span>
                     </li>
+                    {% if item.has_sent_a_proposal %}
+                      <li>
+                        <strong>Proposals Ranking:</strong>
+                        <ul class="proposals-ranking">
+                          {% for proposal_id in item.proposals_ids %}
+                            {% with proposal=proposals|get_item:proposal_id %}
+                              <li>
+                                <strong><a target="_blank" href="{% url 'admin:submissions_submission_change' proposal.id %}">{{proposal.title}}:</a></strong>
+                                <ul class="grant-proposal-ranking">
+                                  {% for ranking in proposal.rankings.all %}
+                                      <li>{{ ranking.tag.name }} {{ ranking.rank }}/{{ ranking.total_submissions_per_tag }}</li>
+                                  {% endfor %}
+                                </ul>
+                              </li>
+                            {% endwith %}
+                          {% endfor %}
+                        </ul>
+                      </li>
+                    {% endif %}
                   </ul>
                 </td>
 
@@ -235,10 +280,6 @@
                       </a>
                     </li>
                   </ul>
-                  {% if item.user_private_comment %}
-                    <strong>Your private comment</strong>
-                    <p>{{ item.user_private_comment }}</p>
-                  {% endif %}
                 </td>
 
                 <td>

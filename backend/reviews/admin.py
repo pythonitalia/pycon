@@ -1,5 +1,7 @@
+from django.contrib.postgres.expressions import ArraySubquery
 from django.db.models.expressions import ExpressionWrapper
 from django.db.models import FloatField
+from django.db.models.functions import Cast
 from users.admin_mixins import ConferencePermissionMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q, Exists
@@ -49,7 +51,7 @@ class SubmitVoteForm(forms.Form):
 
 @admin.register(UserReview)
 class UserReviewAdmin(admin.ModelAdmin):
-    list_display = ("edit_vote", "proposal", "score", "review_session")
+    list_display = ("edit_vote", "object", "score", "review_session")
     list_filter = ("review_session",)
     list_display_links = ()
     autocomplete_fields = (
@@ -57,6 +59,9 @@ class UserReviewAdmin(admin.ModelAdmin):
         "proposal",
         "grant",
     )
+
+    def object(self, obj):
+        return obj.get_object()
 
     def edit_vote(self, obj):
         url = reverse(
@@ -70,7 +75,7 @@ class UserReviewAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        return qs.filter(user_id=request.user.id)
+        return qs.filter(user_id=request.user.id).prefetch_related("proposal", "grant")
 
 
 class ReviewSessionForm(forms.ModelForm):
@@ -280,30 +285,37 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
         items = (
             review_session.conference.grants.annotate(
-                total_score=Sum(
-                    "userreview__score__numeric_value",
-                    filter=Q(userreview__review_session_id=review_session_id),
+                total_score=Cast(
+                    Sum(
+                        "userreview__score__numeric_value",
+                        filter=Q(userreview__review_session_id=review_session_id),
+                    ),
+                    output_field=FloatField(),
                 ),
-                vote_count=Count(
-                    "userreview",
-                    filter=Q(userreview__review_session_id=review_session_id),
+                vote_count=Cast(
+                    Count(
+                        "userreview",
+                        filter=Q(userreview__review_session_id=review_session_id),
+                    ),
+                    output_field=FloatField(),
                 ),
                 score=ExpressionWrapper(
                     F("total_score") / F("vote_count"),
                     output_field=FloatField(),
                 ),
-                is_a_speaker=Exists(
+                has_sent_a_proposal=Exists(
                     Submission.objects.non_cancelled().filter(
                         speaker_id=OuterRef("user_id"),
                         conference_id=review_session.conference_id,
                     )
                 ),
-                user_private_comment=Subquery(
-                    UserReview.objects.filter(
-                        review_session_id=review_session_id,
-                        grant_id=OuterRef("id"),
-                        user_id=request.user.id,
-                    ).values("private_comment")[:1]
+                proposals_ids=ArraySubquery(
+                    Submission.objects.non_cancelled()
+                    .filter(
+                        speaker_id=OuterRef("user_id"),
+                        conference_id=review_session.conference_id,
+                    )
+                    .values("id")
                 ),
             )
             .order_by(F("score").desc(nulls_last=True))
@@ -319,10 +331,21 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             .all()
         )
 
+        proposals = {
+            submission.id: submission
+            for submission in Submission.objects.non_cancelled()
+            .filter(
+                conference_id=review_session.conference_id,
+                speaker_id__in=items.values_list("user_id"),
+            )
+            .prefetch_related("rankings", "rankings__tag")
+        }
+
         context = dict(
             self.admin_site.each_context(request),
             request=request,
             items=items,
+            proposals=proposals,
             review_session_id=review_session_id,
             review_session_repr=str(review_session),
             all_statuses=[
@@ -592,7 +615,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         context = dict(
             self.admin_site.each_context(request),
             grant=grant,
-            is_speaker=Submission.objects.non_cancelled()
+            has_sent_proposal=Submission.objects.non_cancelled()
             .filter(
                 speaker_id=grant.user_id,
                 conference_id=grant.conference_id,

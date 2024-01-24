@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from grants.models import Grant
-from reviews.models import ReviewSession
+from reviews.models import ReviewSession, UserReview
 from submissions.models import Submission
 
 
@@ -23,6 +23,7 @@ class Command(BaseCommand):
                 self.get_permission("view_grant", Grant),
                 self.get_permission("view_reviewsession", ReviewSession),
                 self.get_permission("review_reviewsession", ReviewSession),
+                self.get_permission("view_userreview", UserReview),
             ]
         )
 
@@ -36,6 +37,7 @@ class Command(BaseCommand):
                 self.get_permission("view_submission", Submission),
                 self.get_permission("view_reviewsession", ReviewSession),
                 self.get_permission("review_reviewsession", ReviewSession),
+                self.get_permission("view_userreview", UserReview),
             ]
         )
 
