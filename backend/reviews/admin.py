@@ -496,16 +496,16 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
             return response
         elif request.method == "POST":
-            if not review_session.can_review_items:
-                messages.error(request, "You cannot vote yet/anymore.")
-                return redirect(
-                    reverse(
-                        "admin:reviews_reviewsession_change",
-                        kwargs={
-                            "object_id": review_session_id,
-                        },
-                    )
-                )
+            # if not review_session.can_review_items:
+            #     messages.error(request, "You cannot vote yet/anymore.")
+            #     return redirect(
+            #         reverse(
+            #             "admin:reviews_reviewsession_change",
+            #             kwargs={
+            #                 "object_id": review_session_id,
+            #             },
+            #         )
+            #     )
 
             form = SubmitVoteForm(request.POST)
             form.is_valid()
