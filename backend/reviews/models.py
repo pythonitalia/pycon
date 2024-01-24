@@ -132,3 +132,9 @@ class UserReview(TimeStampedModel):
     @property
     def object_id(self):
         return self.proposal_id or self.grant_id
+
+    def get_object(self):
+        if self.proposal_id:
+            return self.proposal
+
+        return self.grant

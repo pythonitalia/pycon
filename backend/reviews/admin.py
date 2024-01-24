@@ -51,7 +51,7 @@ class SubmitVoteForm(forms.Form):
 
 @admin.register(UserReview)
 class UserReviewAdmin(admin.ModelAdmin):
-    list_display = ("edit_vote", "proposal", "score", "review_session")
+    list_display = ("edit_vote", "object", "score", "review_session")
     list_filter = ("review_session",)
     list_display_links = ()
     autocomplete_fields = (
@@ -59,6 +59,9 @@ class UserReviewAdmin(admin.ModelAdmin):
         "proposal",
         "grant",
     )
+
+    def object(self, obj):
+        return obj.get_object()
 
     def edit_vote(self, obj):
         url = reverse(
@@ -72,7 +75,7 @@ class UserReviewAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        return qs.filter(user_id=request.user.id)
+        return qs.filter(user_id=request.user.id).prefetch_related("proposal", "grant")
 
 
 class ReviewSessionForm(forms.ModelForm):
