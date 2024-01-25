@@ -74,7 +74,9 @@ def register(info: Info, input: RegisterInput) -> RegisterResult:
     if validation_result := input.validate():
         return validation_result
 
-    if UserModel.objects.filter(email=input.email).exists():
+    if UserModel.objects.filter(
+        email=UserModel.objects.normalize_email(input.email)
+    ).exists():
         return EmailAlreadyUsed()
 
     user = UserModel.objects.create_user(
