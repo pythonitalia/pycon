@@ -28,6 +28,37 @@ def test_login(full_response_graphql_client):
     assert "pythonitalia_sessionid" in response.cookies
 
 
+@pytest.mark.parametrize(
+    "attempt_email",
+    (
+        "test@example.org",
+        "Test@example.org",
+        "TEst@Example.org",
+        "test@example.ORG",
+    ),
+)
+def test_login_is_case_insensitive(full_response_graphql_client, attempt_email):
+    user = UserFactory(email="test@example.org", password="test")
+
+    body, response = full_response_graphql_client.query(
+        """mutation($input: LoginInput!) {
+            login(input: $input) {
+                __typename
+                ... on LoginSuccess {
+                    user {
+                        id
+                    }
+                }
+            }
+        }""",
+        variables={"input": {"email": attempt_email, "password": "test"}},
+    )
+
+    assert body["data"]["login"]["__typename"] == "LoginSuccess"
+    assert body["data"]["login"]["user"]["id"] == str(user.id)
+    assert "pythonitalia_sessionid" in response.cookies
+
+
 def test_logins_fails_with_wrong_password(graphql_client):
     user = UserFactory(email="test@example.org", password="test")
 
