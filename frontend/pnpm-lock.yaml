@@ -54,8 +54,8 @@ dependencies:
     specifier: ^10.0.0
     version: 10.2.3(@mdx-js/loader@1.6.22)(@mdx-js/react@1.6.22)
   '@python-italia/pycon-styleguide':
-    specifier: 0.1.182
-    version: 0.1.182(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.2.0)(react-use@17.4.0)(react@18.2.0)(typescript@4.9.5)
+    specifier: 0.1.183-rc018a49e2988d075a3a056604a9aba58f38566aa7
+    version: 0.1.183-rc018a49e2988d075a3a056604a9aba58f38566aa7(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.2.0)(react-use@17.4.0)(react@18.2.0)(typescript@4.9.5)
   '@sentry/nextjs':
     specifier: ^7.91.0
     version: 7.91.0(next@14.0.4)(react@18.2.0)
@@ -2516,8 +2516,8 @@ packages:
       - supports-color
     dev: true
 
-  /@python-italia/pycon-styleguide@0.1.182(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.2.0)(react-use@17.4.0)(react@18.2.0)(typescript@4.9.5):
-    resolution: {integrity: sha512-a1Gh+De0BBf7m0L/rRkhRU0RfV6mVLn5HKxcu+bVP444oi5Tt4JF+Tmftym1mtlLTShjvwXmH3IgukIj/EijSg==}
+  /@python-italia/pycon-styleguide@0.1.183-rc018a49e2988d075a3a056604a9aba58f38566aa7(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.2.0)(react-use@17.4.0)(react@18.2.0)(typescript@4.9.5):
+    resolution: {integrity: sha512-KMTc3PZ90IANB1DZvzAOgrTZ/jEdc2L2Y+IsU9QTtyTWgPA4FvKYn0ZHmR97Inw8HH52vI1RPD8NtsZgQNGpxQ==}
     peerDependencies:
       clsx: ^1.1.1
       date-fns: ^2.28.0

@@ -104,6 +104,7 @@ SponsorsSection.dataFetching = (client) => {
 const getSponsorsPerRow = (level: string) => {
   switch (level) {
     case "Keystone":
+      return 1;
     case "Gold":
     case "Silver":
       return 2;
