@@ -11,16 +11,12 @@ export const Default = () => (
     tiers={[
       {
         name: "Keystone",
+        cols: 1,
         sponsors: [
           {
-            name: "Google",
+            name: "Example",
             logo: "https://cdn.pycon.it/sponsors/cloudamqp-by-84codes-original.png",
-            url: "https://google.com",
-          },
-          {
-            name: "Facebook",
-            logo: "https://cdn.pycon.it/sponsors/fiscozen.png",
-            url: "https://facebook.com",
+            url: "https://example.org",
           },
         ],
       },
@@ -28,14 +24,14 @@ export const Default = () => (
         name: "Gold",
         sponsors: [
           {
-            name: "Google",
+            name: "Example",
             logo: "https://cdn.pycon.it/sponsors/cloudamqp-by-84codes-original.png",
-            url: "https://google.com",
+            url: "https://example.org",
           },
           {
-            name: "Facebook",
+            name: "Example",
             logo: "https://cdn.pycon.it/sponsors/Manninglogo_outline.png",
-            url: "https://facebook.com",
+            url: "https://example.org",
           },
         ],
       },
@@ -43,9 +39,9 @@ export const Default = () => (
         name: "Silver",
         sponsors: [
           {
-            name: "Google",
+            name: "Example",
             logo: "https://cdn.pycon.it/sponsors/lamanna.png",
-            url: "https://google.com",
+            url: "https://example.org",
           },
         ],
       },
@@ -63,17 +59,12 @@ export const InGrid = () => (
         tiers={[
           {
             name: "Keystone",
-            cols: 2,
+            cols: 1,
             sponsors: [
               {
-                name: "Google",
-                logo: "https://cdn.pycon.it/sponsors/cloudamqp-by-84codes-original.png",
-                url: "https://google.com",
-              },
-              {
-                name: "Facebook",
-                logo: "https://cdn.pycon.it/sponsors/fiscozen.png",
-                url: "https://facebook.com",
+                name: "Example",
+                logo: "https://cdn.pycon.it/sponsors/421478580cba88069f8c12200b032dc1_1.png",
+                url: "https://example.org",
               },
             ],
           },
@@ -82,14 +73,14 @@ export const InGrid = () => (
             cols: 2,
             sponsors: [
               {
-                name: "Google",
+                name: "Example",
                 logo: "https://cdn.pycon.it/sponsors/cloudamqp-by-84codes-original.png",
-                url: "https://google.com",
+                url: "https://example.org",
               },
               {
-                name: "Facebook",
+                name: "Example",
                 logo: "https://cdn.pycon.it/sponsors/Manninglogo_outline.png",
-                url: "https://facebook.com",
+                url: "https://example.org",
               },
             ],
           },
@@ -98,29 +89,29 @@ export const InGrid = () => (
             cols: 3,
             sponsors: [
               {
-                name: "Google",
+                name: "Example",
                 logo: "https://cdn.pycon.it/sponsors/lamanna.png",
-                url: "https://google.com",
+                url: "https://example.org",
               },
               {
-                name: "Google",
+                name: "Example",
                 logo: "https://cdn.pycon.it/sponsors/lamanna.png",
-                url: "https://google.com",
+                url: "https://example.org",
               },
               {
-                name: "Google",
+                name: "Example",
                 logo: "https://cdn.pycon.it/sponsors/Manninglogo_outline.png",
-                url: "https://google.com",
+                url: "https://example.org",
               },
               {
-                name: "Google",
+                name: "Example",
                 logo: "https://cdn.pycon.it/sponsors/lamanna.png",
-                url: "https://google.com",
+                url: "https://example.org",
               },
               {
-                name: "Google",
+                name: "Example",
                 logo: "https://cdn.pycon.it/sponsors/lamanna.png",
-                url: "https://google.com",
+                url: "https://example.org",
               },
             ],
           },
