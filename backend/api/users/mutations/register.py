@@ -74,7 +74,8 @@ def register(info: Info, input: RegisterInput) -> RegisterResult:
     if validation_result := input.validate():
         return validation_result
 
-    if UserModel.objects.filter(email=input.email).exists():
+    user_email = UserModel.objects.normalize_email(input.email)
+    if UserModel.objects.filter(email=user_email).exists():
         return EmailAlreadyUsed()
 
     user = UserModel.objects.create_user(
@@ -82,7 +83,7 @@ def register(info: Info, input: RegisterInput) -> RegisterResult:
         password=input.password,
         full_name=input.fullname,
     )
-    user = authenticate(email=input.email, password=input.password)
+    user = authenticate(email=user_email, password=input.password)
     if not user:
         raise Exception("Something went wrong")
 

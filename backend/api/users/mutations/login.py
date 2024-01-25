@@ -1,3 +1,4 @@
+from users.models import User as UserModel
 import logging
 import strawberry
 from django.contrib.auth import (
@@ -56,7 +57,10 @@ class LoginInput:
         return errors.if_has_errors
 
 
-LoginResult = Annotated[Union[LoginSuccess, LoginErrors, WrongEmailOrPassword], strawberry.union(name="LoginResult")]
+LoginResult = Annotated[
+    Union[LoginSuccess, LoginErrors, WrongEmailOrPassword],
+    strawberry.union(name="LoginResult"),
+]
 
 
 @strawberry.mutation()
@@ -66,7 +70,7 @@ def login(info: Info, input: LoginInput) -> LoginResult:
 
     logger.info("Login attempt for email=%s", input.email)
 
-    email = input.email
+    email = UserModel.objects.normalize_email(input.email)
     password = input.password
 
     user = authenticate(email=email, password=password)
