@@ -36,15 +36,15 @@ const handler = async (req: NextRequest) => {
   const slug = searchParams.get("slug");
 
   const {
-    data: { newsArticle, blogPost },
+    data: { newsArticle },
   } = await queryNewsArticle(client, {
     slug,
     language,
-    code: process.env.conferenceCode,
+    hostname: process.env.cmsHostname,
   });
 
-  const title = newsArticle?.title ?? blogPost?.title;
-  const excerpt = newsArticle?.excerpt ?? blogPost?.excerpt;
+  const title = newsArticle?.title;
+  const excerpt = newsArticle?.excerpt;
 
   return new ImageResponse(
     (
