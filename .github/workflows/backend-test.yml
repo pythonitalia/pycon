@@ -41,11 +41,13 @@ jobs:
 
       - name: Cache PDM
         uses: actions/cache@v4
+        id: cache-deps
         with:
           path: backend/.venv
           key: pdm-${{ hashFiles('**/pdm.lock') }}-1
 
       - name: Install python dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         run: pdm install
 
       - name: Install codecov
