@@ -24,7 +24,7 @@ jobs:
       - name: Cache PDM
         uses: actions/cache@v4
         with:
-          path: ./.venv
+          path: backend/.venv
           key: pdm-${{ hashFiles('**/pdm.lock') }}-2
 
       - name: Install python dependencies
