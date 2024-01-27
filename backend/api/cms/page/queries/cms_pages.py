@@ -1,5 +1,5 @@
+from api.cms.utils import get_site_by_host
 import strawberry
-from wagtail.models import Site
 from cms.components.page.models import GenericPage as GenericPageModel
 
 from api.cms.page.types import GenericPage
@@ -7,9 +7,9 @@ from api.cms.page.types import GenericPage
 
 @strawberry.field
 def cms_pages(hostname: str, language: str) -> list[GenericPage]:
-    hostname, port = hostname.split(":") if ":" in hostname else (hostname, 80)
+    site = get_site_by_host(hostname)
 
-    if not (site := Site.objects.filter(hostname=hostname, port=port).first()):
+    if not site:
         return []
 
     return [
