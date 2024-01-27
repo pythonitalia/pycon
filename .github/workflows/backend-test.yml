@@ -13,7 +13,9 @@ on:
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
-    working-directory: backend
+    defaults:
+      run:
+        working-directory: backend
 
     services:
       postgres:

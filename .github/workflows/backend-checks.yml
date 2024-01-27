@@ -10,7 +10,10 @@ on:
 jobs:
   check-migrations:
     runs-on: ubuntu-latest
-    working-directory: backend
+    defaults:
+      run:
+        working-directory: backend
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
