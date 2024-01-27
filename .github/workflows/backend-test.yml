@@ -54,7 +54,7 @@ jobs:
         working-directory: backend
         run: |
           set +e
-          OUTPUT=$(pdm run pytest --cov-report xml --cov=. --cov-fail-under 80)
+          OUTPUT=$(pdm run pytest --cov-report xml --cov=. --cov-fail-under 80 --durations 10)
           STATUS=$?
           echo "$OUTPUT"
           cd ..
