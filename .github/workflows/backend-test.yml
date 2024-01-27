@@ -13,6 +13,7 @@ on:
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
+    working-directory: backend
 
     services:
       postgres:
@@ -40,18 +41,15 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ./.venv
-          key: pdm-${{ hashFiles('**/pdm.lock') }}-1
+          key: pdm-${{ hashFiles('./pdm.lock') }}-1
 
       - name: Install python dependencies
-        working-directory: backend
         run: pdm install
 
       - name: Install codecov
-        working-directory: backend
         run: pip install codecov
 
       - name: pytest
-        working-directory: backend
         run: |
           set +e
           CPUS=$(nproc --all)
