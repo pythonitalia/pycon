@@ -4,6 +4,9 @@ from typing import Any, Dict, Optional
 
 import pytest
 from django.test import Client as DjangoTestClient
+from wagtail.models import Locale
+from wagtail.coreutils import get_supported_content_language_variant
+from django.conf import settings
 
 
 def query_wrapper(original):
@@ -82,3 +85,16 @@ def admin_graphql_client(graphql_client):
     admin_user = UserFactory(is_staff=True, is_superuser=True)
     graphql_client.force_login(admin_user)
     return graphql_client
+
+
+@pytest.fixture(autouse=True)
+def create_languages(db):
+    from languages.models import Language
+    from languages.languages import LANGUAGES
+
+    for language in LANGUAGES:
+        Language.objects.create(name=language["English"], code=language["alpha2"])
+
+    Locale.objects.create(
+        language_code=get_supported_content_language_variant(settings.LANGUAGE_CODE),
+    )

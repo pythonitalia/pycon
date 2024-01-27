@@ -97,14 +97,12 @@ def test_voting_open_and_user_can_vote(
     assert data["submission"]["type"]["name"] == submission.type.name
     assert data["submission"]["duration"]["name"] == submission.duration.name
     assert data["submission"]["audienceLevel"]["name"] == submission.audience_level.name
-    assert data["submission"]["languages"] == [
-        {"code": "it"},
-        {"code": "en"},
-    ]
-    assert data["submission"]["tags"] == [
-        {"name": "python"},
-        {"name": "GraphQL"},
-    ]
+    assert len(data["submission"]["languages"]) == 2
+    assert {"code": "it"} in data["submission"]["languages"]
+    assert {"code": "en"} in data["submission"]["languages"]
+    assert len(data["submission"]["tags"]) == 2
+    assert {"name": "python"} in data["submission"]["tags"]
+    assert {"name": "GraphQL"} in data["submission"]["tags"]
 
     # ❌ private
     assert data["submission"]["speakerLevel"] is None
@@ -157,14 +155,12 @@ def test_accepted_submission_user_can_see_public_and_restricted_fields(
     assert data["submission"]["type"]["name"] == submission.type.name
     assert data["submission"]["duration"]["name"] == submission.duration.name
     assert data["submission"]["audienceLevel"]["name"] == submission.audience_level.name
-    assert data["submission"]["languages"] == [
-        {"code": "it"},
-        {"code": "en"},
-    ]
-    assert data["submission"]["tags"] == [
-        {"name": "python"},
-        {"name": "GraphQL"},
-    ]
+    assert len(data["submission"]["languages"]) == 2
+    assert {"code": "it"} in data["submission"]["languages"]
+    assert {"code": "en"} in data["submission"]["languages"]
+    assert len(data["submission"]["tags"]) == 2
+    assert {"name": "python"} in data["submission"]["tags"]
+    assert {"name": "GraphQL"} in data["submission"]["tags"]
 
     # ❌ private
     assert data["submission"]["speakerLevel"] is None
@@ -191,14 +187,12 @@ def test_admin_user_can_see_everything(
     assert data["submission"]["type"]["name"] == submission.type.name
     assert data["submission"]["duration"]["name"] == submission.duration.name
     assert data["submission"]["audienceLevel"]["name"] == submission.audience_level.name
-    assert data["submission"]["languages"] == [
-        {"code": "it"},
-        {"code": "en"},
-    ]
-    assert data["submission"]["tags"] == [
-        {"name": "python"},
-        {"name": "GraphQL"},
-    ]
+    assert len(data["submission"]["languages"]) == 2
+    assert {"code": "it"} in data["submission"]["languages"]
+    assert {"code": "en"} in data["submission"]["languages"]
+    assert len(data["submission"]["tags"]) == 2
+    assert {"name": "python"} in data["submission"]["tags"]
+    assert {"name": "GraphQL"} in data["submission"]["tags"]
 
     # ✔️ private
     assert data["submission"]["speakerLevel"] == submission.speaker_level
@@ -223,14 +217,12 @@ def test_submission_author_can_see_everything(graphql_client, submission_factory
     assert data["submission"]["type"]["name"] == submission.type.name
     assert data["submission"]["duration"]["name"] == submission.duration.name
     assert data["submission"]["audienceLevel"]["name"] == submission.audience_level.name
-    assert data["submission"]["languages"] == [
-        {"code": "it"},
-        {"code": "en"},
-    ]
-    assert data["submission"]["tags"] == [
-        {"name": "python"},
-        {"name": "GraphQL"},
-    ]
+    assert len(data["submission"]["languages"]) == 2
+    assert {"code": "it"} in data["submission"]["languages"]
+    assert {"code": "en"} in data["submission"]["languages"]
+    assert len(data["submission"]["tags"]) == 2
+    assert {"name": "python"} in data["submission"]["tags"]
+    assert {"name": "GraphQL"} in data["submission"]["tags"]
 
     # ✔️ private
     assert data["submission"]["speakerLevel"] == submission.speaker_level
@@ -263,14 +255,12 @@ def test_ranked_submission_user_can_see_public_and_restricted_fields(
     assert data["submission"]["type"]["name"] == submission.type.name
     assert data["submission"]["duration"]["name"] == submission.duration.name
     assert data["submission"]["audienceLevel"]["name"] == submission.audience_level.name
-    assert data["submission"]["languages"] == [
-        {"code": "it"},
-        {"code": "en"},
-    ]
-    assert data["submission"]["tags"] == [
-        {"name": "python"},
-        {"name": "GraphQL"},
-    ]
+    assert len(data["submission"]["languages"]) == 2
+    assert {"code": "it"} in data["submission"]["languages"]
+    assert {"code": "en"} in data["submission"]["languages"]
+    assert len(data["submission"]["tags"]) == 2
+    assert {"name": "python"} in data["submission"]["tags"]
+    assert {"name": "GraphQL"} in data["submission"]["tags"]
 
     # ❌ private
     assert data["submission"]["speakerLevel"] is None

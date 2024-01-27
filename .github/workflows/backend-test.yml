@@ -13,6 +13,9 @@ on:
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
 
     services:
       postgres:
@@ -37,24 +40,24 @@ jobs:
       - run: pip install pdm==2.10.4
 
       - name: Cache PDM
-        uses: actions/cache@v1
+        uses: actions/cache@v4
+        id: cache-deps
         with:
-          path: ./.venv
+          path: backend/.venv
           key: pdm-${{ hashFiles('**/pdm.lock') }}-1
 
       - name: Install python dependencies
-        working-directory: backend
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         run: pdm install
 
       - name: Install codecov
-        working-directory: backend
         run: pip install codecov
 
       - name: pytest
-        working-directory: backend
         run: |
           set +e
-          OUTPUT=$(pdm run pytest --cov-report xml --cov=. --cov-fail-under 80)
+          CPUS=$(nproc --all)
+          OUTPUT=$(pdm run pytest --cov-report xml --cov=. --cov-fail-under 80 --durations 10 -n $CPUS)
           STATUS=$?
           echo "$OUTPUT"
           cd ..

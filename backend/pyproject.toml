@@ -21,10 +21,15 @@ dev = [
     "rich<14.0.0,>=13.6.0",
     "libcst<2.0.0,>=1.1.0",
     "wagtail-factories<5.0.0,>=4.1.0",
+    "pytest-xdist>=3.5.0",
 ]
 
 [tool.pdm.build]
 includes = []
+
+[tool.pdm.scripts]
+update-lock = "pdm lock -G :all"
+
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
@@ -98,9 +103,6 @@ name = "backend"
 version = "0.1.0"
 description = "PyCon Italia backend"
 license = {text = "MIT"}
-
-[tool.pdm.scripts]
-update-lock = "pdm lock -G :all"
 
 [project.optional-dependencies]
 lambda = [
