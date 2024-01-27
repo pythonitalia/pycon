@@ -1,5 +1,9 @@
+import pytest
 from api.cms.utils import get_site_by_host
 from wagtail_factories import SiteFactory
+
+
+pytestmark = pytest.mark.django_db
 
 
 def test_hostname_no_port():
