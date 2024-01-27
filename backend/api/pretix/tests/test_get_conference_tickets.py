@@ -8,8 +8,10 @@ from api.pretix.query import get_conference_tickets
 from api.pretix.types import Option
 
 
+pytestmark = pytest.mark.django_db
+
+
 @override_settings(PRETIX_API="https://pretix/api/")
-@pytest.mark.django_db
 def test_get_conference_tickets_no_tickets(conference, requests_mock):
     requests_mock.get(
         "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
@@ -32,7 +34,6 @@ def test_get_conference_tickets_no_tickets(conference, requests_mock):
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-@pytest.mark.django_db
 def test_get_conference_tickets(
     conference,
     requests_mock,
@@ -96,7 +97,6 @@ def test_get_conference_tickets(
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-@pytest.mark.django_db
 def test_get_conference_tickets_hides_when_available_from_is_future(
     conference,
     requests_mock,
@@ -132,7 +132,6 @@ def test_get_conference_tickets_hides_when_available_from_is_future(
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-@pytest.mark.django_db
 def test_get_conference_tickets_hides_when_available_until_is_past(
     conference,
     requests_mock,
