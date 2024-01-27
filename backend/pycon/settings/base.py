@@ -361,5 +361,5 @@ WAGTAIL_HEADLESS_PREVIEW = {
     "CLIENT_URLS": {"default": "{SITE_ROOT_URL}/api/page-preview"},
     "SERVE_BASE_URL": None,
     "REDIRECT_ON_PREVIEW": False,
-    "ENFORCE_TRAILING_SLASH": True,
+    "ENFORCE_TRAILING_SLASH": False,
 }
