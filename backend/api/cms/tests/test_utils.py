@@ -7,17 +7,16 @@ pytestmark = pytest.mark.django_db
 
 
 def test_hostname_no_port():
-    site_1 = SiteFactory(hostname="localhost", port=80)
+    site_1 = SiteFactory(hostname="test.pycon.it", port=80)
     SiteFactory(hostname="localhost", port=81)
     SiteFactory(hostname="example.org", port=80)
 
-    selected_site = get_site_by_host("localhost")
+    selected_site = get_site_by_host("test.pycon.it")
 
     assert selected_site.id == site_1.id
 
 
 def test_hostname_with_port():
-    SiteFactory(hostname="localhost", port=80)
     site_2 = SiteFactory(hostname="localhost", port=81)
     SiteFactory(hostname="example.org", port=80)
 
@@ -27,14 +26,13 @@ def test_hostname_with_port():
 
 
 def test_hostname_with_no_matching_site():
-    SiteFactory(hostname="localhost", port=80)
     SiteFactory(hostname="localhost", port=81)
     SiteFactory(hostname="example.org", port=80)
 
     selected_site = get_site_by_host("localhost:443")
 
-    assert selected_site.id is None
+    assert selected_site is None
 
     selected_site = get_site_by_host("example.org:120")
 
-    assert selected_site.id is None
+    assert selected_site is None
