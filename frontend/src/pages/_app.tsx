@@ -78,8 +78,6 @@ const MyApp = (props) => {
       </Flex>
     );
   }
-  console.log("!!! modalId", modalId);
-
   return (
     <ThemeProvider theme={theme}>
       {enableOlark && (

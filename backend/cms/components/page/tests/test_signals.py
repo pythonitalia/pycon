@@ -33,3 +33,12 @@ def test_revalidate_vercel_frontend(mock_task):
     revalidate_vercel_frontend("test_revalidate_vercel_frontend", instance=page)
 
     mock_task.delay.assert_called_with(page_id=page.id)
+
+
+@mock.patch("cms.components.page.signals.revalidate_vercel_frontend_task")
+def test_revalidate_vercel_frontend_page_with_no_site(mock_task):
+    page = PageFactory()
+
+    revalidate_vercel_frontend("test_revalidate_vercel_frontend", instance=page)
+
+    mock_task.delay.assert_not_called()

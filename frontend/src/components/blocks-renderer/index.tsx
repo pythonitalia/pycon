@@ -6,6 +6,7 @@ import { Block } from "~/types";
 
 import { CheckoutSection } from "../blocks/checkout-section";
 import { HomeIntroSection } from "../blocks/home-intro-section";
+import { HomepageHero } from "../blocks/homepage-hero";
 import { InformationSection } from "../blocks/information-section";
 import { KeynotersSection } from "../blocks/keynotes-section";
 import { LiveStreamingSection } from "../blocks/live-streaming-section";
@@ -34,21 +35,27 @@ const REGISTRY: Registry = {
   NewsGridSection,
   CheckoutSection,
   LiveStreamingSection,
+  HomepageHero,
 };
 
 type Props = {
   blocks: Block[];
+  blocksProps: any;
 };
 
-export const BlocksRenderer = ({ blocks }: Props) => {
+export const BlocksRenderer = ({ blocks, blocksProps }: Props) => {
   return (
     <>
       {blocks.map((block) => {
         const Component = REGISTRY[block.__typename];
         if (!Component) {
-          return <div>Invalid component: {block.__typename}</div>;
+          return (
+            <div key={block.id}>Invalid component: {block.__typename}</div>
+          );
         }
-        return <Component key={block.id} {...block} />;
+        return (
+          <Component {...block} {...blocksProps[block.id]} key={block.id} />
+        );
       })}
     </>
   );
@@ -56,15 +63,31 @@ export const BlocksRenderer = ({ blocks }: Props) => {
 
 export const blocksDataFetching = (client, blocks, language) => {
   const promises = [];
+  let staticProps = {};
 
   for (const block of blocks) {
     const component = REGISTRY[block.__typename];
-    const dataFetching = component.dataFetching;
 
+    if (!component) {
+      return {};
+    }
+
+    const dataFetching = component.dataFetching;
     if (dataFetching) {
       promises.push(...dataFetching(client, language));
     }
+
+    const getStaticProps = component.getStaticProps;
+    if (getStaticProps) {
+      staticProps = {
+        ...staticProps,
+        [block.id]: getStaticProps(block),
+      };
+    }
   }
 
-  return Promise.all(promises);
+  return {
+    dataFetching: Promise.all(promises),
+    staticProps,
+  };
 };

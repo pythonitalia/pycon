@@ -1,3 +1,4 @@
+from cms.components.page.blocks.homepage_hero import HomepageHero
 from cms.components.page.models import GenericPage
 from cms.components.page.blocks.text_section import TextSection
 from cms.components.page.blocks.slider_cards_section import (
@@ -60,6 +61,12 @@ class SimpleTextCardFactory(StructBlockFactory):
     class Params:
         h2 = factory.Faker("text", max_nb_chars=20)
         p = factory.Faker("text", max_nb_chars=300)
+
+
+@register
+class HomepageHeroFactory(StructBlockFactory):
+    class Meta:
+        model = HomepageHero
 
 
 @register

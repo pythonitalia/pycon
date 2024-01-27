@@ -13,7 +13,7 @@ const Illustration = React.memo(HeroIllustration);
 
 export const HomepageHero = ({ cycle }: Props) => {
   return (
-    <div className="h-screen relative mt-[-158px]">
+    <div className="h-screen relative -mt-[161px]">
       <div className="h-screen lg:h-[calc(100vh-60px)]">
         <Illustration cycle={cycle} />
       </div>
@@ -31,4 +31,11 @@ export const HomepageHero = ({ cycle }: Props) => {
       </LayoutContent>
     </div>
   );
+};
+
+HomepageHero.getStaticProps = () => {
+  const utcHours = new Date().getUTCHours();
+  const cycle = utcHours > 5 && utcHours < 17 ? "day" : "night";
+
+  return { cycle };
 };

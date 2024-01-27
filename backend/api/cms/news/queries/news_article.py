@@ -1,12 +1,12 @@
+from api.cms.utils import get_site_by_host
 import strawberry
 from api.cms.news.types import NewsArticle
-from wagtail.models import Site
 from cms.components.news.models import NewsArticle as NewsArticleModel
 
 
 @strawberry.field
 def news_article(hostname: str, slug: str, language: str) -> NewsArticle | None:
-    site = Site.objects.filter(hostname=hostname).first()
+    site = get_site_by_host(hostname)
 
     if not site:
         raise ValueError(f"Site {hostname} not found")
@@ -18,7 +18,7 @@ def news_article(hostname: str, slug: str, language: str) -> NewsArticle | None:
 
     translated_article = (
         article.get_translations(inclusive=True)
-        .filter(locale__language_code=language)
+        .filter(locale__language_code=language, live=True)
         .first()
     )
 

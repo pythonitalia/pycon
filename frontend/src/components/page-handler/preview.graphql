@@ -1,0 +1,18 @@
+#import "../../fragments/generic-page.graphql"
+#import "../../fragments/news-article.graphql"
+
+query PagePreview($contentType: String!, $token: String!) {
+  pagePreview(contentType: $contentType, token: $token) {
+    __typename
+    ... on GenericPagePreview {
+      genericPage {
+        ...GenericPageData
+      }
+    }
+    ... on NewsArticlePreview {
+      newsArticle {
+        ...NewsArticleData
+      }
+    }
+  }
+}

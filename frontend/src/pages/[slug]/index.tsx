@@ -1,72 +1,26 @@
-import { Page as BasePage } from "@python-italia/pycon-styleguide";
-import React, { Fragment } from "react";
+import React from "react";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 
-import { addApolloState, getApolloClient } from "~/apollo/client";
-import {
-  BlocksRenderer,
-  blocksDataFetching,
-} from "~/components/blocks-renderer";
-import { MetaTags } from "~/components/meta-tags";
-import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
-import { GenericPage, queryAllPages, queryPage, usePageQuery } from "~/types";
+import { getApolloClient } from "~/apollo/client";
+import { PageHandler } from "~/components/page-handler";
+import { queryAllPages } from "~/types";
 
-export const FrontendPage = () => {
+export const FrontendPage = ({ blocksProps, isPreview, previewData }) => {
   const router = useRouter();
   const slug = router.query.slug as string;
-  const language = useCurrentLanguage();
-
-  const { data } = usePageQuery({
-    variables: {
-      code: process.env.conferenceCode,
-      language,
-      slug,
-    },
-  });
-
-  const { cmsPage } = data;
-  const page = cmsPage as GenericPage;
-
   return (
-    <Fragment>
-      <MetaTags title={page.title} description={page.searchDescription} />
-
-      <BasePage endSeparator={false}>
-        <BlocksRenderer blocks={page.body} />
-      </BasePage>
-    </Fragment>
+    <PageHandler
+      isPreview={isPreview}
+      previewData={previewData}
+      slug={slug}
+      blocksProps={blocksProps}
+    />
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
-  const language = locale;
-  const slug = params.slug as string;
-  const client = getApolloClient();
-
-  const [_, pageQuery] = await Promise.all([
-    prefetchSharedQueries(client, language),
-    queryPage(client, {
-      code: process.env.conferenceCode,
-      language,
-      slug,
-    }),
-  ]);
-
-  if (pageQuery.data.cmsPage?.__typename !== "GenericPage") {
-    return {
-      notFound: true,
-    };
-  }
-
-  await blocksDataFetching(client, pageQuery.data.cmsPage.body, locale);
-
-  return addApolloState(client, {
-    props: {},
-  });
-};
+export { getStaticProps } from "~/components/page-handler/page-static-props";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const client = getApolloClient();
@@ -79,11 +33,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
     },
   ] = await Promise.all([
     queryAllPages(client, {
-      code: process.env.conferenceCode,
+      hostname: process.env.cmsHostname,
       language: "it",
     }),
     queryAllPages(client, {
-      code: process.env.conferenceCode,
+      hostname: process.env.cmsHostname,
       language: "en",
     }),
   ]);

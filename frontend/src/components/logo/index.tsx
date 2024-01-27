@@ -2,7 +2,7 @@ import React from "react";
 
 export const Logo = (props: any) => (
   <svg {...props} viewBox="0 0 600 180" fill="none">
-    <g clip-path="url(#clip0_5150_33)">
+    <g clipPath="url(#clip0_5150_33)">
       <path d="M422.716 3.40002H3.3999V176.6H422.716V3.40002Z" fill="white" />
       <path
         d="M419.316 6.8V173.2H6.8V6.8H419.316ZM426.116 0H0V180H426.116V0Z"
@@ -61,7 +61,7 @@ export const Logo = (props: any) => (
 
 export const MobileLogo = (props: any) => (
   <svg {...props} viewBox="0 0 120 60" fill="none">
-    <g clip-path="url(#clip0_5311_2)">
+    <g clipPath="url(#clip0_5311_2)">
       <mask
         id="mask0_5311_2"
         style={{ maskType: "luminance" }}
@@ -148,12 +148,12 @@ export const MobileLogo = (props: any) => (
           d="M20.8364 38.0142V29.4717H26.1309V34.8328L22.9494 38.0142V35.8996L20.8364 38.0142ZM24.0178 34.8328V35.438L25.0655 34.3903V30.5371H24.0178V34.8328ZM21.9033 30.5371V35.438L22.9509 34.3903V30.5371H21.9033Z"
           fill="#0E1116"
         />
-        <path d="M60.5 -1V60" stroke="#0E1116" stroke-width="3" />
+        <path d="M60.5 -1V60" stroke="#0E1116" strokeWidth="3" />
       </g>
       <path
         d="M118.5 1.5H1.5V58.5H118.5V1.5Z"
         stroke="#0E1116"
-        stroke-width="3"
+        strokeWidth="3"
       />
     </g>
     <defs>
