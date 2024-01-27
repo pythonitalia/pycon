@@ -40,10 +40,10 @@ jobs:
       - run: pip install pdm==2.10.4
 
       - name: Cache PDM
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ./.venv
-          key: pdm-${{ hashFiles('./pdm.lock') }}-1
+          key: pdm-${{ hashFiles('**/pdm.lock') }}-1
 
       - name: Install python dependencies
         run: pdm install
