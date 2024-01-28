@@ -31,6 +31,13 @@ pytestmark = pytest.mark.django_db
             "expected_travel_amount": 0,
         },
         {
+            "approved_type": Grant.ApprovedType.ticket_travel,
+            "travelling_from": "FR",
+            "expected_ticket_amount": 100,
+            "expected_accommodation_amount": 0,
+            "expected_travel_amount": 400,
+        },
+        {
             "approved_type": Grant.ApprovedType.ticket_travel_accommodation,
             "travelling_from": "AU",
             "expected_ticket_amount": 100,
@@ -132,3 +139,24 @@ def test_can_manually_change_amounts():
     assert grant.accommodation_amount == 50
     assert grant.travel_amount == 0
     assert grant.total_amount == 70
+
+
+@pytest.mark.parametrize(
+    "travelling_from,country_type",
+    [
+        ("IT", Grant.CountryType.italy),
+        ("FR", Grant.CountryType.europe),
+        ("AU", Grant.CountryType.extra_eu),
+        ("US", Grant.CountryType.extra_eu),
+    ],
+)
+def test_sets_country_type(travelling_from, country_type):
+    grant = GrantFactory(travelling_from=travelling_from)
+
+    assert grant.country_type == country_type
+
+
+def test_sets_country_type_does_nothing_if_unset():
+    grant = GrantFactory(travelling_from=None)
+
+    assert grant.country_type is None
