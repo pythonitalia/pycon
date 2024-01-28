@@ -559,48 +559,6 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         )
         return qs
 
-    def save_form(self, request, form, change):
-        # If the status, country_type or approved_type changes and the grant is approved
-        # we need to recalculate the totals
-        if form.cleaned_data["status"] == Grant.Status.approved and (
-            form.cleaned_data["status"] != form.initial.get("status")
-            or form.cleaned_data["country_type"] != form.initial.get("country_type")
-            or form.cleaned_data["approved_type"] != form.initial.get("approved_type")
-        ):
-            conference = form.cleaned_data["conference"]
-            form.instance.ticket_amount = conference.grants_default_ticket_amount
-
-            if form.cleaned_data["approved_type"] not in (
-                Grant.ApprovedType.ticket_only,
-                Grant.ApprovedType.ticket_travel,
-            ):
-                form.instance.accommodation_amount = (
-                    conference.grants_default_accommodation_amount
-                )
-
-            if form.cleaned_data["country_type"] == Grant.CountryType.italy:
-                form.instance.travel_amount = (
-                    conference.grants_default_travel_from_italy_amount
-                )
-            elif form.cleaned_data["country_type"] == Grant.CountryType.europe:
-                form.instance.travel_amount = (
-                    conference.grants_default_travel_from_europe_amount
-                )
-            elif form.cleaned_data["country_type"] == Grant.CountryType.extra_eu:
-                form.instance.travel_amount = (
-                    conference.grants_default_travel_from_extra_eu_amount
-                )
-
-            form.instance.total_amount = (
-                form.instance.ticket_amount
-                + form.instance.accommodation_amount
-                + form.instance.travel_amount
-            )
-
-        return_value = super().save_form(request, form, change)
-
-        return return_value
-
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [

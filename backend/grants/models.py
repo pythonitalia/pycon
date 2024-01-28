@@ -205,21 +205,84 @@ class Grant(TimeStampedModel):
         help_text=_("When the email was last sent"), blank=True, null=True
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._original_status = self.status
+        self._original_approved_type = self.approved_type
+        self._original_country_type = self.country_type
+
     def __str__(self):
         return f"{self.full_name}"
 
     def save(self, *args, **kwargs):
-        if self.travelling_from:
-            country = countries.get(code=self.travelling_from)
-            assert country
-            if country.code == "IT":
-                self.country_type = Grant.CountryType.italy
-            elif country.continent == "EU":
-                self.country_type = Grant.CountryType.europe
-            else:
-                self.country_type = Grant.CountryType.extra_eu
+        self._update_country_type()
+        self._calculate_grant_amounts()
+
+        update_fields = kwargs.get("update_fields", None)
+        if update_fields:
+            update_fields.append("total_amount")
+            update_fields.append("ticket_amount")
+            update_fields.append("accommodation_amount")
+            update_fields.append("travel_amount")
+            update_fields.append("country_type")
 
         super().save(*args, **kwargs)
+
+        self._original_approved_type = self.approved_type
+        self._original_country_type = self.country_type
+        self._original_status = self.status
+
+    def _calculate_grant_amounts(self):
+        if self.status != Grant.Status.approved:
+            return
+
+        if (
+            self._original_status == self.status
+            and self._original_approved_type == self.approved_type
+            and self._original_country_type == self.country_type
+        ):
+            return
+
+        conference = self.conference
+        self.ticket_amount = conference.grants_default_ticket_amount
+        self.accommodation_amount = 0
+        self.travel_amount = 0
+
+        if self.approved_type in (
+            Grant.ApprovedType.ticket_accommodation,
+            Grant.ApprovedType.ticket_travel_accommodation,
+        ):
+            self.accommodation_amount = conference.grants_default_accommodation_amount
+
+        if self.approved_type in (
+            Grant.ApprovedType.ticket_travel_accommodation,
+            Grant.ApprovedType.ticket_travel,
+        ):
+            if self.country_type == Grant.CountryType.italy:
+                self.travel_amount = conference.grants_default_travel_from_italy_amount
+            elif self.country_type == Grant.CountryType.europe:
+                self.travel_amount = conference.grants_default_travel_from_europe_amount
+            elif self.country_type == Grant.CountryType.extra_eu:
+                self.travel_amount = (
+                    conference.grants_default_travel_from_extra_eu_amount
+                )
+
+        self.total_amount = (
+            self.ticket_amount + self.accommodation_amount + self.travel_amount
+        )
+
+    def _update_country_type(self):
+        if not self.travelling_from:
+            return
+
+        country = countries.get(code=self.travelling_from)
+        assert country
+        if country.code == "IT":
+            self.country_type = Grant.CountryType.italy
+        elif country.continent == "EU":
+            self.country_type = Grant.CountryType.europe
+        else:
+            self.country_type = Grant.CountryType.extra_eu
 
     def can_edit(self, user: User):
         return self.user_id == user.id
