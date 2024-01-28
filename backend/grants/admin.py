@@ -645,7 +645,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         """
         Aggregates grant data by gender and status.
         """
-        gender_data = filtered_grants.values("user__gender", "status").annotate(
+        gender_data = filtered_grants.values("gender", "status").annotate(
             total=Count("id")
         )
         gender_summary = {
@@ -656,7 +656,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         }  # For unspecified genders
 
         for data in gender_data:
-            gender = data["user__gender"] if data["user__gender"] else ""
+            gender = data["gender"] if data["gender"] else ""
             status = data["status"]
             total = data["total"]
             gender_summary[gender][status] += total
