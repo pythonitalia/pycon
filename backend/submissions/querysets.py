@@ -2,7 +2,7 @@ from api.helpers.ids import decode_hashid
 from django.db import models
 
 
-class SubmissionManager(models.Manager):
+class SubmissionQuerySet(models.QuerySet):
     def for_conference(self, conference):
         return self.filter(conference=conference)
 
