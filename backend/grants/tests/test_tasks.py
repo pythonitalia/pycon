@@ -198,6 +198,36 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(
     )
 
 
+def test_handle_grant_approved_ticket_travel_accommodation_fails_with_no_amount(
+    conference_factory, grant_factory, settings
+):
+    settings.FRONTEND_URL = "https://pycon.it"
+
+    conference = conference_factory(
+        start=datetime(2023, 5, 2, tzinfo=timezone.utc),
+        end=datetime(2023, 5, 5, tzinfo=timezone.utc),
+    )
+    user = UserFactory(
+        full_name="Marco Acierno",
+        email="marco@placeholder.it",
+        name="Marco",
+        username="marco",
+    )
+
+    grant = grant_factory(
+        conference=conference,
+        approved_type=Grant.ApprovedType.ticket_travel_accommodation,
+        applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
+        travel_amount=0,
+        user=user,
+    )
+
+    with pytest.raises(
+        ValueError, match="Grant travel amount is set to Zero, can't send the email!"
+    ):
+        send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
+
+
 def test_handle_grant_approved_ticket_only_reply_sent(
     conference_factory, grant_factory, settings
 ):
@@ -227,6 +257,50 @@ def test_handle_grant_approved_ticket_only_reply_sent(
 
     email_mock.assert_called_once_with(
         template=EmailTemplate.GRANT_APPROVED_TICKET_ONLY,
+        to="marco@placeholder.it",
+        subject=f"[{grant.conference.name}] Financial Aid Update",
+        variables={
+            "firstname": "Marco Acierno",
+            "conferenceName": grant.conference.name.localize("en"),
+            "startDate": "2 May",
+            "endDate": "6 May",
+            "deadlineDateTime": "1 February 2023 23:59 UTC",
+            "deadlineDate": "1 February 2023",
+            "replyLink": "https://pycon.it/grants/reply/",
+        },
+        reply_to=["grants@pycon.it"],
+    )
+
+
+def test_handle_grant_approved_travel_reply_sent(
+    conference_factory, grant_factory, settings
+):
+    settings.FRONTEND_URL = "https://pycon.it"
+
+    conference = conference_factory(
+        start=datetime(2023, 5, 2, tzinfo=timezone.utc),
+        end=datetime(2023, 5, 5, tzinfo=timezone.utc),
+    )
+    user = UserFactory(
+        full_name="Marco Acierno",
+        email="marco@placeholder.it",
+        name="Marco",
+        username="marco",
+    )
+
+    grant = grant_factory(
+        conference=conference,
+        approved_type=Grant.ApprovedType.ticket_travel,
+        applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
+        total_amount=680,
+        user=user,
+    )
+
+    with patch("grants.tasks.send_email") as email_mock:
+        send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL,
         to="marco@placeholder.it",
         subject=f"[{grant.conference.name}] Financial Aid Update",
         variables={
