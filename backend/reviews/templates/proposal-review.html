@@ -140,7 +140,7 @@ window.addEventListener('load', function() {
   {% endif %}
   <div class="review-row">
     <strong>Notes</strong>
-    <div>{{proposal.notes}}</div>
+    <div>{{proposal.notes | linebreaksbr}}</div>
   </div>
   <div class="review-row">
     <strong>Community Voting</strong>
