@@ -3,6 +3,9 @@ from django.db import models
 
 
 class SubmissionManager(models.Manager):
+    def for_conference(self, conference):
+        return self.filter(conference=conference)
+
     def get_by_hashid(self, hashid):
         return self.get(pk=decode_hashid(hashid))
 

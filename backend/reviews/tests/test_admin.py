@@ -49,6 +49,43 @@ def test_next_item_to_review_prefers_items_with_fewer_votes():
     assert next_to_review == submission_2.id
 
 
+@pytest.mark.parametrize("iteration", range(10))
+def test_next_item_to_review_for_submissions_ignores_excluded_tags(iteration):
+    tag_1 = SubmissionTagFactory(name="A")
+    tag_2 = SubmissionTagFactory(name="B")
+    tag_3 = SubmissionTagFactory(name="C")
+
+    user_1 = UserFactory(is_staff=True, is_superuser=True)
+
+    conference = ConferenceFactory()
+    conference_2 = ConferenceFactory()
+
+    SubmissionFactory(conference=conference_2)
+    SubmissionFactory(conference=conference_2)
+    SubmissionFactory(conference=conference_2)
+
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.PROPOSALS,
+    )
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=0)
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+
+    submission_1 = SubmissionFactory(conference=conference)
+    submission_1.tags.add(tag_1)
+    submission_1.tags.add(tag_3)
+
+    submission_2 = SubmissionFactory(conference=conference)
+    submission_2.tags.add(tag_1)
+    submission_2.tags.add(tag_2)
+    submission_2.tags.add(tag_3)
+
+    next_to_review = get_next_to_review_item_id(
+        review_session, user_1, exclude=[tag_2.id]
+    )
+    assert next_to_review == submission_1.id
+
+
 @pytest.mark.parametrize(
     "scores, avg",
     [
