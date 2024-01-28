@@ -290,7 +290,7 @@ def create_grant_vouchers_on_pretix(modeladmin, request, queryset):
         messages.error(request, "Please select only one conference")
         return
 
-    conference = queryset.only("conference_id").first().conference
+    conference = queryset.first().conference
 
     if not conference.pretix_speaker_voucher_quota_id:
         messages.error(
