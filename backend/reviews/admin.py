@@ -713,11 +713,9 @@ def get_next_to_review_item_id(
 
     if review_session.is_proposals_review:
         already_reviewed_ids = already_reviewed.values_list("proposal_id", flat=True)
-        allowed_tags = list(
-            SubmissionTag.objects.exclude(id__in=exclude).values_list("id", flat=True)
-        )
         skip_item_array = [skip_item] if skip_item else []
-        unvoted_item = (
+        seen_items_to_ignore = list(already_reviewed_ids) + skip_item_array + seen
+        qs = (
             Submission.objects.non_cancelled()
             .for_conference(review_session.conference_id)
             .annotate(
@@ -726,13 +724,16 @@ def get_next_to_review_item_id(
                     filter=Q(userreview__review_session_id=review_session.id),
                 )
             )
-            .filter(tags__in=allowed_tags)
-            .exclude(
-                id__in=list(already_reviewed_ids) + skip_item_array + seen,
-            )
             .order_by("votes_received", "?")
-            .first()
         )
+
+        if seen_items_to_ignore:
+            qs = qs.exclude(id__in=seen_items_to_ignore)
+
+        if exclude:
+            qs = qs.exclude(tags__in=exclude)
+
+        unvoted_item = qs.first()
     elif review_session.is_grants_review:
         already_reviewed_ids = already_reviewed.values_list("grant_id", flat=True)
         unvoted_item = (
