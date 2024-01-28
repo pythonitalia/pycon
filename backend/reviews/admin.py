@@ -368,7 +368,6 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 raise PermissionDenied()
 
             data = request.POST
-            mark_as_confirmed = data.get("mark_as_confirmed", False)
 
             decisions = {
                 int(key.split("-")[1]): value
@@ -380,22 +379,17 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 conference.submissions.filter(id__in=decisions.keys()).all()
             )
 
-            field = "status" if mark_as_confirmed else "pending_status"
-
             for proposal in proposals:
                 decision = decisions[proposal.id]
 
                 if decision == "accept":
-                    setattr(proposal, field, Submission.STATUS.accepted)
+                    proposal.status = Submission.STATUS.accepted
                 elif decision == "reject":
-                    setattr(proposal, field, Submission.STATUS.rejected)
-
-                if mark_as_confirmed:
-                    proposal.pending_status = ""
+                    proposal.status = Submission.STATUS.rejected
 
             Submission.objects.bulk_update(
                 proposals,
-                fields=[field, "pending_status"],
+                fields=["status"],
             )
 
             return redirect(
@@ -428,6 +422,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                         "user", "score"
                     ).filter(review_session_id=review_session_id),
                 ),
+                "duration",
                 "audience_level",
                 "languages",
                 "speaker",

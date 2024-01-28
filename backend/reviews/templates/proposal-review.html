@@ -99,7 +99,7 @@ window.addEventListener('load', function() {
   </div>
   <div class="review-row">
     <strong>Type</strong>
-    <div>{{proposal.type}}</div>
+    <div>{{proposal.type.name}}</div>
   </div>
   <div class="review-row">
     <strong>Duration</strong>
@@ -107,7 +107,7 @@ window.addEventListener('load', function() {
   </div>
   <div class="review-row">
     <strong>Audience Level</strong>
-    <div>{{proposal.audience_level}}</div>
+    <div>{{proposal.audience_level.name}}</div>
   </div>
   {% if has_english_language %}
   <div class="review-row">
@@ -116,11 +116,11 @@ window.addEventListener('load', function() {
   </div>
   <div class="review-row">
     <strong>Elevator Pitch [English]</strong>
-    <div>{{proposal.elevator_pitch | localize:"en" | markdownify}}</div>
+    <div>{{proposal.elevator_pitch | localize:"en" | markdownify | linebreaksbr}}</div>
   </div>
   <div class="review-row">
     <strong>Abstract [English]</strong>
-    <div>{{proposal.abstract | localize:"en" | markdownify}}</div>
+    <div>{{proposal.abstract | localize:"en" | markdownify | linebreaksbr}}</div>
   </div>
   {% endif %}
   {% if has_italian_language %}
@@ -131,11 +131,11 @@ window.addEventListener('load', function() {
 
   <div class="review-row">
     <strong>Elevator Pitch [Italian]</strong>
-    <div>{{proposal.elevator_pitch | localize:"it" | markdownify}}</div>
+    <div>{{proposal.elevator_pitch | localize:"it" | markdownify | linebreaksbr}}</div>
   </div>
   <div class="review-row">
     <strong>Abstract [Italian]</strong>
-    <div>{{proposal.abstract | localize:"it" | markdownify}}</div>
+    <div>{{proposal.abstract | localize:"it" | markdownify | linebreaksbr}}</div>
   </div>
   {% endif %}
   <div class="review-row">
@@ -215,7 +215,7 @@ window.addEventListener('load', function() {
     <strong>Requested a grant?</strong>
     {% if grant %}
     <div>
-      <a target="_blank" href="{{grant_link}}">Yes, open grant</a>
+      <a target="_blank" href="{{grant_link}}">Yes, open grant in admin</a>
     </div>
     {% else %}
     <div>
@@ -233,12 +233,12 @@ window.addEventListener('load', function() {
   {% endif %}
   <div class="review-row">
     <strong>Bio</strong>
-    <div>{{participant.bio}}</div>
+    <div>{{participant.bio|linebreaksbr}}</div>
   </div>
   <div class="review-row">
     <strong>Participant Info</strong>
     <div>
-      <a href="{% url 'admin:participants_participant_change' participant.id %}" target="_blank">Open Participant</a>
+      <a href="{% url 'admin:participants_participant_change' participant.id %}" target="_blank">Open Participant in admin</a>
     </div>
   </div>
   <div class="review-row">
