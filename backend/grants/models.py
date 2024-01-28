@@ -244,7 +244,7 @@ class Grant(TimeStampedModel):
             return
 
         conference = self.conference
-        self.ticket_amount = conference.grants_default_ticket_amount
+        self.ticket_amount = conference.grants_default_ticket_amount or 0
         self.accommodation_amount = 0
         self.travel_amount = 0
 
