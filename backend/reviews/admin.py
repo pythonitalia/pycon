@@ -730,6 +730,7 @@ def get_next_to_review_item_id(
             .exclude(
                 id__in=list(already_reviewed_ids) + skip_item_array + seen,
             )
+            .order_by("votes_received", "?")
             .first()
         )
     elif review_session.is_grants_review:
