@@ -181,7 +181,7 @@ def send_reply_emails(modeladmin, request, queryset):
             if grant.grant_type != Grant.ApprovedType.ticket_only and (
                 grant.total_amount is None
                 or grant.accommodation_amount is None
-                or grant.total_amount is None
+                or grant.travel_amount is None
             ):
                 messages.error(
                     request,
