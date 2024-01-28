@@ -1,6 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load i18n markdownify %}
-{% load localize countryname %}
+{% load localize countryname hostname %}
 {% block breadcrumbs %}
 <div class="breadcrumbs">
   <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
@@ -19,7 +19,8 @@
 
   .review-row {
     display: grid;
-    grid-template-columns: 100px 1fr;
+    grid-template-columns: 150px 1fr;
+    gap: 50px;
     padding: 10px;
     font-size: 13px;
     border-bottom: 1px solid var(--hairline-color);
@@ -90,55 +91,59 @@ window.addEventListener('load', function() {
 </script>
 
 <fieldset class="module aligned">
-  <h2>Submission</h2>
+  <h2>Proposal</h2>
 
   <div class="review-row">
-    <label>Languages</label>
+    <strong>Languages</strong>
     <div>{{proposal.languages.all|join:", "}}</div>
   </div>
   <div class="review-row">
-    <label>Type</label>
-    <div>{{proposal.type}}</div>
+    <strong>Type</strong>
+    <div>{{proposal.type.name}}</div>
   </div>
   <div class="review-row">
-    <label>Audience Level</label>
-    <div>{{proposal.audience_level}}</div>
+    <strong>Duration</strong>
+    <div>{{proposal.duration.duration}} mins</div>
+  </div>
+  <div class="review-row">
+    <strong>Audience Level</strong>
+    <div>{{proposal.audience_level.name}}</div>
   </div>
   {% if has_english_language %}
   <div class="review-row">
-    <label>Title [English]</label>
+    <strong>Title [English]</strong>
     <div>{{proposal.title | localize:"en" }}</div>
   </div>
   <div class="review-row">
-    <label>Elevator Pitch [English]</label>
-    <div>{{proposal.elevator_pitch | localize:"en" | markdownify}}</div>
+    <strong>Elevator Pitch [English]</strong>
+    <div>{{proposal.elevator_pitch | localize:"en" | markdownify | linebreaksbr}}</div>
   </div>
   <div class="review-row">
-    <label>Abstract [English]</label>
-    <div>{{proposal.abstract | localize:"en" | markdownify}}</div>
+    <strong>Abstract [English]</strong>
+    <div>{{proposal.abstract | localize:"en" | markdownify | linebreaksbr}}</div>
   </div>
   {% endif %}
   {% if has_italian_language %}
   <div class="review-row">
-    <label>Title [Italian]</label>
+    <strong>Title [Italian]</strong>
     <div>{{proposal.title | localize:"it" }}</div>
   </div>
 
   <div class="review-row">
-    <label>Elevator Pitch [Italian]</label>
-    <div>{{proposal.elevator_pitch | localize:"it" | markdownify}}</div>
+    <strong>Elevator Pitch [Italian]</strong>
+    <div>{{proposal.elevator_pitch | localize:"it" | markdownify | linebreaksbr}}</div>
   </div>
   <div class="review-row">
-    <label>Abstract [Italian]</label>
-    <div>{{proposal.abstract | localize:"it" | markdownify}}</div>
+    <strong>Abstract [Italian]</strong>
+    <div>{{proposal.abstract | localize:"it" | markdownify | linebreaksbr}}</div>
   </div>
   {% endif %}
   <div class="review-row">
-    <label>Notes</label>
+    <strong>Notes</strong>
     <div>{{proposal.notes}}</div>
   </div>
   <div class="review-row">
-    <label>Community Voting</label>
+    <strong>Community Voting</strong>
     <div>
       <ul>
         {% for ranking in proposal.rankings.all %}
@@ -150,7 +155,7 @@ window.addEventListener('load', function() {
     </div>
   </div>
   <div class="review-row">
-    <label>Voted by</label>
+    <strong>Voted by</strong>
     <div>
       <details>
         <summary>See votes ({{proposal.userreview_set.count}} votes)</summary>
@@ -170,41 +175,47 @@ window.addEventListener('load', function() {
     </div>
   </div>
   <div class="review-row">
-    <label>Open submission</label>
+    <strong>Open proposal [Website]</strong>
     <div>
-      <a target="_blank" href="{% url 'admin:submissions_submission_change' object_id=proposal.id %}">Open Submission</a>
+      <a target="_blank" href="https://pycon.it/submission/{{proposal.hashid}}">Open Proposal in website</a>
+    </div>
+  </div>
+  <div class="review-row">
+    <strong>Open proposal [Admin]</strong>
+    <div>
+      <a target="_blank" href="{% url 'admin:submissions_submission_change' object_id=proposal.id %}">Open Proposal in admin</a>
     </div>
   </div>
 </fieldset>
 <fieldset class="module aligned">
   <h2>Speaker</h2>
   <div class="review-row">
-    <label>Name</label>
+    <strong>Name</strong>
     <div>{{speaker.fullname}}</div>
   </div>
   <div class="review-row">
-    <label>Country</label>
+    <strong>Country</strong>
     <div>{{speaker.country | countryname}}</div>
   </div>
   <div class="review-row">
-    <label>Speaker Experience</label>
-    <div>{{participant.speaker_level}}</div>
+    <strong>Speaker Experience</strong>
+    <div>{{participant.get_speaker_level_display}}</div>
   </div>
   <div class="review-row">
-    <label>Previous Talk Video</label>
+    <strong>Previous Talk Video</strong>
     <div>
       {% if participant.previous_talk_video %}
         <a target="_blank" rel="noreferrer noopener" href="{{participant.previous_talk_video}}">
           {{participant.previous_talk_video}}
         </a>
-      {% endif%}
+      {% endif %}
     </div>
   </div>
   <div class="review-row">
-    <label>Requested a grant?</label>
+    <strong>Requested a grant?</strong>
     {% if grant %}
     <div>
-      <a target="_blank" href="{{grant_link}}">Yes, open grant</a>
+      <a target="_blank" href="{{grant_link}}">Yes, open grant in admin</a>
     </div>
     {% else %}
     <div>
@@ -216,18 +227,43 @@ window.addEventListener('load', function() {
   <div class="review-row">
     <label>Grant status</label>
     <div>
-      {{grant.status}}
+      {{grant.get_status_display}}
     </div>
   </div>
   {% endif %}
   <div class="review-row">
-    <label>Bio</label>
-    <div>{{participant.bio}}</div>
+    <strong>Bio</strong>
+    <div>{{participant.bio|linebreaksbr}}</div>
   </div>
   <div class="review-row">
-    <label>Participant Info</label>
+    <strong>Participant Info</strong>
     <div>
-      <a href="{% url 'admin:participants_participant_change' participant.id %}" target="_blank">Open Participant</a>
+      <a href="{% url 'admin:participants_participant_change' participant.id %}" target="_blank">Open Participant in admin</a>
+    </div>
+  </div>
+  <div class="review-row">
+    <strong>Socials</strong>
+    <div>
+      <ul>
+        {% if participant.website %}
+        <li><a target="_blank" rel="noopener noreferrer" href="{{participant.website}}">Website ({{participant.website|hostname}})</a></li>
+        {% endif %}
+        {% if participant.twitter_handle %}
+        <li><a target="_blank" rel="noopener noreferrer" href="https://twitter.com/@{{participant.twitter_handle}}">Twitter ({{participant.twitter_handle}})</a></li>
+        {% endif %}
+        {% if participant.instagram_handle %}
+        <li><a target="_blank" rel="noopener noreferrer" href="https://instagram.com/{{participant.instagram_handle}}">Instagram ({{participant.instagram_handle}})</a></li>
+        {% endif %}
+        {% if participant.linkedin_url %}
+        <li><a target="_blank" rel="noopener noreferrer" href="{{participant.linkedin_url}}">Linkedin</a></li>
+        {% endif %}
+        {% if participant.facebook_url %}
+        <li><a target="_blank" rel="noopener noreferrer" href="{{participant.facebook_url}}">Facebook</a></li>
+        {% endif %}
+        {% if participant.mastodon_handle %}
+        <li><a target="_blank" rel="noopener noreferrer" href="{{participant.mastodon_handle}}">Mastodon ({{participant.mastodon_handle}})</a></li>
+        {% endif %}
+      </ul>
     </div>
   </div>
 </fieldset>

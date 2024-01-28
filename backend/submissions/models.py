@@ -9,7 +9,7 @@ from model_utils.models import TimeStampedModel
 from api.helpers.ids import encode_hashid
 from i18n.fields import I18nCharField, I18nTextField
 
-from .managers import SubmissionManager
+from .querysets import SubmissionQuerySet
 
 
 class SubmissionTag(models.Model):
@@ -107,7 +107,7 @@ class Submission(TimeStampedModel):
         _("pending status"), choices=STATUS, max_length=20, default="", blank=True
     )
 
-    objects = SubmissionManager()
+    objects = SubmissionQuerySet().as_manager()
 
     @property
     def hashid(self):

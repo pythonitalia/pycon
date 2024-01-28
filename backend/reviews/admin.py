@@ -368,7 +368,6 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 raise PermissionDenied()
 
             data = request.POST
-            mark_as_confirmed = data.get("mark_as_confirmed", False)
 
             decisions = {
                 int(key.split("-")[1]): value
@@ -380,22 +379,17 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 conference.submissions.filter(id__in=decisions.keys()).all()
             )
 
-            field = "status" if mark_as_confirmed else "pending_status"
-
             for proposal in proposals:
                 decision = decisions[proposal.id]
 
                 if decision == "accept":
-                    setattr(proposal, field, Submission.STATUS.accepted)
+                    proposal.status = Submission.STATUS.accepted
                 elif decision == "reject":
-                    setattr(proposal, field, Submission.STATUS.rejected)
-
-                if mark_as_confirmed:
-                    proposal.pending_status = ""
+                    proposal.status = Submission.STATUS.rejected
 
             Submission.objects.bulk_update(
                 proposals,
-                fields=[field, "pending_status"],
+                fields=["status"],
             )
 
             return redirect(
@@ -408,7 +402,9 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             )
 
         items = (
-            review_session.conference.submissions.annotate(
+            Submission.objects.for_conference(review_session.conference_id)
+            .non_cancelled()
+            .annotate(
                 score=Subquery(
                     UserReview.objects.select_related("score")
                     .filter(
@@ -428,6 +424,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                         "user", "score"
                     ).filter(review_session_id=review_session_id),
                 ),
+                "duration",
                 "audience_level",
                 "languages",
                 "speaker",
@@ -716,22 +713,27 @@ def get_next_to_review_item_id(
 
     if review_session.is_proposals_review:
         already_reviewed_ids = already_reviewed.values_list("proposal_id", flat=True)
-        allowed_tags = SubmissionTag.objects.exclude(id__in=exclude)
-        unvoted_item = (
-            review_session.conference.submissions.annotate(
+        skip_item_array = [skip_item] if skip_item else []
+        seen_items_to_ignore = list(already_reviewed_ids) + skip_item_array + seen
+        qs = (
+            Submission.objects.non_cancelled()
+            .for_conference(review_session.conference_id)
+            .annotate(
                 votes_received=Count(
                     "userreview",
                     filter=Q(userreview__review_session_id=review_session.id),
                 )
             )
-            .exclude(
-                id__in=list(already_reviewed_ids) + [skip_item] + seen,
-            )
             .order_by("votes_received", "?")
-            .filter(tags__in=allowed_tags)
-            .first()
         )
 
+        if seen_items_to_ignore:
+            qs = qs.exclude(id__in=seen_items_to_ignore)
+
+        if exclude:
+            qs = qs.exclude(tags__in=exclude)
+
+        unvoted_item = qs.first()
     elif review_session.is_grants_review:
         already_reviewed_ids = already_reviewed.values_list("grant_id", flat=True)
         unvoted_item = (
