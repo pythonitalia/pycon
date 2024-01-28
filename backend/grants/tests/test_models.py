@@ -20,14 +20,14 @@ pytestmark = pytest.mark.django_db
             "approved_type": Grant.ApprovedType.ticket_only,
             "travelling_from": "IT",
             "expected_ticket_amount": 100,
-            "expected_accommodation_amount": 400,
+            "expected_accommodation_amount": 0,
             "expected_travel_amount": 0,
         },
         {
             "approved_type": Grant.ApprovedType.ticket_accommodation,
             "travelling_from": "FR",
             "expected_ticket_amount": 100,
-            "expected_accommodation_amount": 0,
+            "expected_accommodation_amount": 200,
             "expected_travel_amount": 0,
         },
         {
