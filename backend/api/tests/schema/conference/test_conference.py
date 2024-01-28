@@ -3,6 +3,7 @@ import pytz
 import time_machine
 from django.utils import timezone
 from pytest import mark
+from datetime import UTC
 
 from api.conferences.types import DeadlineStatus
 
@@ -465,8 +466,8 @@ def test_get_conference_hotel_rooms(
     graphql_client, conference_factory, bed_layout_factory, hotel_room
 ):
     hotel_room.conference = conference_factory(
-        start=timezone.datetime(2019, 1, 1, tzinfo=timezone.utc),
-        end=timezone.datetime(2019, 1, 5, tzinfo=timezone.utc),
+        start=timezone.datetime(2019, 1, 1, tzinfo=UTC),
+        end=timezone.datetime(2019, 1, 5, tzinfo=UTC),
     )
 
     bed_layout = bed_layout_factory()

@@ -1,5 +1,6 @@
 from decimal import Decimal
 from typing import Optional
+from api.context import Info
 
 import strawberry
 from django.conf import settings
@@ -44,7 +45,7 @@ class Map:
         )
 
 
-def resolve_map(root, info) -> Optional[Map]:
+def resolve_map(root, info: Info) -> Optional[Map]:
     if not all((root.latitude, root.longitude)):
         return None
 

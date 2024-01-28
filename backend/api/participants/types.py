@@ -1,4 +1,5 @@
 from typing import Optional
+from api.context import Info
 
 import strawberry
 from strawberry import ID
@@ -26,14 +27,14 @@ class Participant:
     _previous_talk_video: strawberry.Private[str]
 
     @strawberry.field
-    def speaker_level(self, info) -> Optional[str]:
+    def speaker_level(self, info: Info) -> Optional[str]:
         if not CanSeeSubmissionPrivateFields().has_permission(self, info):
             return None
 
         return self._speaker_level
 
     @strawberry.field
-    def previous_talk_video(self, info) -> Optional[str]:
+    def previous_talk_video(self, info: Info) -> Optional[str]:
         if not CanSeeSubmissionPrivateFields().has_permission(self, info):
             return None
 

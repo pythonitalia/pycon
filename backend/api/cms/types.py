@@ -1,4 +1,5 @@
 import typing
+from api.context import Info
 
 import strawberry
 from strawberry import ID
@@ -27,5 +28,5 @@ class Menu:
     title: str = strawberry.field(resolver=make_localized_resolver("title"))
 
     @strawberry.field
-    def links(self, info) -> typing.List[MenuLink]:
+    def links(self, info: Info) -> typing.List[MenuLink]:
         return self.links.all()

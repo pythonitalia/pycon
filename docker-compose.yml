@@ -23,7 +23,6 @@ x-defaults:
     <<: *enviroment_defaults
     CACHE_URL: redis://redis:6379/0
     DATABASE_URL: psql://pycon:pycon@pycon-backend-db/pycon
-    DJANGO_SETTINGS_MODULE: pycon.settings.dev
     ALLOWED_HOSTS: "*"
     PRETIX_API_TOKEN: ${PRETIX_API_TOKEN}
     MAILCHIMP_SECRET_KEY: ${MAILCHIMP_SECRET_KEY}
@@ -54,7 +53,7 @@ services:
       pdm run python manage.py migrate &&
       pdm run python manage.py create_admin &&
       touch /.ready &&
-      pdm run python manage.py runserver 0.0.0.0:8000"
+      DJANGO_SETTINGS_MODULE=pycon.settings.dev pdm run python manage.py runserver 0.0.0.0:8000"
     depends_on:
       redis:
         condition: service_healthy

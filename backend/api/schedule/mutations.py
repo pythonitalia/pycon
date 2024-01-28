@@ -1,5 +1,6 @@
 import typing
 from datetime import date, datetime, time, timedelta
+from api.context import Info
 from schedule.tasks import notify_new_schedule_invitation_answer_slack
 
 import strawberry
@@ -125,7 +126,7 @@ CancelBookingScheduleItemResult = Annotated[
 @strawberry.type
 class ScheduleMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    def star_schedule_item(self, info, id: ID) -> None:
+    def star_schedule_item(self, info: Info, id: ID) -> None:
         user_id = info.context.request.user.id
 
         ScheduleItemStar.objects.update_or_create(
@@ -134,7 +135,7 @@ class ScheduleMutations:
         )
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    def unstar_schedule_item(self, info, id: ID) -> None:
+    def unstar_schedule_item(self, info: Info, id: ID) -> None:
         user_id = info.context.request.user.id
         ScheduleItemStar.objects.filter(
             user_id=user_id,
@@ -142,7 +143,7 @@ class ScheduleMutations:
         ).delete()
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
-    def book_schedule_item(self, info, id: ID) -> BookScheduleItemResult:
+    def book_schedule_item(self, info: Info, id: ID) -> BookScheduleItemResult:
         schedule_item = ScheduleItem.objects.get(id=id)
         user_id = info.context.request.user.id
 
@@ -172,7 +173,7 @@ class ScheduleMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def cancel_booking_schedule_item(
-        self, info, id: ID
+        self, info: Info, id: ID
     ) -> CancelBookingScheduleItemResult:
         schedule_item = ScheduleItem.objects.get(id=id)
         user_id = info.context.request.user.id
@@ -193,7 +194,7 @@ class ScheduleMutations:
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def update_schedule_invitation(
-        self, info, input: UpdateScheduleInvitationInput
+        self, info: Info, input: UpdateScheduleInvitationInput
     ) -> typing.Union[ScheduleInvitationNotFound, ScheduleInvitation]:
         submission = Submission.objects.get_by_hashid(input.submission_id)
 
@@ -247,7 +248,7 @@ class ScheduleMutations:
 
     @strawberry.mutation(permission_classes=[IsStaffPermission])
     def add_schedule_slot(
-        self, info, conference: strawberry.ID, duration: int, day: date
+        self, info: Info, conference: strawberry.ID, duration: int, day: date
     ) -> typing.Union[AddScheduleSlotError, Day]:
         conference = Conference.objects.get(code=conference)
         day, _ = DayModel.objects.get_or_create(day=day, conference=conference)
@@ -266,7 +267,7 @@ class ScheduleMutations:
 
     @strawberry.mutation(permission_classes=[IsStaffPermission])
     def update_or_create_slot_item(
-        self, info, input: UpdateOrCreateSlotItemInput
+        self, info: Info, input: UpdateOrCreateSlotItemInput
     ) -> typing.Union[UpdateOrCreateSlotItemError, UpdateOrCreateSlotItemResult]:
         # TODO: validate this is not none
         slot = Slot.objects.select_related("day").filter(id=input.slot_id).first()

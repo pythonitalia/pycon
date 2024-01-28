@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing
+from api.context import Info
 
 import strawberry
 from strawberry import ID
@@ -14,11 +15,11 @@ class Sponsor:
     name: str
 
     @strawberry.field
-    def link(self, info) -> str:
+    def link(self, info: Info) -> str:
         return self.link
 
     @strawberry.field
-    def image(self, info) -> str:
+    def image(self, info: Info) -> str:
         if not self.image:
             return ""
 

@@ -122,15 +122,15 @@ class Submission:
         )
 
     @strawberry.field
-    def id(self, info) -> strawberry.ID:
+    def id(self, info: Info) -> strawberry.ID:
         return self.hashid
 
     @strawberry.field
-    def can_edit(self, info) -> bool:
+    def can_edit(self, info: Info) -> bool:
         return self.can_edit(info.context.request)
 
     @strawberry.field
-    def my_vote(self, info) -> Optional[VoteType]:
+    def my_vote(self, info: Info) -> Optional[VoteType]:
         request = info.context.request
 
         if not request.user.is_authenticated:
@@ -145,11 +145,11 @@ class Submission:
             return None
 
     @strawberry.field
-    def languages(self, info) -> Optional[List[Language]]:
+    def languages(self, info: Info) -> Optional[List[Language]]:
         return self.languages.all()
 
     @strawberry.field
-    def tags(self, info) -> Optional[List[SubmissionTag]]:
+    def tags(self, info: Info) -> Optional[List[SubmissionTag]]:
         return self.tags.all()
 
 

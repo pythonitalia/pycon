@@ -1,7 +1,9 @@
 from typing import Optional
 
+from api.context import Info
 
-def resolve_image(root, info) -> Optional[str]:
+
+def resolve_image(root, info: Info) -> Optional[str]:
     if not root.image:
         return None
 

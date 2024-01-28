@@ -1,5 +1,5 @@
 from import_export.resources import ModelResource
-from datetime import timedelta
+from datetime import timedelta, UTC
 from typing import Dict, List, Optional
 from countries.filters import CountryFilter
 from django.urls import path
@@ -191,7 +191,7 @@ def send_reply_emails(modeladmin, request, queryset):
 
             now = timezone.now()
             grant.applicant_reply_deadline = timezone.datetime(
-                now.year, now.month, now.day, 23, 59, 59
+                now.year, now.month, now.day, 23, 59, 59, tzinfo=UTC
             ) + timedelta(days=14)
             grant.save()
             send_grant_reply_approved_email.delay(grant_id=grant.id, is_reminder=False)

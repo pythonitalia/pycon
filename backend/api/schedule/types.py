@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
 from typing import TYPE_CHECKING, List, Optional
+from api.context import Info
 
 import strawberry
 
@@ -90,7 +91,7 @@ class ScheduleItem:
         return self.attendees_total_capacity - self.attendees.count()
 
     @strawberry.field
-    def user_has_spot(self, info) -> bool:
+    def user_has_spot(self, info: Info) -> bool:
         user_id = info.context.request.user.id
         return self.attendees.filter(user_id=user_id).exists()
 
@@ -122,18 +123,18 @@ class ScheduleItem:
         return Keynote.from_django_model(self.keynote)
 
     @strawberry.field
-    def rooms(self, info) -> List[Room]:
+    def rooms(self, info: Info) -> List[Room]:
         return self.rooms.all()
 
     @strawberry.field
-    def image(self, info) -> Optional[str]:
+    def image(self, info: Info) -> Optional[str]:
         if not self.image:
             return None
 
         return info.context.request.build_absolute_uri(self.image.url)
 
     @strawberry.field
-    def slido_url(self, info) -> str:
+    def slido_url(self, info: Info) -> str:
         if self.slido_url:
             return self.slido_url
 

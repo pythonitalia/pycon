@@ -1,4 +1,5 @@
 from typing import Optional
+from api.context import Info
 
 import strawberry
 from strawberry import ID
@@ -15,7 +16,7 @@ from ..permissions import IsAuthenticated
 class ScheduleQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     def schedule_invitation(
-        self, info, submission_id: ID
+        self, info: Info, submission_id: ID
     ) -> Optional[ScheduleInvitation]:
         submission = SubmissionModel.objects.get_by_hashid(submission_id)
 
