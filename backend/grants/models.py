@@ -248,24 +248,35 @@ class Grant(TimeStampedModel):
         self.accommodation_amount = 0
         self.travel_amount = 0
 
+        default_accommodation_amount = (
+            conference.grants_default_accommodation_amount or 0
+        )
+        default_travel_from_italy_amount = (
+            conference.grants_default_travel_from_italy_amount or 0
+        )
+        default_travel_from_europe_amount = (
+            conference.grants_default_travel_from_europe_amount or 0
+        )
+        default_travel_from_extra_eu_amount = (
+            conference.grants_default_travel_from_extra_eu_amount or 0
+        )
+
         if self.approved_type in (
             Grant.ApprovedType.ticket_accommodation,
             Grant.ApprovedType.ticket_travel_accommodation,
         ):
-            self.accommodation_amount = conference.grants_default_accommodation_amount
+            self.accommodation_amount = default_accommodation_amount
 
         if self.approved_type in (
             Grant.ApprovedType.ticket_travel_accommodation,
             Grant.ApprovedType.ticket_travel,
         ):
             if self.country_type == Grant.CountryType.italy:
-                self.travel_amount = conference.grants_default_travel_from_italy_amount
+                self.travel_amount = default_travel_from_italy_amount
             elif self.country_type == Grant.CountryType.europe:
-                self.travel_amount = conference.grants_default_travel_from_europe_amount
+                self.travel_amount = default_travel_from_europe_amount
             elif self.country_type == Grant.CountryType.extra_eu:
-                self.travel_amount = (
-                    conference.grants_default_travel_from_extra_eu_amount
-                )
+                self.travel_amount = default_travel_from_extra_eu_amount
 
         self.total_amount = (
             self.ticket_amount + self.accommodation_amount + self.travel_amount

@@ -37,6 +37,8 @@ def test_send_reply_emails_approved_missing_amount(rf, grant_factory, mocker):
         approved_type=Grant.ApprovedType.ticket_accommodation,
         total_amount=None,
     )
+    grant.total_amount = None
+    grant.save()
     request = rf.get("/")
 
     send_reply_emails(None, request=request, queryset=Grant.objects.all())
