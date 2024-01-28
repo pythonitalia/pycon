@@ -635,8 +635,19 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     def _render_proposal_review(
         self, request, review_session, review_item_id, user_review
     ):
-        proposal = Submission.objects.prefetch_related("rankings").get(
-            id=review_item_id
+        proposal = (
+            Submission.objects.for_conference(review_session.conference_id)
+            .prefetch_related(
+                "rankings",
+                "rankings__tag",
+                Prefetch(
+                    "userreview_set",
+                    queryset=UserReview.objects.prefetch_related(
+                        "user", "score"
+                    ).filter(review_session_id=review_session.id),
+                ),
+            )
+            .get(id=review_item_id)
         )
 
         languages = list(proposal.languages.all())
