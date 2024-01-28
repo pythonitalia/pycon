@@ -19,10 +19,18 @@
   }
 
   .status-choices {
+    width: 150px;
+  }
+
+  .approved-type-choices {
+    width: 200px;
+  }
+
+  .status-choices, .approved-type-choices {
     list-style: none;
   }
 
-  .status-choices li {
+  .status-choices li, .approved-type-choices li {
     list-style: none;
   }
 
@@ -103,6 +111,16 @@
     list-style: none;
   }
 
+  table.results-table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .results-table thead {
+    position: sticky;
+    top: 43px;
+  }
+
   .hidden {
     display: none;
   }
@@ -134,6 +152,37 @@
     document.querySelectorAll('.unset-radio').forEach(radio => {
       radio.addEventListener('click', () => {
         radio.checked = false;
+
+        const grantId = radio.name.split('-')[1];
+        const grantRow = document.querySelector(`#grant-${grantId}`);
+
+        const originalStatus = grantRow.dataset.originalStatus;
+        const originalApprovedType = grantRow.dataset.originalApprovedType;
+
+        grantRow.querySelector(`.status-decision-radio[value="${originalStatus}"]`).checked = true;
+
+        if (originalApprovedType !== 'None') {
+          grantRow.querySelector(`.approved-type-choices input[value="${originalApprovedType}"]`).checked = true;
+        }
+
+        if (originalStatus === "approved") {
+          grantRow.querySelector(`.approved-type-choices`).classList.remove('hidden');
+        } else {
+          grantRow.querySelector(`.approved-type-choices`).classList.add('hidden');
+        }
+      });
+    });
+
+    document.querySelectorAll('.status-decision-radio').forEach(radio => {
+      radio.addEventListener('click', () => {
+        const grantId = radio.name.split('-')[1];
+        const approvedTypeSection = document.querySelector(`.approved-type-choices[data-item-id="${grantId}"]`)
+
+        if (radio.value === "approved") {
+          approvedTypeSection.classList.remove('hidden');
+        } else {
+          approvedTypeSection.classList.add('hidden');
+        }
       });
     });
   };
@@ -141,7 +190,7 @@
 
 <ul class="object-tools">
   <li>
-    <a target="_blank" href="{% url 'admin:grants-summary' %}" class="change-list-object-tools-item">
+    <a target="_blank" href="{% url 'admin:grants-summary' %}?conference__id__exact={{ review_session.conference_id }}" class="change-list-object-tools-item">
       Open Grants Summary
     </a>
   </li>
@@ -158,6 +207,10 @@
             <thead>
               <tr>
                 <th scope="col">
+                  <div class="text"><span>#</span></div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
                   <div class="text"><span>Grant</span></div>
                   <div class="clear"></div>
                 </th>
@@ -170,18 +223,25 @@
                   <div class="clear"></div>
                 </th>
                 <th scope="col">
-                  <div class="text"><span>Status</span></div>
+                  <div class="text"><span>Current Status</span></div>
                   <div class="clear"></div>
                 </th>
                 <th scope="col">
                   <div class="text"><span>Decision</span></div>
                   <div class="clear"></div>
                 </th>
+                <th scope="col">
+                  <div class="text"><span>Approved type</span></div>
+                  <div class="clear"></div>
+                </th>
               </tr>
             </thead>
             <tbody>
               {% for item in items %}
-              <tr class="grant-item" id="grant-{{item.id}}" data-type="{{item.type}}" data-num-of-votes="{{ item.userreview_set.count }}">
+              <tr data-original-status="{{item.status}}" data-original-approved-type="{{item.approved_type}}" class="grant-item" id="grant-{{item.id}}" data-type="{{item.type}}" data-num-of-votes="{{ item.userreview_set.count }}">
+                <td>
+                  {{forloop.counter}}
+                </td>
                 <td class="results-item">
                   <a
                     target="_blank"
@@ -283,7 +343,10 @@
                 </td>
 
                 <td>
-                  {{ item.get_status_display }}
+                  {{ item.get_status_display }}<br/>
+                  {% if item.approved_type %}
+                  ({{ item.get_approved_type_display }})
+                  {% endif %}
                 </td>
 
                 <td>
@@ -292,7 +355,7 @@
                       {% for status in all_statuses %}
                         <li>
                           <label>
-                            <input type="radio" name="decision-{{item.id}}" value="{{status.0}}" />
+                            <input {% if item.status == status.0 %}checked{% endif %} type="radio" class="status-decision-radio" name="decision-{{item.id}}" value="{{status.0}}" />
                               {{status.1}}
                           </label>
                         </li>
@@ -300,6 +363,29 @@
                       <li>
                         <label>
                           <input class="unset-radio" type="radio" name="decision-{{item.id}}" value="unset" />
+                            Unset
+                        </label>
+                      </li>
+                    </ul>
+                  {% else %}
+                    No permission to change.
+                  {% endif %}
+                </td>
+
+                <td>
+                  {% if perms.reviews.decision_reviewsession %}
+                    <ul data-item-id="{{item.id}}" class="approved-type-choices {% if item.status != 'approved' %}hidden{% endif %}">
+                      {% for approved_type in all_approved_types %}
+                        <li>
+                          <label>
+                            <input {% if item.approved_type == approved_type.0 %}checked{% endif %} type="radio" name="approvedtype-{{item.id}}" value="{{approved_type.0}}" />
+                              {{approved_type.1}}
+                          </label>
+                        </li>
+                      {% endfor %}
+                      <li>
+                        <label>
+                          <input class="unset-radio" type="radio" name="approvedtype-{{item.id}}" value="unset" />
                             Unset
                         </label>
                       </li>

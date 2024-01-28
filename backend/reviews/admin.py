@@ -255,6 +255,12 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 if key.startswith("decision-")
             }
 
+            approved_type_decisions = {
+                int(key.split("-")[1]): value
+                for [key, value] in data.items()
+                if key.startswith("approvedtype-")
+            }
+
             grants = list(
                 review_session.conference.grants.filter(id__in=decisions.keys()).all()
             )
@@ -264,16 +270,22 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 if decision not in Grant.REVIEW_SESSION_STATUSES_OPTIONS:
                     continue
 
-                grant.status = decision
+                approved_type = approved_type_decisions.get(grant.id, "")
 
-            Grant.objects.bulk_update(
-                grants,
-                fields=["status"],
-            )
+                grant.status = decision
+                grant.approved_type = (
+                    approved_type if decision == Grant.Status.approved else None
+                )
+
+            for grant in grants:
+                # save each to make sure we re-calculate the grants amounts
+                # TODO: move the amount calculation in a separate function maybe?
+                grant.save(update_fields=["status", "approved_type"])
 
             messages.success(
                 request, "Decisions saved. Check the Grants Summary for more info."
             )
+
             return redirect(
                 reverse(
                     "admin:reviews-recap",
@@ -353,6 +365,8 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 for choice in Grant.Status.choices
                 if choice[0] in Grant.REVIEW_SESSION_STATUSES_OPTIONS
             ],
+            all_approved_types=[choice for choice in Grant.ApprovedType.choices],
+            review_session=review_session,
             title="Recap",
         )
         return TemplateResponse(request, "grants-recap.html", context)
