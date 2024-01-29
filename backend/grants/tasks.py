@@ -39,14 +39,13 @@ def send_grant_reply_approved_email(*, grant_id, is_reminder):
         "deadlineDateTime": f"{grant.applicant_reply_deadline:%-d %B %Y %H:%M %Z}",
         "deadlineDate": f"{grant.applicant_reply_deadline:%-d %B %Y}",
     }
+
     if grant.approved_type == Grant.ApprovedType.ticket_only:
         template = EmailTemplate.GRANT_APPROVED_TICKET_ONLY
-
-    elif grant.approved_type == Grant.ApprovedType.ticket_accommodation:
-        template = EmailTemplate.GRANT_APPROVED_TICKET_ACCOMMODATION
     elif grant.approved_type == Grant.ApprovedType.ticket_travel:
         template = EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL
-
+    elif grant.approved_type == Grant.ApprovedType.ticket_accommodation:
+        template = EmailTemplate.GRANT_APPROVED_TICKET_ACCOMMODATION
     elif grant.approved_type == Grant.ApprovedType.ticket_travel_accommodation:
         if grant.travel_amount == 0:
             raise ValueError(

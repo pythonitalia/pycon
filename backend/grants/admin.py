@@ -152,6 +152,43 @@ class GrantResource(ModelResource):
         export_order = EXPORT_GRANTS_FIELDS
 
 
+def _check_amounts_are_not_empty(grant: Grant, request):
+    if grant.total_amount is None:
+        messages.error(
+            request,
+            f"Grant for {grant.name} is missing 'Total Amount'!",
+        )
+        return
+
+    if (
+        grant.grant_type
+        in (
+            Grant.ApprovedType.ticket_accommodation,
+            Grant.ApprovedType.ticket_travel_accommodation,
+        )
+        and grant.accommodation_amount is None
+    ):
+        messages.error(
+            request,
+            f"Grant for {grant.name} is missing 'Accommodation Amount'!",
+        )
+        return
+
+    if (
+        grant.grant_type
+        in (
+            Grant.ApprovedType.ticket_travel,
+            Grant.ApprovedType.ticket_travel_accommodation,
+        )
+        and grant.travel_amount is None
+    ):
+        messages.error(
+            request,
+            f"Grant for {grant.name} is missing 'Travel Amount'!",
+        )
+        return
+
+
 @admin.action(description="Send Approved/Waiting List/Rejected reply emails")
 def send_reply_emails(modeladmin, request, queryset):
     queryset = queryset.filter(
@@ -178,16 +215,7 @@ def send_reply_emails(modeladmin, request, queryset):
                 )
                 return
 
-            if grant.grant_type != Grant.ApprovedType.ticket_only and (
-                grant.total_amount is None
-                or grant.accommodation_amount is None
-                or grant.travel_amount is None
-            ):
-                messages.error(
-                    request,
-                    f"Grant for {grant.name} is missing 'Approved Amount'!",
-                )
-                return
+            _check_amounts_are_not_empty(grant, request)
 
             now = timezone.now()
             grant.applicant_reply_deadline = timezone.datetime(
@@ -225,17 +253,7 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
             )
             return
 
-        if grant.grant_type != Grant.ApprovedType.ticket_only and (
-            grant.total_amount is None
-            or grant.accommodation_amount is None
-            or grant.total_amount is None
-        ):
-            messages.add_message(
-                request,
-                messages.ERROR,
-                f"Grant for {grant.name} is missing 'Grant Approved Amount'!",
-            )
-            return
+        _check_amounts_are_not_empty(grant, request)
 
         send_grant_reply_approved_email.delay(grant_id=grant.id, is_reminder=True)
 

@@ -1,5 +1,5 @@
 ---
-title: "[PyCon Italia 2022] Financial Aid Update!"
+title: "[PyCon Italia YYYY] Financial Aid Update!"
 ---
 
 <extends src="src/layouts/base.html">
@@ -23,6 +23,7 @@ title: "[PyCon Italia 2022] Financial Aid Update!"
                         Good news! Your grant request for @{{conferenceName}} has been
                         accepted! 🎉
                       </p>
+
                       <p class="m-0 mb-16">
                         As we received a large amount of requests for grants, we might
                         not have been able to fulfil all of your needs. Your grant
@@ -49,17 +50,13 @@ title: "[PyCon Italia 2022] Financial Aid Update!"
                           receipts, like plane/bus/train tickets, sent to us before the
                           conference
                         </li>
-
-                        <li>
-                          <span class="font-semibold">🛏️ Accommodation:</span>
-
-                          <br />
-                          A bed in a shared room at the "Grand Hotel Mediterraneo," where
-                          the conference take place. This accommodation is available from
-                          <span class="font-semibold">@{{startDate}}</span> to
-                          <span class="font-semibold">@{{endDate}}</span>.
-                        </li>
                       </ul>
+
+                      <p class="m-0 mb-16">
+                        If you asked for accommodation, unfortunately we have not been
+                        able to provide you funds for it.
+                      </p>
+
                       <p
                         class="text-xl font-bold text-center text-red-600 mt-8 mb-4 uppercase"
                       >
@@ -109,20 +106,6 @@ title: "[PyCon Italia 2022] Financial Aid Update!"
                         <span class="font-bold">@{{deadlineDate}}</span>, we will
                         allocate your grant to another person. This is a firm deadline,
                         and your prompt response is necessary.
-                      </p>
-                      <p class="text-lg text-center font-semibold mb-4 uppercase">
-                        Need a VISA Invitation Letter?
-                      </p>
-                      <p class="m-0 mb-16">
-                        If you require an invitation letter for a VISA, please
-                        <a
-                          href="@{{replyLink}}"
-                          class="text-blue-600 underline font-bold"
-                          >click this link</a
-                        >
-                        and provide your complete name, surname, birthdate, nationality,
-                        and passport number. We will send you the invitation letter
-                        within 4 days.
                       </p>
 
                       <p class="m-0 mb-4 font-semibold">Free ticket</p>
