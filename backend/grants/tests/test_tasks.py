@@ -312,6 +312,7 @@ def test_handle_grant_approved_travel_reply_sent(
             "deadlineDateTime": "1 February 2023 23:59 UTC",
             "deadlineDate": "1 February 2023",
             "replyLink": "https://pycon.it/grants/reply/",
+            "amount": "400",
         },
         reply_to=["grants@pycon.it"],
     )
