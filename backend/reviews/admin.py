@@ -395,11 +395,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
             for proposal in proposals:
                 decision = decisions[proposal.id]
-
-                if decision == "accept":
-                    proposal.status = Submission.STATUS.accepted
-                elif decision == "reject":
-                    proposal.status = Submission.STATUS.rejected
+                proposal.status = decision
 
             Submission.objects.bulk_update(
                 proposals,
@@ -466,6 +462,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             review_session_id=review_session_id,
             audience_levels=conference.audience_levels.all(),
             review_session_repr=str(review_session),
+            all_statuses=[choice for choice in Submission.STATUS],
             title="Recap",
         )
         return TemplateResponse(request, "proposals-recap.html", context)
