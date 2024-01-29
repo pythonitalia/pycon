@@ -45,7 +45,7 @@ def test_send_reply_emails_approved_missing_amount(rf, grant_factory, mocker):
 
     mock_messages.error.assert_called_once_with(
         request,
-        f"Grant for {grant.name} is missing 'Approved Amount'!",
+        f"Grant for {grant.name} is missing 'Total Amount'!",
     )
 
 
