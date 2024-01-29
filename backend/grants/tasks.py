@@ -44,15 +44,21 @@ def send_grant_reply_approved_email(*, grant_id, is_reminder):
         template = EmailTemplate.GRANT_APPROVED_TICKET_ONLY
     elif grant.approved_type == Grant.ApprovedType.ticket_travel:
         template = EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL
-    elif grant.approved_type == Grant.ApprovedType.ticket_accommodation:
-        template = EmailTemplate.GRANT_APPROVED_TICKET_ACCOMMODATION
-    elif grant.approved_type == Grant.ApprovedType.ticket_travel_accommodation:
         if grant.travel_amount == 0:
             raise ValueError(
                 "Grant travel amount is set to Zero, can't send the email!"
             )
 
+        variables["amount"] = f"{grant.travel_amount:.0f}"
+    elif grant.approved_type == Grant.ApprovedType.ticket_accommodation:
+        template = EmailTemplate.GRANT_APPROVED_TICKET_ACCOMMODATION
+    elif grant.approved_type == Grant.ApprovedType.ticket_travel_accommodation:
         template = EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL_ACCOMMODATION
+        if grant.travel_amount == 0:
+            raise ValueError(
+                "Grant travel amount is set to Zero, can't send the email!"
+            )
+
         variables["amount"] = f"{grant.travel_amount:.0f}"
     else:
         raise ValueError(f"Grant Approved type `{grant.approved_type}` not valid.")
