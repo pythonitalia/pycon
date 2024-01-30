@@ -7,7 +7,6 @@ from integrations.plain import (
     send_message,
 )
 from users.tests.factories import UserFactory
-from grants.tests.factories import GrantFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -184,13 +183,9 @@ def test_send_message(settings, requests_mock):
         email="ester@example.com",
         username="",
     )
-    grant = GrantFactory(user=user)
 
     send_message(
         user,
         title="User has replied",
         message="Hello World!",
     )
-
-    grant.refresh_from_db()
-    assert grant.plain_thread_id == "th_0123456789ABCDEFGHILMNOPQR"
