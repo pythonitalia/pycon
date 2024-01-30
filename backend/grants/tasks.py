@@ -184,7 +184,7 @@ def send_new_plain_chat(*, user_id, message):
         grant.plain_thread_id = thread_id
         grant.save()
     except Grant.DoesNotExist:
-        logger.error("Couldn't find the grant for: %s", user.user_id)
+        logger.error("Couldn't find the grant for: %s", user.id)
 
 
 def _send_grant_waiting_list_email(grant_id, template):
