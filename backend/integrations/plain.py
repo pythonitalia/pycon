@@ -160,4 +160,4 @@ def send_message(user: User, title: str, message: str):
         grant.plain_thread_id = thread_id
         grant.save()
     except Grant.DoesNotExist:
-        return None
+        logger.error("Coudn't find the grant for: %s", user.user_id)
