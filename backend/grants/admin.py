@@ -375,6 +375,7 @@ class GrantAdminForm(forms.ModelForm):
             "travelling_from",
             "country_type",
             "applicant_message",
+            "plain_thread_id",
             "applicant_reply_sent_at",
             "applicant_reply_deadline",
         )
@@ -436,6 +437,10 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "voucher_email_sent_at",
         "created",
     )
+    readonly_fields = (
+        "applicant_message",
+        "plain_thread_id",
+    )
     list_filter = (
         "conference",
         "status",
@@ -478,6 +483,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                     "accommodation_amount",
                     "total_amount",
                     "applicant_message",
+                    "plain_thread_id",
                     "applicant_reply_sent_at",
                     "applicant_reply_deadline",
                     "pretix_voucher_id",

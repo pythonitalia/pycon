@@ -169,9 +169,6 @@ def send_grant_voucher_email(*, grant_id):
 
 @app.task
 def send_new_plain_chat(*, grand_id, message):
-    print("Send message????")
-    print("settings.PLAIN_API: %s", settings.PLAIN_API)
-    print("settings.PLAIN_API_TOKEN: %s", settings.PLAIN_API_TOKEN)
     if not settings.PLAIN_API:
         return
 
@@ -181,7 +178,6 @@ def send_new_plain_chat(*, grand_id, message):
     thread_id = plain.send_message(
         grant.user, title=f"{name} has some questions:", message=message
     )
-    print("Plain replied with thread_id: %s", thread_id)
 
     grant.plain_thread_id = thread_id
     grant.save()
