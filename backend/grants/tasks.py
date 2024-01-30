@@ -168,23 +168,23 @@ def send_grant_voucher_email(*, grant_id):
 
 
 @app.task
-def send_new_plain_chat(*, user_id, message):
+def send_new_plain_chat(*, grand_id, message):
+    print("Send message????")
+    print("settings.PLAIN_API: %s", settings.PLAIN_API)
+    print("settings.PLAIN_API_TOKEN: %s", settings.PLAIN_API_TOKEN)
     if not settings.PLAIN_API:
         return
 
-    user = User.objects.get(id=user_id)
+    grant = Grant.objects.get(id=grand_id)
 
-    name = get_name(user, "Financial Aid Applicant")
+    name = get_name(grant.user, "Financial Aid Applicant")
     thread_id = plain.send_message(
-        user, title=f"{name} has some questions:", message=message
+        grant.user, title=f"{name} has some questions:", message=message
     )
+    print("Plain replied with thread_id: %s", thread_id)
 
-    try:
-        grant = Grant.objects.get(user=user)
-        grant.plain_thread_id = thread_id
-        grant.save()
-    except Grant.DoesNotExist:
-        logger.error("Couldn't find the grant for: %s", user.id)
+    grant.plain_thread_id = thread_id
+    grant.save()
 
 
 def _send_grant_waiting_list_email(grant_id, template):

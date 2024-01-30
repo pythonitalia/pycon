@@ -342,10 +342,10 @@ def test_send_grant_reply_waiting_list_update_email(sent_emails):
 @override_settings(PLAIN_API=None)
 def test_send_new_plain_chat_when_disabled(mocker):
     plain_mock = mocker.patch("grants.tasks.plain")
-    user = UserFactory()
+    grant = GrantFactory()
 
     send_new_plain_chat(
-        user_id=user.id,
+        user_id=grant.id,
         message="Hello",
     )
 
@@ -360,8 +360,9 @@ def test_send_new_plain_chat(mocker):
     plain_mock.send_message.return_value = "th_0123456789ABCDEFGHILMNOPQR"
     user = UserFactory()
     grant = GrantFactory(user=user)
+
     send_new_plain_chat(
-        user_id=user.id,
+        user_id=grant.id,
         message="Hello",
     )
 
