@@ -71,7 +71,7 @@ def create_customer(user: User) -> str:
             "input": {
                 "identifier": {"emailAddress": user.email},
                 "onCreate": {
-                    "externalId": user.id,
+                    "externalId": str(user.id),
                     "fullName": get_name(user),
                     "email": {
                         "email": user.email,
@@ -79,7 +79,7 @@ def create_customer(user: User) -> str:
                     },
                 },
                 "onUpdate": {
-                    "externalId": {"value": user.id},
+                    "externalId": {"value": str(user.id)},
                     "fullName": {"value": get_name(user)},
                     "email": {
                         "email": user.email,
