@@ -2,8 +2,7 @@ import pytest
 
 from integrations.plain import (
     PlainError,
-    _send_chat,
-    change_customer_status,
+    _create_thread,
     create_customer,
     send_message,
 )
@@ -66,85 +65,47 @@ def test_create_user_failed(settings, requests_mock):
         create_customer(user)
 
 
-def test_change_customer_status_successful(settings, requests_mock):
+def test_create_thread_successful(settings, requests_mock):
     settings.PLAIN_API = "https://api.plain.com/graphql/"
     requests_mock.post(
         settings.PLAIN_API,
         json={
             "data": {
-                "changeCustomerStatus": {
-                    "customer": {"id": "c_01GRV5X4BKVSW0YNAXW954VBY6"},
+                "createThread": {
+                    "thread": {
+                        "__typename": "Thread",
+                        "id": "th_0123456789ABCDEFGHILMNOPQR",
+                        "customer": {"id": "c_0123456789ABCDEFGHILMNOPQR"},
+                        "status": "TODO",
+                        "statusChangedAt": {
+                            "__typename": "DateTime",
+                            "iso8601": "2024-01-30T12:52:21.884Z",
+                            "unixTimestamp": "1706619141884",
+                        },
+                        "title": "Marcotte has some questions about his grant",
+                        "previewText": "Can I have my grant?",
+                        "priority": 2,
+                    },
                     "error": None,
                 }
             }
         },
     )
 
-    change_customer_status("c_ABC25904A1DA4E0A82934234F2")
-
-
-def test_change_customer_status_failed(settings, requests_mock):
-    settings.PLAIN_API = "https://api.plain.com/graphql/"
-    requests_mock.post(
-        settings.PLAIN_API,
-        json={
-            "data": {
-                "changeCustomerStatus": {
-                    "customer": None,
-                    "error": {"message": "something went wrong"},
-                }
-            }
-        },
+    thread_id = _create_thread(
+        "c_0123456789ABCDEFGHILMNOPQR", title="wtf", message="hello world"
     )
 
-    with pytest.raises(PlainError, match="something went wrong"):
-        change_customer_status("c_ABC25904A1DA4E0A82934234F2")
+    assert thread_id == "th_0123456789ABCDEFGHILMNOPQR"
 
 
-def test_change_customer_status_is_already_active(settings, requests_mock):
+def test_create_thread_failed(settings, requests_mock):
     settings.PLAIN_API = "https://api.plain.com/graphql/"
     requests_mock.post(
         settings.PLAIN_API,
         json={
             "data": {
-                "changeCustomerStatus": {
-                    "customer": None,
-                    "error": {"message": "Customer already is status: ACTIVE"},
-                }
-            }
-        },
-    )
-
-    change_customer_status("c_ABC25904A1DA4E0A82934234F2")
-
-
-def test_send_chat_successful(settings, requests_mock):
-    settings.PLAIN_API = "https://api.plain.com/graphql/"
-    requests_mock.post(
-        settings.PLAIN_API,
-        json={
-            "data": {
-                "upsertCustomTimelineEntry": {
-                    "result": "CREATED",
-                    "timelineEntry": {"id": "t_01GRXN6HTBRSERGSGHS60PVGBY"},
-                    "error": None,
-                }
-            }
-        },
-    )
-
-    _send_chat("c_ABC25904A1DA4E0A82934234F2", title="wtf", message="hello world")
-
-
-def test_send_chat_failed(settings, requests_mock):
-    settings.PLAIN_API = "https://api.plain.com/graphql/"
-    requests_mock.post(
-        settings.PLAIN_API,
-        json={
-            "data": {
-                "upsertCustomTimelineEntry": {
-                    "result": "NOOP",
-                    "timelineEntry": None,
+                "createThread": {
                     "error": {
                         "message": "There was a validation error.",
                         "type": "VALIDATION",
@@ -169,7 +130,9 @@ def test_send_chat_failed(settings, requests_mock):
             "customerId: ID does not match expected format"
         ),
     ):
-        _send_chat("c_ABC25904A1DA4E0A82934234F2", title="wtf", message="hello world")
+        _create_thread(
+            "c_ABC25904A1DA4E0A82934234F2", title="wtf", message="hello world"
+        )
 
 
 def test_send_message(settings, requests_mock):
@@ -191,19 +154,21 @@ def test_send_message(settings, requests_mock):
             {
                 "json": {
                     "data": {
-                        "changeCustomerStatus": {
-                            "customer": {"id": "c_01GRV5X4BKVSW0YNAXW954VBY6"},
-                            "error": None,
-                        }
-                    }
-                }
-            },
-            {
-                "json": {
-                    "data": {
-                        "upsertCustomTimelineEntry": {
-                            "result": "CREATED",
-                            "timelineEntry": {"id": "t_01GRXN6HTBRSERGSGHS60PVGBY"},
+                        "createThread": {
+                            "thread": {
+                                "__typename": "Thread",
+                                "id": "th_0123456789ABCDEFGHILMNOPQR",
+                                "customer": {"id": "c_0123456789ABCDEFGHILMNOPQR"},
+                                "status": "TODO",
+                                "statusChangedAt": {
+                                    "__typename": "DateTime",
+                                    "iso8601": "2024-01-30T12:52:21.884Z",
+                                    "unixTimestamp": "1706619141884",
+                                },
+                                "title": "Marcotte has some questions about his grant",
+                                "previewText": "Can I have my grant?",
+                                "priority": 2,
+                            },
                             "error": None,
                         }
                     }
@@ -218,6 +183,7 @@ def test_send_message(settings, requests_mock):
         email="ester@example.com",
         username="",
     )
+
     send_message(
         user,
         title="User has replied",

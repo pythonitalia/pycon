@@ -42,6 +42,7 @@ x-defaults:
     FLODESK_SEGMENT_ID: ${FLODESK_SEGMENT_ID}
     CELERY_BROKER_URL: redis://redis:6379/9
     CELERY_RESULT_BACKEND: redis://redis:6379/10
+    PLAIN_API_TOKEN: ${PLAIN_API_TOKEN}
 
 services:
   pycon-backend:

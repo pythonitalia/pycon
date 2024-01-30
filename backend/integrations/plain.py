@@ -71,7 +71,7 @@ def create_customer(user: User) -> str:
             "input": {
                 "identifier": {"emailAddress": user.email},
                 "onCreate": {
-                    "externalId": user.id,
+                    "externalId": str(user.id),
                     "fullName": get_name(user),
                     "email": {
                         "email": user.email,
@@ -79,7 +79,7 @@ def create_customer(user: User) -> str:
                     },
                 },
                 "onUpdate": {
-                    "externalId": {"value": user.id},
+                    "externalId": {"value": str(user.id)},
                     "fullName": {"value": get_name(user)},
                     "email": {
                         "email": user.email,
@@ -96,48 +96,29 @@ def create_customer(user: User) -> str:
     return response["upsertCustomer"]["customer"]["id"]
 
 
-def change_customer_status(customer_id: str):
+def _create_thread(customer_id: str, title: str, message: str):
     document = """
-    mutation changeCustomerStatus ($input: ChangeCustomerStatusInput!) {
-        changeCustomerStatus (input:$input) {
-            customer {
+    mutation createThread($input: CreateThreadInput!) {
+        createThread(input: $input) {
+            thread {
+                __typename
                 id
-            }
-
-            error {
-                message
-            }
-        }
-    }
-    """
-
-    response = _execute(
-        document,
-        variables={"input": {"status": "ACTIVE", "customerId": customer_id}},
-    )
-
-    if response["changeCustomerStatus"]["error"]:
-        if (
-            response["changeCustomerStatus"]["error"]["message"]
-            == "Customer already is status: ACTIVE"
-        ):
-            return
-        raise PlainError(response["changeCustomerStatus"]["error"]["message"])
-
-    logger.info(
-        "Customer set to ACTIVE on Plain",
-    )
-
-
-def _send_chat(customer_id: str, title: str, message: str):
-    document = """
-    mutation upsertCustomTimelineEntry($input: UpsertCustomTimelineEntryInput!) {
-        upsertCustomTimelineEntry(input: $input) {
-            result
-            timelineEntry {
-                id
+                externalId
+                customer {
+                    id
+                }
+                status
+                statusChangedAt {
+                    __typename
+                    iso8601
+                    unixTimestamp
+                }
+                title
+                previewText
+                priority
             }
             error {
+                __typename
                 message
                 type
                 code
@@ -155,19 +136,20 @@ def _send_chat(customer_id: str, title: str, message: str):
         document,
         variables={
             "input": {
-                "customerId": customer_id,
                 "title": title,
+                "customerIdentifier": {"customerId": customer_id},
                 "components": [{"componentText": {"text": message}}],
             }
         },
     )
 
-    _raise_mutation_error(response, "upsertCustomTimelineEntry")
+    _raise_mutation_error(response, "createThread")
+    thread_id = response["createThread"]["thread"]["id"]
 
-    logger.info("Custom timeline entry added on Plain with title '%s'", title)
+    logger.info("Thread created with id: %s", thread_id)
+    return thread_id
 
 
-def send_message(user: User, title: str, message: str):
+def send_message(user: User, title: str, message: str) -> str:
     customer_id = create_customer(user)
-    change_customer_status(customer_id)
-    _send_chat(customer_id, title, message)
+    return _create_thread(customer_id, title, message)

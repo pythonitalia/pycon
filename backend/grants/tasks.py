@@ -175,7 +175,16 @@ def send_new_plain_chat(*, user_id, message):
     user = User.objects.get(id=user_id)
 
     name = get_name(user, "Financial Aid Applicant")
-    plain.send_message(user, title=f"{name} has some questions:", message=message)
+    thread_id = plain.send_message(
+        user, title=f"{name} has some questions:", message=message
+    )
+
+    try:
+        grant = Grant.objects.get(user=user)
+        grant.plain_thread_id = thread_id
+        grant.save()
+    except Grant.DoesNotExist:
+        logger.error("Couldn't find the grant for: %s", user.id)
 
 
 def _send_grant_waiting_list_email(grant_id, template):
