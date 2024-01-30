@@ -6,6 +6,7 @@ x-defaults:
     CONFERENCE_CODE: ${CONFERENCE_CODE:-pycon2023}
     PRETIX_API: https://tickets.pycon.it/api/v1/
     PRETIX_API_TOKEN: None # ask for a token
+    PLAIN_API: https://core-api.uk.plain.com/graphql/v1
     SECRET_KEY: secret-key
     API_URL: /graphql
     API_URL_SERVER: http://pycon-backend:8000/graphql
