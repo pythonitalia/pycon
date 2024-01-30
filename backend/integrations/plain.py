@@ -145,9 +145,7 @@ def _create_thread(customer_id: str, title: str, message: str):
 
     _raise_mutation_error(response, "createThread")
 
-    logger.info(
-        "Thread created with id: %s", response["data"]["createThread"]["thread"]["id"]
-    )
+    logger.info("Thread created with id: %s", response["createThread"]["thread"]["id"])
 
 
 def send_message(user: User, title: str, message: str):

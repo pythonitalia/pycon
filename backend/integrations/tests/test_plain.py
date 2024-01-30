@@ -2,7 +2,7 @@ import pytest
 
 from integrations.plain import (
     PlainError,
-    _send_chat,
+    _create_thread,
     change_customer_status,
     create_customer,
     send_message,
@@ -133,10 +133,10 @@ def test_send_chat_successful(settings, requests_mock):
         },
     )
 
-    _send_chat("c_ABC25904A1DA4E0A82934234F2", title="wtf", message="hello world")
+    _create_thread("c_ABC25904A1DA4E0A82934234F2", title="wtf", message="hello world")
 
 
-def test_send_chat_failed(settings, requests_mock):
+def test_create_thread_failed(settings, requests_mock):
     settings.PLAIN_API = "https://api.plain.com/graphql/"
     requests_mock.post(
         settings.PLAIN_API,
@@ -169,7 +169,9 @@ def test_send_chat_failed(settings, requests_mock):
             "customerId: ID does not match expected format"
         ),
     ):
-        _send_chat("c_ABC25904A1DA4E0A82934234F2", title="wtf", message="hello world")
+        _create_thread(
+            "c_ABC25904A1DA4E0A82934234F2", title="wtf", message="hello world"
+        )
 
 
 def test_send_message(settings, requests_mock):
