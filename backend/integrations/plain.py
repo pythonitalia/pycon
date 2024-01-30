@@ -4,7 +4,6 @@ import requests
 from django.conf import settings
 
 from users.models import User
-from grants.models import Grant
 
 logger = logging.getLogger(__name__)
 
@@ -151,13 +150,6 @@ def _create_thread(customer_id: str, title: str, message: str):
     return thread_id
 
 
-def send_message(user: User, title: str, message: str):
+def send_message(user: User, title: str, message: str) -> str:
     customer_id = create_customer(user)
-    thread_id = _create_thread(customer_id, title, message)
-
-    try:
-        grant = Grant.objects.get(user=user)
-        grant.plain_thread_id = thread_id
-        grant.save()
-    except Grant.DoesNotExist:
-        logger.error("Coudn't find the grant for: %s", user.user_id)
+    return _create_thread(customer_id, title, message)
