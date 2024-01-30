@@ -345,7 +345,7 @@ def test_send_new_plain_chat_when_disabled(mocker):
     grant = GrantFactory()
 
     send_new_plain_chat(
-        user_id=grant.id,
+        grant_id=grant.id,
         message="Hello",
     )
 
@@ -362,7 +362,7 @@ def test_send_new_plain_chat(mocker):
     grant = GrantFactory(user=user)
 
     send_new_plain_chat(
-        user_id=grant.id,
+        grant_id=grant.id,
         message="Hello",
     )
 
