@@ -354,9 +354,12 @@ def test_send_new_plain_chat_when_disabled(mocker):
 
 @override_settings(PLAIN_API="https://invalid/api")
 def test_send_new_plain_chat(mocker):
-    plain_mock = mocker.patch("grants.tasks.plain")
+    plain_mock = mocker.patch(
+        "grants.tasks.plain",
+    )
+    plain_mock.send_message.return_value = "th_0123456789ABCDEFGHILMNOPQR"
     user = UserFactory()
-
+    grant = GrantFactory(user=user)
     send_new_plain_chat(
         user_id=user.id,
         message="Hello",
@@ -367,3 +370,6 @@ def test_send_new_plain_chat(mocker):
         title=ANY,
         message="Hello",
     )
+
+    grant.refresh_from_db()
+    assert grant.plain_thread_id == "th_0123456789ABCDEFGHILMNOPQR"
