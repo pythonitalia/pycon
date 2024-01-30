@@ -4,6 +4,7 @@ import requests
 from django.conf import settings
 
 from users.models import User
+from grants.models import Grant
 
 logger = logging.getLogger(__name__)
 
@@ -144,10 +145,19 @@ def _create_thread(customer_id: str, title: str, message: str):
     )
 
     _raise_mutation_error(response, "createThread")
+    thread_id = response["createThread"]["thread"]["id"]
 
-    logger.info("Thread created with id: %s", response["createThread"]["thread"]["id"])
+    logger.info("Thread created with id: %s", thread_id)
+    return thread_id
 
 
 def send_message(user: User, title: str, message: str):
     customer_id = create_customer(user)
-    _create_thread(customer_id, title, message)
+    thread_id = _create_thread(customer_id, title, message)
+
+    try:
+        grant = Grant.objects.get(user=user)
+        grant.plain_thread_id = thread_id
+        grant.save()
+    except Grant.DoesNotExist:
+        return None
