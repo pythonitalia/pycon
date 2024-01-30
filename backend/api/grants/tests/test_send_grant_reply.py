@@ -124,7 +124,7 @@ def test_send_plain_when_user_send_a_message(
     )
 
     assert response["data"]["sendGrantReply"]["__typename"] == "Grant"
-    mock_publisher.delay.assert_called_once_with(grant_id=grant.user.id, message="wtf")
+    mock_publisher.delay.assert_called_once_with(grant_id=grant.id, message="wtf")
 
 
 def test_call_notify_new_grant_reply(rf, graphql_client, user, grant_factory, mocker):
