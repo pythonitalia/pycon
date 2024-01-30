@@ -229,3 +229,11 @@ resource "aws_route53_record" "email_flodesk_2" {
   records = ["spf.dxjyvt.fg84.fdske.com"]
   ttl     = "3600"
 }
+
+resource "aws_route53_record" "flodesk_dmarc" {
+  zone_id = aws_route53_zone.pyconit.id
+  name    = "_dmarc"
+  type    = "TXT"
+  records = ["v=DMARC1; p=none"]
+  ttl     = "900"
+}
