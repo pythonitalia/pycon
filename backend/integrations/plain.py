@@ -129,15 +129,29 @@ def change_customer_status(customer_id: str):
     )
 
 
-def _send_chat(customer_id: str, title: str, message: str):
+def _create_thread(customer_id: str, title: str, message: str):
     document = """
-    mutation upsertCustomTimelineEntry($input: UpsertCustomTimelineEntryInput!) {
-        upsertCustomTimelineEntry(input: $input) {
-            result
-            timelineEntry {
+    mutation createThread($input: CreateThreadInput!) {
+        createThread(input: $input) {
+            thread {
+                __typename
                 id
+                externalId
+                customer {
+                    id
+                }
+                status
+                statusChangedAt {
+                    __typename
+                    iso8601
+                    unixTimestamp
+                }
+                title
+                previewText
+                priority
             }
             error {
+                __typename
                 message
                 type
                 code
@@ -155,19 +169,21 @@ def _send_chat(customer_id: str, title: str, message: str):
         document,
         variables={
             "input": {
-                "customerId": customer_id,
                 "title": title,
+                "customerIdentifier": {"customerId": customer_id},
                 "components": [{"componentText": {"text": message}}],
             }
         },
     )
 
-    _raise_mutation_error(response, "upsertCustomTimelineEntry")
+    _raise_mutation_error(response, "createThread")
 
-    logger.info("Custom timeline entry added on Plain with title '%s'", title)
+    logger.info(
+        "Thread created with id: %s", response["data"]["createThread"]["thread"]["id"]
+    )
 
 
 def send_message(user: User, title: str, message: str):
     customer_id = create_customer(user)
     change_customer_status(customer_id)
-    _send_chat(customer_id, title, message)
+    _create_thread(customer_id, title, message)
