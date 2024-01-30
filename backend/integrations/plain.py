@@ -96,39 +96,6 @@ def create_customer(user: User) -> str:
     return response["upsertCustomer"]["customer"]["id"]
 
 
-def change_customer_status(customer_id: str):
-    document = """
-    mutation changeCustomerStatus ($input: ChangeCustomerStatusInput!) {
-        changeCustomerStatus (input:$input) {
-            customer {
-                id
-            }
-
-            error {
-                message
-            }
-        }
-    }
-    """
-
-    response = _execute(
-        document,
-        variables={"input": {"status": "ACTIVE", "customerId": customer_id}},
-    )
-
-    if response["changeCustomerStatus"]["error"]:
-        if (
-            response["changeCustomerStatus"]["error"]["message"]
-            == "Customer already is status: ACTIVE"
-        ):
-            return
-        raise PlainError(response["changeCustomerStatus"]["error"]["message"])
-
-    logger.info(
-        "Customer set to ACTIVE on Plain",
-    )
-
-
 def _create_thread(customer_id: str, title: str, message: str):
     document = """
     mutation createThread($input: CreateThreadInput!) {
@@ -185,5 +152,4 @@ def _create_thread(customer_id: str, title: str, message: str):
 
 def send_message(user: User, title: str, message: str):
     customer_id = create_customer(user)
-    change_customer_status(customer_id)
     _create_thread(customer_id, title, message)
