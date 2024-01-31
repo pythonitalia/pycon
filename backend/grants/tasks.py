@@ -168,11 +168,11 @@ def send_grant_voucher_email(*, grant_id):
 
 
 @app.task
-def send_new_plain_chat(*, grand_id, message):
+def send_new_plain_chat(*, grant_id, message):
     if not settings.PLAIN_API:
         return
 
-    grant = Grant.objects.get(id=grand_id)
+    grant = Grant.objects.get(id=grant_id)
 
     name = get_name(grant.user, "Financial Aid Applicant")
     thread_id = plain.send_message(

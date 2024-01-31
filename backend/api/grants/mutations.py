@@ -265,6 +265,6 @@ class GrantMutation:
         notify_new_grant_reply_slack.delay(grant_id=grant.id, admin_url=admin_url)
 
         if grant.applicant_message:
-            send_new_plain_chat.delay(grand_id=grant.id, message=input.message)
+            send_new_plain_chat.delay(grant_id=grant.id, message=input.message)
 
         return Grant.from_model(grant)
