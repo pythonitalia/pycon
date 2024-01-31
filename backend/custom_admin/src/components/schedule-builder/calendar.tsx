@@ -1,21 +1,11 @@
 import React, { Fragment } from "react";
 
+import { convertHoursToMinutes, formatHour } from "../utils/time";
+import { Placeholder } from "./placeholder";
 import type { ConferenceScheduleQuery } from "./schedule.generated";
 
 type Props = {
   day: ConferenceScheduleQuery["conferenceSchedule"]["days"][0];
-};
-
-const convertHoursToMinutes = (value: string) => {
-  const [hour, minutes] = value.split(":").map((x) => parseInt(x, 10));
-
-  return hour * 60 + minutes;
-};
-
-const formatHour = (value: string) => {
-  const [hour, minutes] = value.split(":");
-
-  return [hour, minutes].join(".");
 };
 
 export const Calendar = ({ day: { day, rooms, slots } }: Props) => {
@@ -23,17 +13,22 @@ export const Calendar = ({ day: { day, rooms, slots } }: Props) => {
   let rowStartPos = 2;
 
   return (
-    <div>
+    <div className="mb-6">
       <h1 className="text-red-900 text-3xl">{day}</h1>
       <div
-        className="grid"
+        className="grid gap-1"
         style={{
-          gridTemplateColumns: `100px repeat(${numOfRooms}, 1fr)`,
+          gridTemplateColumns: `50px repeat(${numOfRooms}, 1fr)`,
         }}
       >
         <div></div>
         {rooms.map((room) => (
-          <div key={room.id}>{room.name}</div>
+          <div
+            className="sticky p-2 font-semibold flex items-center justify-center top-0 bg-white z-[100]"
+            key={room.id}
+          >
+            {room.name}
+          </div>
         ))}
         {slots.map((slot) => {
           const rowStart = rowStartPos;
@@ -42,6 +37,7 @@ export const Calendar = ({ day: { day, rooms, slots } }: Props) => {
           return (
             <Fragment key={slot.id}>
               <div
+                className="flex items-center font-semibold"
                 style={{
                   gridColumnStart: 1,
                   gridColumnEnd: 1,
@@ -49,10 +45,10 @@ export const Calendar = ({ day: { day, rooms, slots } }: Props) => {
                   gridRowEnd: rowEnd,
                 }}
               >
-                {slot.hour}
+                {formatHour(slot.hour)}
               </div>
 
-              {rooms.map((room, index) => (
+              {rooms.map((_, index) => (
                 <Placeholder
                   rowStart={rowStart}
                   rowEnd={rowEnd}
@@ -78,28 +74,13 @@ export const Calendar = ({ day: { day, rooms, slots } }: Props) => {
   );
 };
 
-const Placeholder = ({ rowStart, rowEnd, index }) => {
-  return (
-    <div
-      style={{
-        gridColumnStart: 2 + index,
-        gridColumnEnd: 2 + index,
-        gridRowStart: rowStart,
-        gridRowEnd: rowEnd,
-      }}
-    >
-      Add proposal
-      <PlusIcon />
-    </div>
-  );
-};
-
 const Item = ({ slots, slot, item, rooms, rowStart }) => {
   const roomIndexes = item.rooms
     .map((room) => rooms.findIndex((r) => r.id === room.id))
     .sort();
 
   const start = convertHoursToMinutes(slot.hour);
+  // fix durations
   const duration =
     item.duration || slot.duration || item.submission?.duration?.duration;
 
@@ -132,13 +113,5 @@ const Item = ({ slots, slot, item, rooms, rowStart }) => {
     >
       {item.title}
     </div>
-  );
-};
-
-const PlusIcon = () => {
-  return (
-    <svg width="28" height="28" viewBox="0 0 100 100">
-      <path d="m50 87.375c20.609 0 37.379-16.766 37.379-37.375s-16.77-37.375-37.379-37.375-37.379 16.766-37.379 37.375 16.77 37.375 37.379 37.375zm-11.707-40.375h8.707v-8.707c0-1.6562 1.3438-3 3-3s3 1.3438 3 3v8.707h8.707c1.6562 0 3 1.3438 3 3s-1.3438 3-3 3h-8.707v8.707c0 1.6562-1.3438 3-3 3s-3-1.3438-3-3v-8.707h-8.707c-1.6562 0-3-1.3438-3-3s1.3438-3 3-3z" />
-    </svg>
   );
 };
