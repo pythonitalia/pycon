@@ -383,7 +383,25 @@ class Conference:
 
     @strawberry.field
     def days(self, info) -> List[Day]:
-        return self.days.order_by("day").prefetch_related("slots", "slots__items").all()
+        return (
+            self.days.order_by("day")
+            .prefetch_related(
+                "slots",
+                "slots__items",
+                "slots__items__audience_level",
+                "slots__items__language",
+                "slots__items__rooms",
+                "slots__items__submission",
+                "slots__items__submission__type",
+                "slots__items__submission__tags",
+                "slots__items__submission__duration",
+                "slots__items__submission__audience_level",
+                "slots__items__submission__speaker",
+                "slots__items__keynote",
+                "slots__items__keynote__speakers",
+            )
+            .all()
+        )
 
     @strawberry.field
     def current_day(self, info) -> Optional[Day]:
