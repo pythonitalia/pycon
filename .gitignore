@@ -130,3 +130,6 @@ badge-service/badges.zip
 .virtualenv/
 .pdm-python
 .pdm-build/
+
+*.generated.ts
+backend/custom_admin/src/types.ts

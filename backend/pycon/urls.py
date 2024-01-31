@@ -1,3 +1,6 @@
+from django_admin_api.views import DjangoAdminGraphQLView
+from django_admin_api.schema import schema as django_admin_graphql_schema
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -16,6 +19,11 @@ urlpatterns = [
         "admin/_/submission-autocomplete",
         SubmissionAutocomplete.as_view(),
         name="submission-autocomplete",
+    ),
+    path(
+        "admin/graphql",
+        DjangoAdminGraphQLView.as_view(schema=django_admin_graphql_schema),
+        name="django-admin-graphql",
     ),
     path("admin/", admin.site.urls),
     path("graphql", csrf_exempt(GraphQLView.as_view(schema=schema)), name="graphql"),

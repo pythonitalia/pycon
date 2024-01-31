@@ -120,6 +120,7 @@ INSTALLED_APPS = [
     "google_api.apps.GoogleApiConfig",
     "association_membership.apps.AssociationMembershipConfig",
     "rest_framework",
+    "django_admin_api.apps.DjangoAdminApiConfig",
 ]
 
 MIDDLEWARE = [
@@ -139,7 +140,7 @@ ROOT_URLCONF = "pycon.urls"
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "BACKEND": "custom_admin.template_backends.CustomAdminDjangoTemplate",
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -148,6 +149,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "custom_admin.context_processors.admin_settings",
+                "custom_admin.context_processors.astro_settings",
             ]
         },
     }

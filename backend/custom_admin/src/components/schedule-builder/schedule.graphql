@@ -1,0 +1,54 @@
+query ConferenceSchedule($conferenceId: ID!) {
+  conferenceSchedule(conferenceId: $conferenceId) {
+    id
+    days {
+      id
+      day
+      rooms {
+        id
+        name
+      }
+      slots {
+        id
+        hour
+        duration
+        type
+        items {
+          id
+          title
+          rooms {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}
+
+# query ConferenceSchedule($conferenceId: ID!) {
+#   conference(id: $conferenceId) {
+#     id
+#     name
+#     schedule {
+#       id
+#       name
+#       startTime
+#       endTime
+#       sessions {
+#         id
+#         name
+#         startTime
+#         endTime
+#         room {
+#           id
+#           name
+#         }
+#         speakers {
+#           id
+#           name
+#         }
+#       }
+#     }
+#   }
+# }
