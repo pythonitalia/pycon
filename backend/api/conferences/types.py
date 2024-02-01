@@ -246,6 +246,7 @@ class Conference:
     map: Optional[Map] = strawberry.field(resolver=resolve_map)
 
     pretix_event_url: str
+    visa_application_form_link: str
 
     @strawberry.field
     def voucher(self, info, code: str) -> Optional[Voucher]:

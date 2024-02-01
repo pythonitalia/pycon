@@ -133,6 +133,10 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         default=None,
     )
 
+    visa_application_form_link = models.URLField(
+        _("Visa application form link"), blank=True, default=""
+    )
+
     youtube_video_bottom_text = models.TextField(
         default="",
         blank=True,

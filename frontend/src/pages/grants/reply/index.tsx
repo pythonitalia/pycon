@@ -5,6 +5,7 @@ import {
   Section,
   Spacer,
   Text,
+  Link,
 } from "@python-italia/pycon-styleguide";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
@@ -29,6 +30,8 @@ import {
   queryCurrentUser,
   queryGrant,
 } from "~/types";
+
+import { Conference } from "../../../types";
 
 type GrantReplyFrom = {
   option: StatusOption | null;
@@ -213,7 +216,26 @@ const GrantReply = () => {
           <Spacer size="medium" />
 
           <Text size={2}>
-            <FormattedMessage id="grants.reply.messageDescription" />
+            <FormattedMessage
+              id="grants.reply.messageDescription"
+              values={{
+                visaApplicationFormLink: (
+                  <Link
+                    target="_blank"
+                    href={data.conference.visaApplicationFormLink}
+                  >
+                    <Text
+                      decoration="underline"
+                      size={2}
+                      weight="strong"
+                      color="none"
+                    >
+                      Visa Application Form
+                    </Text>
+                  </Link>
+                ),
+              }}
+            />
           </Text>
           <Spacer size="small" />
 

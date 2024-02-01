@@ -31,6 +31,12 @@ def send_grant_reply_approved_email(*, grant_id, is_reminder):
         "Reminder: Financial Aid Update" if is_reminder else "Financial Aid Update"
     )
 
+    if not grant.conference.visa_application_form_link:
+        raise ValueError(
+            "Visa Application Form Link Missing: Please ensure the link to the Visa "
+            "Application Form is set in the Conference admin settings."
+        )
+
     template = None
     variables = {
         "replyLink": reply_url,
@@ -38,6 +44,7 @@ def send_grant_reply_approved_email(*, grant_id, is_reminder):
         "endDate": f"{grant.conference.end+timedelta(days=1):%-d %B}",
         "deadlineDateTime": f"{grant.applicant_reply_deadline:%-d %B %Y %H:%M %Z}",
         "deadlineDate": f"{grant.applicant_reply_deadline:%-d %B %Y}",
+        "visaApplicationFormLink": grant.conference.visa_application_form_link,
     }
 
     if grant.approved_type == Grant.ApprovedType.ticket_only:
