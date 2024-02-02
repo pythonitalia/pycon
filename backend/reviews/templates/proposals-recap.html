@@ -333,7 +333,7 @@
         <select name="filter-with-n-reviews" id="filter-with-n-reviews">
           <option value="all">All</option>
           {% for i in '0123456789'|make_list %}
-            <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
+            <option value="{{ i }}">{{ i }}</option>
           {% endfor %}
         </select>
       </div>
