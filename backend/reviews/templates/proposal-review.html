@@ -157,21 +157,19 @@ window.addEventListener('load', function() {
   <div class="review-row">
     <strong>Voted by</strong>
     <div>
-      <details>
-        <summary>See votes ({{proposal.userreview_set.count}} votes)</summary>
-        <ul>
-          {% for reviewer in proposal.userreview_set.all %}
-          <li>
-            <strong>{{reviewer.user.full_name}}</strong> voted
-            {{reviewer.score.label}}
-            ({{reviewer.score.numeric_value}})<br />
-            {{reviewer.comment}}
-          </li>
-          {% empty %}
-          <li>No reviews yet</li>
-          {% endfor %}
-        </ul>
-      </details>
+      <span>Total votes: {{proposal.userreview_set.count}}</span>
+      <ul>
+        {% for reviewer in proposal.userreview_set.all %}
+        <li>
+          <strong>{{reviewer.user.full_name}}</strong> voted
+          {{reviewer.score.label}}
+          ({{reviewer.score.numeric_value}})<br />
+          {{reviewer.comment}}
+        </li>
+        {% empty %}
+        <li>No reviews yet</li>
+        {% endfor %}
+      </ul>
     </div>
   </div>
   <div class="review-row">
