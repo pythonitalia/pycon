@@ -19,7 +19,7 @@ export const Calendar = ({ day: { day, rooms, slots } }: Props) => {
       <div
         className="grid gap-1"
         style={{
-          gridTemplateColumns: `50px repeat(${numOfRooms}, 1fr)`,
+          gridTemplateColumns: `50px repeat(${numOfRooms}, minmax(150px, 1fr))`,
         }}
       >
         <div></div>
@@ -51,6 +51,7 @@ export const Calendar = ({ day: { day, rooms, slots } }: Props) => {
 
               {rooms.map((_, index) => (
                 <Placeholder
+                  key={`placeholder-${slot.id}-${index}`}
                   rowStart={rowStart}
                   rowEnd={rowEnd}
                   index={index}

@@ -48,21 +48,22 @@ export const Item = ({ slots, slot, item, rooms, rowStart }) => {
       className="bg-slate-200 p-3 z-50"
     >
       <ul>
-        <li>[{item.type}]</li>
-        <li>{item.title}</li>
         <li>
-          <strong>Duration</strong>:{" "}
-          <span>{item.submission?.duration} mins</span>
+          [{item.type} - {duration} mins]
         </li>
         <li>
-          <strong>Speakers</strong>:{" "}
-          <span>
-            {item.speakers.map((speaker) => speaker.fullname).join(",")}
-          </span>
+          <strong>{item.title}</strong>
         </li>
+        {item.speakers.length > 0 && (
+          <li>
+            <span>
+              {item.speakers.map((speaker) => speaker.fullname).join(",")}
+            </span>
+          </li>
+        )}
         <li>
           <a className="underline" href="#" onClick={openEditLink}>
-            Edit schedule item!!
+            Edit schedule item
           </a>
         </li>
       </ul>

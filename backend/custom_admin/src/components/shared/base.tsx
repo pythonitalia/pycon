@@ -9,6 +9,10 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+export const getApolloClient = () => {
+  return client;
+};
+
 export const Base = ({ children }: Props) => {
   console.log("client", client);
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
