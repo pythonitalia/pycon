@@ -1,7 +1,30 @@
+import clsx from "clsx";
+import { useDrag, useDrop } from "react-dnd";
+
 export const Placeholder = ({ rowStart, rowEnd, index }) => {
+  const [{ isOver, canDrop }, dropRef] = useDrop(
+    () => ({
+      accept: "scheduleItem",
+      drop: async (scheduleItem) => {
+        console.log("drop", scheduleItem);
+      },
+      collect: (mon) => ({
+        isOver: !!mon.isOver(),
+        canDrop: !!mon.canDrop(),
+      }),
+    }),
+    [],
+  );
+  console.log("isOver", isOver);
   return (
     <div
-      className="p-2 text-center flex items-center justify-center flex-col cursor-pointer transition-colors hover:bg-orange-600/50"
+      ref={dropRef}
+      className={clsx(
+        "p-2 text-center flex items-center justify-center flex-col cursor-pointer hover:bg-orange-600/50 transition-colors",
+        {
+          "bg-orange-600/50": isOver && canDrop,
+        },
+      )}
       style={{
         gridColumnStart: 2 + index,
         gridColumnEnd: 2 + index,

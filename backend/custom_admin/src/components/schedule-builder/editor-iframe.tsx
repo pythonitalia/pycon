@@ -1,11 +1,11 @@
+import { useApolloClient } from "@apollo/client";
 import { useEffect } from "react";
 
-import { getApolloClient } from "../shared/base";
 import { useIframeEditor } from "./context";
 
 export const EditorIframe = () => {
   const { visibleScheduleItemId, close } = useIframeEditor();
-  const apolloClient = getApolloClient();
+  const apolloClient = useApolloClient();
 
   const onClose = () => {
     close();

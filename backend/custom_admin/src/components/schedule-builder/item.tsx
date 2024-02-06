@@ -1,4 +1,4 @@
-import { useApolloClient } from "@apollo/client";
+import { useDrag } from "react-dnd";
 
 import { convertHoursToMinutes } from "../utils/time";
 import { useIframeEditor } from "./context";
@@ -24,12 +24,6 @@ export const Item = ({ slots, slot, item, rooms, rowStart }) => {
   }
 
   const index = roomIndexes[0];
-  const { open } = useIframeEditor();
-
-  const openEditLink = (e) => {
-    e.preventDefault();
-    open(item.id);
-  };
 
   return (
     <div
@@ -43,29 +37,54 @@ export const Item = ({ slots, slot, item, rooms, rowStart }) => {
             .slice(currentSlotIndex, endingSlotIndex)
             .reduce((acc, s) => acc + 1, 0),
       }}
-      className="bg-slate-200 p-3 z-50"
+      className="z-50 bg-slate-200"
     >
-      <ul>
-        <li>
-          [{item.type} - {duration} mins]
-        </li>
-        <li>{item.status}</li>
-        <li className="pt-2">
-          <strong>{item.title}</strong>
-        </li>
-        {item.speakers.length > 0 && (
-          <li>
-            <span>
-              {item.speakers.map((speaker) => speaker.fullname).join(",")}
-            </span>
-          </li>
-        )}
-        <li className="pt-2">
-          <a className="underline" href="#" onClick={openEditLink}>
-            Edit schedule item
-          </a>
-        </li>
-      </ul>
+      <ScheduleItemCard item={item} duration={duration} />
     </div>
+  );
+};
+
+const ScheduleItemCard = ({ item, duration }) => {
+  const [{ opacity }, dragRef] = useDrag(
+    () => ({
+      type: "scheduleItem",
+      item: {
+        item,
+      },
+      collect: (monitor) => ({
+        opacity: monitor.isDragging() ? 0.5 : 1,
+      }),
+    }),
+    [],
+  );
+  const { open } = useIframeEditor();
+
+  const openEditLink = (e) => {
+    e.preventDefault();
+    open(item.id);
+  };
+
+  return (
+    <ul className="bg-slate-200 p-3" ref={dragRef}>
+      <li>
+        [{item.type} - {duration} mins]
+      </li>
+      <li>{item.status}</li>
+      <li className="pt-2">
+        <strong>{item.title}</strong>
+      </li>
+      {item.speakers.length > 0 && (
+        <li>
+          <span>
+            {item.speakers.map((speaker) => speaker.fullname).join(",")}
+          </span>
+        </li>
+      )}
+      <li className="pt-2">
+        <a className="underline" href="#" onClick={openEditLink}>
+          Edit schedule item
+        </a>
+      </li>
+    </ul>
   );
 };
