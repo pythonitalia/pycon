@@ -18,6 +18,7 @@ query ConferenceSchedule($conferenceId: ID!) {
           title
           type
           duration
+          status
           rooms {
             id
             name

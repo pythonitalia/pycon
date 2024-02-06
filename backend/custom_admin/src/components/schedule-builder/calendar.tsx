@@ -38,7 +38,7 @@ export const Calendar = ({ day: { day, rooms, slots } }: Props) => {
           return (
             <Fragment key={slot.id}>
               <div
-                className="flex items-center font-semibold"
+                className="flex items-center font-semibold text-center"
                 style={{
                   gridColumnStart: 1,
                   gridColumnEnd: 1,
@@ -46,7 +46,7 @@ export const Calendar = ({ day: { day, rooms, slots } }: Props) => {
                   gridRowEnd: rowEnd,
                 }}
               >
-                {formatHour(slot.hour)}
+                {formatHour(slot.hour)} [{slot.duration} mins]
               </div>
 
               {rooms.map((_, index) => (

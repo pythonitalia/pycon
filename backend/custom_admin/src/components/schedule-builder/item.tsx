@@ -49,7 +49,8 @@ export const Item = ({ slots, slot, item, rooms, rowStart }) => {
         <li>
           [{item.type} - {duration} mins]
         </li>
-        <li>
+        <li>{item.status}</li>
+        <li className="pt-2">
           <strong>{item.title}</strong>
         </li>
         {item.speakers.length > 0 && (
@@ -59,7 +60,7 @@ export const Item = ({ slots, slot, item, rooms, rowStart }) => {
             </span>
           </li>
         )}
-        <li>
+        <li className="pt-2">
           <a className="underline" href="#" onClick={openEditLink}>
             Edit schedule item
           </a>
