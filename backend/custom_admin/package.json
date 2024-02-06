@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"npm run codegen:watch\" \"astro dev --port 3002\"",
+    "dev": "concurrently \"npm run codegen:watch\" \"nodemon ws-proxy/ws.py\" \"astro dev --port 3002 --host 0.0.0.0\"",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
@@ -33,6 +33,9 @@
     "@graphql-codegen/typescript-react-apollo": "^4.1.0",
     "@parcel/watcher": "^2.4.0",
     "concurrently": "^8.2.2",
-    "prettier": "^3.2.4"
+    "http-proxy": "^1.18.1",
+    "nodemon": "^3.0.3",
+    "prettier": "^3.2.4",
+    "ws": "^8.16.0"
   }
 }

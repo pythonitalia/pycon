@@ -1,7 +1,7 @@
 export const Placeholder = ({ rowStart, rowEnd, index }) => {
   return (
     <div
-      className="flex items-center justify-center flex-col"
+      className="p-2 text-center flex items-center justify-center flex-col cursor-pointer transition-colors hover:bg-orange-600/50"
       style={{
         gridColumnStart: 2 + index,
         gridColumnEnd: 2 + index,

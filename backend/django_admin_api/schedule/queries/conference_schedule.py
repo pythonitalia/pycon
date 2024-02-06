@@ -14,17 +14,50 @@ class Room:
 
 
 @strawberry.type
-class ScheduleItem:
+class Submission:
     id: strawberry.ID
     title: str
+    duration: int
+
+    @classmethod
+    def from_model(cls, submission):
+        return cls(
+            id=submission.id,
+            title=submission.title,
+            duration=submission.duration.duration,
+        )
+
+
+@strawberry.type
+class User:
+    id: strawberry.ID
+    fullname: str
+
+    @classmethod
+    def from_model(cls, user):
+        return cls(id=user.id, fullname=user.fullname)
+
+
+@strawberry.type
+class ScheduleItem:
+    id: strawberry.ID
+    type: str
+    title: str
+    submission: Submission | None
     rooms: list[Room]
+    speakers: list[User]
 
     @classmethod
     def from_model(cls, item):
         return cls(
             id=item.id,
+            type=item.type,
             title=item.title,
             rooms=[Room.from_model(room) for room in item.rooms.all()],
+            submission=Submission.from_model(item.submission)
+            if item.submission_id
+            else None,
+            speakers=[User.from_model(speaker) for speaker in item.speakers],
         )
 
 

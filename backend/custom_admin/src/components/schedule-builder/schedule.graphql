@@ -16,9 +16,19 @@ query ConferenceSchedule($conferenceId: ID!) {
         items {
           id
           title
+          type
           rooms {
             id
             name
+          }
+          speakers {
+            id
+            fullname
+          }
+          submission {
+            id
+            title
+            duration
           }
         }
       }

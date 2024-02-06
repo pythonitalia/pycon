@@ -7,6 +7,6 @@ def admin_settings(request):
 
 def astro_settings(request):
     return {
-        "ASTRO_URL": "http://localhost:3002",
+        "ASTRO_URL": request.build_absolute_uri("/astro"),
         "APOLLO_GRAPHQL_URL": "/admin/graphql",
     }

@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 
-import { convertHoursToMinutes, formatHour } from "../utils/time";
+import { formatHour } from "../utils/time";
+import { Item } from "./item";
 import { Placeholder } from "./placeholder";
 import type { ConferenceScheduleQuery } from "./schedule.generated";
 
@@ -70,48 +71,6 @@ export const Calendar = ({ day: { day, rooms, slots } }: Props) => {
           );
         })}
       </div>
-    </div>
-  );
-};
-
-const Item = ({ slots, slot, item, rooms, rowStart }) => {
-  const roomIndexes = item.rooms
-    .map((room) => rooms.findIndex((r) => r.id === room.id))
-    .sort();
-
-  const start = convertHoursToMinutes(slot.hour);
-  // fix durations
-  const duration =
-    item.duration || slot.duration || item.submission?.duration?.duration;
-
-  const end = start + duration;
-
-  const currentSlotIndex = slots.findIndex((s) => s.id === slot.id);
-
-  let endingSlotIndex = slots.findIndex(
-    (s) => convertHoursToMinutes(s.hour) + s.duration > end,
-  );
-
-  if (endingSlotIndex === -1) {
-    endingSlotIndex = slots.length;
-  }
-
-  const index = roomIndexes[0];
-  return (
-    <div
-      style={{
-        gridColumnStart: index + 2,
-        gridColumnEnd: index + 2 + item.rooms.length,
-        gridRowStart: rowStart,
-        gridRowEnd:
-          rowStart +
-          slots
-            .slice(currentSlotIndex, endingSlotIndex)
-            .reduce((acc, s) => acc + 1, 0),
-      }}
-      className="bg-slate-200 p-3 z-50"
-    >
-      {item.title}
     </div>
   );
 };

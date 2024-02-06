@@ -2,7 +2,8 @@ import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: "http://localhost:3002/admin/graphql",
+  schema:
+    process.env.ADMIN_GRAPHQL_URL || "http://localhost:3002/admin/graphql",
   documents: ["src/**/*.graphql"],
   generates: {
     "src/types.ts": { plugins: ["typescript"] },

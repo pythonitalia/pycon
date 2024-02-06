@@ -20,8 +20,8 @@ import { ScheduleBuilderRoot } from "../components/schedule-builder/root";
             return url.searchParams.get(name);
         }
 
-        (window as any).apolloGraphQLUrl = getArg('APOLLO_GRAPHQL_URL', "{{ APOLLO_GRAPHQL_URL }}");
-        (window as any).conferenceId = getArg('conference_id', "{{ conference_id }}");
+        window.apolloGraphQLUrl = '/admin/graphql';
+        window.conferenceId = getArg('conference_id', "{{ conference_id }}");
         </script>
     </body>
 </html>

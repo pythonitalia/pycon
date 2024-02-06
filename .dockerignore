@@ -3,3 +3,8 @@
 **/.npmrc
 **/.pdm-build
 **/.venv/**
+**/.ruff_cache/**
+**/.pnpm-store/**
+**/__pycache__/**
+.pdm-python
+**/.pytest_cache/**
