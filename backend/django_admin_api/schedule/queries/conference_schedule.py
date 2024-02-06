@@ -43,6 +43,7 @@ class ScheduleItem:
     id: strawberry.ID
     type: str
     title: str
+    duration: int | None
     submission: Submission | None
     rooms: list[Room]
     speakers: list[User]
@@ -53,6 +54,7 @@ class ScheduleItem:
             id=item.id,
             type=item.type,
             title=item.title,
+            duration=item.duration,
             rooms=[Room.from_model(room) for room in item.rooms.all()],
             submission=Submission.from_model(item.submission)
             if item.submission_id

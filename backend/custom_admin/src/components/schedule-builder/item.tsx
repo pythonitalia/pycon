@@ -4,7 +4,6 @@ import { convertHoursToMinutes } from "../utils/time";
 import { useIframeEditor } from "./context";
 
 export const Item = ({ slots, slot, item, rooms, rowStart }) => {
-  const apolloClient = useApolloClient();
   const roomIndexes = item.rooms
     .map((room) => rooms.findIndex((r) => r.id === room.id))
     .sort();
@@ -29,7 +28,6 @@ export const Item = ({ slots, slot, item, rooms, rowStart }) => {
 
   const openEditLink = (e) => {
     e.preventDefault();
-
     open(item.id);
   };
 
