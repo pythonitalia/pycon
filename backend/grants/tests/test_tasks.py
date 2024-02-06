@@ -118,6 +118,7 @@ def test_handle_grant_reply_sent_reminder(conference_factory, grant_factory, set
     conference = conference_factory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
+        visa_application_form_link="https://example.com/visa-application-form",
     )
     user = UserFactory(
         full_name="Marco Acierno",
@@ -137,7 +138,7 @@ def test_handle_grant_reply_sent_reminder(conference_factory, grant_factory, set
         send_grant_reply_approved_email(grant_id=grant.id, is_reminder=True)
 
     email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_APPROVED_TICKET_ONLY,
+        template=EmailTemplate.GRANT_APPROVED,
         to="marco@placeholder.it",
         subject=f"[{grant.conference.name}] Reminder: Financial Aid Update",
         variables={
@@ -148,6 +149,9 @@ def test_handle_grant_reply_sent_reminder(conference_factory, grant_factory, set
             "deadlineDateTime": "1 February 2023 23:59 UTC",
             "deadlineDate": "1 February 2023",
             "replyLink": "https://pycon.it/grants/reply/",
+            "visaApplicationFormLink": "https://example.com/visa-application-form",
+            "hasApprovedTravel": False,
+            "hasApprovedAccommodation": False,
         },
         reply_to=["grants@pycon.it"],
     )
@@ -161,6 +165,7 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(
     conference = conference_factory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
+        visa_application_form_link="https://example.com/visa-application-form",
     )
     user = UserFactory(
         full_name="Marco Acierno",
@@ -181,7 +186,7 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(
         send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
 
     email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL_ACCOMMODATION,
+        template=EmailTemplate.GRANT_APPROVED,
         to="marco@placeholder.it",
         subject=f"[{grant.conference.name}] Financial Aid Update",
         variables={
@@ -193,6 +198,9 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(
             "deadlineDateTime": "1 February 2023 23:59 UTC",
             "deadlineDate": "1 February 2023",
             "replyLink": "https://pycon.it/grants/reply/",
+            "visaApplicationFormLink": "https://example.com/visa-application-form",
+            "hasApprovedTravel": True,
+            "hasApprovedAccommodation": True,
         },
         reply_to=["grants@pycon.it"],
     )
@@ -206,6 +214,7 @@ def test_handle_grant_approved_ticket_travel_accommodation_fails_with_no_amount(
     conference = conference_factory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
+        visa_application_form_link="https://example.com/visa-application-form",
     )
     user = UserFactory(
         full_name="Marco Acierno",
@@ -228,6 +237,32 @@ def test_handle_grant_approved_ticket_travel_accommodation_fails_with_no_amount(
         send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
 
 
+def test_handle_grant_approved_ticket_fails_with_no_visa_application_form_link(
+    conference_factory, grant_factory, settings
+):
+    settings.FRONTEND_URL = "https://pycon.it"
+
+    conference = conference_factory(
+        start=datetime(2023, 5, 2, tzinfo=timezone.utc),
+        end=datetime(2023, 5, 5, tzinfo=timezone.utc),
+    )
+    user = UserFactory()
+    grant = grant_factory(
+        conference=conference,
+        approved_type=Grant.ApprovedType.ticket_travel_accommodation,
+        applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
+        travel_amount=0,
+        user=user,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="Visa Application Form Link Missing: Please ensure the link to the Visa "
+        "Application Form is set in the Conference admin settings.",
+    ):
+        send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
+
+
 def test_handle_grant_approved_ticket_only_reply_sent(
     conference_factory, grant_factory, settings
 ):
@@ -236,6 +271,7 @@ def test_handle_grant_approved_ticket_only_reply_sent(
     conference = conference_factory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
+        visa_application_form_link="https://example.com/visa-application-form",
     )
     user = UserFactory(
         full_name="Marco Acierno",
@@ -256,7 +292,7 @@ def test_handle_grant_approved_ticket_only_reply_sent(
         send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
 
     email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_APPROVED_TICKET_ONLY,
+        template=EmailTemplate.GRANT_APPROVED,
         to="marco@placeholder.it",
         subject=f"[{grant.conference.name}] Financial Aid Update",
         variables={
@@ -267,6 +303,9 @@ def test_handle_grant_approved_ticket_only_reply_sent(
             "deadlineDateTime": "1 February 2023 23:59 UTC",
             "deadlineDate": "1 February 2023",
             "replyLink": "https://pycon.it/grants/reply/",
+            "visaApplicationFormLink": "https://example.com/visa-application-form",
+            "hasApprovedTravel": False,
+            "hasApprovedAccommodation": False,
         },
         reply_to=["grants@pycon.it"],
     )
@@ -280,6 +319,7 @@ def test_handle_grant_approved_travel_reply_sent(
     conference = conference_factory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
+        visa_application_form_link="https://example.com/visa-application-form",
     )
     user = UserFactory(
         full_name="Marco Acierno",
@@ -301,7 +341,7 @@ def test_handle_grant_approved_travel_reply_sent(
         send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
 
     email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL,
+        template=EmailTemplate.GRANT_APPROVED,
         to="marco@placeholder.it",
         subject=f"[{grant.conference.name}] Financial Aid Update",
         variables={
@@ -312,14 +352,24 @@ def test_handle_grant_approved_travel_reply_sent(
             "deadlineDateTime": "1 February 2023 23:59 UTC",
             "deadlineDate": "1 February 2023",
             "replyLink": "https://pycon.it/grants/reply/",
+            "visaApplicationFormLink": "https://example.com/visa-application-form",
+            "hasApprovedTravel": True,
+            "hasApprovedAccommodation": False,
             "amount": "400",
         },
         reply_to=["grants@pycon.it"],
     )
 
 
-def test_send_grant_reply_waiting_list_update_email(sent_emails):
-    grant = GrantFactory()
+def test_send_grant_reply_waiting_list_update_email(settings):
+    settings.FRONTEND_URL = "https://pycon.it"
+    user = UserFactory(
+        full_name="Marco Acierno",
+        email="marco@placeholder.it",
+        name="Marco",
+        username="marco",
+    )
+    grant = GrantFactory(user=user)
     DeadlineFactory(
         conference=grant.conference,
         start=datetime(2023, 3, 1, 23, 59, tzinfo=timezone.utc),
@@ -329,14 +379,25 @@ def test_send_grant_reply_waiting_list_update_email(sent_emails):
             "it": "Update Grants in Waiting List",
         },
     )
+    conference_name = grant.conference.name.localize("en")
 
-    send_grant_reply_waiting_list_update_email(
-        grant_id=grant.id,
+    with patch("grants.tasks.send_email") as email_mock:
+        send_grant_reply_waiting_list_update_email(
+            grant_id=grant.id,
+        )
+
+    email_mock.assert_called_once_with(
+        template=EmailTemplate.GRANT_WAITING_LIST_UPDATE,
+        to="marco@placeholder.it",
+        variables={
+            "firstname": "Marco Acierno",
+            "conferenceName": conference_name,
+            "grantsUpdateDeadline": "1 March 2023",
+            "replyLink": "https://pycon.it/grants/reply/",
+        },
+        reply_to=["grants@pycon.it"],
+        subject=f"[{conference_name}] Financial Aid Update",
     )
-
-    assert len(sent_emails) == 1
-    assert sent_emails[0]["template"] == EmailTemplate.GRANT_WAITING_LIST_UPDATE
-    assert sent_emails[0]["to"] == grant.user.email
 
 
 @override_settings(PLAIN_API=None)

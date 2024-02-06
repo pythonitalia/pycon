@@ -1,6 +1,5 @@
 ---
-title: "[PyCon Italia YYYY] Financial Aid Update!"
-conferenceName: PyCon Italia 3000
+title: "[PyCon Italia 2022] Financial Aid Update!"
 ---
 
 <extends src="src/layouts/base.html">
@@ -29,6 +28,7 @@ conferenceName: PyCon Italia 3000
                         not have been able to fulfil all of your needs. Your grant
                         includes:
                       </p>
+
                       <ul class="m-0 mb-16">
                         <li>
                           <span class="font-semibold"
@@ -39,14 +39,34 @@ conferenceName: PyCon Italia 3000
                           (includes AM and PM coffee breaks and Lunch for every
                           conference day).
                         </li>
+                        {{#if hasApprovedTravel}}
+
+                        <li>
+                          <span class="font-semibold"
+                            >✈️ up to @{{amount}}€ refund for travel expenses
+                          </span>
+                          <br />
+                          The granted amount will be corresponded upon valid payments
+                          receipts, like plane/bus/train tickets, sent to us before the
+                          conference
+                        </li>
+{{/if}}
+{{#if hasApprovedAccommodation}}
+
+                        <li>
+                          <span class="font-semibold">🛏️ Accommodation:</span>
+
+                          <br />
+                          A bed in a shared room at the "Grand Hotel Mediterraneo," where
+                          the conference take place. This accommodation is available from
+                          <span class="font-semibold">@{{startDate}}</span> to
+                          <span class="font-semibold">@{{endDate}}</span>.
+                        </li>
+                        {{/if}}
                       </ul>
-                      <p class="m-0 mb-16">
-                        If you asked for travel reimbursement and/or accommodation,
-                        unfortunately we have not been able to provide you funds for it.
-                      </p>
 
                       <p
-                        class="text-xl font-bold text-center text-red-600 mt-8 mb-16 uppercase"
+                        class="text-xl font-bold text-center text-red-600 mt-8 mb-4 uppercase"
                       >
                         ACTION NEEDED: Confirm Your Grant!
                       </p>
@@ -119,6 +139,32 @@ conferenceName: PyCon Italia 3000
                       <p class="m-0 mb-16">
                         Personalized coupons will be generated to claim a free ticket.
                       </p>
+
+                      <p class="m-0 mb-4 font-semibold">Travel grant</p>
+                      <p class="m-0 mb-16">
+                        All grants involving reimbursements will be reimbursed based on
+                        approved receipts (plane/bus/train ticket) sent to us before the
+                        conference. The reimbursement will be made by a bank transfer or
+                        with PayPal after the conference.
+                      </p>
+                      <p class="m-0 mb-4 font-semibold">Please note:</p>
+                      <ul class="m-0 mb-16">
+                        <li>Not approved invoices will not be reimbursed.</li>
+                        <li>Reimbursements before the conference are not possible.</li>
+                        <li>
+                          The financial aid grants will only be made available to
+                          registered attendees actually attending the conference.
+                        </li>
+                        <li>Transfers to other people are not possible.</li>
+                        <li>
+                          As part of our efforts to reduce the carbon footprint of the
+                          conference we expect our attendees to use trains rather than
+                          airplanes when possible. Thus, we will not refund air travel
+                          costs when other means of transportation are easily available.
+                          This will be considered on a case by case basis. Please
+                          consider this when calculating the estimated costs.
+                        </li>
+                      </ul>
 
                       <p class="text-lg text-center font-semibold mb-4">
                         Help us at PyCon Italia!

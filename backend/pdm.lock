@@ -5,7 +5,7 @@
 groups = ["default", "dev", "lambda"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:c639608604a6409382173e65d1acf24abbac66fc5794949c77ac8f2a76cf0416"
+content_hash = "sha256:cdcf2269f4952259c03050d3288838981b8f878c5c01927ea489b42c4e64e070"
 
 [[package]]
 name = "amqp"
@@ -2234,7 +2234,7 @@ files = [
 
 [[package]]
 name = "pythonit-toolkit"
-version = "0.1.92"
+version = "0.1.93.dev1707238652"
 requires_python = ">=3.8,<4.0.0"
 summary = ""
 dependencies = [
@@ -2247,8 +2247,8 @@ dependencies = [
     "strawberry-graphql",
 ]
 files = [
-    {file = "pythonit_toolkit-0.1.92-py3-none-any.whl", hash = "sha256:9174afaddaf5572b13fb2b9357a3b530713f9346dd127e531281e532681e8b0c"},
-    {file = "pythonit_toolkit-0.1.92.tar.gz", hash = "sha256:9563a287d9cae26ddb587301a025af8107ca93909f8bdcae4910ff6b8a303d6a"},
+    {file = "pythonit_toolkit-0.1.93.dev1707238652-py3-none-any.whl", hash = "sha256:d6956a801b17fe544c609f5edfd62cd075c57c7d4c810c104a179590b0eaffa0"},
+    {file = "pythonit_toolkit-0.1.93.dev1707238652.tar.gz", hash = "sha256:c2a6fbca094792543391ab7f665dccc4baca6f9a625bb0c92b9cfb6cb0736af8"},
 ]
 
 [[package]]
