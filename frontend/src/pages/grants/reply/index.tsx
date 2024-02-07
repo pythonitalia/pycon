@@ -228,7 +228,7 @@ const GrantReply = () => {
                       weight="strong"
                       color="none"
                     >
-                      Visa Application Form
+                      <FormattedMessage id="grants.reply.visaApplicationFormLink" />
                     </Text>
                   </Link>
                 ),
