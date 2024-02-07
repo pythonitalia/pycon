@@ -745,7 +745,7 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
       "Congratulations! Your Grant has been approved!",
     "grants.reply.descriptionApproved": `Please, confirm your presence before {replyDeadline}!
 If we don't get news from you before {replyDeadline} we will allocate your grant to another person. `,
-    "grants.reply.confirmed": "Confrim",
+    "grants.reply.confirmed": "Confirm",
     "grants.reply.refused": "Refuse",
     "grants.reply.submitReply": "Submit answer",
     "grants.reply.sendingReply": "Sending your answer!",
@@ -1499,11 +1499,11 @@ Se non riceveremo una conferma da te prima del {replyDeadlilne}, assegneremo il 
     "grants.reply.sendingReply": "Invio della tua risposta!",
     "grants.reply.replySentWithSuccess":
       "Grazie! La tua risposta è stata correttamente salvata",
-    "grants.reply.messageDescription": `Se hai domande o hai bisogno di assistenza, non esitare a contattarci utilizzando il messaggio qui sotto. Per qualsiasi domanda riguardante la conferenza, aiuto con il processo di candidatura o informazioni generali, siamo qui per assisterti.
+    "grants.reply.messageDescription": `Se hai domande o hai bisogno di assistenza, non esitare a contattarci utilizzando il messaggio qui sotto. Per qualsiasi domanda riguardante la conferenza, aiuto con la richiesta di grant o informazioni generali, siamo qui per assisterti.
 
 Nota: Si prega di NON inviare dettagli personali tramite questo modulo.
 
-Per le richieste di lettera d'invito per il visto, si prega gentilmente di utilizzare il {visaApplicationFormLink} dedicato. Elaboreremo la tua candidatura e invieremo la lettera d'invito entro 4 giorni dalla presentazione del modulo.`,
+Per le richieste di lettera d'invito per il visto, si prega gentilmente di utilizzare il {visaApplicationFormLink} dedicato. Elaboreremo la tua richiesta e invieremo la lettera d'invito entro 4 giorni dalla presentazione del modulo.`,
     "grants.reply.visaApplicationFormLink": "Modulo di Domanda per il Visto",
     "schedule.invitation.sendingReply": "Caricamento in corso",
     "schedule.invitation.replySentWithSuccess":

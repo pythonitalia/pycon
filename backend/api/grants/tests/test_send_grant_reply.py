@@ -88,7 +88,7 @@ def test_status_is_not_updated_when_the_reply_is_need_info(
     assert grant.status == Grant.Status.waiting_for_confirmation
 
 
-def test_status_is_updated_when_reply_is_confrimed(graphql_client, user, grant_factory):
+def test_status_is_updated_when_reply_is_confirmed(graphql_client, user, grant_factory):
     graphql_client.force_login(user)
     grant = grant_factory(user_id=user.id, status=Grant.Status.waiting_for_confirmation)
 
