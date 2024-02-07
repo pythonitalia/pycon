@@ -1491,7 +1491,7 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
     "grants.reply.titleApproved":
       "Congratulazioni! Il tuo Grant e' stato approvato! ",
     "grants.reply.descriptionApproved": `Per favore, conferma la tua presenza entro il {replyDeadline}!
-Se non riceveremo una conferma da te prima del {replyDeadlilne}, assegneremo il tuo grant ad un'altra persona.`,
+Se non riceveremo una conferma da te prima del {replyDeadline}, assegneremo il tuo grant ad un'altra persona.`,
     "grants.reply.confirmed": "Conferma",
     "grants.reply.refused": "Rifiuta",
     "grants.reply.submitReply": "Invia risposta",
