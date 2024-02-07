@@ -223,16 +223,5 @@ class GrantAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         )
         return qs
 
-    # def get_urls(self):
-    #     urls = super().get_urls()
-    #     custom_urls = [
-    #         path(
-    #             "summary/",
-    #             self.admin_site.admin_view(self.summary_view),
-    #             name="grants-summary",
-    #         ),
-    #     ]
-    #     return custom_urls + urls
-
     class Media:
         js = ["admin/js/jquery.init.js"]
