@@ -1497,8 +1497,11 @@ Se non riceveremo una conferma da te prima del {replyDeadlilne}, assegneremo il 
     "grants.reply.refused": "Rifiuta",
     "grants.reply.submitReply": "Invia risposta",
     "grants.reply.currentReply": "Risposta attuale: {reply}",
-    "grants.reply.messageDescription": `Se hai domande, o se hai bisogno di una lettera di invito per un obbligo di visto per favore, scrivi sotto i tuoi dati personali
-(nome/cognome completo, data di nascita, nazionalità, numero di passaporto) e ti invieremo la lettera di invito entro 4 giorni.`,
+    "grants.reply.messageDescription": `Se hai domande o hai bisogno di assistenza, non esitare a contattarci utilizzando il messaggio qui sotto. Per qualsiasi domanda riguardante la conferenza, aiuto con il processo di candidatura o informazioni generali, siamo qui per assisterti.
+
+    Nota: Si prega di NON inviare dettagli personali tramite questo modulo.
+
+    Per le richieste di lettera d'invito per il visto, si prega gentilmente di utilizzare il {visaApplicationFormLink} dedicato. Elaboreremo la tua candidatura e invieremo la lettera d'invito entro 4 giorni dalla presentazione del modulo.`,
 
     "schedule.invitation.sendingReply": "Caricamento in corso",
     "schedule.invitation.replySentWithSuccess":

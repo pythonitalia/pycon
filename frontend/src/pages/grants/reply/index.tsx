@@ -31,8 +31,6 @@ import {
   queryGrant,
 } from "~/types";
 
-import { Conference } from "../../../types";
-
 type GrantReplyFrom = {
   option: StatusOption | null;
   message: string;

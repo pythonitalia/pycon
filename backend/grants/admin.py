@@ -160,28 +160,14 @@ def _check_amounts_are_not_empty(grant: Grant, request):
         )
         return
 
-    if (
-        grant.grant_type
-        in (
-            Grant.ApprovedType.ticket_accommodation,
-            Grant.ApprovedType.ticket_travel_accommodation,
-        )
-        and grant.accommodation_amount is None
-    ):
+    if grant.has_approved_accommodation() and grant.accommodation_amount is None:
         messages.error(
             request,
             f"Grant for {grant.name} is missing 'Accommodation Amount'!",
         )
         return
 
-    if (
-        grant.grant_type
-        in (
-            Grant.ApprovedType.ticket_travel,
-            Grant.ApprovedType.ticket_travel_accommodation,
-        )
-        and grant.travel_amount is None
-    ):
+    if grant.has_approved_travel() and grant.travel_amount is None:
         messages.error(
             request,
             f"Grant for {grant.name} is missing 'Travel Amount'!",
