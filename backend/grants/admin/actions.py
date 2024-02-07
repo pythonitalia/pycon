@@ -10,7 +10,7 @@ from grants.tasks import (
     send_grant_voucher_email,
 )
 from pretix import create_voucher
-from .models import Grant
+from grants.models import Grant
 
 
 def _check_amounts_are_not_empty(grant: Grant, request):

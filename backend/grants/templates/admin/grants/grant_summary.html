@@ -56,21 +56,11 @@
         }
     </style>
 {% endblock %}
+
 {% block content %}
     <div class="back-button">
-        <a href="{% url 'admin:grants_grant_changelist' %}?{{ request.GET.urlencode }}"
-           class="button">Back to List</a>
-    </div>
-    <h1>Grant Summary</h1>
-    <div class="active-filters">
-        <h3>Active Filters:</h3>
-        <ul>
-            {% for filter_name, value in filters.items %}
-                <li>{{ filter_name }}: {{ value }}</li>
-            {% empty %}
-                <li>No filters applied</li>
-            {% endfor %}
-        </ul>
+        <a href="{% url 'admin:conferences_conference_change' conference_id %}"
+           class="button">Back to {{ conference_name }}</a>
     </div>
     <div class="status-filter">
         <h3>Toggle Status Columns</h3>

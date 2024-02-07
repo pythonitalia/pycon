@@ -2,10 +2,7 @@ from pathlib import Path
 from django.core.files.storage import storages
 from django import forms
 from django.contrib import admin, messages
-from django.core import exceptions
 from django.core.cache import cache
-from django.forms import BaseInlineFormSet
-from django.forms.models import ModelForm
 from django.shortcuts import redirect, render
 from django.urls import path, reverse
 from django.utils.translation import gettext_lazy as _
@@ -13,89 +10,40 @@ from ordered_model.admin import (
     OrderedInlineModelAdminMixin,
     OrderedModelAdmin,
     OrderedStackedInline,
-    OrderedTabularInline,
 )
 from itertools import permutations
-from unicodedata import normalize
-from conferences.models import SpeakerVoucher
-from pretix import create_voucher
 from schedule.models import ScheduleItem
-from schedule.tasks import send_speaker_voucher_email
-from sponsors.models import SponsorLevel
-from voting.models import IncludedEvent
-import re
-from .models import (
+from conferences.models import (
     AudienceLevel,
     Conference,
     Deadline,
-    Duration,
     Keynote,
     KeynoteSpeaker,
     Topic,
 )
+from .inlines import (
+    DeadlineInline,
+    DurationInline,
+    SponsorLevelInline,
+    IncludedEventInline,
+)
+from .utils import cleanup_string
+
+from grants.admin.views import summary_view
 
 
-def validate_deadlines_form(forms):
-    existing_types = set()
-    for form in forms:
-        if not form.cleaned_data:
-            return
+def walk_conference_videos_folder(storage, base_path):
+    folders, files = storage.listdir(base_path)
+    all_files = [f"{base_path}{file_}" for file_ in files]
 
-        start = form.cleaned_data["start"]
-        end = form.cleaned_data["end"]
-        delete = form.cleaned_data["DELETE"]
-
-        if start > end:
-            raise exceptions.ValidationError(_("Start date cannot be after end"))
-
-        type = form.cleaned_data["type"]
-
-        if type == Deadline.TYPES.custom or delete:
+    for folder in folders:
+        if not folder:
             continue
 
-        if type in existing_types:
-            raise exceptions.ValidationError(
-                _("You can only have one deadline of type %(type)s") % {"type": type}
-            )
+        new_path = str(Path(base_path, folder)) + "/"
+        all_files.extend(walk_conference_videos_folder(storage, new_path))
 
-        existing_types.add(type)
-
-
-class DeadlineForm(ModelForm):
-    class Meta:
-        model = Deadline
-        fields = ["start", "end", "name", "description", "type", "conference"]
-
-
-class DeadlineFormSet(BaseInlineFormSet):
-    def clean(self):
-        validate_deadlines_form(self.forms)
-
-
-class DeadlineInline(admin.TabularInline):
-    model = Deadline
-    form = DeadlineForm
-    formset = DeadlineFormSet
-
-
-class DurationInline(admin.StackedInline):
-    model = Duration
-    filter_horizontal = ("allowed_submission_types",)
-
-
-class SponsorLevelInline(OrderedTabularInline):
-    model = SponsorLevel
-    fields = ("name", "conference", "sponsors", "order", "move_up_down_links")
-    readonly_fields = (
-        "order",
-        "move_up_down_links",
-    )
-    ordering = ("order",)
-    extra = 1
-
-
-class IncludedEventInline(admin.TabularInline):
-    model = IncludedEvent
+    return all_files
 
 
 @admin.register(Conference)
@@ -188,7 +136,12 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                 "<int:object_id>/video-upload/map-videos",
                 self.admin_site.admin_view(self.map_videos),
                 name="map_videos",
-            )
+            ),
+            path(
+                "<int:object_id>/grants/summary",
+                self.admin_site.admin_view(self.grants_summary),
+                name="grants-summary",
+            ),
         ]
 
     def map_videos(self, request, object_id):
@@ -350,37 +303,10 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
 
         return ""
 
+    def grants_summary(self, request, object_id):
+        context = self.admin_site.each_context(request)
 
-def walk_conference_videos_folder(storage, base_path):
-    folders, files = storage.listdir(base_path)
-    all_files = [f"{base_path}{file_}" for file_ in files]
-
-    for folder in folders:
-        if not folder:
-            continue
-
-        new_path = str(Path(base_path, folder)) + "/"
-        all_files.extend(walk_conference_videos_folder(storage, new_path))
-
-    return all_files
-
-
-@admin.register(Topic)
-class TopicAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(AudienceLevel)
-class AudienceLevelAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Deadline)
-class DeadlineAdmin(admin.ModelAdmin):
-    fieldsets = (
-        ("Info", {"fields": ("name", "description", "type", "conference")}),
-        ("Dates", {"fields": ("start", "end")}),
-    )
+        return summary_view(request, object_id, context)
 
 
 class KeynoteSpeakerForm(forms.ModelForm):
@@ -442,124 +368,19 @@ class KeynoteAdmin(OrderedInlineModelAdminMixin, OrderedModelAdmin):
         return Keynote.all_objects.all()
 
 
-@admin.action(description="Send voucher via email")
-def send_voucher_via_email(modeladmin, request, queryset):
-    is_filtered_by_conference = (
-        queryset.values_list("conference_id").distinct().count() == 1
+@admin.register(Topic)
+class TopicAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(AudienceLevel)
+class AudienceLevelAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Deadline)
+class DeadlineAdmin(admin.ModelAdmin):
+    fieldsets = (
+        ("Info", {"fields": ("name", "description", "type", "conference")}),
+        ("Dates", {"fields": ("start", "end")}),
     )
-
-    if not is_filtered_by_conference:
-        messages.error(request, "Please select only one conference")
-        return
-
-    count = 0
-    for speaker_voucher in queryset.filter(pretix_voucher_id__isnull=False):
-        send_speaker_voucher_email.delay(speaker_voucher_id=speaker_voucher.id)
-        count = count + 1
-
-    messages.success(request, f"{count} Voucher emails scheduled!")
-
-
-@admin.action(description="Create speaker vouchers on Pretix")
-def create_speaker_vouchers_on_pretix(modeladmin, request, queryset):
-    is_filtered_by_conference = (
-        queryset.values_list("conference_id").distinct().count() == 1
-    )
-
-    if not is_filtered_by_conference:
-        messages.error(request, "Please select only one conference")
-        return
-
-    conference = queryset.only("conference_id").first().conference
-
-    if not conference.pretix_speaker_voucher_quota_id:
-        messages.error(
-            request,
-            "Please configure the speaker voucher quota ID in the conference settings",
-        )
-        return
-
-    count = 0
-
-    for speaker_voucher in queryset.filter(pretix_voucher_id__isnull=True):
-        if speaker_voucher.voucher_type == SpeakerVoucher.VoucherType.SPEAKER:
-            price_mode = "set"
-            value = "0.00"
-        elif speaker_voucher.voucher_type == SpeakerVoucher.VoucherType.CO_SPEAKER:
-            price_mode = "percent"
-            value = "25.00"
-
-        pretix_voucher = create_voucher(
-            conference=speaker_voucher.conference,
-            code=speaker_voucher.voucher_code,
-            comment=f"Voucher for user_id={speaker_voucher.user_id}",
-            tag="speakers",
-            quota_id=speaker_voucher.conference.pretix_speaker_voucher_quota_id,
-            price_mode=price_mode,
-            value=value,
-        )
-
-        pretix_voucher_id = pretix_voucher["id"]
-        speaker_voucher.pretix_voucher_id = pretix_voucher_id
-        speaker_voucher.save()
-        count = count + 1
-
-    messages.success(request, f"{count} Vouchers created on Pretix!")
-
-
-class SpeakerVoucherForm(forms.ModelForm):
-    class Meta:
-        model = SpeakerVoucher
-        fields = [
-            "conference",
-            "user",
-            "voucher_type",
-            "voucher_code",
-            "pretix_voucher_id",
-            "voucher_email_sent_at",
-        ]
-
-
-@admin.register(SpeakerVoucher)
-class SpeakerVoucherAdmin(admin.ModelAdmin):
-    form = SpeakerVoucherForm
-    search_fields = ("voucher_code", "user__name", "user__full_name")
-    autocomplete_fields = ("user",)
-    list_filter = (
-        "conference",
-        "voucher_type",
-        ("pretix_voucher_id", admin.EmptyFieldListFilter),
-    )
-    list_display = (
-        "conference",
-        "user_display_name",
-        "voucher_type",
-        "voucher_code",
-        "created_on_pretix",
-        "voucher_email_sent_at",
-        "created",
-    )
-    actions = [
-        create_speaker_vouchers_on_pretix,
-        send_voucher_via_email,
-    ]
-
-    @admin.display(
-        boolean=True,
-    )
-    def created_on_pretix(self, obj):
-        return obj.pretix_voucher_id is not None
-
-    def get_changeform_initial_data(self, request):
-        return {"voucher_code": SpeakerVoucher.generate_code()}
-
-    def user_display_name(self, obj):
-        return obj.user.display_name
-
-
-def cleanup_string(string: str) -> str:
-    new_string = normalize(
-        "NFKD", "".join(char for char in string if char.isprintable())
-    ).lower()
-    new_string = re.sub(r"\s+", " ", new_string)
-    return new_string.strip()
