@@ -309,3 +309,15 @@ class Grant(TimeStampedModel):
             "admin:%s_%s_change" % (self._meta.app_label, self._meta.model_name),
             args=(self.pk,),
         )
+
+    def has_approved_travel(self):
+        return (
+            self.approved_type == Grant.ApprovedType.ticket_travel_accommodation
+            or self.approved_type == Grant.ApprovedType.ticket_travel
+        )
+
+    def has_approved_accommodation(self):
+        return (
+            self.approved_type == Grant.ApprovedType.ticket_accommodation
+            or self.approved_type == Grant.ApprovedType.ticket_travel_accommodation
+        )

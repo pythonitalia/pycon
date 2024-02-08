@@ -74,7 +74,7 @@ dependencies = [
     "jsonschema<4.0.0,>=3.2.0",
     "strawberry-graphql==0.211.1",
     "Werkzeug<2.0.0,>=1.0.1",
-    "pythonit-toolkit==0.1.92",
+    "pythonit-toolkit==0.1.93",
     "django-import-export<4.0.0,>=3.2.0",
     "azure-identity<2.0.0,>=1.12.0",
     "azure-storage-blob<13.0.0,>=12.14.1",

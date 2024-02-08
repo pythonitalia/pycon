@@ -745,15 +745,21 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
       "Congratulations! Your Grant has been approved!",
     "grants.reply.descriptionApproved": `Please, confirm your presence before {replyDeadline}!
 If we don't get news from you before {replyDeadline} we will allocate your grant to another person. `,
-    "grants.reply.confirmed": "Confrim",
+    "grants.reply.confirmed": "Confirm",
     "grants.reply.refused": "Refuse",
     "grants.reply.submitReply": "Submit answer",
     "grants.reply.sendingReply": "Sending your answer!",
     "grants.reply.replySentWithSuccess":
       "Thank you! Your reply has been correctly saved",
     "grants.reply.currentReply": "Your current answer is: {reply}",
-    "grants.reply.messageDescription": `If you have questions, or if you need an invitation letter for a VISA requirement please, write below your personal details
-(complete name/surname, birthdate, nationality, passport number) and we'll send you the invitation letter within 4 days.`,
+    "grants.reply.messageDescription": `If you have questions or need assistance, please feel free to reach out using the message below.
+For any queries regarding the conference, help with the application process, or general information, we're here to assist you.
+
+Note: Please DO NOT send any personal details through this form.
+
+For Visa invitation letter requests, kindly use the dedicated
+{visaApplicationFormLink}. We'll process your application and send the invitation letter within 4 days of form submission.`,
+    "grants.reply.visaApplicationFormLink": "Visa Application Form",
     "homepage.sponsorsSectionText":
       "PyCon Italia can be your platform to gain brand recognition, take leads and recruit from an audience of highly skilled professionals!",
     "homepage.sponsorsSectionCTAText": "Become a sponsor",
@@ -1485,14 +1491,20 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
     "grants.reply.titleApproved":
       "Congratulazioni! Il tuo Grant e' stato approvato! ",
     "grants.reply.descriptionApproved": `Per favore, conferma la tua presenza entro il {replyDeadline}!
-Se non riceveremo una conferma da te prima del {replyDeadlilne}, assegneremo il tuo grant ad un'altra persona.`,
+Se non riceveremo una conferma da te prima del {replyDeadline}, assegneremo il tuo grant ad un'altra persona.`,
     "grants.reply.confirmed": "Conferma",
     "grants.reply.refused": "Rifiuta",
     "grants.reply.submitReply": "Invia risposta",
     "grants.reply.currentReply": "Risposta attuale: {reply}",
-    "grants.reply.messageDescription": `Se hai domande, o se hai bisogno di una lettera di invito per un obbligo di visto per favore, scrivi sotto i tuoi dati personali
-(nome/cognome completo, data di nascita, nazionalità, numero di passaporto) e ti invieremo la lettera di invito entro 4 giorni.`,
+    "grants.reply.sendingReply": "Invio della tua risposta!",
+    "grants.reply.replySentWithSuccess":
+      "Grazie! La tua risposta è stata correttamente salvata",
+    "grants.reply.messageDescription": `Se hai domande o hai bisogno di assistenza, non esitare a contattarci utilizzando il messaggio qui sotto. Per qualsiasi domanda riguardante la conferenza, aiuto con la richiesta di grant o informazioni generali, siamo qui per assisterti.
 
+Nota: Si prega di NON inviare dettagli personali tramite questo modulo.
+
+Per le richieste di lettera d'invito per il visto, si prega gentilmente di utilizzare il {visaApplicationFormLink} dedicato. Elaboreremo la tua richiesta e invieremo la lettera d'invito entro 4 giorni dalla presentazione del modulo.`,
+    "grants.reply.visaApplicationFormLink": "Modulo di Domanda per il Visto",
     "schedule.invitation.sendingReply": "Caricamento in corso",
     "schedule.invitation.replySentWithSuccess":
       "Grazie! La tua risposta è stata salvata",

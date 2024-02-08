@@ -9,4 +9,8 @@ query Grant($conference: String!) {
       applicantMessage
     }
   }
+
+  conference(code: $conference) {
+    visaApplicationFormLink
+  }
 }

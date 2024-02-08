@@ -31,37 +31,31 @@ def send_grant_reply_approved_email(*, grant_id, is_reminder):
         "Reminder: Financial Aid Update" if is_reminder else "Financial Aid Update"
     )
 
-    template = None
+    if not grant.conference.visa_application_form_link:
+        raise ValueError(
+            "Visa Application Form Link Missing: Please ensure the link to the Visa "
+            "Application Form is set in the Conference admin settings."
+        )
+
+    template = EmailTemplate.GRANT_APPROVED
     variables = {
         "replyLink": reply_url,
         "startDate": f"{grant.conference.start:%-d %B}",
         "endDate": f"{grant.conference.end+timedelta(days=1):%-d %B}",
         "deadlineDateTime": f"{grant.applicant_reply_deadline:%-d %B %Y %H:%M %Z}",
         "deadlineDate": f"{grant.applicant_reply_deadline:%-d %B %Y}",
+        "visaApplicationFormLink": grant.conference.visa_application_form_link,
+        "hasApprovedTravel": grant.has_approved_travel(),
+        "hasApprovedAccommodation": grant.has_approved_accommodation(),
     }
 
-    if grant.approved_type == Grant.ApprovedType.ticket_only:
-        template = EmailTemplate.GRANT_APPROVED_TICKET_ONLY
-    elif grant.approved_type == Grant.ApprovedType.ticket_travel:
-        template = EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL
-        if grant.travel_amount == 0:
+    if grant.has_approved_travel():
+        if not grant.travel_amount:
             raise ValueError(
                 "Grant travel amount is set to Zero, can't send the email!"
             )
 
         variables["amount"] = f"{grant.travel_amount:.0f}"
-    elif grant.approved_type == Grant.ApprovedType.ticket_accommodation:
-        template = EmailTemplate.GRANT_APPROVED_TICKET_ACCOMMODATION
-    elif grant.approved_type == Grant.ApprovedType.ticket_travel_accommodation:
-        template = EmailTemplate.GRANT_APPROVED_TICKET_TRAVEL_ACCOMMODATION
-        if grant.travel_amount == 0:
-            raise ValueError(
-                "Grant travel amount is set to Zero, can't send the email!"
-            )
-
-        variables["amount"] = f"{grant.travel_amount:.0f}"
-    else:
-        raise ValueError(f"Grant Approved type `{grant.approved_type}` not valid.")
 
     _send_grant_email(template=template, subject=subject, grant=grant, **variables)
 
