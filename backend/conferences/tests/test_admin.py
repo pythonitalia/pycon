@@ -9,11 +9,14 @@ from django.contrib.admin.sites import AdminSite
 from conferences.admin import (
     ConferenceAdmin,
     DeadlineForm,
+)
+from conferences.admin.actions import (
     create_speaker_vouchers_on_pretix,
     send_voucher_via_email,
     validate_deadlines_form,
     walk_conference_videos_folder,
 )
+
 from conferences.models import SpeakerVoucher
 from schedule.models import ScheduleItem
 

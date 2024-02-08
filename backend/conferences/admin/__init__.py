@@ -4,5 +4,4 @@ from .conference import (
     DeadlineAdmin,  #  noqa
     TopicAdmin,  #  noqa
     AudienceLevelAdmin,  #  noqa
-    BadgeScanAdmin,  #  noqa
 )  #  noqa

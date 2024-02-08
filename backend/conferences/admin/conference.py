@@ -1,6 +1,5 @@
 from pathlib import Path
 from django.core.files.storage import storages
-from django import forms
 from django.contrib import admin, messages
 from django.core.cache import cache
 from django.shortcuts import redirect, render
@@ -28,7 +27,7 @@ from .inlines import (
     IncludedEventInline,
 )
 from .utils import cleanup_string
-
+from .forms import KeynoteSpeakerForm
 from grants.admin.views import summary_view
 
 
@@ -307,15 +306,6 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
         context = self.admin_site.each_context(request)
 
         return summary_view(request, object_id, context)
-
-
-class KeynoteSpeakerForm(forms.ModelForm):
-    class Meta:
-        model = KeynoteSpeaker
-        fields = (
-            "keynote",
-            "user",
-        )
 
 
 class KeynoteSpeakerInline(OrderedStackedInline):

@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.core import exceptions
 from django.forms import BaseInlineFormSet
-from django.forms.models import ModelForm
 from django.utils.translation import gettext_lazy as _
 from ordered_model.admin import (
     OrderedTabularInline,
@@ -12,6 +11,7 @@ from conferences.models import (
     Deadline,
     Duration,
 )
+from .forms import DeadlineForm
 
 
 def validate_deadlines_form(forms):
@@ -38,12 +38,6 @@ def validate_deadlines_form(forms):
             )
 
         existing_types.add(type)
-
-
-class DeadlineForm(ModelForm):
-    class Meta:
-        model = Deadline
-        fields = ["start", "end", "name", "description", "type", "conference"]
 
 
 class DeadlineFormSet(BaseInlineFormSet):

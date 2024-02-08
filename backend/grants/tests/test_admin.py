@@ -5,7 +5,7 @@ import time_machine
 import pytest
 from django.utils import timezone
 
-from grants.admin import (
+from grants.admin.actions import (
     create_grant_vouchers_on_pretix,
     send_reply_emails,
     send_voucher_via_email,

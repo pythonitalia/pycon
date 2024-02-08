@@ -1,20 +1,7 @@
-from django import forms
 from django.contrib import admin
 from conferences.models import SpeakerVoucher
 from .actions import create_speaker_vouchers_on_pretix, send_voucher_via_email
-
-
-class SpeakerVoucherForm(forms.ModelForm):
-    class Meta:
-        model = SpeakerVoucher
-        fields = [
-            "conference",
-            "user",
-            "voucher_type",
-            "voucher_code",
-            "pretix_voucher_id",
-            "voucher_email_sent_at",
-        ]
+from .forms import SpeakerVoucherForm
 
 
 @admin.register(SpeakerVoucher)
