@@ -178,7 +178,7 @@ def _check_amounts_are_not_empty(grant: Grant, request):
     return True
 
 
-def check_single_conference(func):
+def validate_single_conference_selection(func):
     """
     Ensure all selected grants in the queryset belong to the same conference.
     """
@@ -199,7 +199,7 @@ def check_single_conference(func):
 
 
 @admin.action(description="Send Approved/Waiting List/Rejected reply emails")
-@check_single_conference
+@validate_single_conference_selection
 def send_reply_emails(modeladmin, request, queryset):
     conference = queryset.first().conference
 
@@ -261,7 +261,7 @@ def send_reply_emails(modeladmin, request, queryset):
 
 
 @admin.action(description="Send reminder to waiting confirmation grants")
-@check_single_conference
+@validate_single_conference_selection
 def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryset):
     queryset = queryset.filter(
         status__in=(Grant.Status.waiting_for_confirmation,),
@@ -284,7 +284,7 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
 
 
 @admin.action(description="Send Waiting List update email")
-@check_single_conference
+@validate_single_conference_selection
 def send_reply_email_waiting_list_update(modeladmin, request, queryset):
     queryset = queryset.filter(
         status__in=(
@@ -299,7 +299,7 @@ def send_reply_email_waiting_list_update(modeladmin, request, queryset):
 
 
 @admin.action(description="Send voucher via email")
-@check_single_conference
+@validate_single_conference_selection
 def send_voucher_via_email(modeladmin, request, queryset):
     count = 0
     for grant in queryset.filter(pretix_voucher_id__isnull=False):
@@ -316,7 +316,7 @@ def _generate_voucher_code(prefix: str) -> str:
 
 
 @admin.action(description="Create grant vouchers on Pretix")
-@check_single_conference
+@validate_single_conference_selection
 def create_grant_vouchers_on_pretix(modeladmin, request, queryset):
     conference = queryset.first().conference
 
