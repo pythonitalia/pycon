@@ -245,6 +245,7 @@ def test_handle_grant_approved_ticket_fails_with_no_visa_application_form_link(
     conference = conference_factory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
+        visa_application_form_link="",
     )
     user = UserFactory()
     grant = grant_factory(
