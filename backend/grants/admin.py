@@ -28,6 +28,7 @@ from submissions.models import Submission
 from .models import Grant
 from django.db.models import Exists, OuterRef
 
+from functools import wraps
 from django.contrib.admin import SimpleListFilter
 
 EXPORT_GRANTS_FIELDS = (
@@ -158,25 +159,58 @@ def _check_amounts_are_not_empty(grant: Grant, request):
             request,
             f"Grant for {grant.name} is missing 'Total Amount'!",
         )
-        return
+        return False
 
     if grant.has_approved_accommodation() and grant.accommodation_amount is None:
         messages.error(
             request,
             f"Grant for {grant.name} is missing 'Accommodation Amount'!",
         )
-        return
+        return False
 
     if grant.has_approved_travel() and grant.travel_amount is None:
         messages.error(
             request,
             f"Grant for {grant.name} is missing 'Travel Amount'!",
         )
-        return
+        return False
+
+    return True
+
+
+def check_single_conference(func):
+    """
+    Ensure all selected grants in the queryset belong to the same conference.
+    """
+
+    @wraps(func)
+    def wrapper(modeladmin, request, queryset):
+        is_filtered_by_conference = (
+            queryset.values_list("conference_id").distinct().count() == 1
+        )
+
+        if not is_filtered_by_conference:
+            messages.error(request, "Please select only one conference")
+            return
+
+        return func(modeladmin, request, queryset)
+
+    return wrapper
 
 
 @admin.action(description="Send Approved/Waiting List/Rejected reply emails")
+@check_single_conference
 def send_reply_emails(modeladmin, request, queryset):
+    conference = queryset.first().conference
+
+    if not conference.visa_application_form_link:
+        messages.error(
+            request,
+            "Visa Application Form Link Missing: Please ensure the link to the Visa "
+            "Application Form is set in the Conference admin settings.",
+        )
+        return
+
     queryset = queryset.filter(
         status__in=(
             Grant.Status.approved,
@@ -193,6 +227,7 @@ def send_reply_emails(modeladmin, request, queryset):
         return
 
     for grant in queryset:
+
         if grant.status in (Grant.Status.approved,):
             if grant.approved_type is None:
                 messages.error(
@@ -201,7 +236,8 @@ def send_reply_emails(modeladmin, request, queryset):
                 )
                 return
 
-            _check_amounts_are_not_empty(grant, request)
+            if not _check_amounts_are_not_empty(grant, request):
+                return
 
             now = timezone.now()
             grant.applicant_reply_deadline = timezone.datetime(
@@ -225,6 +261,7 @@ def send_reply_emails(modeladmin, request, queryset):
 
 
 @admin.action(description="Send reminder to waiting confirmation grants")
+@check_single_conference
 def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryset):
     queryset = queryset.filter(
         status__in=(Grant.Status.waiting_for_confirmation,),
@@ -247,6 +284,7 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
 
 
 @admin.action(description="Send Waiting List update email")
+@check_single_conference
 def send_reply_email_waiting_list_update(modeladmin, request, queryset):
     queryset = queryset.filter(
         status__in=(
@@ -261,15 +299,8 @@ def send_reply_email_waiting_list_update(modeladmin, request, queryset):
 
 
 @admin.action(description="Send voucher via email")
+@check_single_conference
 def send_voucher_via_email(modeladmin, request, queryset):
-    is_filtered_by_conference = (
-        queryset.values_list("conference_id").distinct().count() == 1
-    )
-
-    if not is_filtered_by_conference:
-        messages.error(request, "Please select only one conference")
-        return
-
     count = 0
     for grant in queryset.filter(pretix_voucher_id__isnull=False):
         send_grant_voucher_email.delay(grant_id=grant.id)
@@ -285,15 +316,8 @@ def _generate_voucher_code(prefix: str) -> str:
 
 
 @admin.action(description="Create grant vouchers on Pretix")
+@check_single_conference
 def create_grant_vouchers_on_pretix(modeladmin, request, queryset):
-    is_filtered_by_conference = (
-        queryset.values_list("conference_id").distinct().count() == 1
-    )
-
-    if not is_filtered_by_conference:
-        messages.error(request, "Please select only one conference")
-        return
-
     conference = queryset.first().conference
 
     if not conference.pretix_speaker_voucher_quota_id:

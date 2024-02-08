@@ -15,12 +15,54 @@ from grants.models import Grant
 pytestmark = pytest.mark.django_db
 
 
+def test_send_reply_emails_with_grants_from_multiple_conferences(
+    rf, grant_factory, mocker, conference_factory
+):
+    """
+    Test that sending reply emails does not proceed when selected grants belong
+    to different conferences and appropriately displays an error message.
+    """
+    mock_messages = mocker.patch("grants.admin.messages")
+    conference1 = conference_factory()
+    conference2 = conference_factory()
+    grant1 = grant_factory(conference=conference1, status=Grant.Status.approved)
+    grant2 = grant_factory(conference=conference2, status=Grant.Status.waiting_list)
+    grant3 = grant_factory(conference=conference2, status=Grant.Status.rejected)
+    request = rf.get("/")
+    mock_send_approved_email = mocker.patch(
+        "grants.admin.send_grant_reply_approved_email.delay"
+    )
+    mock_send_waiting_list_email = mocker.patch(
+        "grants.admin.send_grant_reply_waiting_list_email.delay"
+    )
+    mock_send_rejected_email = mocker.patch(
+        "grants.admin.send_grant_reply_rejected_email.delay"
+    )
+
+    send_reply_emails(
+        None,
+        request=request,
+        queryset=Grant.objects.filter(id__in=[grant1.id, grant2.id, grant3.id]),
+    )
+
+    mock_messages.error.assert_called_once_with(
+        request,
+        "Please select only one conference",
+    )
+    mock_send_approved_email.assert_not_called()
+    mock_send_waiting_list_email.assert_not_called()
+    mock_send_rejected_email.assert_not_called()
+
+
 def test_send_reply_emails_approved_grant_missing_approved_type(
     rf, grant_factory, mocker
 ):
     mock_messages = mocker.patch("grants.admin.messages")
     grant = grant_factory(status=Grant.Status.approved, approved_type=None)
     request = rf.get("/")
+    mock_send_approved_email = mocker.patch(
+        "grants.admin.send_grant_reply_approved_email.delay"
+    )
 
     send_reply_emails(None, request=request, queryset=Grant.objects.all())
 
@@ -28,6 +70,7 @@ def test_send_reply_emails_approved_grant_missing_approved_type(
         request,
         f"Grant for {grant.name} is missing 'Grant Approved Type'!",
     )
+    mock_send_approved_email.assert_not_called()
 
 
 def test_send_reply_emails_approved_missing_amount(rf, grant_factory, mocker):
@@ -41,6 +84,9 @@ def test_send_reply_emails_approved_missing_amount(rf, grant_factory, mocker):
     grant.total_amount = None
     grant.save()
     request = rf.get("/")
+    mock_send_approved_email = mocker.patch(
+        "grants.admin.send_grant_reply_approved_email.delay"
+    )
 
     send_reply_emails(None, request=request, queryset=Grant.objects.all())
 
@@ -48,6 +94,7 @@ def test_send_reply_emails_approved_missing_amount(rf, grant_factory, mocker):
         request,
         f"Grant for {grant.name} is missing 'Total Amount'!",
     )
+    mock_send_approved_email.assert_not_called()
 
 
 def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
@@ -61,12 +108,18 @@ def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
         conference__visa_application_form_link="https://forms.com/visa",
     )
     request = rf.get("/")
+    mock_send_approved_email = mocker.patch(
+        "grants.admin.send_grant_reply_approved_email.delay"
+    )
 
     send_reply_emails(None, request=request, queryset=Grant.objects.all())
 
     mock_messages.info.assert_called_once_with(
         request,
         f"Sent Approved reply email to {grant.name}",
+    )
+    mock_send_approved_email.assert_called_once_with(
+        grant_id=grant.id, is_reminder=False
     )
 
     grant.refresh_from_db()
@@ -82,14 +135,16 @@ def test_send_reply_emails_waiting_list(rf, grant_factory, mocker):
         status=Grant.Status.waiting_list,
     )
     request = rf.get("/")
-    mock_send = mocker.patch("grants.admin.send_grant_reply_waiting_list_email")
+    mock_send_waiting_list_email = mocker.patch(
+        "grants.admin.send_grant_reply_waiting_list_email.delay"
+    )
 
     send_reply_emails(None, request=request, queryset=Grant.objects.all())
 
     mock_messages.info.assert_called_once_with(
         request, f"Sent Waiting List reply email to {grant.name}"
     )
-    mock_send.delay.assert_called_once_with(grant_id=grant.id)
+    mock_send_waiting_list_email.assert_called_once_with(grant_id=grant.id)
 
 
 def test_send_reply_emails_waiting_list_maybe(rf, grant_factory, mocker):
@@ -98,14 +153,16 @@ def test_send_reply_emails_waiting_list_maybe(rf, grant_factory, mocker):
         status=Grant.Status.waiting_list_maybe,
     )
     request = rf.get("/")
-    mock_send = mocker.patch("grants.admin.send_grant_reply_waiting_list_email")
+    mock_send_waiting_list_email = mocker.patch(
+        "grants.admin.send_grant_reply_waiting_list_email.delay"
+    )
 
     send_reply_emails(None, request=request, queryset=Grant.objects.all())
 
     mock_messages.info.assert_called_once_with(
         request, f"Sent Waiting List reply email to {grant.name}"
     )
-    mock_send.delay.assert_called_once_with(grant_id=grant.id)
+    mock_send_waiting_list_email.assert_called_once_with(grant_id=grant.id)
 
 
 def test_send_reply_emails_rejected(rf, grant_factory, mocker):
@@ -114,12 +171,16 @@ def test_send_reply_emails_rejected(rf, grant_factory, mocker):
         status=Grant.Status.rejected,
     )
     request = rf.get("/")
+    mock_send_rejected_email = mocker.patch(
+        "grants.admin.send_grant_reply_rejected_email.delay"
+    )
 
     send_reply_emails(None, request=request, queryset=Grant.objects.all())
 
     mock_messages.info.assert_called_once_with(
         request, f"Sent Rejected reply email to {grant.name}"
     )
+    mock_send_rejected_email.assert_called_once_with(grant_id=grant.id)
 
 
 @time_machine.travel("2020-10-10 10:00:00", tick=False)
