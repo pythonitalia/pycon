@@ -1,3 +1,4 @@
+#import "../../fragments/slot.graphql"
 query ConferenceSchedule($conferenceId: ID!) {
   conferenceSchedule(conferenceId: $conferenceId) {
     id
@@ -9,58 +10,8 @@ query ConferenceSchedule($conferenceId: ID!) {
         name
       }
       slots {
-        id
-        hour
-        duration
-        type
-        items {
-          id
-          title
-          type
-          duration
-          status
-          rooms {
-            id
-            name
-          }
-          speakers {
-            id
-            fullname
-          }
-          submission {
-            id
-            title
-            duration
-          }
-        }
+        ...SlotFragment
       }
     }
   }
 }
-
-# query ConferenceSchedule($conferenceId: ID!) {
-#   conference(id: $conferenceId) {
-#     id
-#     name
-#     schedule {
-#       id
-#       name
-#       startTime
-#       endTime
-#       sessions {
-#         id
-#         name
-#         startTime
-#         endTime
-#         room {
-#           id
-#           name
-#         }
-#         speakers {
-#           id
-#           name
-#         }
-#       }
-#     }
-#   }
-# }

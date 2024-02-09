@@ -1,12 +1,41 @@
 import clsx from "clsx";
 import { useDrag, useDrop } from "react-dnd";
 
-export const Placeholder = ({ rowStart, rowEnd, index }) => {
+import type { Room, ScheduleItem, Slot } from "../../types";
+import { useCurrentConference } from "../utils/conference";
+import { useChangeScheduleItemSlotMutation } from "./change-schedule-item-slot.generated";
+
+type Props = {
+  rowStart: number;
+  rowEnd: number;
+  index: number;
+  slot: Slot;
+  room: Room;
+};
+
+export const Placeholder = ({ rowStart, rowEnd, index, slot, room }: Props) => {
+  const conferenceId = useCurrentConference();
+  const [changeScheduleItemSlot, { loading: movingItem }] =
+    useChangeScheduleItemSlotMutation({});
+
+  const onMoveItem = async (item: ScheduleItem) => {
+    await changeScheduleItemSlot({
+      variables: {
+        input: {
+          conferenceId,
+          rooms: [room.id],
+          scheduleItemId: item.id,
+          newSlotId: slot.id,
+        },
+      },
+    });
+  };
+
   const [{ isOver, canDrop }, dropRef] = useDrop(
     () => ({
       accept: "scheduleItem",
-      drop: async (scheduleItem) => {
-        console.log("drop", scheduleItem);
+      drop: async ({ item }) => {
+        onMoveItem(item);
       },
       collect: (mon) => ({
         isOver: !!mon.isOver(),
@@ -32,6 +61,7 @@ export const Placeholder = ({ rowStart, rowEnd, index }) => {
         gridRowEnd: rowEnd,
       }}
     >
+      {movingItem && <span>Please wait</span>}
       Add proposal
       <PlusIcon />
     </div>

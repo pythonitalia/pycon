@@ -49,12 +49,14 @@ export const Calendar = ({ day: { day, rooms, slots } }: Props) => {
                 {formatHour(slot.hour)} [{slot.duration} mins]
               </div>
 
-              {rooms.map((_, index) => (
+              {rooms.map((room, index) => (
                 <Placeholder
                   key={`placeholder-${slot.id}-${index}`}
                   rowStart={rowStart}
                   rowEnd={rowEnd}
                   index={index}
+                  slot={slot}
+                  room={room}
                 />
               ))}
 

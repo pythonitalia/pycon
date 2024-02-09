@@ -1,0 +1,11 @@
+#import "../../fragments/schedule-item-fragment.graphql"
+
+fragment SlotFragment on Slot {
+  id
+  hour
+  duration
+  type
+  items {
+    ...ScheduleItemFragment
+  }
+}

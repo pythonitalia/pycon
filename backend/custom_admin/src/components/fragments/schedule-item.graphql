@@ -1,0 +1,20 @@
+fragment ScheduleItemFragment on ScheduleItem {
+  id
+  title
+  type
+  duration
+  status
+  rooms {
+    id
+    name
+  }
+  speakers {
+    id
+    fullname
+  }
+  submission {
+    id
+    title
+    duration
+  }
+}

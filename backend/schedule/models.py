@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Optional
+from conferences.querysets import ConferenceQuerySetMixin
 
 from django.core import exceptions
 from django.db import models
@@ -11,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
 from ordered_model.models import OrderedModel
+from django.db.models import QuerySet
 
 from conferences.models import Conference, Keynote
 from helpers.unique_slugify import unique_slugify
@@ -83,7 +85,13 @@ class DayRoomThroughModel(OrderedModel):
         verbose_name_plural = _("Day - Rooms")
 
 
+class SlotQuerySet(QuerySet, ConferenceQuerySetMixin):
+    pass
+
+
 class Slot(models.Model):
+    conference_reference = "day__conference"
+
     TYPES = Choices(
         # Type of slot where something is happening in the conference
         ("default", _("Default")),
@@ -99,11 +107,17 @@ class Slot(models.Model):
         choices=TYPES, max_length=100, verbose_name=_("type"), default=TYPES.default
     )
 
+    objects = SlotQuerySet().as_manager()
+
     def __str__(self):
         return f"[{self.day.conference.name}] {self.day.day} - {self.hour}"
 
     class Meta:
         ordering = ["hour"]
+
+
+class ScheduleItemQuerySet(QuerySet, ConferenceQuerySetMixin):
+    pass
 
 
 class ScheduleItem(TimeStampedModel):
@@ -226,6 +240,8 @@ class ScheduleItem(TimeStampedModel):
     youtube_video_id = models.CharField(
         _("Youtube video ID"), max_length=1024, blank=True, default=""
     )
+
+    objects = ScheduleItemQuerySet().as_manager()
 
     @cached_property
     def speakers(self):
