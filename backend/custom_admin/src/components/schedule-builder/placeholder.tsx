@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { useDrag, useDrop } from "react-dnd";
 
-import type { Room, ScheduleItem, Slot } from "../../types";
+import type { Day, Room, ScheduleItem, Slot } from "../../types";
 import { useCurrentConference } from "../utils/conference";
 import { useAddItemModal } from "./add-item-modal/context";
 import { useChangeScheduleItemSlotMutation } from "./change-schedule-item-slot.generated";
@@ -12,9 +12,17 @@ type Props = {
   index: number;
   slot: Slot;
   room: Room;
+  day: Day;
 };
 
-export const Placeholder = ({ rowStart, rowEnd, index, slot, room }: Props) => {
+export const Placeholder = ({
+  rowStart,
+  rowEnd,
+  index,
+  slot,
+  room,
+  day,
+}: Props) => {
   const conferenceId = useCurrentConference();
   const { open, data } = useAddItemModal();
   const [changeScheduleItemSlot, { loading: isMovingItemLoading }] =
@@ -49,12 +57,12 @@ export const Placeholder = ({ rowStart, rowEnd, index, slot, room }: Props) => {
 
   const openAddModal = () => {
     open({
+      day,
       slot,
       room,
     });
   };
 
-  console.log("isOver", isOver);
   return (
     <div
       ref={dropRef}

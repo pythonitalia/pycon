@@ -10,7 +10,8 @@ type Props = {
   day: ConferenceScheduleQuery["conferenceSchedule"]["days"][0];
 };
 
-export const Calendar = ({ day: { id, day, rooms, slots } }: Props) => {
+export const Calendar = ({ day }: Props) => {
+  const { id, day: date, rooms, slots } = day;
   const { open } = useDjangoAdminEditor();
   const numOfRooms = rooms.length;
   let rowStartPos = 2;
@@ -24,7 +25,7 @@ export const Calendar = ({ day: { id, day, rooms, slots } }: Props) => {
   return (
     <div className="mb-6">
       <span className="sticky top-0 flex items-center gap-3 z-[100] bg-white">
-        <h1 className="text-red-900 text-3xl">{day}</h1>
+        <h1 className="text-red-900 text-3xl">{date}</h1>
         <a className="underline" href="#" onClick={openDayInAdmin}>
           Edit day in admin
         </a>
@@ -70,6 +71,7 @@ export const Calendar = ({ day: { id, day, rooms, slots } }: Props) => {
                   index={index}
                   slot={slot}
                   room={room}
+                  day={day}
                 />
               ))}
 

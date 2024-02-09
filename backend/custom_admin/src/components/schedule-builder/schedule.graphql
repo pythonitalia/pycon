@@ -8,6 +8,7 @@ query ConferenceSchedule($conferenceId: ID!) {
       rooms {
         id
         name
+        type
       }
       slots {
         ...SlotFragment

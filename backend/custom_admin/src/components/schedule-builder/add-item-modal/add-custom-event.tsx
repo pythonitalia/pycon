@@ -1,15 +1,24 @@
 import { useState } from "react";
 
+import type { Room } from "../../../types";
 import { useCurrentConference } from "../../utils/conference";
 import { useAddItemModal } from "./context";
 import { useCreateScheduleItemMutation } from "./create-schedule-item.generated";
 
 export const AddCustomEvent = () => {
-  const { data } = useAddItemModal();
+  const { data, close } = useAddItemModal();
   const conferenceId = useCurrentConference();
   const [createScheduleItem] = useCreateScheduleItemMutation();
 
-  const onCreate = async ({ title, type }: { title: string; type: string }) => {
+  const onCreate = async ({
+    title,
+    type,
+    rooms,
+  }: {
+    title: string;
+    type: string;
+    rooms: Room[];
+  }) => {
     await createScheduleItem({
       variables: {
         input: {
@@ -17,11 +26,12 @@ export const AddCustomEvent = () => {
           type: type,
           title: title,
           slotId: data.slot.id,
-          rooms: [data.room.id],
+          rooms: rooms.map((room) => room.id),
           languageId: null,
         },
       },
     });
+    close();
   };
 
   return (
@@ -33,32 +43,40 @@ export const AddCustomEvent = () => {
 };
 
 const CustomDefinedOptions = ({ onCreate }) => {
+  const {
+    data: {
+      day: { rooms },
+    },
+  } = useAddItemModal();
+  const allTalkRooms = rooms.filter((room) => room.type === "talk");
+  const allRooms = rooms;
+
   return (
     <>
       <strong>Add Custom from list:</strong>
       <ul className="my-2">
-        <Option onClick={onCreate} type="break">
+        <Option onClick={onCreate} type="break" rooms={allTalkRooms}>
           Room change
         </Option>
-        <Option onClick={onCreate} type="break">
+        <Option onClick={onCreate} type="break" rooms={allRooms}>
           Lunch 🍝
         </Option>
-        <Option onClick={onCreate} type="break">
+        <Option onClick={onCreate} type="break" rooms={allRooms}>
           Coffee Break ☕️
         </Option>
-        <Option onClick={onCreate} type="break">
+        <Option onClick={onCreate} type="break" rooms={allRooms}>
           Welcome Coffee
         </Option>
-        <Option onClick={onCreate} type="custom">
+        <Option onClick={onCreate} type="custom" rooms={allRooms}>
           Keynote Announcement Soon!
         </Option>
-        <Option onClick={onCreate} type="announcements">
+        <Option onClick={onCreate} type="announcements" rooms={allTalkRooms}>
           Opening
         </Option>
-        <Option onClick={onCreate} type="registration">
+        <Option onClick={onCreate} type="registration" rooms={allTalkRooms}>
           Registration
         </Option>
-        <Option onClick={onCreate} type="announcements">
+        <Option onClick={onCreate} type="announcements" rooms={allRooms}>
           Closing
         </Option>
       </ul>
@@ -66,13 +84,14 @@ const CustomDefinedOptions = ({ onCreate }) => {
   );
 };
 
-const Option = ({ children, type, onClick }) => {
+const Option = ({ children, type, rooms, onClick }) => {
   return (
     <li
       onClick={() => {
         onClick({
           title: children,
-          type: type,
+          type,
+          rooms,
         });
       }}
       className="p-2 bg-slate-300 odd:bg-slate-200 cursor-pointer hover:bg-slate-400"
@@ -83,11 +102,15 @@ const Option = ({ children, type, onClick }) => {
 };
 
 const CustomByHand = ({ onCreate }) => {
+  const {
+    data: { room: selectedRoom },
+  } = useAddItemModal();
+
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
 
   const create = () => {
-    onCreate({ title, type });
+    onCreate({ title, type, rooms: [selectedRoom] });
   };
 
   return (
@@ -113,7 +136,7 @@ const CustomByHand = ({ onCreate }) => {
           value={type}
           onChange={(e) => setType(e.target.selectedOptions[0].value)}
         >
-          <option selected value="" disabled>
+          <option value="" disabled>
             Choose one
           </option>
           <option value="talk">Talk</option>

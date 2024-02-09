@@ -11,6 +11,7 @@ export const SearchEvent = () => {
   const { data, loading } = useSearchEventsQuery({
     variables: { conferenceId, query: searchQuery },
     skip: !searchQuery,
+    returnPartialData: true,
   });
   const changeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -34,7 +35,7 @@ export const SearchEvent = () => {
         {!loading && data?.searchEvents.length === 0 && (
           <span>No events found</span>
         )}
-        {!loading && data?.searchEvents.length > 0 && (
+        {data?.searchEvents.length > 0 && (
           <ul>
             {data.searchEvents.map((event) => {
               if (event.__typename === "Proposal") {
