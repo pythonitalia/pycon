@@ -1,7 +1,7 @@
 import { useDrag } from "react-dnd";
 
+import { useDjangoAdminEditor } from "../shared/django-admin-editor-modal/context";
 import { convertHoursToMinutes } from "../utils/time";
-import { useIframeEditor } from "./context";
 
 export const Item = ({ slots, slot, item, rooms, rowStart }) => {
   const roomIndexes = item.rooms
@@ -9,7 +9,7 @@ export const Item = ({ slots, slot, item, rooms, rowStart }) => {
     .sort();
 
   const start = convertHoursToMinutes(slot.hour);
-  const duration = item.duration || slot.duration || item.submission?.duration;
+  const duration = item.duration || slot.duration || item.proposal?.duration;
 
   const end = start + duration;
 
@@ -57,11 +57,11 @@ const ScheduleItemCard = ({ item, duration }) => {
     }),
     [],
   );
-  const { open } = useIframeEditor();
+  const { open } = useDjangoAdminEditor();
 
   const openEditLink = (e) => {
     e.preventDefault();
-    open(item.id);
+    open(`/schedule/scheduleitem/${item.id}/change`);
   };
 
   return (

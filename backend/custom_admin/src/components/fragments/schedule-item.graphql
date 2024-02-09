@@ -1,3 +1,5 @@
+#import "./proposal.graphql"
+#import "./keynote.graphql"
 fragment ScheduleItemFragment on ScheduleItem {
   id
   title
@@ -12,9 +14,10 @@ fragment ScheduleItemFragment on ScheduleItem {
     id
     fullname
   }
-  submission {
-    id
-    title
-    duration
+  proposal {
+    ...ProposalFragment
+  }
+  keynote {
+    ...KeynoteFragment
   }
 }

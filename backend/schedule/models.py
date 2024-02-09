@@ -127,6 +127,9 @@ class ScheduleItem(TimeStampedModel):
         ("training", _("Training")),
         ("keynote", _("Keynote")),
         ("panel", _("Panel")),
+        ("registration", _("Registration")),
+        ("announcements", _("Announcements")),
+        ("break", _("Break")),
         ("custom", _("Custom")),
     )
 
@@ -150,7 +153,7 @@ class ScheduleItem(TimeStampedModel):
     slug = models.CharField(_("slug"), max_length=100, blank=True, null=True)
     description = models.TextField(_("description"), blank=True)
 
-    type = models.CharField(choices=TYPES, max_length=10, verbose_name=_("type"))
+    type = models.CharField(choices=TYPES, max_length=100, verbose_name=_("type"))
     status = models.CharField(
         choices=STATUS,
         max_length=25,

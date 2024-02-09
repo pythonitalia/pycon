@@ -1,3 +1,4 @@
+from conferences.querysets import ConferenceQuerySetMixin
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
@@ -10,7 +11,7 @@ from i18n.fields import I18nCharField, I18nTextField
 from pycon.constants import COLORS
 
 
-class KeynoteManager(OrderedModelManager):
+class KeynoteManager(ConferenceQuerySetMixin, OrderedModelManager):
     def get_queryset(self):
         return super().get_queryset().filter(published__lte=timezone.now())
 

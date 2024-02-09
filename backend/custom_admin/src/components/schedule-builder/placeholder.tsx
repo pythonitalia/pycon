@@ -3,6 +3,7 @@ import { useDrag, useDrop } from "react-dnd";
 
 import type { Room, ScheduleItem, Slot } from "../../types";
 import { useCurrentConference } from "../utils/conference";
+import { useAddItemModal } from "./add-item-modal/context";
 import { useChangeScheduleItemSlotMutation } from "./change-schedule-item-slot.generated";
 
 type Props = {
@@ -15,7 +16,8 @@ type Props = {
 
 export const Placeholder = ({ rowStart, rowEnd, index, slot, room }: Props) => {
   const conferenceId = useCurrentConference();
-  const [changeScheduleItemSlot, { loading: movingItem }] =
+  const { open, data } = useAddItemModal();
+  const [changeScheduleItemSlot, { loading: isMovingItemLoading }] =
     useChangeScheduleItemSlotMutation({});
 
   const onMoveItem = async (item: ScheduleItem) => {
@@ -44,14 +46,25 @@ export const Placeholder = ({ rowStart, rowEnd, index, slot, room }: Props) => {
     }),
     [],
   );
+
+  const openAddModal = () => {
+    open({
+      slot,
+      room,
+    });
+  };
+
   console.log("isOver", isOver);
   return (
     <div
       ref={dropRef}
+      onClick={openAddModal}
       className={clsx(
         "p-2 text-center flex items-center justify-center flex-col cursor-pointer hover:bg-orange-600/50 transition-colors",
         {
-          "bg-orange-600/50": isOver && canDrop,
+          "bg-orange-600/50":
+            (isOver && canDrop) ||
+            (data?.room?.id === room.id && data?.slot?.id === slot.id),
         },
       )}
       style={{
@@ -61,8 +74,8 @@ export const Placeholder = ({ rowStart, rowEnd, index, slot, room }: Props) => {
         gridRowEnd: rowEnd,
       }}
     >
-      {movingItem && <span>Please wait</span>}
-      Add proposal
+      {isMovingItemLoading && <span>Please wait</span>}
+      {!isMovingItemLoading && <span>Click to add</span>}
       <PlusIcon />
     </div>
   );

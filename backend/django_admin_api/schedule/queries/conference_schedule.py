@@ -24,6 +24,7 @@ def conference_schedule(conference_id: strawberry.ID) -> Schedule:
         "days__added_rooms",
         "days__slots__items",
         "days__slots__items__rooms",
+        "days__slots__items__keynote",
         "days__slots__items__submission",
         "days__slots__items__submission__speaker",
         "days__slots__items__additional_speakers",

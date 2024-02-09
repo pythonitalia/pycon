@@ -1,33 +1,15 @@
-import { useMemo, useState } from "react";
-
 import { Base } from "../shared/base";
 import { DjangoAdminLayout } from "../shared/django-admin-layout";
+import { AddItemModalProvider } from "./add-item-modal/context";
 import { Calendar } from "./calendar";
-import { IframeEditorContext } from "./context";
-import { EditorIframe } from "./editor-iframe";
 import { useConferenceScheduleQuery } from "./schedule.generated";
 
 export const ScheduleBuilderRoot = () => {
-  const [iframeEditorVisibleScheduleItem, setVisibleScheduleItemIframeEditor] =
-    useState(null);
-  const iframeEditorContextValue = useMemo(
-    () => ({
-      visibleScheduleItemId: iframeEditorVisibleScheduleItem,
-      open: (scheduleItemId) => {
-        setVisibleScheduleItemIframeEditor(scheduleItemId);
-      },
-      close: () => {
-        setVisibleScheduleItemIframeEditor(null);
-      },
-    }),
-    [iframeEditorVisibleScheduleItem],
-  );
-
   return (
     <Base>
-      <IframeEditorContext.Provider value={iframeEditorContextValue}>
+      <AddItemModalProvider>
         <ScheduleBuilder />
-      </IframeEditorContext.Provider>
+      </AddItemModalProvider>
     </Base>
   );
 };
@@ -58,8 +40,6 @@ const ScheduleBuilder = () => {
         { label: "Schedule Builder" },
       ]}
     >
-      <EditorIframe />
-
       {days.map((day) => (
         <Calendar key={day.id} day={day} />
       ))}

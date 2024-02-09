@@ -1,0 +1,18 @@
+fragment ProposalFragment on Proposal {
+  id
+  title
+  duration
+  type {
+    id
+    name
+  }
+  languages {
+    id
+    name
+    code
+  }
+  speaker {
+    id
+    fullname
+  }
+}

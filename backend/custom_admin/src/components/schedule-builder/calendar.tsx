@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 
+import { useDjangoAdminEditor } from "../shared/django-admin-editor-modal/context";
 import { formatHour } from "../utils/time";
 import { Item } from "./item";
 import { Placeholder } from "./placeholder";
@@ -9,13 +10,25 @@ type Props = {
   day: ConferenceScheduleQuery["conferenceSchedule"]["days"][0];
 };
 
-export const Calendar = ({ day: { day, rooms, slots } }: Props) => {
+export const Calendar = ({ day: { id, day, rooms, slots } }: Props) => {
+  const { open } = useDjangoAdminEditor();
   const numOfRooms = rooms.length;
   let rowStartPos = 2;
 
+  const openDayInAdmin = (e) => {
+    e.preventDefault();
+    const url = `/schedule/day/${id}/change`;
+    open(url);
+  };
+
   return (
     <div className="mb-6">
-      <h1 className="text-red-900 text-3xl">{day}</h1>
+      <span className="sticky top-0 flex items-center gap-3 z-[100] bg-white">
+        <h1 className="text-red-900 text-3xl">{day}</h1>
+        <a className="underline" href="#" onClick={openDayInAdmin}>
+          Edit day in admin
+        </a>
+      </span>
       <div
         className="grid gap-1"
         style={{
@@ -25,7 +38,7 @@ export const Calendar = ({ day: { day, rooms, slots } }: Props) => {
         <div></div>
         {rooms.map((room) => (
           <div
-            className="sticky p-2 font-semibold flex items-center justify-center top-0 bg-white z-[100]"
+            className="sticky p-2 font-semibold flex items-center justify-center top-10 bg-white z-[100]"
             key={room.id}
           >
             {room.name}

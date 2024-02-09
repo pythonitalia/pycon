@@ -14,7 +14,7 @@ class Day:
     @classmethod
     def from_model(cls, day):
         return cls(
-            id=day.day,
+            id=day.id,
             day=day.day,
             rooms=[
                 Room.from_model(added_room.room) for added_room in day.added_rooms.all()

@@ -1,6 +1,7 @@
+from django_admin_api.proposals.types.keynote import Keynote
 from django_admin_api.schedule.types.room import Room
 from django_admin_api.schedule.types.user import User
-from django_admin_api.schedule.types.submission import Submission
+from django_admin_api.proposals.types.proposal import Proposal
 import strawberry
 
 
@@ -11,7 +12,8 @@ class ScheduleItem:
     title: str
     status: str
     duration: int | None
-    submission: Submission | None
+    proposal: Proposal | None
+    keynote: Keynote | None
     rooms: list[Room]
     speakers: list[User]
 
@@ -24,8 +26,9 @@ class ScheduleItem:
             status=item.status,
             duration=item.duration,
             rooms=[Room.from_model(room) for room in item.rooms.all()],
-            submission=Submission.from_model(item.submission)
+            proposal=Proposal.from_model(item.submission)
             if item.submission_id
             else None,
+            keynote=Keynote.from_model(item.keynote) if item.keynote_id else None,
             speakers=[User.from_model(speaker) for speaker in item.speakers],
         )
