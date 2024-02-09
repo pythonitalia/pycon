@@ -6,7 +6,7 @@ import { InfoRecap } from "./info-recap";
 
 export const KeynotePreview = ({ keynote }: { keynote: Keynote }) => {
   const conferenceId = useCurrentConference();
-  const { data } = useAddItemModal();
+  const { data, close } = useAddItemModal();
   const [createScheduleItem] = useCreateScheduleItemMutation();
 
   const onAddToSchedule = async () => {
@@ -21,6 +21,7 @@ export const KeynotePreview = ({ keynote }: { keynote: Keynote }) => {
         },
       },
     });
+    close();
   };
 
   return (

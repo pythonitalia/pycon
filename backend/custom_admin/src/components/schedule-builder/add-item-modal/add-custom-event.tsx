@@ -149,7 +149,7 @@ const CustomByHand = ({ onCreate }) => {
           <option value="custom">Custom</option>
         </select>
       </div>
-      <button onClick={create} className="btn w-full">
+      <button onClick={create} className="btn w-full mt-3">
         Create
       </button>
     </>

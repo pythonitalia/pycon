@@ -25,7 +25,7 @@ export const ProposalPreview = ({ proposal }: Props) => {
 
 const AddActions = ({ proposal }: { proposal: Proposal }) => {
   const conferenceId = useCurrentConference();
-  const { data } = useAddItemModal();
+  const { data, close } = useAddItemModal();
   const [createScheduleItem] = useCreateScheduleItemMutation();
   const languages = proposal.languages;
   const onCreate = async (language: Language) => {
@@ -42,6 +42,7 @@ const AddActions = ({ proposal }: { proposal: Proposal }) => {
         },
       },
     });
+    close();
   };
 
   return (

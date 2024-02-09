@@ -1,21 +1,46 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useCurrentConference } from "../../utils/conference";
+import { useDebounce } from "../../utils/use-debounce";
 import { KeynotePreview } from "./keynote-preview";
 import { ProposalPreview } from "./proposal-preview";
-import { useSearchEventsQuery } from "./search-events.generated";
+import { useSearchEventsLazyQuery } from "./search-events.generated";
 
 export const SearchEvent = () => {
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const conferenceId = useCurrentConference();
+
   const [searchQuery, setSearchQuery] = useState("");
-  const { data, loading } = useSearchEventsQuery({
-    variables: { conferenceId, query: searchQuery },
-    skip: !searchQuery,
+  const debouncedSearch = useDebounce(searchQuery, 300);
+  const [runSearch, { data, loading }] = useSearchEventsLazyQuery({
     returnPartialData: true,
   });
+
   const changeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
+
+  useEffect(() => {
+    if (!searchInputRef.current) {
+      return;
+    }
+    searchInputRef.current.focus();
+  }, []);
+
+  useEffect(() => {
+    if (debouncedSearch) {
+      console.log("running search", debouncedSearch);
+
+      runSearch({
+        variables: {
+          conferenceId,
+          query: debouncedSearch,
+        },
+      });
+    } else {
+    }
+  }, [debouncedSearch]);
+
   return (
     <>
       <div className="mb-2">
@@ -23,6 +48,7 @@ export const SearchEvent = () => {
       </div>
       <div>
         <input
+          ref={searchInputRef}
           onChange={changeSearch}
           className="w-full p-3 border"
           type="text"
@@ -35,7 +61,7 @@ export const SearchEvent = () => {
         {!loading && data?.searchEvents.length === 0 && (
           <span>No events found</span>
         )}
-        {data?.searchEvents.length > 0 && (
+        {debouncedSearch && data?.searchEvents.length > 0 && (
           <ul>
             {data.searchEvents.map((event) => {
               if (event.__typename === "Proposal") {
