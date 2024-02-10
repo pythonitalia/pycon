@@ -151,6 +151,7 @@ def send_grant_voucher_email(*, grant_id):
         variables={
             "firstname": get_name(user, "there"),
             "voucherCode": voucher_code,
+            "hasApprovedAccommodation": grant.has_approved_accommodation(),
         },
         reply_to=[
             "grants@pycon.it",

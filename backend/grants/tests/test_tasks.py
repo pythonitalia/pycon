@@ -33,6 +33,7 @@ def test_send_grant_voucher_email(settings, grant_factory):
     grant = grant_factory(
         user=user,
         voucher_code="ABC123",
+        approved_type=Grant.ApprovedType.ticket_only,
     )
 
     with patch("grants.tasks.send_email") as email_mock:
@@ -45,6 +46,7 @@ def test_send_grant_voucher_email(settings, grant_factory):
         variables={
             "firstname": "Marco Acierno",
             "voucherCode": "ABC123",
+            "hasApprovedAccommodation": False,
         },
         reply_to=["grants@pycon.it"],
     )
