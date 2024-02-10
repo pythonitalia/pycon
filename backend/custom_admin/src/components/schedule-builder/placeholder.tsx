@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useDrag, useDrop } from "react-dnd";
+import { useDrop } from "react-dnd";
 
 import type { Day, Room, ScheduleItem, Slot } from "../../types";
 import { useCurrentConference } from "../utils/conference";
@@ -26,7 +26,9 @@ export const Placeholder = ({
   const conferenceId = useCurrentConference();
   const { open, data } = useAddItemModal();
   const [changeScheduleItemSlot, { loading: isMovingItemLoading }] =
-    useChangeScheduleItemSlotMutation({});
+    useChangeScheduleItemSlotMutation({
+      refetchQueries: ["UnassignedScheduleItems"],
+    });
 
   const onMoveItem = async (item: ScheduleItem) => {
     await changeScheduleItemSlot({
@@ -83,7 +85,8 @@ export const Placeholder = ({
       }}
     >
       {isMovingItemLoading && <span>Please wait</span>}
-      {!isMovingItemLoading && <span>Click to add</span>}
+      {!isMovingItemLoading && !canDrop && <span>Click to add</span>}
+      {!isMovingItemLoading && canDrop && <span>Drop here to move</span>}
       <PlusIcon />
     </div>
   );

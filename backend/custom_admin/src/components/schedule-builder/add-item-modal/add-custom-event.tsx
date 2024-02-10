@@ -110,6 +110,9 @@ const CustomByHand = ({ onCreate }) => {
   const [type, setType] = useState("");
 
   const create = () => {
+    if (!title || type === "") {
+      return;
+    }
     onCreate({ title, type, rooms: [selectedRoom] });
   };
 
@@ -150,7 +153,11 @@ const CustomByHand = ({ onCreate }) => {
           <option value="custom">Custom</option>
         </select>
       </div>
-      <button onClick={create} className="btn w-full mt-3">
+      <button
+        disabled={!title || type === ""}
+        onClick={create}
+        className="btn w-full mt-3"
+      >
         Create
       </button>
     </>

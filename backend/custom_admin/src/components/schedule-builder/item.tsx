@@ -44,7 +44,7 @@ export const Item = ({ slots, slot, item, rooms, rowStart }) => {
   );
 };
 
-const ScheduleItemCard = ({ item, duration }) => {
+export const ScheduleItemCard = ({ item, duration }) => {
   const [{ opacity }, dragRef] = useDrag(
     () => ({
       type: "scheduleItem",

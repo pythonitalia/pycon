@@ -11,7 +11,7 @@ from django.db import transaction
 class ChangeScheduleItemSlotInput:
     conference_id: strawberry.ID
     schedule_item_id: strawberry.ID
-    new_slot_id: strawberry.ID
+    new_slot_id: strawberry.ID | None
     rooms: list[strawberry.ID]
 
 
@@ -21,15 +21,20 @@ def change_schedule_item_slot(
 ) -> list[Slot]:
     conference_id = input.conference_id
 
-    new_slot = SlotModel.objects.for_conference(conference_id).get(id=input.new_slot_id)
     schedule_item = ScheduleItemModel.objects.for_conference(conference_id).get(
         id=input.schedule_item_id
     )
 
-    old_slot = schedule_item.slot
+    new_slot = (
+        SlotModel.objects.for_conference(conference_id).get(id=input.new_slot_id)
+        if input.new_slot_id
+        else None
+    )
+
+    old_slot = schedule_item.slot if schedule_item.slot_id else None
     old_rooms_names = ",".join(schedule_item.rooms.values_list("name", flat=True))
 
-    slot_changed = old_slot.id != new_slot.id
+    slot_changed = old_slot != new_slot
     rooms_changed = set(
         map(str, schedule_item.rooms.values_list("id", flat=True))
     ) != set(input.rooms)
@@ -40,7 +45,12 @@ def change_schedule_item_slot(
         schedule_item.save(update_fields=["slot"])
 
         changes = []
-        if slot_changed:
+
+        if not old_slot:
+            changes.append(f"Added to slot {str(new_slot)}")
+        elif not new_slot:
+            changes.append(f"Removed from slot {str(old_slot)}")
+        else:
             changes.append(f"Changed Slot from {str(old_slot)} to {str(new_slot)}")
 
         if rooms_changed:
@@ -57,11 +67,11 @@ def change_schedule_item_slot(
             " and ".join(changes),
         )
 
-    updated_slots = [
-        Slot.from_model(old_slot),
-    ]
+    updated_slots = []
+    if old_slot:
+        updated_slots.append(Slot.from_model(old_slot))
 
-    if slot_changed:
+    if new_slot and slot_changed:
         updated_slots.append(Slot.from_model(new_slot))
 
     return updated_slots

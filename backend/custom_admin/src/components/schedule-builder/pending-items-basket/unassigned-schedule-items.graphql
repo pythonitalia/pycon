@@ -1,0 +1,6 @@
+#import "../../.../fragments/schedule-item.graphql"
+query UnassignedScheduleItems($conferenceId: ID!) {
+  unassignedScheduleItems(conferenceId: $conferenceId) {
+    ...ScheduleItemFragment
+  }
+}
