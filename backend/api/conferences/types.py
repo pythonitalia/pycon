@@ -1,3 +1,5 @@
+from django.db.models import Case, When, Value, IntegerField
+from django.db.models import Prefetch
 from participants.models import Participant as ParticipantModel
 from datetime import datetime
 from typing import List, Optional
@@ -86,8 +88,16 @@ class Keynote:
         self.youtube_video_id = youtube_video_id
 
     @classmethod
-    def from_django_model(cls, instance):
-        schedule_item = instance.schedule_item
+    def from_django_model(cls, instance, info):
+        participants_data = info.context._participants_data
+        if not participants_data:
+            participants_data = ParticipantModel.objects.get(
+                user_id__in=instance.speakers.values_list("user_id"),
+                conference_id=instance.conference_id,
+            )
+
+        schedule_item = instance.schedule_items.all()[0]
+
         return cls(
             id=instance.id,
             title=instance.title,
@@ -100,11 +110,7 @@ class Keynote:
                     fullname=speaker.user.full_name,
                     full_name=speaker.user.full_name,
                     participant=Participant.from_model(
-                        # todo: fix this to avoid query
-                        ParticipantModel.objects.get(
-                            user_id=speaker.user.id,
-                            conference_id=instance.conference_id,
-                        )
+                        participants_data[speaker.user_id]
                     ),
                 )
                 for speaker in instance.speakers.all()
@@ -231,12 +237,14 @@ class Conference:
 
     @strawberry.field
     def keynotes(self, info) -> List[Keynote]:
-        return [Keynote.from_django_model(keynote) for keynote in self.keynotes.all()]
+        return [
+            Keynote.from_django_model(keynote, info) for keynote in self.keynotes.all()
+        ]
 
     @strawberry.field
     def keynote(self, info, slug: str) -> Optional[Keynote]:
         keynote = self.keynotes.by_slug(slug).first()
-        return Keynote.from_django_model(keynote) if keynote else None
+        return Keynote.from_django_model(keynote, info) if keynote else None
 
     @strawberry.field
     def talks(self, info) -> List[ScheduleItem]:
@@ -268,25 +276,71 @@ class Conference:
 
     @strawberry.field
     def days(self, info) -> List[Day]:
-        return (
+        days = list(
             self.days.order_by("day")
             .prefetch_related(
                 "slots",
-                "slots__items",
-                "slots__items__audience_level",
-                "slots__items__language",
-                "slots__items__rooms",
-                "slots__items__submission",
-                "slots__items__submission__type",
-                "slots__items__submission__tags",
-                "slots__items__submission__duration",
-                "slots__items__submission__audience_level",
-                "slots__items__submission__speaker",
-                "slots__items__keynote",
-                "slots__items__keynote__speakers",
+                "slots__day",
+                "slots__day__added_rooms",
+                "slots__day__added_rooms__room",
+                Prefetch(
+                    "slots__items",
+                    queryset=(
+                        ScheduleItemModel.objects.for_conference(self.id)
+                        .annotate(
+                            order=Case(
+                                When(type="custom", then=Value(1)),
+                                When(type="talk", then=Value(2)),
+                                When(type="panel", then=Value(3)),
+                                default=Value(4),
+                                output_field=IntegerField(),
+                            )
+                        )
+                        .order_by("order")
+                        .prefetch_related(
+                            "audience_level",
+                            "language",
+                            "rooms",
+                            "additional_speakers",
+                            "additional_speakers__user",
+                            "language",
+                            "submission",
+                            "submission__type",
+                            "submission__tags",
+                            "submission__duration",
+                            "submission__audience_level",
+                            "submission__speaker",
+                            "submission__languages",
+                            "submission__schedule_items",
+                            "keynote",
+                            "keynote__schedule_items",
+                            "keynote__schedule_items__rooms",
+                            "keynote__schedule_items__slot",
+                            "keynote__schedule_items__slot__day",
+                            "keynote__speakers",
+                            "keynote__speakers__user",
+                        )
+                    ),
+                ),
             )
             .all()
         )
+        all_speakers = [
+            speaker.id
+            for day in days
+            for slot in day.slots.all()
+            for item in slot.items.all()
+            for speaker in item.speakers
+        ]
+        info.context._participants_data = {
+            participant.user_id: participant
+            for participant in ParticipantModel.objects.for_conference(self.id)
+            .filter(user_id__in=all_speakers)
+            .prefetch_related("user")
+            .all()
+        }
+
+        return days
 
     @strawberry.field
     def current_day(self, info) -> Optional[Day]:

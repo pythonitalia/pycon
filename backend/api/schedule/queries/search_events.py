@@ -1,3 +1,4 @@
+from api.context import Info
 from django.db.models import Q
 from api.permissions import CanEditSchedule
 from api.conferences.types import Keynote
@@ -13,7 +14,9 @@ class SearchEventsResult:
 
 
 @strawberry.field(permission_classes=[CanEditSchedule])
-def search_events(conference_id: strawberry.ID, query: str) -> SearchEventsResult:
+def search_events(
+    info: Info, conference_id: strawberry.ID, query: str
+) -> SearchEventsResult:
     proposals = (
         SubmissionModel.objects.for_conference(conference_id)
         .accepted()
@@ -42,6 +45,6 @@ def search_events(conference_id: strawberry.ID, query: str) -> SearchEventsResul
     return SearchEventsResult(
         results=[
             *proposals,
-            *[Keynote.from_django_model(keynote) for keynote in keynotes],
+            *[Keynote.from_django_model(keynote, info) for keynote in keynotes],
         ]
     )

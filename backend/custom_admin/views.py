@@ -1,3 +1,4 @@
+from api.context import Context
 from strawberry.django.views import GraphQLView
 import re
 from django.http import HttpResponse
@@ -147,4 +148,5 @@ def get_headers(environ):
 
 
 class DjangoAdminGraphQLView(GraphQLView):
-    pass
+    def get_context(self, request, response) -> Context:
+        return Context(request=request, response=response)

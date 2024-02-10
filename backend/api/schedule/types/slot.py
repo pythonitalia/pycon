@@ -1,6 +1,4 @@
 from enum import Enum
-from django.db.models import Case, When, Value, IntegerField
-from schedule.models import ScheduleItem as ScheduleItemModel
 from django.utils import timezone
 from datetime import datetime, time, timedelta
 from api.schedule.types.schedule_item import ScheduleItem
@@ -41,26 +39,4 @@ class ScheduleSlot:
 
     @strawberry.field
     def items(self, info) -> list[ScheduleItem]:
-        return (
-            ScheduleItemModel.objects.annotate(
-                order=Case(
-                    When(type="custom", then=Value(1)),
-                    When(type="talk", then=Value(2)),
-                    When(type="panel", then=Value(3)),
-                    default=Value(4),
-                    output_field=IntegerField(),
-                )
-            )
-            .filter(slot__id=self.id)
-            .select_related(
-                "language",
-                "audience_level",
-                "submission",
-                "submission__type",
-                "submission__duration",
-                "submission__audience_level",
-                "submission__type",
-            )
-            .prefetch_related("additional_speakers", "rooms")
-            .order_by("order")
-        )
+        return self.items.all()

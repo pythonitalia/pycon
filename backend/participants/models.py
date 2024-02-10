@@ -1,8 +1,13 @@
+from conferences.querysets import ConferenceQuerySetMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from api.helpers.ids import encode_hashid
 from django.conf import settings
+
+
+class ParticipantQuerySet(ConferenceQuerySetMixin, models.QuerySet):
+    pass
 
 
 class Participant(models.Model):
@@ -42,6 +47,8 @@ class Participant(models.Model):
     previous_talk_video = models.URLField(
         _("previous talk video"), blank=True, max_length=2049
     )
+
+    objects = ParticipantQuerySet().as_manager()
 
     @property
     def hashid(self):

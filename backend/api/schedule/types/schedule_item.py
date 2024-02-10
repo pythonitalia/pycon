@@ -1,3 +1,4 @@
+from api.context import Info
 from api.participants.types import Participant
 from participants.models import Participant as ParticipantModel
 from typing import TYPE_CHECKING
@@ -57,17 +58,19 @@ class ScheduleItem:
         return self.attendees.filter(user_id=user_id).exists()
 
     @strawberry.field
-    def speakers(self) -> list[ScheduleItemUser]:
+    def speakers(self, info: Info) -> list[ScheduleItemUser]:
         speakers = []
 
-        # todo: fix this to avoid query
-        participants = {
-            participant.user_id: participant
-            for participant in ParticipantModel.objects.filter(
-                user__in=self.speakers,
-                conference_id=self.conference_id,
-            )
-        }
+        # TODO: Find a better solution
+        participants_data = info.context._participants_data
+        if not participants_data:
+            participants_data = {
+                participant.user_id: participant
+                for participant in ParticipantModel.objects.filter(
+                    id__in=[speaker.id for speaker in self.speakers],
+                    conference_id=self.conference_id,
+                )
+            }
 
         for speaker in self.speakers:
             speakers.append(
@@ -75,8 +78,8 @@ class ScheduleItem:
                     id=speaker.id,
                     fullname=speaker.fullname,
                     full_name=speaker.full_name,
-                    participant=Participant.from_model(participants[speaker.id])
-                    if speaker.id in participants
+                    participant=Participant.from_model(participants_data[speaker.id])
+                    if speaker.id in participants_data
                     else None,
                 )
             )
@@ -85,14 +88,14 @@ class ScheduleItem:
 
     @strawberry.field
     def keynote(
-        self,
+        self, info: Info
     ) -> Annotated["Keynote", strawberry.lazy("api.conferences.types")] | None:
         from api.conferences.types import Keynote
 
         if not self.keynote_id:
             return None
 
-        return Keynote.from_django_model(self.keynote)
+        return Keynote.from_django_model(self.keynote, info)
 
     @strawberry.field
     def rooms(self, info) -> list[Room]:
