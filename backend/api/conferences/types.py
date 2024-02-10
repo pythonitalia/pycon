@@ -91,10 +91,13 @@ class Keynote:
     def from_django_model(cls, instance, info):
         participants_data = info.context._participants_data
         if not participants_data:
-            participants_data = ParticipantModel.objects.get(
-                user_id__in=instance.speakers.values_list("user_id"),
-                conference_id=instance.conference_id,
-            )
+            participants_data = {
+                participant.user_id: participant
+                for participant in ParticipantModel.objects.filter(
+                    user_id__in=instance.speakers.values_list("user_id"),
+                    conference_id=instance.conference_id,
+                ).all()
+            }
 
         schedule_item = instance.schedule_items.all()[0]
 
