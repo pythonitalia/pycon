@@ -76,7 +76,7 @@ export const PendingItemsBasket = () => {
               },
             )}
           >
-            <span className="font-bold opacity-50 uppercase">
+            <span className="font-bold opacity-50 uppercase select-none">
               Drop here to unassign from slot
             </span>
           </div>
