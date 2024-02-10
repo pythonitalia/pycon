@@ -1,12 +1,14 @@
-#import "../../fragments/proposal.graphql"
+#import "../../fragments/submission.graphql"
 #import "../../fragments/keynote.graphql"
 query SearchEvents($conferenceId: ID!, $query: String!) {
   searchEvents(conferenceId: $conferenceId, query: $query) {
-    ... on Proposal {
-      ...ProposalFragment
-    }
-    ... on Keynote {
-      ...KeynoteFragment
+    results {
+      ... on Submission {
+        ...SubmissionFragment
+      }
+      ... on Keynote {
+        ...KeynoteFragment
+      }
     }
   }
 }

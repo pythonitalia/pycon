@@ -1,6 +1,6 @@
 #import "../../fragments/schedule-item-fragment.graphql"
 
-fragment SlotFragment on Slot {
+fragment SlotFragment on ScheduleSlot {
   id
   hour
   duration

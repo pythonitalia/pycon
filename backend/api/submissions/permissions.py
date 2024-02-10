@@ -13,6 +13,9 @@ class CanSeeSubmissionRestrictedFields(BasePermission):
         if HasTokenPermission().has_permission(source, info):
             return True
 
+        if source.schedule_items.exists():  # pragma: no cover
+            return True
+
         conference = source.conference
 
         try:
@@ -20,9 +23,6 @@ class CanSeeSubmissionRestrictedFields(BasePermission):
                 return True
         except RankRequest.DoesNotExist:
             pass
-
-        if source.schedule_items.exists():  # pragma: no cover
-            return True
 
         user = info.context.request.user
 

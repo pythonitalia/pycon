@@ -30,7 +30,7 @@ export const SlotCreation = ({ dayId }) => {
 };
 
 const AddSlotButton = ({ children, duration, type, dayId }) => {
-  const conferenceId = useCurrentConference();
+  const { conferenceId } = useCurrentConference();
   const [createScheduleSlot] = useCreateScheduleSlotMutation();
 
   const onCreateSlot = (e) => {

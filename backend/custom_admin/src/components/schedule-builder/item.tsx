@@ -9,7 +9,8 @@ export const Item = ({ slots, slot, item, rooms, rowStart }) => {
     .sort();
 
   const start = convertHoursToMinutes(slot.hour);
-  const duration = item.duration || slot.duration || item.proposal?.duration;
+  const duration =
+    item.duration || slot.duration || item.proposal?.duration.duration;
 
   const end = start + duration;
 

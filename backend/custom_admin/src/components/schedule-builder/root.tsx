@@ -1,5 +1,6 @@
 import { Base } from "../shared/base";
 import { DjangoAdminLayout } from "../shared/django-admin-layout";
+import { useCurrentConference } from "../utils/conference";
 import { AddItemModalProvider } from "./add-item-modal/context";
 import { Calendar } from "./calendar";
 import { PendingItemsBasket } from "./pending-items-basket";
@@ -16,16 +17,16 @@ export const ScheduleBuilderRoot = () => {
 };
 
 const ScheduleBuilder = () => {
-  const conferenceId = (window as any).conferenceId;
+  const { conferenceCode } = useCurrentConference();
   const { error, loading, data } = useConferenceScheduleQuery({
     variables: {
-      conferenceId,
+      conferenceCode,
     },
   });
 
   const {
-    conferenceSchedule: { days },
-  } = data ?? { conferenceSchedule: {} };
+    conference: { days },
+  } = data ?? { conference: {} };
 
   return (
     <DjangoAdminLayout

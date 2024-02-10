@@ -1,11 +1,15 @@
-import type { Keynote } from "../../../types";
+import type { KeynoteFragmentFragment } from "../../fragments/keynote.generated";
 import { useCurrentConference } from "../../utils/conference";
 import { useAddItemModal } from "./context";
 import { useCreateScheduleItemMutation } from "./create-schedule-item.generated";
 import { InfoRecap } from "./info-recap";
 
-export const KeynotePreview = ({ keynote }: { keynote: Keynote }) => {
-  const conferenceId = useCurrentConference();
+export const KeynotePreview = ({
+  keynote,
+}: {
+  keynote: KeynoteFragmentFragment;
+}) => {
+  const { conferenceId } = useCurrentConference();
   const { data, close } = useAddItemModal();
   const [createScheduleItem] = useCreateScheduleItemMutation();
 
@@ -30,7 +34,10 @@ export const KeynotePreview = ({ keynote }: { keynote: Keynote }) => {
       <InfoRecap
         info={[
           { label: "Type", value: `Keynote` },
-          { label: "Speaker", value: keynote.name },
+          {
+            label: "Speaker",
+            value: keynote.speakers.map((s) => s.fullName).join(", "),
+          },
         ]}
       />
       <button onClick={onAddToSchedule} className="btn">

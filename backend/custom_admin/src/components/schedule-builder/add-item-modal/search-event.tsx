@@ -8,7 +8,7 @@ import { useSearchEventsLazyQuery } from "./search-events.generated";
 
 export const SearchEvent = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const conferenceId = useCurrentConference();
+  const { conferenceId } = useCurrentConference();
 
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 300);
@@ -58,13 +58,13 @@ export const SearchEvent = () => {
       </div>
       <div>
         {loading && <span>Searching events</span>}
-        {!loading && data?.searchEvents.length === 0 && (
+        {!loading && data?.searchEvents.results.length === 0 && (
           <span>No events found</span>
         )}
-        {debouncedSearch && data?.searchEvents.length > 0 && (
+        {debouncedSearch && data?.searchEvents.results.length > 0 && (
           <ul>
-            {data.searchEvents.map((event) => {
-              if (event.__typename === "Proposal") {
+            {data.searchEvents.results.map((event) => {
+              if (event.__typename === "Submission") {
                 return <ProposalPreview key={event.id} proposal={event} />;
               }
 

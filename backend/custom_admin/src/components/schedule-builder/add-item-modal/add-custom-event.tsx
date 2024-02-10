@@ -7,7 +7,7 @@ import { useCreateScheduleItemMutation } from "./create-schedule-item.generated"
 
 export const AddCustomEvent = () => {
   const { data, close } = useAddItemModal();
-  const conferenceId = useCurrentConference();
+  const { conferenceId } = useCurrentConference();
   const [createScheduleItem] = useCreateScheduleItemMutation();
 
   const onCreate = async ({
@@ -70,10 +70,10 @@ const CustomDefinedOptions = ({ onCreate }) => {
         <Option onClick={onCreate} type="custom" rooms={allRooms}>
           Keynote Announcement Soon!
         </Option>
-        <Option onClick={onCreate} type="announcements" rooms={allTalkRooms}>
+        <Option onClick={onCreate} type="announcements" rooms={allRooms}>
           Opening
         </Option>
-        <Option onClick={onCreate} type="registration" rooms={allTalkRooms}>
+        <Option onClick={onCreate} type="registration" rooms={allRooms}>
           Registration
         </Option>
         <Option onClick={onCreate} type="announcements" rooms={allRooms}>

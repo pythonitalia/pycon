@@ -61,7 +61,8 @@ export const Calendar = ({ day }: Props) => {
                   gridRowEnd: rowEnd,
                 }}
               >
-                {formatHour(slot.hour)} [{slot.duration}m] [{slot.type}]
+                {formatHour(slot.hour)} [{slot.duration}m] [
+                {slot.type.toLowerCase()}]
               </div>
 
               {rooms.map((room, index) => (

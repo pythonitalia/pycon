@@ -45,3 +45,18 @@ class CanSeeSubmissions(BasePermission):
             return False
 
         return check_if_user_can_vote(user, conference)
+
+
+class CanEditSchedule(IsStaffPermission):
+    message = "Cannot edit schedule"
+
+    def has_permission(self, source, info, **kwargs):
+        if not super().has_permission(source, info, **kwargs):
+            return False
+
+        from conferences.models import Conference
+
+        conference_id = kwargs.get("conferenceId")
+        conference = Conference.objects.filter(id=conference_id).first()
+        user = info.context.request.user
+        return user.has_perm("schedule.change_scheduleitem", conference)

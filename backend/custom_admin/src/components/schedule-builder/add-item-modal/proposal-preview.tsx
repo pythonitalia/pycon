@@ -14,8 +14,8 @@ export const ProposalPreview = ({ proposal }: Props) => {
       <InfoRecap
         info={[
           { label: "Type", value: proposal.type.name },
-          { label: "Duration", value: `${proposal.duration} mins` },
-          { label: "Speaker", value: proposal.speaker.fullname },
+          { label: "Duration", value: `${proposal.duration.duration} mins` },
+          { label: "Speaker", value: proposal.speaker.fullName },
         ]}
       />
       <AddActions proposal={proposal} />
@@ -24,7 +24,7 @@ export const ProposalPreview = ({ proposal }: Props) => {
 };
 
 const AddActions = ({ proposal }: { proposal: Proposal }) => {
-  const conferenceId = useCurrentConference();
+  const { conferenceId } = useCurrentConference();
   const { data, close } = useAddItemModal();
   const [createScheduleItem] = useCreateScheduleItemMutation();
   const languages = proposal.languages;

@@ -7,7 +7,7 @@ import { ScheduleItemCard } from "../item";
 import { useUnassignedScheduleItemsQuery } from "./unassigned-schedule-items.generated";
 
 export const PendingItemsBasket = () => {
-  const conferenceId = useCurrentConference();
+  const { conferenceId } = useCurrentConference();
   const { data } = useUnassignedScheduleItemsQuery({
     variables: {
       conferenceId,
@@ -95,7 +95,7 @@ const PendingItemCard = ({ item }) => {
     <div className="shrink-0 max-w-80">
       <ScheduleItemCard
         item={item}
-        duration={item.duration || item.proposal?.duration}
+        duration={item.duration || item.proposal?.duration?.duration}
       />
     </div>
   );

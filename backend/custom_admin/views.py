@@ -1,3 +1,4 @@
+from strawberry.django.views import GraphQLView
 import re
 from django.http import HttpResponse
 import requests
@@ -143,3 +144,7 @@ def get_headers(environ):
             headers[key.replace("_", "-")] = value
 
     return headers
+
+
+class DjangoAdminGraphQLView(GraphQLView):
+    pass

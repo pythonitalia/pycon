@@ -1,10 +1,10 @@
 from custom_admin.audit import create_addition_admin_log_entry
 from django.db import transaction
-from django_admin_api.schedule.types.day import Day
+from api.schedule.types.day import Day
 from datetime import time, timedelta, datetime
 from schedule.models import Day as DayModel, Slot as SlotModel
 import strawberry
-from django_admin_api.permissions import CanEditSchedule
+from api.permissions import CanEditSchedule
 
 
 @strawberry.input
@@ -45,4 +45,4 @@ def create_schedule_slot(info, input: CreateScheduleSlotInput) -> Day:
         )
 
     refreshed_day = DayModel.objects.for_conference(conference_id).get(id=input.day_id)
-    return Day.from_model(refreshed_day)
+    return Day.from_db(refreshed_day)

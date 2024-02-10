@@ -23,7 +23,7 @@ export const Placeholder = ({
   room,
   day,
 }: Props) => {
-  const conferenceId = useCurrentConference();
+  const { conferenceId } = useCurrentConference();
   const { open, data } = useAddItemModal();
   const [changeScheduleItemSlot, { loading: isMovingItemLoading }] =
     useChangeScheduleItemSlotMutation({
@@ -70,7 +70,7 @@ export const Placeholder = ({
       ref={dropRef}
       onClick={openAddModal}
       className={clsx(
-        "p-2 text-center flex items-center justify-center flex-col cursor-pointer hover:bg-orange-600/50 transition-colors",
+        "p-2 text-center min-h-48 flex items-center justify-center flex-col cursor-pointer hover:bg-orange-600/50 transition-colors select-none",
         {
           "bg-orange-600/50":
             (isOver && canDrop) ||

@@ -1,5 +1,5 @@
-from django_admin_api.permissions import CanEditSchedule
-from django_admin_api.schedule.types.slot import Slot
+from api.permissions import CanEditSchedule
+from api.schedule.types.slot import ScheduleSlot
 from schedule.models import Room, ScheduleItem as ScheduleItemModel, Slot as SlotModel
 import strawberry
 from strawberry.types import Info
@@ -18,7 +18,7 @@ class ChangeScheduleItemSlotInput:
 @strawberry.field(permission_classes=[CanEditSchedule])
 def change_schedule_item_slot(
     info: Info, input: ChangeScheduleItemSlotInput
-) -> list[Slot]:
+) -> list[ScheduleSlot]:
     conference_id = input.conference_id
 
     schedule_item = ScheduleItemModel.objects.for_conference(conference_id).get(
@@ -46,12 +46,13 @@ def change_schedule_item_slot(
 
         changes = []
 
-        if not old_slot:
-            changes.append(f"Added to slot {str(new_slot)}")
-        elif not new_slot:
-            changes.append(f"Removed from slot {str(old_slot)}")
-        else:
-            changes.append(f"Changed Slot from {str(old_slot)} to {str(new_slot)}")
+        if slot_changed:
+            if not old_slot:
+                changes.append(f"Added to slot {str(new_slot)}")
+            elif not new_slot:
+                changes.append(f"Removed from slot {str(old_slot)}")
+            else:
+                changes.append(f"Changed Slot from {str(old_slot)} to {str(new_slot)}")
 
         if rooms_changed:
             new_rooms_names = ",".join(
@@ -69,9 +70,9 @@ def change_schedule_item_slot(
 
     updated_slots = []
     if old_slot:
-        updated_slots.append(Slot.from_model(old_slot))
+        updated_slots.append(old_slot)
 
     if new_slot and slot_changed:
-        updated_slots.append(Slot.from_model(new_slot))
+        updated_slots.append(new_slot)
 
     return updated_slots

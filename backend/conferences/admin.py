@@ -198,10 +198,12 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
         ]
 
     def schedule_builder(self, request, object_id):
+        conference = Conference.objects.get(pk=object_id)
         context = dict(
             self.admin_site.each_context(request),
             arguments={
                 "conference_id": object_id,
+                "conference_code": conference.code,
             },
         )
         return TemplateResponse(request, "astro/schedule-builder.html", context)

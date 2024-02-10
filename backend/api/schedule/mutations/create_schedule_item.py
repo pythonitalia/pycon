@@ -1,11 +1,11 @@
 from custom_admin.audit import create_addition_admin_log_entry
 from django.db import transaction
-from django_admin_api.permissions import CanEditSchedule
+from api.permissions import CanEditSchedule
 from languages.models import Language
 
 import strawberry
 from schedule.models import ScheduleItem as ScheduleItemModel, Slot as SlotModel
-from django_admin_api.schedule.types.slot import Slot
+from api.schedule.types.slot import ScheduleSlot
 from strawberry.types import Info
 from submissions.models import Submission
 
@@ -23,7 +23,7 @@ class CreateScheduleItemInput:
 
 
 @strawberry.field(permission_classes=[CanEditSchedule])
-def create_schedule_item(info: Info, input: CreateScheduleItemInput) -> Slot:
+def create_schedule_item(info: Info, input: CreateScheduleItemInput) -> ScheduleSlot:
     slot = SlotModel.objects.for_conference(input.conference_id).get(id=input.slot_id)
 
     best_language = get_best_language(input.language_id, input.proposal_id)
@@ -46,7 +46,7 @@ def create_schedule_item(info: Info, input: CreateScheduleItemInput) -> Slot:
             schedule_item,
             "Created Schedule Item",
         )
-    return Slot.from_model(slot)
+    return slot
 
 
 def get_best_language(language_id, proposal_id):
