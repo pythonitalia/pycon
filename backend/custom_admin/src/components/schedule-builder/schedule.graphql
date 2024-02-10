@@ -1,18 +1,9 @@
-#import "../../fragments/slot.graphql"
+#import "../../fragments/day.graphql"
 query ConferenceSchedule($conferenceId: ID!) {
   conferenceSchedule(conferenceId: $conferenceId) {
     id
     days {
-      id
-      day
-      rooms {
-        id
-        name
-        type
-      }
-      slots {
-        ...SlotFragment
-      }
+      ...DayFragment
     }
   }
 }

@@ -9,9 +9,7 @@ from django.urls import path
 urlpatterns = [
     path(
         "admin/graphql",
-        staff_member_required(
-            DjangoAdminGraphQLView.as_view(schema=django_admin_graphql_schema)
-        ),
+        DjangoAdminGraphQLView.as_view(schema=django_admin_graphql_schema),
         name="django-admin-graphql",
     ),
     path("astro/<path:path>", staff_member_required(astro_proxy), name="astro-proxy"),

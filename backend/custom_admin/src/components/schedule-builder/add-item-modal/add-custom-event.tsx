@@ -53,7 +53,7 @@ const CustomDefinedOptions = ({ onCreate }) => {
 
   return (
     <>
-      <strong>Add Custom from list:</strong>
+      <strong>Add Custom from list</strong>
       <ul className="my-2">
         <Option onClick={onCreate} type="break" rooms={allTalkRooms}>
           Room change
@@ -115,7 +115,7 @@ const CustomByHand = ({ onCreate }) => {
 
   return (
     <>
-      <strong>Create custom by hand:</strong>
+      <strong>Create custom by hand</strong>
       <div className="my-2 grid gap-2 grid-cols-[50px_1fr] items-center">
         <label htmlFor="title">
           <strong>Title</strong>
@@ -146,6 +146,7 @@ const CustomByHand = ({ onCreate }) => {
           <option value="registration">Registration</option>
           <option value="announcements">Announcements</option>
           <option value="break">Break</option>
+          <option value="social">Social</option>
           <option value="custom">Custom</option>
         </select>
       </div>

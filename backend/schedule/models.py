@@ -40,6 +40,10 @@ class Room(models.Model):
         verbose_name_plural = _("Rooms")
 
 
+class DayQuerySet(ConferenceQuerySetMixin, models.QuerySet):
+    pass
+
+
 class Day(models.Model):
     day = models.DateField()
     conference = models.ForeignKey(
@@ -48,6 +52,7 @@ class Day(models.Model):
         verbose_name=_("conference"),
         related_name="days",
     )
+    objects = DayQuerySet().as_manager()
 
     def ordered_rooms(self):
         added_rooms = self.added_rooms.all()
@@ -98,6 +103,7 @@ class Slot(models.Model):
         # Free time, that can used to change rooms
         # or represent time between social events
         ("free_time", _("Free Time")),
+        ("break", _("Break")),
     )
 
     day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name="slots")
@@ -130,6 +136,7 @@ class ScheduleItem(TimeStampedModel):
         ("registration", _("Registration")),
         ("announcements", _("Announcements")),
         ("break", _("Break")),
+        ("social", _("Social")),
         ("custom", _("Custom")),
     )
 

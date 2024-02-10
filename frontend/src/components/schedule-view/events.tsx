@@ -282,7 +282,7 @@ export const ScheduleEntry = ({
       {...props}
     >
       <ScheduleItemCard
-        size={slot.type === "FREE_TIME" ? "small" : "large"}
+        size={["FREE_TIME", "BREAK"].includes(slot.type) ? "small" : "large"}
         background={getItemBg(item.type)}
       >
         <div

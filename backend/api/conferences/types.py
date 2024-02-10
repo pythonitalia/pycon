@@ -113,6 +113,7 @@ class Keynote:
 class ScheduleSlotType(Enum):
     DEFAULT = "default"
     FREE_TIME = "free_time"
+    BREAK = "break"
 
 
 @strawberry.type

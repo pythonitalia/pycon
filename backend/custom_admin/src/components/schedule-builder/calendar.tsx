@@ -5,6 +5,7 @@ import { formatHour } from "../utils/time";
 import { Item } from "./item";
 import { Placeholder } from "./placeholder";
 import type { ConferenceScheduleQuery } from "./schedule.generated";
+import { SlotCreation } from "./slot-creation";
 
 type Props = {
   day: ConferenceScheduleQuery["conferenceSchedule"]["days"][0];
@@ -33,7 +34,7 @@ export const Calendar = ({ day }: Props) => {
       <div
         className="grid gap-1"
         style={{
-          gridTemplateColumns: `50px repeat(${numOfRooms}, minmax(150px, 1fr))`,
+          gridTemplateColumns: `70px repeat(${numOfRooms}, minmax(150px, 1fr))`,
         }}
       >
         <div></div>
@@ -60,7 +61,7 @@ export const Calendar = ({ day }: Props) => {
                   gridRowEnd: rowEnd,
                 }}
               >
-                {formatHour(slot.hour)} [{slot.duration} mins]
+                {formatHour(slot.hour)} [{slot.duration}m] [{slot.type}]
               </div>
 
               {rooms.map((room, index) => (
@@ -89,6 +90,7 @@ export const Calendar = ({ day }: Props) => {
           );
         })}
       </div>
+      <SlotCreation dayId={id} />
     </div>
   );
 };

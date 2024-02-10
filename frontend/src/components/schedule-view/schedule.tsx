@@ -17,7 +17,7 @@ import { Placeholder } from "./placeholder";
 import { Item, Room, Slot } from "./types";
 
 const getSlotSize = (slot: Slot) => {
-  if (slot.type === "FREE_TIME") {
+  if (["FREE_TIME", "BREAK"].includes(slot.type)) {
     return 5;
   }
   return 31;
@@ -327,7 +327,7 @@ export const Schedule = ({
             const rowStart = rowStartPos;
             const rowEnd = rowStartPos + getSlotSize(slot);
             const isLive = slot.id === liveSlot?.id;
-            const freeTimeSlot = slot.type === "FREE_TIME";
+            const breakSlot = ["FREE_TIME", "BREAK"].includes(slot.type);
 
             rowStartPos = rowEnd;
 
@@ -339,8 +339,8 @@ export const Schedule = ({
                     className={clsx(
                       "md:border-r md:-mr-[3px] md:text-center md:px-4 left-0 sticky bg-milk z-40 pb-2",
                       {
-                        "md:py-4": freeTimeSlot,
-                        "md:py-6": !freeTimeSlot,
+                        "md:py-4": breakSlot,
+                        "md:py-6": !breakSlot,
                         "md:bg-coral": isLive,
                       },
                     )}
@@ -384,7 +384,7 @@ export const Schedule = ({
                       />
                       {isLive && (
                         <>
-                          {!freeTimeSlot && <Spacer size="xs" />}
+                          {!breakSlot && <Spacer size="xs" />}
                           <Text as="p" uppercase size="label3" weight="strong">
                             <FormattedMessage id="schedule.live" />
                           </Text>
