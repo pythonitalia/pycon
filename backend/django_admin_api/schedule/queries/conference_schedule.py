@@ -1,4 +1,5 @@
 from conferences.models.conference import Conference
+from django_admin_api.permissions import CanEditSchedule
 from django_admin_api.schedule.types.day import Day
 import strawberry
 
@@ -16,7 +17,7 @@ class Schedule:
         )
 
 
-@strawberry.field
+@strawberry.field(permission_classes=[CanEditSchedule])
 def conference_schedule(conference_id: strawberry.ID) -> Schedule:
     conference = Conference.objects.prefetch_related(
         "days",

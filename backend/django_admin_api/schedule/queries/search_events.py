@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django_admin_api.permissions import CanEditSchedule
 from django_admin_api.proposals.types.keynote import Keynote
 from django_admin_api.proposals.types.proposal import Proposal
 import strawberry
@@ -6,7 +7,7 @@ from submissions.models import Submission
 from conferences.models import Keynote as KeynoteModel
 
 
-@strawberry.field
+@strawberry.field(permission_classes=[CanEditSchedule])
 def search_events(conference_id: strawberry.ID, query: str) -> list[Proposal | Keynote]:
     proposals = (
         Submission.objects.for_conference(conference_id)

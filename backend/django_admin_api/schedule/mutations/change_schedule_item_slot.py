@@ -1,3 +1,4 @@
+from django_admin_api.permissions import CanEditSchedule
 from django_admin_api.schedule.types.slot import Slot
 from schedule.models import Room, ScheduleItem as ScheduleItemModel, Slot as SlotModel
 import strawberry
@@ -14,7 +15,7 @@ class ChangeScheduleItemSlotInput:
     rooms: list[strawberry.ID]
 
 
-@strawberry.field
+@strawberry.field(permission_classes=[CanEditSchedule])
 def change_schedule_item_slot(
     info: Info, input: ChangeScheduleItemSlotInput
 ) -> list[Slot]:

@@ -1,5 +1,6 @@
 from custom_admin.audit import create_addition_admin_log_entry
 from django.db import transaction
+from django_admin_api.permissions import CanEditSchedule
 from languages.models import Language
 
 import strawberry
@@ -21,7 +22,7 @@ class CreateScheduleItemInput:
     title: str | None = ""
 
 
-@strawberry.field
+@strawberry.field(permission_classes=[CanEditSchedule])
 def create_schedule_item(info: Info, input: CreateScheduleItemInput) -> Slot:
     slot = SlotModel.objects.for_conference(input.conference_id).get(id=input.slot_id)
 
