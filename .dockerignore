@@ -8,3 +8,5 @@
 **/__pycache__/**
 .pdm-python
 **/.pytest_cache/**
+Dockerfile
+**/_dist/**
