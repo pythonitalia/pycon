@@ -68,7 +68,7 @@ export const ScheduleItemCard = ({ item, duration }) => {
   return (
     <ul className="bg-slate-200 p-3" ref={dragRef}>
       <li>
-        [{item.type} - {duration} mins]
+        [{item.type} - {duration || "??"} mins]
       </li>
       <li>{item.status}</li>
       <li className="pt-2">
