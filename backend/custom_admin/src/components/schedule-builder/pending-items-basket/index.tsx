@@ -62,7 +62,11 @@ export const PendingItemsBasket = () => {
           ref={dropRef}
           className="relative bg-slate-100 min-h-48 max-w-7xl w-full border-2 border-slate-400"
         >
-          <ScrollButton direction="backwards" scrollElement={itemsRef} />
+          <ScrollButton
+            direction="backwards"
+            scrollElement={itemsRef}
+            items={items}
+          />
 
           <div
             className={clsx(
@@ -90,7 +94,11 @@ export const PendingItemsBasket = () => {
             ))}
           </div>
 
-          <ScrollButton direction="forwards" scrollElement={itemsRef} />
+          <ScrollButton
+            direction="forwards"
+            scrollElement={itemsRef}
+            items={items}
+          />
         </div>
       </div>
     </>
@@ -111,9 +119,11 @@ const PendingItemCard = ({ item }) => {
 const ScrollButton = ({
   direction,
   scrollElement,
+  items,
 }: {
   direction: "backwards" | "forwards";
   scrollElement: React.RefObject<HTMLDivElement>;
+  items: any[];
 }) => {
   const [canScroll, setCanScroll] = useState(false);
   const checkCanScroll = () => {
@@ -157,6 +167,10 @@ const ScrollButton = ({
       scrollElement.current.removeEventListener("scroll", checkCanScroll);
     };
   }, [scrollElement.current]);
+
+  useEffect(() => {
+    checkCanScroll();
+  }, [items]);
 
   if (!canScroll) {
     return null;
