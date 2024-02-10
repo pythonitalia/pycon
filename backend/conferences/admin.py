@@ -204,7 +204,9 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
             arguments={
                 "conference_id": object_id,
                 "conference_code": conference.code,
+                "conference_repr": str(conference),
             },
+            title="Schedule Builder",
         )
         return TemplateResponse(request, "astro/schedule-builder.html", context)
 

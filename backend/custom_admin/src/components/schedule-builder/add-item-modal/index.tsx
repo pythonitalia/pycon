@@ -14,7 +14,7 @@ export const AddItemModal = () => {
     <Modal
       isOpen={isOpen}
       onClose={close}
-      className="p-3 max-w-3xl w-full max-h-[50vh] overflow-scroll"
+      className="p-3 max-w-3xl w-full max-h-[700px] overflow-scroll"
     >
       <div className="">
         <h2 className="text-xl">Add event to schedule</h2>

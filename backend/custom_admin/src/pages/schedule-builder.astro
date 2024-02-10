@@ -16,13 +16,13 @@ import { ScheduleBuilderRoot } from "../components/schedule-builder/root";
                 return cleanedValue;
             }
             const url = new URL(window.location.href);
-            console.log("url.searchParams", name, url.searchParams.get(name))
             return url.searchParams.get(name);
         }
 
         window.apolloGraphQLUrl = '/admin/graphql';
         window.conferenceId = getArg('conference_id', "{{ conference_id }}");
         window.conferenceCode = getArg('conference_code', "{{ conference_code }}");
+        window.conferenceRepr = getArg('conference_repr', "{{ conference_repr }}");
         </script>
     </body>
 </html>

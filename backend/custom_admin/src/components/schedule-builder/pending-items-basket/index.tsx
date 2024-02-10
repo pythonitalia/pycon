@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { useEffect, useRef, useState } from "react";
 import { useDrop } from "react-dnd";
 
 import { useCurrentConference } from "../../utils/conference";
@@ -16,6 +17,7 @@ export const PendingItemsBasket = () => {
   const [changeScheduleItemSlot] = useChangeScheduleItemSlotMutation({
     refetchQueries: ["UnassignedScheduleItems"],
   });
+  const itemsRef = useRef<HTMLDivElement>(null);
 
   const [{ isOver, canDrop }, dropRef] = useDrop(
     () => ({
@@ -49,7 +51,7 @@ export const PendingItemsBasket = () => {
 
       <div
         className={clsx(
-          "fixed bottom-5 w-full z-[100] flex items-center justify-center transition-transform",
+          "fixed bottom-5 w-full z-[100] flex items-center justify-center transition-transform ",
           {
             "translate-y-[110%]": isEmpty && !canDrop,
             "translate-y-0": !isEmpty || canDrop,
@@ -58,8 +60,10 @@ export const PendingItemsBasket = () => {
       >
         <div
           ref={dropRef}
-          className="relative bg-slate-100 min-h-48 max-w-7xl w-full"
+          className="relative bg-slate-100 min-h-48 max-w-7xl w-full border-2 border-slate-400"
         >
+          <ScrollButton direction="backwards" scrollElement={itemsRef} />
+
           <div
             className={clsx(
               "absolute top-3 left-3 right-3 bottom-3 flex items-center justify-center border-dotted border-2 border-slate-500 transition-opacity opacity-0 pointer-events-none",
@@ -73,8 +77,9 @@ export const PendingItemsBasket = () => {
             </span>
           </div>
           <div
+            ref={itemsRef}
             className={clsx(
-              "p-3 transition-opacity flex gap-3 overflow-scroll",
+              "px-12 py-3 transition-opacity flex gap-3 overflow-scroll",
               {
                 "opacity-20": canDrop,
               },
@@ -84,6 +89,8 @@ export const PendingItemsBasket = () => {
               <PendingItemCard key={item.id} item={item} />
             ))}
           </div>
+
+          <ScrollButton direction="forwards" scrollElement={itemsRef} />
         </div>
       </div>
     </>
@@ -97,6 +104,76 @@ const PendingItemCard = ({ item }) => {
         item={item}
         duration={item.duration || item.proposal?.duration?.duration}
       />
+    </div>
+  );
+};
+
+const ScrollButton = ({
+  direction,
+  scrollElement,
+}: {
+  direction: "backwards" | "forwards";
+  scrollElement: React.RefObject<HTMLDivElement>;
+}) => {
+  const [canScroll, setCanScroll] = useState(false);
+  const checkCanScroll = () => {
+    const element = scrollElement.current;
+
+    if (direction === "forwards") {
+      setCanScroll(
+        Math.ceil(element.scrollWidth) >
+          Math.ceil(element.clientWidth) + Math.ceil(element.scrollLeft),
+      );
+    } else {
+      setCanScroll(element.scrollLeft > 0);
+    }
+  };
+  const scroll = (e) => {
+    e.preventDefault();
+    if (direction === "forwards") {
+      scrollElement.current.scrollBy({
+        left: 500,
+        behavior: "smooth",
+      });
+    } else {
+      scrollElement.current.scrollBy({
+        left: -500,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (!scrollElement.current) {
+      return;
+    }
+
+    checkCanScroll();
+    scrollElement.current.addEventListener("scroll", checkCanScroll, {
+      passive: true,
+    });
+
+    return () => {
+      scrollElement.current.removeEventListener("scroll", checkCanScroll);
+    };
+  }, [scrollElement.current]);
+
+  if (!canScroll) {
+    return null;
+  }
+
+  return (
+    <div
+      onClick={scroll}
+      className={clsx(
+        "absolute shadow-md p-6 cursor-pointer top-1/2 bg-white rounded-full select-none",
+        {
+          "-translate-y-1/2 -translate-x-1/2 left-0": direction === "backwards",
+          "-translate-y-1/2 translate-x-1/2 right-0": direction === "forwards",
+        },
+      )}
+    >
+      {direction === "backwards" ? `👈` : `👉`}
     </div>
   );
 };
