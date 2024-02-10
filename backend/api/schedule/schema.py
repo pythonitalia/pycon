@@ -10,7 +10,7 @@ from api.schedule.mutations.unstar_schedule_item import unstar_schedule_item
 from api.schedule.mutations.star_schedule_item import star_schedule_item
 from api.schedule.queries.schedule_invitation import schedule_invitation
 from api.schedule.queries.unassigned_schedule_items import unassigned_schedule_items
-from api.schedule.queries.search_events import search_events
+from api.schedule.queries.search_events_for_schedule import search_events_for_schedule
 
 
 from strawberry.tools import create_type
@@ -35,6 +35,6 @@ ScheduleQuery = create_type(
     [
         schedule_invitation,
         unassigned_schedule_items,
-        search_events,
+        search_events_for_schedule,
     ],
 )

@@ -1,6 +1,7 @@
 fragment SubmissionFragment on Submission {
   id
   title(language: "en")
+  italianTitle: title(language: "it")
   duration {
     id
     duration

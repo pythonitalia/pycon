@@ -1,7 +1,10 @@
 #import "../../fragments/submission.graphql"
 #import "../../fragments/keynote.graphql"
 query SearchEvents($conferenceId: ID!, $query: String!) {
-  searchEvents(conferenceId: $conferenceId, query: $query) {
+  searchEvents: searchEventsForSchedule(
+    conferenceId: $conferenceId
+    query: $query
+  ) {
     results {
       ... on Submission {
         ...SubmissionFragment

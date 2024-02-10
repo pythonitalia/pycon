@@ -9,14 +9,14 @@ from conferences.models import Keynote as KeynoteModel
 
 
 @strawberry.type
-class SearchEventsResult:
+class SearchEventsForScheduleResult:
     results: list[Submission | Keynote]
 
 
 @strawberry.field(permission_classes=[CanEditSchedule])
-def search_events(
+def search_events_for_schedule(
     info: Info, conference_id: strawberry.ID, query: str
-) -> SearchEventsResult:
+) -> SearchEventsForScheduleResult:
     proposals = (
         SubmissionModel.objects.for_conference(conference_id)
         .accepted()
@@ -42,7 +42,7 @@ def search_events(
     for proposal in proposals:
         proposal.__strawberry_definition__ = Submission.__strawberry_definition__
 
-    return SearchEventsResult(
+    return SearchEventsForScheduleResult(
         results=[
             *proposals,
             *[Keynote.from_django_model(keynote, info) for keynote in keynotes],

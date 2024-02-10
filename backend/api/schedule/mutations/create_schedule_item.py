@@ -26,13 +26,18 @@ class CreateScheduleItemInput:
 def create_schedule_item(info: Info, input: CreateScheduleItemInput) -> ScheduleSlot:
     slot = SlotModel.objects.for_conference(input.conference_id).get(id=input.slot_id)
 
-    best_language = get_best_language(input.language_id, input.proposal_id)
+    proposal = (
+        Submission.objects.get_by_hashid(input.proposal_id)
+        if input.proposal_id
+        else None
+    )
+    best_language = get_best_language(input.language_id, proposal)
 
     with transaction.atomic():
         schedule_item = ScheduleItemModel.objects.create(
             conference_id=input.conference_id,
             type=input.type,
-            submission_id=input.proposal_id,
+            submission_id=proposal.id if proposal else None,
             keynote_id=input.keynote_id,
             slot=slot,
             language_id=best_language,
@@ -49,14 +54,12 @@ def create_schedule_item(info: Info, input: CreateScheduleItemInput) -> Schedule
     return slot
 
 
-def get_best_language(language_id, proposal_id):
+def get_best_language(language_id, proposal):
     if language_id:
         return language_id
 
-    if proposal_id:
-        proposal_first_language = Submission.objects.get(
-            id=proposal_id
-        ).languages.first()
+    if proposal:
+        proposal_first_language = proposal.languages.first()
         return proposal_first_language.id
 
     english_language = Language.objects.get(code="en")

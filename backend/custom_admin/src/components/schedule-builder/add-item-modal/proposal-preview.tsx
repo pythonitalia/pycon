@@ -1,16 +1,21 @@
-import type { Language, Proposal } from "../../../types";
+import type { Language } from "../../../types";
+import type { SubmissionFragmentFragment } from "../../fragments/submission.generated";
 import { useCurrentConference } from "../../utils/conference";
 import { useAddItemModal } from "./context";
 import { useCreateScheduleItemMutation } from "./create-schedule-item.generated";
 import { InfoRecap } from "./info-recap";
 
 type Props = {
-  proposal: Proposal;
+  proposal: SubmissionFragmentFragment;
 };
 export const ProposalPreview = ({ proposal }: Props) => {
   return (
     <li className="p-2 bg-slate-300 odd:bg-slate-200">
       <strong>{proposal.title}</strong>
+      {proposal.italianTitle !== proposal.title && (
+        <div>{proposal.italianTitle}</div>
+      )}
+
       <InfoRecap
         info={[
           { label: "Type", value: proposal.type.name },
@@ -23,7 +28,7 @@ export const ProposalPreview = ({ proposal }: Props) => {
   );
 };
 
-const AddActions = ({ proposal }: { proposal: Proposal }) => {
+const AddActions = ({ proposal }: { proposal: SubmissionFragmentFragment }) => {
   const { conferenceId } = useCurrentConference();
   const { data, close } = useAddItemModal();
   const [createScheduleItem] = useCreateScheduleItemMutation();
