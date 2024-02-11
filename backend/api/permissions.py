@@ -56,7 +56,12 @@ class CanEditSchedule(IsStaffPermission):
 
         from conferences.models import Conference
 
-        conference_id = kwargs.get("conferenceId")
+        conference_id = kwargs.get(
+            "conferenceId", kwargs.get("input", {}).get("conferenceId")
+        )
         conference = Conference.objects.filter(id=conference_id).first()
+        if not conference_id or not conference:
+            return False
+
         user = info.context.request.user
         return user.has_perm("schedule.change_scheduleitem", conference)

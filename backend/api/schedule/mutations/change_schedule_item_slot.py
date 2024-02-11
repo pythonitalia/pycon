@@ -48,9 +48,9 @@ def change_schedule_item_slot(
 
         if slot_changed:
             if not old_slot:
-                changes.append(f"Added to slot {str(new_slot)}")
+                changes.append(f"Added to Slot {str(new_slot)}")
             elif not new_slot:
-                changes.append(f"Removed from slot {str(old_slot)}")
+                changes.append(f"Removed from Slot {str(old_slot)}")
             else:
                 changes.append(f"Changed Slot from {str(old_slot)} to {str(new_slot)}")
 
@@ -58,9 +58,16 @@ def change_schedule_item_slot(
             new_rooms_names = ",".join(
                 Room.objects.filter(id__in=input.rooms).values_list("name", flat=True)
             )
-            changes.append(
-                f"Changed Rooms from {str(old_rooms_names)} to {str(new_rooms_names)}"
-            )
+
+            if not old_rooms_names:
+                changes.append(f"Added to Rooms {str(new_rooms_names)}")
+            elif not new_rooms_names:
+                changes.append(f"Removed from Rooms {str(old_rooms_names)}")
+            else:
+                changes.append(
+                    f"Changed Rooms from {str(old_rooms_names)} "
+                    f"to {str(new_rooms_names)}"
+                )
 
         create_change_admin_log_entry(
             info.context.request.user,

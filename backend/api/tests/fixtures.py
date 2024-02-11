@@ -42,6 +42,8 @@ class DjangoAsyncClientWrapper:
 
 
 class NewGraphQLClient:
+    GRAPHQL_URL = "/graphql"
+
     def __init__(self, *, include_full_response: bool = False):
         self.client = DjangoTestClient()
         self.include_full_response = include_full_response
@@ -59,7 +61,10 @@ class NewGraphQLClient:
             body["variables"] = variables
 
         resp = self.client.post(
-            "/graphql", data=body, headers=headers, content_type="application/json"
+            self.GRAPHQL_URL,
+            data=body,
+            headers=headers,
+            content_type="application/json",
         )
         data = json.loads(resp.content.decode())
 
@@ -71,23 +76,23 @@ class NewGraphQLClient:
         self.client.force_login(user)
 
 
+class AdminGraphQLAPIClient(NewGraphQLClient):
+    GRAPHQL_URL = "/admin/graphql"
+
+
 @pytest.fixture()
 def graphql_client():
     return NewGraphQLClient()
 
 
 @pytest.fixture()
-def full_response_graphql_client():
-    return NewGraphQLClient(include_full_response=True)
+def admin_graphql_api_client():
+    return AdminGraphQLAPIClient()
 
 
 @pytest.fixture()
-def admin_graphql_client(graphql_client):
-    from users.tests.factories import UserFactory
-
-    admin_user = UserFactory(is_staff=True, is_superuser=True)
-    graphql_client.force_login(admin_user)
-    return graphql_client
+def full_response_graphql_client():
+    return NewGraphQLClient(include_full_response=True)
 
 
 @pytest.fixture(autouse=True)
@@ -105,8 +110,8 @@ def create_languages(db):
 
 @pytest.fixture
 def conference_with_schedule_setup():
-    room_a = RoomFactory()
-    room_b = RoomFactory()
+    room_a = RoomFactory(name="Room A")
+    room_b = RoomFactory(name="Room B")
 
     conference = ConferenceFactory()
     day_apr1 = DayFactory(
