@@ -1,9 +1,12 @@
 import dataclasses
 import json
 from typing import Any, Dict, Optional
-
+from conferences.tests.factories import ConferenceFactory
+from datetime import date, time
 import pytest
 from django.test import Client as DjangoTestClient
+from schedule.models import DayRoomThroughModel
+from schedule.tests.factories import DayFactory, RoomFactory, SlotFactory
 from wagtail.models import Locale
 from wagtail.coreutils import get_supported_content_language_variant
 from django.conf import settings
@@ -98,3 +101,35 @@ def create_languages(db):
     Locale.objects.create(
         language_code=get_supported_content_language_variant(settings.LANGUAGE_CODE),
     )
+
+
+@pytest.fixture
+def conference_with_schedule_setup():
+    room_a = RoomFactory()
+    room_b = RoomFactory()
+
+    conference = ConferenceFactory()
+    day_apr1 = DayFactory(
+        day=date(2024, 4, 1),
+        conference=conference,
+    )
+
+    DayRoomThroughModel.objects.create(day=day_apr1, room=room_a)
+    DayRoomThroughModel.objects.create(day=day_apr1, room=room_b)
+
+    SlotFactory(
+        day=day_apr1,
+        hour=time(9, 0),
+        duration=30,
+    )
+    SlotFactory(
+        day=day_apr1,
+        hour=time(9, 30),
+        duration=30,
+    )
+    SlotFactory(
+        day=day_apr1,
+        hour=time(10, 0),
+        duration=30,
+    )
+    return conference
