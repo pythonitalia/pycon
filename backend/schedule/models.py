@@ -289,7 +289,7 @@ class ScheduleItem(TimeStampedModel):
             self.title = self.submission.title.localize(self.language.code)
 
         if self.keynote_id and not self.title:
-            self.title = self.keynote.title.localize("en")
+            self.title = self.keynote.title.localize(self.language.code)
 
         if not self.slug:
             unique_slugify(self, self.title)

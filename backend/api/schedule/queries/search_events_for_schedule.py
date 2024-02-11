@@ -34,8 +34,11 @@ def search_events_for_schedule(
         )
         .all()[:5]
     )
-    keynotes = KeynoteModel.objects.for_conference(conference_id).filter(
-        Q(title__icontains=query) | Q(speakers__name__icontains=query)
+    keynotes = (
+        KeynoteModel.objects.for_conference(conference_id)
+        .filter(Q(title__icontains=query) | Q(speakers__name__icontains=query))
+        .prefetch_related("schedule_items")
+        .all()
     )
 
     proposals = list(proposals)

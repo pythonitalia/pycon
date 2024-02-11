@@ -36,6 +36,8 @@ class DayFactory(DjangoModelFactory):
 
 @register
 class SlotFactory(DjangoModelFactory):
+    day = factory.SubFactory(DayFactory)
+
     class Meta:
         model = Slot
 

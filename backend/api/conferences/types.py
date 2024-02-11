@@ -99,7 +99,7 @@ class Keynote:
                 ).all()
             }
 
-        schedule_item = instance.schedule_items.all()[0]
+        schedule_item = instance.schedule_items.all().first()
 
         return cls(
             id=instance.id,
