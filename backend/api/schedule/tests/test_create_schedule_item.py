@@ -216,7 +216,7 @@ def test_schedule_item_with_custom_item(
 
     day = conference.days.first()
     slot = day.slots.first()
-    rooms = day.added_rooms.values_list("id", flat=True)
+    rooms = day.added_rooms.values_list("room_id", flat=True)
 
     response = _create_schedule_item(
         admin_graphql_api_client,

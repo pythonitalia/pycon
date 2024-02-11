@@ -1,3 +1,5 @@
 mutation UnstarScheduleItem($id: ID!) {
-  unstarScheduleItem(id: $id)
+  unstarScheduleItem(id: $id) {
+    ok
+  }
 }
