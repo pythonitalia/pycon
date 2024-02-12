@@ -154,10 +154,6 @@ export const Schedule = ({
   adminMode,
   slots,
   rooms,
-  addCustomScheduleItem,
-  addSubmissionToSchedule,
-  addKeynoteToSchedule,
-  moveItem,
   currentDay,
   currentFilters,
   starredScheduleItems,
@@ -167,22 +163,6 @@ export const Schedule = ({
   slots: Slot[];
   rooms: Room[];
   adminMode: boolean;
-  addCustomScheduleItem: (
-    slotId: string,
-    rooms: string[],
-    title?: string,
-  ) => void;
-  moveItem: (slotId: string, rooms: string[], itemId: string) => void;
-  addSubmissionToSchedule: (
-    slotId: string,
-    rooms: string[],
-    submissionId: string,
-  ) => void;
-  addKeynoteToSchedule: (
-    slotId: string,
-    rooms: string[],
-    keynoteId: string,
-  ) => void;
   currentFilters: Record<string, string[]>;
   toggleEventFavorite: (item: Item) => void;
   currentDay: string;
@@ -196,35 +176,6 @@ export const Schedule = ({
     query: { photo },
   } = useRouter();
   const isInPhotoMode = photo == "1";
-
-  const handleDrop = (item: any, slot: Slot, index: number) => {
-    if (item.itemId) {
-      moveItem(slot.id, [rooms[index].id], item.itemId);
-    } else if (item.event.submissionId) {
-      addSubmissionToSchedule(
-        slot.id,
-        [rooms[index].id],
-        item.event.submissionId,
-      );
-    } else if (item.event.keynoteId) {
-      addKeynoteToSchedule(
-        slot.id,
-        rooms.filter((room) => room.type !== "training").map((room) => room.id),
-        item.event.keynoteId,
-      );
-    } else if (item.event.roomChange) {
-      const roomIds = rooms
-        .filter((room) => room.type !== "training")
-        .map((room) => room.id);
-      addCustomScheduleItem(slot.id, roomIds, "Room Change / Cambio stanza");
-    } else {
-      const roomIds = item.event.allTracks
-        ? rooms.map((room) => room.id)
-        : [rooms[index].id];
-
-      addCustomScheduleItem(slot.id, roomIds);
-    }
-  };
 
   const headerRef = useRef(null);
   const scheduleRef = useRef(null);
@@ -402,7 +353,6 @@ export const Schedule = ({
                       duration={slot.duration}
                       roomType={room.type}
                       adminMode={adminMode}
-                      onDrop={(item: any) => handleDrop(item, slot, index)}
                     />
                   ))}
 

@@ -26,10 +26,8 @@ import { getDayUrl } from "~/pages/schedule/[day]";
 import {
   readUserStarredScheduleItemsQueryCache,
   ScheduleQuery,
-  useAddScheduleSlotMutation,
   useStarScheduleItemMutation,
   useUnstarScheduleItemMutation,
-  useUpdateOrCreateSlotItemMutation,
   useUserStarredScheduleItemsQuery,
   writeUserStarredScheduleItemsQueryCache,
 } from "~/types";
@@ -63,7 +61,6 @@ export const ScheduleView = ({
   const [isLoggedIn] = useLoginState();
   const language = useCurrentLanguage();
   const [liveSlot, setLiveSlot] = useState<Slot | null>(null);
-  const code = process.env.conferenceCode;
   const {
     query: { photo },
   } = useRouter();
@@ -78,7 +75,7 @@ export const ScheduleView = ({
 
   const [starScheduleItem] = useStarScheduleItemMutation({
     optimisticResponse: {
-      starScheduleItem: null,
+      starScheduleItem: { ok: true },
     },
     update(cache, _, { variables }) {
       const { me } = readUserStarredScheduleItemsQueryCache({
@@ -103,7 +100,7 @@ export const ScheduleView = ({
   });
   const [unstarScheduleItem] = useUnstarScheduleItemMutation({
     optimisticResponse: {
-      unstarScheduleItem: null,
+      unstarScheduleItem: { ok: true },
     },
     update(cache, _, { variables }) {
       const { me } = readUserStarredScheduleItemsQueryCache({
@@ -151,13 +148,6 @@ export const ScheduleView = ({
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const prevViewMode = useRef(null);
 
-  const [addSlot, { loading: addingSlot }] = useAddScheduleSlotMutation({
-    variables: { code, day: currentDay, duration: 60, language },
-  });
-
-  const [addOrCreateScheduleItem, { loading: updatingSchedule }] =
-    useUpdateOrCreateSlotItemMutation();
-
   const toggleScheduleView = useCallback(() => {
     setViewMode((current) => {
       const nextValue = current === "grid" ? "list" : "grid";
@@ -191,84 +181,11 @@ export const ScheduleView = ({
     };
   }, []);
 
-  const addCustomScheduleItem = useCallback(
-    (slotId: string, itemRooms: string[], title = "Custom") =>
-      addOrCreateScheduleItem({
-        variables: {
-          input: {
-            slotId,
-            rooms: itemRooms,
-            title,
-          },
-          language,
-        },
-      }),
-    [],
-  );
-
-  const addSubmissionToSchedule = useCallback(
-    (slotId: string, itemRooms: string[], submissionId: string) =>
-      addOrCreateScheduleItem({
-        variables: {
-          input: {
-            slotId,
-            submissionId,
-            rooms: itemRooms,
-          },
-          language,
-        },
-      }),
-    [],
-  );
-
-  const addKeynoteToSchedule = useCallback(
-    (slotId: string, itemRooms: string[], keynoteId: string) =>
-      addOrCreateScheduleItem({
-        variables: {
-          input: {
-            slotId,
-            keynoteId,
-            rooms: itemRooms,
-          },
-          language,
-        },
-      }),
-    [],
-  );
-
-  const moveItem = useCallback(
-    (slotId: string, itemRooms: string[], itemId: string) =>
-      addOrCreateScheduleItem({
-        variables: {
-          input: {
-            slotId,
-            itemId,
-            rooms: itemRooms,
-          },
-          language,
-        },
-      }),
-    [],
-  );
-
-  const addScheduleSlot = useCallback(
-    (duration: number) =>
-      addSlot({
-        variables: {
-          code,
-          day: currentDay,
-          duration,
-          language,
-        },
-      }),
-    [code, currentDay],
-  );
-
   if (!schedule) {
     return null;
   }
 
-  const { days, submissions, keynotes } = schedule.conference!;
+  const { days } = schedule.conference!;
   const day = days.find((d) => d.day === currentDay);
   const [currentFilters, setCurrentFilters] = useState({});
   const applyFilters = (newFilters: Record<string, string[]>) => {
@@ -428,10 +345,6 @@ export const ScheduleView = ({
 
   return (
     <Fragment>
-      {shouldShowAdmin && (
-        <ItemsPanel keynotes={keynotes ?? []} submissions={submissions ?? []} />
-      )}
-      {(addingSlot || updatingSchedule) && <LoadingOverlay />}
       {!isInPhotoMode && (
         <>
           <Section illustration="snakeHead">
@@ -486,10 +399,6 @@ export const ScheduleView = ({
                 slots={day.slots}
                 rooms={day.rooms}
                 adminMode={shouldShowAdmin}
-                addCustomScheduleItem={addCustomScheduleItem}
-                addSubmissionToSchedule={addSubmissionToSchedule}
-                addKeynoteToSchedule={addKeynoteToSchedule}
-                moveItem={moveItem}
                 currentDay={currentDay}
                 currentFilters={currentFilters}
                 starredScheduleItems={starredScheduleItems}
