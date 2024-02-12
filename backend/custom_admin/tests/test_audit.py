@@ -1,3 +1,4 @@
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from custom_admin.audit import (
     create_addition_admin_log_entry,
     create_change_admin_log_entry,
@@ -17,7 +18,7 @@ def test_create_audit_log_for_creation(admin_user):
 
     log_entry = LogEntry.objects.get()
 
-    assert log_entry.action_flag == LogEntry.ADDITION
+    assert log_entry.action_flag == ADDITION
     assert log_entry.object_id == obj.pk
     assert log_entry.user == admin_user
 
@@ -28,7 +29,7 @@ def test_create_change_admin_log_entry(admin_user):
 
     log_entry = LogEntry.objects.get()
 
-    assert log_entry.action_flag == LogEntry.ADDITION
+    assert log_entry.action_flag == CHANGE
     assert log_entry.object_id == obj.pk
     assert log_entry.user == admin_user
 
@@ -39,6 +40,6 @@ def test_create_deletion_admin_log_entry(admin_user):
 
     log_entry = LogEntry.objects.get()
 
-    assert log_entry.action_flag == LogEntry.ADDITION
+    assert log_entry.action_flag == DELETION
     assert log_entry.object_id == obj.pk
     assert log_entry.user == admin_user
