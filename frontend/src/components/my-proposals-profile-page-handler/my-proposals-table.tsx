@@ -53,7 +53,15 @@ export const MyProposalsTable = ({ submissions }: Props) => {
               </Heading>
             </Link>
           </div>,
-          <StatusTag status={row.status} />,
+          row.status === "accepted" ? (
+            inSchedule ? (
+              <StatusTag status={row.status} />
+            ) : (
+              <StatusTag status={"proposed"} />
+            )
+          ) : (
+            <StatusTag status={row.status} />
+          ),
           <div>
             {!inSchedule && (
               <Text size={2} weight="strong" as="p">
