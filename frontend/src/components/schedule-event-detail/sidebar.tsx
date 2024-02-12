@@ -84,7 +84,7 @@ export const Sidebar = ({
   return (
     <>
       <MultiplePartsCard>
-        {rooms && (
+        {rooms && rooms.length > 0 && (
           <EventInfo
             label={
               <FormattedMessage
