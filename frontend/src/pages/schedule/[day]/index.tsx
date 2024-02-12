@@ -92,7 +92,6 @@ export const ScheduleDayPage = () => {
   const { loading, data } = useScheduleQuery({
     variables: {
       code,
-      fetchSubmissions: shouldShowAdmin,
       language,
     },
   });
@@ -175,7 +174,6 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     prefetchSharedQueries(client, locale),
     querySchedule(client, {
       code: process.env.conferenceCode,
-      fetchSubmissions: false,
       language: locale,
     }),
   ]);
