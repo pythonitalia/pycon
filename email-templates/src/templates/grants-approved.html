@@ -34,7 +34,8 @@ title: "[PyCon Italia 2022] Financial Aid Update!"
                                             (includes AM and PM coffee breaks and Lunch for every
                                             conference day).
                                         </li>
-                                        @{{#if hasApprovedTravel}}
+                                        @
+                                        {{#if hasApprovedTravel}}
                                             <li>
                                                 <strong class="font-semibold">✈️ up to @{{ amount }}€ refund for travel expenses</strong>
                                                 <br />
@@ -42,149 +43,149 @@ title: "[PyCon Italia 2022] Financial Aid Update!"
                                                 receipts, like plane/bus/train tickets, sent to us before the
                                                 conference
                                             </li>
-                                        @{{/if}}
-                                        @{{#if hasApprovedAccommodation}}
-                                            <li>
-                                                <strong class="font-semibold">🛏️ Accommodation</strong>
-                                                <br />
-                                                A bed in a shared room at the "Grand Hotel Mediterraneo," where
-                                                the conference takes place. This accommodation is available from
-                                                <span class="font-semibold">@{{ startDate }}</span> to
-                                                <span class="font-semibold">@{{ endDate }}</span>.
-                                            </li>
-                                        @{{/if}}
-                                    </ul>
-                                    <h2 class="text-xl font-bold text-center text-red-600 mt-8 mb-4 uppercase">ACTION NEEDED: Confirm Your Grant!</h2>
-                                    <p class="m-0 mb-24">
-                                        <strong class="font-semibold">To confirm your grant</strong>,
-                                        please click on the link below within the next 14 days (deadline
-                                        <strong class="font-semibold">@{{ deadlineDateTime }}</strong>). If
-                                        for some reason you no longer need the grant, or you have any
-                                        questions or need more information please let us know by clicking
-                                        the link below.
-                                    </p>
-                                    <div class="leading-full items-center justify-center flex mb-4"
-                                         style="justify-content: center">
-                                        <a href="@{{ replyLink }}"
-                                           target="_blank"
-                                           class="inline-block py-16 px-24 select-none text-base font-semibold text-center no-underline text-white bg-primary hover:bg-darker">
-                                            <!--[if mso
+                                            @{{/if}}
+                                            @
+                                            {{#if hasApprovedAccommodation}}
+                                                <li>
+                                                    <strong class="font-semibold">🛏️ Accommodation</strong>
+                                                    <br />
+                                                    A bed in a shared room at the "Grand Hotel Mediterraneo," where
+                                                    the conference takes place. This accommodation is available from
+                                                    <span class="font-semibold">@{{ startDate }}</span> to
+                                                    <span class="font-semibold">@{{ endDate }}</span>.
+                                                </li>
+                                                @{{/if}}
+                                            </ul>
+                                            <h2 class="text-xl font-bold text-center text-red-600 mt-8 mb-4 uppercase">ACTION NEEDED: Confirm Your Grant!</h2>
+                                            <p class="m-0 mb-24">
+                                                <strong class="font-semibold">To confirm your grant</strong>,
+                                                please click on the link below within the next 14 days (deadline
+                                                <strong class="font-semibold">@{{ deadlineDateTime }}</strong>). If
+                                                for some reason you no longer need the grant, or you have any
+                                                questions or need more information please let us know by clicking
+                                                the link below.
+                                            </p>
+                                            <div class="leading-full items-center justify-center flex mb-4"
+                                                 style="justify-content: center">
+                                                <a href="@{{ replyLink }}"
+                                                   target="_blank"
+                                                   class="inline-block py-16 px-24 select-none text-base font-semibold text-center no-underline text-white bg-primary hover:bg-darker">
+                                                    <!--[if mso
                             ]><i style=" letter-spacing: 24px; mso-font-width: -100%; mso-text-raise: 30px; ">&#8202;</i><!
                           [endif]-->
-                                            <span style="mso-text-raise: 16px">Manage your Grant</span>
-                                            <!--[if mso
+                                                    <span style="mso-text-raise: 16px">Manage your Grant</span>
+                                                    <!--[if mso
                             ]><i style="letter-spacing: 24px; mso-font-width: -100%">&#8202;</i><!
                           [endif]-->
-                                        </a>
-                                    </div>
-                                    <p class="text-center mb-24">
-                                        Use the button above or click the link here:
-                                        <a href="@{{ replyLink }}">@{{ replyLink }}</a>
-                                    </p>
-                                    <h2 class="text-lg text-center font-semibold mb-4 uppercase">Important: Grant allocation deadline</h2>
-                                    <p class="m-0 mb-16">
-                                        <strong class="font-bold">Please note:</strong>
-                                        If we don't hear from you before
-                                        <strong class="font-bold">@{{ deadlineDate }}</strong>, we will
-                                        allocate your grant to another person. This is a firm deadline,
-                                        and your prompt response is necessary.
-                                    </p>
-                                    <h3 class="text-lg text-center font-semibold mb-4 uppercase">Need a VISA Invitation Letter?</h3>
-                                    <p class="m-0 mb-16">
-                                        If you require an invitation letter for a VISA, kindly
-                                        <a href="@{{ visaPageLink }}"
-                                           class="text-blue-600 underline font-bold">fill out our Visa Application Form</a>. We will process your request and send you the invitation
-                                        letter within 4 days of form submission.
-                                    </p>
-                                    <h3 class="text-lg text-center font-semibold mb-4">Free ticket</h3>
-                                    <p class="m-0 mb-16">
-                                        <strong class="font-bold">There's no need for you to purchase a ticket.</strong>
-                                        We will provide you with a personalized voucher via a separate email.
-                                        This voucher will allow you to redeem your free ticket directly on our website.
-                                        <br/>     <br/>
-                                        Please keep an eye on your inbox, as we will be sending the voucher closer to the conference date.
-                                    </p>
-
-                                    @{{#if hasApprovedTravel}}
-                                    <h3 class="text-lg text-center font-semibold mb-4">Travel grant</h3>
-                                    <p class="m-0 mb-16">
-                                        All grants involving reimbursements will be reimbursed based on
-                                        approved receipts (plane/bus/train ticket) sent to us before the
-                                        conference. The reimbursement will be made by a bank transfer or
-                                        with PayPal after the conference.
-                                    </p>
-                                    <h4 class="m-0 mb-4 font-semibold">Please note:</h4>
-                                    <ul class="m-0 mb-16">
-                                        <li>Not approved invoices will not be reimbursed.</li>
-                                        <li>Reimbursements before the conference are not possible.</li>
-                                        <li>
-                                            The financial aid grants will only be made available to
-                                            registered attendees actually attending the conference.
-                                        </li>
-                                        <li>Transfers to other people are not possible.</li>
-                                        <li>
-                                            As part of our efforts to reduce the carbon footprint of the
-                                            conference we expect our attendees to use trains rather than
-                                            airplanes when possible. Thus, we will not refund air travel
-                                            costs when other means of transportation are easily available.
-                                            This will be considered on a case by case basis. Please
-                                            consider this when calculating the estimated costs.
-                                        </li>
-                                    </ul>
-                                    @{{/if}}
-
-                                    <h3 class="text-lg text-center font-semibold mb-4">Help us at PyCon Italia!</h3>
-                                    <p class="m-0 mb-16">
-                                        We are always looking for passionate individuals to join our
-                                        volunteer team at PyCon Italia. Whether you've already signed up
-                                        to volunteer or are considering it, we deeply appreciate your
-                                        interest in contributing to our conference's success. 😊
-                                    </p>
-                                    <p class="m-0 mb-4">
-                                        For those who have expressed interest in volunteering, here's a
-                                        glimpse of what you might be involved in as part of our dedicated
-                                        conference staff:
-                                    </p>
-                                    <ul class="m-0 mb-16">
-                                        <li>Assisting at the registration desk.</li>
-                                        <li>
-                                            Acting as a talk manager for a few hours - introducing
-                                            speakers, assisting with technical rehearsals, and monitoring
-                                            talk timings. Don't worry, we'll provide a simple handbook to
-                                            guide you!
-                                        </li>
-                                        <li>Helping manage attendee flow during breaks and lunches.</li>
-                                        <li>
-                                            Ensuring the observation of the Code of Conduct at all
-                                            event-related activities, including social events.
-                                        </li>
-                                    </ul>
-                                    <p class="m-0 mb-16">
-                                        Your contribution as a volunteer is invaluable in making PyCon
-                                        Italia a welcoming and smoothly run event. If you have any
-                                        questions or need more information, please don't hesitate to
-                                        reach out. More detailed information will follow as the
-                                        conference approaches.
-                                    </p>
-                                    <p class="m-0 mb-16">
-                                        Please let us know your thoughts regarding this matter or if you
-                                        need more information! :)
-                                    </p>
-                                    <p class="m-0 mb-24">We can't wait to see you at the conference!</p>
+                                                </a>
+                                            </div>
+                                            <p class="text-center mb-24">
+                                                Use the button above or click the link here:
+                                                <a href="@{{ replyLink }}">@{{ replyLink }}</a>
+                                            </p>
+                                            <h2 class="text-lg text-center font-semibold mb-4 uppercase">Important: Grant allocation deadline</h2>
+                                            <p class="m-0 mb-16">
+                                                <strong class="font-bold">Please note:</strong>
+                                                If we don't hear from you before
+                                                <strong class="font-bold">@{{ deadlineDate }}</strong>, we will
+                                                allocate your grant to another person. This is a firm deadline,
+                                                and your prompt response is necessary.
+                                            </p>
+                                            <h3 class="text-lg text-center font-semibold mb-4 uppercase">Need a VISA Invitation Letter?</h3>
+                                            <p class="m-0 mb-16">
+                                                If you require an invitation letter for a VISA, visit our
+                                                <a href="@{{ visaPageLink }}" class="text-blue-600 underline font-bold">VISA page</a>
+                                                and complete the Visa Information Request form.
+                                            </p>
+                                            <h3 class="text-lg text-center font-semibold mb-4">Free ticket</h3>
+                                            <p class="m-0 mb-16">
+                                                <strong class="font-bold">There's no need for you to purchase a ticket.</strong>
+                                                We will provide you with a personalized voucher via a separate email.
+                                                This voucher will allow you to redeem your free ticket directly on our website.
+                                                <br />
+                                                <br />
+                                                Please keep an eye on your inbox, as we will be sending the voucher closer to the conference date.
+                                            </p>
+                                            @
+                                            {{#if hasApprovedTravel}}
+                                                <h3 class="text-lg text-center font-semibold mb-4">Travel grant</h3>
+                                                <p class="m-0 mb-16">
+                                                    All grants involving reimbursements will be reimbursed based on
+                                                    approved receipts (plane/bus/train ticket) sent to us before the
+                                                    conference. The reimbursement will be made by a bank transfer or
+                                                    with PayPal after the conference.
+                                                </p>
+                                                <h4 class="m-0 mb-4 font-semibold">Please note:</h4>
+                                                <ul class="m-0 mb-16">
+                                                    <li>Not approved invoices will not be reimbursed.</li>
+                                                    <li>Reimbursements before the conference are not possible.</li>
+                                                    <li>
+                                                        The financial aid grants will only be made available to
+                                                        registered attendees actually attending the conference.
+                                                    </li>
+                                                    <li>Transfers to other people are not possible.</li>
+                                                    <li>
+                                                        As part of our efforts to reduce the carbon footprint of the
+                                                        conference we expect our attendees to use trains rather than
+                                                        airplanes when possible. Thus, we will not refund air travel
+                                                        costs when other means of transportation are easily available.
+                                                        This will be considered on a case by case basis. Please
+                                                        consider this when calculating the estimated costs.
+                                                    </li>
+                                                </ul>
+                                                @{{/if}}
+                                                <h3 class="text-lg text-center font-semibold mb-4">Help us at PyCon Italia!</h3>
+                                                <p class="m-0 mb-16">
+                                                    We are always looking for passionate individuals to join our
+                                                    volunteer team at PyCon Italia. Whether you've already signed up
+                                                    to volunteer or are considering it, we deeply appreciate your
+                                                    interest in contributing to our conference's success. 😊
+                                                </p>
+                                                <p class="m-0 mb-4">
+                                                    For those who have expressed interest in volunteering, here's a
+                                                    glimpse of what you might be involved in as part of our dedicated
+                                                    conference staff:
+                                                </p>
+                                                <ul class="m-0 mb-16">
+                                                    <li>Assisting at the registration desk.</li>
+                                                    <li>
+                                                        Acting as a talk manager for a few hours - introducing
+                                                        speakers, assisting with technical rehearsals, and monitoring
+                                                        talk timings. Don't worry, we'll provide a simple handbook to
+                                                        guide you!
+                                                    </li>
+                                                    <li>Helping manage attendee flow during breaks and lunches.</li>
+                                                    <li>
+                                                        Ensuring the observation of the Code of Conduct at all
+                                                        event-related activities, including social events.
+                                                    </li>
+                                                </ul>
+                                                <p class="m-0 mb-16">
+                                                    Your contribution as a volunteer is invaluable in making PyCon
+                                                    Italia a welcoming and smoothly run event. If you have any
+                                                    questions or need more information, please don't hesitate to
+                                                    reach out. More detailed information will follow as the
+                                                    conference approaches.
+                                                </p>
+                                                <p class="m-0 mb-16">
+                                                    Please let us know your thoughts regarding this matter or if you
+                                                    need more information! :)
+                                                </p>
+                                                <p class="m-0 mb-24">We can't wait to see you at the conference!</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="h-48"></td>
+                                        </tr>
+                                        <tr>
+                                            <component src="src/components/footer.html" />
+                                        </tr>
+                                    </table>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td class="h-48"></td>
-                            </tr>
-                            <tr>
-                                <component src="src/components/footer.html" />
                             </tr>
                         </table>
                     </td>
                 </tr>
             </table>
-        </td>
-    </tr>
-</table>
-</block>
-</extends>
+            </block>
+            </extends>
