@@ -918,7 +918,7 @@ reflects what everyone wants to see!`,
     "schedule.workshop.soldout": "No more seats available",
 
     "schedule.invitation.congratulations":
-      "Congratulations! Your submission {submissionTitle} was accepted!",
+      "Congratulations! Your submission {submissionTitle} has been accepted!",
     "schedule.invitation.program": "It is currently scheduled for:",
     "schedule.invitation.date": "{start} to {end}",
     "schedule.invitation.notes.placeholder": "Insert your reasons here",
