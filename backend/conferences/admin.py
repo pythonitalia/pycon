@@ -162,7 +162,6 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                     "topics",
                     "audience_levels",
                     "languages",
-                    "visa_application_form_link",
                 )
             },
         ),

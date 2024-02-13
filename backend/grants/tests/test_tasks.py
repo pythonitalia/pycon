@@ -120,7 +120,6 @@ def test_handle_grant_reply_sent_reminder(conference_factory, grant_factory, set
     conference = conference_factory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
-        visa_application_form_link="https://example.com/visa-application-form",
     )
     user = UserFactory(
         full_name="Marco Acierno",
@@ -151,7 +150,7 @@ def test_handle_grant_reply_sent_reminder(conference_factory, grant_factory, set
             "deadlineDateTime": "1 February 2023 23:59 UTC",
             "deadlineDate": "1 February 2023",
             "replyLink": "https://pycon.it/grants/reply/",
-            "visaApplicationFormLink": "https://example.com/visa-application-form",
+            "visaPageLink": "https://pycon.it/visa",
             "hasApprovedTravel": False,
             "hasApprovedAccommodation": False,
         },
@@ -167,7 +166,6 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(
     conference = conference_factory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
-        visa_application_form_link="https://example.com/visa-application-form",
     )
     user = UserFactory(
         full_name="Marco Acierno",
@@ -200,7 +198,7 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(
             "deadlineDateTime": "1 February 2023 23:59 UTC",
             "deadlineDate": "1 February 2023",
             "replyLink": "https://pycon.it/grants/reply/",
-            "visaApplicationFormLink": "https://example.com/visa-application-form",
+            "visaPageLink": "https://pycon.it/visa",
             "hasApprovedTravel": True,
             "hasApprovedAccommodation": True,
         },
@@ -216,7 +214,6 @@ def test_handle_grant_approved_ticket_travel_accommodation_fails_with_no_amount(
     conference = conference_factory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
-        visa_application_form_link="https://example.com/visa-application-form",
     )
     user = UserFactory(
         full_name="Marco Acierno",
@@ -239,33 +236,6 @@ def test_handle_grant_approved_ticket_travel_accommodation_fails_with_no_amount(
         send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
 
 
-def test_handle_grant_approved_ticket_fails_with_no_visa_application_form_link(
-    conference_factory, grant_factory, settings
-):
-    settings.FRONTEND_URL = "https://pycon.it"
-
-    conference = conference_factory(
-        start=datetime(2023, 5, 2, tzinfo=timezone.utc),
-        end=datetime(2023, 5, 5, tzinfo=timezone.utc),
-        visa_application_form_link="",
-    )
-    user = UserFactory()
-    grant = grant_factory(
-        conference=conference,
-        approved_type=Grant.ApprovedType.ticket_travel_accommodation,
-        applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
-        travel_amount=0,
-        user=user,
-    )
-
-    with pytest.raises(
-        ValueError,
-        match="Visa Application Form Link Missing: Please ensure the link to the Visa "
-        "Application Form is set in the Conference admin settings.",
-    ):
-        send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
-
-
 def test_handle_grant_approved_ticket_only_reply_sent(
     conference_factory, grant_factory, settings
 ):
@@ -274,7 +244,6 @@ def test_handle_grant_approved_ticket_only_reply_sent(
     conference = conference_factory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
-        visa_application_form_link="https://example.com/visa-application-form",
     )
     user = UserFactory(
         full_name="Marco Acierno",
@@ -306,7 +275,7 @@ def test_handle_grant_approved_ticket_only_reply_sent(
             "deadlineDateTime": "1 February 2023 23:59 UTC",
             "deadlineDate": "1 February 2023",
             "replyLink": "https://pycon.it/grants/reply/",
-            "visaApplicationFormLink": "https://example.com/visa-application-form",
+            "visaPageLink": "https://pycon.it/visa",
             "hasApprovedTravel": False,
             "hasApprovedAccommodation": False,
         },
@@ -322,7 +291,6 @@ def test_handle_grant_approved_travel_reply_sent(
     conference = conference_factory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
-        visa_application_form_link="https://example.com/visa-application-form",
     )
     user = UserFactory(
         full_name="Marco Acierno",
@@ -355,7 +323,7 @@ def test_handle_grant_approved_travel_reply_sent(
             "deadlineDateTime": "1 February 2023 23:59 UTC",
             "deadlineDate": "1 February 2023",
             "replyLink": "https://pycon.it/grants/reply/",
-            "visaApplicationFormLink": "https://example.com/visa-application-form",
+            "visaPageLink": "https://pycon.it/visa",
             "hasApprovedTravel": True,
             "hasApprovedAccommodation": False,
             "amount": "400",

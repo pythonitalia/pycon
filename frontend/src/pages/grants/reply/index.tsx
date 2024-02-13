@@ -16,6 +16,7 @@ import { GetServerSideProps } from "next";
 
 import { getApolloClient, addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
+import { createHref } from "~/components/link";
 import { PageLoading } from "~/components/page-loading";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -115,7 +116,10 @@ const GrantReply = () => {
   }
 
   const hasSentAnswer = ANSWERS_STATUSES.includes(grant?.status) ?? false;
-
+  const visaPageLink = createHref({
+    path: `/visa/`,
+    locale: language,
+  });
   const answerHasChanged =
     toStatusOption(grant?.status) !== formState.values.option ||
     grant?.applicantMessage !== formState.values.message;
@@ -217,19 +221,9 @@ const GrantReply = () => {
             <FormattedMessage
               id="grants.reply.messageDescription"
               values={{
-                visaApplicationFormLink: (
-                  <Link
-                    target="_blank"
-                    href={data.conference.visaApplicationFormLink}
-                  >
-                    <Text
-                      decoration="underline"
-                      size={2}
-                      weight="strong"
-                      color="none"
-                    >
-                      <FormattedMessage id="grants.reply.visaApplicationFormLink" />
-                    </Text>
+                visaPageLink: (
+                  <Link target="_blank" href={visaPageLink}>
+                    {`https://pycon.it${visaPageLink}`}
                   </Link>
                 ),
               }}

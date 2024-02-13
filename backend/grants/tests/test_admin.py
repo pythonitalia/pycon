@@ -79,7 +79,6 @@ def test_send_reply_emails_approved_missing_amount(rf, grant_factory, mocker):
         status=Grant.Status.approved,
         approved_type=Grant.ApprovedType.ticket_accommodation,
         total_amount=None,
-        conference__visa_application_form_link="https://forms.com/visa",
     )
     grant.total_amount = None
     grant.save()
@@ -105,7 +104,6 @@ def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
         status=Grant.Status.approved,
         approved_type=Grant.ApprovedType.ticket_accommodation,
         total_amount=800,
-        conference__visa_application_form_link="https://forms.com/visa",
     )
     request = rf.get("/")
     mock_send_approved_email = mocker.patch(
