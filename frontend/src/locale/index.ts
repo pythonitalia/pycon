@@ -757,9 +757,8 @@ For any queries regarding the conference, help with the application process, or 
 
 Note: Please DO NOT send any personal details through this form.
 
-For Visa invitation letter requests, kindly visit our dedicated page at {visaPageLink} and submit the form there.
-We'll process your application and send the invitation letter within 4 days of form submission.
-`,
+For Visa invitation letter requests, kindly visit our dedicated {visaPageLink} and submit the form there.`,
+    "grants.reply.visaPageLink": "VISA page",
     "homepage.sponsorsSectionText":
       "PyCon Italia can be your platform to gain brand recognition, take leads and recruit from an audience of highly skilled professionals!",
     "homepage.sponsorsSectionCTAText": "Become a sponsor",
@@ -1503,8 +1502,8 @@ Se non riceveremo una conferma da te prima del {replyDeadline}, assegneremo il t
 
 Nota: Si prega di NON inviare dettagli personali tramite questo modulo.
 
-Per le richieste di lettera d'invito per il visto, si prega gentilmente di visitare la nostra pagina dedicata su {visaPageLink} e di compilare il modulo dedicato.
-Elaboreremo la tua richiesta e invieremo la lettera d'invito entro 4 giorni dalla presentazione del modulo.`,
+Per le richieste di lettera d'invito per il visto, si prega gentilmente di visitare la nostra {visaPageLink} e di compilare il modulo.`,
+    "grants.reply.visaPageLink": "pagina Visto",
     "schedule.invitation.sendingReply": "Caricamento in corso",
     "schedule.invitation.replySentWithSuccess":
       "Grazie! La tua risposta è stata salvata",

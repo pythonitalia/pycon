@@ -116,10 +116,7 @@ const GrantReply = () => {
   }
 
   const hasSentAnswer = ANSWERS_STATUSES.includes(grant?.status) ?? false;
-  const visaPageLink = createHref({
-    path: `/visa/`,
-    locale: language,
-  });
+
   const answerHasChanged =
     toStatusOption(grant?.status) !== formState.values.option ||
     grant?.applicantMessage !== formState.values.message;
@@ -222,8 +219,21 @@ const GrantReply = () => {
               id="grants.reply.messageDescription"
               values={{
                 visaPageLink: (
-                  <Link target="_blank" href={visaPageLink}>
-                    {`https://pycon.it${visaPageLink}`}
+                  <Link
+                    target="_blank"
+                    href={createHref({
+                      path: `/visa/`,
+                      locale: language,
+                    })}
+                  >
+                    <Text
+                      decoration="underline"
+                      size={2}
+                      weight="strong"
+                      color="none"
+                    >
+                      <FormattedMessage id="grants.reply.visaPageLink" />
+                    </Text>
                   </Link>
                 ),
               }}
