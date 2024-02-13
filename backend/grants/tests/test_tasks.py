@@ -23,6 +23,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_send_grant_voucher_email(settings, grant_factory):
+    settings.FRONTEND_URL = "https://pycon.it"
     user = UserFactory(
         full_name="Marco Acierno",
         email="marco@placeholder.it",
@@ -47,6 +48,7 @@ def test_send_grant_voucher_email(settings, grant_factory):
             "firstname": "Marco Acierno",
             "voucherCode": "ABC123",
             "hasApprovedAccommodation": False,
+            "visaPageLink": "http://pycon.itvisa",
         },
         reply_to=["grants@pycon.it"],
     )
