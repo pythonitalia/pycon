@@ -35,9 +35,9 @@ def send_schedule_invitation_email(*, schedule_item_id, is_reminder):
 
     prefix = f"[{conference_name}]"
     subject = (
-        f"{prefix} Reminder: Your submission was accepted, confirm your presence"
+        f"{prefix} Reminder: Your submission has been accepted, confirm your presence"
         if is_reminder
-        else f"{prefix} Your submission was accepted!"
+        else f"{prefix} Your submission has been accepted!"
     )
 
     send_email(
