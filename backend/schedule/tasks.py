@@ -31,8 +31,9 @@ def send_schedule_invitation_email(*, schedule_item_id, is_reminder):
     submission_title = submission.title.localize(language_code)
 
     speaker = User.objects.get(id=speaker_id)
+    conference_name = schedule_item.conference.name.localize("en")
 
-    prefix = f"[{schedule_item.conference.name.localize('en')}]"
+    prefix = f"[{conference_name}]"
     subject = (
         f"{prefix} Reminder: Your submission was accepted, confirm your presence"
         if is_reminder
@@ -45,6 +46,7 @@ def send_schedule_invitation_email(*, schedule_item_id, is_reminder):
         subject=subject,
         variables={
             "submissionTitle": submission_title,
+            "conferenceName": conference_name,
             "firstname": get_name(speaker, "there"),
             "invitationlink": invitation_url,
         },
@@ -79,6 +81,7 @@ def send_submission_time_slot_changed_email(*, schedule_item_id):
             "submissionTitle": submission_title,
             "firstname": get_name(speaker, "there"),
             "invitationlink": invitation_url,
+            "conferenceName": conference_name,
         },
     )
 
