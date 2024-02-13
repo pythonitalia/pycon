@@ -59,9 +59,10 @@ class CanEditSchedule(IsStaffPermission):
         conference_id = kwargs.get(
             "conferenceId", kwargs.get("input", {}).get("conferenceId")
         )
+        assert conference_id
+
         conference = Conference.objects.filter(id=conference_id).first()
-        if not conference_id or not conference:
-            return False
+        assert conference
 
         user = info.context.request.user
         return user.has_perm("schedule.change_scheduleitem", conference)
