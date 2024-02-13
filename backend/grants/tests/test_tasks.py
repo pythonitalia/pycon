@@ -48,7 +48,7 @@ def test_send_grant_voucher_email(settings, grant_factory):
             "firstname": "Marco Acierno",
             "voucherCode": "ABC123",
             "hasApprovedAccommodation": False,
-            "visaPageLink": "http://pycon.itvisa",
+            "visaPageLink": "https://pycon.it/visa",
         },
         reply_to=["grants@pycon.it"],
     )
