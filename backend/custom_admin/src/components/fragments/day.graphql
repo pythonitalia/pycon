@@ -1,0 +1,13 @@
+#import "./slot.graphql"
+fragment DayFragment on Day {
+  id
+  day
+  rooms {
+    id
+    name
+    type
+  }
+  slots {
+    ...SlotFragment
+  }
+}

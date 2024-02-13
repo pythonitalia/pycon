@@ -77,29 +77,47 @@ services:
       timeout: 10s
       retries: 10
 
-  pycon-backend-worker:
+  # pycon-custom-admin-ws:
+  #   build:
+  #     context: ./backend/custom_admin/ws-proxy
+  #   networks: [pycon_net]
+  #   tty: true
+  #   stdin_open: true
+  #   ports:
+  #     - 3003:3003
+  #   volumes:
+  #     - ./backend/custom_admin/ws-proxy/nginx.conf:/etc/nginx/conf.d/default.conf
+  #   depends_on:
+  #     pycon-custom-admin:
+  #       condition: service_healthy
+
+  pycon-custom-admin:
     build:
       context: ./backend
-      dockerfile: ../Dockerfile.python.local
+      dockerfile: ../Dockerfile.node.local
     networks: [pycon_net]
     entrypoint: ""
-    command: sh -c "touch /.ready && pdm install && pdm run python worker.py"
-    depends_on:
-      redis:
-        condition: service_healthy
-      pycon-backend-db:
-        condition: service_healthy
+    working_dir: /home/node/app/custom_admin/
+    command: sh -c "pnpm install --config.confirmModulesPurge=false && touch /.ready && pnpm run dev"
+    volumes:
+      - ./backend:/home/node/app
+      - /home/node/app/node_modules/
+    environment:
+      <<: *enviroment_defaults
+      ADMIN_GRAPHQL_URL: http://pycon-backend:8000/admin/graphql
     tty: true
     stdin_open: true
-    volumes:
-      - ./backend:/home/app/
-    environment:
-      <<: *pycon_backend_envs
+    ports:
+      - 3002:3002
+      - 3003:3003
     healthcheck:
       test: ["CMD-SHELL", "test -f /.ready"]
       interval: 10s
       timeout: 10s
       retries: 10
+    depends_on:
+      pycon-backend:
+        condition: service_healthy
 
   pycon-backend-db:
     image: postgres:14.5
@@ -148,6 +166,7 @@ services:
       context: ./email-templates
       dockerfile: ../Dockerfile.node.local
     command: sh -c "pnpm install && pnpm run dev"
+    networks: [pycon_net]
     ports:
       - 3500:3500
       - 3501:3501
@@ -160,58 +179,6 @@ services:
     networks: [pycon_net]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-
-  temporal-db:
-    image: postgres:14.5
-    networks: [pycon_net]
-    volumes:
-      - temporal-db-data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: temporal
-      POSTGRES_PASSWORD: temporal
-      POSTGRES_DB: temporal
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U temporal"]
-      interval: 5s
-      timeout: 5s
-
-  temporal:
-    image: temporalio/auto-setup:${TEMPORAL_VERSION:-1.21.2.0}
-    networks: [pycon_net]
-    depends_on:
-      temporal-db:
-        condition: service_healthy
-    environment:
-      - DB=postgres
-      - DB_PORT=5432
-      - POSTGRES_USER=temporal
-      - POSTGRES_PWD=temporal
-      - POSTGRES_SEEDS=temporal-db
-      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yml
-    volumes:
-      - ./temporal-config:/etc/temporal/config/dynamicconfig
-
-  temporal-admin-tools:
-    depends_on:
-      - temporal
-    environment:
-      - TEMPORAL_ADDRESS=temporal:7233
-      - TEMPORAL_CLI_ADDRESS=temporal:7233
-    image: temporalio/admin-tools:${TEMPORAL_VERSION:-1.21.2.0}
-    networks: [pycon_net]
-    stdin_open: true
-    tty: true
-
-  temporal-ui:
-    depends_on:
-      - temporal
-    environment:
-      - TEMPORAL_ADDRESS=temporal:7233
-      - TEMPORAL_CORS_ORIGINS=http://localhost:3000
-    image: temporalio/ui:${TEMPORAL_UI_VERSION:-2.16.2}
-    networks: [pycon_net]
-    ports:
-      - 8969:8080
 
 networks:
   pycon_net:

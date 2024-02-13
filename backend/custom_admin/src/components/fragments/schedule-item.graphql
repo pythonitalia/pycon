@@ -1,0 +1,23 @@
+#import "./submission.graphql"
+#import "./keynote.graphql"
+fragment ScheduleItemFragment on ScheduleItem {
+  id
+  title
+  type
+  duration
+  status
+  rooms {
+    id
+    name
+  }
+  speakers {
+    id
+    fullname
+  }
+  proposal: submission {
+    ...SubmissionFragment
+  }
+  keynote {
+    ...KeynoteFragment
+  }
+}

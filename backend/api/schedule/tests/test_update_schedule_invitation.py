@@ -26,7 +26,7 @@ def test_update_invitation_answer(
     mocker,
 ):
     mock_event = mocker.patch(
-        "api.schedule.mutations.notify_new_schedule_invitation_answer_slack"
+        "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
     )
 
     graphql_client.force_login(user)
@@ -86,7 +86,7 @@ def test_saving_the_same_answer_does_not_trigger_event(
     mocker,
 ):
     mock_event = mocker.patch(
-        "api.schedule.mutations.notify_new_schedule_invitation_answer_slack"
+        "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
     )
 
     graphql_client.force_login(user)
@@ -148,7 +148,7 @@ def test_changing_notes_triggers_a_new_event(
     mocker,
 ):
     mock_event = mocker.patch(
-        "api.schedule.mutations.notify_new_schedule_invitation_answer_slack"
+        "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
     )
 
     graphql_client.force_login(user)
@@ -210,7 +210,7 @@ def test_random_user_cannot_update_an_invitation(
     mocker,
 ):
     mock_event = mocker.patch(
-        "api.schedule.mutations.notify_new_schedule_invitation_answer_slack"
+        "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
     )
 
     graphql_client.force_login(user)
@@ -258,7 +258,7 @@ def test_cannot_update_schedule_if_submission_doesnt_have_a_matching_schedule(
     submission_factory, graphql_client, user, mocker
 ):
     mock_event = mocker.patch(
-        "api.schedule.mutations.notify_new_schedule_invitation_answer_slack"
+        "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
     )
 
     graphql_client.force_login(user)
@@ -298,7 +298,7 @@ def test_reqires_authentication(
     mocker,
 ):
     mock_event = mocker.patch(
-        "api.schedule.mutations.notify_new_schedule_invitation_answer_slack"
+        "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
     )
 
     submission = submission_factory()
@@ -349,7 +349,7 @@ def test_staff_can_update_invitation_answer(
     mocker,
 ):
     mock_event = mocker.patch(
-        "api.schedule.mutations.notify_new_schedule_invitation_answer_slack"
+        "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
     )
 
     graphql_client.force_login(admin_user)

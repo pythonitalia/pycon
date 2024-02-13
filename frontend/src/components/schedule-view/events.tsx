@@ -43,111 +43,20 @@ import {
   Slot,
   Submission as SubmissionType,
 } from "./types";
-import { useDragOrDummy } from "./use-drag-or-dummy";
 
 const getType = (submission?: SubmissionType | null) =>
   submission?.type?.name.toLowerCase() === "tutorial"
     ? ItemTypes.TRAINING
     : ItemTypes.TALK;
 
-const BaseDraggable = ({
-  adminMode,
-  type,
-  children,
-  metadata,
-  ...props
-}: {
-  type: string;
-  metadata?: any;
-  adminMode?: boolean;
-  sx?: ThemeUIStyleObject;
-  children: any;
-  className?: string;
-}) => {
-  const [_, drag] = useDragOrDummy({
-    adminMode,
-    item: {
-      type,
-      ...metadata,
-    },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  });
-
-  return (
-    <div
-      ref={adminMode ? drag : null}
-      style={{
-        cursor: adminMode ? "move" : "",
-      }}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-};
-
-export const BaseEvent = ({
-  type,
-  children,
-  metadata,
-  ...props
-}: {
-  type: string;
-  metadata: any;
-  sx?: ThemeUIStyleObject;
-  children: any;
-}) => (
-  <BaseDraggable
-    type={type}
-    adminMode={true}
-    metadata={metadata}
-    sx={{
-      display: "inline-block",
-      border: "primary",
-      p: 3,
-      mb: "-4px",
-      mr: 3,
-    }}
-    {...props}
-  >
-    {children}
-  </BaseDraggable>
-);
-
-export const Submission = ({
-  submission,
-  ...props
-}: {
-  submission: SubmissionType;
-  sx?: any;
-}) => {
-  const itemType = getType(submission);
-
-  return (
-    <BaseEvent
-      type={itemType}
-      metadata={{ event: { submissionId: submission.id } }}
-      sx={{ backgroundColor: getColorForSubmission(submission) }}
-      {...props}
-    >
-      {submission.title}{" "}
-      <Text as="span" sx={{ fontWeight: "bold" }}>
-        ({submission.duration!.duration} minutes)
-      </Text>
-      <Text sx={{ fontWeight: "bold", color: "white", mt: 2 }}>
-        {submission.speaker?.fullName || "No name"}
-      </Text>
-    </BaseEvent>
-  );
-};
-
 export const getItemUrl = (item: Item) => {
   if (
     item.type === "training" ||
     item.type === "talk" ||
-    item.type === "panel"
+    item.type === "panel" ||
+    item.type === "social" ||
+    item.type === "announcements" ||
+    item.type === "registration"
   ) {
     return `/event/[slug]`;
   }
@@ -158,49 +67,6 @@ export const getItemUrl = (item: Item) => {
 
   return undefined;
 };
-
-export const AllTracksEvent = ({ ...props }) => (
-  <BaseEvent
-    type={ItemTypes.ALL_TRACKS_EVENT}
-    metadata={{ event: { allTracks: true } }}
-    {...props}
-  >
-    All track event
-  </BaseEvent>
-);
-
-export const RoomChangeEvent = ({ ...props }) => (
-  <BaseEvent
-    type={ItemTypes.ALL_TRACKS_EVENT}
-    metadata={{ event: { roomChange: true } }}
-    {...props}
-  >
-    Room change event
-  </BaseEvent>
-);
-
-export const CustomEvent = ({ ...props }) => (
-  <BaseEvent
-    type={ItemTypes.CUSTOM}
-    metadata={{ event: { title: "Custom" } }}
-    {...props}
-  >
-    Custom event
-  </BaseEvent>
-);
-
-export const Keynote = ({ keynote, ...props }) => (
-  <BaseEvent
-    type={ItemTypes.KEYNOTE}
-    metadata={{ event: { keynoteId: keynote.id } }}
-    sx={{
-      backgroundColor: "yellow",
-    }}
-    {...props}
-  >
-    {keynote.title}
-  </BaseEvent>
-);
 
 export const ScheduleEntry = ({
   item,
@@ -251,7 +117,7 @@ export const ScheduleEntry = ({
   const languageText = useTranslatedMessage(
     item.language.code === "en" ? `talk.language.en` : `talk.language.it`,
   );
-  const isCustomItem = item.type === "custom";
+  const isCustomItem = item.type === "custom" || item.type === "break";
   const speakersNames = item.speakers.map((s) => s.fullName).join(", ");
   const allRoomsText = useTranslatedMessage("scheduleView.allRooms");
 
@@ -272,17 +138,14 @@ export const ScheduleEntry = ({
   });
 
   return (
-    <BaseDraggable
-      adminMode={adminMode}
-      type={type}
-      metadata={{ itemId: item.id }}
+    <a
       className={clsx("relative z-20 border-r border-l md:border-0", {
         "hidden md:block": filteredOut,
       })}
       {...props}
     >
       <ScheduleItemCard
-        size={slot.type === "FREE_TIME" ? "small" : "large"}
+        size={["FREE_TIME", "BREAK"].includes(slot.type) ? "small" : "large"}
         background={getItemBg(item.type)}
       >
         <div
@@ -418,12 +281,12 @@ export const ScheduleEntry = ({
           )}
         </div>
       </ScheduleItemCard>
-    </BaseDraggable>
+    </a>
   );
 };
 
 export const getItemBg = (type: string) => {
-  if (type === "custom") {
+  if (type === "custom" || type === "break") {
     return "milk";
   }
 

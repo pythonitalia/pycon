@@ -45,6 +45,11 @@ def admin_user(db):
     return UserFactory(email="admin@user.it", is_staff=True)
 
 
+@pytest.fixture()
+def admin_superuser(db):
+    return UserFactory(email="admin@user.it", is_staff=True, is_superuser=True)
+
+
 @pytest.fixture
 def language():
     return lambda code: Language.objects.get(code=code)

@@ -33,7 +33,6 @@ def simple_schedule_item(
 def test_cancel_booking(
     graphql_client, user, simple_schedule_item, mocker, schedule_item_attendee_factory
 ):
-    mocker.patch("api.schedule.mutations.user_has_admission_ticket", return_value=True)
 
     graphql_client.force_login(user)
 
@@ -71,7 +70,6 @@ def test_user_cannot_cancel_if_they_are_not_booked(
     simple_schedule_item,
     mocker,
 ):
-    mocker.patch("api.schedule.mutations.user_has_admission_ticket", return_value=True)
 
     graphql_client.force_login(user)
 
@@ -97,7 +95,6 @@ def test_cannot_cancel_if_schedule_item_is_not_bookable(
     simple_schedule_item,
     mocker,
 ):
-    mocker.patch("api.schedule.mutations.user_has_admission_ticket", return_value=True)
 
     graphql_client.force_login(user)
 

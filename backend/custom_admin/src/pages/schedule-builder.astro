@@ -1,0 +1,28 @@
+---
+import { ScheduleBuilderRoot } from "../components/schedule-builder/root";
+---
+<html>
+    <head>
+        <title>Schedule Builder</title>
+    </head>
+
+    <body class="text-sm">
+        <ScheduleBuilderRoot client:only />
+
+        <script>
+        const getArg = (name, value) => {
+            const cleanedValue = value.replace(`{{ ${name} }}`, "")
+            if (cleanedValue) {
+                return cleanedValue;
+            }
+            const url = new URL(window.location.href);
+            return url.searchParams.get(name);
+        }
+
+        window.apolloGraphQLUrl = '/admin/graphql';
+        window.conferenceId = getArg('conference_id', "{{ conference_id }}");
+        window.conferenceCode = getArg('conference_code', "{{ conference_code }}");
+        window.conferenceRepr = getArg('conference_repr', "{{ conference_repr }}");
+        </script>
+    </body>
+</html>

@@ -10,7 +10,6 @@ export const Placeholder = ({
   rowEnd,
   duration,
   roomType,
-  onDrop,
 }: {
   adminMode: boolean;
   columnStart: number;
@@ -18,7 +17,6 @@ export const Placeholder = ({
   rowEnd: number;
   duration: number;
   roomType: string;
-  onDrop: (item: any) => void;
 }) => {
   const accept = [`TALK_${duration}`, ItemTypes.TALK, ItemTypes.CUSTOM];
 
@@ -34,7 +32,6 @@ export const Placeholder = ({
   const [{ isOver, canDrop }, drop] = useDropOrDummy({
     adminMode,
     accept,
-    drop: onDrop,
     collect: (mon) => ({
       isOver: !!mon.isOver(),
       canDrop: !!mon.canDrop(),

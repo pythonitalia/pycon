@@ -1,3 +1,4 @@
+from django.template.response import TemplateResponse
 from pathlib import Path
 from django.core.files.storage import storages
 from django import forms
@@ -188,8 +189,26 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                 "<int:object_id>/video-upload/map-videos",
                 self.admin_site.admin_view(self.map_videos),
                 name="map_videos",
-            )
+            ),
+            path(
+                "<int:object_id>/schedule-builder",
+                self.admin_site.admin_view(self.schedule_builder),
+                name="schedule_builder",
+            ),
         ]
+
+    def schedule_builder(self, request, object_id):
+        conference = Conference.objects.get(pk=object_id)
+        context = dict(
+            self.admin_site.each_context(request),
+            arguments={
+                "conference_id": object_id,
+                "conference_code": conference.code,
+                "conference_repr": str(conference),
+            },
+            title="Schedule Builder",
+        )
+        return TemplateResponse(request, "astro/schedule-builder.html", context)
 
     def map_videos(self, request, object_id):
         if request.method == "POST":

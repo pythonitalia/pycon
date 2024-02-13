@@ -1,20 +1,15 @@
-import json
-
 from api.schema import schema
 from django.core.management.base import BaseCommand
-from graphql import get_introspection_query, graphql_sync
+from strawberry.printer import print_schema
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        query = get_introspection_query(descriptions=False)
-        result = graphql_sync(schema, query)
+        output = print_schema(schema)
 
-        output = {"data": result.data}
-
-        with open("schema.json", "w") as f:
-            json.dump(output, f, indent=4, sort_keys=True)
+        with open("schema.graphql", "w") as f:
+            f.write(output)
 
         self.stdout.write(
-            self.style.SUCCESS("Successfully dumped GraphQL schema to schema.json")
+            self.style.SUCCESS("Successfully dumped GraphQL schema to schema.graphql")
         )

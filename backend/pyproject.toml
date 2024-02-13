@@ -1,3 +1,12 @@
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.ruff]
+line-length = 88
+exclude = ["migrations"]
+target-version = "py311"
+
 [tool.pdm]
 [tool.pdm.dev-dependencies]
 dev = [
@@ -22,6 +31,7 @@ dev = [
     "libcst<2.0.0,>=1.1.0",
     "wagtail-factories<5.0.0,>=4.1.0",
     "pytest-xdist>=3.5.0",
+    "websockets>=12.0",
 ]
 
 [tool.pdm.build]
@@ -29,15 +39,6 @@ includes = []
 
 [tool.pdm.scripts]
 update-lock = "pdm lock -G :all"
-
-[build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
-
-[tool.ruff]
-line-length = 88
-exclude = ["migrations"]
-target-version = "py311"
 
 [project]
 authors = [

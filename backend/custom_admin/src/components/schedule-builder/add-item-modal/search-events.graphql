@@ -1,0 +1,17 @@
+#import "../../fragments/submission.graphql"
+#import "../../fragments/keynote.graphql"
+query SearchEvents($conferenceId: ID!, $query: String!) {
+  searchEvents: searchEventsForSchedule(
+    conferenceId: $conferenceId
+    query: $query
+  ) {
+    results {
+      ... on Submission {
+        ...SubmissionFragment
+      }
+      ... on Keynote {
+        ...KeynoteFragment
+      }
+    }
+  }
+}

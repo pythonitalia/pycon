@@ -17,6 +17,7 @@ urlpatterns = [
         SubmissionAutocomplete.as_view(),
         name="submission-autocomplete",
     ),
+    path("", include("custom_admin.urls")),
     path("admin/", admin.site.urls),
     path("graphql", csrf_exempt(GraphQLView.as_view(schema=schema)), name="graphql"),
     path("user/", include("users.urls")),

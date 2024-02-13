@@ -1,0 +1,6 @@
+#import "../../fragments/day.graphql"
+mutation CreateScheduleSlot($input: CreateScheduleSlotInput!) {
+  createScheduleSlot(input: $input) {
+    ...DayFragment
+  }
+}

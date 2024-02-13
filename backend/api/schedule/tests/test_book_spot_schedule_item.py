@@ -31,7 +31,10 @@ def simple_schedule_item(
 
 
 def test_book_schedule_item(graphql_client, user, mocker, simple_schedule_item):
-    mocker.patch("api.schedule.mutations.user_has_admission_ticket", return_value=True)
+    mocker.patch(
+        "api.schedule.mutations.book_schedule_item.user_has_admission_ticket",
+        return_value=True,
+    )
     graphql_client.force_login(user)
 
     schedule_item = simple_schedule_item
@@ -64,7 +67,10 @@ def test_needs_ticket_to_book(
     simple_schedule_item,
     mocker,
 ):
-    mocker.patch("api.schedule.mutations.user_has_admission_ticket", return_value=False)
+    mocker.patch(
+        "api.schedule.mutations.book_schedule_item.user_has_admission_ticket",
+        return_value=False,
+    )
 
     graphql_client.force_login(user)
 
@@ -92,7 +98,10 @@ def test_needs_ticket_to_book(
 def test_cannot_overbook(
     graphql_client, user, simple_schedule_item, mocker, schedule_item_attendee_factory
 ):
-    mocker.patch("api.schedule.mutations.user_has_admission_ticket", return_value=True)
+    mocker.patch(
+        "api.schedule.mutations.book_schedule_item.user_has_admission_ticket",
+        return_value=True,
+    )
 
     graphql_client.force_login(user)
 
@@ -121,7 +130,10 @@ def test_cannot_overbook(
 def test_user_cannot_book_twice(
     graphql_client, user, simple_schedule_item, mocker, schedule_item_attendee_factory
 ):
-    mocker.patch("api.schedule.mutations.user_has_admission_ticket", return_value=True)
+    mocker.patch(
+        "api.schedule.mutations.book_schedule_item.user_has_admission_ticket",
+        return_value=True,
+    )
 
     graphql_client.force_login(user)
 
@@ -148,7 +160,10 @@ def test_user_cannot_book_twice(
 def test_user_cannot_book_any_event(
     graphql_client, user, simple_schedule_item, mocker, schedule_item_attendee_factory
 ):
-    mocker.patch("api.schedule.mutations.user_has_admission_ticket", return_value=True)
+    mocker.patch(
+        "api.schedule.mutations.book_schedule_item.user_has_admission_ticket",
+        return_value=True,
+    )
 
     graphql_client.force_login(user)
 

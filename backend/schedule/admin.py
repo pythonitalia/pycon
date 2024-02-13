@@ -25,6 +25,7 @@ from schedule.tasks import (
     send_speaker_communication_email,
     send_submission_time_slot_changed_email,
 )
+from users.admin_mixins import ConferencePermissionMixin
 from video_upload.workflows.batch_multiple_schedule_items_video_upload import (
     BatchMultipleScheduleItemsVideoUpload,
 )
@@ -303,7 +304,7 @@ class ScheduleItemAdminForm(forms.ModelForm):
 
 
 @admin.register(ScheduleItem)
-class ScheduleItemAdmin(admin.ModelAdmin):
+class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     list_display = (
         "title",
         "conference",
