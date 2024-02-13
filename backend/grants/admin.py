@@ -30,7 +30,6 @@ from django.db.models import Exists, OuterRef
 
 from functools import wraps
 from django.contrib.admin import SimpleListFilter
-from wagtail.models import Site, Page
 
 EXPORT_GRANTS_FIELDS = (
     "name",
@@ -199,35 +198,7 @@ def validate_single_conference_selection(func):
     return wrapper
 
 
-def validate_visa_page_public(func):
-    """
-    Ensure the '/visa/' page exists and is public on the conference website.
-    """
-
-    @wraps(func)
-    def wrapper(modeladmin, request, queryset):
-        site = Site.find_for_request(request)
-        if (
-            not Page.objects.live()
-            .descendant_of(site.root_page)
-            .filter(slug="visa")
-            .exists()
-        ):
-            messages.error(
-                request,
-                "Link to the Visa Page Missing or Not Public: Please ensure the "
-                "'/visa/' page is created and made public on the conference CMS "
-                "before sending the emails.",
-            )
-            return
-
-        return func(modeladmin, request, queryset)
-
-    return wrapper
-
-
 @admin.action(description="Send Approved/Waiting List/Rejected reply emails")
-@validate_visa_page_public
 @validate_single_conference_selection
 def send_reply_emails(modeladmin, request, queryset):
     queryset = queryset.filter(
@@ -280,7 +251,6 @@ def send_reply_emails(modeladmin, request, queryset):
 
 
 @admin.action(description="Send reminder to waiting confirmation grants")
-@validate_visa_page_public
 @validate_single_conference_selection
 def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryset):
     queryset = queryset.filter(
@@ -319,7 +289,6 @@ def send_reply_email_waiting_list_update(modeladmin, request, queryset):
 
 
 @admin.action(description="Send voucher via email")
-@validate_visa_page_public
 @validate_single_conference_selection
 def send_voucher_via_email(modeladmin, request, queryset):
     count = 0

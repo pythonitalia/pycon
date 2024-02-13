@@ -11,40 +11,9 @@ from grants.admin import (
     send_voucher_via_email,
 )
 from grants.models import Grant
-from api.cms.tests.factories import GenericPageFactory
-from django.http import HttpRequest
-from wagtail.models import Site, Page
 
-from django.test.utils import override_settings
 
 pytestmark = pytest.mark.django_db
-
-
-@pytest.fixture(scope="session", autouse=True)
-def test_settings():
-    with override_settings(
-        **{
-            "ALLOWED_HOSTS ": ["*"],
-        }
-    ):
-        yield
-
-
-def _setup_visa_page_and_request(request: HttpRequest, site: Site):
-    """
-    Configures request for testing and ensures 'visa' page existence.
-
-    Modifies request to match site's domain and creates a 'visa' page if absent.
-    """
-    request.META.update({"HTTP_HOST": site.hostname, "SERVER_PORT": site.port})
-
-    if (
-        not Page.objects.live()
-        .descendant_of(site.root_page)
-        .filter(slug="visa")
-        .exists()
-    ):
-        GenericPageFactory(slug="visa", parent=site.root_page)
 
 
 def test_send_reply_emails_with_grants_from_multiple_conferences(
@@ -61,7 +30,6 @@ def test_send_reply_emails_with_grants_from_multiple_conferences(
     grant2 = grant_factory(conference=conference2, status=Grant.Status.waiting_list)
     grant3 = grant_factory(conference=conference2, status=Grant.Status.rejected)
     request = rf.get("/")
-    _setup_visa_page_and_request(request, site)
     mock_send_approved_email = mocker.patch(
         "grants.admin.send_grant_reply_approved_email.delay"
     )
@@ -93,7 +61,6 @@ def test_send_reply_emails_approved_grant_missing_approved_type(
     mock_messages = mocker.patch("grants.admin.messages")
     grant = grant_factory(status=Grant.Status.approved, approved_type=None)
     request = rf.get("/")
-    _setup_visa_page_and_request(request, site)
     mock_send_approved_email = mocker.patch(
         "grants.admin.send_grant_reply_approved_email.delay"
     )
@@ -117,7 +84,6 @@ def test_send_reply_emails_approved_missing_amount(rf, site, grant_factory, mock
     grant.total_amount = None
     grant.save()
     request = rf.get("/")
-    _setup_visa_page_and_request(request, site)
     mock_send_approved_email = mocker.patch(
         "grants.admin.send_grant_reply_approved_email.delay"
     )
@@ -141,7 +107,6 @@ def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
         total_amount=800,
     )
     request = rf.get("/")
-    _setup_visa_page_and_request(request, site)
     mock_send_approved_email = mocker.patch(
         "grants.admin.send_grant_reply_approved_email.delay"
     )
@@ -169,7 +134,6 @@ def test_send_reply_emails_waiting_list(rf, site, grant_factory, mocker):
         status=Grant.Status.waiting_list,
     )
     request = rf.get("/")
-    _setup_visa_page_and_request(request, site)
     mock_send_waiting_list_email = mocker.patch(
         "grants.admin.send_grant_reply_waiting_list_email.delay"
     )
@@ -188,7 +152,6 @@ def test_send_reply_emails_waiting_list_maybe(rf, site, grant_factory, mocker):
         status=Grant.Status.waiting_list_maybe,
     )
     request = rf.get("/")
-    _setup_visa_page_and_request(request, site)
     mock_send_waiting_list_email = mocker.patch(
         "grants.admin.send_grant_reply_waiting_list_email.delay"
     )
@@ -207,7 +170,6 @@ def test_send_reply_emails_rejected(rf, site, grant_factory, mocker):
         status=Grant.Status.rejected,
     )
     request = rf.get("/")
-    _setup_visa_page_and_request(request, site)
     mock_send_rejected_email = mocker.patch(
         "grants.admin.send_grant_reply_rejected_email.delay"
     )
@@ -218,30 +180,6 @@ def test_send_reply_emails_rejected(rf, site, grant_factory, mocker):
         request, f"Sent Rejected reply email to {grant.name}"
     )
     mock_send_rejected_email.assert_called_once_with(grant_id=grant.id)
-
-
-def test_send_reply_emails_missing_visa_page(rf, site, grant_factory, settings, mocker):
-    mock_messages = mocker.patch("grants.admin.messages")
-    mock_send_approved_email = mocker.patch(
-        "grants.admin.send_grant_reply_approved_email.delay"
-    )
-    grant_factory(
-        status=Grant.Status.approved,
-        approved_type=Grant.ApprovedType.ticket_accommodation,
-        total_amount=800,
-    )
-    request = rf.get("/")
-    request.META.update({"HTTP_HOST": site.hostname, "SERVER_PORT": site.port})
-
-    send_reply_emails(None, request=request, queryset=Grant.objects.all())
-
-    mock_messages.error.assert_called_once_with(
-        request,
-        "Link to the Visa Page Missing or Not Public: Please ensure the "
-        "'/visa/' page is created and made public on the conference CMS "
-        "before sending the emails.",
-    )
-    mock_send_approved_email.assert_not_called()
 
 
 @time_machine.travel("2020-10-10 10:00:00", tick=False)
@@ -264,7 +202,6 @@ def test_send_voucher_via_email(
         voucher_code="GRANT-532VCT",
     )
     request = rf.get("/")
-    _setup_visa_page_and_request(request, site)
 
     send_voucher_via_email(
         None, request, queryset=Grant.objects.filter(conference=conference)
@@ -297,7 +234,6 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
         conference=conference_2,
     )
     request = rf.get("/")
-    _setup_visa_page_and_request(request, site)
 
     send_voucher_via_email(
         None,
