@@ -96,11 +96,6 @@ class GenericPageFactory(PageFactory):
 
 @register
 class SiteFactory(SiteFactory):
-    """
-    Extends wagtail_factories.SiteFactory to use custom HomePage as root page.
-    """
-
-    hostname = "pycon.it"
     root_page = factory.SubFactory(GenericPageFactory)
     is_default_site = True
 
