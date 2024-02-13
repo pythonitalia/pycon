@@ -208,6 +208,30 @@ def test_send_reply_emails_rejected(rf, site, grant_factory, mocker):
     mock_send_rejected_email.assert_called_once_with(grant_id=grant.id)
 
 
+def test_send_reply_emails_missing_visa_page(rf, site, grant_factory, settings, mocker):
+    mock_messages = mocker.patch("grants.admin.messages")
+    mock_send_approved_email = mocker.patch(
+        "grants.admin.send_grant_reply_approved_email.delay"
+    )
+    grant_factory(
+        status=Grant.Status.approved,
+        approved_type=Grant.ApprovedType.ticket_accommodation,
+        total_amount=800,
+    )
+    request = rf.get("/")
+    request.META.update({"HTTP_HOST": site.hostname, "SERVER_PORT": site.port})
+
+    send_reply_emails(None, request=request, queryset=Grant.objects.all())
+
+    mock_messages.error.assert_called_once_with(
+        request,
+        "Link to the Visa Page Missing or Not Public: Please ensure the "
+        "'/visa/' page is created and made public on the conference CMS "
+        "before sending the emails.",
+    )
+    mock_send_approved_email.assert_not_called()
+
+
 @time_machine.travel("2020-10-10 10:00:00", tick=False)
 def test_send_voucher_via_email(
     rf,
