@@ -16,7 +16,6 @@ import { GetServerSideProps } from "next";
 
 import { getApolloClient, addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
-import { createHref } from "~/components/link";
 import { PageLoading } from "~/components/page-loading";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
