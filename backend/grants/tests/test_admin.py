@@ -17,7 +17,10 @@ pytestmark = pytest.mark.django_db
 
 
 def test_send_reply_emails_with_grants_from_multiple_conferences(
-    rf, grant_factory, mocker, conference_factory, site
+    rf,
+    grant_factory,
+    mocker,
+    conference_factory,
 ):
     """
     Test that sending reply emails does not proceed when selected grants belong
@@ -56,7 +59,7 @@ def test_send_reply_emails_with_grants_from_multiple_conferences(
 
 
 def test_send_reply_emails_approved_grant_missing_approved_type(
-    rf, site, grant_factory, mocker
+    rf, grant_factory, mocker
 ):
     mock_messages = mocker.patch("grants.admin.messages")
     grant = grant_factory(status=Grant.Status.approved, approved_type=None)
@@ -74,7 +77,7 @@ def test_send_reply_emails_approved_grant_missing_approved_type(
     mock_send_approved_email.assert_not_called()
 
 
-def test_send_reply_emails_approved_missing_amount(rf, site, grant_factory, mocker):
+def test_send_reply_emails_approved_missing_amount(rf, grant_factory, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
     grant = grant_factory(
         status=Grant.Status.approved,
@@ -98,7 +101,7 @@ def test_send_reply_emails_approved_missing_amount(rf, site, grant_factory, mock
 
 
 def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
-    rf, site, grant_factory, mocker
+    rf, grant_factory, mocker
 ):
     mock_messages = mocker.patch("grants.admin.messages")
     grant = grant_factory(
@@ -128,7 +131,7 @@ def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
     )
 
 
-def test_send_reply_emails_waiting_list(rf, site, grant_factory, mocker):
+def test_send_reply_emails_waiting_list(rf, grant_factory, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
     grant = grant_factory(
         status=Grant.Status.waiting_list,
@@ -146,7 +149,7 @@ def test_send_reply_emails_waiting_list(rf, site, grant_factory, mocker):
     mock_send_waiting_list_email.assert_called_once_with(grant_id=grant.id)
 
 
-def test_send_reply_emails_waiting_list_maybe(rf, site, grant_factory, mocker):
+def test_send_reply_emails_waiting_list_maybe(rf, grant_factory, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
     grant = grant_factory(
         status=Grant.Status.waiting_list_maybe,
@@ -164,7 +167,7 @@ def test_send_reply_emails_waiting_list_maybe(rf, site, grant_factory, mocker):
     mock_send_waiting_list_email.assert_called_once_with(grant_id=grant.id)
 
 
-def test_send_reply_emails_rejected(rf, site, grant_factory, mocker):
+def test_send_reply_emails_rejected(rf, grant_factory, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
     grant = grant_factory(
         status=Grant.Status.rejected,
@@ -185,7 +188,6 @@ def test_send_reply_emails_rejected(rf, site, grant_factory, mocker):
 @time_machine.travel("2020-10-10 10:00:00", tick=False)
 def test_send_voucher_via_email(
     rf,
-    site,
     grant_factory,
     conference_factory,
     mocker,
@@ -216,7 +218,6 @@ def test_send_voucher_via_email(
 
 def test_send_voucher_via_email_requires_filtering_by_conference(
     rf,
-    site,
     grant_factory,
     conference_factory,
     mocker,
