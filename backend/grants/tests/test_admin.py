@@ -203,10 +203,9 @@ def test_send_voucher_via_email(
         pretix_voucher_id=2345,
         voucher_code="GRANT-532VCT",
     )
-    request = rf.get("/")
 
     send_voucher_via_email(
-        None, request, queryset=Grant.objects.filter(conference=conference)
+        None, rf.get("/"), queryset=Grant.objects.filter(conference=conference)
     )
 
     mock_send_email.delay.assert_has_calls(
