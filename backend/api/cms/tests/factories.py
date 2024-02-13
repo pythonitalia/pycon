@@ -96,6 +96,11 @@ class GenericPageFactory(PageFactory):
 
 @register
 class SiteFactory(SiteFactory):
+    """
+    Overrides wagtail_factories.SiteFactory to use "testserver" as hostname
+    to make sure it works with Wagtail's ALLOWED_HOSTS in test environments.
+    """
+
     hostname = "testserver"
     root_page = factory.SubFactory(GenericPageFactory)
     is_default_site = True
