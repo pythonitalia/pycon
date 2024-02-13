@@ -34,8 +34,6 @@ from voting.tests.fixtures import *  # noqa
 from users.tests.factories import UserFactory
 from api.cms.tests.factories import *  # noqa
 
-from django.test.utils import override_settings
-
 
 @pytest.fixture()
 def user(db):
@@ -131,14 +129,3 @@ def mock_has_ticket(requests_mock, settings):
         )
 
     return wrapper
-
-
-@pytest.fixture(scope="session", autouse=True)
-def test_settings():
-    with override_settings(**TEST_SETTINGS):
-        yield
-
-
-TEST_SETTINGS = {
-    "ALLOWED_HOSTS ": ["*"],
-}

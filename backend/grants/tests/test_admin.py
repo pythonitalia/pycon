@@ -15,7 +15,19 @@ from api.cms.tests.factories import GenericPageFactory
 from django.http import HttpRequest
 from wagtail.models import Site, Page
 
+from django.test.utils import override_settings
+
 pytestmark = pytest.mark.django_db
+
+
+@pytest.fixture(scope="session", autouse=True)
+def test_settings():
+    with override_settings(
+        **{
+            "ALLOWED_HOSTS ": ["*"],
+        }
+    ):
+        yield
 
 
 def _setup_visa_page_and_request(request: HttpRequest, site: Site):
