@@ -46,6 +46,11 @@ module.exports = withSentryConfig({
         permanent: false,
       },
       {
+        source: "/cms-admin/:match*",
+        destination: "https://admin.pycon.it/cms-admin/:match",
+        permanent: false,
+      },
+      {
         source: "/discord",
         destination: "https://discord.gg/2WYMZdbv9j",
         permanent: false,
