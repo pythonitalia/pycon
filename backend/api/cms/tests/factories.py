@@ -96,6 +96,7 @@ class GenericPageFactory(PageFactory):
 
 @register
 class SiteFactory(SiteFactory):
+    hostname = "testserver"
     root_page = factory.SubFactory(GenericPageFactory)
     is_default_site = True
 
