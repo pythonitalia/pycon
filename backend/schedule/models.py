@@ -253,6 +253,13 @@ class ScheduleItem(TimeStampedModel):
         _("Youtube video ID"), max_length=1024, blank=True, default=""
     )
 
+    plain_thread_id = models.CharField(
+        _("Plain threadID"),
+        max_length=50,
+        null=True,
+        blank=True,
+    )
+
     objects = ScheduleItemQuerySet().as_manager()
 
     @cached_property

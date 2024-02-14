@@ -150,6 +150,55 @@ def _create_thread(customer_id: str, title: str, message: str):
     return thread_id
 
 
-def send_message(user: User, title: str, message: str) -> str:
+def _create_thread_event(thread_id: str, title: str, description: str):
+    document = """
+    mutation createThreadEvent($input: CreateThreadEventInput!) {
+        createThreadEvent(input: $input) {
+            threadEvent {
+                id
+            }
+            error {
+                __typename
+                message
+                type
+                code
+                fields {
+                    field
+                    message
+                    type
+                }
+            }
+        }
+    }"""
+
+    response = _execute(
+        document,
+        variables={
+            "input": {
+                "threadId": thread_id,
+                "title": title,
+                "components": [{"componentText": {"text": description}}],
+            }
+        },
+    )
+
+    _raise_mutation_error(response, "createThreadEvent")
+    thread_event_id = response["createThreadEvent"]["threadEvent"]["id"]
+
+    logger.info("Thread event created with id: %s", thread_id)
+    return thread_event_id
+
+
+def send_message(
+    user: User, title: str, message: str, existing_thread_id: str | None = None
+) -> str:
     customer_id = create_customer(user)
-    return _create_thread(customer_id, title, message)
+    if existing_thread_id:
+        _create_thread_event(
+            thread_id=existing_thread_id,
+            title=title,
+            description=message,
+        )
+        return existing_thread_id
+    else:
+        return _create_thread(customer_id, title, message)
