@@ -35,16 +35,9 @@ import {
 import { useLoginState } from "../profile/hooks";
 import { Schedule } from "./schedule";
 import { ScheduleList } from "./schedule-list";
-import { ItemsPanel } from "./staff/items-panel";
 import { Item, Slot } from "./types";
 
 export type ViewMode = "grid" | "list";
-
-const LoadingOverlay = () => (
-  <div className="flex fixed inset-0 bg-black/30 z-10 items-center justify-center">
-    <div className="bg-white border p-4">Updating schedule, please wait...</div>
-  </div>
-);
 
 export const ScheduleView = ({
   day: currentDay,

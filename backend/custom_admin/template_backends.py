@@ -1,16 +1,12 @@
 from django.template import TemplateDoesNotExist
 from django.template.backends.django import DjangoTemplates
 from django.template.backends.django import reraise, Template as BaseTemplate
-from django.conf import settings
 from urllib.parse import urlencode
 
 
 class CustomAdminDjangoTemplate(DjangoTemplates):
     def get_template(self, template_name):
         if not template_name.startswith("astro/"):
-            return super().get_template(template_name)
-
-        if not settings.DEBUG:
             return super().get_template(template_name)
 
         astro_path = template_name.split("/")[1].replace(".html", "")

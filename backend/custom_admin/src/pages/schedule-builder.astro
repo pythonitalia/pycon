@@ -11,7 +11,7 @@ import { ScheduleBuilderRoot } from "../components/schedule-builder/root";
 
         <script>
         const getArg = (name, value) => {
-            const cleanedValue = value.replace("{{ "  + name + " }}", "")
+            const cleanedValue = value.replace("{" + "{ "  + name + " }" + "}", "")
             if (cleanedValue) {
                 return cleanedValue;
             }
