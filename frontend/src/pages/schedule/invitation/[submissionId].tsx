@@ -187,7 +187,9 @@ const Invitation = () => {
                 id="schedule.invitation.durationChanged"
                 values={{
                   duration: <strong>{scheduleDate.duration}</strong>,
-                  originalDuration: invitation.submission.duration.duration,
+                  originalDuration: (
+                    <strong>{invitation.submission.duration.duration}</strong>
+                  ),
                 }}
               />
             </Text>
