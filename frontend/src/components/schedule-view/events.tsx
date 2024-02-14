@@ -90,7 +90,6 @@ export const ScheduleEntry = ({
   filteredOut: boolean;
   toggleEventFavorite: (item: Item) => void;
 }) => {
-  const type = getType(item.submission);
   const language = useCurrentLanguage();
 
   const audienceLevel = item.submission
@@ -100,7 +99,7 @@ export const ScheduleEntry = ({
     : null;
 
   const itemUrl = getItemUrl(item);
-  const wrapperProps: { hoverColor: Color; href: string } | undefined = itemUrl
+  const wrapperProps: any = itemUrl
     ? {
         hoverColor: "coral",
         href: createHref({
@@ -142,7 +141,7 @@ export const ScheduleEntry = ({
       className={clsx("relative z-20 border-r border-l md:border-0", {
         "hidden md:block": filteredOut,
       })}
-      {...props}
+      {...(props as any)}
     >
       <ScheduleItemCard
         size={["FREE_TIME", "BREAK"].includes(slot.type) ? "small" : "large"}

@@ -22,6 +22,6 @@ export default defineConfig({
   integrations: [react(), tailwind()],
   build: {
     format: "file",
-    assetsPrefix: "//django-static/",
+    assetsPrefix: "/django-static/",
   },
 });
