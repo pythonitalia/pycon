@@ -48,11 +48,12 @@ def test_send_schedule_invitation_email():
     email_mock.assert_called_once_with(
         template=EmailTemplate.SUBMISSION_ACCEPTED,
         to="marco@placeholder.it",
-        subject="[Conf] Your submission was accepted!",
+        subject="[Conf] Your submission has been accepted!",
         variables={
             "submissionTitle": "Title Submission",
             "firstname": "Marco Acierno",
             "invitationlink": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
+            "conferenceName": "Conf",
         },
     )
 
@@ -86,12 +87,13 @@ def test_send_schedule_invitation_email_reminder():
         template=EmailTemplate.SUBMISSION_ACCEPTED,
         to="marco@placeholder.it",
         subject=(
-            "[Conf] Reminder: Your submission was accepted, confirm your presence"
+            "[Conf] Reminder: Your submission has been accepted, confirm your presence"
         ),
         variables={
             "submissionTitle": "Title Submission",
             "firstname": "Marco Acierno",
             "invitationlink": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
+            "conferenceName": "Conf",
         },
     )
 
@@ -122,6 +124,7 @@ def test_send_submission_time_slot_changed_email():
             "submissionTitle": "Title Submission",
             "firstname": "Marco Acierno",
             "invitationlink": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
+            "conferenceName": "Conf",
         },
     )
 
