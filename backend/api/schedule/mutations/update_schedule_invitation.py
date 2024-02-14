@@ -82,8 +82,9 @@ def update_schedule_invitation(
         invitation_admin_url=invitation_admin_url,
         schedule_item_admin_url=schedule_item_admin_url,
     )
-    send_schedule_invitation_plain_message.delay(
-        schedule_item_id=schedule_item.id,
-        message=new_notes,
-    )
+    if new_notes:
+        send_schedule_invitation_plain_message.delay(
+            schedule_item_id=schedule_item.id,
+            message=new_notes,
+        )
     return ScheduleInvitation.from_django_model(schedule_item)
