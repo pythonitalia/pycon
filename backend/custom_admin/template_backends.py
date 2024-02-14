@@ -13,23 +13,23 @@ class CustomAdminDjangoTemplate(DjangoTemplates):
         if not settings.DEBUG:
             return super().get_template(template_name)
 
-        path = template_name.split("/")[1].replace(".html", "")
+        astro_path = template_name.split("/")[1].replace(".html", "")
         try:
             return Template(
                 template=self.engine.get_template("admin/iframe.html"),
                 backend=self,
-                template_name=path,
+                astro_path=astro_path,
             )
         except TemplateDoesNotExist as exc:
             reraise(exc, self)
 
 
 class Template(BaseTemplate):
-    def __init__(self, template_name: str, *args, **kwargs) -> None:
+    def __init__(self, astro_path: str, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.template_name = template_name
+        self.astro_path = astro_path
 
     def render(self, context=None, request=None):
-        context["TEMPLATE_NAME"] = self.template_name
+        context["ASTRO_PATH"] = self.astro_path
         context["ASTRO_ARGS"] = urlencode({**context.get("arguments", {})})
         return super().render(context=context, request=request)

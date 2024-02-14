@@ -419,29 +419,6 @@ export const ScheduleView = ({
             )}
           </div>
         )}
-
-        {shouldShowAdmin && (
-          <div className="my-4 ml-24">
-            {schedule.conference.durations.map((duration) => {
-              if (
-                duration.allowedSubmissionTypes.find(
-                  (type) => type.name.toLowerCase() !== "talk",
-                )
-              ) {
-                return null;
-              }
-
-              return (
-                <Button
-                  key={duration.duration}
-                  onClick={() => addScheduleSlot(duration.duration)}
-                >
-                  Add {duration.duration} minutes slot
-                </Button>
-              );
-            })}
-          </div>
-        )}
       </Section>
     </Fragment>
   );
