@@ -16,6 +16,7 @@ import { GetServerSideProps } from "next";
 
 import { getApolloClient, addApolloState } from "~/apollo/client";
 import { Alert } from "~/components/alert";
+import { createHref } from "~/components/link";
 import { PageLoading } from "~/components/page-loading";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -217,10 +218,13 @@ const GrantReply = () => {
             <FormattedMessage
               id="grants.reply.messageDescription"
               values={{
-                visaApplicationFormLink: (
+                visaPageLink: (
                   <Link
                     target="_blank"
-                    href={data.conference.visaApplicationFormLink}
+                    href={createHref({
+                      path: `/visa/`,
+                      locale: language,
+                    })}
                   >
                     <Text
                       decoration="underline"
@@ -228,7 +232,7 @@ const GrantReply = () => {
                       weight="strong"
                       color="none"
                     >
-                      <FormattedMessage id="grants.reply.visaApplicationFormLink" />
+                      <FormattedMessage id="grants.reply.visaPageLink" />
                     </Text>
                   </Link>
                 ),

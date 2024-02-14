@@ -34,7 +34,6 @@ class ConferenceFactory(DjangoModelFactory):
 
     pretix_organizer_id = "base-pretix-organizer-id"
     pretix_event_id = "base-pretix-event-id"
-    visa_application_form_link = factory.Faker("url")
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):

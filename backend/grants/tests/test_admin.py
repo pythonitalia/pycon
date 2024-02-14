@@ -12,11 +12,15 @@ from grants.admin import (
 )
 from grants.models import Grant
 
+
 pytestmark = pytest.mark.django_db
 
 
 def test_send_reply_emails_with_grants_from_multiple_conferences(
-    rf, grant_factory, mocker, conference_factory
+    rf,
+    grant_factory,
+    mocker,
+    conference_factory,
 ):
     """
     Test that sending reply emails does not proceed when selected grants belong
@@ -79,7 +83,6 @@ def test_send_reply_emails_approved_missing_amount(rf, grant_factory, mocker):
         status=Grant.Status.approved,
         approved_type=Grant.ApprovedType.ticket_accommodation,
         total_amount=None,
-        conference__visa_application_form_link="https://forms.com/visa",
     )
     grant.total_amount = None
     grant.save()
@@ -105,7 +108,6 @@ def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
         status=Grant.Status.approved,
         approved_type=Grant.ApprovedType.ticket_accommodation,
         total_amount=800,
-        conference__visa_application_form_link="https://forms.com/visa",
     )
     request = rf.get("/")
     mock_send_approved_email = mocker.patch(

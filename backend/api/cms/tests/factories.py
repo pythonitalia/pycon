@@ -15,13 +15,13 @@ from wagtail_factories import (
     StreamFieldFactory,
     SiteFactory,
 )
+from wagtail.models import Site
 import factory
 from decimal import Decimal
 from pytest_factoryboy import register
 from wagtail.rich_text import RichText
 
 
-register(SiteFactory)
 register(PageFactory)
 
 
@@ -92,3 +92,18 @@ class GenericPageFactory(PageFactory):
 
     class Meta:
         model = GenericPage
+
+
+@register
+class SiteFactory(SiteFactory):
+    """
+    Overrides wagtail_factories.SiteFactory to use "testserver" as hostname
+    to make sure it works with Wagtail's ALLOWED_HOSTS in test environments.
+    """
+
+    hostname = "testserver"
+    root_page = factory.SubFactory(GenericPageFactory)
+    is_default_site = True
+
+    class Meta:
+        model = Site

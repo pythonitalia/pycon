@@ -201,16 +201,6 @@ def validate_single_conference_selection(func):
 @admin.action(description="Send Approved/Waiting List/Rejected reply emails")
 @validate_single_conference_selection
 def send_reply_emails(modeladmin, request, queryset):
-    conference = queryset.first().conference
-
-    if not conference.visa_application_form_link:
-        messages.error(
-            request,
-            "Visa Application Form Link Missing: Please ensure the link to the Visa "
-            "Application Form is set in the Conference admin settings.",
-        )
-        return
-
     queryset = queryset.filter(
         status__in=(
             Grant.Status.approved,
