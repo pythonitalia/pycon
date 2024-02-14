@@ -171,7 +171,9 @@ class ScheduleItem(TimeStampedModel):
         choices=COLORS, max_length=15, blank=True, verbose_name=_("highlight color")
     )
 
-    rooms = models.ManyToManyField(Room, related_name="talks", verbose_name=_("rooms"))
+    rooms = models.ManyToManyField(
+        Room, related_name="talks", verbose_name=_("rooms"), blank=True
+    )
 
     submission = models.ForeignKey(
         Submission,
