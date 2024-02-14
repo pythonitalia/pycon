@@ -185,7 +185,9 @@ def _create_thread_event(thread_id: str, title: str, description: str):
     _raise_mutation_error(response, "createThreadEvent")
     thread_event_id = response["createThreadEvent"]["threadEvent"]["id"]
 
-    logger.info("Thread event created with id: %s", thread_id)
+    logger.info(
+        "Thread event created with id=%s to thread_id=%s", thread_event_id, thread_id
+    )
     return thread_event_id
 
 
