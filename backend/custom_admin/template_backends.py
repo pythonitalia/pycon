@@ -30,6 +30,9 @@ class Template(BaseTemplate):
         self.astro_path = astro_path
 
     def render(self, context=None, request=None):
-        context["ASTRO_PATH"] = self.astro_path
-        context["ASTRO_ARGS"] = urlencode({**context.get("arguments", {})})
+        context = {
+            "ASTRO_PATH": self.astro_path,
+            "ASTRO_URL_ARGS": urlencode({**context.get("arguments", {})}),
+            **context.get("arguments", {}),
+        }
         return super().render(context=context, request=request)
