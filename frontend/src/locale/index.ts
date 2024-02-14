@@ -943,7 +943,7 @@ reflects what everyone wants to see!`,
     "schedule.invitation.invitationNotValid":
       "Unable to find this invitation. Please contact us if you think this is a mistake",
     "schedule.invitation.currentAnswer": "Your current answer is: {answer}",
-    "schedule.invitation.durationChanged": `Unfortunately, due to time constraints, we had to adjust your submission duration to {duration} mins. (You asked for {originalDuration} mins). We are sorry for the inconvenience.
+    "schedule.invitation.durationChanged": `⚠️ Unfortunately, due to time constraints, we had to adjust your submission duration to {duration} mins. (You asked for {originalDuration} mins). We are sorry for the inconvenience.
 If this new timing doesn't work for you, please don't hesitate to let us know below. We'll do our very best to accommodate your needs, though please keep in mind that due to scheduling limitations, we might not be able to fulfil all requests. In the rare event we can't find an alternative, we may need to cancel your submission.`,
 
     "streaming.qa": "Ask Questions",
@@ -1511,6 +1511,8 @@ Per le richieste di lettera d'invito per il visto, si prega gentilmente di visit
     "schedule.invitation.replySentWithSuccess":
       "Grazie! La tua risposta è stata salvata",
     "schedule.invitation.currentReply": "Risposta attuale: {answer}",
+    "schedule.invitation.durationChanged": `⚠️ Purtroppo, a causa di vincoli di tempo, abbiamo dovuto ridurre la durata della tua presentazione a {duration} minuti. (Avevi richiesto {originalDuration} minuti). Ci scusiamo per l'inconveniente.
+Se questo nuovo orario non dovesse andare bene per te, per favore non esitare a farcelo sapere qui sotto. Faremo del nostro meglio per soddisfare le tue esigenze, ma tieni presente che a causa dei limiti di programmazione, potremmo non essere in grado di soddisfare tutte le richieste. Nel raro evento in cui non riusciamo a trovare un'alternativa, potremmo dover annullare la tua presentazione.`,
 
     "orderReview.heading": "Recap ordine",
     "orderReview.invoiceInformation": "Informazioni fatturazione",
