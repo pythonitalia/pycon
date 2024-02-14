@@ -1,6 +1,7 @@
 from django.template import TemplateDoesNotExist
 from django.template.backends.django import DjangoTemplates
 from django.template.backends.django import reraise, Template as BaseTemplate
+from django.conf import settings
 from urllib.parse import urlencode
 
 
@@ -10,9 +11,13 @@ class CustomAdminDjangoTemplate(DjangoTemplates):
             return super().get_template(template_name)
 
         astro_path = template_name.split("/")[1].replace(".html", "")
+
+        if settings.DEBUG:
+            template_name = "admin/iframe.html"
+
         try:
             return Template(
-                template=self.engine.get_template("admin/iframe.html"),
+                template=self.engine.get_template(template_name),
                 backend=self,
                 astro_path=astro_path,
             )
