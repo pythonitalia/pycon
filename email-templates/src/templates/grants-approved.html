@@ -34,8 +34,7 @@ title: "[PyCon Italia 2022] Financial Aid Update!"
                                             (includes AM and PM coffee breaks and Lunch for every
                                             conference day).
                                         </li>
-                                        @
-                                        {{#if hasApprovedTravel}}
+                                          @{{#if hasApprovedTravel}}
                                             <li>
                                                 <strong class="font-semibold">✈️ up to @{{ amount }}€ refund for travel expenses</strong>
                                                 <br />
@@ -43,18 +42,17 @@ title: "[PyCon Italia 2022] Financial Aid Update!"
                                                 receipts, like plane/bus/train tickets, sent to us before the
                                                 conference
                                             </li>
+                                          @{{/if}}
+                                          @{{#if hasApprovedAccommodation}}
+                                              <li>
+                                                  <strong class="font-semibold">🛏️ Accommodation</strong>
+                                                  <br />
+                                                  A bed in a shared room at the "Grand Hotel Mediterraneo," where
+                                                  the conference takes place. This accommodation is available from
+                                                  <span class="font-semibold">@{{ startDate }}</span> to
+                                                  <span class="font-semibold">@{{ endDate }}</span>.
+                                              </li>
                                             @{{/if}}
-                                            @
-                                            {{#if hasApprovedAccommodation}}
-                                                <li>
-                                                    <strong class="font-semibold">🛏️ Accommodation</strong>
-                                                    <br />
-                                                    A bed in a shared room at the "Grand Hotel Mediterraneo," where
-                                                    the conference takes place. This accommodation is available from
-                                                    <span class="font-semibold">@{{ startDate }}</span> to
-                                                    <span class="font-semibold">@{{ endDate }}</span>.
-                                                </li>
-                                                @{{/if}}
                                             </ul>
                                             <h2 class="text-xl font-bold text-center text-red-600 mt-8 mb-4 uppercase">ACTION NEEDED: Confirm Your Grant!</h2>
                                             <p class="m-0 mb-24">
@@ -106,8 +104,7 @@ title: "[PyCon Italia 2022] Financial Aid Update!"
                                                 <br />
                                                 Please keep an eye on your inbox, as we will be sending the voucher closer to the conference date.
                                             </p>
-                                            @
-                                            {{#if hasApprovedTravel}}
+                                              @{{#if hasApprovedTravel}}
                                                 <h3 class="text-lg text-center font-semibold mb-4">Travel grant</h3>
                                                 <p class="m-0 mb-16">
                                                     All grants involving reimbursements will be reimbursed based on
