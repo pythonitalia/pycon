@@ -352,7 +352,13 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         ),
         (
             _("Invitation"),
-            {"fields": ("speaker_invitation_notes", "speaker_invitation_sent_at")},
+            {
+                "fields": (
+                    "speaker_invitation_notes",
+                    "speaker_invitation_sent_at",
+                    "invitation_link",
+                )
+            },
         ),
         (_("Booking"), {"fields": ("attendees_total_capacity", "spaces_left")}),
         (_("Voucher"), {"fields": ("exclude_from_voucher_generation",)}),
@@ -378,7 +384,10 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         mark_speakers_to_receive_vouchers,
         upload_videos_to_youtube,
     ]
-    readonly_fields = ("spaces_left",)
+    readonly_fields = (
+        "spaces_left",
+        "invitation_link",
+    )
 
     def get_urls(self):
         return [
@@ -481,6 +490,9 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             )
 
         return return_value
+
+    def invitation_link(self, obj):
+        return f"https://pycon.it/schedule/invitation/{obj.submission.hashid}"
 
 
 SCHEDULE_ITEM_INVITATION_FIELDS = [

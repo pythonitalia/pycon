@@ -12,11 +12,16 @@ class ScheduleInvitationDate:
     id: strawberry.ID
     start: datetime
     end: datetime
+    duration: int
 
     @classmethod
     def from_django(cls, schedule_item):
+        duration = schedule_item.duration or schedule_item.slot.duration
         return cls(
-            id=schedule_item.id, start=schedule_item.start, end=schedule_item.end
+            id=schedule_item.id,
+            start=schedule_item.start,
+            end=schedule_item.end,
+            duration=duration,
         )
 
 

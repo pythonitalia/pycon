@@ -23,6 +23,12 @@ def schedule_invitation(
             conference_id=submission.conference_id,
             submission_id=submission.id,
         )
+        .prefetch_related(
+            "submission",
+            "submission__duration",
+            "slot",
+            "slot__day",
+        )
         .exclude(status=ScheduleItemModel.STATUS.cancelled)
         .first()
     )

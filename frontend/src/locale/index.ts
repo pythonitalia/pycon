@@ -919,9 +919,9 @@ reflects what everyone wants to see!`,
 
     "schedule.invitation.congratulations":
       "Congratulations! Your submission {submissionTitle} has been accepted!",
-    "schedule.invitation.program": "It is currently scheduled for:",
-    "schedule.invitation.date": "{start} to {end}",
-    "schedule.invitation.notes.placeholder": "Insert your reasons here",
+    "schedule.invitation.program": "It is currently scheduled for: {date}",
+    "schedule.invitation.date": "{start} to {end}, {duration} minutes long.",
+    "schedule.invitation.notes.placeholder": "Type here",
     "schedule.invitation.confirmPresence":
       "Please confirm your presence as soon as possible. Request a new time slot ONLY if there is no way you can make the original time slot work.",
     "schedule.invitation.presence.CONFIRM":
@@ -943,6 +943,9 @@ reflects what everyone wants to see!`,
     "schedule.invitation.invitationNotValid":
       "Unable to find this invitation. Please contact us if you think this is a mistake",
     "schedule.invitation.currentAnswer": "Your current answer is: {answer}",
+    "schedule.invitation.durationChanged": `Unfortunately, due to time constraints, we had to adjust your submission duration to {duration} mins. (You asked for {originalDuration} mins). We are sorry for the inconvenience.
+If this new timing doesn't work for you, please don't hesitate to let us know below. We'll do our very best to accommodate your needs, though please keep in mind that due to scheduling limitations, we might not be able to fulfil all requests. In the rare event we can't find an alternative, we may need to cancel your submission.`,
+
     "streaming.qa": "Ask Questions",
 
     "talk.bookToAttend":
@@ -1653,8 +1656,8 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
 
     "schedule.invitation.congratulations":
       "Congratulazioni! La tua submission {submissionTitle} è stata accettata!",
-    "schedule.invitation.program": "Il tuo intervento è previsto il:",
-    "schedule.invitation.date": "{start} a {end}",
+    "schedule.invitation.program": "Il tuo intervento è previsto il: {date}",
+    "schedule.invitation.date": "{start} a {end}, durata {duration} minuti.",
     "schedule.invitation.confirmPresence":
       "Per favore conferma la tua presenza il prima possibile. Richiedi un nuovo slot orario soltanto se per te è impossibile tenere l'orario proposto.",
     "schedule.invitation.presence.CONFIRM": "Lo slot orario va bene per me",
@@ -1675,6 +1678,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "schedule.invitation.invitationNotValid":
       "Impossibile trovare questo invito",
     "schedule.invitation.currentAnswer": "Risposta attuale: {answer}",
+
     "streaming.qa": "Invia domanda",
 
     "talk.bookToAttend":

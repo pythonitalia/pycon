@@ -7,11 +7,16 @@ query GetScheduleInvitation($submissionId: ID!, $language: String!) {
     submission {
       id
       title(language: $language)
+      duration {
+        id
+        duration
+      }
     }
     dates {
       id
       start
       end
+      duration
     }
   }
 }
