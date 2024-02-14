@@ -13,7 +13,10 @@ from api.schedule.types import (
 )
 from api.submissions.permissions import IsSubmissionSpeakerOrStaff
 
-from schedule.tasks import notify_new_schedule_invitation_answer_slack
+from schedule.tasks import (
+    notify_new_schedule_invitation_answer_slack,
+    send_schedule_invitation_plain_message,
+)
 import strawberry
 
 
@@ -78,5 +81,9 @@ def update_schedule_invitation(
         schedule_item_id=schedule_item.id,
         invitation_admin_url=invitation_admin_url,
         schedule_item_admin_url=schedule_item_admin_url,
+    )
+    send_schedule_invitation_plain_message.delay(
+        schedule_item_id=schedule_item.id,
+        message=new_notes,
     )
     return ScheduleInvitation.from_django_model(schedule_item)

@@ -1,3 +1,4 @@
+from integrations import plain
 from pythonit_toolkit.emails.utils import mark_safe
 from pretix import user_has_admission_ticket
 from django.utils import timezone
@@ -230,3 +231,28 @@ def _schedule_item_status_to_message(status: str):
         return "I can't attend the conference anymore"
 
     return "Undefined"
+
+
+@app.task
+def send_schedule_invitation_plain_message(*, schedule_item_id, message):
+    from schedule.models import ScheduleItem
+
+    if not settings.PLAIN_API:
+        return
+
+    schedule_item = ScheduleItem.objects.get(id=schedule_item_id)
+
+    user = schedule_item.submission.speaker
+    existing_thread_id = schedule_item.plain_thread_id
+
+    name = get_name(user, "Speaker")
+    title = f"{name} Schedule Invitation time slot"
+    if existing_thread_id:
+        title = "Additional message"
+
+    thread_id = plain.send_message(
+        user, title=title, message=message, existing_thread_id=existing_thread_id
+    )
+
+    schedule_item.plain_thread_id = thread_id
+    schedule_item.save(update_fields=["plain_thread_id"])
