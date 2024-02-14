@@ -918,10 +918,10 @@ reflects what everyone wants to see!`,
     "schedule.workshop.soldout": "No more seats available",
 
     "schedule.invitation.congratulations":
-      "Congratulations! Your submission {submissionTitle} was accepted!",
-    "schedule.invitation.program": "It is currently scheduled for:",
-    "schedule.invitation.date": "{start} to {end}",
-    "schedule.invitation.notes.placeholder": "Insert your reasons here",
+      "Congratulations! Your submission {submissionTitle} has been accepted!",
+    "schedule.invitation.program": "It is currently scheduled for: {date}",
+    "schedule.invitation.date": "{start} to {end}, {duration} minutes long.",
+    "schedule.invitation.notes.placeholder": "Type here",
     "schedule.invitation.confirmPresence":
       "Please confirm your presence as soon as possible. Request a new time slot ONLY if there is no way you can make the original time slot work.",
     "schedule.invitation.presence.CONFIRM":
@@ -943,6 +943,9 @@ reflects what everyone wants to see!`,
     "schedule.invitation.invitationNotValid":
       "Unable to find this invitation. Please contact us if you think this is a mistake",
     "schedule.invitation.currentAnswer": "Your current answer is: {answer}",
+    "schedule.invitation.durationChanged": `⚠️ Unfortunately, due to time constraints, we had to adjust your submission duration from {originalDuration} mins to {duration} mins. We are sorry for the inconvenience.
+If this new timing doesn't work for you, please don't hesitate to let us know below. We'll do our very best to accommodate your needs, though please keep in mind that due to scheduling limitations, we might not be able to fulfil all requests. In the rare event we can't find an alternative, we may need to cancel your submission.`,
+
     "streaming.qa": "Ask Questions",
 
     "talk.bookToAttend":
@@ -1508,6 +1511,8 @@ Per le richieste di lettera d'invito per il visto, si prega gentilmente di visit
     "schedule.invitation.replySentWithSuccess":
       "Grazie! La tua risposta è stata salvata",
     "schedule.invitation.currentReply": "Risposta attuale: {answer}",
+    "schedule.invitation.durationChanged": `⚠️ Purtroppo, a causa di vincoli di tempo, abbiamo dovuto ridurre la durata della tua presentazione da {originalDuration} minuti a {duration} minuti. Ci scusiamo per l'inconveniente.
+Se questo nuovo orario non dovesse andare bene per te, per favore non esitare a farcelo sapere qui sotto. Faremo del nostro meglio per soddisfare le tue esigenze, ma tieni presente che a causa dei limiti di programmazione, potremmo non essere in grado di soddisfare tutte le richieste. Nel raro evento in cui non riusciamo a trovare un'alternativa, potremmo dover annullare la tua presentazione.`,
 
     "orderReview.heading": "Recap ordine",
     "orderReview.invoiceInformation": "Informazioni fatturazione",
@@ -1653,10 +1658,11 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
 
     "schedule.invitation.congratulations":
       "Congratulazioni! La tua submission {submissionTitle} è stata accettata!",
-    "schedule.invitation.program": "Il tuo intervento è previsto il:",
-    "schedule.invitation.date": "{start} a {end}",
+    "schedule.invitation.program": "Il tuo intervento è previsto il: {date}",
+    "schedule.invitation.date":
+      "{start} a {end}, con durata {duration} minuti.",
     "schedule.invitation.confirmPresence":
-      "Per favore conferma la tua presenza il prima possibile. Richiedi un nuovo slot orario soltanto se per te è impossibile tenere l'orario proposto.",
+      "Per favore conferma la tua presenza il prima possibile. Richiedi un nuovo slot orario SOLTANTO se per te è impossibile tenere l'orario proposto.",
     "schedule.invitation.presence.CONFIRM": "Lo slot orario va bene per me",
     "schedule.invitation.presence.MAYBE":
       "Lo slot orario va bene ma preferirei un altro",
@@ -1675,6 +1681,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "schedule.invitation.invitationNotValid":
       "Impossibile trovare questo invito",
     "schedule.invitation.currentAnswer": "Risposta attuale: {answer}",
+
     "streaming.qa": "Invia domanda",
 
     "talk.bookToAttend":

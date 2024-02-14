@@ -79,6 +79,13 @@ const Invitation = () => {
         return;
       }
 
+      if (
+        EXTRA_NOTES_OPTIONS.includes(formState.values.option) &&
+        !formState.values.notes
+      ) {
+        return;
+      }
+
       e.preventDefault();
       updateScheduleInvitation({
         variables: {
@@ -135,6 +142,8 @@ const Invitation = () => {
     end: formatDateTime(date.end, language),
   }));
 
+  const scheduleDate = scheduleDates[0];
+
   const notesPlaceholder = useTranslatedMessage(
     "schedule.invitation.notes.placeholder",
   );
@@ -152,31 +161,46 @@ const Invitation = () => {
         </Heading>
         <Spacer size="medium" />
         <Text>
-          <FormattedMessage id="schedule.invitation.program" />
+          <FormattedMessage
+            id="schedule.invitation.program"
+            values={{
+              date: (
+                <strong>
+                  <FormattedMessage
+                    id="schedule.invitation.date"
+                    values={{
+                      start: scheduleDate.start,
+                      end: scheduleDate.end,
+                      duration: scheduleDate.duration,
+                    }}
+                  />
+                </strong>
+              ),
+            }}
+          />
         </Text>
-        <ul
-          sx={{
-            listStyle: "none",
-          }}
-        >
-          {scheduleDates.map((date) => (
-            <li>
-              <Text>
-                <FormattedMessage
-                  id="schedule.invitation.date"
-                  values={{
-                    start: date.start,
-                    end: date.end,
-                  }}
-                />
-              </Text>
-            </li>
-          ))}
-        </ul>
+        {scheduleDate.duration !== invitation.submission.duration.duration && (
+          <>
+            <Spacer size="small" />
+            <Text>
+              <FormattedMessage
+                id="schedule.invitation.durationChanged"
+                values={{
+                  duration: <strong>{scheduleDate.duration}</strong>,
+                  originalDuration: (
+                    <strong>{invitation.submission.duration.duration}</strong>
+                  ),
+                }}
+              />
+            </Text>
+          </>
+        )}
         <Spacer size="medium" />
         <Text>
           <FormattedMessage id="schedule.invitation.confirmPresence" />
         </Text>
+        <Spacer size="medium" />
+
         {hasSentAnswer && (
           <Text
             sx={{
@@ -250,7 +274,14 @@ const Invitation = () => {
             </Label>
           )}
 
-          <Button role="secondary" onClick={submitAnswer}>
+          <Button
+            role="secondary"
+            onClick={submitAnswer}
+            disabled={
+              EXTRA_NOTES_OPTIONS.includes(formState.values.option) &&
+              !formState.values.notes
+            }
+          >
             <FormattedMessage id="schedule.invitation.submitAnswer" />
           </Button>
 
