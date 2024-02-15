@@ -3,6 +3,7 @@ import pytest
 from integrations.plain import (
     PlainError,
     _create_thread,
+    _create_thread_event,
     create_customer,
     send_message,
 )
@@ -63,6 +64,63 @@ def test_create_user_failed(settings, requests_mock):
 
     with pytest.raises(PlainError, match="something went wrong"):
         create_customer(user)
+
+
+def test_create_thread_event_successful(settings, requests_mock):
+    settings.PLAIN_API = "https://api.plain.com/graphql/"
+    requests_mock.post(
+        settings.PLAIN_API,
+        json={
+            "data": {
+                "createThreadEvent": {
+                    "threadEvent": {
+                        "__typename": "ThreadEvent",
+                        "id": "th_event_0123456789ABCDEFGHILMNOPQR",
+                    },
+                    "error": None,
+                }
+            }
+        },
+    )
+
+    thread_event_id = _create_thread_event(
+        "th_123", title="wtf", description="hello world"
+    )
+
+    assert thread_event_id == "th_event_0123456789ABCDEFGHILMNOPQR"
+
+
+def test_create_thread_event_failed(settings, requests_mock):
+    settings.PLAIN_API = "https://api.plain.com/graphql/"
+    requests_mock.post(
+        settings.PLAIN_API,
+        json={
+            "data": {
+                "createThreadEvent": {
+                    "error": {
+                        "message": "There was a validation error.",
+                        "type": "VALIDATION",
+                        "code": "input_validation",
+                        "fields": [
+                            {
+                                "field": "threadId",
+                                "message": "ID does not match expected format",
+                                "type": "VALIDATION",
+                            }
+                        ],
+                    },
+                }
+            }
+        },
+    )
+    with pytest.raises(
+        PlainError,
+        match=(
+            "There was a validation error. "
+            "threadId: ID does not match expected format"
+        ),
+    ):
+        _create_thread_event("th_123", title="wtf", description="hello world")
 
 
 def test_create_thread_successful(settings, requests_mock):
@@ -189,3 +247,52 @@ def test_send_message(settings, requests_mock):
         title="User has replied",
         message="Hello World!",
     )
+
+
+def test_send_message_with_existing_thread(settings, requests_mock):
+    settings.PLAIN_API = "https://api.plain.com/graphql/"
+    requests_mock.post(
+        settings.PLAIN_API,
+        [
+            {
+                "json": {
+                    "data": {
+                        "upsertCustomer": {
+                            "result": "UPDATED",
+                            "customer": {"id": "c_ABC25904A1DA4E0A82934234F2"},
+                            "error": None,
+                        }
+                    }
+                }
+            },
+            {
+                "json": {
+                    "data": {
+                        "createThreadEvent": {
+                            "threadEvent": {
+                                "__typename": "ThreadEvent",
+                                "id": "thevent_0123456789ABCDEFGHILMNOPQR",
+                            },
+                            "error": None,
+                        }
+                    }
+                }
+            },
+        ],
+    )
+
+    user = UserFactory(
+        name="Ester",
+        full_name="Ester",
+        email="ester@example.com",
+        username="",
+    )
+
+    send_message(
+        user,
+        title="User has replied",
+        message="Hello World!",
+        existing_thread_id="th_0123456789ABCDEFGHILMNOPQR",
+    )
+
+    assert "createThreadEvent" in requests_mock.last_request.json()["query"]

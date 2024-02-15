@@ -1,17 +1,19 @@
 from conferences.tests.factories import SpeakerVoucherFactory
 from i18n.strings import LazyI18nString
 from datetime import datetime
-from unittest.mock import patch
+from unittest.mock import ANY, patch
 from django.test import override_settings
 
 from schedule.tasks import (
     notify_new_schedule_invitation_answer_slack,
     send_schedule_invitation_email,
+    send_schedule_invitation_plain_message,
     send_speaker_communication_email,
     send_speaker_voucher_email,
     send_submission_time_slot_changed_email,
 )
 from schedule.tests.factories import ScheduleItemFactory
+from submissions.tests.factories import SubmissionFactory
 import time_machine
 from conferences.models.speaker_voucher import SpeakerVoucher
 from users.tests.factories import UserFactory
@@ -48,11 +50,12 @@ def test_send_schedule_invitation_email():
     email_mock.assert_called_once_with(
         template=EmailTemplate.SUBMISSION_ACCEPTED,
         to="marco@placeholder.it",
-        subject="[Conf] Your submission was accepted!",
+        subject="[Conf] Your submission has been accepted!",
         variables={
             "submissionTitle": "Title Submission",
             "firstname": "Marco Acierno",
             "invitationlink": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
+            "conferenceName": "Conf",
         },
     )
 
@@ -86,12 +89,13 @@ def test_send_schedule_invitation_email_reminder():
         template=EmailTemplate.SUBMISSION_ACCEPTED,
         to="marco@placeholder.it",
         subject=(
-            "[Conf] Reminder: Your submission was accepted, confirm your presence"
+            "[Conf] Reminder: Your submission has been accepted, confirm your presence"
         ),
         variables={
             "submissionTitle": "Title Submission",
             "firstname": "Marco Acierno",
             "invitationlink": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
+            "conferenceName": "Conf",
         },
     )
 
@@ -122,6 +126,7 @@ def test_send_submission_time_slot_changed_email():
             "submissionTitle": "Title Submission",
             "firstname": "Marco Acierno",
             "invitationlink": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
+            "conferenceName": "Conf",
         },
     )
 
@@ -310,3 +315,55 @@ def test_send_speaker_communication_email_to_everyone(
         },
         reply_to=[settings.SPEAKERS_EMAIL_ADDRESS],
     )
+
+
+@override_settings(PLAIN_API="https://example.org/plain")
+def test_send_schedule_invitation_plain_message(mocker):
+    mock_plain = mocker.patch("schedule.tasks.plain")
+    mock_plain.send_message.return_value = "id_123"
+
+    schedule_item = ScheduleItemFactory(
+        type=ScheduleItem.TYPES.talk, submission=SubmissionFactory()
+    )
+
+    send_schedule_invitation_plain_message(
+        schedule_item_id=schedule_item.id,
+        message="Test message",
+    )
+
+    mock_plain.send_message.assert_called_once_with(
+        schedule_item.submission.speaker,
+        title=ANY,
+        message="Test message",
+        existing_thread_id=None,
+    )
+
+    schedule_item.refresh_from_db()
+    assert schedule_item.plain_thread_id == "id_123"
+
+
+@override_settings(PLAIN_API="https://example.org/plain")
+def test_send_schedule_invitation_plain_message_with_existing_thread(mocker):
+    mock_plain = mocker.patch("schedule.tasks.plain")
+    mock_plain.send_message.return_value = "thread_id"
+
+    schedule_item = ScheduleItemFactory(
+        type=ScheduleItem.TYPES.talk,
+        submission=SubmissionFactory(),
+        plain_thread_id="thread_id",
+    )
+
+    send_schedule_invitation_plain_message(
+        schedule_item_id=schedule_item.id,
+        message="New message",
+    )
+
+    mock_plain.send_message.assert_called_once_with(
+        schedule_item.submission.speaker,
+        title="Additional message",
+        message="New message",
+        existing_thread_id="thread_id",
+    )
+
+    schedule_item.refresh_from_db()
+    assert schedule_item.plain_thread_id == "thread_id"
