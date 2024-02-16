@@ -24,6 +24,7 @@ urlpatterns = [
     path("cms-admin/", include(wagtailadmin_urls)),
     path("cms-documents/", include(wagtaildocs_urls)),
     path("", include("association_membership.urls")),
+    path("integrations/", include("integrations.urls")),
     path("sponsors/", include("sponsors.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

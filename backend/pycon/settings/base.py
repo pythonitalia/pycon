@@ -120,6 +120,7 @@ INSTALLED_APPS = [
     "google_api.apps.GoogleApiConfig",
     "association_membership.apps.AssociationMembershipConfig",
     "rest_framework",
+    "integrations.apps.IntegrationsConfig",
 ]
 
 MIDDLEWARE = [
