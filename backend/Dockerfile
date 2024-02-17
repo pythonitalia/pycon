@@ -75,6 +75,7 @@ RUN AWS_MEDIA_BUCKET=example \
     STRIPE_WEBHOOK_SIGNATURE_SECRET=demo \
     CELERY_BROKER_URL=demo \
     CELERY_RESULT_BACKEND=demo \
+    HASHID_DEFAULT_SECRET_SALT=demo \
     ${FUNCTION_DIR}/.venv/bin/python manage.py graphql_schema
 
 # Build custom admin components
@@ -129,6 +130,7 @@ RUN AWS_MEDIA_BUCKET=example \
     STRIPE_WEBHOOK_SIGNATURE_SECRET=demo \
     CELERY_BROKER_URL=demo \
     CELERY_RESULT_BACKEND=demo \
+    HASHID_DEFAULT_SECRET_SALT=demo \
     ${FUNCTION_DIR}/.venv/bin/python manage.py collectstatic --noinput
 
 ENTRYPOINT ["/home/app/.venv/bin/python", "-m", "awslambdaric"]
