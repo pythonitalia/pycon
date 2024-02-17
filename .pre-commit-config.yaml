@@ -8,17 +8,12 @@ aliases:
           )$
 
 repos:
-    - repo: https://github.com/python/black
-      rev: 22.6.0
-      hooks:
-        - <<: *python_settings
-          id: black
-          language_version: python3.11
     - repo: https://github.com/astral-sh/ruff-pre-commit
-      rev: 'v0.0.291'
+      rev: 'v0.2.1'
       hooks:
         - id: ruff
           args: [--fix, --exit-non-zero-on-fix]
+        - id: ruff-format
     - repo: https://github.com/adamchainz/django-upgrade
       rev: '1.13.0'
       hooks:
