@@ -56,8 +56,9 @@ class CanEditSchedule(IsStaffPermission):
 
         from conferences.models import Conference
 
+        input = kwargs.get("input")
         conference_id = kwargs.get(
-            "conferenceId", kwargs.get("input", {}).get("conferenceId")
+            "conference_id", input.conference_id if input else None
         )
         assert conference_id
 
