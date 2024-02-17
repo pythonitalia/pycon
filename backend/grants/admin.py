@@ -217,7 +217,6 @@ def send_reply_emails(modeladmin, request, queryset):
         return
 
     for grant in queryset:
-
         if grant.status in (Grant.Status.approved,):
             if grant.approved_type is None:
                 messages.error(

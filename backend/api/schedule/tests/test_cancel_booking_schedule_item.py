@@ -33,7 +33,6 @@ def simple_schedule_item(
 def test_cancel_booking(
     graphql_client, user, simple_schedule_item, mocker, schedule_item_attendee_factory
 ):
-
     graphql_client.force_login(user)
 
     schedule_item = simple_schedule_item
@@ -70,7 +69,6 @@ def test_user_cannot_cancel_if_they_are_not_booked(
     simple_schedule_item,
     mocker,
 ):
-
     graphql_client.force_login(user)
 
     schedule_item = simple_schedule_item
@@ -95,7 +93,6 @@ def test_cannot_cancel_if_schedule_item_is_not_bookable(
     simple_schedule_item,
     mocker,
 ):
-
     graphql_client.force_login(user)
 
     schedule_item = simple_schedule_item

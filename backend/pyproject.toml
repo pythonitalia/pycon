@@ -22,7 +22,6 @@ dev = [
     "factory-boy==3.3.0",
     "pdbpp<1.0.0,>=0.10.3",
     "flake8<7.0.0,>=6.1.0",
-    "black==23.10.1",
     "requests-mock<2.0.0,>=1.11.0",
     "pytest-mock<4.0.0,>=3.12.0",
     "pytest-cache<2.0,>=1.0",

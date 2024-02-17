@@ -207,9 +207,7 @@ export const BillingCard = () => {
                       })}
                       required={true}
                       errors={
-                        formState.errors.sdi
-                          ? [formState.errors.sdi]
-                          : null
+                        formState.errors.sdi ? [formState.errors.sdi] : null
                       }
                     />
                   </InputWrapper>

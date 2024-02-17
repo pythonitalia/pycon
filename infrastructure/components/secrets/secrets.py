@@ -17,9 +17,9 @@ def main():
     sys.stdout.write(
         json.dumps(
             {
-                parameter["Name"]
-                .replace(path, "")
-                .replace("-", "_"): parameter["Value"]
+                parameter["Name"].replace(path, "").replace("-", "_"): parameter[
+                    "Value"
+                ]
                 for parameter in parameters
             }
         )
