@@ -62,9 +62,26 @@ const getRowEnd = ({
     endingSlotIndex = slots.length;
   }
 
-  return slots
-    .slice(currentSlotIndex, endingSlotIndex)
-    .reduce((acc, s) => acc + getSlotSize(s), 0);
+  if (currentSlotIndex === endingSlotIndex) {
+    // the item is shorter than the slot (e.g. we have a 30 mins talk in a 45 min slot)
+    // we could calculate how much you actually use of the slot and set the size
+    // to match the actual duration length, but in the UI it doesn't look good
+    // as 30 of 45 is 0.6, so we use 0.9 to make it look better
+    const sizeToNextSlot = slots
+      .slice(currentSlotIndex, endingSlotIndex + 1)
+      .reduce((acc, s) => acc + getSlotSize(s), 0);
+    return {
+      itemRowEnd: Math.floor(sizeToNextSlot * 0.85),
+      sameSlotItem: true,
+    };
+  }
+
+  return {
+    itemRowEnd: slots
+      .slice(currentSlotIndex, endingSlotIndex)
+      .reduce((acc, s) => acc + getSlotSize(s), 0),
+    sameSlotItem: false,
+  };
 };
 
 const getEntryPosition = ({
@@ -92,14 +109,32 @@ const getEntryPosition = ({
     .sort();
 
   const index = roomIndexes[0];
-  const rowEnd = rowStart + getRowEnd({ item, rowOffset, slot, slots });
+  const { itemRowEnd, sameSlotItem } = getRowEnd({
+    item,
+    rowOffset,
+    slot,
+    slots,
+  });
+  const actualRowEnd = rowStart + itemRowEnd;
 
-  return {
+  const css: {
+    gridColumnStart: number;
+    gridColumnEnd: number;
+    gridRowStart: number;
+    gridRowEnd: number;
+    borderBottom?: string;
+  } = {
     gridColumnStart: index + 2,
     gridColumnEnd: index + 2 + item.rooms.length,
     gridRowStart: rowStart,
-    gridRowEnd: rowEnd,
+    gridRowEnd: actualRowEnd,
   };
+
+  if (sameSlotItem) {
+    css.borderBottom = "3px solid #000";
+  }
+
+  return css;
 };
 
 const GridContainer = React.forwardRef<
@@ -151,7 +186,6 @@ const GridContainer = React.forwardRef<
 );
 
 export const Schedule = ({
-  adminMode,
   slots,
   rooms,
   currentDay,
@@ -162,7 +196,6 @@ export const Schedule = ({
 }: {
   slots: Slot[];
   rooms: Room[];
-  adminMode: boolean;
   currentFilters: Record<string, string[]>;
   toggleEventFavorite: (item: Item) => void;
   currentDay: string;
@@ -352,7 +385,6 @@ export const Schedule = ({
                       rowEnd={rowEnd}
                       duration={slot.duration}
                       roomType={room.type}
-                      adminMode={adminMode}
                     />
                   ))}
 
@@ -364,7 +396,6 @@ export const Schedule = ({
                         item={item}
                         slot={slot}
                         rooms={rooms}
-                        adminMode={adminMode}
                         day={currentDay}
                         starred={starred}
                         filteredOut={

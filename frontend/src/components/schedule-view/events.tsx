@@ -70,7 +70,6 @@ export const getItemUrl = (item: Item) => {
 
 export const ScheduleEntry = ({
   item,
-  adminMode,
   slot,
   rooms,
   day,
@@ -79,7 +78,6 @@ export const ScheduleEntry = ({
   toggleEventFavorite,
   ...props
 }: {
-  adminMode: boolean;
   item: Item;
   slot: Slot;
   rooms: Room[];
@@ -97,6 +95,8 @@ export const ScheduleEntry = ({
     : item.audienceLevel
     ? item.audienceLevel.name
     : null;
+  const duration =
+    item.duration || slot.duration || item.submission?.duration?.duration;
 
   const itemUrl = getItemUrl(item);
   const wrapperProps: any = itemUrl
@@ -113,6 +113,7 @@ export const ScheduleEntry = ({
     : undefined;
 
   const WrapperComponent = itemUrl ? Link : "div";
+  const durationText = `${duration} min`;
   const languageText = useTranslatedMessage(
     item.language.code === "en" ? `talk.language.en` : `talk.language.it`,
   );
@@ -137,7 +138,7 @@ export const ScheduleEntry = ({
   });
 
   return (
-    <a
+    <div
       className={clsx("relative z-20 border-r border-l md:border-0", {
         "hidden md:block": filteredOut,
       })}
@@ -248,7 +249,9 @@ export const ScheduleEntry = ({
                 )}
 
                 <Text size="label3" color="grey-500">
-                  {[audienceLevel, languageText].filter((v) => v).join(", ")}
+                  {[durationText, audienceLevel, languageText]
+                    .filter((v) => v)
+                    .join(", ")}
                 </Text>
               </div>
               {item.speakers.length > 0 && (
@@ -265,6 +268,7 @@ export const ScheduleEntry = ({
                     <AvatarGroup>
                       {item.speakers.map((speaker) => (
                         <Avatar
+                          key={speaker.fullName}
                           image={speaker.participant?.photo}
                           letter={speaker.fullName}
                           letterBackgroundColor={getAvatarBackgroundColor(
@@ -280,7 +284,7 @@ export const ScheduleEntry = ({
           )}
         </div>
       </ScheduleItemCard>
-    </a>
+    </div>
   );
 };
 
