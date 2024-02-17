@@ -179,7 +179,11 @@ locals {
     {
       name = "PLAIN_INTEGRATION_TOKEN"
       value = module.secrets.value.plain_integration_token
-    }
+    },
+    {
+      name  = "HASHID_DEFAULT_SECRET_SALT",
+      value = module.secrets.value.hashid_default_secret_salt
+    },
   ]
 }
 resource "aws_ecs_cluster" "worker" {
