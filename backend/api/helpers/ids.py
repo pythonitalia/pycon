@@ -5,10 +5,10 @@ from hashids import Hashids
 
 
 def get_hashids(salt: Optional[str] = None, min_length: int = 4):
-    salt = salt or settings.SECRET_KEY
+    salt = salt or settings.HASHID_DEFAULT_SECRET_SALT
 
     return Hashids(
-        salt=settings.SECRET_KEY,
+        salt=salt,
         min_length=min_length,
         alphabet="abcdefghijklmnopqrstuvwxyz",
     )

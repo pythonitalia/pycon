@@ -148,5 +148,7 @@ def get_headers(environ):
 
 
 class DjangoAdminGraphQLView(GraphQLView):
+    allow_queries_via_get = False
+
     def get_context(self, request, response) -> Context:
         return Context(request=request, response=response)

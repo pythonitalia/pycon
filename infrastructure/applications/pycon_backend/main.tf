@@ -115,6 +115,7 @@ module "lambda" {
     CELERY_BROKER_URL                         = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/5"
     CELERY_RESULT_BACKEND                     = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/6"
     PLAIN_INTEGRATION_TOKEN                   = module.secrets.value.plain_integration_token
+    HASHID_DEFAULT_SECRET_SALT                = module.secrets.value.hashid_default_secret_salt
   }
 }
 
