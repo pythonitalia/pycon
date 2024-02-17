@@ -122,7 +122,6 @@ const getEntryPosition = ({
     gridColumnEnd: number;
     gridRowStart: number;
     gridRowEnd: number;
-    borderBottom?: string;
   } = {
     gridColumnStart: index + 2,
     gridColumnEnd: index + 2 + item.rooms.length,
@@ -130,11 +129,7 @@ const getEntryPosition = ({
     gridRowEnd: actualRowEnd,
   };
 
-  if (sameSlotItem) {
-    css.borderBottom = "3px solid #000";
-  }
-
-  return css;
+  return { css, sameSlotItem };
 };
 
 const GridContainer = React.forwardRef<
@@ -390,6 +385,16 @@ export const Schedule = ({
 
                   {slot.items.map((item) => {
                     const starred = starredScheduleItems.includes(item.id);
+                    const { css: entryPosition, sameSlotItem } =
+                      getEntryPosition({
+                        item,
+                        rooms,
+                        slot,
+                        slots,
+                        rowOffset,
+                        rowStart,
+                      });
+
                     return (
                       <ScheduleEntry
                         key={item.id}
@@ -402,17 +407,11 @@ export const Schedule = ({
                           !isItemVisible(item, currentFilters, starred)
                         }
                         toggleEventFavorite={toggleEventFavorite}
+                        sameSlotItem={sameSlotItem}
                         style={
                           {
                             position: "relative",
-                            ...getEntryPosition({
-                              item,
-                              rooms,
-                              slot,
-                              slots,
-                              rowOffset,
-                              rowStart,
-                            }),
+                            ...entryPosition,
                           } as any
                         }
                       />

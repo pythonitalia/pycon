@@ -44,11 +44,6 @@ import {
   Submission as SubmissionType,
 } from "./types";
 
-const getType = (submission?: SubmissionType | null) =>
-  submission?.type?.name.toLowerCase() === "tutorial"
-    ? ItemTypes.TRAINING
-    : ItemTypes.TALK;
-
 export const getItemUrl = (item: Item) => {
   if (
     item.type === "training" ||
@@ -76,6 +71,7 @@ export const ScheduleEntry = ({
   starred,
   filteredOut,
   toggleEventFavorite,
+  sameSlotItem,
   ...props
 }: {
   item: Item;
@@ -86,6 +82,7 @@ export const ScheduleEntry = ({
   sx?: any;
   starred: boolean;
   filteredOut: boolean;
+  sameSlotItem: boolean;
   toggleEventFavorite: (item: Item) => void;
 }) => {
   const language = useCurrentLanguage();
@@ -141,6 +138,8 @@ export const ScheduleEntry = ({
     <div
       className={clsx("relative z-20 border-r border-l md:border-0", {
         "hidden md:block": filteredOut,
+        "md:!border-b-3 md:border-b-black md:!border-0 md:!border-solid":
+          sameSlotItem,
       })}
       {...(props as any)}
     >
