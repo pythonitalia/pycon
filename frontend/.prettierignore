@@ -4,3 +4,4 @@ public/
 src/generated
 _schema.json
 package.json
+*.otf
