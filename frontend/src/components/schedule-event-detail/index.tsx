@@ -142,6 +142,20 @@ export const ScheduleEventDetail = ({
             </Sidebar>
           </GridColumn>
           <GridColumn colSpan={8}>
+            {eventTitle === "TBA" && (
+              <video
+                muted
+                loop
+                autoPlay
+                src="/videos/nothing-to-see-here.mp4"
+                style={{
+                  width: "100%",
+                  zIndex: 0,
+                  pointerEvents: "none",
+                  objectFit: "cover",
+                }}
+              />
+            )}
             {elevatorPitch && (
               <>
                 <Title>
