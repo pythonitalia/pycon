@@ -18,7 +18,7 @@ class IsTicketOwner(BasePermission):
             return False
 
         email = info.context.request.user.email
-        if not pretix.is_ticket_owner(conference, email, kwargs["input"]["id"]):
+        if not pretix.is_ticket_owner(conference, email, kwargs["input"].id):
             return False
 
         return True

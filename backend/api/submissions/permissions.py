@@ -59,6 +59,9 @@ class CanSeeSubmissionPrivateFields(BasePermission):
 class IsSubmissionSpeakerOrStaff(BasePermission):
     message = "Not authorized"
 
+    def has_permission(self, source, info):
+        return False
+
     def has_object_permission(self, info, submission):
         user = info.context.request.user
 
