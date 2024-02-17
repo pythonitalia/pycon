@@ -175,6 +175,10 @@ locals {
     {
       name  = "GITHASH",
       value = data.external.githash.result.githash
+    },
+    {
+      name = "PLAIN_INTEGRATION_TOKEN"
+      value = module.secrets.value.plain_integration_token
     }
   ]
 }

@@ -114,6 +114,7 @@ module "lambda" {
     FLODESK_SEGMENT_ID                        = module.secrets.value.flodesk_segment_id
     CELERY_BROKER_URL                         = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/5"
     CELERY_RESULT_BACKEND                     = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/6"
+    PLAIN_INTEGRATION_TOKEN                   = module.secrets.value.plain_integration_token
   }
 }
 
