@@ -22,8 +22,9 @@ class Grant(TimeStampedModel):
         approved = "approved", _("Approved")
         waiting_list = "waiting_list", _("Waiting List")
         waiting_list_maybe = "waiting_list_maybe", _("Waiting List, Maybe")
-        waiting_for_confirmation = "waiting_for_confirmation", _(
-            "Waiting for confirmation"
+        waiting_for_confirmation = (
+            "waiting_for_confirmation",
+            _("Waiting for confirmation"),
         )
         refused = "refused", _("Refused")
         confirmed = "confirmed", _("Confirmed")

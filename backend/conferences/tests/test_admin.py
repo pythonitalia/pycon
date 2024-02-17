@@ -619,8 +619,7 @@ def test_video_uploaded_path_matcher(
         == "conf/video-2/2-Harrier Du Bois, Klaasje.mp4"
     )
     assert (
-        special_char_speaker.video_uploaded_path
-        == "conf/video-2/5-Marcsed Cazzęfa.mp4"
+        special_char_speaker.video_uploaded_path == "conf/video-2/5-Marcsed Cazzęfa.mp4"
     )
 
     assert (

@@ -54,7 +54,7 @@ def test_returns_none_when_scan_does_not_exist(user, graphql_client):
         variables={"id": "1"},
     )
 
-    assert resp["data"]["badgeScan"] == None
+    assert resp["data"]["badgeScan"] is None
 
 
 def test_returns_none_when_scan_by_other_user(user, graphql_client, conference):
@@ -73,4 +73,4 @@ def test_returns_none_when_scan_by_other_user(user, graphql_client, conference):
         variables={"id": scan.id},
     )
 
-    assert resp["data"]["badgeScan"] == None
+    assert resp["data"]["badgeScan"] is None

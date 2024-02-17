@@ -44,10 +44,7 @@ TOPIC_MAPPING = {
     ("PyLang", "*"): "PyLang",
     ("PyData", "*"): "PyData",
     ("PyDataTwo", "*"): "PyData",
-    ("PyDataTwo", "*"): "PyData",
     ("PyDataTrainingTwo", "*"): "PyData",
-    ("PyDataTrainingTwo", "*"): "PyData",
-    ("PyDataTrainingOne", "*"): "PyData",
     ("PyDataTrainingOne", "*"): "PyData",
     ("PyDataTraining", "*"): "PyData",
     ("PyDatabase", "*"): "PyDatabase",
@@ -609,7 +606,6 @@ class Command(BaseCommand):
             action = "create"
             try:
                 with transaction.atomic():
-
                     order_user = users_by_email[orig_ticket["order_user"]]
                     ticket_user = users_by_email.get(
                         orig_ticket["ticket_user"] or None, order_user

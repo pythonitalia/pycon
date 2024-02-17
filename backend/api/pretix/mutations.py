@@ -33,7 +33,10 @@ class UpdateAttendeeTicketErrors:
     errors: List[UpdateAttendeeTicketError]
 
 
-UpdateAttendeeTicketResult = Annotated[Union[TicketReassigned, AttendeeTicket, UpdateAttendeeTicketErrors], strawberry.union(name="UpdateAttendeeTicketResult")]
+UpdateAttendeeTicketResult = Annotated[
+    Union[TicketReassigned, AttendeeTicket, UpdateAttendeeTicketErrors],
+    strawberry.union(name="UpdateAttendeeTicketResult"),
+]
 
 
 @strawberry.type
@@ -46,7 +49,6 @@ class AttendeeTicketMutation:
         input: UpdateAttendeeTicketInput,
         language: str = "en",
     ) -> UpdateAttendeeTicketResult:
-
         if not input.email.strip():
             error = UpdateAttendeeTicketError(
                 field="attendee_email", message="This field may not be blank."

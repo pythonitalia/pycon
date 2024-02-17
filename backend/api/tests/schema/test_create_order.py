@@ -1359,6 +1359,7 @@ def test_invoice_validation_fails_when_italian_business_and_no_sdi(
 
     create_order_mock.assert_not_called()
 
+
 @override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_works_when_not_italian_and_no_sdi(
     graphql_client, user, conference, mocker

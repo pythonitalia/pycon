@@ -71,7 +71,6 @@ def test_unsubscribe_not_registered_mail_to_newsletter(graphql_client):
 
 
 def _update_user_newsletter(graphql_client, user, open_to_newsletter):
-
     query = """
      mutation(
         $open_to_newsletter: Boolean!,

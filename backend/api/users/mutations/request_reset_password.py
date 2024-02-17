@@ -11,7 +11,9 @@ import logging
 from typing import Annotated, Union
 
 logger = logging.getLogger(__file__)
-RequestResetPasswordResult = Annotated[Union[OperationSuccess], strawberry.union(name="RequestResetPasswordResult")]
+RequestResetPasswordResult = Annotated[
+    Union[OperationSuccess], strawberry.union(name="RequestResetPasswordResult")
+]
 
 
 @strawberry.mutation
