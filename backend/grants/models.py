@@ -1,3 +1,4 @@
+from conferences.querysets import ConferenceQuerySetMixin
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -6,6 +7,11 @@ from model_utils.models import TimeStampedModel
 from countries import countries
 from helpers.constants import GENDERS
 from users.models import User
+
+
+class GrantQuerySet(ConferenceQuerySetMixin, models.QuerySet):
+    def of_user(self, user):
+        return self.filter(user=user)
 
 
 class Grant(TimeStampedModel):
@@ -210,6 +216,8 @@ class Grant(TimeStampedModel):
     voucher_email_sent_at = models.DateTimeField(
         help_text=_("When the email was last sent"), blank=True, null=True
     )
+
+    objects = GrantQuerySet().as_manager()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

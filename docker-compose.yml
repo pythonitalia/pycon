@@ -44,6 +44,7 @@ x-defaults:
     CELERY_BROKER_URL: redis://redis:6379/9
     CELERY_RESULT_BACKEND: redis://redis:6379/10
     PLAIN_API_TOKEN: ${PLAIN_API_TOKEN}
+    PLAIN_INTEGRATION_TOKEN: ${PLAIN_INTEGRATION_TOKEN}
 
 services:
   pycon-backend:
@@ -76,20 +77,6 @@ services:
       interval: 10s
       timeout: 10s
       retries: 10
-
-  # pycon-custom-admin-ws:
-  #   build:
-  #     context: ./backend/custom_admin/ws-proxy
-  #   networks: [pycon_net]
-  #   tty: true
-  #   stdin_open: true
-  #   ports:
-  #     - 3003:3003
-  #   volumes:
-  #     - ./backend/custom_admin/ws-proxy/nginx.conf:/etc/nginx/conf.d/default.conf
-  #   depends_on:
-  #     pycon-custom-admin:
-  #       condition: service_healthy
 
   pycon-custom-admin:
     build:

@@ -34,7 +34,7 @@ def test_cannot_call_pretix_webhook_with_incorrect_basic_auth(rest_api_client):
 def test_can_call_pretix_webhook_with_correct_basic_auth(rest_api_client):
     rest_api_client.basic_auth("pretix", "secret")
     response = rest_api_client.post(
-        reverse("pretix-webhook"), data={"action": "undefined"}, format="json"
+        reverse("pretix-webhook"), data={"action": "undefined"}
     )
     assert response.status_code == 200
 

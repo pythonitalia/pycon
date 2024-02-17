@@ -63,9 +63,13 @@ def http_client():
 @pytest.fixture
 def rest_api_client():
     api_client = APIClient()
+    api_client.default_format = "json"
     api_client.basic_auth = lambda username, password: api_client.credentials(
         HTTP_AUTHORIZATION="Basic "
         + base64.b64encode(f"{username}:{password}".encode("utf-8")).decode("utf-8")
+    )
+    api_client.token_auth = lambda token: api_client.credentials(
+        HTTP_AUTHORIZATION=f"Token {token}"
     )
     return api_client
 
