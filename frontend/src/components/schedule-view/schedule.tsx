@@ -4,7 +4,7 @@
 import { Separator, Spacer, Text } from "@python-italia/pycon-styleguide";
 import { ArrowIcon, LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import clsx from "clsx";
-import React, { useEffect, useRef } from "react";
+import React, { Fragment, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import useSyncScroll from "react-use-sync-scroll";
 import { jsx, ThemeUIStyleObject } from "theme-ui";
@@ -62,9 +62,26 @@ const getRowEnd = ({
     endingSlotIndex = slots.length;
   }
 
-  return slots
-    .slice(currentSlotIndex, endingSlotIndex)
-    .reduce((acc, s) => acc + getSlotSize(s), 0);
+  if (currentSlotIndex === endingSlotIndex) {
+    // the item is shorter than the slot (e.g. we have a 30 mins talk in a 45 min slot)
+    // we could calculate how much you actually use of the slot and set the size
+    // to match the actual duration length, but in the UI it doesn't look good
+    // as 30 of 45 is 0.6, so we use 0.9 to make it look better
+    const sizeToNextSlot = slots
+      .slice(currentSlotIndex, endingSlotIndex + 1)
+      .reduce((acc, s) => acc + getSlotSize(s), 0);
+    return {
+      itemRowEnd: Math.floor(sizeToNextSlot * 0.85),
+      sameSlotItem: true,
+    };
+  }
+
+  return {
+    itemRowEnd: slots
+      .slice(currentSlotIndex, endingSlotIndex)
+      .reduce((acc, s) => acc + getSlotSize(s), 0),
+    sameSlotItem: false,
+  };
 };
 
 const getEntryPosition = ({
@@ -92,14 +109,27 @@ const getEntryPosition = ({
     .sort();
 
   const index = roomIndexes[0];
-  const rowEnd = rowStart + getRowEnd({ item, rowOffset, slot, slots });
+  const { itemRowEnd, sameSlotItem } = getRowEnd({
+    item,
+    rowOffset,
+    slot,
+    slots,
+  });
+  const actualRowEnd = rowStart + itemRowEnd;
 
-  return {
+  const css: {
+    gridColumnStart: number;
+    gridColumnEnd: number;
+    gridRowStart: number;
+    gridRowEnd: number;
+  } = {
     gridColumnStart: index + 2,
     gridColumnEnd: index + 2 + item.rooms.length,
     gridRowStart: rowStart,
-    gridRowEnd: rowEnd,
+    gridRowEnd: actualRowEnd,
   };
+
+  return { css, sameSlotItem };
 };
 
 const GridContainer = React.forwardRef<
@@ -151,7 +181,6 @@ const GridContainer = React.forwardRef<
 );
 
 export const Schedule = ({
-  adminMode,
   slots,
   rooms,
   currentDay,
@@ -162,7 +191,6 @@ export const Schedule = ({
 }: {
   slots: Slot[];
   rooms: Room[];
-  adminMode: boolean;
   currentFilters: Record<string, string[]>;
   toggleEventFavorite: (item: Item) => void;
   currentDay: string;
@@ -283,7 +311,7 @@ export const Schedule = ({
             rowStartPos = rowEnd;
 
             return (
-              <>
+              <Fragment key={slot.id}>
                 {index > 0 && <Spacer showOnlyOn="mobile" size="xl" />}
                 <div className="contents divide-y md:divide-none" key={slot.id}>
                   <div
@@ -352,36 +380,38 @@ export const Schedule = ({
                       rowEnd={rowEnd}
                       duration={slot.duration}
                       roomType={room.type}
-                      adminMode={adminMode}
                     />
                   ))}
 
                   {slot.items.map((item) => {
                     const starred = starredScheduleItems.includes(item.id);
+                    const { css: entryPosition, sameSlotItem } =
+                      getEntryPosition({
+                        item,
+                        rooms,
+                        slot,
+                        slots,
+                        rowOffset,
+                        rowStart,
+                      });
+
                     return (
                       <ScheduleEntry
                         key={item.id}
                         item={item}
                         slot={slot}
                         rooms={rooms}
-                        adminMode={adminMode}
                         day={currentDay}
                         starred={starred}
                         filteredOut={
                           !isItemVisible(item, currentFilters, starred)
                         }
                         toggleEventFavorite={toggleEventFavorite}
+                        sameSlotItem={sameSlotItem}
                         style={
                           {
                             position: "relative",
-                            ...getEntryPosition({
-                              item,
-                              rooms,
-                              slot,
-                              slots,
-                              rowOffset,
-                              rowStart,
-                            }),
+                            ...entryPosition,
                           } as any
                         }
                       />
@@ -390,7 +420,7 @@ export const Schedule = ({
 
                   <div className="md:hidden"></div>
                 </div>
-              </>
+              </Fragment>
             );
           })}
       </GridContainer>

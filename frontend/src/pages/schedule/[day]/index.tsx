@@ -4,8 +4,6 @@
 import { Page } from "@python-italia/pycon-styleguide";
 import { stringify } from "querystring";
 import React, { useState } from "react";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
 
@@ -75,11 +73,6 @@ export const ScheduleDayPage = () => {
   const [currentDay, setCurrentDay] = useState(day);
 
   const { user } = useCurrentUser({ skip: !loggedIn });
-  const shouldShowAdmin =
-    user && typeof window !== "undefined"
-      ? user.canEditSchedule &&
-        window.sessionStorage.getItem("show_admin") === "1"
-      : false;
 
   const changeDay = (day: string) => {
     setCurrentDay(day);
@@ -96,24 +89,9 @@ export const ScheduleDayPage = () => {
     },
   });
 
-  if (shouldShowAdmin) {
-    return (
-      <DndProvider backend={HTML5Backend}>
-        <PageContent
-          loading={loading}
-          shouldShowAdmin={shouldShowAdmin}
-          data={data}
-          day={currentDay}
-          changeDay={changeDay}
-        />
-      </DndProvider>
-    );
-  }
-
   return (
     <PageContent
       loading={loading}
-      shouldShowAdmin={shouldShowAdmin}
       data={data}
       day={currentDay}
       changeDay={changeDay}
@@ -123,19 +101,12 @@ export const ScheduleDayPage = () => {
 
 type PageContentProps = {
   loading: boolean;
-  shouldShowAdmin: boolean;
   data: ScheduleQuery;
   day: string;
   changeDay: (day: string) => void;
 };
 
-const PageContent = ({
-  loading,
-  shouldShowAdmin,
-  data,
-  day,
-  changeDay,
-}: PageContentProps) => {
+const PageContent = ({ loading, data, day, changeDay }: PageContentProps) => {
   const language = useCurrentLanguage();
 
   return (
@@ -156,12 +127,7 @@ const PageContent = ({
         </Box>
       )}
       {!loading && (
-        <ScheduleView
-          schedule={data}
-          day={day}
-          shouldShowAdmin={shouldShowAdmin}
-          changeDay={changeDay}
-        />
+        <ScheduleView schedule={data} day={day} changeDay={changeDay} />
       )}
     </Page>
   );

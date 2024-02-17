@@ -112,18 +112,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getType = (
-  type: string,
-): Parameters<typeof ScheduleEventDetail>[0]["type"] => {
-  switch (type.toLowerCase()) {
+export const getType = (type: string): string => {
+  const lowerType = type.toLowerCase();
+  switch (lowerType) {
     case "workshop":
     case "tutorial":
     case "training":
       return "workshop";
-    case "talk":
-      return "talk";
-    case "panel":
-      return "panel";
+    default:
+      return lowerType;
   }
 };
 

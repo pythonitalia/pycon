@@ -41,11 +41,9 @@ export type ViewMode = "grid" | "list";
 
 export const ScheduleView = ({
   day: currentDay,
-  shouldShowAdmin,
   schedule,
   changeDay,
 }: {
-  shouldShowAdmin: boolean;
   day?: string;
   schedule: ScheduleQuery;
   changeDay: (day: string) => void;
@@ -391,7 +389,6 @@ export const ScheduleView = ({
               <Schedule
                 slots={day.slots}
                 rooms={day.rooms}
-                adminMode={shouldShowAdmin}
                 currentDay={currentDay}
                 currentFilters={currentFilters}
                 starredScheduleItems={starredScheduleItems}

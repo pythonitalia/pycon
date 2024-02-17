@@ -44,11 +44,6 @@ import {
   Submission as SubmissionType,
 } from "./types";
 
-const getType = (submission?: SubmissionType | null) =>
-  submission?.type?.name.toLowerCase() === "tutorial"
-    ? ItemTypes.TRAINING
-    : ItemTypes.TALK;
-
 export const getItemUrl = (item: Item) => {
   if (
     item.type === "training" ||
@@ -70,16 +65,15 @@ export const getItemUrl = (item: Item) => {
 
 export const ScheduleEntry = ({
   item,
-  adminMode,
   slot,
   rooms,
   day,
   starred,
   filteredOut,
   toggleEventFavorite,
+  sameSlotItem,
   ...props
 }: {
-  adminMode: boolean;
   item: Item;
   slot: Slot;
   rooms: Room[];
@@ -88,6 +82,7 @@ export const ScheduleEntry = ({
   sx?: any;
   starred: boolean;
   filteredOut: boolean;
+  sameSlotItem: boolean;
   toggleEventFavorite: (item: Item) => void;
 }) => {
   const language = useCurrentLanguage();
@@ -97,6 +92,8 @@ export const ScheduleEntry = ({
     : item.audienceLevel
     ? item.audienceLevel.name
     : null;
+  const duration =
+    item.duration || slot.duration || item.submission?.duration?.duration;
 
   const itemUrl = getItemUrl(item);
   const wrapperProps: any = itemUrl
@@ -113,6 +110,7 @@ export const ScheduleEntry = ({
     : undefined;
 
   const WrapperComponent = itemUrl ? Link : "div";
+  const durationText = `${duration} min`;
   const languageText = useTranslatedMessage(
     item.language.code === "en" ? `talk.language.en` : `talk.language.it`,
   );
@@ -137,9 +135,11 @@ export const ScheduleEntry = ({
   });
 
   return (
-    <a
+    <div
       className={clsx("relative z-20 border-r border-l md:border-0", {
         "hidden md:block": filteredOut,
+        "md:!border-b-3 md:border-b-black md:!border-0 md:!border-solid":
+          sameSlotItem,
       })}
       {...(props as any)}
     >
@@ -248,7 +248,9 @@ export const ScheduleEntry = ({
                 )}
 
                 <Text size="label3" color="grey-500">
-                  {[audienceLevel, languageText].filter((v) => v).join(", ")}
+                  {[durationText, audienceLevel, languageText]
+                    .filter((v) => v)
+                    .join(", ")}
                 </Text>
               </div>
               {item.speakers.length > 0 && (
@@ -265,6 +267,7 @@ export const ScheduleEntry = ({
                     <AvatarGroup>
                       {item.speakers.map((speaker) => (
                         <Avatar
+                          key={speaker.fullName}
                           image={speaker.participant?.photo}
                           letter={speaker.fullName}
                           letterBackgroundColor={getAvatarBackgroundColor(
@@ -280,7 +283,7 @@ export const ScheduleEntry = ({
           )}
         </div>
       </ScheduleItemCard>
-    </a>
+    </div>
   );
 };
 
