@@ -292,6 +292,7 @@ class Conference:
                         .annotate(
                             order=Case(
                                 When(type="custom", then=Value(1)),
+                                When(type="break", then=Value(1)),
                                 When(type="talk", then=Value(2)),
                                 When(type="panel", then=Value(3)),
                                 default=Value(4),
