@@ -4,7 +4,7 @@
 import { Separator, Spacer, Text } from "@python-italia/pycon-styleguide";
 import { ArrowIcon, LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import clsx from "clsx";
-import React, { useEffect, useRef } from "react";
+import React, { Fragment, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import useSyncScroll from "react-use-sync-scroll";
 import { jsx, ThemeUIStyleObject } from "theme-ui";
@@ -316,7 +316,7 @@ export const Schedule = ({
             rowStartPos = rowEnd;
 
             return (
-              <>
+              <Fragment key={slot.id}>
                 {index > 0 && <Spacer showOnlyOn="mobile" size="xl" />}
                 <div className="contents divide-y md:divide-none" key={slot.id}>
                   <div
@@ -421,7 +421,7 @@ export const Schedule = ({
 
                   <div className="md:hidden"></div>
                 </div>
-              </>
+              </Fragment>
             );
           })}
       </GridContainer>
