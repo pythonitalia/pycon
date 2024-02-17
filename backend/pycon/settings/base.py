@@ -303,6 +303,7 @@ USER_ID_HASH_SALT = env("USER_ID_HASH_SALT", default="")
 
 PLAIN_API = env("PLAIN_API", default="")
 PLAIN_API_TOKEN = env("PLAIN_API_TOKEN", default="")
+PLAIN_INTEGRATION_TOKEN = env("PLAIN_INTEGRATION_TOKEN", default="")
 
 IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "imagekit.cachefiles.strategies.Optimistic"
 

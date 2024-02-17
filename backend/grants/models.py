@@ -10,7 +10,8 @@ from users.models import User
 
 
 class GrantQuerySet(ConferenceQuerySetMixin, models.QuerySet):
-    pass
+    def of_user(self, user):
+        return self.filter(user=user)
 
 
 class Grant(TimeStampedModel):

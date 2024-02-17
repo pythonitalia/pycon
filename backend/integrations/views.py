@@ -1,8 +1,11 @@
 from conferences.models.conference import Conference
+from integrations.permissions import IsPlainAuthenticated, PlainAuthentication
 from integrations.plain_cards import create_grant_card
 from integrations.serializers import PlainCustomerCardsSerializer
 from rest_framework.decorators import (
     api_view,
+    authentication_classes,
+    permission_classes,
 )
 from rest_framework import status
 from rest_framework.response import Response
@@ -10,6 +13,8 @@ from users.models import User
 
 
 @api_view(["POST"])
+@permission_classes([IsPlainAuthenticated])
+@authentication_classes([PlainAuthentication])
 def plain_customer_cards(request):
     conference_id = request.headers.get("Conference-Id")
     serializer = PlainCustomerCardsSerializer(data=request.data)

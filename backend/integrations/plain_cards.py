@@ -3,7 +3,7 @@ from grants.models import Grant
 
 
 def create_grant_card(request, user, conference):
-    grant = Grant.objects.for_conference(conference).filter(user=user).first()
+    grant = Grant.objects.of_user(user).for_conference(conference).first()
 
     if not grant:
         return {"key": "grant", "components": []}
@@ -14,58 +14,40 @@ def create_grant_card(request, user, conference):
 
     return {
         "key": "grant",
-        "components": filter(
-            None,
-            [
-                {
-                    "componentRow": {
-                        "rowMainContent": [
-                            {"componentText": {"textColor": "MUTED", "text": "Status"}}
-                        ],
-                        "rowAsideContent": [
-                            {
-                                "componentBadge": {
-                                    "badgeLabel": grant.get_status_display(),
-                                    "badgeColor": _status_to_color(grant.status),
-                                }
-                            }
-                        ],
-                    }
-                },
-                {"componentSpacer": {"spacerSize": "M"}},
-                {
-                    "componentRow": {
-                        "rowMainContent": [
-                            {
-                                "componentText": {
-                                    "textColor": "MUTED",
-                                    "text": "Approval type",
-                                }
-                            }
-                        ],
-                        "rowAsideContent": [
-                            {
-                                "componentText": {
-                                    "textColor": "NORMAL",
-                                    "text": (
-                                        grant.get_approved_type_display()
-                                        if grant.approved_type
-                                        else "Undefined"
-                                    ),
-                                }
-                            }
-                        ],
-                    }
-                },
-                {"componentSpacer": {"spacerSize": "M"}},
-                (
+        "components": list(
+            filter(
+                None,
+                [
                     {
                         "componentRow": {
                             "rowMainContent": [
                                 {
                                     "componentText": {
                                         "textColor": "MUTED",
-                                        "text": "Travel amount",
+                                        "text": "Status",
+                                    }
+                                }
+                            ],
+                            "rowAsideContent": [
+                                {
+                                    "componentBadge": {
+                                        "badgeLabel": grant.get_status_display(),
+                                        "badgeColor": _grant_status_to_color(
+                                            grant.status
+                                        ),
+                                    }
+                                }
+                            ],
+                        }
+                    },
+                    {"componentSpacer": {"spacerSize": "M"}},
+                    {
+                        "componentRow": {
+                            "rowMainContent": [
+                                {
+                                    "componentText": {
+                                        "textColor": "MUTED",
+                                        "text": "Approval type",
                                     }
                                 }
                             ],
@@ -73,35 +55,66 @@ def create_grant_card(request, user, conference):
                                 {
                                     "componentText": {
                                         "textColor": "NORMAL",
-                                        "text": f"€{grant.travel_amount}",
+                                        "text": (
+                                            grant.get_approved_type_display()
+                                            if grant.approved_type
+                                            else "Empty"
+                                        ),
                                     }
                                 }
                             ],
                         }
-                    }
-                    if grant.has_approved_travel()
-                    else None
-                ),
-                {"componentSpacer": {"spacerSize": "M"}},
-                {
-                    "componentRow": {
-                        "rowMainContent": [
-                            {
-                                "componentLinkButton": {
-                                    "linkButtonLabel": "View in Admin",
-                                    "linkButtonUrl": admin_url,
-                                }
+                    },
+                    {"componentSpacer": {"spacerSize": "M"}},
+                    (
+                        {
+                            "componentRow": {
+                                "rowMainContent": [
+                                    {
+                                        "componentText": {
+                                            "textColor": "MUTED",
+                                            "text": "Travel amount",
+                                        }
+                                    }
+                                ],
+                                "rowAsideContent": [
+                                    {
+                                        "componentText": {
+                                            "textColor": "NORMAL",
+                                            "text": f"€{grant.travel_amount}",
+                                        }
+                                    }
+                                ],
                             }
-                        ],
-                        "rowAsideContent": [],
-                    }
-                },
-            ],
+                        }
+                        if grant.has_approved_travel()
+                        else None
+                    ),
+                    (
+                        {"componentSpacer": {"spacerSize": "M"}}
+                        if grant.has_approved_travel()
+                        else None
+                    ),
+                    {
+                        "componentRow": {
+                            "rowMainContent": [
+                                {
+                                    "componentLinkButton": {
+                                        "linkButtonLabel": "Open Grant in admin",
+                                        "linkButtonUrl": admin_url,
+                                    }
+                                }
+                            ],
+                            "rowAsideContent": [],
+                        }
+                    },
+                ],
+            )
         ),
     }
 
 
-def _status_to_color(status):
+def _grant_status_to_color(status):
     if status in (Grant.Status.approved, Grant.Status.confirmed):
         return "GREEN"
     elif status in (Grant.Status.waiting_for_confirmation):
