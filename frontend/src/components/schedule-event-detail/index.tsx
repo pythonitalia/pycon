@@ -28,7 +28,7 @@ import { Sidebar } from "./sidebar";
 type Props = {
   id?: string;
   slug?: string;
-  type: "talk" | "workshop" | "keynote" | "lightning-talks" | "panel";
+  type: string;
   eventTitle: string;
   elevatorPitch?: string;
   abstract?: string;
