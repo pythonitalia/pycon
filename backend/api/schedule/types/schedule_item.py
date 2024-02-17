@@ -67,7 +67,7 @@ class ScheduleItem:
             participants_data = {
                 participant.user_id: participant
                 for participant in ParticipantModel.objects.filter(
-                    id__in=[speaker.id for speaker in self.speakers],
+                    user_id__in=[speaker.id for speaker in self.speakers],
                     conference_id=self.conference_id,
                 )
             }
