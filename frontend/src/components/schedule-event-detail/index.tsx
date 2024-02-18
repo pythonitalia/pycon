@@ -18,7 +18,7 @@ import { FormattedMessage } from "react-intl";
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 
-import { ScheduleItemUser } from "~/types";
+import { TalkQueryResult } from "~/types";
 import { ParticipantInfoSection } from "../participant-info-section";
 import { EventTag } from "./event-tag";
 import { Sidebar } from "./sidebar";
@@ -30,7 +30,10 @@ type Props = {
   eventTitle: string;
   elevatorPitch?: string;
   abstract?: string;
-  speakers: ScheduleItemUser[];
+  speakers: {
+    fullName: string;
+    participant?: TalkQueryResult["data"]["conference"]["talk"]["speakers"][0]["participant"];
+  }[];
   tags?: string[];
   language: string;
   audienceLevel?: string;
@@ -212,7 +215,7 @@ export const ScheduleEventDetail = ({
           {speakers.map((speaker, index) => (
             <>
               <ParticipantInfoSection
-                fullname={speaker.fullname}
+                fullname={speaker.fullName}
                 participant={speaker.participant}
               />
               {index !== speakers.length - 1 && <Spacer size="2xl" />}

@@ -53,11 +53,10 @@ query Talk($slug: String!, $code: String!, $language: String!) {
 
       speakers {
         id
-        fullname
+        fullName
         participant {
           id
           photo
-          fullname
           bio
           twitterHandle
           instagramHandle

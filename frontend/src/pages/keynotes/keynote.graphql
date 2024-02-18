@@ -19,7 +19,7 @@ query Keynote($conference: String!, $slug: String!, $language: String!) {
       }
       speakers {
         id
-        fullname
+        fullName
         participant {
           id
           photo

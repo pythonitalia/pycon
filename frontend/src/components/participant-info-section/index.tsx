@@ -21,13 +21,13 @@ import { SnakeTail } from "@python-italia/pycon-styleguide/illustrations";
 import React from "react";
 
 import { compile } from "~/helpers/markdown";
-import { Participant } from "~/types";
+import { TalkQueryResult } from "~/types";
 
 export const ParticipantInfoSection = ({
   fullname,
   participant,
 }: {
-  participant?: Participant;
+  participant?: TalkQueryResult["data"]["conference"]["talk"]["speakers"][0]["participant"];
   fullname: string;
 }) => (
   <>

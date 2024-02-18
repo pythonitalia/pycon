@@ -1,13 +1,11 @@
 query ParticipantPublicProfile($userId: ID!, $conference: String!) {
   participant(userId: $userId, conference: $conference) {
     id
-    userId
     fullname
     publicProfile
     bio
     website
     photo
-    publicProfile
     twitterHandle
     instagramHandle
     linkedinUrl
