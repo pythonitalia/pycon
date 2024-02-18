@@ -88,7 +88,7 @@ export const ScheduleEntry = ({
   const language = useCurrentLanguage();
 
   const audienceLevel = item.submission
-    ? item.submission.audienceLevel!.name
+    ? item.submission.audienceLevel.name
     : item.audienceLevel
       ? item.audienceLevel.name
       : null;

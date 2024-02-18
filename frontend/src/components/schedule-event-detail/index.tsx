@@ -213,7 +213,10 @@ export const ScheduleEventDetail = ({
         <Section>
           {speakers.map((speaker, index) => (
             <>
-              <ParticipantInfoSection participant={speaker} />
+              <ParticipantInfoSection
+                fullname={speaker.fullname}
+                participant={speaker}
+              />
               {index !== speakers.length - 1 && <Spacer size="2xl" />}
             </>
           ))}
