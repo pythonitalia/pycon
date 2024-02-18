@@ -1,4 +1,5 @@
 export const messages = {
+  default: {},
   en: {
     titleTemplate: "%s | PyCon Italia",
     description:
