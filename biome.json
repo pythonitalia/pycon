@@ -40,7 +40,8 @@
       "public/",
       "src/generated",
       "_schema.json",
-      "package.json"
+      "package.json",
+      "src/types.tsx"
     ]
   }
 }
