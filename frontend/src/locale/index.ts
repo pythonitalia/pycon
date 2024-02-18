@@ -455,7 +455,7 @@ Let's get in touch to find the best solution for your business' needs!`,
     "tickets.pageTitle": "Buy your ticket for PyCon Italia",
     "tickets.loading": "Please wait 🕐",
     "tickets.heading": "Get some tickets",
-    "tickets.explanation": `{br}`,
+    "tickets.explanation": "{br}",
 
     "homepage.schedulePreviewSection.goToSchedule": "Go to schedule",
 
@@ -566,7 +566,8 @@ Let's get in touch to find the best solution for your business' needs!`,
       "Your order is still pending and not paid!",
     "orderConfirmation.cardMessage":
       "If you paid by card, click the button below and try again",
-    "orderConfirmation.bankMessage": `If you paid via bank transfer, contact us at {email} with your order code {code} once the transfer is done so we can confirm it when we receive the transfer.`,
+    "orderConfirmation.bankMessage":
+      "If you paid via bank transfer, contact us at {email} with your order code {code} once the transfer is done so we can confirm it when we receive the transfer.",
     "orderConfirmation.manage": "Click here to manage the order",
     "orderConfirmation.home": "Homepage",
     "orderConfirmation.pendingManage": "Try another card or retry",
@@ -1272,7 +1273,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "tickets.pageTitle": "Compra il tuo biglietto per PyCon Italia",
     "tickets.loading": "Caricamento in corso 🕐",
     "tickets.heading": "Acquista biglietti",
-    "tickets.explanation": `{br}`,
+    "tickets.explanation": "{br}",
 
     "signup.acceptPrivacyPolicy": "Accetto la {privacyPolicyLink}",
     "signup.privacyPolicy": "privacy policy",
@@ -1851,7 +1852,8 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "tickets.landing.title": "Cosa puoi comprare?",
     "tickets.landing.ticketsCopy": `Biglietti per partecipare alla conferenza! PyCon Italia é un evento di 4 giorni dove ogni anno più di 600 persone si riuniscono per partecipare a più di 110+ sessioni (talks e workshops) ed eventi sociali dove puoi fare nuove amicizie e goderti la bellissima Firenze.
 Affrettati a comprare il biglietto!`,
-    "tickets.landing.hotelCopy": `Organizza il tuo viaggio con tranquillità e soggiorna al Grand Hotel Mediterraneo! Abbiamo un numero limitato di stanze scontate al Grand Hotel Mediterraneo, dove la conferenza avviene!`,
+    "tickets.landing.hotelCopy":
+      "Organizza il tuo viaggio con tranquillità e soggiorna al Grand Hotel Mediterraneo! Abbiamo un numero limitato di stanze scontate al Grand Hotel Mediterraneo, dove la conferenza avviene!",
 
     "tickets.landing.membership.cta": "Unisciti a noi!",
 
@@ -2095,5 +2097,5 @@ Mettiamoci in contatto per trovare la soluzione migliore per le esigenze della t
   },
 };
 
-messages["default"] = messages["en"];
+messages.default = messages.en;
 export default messages;

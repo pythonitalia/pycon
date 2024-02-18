@@ -68,7 +68,6 @@ export const ReassignTicketModal = ({
               formState.values.email === currentEmail || !formState.touched
             }
             size="small"
-            role="secondary"
             onClick={saveChanges}
           >
             <FormattedMessage id="profile.tickets.save" />

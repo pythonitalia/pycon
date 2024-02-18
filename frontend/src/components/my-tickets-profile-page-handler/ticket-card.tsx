@@ -119,13 +119,13 @@ export const TicketCard = ({ ticket, userEmail }: Props) => {
   const callUpdateUserTicket = (updatedProductUserInformation) => {
     const answers = ticket.item.questions
       .map((question) => {
-        let answer;
+        let answer: string;
         let option = null;
 
         if (question.options.length > 0) {
           option = question.options.filter(
             (option) =>
-              option.id == updatedProductUserInformation.answers[question.id],
+              option.id === updatedProductUserInformation.answers[question.id],
           )[0];
           answer = option.name;
         } else {
@@ -138,7 +138,7 @@ export const TicketCard = ({ ticket, userEmail }: Props) => {
         };
 
         if (option) {
-          data["options"] = [option.id];
+          data.options = [option.id];
         }
         return data;
       })

@@ -32,13 +32,14 @@ const ScheduleBuilder = () => {
   return (
     <DjangoAdminLayout
       breadcrumbs={[
-        { label: "Conferences", url: "/admin/conferences" },
-        { label: "Conferences", url: "/admin/conferences/conference" },
+        { id: 0, label: "Conferences", url: "/admin/conferences" },
+        { id: 1, label: "Conferences", url: "/admin/conferences/conference" },
         {
+          id: 2,
           label: conferenceRepr,
           url: `/admin/conferences/conference/${conferenceId}`,
         },
-        { label: "Schedule Builder" },
+        { id: 3, label: "Schedule Builder" },
       ]}
     >
       {loading && <h2>Please wait</h2>}

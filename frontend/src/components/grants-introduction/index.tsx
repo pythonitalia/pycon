@@ -76,7 +76,7 @@ export const Introduction = ({ end }: { end: string | null }) => {
 
           <Link
             href={createHref({
-              path: `/grants-info`,
+              path: "/grants-info",
               locale: language,
             })}
             sx={{ mt: 4 }}

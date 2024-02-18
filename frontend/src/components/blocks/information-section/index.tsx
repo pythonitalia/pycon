@@ -78,9 +78,7 @@ export const InformationSection = ({
         {cta && (
           <>
             <Spacer size="large" />
-            <Button href={cta.link} role="primary">
-              {cta.label}
-            </Button>
+            <Button href={cta.link}>{cta.label}</Button>
           </>
         )}
         {IllustrationComponent && (

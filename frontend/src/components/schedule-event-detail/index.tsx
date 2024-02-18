@@ -117,7 +117,7 @@ export const ScheduleEventDetail = ({
                 <Spacer size="medium" />
 
                 {slidoUrl && (
-                  <Button size="small" role="secondary" href={slidoUrl}>
+                  <Button size="small" href={slidoUrl}>
                     <FormattedMessage id="streaming.qa" />
                   </Button>
                 )}
@@ -200,6 +200,7 @@ export const ScheduleEventDetail = ({
             <SnakeWithPopcorn className="absolute top-0 right-14 z-10 w-[130px] -translate-y-[63%] lg:w-[180px] lg:-translate-y-[68%] hidden md:block" />
             <div className="z-20 relative">
               <iframe
+                title="Recording"
                 src={`https://www.youtube.com/embed/${youtubeVideoId}`}
                 allowFullScreen
                 className="aspect-video p-[3px] top-0 left-0 w-full bg-black"

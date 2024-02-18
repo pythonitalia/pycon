@@ -97,7 +97,6 @@ export const MyProposalsTable = ({ submissions }: Props) => {
                   path: `/schedule/invitation/${row.id}`,
                   locale: language,
                 })}
-                role="secondary"
                 size="small"
               >
                 <FormattedMessage id="profile.myProposals.viewInvitation" />
@@ -108,7 +107,6 @@ export const MyProposalsTable = ({ submissions }: Props) => {
                 path: `/submission/${row.id}/edit`,
                 locale: language,
               })}
-              role="secondary"
               size="small"
             >
               <FormattedMessage id="profile.myProposals.edit" />

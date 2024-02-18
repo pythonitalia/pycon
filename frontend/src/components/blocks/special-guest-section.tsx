@@ -64,6 +64,7 @@ export const SpecialGuestSection = ({
               <Spacer size="medium" showOnlyOn="mobile" />
               <Spacer size="medium" showOnlyOn="tablet" />
               <img
+                alt="Special guest"
                 src={guestPhoto}
                 className="w-72 aspect-square object-cover border"
               />
@@ -90,7 +91,6 @@ export const SpecialGuestSection = ({
                       path: cta.link,
                       locale: language,
                     })}
-                    role="secondary"
                   >
                     {cta.label}
                   </Button>
@@ -106,6 +106,8 @@ export const SpecialGuestSection = ({
 
 const BgIllustration = () => (
   <svg
+    aria-label="Special guest background"
+    role="img"
     width="100%"
     height="1024"
     fill="none"

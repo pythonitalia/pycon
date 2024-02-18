@@ -54,7 +54,6 @@ export const AvailableProductsLandingSection = ({ tickets }: Props) => {
               <Spacer size="2md" />
               <Button
                 size="small"
-                role="secondary"
                 href={createHref({
                   path: "/social-events",
                   locale: language,

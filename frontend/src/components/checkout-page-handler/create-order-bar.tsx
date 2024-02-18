@@ -150,7 +150,6 @@ export const CreateOrderBar = ({
             />
             <Button
               disabled={createOrderState.matches("creating")}
-              role="secondary"
               onClick={(e) => {
                 onCreateOrder(e, "stripe");
               }}

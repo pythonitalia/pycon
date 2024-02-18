@@ -75,7 +75,7 @@ export const NewsletterModal = ({ openModal, show }) => {
           <BasicButton onClick={() => closeModal()}>
             <FormattedMessage id="profile.tickets.cancel" />
           </BasicButton>
-          <Button role="secondary" onClick={onSubmit} disabled={!canSubmit}>
+          <Button onClick={onSubmit} disabled={!canSubmit}>
             <FormattedMessage id="newsletter.button" />
           </Button>
         </div>
@@ -105,15 +105,15 @@ export const NewsletterModal = ({ openModal, show }) => {
 
         {hasCompletedSubscription && !isUnableToSubscribe && (
           <Text size={2}>
-            {subscribeToNewsletter.status ==
+            {subscribeToNewsletter.status ===
               NewsletterSubscriptionResult.Subscribed && (
               <FormattedMessage id="newsletter.success" />
             )}
-            {subscribeToNewsletter.status ==
+            {subscribeToNewsletter.status ===
               NewsletterSubscriptionResult.WaitingConfirmation && (
               <FormattedMessage id="newsletter.confirmViaEmail" />
             )}
-            {subscribeToNewsletter.status ==
+            {subscribeToNewsletter.status ===
               NewsletterSubscriptionResult.OptInFormRequired && (
               <FormattedMessage
                 id="newsletter.optinFormRequired"

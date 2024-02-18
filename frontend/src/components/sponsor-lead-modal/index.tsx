@@ -77,7 +77,6 @@ export const SponsorLeadModal = ({ onClose }) => {
             <FormattedMessage id="modal.cancel" />
           </BasicButton>
           <Button
-            role="secondary"
             disabled={
               loading || submitComplete || !formState.values.acceptPrivacyPolicy
             }

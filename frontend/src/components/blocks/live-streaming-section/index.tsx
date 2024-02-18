@@ -1,12 +1,12 @@
 import {
+  Button,
   Grid,
-  Text,
   GridColumn,
   Heading,
+  Link,
   Section,
   Spacer,
-  Link,
-  Button,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import { SnakeWithPopcorn } from "@python-italia/pycon-styleguide/illustrations";
@@ -57,9 +57,7 @@ export const LiveStreamingSection = () => {
           </Heading>
           <Spacer size="small" />
           <Link href="https://www.youtube.com/pythonitalia" target="_blank">
-            <Button size="small" role="secondary">
-              YouTube
-            </Button>
+            <Button size="small">YouTube</Button>
           </Link>
         </>
       )}
@@ -106,6 +104,7 @@ export const LiveStreamingSection = () => {
               <div className="z-20 relative mt-8 lg:mt-0">
                 {currentRoom && (
                   <iframe
+                    title="Video"
                     height="500px"
                     src={currentRoom.streamingUrl}
                     allowFullScreen
@@ -131,7 +130,7 @@ export const LiveStreamingSection = () => {
                     <Spacer size="xs" />
                     {runningEvent.slidoUrl && (
                       <Link href={runningEvent.slidoUrl} target="_blank">
-                        <Button role="secondary" size="small">
+                        <Button size="small">
                           <FormattedMessage id="streaming.qa" />
                         </Button>
                       </Link>

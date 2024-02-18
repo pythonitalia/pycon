@@ -103,7 +103,7 @@ export const EditSubmissionPage = () => {
           <FormattedMessage id="cfp.cannotEdit" />
         </Alert>
       )}
-      {submissionData && submissionData.submission?.canEdit && (
+      {submissionData?.submission?.canEdit && (
         <CfpForm
           submission={submissionData.submission as SubmissionStructure}
           loading={updateSubmissionLoading}

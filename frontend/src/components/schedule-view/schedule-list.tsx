@@ -95,8 +95,8 @@ const ScheduleItem = ({
   currentDay: string;
 }) => {
   const language = useCurrentLanguage();
-  const italianLanguageText = useTranslatedMessage(`talk.language.it`);
-  const englishLanguageText = useTranslatedMessage(`talk.language.en`);
+  const italianLanguageText = useTranslatedMessage("talk.language.it");
+  const englishLanguageText = useTranslatedMessage("talk.language.en");
   const allRoomsText = useTranslatedMessage("scheduleView.allRooms");
   const translatedRoomText = useTranslatedMessage("schedule.room");
 

@@ -162,7 +162,6 @@ export const Sidebar = ({
                 onClick={userHasSpot ? cancelBooking : bookScheduleItem}
                 disabled={isBookingSpot || isCancellingBooking}
                 size="small"
-                role="secondary"
               >
                 {userHasSpot && <FormattedMessage id="talk.unregisterCta" />}
                 {!userHasSpot && <FormattedMessage id="talk.bookCta" />}

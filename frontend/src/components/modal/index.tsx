@@ -40,7 +40,7 @@ export const Modal = ({
       )}
       role="dialog"
     >
-      <div className="fixed inset-0 bg-caramel/90" onClick={onClose}></div>
+      <div className="fixed inset-0 bg-caramel/90" onClick={onClose} />
       <div
         className={clsx("md:px-4 z-10 w-full h-screen md:h-auto", {
           "md:max-w-3xl": size === "medium",

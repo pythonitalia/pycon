@@ -82,9 +82,9 @@ export const ScheduleItemCard = ({ item, duration }) => {
         </li>
       )}
       <li className="pt-2">
-        <a className="underline" href="#" onClick={openEditLink}>
+        <button type="button" className="underline" onClick={openEditLink}>
           Edit schedule item
-        </a>
+        </button>
       </li>
     </ul>
   );

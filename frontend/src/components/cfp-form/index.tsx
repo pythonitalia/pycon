@@ -740,7 +740,7 @@ export const CfpForm = ({
             />
           }
         />
-        <Button role="secondary">
+        <Button>
           <FormattedMessage id="cfp.submit" />
         </Button>
       </form>

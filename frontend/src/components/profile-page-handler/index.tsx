@@ -48,7 +48,7 @@ export const ProfilePageHandler = () => {
   });
 
   useEffect(() => {
-    const loginUrl = `/login`;
+    const loginUrl = "/login";
 
     if (error) {
       setLoginState(false);
@@ -59,7 +59,7 @@ export const ProfilePageHandler = () => {
 
   useEffect(() => {
     if (!loggedIn) {
-      const loginUrl = `/login`;
+      const loginUrl = "/login";
       setLoginState(false);
       Router.push("/login", loginUrl);
     }

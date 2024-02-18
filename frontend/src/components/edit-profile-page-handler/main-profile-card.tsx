@@ -75,7 +75,7 @@ export const MainProfileCard = ({
                 onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
                   const timestamp = Date.parse(event.target.value);
 
-                  if (!isNaN(timestamp)) {
+                  if (!Number.isNaN(timestamp)) {
                     const date = new Date(timestamp);
                     formState.setField("dateBirth", date);
                     return date;
@@ -84,10 +84,7 @@ export const MainProfileCard = ({
                   return formState.values.dateBirth;
                 },
               })}
-              value={
-                formState.values.dateBirth &&
-                formState.values.dateBirth.toISOString().split("T")[0]
-              }
+              value={formState.values.dateBirth?.toISOString().split("T")[0]}
               type="date"
               required={true}
               errors={[

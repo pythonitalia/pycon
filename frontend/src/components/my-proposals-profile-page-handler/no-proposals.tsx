@@ -39,7 +39,6 @@ export const NoProposals = ({ deadline }: Props) => {
       {(deadlineStatus === DeadlineStatus.HappeningNow ||
         deadlineStatus === DeadlineStatus.InTheFuture) && (
         <Button
-          role="secondary"
           href={createHref({
             path: "/call-for-proposals",
             locale: language,
@@ -50,7 +49,6 @@ export const NoProposals = ({ deadline }: Props) => {
       )}
       {deadlineStatus === DeadlineStatus.InThePast && (
         <Button
-          role="secondary"
           href={createHref({
             path: "/tickets",
             locale: language,

@@ -85,7 +85,7 @@ export const CfpSendSubmission = () => {
 
     if (response.data?.mutationOp.__typename === "Submission") {
       const id = response.data.mutationOp.id;
-      router.push(`/submission/[id]`, `/submission/${id}`);
+      router.push("/submission/[id]", `/submission/${id}`);
     }
   };
 

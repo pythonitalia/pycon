@@ -7,9 +7,7 @@ import clsx from "clsx";
 import React, { Fragment, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import useSyncScroll from "react-use-sync-scroll";
-import { jsx, ThemeUIStyleObject } from "theme-ui";
-
-import { useRouter } from "next/router";
+import { ThemeUIStyleObject, jsx } from "theme-ui";
 
 import { isItemVisible } from ".";
 import { ScheduleEntry } from "./events";
@@ -137,7 +135,6 @@ const GridContainer = React.forwardRef<
   {
     totalColumns: number;
     totalRows: number;
-    isInPhotoMode: boolean;
     children: React.ReactNode;
     sx?: ThemeUIStyleObject;
     className?: string;
@@ -145,15 +142,7 @@ const GridContainer = React.forwardRef<
   }
 >(
   (
-    {
-      totalColumns,
-      totalRows,
-      children,
-      isInPhotoMode,
-      className,
-      totalRooms,
-      ...props
-    },
+    { totalColumns, totalRows, children, className, totalRooms, ...props },
     ref,
   ) => (
     <div
@@ -200,10 +189,6 @@ export const Schedule = ({
   const rowOffset = 6;
   const totalRows = slots.reduce((count, slot) => count + getSlotSize(slot), 0);
   const totalColumns = rooms.length;
-  const {
-    query: { photo },
-  } = useRouter();
-  const isInPhotoMode = photo == "1";
 
   const headerRef = useRef(null);
   const scheduleRef = useRef(null);
@@ -238,7 +223,6 @@ export const Schedule = ({
   return (
     <React.Fragment>
       <GridContainer
-        isInPhotoMode={isInPhotoMode}
         totalRows={rowOffset}
         totalColumns={totalColumns}
         ref={headerRef}
@@ -290,139 +274,133 @@ export const Schedule = ({
       </GridContainer>
 
       <GridContainer
-        isInPhotoMode={isInPhotoMode}
         ref={scheduleRef}
         totalRows={totalRows}
         totalColumns={totalColumns}
         totalRooms={totalRooms}
       >
-        {slots
-          .filter(
-            (slot) =>
-              !isInPhotoMode ||
-              (isInPhotoMode && slot?.items[0]?.title !== "Registration"),
-          )
-          .map((slot, index) => {
-            const rowStart = rowStartPos;
-            const rowEnd = rowStartPos + getSlotSize(slot);
-            const isLive = slot.id === liveSlot?.id;
-            const breakSlot = ["FREE_TIME", "BREAK"].includes(slot.type);
+        {slots.map((slot, index) => {
+          const rowStart = rowStartPos;
+          const rowEnd = rowStartPos + getSlotSize(slot);
+          const isLive = slot.id === liveSlot?.id;
+          const breakSlot = ["FREE_TIME", "BREAK"].includes(slot.type);
 
-            rowStartPos = rowEnd;
+          rowStartPos = rowEnd;
 
-            return (
-              <Fragment key={slot.id}>
-                {index > 0 && <Spacer showOnlyOn="mobile" size="xl" />}
-                <div className="contents divide-y md:divide-none" key={slot.id}>
-                  <div
-                    className={clsx(
-                      "md:border-r md:-mr-[3px] md:text-center md:px-4 left-0 sticky bg-milk z-40 pb-2",
-                      {
-                        "md:py-4": breakSlot,
-                        "md:py-6": !breakSlot,
-                        "md:bg-coral": isLive,
-                      },
-                    )}
-                    style={
-                      {
-                        gridColumnStart: 1,
-                        gridColumnEnd: 1,
-                        gridRowStart: "var(--start)",
-                        gridRowEnd: "var(--end)",
-                        "--start": rowStart,
-                        "--end": rowEnd,
-                      } as any
-                    }
-                  >
-                    <Text weight="strong" size="label1" className="md:hidden">
-                      <FormattedMessage
-                        id="schedule.time"
-                        values={{
-                          start: formatHour(slot.hour),
-                          end: formatHour(slot.endHour),
-                        }}
-                      />
-
-                      {isLive && (
-                        <>
-                          <Spacer size="small" orientation="horizontal" />
-                          <LiveIcon className="inline-block" />
-                        </>
-                      )}
-                    </Text>
-                    <Text
-                      weight="strong"
-                      size="label1"
-                      className="hidden md:block"
-                    >
-                      <FormattedMessage
-                        id="schedule.timeNoEnd"
-                        values={{
-                          start: formatHour(slot.hour),
-                        }}
-                      />
-                      {isLive && (
-                        <>
-                          {!breakSlot && <Spacer size="xs" />}
-                          <Text as="p" uppercase size="label3" weight="strong">
-                            <FormattedMessage id="schedule.live" />
-                          </Text>
-                        </>
-                      )}
-                    </Text>
-                  </div>
-
-                  {rooms.map((room, index) => (
-                    <Placeholder
-                      key={`${room.id}-${slot.id}`}
-                      columnStart={index + 2}
-                      rowStart={rowStart}
-                      rowEnd={rowEnd}
-                      duration={slot.duration}
-                      roomType={room.type}
+          return (
+            <Fragment key={slot.id}>
+              {index > 0 && <Spacer showOnlyOn="mobile" size="xl" />}
+              <div className="contents divide-y md:divide-none" key={slot.id}>
+                <div
+                  className={clsx(
+                    "md:border-r md:-mr-[3px] md:text-center md:px-4 left-0 sticky bg-milk z-40 pb-2",
+                    {
+                      "md:py-4": breakSlot,
+                      "md:py-6": !breakSlot,
+                      "md:bg-coral": isLive,
+                    },
+                  )}
+                  style={
+                    {
+                      gridColumnStart: 1,
+                      gridColumnEnd: 1,
+                      gridRowStart: "var(--start)",
+                      gridRowEnd: "var(--end)",
+                      "--start": rowStart,
+                      "--end": rowEnd,
+                    } as any
+                  }
+                >
+                  <Text weight="strong" size="label1" className="md:hidden">
+                    <FormattedMessage
+                      id="schedule.time"
+                      values={{
+                        start: formatHour(slot.hour),
+                        end: formatHour(slot.endHour),
+                      }}
                     />
-                  ))}
 
-                  {slot.items.map((item) => {
-                    const starred = starredScheduleItems.includes(item.id);
-                    const { css: entryPosition, sameSlotItem } =
-                      getEntryPosition({
-                        item,
-                        rooms,
-                        slot,
-                        slots,
-                        rowOffset,
-                        rowStart,
-                      });
-
-                    return (
-                      <ScheduleEntry
-                        key={item.id}
-                        item={item}
-                        slot={slot}
-                        rooms={rooms}
-                        day={currentDay}
-                        starred={starred}
-                        filteredOut={
-                          !isItemVisible(item, currentFilters, starred)
-                        }
-                        toggleEventFavorite={toggleEventFavorite}
-                        sameSlotItem={sameSlotItem}
-                        style={
-                          {
-                            position: "relative",
-                            ...entryPosition,
-                          } as any
-                        }
-                      />
-                    );
-                  })}
-
-                  <div className="md:hidden"></div>
+                    {isLive && (
+                      <>
+                        <Spacer size="small" orientation="horizontal" />
+                        <LiveIcon className="inline-block" />
+                      </>
+                    )}
+                  </Text>
+                  <Text
+                    weight="strong"
+                    size="label1"
+                    className="hidden md:block"
+                  >
+                    <FormattedMessage
+                      id="schedule.timeNoEnd"
+                      values={{
+                        start: formatHour(slot.hour),
+                      }}
+                    />
+                    {isLive && (
+                      <>
+                        {!breakSlot && <Spacer size="xs" />}
+                        <Text as="p" uppercase size="label3" weight="strong">
+                          <FormattedMessage id="schedule.live" />
+                        </Text>
+                      </>
+                    )}
+                  </Text>
                 </div>
-              </Fragment>
-            );
-          })}
+
+                {rooms.map((room, index) => (
+                  <Placeholder
+                    key={`${room.id}-${slot.id}`}
+                    columnStart={index + 2}
+                    rowStart={rowStart}
+                    rowEnd={rowEnd}
+                    duration={slot.duration}
+                    roomType={room.type}
+                  />
+                ))}
+
+                {slot.items.map((item) => {
+                  const starred = starredScheduleItems.includes(item.id);
+                  const { css: entryPosition, sameSlotItem } = getEntryPosition(
+                    {
+                      item,
+                      rooms,
+                      slot,
+                      slots,
+                      rowOffset,
+                      rowStart,
+                    },
+                  );
+
+                  return (
+                    <ScheduleEntry
+                      key={item.id}
+                      item={item}
+                      slot={slot}
+                      rooms={rooms}
+                      day={currentDay}
+                      starred={starred}
+                      filteredOut={
+                        !isItemVisible(item, currentFilters, starred)
+                      }
+                      toggleEventFavorite={toggleEventFavorite}
+                      sameSlotItem={sameSlotItem}
+                      style={
+                        {
+                          position: "relative",
+                          ...entryPosition,
+                        } as any
+                      }
+                    />
+                  );
+                })}
+
+                <div className="md:hidden" />
+              </div>
+            </Fragment>
+          );
+        })}
       </GridContainer>
     </React.Fragment>
   );

@@ -7,17 +7,16 @@ import tailwind from "@astrojs/tailwind";
 // Sec-Websocket-Protocol:
 // vite-hmr
 
-
 export default defineConfig({
   vite: {
-    logLevel: 'info',
+    logLevel: "info",
     server: {
-        strictPort: true,
-        port: 3002,
-        hmr: {
-            clientPort: 3003,
-        },
-    }
+      strictPort: true,
+      port: 3002,
+      hmr: {
+        clientPort: 3003,
+      },
+    },
   },
   integrations: [react(), tailwind()],
   build: {

@@ -126,7 +126,7 @@ export const EditProfilePageHandler = () => {
       | "openToRecruiting"
       | "openToNewsletter",
   ) => {
-    const validationKey = "validation" + toTileCase(key);
+    const validationKey = `validation${toTileCase(key)}`;
     const validationError =
       (updateProfileData &&
         updateProfileData.updateProfile.__typename === "UpdateProfileErrors" &&
@@ -201,7 +201,7 @@ export const EditProfilePageHandler = () => {
 
         const updateParticipantResult =
           updateProfileResponse.data?.updateParticipant;
-        if (updateParticipantResult?.__typename == "Participant") {
+        if (updateParticipantResult?.__typename === "Participant") {
           formState.setField(
             "participantPhoto",
             updateParticipantResult.photo ?? "",
@@ -276,7 +276,7 @@ export const EditProfilePageHandler = () => {
                     <FormattedMessage id="profile.edit.success" />
                   </Text>
                 )}
-              <Button role="secondary" disabled={updateProfileLoading}>
+              <Button disabled={updateProfileLoading}>
                 <FormattedMessage id="buttons.save" />
               </Button>
             </HorizontalStack>

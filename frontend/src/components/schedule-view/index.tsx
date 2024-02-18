@@ -1,10 +1,9 @@
 import {
-  Section,
-  Heading,
-  Spacer,
   DaysSelector,
-  Button,
   FilterBar,
+  Heading,
+  Section,
+  Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
 import va from "@vercel/analytics";
@@ -24,8 +23,8 @@ import { useRouter } from "next/router";
 import { useCurrentLanguage } from "~/locale/context";
 import { getDayUrl } from "~/pages/schedule/[day]";
 import {
-  readUserStarredScheduleItemsQueryCache,
   ScheduleQuery,
+  readUserStarredScheduleItemsQueryCache,
   useStarScheduleItemMutation,
   useUnstarScheduleItemMutation,
   useUserStarredScheduleItemsQuery,
@@ -52,17 +51,17 @@ export const ScheduleView = ({
   const [isLoggedIn] = useLoginState();
   const language = useCurrentLanguage();
   const [liveSlot, setLiveSlot] = useState<Slot | null>(null);
+
   const {
-    query: { photo },
-  } = useRouter();
-  const isInPhotoMode = photo == "1";
-  const { data: { me: { starredScheduleItems = [] } = {} } = {} } =
-    useUserStarredScheduleItemsQuery({
-      skip: !isLoggedIn,
-      variables: {
-        code: process.env.conferenceCode,
-      },
-    });
+    data: {
+      me: { starredScheduleItems = [] } = {},
+    } = {},
+  } = useUserStarredScheduleItemsQuery({
+    skip: !isLoggedIn,
+    variables: {
+      code: process.env.conferenceCode,
+    },
+  });
 
   const [starScheduleItem] = useStarScheduleItemMutation({
     optimisticResponse: {
@@ -336,13 +335,9 @@ export const ScheduleView = ({
 
   return (
     <Fragment>
-      {!isInPhotoMode && (
-        <>
-          <Section illustration="snakeHead">
-            <Heading size="display1">Schedule</Heading>
-          </Section>
-        </>
-      )}
+      <Section illustration="snakeHead">
+        <Heading size="display1">Schedule</Heading>
+      </Section>
 
       <Section noContainer>
         <DaysSelector
@@ -452,7 +447,9 @@ export const isItemVisible = (
     if (choice === "no" && isStarred) {
       // the user wants items not starred and this is one
       return false;
-    } else if (choice === "yes" && !isStarred) {
+    }
+
+    if (choice === "yes" && !isStarred) {
       // the user wants starred items and this is not one
       return false;
     }

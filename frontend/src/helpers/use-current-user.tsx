@@ -16,7 +16,7 @@ export const useCurrentUser = ({ skip }: { skip?: boolean }): CurrentUser => {
     errorPolicy: "all",
   });
 
-  const user = data && data.me;
+  const user = data?.me;
 
   useEffect(() => {
     if (user) {

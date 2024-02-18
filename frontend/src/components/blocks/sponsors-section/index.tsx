@@ -70,7 +70,6 @@ export const SponsorsSection = ({ title, body, cta }: Props) => {
                       locale: language,
                     })}
                     size="small"
-                    role="secondary"
                   >
                     {cta.label}
                   </Button>

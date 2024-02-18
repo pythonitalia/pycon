@@ -45,7 +45,7 @@ export const MyGrant = () => {
                 linkGrant: (
                   <Link
                     href={createHref({
-                      path: `/grants/edit`,
+                      path: "/grants/edit",
                       locale: language,
                     })}
                   >

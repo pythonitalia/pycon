@@ -8,7 +8,7 @@ import { useSSRResponsiveValue } from "~/helpers/use-ssr-responsive-value";
 
 import { ArrowIcon } from "../icons/arrow";
 
-const useSlider = <T extends any>(
+const useSlider = <T,>(
   objects: T[],
   perPage: number,
 ): [T[], () => void, () => void] => {

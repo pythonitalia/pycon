@@ -2,6 +2,7 @@ import clsx from "clsx";
 import React, { Fragment } from "react";
 
 type Breadcrumb = {
+  id: number;
   label: string;
   url?: string;
 };
@@ -40,11 +41,11 @@ const Breadcrumbs = ({ breadcrumbs }: { breadcrumbs: Breadcrumb[] }) => {
             Home
           </a>
         </span>
-        <span>{` \u203a `}</span>
+        <span>{" \u203a "}</span>
         {breadcrumbs.map((breadcrumb, index) => {
           const last = index === breadcrumbs.length - 1;
           return (
-            <span key={index}>
+            <span key={breadcrumb.id}>
               <a
                 href={breadcrumb.url}
                 className={clsx("hover:text-[#c4dce8] transition-colors", {
@@ -53,7 +54,7 @@ const Breadcrumbs = ({ breadcrumbs }: { breadcrumbs: Breadcrumb[] }) => {
               >
                 {breadcrumb.label}
               </a>
-              {!last && <span>{` \u203a `}</span>}
+              {!last && <span>{" \u203a "}</span>}
             </span>
           );
         })}

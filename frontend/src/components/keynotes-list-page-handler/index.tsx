@@ -78,7 +78,6 @@ export const KeynotesListPageHandler = () => {
         <Spacer size="large" />
         <VerticalStack alignItems="center">
           <Button
-            role="secondary"
             href={createHref({
               path: "/schedule",
               locale: language,

@@ -85,7 +85,7 @@ export const MyProfileSponsorSection = () => {
               ]}
               keyGetter={(item) => item.id}
               cols={4}
-            ></Table>
+            />
           </>
         )}
         {data?.badgeScans.items.length === 0 && !loading && (

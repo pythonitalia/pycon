@@ -124,7 +124,7 @@ export const VotingCard = ({
         />
 
         <Text size={3} color="error">
-          {error && error.message}
+          {error?.message}
           {submissionData &&
             submissionData.sendVote.__typename === "SendVoteErrors" && (
               <>

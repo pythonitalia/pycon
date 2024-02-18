@@ -89,7 +89,7 @@ export const MyGrantOrForm = () => {
     },
     skip: typeof window === "undefined",
   });
-  const grant = data && data?.me?.grant;
+  const grant = data?.me?.grant;
 
   const [submitGrant, { loading, error: grantError, data: grantData }] =
     useSendGrantMutation({
@@ -181,9 +181,7 @@ export const GrantForm = ({
           new Date().getFullYear() - new Date(user.dateBirth).getFullYear();
         formState.setField(
           "ageGroup",
-          AGE_GROUPS_OPTIONS.find(
-            (option) => option.isAgeInRange && option.isAgeInRange(age),
-          ).value,
+          AGE_GROUPS_OPTIONS.find((option) => option.isAgeInRange?.(age)).value,
         );
       }
     }
@@ -281,7 +279,7 @@ export const GrantForm = ({
           values={{
             linkGrant: (
               <Link
-                href={createHref({ path: `/grants/edit`, locale: language })}
+                href={createHref({ path: "/grants/edit", locale: language })}
               >
                 <Text
                   color="none"
@@ -797,7 +795,6 @@ export const GrantForm = ({
           />
         </div>
         <Button
-          role="secondary"
           disabled={grantLoading || !formState.values.acceptedPrivacyPolicy}
         >
           <FormattedMessage id="grants.form.submit" />

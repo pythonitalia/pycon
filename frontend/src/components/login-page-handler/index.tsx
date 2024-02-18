@@ -39,7 +39,7 @@ export const LoginPageHandler = () => {
   const [loggedIn, setLoggedIn] = useLoginState();
   const formRef = useRef<HTMLFormElement>();
 
-  const nextUrl = cleanRedirectUrl((router.query.next as string) || `/profile`);
+  const nextUrl = cleanRedirectUrl((router.query.next as string) || "/profile");
 
   const onLoginCompleted = (data: LoginMutation) => {
     if (data && data.login.__typename === "LoginSuccess") {
@@ -122,12 +122,7 @@ export const LoginPageHandler = () => {
                   }}
                 />
               </Text>
-              <Button
-                role="secondary"
-                onClick={onLogin}
-                disabled={loading}
-                fullWidth="mobile"
-              >
+              <Button onClick={onLogin} disabled={loading} fullWidth="mobile">
                 <FormattedMessage id="login.loginButton" />
               </Button>
             </>
@@ -182,7 +177,7 @@ export const LoginPageHandler = () => {
                   errors={getFieldErrors("password")}
                 />
               </InputWrapper>
-              <div></div>
+              <div />
               <div className="text-right">
                 <BasicButton
                   href={createHref({
