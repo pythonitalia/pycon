@@ -3,21 +3,21 @@
 /** @jsx jsx */
 import { ApolloError } from "@apollo/client";
 import {
-  InputWrapper,
-  Input,
-  Heading,
-  Text,
-  MultiplePartsCard,
-  Grid,
-  CardPart,
-  Select,
-  Textarea,
-  Section,
-  Spacer,
   Button,
-  HorizontalStack,
-  Link,
+  CardPart,
   Checkbox,
+  Grid,
+  Heading,
+  HorizontalStack,
+  Input,
+  InputWrapper,
+  Link,
+  MultiplePartsCard,
+  Section,
+  Select,
+  Spacer,
+  Text,
+  Textarea,
 } from "@python-italia/pycon-styleguide";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
@@ -34,24 +34,24 @@ import {
   AgeGroup,
   Grant,
   GrantType,
-  UpdateGrantInput,
-  useSendGrantMutation,
-  useMyGrantQuery,
-  SendGrantInput,
-  SendGrantMutation,
-  UpdateGrantMutation,
   InterestedInVolunteering,
   Occupation,
+  SendGrantInput,
+  SendGrantMutation,
+  UpdateGrantInput,
+  UpdateGrantMutation,
+  useMyGrantQuery,
+  useSendGrantMutation,
 } from "~/types";
 
 import { ErrorsList } from "../errors-list";
 import { createHref } from "../link";
 import {
+  AGE_GROUPS_OPTIONS,
   GENDER_OPTIONS,
   GRANT_TYPE_OPTIONS,
   INTERESTED_IN_VOLUNTEERING_OPTIONS,
   OCCUPATION_OPTIONS,
-  AGE_GROUPS_OPTIONS,
 } from "./options";
 
 export type GrantFormFields = {

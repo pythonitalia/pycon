@@ -1,17 +1,17 @@
 import {
-  Grid,
   CardPart,
-  Text,
-  MultiplePartsCard,
-  Heading,
-  InputWrapper,
-  Input,
-  Textarea,
-  Select,
-  GridColumn,
   Checkbox,
+  Grid,
+  GridColumn,
+  Heading,
   HorizontalStack,
+  Input,
+  InputWrapper,
+  MultiplePartsCard,
+  Select,
   Spacer,
+  Text,
+  Textarea,
 } from "@python-italia/pycon-styleguide";
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";

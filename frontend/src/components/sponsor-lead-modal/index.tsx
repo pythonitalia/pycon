@@ -1,13 +1,13 @@
 import {
-  Checkbox,
+  BasicButton,
   Button,
-  Spacer,
-  Text,
+  Checkbox,
+  HorizontalStack,
   Input,
   InputWrapper,
-  BasicButton,
   Link,
-  HorizontalStack,
+  Spacer,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React, { useRef } from "react";
 import { FormattedMessage } from "react-intl";

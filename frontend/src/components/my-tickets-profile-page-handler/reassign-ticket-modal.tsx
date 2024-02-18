@@ -1,11 +1,11 @@
 import {
-  Text,
-  Heading,
-  Spacer,
-  InputWrapper,
-  Input,
   BasicButton,
   Button,
+  Heading,
+  Input,
+  InputWrapper,
+  Spacer,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { useRef } from "react";
 import { FormattedMessage } from "react-intl";

@@ -11,10 +11,10 @@ import { useCurrentUser } from "~/helpers/use-current-user";
 import { useCurrentLanguage } from "~/locale/context";
 import {
   CurrentUserQueryResult,
-  TicketsQueryResult,
-  TicketType,
-  useTicketsQuery,
   TicketItem,
+  TicketType,
+  TicketsQueryResult,
+  useTicketsQuery,
 } from "~/types";
 
 import { CartContext, createCartContext } from "./use-cart";

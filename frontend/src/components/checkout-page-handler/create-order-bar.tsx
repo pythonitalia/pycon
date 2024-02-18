@@ -1,10 +1,10 @@
 import {
+  BasicButton,
   BottomBar,
+  Button,
   Heading,
   Spacer,
   Text,
-  Button,
-  BasicButton,
 } from "@python-italia/pycon-styleguide";
 import { useMachine } from "@xstate/react";
 import React from "react";

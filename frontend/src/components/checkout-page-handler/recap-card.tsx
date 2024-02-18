@@ -1,8 +1,8 @@
 import {
-  Text,
   CardPart,
-  MultiplePartsCard,
   Heading,
+  MultiplePartsCard,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";

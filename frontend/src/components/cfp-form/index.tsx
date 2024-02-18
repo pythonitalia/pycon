@@ -11,12 +11,12 @@ import {
   Checkbox,
   Flex,
   Grid,
-  jsx,
+  Heading,
   Label,
   Radio,
   Select,
   Text,
-  Heading,
+  jsx,
 } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";

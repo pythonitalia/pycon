@@ -1,10 +1,10 @@
 import {
   Heading,
-  Text,
   Section,
-  VerticalStack,
-  Spacer,
   SocialLinks,
+  Spacer,
+  Text,
+  VerticalStack,
 } from "@python-italia/pycon-styleguide";
 
 import { Hills } from "./hills";

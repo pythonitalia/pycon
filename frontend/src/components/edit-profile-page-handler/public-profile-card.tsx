@@ -1,16 +1,16 @@
 import {
   CardPart,
-  Text,
-  Heading,
   Checkbox,
-  MultiplePartsCard,
   Grid,
-  HorizontalStack,
   GridColumn,
-  InputWrapper,
-  Textarea,
+  Heading,
+  HorizontalStack,
   Input,
+  InputWrapper,
   Link,
+  MultiplePartsCard,
+  Text,
+  Textarea,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 import { FormState, Inputs, StateErrors } from "react-use-form-state";

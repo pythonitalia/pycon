@@ -1,11 +1,11 @@
 import {
+  Button,
   Heading,
-  Text,
+  HorizontalStack,
   Page,
   Section,
-  Button,
-  HorizontalStack,
   Spacer,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";

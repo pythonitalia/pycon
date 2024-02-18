@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 
+import { stringify } from "querystring";
 /** @jsx jsx */
 import { Page } from "@python-italia/pycon-styleguide";
-import { stringify } from "querystring";
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Box, jsx } from "theme-ui";
@@ -19,9 +19,9 @@ import { useCurrentUser } from "~/helpers/use-current-user";
 import { useCurrentLanguage } from "~/locale/context";
 import { Language } from "~/locale/languages";
 import {
+  ScheduleQuery,
   querySchedule,
   queryScheduleDays,
-  ScheduleQuery,
   useScheduleQuery,
 } from "~/types";
 

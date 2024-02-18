@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import { Text } from "@python-italia/pycon-styleguide";
 import React from "react";
-import { Box, jsx, ThemeUIStyleObject } from "theme-ui";
+import { Box, ThemeUIStyleObject, jsx } from "theme-ui";
 
 export const ErrorsList = ({
   errors,

@@ -1,9 +1,9 @@
 import {
-  Text,
+  Button,
+  Container,
   Heading,
   Spacer,
-  Container,
-  Button,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";

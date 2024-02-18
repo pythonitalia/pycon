@@ -1,4 +1,4 @@
-import { createMachine, assign } from "xstate";
+import { assign, createMachine } from "xstate";
 
 type Context = {
   paymentUrl?: string;

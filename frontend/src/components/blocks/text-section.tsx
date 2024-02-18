@@ -1,12 +1,12 @@
 import {
-  Heading,
-  StyledHTMLText,
-  Spacer,
-  Section,
-  Container,
-  MultiplePartsCard,
-  CardPart,
   Button,
+  CardPart,
+  Container,
+  Heading,
+  MultiplePartsCard,
+  Section,
+  Spacer,
+  StyledHTMLText,
 } from "@python-italia/pycon-styleguide";
 
 import { BodyTextSize, TextSection as TextSectionType } from "~/types";

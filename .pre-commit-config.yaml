@@ -22,9 +22,7 @@ repos:
     - repo: https://github.com/biomejs/pre-commit
       rev: "v0.1.0"
       hooks:
-        - id: biome-format
-          additional_dependencies: ["@biomejs/biome@1.5.3"]
-        - id: biome-lint
+        - id: biome-check
           additional_dependencies: ["@biomejs/biome@1.5.3"]
     - repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v4.3.0

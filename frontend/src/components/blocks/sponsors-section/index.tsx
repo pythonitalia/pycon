@@ -1,13 +1,13 @@
 import {
-  Grid,
-  Heading,
   Button,
+  Grid,
+  GridColumn,
+  Heading,
   LayoutContent,
   Section,
-  GridColumn,
   Spacer,
-  Text,
   SponsorsGrid,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 

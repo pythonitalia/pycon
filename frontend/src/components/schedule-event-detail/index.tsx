@@ -1,16 +1,16 @@
 import {
-  StyledText,
+  Button,
   Grid,
   GridColumn,
   Heading,
   Section,
-  Button,
   Spacer,
+  StyledText,
   Text,
 } from "@python-italia/pycon-styleguide";
 import { LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import { SnakeWithPopcorn } from "@python-italia/pycon-styleguide/illustrations";
-import { parseISO, isAfter, isBefore } from "date-fns";
+import { isAfter, isBefore, parseISO } from "date-fns";
 import { zonedTimeToUtc } from "date-fns-tz";
 import React from "react";
 import { FormattedMessage } from "react-intl";

@@ -1,11 +1,11 @@
 import {
-  Heading,
   Button,
   Countdown,
+  Heading,
   Section,
-  VerticalStack,
   Spacer,
   StyledHTMLText,
+  VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import { Illustration } from "@python-italia/pycon-styleguide/dist/illustrations/types";
 import { Color } from "@python-italia/pycon-styleguide/dist/types";

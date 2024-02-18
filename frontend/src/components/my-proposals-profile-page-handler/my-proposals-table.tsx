@@ -1,11 +1,11 @@
 import {
-  Text,
+  Button,
   Heading,
   Link,
   Spacer,
-  VerticalStack,
-  Button,
   Tag,
+  Text,
+  VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import { parseISO } from "date-fns";
 import { FormattedMessage } from "react-intl";

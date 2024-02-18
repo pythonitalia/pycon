@@ -7,12 +7,12 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { GrantForm } from "~/components/grant-form";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import {
+  UpdateGrantInput,
+  queryCurrentUser,
+  queryGrantDeadline,
+  queryMyGrant,
   useMyGrantQuery,
   useUpdateGrantMutation,
-  UpdateGrantInput,
-  queryMyGrant,
-  queryGrantDeadline,
-  queryCurrentUser,
 } from "~/types";
 
 const GrantPage = (): JSX.Element => {

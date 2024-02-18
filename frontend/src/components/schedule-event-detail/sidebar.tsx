@@ -1,12 +1,12 @@
 import {
-  Spacer,
-  Text,
-  CardPart,
-  MultiplePartsCard,
   Button,
-  VerticalStack,
+  CardPart,
   Link,
+  MultiplePartsCard,
+  Spacer,
   Tag,
+  Text,
+  VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 

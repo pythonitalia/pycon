@@ -1,10 +1,10 @@
 import {
-  Text,
+  CardPart,
   Heading,
   MultiplePartsCard,
-  CardPart,
   Tag,
   TagsCollection,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { Icon } from "@python-italia/pycon-styleguide/dist/icons/types";
 import { FormattedMessage } from "react-intl";

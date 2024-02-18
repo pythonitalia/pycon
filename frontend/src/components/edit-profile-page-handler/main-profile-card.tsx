@@ -1,14 +1,14 @@
 import {
-  Text,
-  Heading,
-  Grid,
-  MultiplePartsCard,
   CardPart,
-  InputWrapper,
-  Input,
-  Select,
+  Grid,
   GridColumn,
+  Heading,
+  Input,
+  InputWrapper,
   Link,
+  MultiplePartsCard,
+  Select,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 import { FormState, Inputs, StateErrors } from "react-use-form-state";

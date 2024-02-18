@@ -1,12 +1,12 @@
 import {
-  Heading,
-  Text,
-  Page,
-  Spacer,
-  InputWrapper,
-  Input,
   Button,
   Grid,
+  Heading,
+  Input,
+  InputWrapper,
+  Page,
+  Spacer,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { useRef } from "react";
 import { FormattedMessage } from "react-intl";

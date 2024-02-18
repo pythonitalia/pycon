@@ -4,7 +4,7 @@
 import { Link } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Grid, Heading, jsx, Text } from "theme-ui";
+import { Box, Grid, Heading, Text, jsx } from "theme-ui";
 
 import { CFPIllustration } from "~/components/illustrations/cfp";
 import { createHref } from "~/components/link";

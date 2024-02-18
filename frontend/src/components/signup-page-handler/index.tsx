@@ -1,16 +1,16 @@
 import {
+  Button,
+  Checkbox,
   Grid,
-  Text,
+  GridColumn,
   Heading,
+  HorizontalStack,
   Input,
   InputWrapper,
   Link,
   Page,
-  Button,
   Spacer,
-  GridColumn,
-  Checkbox,
-  HorizontalStack,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React, { useCallback, useLayoutEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";

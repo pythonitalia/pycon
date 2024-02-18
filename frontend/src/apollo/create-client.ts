@@ -1,7 +1,7 @@
 import {
-  HttpLink,
   ApolloClient,
   ApolloLink,
+  HttpLink,
   InMemoryCache,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
