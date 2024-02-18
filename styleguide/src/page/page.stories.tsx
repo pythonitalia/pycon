@@ -1,17 +1,17 @@
 import React from "react";
-import { SplitSection } from "../split-section/split-section";
-import { Logo } from "../logo/logo";
-import { NavBar } from "../navbar/navbar";
-import { Cathedral, Snake5 } from "../illustrations";
-import { Text } from "../text";
-import { Spacer } from "../spacer";
 import { Button } from "../button";
-import { Page } from "./page";
-import { Heading } from "../heading";
 import { Countdown } from "../countdown";
+import { Heading } from "../heading";
+import { Cathedral, Snake5 } from "../illustrations";
+import { Logo } from "../logo/logo";
+import { CardPart, MultiplePartsCard } from "../multiple-parts-card";
+import { NavBar } from "../navbar/navbar";
 import { Section } from "../section";
 import { SliderGrid } from "../slider-grid";
-import { MultiplePartsCard, CardPart } from "../multiple-parts-card";
+import { Spacer } from "../spacer";
+import { SplitSection } from "../split-section/split-section";
+import { Text } from "../text";
+import { Page } from "./page";
 
 export default {
   title: "Page examples",
@@ -151,7 +151,7 @@ export const Standard = () => (
       >
         <Text size={1}>We have tickets</Text>
         <Spacer size="large" />
-        <Button onClick={() => {}} role="primary">
+        <Button onClick={() => {}} variant="primary">
           Buy ticket
         </Button>
       </SplitSection>
@@ -184,7 +184,7 @@ export const Standard = () => (
           you.
         </Text>
         <Spacer size="large" />
-        <Button onClick={() => {}} role="primary">
+        <Button onClick={() => {}} variant="primary">
           Buy ticket
         </Button>
       </SplitSection>
@@ -204,7 +204,7 @@ export const Standard = () => (
           you.
         </Text>
         <Spacer size="large" />
-        <Button onClick={() => {}} role="secondary">
+        <Button onClick={() => {}} variant="secondary">
           Submit now
         </Button>
       </SplitSection>

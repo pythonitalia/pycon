@@ -1,19 +1,19 @@
 import React from "react";
+import { Button } from "../button";
+import { Countdown } from "../countdown";
+import { Heading } from "../heading";
 import {
   Cathedral,
+  Snake1,
   Snake4,
   Snake5,
-  Snake1,
   SnakePencil,
 } from "../illustrations";
-import { SplitSection } from "./split-section";
-import { Text } from "../text";
-import { Spacer } from "../spacer";
-import { Button } from "../button";
 import { Florence2 } from "../illustrations/florence2";
 import { Page } from "../page/index";
-import { Heading } from "../heading";
-import { Countdown } from "../countdown";
+import { Spacer } from "../spacer";
+import { Text } from "../text";
+import { SplitSection } from "./split-section";
 
 export const Standard = ({ ...props }) => (
   <div className="py-4">
@@ -29,7 +29,7 @@ export const Standard = ({ ...props }) => (
         senior developers and software engineers.
       </Text>
       <Spacer size="large" />
-      <Button onClick={() => {}} role="secondary">
+      <Button onClick={() => {}} variant="secondary">
         Become a sponsor
       </Button>
     </SplitSection>
@@ -52,7 +52,7 @@ export const WithCustomIllustration = () => (
         senior developers and software engineers.
       </Text>
       <Spacer size="large" />
-      <Button onClick={() => {}} role="secondary">
+      <Button onClick={() => {}} variant="secondary">
         Become a sponsor
       </Button>
     </SplitSection>
@@ -89,7 +89,7 @@ export const WithOtherSideContent = ({ ...props }) => (
         programming and open source communities, we would love to hear from you.
       </Text>
       <Spacer size="large" />
-      <Button onClick={() => {}} role="primary">
+      <Button onClick={() => {}} variant="primary">
         Buy ticket
       </Button>
     </SplitSection>
@@ -121,7 +121,7 @@ export const WithOtherSideContent = ({ ...props }) => (
         programming and open source communities, we would love to hear from you.
       </Text>
       <Spacer size="large" />
-      <Button onClick={() => {}} role="primary">
+      <Button onClick={() => {}} variant="primary">
         Buy ticket
       </Button>
     </SplitSection>
@@ -142,7 +142,7 @@ export const MultipleSections = ({ ...props }) => (
           senior developers and software engineers.
         </Text>
         <Spacer size="large" />
-        <Button onClick={() => {}} role="secondary">
+        <Button onClick={() => {}} variant="secondary">
           Become a sponsor
         </Button>
       </SplitSection>
@@ -154,7 +154,7 @@ export const MultipleSections = ({ ...props }) => (
         <Spacer size="medium" />
         <Text size={1}>We have tickets</Text>
         <Spacer size="large" />
-        <Button onClick={() => {}} role="primary">
+        <Button onClick={() => {}} variant="primary">
           Buy ticket
         </Button>
       </SplitSection>
@@ -188,7 +188,7 @@ export const MultipleSections = ({ ...props }) => (
           you.
         </Text>
         <Spacer size="large" />
-        <Button onClick={() => {}} role="primary">
+        <Button onClick={() => {}} variant="primary">
           Buy ticket
         </Button>
       </SplitSection>
@@ -201,7 +201,7 @@ export const MultipleSections = ({ ...props }) => (
         <Spacer size="medium" />
         <Text size={1}>Some more text</Text>
         <Spacer size="large" />
-        <Button onClick={() => {}} role="primary">
+        <Button onClick={() => {}} variant="primary">
           Hello look at me! I am a text!
         </Button>
       </SplitSection>
@@ -222,7 +222,7 @@ export const MultipleSections = ({ ...props }) => (
           you.
         </Text>
         <Spacer size="large" />
-        <Button onClick={() => {}} role="secondary">
+        <Button onClick={() => {}} variant="secondary">
           Submit now
         </Button>
       </SplitSection>
@@ -245,7 +245,7 @@ export const MultipleSections = ({ ...props }) => (
           you.
         </Text>
         <Spacer size="large" />
-        <Button onClick={() => {}} role="secondary">
+        <Button onClick={() => {}} variant="secondary">
           Submit now
         </Button>
       </SplitSection>

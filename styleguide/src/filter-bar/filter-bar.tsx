@@ -1,11 +1,11 @@
 import clsx from "clsx";
 import React, { Fragment, useEffect, useState } from "react";
-import { Heading } from "../heading/index";
-import { BasicButton, Button } from "../button/index";
-import { Text } from "../text/index";
-import { Input } from "../index";
-import { FormattedMessage } from "react-intl";
 import { createPortal } from "react-dom";
+import { FormattedMessage } from "react-intl";
+import { BasicButton, Button } from "../button/index";
+import { Heading } from "../heading/index";
+import { Input } from "../index";
+import { Text } from "../text/index";
 
 type FilterOption = {
   label: string | React.ReactNode;
@@ -238,7 +238,7 @@ export const FilterBar = ({
               <BasicButton onClick={onReset}>
                 <FormattedMessage id="filters.reset" defaultMessage="Reset" />
               </BasicButton>
-              <Button size="small" role="secondary" onClick={applyChanges}>
+              <Button size="small" variant="secondary" onClick={applyChanges}>
                 <FormattedMessage id="filters.apply" defaultMessage="Apply" />
               </Button>
             </div>
