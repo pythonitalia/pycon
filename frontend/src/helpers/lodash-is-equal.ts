@@ -1,3 +1,4 @@
+// eslint-disable-file
 /**
  * Lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -1845,4 +1846,4 @@ function stubFalse() {
   return false;
 }
 
-module.exports = isEqual;
+export default isEqual;
