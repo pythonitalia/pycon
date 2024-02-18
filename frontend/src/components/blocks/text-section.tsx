@@ -11,6 +11,7 @@ import {
 
 import { BodyTextSize, TextSection as TextSectionType } from "~/types";
 
+import { Fragment } from "react";
 import { useSetCurrentModal } from "../modal/context";
 
 export const TextSection = ({
@@ -82,9 +83,8 @@ export const TextSection = ({
           <>
             {!onlyAccordions && <Spacer size="xl" />}
             {accordions?.map((accordion, index) => (
-              <>
+              <Fragment key={index}>
                 <MultiplePartsCard
-                  key={index}
                   clickablePart="heading"
                   expandTarget="content"
                   openByDefault={accordion.isOpen}
@@ -98,7 +98,7 @@ export const TextSection = ({
                 </MultiplePartsCard>
                 {/* todo replace with MultiplePartsCardCollection */}
                 {index !== accordions.length - 1 && <Spacer size="small" />}
-              </>
+              </Fragment>
             ))}
           </>
         )}
