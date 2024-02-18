@@ -68,7 +68,7 @@ const KeynotePage = () => {
         startTime={start}
         endTime={end}
         bookable={false}
-        speakers={speakers.map((speaker) => speaker.participant)}
+        speakers={speakers}
         rooms={rooms.map((room) => room.name)}
         youtubeVideoId={youtubeVideoId}
       />

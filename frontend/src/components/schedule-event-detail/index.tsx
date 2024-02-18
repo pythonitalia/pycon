@@ -18,10 +18,8 @@ import { FormattedMessage } from "react-intl";
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 
-import {
-  Participant,
-  ParticipantInfoSection,
-} from "../participant-info-section";
+import { ScheduleItemUser } from "~/types";
+import { ParticipantInfoSection } from "../participant-info-section";
 import { EventTag } from "./event-tag";
 import { Sidebar } from "./sidebar";
 
@@ -32,7 +30,7 @@ type Props = {
   eventTitle: string;
   elevatorPitch?: string;
   abstract?: string;
-  speakers: Participant[];
+  speakers: ScheduleItemUser[];
   tags?: string[];
   language: string;
   audienceLevel?: string;
@@ -215,7 +213,7 @@ export const ScheduleEventDetail = ({
             <>
               <ParticipantInfoSection
                 fullname={speaker.fullname}
-                participant={speaker}
+                participant={speaker.participant}
               />
               {index !== speakers.length - 1 && <Spacer size="2xl" />}
             </>

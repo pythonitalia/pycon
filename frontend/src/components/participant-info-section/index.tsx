@@ -21,19 +21,7 @@ import { SnakeTail } from "@python-italia/pycon-styleguide/illustrations";
 import React from "react";
 
 import { compile } from "~/helpers/markdown";
-
-export type Participant = {
-  fullname: string;
-  bio: string;
-  photo: string;
-
-  twitterHandle?: string;
-  instagramHandle?: string;
-  mastodonHandle?: string;
-  linkedinUrl?: string;
-  facebookUrl?: string;
-  website?: string;
-};
+import { Participant } from "~/types";
 
 export const ParticipantInfoSection = ({
   fullname,
@@ -47,23 +35,22 @@ export const ParticipantInfoSection = ({
       <GridColumn colSpan={4} mdColSpan={4}>
         <LayoutContent position="relative">
           <VerticalStack>
-            {participant?.photo && (
-              <>
-                <img
-                  alt="Participant"
-                  className="aspect-square border-black border z-10 object-cover"
-                  src={participant.photo}
-                />
-                <LayoutContent
-                  zIndex={1}
-                  style={{ bottom: "-60px", left: "20px" }}
-                  showFrom="desktop"
-                  position="absolute"
-                >
-                  <SnakeTail className="w-24" />
-                </LayoutContent>
-              </>
-            )}
+            <img
+              alt="Participant"
+              className="aspect-square border-black border z-10 object-cover"
+              src={
+                participant?.photo ??
+                "/images/speaker-no-picture-placeholder.png"
+              }
+            />
+            <LayoutContent
+              zIndex={1}
+              style={{ bottom: "-60px", left: "20px" }}
+              showFrom="desktop"
+              position="absolute"
+            >
+              <SnakeTail className="w-24" />
+            </LayoutContent>
 
             <Spacer size="2md" />
             <HorizontalStack
