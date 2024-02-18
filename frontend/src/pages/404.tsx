@@ -37,7 +37,7 @@ const NotFoundPage = () => {
             <FormattedMessage id="404.message" />
           </Heading>
           <Spacer size="large" />
-          <Button href="/" fullWidth="mobile">
+          <Button href="/" fullWidth="mobile" variant="primary">
             <FormattedMessage id="404.goToHomepage" />
           </Button>
         </Container>
