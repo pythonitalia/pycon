@@ -9,9 +9,6 @@
     "dev": "concurrently \"npm run codegen:watch\" \"next dev\"",
     "build": "npm run codegen && next build",
     "start": "next start",
-    "lint": "eslint src --ext .jsx,.js,.tsx,.ts",
-    "lint:ts": "tsc --noemit",
-    "lint:prettier": "prettier --check src/**/*",
     "codegen": "graphql-codegen -r dotenv/config -c codegen.yml",
     "codegen:watch": "pnpm run codegen --watch",
     "test": "jest src/"
@@ -97,7 +94,6 @@
     "autoprefixer": "^10.4.13",
     "jest": "^27.0.6",
     "postcss": "^8.4.31",
-    "prettier": "^2.8.4",
     "tailwindcss": "^3.3.5",
     "tailwindcss-blend-mode": "^1.0.0",
     "ts-jest": "^27.0.4",
