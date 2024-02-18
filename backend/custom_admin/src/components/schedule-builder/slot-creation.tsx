@@ -48,7 +48,7 @@ const AddSlotButton = ({ children, duration, type, dayId }) => {
   };
 
   return (
-    <button className="btn" onClick={onCreateSlot}>
+    <button type="button" className="btn" onClick={onCreateSlot}>
       {children}
     </button>
   );

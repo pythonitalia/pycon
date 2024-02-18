@@ -154,6 +154,7 @@ const CustomByHand = ({ onCreate }) => {
         </select>
       </div>
       <button
+        type="button"
         disabled={!title || type === ""}
         onClick={create}
         className="btn w-full mt-3"

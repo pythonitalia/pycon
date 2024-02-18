@@ -54,6 +54,7 @@ const AddActions = ({ proposal }: { proposal: SubmissionFragmentFragment }) => {
     <div>
       {languages.map((language) => (
         <button
+          type="button"
           onClick={(e) => onCreate(language)}
           className="btn mr-3"
           key={language.id}
