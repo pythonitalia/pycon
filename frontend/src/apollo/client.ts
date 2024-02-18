@@ -2,7 +2,7 @@ import { ApolloClient, Operation } from "@apollo/client/core";
 import merge from "deepmerge";
 import { DefinitionNode } from "graphql";
 
-import isEqual from "../helpers/lodash-is-equal.js";
+import isEqual from "../helpers/lodash-is-equal";
 import { createClient } from "./create-client";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";

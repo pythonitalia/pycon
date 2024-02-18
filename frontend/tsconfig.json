@@ -27,5 +27,5 @@
     "incremental": true
   },
   "exclude": ["node_modules"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/helpers/lodash-is-equal.js"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/helpers/lodash-is-equal.ts"]
 }
