@@ -1,9 +1,9 @@
 import {
-  Text,
+  Button,
+  Container,
   Heading,
   Spacer,
-  Container,
-  Button,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
@@ -36,7 +36,7 @@ export const NoTickets = ({ email }: Props) => {
           path: "/tickets",
           locale: language,
         })}
-        role="secondary"
+        variant="secondary"
       >
         <FormattedMessage id="profile.myTickets.buyTickets" />
       </Button>

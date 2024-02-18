@@ -7,7 +7,13 @@ export const EnglishIcon = ({
   active?: boolean;
   sx?: any;
 }) => (
-  <svg viewBox="0 0 50 50" fill="none" {...props}>
+  <svg
+    viewBox="0 0 50 50"
+    fill="none"
+    {...props}
+    role="img"
+    aria-label="English flag"
+  >
     <path
       d="M50 25c0 13.806-11.194 25-25 25C11.193 50 0 38.807 0 25S11.193 0 25 0s25 11.193 25 25z"
       fill="#F0F0F0"

@@ -28,7 +28,7 @@ async def handler(websocket, path):
     print("Connected", websocket.remote_address)
 
     async with websockets.connect(
-        "ws://pycon-custom-admin:3002", subprotocols=["vite-hmr"]
+        "ws://custom-admin:3002", subprotocols=["vite-hmr"]
     ) as server_ws:
         # Vite HMR starts by sending a type connected message
         response = await server_ws.recv()

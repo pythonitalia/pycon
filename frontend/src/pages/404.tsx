@@ -37,7 +37,7 @@ const NotFoundPage = () => {
             <FormattedMessage id="404.message" />
           </Heading>
           <Spacer size="large" />
-          <Button role="primary" href="/" fullWidth="mobile">
+          <Button href="/" fullWidth="mobile" variant="primary">
             <FormattedMessage id="404.goToHomepage" />
           </Button>
         </Container>
@@ -48,6 +48,8 @@ const NotFoundPage = () => {
 
 const FourOhFourIllustration = () => (
   <svg
+    role="img"
+    aria-label="404 Illustration"
     width="584"
     height="286"
     viewBox="0 0 584 286"

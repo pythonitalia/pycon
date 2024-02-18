@@ -1,13 +1,13 @@
 import {
+  Button,
+  Grid,
   GridColumn,
   Heading,
-  Section,
-  Page,
-  Text,
-  Spacer,
-  Button,
   LayoutContent,
-  Grid,
+  Page,
+  Section,
+  Spacer,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
@@ -52,8 +52,8 @@ export const JobBoardLayout = ({
               fullScreenHeight
               overflow="scroll"
             >
-              {jobListings.map((job, index) => (
-                <JobListingAccordion key={index} job={job} />
+              {jobListings.map((job) => (
+                <JobListingAccordion key={job.id} job={job} />
               ))}
             </LayoutContent>
           </GridColumn>
@@ -74,7 +74,7 @@ export const JobBoardLayout = ({
               <Article>{compile(jobListing.description).tree}</Article>
               <Spacer size="xl" />
               {jobListing.applyUrl && (
-                <Button href={jobListing.applyUrl} role="secondary">
+                <Button href={jobListing.applyUrl} variant="secondary">
                   <FormattedMessage id="jobboard.applyNow" />
                 </Button>
               )}

@@ -1,17 +1,17 @@
 import {
-  MultiplePartsCardCollection,
-  Heading,
-  Section,
-  Text,
-  Page,
-  Link,
   BasicButton,
-  Spacer,
-  CardPart,
-  MultiplePartsCard,
   Button,
-  HorizontalStack,
+  CardPart,
   FilterBar,
+  Heading,
+  HorizontalStack,
+  Link,
+  MultiplePartsCard,
+  MultiplePartsCardCollection,
+  Page,
+  Section,
+  Spacer,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React, { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -151,7 +151,7 @@ export const VotingPage = () => {
       types: currentFilters.types,
       audienceLevels: currentFilters.audienceLevels,
     },
-    skip: !router.isReady || isNaN(currentPage),
+    skip: !router.isReady || Number.isNaN(currentPage),
     errorPolicy: "all",
   });
 
@@ -219,10 +219,10 @@ export const VotingPage = () => {
           label: <FormattedMessage id="global.all" />,
           value: "",
         },
-        ...votingMetadata?.conference.submissionTypes.map((type) => ({
+        ...(votingMetadata?.conference.submissionTypes.map((type) => ({
           label: type.name,
           value: type.id,
-        })),
+        })) ?? []),
       ],
     },
     {
@@ -233,10 +233,10 @@ export const VotingPage = () => {
           label: <FormattedMessage id="global.all" />,
           value: "",
         },
-        ...votingMetadata?.conference.audienceLevels.map((a) => ({
+        ...(votingMetadata?.conference.audienceLevels.map((a) => ({
           label: a.name,
           value: a.id,
-        })),
+        })) ?? []),
       ],
     },
     {
@@ -247,10 +247,10 @@ export const VotingPage = () => {
           label: <FormattedMessage id="global.all" />,
           value: "",
         },
-        ...votingMetadata?.votingTags.map((tag) => ({
+        ...(votingMetadata?.votingTags.map((tag) => ({
           label: tag.name,
           value: tag.id,
-        })),
+        })) ?? []),
       ],
     },
   ];
@@ -418,7 +418,7 @@ export const VotingPage = () => {
                       navigateToPage(i + 1);
                     }}
                     size="small"
-                    role="secondary"
+                    variant="secondary"
                   >
                     {i + 1}
                   </Button>

@@ -1,8 +1,4 @@
-import { useEffect } from "react";
-
 import { CurrentUserQueryResult, useCurrentUserQuery } from "~/types";
-
-import { updateOlarkFields } from "./olark";
 
 type CurrentUser = {
   loading: boolean;
@@ -16,13 +12,7 @@ export const useCurrentUser = ({ skip }: { skip?: boolean }): CurrentUser => {
     errorPolicy: "all",
   });
 
-  const user = data && data.me;
-
-  useEffect(() => {
-    if (user) {
-      updateOlarkFields(user);
-    }
-  }, [user]);
+  const user = data?.me;
 
   return { loading, error, user };
 };

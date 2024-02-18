@@ -2,23 +2,23 @@
 
 /** @jsx jsx */
 import {
+  Button,
+  Heading,
   Page,
   Section,
-  Heading,
-  Text,
   Spacer,
+  Text,
   Textarea,
-  Button,
 } from "@python-italia/pycon-styleguide";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Flex, Box, jsx, Label, Radio } from "theme-ui";
+import { Box, Flex, Label, Radio, jsx } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
-import { getApolloClient, addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
@@ -275,7 +275,7 @@ const Invitation = () => {
           )}
 
           <Button
-            role="secondary"
+            variant="secondary"
             onClick={submitAnswer}
             disabled={
               EXTRA_NOTES_OPTIONS.includes(formState.values.option) &&

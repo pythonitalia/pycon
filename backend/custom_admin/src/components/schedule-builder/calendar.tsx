@@ -27,9 +27,9 @@ export const Calendar = ({ day }: Props) => {
     <div className="mb-6">
       <span className="sticky top-0 flex items-center gap-3 z-[100] bg-white">
         <h1 className="text-red-900 text-3xl">{date}</h1>
-        <a className="underline" href="#" onClick={openDayInAdmin}>
+        <button type="button" className="underline" onClick={openDayInAdmin}>
           Edit day in admin
-        </a>
+        </button>
       </span>
       <div
         className="grid gap-1"
@@ -37,7 +37,7 @@ export const Calendar = ({ day }: Props) => {
           gridTemplateColumns: `70px repeat(${numOfRooms}, minmax(150px, 1fr))`,
         }}
       >
-        <div></div>
+        <div />
         {rooms.map((room) => (
           <div
             className="sticky p-2 font-semibold flex items-center justify-center top-10 bg-white z-[100]"
@@ -48,7 +48,7 @@ export const Calendar = ({ day }: Props) => {
         ))}
         {slots.map((slot) => {
           const rowStart = rowStartPos;
-          let rowEnd = rowStart + 1;
+          const rowEnd = rowStart + 1;
           rowStartPos = rowEnd;
           return (
             <Fragment key={slot.id}>

@@ -6,6 +6,8 @@ export const LandscapeNight = (props: any) => (
     fill="none"
     {...props}
     preserveAspectRatio="xMidYMid slice"
+    role="img"
+    aria-label="Landscape at night"
   >
     <g clipPath="url(#clip0_13_456)">
       <rect width="1440" height="850" fill="#151C28" />

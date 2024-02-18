@@ -1,11 +1,11 @@
 import {
-  Heading,
   Button,
   Countdown,
+  Heading,
   Section,
-  VerticalStack,
   Spacer,
   StyledHTMLText,
+  VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import { Illustration } from "@python-italia/pycon-styleguide/dist/illustrations/types";
 import { Color } from "@python-italia/pycon-styleguide/dist/types";
@@ -78,7 +78,7 @@ export const InformationSection = ({
         {cta && (
           <>
             <Spacer size="large" />
-            <Button href={cta.link} role="primary">
+            <Button href={cta.link} variant="primary">
               {cta.label}
             </Button>
           </>

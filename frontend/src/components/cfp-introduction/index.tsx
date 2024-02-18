@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import { Link } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
-import { Box, Grid, jsx, Text, Heading } from "theme-ui";
+import { Box, Grid, Heading, Text, jsx } from "theme-ui";
 
 import { CFPIllustration } from "~/components/illustrations/cfp";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";

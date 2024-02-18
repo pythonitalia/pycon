@@ -187,7 +187,7 @@ const ScrollButton = ({
         },
       )}
     >
-      {direction === "backwards" ? `👈` : `👉`}
+      {direction === "backwards" ? "👈" : "👉"}
     </div>
   );
 };

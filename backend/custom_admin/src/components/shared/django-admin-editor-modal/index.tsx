@@ -50,7 +50,11 @@ export const DjangoAdminEditorModal = () => {
 
   return (
     <Modal onClose={onClose} isOpen={isOpen}>
-      <iframe src={itemUrl} className="w-[90vw] h-[90vh] z-[100]" />
+      <iframe
+        title="Admin view"
+        src={itemUrl}
+        className="w-[90vw] h-[90vh] z-[100]"
+      />
     </Modal>
   );
 };

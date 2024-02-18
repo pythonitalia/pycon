@@ -21,6 +21,6 @@ export const Placeholder = ({
         gridRowEnd: rowEnd,
         backgroundColor: "#FAF5F3",
       }}
-    ></div>
+    />
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Map } from "~/components/blocks/map";
+import { MapBlock } from "~/components/blocks/map";
 import { TextSection } from "~/components/blocks/text-section";
 import { Block } from "~/types";
 
@@ -23,7 +23,7 @@ type Registry = {
 
 const REGISTRY: Registry = {
   TextSection,
-  CMSMap: Map,
+  CMSMap: MapBlock,
   SliderCardsSection,
   HomeIntroSection,
   SchedulePreviewSection,

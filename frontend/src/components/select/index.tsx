@@ -2,7 +2,7 @@
 
 /** @jsx jsx */
 import React, { CSSProperties } from "react";
-import { default as ReactSelect, Props } from "react-select";
+import { Props, default as ReactSelect } from "react-select";
 import { jsx } from "theme-ui";
 
 export const Select = (props: Props) => (

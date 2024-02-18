@@ -7,8 +7,8 @@ import {
   CurrentUserQueryResult,
   HotelRoom,
   TicketItem,
-  TicketsQuery,
   TicketType,
+  TicketsQuery,
 } from "~/types";
 
 import { HotelRow } from "./hotel-row";

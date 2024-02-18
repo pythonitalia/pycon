@@ -1,4 +1,4 @@
-import { Text, Heading, Page, Spacer } from "@python-italia/pycon-styleguide";
+import { Heading, Page, Spacer, Text } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
 import { LoginFlowLayout } from "../login-flow-layout";

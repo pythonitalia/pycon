@@ -1,13 +1,13 @@
 import {
-  MultiplePartsCard,
   CardPart,
   CardPartIncrements,
-  Text,
-  Heading,
-  Tag,
   CardPartTwoSides,
-  TagsCollection,
+  Heading,
+  MultiplePartsCard,
   Spacer,
+  Tag,
+  TagsCollection,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 

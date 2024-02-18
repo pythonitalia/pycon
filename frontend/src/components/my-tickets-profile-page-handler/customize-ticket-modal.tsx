@@ -84,8 +84,8 @@ export const CustomizeTicketModal = ({
           <Button
             disabled={updatingTicket}
             size="small"
-            role="secondary"
             onClick={() => saveChanges(formState.values)}
+            variant="secondary"
           >
             <FormattedMessage id="profile.tickets.save" />
           </Button>

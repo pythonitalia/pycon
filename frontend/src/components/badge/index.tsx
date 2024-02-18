@@ -3,10 +3,10 @@ import QRCode from "react-qr-code";
 import Balancer from "react-wrap-balancer";
 
 import {
-  BADGE_INSIDE_WIDTH_PX,
   BADGE_INSIDE_HEIGHT_PX,
-  CUT_LINE_SIZE_PX,
+  BADGE_INSIDE_WIDTH_PX,
   CUT_LINE_SIZE_2_PX,
+  CUT_LINE_SIZE_PX,
 } from "~/pages/badge";
 import { ConferenceRole } from "~/types";
 
@@ -87,13 +87,14 @@ export const Badge = ({
         {/* badge */}
 
         <img
+          alt=""
           style={{
             width: "113px",
             height: "34px",
             marginBottom: "20px",
             marginTop: "25px",
           }}
-          src="https://pythonit-email-assets.s3.eu-central-1.amazonaws.com/logo-pycon-2023.png"
+          src="https://pythonit-email-assets.s3.eu-central-1.amazonaws.com/logo-pycon-2024.png"
         />
         <div
           style={{
@@ -127,7 +128,7 @@ export const Badge = ({
               height: "150px",
               background: "#ffffff",
             }}
-          ></div>
+          />
         )}
         <div
           style={{
@@ -209,13 +210,13 @@ const CutLines = ({
         height: CUT_LINE_SIZE_2_PX,
         top: 0,
         left: 0,
-        transform: `translateX(-100%)`,
+        transform: "translateX(-100%)",
       };
       line2 = {
         width: CUT_LINE_SIZE_2_PX,
         height: CUT_LINE_SIZE_PX,
 
-        transform: `translateY(-100%)`,
+        transform: "translateY(-100%)",
         top: 0,
         left: 0,
       };
@@ -230,13 +231,13 @@ const CutLines = ({
         height: CUT_LINE_SIZE_2_PX,
         bottom: 0,
         left: 0,
-        transform: `translateX(-100%)`,
+        transform: "translateX(-100%)",
       };
       line2 = {
         width: CUT_LINE_SIZE_2_PX,
         height: CUT_LINE_SIZE_PX,
 
-        transform: `translateY(100%)`,
+        transform: "translateY(100%)",
         bottom: 0,
         left: 0,
       };
@@ -251,13 +252,13 @@ const CutLines = ({
         height: CUT_LINE_SIZE_PX,
         top: 0,
         left: 0,
-        transform: `translateY(-100%) translateX(-100%)`,
+        transform: "translateY(-100%) translateX(-100%)",
       };
       line2 = {
         width: CUT_LINE_SIZE_PX,
         height: CUT_LINE_SIZE_2_PX,
 
-        transform: `translateX(100%)`,
+        transform: "translateX(100%)",
         top: 0,
         right: 0,
       };
@@ -272,13 +273,13 @@ const CutLines = ({
         height: CUT_LINE_SIZE_PX,
         bottom: 0,
         left: 0,
-        transform: `translateY(100%) translateX(-100%)`,
+        transform: "translateY(100%) translateX(-100%)",
       };
       line2 = {
         width: CUT_LINE_SIZE_PX,
         height: CUT_LINE_SIZE_2_PX,
 
-        transform: `translateX(100%)`,
+        transform: "translateX(100%)",
         bottom: 0,
         right: 0,
       };
@@ -301,7 +302,7 @@ const CutLines = ({
           display: "flex",
           ...line1,
         }}
-      ></div>
+      />
       <div
         style={{
           position: "absolute",
@@ -309,7 +310,7 @@ const CutLines = ({
           display: "flex",
           ...line2,
         }}
-      ></div>
+      />
     </div>
   );
 };

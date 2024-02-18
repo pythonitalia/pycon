@@ -1,10 +1,10 @@
 import {
   Container,
-  StyledHTMLText,
   Heading,
   Page,
   Section,
   Spacer,
+  StyledHTMLText,
   Text,
 } from "@python-italia/pycon-styleguide";
 import { parseISO } from "date-fns";

@@ -2,7 +2,7 @@
 
 /** @jsx jsx */
 import React from "react";
-import { Box, jsx, Text, ThemeUIStyleObject } from "theme-ui";
+import { Box, Text, ThemeUIStyleObject, jsx } from "theme-ui";
 
 import { ErrorsList } from "../errors-list";
 

@@ -1,16 +1,16 @@
 import {
+  Button,
+  Checkbox,
   Grid,
-  Text,
+  GridColumn,
   Heading,
+  HorizontalStack,
   Input,
   InputWrapper,
   Link,
   Page,
-  Button,
   Spacer,
-  GridColumn,
-  Checkbox,
-  HorizontalStack,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React, { useCallback, useLayoutEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
@@ -162,10 +162,10 @@ export const SignupPageHandler = () => {
                 />
               </Text>
               <Button
-                role="secondary"
                 onClick={onFormSubmit}
                 disabled={loading}
                 fullWidth="mobile"
+                variant="secondary"
               >
                 <FormattedMessage id="signup.signupButton" />
               </Button>
@@ -187,7 +187,7 @@ export const SignupPageHandler = () => {
                   placeholder="Ada Lovelace"
                   required={true}
                   type="text"
-                  tabIndex={1}
+                  tabIndex={0}
                   errors={getFieldErrors("fullname")}
                 />
               </InputWrapper>
@@ -201,7 +201,7 @@ export const SignupPageHandler = () => {
                   placeholder="ada@pycon.it"
                   required={true}
                   type="email"
-                  tabIndex={1}
+                  tabIndex={0}
                   errors={[...getFieldErrors("email"), errorMessage]}
                 />
               </InputWrapper>
@@ -215,7 +215,7 @@ export const SignupPageHandler = () => {
                   required={true}
                   type="password"
                   placeholder="buyyourticket!"
-                  tabIndex={2}
+                  tabIndex={0}
                   minLength={PASSWORD_MIN_LENGTH}
                   errors={getFieldErrors("password")}
                 />
@@ -230,7 +230,7 @@ export const SignupPageHandler = () => {
                   required={true}
                   type="password"
                   placeholder="becomeamember"
-                  tabIndex={2}
+                  tabIndex={0}
                   minLength={PASSWORD_MIN_LENGTH}
                   errors={
                     passwordsAreNotMatching ? [passwordMismatchMessage] : []

@@ -33,14 +33,14 @@ export const KeynotePreview = ({
       <strong>{keynote.title}</strong>
       <InfoRecap
         info={[
-          { label: "Type", value: `Keynote` },
+          { label: "Type", value: "Keynote" },
           {
             label: "Speaker",
             value: keynote.speakers.map((s) => s.fullName).join(", "),
           },
         ]}
       />
-      <button onClick={onAddToSchedule} className="btn">
+      <button type="button" onClick={onAddToSchedule} className="btn">
         Add to schedule
       </button>
     </li>

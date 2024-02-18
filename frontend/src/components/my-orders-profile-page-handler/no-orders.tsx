@@ -24,7 +24,7 @@ export const NoOrders = () => {
       </Text>
       <Spacer size="large" />
       <Button
-        role="secondary"
+        variant="secondary"
         href={createHref({
           path: "/tickets",
           locale: language,

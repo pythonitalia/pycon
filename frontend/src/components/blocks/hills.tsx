@@ -1,5 +1,11 @@
 export const Hills = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="180">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="100%"
+    height="180"
+    role="img"
+    aria-label="Hills"
+  >
     <defs>
       <pattern id="bg" patternUnits="userSpaceOnUse" width="1350" height="180">
         <path

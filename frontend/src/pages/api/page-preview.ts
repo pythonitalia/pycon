@@ -29,7 +29,7 @@ export default async (req, res) => {
 
   switch (contentType) {
     case "news.newsarticle":
-      res.redirect(`/news/empty`);
+      res.redirect("/news/empty");
       break;
     default:
       res.redirect("/");

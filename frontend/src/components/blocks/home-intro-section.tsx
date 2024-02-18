@@ -1,9 +1,9 @@
 import {
   Heading,
-  Text,
+  LayoutContent,
   Section,
   Spacer,
-  LayoutContent,
+  Text,
 } from "@python-italia/pycon-styleguide";
 
 type Props = {

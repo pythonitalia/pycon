@@ -1,13 +1,13 @@
 import {
-  Checkbox,
+  BasicButton,
   Button,
-  Spacer,
-  Text,
+  Checkbox,
+  HorizontalStack,
   Input,
   InputWrapper,
-  BasicButton,
   Link,
-  HorizontalStack,
+  Spacer,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React, { useRef } from "react";
 import { FormattedMessage } from "react-intl";
@@ -77,11 +77,11 @@ export const SponsorLeadModal = ({ onClose }) => {
             <FormattedMessage id="modal.cancel" />
           </BasicButton>
           <Button
-            role="secondary"
             disabled={
               loading || submitComplete || !formState.values.acceptPrivacyPolicy
             }
             onClick={onSubmit}
+            variant="secondary"
           >
             <FormattedMessage id="sponsorLeadModal.submit" />
           </Button>

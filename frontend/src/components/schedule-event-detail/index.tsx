@@ -1,16 +1,16 @@
 import {
-  StyledText,
+  Button,
   Grid,
   GridColumn,
   Heading,
   Section,
-  Button,
   Spacer,
+  StyledText,
   Text,
 } from "@python-italia/pycon-styleguide";
 import { LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import { SnakeWithPopcorn } from "@python-italia/pycon-styleguide/illustrations";
-import { parseISO, isAfter, isBefore } from "date-fns";
+import { isAfter, isBefore, parseISO } from "date-fns";
 import { zonedTimeToUtc } from "date-fns-tz";
 import React from "react";
 import { FormattedMessage } from "react-intl";
@@ -117,7 +117,7 @@ export const ScheduleEventDetail = ({
                 <Spacer size="medium" />
 
                 {slidoUrl && (
-                  <Button size="small" role="secondary" href={slidoUrl}>
+                  <Button size="small" href={slidoUrl} variant="secondary">
                     <FormattedMessage id="streaming.qa" />
                   </Button>
                 )}
@@ -200,6 +200,7 @@ export const ScheduleEventDetail = ({
             <SnakeWithPopcorn className="absolute top-0 right-14 z-10 w-[130px] -translate-y-[63%] lg:w-[180px] lg:-translate-y-[68%] hidden md:block" />
             <div className="z-20 relative">
               <iframe
+                title="Recording"
                 src={`https://www.youtube.com/embed/${youtubeVideoId}`}
                 allowFullScreen
                 className="aspect-video p-[3px] top-0 left-0 w-full bg-black"

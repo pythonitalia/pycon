@@ -13,7 +13,7 @@ def test_astro_proxy(admin_client, requests_mock, settings):
     settings.DEBUG = True
 
     requests_mock.get(
-        "http://pycon-custom-admin:3002/test",
+        "http://custom-admin:3002/test",
         text='<script type="module" src="/test.js"></script>',
     )
 
@@ -30,13 +30,13 @@ def test_astro_proxy_redirection(admin_client, requests_mock, settings):
     settings.DEBUG = True
 
     requests_mock.get(
-        "http://pycon-custom-admin:3002/test",
+        "http://custom-admin:3002/test",
         headers={"Location": "/redirect"},
         status_code=302,
     )
 
     requests_mock.get(
-        "http://pycon-custom-admin:3002/redirect",
+        "http://custom-admin:3002/redirect",
         text='<script type="module" src="/redirect.js"></script>',
     )
 

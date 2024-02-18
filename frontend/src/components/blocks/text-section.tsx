@@ -1,16 +1,17 @@
 import {
-  Heading,
-  StyledHTMLText,
-  Spacer,
-  Section,
-  Container,
-  MultiplePartsCard,
-  CardPart,
   Button,
+  CardPart,
+  Container,
+  Heading,
+  MultiplePartsCard,
+  Section,
+  Spacer,
+  StyledHTMLText,
 } from "@python-italia/pycon-styleguide";
 
 import { BodyTextSize, TextSection as TextSectionType } from "~/types";
 
+import { Fragment } from "react";
 import { useSetCurrentModal } from "../modal/context";
 
 export const TextSection = ({
@@ -68,9 +69,9 @@ export const TextSection = ({
         {cta && (
           <>
             <Button
+              variant="secondary"
               onClick={openModal}
               href={isModalCTA ? null : cta.link}
-              role="secondary"
               fullWidth="mobile"
             >
               {cta.label}
@@ -83,9 +84,8 @@ export const TextSection = ({
           <>
             {!onlyAccordions && <Spacer size="xl" />}
             {accordions?.map((accordion, index) => (
-              <>
+              <Fragment key={index}>
                 <MultiplePartsCard
-                  key={index}
                   clickablePart="heading"
                   expandTarget="content"
                   openByDefault={accordion.isOpen}
@@ -99,7 +99,7 @@ export const TextSection = ({
                 </MultiplePartsCard>
                 {/* todo replace with MultiplePartsCardCollection */}
                 {index !== accordions.length - 1 && <Spacer size="small" />}
-              </>
+              </Fragment>
             ))}
           </>
         )}

@@ -3,21 +3,21 @@
 /** @jsx jsx */
 import { ApolloError } from "@apollo/client";
 import {
-  InputWrapper,
-  Input,
-  Heading,
-  Text,
-  MultiplePartsCard,
-  Grid,
-  CardPart,
-  Select,
-  Textarea,
-  Section,
-  Spacer,
   Button,
-  HorizontalStack,
-  Link,
+  CardPart,
   Checkbox,
+  Grid,
+  Heading,
+  HorizontalStack,
+  Input,
+  InputWrapper,
+  Link,
+  MultiplePartsCard,
+  Section,
+  Select,
+  Spacer,
+  Text,
+  Textarea,
 } from "@python-italia/pycon-styleguide";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
@@ -34,24 +34,24 @@ import {
   AgeGroup,
   Grant,
   GrantType,
-  UpdateGrantInput,
-  useSendGrantMutation,
-  useMyGrantQuery,
-  SendGrantInput,
-  SendGrantMutation,
-  UpdateGrantMutation,
   InterestedInVolunteering,
   Occupation,
+  SendGrantInput,
+  SendGrantMutation,
+  UpdateGrantInput,
+  UpdateGrantMutation,
+  useMyGrantQuery,
+  useSendGrantMutation,
 } from "~/types";
 
 import { ErrorsList } from "../errors-list";
 import { createHref } from "../link";
 import {
+  AGE_GROUPS_OPTIONS,
   GENDER_OPTIONS,
   GRANT_TYPE_OPTIONS,
   INTERESTED_IN_VOLUNTEERING_OPTIONS,
   OCCUPATION_OPTIONS,
-  AGE_GROUPS_OPTIONS,
 } from "./options";
 
 export type GrantFormFields = {
@@ -89,7 +89,7 @@ export const MyGrantOrForm = () => {
     },
     skip: typeof window === "undefined",
   });
-  const grant = data && data?.me?.grant;
+  const grant = data?.me?.grant;
 
   const [submitGrant, { loading, error: grantError, data: grantData }] =
     useSendGrantMutation({
@@ -181,9 +181,7 @@ export const GrantForm = ({
           new Date().getFullYear() - new Date(user.dateBirth).getFullYear();
         formState.setField(
           "ageGroup",
-          AGE_GROUPS_OPTIONS.find(
-            (option) => option.isAgeInRange && option.isAgeInRange(age),
-          ).value,
+          AGE_GROUPS_OPTIONS.find((option) => option.isAgeInRange?.(age)).value,
         );
       }
     }
@@ -281,7 +279,7 @@ export const GrantForm = ({
           values={{
             linkGrant: (
               <Link
-                href={createHref({ path: `/grants/edit`, locale: language })}
+                href={createHref({ path: "/grants/edit", locale: language })}
               >
                 <Text
                   color="none"
@@ -797,8 +795,8 @@ export const GrantForm = ({
           />
         </div>
         <Button
-          role="secondary"
           disabled={grantLoading || !formState.values.acceptedPrivacyPolicy}
+          variant="secondary"
         >
           <FormattedMessage id="grants.form.submit" />
         </Button>

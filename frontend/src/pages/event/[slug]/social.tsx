@@ -2,7 +2,7 @@
 
 /** @jsx jsx */
 import { Fragment } from "react";
-import { Box, Flex, Heading, jsx, Text } from "theme-ui";
+import { Box, Flex, Heading, Text, jsx } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";

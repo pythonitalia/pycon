@@ -1,12 +1,12 @@
 import {
+  BasicButton,
+  Button,
   Heading,
+  Link,
   Page,
   Section,
-  Text,
-  Button,
   Spacer,
-  BasicButton,
-  Link,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";

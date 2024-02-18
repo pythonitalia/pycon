@@ -6,6 +6,8 @@ export const Landscape = (props: any) => (
     height="847"
     viewBox="0 0 1440 847"
     preserveAspectRatio="xMidYMid slice"
+    role="img"
+    aria-label="Landscape"
     {...props}
   >
     <g clipPath="url(#clip0_1426_26749)">

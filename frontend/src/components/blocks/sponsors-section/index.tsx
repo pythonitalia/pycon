@@ -1,13 +1,13 @@
 import {
-  Grid,
-  Heading,
   Button,
+  Grid,
+  GridColumn,
+  Heading,
   LayoutContent,
   Section,
-  GridColumn,
   Spacer,
-  Text,
   SponsorsGrid,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 
@@ -65,12 +65,12 @@ export const SponsorsSection = ({ title, body, cta }: Props) => {
                 <>
                   <Spacer size="large" />
                   <Button
+                    variant="secondary"
                     href={createHref({
                       path: cta.link,
                       locale: language,
                     })}
                     size="small"
-                    role="secondary"
                   >
                     {cta.label}
                   </Button>

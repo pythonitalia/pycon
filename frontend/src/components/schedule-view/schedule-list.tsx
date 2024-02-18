@@ -20,7 +20,7 @@ import { isItemVisible } from ".";
 import { createHref } from "../link";
 import { EventTag } from "../schedule-event-detail/event-tag";
 import { getItemBg, getItemUrl } from "./events";
-import { Item, Slot, Room } from "./types";
+import { Item, Room, Slot } from "./types";
 
 type Props = {
   slots: Slot[];
@@ -95,8 +95,8 @@ const ScheduleItem = ({
   currentDay: string;
 }) => {
   const language = useCurrentLanguage();
-  const italianLanguageText = useTranslatedMessage(`talk.language.it`);
-  const englishLanguageText = useTranslatedMessage(`talk.language.en`);
+  const italianLanguageText = useTranslatedMessage("talk.language.it");
+  const englishLanguageText = useTranslatedMessage("talk.language.en");
   const allRoomsText = useTranslatedMessage("scheduleView.allRooms");
   const translatedRoomText = useTranslatedMessage("schedule.room");
 

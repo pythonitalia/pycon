@@ -1,11 +1,11 @@
 import {
-  Text,
-  Heading,
-  Spacer,
-  InputWrapper,
-  Input,
   BasicButton,
   Button,
+  Heading,
+  Input,
+  InputWrapper,
+  Spacer,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { useRef } from "react";
 import { FormattedMessage } from "react-intl";
@@ -68,8 +68,8 @@ export const ReassignTicketModal = ({
               formState.values.email === currentEmail || !formState.touched
             }
             size="small"
-            role="secondary"
             onClick={saveChanges}
+            variant="secondary"
           >
             <FormattedMessage id="profile.tickets.save" />
           </Button>

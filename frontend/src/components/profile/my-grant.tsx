@@ -1,4 +1,4 @@
-import { Text, Section, Link, Heading } from "@python-italia/pycon-styleguide";
+import { Heading, Link, Section, Text } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -45,7 +45,7 @@ export const MyGrant = () => {
                 linkGrant: (
                   <Link
                     href={createHref({
-                      path: `/grants/edit`,
+                      path: "/grants/edit",
                       locale: language,
                     })}
                   >

@@ -7,12 +7,12 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { GrantForm } from "~/components/grant-form";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import {
+  UpdateGrantInput,
+  queryCurrentUser,
+  queryGrantDeadline,
+  queryMyGrant,
   useMyGrantQuery,
   useUpdateGrantMutation,
-  UpdateGrantInput,
-  queryMyGrant,
-  queryGrantDeadline,
-  queryCurrentUser,
 } from "~/types";
 
 const GrantPage = (): JSX.Element => {
@@ -26,7 +26,7 @@ const GrantPage = (): JSX.Element => {
     skip: typeof window === "undefined",
   });
 
-  const grant = data && data?.me?.grant;
+  const grant = data?.me?.grant;
   const [
     updateGrant,
     { loading: updateLoading, error: updateError, data: updateData },
@@ -72,7 +72,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
   locale,
 }) => {
-  const identityToken = req.cookies["pythonitalia_sessionid"];
+  const identityToken = req.cookies.pythonitalia_sessionid;
   if (!identityToken) {
     return {
       redirect: {

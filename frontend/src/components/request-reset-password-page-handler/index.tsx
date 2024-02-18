@@ -1,13 +1,13 @@
 import {
-  Text,
   Button,
+  Grid,
   Heading,
+  Input,
+  InputWrapper,
   Link,
   Page,
   Spacer,
-  InputWrapper,
-  Input,
-  Grid,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { useCallback, useRef } from "react";
 import { FormattedMessage } from "react-intl";
@@ -102,7 +102,7 @@ export const RequestResetPasswordPageHandler = () => {
                 />
               </Text>
               <Button
-                role="secondary"
+                variant="secondary"
                 disabled={loading}
                 onClick={onSubmit}
                 data-testid="login-button"

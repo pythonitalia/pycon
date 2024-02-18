@@ -47,65 +47,63 @@ const handler = async (req: NextRequest) => {
   const excerpt = newsArticle?.excerpt;
 
   return new ImageResponse(
-    (
+    <div
+      style={{
+        background: "#F17A5D",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        textAlign: "left",
+        alignItems: "flex-start",
+        justifyContent: "center",
+        flexDirection: "column",
+        paddingLeft: "64px",
+        paddingRight: "64px",
+        fontFamily: '"GeneralSans"',
+      }}
+    >
       <div
         style={{
-          background: "#F17A5D",
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          textAlign: "left",
-          alignItems: "flex-start",
-          justifyContent: "center",
-          flexDirection: "column",
-          paddingLeft: "64px",
-          paddingRight: "64px",
-          fontFamily: '"GeneralSans"',
+          fontSize: "64px",
+          fontWeight: 700,
+          color: "#0E1116",
+          paddingBottom: "16px",
         }}
       >
-        <div
-          style={{
-            fontSize: "64px",
-            fontWeight: 700,
-            color: "#0E1116",
-            paddingBottom: "16px",
-          }}
-        >
-          {title}
-        </div>
-        <div
-          style={{
-            fontSize: "32px",
-            color: "#FAF5F3",
-            paddingRight: 220,
-            fontWeight: 500,
-          }}
-        >
-          {excerpt.length > 140 ? `${excerpt.substring(0, 140)}...` : excerpt}
-        </div>
-        <div
-          style={{
-            display: "flex",
-            position: "absolute",
-            bottom: 0,
-            right: 160,
-          }}
-        >
-          <SnakeHead />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            position: "absolute",
-            bottom: 0,
-            right: 20,
-            transform: "rotate(180deg)",
-          }}
-        >
-          <SnakeTail />
-        </div>
+        {title}
       </div>
-    ),
+      <div
+        style={{
+          fontSize: "32px",
+          color: "#FAF5F3",
+          paddingRight: 220,
+          fontWeight: 500,
+        }}
+      >
+        {excerpt.length > 140 ? `${excerpt.substring(0, 140)}...` : excerpt}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          position: "absolute",
+          bottom: 0,
+          right: 160,
+        }}
+      >
+        <SnakeHead />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          position: "absolute",
+          bottom: 0,
+          right: 20,
+          transform: "rotate(180deg)",
+        }}
+      >
+        <SnakeTail />
+      </div>
+    </div>,
     {
       width: 1200,
       height: 600,

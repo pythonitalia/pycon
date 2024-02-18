@@ -79,7 +79,7 @@ export const SchedulePreviewSection = ({
         <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
           {primaryCta && (
             <Button
-              role="secondary"
+              variant="secondary"
               href={createHref({
                 path: primaryCta.link,
                 locale: language,
@@ -152,7 +152,7 @@ const ScheduleEventPreviewCard = ({
               {photo && (
                 <img
                   src={photo}
-                  alt="Speaker photo"
+                  alt="Speaker"
                   loading="lazy"
                   className="w-20 aspect-square object-cover"
                 />

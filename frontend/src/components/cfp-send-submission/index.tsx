@@ -8,8 +8,8 @@ import { useRouter } from "next/router";
 import { CfpForm, CfpFormFields } from "~/components/cfp-form";
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  readMeSubmissionsQueryCache,
   SendSubmissionMutation,
+  readMeSubmissionsQueryCache,
   useSendSubmissionMutation,
   writeMeSubmissionsQueryCache,
 } from "~/types";
@@ -85,7 +85,7 @@ export const CfpSendSubmission = () => {
 
     if (response.data?.mutationOp.__typename === "Submission") {
       const id = response.data.mutationOp.id;
-      router.push(`/submission/[id]`, `/submission/${id}`);
+      router.push("/submission/[id]", `/submission/${id}`);
     }
   };
 

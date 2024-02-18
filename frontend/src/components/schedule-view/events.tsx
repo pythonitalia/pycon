@@ -2,16 +2,16 @@
 
 /** @jsx jsx */
 import {
-  Heading,
-  Separator,
-  ScheduleItemCard,
-  Spacer,
-  Text,
-  Link,
-  AvatarGroup,
   Avatar,
+  AvatarGroup,
+  Heading,
   HorizontalStack,
   LayoutContent,
+  Link,
+  ScheduleItemCard,
+  Separator,
+  Spacer,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { Color } from "@python-italia/pycon-styleguide/dist/types";
 import { HeartIcon } from "@python-italia/pycon-styleguide/icons";
@@ -19,7 +19,7 @@ import clsx from "clsx";
 import { addMinutes, parseISO } from "date-fns";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx, ThemeUIStyleObject } from "theme-ui";
+import { ThemeUIStyleObject, jsx } from "theme-ui";
 
 import { useRouter } from "next/router";
 
@@ -28,9 +28,9 @@ import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import {
   readUserStarredScheduleItemsQueryCache,
-  writeUserStarredScheduleItemsQueryCache,
   useStarScheduleItemMutation,
   useUnstarScheduleItemMutation,
+  writeUserStarredScheduleItemsQueryCache,
 } from "~/types";
 
 import { createHref } from "../link";
@@ -53,11 +53,11 @@ export const getItemUrl = (item: Item) => {
     item.type === "announcements" ||
     item.type === "registration"
   ) {
-    return `/event/[slug]`;
+    return "/event/[slug]";
   }
 
   if (item.type === "keynote") {
-    return `/keynotes/[slug]`;
+    return "/keynotes/[slug]";
   }
 
   return undefined;
@@ -90,8 +90,8 @@ export const ScheduleEntry = ({
   const audienceLevel = item.submission
     ? item.submission.audienceLevel!.name
     : item.audienceLevel
-    ? item.audienceLevel.name
-    : null;
+      ? item.audienceLevel.name
+      : null;
   const duration =
     item.duration || slot.duration || item.submission?.duration?.duration;
 
@@ -112,7 +112,7 @@ export const ScheduleEntry = ({
   const WrapperComponent = itemUrl ? Link : "div";
   const durationText = `${duration} min`;
   const languageText = useTranslatedMessage(
-    item.language.code === "en" ? `talk.language.en` : `talk.language.it`,
+    item.language.code === "en" ? "talk.language.en" : "talk.language.it",
   );
   const isCustomItem = item.type === "custom" || item.type === "break";
   const speakersNames = item.speakers.map((s) => s.fullName).join(", ");

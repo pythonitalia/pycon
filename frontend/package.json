@@ -9,9 +9,6 @@
     "dev": "concurrently \"npm run codegen:watch\" \"next dev\"",
     "build": "npm run codegen && next build",
     "start": "next start",
-    "lint": "eslint src --ext .jsx,.js,.tsx,.ts",
-    "lint:ts": "tsc --noemit",
-    "lint:prettier": "prettier --check src/**/*",
     "codegen": "graphql-codegen -r dotenv/config -c codegen.yml",
     "codegen:watch": "pnpm run codegen --watch",
     "test": "jest src/"
@@ -33,7 +30,7 @@
     "@graphql-codegen/typescript-react-apollo": "^3.3.2",
     "@mdx-js/loader": "^1.6.19",
     "@next/mdx": "^10.0.0",
-    "@python-italia/pycon-styleguide": "0.1.183",
+    "@python-italia/pycon-styleguide": "0.1.184",
     "@sentry/nextjs": "^7.91.0",
     "@theme-ui/core": "^0.15.3",
     "@theme-ui/css": "^0.15.3",
@@ -80,6 +77,7 @@
     "yup": "^0.29.3"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.5.3",
     "@python-italia/eslint-config": "^1.0.13",
     "@tailwindcss/typography": "^0.5.9",
     "@testing-library/dom": "^8.1.0",
@@ -96,7 +94,6 @@
     "autoprefixer": "^10.4.13",
     "jest": "^27.0.6",
     "postcss": "^8.4.31",
-    "prettier": "^2.8.4",
     "tailwindcss": "^3.3.5",
     "tailwindcss-blend-mode": "^1.0.0",
     "ts-jest": "^27.0.4",

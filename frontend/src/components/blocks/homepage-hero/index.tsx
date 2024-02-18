@@ -1,7 +1,7 @@
 import {
+  HeroIllustration,
   LayoutContent,
   ScrollDownArrowBar,
-  HeroIllustration,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 

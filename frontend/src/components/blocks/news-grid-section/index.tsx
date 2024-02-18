@@ -1,11 +1,11 @@
 import {
-  Heading,
-  Text,
-  Section,
-  MultiplePartsCard,
   CardPart,
-  Link,
   Grid,
+  Heading,
+  Link,
+  MultiplePartsCard,
+  Section,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { parseISO } from "date-fns";
 

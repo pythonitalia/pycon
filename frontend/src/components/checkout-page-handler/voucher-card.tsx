@@ -1,10 +1,10 @@
 import {
-  Text,
   CardPart,
-  MultiplePartsCard,
   Heading,
   Input,
   InputWrapper,
+  MultiplePartsCard,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { useMachine } from "@xstate/react";
 import { useEffect } from "react";

@@ -19,7 +19,13 @@ type ArrowIconProps = {
 };
 
 export const ArrowIcon = ({ direction = "left", ...props }: ArrowIconProps) => (
-  <svg viewBox="0 0 46 53" fill="none" {...props}>
+  <svg
+    viewBox="0 0 46 53"
+    fill="none"
+    {...props}
+    role="img"
+    aria-label="arrow icon"
+  >
     <g
       style={{ transform: getTransform(direction), transformOrigin: "center" }}
     >

@@ -1,13 +1,13 @@
 import {
   CardPart,
-  StyledHTMLText,
-  Text,
+  Container,
   Heading,
   MultiplePartsCard,
   Section,
   SliderGrid,
   Spacer,
-  Container,
+  StyledHTMLText,
+  Text,
 } from "@python-italia/pycon-styleguide";
 
 import { useMoneyFormatter } from "~/helpers/formatters";

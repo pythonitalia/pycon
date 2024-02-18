@@ -1,10 +1,10 @@
 import {
+  BasicButton,
   BottomBar,
+  Button,
   Heading,
   Spacer,
   Text,
-  Button,
-  BasicButton,
 } from "@python-italia/pycon-styleguide";
 import { useMachine } from "@xstate/react";
 import React from "react";
@@ -149,8 +149,8 @@ export const CreateOrderBar = ({
               orientation="horizontal"
             />
             <Button
+              variant="secondary"
               disabled={createOrderState.matches("creating")}
-              role="secondary"
               onClick={(e) => {
                 onCreateOrder(e, "stripe");
               }}

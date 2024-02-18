@@ -1,10 +1,10 @@
-import { Section, Heading } from "@python-italia/pycon-styleguide";
+import { Heading, Section } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { GetServerSideProps } from "next";
 
-import { getApolloClient, addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Tickets } from "~/components/tickets-page/tickets";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
