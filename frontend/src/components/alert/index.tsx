@@ -11,7 +11,7 @@ export const Alert = ({
   children,
   ...props
 }: React.PropsWithChildren<Props>) => {
-  let backgroundColor;
+  let backgroundColor: string;
 
   switch (variant) {
     case "alert":

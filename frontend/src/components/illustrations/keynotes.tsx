@@ -10,6 +10,8 @@ export const KeynotesIllustration = (props) => (
     preserveAspectRatio="meet"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
+    role="img"
+    aria-label="Keynotes illustration"
     sx={{
       backgroundColor: "blue",
       border: "primary",

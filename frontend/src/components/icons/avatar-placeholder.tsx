@@ -1,7 +1,13 @@
 import React from "react";
 
 export const AvatarPlaceholder = (props: { style: any }) => (
-  <svg viewBox="0 0 365 365" fill="none" {...props}>
+  <svg
+    viewBox="0 0 365 365"
+    fill="none"
+    {...props}
+    role="img"
+    aria-label="Avatar placeholder"
+  >
     <path fill="#9473B0" d="M0 0h365v365H0z" />
     <path stroke="#000" d="M0 0h365v365H0z" />
     <path fill="#F8B03D" d="M118.344 213.943h124.365v151.943H118.344z" />

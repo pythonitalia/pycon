@@ -1,7 +1,13 @@
 import React from "react";
 
 export const Logo = (props: any) => (
-  <svg {...props} viewBox="0 0 600 180" fill="none">
+  <svg
+    {...props}
+    viewBox="0 0 600 180"
+    fill="none"
+    role="img"
+    aria-label="Logo"
+  >
     <g clipPath="url(#clip0_5150_33)">
       <path d="M422.716 3.40002H3.3999V176.6H422.716V3.40002Z" fill="white" />
       <path
@@ -60,7 +66,7 @@ export const Logo = (props: any) => (
 );
 
 export const MobileLogo = (props: any) => (
-  <svg {...props} viewBox="0 0 120 60" fill="none">
+  <svg {...props} viewBox="0 0 120 60" fill="none" role="img" aria-label="Logo">
     <g clipPath="url(#clip0_5311_2)">
       <mask
         id="mask0_5311_2"

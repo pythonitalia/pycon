@@ -1,20 +1,20 @@
 import {
   Grid,
-  Link,
-  Heading,
   GridColumn,
-  VerticalStack,
-  Spacer,
+  Heading,
   HorizontalStack,
-  Text,
   LayoutContent,
+  Link,
+  Spacer,
+  Text,
+  VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import {
-  TwitterIcon,
-  InstagramIcon,
-  MastodonIcon,
-  LinkedinIcon,
   FacebookIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  MastodonIcon,
+  TwitterIcon,
   WebIcon,
 } from "@python-italia/pycon-styleguide/icons";
 import { SnakeTail } from "@python-italia/pycon-styleguide/illustrations";
@@ -48,7 +48,7 @@ export const ParticipantInfoSection = ({
             {participant.photo && (
               <>
                 <img
-                  alt="participant photo"
+                  alt="Participant"
                   className="aspect-square border-black border z-10 object-cover"
                   src={participant.photo}
                 />

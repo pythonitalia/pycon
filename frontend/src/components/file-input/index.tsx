@@ -153,6 +153,7 @@ export const FileInput = ({
             height: "200px",
             mt: 3,
           }}
+          alt="Selection preview"
           src={previewAvailable}
         />
       )}
