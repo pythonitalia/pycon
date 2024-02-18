@@ -33,6 +33,7 @@ jobs:
           path: ./frontend/node_modules
           key: node_modules-frontend-${{ hashFiles('./frontend/pnpm-lock.yaml') }}-v4
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: pnpm install
       - name: Codegen
         run: pnpm run codegen
