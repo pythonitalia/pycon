@@ -30,7 +30,7 @@ jobs:
         uses: actions/cache@v1
         id: cache
         with:
-          path: ./node_modules
+          path: ./frontend/node_modules
           key: node_modules-frontend-${{ hashFiles('pnpm-lock.yaml') }}-v4
       - name: Install dependencies
         run: pnpm install
