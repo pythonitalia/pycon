@@ -1,13 +1,13 @@
 import clsx from "clsx";
 import React, { ReactNode } from "react";
-import { Color } from "../types";
-import { Text } from "../text";
 import { getBackgroundClasses } from "../colors-utils";
+import { Text } from "../text";
+import { Color } from "../types";
 
 export const Button = ({
   children,
   onClick,
-  role = "primary",
+  variant = "primary",
   icon = null,
   size = "default",
   fullWidth = false,
@@ -22,7 +22,7 @@ export const Button = ({
   size?: "default" | "small";
   children: ReactNode;
   disabled?: boolean;
-  role?: "primary" | "secondary" | "alert";
+  variant?: "primary" | "secondary" | "alert";
   onClick?: (
     e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLAnchorElement>
   ) => void;
@@ -41,15 +41,15 @@ export const Button = ({
         {
           "opacity-30": disabled,
           // primary
-          "hover:bg-green": !disabled && role !== "alert",
-          "hover:bg-red/40": !disabled && role === "alert",
+          "hover:bg-green": !disabled && variant !== "alert",
+          "hover:bg-red/40": !disabled && variant === "alert",
 
           // secondary
-          "bg-milk": role === "primary" && !background,
-          "bg-cream": (role === "alert" || role === "secondary") && !background,
+          "bg-milk": variant === "primary" && !background,
+          "bg-cream": (variant === "alert" || variant === "secondary") && !background,
 
-          "border-black": role !== "alert",
-          "border-red": role === "alert",
+          "border-black": variant !== "alert",
+          "border-red": variant === "alert",
 
           "py-5 px-8": size === "small",
           "py-5 px-8 lg:py-6 lg:px-12": size === "default",
@@ -69,7 +69,7 @@ export const Button = ({
         noWrap
         weight="strong"
         size={size === "small" ? "label2" : "label1"}
-        color={role === "alert" ? "red" : "black"}
+        color={variant === "alert" ? "red" : "black"}
       >
         {children}
       </Text>
