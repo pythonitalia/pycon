@@ -79,6 +79,7 @@ export const SchedulePreviewSection = ({
         <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
           {primaryCta && (
             <Button
+              variant="secondary"
               href={createHref({
                 path: primaryCta.link,
                 locale: language,

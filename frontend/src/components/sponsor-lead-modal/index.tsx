@@ -81,6 +81,7 @@ export const SponsorLeadModal = ({ onClose }) => {
               loading || submitComplete || !formState.values.acceptPrivacyPolicy
             }
             onClick={onSubmit}
+            variant="secondary"
           >
             <FormattedMessage id="sponsorLeadModal.submit" />
           </Button>

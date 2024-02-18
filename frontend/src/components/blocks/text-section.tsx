@@ -69,6 +69,7 @@ export const TextSection = ({
         {cta && (
           <>
             <Button
+              variant="secondary"
               onClick={openModal}
               href={isModalCTA ? null : cta.link}
               fullWidth="mobile"

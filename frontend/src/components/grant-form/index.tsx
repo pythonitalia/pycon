@@ -796,6 +796,7 @@ export const GrantForm = ({
         </div>
         <Button
           disabled={grantLoading || !formState.values.acceptedPrivacyPolicy}
+          variant="secondary"
         >
           <FormattedMessage id="grants.form.submit" />
         </Button>

@@ -276,7 +276,7 @@ export const EditProfilePageHandler = () => {
                     <FormattedMessage id="profile.edit.success" />
                   </Text>
                 )}
-              <Button disabled={updateProfileLoading}>
+              <Button disabled={updateProfileLoading} variant="secondary">
                 <FormattedMessage id="buttons.save" />
               </Button>
             </HorizontalStack>

@@ -57,7 +57,9 @@ export const LiveStreamingSection = () => {
           </Heading>
           <Spacer size="small" />
           <Link href="https://www.youtube.com/pythonitalia" target="_blank">
-            <Button size="small">YouTube</Button>
+            <Button size="small" variant="secondary">
+              YouTube
+            </Button>
           </Link>
         </>
       )}
@@ -130,7 +132,7 @@ export const LiveStreamingSection = () => {
                     <Spacer size="xs" />
                     {runningEvent.slidoUrl && (
                       <Link href={runningEvent.slidoUrl} target="_blank">
-                        <Button size="small">
+                        <Button size="small" variant="secondary">
                           <FormattedMessage id="streaming.qa" />
                         </Button>
                       </Link>

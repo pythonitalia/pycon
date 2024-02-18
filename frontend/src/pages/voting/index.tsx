@@ -418,6 +418,7 @@ export const VotingPage = () => {
                       navigateToPage(i + 1);
                     }}
                     size="small"
+                    variant="secondary"
                   >
                     {i + 1}
                   </Button>

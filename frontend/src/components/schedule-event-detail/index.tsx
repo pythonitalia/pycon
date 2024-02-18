@@ -117,7 +117,7 @@ export const ScheduleEventDetail = ({
                 <Spacer size="medium" />
 
                 {slidoUrl && (
-                  <Button size="small" href={slidoUrl}>
+                  <Button size="small" href={slidoUrl} variant="secondary">
                     <FormattedMessage id="streaming.qa" />
                   </Button>
                 )}

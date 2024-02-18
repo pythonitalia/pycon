@@ -84,6 +84,7 @@ export const SubmissionPage = () => {
             {submission.canEdit ? (
               <Button
                 size="small"
+                variant="primary"
                 href={createHref({
                   path: "/submission/[id]/edit",
                   params: {
@@ -112,6 +113,7 @@ export const SubmissionPage = () => {
                 </Text>
                 <Button
                   size="small"
+                  variant="secondary"
                   onClick={(_) => {
                     setViewInLanguage(otherLanguage);
                   }}

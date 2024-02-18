@@ -149,6 +149,7 @@ export const CreateOrderBar = ({
               orientation="horizontal"
             />
             <Button
+              variant="secondary"
               disabled={createOrderState.matches("creating")}
               onClick={(e) => {
                 onCreateOrder(e, "stripe");

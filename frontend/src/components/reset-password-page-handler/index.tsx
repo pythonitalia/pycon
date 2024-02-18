@@ -129,7 +129,7 @@ export const ResetPasswordPageHandler = () => {
             </Grid>
             <Spacer size="large" />
             <div className="flex justify-end">
-              <Button disabled={loading} onClick={onSubmit}>
+              <Button disabled={loading} onClick={onSubmit} variant="secondary">
                 <FormattedMessage id="resetPassword.changePassword" />
               </Button>
             </div>

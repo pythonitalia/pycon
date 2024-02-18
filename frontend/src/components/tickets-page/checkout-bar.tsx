@@ -34,7 +34,7 @@ export const CheckoutBar = ({ products, hotelRooms, onCheckout }: Props) => {
   return (
     <BottomBar
       action={
-        <Button onClick={onCheckout}>
+        <Button onClick={onCheckout} variant="secondary">
           <FormattedMessage id="tickets.checkoutBar.cta" />
         </Button>
       }

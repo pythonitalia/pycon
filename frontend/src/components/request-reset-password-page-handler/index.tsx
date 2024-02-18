@@ -102,6 +102,7 @@ export const RequestResetPasswordPageHandler = () => {
                 />
               </Text>
               <Button
+                variant="secondary"
                 disabled={loading}
                 onClick={onSubmit}
                 data-testid="login-button"

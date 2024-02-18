@@ -74,7 +74,7 @@ export const JobBoardLayout = ({
               <Article>{compile(jobListing.description).tree}</Article>
               <Spacer size="xl" />
               {jobListing.applyUrl && (
-                <Button href={jobListing.applyUrl}>
+                <Button href={jobListing.applyUrl} variant="secondary">
                   <FormattedMessage id="jobboard.applyNow" />
                 </Button>
               )}

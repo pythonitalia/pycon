@@ -36,6 +36,7 @@ export const NoTickets = ({ email }: Props) => {
           path: "/tickets",
           locale: language,
         })}
+        variant="secondary"
       >
         <FormattedMessage id="profile.myTickets.buyTickets" />
       </Button>

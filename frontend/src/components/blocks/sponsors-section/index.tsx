@@ -65,6 +65,7 @@ export const SponsorsSection = ({ title, body, cta }: Props) => {
                 <>
                   <Spacer size="large" />
                   <Button
+                    variant="secondary"
                     href={createHref({
                       path: cta.link,
                       locale: language,

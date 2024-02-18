@@ -87,6 +87,7 @@ export const SpecialGuestSection = ({
                 <>
                   <Spacer size="medium" />
                   <Button
+                    variant="secondary"
                     href={createHref({
                       path: cta.link,
                       locale: language,

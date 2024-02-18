@@ -69,6 +69,7 @@ export const ReassignTicketModal = ({
             }
             size="small"
             onClick={saveChanges}
+            variant="secondary"
           >
             <FormattedMessage id="profile.tickets.save" />
           </Button>

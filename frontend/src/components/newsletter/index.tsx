@@ -75,7 +75,7 @@ export const NewsletterModal = ({ openModal, show }) => {
           <BasicButton onClick={() => closeModal()}>
             <FormattedMessage id="profile.tickets.cancel" />
           </BasicButton>
-          <Button onClick={onSubmit} disabled={!canSubmit}>
+          <Button onClick={onSubmit} disabled={!canSubmit} variant="secondary">
             <FormattedMessage id="newsletter.button" />
           </Button>
         </div>

@@ -275,6 +275,7 @@ const Invitation = () => {
           )}
 
           <Button
+            variant="secondary"
             onClick={submitAnswer}
             disabled={
               EXTRA_NOTES_OPTIONS.includes(formState.values.option) &&

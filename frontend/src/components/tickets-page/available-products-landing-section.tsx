@@ -58,6 +58,7 @@ export const AvailableProductsLandingSection = ({ tickets }: Props) => {
                   path: "/social-events",
                   locale: language,
                 })}
+                variant="secondary"
               >
                 <FormattedMessage id="tickets.buyNow" />
               </Button>

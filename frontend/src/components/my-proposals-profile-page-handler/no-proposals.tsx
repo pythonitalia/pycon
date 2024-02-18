@@ -43,6 +43,7 @@ export const NoProposals = ({ deadline }: Props) => {
             path: "/call-for-proposals",
             locale: language,
           })}
+          variant="secondary"
         >
           <FormattedMessage id="profile.myProposals.noProposals.submitProposal" />
         </Button>
@@ -53,6 +54,7 @@ export const NoProposals = ({ deadline }: Props) => {
             path: "/tickets",
             locale: language,
           })}
+          variant="secondary"
         >
           <FormattedMessage id="profile.myTickets.buyTickets" />
         </Button>

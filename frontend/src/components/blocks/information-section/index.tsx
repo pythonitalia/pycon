@@ -78,7 +78,9 @@ export const InformationSection = ({
         {cta && (
           <>
             <Spacer size="large" />
-            <Button href={cta.link}>{cta.label}</Button>
+            <Button href={cta.link} variant="primary">
+              {cta.label}
+            </Button>
           </>
         )}
         {IllustrationComponent && (

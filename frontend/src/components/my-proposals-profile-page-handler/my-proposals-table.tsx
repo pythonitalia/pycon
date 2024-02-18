@@ -98,6 +98,7 @@ export const MyProposalsTable = ({ submissions }: Props) => {
                   locale: language,
                 })}
                 size="small"
+                variant="secondary"
               >
                 <FormattedMessage id="profile.myProposals.viewInvitation" />
               </Button>
@@ -108,6 +109,7 @@ export const MyProposalsTable = ({ submissions }: Props) => {
                 locale: language,
               })}
               size="small"
+              variant="secondary"
             >
               <FormattedMessage id="profile.myProposals.edit" />
             </Button>
