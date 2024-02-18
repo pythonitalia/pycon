@@ -1,21 +1,21 @@
 import React from "react";
-import { Button } from "./button";
-import { BasicButton } from "./basic-button";
 import { Spacer } from "../spacer";
+import { BasicButton } from "./basic-button";
+import { Button } from "./button";
 
 export default {
   title: "Button",
 };
 
-export const Story = ({ text, size, disabled, role }) => (
+export const Story = ({ text, size, disabled, variant }) => (
   <div>
     <div>
-      <Button onClick={() => {}} disabled={disabled} role={role}>
+      <Button onClick={() => {}} disabled={disabled} variant={variant}>
         {text}
       </Button>
     </div>
     <div>
-      <Button onClick={() => {}} fullWidth disabled={disabled} role={role}>
+      <Button onClick={() => {}} fullWidth disabled={disabled} variant={variant}>
         {text} - Full width
       </Button>
     </div>
@@ -24,7 +24,7 @@ export const Story = ({ text, size, disabled, role }) => (
         onClick={() => {}}
         fullWidth="mobile"
         disabled={disabled}
-        role={role}
+        variant={variant}
       >
         {text} - Full width mobile
       </Button>
@@ -45,7 +45,7 @@ Story.argTypes = {
       type: "boolean",
     },
   },
-  role: {
+  variant: {
     defaultValue: "primary",
     control: {
       type: "select",
@@ -57,23 +57,23 @@ Story.argTypes = {
 export const AllButtons = () => {
   return (
     <>
-      <Button onClick={() => {}} disabled={false} role="primary">
+      <Button onClick={() => {}} disabled={false} variant="primary">
         Primary
       </Button>
       <Spacer size="large" />
-      <Button onClick={() => {}} disabled={false} role="secondary">
+      <Button onClick={() => {}} disabled={false} variant="secondary">
         Secondary
       </Button>
       <Button
         background="red"
         onClick={() => {}}
         disabled={false}
-        role="secondary"
+        variant="secondary"
       >
         Secondary [custom bg]
       </Button>
       <Spacer size="large" />
-      <Button onClick={() => {}} disabled={false} role="alert">
+      <Button onClick={() => {}} disabled={false} variant="alert">
         Alert
       </Button>
     </>
