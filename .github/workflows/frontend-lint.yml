@@ -31,7 +31,7 @@ jobs:
         id: cache
         with:
           path: ./frontend/node_modules
-          key: node_modules-frontend-${{ hashFiles('pnpm-lock.yaml') }}-v4
+          key: node_modules-frontend-${{ hashFiles('./frontend/pnpm-lock.yaml') }}-v4
       - name: Install dependencies
         run: pnpm install
       - name: Codegen
