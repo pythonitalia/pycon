@@ -1,5 +1,3 @@
-import { updateOlarkFields } from "~/helpers/olark";
-
 export const LOGIN_KEY = "login_state_v3";
 export const USER_INFO_CACHE = "user_info_cache_v2";
 
@@ -26,8 +24,6 @@ export const setLoginState = (value: boolean) => {
   if (!value) {
     window.localStorage.removeItem(USER_INFO_CACHE);
   }
-
-  updateOlarkFields();
 };
 
 export const useLoginState = () => [getLoginState(), setLoginState];
