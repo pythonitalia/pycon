@@ -34,7 +34,7 @@
   },
   "files": {
     "ignore": [
-      "frontend/src/helpers/lodash-is-equal.ts",
+      "**/lodash-is-equal.ts",
       ".cache/",
       ".docz/",
       "public/",
