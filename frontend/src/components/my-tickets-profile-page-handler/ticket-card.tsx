@@ -132,7 +132,11 @@ export const TicketCard = ({ ticket, userEmail }: Props) => {
           answer = updatedProductUserInformation.answers[question.id] || "";
         }
 
-        const data = {
+        const data: {
+          answer: string;
+          question: string;
+          options?: string[];
+        } = {
           answer,
           question: question.id,
         };
