@@ -2,10 +2,6 @@ import react from "@astrojs/react";
 import { defineConfig } from "astro/config";
 
 import tailwind from "@astrojs/tailwind";
-// Sec-Websocket-Accept:
-// AW3KkaseWbPOHdkJmRJokz0C60Y=
-// Sec-Websocket-Protocol:
-// vite-hmr
 
 export default defineConfig({
   vite: {
