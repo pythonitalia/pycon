@@ -1,4 +1,4 @@
-// eslint-disable-file
+/* eslint-disable */
 /**
  * Lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
