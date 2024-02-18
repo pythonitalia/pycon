@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 from django.http import QueryDict
 from django.conf import settings
 
-LOCAL_ASTRO_HTTP = "http://pycon-custom-admin:3002"
+LOCAL_ASTRO_HTTP = "http://custom-admin:3002"
 
 
 def astro_proxy(request, path):
