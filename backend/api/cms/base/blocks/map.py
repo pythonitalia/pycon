@@ -1,5 +1,6 @@
 from decimal import Decimal
 from typing import Self
+from api.context import Info
 from django.conf import settings
 import strawberry
 
@@ -39,7 +40,7 @@ class CMSMap:
     @strawberry.field
     def image(
         self,
-        info,
+        info: Info,
         width: int = 1280,
         height: int = 400,
     ) -> str:
