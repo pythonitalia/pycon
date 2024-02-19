@@ -10,7 +10,7 @@ from users.models import User
 class UserFactory(DjangoModelFactory):
     class Meta:
         model = User
-        skip_postgeneration_save = True
+        skip_postgeneration_save = False
 
     username = factory.Faker("word")
     email = factory.Faker("email")
