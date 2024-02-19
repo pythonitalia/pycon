@@ -1,18 +1,18 @@
-{% extends "admin/base_site.html" %}
-{% load i18n %}
-{% load markdownify %}
-{% load localize countryname get_item %}
-{% block breadcrumbs %}
+{% extends "admin/base_site.html" %} {% load i18n %} {% load markdownify %}
+{% load localize countryname get_item %} {% block breadcrumbs %}
 <div class="breadcrumbs">
   <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
-  &rsaquo; <a href="{% url 'admin:app_list' 'reviews' %}">Reviews</a>
-  &rsaquo; <a href="{% url 'admin:reviews_reviewsession_changelist' %}">Review sessions</a>
-  &rsaquo; <a href="{% url 'admin:reviews_reviewsession_change' review_session_id %}">{{review_session_repr}}</a>
-  &rsaquo; {{title}}
+  &rsaquo; <a href="{% url 'admin:app_list' 'reviews' %}">Reviews</a> &rsaquo;
+  <a href="{% url 'admin:reviews_reviewsession_changelist' %}"
+    >Review sessions</a
+  >
+  &rsaquo;
+  <a href="{% url 'admin:reviews_reviewsession_change' review_session_id %}"
+    >{{ review_session_repr }}</a
+  >
+  &rsaquo; {{ title }}
 </div>
-{% endblock %}
-{% block content %}
-
+{% endblock %} {% block content %}
 <style>
   * {
     box-sizing: border-box;
@@ -26,11 +26,13 @@
     width: 200px;
   }
 
-  .status-choices, .approved-type-choices {
+  .status-choices,
+  .approved-type-choices {
     list-style: none;
   }
 
-  .status-choices li, .approved-type-choices li {
+  .status-choices li,
+  .approved-type-choices li {
     list-style: none;
   }
 
@@ -44,7 +46,7 @@
   }
 
   .needs-list li::after {
-    content: ',';
+    content: ",";
   }
 
   .needs-list li:last-child:after {
@@ -88,6 +90,13 @@
     gap: 50px;
   }
 
+  .reviews-bottom-bar-stats tr {
+    background-color: #417690;
+  }
+  .reviews-bottom-bar-stats td {
+    border-bottom: 0;
+  }
+
   .reviews-bottom-bar-confirm-bar {
     display: flex;
     flex-direction: column;
@@ -125,6 +134,14 @@
     display: none;
   }
 
+  .pending-grants-num span {
+    color: #48ff5a;
+  }
+
+  .current-grants-num span {
+    color: #ffa500;
+  }
+
   .grant-proposal-ranking {
     display: inline;
   }
@@ -134,8 +151,9 @@
   }
 
   .grant-proposal-ranking li:after {
-    content: ',';
+    content: ",";
   }
+
   .grant-proposal-ranking li:last-child:after {
     display: none;
   }
@@ -143,63 +161,249 @@
   ul.proposals-ranking {
     margin-left: 30px;
   }
+
   ul.proposals-ranking li {
     list-style: square;
   }
+
+  .opt-filter {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: max-content auto;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .opt-filter label + label {
+    margin-left: 10px;
+  }
 </style>
-<script>
+<script type="application/javascript">
+  const grantsById = {};
+  let grants;
+
+  const pendingStatusNumRef = {}
+  const currentStatusNumRef = {}
+
+  const getRefs = () => {
+    {% for status in all_review_statuses %}
+    pendingStatusNumRef["{{status.0}}"] = document.querySelector("#pending-{{status.0}}-grants-num");
+    {% endfor %}
+
+    {% for status in all_statuses %}
+      currentStatusNumRef["{{status.0}}"] = document.querySelector("#current-{{status.0}}-grants-num");
+    {% endfor %}
+
+    const acc = {
+      {% for status in all_statuses %}
+      "{{status.0}}": 0,
+      {% endfor %}
+    };
+
+    grants.forEach(grant => {
+      acc[grant.originalStatus]++;
+    });
+
+    {% for status in all_statuses %}
+      currentStatusNumRef["{{status.0}}"].innerText = acc["{{status.0}}"];
+    {% endfor %}
+  };
+
+
+
+  window.addEventListener("load", () => {
+      grants = Object.values(grantsById);
+
+      getRefs();
+      updateBottomBarUI();
+
+      grants.forEach((grantData) => {
+          const grantId = grantData.id;
+          const approvedInput = document.getElementById(
+              `decision-${grantId}-approved`,
+          );
+          const rejectInput = document.getElementById(
+              `decision-${grantId}-rejected`,
+          );
+          const unsetInput = document.getElementById(
+              `decision-${grantId}-unset`,
+          );
+          const waitinglistInput = document.getElementById(
+              `decision-${grantId}-waiting_list`,
+          );
+          const waitinglistmaybeInput = document.getElementById(
+              `decision-${grantId}-waiting_list_maybe`,
+          );
+
+          approvedInput.addEventListener("change", () => {
+              grantData.status = "approved";
+              updateBottomBarUI();
+          });
+
+          rejectInput.addEventListener("change", () => {
+              grantData.status = "rejected";
+              updateBottomBarUI();
+          });
+
+          waitinglistInput.addEventListener("change", () => {
+              grantData.status = "waiting_list";
+              updateBottomBarUI();
+          });
+
+          waitinglistInput.addEventListener("change", () => {
+              grantData.status = "waiting_list_maybe";
+              updateBottomBarUI();
+          });
+
+          unsetInput.addEventListener("change", () => {
+              const proposalRow = document.querySelector(`#grant-${grantId}`);
+              const originalStatus = proposalRow.dataset.originalStatus;
+
+              if (originalStatus === "approved") {
+                  approvedInput.checked = true;
+              } else if (originalStatus === "rejected") {
+                  rejectInput.checked = true;
+              } else if (originalStatus === "waiting_list") {
+                  waitinglistInput.checked = true;
+              } else if (originalStatus === "waiting_list_maybe") {
+                  waitinglistmaybeInput.checked = true;
+              }
+
+              unsetInput.checked = false;
+              grantData.status = originalStatus;
+              updateBottomBarUI();
+          });
+      });
+  });
+
   window.onload = () => {
-    document.querySelectorAll('.unset-radio').forEach(radio => {
-      radio.addEventListener('click', () => {
-        radio.checked = false;
+      document.querySelectorAll('.unset-radio').forEach(radio => {
+          radio.addEventListener('click', () => {
+              radio.checked = false;
 
-        const grantId = radio.name.split('-')[1];
-        const grantRow = document.querySelector(`#grant-${grantId}`);
+              const grantId = radio.name.split('-')[1];
+              const grantRow = document.querySelector(`#grant-${grantId}`);
 
-        const originalStatus = grantRow.dataset.originalStatus;
-        const originalApprovedType = grantRow.dataset.originalApprovedType;
+              const originalStatus = grantRow.dataset.originalStatus;
+              const originalApprovedType = grantRow.dataset.originalApprovedType;
 
-        grantRow.querySelector(`.status-decision-radio[value="${originalStatus}"]`).checked = true;
+              grantRow.querySelector(`.status-decision-radio[value="${originalStatus}"]`).checked = true;
 
-        if (originalApprovedType !== 'None') {
-          grantRow.querySelector(`.approved-type-choices input[value="${originalApprovedType}"]`).checked = true;
-        }
+              if (originalApprovedType !== 'None') {
+                  grantRow.querySelector(`.approved-type-choices input[value="${originalApprovedType}"]`).checked = true;
+              }
 
-        if (originalStatus === "approved") {
-          grantRow.querySelector(`.approved-type-choices`).classList.remove('hidden');
-        } else {
-          grantRow.querySelector(`.approved-type-choices`).classList.add('hidden');
-        }
+              if (originalStatus === "approved") {
+                  grantRow.querySelector(`.approved-type-choices`).classList.remove('hidden');
+              } else {
+                  grantRow.querySelector(`.approved-type-choices`).classList.add('hidden');
+              }
+          });
       });
-    });
 
-    document.querySelectorAll('.status-decision-radio').forEach(radio => {
-      radio.addEventListener('click', () => {
-        const grantId = radio.name.split('-')[1];
-        const approvedTypeSection = document.querySelector(`.approved-type-choices[data-item-id="${grantId}"]`)
+      document.querySelectorAll('.status-decision-radio').forEach(radio => {
+          radio.addEventListener('click', () => {
+              const grantId = radio.name.split('-')[1];
 
-        if (radio.value === "approved") {
-          approvedTypeSection.classList.remove('hidden');
-        } else {
-          approvedTypeSection.classList.add('hidden');
-        }
+              const approvedTypeSection = document.querySelector(`.approved-type-choices[data-item-id="${grantId}"]`)
+
+              if (radio.value === "approved") {
+                  approvedTypeSection.classList.remove('hidden');
+              } else {
+                  approvedTypeSection.classList.add('hidden');
+              }
+          });
       });
-    });
+
+      const filterByStatusInputs = [...document.querySelectorAll('input[name="filter-by-status"]')];
+      filterByStatusInputs.forEach(
+          filterByStatusInput => {
+              filterByStatusInput.addEventListener('change', e => {
+                  e.preventDefault();
+
+                  const filterValue = e.target.value;
+                  const visibleStatuses = filterByStatusInputs.filter(
+                      input => input.checked
+                  ).map(
+                      input => input.value
+                  );
+
+                  document.querySelectorAll('.grant-item').forEach(
+                      grantRow => {
+                          const grantId = parseInt(grantRow.id.split('-')[1], 10);
+                          const grantData = grantsById[grantId];
+
+                          if (visibleStatuses.includes(grantData.originalStatus)) {
+                              grantRow.classList.remove('hidden')
+                          } else {
+                              grantRow.classList.add('hidden')
+                          }
+                      }
+                  );
+              });
+          }
+      );
+
+
+
+  };
+
+  const updateBottomBarUI = () => {
+      const   acc = {}
+      {% for status in all_review_statuses %}
+        acc["{{status.0}}"] = 0
+      {% endfor %}
+
+      const results = grants.reduce(
+          (acc, grant) => {
+            const grantStatus = grant.status;
+            acc[grantStatus]++;
+            return acc
+          },
+          acc,
+      );
+
+      {% for status in all_review_statuses %}
+        pendingStatusNumRef["{{status.0}}"].innerText = results["{{status.0}}"];
+      {% endfor %}
+
   };
 </script>
-
 <ul class="object-tools">
   <li>
-    <a target="_blank" href="{% url 'admin:grants-summary' %}?conference__id__exact={{ review_session.conference_id }}" class="change-list-object-tools-item">
-      Open Grants Summary
-    </a>
+    <a
+      target="_blank"
+      href="{% url 'admin:grants-summary' %}?conference__id__exact={{ review_session.conference_id }}"
+      class="change-list-object-tools-item"
+      >Open Grants Summary</a
+    >
   </li>
 </ul>
-
 <form id="changelist-form" method="post" novalidate="">
   {% csrf_token %}
-
   <div id="content-main">
+    <div class="module filtered">
+      <h2>Filters</h2>
+      <div class="opt-filter">
+        <h3>
+          Show grants with
+          <strong style="text-transform: uppercase">current</strong> status:
+        </h3>
+        <div>
+          {% for status in all_statuses %}
+          <label>
+            <input
+              checked
+              type="checkbox"
+              name="filter-by-status"
+              value="{{ status.0 }}"
+            />
+            <span>{{ status.1 }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
     <div class="module filtered" id="changelist">
       <div class="changelist-form-container">
         <div class="results">
@@ -207,192 +411,234 @@
             <thead>
               <tr>
                 <th scope="col">
-                  <div class="text"><span>#</span></div>
+                  <div class="text">
+                    <span>#</span>
+                  </div>
                   <div class="clear"></div>
                 </th>
                 <th scope="col">
-                  <div class="text"><span>Grant</span></div>
+                  <div class="text">
+                    <span>Grant</span>
+                  </div>
                   <div class="clear"></div>
                 </th>
                 <th scope="col">
-                  <div class="text"><a>Score</a></div>
+                  <div class="text">
+                    <a>Score</a>
+                  </div>
                   <div class="clear"></div>
                 </th>
                 <th scope="col">
-                  <div class="text"><span>Votes</span></div>
+                  <div class="text">
+                    <span>Votes</span>
+                  </div>
                   <div class="clear"></div>
                 </th>
                 <th scope="col">
-                  <div class="text"><span>Current Status</span></div>
+                  <div class="text">
+                    <span>Current Status</span>
+                  </div>
                   <div class="clear"></div>
                 </th>
                 <th scope="col">
-                  <div class="text"><span>Decision</span></div>
+                  <div class="text">
+                    <span>Decision</span>
+                  </div>
                   <div class="clear"></div>
                 </th>
                 <th scope="col">
-                  <div class="text"><span>Approved type</span></div>
+                  <div class="text">
+                    <span>Approved type</span>
+                  </div>
                   <div class="clear"></div>
                 </th>
               </tr>
             </thead>
             <tbody>
               {% for item in items %}
-              <tr data-original-status="{{item.status}}" data-original-approved-type="{{item.approved_type}}" class="grant-item" id="grant-{{item.id}}" data-type="{{item.type}}" data-num-of-votes="{{ item.userreview_set.count }}">
-                <td>
-                  {{forloop.counter}}
-                </td>
+              <script>
+                grantsById[{{item.id}}] = {
+                    id: {{item.id}},
+                    status: "{{ item.status }}",
+                    originalStatus: "{{ item.status }}",
+                    numOfVotes: {{item.userreview_set.count}},
+                };
+              </script>
+              <tr
+                data-original-status="{{ item.status }}"
+                data-original-approved-type="{{ item.approved_type }}"
+                class="grant-item"
+                id="grant-{{ item.id }}"
+                data-type="{{ item.type }}"
+                data-num-of-votes="{{ item.userreview_set.count }}"
+              >
+                <td>{{ forloop.counter }}</td>
                 <td class="results-item">
                   <a
                     target="_blank"
-                    href="{% url 'admin:grants_grant_change' item.id %}">
-                    <strong>{{item.name}} - {{item.full_name}}</strong>
+                    href="{% url 'admin:grants_grant_change' item.id %}"
+                  >
+                    <strong>{{ item.name }} - {{ item.full_name }}</strong>
                   </a>
                   <ul>
                     <li>
                       <strong>Gender:</strong>
-                      <span>{{item.get_gender_display}}</span>
+                      <span>{{ item.get_gender_display }}</span>
                     </li>
                     <li>
                       <strong>Age Group:</strong>
-                      <span>{{item.get_age_group_display}}</span>
+                      <span>{{ item.get_age_group_display }}</span>
                     </li>
                     <li>
                       <strong>Occupation:</strong>
-                      <span>{{item.get_occupation_display}}</span>
+                      <span>{{ item.get_occupation_display }}</span>
                     </li>
                     <li>
                       <strong>Travelling From:</strong>
-                      <span>{{item.get_travelling_from_display}}</span>
+                      <span>{{ item.get_travelling_from_display }}</span>
                     </li>
                     <li>
                       <strong>Country type:</strong>
-                      <span>{{item.get_country_type_display}}</span>
+                      <span>{{ item.get_country_type_display }}</span>
                     </li>
                     <li>
                       <strong>Grant type:</strong>
-                      <span>{{item.get_grant_type_display}}</span>
+                      <span>{{ item.get_grant_type_display }}</span>
                     </li>
                     <li>
                       <strong>Needs:</strong>
                       <ul class="needs-list">
                         {% if item.need_visa %}
-                          <li>VISA</li>
-                        {% endif %}
-                        {% if item.need_accommodation %}
-                          <li>Accommodation</li>
-                        {% endif %}
-                        {% if item.needs_funds_for_travel %}
-                          <li>Funds for Travel</li>
-                        {% endif %}
-                        {% if not item.need_visa and not item.need_accommodation and not item.needs_funds_for_travel %}
-                          <li>Ticket only</li>
+                        <li>VISA</li>
+                        {% endif %} {% if item.need_accommodation %}
+                        <li>Accommodation</li>
+                        {% endif %} {% if item.needs_funds_for_travel %}
+                        <li>Funds for Travel</li>
+                        {% endif %} {% if not item.need_visa and not item.need_accommodation and not item.needs_funds_for_travel %}
+                        <li>Ticket only</li>
                         {% endif %}
                       </ul>
                     </li>
                     <li>
                       <strong>Interested in Volunteering?</strong>
-                      <span>{{item.get_interested_in_volunteering_display}}</span>
+                      <span
+                        >{{ item.get_interested_in_volunteering_display }}</span
+                      >
                     </li>
                     <li>
                       <strong>Has sent a proposal?</strong>
-                      <span>{{item.has_sent_a_proposal|yesno}}</span>
+                      <span>{{ item.has_sent_a_proposal|yesno }}</span>
                     </li>
                     {% if item.has_sent_a_proposal %}
-                      <li>
-                        <strong>Proposals Ranking:</strong>
-                        <ul class="proposals-ranking">
-                          {% for proposal_id in item.proposals_ids %}
-                            {% with proposal=proposals|get_item:proposal_id %}
-                              <li>
-                                <strong><a target="_blank" href="{% url 'admin:submissions_submission_change' proposal.id %}">{{proposal.title}}:</a></strong>
-                                <ul class="grant-proposal-ranking">
-                                  {% for ranking in proposal.rankings.all %}
-                                      <li>{{ ranking.tag.name }} {{ ranking.rank }}/{{ ranking.total_submissions_per_tag }}</li>
-                                  {% endfor %}
-                                </ul>
-                              </li>
-                            {% endwith %}
-                          {% endfor %}
-                        </ul>
-                      </li>
+                    <li>
+                      <strong>Proposals Ranking:</strong>
+                      <ul class="proposals-ranking">
+                        {% for proposal_id in item.proposals_ids %} {% with proposal=proposals|get_item:proposal_id %}
+                        <li>
+                          <strong
+                            ><a
+                              target="_blank"
+                              href="{% url 'admin:submissions_submission_change' proposal.id %}"
+                              >{{ proposal.title }}:</a
+                            ></strong
+                          >
+                          <ul class="grant-proposal-ranking">
+                            {% for ranking in proposal.rankings.all %}
+                            <li>
+                              {{ ranking.tag.name }} {{ ranking.rank }}/{{ ranking.total_submissions_per_tag }}
+                            </li>
+                            {% endfor %}
+                          </ul>
+                        </li>
+                        {% endwith %} {% endfor %}
+                      </ul>
+                    </li>
                     {% endif %}
                   </ul>
                 </td>
-
                 <td>{{ item.score }}</td>
-
                 <td class="votes-list">
                   <ul>
                     {% for reviewer in item.userreview_set.all %}
                     <li>
-                      <strong>{{reviewer.user.full_name}}</strong> voted
-                      {{reviewer.score.label}}
-                      ({{reviewer.score.numeric_value}})<br />
-                      {{reviewer.comment}}
+                      <strong>{{ reviewer.user.full_name }}</strong> voted
+                      {{ reviewer.score.label }} ({{ reviewer.score.numeric_value }})
+                      <br />
+                      {{ reviewer.comment }}
                     </li>
                     {% empty %}
                     <li>No reviews yet</li>
                     {% endfor %}
                     <li>
-                      <a style="font-weight: bold" target="_blank" href="{% url 'admin:reviews-vote-view' review_session_id=review_session_id review_item_id=item.id %}">
+                      <a
+                        style="font-weight: bold"
+                        target="_blank"
+                        href="{% url 'admin:reviews-vote-view' review_session_id=review_session_id review_item_id=item.id %}"
+                      >
                         Open Grant review screen
                       </a>
                     </li>
                   </ul>
                 </td>
-
                 <td>
-                  {{ item.get_status_display }}<br/>
-                  {% if item.approved_type %}
-                  ({{ item.get_approved_type_display }})
-                  {% endif %}
+                  {{ item.get_status_display }}
+                  <br />
+                  {% if item.approved_type %}({{ item.get_approved_type_display }}){% endif %}
                 </td>
-
                 <td>
                   {% if perms.reviews.decision_reviewsession %}
-                    <ul class="status-choices">
-                      {% for status in all_statuses %}
-                        <li>
-                          <label>
-                            <input {% if item.status == status.0 %}checked{% endif %} type="radio" class="status-decision-radio" name="decision-{{item.id}}" value="{{status.0}}" />
-                              {{status.1}}
-                          </label>
-                        </li>
-                      {% endfor %}
-                      <li>
-                        <label>
-                          <input class="unset-radio" type="radio" name="decision-{{item.id}}" value="unset" />
-                            Unset
-                        </label>
-                      </li>
-                    </ul>
-                  {% else %}
-                    No permission to change.
-                  {% endif %}
+                  <ul class="status-choices">
+                    {% for status in all_review_statuses %}
+                    <li>
+                      <label>
+                        <input {% if item.status == status.0 %}checked{% endif %}
+                          type="radio"
+                          class="status-decision-radio"
+                          name="decision-{{item.id}}"
+                          id="decision-{{ item.id }}-{{ status.0 }}"
+                          value="{{status.0}}" />
+                        {{ status.1 }}
+                      </label>
+                    </li>
+                    {% endfor %}
+                    <li>
+                      <label>
+                        <input
+                          class="unset-radio"
+                          type="radio"
+                          name="decision-{{ item.id }}"
+                          id="decision-{{ item.id }}-unset"
+                          value="unset"
+                        />
+                        Unset
+                      </label>
+                    </li>
+                  </ul>
+                  {% else %} No permission to change. {% endif %}
                 </td>
-
                 <td>
                   {% if perms.reviews.decision_reviewsession %}
-                    <ul data-item-id="{{item.id}}" class="approved-type-choices {% if item.status != 'approved' %}hidden{% endif %}">
-                      {% for approved_type in all_approved_types %}
-                        <li>
-                          <label>
-                            <input {% if item.approved_type == approved_type.0 %}checked{% endif %} type="radio" name="approvedtype-{{item.id}}" value="{{approved_type.0}}" />
-                              {{approved_type.1}}
-                          </label>
-                        </li>
-                      {% endfor %}
-                      <li>
-                        <label>
-                          <input class="unset-radio" type="radio" name="approvedtype-{{item.id}}" value="unset" />
-                            Unset
-                        </label>
-                      </li>
-                    </ul>
-                  {% else %}
-                    No permission to change.
-                  {% endif %}
+                  <ul
+                    data-item-id="{{ item.id }}"
+                    class="approved-type-choices {% if item.status != 'approved' %}hidden{% endif %}"
+                  >
+                    {% for approved_type in all_approved_types %}
+                    <li>
+                      <label>
+                        <input {% if item.approved_type == approved_type.0 %}checked{% endif %}
+                          type="radio" name="approvedtype-{{item.id}}" value="{{approved_type.0}}" />
+                        {{approved_type.1}}
+                      </label>
+                    </li>
+                    {% endfor %}
+                    <li>
+                      <label>
+                        <input class="unset-radio" type="radio" name="approvedtype-{{item.id}}" value="unset" />
+                          Unset
+                      </label>
+                    </li>
+                  </ul>
+                  {% else %} No permission to change. {% endif %}
                 </td>
               </tr>
               {% endfor %}
@@ -404,17 +650,47 @@
     <div style="height: 100px"></div>
   </div>
   {% if perms.reviews.decision_reviewsession %}
-    <div id="content" class="reviews-bottom-bar colM">
-      <div class="reviews-bottom-bar-content">
-        <div class="submit-row reviews-bottom-bar-confirm-bar">
-          <p>
-            Once done, click the button to save your choices.
-            You can change as many times as you need, no emails will be sent.
-          </p>
-          <input value="Submit choices" type="submit" />
-        </div>
+  <div id="content" class="reviews-bottom-bar colM">
+    <div class="reviews-bottom-bar-content">
+      <div class="submit-row reviews-bottom-bar-confirm-bar">
+        <p>
+          Once done, click the button to save your choices. You can change as
+          many times as you need, no emails will be sent.
+        </p>
+        <input value="Submit choices" type="submit" />
+      </div>
+      <div class="reviews-bottom-bar-stats">
+        <table>
+          <tbody>
+            <tr>
+              <td><h2>Pending status ➡</h2></td>
+              {% for status in all_statuses %}
+              <td>
+                {% if status in all_review_statuses %}
+                <h2 class="pending-grants-num">
+                  {{status.1}}:
+                  <span id="pending-{{status.0}}-grants-num">0</span>
+                </h2>
+                {% endif %}
+              </td>
+              {% endfor %}
+            </tr>
+            <tr>
+              <td><h2>Current status ➡</h2></td>
+              {% for status in all_statuses %}
+              <td>
+                <h2 class="current-grants-num">
+                  {{status.1}}:
+                  <span id="current-{{status.0}}-grants-num">0</span>
+                </h2>
+              </td>
+              {% endfor %}
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
+  </div>
   {% endif %}
 </form>
 {% endblock %}

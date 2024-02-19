@@ -360,11 +360,12 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             proposals=proposals,
             review_session_id=review_session_id,
             review_session_repr=str(review_session),
-            all_statuses=[
+            all_review_statuses=[
                 choice
                 for choice in Grant.Status.choices
                 if choice[0] in Grant.REVIEW_SESSION_STATUSES_OPTIONS
             ],
+            all_statuses=Grant.Status.choices,
             all_approved_types=[choice for choice in Grant.ApprovedType.choices],
             review_session=review_session,
             title="Recap",
