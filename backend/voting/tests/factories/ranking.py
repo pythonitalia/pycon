@@ -18,6 +18,7 @@ class RankRequestFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = RankRequest
+        skip_postgeneration_save = True
 
     @post_generation
     def rank_submissions(self, create, extracted):

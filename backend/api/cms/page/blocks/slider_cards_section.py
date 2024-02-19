@@ -1,4 +1,4 @@
-from typing import Self
+from typing import Annotated, Self
 import strawberry
 
 from api.cms.base.blocks.cta import CTA
@@ -41,7 +41,9 @@ class PriceCard:
         )
 
 
-AvailableCards = strawberry.union("AvailableCards", (SimpleTextCard, PriceCard))
+AvailableCards = Annotated[
+    SimpleTextCard | PriceCard, strawberry.union("AvailableCards")
+]
 
 
 @strawberry.type

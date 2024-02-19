@@ -44,6 +44,7 @@ class SubmissionTagFactory(DjangoModelFactory):
 class SubmissionFactory(DjangoModelFactory):
     class Meta:
         model = Submission
+        skip_postgeneration_save = True
 
     conference = factory.SubFactory(ConferenceFactory)
 

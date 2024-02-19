@@ -17,6 +17,7 @@ class SponsorFactory(DjangoModelFactory):
 
     class Meta:
         model = Sponsor
+        skip_postgeneration_save = True
 
 
 @register
@@ -27,6 +28,7 @@ class SponsorLevelFactory(DjangoModelFactory):
 
     class Meta:
         model = SponsorLevel
+        skip_postgeneration_save = True
 
     @factory.post_generation
     def sponsors(self, create, extracted, **kwargs):

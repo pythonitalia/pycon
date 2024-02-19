@@ -1,4 +1,4 @@
-from typing import Self
+from typing import Annotated, Self, Union
 from api.cms.page.blocks.homepage_hero import HomepageHero
 from cms.components.page.models import GenericPage as GenericPageModel
 
@@ -41,10 +41,7 @@ REGISTRY = {
     "homepage_hero": HomepageHero,
 }
 
-Block = strawberry.union(
-    "Block",
-    REGISTRY.values(),
-)
+Block = Annotated[Union[REGISTRY.values()], strawberry.union("Block")]
 
 
 @strawberry.type

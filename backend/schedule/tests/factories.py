@@ -89,6 +89,7 @@ class ScheduleItemFactory(DjangoModelFactory):
 
     class Meta:
         model = ScheduleItem
+        skip_postgeneration_save = True
 
 
 @register

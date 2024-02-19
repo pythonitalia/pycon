@@ -148,6 +148,7 @@ class ConferenceFactory(DjangoModelFactory):
     class Meta:
         model = Conference
         django_get_or_create = ("code",)
+        skip_postgeneration_save = True
 
 
 @register
