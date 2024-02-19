@@ -45,7 +45,7 @@ export const TalkPage = () => {
         audienceLevel={talk.submission?.audienceLevel.name}
         startTime={talk.start}
         endTime={talk.end}
-        speakers={talk.speakers.map((speaker) => speaker.participant)}
+        speakers={talk.speakers}
         bookable={talk.hasLimitedCapacity}
         spacesLeft={talk.spacesLeft}
         slidoUrl={talk.slidoUrl}
