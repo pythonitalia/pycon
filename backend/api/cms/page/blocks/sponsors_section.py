@@ -1,6 +1,7 @@
 import enum
 from typing import Self
 import strawberry
+from api.cms.page.registry import register_page_block
 
 from api.cms.base.blocks.cta import CTA
 
@@ -11,6 +12,7 @@ class SponsorsSectionLayout(enum.Enum):
     VERTICAL = "vertical"
 
 
+@register_page_block
 @strawberry.type
 class SponsorsSection:
     id: strawberry.ID

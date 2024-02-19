@@ -1,4 +1,5 @@
 from typing import Annotated, Self
+from api.cms.page.registry import register_page_block
 import strawberry
 
 from api.cms.base.blocks.cta import CTA
@@ -46,6 +47,7 @@ AvailableCards = Annotated[
 ]
 
 
+@register_page_block
 @strawberry.type
 class SliderCardsSection:
     id: strawberry.ID
