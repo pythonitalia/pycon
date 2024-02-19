@@ -44,7 +44,6 @@ class SubmissionTagFactory(DjangoModelFactory):
 class SubmissionFactory(DjangoModelFactory):
     class Meta:
         model = Submission
-        skip_postgeneration_save = True
 
     conference = factory.SubFactory(ConferenceFactory)
 
@@ -124,6 +123,10 @@ class SubmissionFactory(DjangoModelFactory):
             for tag_name in extracted:
                 tag, _ = SubmissionTag.objects.get_or_create(name=tag_name)
                 self.tags.add(tag)
+
+    def _after_postgeneration(self, obj, create, results=None):
+        if create and results:
+            obj.save()
 
 
 @register

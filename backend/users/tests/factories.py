@@ -10,9 +10,12 @@ from users.models import User
 class UserFactory(DjangoModelFactory):
     class Meta:
         model = User
-        skip_postgeneration_save = False
 
     username = factory.Faker("word")
     email = factory.Faker("email")
     full_name = factory.Faker("name")
     password = factory.PostGenerationMethodCall("set_password", "test")
+
+    def _after_postgeneration(self, obj, create, results=None):
+        if create and results:
+            obj.save()
