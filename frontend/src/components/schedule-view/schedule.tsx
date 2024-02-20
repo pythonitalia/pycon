@@ -69,7 +69,7 @@ const getRowEnd = ({
       .slice(currentSlotIndex, endingSlotIndex + 1)
       .reduce((acc, s) => acc + getSlotSize(s), 0);
     return {
-      itemRowEnd: Math.floor(sizeToNextSlot * 0.85),
+      itemRowEnd: Math.floor(sizeToNextSlot * 0.9),
       sameSlotItem: true,
     };
   }
