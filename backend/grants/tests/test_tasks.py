@@ -1,11 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import patch, ANY
 from conferences.tests.factories import DeadlineFactory
 from django.test import override_settings
 
 import pytest
 from users.tests.factories import UserFactory
-from django.utils import timezone
 from pythonit_toolkit.emails.templates import EmailTemplate
 
 from grants.tests.factories import GrantFactory

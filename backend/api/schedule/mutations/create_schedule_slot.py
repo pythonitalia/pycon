@@ -1,3 +1,4 @@
+from api.context import Info
 from custom_admin.audit import create_addition_admin_log_entry
 from django.db import transaction
 from api.schedule.types.day import Day
@@ -16,7 +17,7 @@ class CreateScheduleSlotInput:
 
 
 @strawberry.field(permission_classes=[CanEditSchedule])
-def create_schedule_slot(info, input: CreateScheduleSlotInput) -> Day:
+def create_schedule_slot(info: Info, input: CreateScheduleSlotInput) -> Day:
     conference_id = input.conference_id
     day = DayModel.objects.for_conference(conference_id).get(id=input.day_id)
 

@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import Self
+from api.cms.page.registry import register_page_block
 import strawberry
 
 from api.cms.base.blocks.accordion import Accordion
@@ -12,6 +13,7 @@ class BodyTextSize(Enum):
     TEXT_2 = "text-2"
 
 
+@register_page_block
 @strawberry.type
 class TextSection:
     id: strawberry.ID
