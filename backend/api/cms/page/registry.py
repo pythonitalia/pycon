@@ -1,4 +1,6 @@
-from typing import Union
+from typing import Annotated, Union
+
+import strawberry
 
 
 REGISTRY = {}
@@ -29,7 +31,7 @@ def get_block_union():
         module_path = file_.replace("/", ".").replace(".py", "")
         importlib.import_module(module_path)
 
-    return Union[tuple(REGISTRY.values())]
+    return Annotated[Union[tuple(REGISTRY.values())], strawberry.union("Block")]
 
 
 def get_block(block_type):

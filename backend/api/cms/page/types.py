@@ -1,5 +1,5 @@
-from typing import Annotated, Self
-from api.cms.page.registry import get_block_union, get_block
+from typing import Self
+from api.cms.page.registry import get_block, get_block_union
 from cms.components.page.models import GenericPage as GenericPageModel
 
 import strawberry
@@ -16,7 +16,7 @@ class GenericPage:
     title: str
     search_description: str
     slug: str
-    body: Annotated[list[get_block_union()], strawberry.union("Block")]  # type: ignore
+    body: list[get_block_union()]  # type: ignore
 
     @classmethod
     def from_model(cls, obj: GenericPageModel) -> Self:
