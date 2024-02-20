@@ -2,7 +2,6 @@ import re
 import typing
 from urllib.parse import urljoin
 
-from api.context import Info
 import strawberry
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
@@ -38,7 +37,7 @@ class Error:
 class OrdersMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def create_order(
-        self, info: Info, conference: str, input: CreateOrderInput
+        self, info, conference: str, input: CreateOrderInput
     ) -> typing.Union[CreateOrderResult, Error]:
         conference_obj = Conference.objects.get(code=conference)
         validation_error = validate_hotel_rooms(

@@ -15,11 +15,6 @@ class SponsorFactory(DjangoModelFactory):
     image = factory.django.ImageField()
     order = factory.Faker("pyint", min_value=0)
 
-    @classmethod
-    def _after_postgeneration(cls, obj, create, results=None):
-        if create and results:
-            obj.save()
-
     class Meta:
         model = Sponsor
 
@@ -29,11 +24,6 @@ class SponsorLevelFactory(DjangoModelFactory):
     name = factory.Faker("word")
     conference = factory.SubFactory(ConferenceFactory)
     highlight_color = factory.fuzzy.FuzzyChoice([color[0] for color in COLORS])
-
-    @classmethod
-    def _after_postgeneration(cls, obj, create, results=None):
-        if create and results:
-            obj.save()
 
     class Meta:
         model = SponsorLevel

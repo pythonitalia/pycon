@@ -1,5 +1,4 @@
 from typing import Annotated, Union
-from api.context import Info
 from pretix import user_has_admission_ticket
 import strawberry
 from api.permissions import IsAuthenticated
@@ -45,7 +44,7 @@ BookScheduleItemResult = Annotated[
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-def book_schedule_item(info: Info, id: strawberry.ID) -> BookScheduleItemResult:
+def book_schedule_item(info, id: strawberry.ID) -> BookScheduleItemResult:
     schedule_item = ScheduleItem.objects.get(id=id)
     user_id = info.context.request.user.id
 

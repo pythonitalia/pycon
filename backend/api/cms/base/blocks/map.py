@@ -1,7 +1,5 @@
 from decimal import Decimal
 from typing import Self
-from api.cms.page.registry import register_page_block
-from api.context import Info
 from django.conf import settings
 import strawberry
 
@@ -20,7 +18,6 @@ def generate_map_image(
     return f"{base}{style}/static/{marker}/{coordinates},{zoom},0,13/{size}?{token}"
 
 
-@register_page_block(name="map")
 @strawberry.type
 class CMSMap:
     id: strawberry.ID
@@ -42,7 +39,7 @@ class CMSMap:
     @strawberry.field
     def image(
         self,
-        info: Info,
+        info,
         width: int = 1280,
         height: int = 400,
     ) -> str:

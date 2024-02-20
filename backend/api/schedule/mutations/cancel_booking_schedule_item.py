@@ -1,4 +1,3 @@
-from api.context import Info
 from api.schedule.mutations.book_schedule_item import ScheduleItemNotBookable
 from api.schedule.types import (
     ScheduleItem as ScheduleItemType,
@@ -25,7 +24,7 @@ CancelBookingScheduleItemResult = Annotated[
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 def cancel_booking_schedule_item(
-    info: Info, id: strawberry.ID
+    self, info, id: strawberry.ID
 ) -> CancelBookingScheduleItemResult:
     schedule_item = ScheduleItem.objects.get(id=id)
     user_id = info.context.request.user.id

@@ -37,7 +37,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: "3.11.6"
-      - run: pip install pdm==2.10.4 codecov
+      - run: pip install pdm==2.10.4
 
       - name: Cache PDM
         uses: actions/cache@v4
@@ -49,6 +49,9 @@ jobs:
       - name: Install python dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: pdm install
+
+      - name: Install codecov
+        run: pip install codecov
 
       - name: pytest
         run: |

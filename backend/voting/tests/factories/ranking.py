@@ -38,11 +38,6 @@ class RankRequestFactory(factory.django.DjangoModelFactory):
                 rank_submission = RankSubmissionFactory.create(submission=submission)
                 self.rank_submissions.add(rank_submission)
 
-    @classmethod
-    def _after_postgeneration(cls, obj, create, results=None):
-        if create and results:
-            obj.save()
-
 
 @register
 class RankSubmissionFactory(factory.django.DjangoModelFactory):

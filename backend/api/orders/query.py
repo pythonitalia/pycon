@@ -1,6 +1,5 @@
 from typing import Optional
 
-from api.context import Info
 import strawberry
 from api.permissions import IsAuthenticated
 from api.pretix.query import get_order
@@ -11,9 +10,7 @@ from conferences.models import Conference
 @strawberry.type
 class OrdersQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
-    def order(
-        self, info: Info, conference_code: str, code: str
-    ) -> Optional[PretixOrder]:
+    def order(self, info, conference_code: str, code: str) -> Optional[PretixOrder]:
         conference = Conference.objects.get(code=conference_code)
 
         user = info.context.request.user

@@ -124,11 +124,6 @@ class SubmissionFactory(DjangoModelFactory):
                 tag, _ = SubmissionTag.objects.get_or_create(name=tag_name)
                 self.tags.add(tag)
 
-    @classmethod
-    def _after_postgeneration(cls, obj, create, results=None):
-        if create and results:
-            obj.save()
-
 
 @register
 class SubmissionCommentFactory(DjangoModelFactory):

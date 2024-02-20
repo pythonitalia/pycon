@@ -1,6 +1,5 @@
 from typing import List, Optional
 
-from api.context import Info
 import strawberry
 
 from blog.models import Post
@@ -34,7 +33,7 @@ class BlogQuery:
         ]
 
     @strawberry.field
-    def blog_post(self, info: Info, slug: str) -> Optional[PostType]:
+    def blog_post(self, info, slug: str) -> Optional[PostType]:
         post = Post.published_posts.by_slug(slug).first()
 
         if not post:

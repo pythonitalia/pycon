@@ -1,12 +1,10 @@
 import datetime
 from typing import Any
-from api.cms.page.registry import register_page_block
 import strawberry
 
 from api.cms.base.blocks.cta import CTA
 
 
-@register_page_block
 @strawberry.type
 class SpecialGuestSection:
     id: strawberry.ID

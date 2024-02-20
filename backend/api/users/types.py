@@ -68,9 +68,7 @@ class User:
         )
 
     @strawberry.field
-    def starred_schedule_items(
-        self, info: Info, conference: str
-    ) -> List[strawberry.ID]:
+    def starred_schedule_items(self, info, conference: str) -> List[strawberry.ID]:
         stars = ScheduleItemStarModel.objects.filter(
             schedule_item__conference__code=conference, user_id=self.id
         ).values_list("schedule_item_id", flat=True)
@@ -87,7 +85,7 @@ class User:
         return Grant.from_model(grant) if grant else None
 
     @strawberry.field
-    def participant(self, info: Info, conference: str) -> Optional[Participant]:
+    def participant(self, info, conference: str) -> Optional[Participant]:
         participant = ParticipantModel.objects.filter(
             user_id=self.id,
             conference__code=conference,
@@ -95,7 +93,7 @@ class User:
         return Participant.from_model(participant) if participant else None
 
     @strawberry.field
-    def orders(self, info: Info, conference: str) -> List[PretixOrder]:
+    def orders(self, info, conference: str) -> List[PretixOrder]:
         conference = Conference.objects.get(code=conference)
         return sorted(
             get_user_orders(conference, self.email),
@@ -103,15 +101,13 @@ class User:
         )
 
     @strawberry.field
-    def tickets(
-        self, info: Info, conference: str, language: str
-    ) -> List[AttendeeTicket]:
+    def tickets(self, info, conference: str, language: str) -> List[AttendeeTicket]:
         conference = Conference.objects.get(code=conference)
         attendee_tickets = get_user_tickets(conference, self.email, language)
         return [ticket for ticket in attendee_tickets]
 
     @strawberry.field
-    def submissions(self, info: Info, conference: str) -> List[Submission]:
+    def submissions(self, info, conference: str) -> List[Submission]:
         return SubmissionModel.objects.filter(
             speaker_id=self.id, conference__code=conference
         )

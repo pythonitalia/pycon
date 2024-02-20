@@ -1,11 +1,9 @@
 from typing import Self
-from api.cms.page.registry import register_page_block
 import strawberry
 
 from api.cms.base.blocks.cta import CTA
 
 
-@register_page_block
 @strawberry.type
 class SchedulePreviewSection:
     id: strawberry.ID

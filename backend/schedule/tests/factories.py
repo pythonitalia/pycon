@@ -87,11 +87,6 @@ class ScheduleItemFactory(DjangoModelFactory):
             )
         )
 
-    @classmethod
-    def _after_postgeneration(cls, obj, create, results=None):
-        if create and results:
-            obj.save()
-
     class Meta:
         model = ScheduleItem
 

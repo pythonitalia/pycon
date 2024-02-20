@@ -1,6 +1,5 @@
 import random
 import typing
-from api.context import Info
 from api.submissions.permissions import CanSeeSubmissionRestrictedFields
 
 import strawberry
@@ -20,7 +19,7 @@ from .types import Submission, SubmissionTag
 @strawberry.type
 class SubmissionsQuery:
     @strawberry.field
-    def submission(self, info: Info, id: strawberry.ID) -> typing.Optional[Submission]:
+    def submission(self, info, id: strawberry.ID) -> typing.Optional[Submission]:
         try:
             submission = SubmissionModel.objects.get_by_hashid(id)
         except SubmissionModel.DoesNotExist:
@@ -38,7 +37,7 @@ class SubmissionsQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     def submissions(
         self,
-        info: Info,
+        info,
         code: str,
         languages: typing.Optional[list[str]] = None,
         voted: typing.Optional[bool] = None,
@@ -121,11 +120,11 @@ class SubmissionsQuery:
         )
 
     @strawberry.field
-    def submission_tags(self, info: Info) -> typing.List[SubmissionTag]:
+    def submission_tags(self, info) -> typing.List[SubmissionTag]:
         return SubmissionTagModel.objects.order_by("name").all()
 
     @strawberry.field
-    def voting_tags(self, info: Info, conference: str) -> typing.List[SubmissionTag]:
+    def voting_tags(self, info, conference: str) -> typing.List[SubmissionTag]:
         used_tags = (
             SubmissionModel.objects.filter(
                 conference__code=conference,

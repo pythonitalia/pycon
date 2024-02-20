@@ -1,7 +1,6 @@
 import dataclasses
 import enum
 
-from api.context import Info
 import strawberry
 from django.forms import ModelForm
 from graphql import GraphQLError
@@ -51,7 +50,7 @@ class FormMutation:
             strawberry.union(name=f"{name}Output", description="Output"),
         ]
 
-        def _mutate(root, info: Info, input: input_type) -> output:
+        def _mutate(root, info, input: input_type) -> output:
             # Add the mutation input in the context so we can access it inside the permissions
             if info:
                 setattr(info.context, "input", input)
@@ -97,12 +96,12 @@ class FormMutation:
 
         if input_type:
 
-            def mutate(root, info: Info, input: input_type) -> output:
+            def mutate(root, info, input: input_type) -> output:
                 return _mutate(root, info, input)
 
         else:
 
-            def mutate(root, info: Info) -> output:
+            def mutate(root, info) -> output:
                 return _mutate(root, info, {})
 
         # Hack because something changed and now the name contains `Mutation`

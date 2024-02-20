@@ -1,6 +1,5 @@
 from enum import Enum
 from typing import Self
-from api.cms.page.registry import register_page_block
 import strawberry
 
 
@@ -16,7 +15,6 @@ class CheckoutCategory(Enum):
 CheckoutCategoryEnum = strawberry.enum(CheckoutCategory, name="CheckoutCategory")
 
 
-@register_page_block
 @strawberry.type
 class CheckoutSection:
     id: strawberry.ID

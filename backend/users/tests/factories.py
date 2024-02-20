@@ -15,8 +15,3 @@ class UserFactory(DjangoModelFactory):
     email = factory.Faker("email")
     full_name = factory.Faker("name")
     password = factory.PostGenerationMethodCall("set_password", "test")
-
-    @classmethod
-    def _after_postgeneration(cls, obj, create, results=None):
-        if create and results:
-            obj.save()
