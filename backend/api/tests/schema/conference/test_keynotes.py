@@ -47,7 +47,9 @@ def test_get_conference_keynotes(
         title=LazyI18nString({"en": "title", "it": "titolo"}),
         conference=conference,
         topic=topic_factory(),
-        published=timezone.datetime(1995, 12, 1, 5, 10, 3),
+        published=timezone.datetime(
+            1995, 12, 1, 5, 10, 3, tzinfo=datetime.timezone.utc
+        ),
     )
     speaker = keynote_speaker_factory(keynote=keynote)
     participant_factory(
@@ -61,7 +63,9 @@ def test_get_conference_keynotes(
         title=LazyI18nString({"en": "nope", "it": "noope"}),
         conference=conference,
         topic=topic_factory(),
-        published=timezone.datetime(2050, 12, 1, 5, 10, 3),
+        published=timezone.datetime(
+            2050, 12, 1, 5, 10, 3, tzinfo=datetime.timezone.utc
+        ),
     )
     keynote_speaker_factory(keynote=future_keynote)
 

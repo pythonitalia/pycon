@@ -1,3 +1,4 @@
+from api.context import Info
 from schedule.models import ScheduleItem as ScheduleItemModel
 from api.schedule.types.schedule_item import ScheduleItem
 from django.utils import timezone
@@ -27,7 +28,9 @@ class Day:
         ).order_by("?")[:limit]
 
     @strawberry.field
-    def slots(self, info, room: strawberry.ID | None = None) -> list[ScheduleSlot]:
+    def slots(
+        self, info: Info, room: strawberry.ID | None = None
+    ) -> list[ScheduleSlot]:
         if room:
             return list(self.slots.filter(items__rooms__id=room))
         return list(self.slots.all())

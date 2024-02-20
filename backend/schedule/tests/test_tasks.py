@@ -1,6 +1,6 @@
 from conferences.tests.factories import SpeakerVoucherFactory
 from i18n.strings import LazyI18nString
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import ANY, patch
 from django.test import override_settings
 
@@ -18,7 +18,6 @@ import time_machine
 from conferences.models.speaker_voucher import SpeakerVoucher
 from users.tests.factories import UserFactory
 from schedule.models import ScheduleItem
-from django.utils import timezone
 from pythonit_toolkit.emails.templates import EmailTemplate
 
 import pytest

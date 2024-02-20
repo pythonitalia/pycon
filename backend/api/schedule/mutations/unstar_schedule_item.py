@@ -1,3 +1,4 @@
+from api.context import Info
 from api.permissions import IsAuthenticated
 from schedule.models import ScheduleItemStar
 import strawberry
@@ -5,7 +6,7 @@ from api.users.types import OperationSuccess
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
-def unstar_schedule_item(info, id: strawberry.ID) -> OperationSuccess:
+def unstar_schedule_item(info: Info, id: strawberry.ID) -> OperationSuccess:
     user_id = info.context.request.user.id
 
     ScheduleItemStar.objects.filter(

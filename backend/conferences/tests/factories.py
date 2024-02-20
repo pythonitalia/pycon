@@ -145,6 +145,11 @@ class ConferenceFactory(DjangoModelFactory):
                     AudienceLevel.objects.get_or_create(name=audience_level)[0]
                 )
 
+    @classmethod
+    def _after_postgeneration(cls, obj, create, results=None):
+        if create and results:
+            obj.save()
+
     class Meta:
         model = Conference
         django_get_or_create = ("code",)
