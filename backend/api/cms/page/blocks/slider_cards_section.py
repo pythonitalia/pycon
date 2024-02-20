@@ -1,4 +1,5 @@
-from typing import Self
+from typing import Annotated, Self
+from api.cms.page.registry import register_page_block
 import strawberry
 
 from api.cms.base.blocks.cta import CTA
@@ -41,9 +42,12 @@ class PriceCard:
         )
 
 
-AvailableCards = strawberry.union("AvailableCards", (SimpleTextCard, PriceCard))
+AvailableCards = Annotated[
+    SimpleTextCard | PriceCard, strawberry.union("AvailableCards")
+]
 
 
+@register_page_block
 @strawberry.type
 class SliderCardsSection:
     id: strawberry.ID

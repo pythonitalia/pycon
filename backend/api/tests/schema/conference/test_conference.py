@@ -1,3 +1,4 @@
+import datetime
 import pytest
 import pytz
 import time_machine
@@ -465,8 +466,8 @@ def test_get_conference_hotel_rooms(
     graphql_client, conference_factory, bed_layout_factory, hotel_room
 ):
     hotel_room.conference = conference_factory(
-        start=timezone.datetime(2019, 1, 1, tzinfo=timezone.utc),
-        end=timezone.datetime(2019, 1, 5, tzinfo=timezone.utc),
+        start=timezone.datetime(2019, 1, 1, tzinfo=datetime.timezone.utc),
+        end=timezone.datetime(2019, 1, 5, tzinfo=datetime.timezone.utc),
     )
 
     bed_layout = bed_layout_factory()

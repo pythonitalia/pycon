@@ -1,3 +1,4 @@
+from api.context import Info
 from django.db import transaction
 from api.schedule.types import (
     ScheduleInvitationOption,
@@ -34,7 +35,7 @@ class ScheduleInvitationNotFound:
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 def update_schedule_invitation(
-    self, info, input: UpdateScheduleInvitationInput
+    info: Info, input: UpdateScheduleInvitationInput
 ) -> Union[ScheduleInvitationNotFound, ScheduleInvitation]:
     submission = Submission.objects.get_by_hashid(input.submission_id)
 
