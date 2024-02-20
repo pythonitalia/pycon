@@ -93,7 +93,7 @@
     "@xstate/inspect": "^0.7.0",
     "autoprefixer": "^10.4.13",
     "jest": "^27.0.6",
-    "postcss": "^8.4.31",
+    "postcss": "^8.4.35",
     "tailwindcss": "^3.3.5",
     "tailwindcss-blend-mode": "^1.0.0",
     "ts-jest": "^27.0.4",
