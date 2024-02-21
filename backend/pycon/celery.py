@@ -14,6 +14,10 @@ app.autodiscover_tasks()
 
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
+    import django
+
+    django.setup()
+
     try:
         from association_membership.tasks import (
             check_association_membership_subscriptions,
