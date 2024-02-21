@@ -1,6 +1,7 @@
+from pycon.celery import app
+
 import logging
 from datetime import datetime, timezone
-from typing import Any
 
 from association_membership.enums import (
     PaymentStatus,
@@ -13,7 +14,8 @@ from association_membership.models import (
 logger = logging.getLogger(__file__)
 
 
-def membership_check_status(payload: Any):
+@app.task
+def check_association_membership_subscriptions():
     update_expired_subscriptions()
     update_now_active_subscriptions()
 
