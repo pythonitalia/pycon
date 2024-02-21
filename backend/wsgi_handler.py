@@ -15,8 +15,6 @@ import sys
 import traceback
 from logging import getLogger
 
-from django.apps import apps
-from django.conf import settings
 
 # imports serverless_wsgi from the root
 import serverless_wsgi
@@ -44,15 +42,6 @@ def import_app(config):
 
 
 def handler(event, context):
-    if "cronEvent" in event:
-        logger.info("Received cronEvent from lambda")
-        apps.populate(settings.INSTALLED_APPS)
-        from association_membership.handlers import run_handler
-
-        received_event = event["cronEvent"]
-        run_handler("crons", received_event["name"], received_event["payload"])
-        return
-
     """Lambda event handler, invokes the WSGI wrapper and handles command invocation"""
     if "_serverless-wsgi" in event:
         import shlex
