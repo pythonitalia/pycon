@@ -85,10 +85,6 @@ locals {
       value = module.secrets.value.pinpoint_application_id
     },
     {
-      name  = "FORCE_PYCON_HOST",
-      value = local.is_prod ? "true" : "false"
-    },
-    {
       name  = "SQS_QUEUE_URL",
       value = aws_sqs_queue.queue.id
     },

@@ -84,7 +84,6 @@ module "lambda" {
     AWS_S3_CUSTOM_DOMAIN                      = local.cdn_url
     PRETIX_API_TOKEN                          = module.common_secrets.value.pretix_api_token
     PINPOINT_APPLICATION_ID                   = module.secrets.value.pinpoint_application_id
-    FORCE_PYCON_HOST                          = local.is_prod
     SQS_QUEUE_URL                             = aws_sqs_queue.queue.id
     MAILCHIMP_SECRET_KEY                      = module.common_secrets.value.mailchimp_secret_key
     MAILCHIMP_DC                              = module.common_secrets.value.mailchimp_dc
