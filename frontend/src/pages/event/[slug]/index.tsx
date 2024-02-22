@@ -25,9 +25,7 @@ export const TalkPage = () => {
 
   const { talk } = data.conference;
 
-  const description = talk.submission
-    ? talk.submission.abstract
-    : talk.description;
+  const description = talk.abstract ? talk.abstract : talk.description;
 
   return (
     <Page endSeparator={false}>
@@ -38,7 +36,7 @@ export const TalkPage = () => {
         slug={slug}
         type={getType(talk.type)}
         eventTitle={talk.title}
-        elevatorPitch={talk.submission?.elevatorPitch}
+        elevatorPitch={talk.elevatorPitch}
         abstract={description}
         tags={talk.submission?.tags.map((tag) => tag.name)}
         language={talk.language.code}

@@ -1,8 +1,11 @@
 import datetime
 
+from i18n.strings import LazyI18nString
+from languages.models import Language
 import pytest
 
 from schedule.models import ScheduleItem
+from submissions.tests.factories import SubmissionFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -28,6 +31,50 @@ def simple_schedule_item(
         ),
         youtube_video_id="AbCdEfGhIjK",
     )
+
+
+@pytest.mark.parametrize("language_code", ["it", "en"])
+def test_exposes_abstract_elevator_pitch_in_correct_language(
+    simple_schedule_item, graphql_client, user, language_code
+):
+    graphql_client.force_login(user)
+
+    schedule_item = simple_schedule_item
+    schedule_item.language = Language.objects.get(code=language_code)
+    schedule_item.save()
+
+    submission = SubmissionFactory()
+    submission.abstract = LazyI18nString(
+        {"en": "English abstract", "it": "Italian abstract"}
+    )
+    submission.elevator_pitch = LazyI18nString(
+        {"en": "English elevator pitch", "it": "Italian elevator pitch"}
+    )
+    schedule_item.submission = submission
+    schedule_item.save()
+
+    response = graphql_client.query(
+        """query($slug: String!, $code: String!) {
+            conference(code: $code) {
+                talk(slug: $slug) {
+                    abstract
+                    elevatorPitch
+                }
+            }
+        }""",
+        variables={"slug": schedule_item.slug, "code": schedule_item.conference.code},
+    )
+
+    if language_code == "en":
+        assert response["data"]["conference"]["talk"] == {
+            "abstract": "English abstract",
+            "elevatorPitch": "English elevator pitch",
+        }
+    else:
+        assert response["data"]["conference"]["talk"] == {
+            "abstract": "Italian abstract",
+            "elevatorPitch": "Italian elevator pitch",
+        }
 
 
 def test_fetch_schedule_talk(simple_schedule_item, graphql_client, user):
