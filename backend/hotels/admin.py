@@ -43,8 +43,6 @@ class HotelRoomReservationAdmin(admin.ModelAdmin):
         "checkin",
         "checkout",
         "order_code",
-        "room",
-        "bed_layout",
     )
 
     def has_add_permission(self, *args, **kwargs) -> bool:
