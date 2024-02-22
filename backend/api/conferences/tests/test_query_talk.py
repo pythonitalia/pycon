@@ -54,8 +54,8 @@ def test_exposes_abstract_elevator_pitch_in_correct_language(
         type=ScheduleItem.TYPES.talk,
         conference=submission.conference,
         attendees_total_capacity=None,
+        language=Language.objects.get(code=language_code),
     )
-    schedule_item.language = Language.objects.get(code=language_code)
 
     response = graphql_client.query(
         """query($slug: String!, $code: String!) {
@@ -85,7 +85,7 @@ def test_empty_abstract_elevator_pitch_with_no_submission(graphql_client, user):
     graphql_client.force_login(user)
 
     schedule_item = ScheduleItemFactory(
-        status=ScheduleItem.STATUS.panel,
+        status=ScheduleItem.STATUS.confirmed,
         submission=None,
         type=ScheduleItem.TYPES.talk,
         conference=ConferenceFactory(),
