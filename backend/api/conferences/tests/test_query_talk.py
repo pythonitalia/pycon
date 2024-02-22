@@ -1,5 +1,6 @@
 import datetime
 
+from conferences.tests.factories import ConferenceFactory
 from i18n.strings import LazyI18nString
 from languages.models import Language
 import pytest
@@ -78,6 +79,35 @@ def test_exposes_abstract_elevator_pitch_in_correct_language(
             "abstract": "Italian abstract",
             "elevatorPitch": "Italian elevator pitch",
         }
+
+
+def test_empty_abstract_elevator_pitch_with_no_submission(graphql_client, user):
+    graphql_client.force_login(user)
+
+    schedule_item = ScheduleItemFactory(
+        status=ScheduleItem.STATUS.panel,
+        submission=None,
+        type=ScheduleItem.TYPES.talk,
+        conference=ConferenceFactory(),
+        attendees_total_capacity=None,
+    )
+
+    response = graphql_client.query(
+        """query($slug: String!, $code: String!) {
+            conference(code: $code) {
+                talk(slug: $slug) {
+                    abstract
+                    elevatorPitch
+                }
+            }
+        }""",
+        variables={"slug": schedule_item.slug, "code": schedule_item.conference.code},
+    )
+
+    assert response["data"]["conference"]["talk"] == {
+        "abstract": "",
+        "elevatorPitch": "",
+    }
 
 
 def test_fetch_schedule_talk(simple_schedule_item, graphql_client, user):
