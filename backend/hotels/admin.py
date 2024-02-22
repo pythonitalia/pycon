@@ -48,9 +48,6 @@ class HotelRoomReservationAdmin(admin.ModelAdmin):
     def has_add_permission(self, *args, **kwargs) -> bool:
         return False
 
-    def has_change_permission(self, *args, **kwargs) -> bool:
-        return False
-
     def user_display_name(self, obj):
         return obj.user.display_name
 
