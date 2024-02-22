@@ -5,6 +5,7 @@ from languages.models import Language
 import pytest
 
 from schedule.models import ScheduleItem
+from schedule.tests.factories import ScheduleItemFactory
 from submissions.tests.factories import SubmissionFactory
 
 pytestmark = pytest.mark.django_db
@@ -35,23 +36,25 @@ def simple_schedule_item(
 
 @pytest.mark.parametrize("language_code", ["it", "en"])
 def test_exposes_abstract_elevator_pitch_in_correct_language(
-    simple_schedule_item, graphql_client, user, language_code
+    graphql_client, user, language_code
 ):
     graphql_client.force_login(user)
 
-    schedule_item = simple_schedule_item
-    schedule_item.language = Language.objects.get(code=language_code)
-    schedule_item.save()
+    submission = SubmissionFactory(
+        abstract=LazyI18nString({"en": "English abstract", "it": "Italian abstract"}),
+        elevator_pitch=LazyI18nString(
+            {"en": "English elevator pitch", "it": "Italian elevator pitch"}
+        ),
+    )
 
-    submission = SubmissionFactory()
-    submission.abstract = LazyI18nString(
-        {"en": "English abstract", "it": "Italian abstract"}
+    schedule_item = ScheduleItemFactory(
+        status=ScheduleItem.STATUS.confirmed,
+        submission=submission,
+        type=ScheduleItem.TYPES.talk,
+        conference=submission.conference,
+        attendees_total_capacity=None,
     )
-    submission.elevator_pitch = LazyI18nString(
-        {"en": "English elevator pitch", "it": "Italian elevator pitch"}
-    )
-    schedule_item.submission = submission
-    schedule_item.save()
+    schedule_item.language = Language.objects.get(code=language_code)
 
     response = graphql_client.query(
         """query($slug: String!, $code: String!) {
