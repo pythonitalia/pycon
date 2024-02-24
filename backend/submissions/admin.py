@@ -233,6 +233,7 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         move_to_waiting_list,
         move_to_rejected,
         send_proposal_rejected_email_action,
+        send_proposal_in_waiting_list_email_action,
     ]
     autocomplete_fields = ("speaker",)
 
