@@ -81,3 +81,30 @@ def send_proposal_rejected_email(proposal_id):
             "submissionType": submission.type.name,
         },
     )
+    logger.info("Sending email to speaker for rejected proposal %s", submission.id)
+
+
+@app.task
+def send_proposal_in_waiting_list_email(proposal_id):
+    from submissions.models import Submission
+
+    submission = Submission.objects.get(id=proposal_id)
+    submission_speaker = submission.speaker
+
+    language_code = submission.languages.first().code
+    conference_name = submission.conference.name.localize(language_code)
+
+    send_email(
+        template=EmailTemplate.SUBMISSION_IN_WAITING_LIST,
+        to=submission_speaker.email,
+        subject=f"[{conference_name}] Speakers Waiting List",
+        variables={
+            "firstname": get_name(submission_speaker, "there"),
+            "conferenceName": conference_name,
+            "submissionTitle": submission.title.localize(language_code),
+            "submissionType": submission.type.name,
+        },
+    )
+    logger.info(
+        "Sending email to speaker in waiting list for proposal %s", submission.id
+    )
