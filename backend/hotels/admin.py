@@ -69,12 +69,11 @@ class HotelRoomReservationResource(ModelResource):
     def dehydrate_user_email(self, obj: HotelRoomReservation):
         return obj.user.email
 
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
+    def before_export(self, queryset, *args, **kwargs):
+        super().before_export(queryset, *args, **kwargs)
 
         codes = [reservation.order_code for reservation in queryset]
         self._reservation_status = get_orders_status(codes)
-        return queryset
 
     class Meta:
         model = HotelRoomReservation
