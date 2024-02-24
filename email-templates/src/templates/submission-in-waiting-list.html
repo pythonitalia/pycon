@@ -1,0 +1,68 @@
+---
+title: "[PyCon Italia 2023] Update about your proposal"
+preheader: "Update about your proposal"
+---
+
+<extends src="src/layouts/base.html">
+  <block name="template">
+    <table class="w-full font-sans">
+      <tr>
+        <td align="center" class="bg-gray-100">
+          <table class="w-600 sm:w-full">
+            <tr>
+              <component src="src/components/head-pycon.html" />
+            </tr>
+            <tr>
+              <td align="center" class="sm:px-24">
+                <table class="w-full">
+                  <tr>
+                    <td
+                      class="bg-white text-gray-800 text-base text-left p-48 sm:px-24 leading-24"
+                    >
+                      <p class="m-0 mb-16">👋 @{{firstname}}!</p>
+                      <p class="m-0 mb-16">
+                        We're reaching out to you regarding the status of your submission @{{submissionTitle}} (@{{submissionType}}) at @{{conferenceName}}.
+                        <br />
+                        As you may be aware, we have had an overwhelming response to our call for proposals,
+                        and while we wish we could accommodate everyone, our schedule has limitations.
+                        <br />
+                        As we are currently finalizing our speaker lineup we wanted to inquire
+                        if you are still interested in remaining on the waiting list.
+                        In the event of any withdrawals or changes to our schedule,
+                        speakers from the waiting list will be considered for inclusion.
+                        <br />
+                        <strong>If you are available and willing to stay on the waiting list, please reply to this email confirming your continued interest.</strong>
+                        Your response will help us ensure we can reach out to you promptly should an opportunity arise.
+                        <br />
+                        Conversely, if your circumstances have changed or you have secured other commitments that prevent your participation,
+                        kindly let us know, and we will update our records accordingly.
+                      </p>
+                      <p class="m-0 mb-16">
+                        Thank you for your understanding and cooperation.
+                        We truly appreciate your interest in speaking at @{{conferenceName}},
+                        and we hope to have the opportunity to welcome you as a speaker in the near future.
+                      </p>
+                      <p class="m-0">
+                        Looking forward to hearing from you soon.
+                        <br />
+                        Warm regards,
+                        <br />
+                        PyCon Italia Team
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="h-48"></td>
+                  </tr>
+                  <tr>
+                    <component src="src/components/footer.html" />
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </block>
+</extends>
