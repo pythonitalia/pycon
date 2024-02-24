@@ -149,10 +149,11 @@ def move_to_rejected(modeladmin, request, queryset):
     )
 
 
-@admin.action(description="Send proposal rejected email")
+@admin.action(description="Send proposal rejected emails")
 @validate_single_conference_selection
 def send_proposal_rejected_email_action(modeladmin, request, queryset):
-    for proposal in queryset.filter(status=Submission.STATUS.rejected):
+    queryset = queryset.filter(status=Submission.STATUS.rejected)
+    for proposal in queryset:
         send_proposal_rejected_email.delay(proposal.id)
 
     messages.add_message(
@@ -162,10 +163,11 @@ def send_proposal_rejected_email_action(modeladmin, request, queryset):
     )
 
 
-@admin.action(description="Send proposal in waiting list email")
+@admin.action(description="Send proposal in waiting list emails")
 @validate_single_conference_selection
 def send_proposal_in_waiting_list_email_action(modeladmin, request, queryset):
-    for proposal in queryset.filter(status=Submission.STATUS.waiting_list):
+    queryset = queryset.filter(status=Submission.STATUS.waiting_list)
+    for proposal in queryset:
         send_proposal_in_waiting_list_email.delay(proposal.id)
 
     messages.add_message(
