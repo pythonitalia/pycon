@@ -85,3 +85,4 @@ def test_send_proposal_in_waiting_list_email(sent_emails):
     assert sent_emails[0]["variables"]["conferenceName"] == "Conf"
     assert sent_emails[0]["variables"]["submissionTitle"] == "Title"
     assert sent_emails[0]["variables"]["submissionType"] == submission.type.name
+    assert sent_emails[0]["reply_to"] == ["speakers@pycon.it"]

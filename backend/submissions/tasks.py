@@ -97,6 +97,7 @@ def send_proposal_in_waiting_list_email(proposal_id):
     send_email(
         template=EmailTemplate.SUBMISSION_IN_WAITING_LIST,
         to=submission_speaker.email,
+        reply_to=["speakers@pycon.it"],
         subject=f"[{conference_name}] Speakers Waiting List",
         variables={
             "firstname": get_name(submission_speaker, "there"),

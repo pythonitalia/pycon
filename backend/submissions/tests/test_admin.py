@@ -45,7 +45,7 @@ def test_send_proposal_in_waiting_list_email_action(rf, mocker):
         conference=submission.conference, status=Submission.STATUS.accepted
     )
     SubmissionFactory(
-        conference=submission.conference, status=Submission.STATUS.waiting_list
+        conference=submission.conference, status=Submission.STATUS.rejected
     )
 
     send_proposal_in_waiting_list_email_action(
