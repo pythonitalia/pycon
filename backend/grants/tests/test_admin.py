@@ -16,7 +16,7 @@ from grants.models import Grant
 pytestmark = pytest.mark.django_db
 
 
-def test_send_reply_emails_with_grants_from_multiple_conferences(
+def test_send_reply_emails_with_grants_from_multiple_conferences_fails(
     rf,
     grant_factory,
     mocker,
@@ -26,7 +26,7 @@ def test_send_reply_emails_with_grants_from_multiple_conferences(
     Test that sending reply emails does not proceed when selected grants belong
     to different conferences and appropriately displays an error message.
     """
-    mock_messages = mocker.patch("grants.admin.messages")
+    mock_messages = mocker.patch("custom_admin.admin.messages")
     conference1 = conference_factory()
     conference2 = conference_factory()
     grant1 = grant_factory(conference=conference1, status=Grant.Status.approved)
