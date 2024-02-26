@@ -223,7 +223,7 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
 ):
     conference = conference_factory(pretix_speaker_voucher_quota_id=1234)
     conference_2 = conference_factory(pretix_speaker_voucher_quota_id=1234)
-    mock_messages = mocker.patch("grants.admin.messages")
+    mock_messages = mocker.patch("custom_admin.admin.messages")
     mock_send_email = mocker.patch("grants.admin.send_grant_voucher_email")
     grant_factory(
         status=Grant.Status.confirmed,
@@ -375,7 +375,8 @@ def test_create_grant_vouchers_on_pretix_doesnt_work_with_multiple_conferences(
 ):
     conference = conference_factory(pretix_speaker_voucher_quota_id=1234)
     conference_2 = conference_factory(pretix_speaker_voucher_quota_id=1234)
-    mock_messages = mocker.patch("grants.admin.messages")
+    mock_messages = mocker.patch("custom_admin.admin.messages")
+
     mock_create_voucher = mocker.patch(
         "grants.admin.create_voucher",
         side_effect=[
