@@ -60,7 +60,7 @@ const handler = async (req: NextRequest) => {
   });
   const { searchParams } = new URL(req.url);
 
-  const language = searchParams.get("lang");
+  const language = searchParams.get("lang") as Language;
 
   return new ImageResponse(
     <div
