@@ -1,3 +1,4 @@
+from custom_admin.admin import validate_single_conference_selection
 from import_export.resources import ModelResource
 
 from django import forms
@@ -8,7 +9,10 @@ from import_export.admin import ExportMixin
 from import_export.fields import Field
 
 from participants.models import Participant
-from submissions.tasks import send_proposal_rejected_email
+from submissions.tasks import (
+    send_proposal_rejected_email,
+    send_proposal_in_waiting_list_email,
+)
 from users.admin_mixins import ConferencePermissionMixin
 
 
@@ -128,6 +132,7 @@ class SubmissionAdminForm(forms.ModelForm):
 
 
 @admin.action(description="Move to waiting list")
+@validate_single_conference_selection
 def move_to_waiting_list(modeladmin, request, queryset):
     update_count = queryset.update(status=Submission.STATUS.waiting_list)
     messages.add_message(
@@ -136,6 +141,7 @@ def move_to_waiting_list(modeladmin, request, queryset):
 
 
 @admin.action(description="Move to rejected")
+@validate_single_conference_selection
 def move_to_rejected(modeladmin, request, queryset):
     update_count = queryset.update(status=Submission.STATUS.rejected)
     messages.add_message(
@@ -143,8 +149,10 @@ def move_to_rejected(modeladmin, request, queryset):
     )
 
 
-@admin.action(description="Send proposal rejected email")
+@admin.action(description="Send proposal rejected emails")
+@validate_single_conference_selection
 def send_proposal_rejected_email_action(modeladmin, request, queryset):
+    queryset = queryset.filter(status=Submission.STATUS.rejected)
     for proposal in queryset:
         send_proposal_rejected_email.delay(proposal.id)
 
@@ -152,6 +160,20 @@ def send_proposal_rejected_email_action(modeladmin, request, queryset):
         request,
         messages.INFO,
         f"Scheduled rejection emails to {queryset.count()} proposals",
+    )
+
+
+@admin.action(description="Send proposal in waiting list emails")
+@validate_single_conference_selection
+def send_proposal_in_waiting_list_email_action(modeladmin, request, queryset):
+    queryset = queryset.filter(status=Submission.STATUS.waiting_list)
+    for proposal in queryset:
+        send_proposal_in_waiting_list_email.delay(proposal.id)
+
+    messages.add_message(
+        request,
+        messages.INFO,
+        f"Scheduled waiting list emails to {queryset.count()} proposals",
     )
 
 
@@ -213,6 +235,7 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         move_to_waiting_list,
         move_to_rejected,
         send_proposal_rejected_email_action,
+        send_proposal_in_waiting_list_email_action,
     ]
     autocomplete_fields = ("speaker",)
 

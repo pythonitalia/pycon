@@ -9,6 +9,7 @@ from django.utils import timezone
 from conferences.models import SpeakerVoucher
 from schedule.admin import (
     ScheduleItemAdmin,
+    mark_as_confirmed_action,
     mark_speakers_to_receive_vouchers,
     send_schedule_invitation_reminder_to_waiting,
     send_schedule_invitation_to_all,
@@ -683,3 +684,25 @@ def test_email_speakers_with_co_speakers(rf, admin_user, mocker):
     admin.message_user.assert_called_once_with(
         request, "Scheduled 2 emails.", messages.SUCCESS
     )
+
+
+def test_mark_as_confirmed_action(rf, mocker):
+    mocker.patch("schedule.admin.messages")
+
+    request = rf.get("/")
+    schedule_item = ScheduleItemFactory(
+        status=ScheduleItem.STATUS.waiting_confirmation,
+    )
+    unrelated_schedule_item = ScheduleItemFactory(
+        status=ScheduleItem.STATUS.waiting_confirmation,
+    )
+
+    mark_as_confirmed_action(
+        None, request, ScheduleItem.objects.filter(id=schedule_item.id)
+    )
+
+    schedule_item.refresh_from_db()
+    unrelated_schedule_item.refresh_from_db()
+
+    assert schedule_item.status == ScheduleItem.STATUS.confirmed
+    assert unrelated_schedule_item.status == ScheduleItem.STATUS.waiting_confirmation
