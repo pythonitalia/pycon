@@ -9,6 +9,7 @@ import type { NextRequest } from "next/server";
 import { createClient } from "~/apollo/create-client";
 import { Logo } from "~/components/logo";
 import { useCurrentLanguage } from "~/locale/context";
+import { Language } from "~/locale/languages";
 import { queryNewsArticle, querySocialCard, useSocialCardQuery } from "~/types";
 
 export const config = {
