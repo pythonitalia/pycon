@@ -29,7 +29,11 @@ export const TalkPage = () => {
 
   return (
     <Page endSeparator={false}>
-      <MetaTags title={talk.title} useDefaultSocialCard={false} />
+      <MetaTags
+        title={talk.title}
+        useDefaultSocialCard={false}
+        useNewSocialCard={true}
+      />
 
       <ScheduleEventDetail
         id={talk.id}
