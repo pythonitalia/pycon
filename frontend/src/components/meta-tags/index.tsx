@@ -38,7 +38,7 @@ export const MetaTags = ({
   title,
   description,
   useDefaultSocialCard = true,
-  useNewSocialCard = false,
+  useNewSocialCard = true,
   children,
 }: React.PropsWithChildren<Props>) => {
   const language = useCurrentLanguage();
