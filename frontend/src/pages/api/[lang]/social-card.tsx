@@ -51,10 +51,9 @@ const getYear = ({ end }: { end: string }) => {
 };
 
 const handler = async (req: NextRequest) => {
-  const regularFontData = await regularFont;
-  const boldFontData = await boldFont;
+  const [regularFontData, boldFontData, mainIllustrationData] =
+    await Promise.all([regularFont, boldFont, mainIllustration]);
   const client = createClient();
-  const mainIllustrationData = await mainIllustration;
   const { data } = await querySocialCard(client, {
     code: process.env.conferenceCode,
   });

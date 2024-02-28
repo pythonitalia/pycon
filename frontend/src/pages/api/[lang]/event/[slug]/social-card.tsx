@@ -1,7 +1,3 @@
-import {
-  SnakeHead,
-  SnakeTail,
-} from "@python-italia/pycon-styleguide/illustrations";
 import { ImageResponse } from "@vercel/og";
 
 import type { NextRequest } from "next/server";
@@ -28,21 +24,28 @@ const boldFont = fetch(
 ).then((res) => res.arrayBuffer());
 
 export const handler = async (req: NextRequest) => {
-  const regularFontData = await regularFont;
-  const boldFontData = await boldFont;
   const client = createClient();
   const { searchParams } = new URL(req.url);
 
   const language = searchParams.get("lang");
   const slug = searchParams.get("slug");
 
-  const {
-    data: { conference },
-  } = await queryTalk(client, {
-    slug,
-    language,
-    code: process.env.conferenceCode,
-  });
+  const [
+    regularFontData,
+    boldFontData,
+    {
+      data: { conference },
+    },
+  ] = await Promise.all([
+    regularFont,
+    boldFont,
+    queryTalk(client, {
+      slug,
+      language,
+      code: process.env.conferenceCode,
+    }),
+  ]);
+
   const talk = conference?.talk;
 
   const title = talk.title;
