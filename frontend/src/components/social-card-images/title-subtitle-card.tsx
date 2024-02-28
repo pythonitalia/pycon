@@ -1,10 +1,9 @@
+import { tailwindConfig } from "@python-italia/pycon-styleguide";
 import {
   SnakeHead,
   SnakeTail,
 } from "@python-italia/pycon-styleguide/illustrations";
 import { getTagColor } from "../schedule-event-detail/event-tag";
-
-const { tailwindConfig } = require("@python-italia/pycon-styleguide");
 
 const bgForTag = (tag: string) => {
   const colorName = getTagColor(tag);
