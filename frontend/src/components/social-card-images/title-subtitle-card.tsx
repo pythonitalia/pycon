@@ -2,19 +2,23 @@ import {
   SnakeHead,
   SnakeTail,
 } from "@python-italia/pycon-styleguide/illustrations";
-import { ImageResponse } from "@vercel/og";
+import { getTagColor } from "../schedule-event-detail/event-tag";
+const { tailwindConfig } = require("@python-italia/pycon-styleguide");
 
-import type { NextRequest } from "next/server";
-
-import { createClient } from "~/apollo/create-client";
-import { queryTalk } from "~/types";
+const bgForTag = (tag: string) => {
+  const colorName = getTagColor(tag);
+  const colors = tailwindConfig.theme.colors;
+  return colors[colorName].light;
+};
 
 export const TitleSubtitleCard = ({
   title,
   subtitle,
+  tag,
 }: {
   title: string;
   subtitle: string;
+  tag?: string;
 }) => (
   <div
     style={{
@@ -31,6 +35,26 @@ export const TitleSubtitleCard = ({
       fontFamily: '"GeneralSans"',
     }}
   >
+    {tag && (
+      <div
+        style={{
+          border: "3px solid #0E1116",
+          paddingTop: "8px",
+          paddingBottom: "8px",
+          paddingRight: "16px",
+          paddingLeft: "16px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: bgForTag(tag),
+          textTransform: "uppercase",
+          fontWeight: "semibold",
+          marginBottom: "16px",
+        }}
+      >
+        {tag}
+      </div>
+    )}
     <div
       style={{
         fontSize: "64px",

@@ -16,9 +16,9 @@ const regularFont = fetch(
     import.meta.url,
   ),
 ).then((res) => res.arrayBuffer());
-const boldFont = fetch(
+const semiBoldFont = fetch(
   new URL(
-    "../../../../../social-card-font/GeneralSans-Bold.otf",
+    "../../../../../social-card-font/GeneralSans-SemiBold.otf",
     import.meta.url,
   ),
 ).then((res) => res.arrayBuffer());
@@ -32,13 +32,13 @@ const handler = async (req: NextRequest) => {
 
   const [
     regularFontData,
-    boldFontData,
+    semiBoldFontData,
     {
       data: { newsArticle },
     },
   ] = await Promise.all([
     regularFont,
-    boldFont,
+    semiBoldFont,
     queryNewsArticle(client, {
       slug,
       language,
@@ -63,9 +63,9 @@ const handler = async (req: NextRequest) => {
         },
         {
           name: "GeneralSans",
-          data: boldFontData,
+          data: semiBoldFontData,
           style: "normal",
-          weight: 700,
+          weight: 600,
         },
       ],
     },

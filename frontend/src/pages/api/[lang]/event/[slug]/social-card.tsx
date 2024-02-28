@@ -16,7 +16,7 @@ const regularFont = fetch(
     import.meta.url,
   ),
 ).then((res) => res.arrayBuffer());
-const boldFont = fetch(
+const semiBoldFont = fetch(
   new URL(
     "../../../../../social-card-font/GeneralSans-Bold.otf",
     import.meta.url,
@@ -32,13 +32,13 @@ export const handler = async (req: NextRequest) => {
 
   const [
     regularFontData,
-    boldFontData,
+    semiBoldFontData,
     {
       data: { conference },
     },
   ] = await Promise.all([
     regularFont,
-    boldFont,
+    semiBoldFont,
     queryTalk(client, {
       slug,
       language,
@@ -52,7 +52,7 @@ export const handler = async (req: NextRequest) => {
   const speakers = talk.speakers.map((speaker) => speaker.fullName).join(", ");
 
   return new ImageResponse(
-    <TitleSubtitleCard title={title} subtitle={speakers} />,
+    <TitleSubtitleCard title={title} subtitle={speakers} tag={talk.type} />,
     {
       width: 1200,
       height: 630,
@@ -65,9 +65,9 @@ export const handler = async (req: NextRequest) => {
         },
         {
           name: "GeneralSans",
-          data: boldFontData,
+          data: semiBoldFontData,
           style: "normal",
-          weight: 700,
+          weight: 600,
         },
       ],
     },

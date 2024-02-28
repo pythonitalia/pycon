@@ -19,8 +19,11 @@ export const config = {
 const regularFont = fetch(
   new URL("../../../social-card-font/GeneralSans-Regular.otf", import.meta.url),
 ).then((res) => res.arrayBuffer());
-const boldFont = fetch(
-  new URL("../../../social-card-font/GeneralSans-Bold.otf", import.meta.url),
+const semiBoldFont = fetch(
+  new URL(
+    "../../../social-card-font/GeneralSans-SemiBold.otf",
+    import.meta.url,
+  ),
 ).then((res) => res.arrayBuffer());
 const mainIllustration = fetch(
   new URL("../../../../public/images/main-illustration.png", import.meta.url),
@@ -51,8 +54,8 @@ const getYear = ({ end }: { end: string }) => {
 };
 
 const handler = async (req: NextRequest) => {
-  const [regularFontData, boldFontData, mainIllustrationData] =
-    await Promise.all([regularFont, boldFont, mainIllustration]);
+  const [regularFontData, semiBoldFontData, mainIllustrationData] =
+    await Promise.all([regularFont, semiBoldFont, mainIllustration]);
   const client = createClient();
   const { data } = await querySocialCard(client, {
     code: process.env.conferenceCode,
@@ -102,7 +105,7 @@ const handler = async (req: NextRequest) => {
           <div
             style={{
               fontSize: "48px",
-              fontWeight: "bold",
+              fontWeight: "semibold",
               marginBottom: "10px",
               display: "flex",
               textTransform: "uppercase",
@@ -113,7 +116,7 @@ const handler = async (req: NextRequest) => {
           <div
             style={{
               fontSize: "48px",
-              fontWeight: "bold",
+              fontWeight: "semibold",
               marginBottom: "10px",
               display: "flex",
               textTransform: "uppercase",
@@ -124,7 +127,7 @@ const handler = async (req: NextRequest) => {
           <div
             style={{
               fontSize: "48px",
-              fontWeight: "bold",
+              fontWeight: "semibold",
               display: "flex",
               marginBottom: "10px",
               textTransform: "uppercase",
@@ -135,7 +138,7 @@ const handler = async (req: NextRequest) => {
           <div
             style={{
               fontSize: "32px",
-              fontWeight: "bold",
+              fontWeight: "semibold",
               display: "flex",
               color: "#ffffff",
               textTransform: "uppercase",
@@ -159,9 +162,9 @@ const handler = async (req: NextRequest) => {
         },
         {
           name: "GeneralSans",
-          data: boldFontData,
+          data: semiBoldFontData,
           style: "normal",
-          weight: 700,
+          weight: 600,
         },
       ],
     },
