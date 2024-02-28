@@ -26,7 +26,7 @@ const boldFont = fetch(
   ),
 ).then((res) => res.arrayBuffer());
 
-const handler = async (req: NextRequest) => {
+export const handler = async (req: NextRequest) => {
   const regularFontData = await regularFont;
   const boldFontData = await boldFont;
   const client = createClient();
@@ -107,7 +107,7 @@ const handler = async (req: NextRequest) => {
     </div>,
     {
       width: 1200,
-      height: 600,
+      height: 630,
       fonts: [
         {
           name: "GeneralSans",

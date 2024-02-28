@@ -93,7 +93,7 @@ const handler = async (req: NextRequest) => {
             background: "#34B4A1",
             display: "flex",
             width: 1200 - 600 - 14 - 6,
-            height: 600 - 180 - 14 * 2,
+            height: 630 - 180 - 14 * 2,
             marginLeft: "6px",
             flexDirection: "column",
             justifyContent: "center",
@@ -150,7 +150,7 @@ const handler = async (req: NextRequest) => {
     </div>,
     {
       width: 1200,
-      height: 600,
+      height: 630,
       fonts: [
         {
           name: "GeneralSans",
