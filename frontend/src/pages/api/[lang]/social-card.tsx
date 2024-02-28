@@ -72,6 +72,7 @@ const handler = async (req: NextRequest) => {
         fontFamily: '"GeneralSans"',
       }}
     >
+      {/* eslint-disable @typescript-eslint/ban-ts-comment */}
       {/* @ts-ignore */}
       <img width={600} height={600} src={mainIllustrationResponse} alt="" />
       <div
