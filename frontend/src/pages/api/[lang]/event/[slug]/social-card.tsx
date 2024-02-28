@@ -7,6 +7,7 @@ import { ImageResponse } from "@vercel/og";
 import type { NextRequest } from "next/server";
 
 import { createClient } from "~/apollo/create-client";
+import { TitleSubtitleCard } from "~/components/social-card-images/title-subtitle-card";
 import { queryTalk } from "~/types";
 
 export const config = {
@@ -48,63 +49,7 @@ export const handler = async (req: NextRequest) => {
   const speakers = talk.speakers.map((speaker) => speaker.fullName).join(", ");
 
   return new ImageResponse(
-    <div
-      style={{
-        background: "#F17A5D",
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        textAlign: "left",
-        alignItems: "flex-start",
-        justifyContent: "center",
-        flexDirection: "column",
-        paddingLeft: "64px",
-        paddingRight: "64px",
-        fontFamily: '"GeneralSans"',
-      }}
-    >
-      <div
-        style={{
-          fontSize: "64px",
-          fontWeight: 700,
-          color: "#0E1116",
-          paddingBottom: "16px",
-        }}
-      >
-        {title}
-      </div>
-      <div
-        style={{
-          fontSize: "32px",
-          color: "#FAF5F3",
-          paddingRight: 220,
-          fontWeight: 500,
-        }}
-      >
-        {speakers}
-      </div>
-      <div
-        style={{
-          display: "flex",
-          position: "absolute",
-          bottom: 0,
-          right: 160,
-        }}
-      >
-        <SnakeHead />
-      </div>
-      <div
-        style={{
-          display: "flex",
-          position: "absolute",
-          bottom: 0,
-          right: 20,
-          transform: "rotate(180deg)",
-        }}
-      >
-        <SnakeTail />
-      </div>
-    </div>,
+    <TitleSubtitleCard title={title} subtitle={speakers} />,
     {
       width: 1200,
       height: 630,
