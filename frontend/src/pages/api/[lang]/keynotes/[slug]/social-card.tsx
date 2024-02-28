@@ -45,7 +45,7 @@ export const handler = async (req: NextRequest) => {
   const speakers = talk.speakers.map((speaker) => speaker.fullName).join(", ");
 
   return new ImageResponse(
-    <TitleSubtitleCard title={title} subtitle={speakers} type="keynote" />,
+    <TitleSubtitleCard title={title} subtitle={speakers} tag="keynote" />,
     {
       width: 1200,
       height: 630,
