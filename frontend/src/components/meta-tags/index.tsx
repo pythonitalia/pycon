@@ -20,18 +20,12 @@ const getSocialCardURL = (
   locale: string,
 ) => {
   if (useDefaultSocialCard) {
-    return `${process.env.NEXT_PUBLIC_SOCIAL_CARD_SERVICE}?url=${process.env.NEXT_PUBLIC_SITE_URL}en/social`;
+    return `${process.env.NEXT_PUBLIC_SITE_URL}api/${locale}/social-card`;
   }
 
-  if (useNewSocialCard) {
-    return `${process.env.NEXT_PUBLIC_SITE_URL}api/${locale}/${asPath.substring(
-      1,
-    )}/social-card`;
-  }
-
-  return `${process.env.NEXT_PUBLIC_SOCIAL_CARD_SERVICE}?url=${
-    process.env.NEXT_PUBLIC_SITE_URL
-  }${asPath.substr(1)}/social`;
+  return `${process.env.NEXT_PUBLIC_SITE_URL}api/${locale}/${asPath.substring(
+    1,
+  )}/social-card`;
 };
 
 export const MetaTags = ({

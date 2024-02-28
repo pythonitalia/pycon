@@ -54,7 +54,7 @@ const handler = async (req: NextRequest) => {
   const regularFontData = await regularFont;
   const boldFontData = await boldFont;
   const client = createClient();
-  const mainIllustrationResponse = await mainIllustration;
+  const mainIllustrationData = await mainIllustration;
   const { data } = await querySocialCard(client, {
     code: process.env.conferenceCode,
   });
@@ -74,7 +74,7 @@ const handler = async (req: NextRequest) => {
     >
       {/* eslint-disable @typescript-eslint/ban-ts-comment */}
       {/* @ts-ignore */}
-      <img width={600} height={600} src={mainIllustrationResponse} alt="" />
+      <img width={600} height={600} src={mainIllustrationData} alt="" />
       <div
         style={{
           display: "flex",
