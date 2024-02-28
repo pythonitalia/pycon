@@ -18,7 +18,7 @@ const regularFont = fetch(
 ).then((res) => res.arrayBuffer());
 const semiBoldFont = fetch(
   new URL(
-    "../../../../../social-card-font/GeneralSans-SemiBold.otf",
+    "../../../../../social-card-font/GeneralSans-Semibold.otf",
     import.meta.url,
   ),
 ).then((res) => res.arrayBuffer());
