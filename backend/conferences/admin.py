@@ -183,18 +183,18 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
     inlines = [DeadlineInline, DurationInline, SponsorLevelInline, IncludedEventInline]
 
     def get_urls(self):
-        return super().get_urls() + [
+        return [
             path(
-                "<int:object_id>/video-upload/map-videos",
+                "<int:object_id>/video-upload/map-videos/",
                 self.admin_site.admin_view(self.map_videos),
                 name="map_videos",
             ),
             path(
-                "<int:object_id>/schedule-builder",
+                "<int:object_id>/schedule-builder/",
                 self.admin_site.admin_view(self.schedule_builder),
                 name="schedule_builder",
             ),
-        ]
+        ] + super().get_urls()
 
     def schedule_builder(self, request, object_id):
         conference = Conference.objects.get(pk=object_id)
