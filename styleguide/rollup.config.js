@@ -113,17 +113,17 @@ export default [
       {
         file: `dist/config-parts.js`,
         format: "es",
-        sourcemap: true,
+        sourcemap: false,
         assetFileNames,
       },
       {
         file: `dist/config-parts.js`,
         format: "cjs",
-        sourcemap: true,
+        sourcemap: false,
         assetFileNames,
       },
     ],
-    plugins: []
+    plugins
   },
   {
     input: "./src/icons/index.ts",
