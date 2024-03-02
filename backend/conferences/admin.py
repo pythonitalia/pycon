@@ -185,12 +185,12 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
     def get_urls(self):
         return [
             path(
-                "<path:object_id>/video-upload/map-videos/",
+                "<int:object_id>/video-upload/map-videos/",
                 self.admin_site.admin_view(self.map_videos),
                 name="map_videos",
             ),
             path(
-                "<path:object_id>/schedule-builder/",
+                "<int:object_id>/schedule-builder/",
                 self.admin_site.admin_view(self.schedule_builder),
                 name="schedule_builder",
             ),
