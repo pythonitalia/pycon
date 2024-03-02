@@ -32,7 +32,7 @@ class CustomIndexLinks(admin.ModelAdmin):
                     name=f"custom_index_link_{func_name}",
                 )
             )
-        return base_urls + additional_urls
+        return additional_urls + base_urls
 
 
 def validate_single_conference_selection(func):
