@@ -107,6 +107,25 @@ export default [
     ],
   },
   {
+    input: "./src/config-parts.js",
+    external,
+    output: [
+      {
+        file: `dist/config-parts.js`,
+        format: "es",
+        sourcemap: true,
+        assetFileNames,
+      },
+      {
+        file: `dist/config-parts.js`,
+        format: "cjs",
+        sourcemap: true,
+        assetFileNames,
+      },
+    ],
+    plugins: []
+  },
+  {
     input: "./src/icons/index.ts",
     external,
     output: [
