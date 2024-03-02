@@ -1,0 +1,83 @@
+---
+title: "[PyCon Italia 2023] Update about your proposal"
+preheader: "Update about your proposal"
+---
+
+<extends src="src/layouts/base.html">
+  <block name="template">
+    <table class="w-full font-sans">
+      <tr>
+        <td align="center" class="bg-gray-100">
+          <table class="w-600 sm:w-full">
+            <tr>
+              <component src="src/components/head-pycon.html" />
+            </tr>
+            <tr>
+              <td align="center" class="sm:px-24">
+                <table class="w-full">
+                  <tr>
+                    <td
+                      class="bg-white text-gray-800 text-base text-left p-48 sm:px-24 leading-24"
+                    >
+                      <p class="m-0 mb-16">👋 @{{firstname}}!</p>
+                      <p class="m-0 mb-16">
+                        We're reaching out to you regarding the status of your submission @{{submissionTitle}} (@{{submissionType}}) at @{{conferenceName}}.
+                      </p>
+                      <p class="m-0 mb-16">
+                        As you may be aware, we have had an overwhelming response to our call for proposals,
+                        and while we wish we could accommodate everyone, our schedule has limitations.
+                      </p>
+                      <p class="m-0 mb-16">
+                        As we are currently finalizing our speaker lineup,
+                        we wanted to inquire if you are still interested in remaining on the waiting list.
+                        In the event of any withdrawals or changes to our schedule,
+                        speakers from the waiting list will be considered for inclusion.
+                      </p>
+                      <p class="m-0 mb-1">
+                        <strong>
+                          If you are willing to stay on the waiting list,
+                          please let us know by replying to this email and also telling us
+                          if you have a specific deadline after which you are no longer interested.
+                        </strong>
+                      </p>
+                      <p class="m-0 mb-16">
+                        If you're planning to attend PyCon Italia, regardless of whether you have a talk/workshop or not,
+                        we'd love to hear if you're open to the possibility of stepping in for a last-minute talk in case of cancellations!
+                        Unfortunately, last-minute issues always happen 🤷🏻,
+                        and your flexibility could really help us out,
+                        especially if it's the day before or the same day as the conference.
+                      </p>
+                      <p class="m-0 mb-16">
+                        Conversely, if your circumstances have changed or you have secured
+                        other commitments that prevent your participation, kindly let us know, and we will update our records accordingly.
+                      </p>
+                      <p class="m-0 mb-16">
+                        Thank you for your understanding and cooperation.
+                        We truly appreciate your interest in speaking at @{{conferenceName}},
+                        and we hope to have the opportunity to welcome you as a speaker in the near future.
+                      </p>
+                      <p class="m-0 mb-16">
+                        Looking forward to hearing from you soon.
+                      </p>
+                      <p class="m-0">
+                        Warm regards,
+                        <br />
+                        @{{conferenceName}}'s Team
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="h-48"></td>
+                  </tr>
+                  <tr>
+                    <component src="src/components/footer.html" />
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </block>
+</extends>

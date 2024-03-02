@@ -18,14 +18,18 @@ class Day:
         if limit > 10:
             raise ValueError("Limit cannot be greater than 10")
 
-        return ScheduleItemModel.objects.filter(
-            slot__day=self,
-            type__in=[
-                ScheduleItemModel.TYPES.talk,
-                ScheduleItemModel.TYPES.training,
-                ScheduleItemModel.TYPES.panel,
-            ],
-        ).order_by("?")[:limit]
+        return (
+            ScheduleItemModel.objects.filter(
+                slot__day=self,
+                type__in=[
+                    ScheduleItemModel.TYPES.talk,
+                    ScheduleItemModel.TYPES.training,
+                    ScheduleItemModel.TYPES.panel,
+                ],
+            )
+            .exclude(title="TBA")
+            .order_by("?")[:limit]
+        )
 
     @strawberry.field
     def slots(
