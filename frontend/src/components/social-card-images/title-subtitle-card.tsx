@@ -1,4 +1,4 @@
-import { colors } from "@python-italia/pycon-styleguide";
+import { colors } from "@python-italia/pycon-styleguide/config-parts";
 import {
   SnakeHead,
   SnakeTail,
