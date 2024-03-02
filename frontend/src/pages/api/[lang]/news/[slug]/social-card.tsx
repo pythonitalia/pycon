@@ -8,7 +8,7 @@ import { queryNewsArticle } from "~/types";
 
 export const config = {
   runtime: "edge",
-  unstable_allowDynamic: ["/node_modules/**"],
+  unstable_allowDynamic: ["/node_modules/.pnpm/**"],
 };
 
 const regularFont = fetch(
