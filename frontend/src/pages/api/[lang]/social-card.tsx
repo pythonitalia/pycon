@@ -97,7 +97,7 @@ const handler = async (req: NextRequest) => {
             display: "flex",
             width: 1200 - 600 - 14 - 6,
             height: 630 - 180 - 14 * 2,
-            marginLeft: "6px",
+            marginLeft: "7px",
             flexDirection: "column",
             justifyContent: "center",
             padding: "50px",
