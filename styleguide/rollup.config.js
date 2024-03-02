@@ -1,9 +1,9 @@
-import typescript from "rollup-plugin-typescript2";
-import { terser } from "rollup-plugin-terser";
 import commonjs from "@rollup/plugin-commonjs";
-import pkg from "./package.json";
-import ts from "typescript";
 import styles from "rollup-plugin-styles";
+import { terser } from "rollup-plugin-terser";
+import typescript from "rollup-plugin-typescript2";
+import ts from "typescript";
+import pkg from "./package.json";
 
 const assetFileNames = (assetInfo) => {
   if (assetInfo.name === "index.css") {
@@ -12,6 +12,10 @@ const assetFileNames = (assetInfo) => {
 
   if (assetInfo.name === "custom.css") {
     return "custom-style.css";
+  }
+
+  if (assetInfo.name === "config-parts.js") {
+    return "config-parts.js";
   }
 
   return "assets/[name]-[hash][extname]";

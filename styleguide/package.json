@@ -8,6 +8,7 @@
     ".": "./dist/index.js",
     "./style": "./dist/index.css",
     "./custom-style": "./dist/custom-style.css",
+    "./config-parts": "./dist/config-parts.js",
     "./icons": "./dist/icons/index.js",
     "./illustrations": "./dist/illustrations/index.js"
   },

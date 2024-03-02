@@ -1,6 +1,6 @@
-const { colors } = require('./colors');
+const { colors } = require('./config-parts');
 
-module.exports= {
+module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx,vue}"],
   theme: {
     screens: {
