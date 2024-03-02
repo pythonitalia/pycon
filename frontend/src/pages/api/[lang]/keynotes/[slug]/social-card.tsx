@@ -8,7 +8,7 @@ import { queryTalk } from "~/types";
 
 export const config = {
   runtime: "edge",
-  unstable_allowDynamic: ["/node_modules/.pnpm/**", "/node_modules/**"],
+  unstable_allowDynamic: ["/node_modules/**"],
 };
 
 const regularFont = fetch(
