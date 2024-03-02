@@ -144,8 +144,8 @@ dependencies:
     specifier: ^4.0.0
     version: 4.0.0(intl-messageformat@10.5.11)(react-intl@6.6.2)(react@18.2.0)
   react-qr-code:
-    specifier: ^2.0.7
-    version: 2.0.11(react@18.2.0)
+    specifier: ^2.0.12
+    version: 2.0.12(react@18.2.0)
   react-select:
     specifier: ^3.1.0
     version: 3.2.0(react-dom@18.2.0)(react@18.2.0)
@@ -8287,8 +8287,8 @@ packages:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
     dev: true
 
-  /react-qr-code@2.0.11(react@18.2.0):
-    resolution: {integrity: sha512-P7mvVM5vk9NjGdHMt4Z0KWeeJYwRAtonHTghZT2r+AASinLUUKQ9wfsGH2lPKsT++gps7hXmaiMGRvwTDEL9OA==}
+  /react-qr-code@2.0.12(react@18.2.0):
+    resolution: {integrity: sha512-k+pzP5CKLEGBRwZsDPp98/CAJeXlsYRHM2iZn1Sd5Th/HnKhIZCSg27PXO58zk8z02RaEryg+60xa4vyywMJwg==}
     peerDependencies:
       react: ^16.x || ^17.x || ^18.x
       react-native-svg: '*'
