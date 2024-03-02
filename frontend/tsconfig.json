@@ -22,6 +22,9 @@
       ],
       "@python-italia/pycon-styleguide/illustrations": [
         "./node_modules/@python-italia/pycon-styleguide/dist/illustrations"
+      ],
+      "@python-italia/pycon-styleguide/config-parts": [
+        "./node_modules/@python-italia/pycon-styleguide/dist/config-parts"
       ]
     },
     "incremental": true

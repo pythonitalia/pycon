@@ -14,6 +14,7 @@ import { queryNewsArticle, querySocialCard, useSocialCardQuery } from "~/types";
 
 export const config = {
   runtime: "edge",
+  unstable_allowDynamic: ["/node_modules/.pnpm/**", "/node_modules/**"],
 };
 
 const regularFont = fetch(
