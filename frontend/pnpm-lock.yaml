@@ -147,8 +147,8 @@ dependencies:
     specifier: ^2.0.12
     version: 2.0.12(react@18.2.0)
   react-select:
-    specifier: ^3.1.0
-    version: 3.2.0(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^5.8.0
+    version: 5.8.0(@types/react@17.0.59)(react-dom@18.2.0)(react@18.2.0)
   react-use-form-state:
     specifier: ^0.13.2
     version: 0.13.2(react-dom@18.2.0)(react@18.2.0)
@@ -1373,6 +1373,23 @@ packages:
   /@eslint/js@8.56.0:
     resolution: {integrity: sha512-gMsVel9D7f2HLkBma9VbtzZRehRogVRfbr++f06nL2vnCGCNlzOD+/MUov/F4p8myyAHspEhVobgjpX64q5m6A==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
+  /@floating-ui/core@1.6.0:
+    resolution: {integrity: sha512-PcF++MykgmTj3CIyOQbKA/hDzOAiqI3mhuoN44WRCopIs1sgoDoU4oty4Jtqaj/y3oDU6fnVSm4QG0a3t5i0+g==}
+    dependencies:
+      '@floating-ui/utils': 0.2.1
+    dev: false
+
+  /@floating-ui/dom@1.6.3:
+    resolution: {integrity: sha512-RnDthu3mzPlQ31Ss/BTwQ1zjzIhr3lk1gZB1OC56h/1vEtaXkESrOqL5fQVMfXpwGtRwX+YsZBdyHtJMQnkArw==}
+    dependencies:
+      '@floating-ui/core': 1.6.0
+      '@floating-ui/utils': 0.2.1
+    dev: false
+
+  /@floating-ui/utils@0.2.1:
+    resolution: {integrity: sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==}
+    dev: false
 
   /@formatjs/ecma402-abstract@1.18.2:
     resolution: {integrity: sha512-+QoPW4csYALsQIl8GbN14igZzDbuwzcpWrku9nyMXlaqAlwRBgl5V+p0vWMGFqHOw37czNXaP/lEk4wbLgcmtA==}
@@ -3184,6 +3201,12 @@ packages:
     dependencies:
       '@types/react': 16.14.41
     dev: true
+
+  /@types/react-transition-group@4.4.10:
+    resolution: {integrity: sha512-hT/+s0VQs2ojCX823m60m5f0sL5idt9SO6Tj6Dg+rdphGPIeJbJ6CxvBYkgkGKrYeDjvIpKTR38UzmtHJOGW3Q==}
+    dependencies:
+      '@types/react': 17.0.59
+    dev: false
 
   /@types/react@16.14.41:
     resolution: {integrity: sha512-h+joCKF2r5rdECoM1U8WCEIHBp5/0TSR5Nyq8gtnnYY1n2WqGuj3indYqTjMb2/b5g2rfxJV6u4jUFq95lbT6Q==}
@@ -7450,8 +7473,8 @@ packages:
     resolution: {integrity: sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==}
     dev: false
 
-  /memoize-one@5.2.1:
-    resolution: {integrity: sha512-zYiwtZUcYyXKo/np96AGZAckk+FWWsUdJ3cHGGmld7+AhvcWmQyGCYUh1hc4Q/pkOhb65dQR/pqCyK0cOaHz4Q==}
+  /memoize-one@6.0.0:
+    resolution: {integrity: sha512-rkpe71W0N0c0Xz6QD0eJETuWAJGnJ9afsl1srmwPrI+yBCkge5EycXXbYRyvL29zZVUWQCY7InPRCv3GDXuZNw==}
     dev: false
 
   /merge-stream@2.0.0:
@@ -8235,15 +8258,6 @@ packages:
       react: 18.2.0
     dev: false
 
-  /react-input-autosize@3.0.0(react@18.2.0):
-    resolution: {integrity: sha512-nL9uS7jEs/zu8sqwFE5MAPx6pPkNAriACQ2rGLlqmKr2sPGtN7TXTyDdQt4lbNXVx7Uzadb40x8qotIuru6Rhg==}
-    peerDependencies:
-      react: ^16.3.0 || ^17.0.0
-    dependencies:
-      prop-types: 15.8.1
-      react: 18.2.0
-    dev: false
-
   /react-intl-formatted-duration@4.0.0(intl-messageformat@10.5.11)(react-intl@6.6.2)(react@18.2.0):
     resolution: {integrity: sha512-d515Fk5T594grm8WbyPer6WKdTgKajaTFT944+4QFDnsNU7cs/ZiDLinGUwaSzn7bu/IFvBCvY0xNGpClKC4uw==}
     peerDependencies:
@@ -8301,22 +8315,25 @@ packages:
       react: 18.2.0
     dev: false
 
-  /react-select@3.2.0(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-B/q3TnCZXEKItO0fFN/I0tWOX3WJvi/X2wtdffmwSQVRwg5BpValScTO1vdic9AxlUgmeSzib2hAZAwIUQUZGQ==}
+  /react-select@5.8.0(@types/react@17.0.59)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-TfjLDo58XrhP6VG5M/Mi56Us0Yt8X7xD6cDybC7yoRMUNm7BGO7qk8J0TLQOua/prb8vUOtsfnXZwfm30HGsAA==}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0
-      react-dom: ^16.8.0 || ^17.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
       '@babel/runtime': 7.23.9
-      '@emotion/cache': 10.0.29
-      '@emotion/core': 10.3.1(react@18.2.0)
-      '@emotion/css': 10.0.27
-      memoize-one: 5.2.1
+      '@emotion/cache': 11.11.0
+      '@emotion/react': 11.11.0(@types/react@17.0.59)(react@18.2.0)
+      '@floating-ui/dom': 1.6.3
+      '@types/react-transition-group': 4.4.10
+      memoize-one: 6.0.0
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      react-input-autosize: 3.0.0(react@18.2.0)
       react-transition-group: 4.4.5(react-dom@18.2.0)(react@18.2.0)
+      use-isomorphic-layout-effect: 1.1.2(@types/react@17.0.59)(react@18.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
     dev: false
 
   /react-spring@8.0.27(react-dom@18.2.0)(react@18.2.0):

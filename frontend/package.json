@@ -61,7 +61,7 @@
     "react-intl": "^6.6.2",
     "react-intl-formatted-duration": "^4.0.0",
     "react-qr-code": "^2.0.12",
-    "react-select": "^3.1.0",
+    "react-select": "^5.8.0",
     "react-use-form-state": "^0.13.2",
     "react-use-sync-scroll": "^0.1.0",
     "react-wrap-balancer": "^0.5.0",
