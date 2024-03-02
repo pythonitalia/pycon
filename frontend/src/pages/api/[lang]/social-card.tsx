@@ -1,16 +1,11 @@
-import {
-  SnakeHead,
-  SnakeTail,
-} from "@python-italia/pycon-styleguide/illustrations";
 import { ImageResponse } from "@vercel/og";
 
 import type { NextRequest } from "next/server";
 
 import { createClient } from "~/apollo/create-client";
 import { Logo } from "~/components/logo";
-import { useCurrentLanguage } from "~/locale/context";
 import { Language } from "~/locale/languages";
-import { queryNewsArticle, querySocialCard, useSocialCardQuery } from "~/types";
+import { querySocialCard } from "~/types";
 
 export const config = {
   runtime: "edge",
