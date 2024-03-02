@@ -66,3 +66,4 @@ export { HeroIllustration } from "./hero-illustration";
 
 // tailwind config
 export { default as tailwindConfig } from "../tailwind.config";
+export { colors } from '../colors'
