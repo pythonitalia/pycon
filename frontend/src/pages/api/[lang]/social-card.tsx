@@ -77,7 +77,7 @@ const handler = async (req: NextRequest) => {
     >
       {/* eslint-disable @typescript-eslint/ban-ts-comment */}
       {/* @ts-ignore */}
-      <img width={600} height={600} src={mainIllustrationData} alt="" />
+      <img width={600} height={"100%"} src={mainIllustrationData} alt="" />
       <div
         style={{
           display: "flex",
