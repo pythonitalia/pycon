@@ -68,6 +68,38 @@ def test_register_with_used_email_fails(full_response_graphql_client):
     assert another_user.check_password("another")
 
 
+@pytest.mark.parametrize(
+    "attempt_email", ("test@EMAIL.it", "TEST@EMAIL.it", "teST@eMaIl.it")
+)
+def test_register_with_used_email_normalised(
+    full_response_graphql_client, attempt_email
+):
+    another_user = UserFactory(
+        email="test@email.it", password="another", full_name="Another user"
+    )
+
+    body, response = full_response_graphql_client.query(
+        """mutation($input: RegisterInput!) {
+            register(input: $input) {
+                __typename
+            }
+        }""",
+        variables={
+            "input": {
+                "email": attempt_email,
+                "password": "password123",
+                "fullname": "New Name",
+            }
+        },
+    )
+
+    assert body["data"]["register"]["__typename"] == "EmailAlreadyUsed"
+    assert "pythonitalia_sessionid" not in response.cookies
+    another_user.refresh_from_db()
+    assert another_user.fullname == "Another user"
+    assert another_user.check_password("another")
+
+
 def test_register_fullname_is_required(full_response_graphql_client):
     body, response = full_response_graphql_client.query(
         """mutation($input: RegisterInput!) {

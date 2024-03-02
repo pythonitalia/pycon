@@ -1,0 +1,44 @@
+{
+  "name": "custom_admin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run codegen:watch\" \"nodemon ws-proxy/ws.py\" \"astro dev --port 3002 --host 0.0.0.0\"",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "codegen": "graphql-codegen --config codegen.ts",
+    "codegen:watch": "pnpm run codegen --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/client": "^3.9.0",
+    "@astrojs/react": "^3.0.9",
+    "@astrojs/tailwind": "^5.1.0",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "astro": "^4.2.7",
+    "clsx": "^2.1.0",
+    "graphql": "^16.8.1",
+    "react": "^18.2.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.4.1"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/near-operation-file-preset": "^3.0.0",
+    "@graphql-codegen/typescript-operations": "^4.0.1",
+    "@graphql-codegen/typescript-react-apollo": "^4.1.0",
+    "@parcel/watcher": "^2.4.0",
+    "concurrently": "^8.2.2",
+    "http-proxy": "^1.18.1",
+    "nodemon": "^3.0.3",
+    "prettier": "^3.2.4",
+    "ws": "^8.16.0"
+  }
+}

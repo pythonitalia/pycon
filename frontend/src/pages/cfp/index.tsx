@@ -4,7 +4,7 @@
 import { Link } from "@python-italia/pycon-styleguide";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Container, Heading, jsx, Text } from "theme-ui";
+import { Box, Container, Heading, Text, jsx } from "theme-ui";
 
 import { GetStaticProps } from "next";
 

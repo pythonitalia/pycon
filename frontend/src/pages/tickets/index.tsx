@@ -1,12 +1,12 @@
 import {
   CardPart,
-  MultiplePartsCard,
-  Text,
-  Heading,
   Container,
-  Spacer,
   Grid,
+  Heading,
+  MultiplePartsCard,
   Section,
+  Spacer,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { SnakeHead } from "@python-italia/pycon-styleguide/illustrations";
 import { FormattedMessage } from "react-intl";

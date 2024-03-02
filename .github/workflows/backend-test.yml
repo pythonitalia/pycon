@@ -1,6 +1,9 @@
 name: Backend tests
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     paths:
       - "backend/**/*"
@@ -10,6 +13,9 @@ on:
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
 
     services:
       postgres:
@@ -22,33 +28,33 @@ jobs:
           - 5432/tcp
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:7.2.3
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
           python-version: "3.11.6"
-      - run: pip install pdm==2.10.4
+      - run: pip install pdm==2.10.4 codecov
 
       - name: Cache PDM
-        uses: actions/cache@v1
+        uses: actions/cache@v4
+        id: cache-deps
         with:
-          path: ./.venv
+          path: backend/.venv
           key: pdm-${{ hashFiles('**/pdm.lock') }}-1
 
       - name: Install python dependencies
-        working-directory: backend
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         run: pdm install
 
-      - name: Install codecov
-        working-directory: backend
-        run: pip install codecov
-
       - name: pytest
-        working-directory: backend
         run: |
           set +e
-          OUTPUT=$(pdm run pytest --cov-report xml --cov=. --cov-fail-under 80)
+          CPUS=$(nproc --all)
+          OUTPUT=$(pdm run pytest --cov-report xml --cov=. --cov-fail-under 80 --durations 10 -n $CPUS)
           STATUS=$?
           echo "$OUTPUT"
           cd ..
@@ -56,6 +62,8 @@ jobs:
           exit $STATUS
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
+          CELERY_BROKER_URL: redis://redis:6379/0
+          CELERY_RESULT_BACKEND: redis://redis:6379/1
           STRIPE_SECRET_API_KEY: fake-key
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
           MEDIA_FILES_STORAGE_BACKEND: django.core.files.storage.FileSystemStorage

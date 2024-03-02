@@ -1,0 +1,83 @@
+---
+title: ""
+preheader: "Thank you for requesting the PyCon Italia sponsorship brochure!"
+---
+
+<extends src="src/layouts/base.html">
+  <block name="template">
+    <table class="w-full font-sans">
+      <tr>
+        <td align="center" class="bg-gray-100">
+          <table class="w-600 sm:w-full">
+            <tr>
+              <component src="src/components/head-pycon.html" />
+            </tr>
+            <tr>
+              <td align="center" class="sm:px-24">
+                <table class="w-full">
+                  <tr>
+                    <td
+                      class="bg-white text-gray-800 text-base text-left p-48 sm:px-24 leading-24"
+                    >
+                      <p class="m-0 mb-16">Hello there! 👋</p>
+                      <p class="m-0 mb-16">
+                        Thank you for requesting the PyCon Italia sponsorship brochure!
+                      </p>
+                      <p class="m-0 mb-24">
+                        You can download it from the link below:
+                      </p>
+                      <div class="leading-full mb-24">
+                        <a
+                          href="@{{brochurelink}}"
+                          target="_blank"
+                          class="inline-block py-16 px-24 select-none text-base font-semibold text-center no-underline text-white bg-primary hover:bg-darker"
+                        >
+                          <!--[if mso
+                            ]><i
+                              style="
+                                letter-spacing: 24px;
+                                mso-font-width: -100%;
+                                mso-text-raise: 30px;
+                              "
+                              >&#8202;</i
+                            ><!
+                          [endif]-->
+                          <span style="mso-text-raise: 16px"
+                            >Open Brochure</span
+                          >
+                          <!--[if mso
+                            ]><i
+                              style="
+                                letter-spacing: 24px;
+                                mso-font-width: -100%;
+                              "
+                              >&#8202;</i
+                            ><!
+                          [endif]-->
+                        </a>
+                      </div>
+                      <p>
+                        Can't see the button? Copy and paste the following URL into your browser:<br /><br />
+                        <a href="@{{brochurelink}}">@{{brochurelink}}</a>
+                      </p>
+                      <p class="m-0 mb-0">
+                        Feel free to reply to this email to ask any question. We are here to help you get the most out of your sponsorship
+                        and can customize any package to fit your needs!
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="h-48"></td>
+                  </tr>
+                  <tr>
+                    <component src="src/components/footer.html" />
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </block>
+</extends>

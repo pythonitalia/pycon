@@ -1,4 +1,4 @@
-import { createMachine, assign } from "xstate";
+import { assign, createMachine } from "xstate";
 
 type Context = {
   paymentUrl?: string;
@@ -41,7 +41,9 @@ export const createOrderMachine = createMachine<Context>(
         if (!context.paymentUrl) {
           return;
         }
-        window.sessionStorage.removeItem("tickets-cart-v4");
+        window.sessionStorage.removeItem("tickets-cart-v6");
+        document.cookie =
+          "tickets-cart-v6=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
         window.location.href = context.paymentUrl;
       },
     },

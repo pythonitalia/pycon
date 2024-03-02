@@ -1,7 +1,8 @@
 locals {
   lambda_name = "${terraform.workspace}-${var.application}"
   base_env_vars = {
-    ENV = terraform.workspace
+    ENV = terraform.workspace,
+    GITHASH = data.external.githash.result.githash,
   }
   env_vars = merge(var.env_vars, local.base_env_vars)
   use_vpc  = length(var.security_group_ids) != 0 && length(var.subnet_ids) != 0

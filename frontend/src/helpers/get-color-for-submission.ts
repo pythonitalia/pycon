@@ -18,7 +18,7 @@ export const getColorForSubmission = (submission: {
   audienceLevel?: { name: string } | null;
 }) =>
   COLOR_MAP[
-    submission.audienceLevel!.name.toLowerCase() as keyof typeof COLOR_MAP
+    submission.audienceLevel.name.toLowerCase() as keyof typeof COLOR_MAP
   ];
 
 export const getColorForItem = (item: Item) => {

@@ -50,7 +50,9 @@ class UpdateProfileInput:
         return errors.if_has_errors
 
 
-UpdateProfileResult = Annotated[Union[UpdateProfileErrors, User], strawberry.union(name="UpdateProfileResult")]
+UpdateProfileResult = Annotated[
+    Union[UpdateProfileErrors, User], strawberry.union(name="UpdateProfileResult")
+]
 
 
 @strawberry.mutation(permission_classes=[IsAuthenticated])

@@ -1,0 +1,8 @@
+fragment KeynoteFragment on Keynote {
+  id
+  title
+  speakers {
+    id
+    fullName
+  }
+}

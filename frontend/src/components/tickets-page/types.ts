@@ -12,6 +12,8 @@ export type InvoiceInformationState = {
   companyName: string;
   name: string;
   fiscalCode: string;
+  pec: string;
+  sdi: string;
   vatId: string;
   address: string;
   zipCode: string;
@@ -41,6 +43,7 @@ export type ProductState = {
   admission?: boolean;
   voucher?: Voucher | null;
   errors?: { [id: string]: string };
+  isMe: boolean;
 };
 
 export type SelectedProducts = {

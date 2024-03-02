@@ -1,0 +1,241 @@
+{% extends "admin/base_site.html" %}
+{% load i18n markdownify %}
+{% load localize countryname %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+  &rsaquo; <a href="{% url 'admin:app_list' 'reviews' %}">Reviews</a>
+  &rsaquo; <a href="{% url 'admin:reviews_reviewsession_changelist' %}">Review sessions</a>
+  &rsaquo; <a href="{% url 'admin:reviews_reviewsession_change' review_session_id %}">{{review_session_repr}}</a>
+  &rsaquo; {{title}}
+</div>
+{% endblock %}
+
+{% block content %}
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  .review-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    padding: 10px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--hairline-color);
+  }
+
+  .my-vote {
+    font-size: 20px;
+    padding: 10px;
+  }
+
+  .my-vote input[type="radio"] {
+    width: 20px;
+    height: 20px;
+  }
+
+  .available-votes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 10px;
+  }
+
+  .comments-wrapper-label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .comments-wrapper textarea {
+    width: 100%;
+  }
+
+  .comments-wrapper + .comments-wrapper {
+    margin-top: 10px;
+  }
+
+  .my-vote .actions {
+    margin-top: 10px;
+  }
+
+  .my-vote .actions input {
+    font-size: 16px;
+  }
+
+  .score-label {
+    margin-bottom: 10px;
+  }
+
+  .tags-to-exclude {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .tags-to-exclude label {
+    font-size: 17px;
+  }
+</style>
+<fieldset class="module aligned">
+  <h2>Grant</h2>
+
+  <div class="review-row">
+    <strong>Name</strong>
+    <div>{{grant.name}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Fullname</strong>
+    <div>{{grant.full_name}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Age Group</strong>
+    <div>{{grant.get_age_group_display}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Gender</strong>
+    <div>{{grant.get_gender_display}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Occupation</strong>
+    <div>{{grant.get_occupation_display}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Grant type</strong>
+    <div>{{grant.get_grant_type_display}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Travelling From</strong>
+    <div>{{grant.get_travelling_from_display}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Country type</strong>
+    <div>{{grant.get_country_type_display}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Needs funds for travel</strong>
+    <div>{{grant.needs_funds_for_travel|yesno}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Needs visa</strong>
+    <div>{{grant.need_visa|yesno}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Needs accommodation</strong>
+    <div>{{grant.need_accommodation|yesno}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Interested in Volunteering</strong>
+    <div>{{grant.get_interested_in_volunteering_display}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Has sent a proposal?</strong>
+    <div>{{has_sent_proposal|yesno}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Why are you asking for a grant?</strong>
+    <div>{{grant.why|linebreaksbr}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>How do they use python</strong>
+    <div>{{grant.python_usage|linebreaksbr}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Have they been to other events?</strong>
+    <div>{{grant.been_to_other_events|linebreaksbr}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Community contribution</strong>
+    <div>{{grant.community_contribution|linebreaksbr}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Notes</strong>
+    <div>{{grant.notes|linebreaksbr}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Socials</strong>
+    <div>
+      <ul>
+        {% if grant.website %}
+        <li><a target="_blank" rel="noopener noreferrer" href="{{grant.website}}">Website</a></li>
+        {% endif %}
+        {% if grant.twitter_handle %}
+        <li><a target="_blank" rel="noopener noreferrer" href="https://twitter.com/@{{grant.twitter_handle}}">Twitter</a></li>
+        {% endif %}
+        {% if grant.github_handle %}
+        <li><a target="_blank" rel="noopener noreferrer" href="https://github.com/{{grant.github_handle}}">GitHub</a></li>
+        {% endif %}
+        {% if grant.linkedin_url %}
+        <li><a target="_blank" rel="noopener noreferrer" href="{{grant.linkedin_url}}">Linkedin</a></li>
+        {% endif %}
+        {% if grant.mastodon_handle %}
+        <li><a target="_blank" rel="noopener noreferrer" href="{{grant.mastodon_handle}}">Mastodon</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="review-row">
+    <strong>Open Grant</strong>
+    <div>
+      <a target="_blank" href="{% url 'admin:grants_grant_change' object_id=grant.id %}">Open Grant</a>
+    </div>
+  </div>
+</fieldset>
+
+<fieldset class="module aligned">
+  <h2>Your vote</h2>
+  <form
+    class="my-vote"
+    method="post"
+    action="{% url 'admin:reviews-vote-view' review_session_id grant.id %}"
+  >
+    {% csrf_token %}
+    <div class="score-label">Score</div>
+      <div class="available-votes">
+        {% for available_score in available_scores %}
+        <label class="my-vote-radio-wrapper">
+          <input {% if user_review.score_id == available_score.id %} checked {% endif %} name="score" type="radio" value="{{ available_score.id }}" />
+          {{available_score.label}}
+        </label>
+        {% endfor %}
+      </div>
+
+      <div class="comments-wrapper">
+        <label class="comments-wrapper-label">Leave a comment?</label>
+        <textarea rows="5" name="comment">{{comment}}</textarea>
+      </div>
+
+      <div class="comments-wrapper">
+        <label class="comments-wrapper-label">Private comment (Only visible to you)</label>
+        <textarea rows="5" name="private_comment">{{private_comment}}</textarea>
+      </div>
+
+        <div class="actions">
+          <input value="Vote and go to the next" type="submit" name="_next" />
+          <input value="Skip for now" type="submit" name="_skip" />
+        </div>
+    </div>
+
+    <input type="hidden" name="seen" value="{% for id in seen %}{{id}},{% endfor %}" />
+  </form>
+</fieldset>
+{% endblock %}

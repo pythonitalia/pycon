@@ -1,13 +1,13 @@
 from django.contrib import admin
 from django.db import transaction
 
-from domain_events.publisher import send_volunteers_push_notification
 from volunteers_notifications.models import Notification, VolunteerDevice
+from volunteers_notifications.tasks import send_volunteers_push_notification
 
 
 def _send_notifications(notification: Notification):
     for device in VolunteerDevice.objects.all():
-        send_volunteers_push_notification(
+        send_volunteers_push_notification.delay(
             notification_id=notification.id, volunteers_device_id=device.id
         )
 

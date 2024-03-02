@@ -1,17 +1,17 @@
 import {
-  MultiplePartsCardCollection,
-  Heading,
-  Section,
-  Text,
-  Page,
-  Link,
   BasicButton,
-  Spacer,
-  CardPart,
-  MultiplePartsCard,
   Button,
-  HorizontalStack,
+  CardPart,
   FilterBar,
+  Heading,
+  HorizontalStack,
+  Link,
+  MultiplePartsCard,
+  MultiplePartsCardCollection,
+  Page,
+  Section,
+  Spacer,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React, { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -96,6 +96,23 @@ export const VotingPage = () => {
   };
 
   const onUpdateFilters = (nextStateValues) => {
+    let voted = null;
+    if (nextStateValues.voted) {
+      if (nextStateValues.voted.length === 2) {
+        voted = null;
+      } else if (
+        nextStateValues.voted.length === 1 &&
+        nextStateValues.voted[0] === "true"
+      ) {
+        voted = true;
+      } else if (
+        nextStateValues.voted.length === 1 &&
+        nextStateValues.voted[0] === "false"
+      ) {
+        voted = false;
+      }
+    }
+    nextStateValues.voted = voted !== null ? [voted.toString()] : [];
     updateUrl(nextStateValues, 1);
     setCurrentPage(1);
     setCurrentFilters(nextStateValues);
@@ -107,11 +124,11 @@ export const VotingPage = () => {
     }
 
     setCurrentFilters({
-      languages: getAsArray(router.query.language) ?? [],
+      languages: getAsArray(router.query.languages) ?? [],
       voted: router.query.voted ? [router.query.voted.toString()] : [],
       tags: getAsArray(router.query.tags),
-      types: getAsArray(router.query.type) ?? [],
-      audienceLevels: getAsArray(router.query.audienceLevel) ?? [],
+      types: getAsArray(router.query.types) ?? [],
+      audienceLevels: getAsArray(router.query.audienceLevels) ?? [],
     });
 
     setCurrentPage(parseInt(router.query.page as string) || 1);
@@ -134,7 +151,7 @@ export const VotingPage = () => {
       types: currentFilters.types,
       audienceLevels: currentFilters.audienceLevels,
     },
-    skip: !router.isReady || isNaN(currentPage),
+    skip: !router.isReady || Number.isNaN(currentPage),
     errorPolicy: "all",
   });
 
@@ -202,10 +219,10 @@ export const VotingPage = () => {
           label: <FormattedMessage id="global.all" />,
           value: "",
         },
-        ...votingMetadata?.conference.submissionTypes.map((type) => ({
+        ...(votingMetadata?.conference.submissionTypes.map((type) => ({
           label: type.name,
           value: type.id,
-        })),
+        })) ?? []),
       ],
     },
     {
@@ -216,10 +233,10 @@ export const VotingPage = () => {
           label: <FormattedMessage id="global.all" />,
           value: "",
         },
-        ...votingMetadata?.conference.audienceLevels.map((a) => ({
+        ...(votingMetadata?.conference.audienceLevels.map((a) => ({
           label: a.name,
           value: a.id,
-        })),
+        })) ?? []),
       ],
     },
     {
@@ -230,10 +247,10 @@ export const VotingPage = () => {
           label: <FormattedMessage id="global.all" />,
           value: "",
         },
-        ...votingMetadata?.votingTags.map((tag) => ({
+        ...(votingMetadata?.votingTags.map((tag) => ({
           label: tag.name,
           value: tag.id,
-        })),
+        })) ?? []),
       ],
     },
   ];
@@ -401,7 +418,7 @@ export const VotingPage = () => {
                       navigateToPage(i + 1);
                     }}
                     size="small"
-                    role="secondary"
+                    variant="secondary"
                   >
                     {i + 1}
                   </Button>

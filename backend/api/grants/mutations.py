@@ -15,7 +15,7 @@ from api.grants.types import (
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType
 from conferences.models.conference import Conference
-from domain_events.publisher import notify_new_grant_reply, send_message_to_plain
+from grants.tasks import send_new_plain_chat, notify_new_grant_reply_slack
 from grants.models import Grant as GrantModel
 from users.models import User
 
@@ -33,13 +33,21 @@ class GrantErrors(BaseErrorType):
         occupation: list[str] = strawberry.field(default_factory=list)
         grant_type: list[str] = strawberry.field(default_factory=list)
         python_usage: list[str] = strawberry.field(default_factory=list)
+        community_contribution: list[str] = strawberry.field(default_factory=list)
         been_to_other_events: list[str] = strawberry.field(default_factory=list)
         interested_in_volunteering: list[str] = strawberry.field(default_factory=list)
         needs_funds_for_travel: list[str] = strawberry.field(default_factory=list)
+        need_visa: list[str] = strawberry.field(default_factory=list)
+        need_accommodation: list[str] = strawberry.field(default_factory=list)
         why: list[str] = strawberry.field(default_factory=list)
         notes: list[str] = strawberry.field(default_factory=list)
         travelling_from: list[str] = strawberry.field(default_factory=list)
         non_field_errors: list[str] = strawberry.field(default_factory=list)
+        website: list[str] = strawberry.field(default_factory=list)
+        twitter_handle: list[str] = strawberry.field(default_factory=list)
+        github_handle: list[str] = strawberry.field(default_factory=list)
+        linkedin_url: list[str] = strawberry.field(default_factory=list)
+        mastodon_handle: list[str] = strawberry.field(default_factory=list)
 
     errors: _GrantErrors = None
 
@@ -58,6 +66,8 @@ class BaseGrantInput:
             "name": 300,
             "full_name": 300,
             "travelling_from": 200,
+            "twitter_handle": 15,
+            "github_handle": 39,
         }
         for field, max_length in max_length_fields.items():
             value = getattr(self, field, "")
@@ -70,7 +80,6 @@ class BaseGrantInput:
                 )
 
         non_empty_fields = (
-            "name",
             "full_name",
             "python_usage",
             "been_to_other_events",
@@ -98,11 +107,19 @@ class SendGrantInput(BaseGrantInput):
     grant_type: GrantType
     python_usage: str
     been_to_other_events: str
+    community_contribution: str
     interested_in_volunteering: InterestedInVolunteering
     needs_funds_for_travel: bool
+    need_visa: bool
+    need_accommodation: bool
     why: str
     notes: str
     travelling_from: str
+    website: str
+    twitter_handle: str
+    github_handle: str
+    linkedin_url: str
+    mastodon_handle: str
 
     def validate(self, conference: Conference, user: User) -> GrantErrors:
         errors = super().validate(conference=conference, user=user)
@@ -125,16 +142,28 @@ class UpdateGrantInput(BaseGrantInput):
     grant_type: GrantType
     python_usage: str
     been_to_other_events: str
+    community_contribution: str
     interested_in_volunteering: InterestedInVolunteering
     needs_funds_for_travel: bool
+    need_visa: bool
+    need_accommodation: bool
     why: str
     notes: str
     travelling_from: str
+    website: str
+    twitter_handle: str
+    github_handle: str
+    linkedin_url: str
+    mastodon_handle: str
 
 
-SendGrantResult = Annotated[Union[Grant, GrantErrors], strawberry.union(name="SendGrantResult")]
+SendGrantResult = Annotated[
+    Union[Grant, GrantErrors], strawberry.union(name="SendGrantResult")
+]
 
-UpdateGrantResult = Annotated[Union[Grant, GrantErrors], strawberry.union(name="UpdateGrantResult")]
+UpdateGrantResult = Annotated[
+    Union[Grant, GrantErrors], strawberry.union(name="UpdateGrantResult")
+]
 
 
 @strawberry.enum
@@ -159,7 +188,9 @@ class SendGrantReplyError:
     message: str
 
 
-SendGrantReplyResult = Annotated[Union[Grant, SendGrantReplyError], strawberry.union(name="SendGrantReplyResult")]
+SendGrantReplyResult = Annotated[
+    Union[Grant, SendGrantReplyError], strawberry.union(name="SendGrantReplyResult")
+]
 
 
 @strawberry.type
@@ -222,7 +253,7 @@ class GrantMutation:
         if grant.status in (GrantModel.Status.pending, GrantModel.Status.rejected):
             return SendGrantReplyError(message="You cannot reply to this grant")
 
-        # do not update to need_info, otherwise we will lose the orignal status:
+        # do not update to need_info, otherwise we will lose the original status:
         # Approved, WaitingList
         if input.status != StatusOption.need_info:
             grant.status = input.status.to_grant_status()
@@ -230,9 +261,10 @@ class GrantMutation:
         grant.applicant_message = input.message
         grant.save()
 
-        notify_new_grant_reply(grant, request)
+        admin_url = request.build_absolute_uri(grant.get_admin_url())
+        notify_new_grant_reply_slack.delay(grant_id=grant.id, admin_url=admin_url)
 
         if grant.applicant_message:
-            send_message_to_plain(grant, input.message)
+            send_new_plain_chat.delay(grant_id=grant.id, message=input.message)
 
         return Grant.from_model(grant)

@@ -21,7 +21,7 @@ export const MyOrdersTable = ({ orders }: Props) => {
         </Text>,
         <OrderStatusTag status={data.status} />,
         <Text size={2}>{moneyFormatter.format(parseFloat(data.total))}</Text>,
-        <Button href={data.url} role="secondary">
+        <Button href={data.url} variant="secondary">
           <FormattedMessage id="profile.myOrders.open" />
         </Button>,
       ]}

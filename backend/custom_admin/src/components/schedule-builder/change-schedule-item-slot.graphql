@@ -1,0 +1,6 @@
+#import "../../fragments/slot.graphql"
+mutation ChangeScheduleItemSlot($input: ChangeScheduleItemSlotInput!) {
+  changeScheduleItemSlot(input: $input) {
+    ...SlotFragment
+  }
+}

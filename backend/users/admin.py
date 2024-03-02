@@ -58,6 +58,8 @@ class PyConUserAdmin(UserAdmin):
                     "is_superuser",
                     "groups",
                     "user_permissions",
+                    "admin_all_conferences",
+                    "admin_conferences",
                 )
             },
         ),
@@ -66,6 +68,11 @@ class PyConUserAdmin(UserAdmin):
 
     add_fieldsets = (
         (None, {"classes": ("wide",), "fields": ("email", "password1", "password2")}),
+    )
+    filter_horizontal = (
+        "groups",
+        "user_permissions",
+        "admin_conferences",
     )
 
     form = PyConUserChangeForm

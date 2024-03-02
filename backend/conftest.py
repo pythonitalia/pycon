@@ -45,6 +45,11 @@ def admin_user(db):
     return UserFactory(email="admin@user.it", is_staff=True)
 
 
+@pytest.fixture()
+def admin_superuser(db):
+    return UserFactory(email="admin@user.it", is_staff=True, is_superuser=True)
+
+
 @pytest.fixture
 def language():
     return lambda code: Language.objects.get(code=code)
@@ -58,9 +63,13 @@ def http_client():
 @pytest.fixture
 def rest_api_client():
     api_client = APIClient()
+    api_client.default_format = "json"
     api_client.basic_auth = lambda username, password: api_client.credentials(
         HTTP_AUTHORIZATION="Basic "
         + base64.b64encode(f"{username}:{password}".encode("utf-8")).decode("utf-8")
+    )
+    api_client.token_auth = lambda token: api_client.credentials(
+        HTTP_AUTHORIZATION=f"Token {token}"
     )
     return api_client
 
@@ -118,3 +127,14 @@ def image_file():
 @pytest.fixture
 def locale():
     return lambda code: Locale.objects.get_or_create(language_code=code)[0]
+
+
+@pytest.fixture
+def mock_has_ticket(requests_mock, settings):
+    def wrapper(conference):
+        requests_mock.post(
+            f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
+            json={"user_has_admission_ticket": True},
+        )
+
+    return wrapper

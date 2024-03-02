@@ -1,5 +1,5 @@
-query NewsGridSection($code: String!, $language: String!) {
-  newsArticles(hostname: $code, language: $language) {
+query NewsGridSection($hostname: String!, $language: String!) {
+  newsArticles(hostname: $hostname, language: $language) {
     id
     slug
     title

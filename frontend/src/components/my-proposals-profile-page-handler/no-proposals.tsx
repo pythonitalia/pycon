@@ -39,22 +39,22 @@ export const NoProposals = ({ deadline }: Props) => {
       {(deadlineStatus === DeadlineStatus.HappeningNow ||
         deadlineStatus === DeadlineStatus.InTheFuture) && (
         <Button
-          role="secondary"
           href={createHref({
             path: "/call-for-proposals",
             locale: language,
           })}
+          variant="secondary"
         >
           <FormattedMessage id="profile.myProposals.noProposals.submitProposal" />
         </Button>
       )}
       {deadlineStatus === DeadlineStatus.InThePast && (
         <Button
-          role="secondary"
           href={createHref({
             path: "/tickets",
             locale: language,
           })}
+          variant="secondary"
         >
           <FormattedMessage id="profile.myTickets.buyTickets" />
         </Button>

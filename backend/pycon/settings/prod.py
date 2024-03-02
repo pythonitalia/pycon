@@ -3,8 +3,6 @@ from .base import DATABASES, MIDDLEWARE, env
 
 SECRET_KEY = env("SECRET_KEY")
 
-SENTRY_DSN = env("SENTRY_DSN", default="")
-
 AWS_STORAGE_BUCKET_NAME = env("AWS_MEDIA_BUCKET", default=None)
 AWS_S3_REGION_NAME = env("AWS_REGION_NAME", default="eu-central-1")
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID", default=None)
@@ -40,3 +38,10 @@ CSRF_TRUSTED_ORIGINS = [
     "https://admin.pycon.it",
     "https://pycon.it",
 ]
+
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")
+
+HASHID_DEFAULT_SECRET_SALT = env("HASHID_DEFAULT_SECRET_SALT")
+
+SESSION_COOKIE_SECURE = True

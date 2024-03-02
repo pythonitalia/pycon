@@ -80,7 +80,7 @@ export const Footer = () => {
           },
           {
             icon: "instagram",
-            link: "https://www.instagram.com/python.it",
+            link: "https://www.instagram.com/pycon.it",
             rel: "me",
           },
           {

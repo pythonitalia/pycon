@@ -8,6 +8,8 @@ export const FooterLogo = (props: Props) => (
     height="96"
     viewBox="0 0 230 96"
     className="border bg-milk w-full h-full"
+    role="img"
+    aria-label="Footer logo"
     {...props}
   >
     <path

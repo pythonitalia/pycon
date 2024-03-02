@@ -4,12 +4,10 @@
 import { Separator, Spacer, Text } from "@python-italia/pycon-styleguide";
 import { ArrowIcon, LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import clsx from "clsx";
-import React, { useEffect, useRef } from "react";
+import React, { Fragment, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import useSyncScroll from "react-use-sync-scroll";
-import { jsx, ThemeUIStyleObject } from "theme-ui";
-
-import { useRouter } from "next/router";
+import { ThemeUIStyleObject, jsx } from "theme-ui";
 
 import { isItemVisible } from ".";
 import { ScheduleEntry } from "./events";
@@ -17,7 +15,7 @@ import { Placeholder } from "./placeholder";
 import { Item, Room, Slot } from "./types";
 
 const getSlotSize = (slot: Slot) => {
-  if (slot.type === "FREE_TIME") {
+  if (["FREE_TIME", "BREAK"].includes(slot.type)) {
     return 5;
   }
   return 31;
@@ -62,9 +60,26 @@ const getRowEnd = ({
     endingSlotIndex = slots.length;
   }
 
-  return slots
-    .slice(currentSlotIndex, endingSlotIndex)
-    .reduce((acc, s) => acc + getSlotSize(s), 0);
+  if (currentSlotIndex === endingSlotIndex) {
+    // the item is shorter than the slot (e.g. we have a 30 mins talk in a 45 min slot)
+    // we could calculate how much you actually use of the slot and set the size
+    // to match the actual duration length, but in the UI it doesn't look good
+    // as 30 of 45 is 0.6, so we use 0.9 to make it look better
+    const sizeToNextSlot = slots
+      .slice(currentSlotIndex, endingSlotIndex + 1)
+      .reduce((acc, s) => acc + getSlotSize(s), 0);
+    return {
+      itemRowEnd: Math.floor(sizeToNextSlot * 0.9),
+      sameSlotItem: true,
+    };
+  }
+
+  return {
+    itemRowEnd: slots
+      .slice(currentSlotIndex, endingSlotIndex)
+      .reduce((acc, s) => acc + getSlotSize(s), 0),
+    sameSlotItem: false,
+  };
 };
 
 const getEntryPosition = ({
@@ -92,14 +107,27 @@ const getEntryPosition = ({
     .sort();
 
   const index = roomIndexes[0];
-  const rowEnd = rowStart + getRowEnd({ item, rowOffset, slot, slots });
+  const { itemRowEnd, sameSlotItem } = getRowEnd({
+    item,
+    rowOffset,
+    slot,
+    slots,
+  });
+  const actualRowEnd = rowStart + itemRowEnd;
 
-  return {
+  const css: {
+    gridColumnStart: number;
+    gridColumnEnd: number;
+    gridRowStart: number;
+    gridRowEnd: number;
+  } = {
     gridColumnStart: index + 2,
     gridColumnEnd: index + 2 + item.rooms.length,
     gridRowStart: rowStart,
-    gridRowEnd: rowEnd,
+    gridRowEnd: actualRowEnd,
   };
+
+  return { css, sameSlotItem };
 };
 
 const GridContainer = React.forwardRef<
@@ -107,7 +135,6 @@ const GridContainer = React.forwardRef<
   {
     totalColumns: number;
     totalRows: number;
-    isInPhotoMode: boolean;
     children: React.ReactNode;
     sx?: ThemeUIStyleObject;
     className?: string;
@@ -115,15 +142,7 @@ const GridContainer = React.forwardRef<
   }
 >(
   (
-    {
-      totalColumns,
-      totalRows,
-      children,
-      isInPhotoMode,
-      className,
-      totalRooms,
-      ...props
-    },
+    { totalColumns, totalRows, children, className, totalRooms, ...props },
     ref,
   ) => (
     <div
@@ -135,8 +154,8 @@ const GridContainer = React.forwardRef<
         className={clsx(
           "bg-milk md:bg-black px-4 md:px-0 block md:grid gap-[3px] py-[3px]",
           {
-            "md:min-w-[2860px]": totalRooms > 3,
-            "md:min-w-[100vw]": totalRooms <= 3,
+            "md:min-w-[2860px]": totalRooms > 4,
+            "md:min-w-[100vw]": totalRooms <= 4,
           },
         )}
         style={{
@@ -151,13 +170,8 @@ const GridContainer = React.forwardRef<
 );
 
 export const Schedule = ({
-  adminMode,
   slots,
   rooms,
-  addCustomScheduleItem,
-  addSubmissionToSchedule,
-  addKeynoteToSchedule,
-  moveItem,
   currentDay,
   currentFilters,
   starredScheduleItems,
@@ -166,23 +180,6 @@ export const Schedule = ({
 }: {
   slots: Slot[];
   rooms: Room[];
-  adminMode: boolean;
-  addCustomScheduleItem: (
-    slotId: string,
-    rooms: string[],
-    title?: string,
-  ) => void;
-  moveItem: (slotId: string, rooms: string[], itemId: string) => void;
-  addSubmissionToSchedule: (
-    slotId: string,
-    rooms: string[],
-    submissionId: string,
-  ) => void;
-  addKeynoteToSchedule: (
-    slotId: string,
-    rooms: string[],
-    keynoteId: string,
-  ) => void;
   currentFilters: Record<string, string[]>;
   toggleEventFavorite: (item: Item) => void;
   currentDay: string;
@@ -192,39 +189,6 @@ export const Schedule = ({
   const rowOffset = 6;
   const totalRows = slots.reduce((count, slot) => count + getSlotSize(slot), 0);
   const totalColumns = rooms.length;
-  const {
-    query: { photo },
-  } = useRouter();
-  const isInPhotoMode = photo == "1";
-
-  const handleDrop = (item: any, slot: Slot, index: number) => {
-    if (item.itemId) {
-      moveItem(slot.id, [rooms[index].id], item.itemId);
-    } else if (item.event.submissionId) {
-      addSubmissionToSchedule(
-        slot.id,
-        [rooms[index].id],
-        item.event.submissionId,
-      );
-    } else if (item.event.keynoteId) {
-      addKeynoteToSchedule(
-        slot.id,
-        rooms.filter((room) => room.type !== "training").map((room) => room.id),
-        item.event.keynoteId,
-      );
-    } else if (item.event.roomChange) {
-      const roomIds = rooms
-        .filter((room) => room.type !== "training")
-        .map((room) => room.id);
-      addCustomScheduleItem(slot.id, roomIds, "Room Change / Cambio stanza");
-    } else {
-      const roomIds = item.event.allTracks
-        ? rooms.map((room) => room.id)
-        : [rooms[index].id];
-
-      addCustomScheduleItem(slot.id, roomIds);
-    }
-  };
 
   const headerRef = useRef(null);
   const scheduleRef = useRef(null);
@@ -259,7 +223,6 @@ export const Schedule = ({
   return (
     <React.Fragment>
       <GridContainer
-        isInPhotoMode={isInPhotoMode}
         totalRows={rowOffset}
         totalColumns={totalColumns}
         ref={headerRef}
@@ -311,138 +274,133 @@ export const Schedule = ({
       </GridContainer>
 
       <GridContainer
-        isInPhotoMode={isInPhotoMode}
         ref={scheduleRef}
         totalRows={totalRows}
         totalColumns={totalColumns}
         totalRooms={totalRooms}
       >
-        {slots
-          .filter(
-            (slot) =>
-              !isInPhotoMode ||
-              (isInPhotoMode && slot?.items[0]?.title !== "Registration"),
-          )
-          .map((slot, index) => {
-            const rowStart = rowStartPos;
-            const rowEnd = rowStartPos + getSlotSize(slot);
-            const isLive = slot.id === liveSlot?.id;
-            const freeTimeSlot = slot.type === "FREE_TIME";
+        {slots.map((slot, index) => {
+          const rowStart = rowStartPos;
+          const rowEnd = rowStartPos + getSlotSize(slot);
+          const isLive = slot.id === liveSlot?.id;
+          const breakSlot = ["FREE_TIME", "BREAK"].includes(slot.type);
 
-            rowStartPos = rowEnd;
+          rowStartPos = rowEnd;
 
-            return (
-              <>
-                {index > 0 && <Spacer showOnlyOn="mobile" size="xl" />}
-                <div className="contents divide-y md:divide-none" key={slot.id}>
-                  <div
-                    className={clsx(
-                      "md:border-r md:-mr-[3px] md:text-center md:px-4 left-0 sticky bg-milk z-40 pb-2",
-                      {
-                        "md:py-4": freeTimeSlot,
-                        "md:py-6": !freeTimeSlot,
-                        "md:bg-coral": isLive,
-                      },
-                    )}
-                    style={
-                      {
-                        gridColumnStart: 1,
-                        gridColumnEnd: 1,
-                        gridRowStart: "var(--start)",
-                        gridRowEnd: "var(--end)",
-                        "--start": rowStart,
-                        "--end": rowEnd,
-                      } as any
-                    }
-                  >
-                    <Text weight="strong" size="label1" className="md:hidden">
-                      <FormattedMessage
-                        id="schedule.time"
-                        values={{
-                          start: formatHour(slot.hour),
-                          end: formatHour(slot.endHour),
-                        }}
-                      />
-
-                      {isLive && (
-                        <>
-                          <Spacer size="small" orientation="horizontal" />
-                          <LiveIcon className="inline-block" />
-                        </>
-                      )}
-                    </Text>
-                    <Text
-                      weight="strong"
-                      size="label1"
-                      className="hidden md:block"
-                    >
-                      <FormattedMessage
-                        id="schedule.timeNoEnd"
-                        values={{
-                          start: formatHour(slot.hour),
-                        }}
-                      />
-                      {isLive && (
-                        <>
-                          {!freeTimeSlot && <Spacer size="xs" />}
-                          <Text as="p" uppercase size="label3" weight="strong">
-                            <FormattedMessage id="schedule.live" />
-                          </Text>
-                        </>
-                      )}
-                    </Text>
-                  </div>
-
-                  {rooms.map((room, index) => (
-                    <Placeholder
-                      key={`${room.id}-${slot.id}`}
-                      columnStart={index + 2}
-                      rowStart={rowStart}
-                      rowEnd={rowEnd}
-                      duration={slot.duration}
-                      roomType={room.type}
-                      adminMode={adminMode}
-                      onDrop={(item: any) => handleDrop(item, slot, index)}
+          return (
+            <Fragment key={slot.id}>
+              {index > 0 && <Spacer showOnlyOn="mobile" size="xl" />}
+              <div className="contents divide-y md:divide-none" key={slot.id}>
+                <div
+                  className={clsx(
+                    "md:border-r md:-mr-[3px] md:text-center md:px-4 left-0 sticky bg-milk z-40 pb-2",
+                    {
+                      "md:py-4": breakSlot,
+                      "md:py-6": !breakSlot,
+                      "md:bg-coral": isLive,
+                    },
+                  )}
+                  style={
+                    {
+                      gridColumnStart: 1,
+                      gridColumnEnd: 1,
+                      gridRowStart: "var(--start)",
+                      gridRowEnd: "var(--end)",
+                      "--start": rowStart,
+                      "--end": rowEnd,
+                    } as any
+                  }
+                >
+                  <Text weight="strong" size="label1" className="md:hidden">
+                    <FormattedMessage
+                      id="schedule.time"
+                      values={{
+                        start: formatHour(slot.hour),
+                        end: formatHour(slot.endHour),
+                      }}
                     />
-                  ))}
 
-                  {slot.items.map((item) => {
-                    const starred = starredScheduleItems.includes(item.id);
-                    return (
-                      <ScheduleEntry
-                        key={item.id}
-                        item={item}
-                        slot={slot}
-                        rooms={rooms}
-                        adminMode={adminMode}
-                        day={currentDay}
-                        starred={starred}
-                        filteredOut={
-                          !isItemVisible(item, currentFilters, starred)
-                        }
-                        toggleEventFavorite={toggleEventFavorite}
-                        style={
-                          {
-                            position: "relative",
-                            ...getEntryPosition({
-                              item,
-                              rooms,
-                              slot,
-                              slots,
-                              rowOffset,
-                              rowStart,
-                            }),
-                          } as any
-                        }
-                      />
-                    );
-                  })}
-
-                  <div className="md:hidden"></div>
+                    {isLive && (
+                      <>
+                        <Spacer size="small" orientation="horizontal" />
+                        <LiveIcon className="inline-block" />
+                      </>
+                    )}
+                  </Text>
+                  <Text
+                    weight="strong"
+                    size="label1"
+                    className="hidden md:block"
+                  >
+                    <FormattedMessage
+                      id="schedule.timeNoEnd"
+                      values={{
+                        start: formatHour(slot.hour),
+                      }}
+                    />
+                    {isLive && (
+                      <>
+                        {!breakSlot && <Spacer size="xs" />}
+                        <Text as="p" uppercase size="label3" weight="strong">
+                          <FormattedMessage id="schedule.live" />
+                        </Text>
+                      </>
+                    )}
+                  </Text>
                 </div>
-              </>
-            );
-          })}
+
+                {rooms.map((room, index) => (
+                  <Placeholder
+                    key={`${room.id}-${slot.id}`}
+                    columnStart={index + 2}
+                    rowStart={rowStart}
+                    rowEnd={rowEnd}
+                    duration={slot.duration}
+                    roomType={room.type}
+                  />
+                ))}
+
+                {slot.items.map((item) => {
+                  const starred = starredScheduleItems.includes(item.id);
+                  const { css: entryPosition, sameSlotItem } = getEntryPosition(
+                    {
+                      item,
+                      rooms,
+                      slot,
+                      slots,
+                      rowOffset,
+                      rowStart,
+                    },
+                  );
+
+                  return (
+                    <ScheduleEntry
+                      key={item.id}
+                      item={item}
+                      slot={slot}
+                      rooms={rooms}
+                      day={currentDay}
+                      starred={starred}
+                      filteredOut={
+                        !isItemVisible(item, currentFilters, starred)
+                      }
+                      toggleEventFavorite={toggleEventFavorite}
+                      sameSlotItem={sameSlotItem}
+                      style={
+                        {
+                          position: "relative",
+                          ...entryPosition,
+                        } as any
+                      }
+                    />
+                  );
+                })}
+
+                <div className="md:hidden" />
+              </div>
+            </Fragment>
+          );
+        })}
       </GridContainer>
     </React.Fragment>
   );

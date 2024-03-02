@@ -1,4 +1,4 @@
-import { createMachine, assign } from "xstate";
+import { assign, createMachine } from "xstate";
 
 import { getApolloClient } from "~/apollo/client";
 import { GetVoucherDocument, GetVoucherQuery } from "~/types";

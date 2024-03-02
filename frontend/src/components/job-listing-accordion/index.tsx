@@ -1,11 +1,11 @@
 import {
   CardPart,
-  MultiplePartsCard,
   Heading,
   HorizontalStack,
+  Link,
+  MultiplePartsCard,
   Spacer,
   Text,
-  Link,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";

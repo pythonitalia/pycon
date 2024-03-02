@@ -36,6 +36,8 @@ class DayFactory(DjangoModelFactory):
 
 @register
 class SlotFactory(DjangoModelFactory):
+    day = factory.SubFactory(DayFactory)
+
     class Meta:
         model = Slot
 
@@ -55,7 +57,6 @@ class ScheduleItemFactory(DjangoModelFactory):
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
         _type = kwargs.get("type", None)
-
         if _type == ScheduleItem.TYPES.custom:
             kwargs.pop("submission", None)
 
@@ -85,6 +86,11 @@ class ScheduleItemFactory(DjangoModelFactory):
                 create, size, **kwargs
             )
         )
+
+    @classmethod
+    def _after_postgeneration(cls, obj, create, results=None):
+        if create and results:
+            obj.save()
 
     class Meta:
         model = ScheduleItem

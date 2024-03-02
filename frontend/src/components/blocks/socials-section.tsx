@@ -1,10 +1,10 @@
 import {
   Heading,
-  Text,
   Section,
-  VerticalStack,
-  Spacer,
   SocialLinks,
+  Spacer,
+  Text,
+  VerticalStack,
 } from "@python-italia/pycon-styleguide";
 
 import { Hills } from "./hills";
@@ -39,7 +39,7 @@ export const SocialsSection = ({ hashtag, label }: Props) => {
               },
               {
                 icon: "instagram",
-                link: "https://www.instagram.com/python.it",
+                link: "https://www.instagram.com/pycon.it",
                 rel: "me",
               },
               {

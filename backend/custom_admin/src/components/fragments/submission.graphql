@@ -1,0 +1,22 @@
+fragment SubmissionFragment on Submission {
+  id
+  title(language: "en")
+  italianTitle: title(language: "it")
+  duration {
+    id
+    duration
+  }
+  type {
+    id
+    name
+  }
+  languages {
+    id
+    name
+    code
+  }
+  speaker {
+    id
+    fullName
+  }
+}

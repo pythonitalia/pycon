@@ -3,7 +3,7 @@ from unittest.mock import patch
 import pytest
 from pytest import mark
 
-from integrations.mailchimp import SubscriptionResult
+from integrations.flodesk import SubscriptionResult
 from newsletters.models import Subscription
 
 
@@ -71,7 +71,6 @@ def test_unsubscribe_not_registered_mail_to_newsletter(graphql_client):
 
 
 def _update_user_newsletter(graphql_client, user, open_to_newsletter):
-
     query = """
      mutation(
         $open_to_newsletter: Boolean!,

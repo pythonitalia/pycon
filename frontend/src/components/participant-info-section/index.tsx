@@ -1,67 +1,56 @@
 import {
   Grid,
-  Link,
-  Heading,
   GridColumn,
-  VerticalStack,
-  Spacer,
+  Heading,
   HorizontalStack,
-  Text,
   LayoutContent,
+  Link,
+  Spacer,
+  Text,
+  VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import {
-  TwitterIcon,
-  InstagramIcon,
-  MastodonIcon,
-  LinkedinIcon,
   FacebookIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  MastodonIcon,
+  TwitterIcon,
   WebIcon,
 } from "@python-italia/pycon-styleguide/icons";
 import { SnakeTail } from "@python-italia/pycon-styleguide/illustrations";
 import React from "react";
 
 import { compile } from "~/helpers/markdown";
-
-export type Participant = {
-  fullname: string;
-  bio: string;
-  photo: string;
-
-  twitterHandle?: string;
-  instagramHandle?: string;
-  mastodonHandle?: string;
-  linkedinUrl?: string;
-  facebookUrl?: string;
-  website?: string;
-};
+import { TalkQueryResult } from "~/types";
 
 export const ParticipantInfoSection = ({
+  fullname,
   participant,
 }: {
-  participant: Participant;
+  participant?: TalkQueryResult["data"]["conference"]["talk"]["speakers"][0]["participant"];
+  fullname: string;
 }) => (
   <>
     <Grid cols={12} mdCols={12}>
       <GridColumn colSpan={4} mdColSpan={4}>
         <LayoutContent position="relative">
           <VerticalStack>
-            {participant.photo && (
-              <>
-                <img
-                  alt="participant photo"
-                  className="aspect-square border-black border z-10 object-cover"
-                  src={participant.photo}
-                />
-                <LayoutContent
-                  zIndex={1}
-                  style={{ bottom: "-60px", left: "20px" }}
-                  showFrom="desktop"
-                  position="absolute"
-                >
-                  <SnakeTail className="w-24" />
-                </LayoutContent>
-              </>
-            )}
+            <img
+              alt="Participant"
+              className="aspect-square border-black border z-10 object-cover"
+              src={
+                participant?.photo ??
+                "/images/speaker-no-picture-placeholder.png"
+              }
+            />
+            <LayoutContent
+              zIndex={1}
+              style={{ bottom: "-60px", left: "20px" }}
+              showFrom="desktop"
+              position="absolute"
+            >
+              <SnakeTail className="w-24" />
+            </LayoutContent>
 
             <Spacer size="2md" />
             <HorizontalStack
@@ -69,7 +58,7 @@ export const ParticipantInfoSection = ({
               justifyContent="end"
               gap="medium"
             >
-              {participant.twitterHandle && (
+              {participant?.twitterHandle && (
                 <Link
                   target="_blank"
                   href={`https://twitter.com/${participant.twitterHandle}`}
@@ -78,7 +67,7 @@ export const ParticipantInfoSection = ({
                 </Link>
               )}
 
-              {participant.instagramHandle && (
+              {participant?.instagramHandle && (
                 <Link
                   target="_blank"
                   href={`https://instagram.com/${participant.instagramHandle}`}
@@ -87,7 +76,7 @@ export const ParticipantInfoSection = ({
                 </Link>
               )}
 
-              {participant.mastodonHandle && (
+              {participant?.mastodonHandle && (
                 <Link
                   target="_blank"
                   href={convertMastodonHandle(participant.mastodonHandle)}
@@ -96,19 +85,19 @@ export const ParticipantInfoSection = ({
                 </Link>
               )}
 
-              {participant.linkedinUrl && (
+              {participant?.linkedinUrl && (
                 <Link target="_blank" href={participant.linkedinUrl}>
                   <LinkedinIcon className="w-6 h-6" />
                 </Link>
               )}
 
-              {participant.facebookUrl && (
+              {participant?.facebookUrl && (
                 <Link target="_blank" href={participant.facebookUrl}>
                   <FacebookIcon className="w-6 h-6" />
                 </Link>
               )}
 
-              {participant.website && (
+              {participant?.website && (
                 <Link target="_blank" href={participant.website}>
                   <WebIcon className="w-6 h-6" />
                 </Link>
@@ -118,9 +107,9 @@ export const ParticipantInfoSection = ({
         </LayoutContent>
       </GridColumn>
       <GridColumn colSpan={8} mdColSpan={8}>
-        <Heading size="display2">{participant.fullname}</Heading>
+        <Heading size="display2">{fullname}</Heading>
         <Spacer size="2md" />
-        {participant.bio && (
+        {participant?.bio && (
           <Text size={2}>{compile(participant.bio).tree}</Text>
         )}
       </GridColumn>

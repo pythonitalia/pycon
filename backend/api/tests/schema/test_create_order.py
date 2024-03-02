@@ -1300,3 +1300,120 @@ def test_invoice_validation_fails_with_empty_business_name_for_businesses(
     assert response["data"]["createOrder"]["message"] == ("company is required")
 
     create_order_mock.assert_not_called()
+
+
+@override_settings(FRONTEND_URL="http://test.it")
+def test_invoice_validation_fails_when_italian_business_and_no_sdi(
+    graphql_client, user, conference, mocker
+):
+    graphql_client.force_login(user)
+
+    create_order_mock = mocker.patch("api.orders.mutations.create_order")
+    create_order_mock.return_value.payment_url = "https://example.com"
+    create_order_mock.return_value.code = "123"
+
+    response = graphql_client.query(
+        """mutation CreateOrder($code: String!, $input: CreateOrderInput!) {
+            createOrder(conference: $code, input: $input) {
+                __typename
+                ... on Error {
+                    message
+                }
+            }
+        }""",
+        variables={
+            "code": conference.code,
+            "input": {
+                "tickets": [
+                    {
+                        "ticketId": "1",
+                        "attendeeName": "ABC",
+                        "attendeeEmail": "patrick.arminio@gmail.com",
+                        "variation": "1",
+                        "answers": [{"questionId": "1", "value": "Example"}],
+                    }
+                ],
+                "hotelRooms": [],
+                "paymentProvider": "stripe",
+                "email": "patrick.arminio@gmail.com",
+                "invoiceInformation": {
+                    "isBusiness": True,
+                    "company": "LTD",
+                    "name": "Patrick",
+                    "street": "street",
+                    "zipcode": "92100",
+                    "city": "Avellino",
+                    "country": "IT",
+                    "vatId": "123",
+                    "sdi": "",
+                    "fiscalCode": "",
+                },
+                "locale": "en",
+            },
+        },
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["createOrder"]["__typename"] == "Error"
+    assert response["data"]["createOrder"]["message"] == "sdi is required"
+
+    create_order_mock.assert_not_called()
+
+
+@override_settings(FRONTEND_URL="http://test.it")
+def test_invoice_validation_works_when_not_italian_and_no_sdi(
+    graphql_client, user, conference, mocker
+):
+    graphql_client.force_login(user)
+
+    create_order_mock = mocker.patch("api.orders.mutations.create_order")
+    create_order_mock.return_value.payment_url = "https://example.com"
+    create_order_mock.return_value.code = "123"
+
+    response = graphql_client.query(
+        """mutation CreateOrder($code: String!, $input: CreateOrderInput!) {
+            createOrder(conference: $code, input: $input) {
+                __typename
+                ... on CreateOrderResult {
+                    paymentUrl
+                }
+            }
+        }""",
+        variables={
+            "code": conference.code,
+            "input": {
+                "tickets": [
+                    {
+                        "ticketId": "1",
+                        "attendeeName": "ABC",
+                        "attendeeEmail": "patrick.arminio@gmail.com",
+                        "variation": "1",
+                        "answers": [{"questionId": "1", "value": "Example"}],
+                    }
+                ],
+                "hotelRooms": [],
+                "paymentProvider": "stripe",
+                "email": "patrick.arminio@gmail.com",
+                "invoiceInformation": {
+                    "isBusiness": True,
+                    "company": "LTD",
+                    "name": "Patrick",
+                    "street": "street",
+                    "zipcode": "92100",
+                    "city": "Avellino",
+                    "country": "UK",
+                    "vatId": "123",
+                    "sdi": "",
+                    "fiscalCode": "",
+                },
+                "locale": "en",
+            },
+        },
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["createOrder"]["paymentUrl"] == (
+        "https://example.com?return_url=http://test.it/en/orders/123/confirmation"
+    )
+
+    create_order_mock.assert_called()

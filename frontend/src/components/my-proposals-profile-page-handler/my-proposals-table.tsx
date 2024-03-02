@@ -1,11 +1,11 @@
 import {
-  Text,
+  Button,
   Heading,
   Link,
   Spacer,
-  VerticalStack,
-  Button,
   Tag,
+  Text,
+  VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import { parseISO } from "date-fns";
 import { FormattedMessage } from "react-intl";
@@ -53,7 +53,15 @@ export const MyProposalsTable = ({ submissions }: Props) => {
               </Heading>
             </Link>
           </div>,
-          <StatusTag status={row.status} />,
+          row.status === "accepted" ? (
+            inSchedule ? (
+              <StatusTag status={row.status} />
+            ) : (
+              <StatusTag status={"proposed"} />
+            )
+          ) : (
+            <StatusTag status={row.status} />
+          ),
           <div>
             {!inSchedule && (
               <Text size={2} weight="strong" as="p">
@@ -89,8 +97,8 @@ export const MyProposalsTable = ({ submissions }: Props) => {
                   path: `/schedule/invitation/${row.id}`,
                   locale: language,
                 })}
-                role="secondary"
                 size="small"
+                variant="secondary"
               >
                 <FormattedMessage id="profile.myProposals.viewInvitation" />
               </Button>
@@ -100,8 +108,8 @@ export const MyProposalsTable = ({ submissions }: Props) => {
                 path: `/submission/${row.id}/edit`,
                 locale: language,
               })}
-              role="secondary"
               size="small"
+              variant="secondary"
             >
               <FormattedMessage id="profile.myProposals.edit" />
             </Button>

@@ -54,3 +54,16 @@ class SponsorLevel(OrderedModel):
 
     class Meta(OrderedModel.Meta):
         unique_together = ["name", "conference"]
+
+
+class SponsorLead(TimeStampedModel):
+    conference = models.ForeignKey(
+        "conferences.Conference",
+        on_delete=models.CASCADE,
+        related_name="sponsor_leads",
+    )
+    fullname = models.CharField(max_length=500)
+    email = models.EmailField()
+    company = models.CharField(max_length=500)
+    brochure_viewed = models.BooleanField(default=False)
+    consent_to_contact_via_email = models.BooleanField(default=False)

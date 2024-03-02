@@ -1,3 +1,4 @@
+from cms.components.page.blocks.homepage_hero import HomepageHero
 from cms.components.page.models import GenericPage
 from cms.components.page.blocks.text_section import TextSection
 from cms.components.page.blocks.slider_cards_section import (
@@ -14,13 +15,13 @@ from wagtail_factories import (
     StreamFieldFactory,
     SiteFactory,
 )
+from wagtail.models import Site
 import factory
 from decimal import Decimal
 from pytest_factoryboy import register
 from wagtail.rich_text import RichText
 
 
-register(SiteFactory)
 register(PageFactory)
 
 
@@ -63,6 +64,12 @@ class SimpleTextCardFactory(StructBlockFactory):
 
 
 @register
+class HomepageHeroFactory(StructBlockFactory):
+    class Meta:
+        model = HomepageHero
+
+
+@register
 class SliderCardsSectionFactory(StreamBlockFactory):
     cards = factory.SubFactory(SimpleTextCardFactory)
 
@@ -85,3 +92,18 @@ class GenericPageFactory(PageFactory):
 
     class Meta:
         model = GenericPage
+
+
+@register
+class SiteFactory(SiteFactory):
+    """
+    Overrides wagtail_factories.SiteFactory to use "testserver" as hostname
+    to make sure it works with Wagtail's ALLOWED_HOSTS in test environments.
+    """
+
+    hostname = "testserver"
+    root_page = factory.SubFactory(GenericPageFactory)
+    is_default_site = True
+
+    class Meta:
+        model = Site

@@ -11,10 +11,10 @@ import { useCurrentUser } from "~/helpers/use-current-user";
 import { useCurrentLanguage } from "~/locale/context";
 import {
   CurrentUserQueryResult,
-  TicketsQueryResult,
-  TicketType,
-  useTicketsQuery,
   TicketItem,
+  TicketType,
+  TicketsQueryResult,
+  useTicketsQuery,
 } from "~/types";
 
 import { CartContext, createCartContext } from "./use-cart";
@@ -27,9 +27,10 @@ type Props = {
     conference: TicketsQueryResult["data"]["conference"];
     me: CurrentUserQueryResult["data"]["me"];
   }) => React.ReactElement;
+  cartCookie?: string;
 };
 
-export const TicketsPageWrapper = ({ children }: Props) => {
+export const TicketsPageWrapper = ({ children, cartCookie }: Props) => {
   const code = process.env.conferenceCode;
   const language = useCurrentLanguage();
   const [isLoggedIn] = useLoginState();
@@ -49,7 +50,7 @@ export const TicketsPageWrapper = ({ children }: Props) => {
   const conference = data?.conference;
   const router = useRouter();
 
-  const cartContext = createCartContext();
+  const cartContext = createCartContext({ cartCookie });
   const state = cartContext.state;
 
   useEffect(() => {

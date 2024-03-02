@@ -22,10 +22,13 @@
       ],
       "@python-italia/pycon-styleguide/illustrations": [
         "./node_modules/@python-italia/pycon-styleguide/dist/illustrations"
+      ],
+      "@python-italia/pycon-styleguide/config-parts": [
+        "./node_modules/@python-italia/pycon-styleguide/dist/config-parts"
       ]
     },
     "incremental": true
   },
   "exclude": ["node_modules"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/helpers/lodash-is-equal.ts"]
 }

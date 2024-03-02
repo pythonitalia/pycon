@@ -25,9 +25,7 @@ export const TalkPage = () => {
 
   const { talk } = data.conference;
 
-  const description = talk.submission
-    ? talk.submission.abstract
-    : talk.description;
+  const description = talk.abstract ? talk.abstract : talk.description;
 
   return (
     <Page endSeparator={false}>
@@ -38,14 +36,14 @@ export const TalkPage = () => {
         slug={slug}
         type={getType(talk.type)}
         eventTitle={talk.title}
-        elevatorPitch={talk.submission?.elevatorPitch}
+        elevatorPitch={talk.elevatorPitch}
         abstract={description}
         tags={talk.submission?.tags.map((tag) => tag.name)}
         language={talk.language.code}
         audienceLevel={talk.submission?.audienceLevel.name}
         startTime={talk.start}
         endTime={talk.end}
-        speakers={talk.speakers.map((speaker) => speaker.participant)}
+        speakers={talk.speakers}
         bookable={talk.hasLimitedCapacity}
         spacesLeft={talk.spacesLeft}
         slidoUrl={talk.slidoUrl}
@@ -112,18 +110,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getType = (
-  type: string,
-): Parameters<typeof ScheduleEventDetail>[0]["type"] => {
-  switch (type.toLowerCase()) {
+export const getType = (type: string): string => {
+  const lowerType = type.toLowerCase();
+  switch (lowerType) {
     case "workshop":
     case "tutorial":
     case "training":
       return "workshop";
-    case "talk":
-      return "talk";
-    case "panel":
-      return "panel";
+    default:
+      return lowerType;
   }
 };
 

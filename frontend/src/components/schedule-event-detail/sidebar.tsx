@@ -1,12 +1,12 @@
 import {
-  Spacer,
-  Text,
-  CardPart,
-  MultiplePartsCard,
   Button,
-  VerticalStack,
+  CardPart,
   Link,
+  MultiplePartsCard,
+  Spacer,
   Tag,
+  Text,
+  VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
@@ -50,7 +50,7 @@ export const Sidebar = ({
         code: process.env.conferenceCode,
         slug,
       },
-      skip: !isLoggedIn,
+      skip: !isLoggedIn || !bookable,
       fetchPolicy: "network-only",
       nextFetchPolicy: "cache-first",
     });
@@ -84,7 +84,7 @@ export const Sidebar = ({
   return (
     <>
       <MultiplePartsCard>
-        {rooms && (
+        {rooms && rooms.length > 0 && (
           <EventInfo
             label={
               <FormattedMessage
@@ -162,7 +162,7 @@ export const Sidebar = ({
                 onClick={userHasSpot ? cancelBooking : bookScheduleItem}
                 disabled={isBookingSpot || isCancellingBooking}
                 size="small"
-                role="secondary"
+                variant="secondary"
               >
                 {userHasSpot && <FormattedMessage id="talk.unregisterCta" />}
                 {!userHasSpot && <FormattedMessage id="talk.bookCta" />}

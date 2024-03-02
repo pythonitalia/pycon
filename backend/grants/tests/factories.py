@@ -6,6 +6,7 @@ from conferences.tests.factories import ConferenceFactory
 from grants.models import Grant
 from helpers.constants import GENDERS
 from users.tests.factories import UserFactory
+from countries import countries
 
 
 @register
@@ -31,4 +32,9 @@ class GrantFactory(DjangoModelFactory):
     needs_funds_for_travel = factory.Faker("boolean")
     why = factory.Faker("text")
     notes = factory.Faker("text")
-    travelling_from = factory.Faker("country")
+    travelling_from = factory.fuzzy.FuzzyChoice([country.code for country in countries])
+    website = factory.Faker("url")
+    twitter_handle = "@handle"
+    github_handle = factory.Faker("user_name")
+    linkedin_url = factory.Faker("user_name")
+    mastodon_handle = factory.Faker("user_name")

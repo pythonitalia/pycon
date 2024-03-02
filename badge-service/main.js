@@ -76,7 +76,7 @@ const getAllOrderPositions = async () => {
 const createEmptyBadgeOrderPositions = () => {
   return Object.entries(EMPTY_BADGES_COUNT).flatMap(([role, count]) => {
     return Array.from({ length: count }, (_, i) => ({
-      attendee_name: ``,
+      attendee_name: "",
       empty: true,
       role,
       answers: [],
@@ -141,9 +141,8 @@ const createEmptyBadgeOrderPositions = () => {
     const tagline =
       answers.find((a) => a.question === taglineQuestion.id)?.answer ?? "";
 
-    const { role, ticketHashid } = await getConferenceRoleForTicketData(
-      orderPosition,
-    );
+    const { role, ticketHashid } =
+      await getConferenceRoleForTicketData(orderPosition);
     return {
       name: orderPosition.attendee_name,
       pronouns,
@@ -164,7 +163,7 @@ const createEmptyBadgeOrderPositions = () => {
   });
   const output = fs.createWriteStream("badges.zip");
 
-  output.on("close", function () {
+  output.on("close", () => {
     console.log("Badges generated.");
   });
 

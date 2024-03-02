@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Optional
+from conferences.querysets import ConferenceQuerySetMixin
 
 from django.core import exceptions
 from django.db import models
@@ -11,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
 from ordered_model.models import OrderedModel
+from django.db.models import QuerySet
 
 from conferences.models import Conference, Keynote
 from helpers.unique_slugify import unique_slugify
@@ -38,6 +40,10 @@ class Room(models.Model):
         verbose_name_plural = _("Rooms")
 
 
+class DayQuerySet(ConferenceQuerySetMixin, models.QuerySet):
+    pass
+
+
 class Day(models.Model):
     day = models.DateField()
     conference = models.ForeignKey(
@@ -46,6 +52,7 @@ class Day(models.Model):
         verbose_name=_("conference"),
         related_name="days",
     )
+    objects = DayQuerySet().as_manager()
 
     def ordered_rooms(self):
         added_rooms = self.added_rooms.all()
@@ -83,13 +90,20 @@ class DayRoomThroughModel(OrderedModel):
         verbose_name_plural = _("Day - Rooms")
 
 
+class SlotQuerySet(QuerySet, ConferenceQuerySetMixin):
+    pass
+
+
 class Slot(models.Model):
+    conference_reference = "day__conference"
+
     TYPES = Choices(
         # Type of slot where something is happening in the conference
         ("default", _("Default")),
         # Free time, that can used to change rooms
         # or represent time between social events
         ("free_time", _("Free Time")),
+        ("break", _("Break")),
     )
 
     day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name="slots")
@@ -99,11 +113,17 @@ class Slot(models.Model):
         choices=TYPES, max_length=100, verbose_name=_("type"), default=TYPES.default
     )
 
+    objects = SlotQuerySet().as_manager()
+
     def __str__(self):
         return f"[{self.day.conference.name}] {self.day.day} - {self.hour}"
 
     class Meta:
         ordering = ["hour"]
+
+
+class ScheduleItemQuerySet(QuerySet, ConferenceQuerySetMixin):
+    pass
 
 
 class ScheduleItem(TimeStampedModel):
@@ -113,6 +133,10 @@ class ScheduleItem(TimeStampedModel):
         ("training", _("Training")),
         ("keynote", _("Keynote")),
         ("panel", _("Panel")),
+        ("registration", _("Registration")),
+        ("announcements", _("Announcements")),
+        ("break", _("Break")),
+        ("social", _("Social")),
         ("custom", _("Custom")),
     )
 
@@ -136,7 +160,7 @@ class ScheduleItem(TimeStampedModel):
     slug = models.CharField(_("slug"), max_length=100, blank=True, null=True)
     description = models.TextField(_("description"), blank=True)
 
-    type = models.CharField(choices=TYPES, max_length=10, verbose_name=_("type"))
+    type = models.CharField(choices=TYPES, max_length=100, verbose_name=_("type"))
     status = models.CharField(
         choices=STATUS,
         max_length=25,
@@ -147,7 +171,9 @@ class ScheduleItem(TimeStampedModel):
         choices=COLORS, max_length=15, blank=True, verbose_name=_("highlight color")
     )
 
-    rooms = models.ManyToManyField(Room, related_name="talks", verbose_name=_("rooms"))
+    rooms = models.ManyToManyField(
+        Room, related_name="talks", verbose_name=_("rooms"), blank=True
+    )
 
     submission = models.ForeignKey(
         Submission,
@@ -227,6 +253,15 @@ class ScheduleItem(TimeStampedModel):
         _("Youtube video ID"), max_length=1024, blank=True, default=""
     )
 
+    plain_thread_id = models.CharField(
+        _("Plain threadID"),
+        max_length=50,
+        null=True,
+        blank=True,
+    )
+
+    objects = ScheduleItemQuerySet().as_manager()
+
     @cached_property
     def speakers(self):
         speakers = []
@@ -260,10 +295,10 @@ class ScheduleItem(TimeStampedModel):
 
     def save(self, **kwargs):
         if self.submission_id and not self.title:
-            self.title = self.submission.title.localize("en")
+            self.title = self.submission.title.localize(self.language.code)
 
         if self.keynote_id and not self.title:
-            self.title = self.keynote.title.localize("en")
+            self.title = self.keynote.title.localize(self.language.code)
 
         if not self.slug:
             unique_slugify(self, self.title)

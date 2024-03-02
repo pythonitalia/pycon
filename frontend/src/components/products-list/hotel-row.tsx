@@ -1,13 +1,13 @@
 import {
-  Text,
-  Heading,
-  MultiplePartsCard,
   CardPart,
   CardPartOptions,
   CardPartTwoSides,
+  Heading,
+  MultiplePartsCard,
+  Spacer,
   Tag,
   TagsCollection,
-  Spacer,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { differenceInCalendarDays, format, isAfter, parseISO } from "date-fns";
 import { useState } from "react";

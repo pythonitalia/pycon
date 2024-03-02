@@ -39,9 +39,7 @@ const KeynotePage = () => {
     },
   });
 
-  const speakersName = speakers
-    .map((speaker) => speaker.participant.fullname)
-    .join(" & ");
+  const speakersName = speakers.map((speaker) => speaker.fullName).join(" & ");
 
   return (
     <Page endSeparator={false}>
@@ -68,7 +66,7 @@ const KeynotePage = () => {
         startTime={start}
         endTime={end}
         bookable={false}
-        speakers={speakers.map((speaker) => speaker.participant)}
+        speakers={speakers}
         rooms={rooms.map((room) => room.name)}
         youtubeVideoId={youtubeVideoId}
       />

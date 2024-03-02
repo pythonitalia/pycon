@@ -20,7 +20,7 @@ import { isItemVisible } from ".";
 import { createHref } from "../link";
 import { EventTag } from "../schedule-event-detail/event-tag";
 import { getItemBg, getItemUrl } from "./events";
-import { Item, Slot, Room } from "./types";
+import { Item, Room, Slot } from "./types";
 
 type Props = {
   slots: Slot[];
@@ -95,8 +95,8 @@ const ScheduleItem = ({
   currentDay: string;
 }) => {
   const language = useCurrentLanguage();
-  const italianLanguageText = useTranslatedMessage(`talk.language.it`);
-  const englishLanguageText = useTranslatedMessage(`talk.language.en`);
+  const italianLanguageText = useTranslatedMessage("talk.language.it");
+  const englishLanguageText = useTranslatedMessage("talk.language.en");
   const allRoomsText = useTranslatedMessage("scheduleView.allRooms");
   const translatedRoomText = useTranslatedMessage("schedule.room");
 
@@ -143,6 +143,8 @@ const ScheduleItem = ({
     .filter((t) => t)
     .join(", ");
 
+  const isBreak = item.type === "break" || item.type === "custom";
+
   return (
     <div
       className="grid md:grid-cols-[100px_1fr] lg:grid-cols-[130px_1fr] divide-x"
@@ -154,7 +156,7 @@ const ScheduleItem = ({
         })}
       >
         <Heading size={6}>
-          {item.type === "custom" && (
+          {isBreak && (
             <FormattedMessage
               id="schedule.timeNoEnd"
               values={{
@@ -162,7 +164,7 @@ const ScheduleItem = ({
               }}
             />
           )}
-          {item.type !== "custom" && (
+          {!isBreak && (
             <FormattedMessage
               id="schedule.time"
               values={{
@@ -181,7 +183,7 @@ const ScheduleItem = ({
       <ScheduleItemCard background={getItemBg(item.type)} size="large">
         <div className="flex justify-between transition-opacity">
           <div>
-            {item.type !== "custom" && (
+            {!isBreak && (
               <>
                 <div className="flex flex-row items-center md:gap-3 lg:gap-6">
                   {item.speakers.length > 0 && (
@@ -206,7 +208,7 @@ const ScheduleItem = ({
               </div>
             </WrapperComponent>
           </div>
-          {item.type !== "custom" && (
+          {!isBreak && (
             <div className="flex flex-col gap-1">
               <div className="flex items-center justify-end gap-3">
                 <HeartIcon

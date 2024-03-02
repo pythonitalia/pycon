@@ -47,7 +47,32 @@ export const useCart = () => {
   return useContext(CartContext);
 };
 
-export const createCartContext = () => {
+function toBinaryStr(str) {
+  const encoder = new TextEncoder();
+  // 1: split the UTF-16 string into an array of bytes
+  const charCodes = encoder.encode(str);
+  // 2: concatenate byte data to create a binary string
+  // eslint-disable-next-line
+  // @ts-ignore
+  return String.fromCharCode(...charCodes);
+}
+
+function fromBinaryStr(binary) {
+  // 1: create an array of bytes
+  const bytes = Uint8Array.from({ length: binary.length }, (_, index) =>
+    binary.charCodeAt(index),
+  );
+
+  // 2: decode the byte data into a string
+  const decoder = new TextDecoder("utf-8");
+  return decoder.decode(bytes);
+}
+
+export const createCartContext = ({
+  cartCookie = "",
+}: {
+  cartCookie?: string;
+}) => {
   const emptyInitialCartReducer = {
     selectedProducts: {},
     invoiceInformation: {
@@ -69,10 +94,19 @@ export const createCartContext = () => {
 
   let storedCart = null;
 
-  if (typeof window !== "undefined") {
-    storedCart = JSON.parse(
-      window.sessionStorage.getItem("tickets-cart-v4")!,
-    ) as OrderState | null;
+  try {
+    if (typeof window !== "undefined") {
+      storedCart = JSON.parse(
+        window.sessionStorage.getItem("tickets-cart-v6")!,
+      ) as OrderState | null;
+    } else if (cartCookie) {
+      storedCart = JSON.parse(
+        atob(fromBinaryStr(cartCookie)),
+      ) as OrderState | null;
+    }
+  } catch (e) {
+    console.error("unable to restore cart", e);
+    storedCart = null;
   }
 
   const [state, dispatcher] = useReducer(
@@ -81,10 +115,11 @@ export const createCartContext = () => {
   );
 
   useEffect(() => {
-    window.sessionStorage.setItem(
-      "tickets-cart-v4",
-      JSON.stringify(state, cartReplacer),
-    );
+    const cartAsJson = JSON.stringify(state, cartReplacer) || "{}";
+    window.sessionStorage.setItem("tickets-cart-v6", cartAsJson);
+    document.cookie = `tickets-cart-v6=${btoa(
+      toBinaryStr(cartAsJson),
+    )}; path=/;`;
   }, [state]);
 
   const addProduct = (id: string, variation?: string, admission?: boolean) =>

@@ -48,7 +48,7 @@ export const ProfilePageHandler = () => {
   });
 
   useEffect(() => {
-    const loginUrl = `/login`;
+    const loginUrl = "/login";
 
     if (error) {
       setLoginState(false);
@@ -59,7 +59,7 @@ export const ProfilePageHandler = () => {
 
   useEffect(() => {
     if (!loggedIn) {
-      const loginUrl = `/login`;
+      const loginUrl = "/login";
       setLoginState(false);
       Router.push("/login", loginUrl);
     }
@@ -194,7 +194,7 @@ export const ProfilePageHandler = () => {
             </BasicButton>
             <Button
               disabled={isLoggingOut}
-              role="alert"
+              variant="alert"
               onClick={onLogout}
               size="small"
               fullWidth="mobile"

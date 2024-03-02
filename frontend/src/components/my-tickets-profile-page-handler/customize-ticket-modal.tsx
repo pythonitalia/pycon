@@ -34,6 +34,7 @@ type Form = {
   attendeeName: string;
   attendeeEmail: string;
   answers: { [key: string]: string };
+  isMe: boolean;
 };
 
 export const CustomizeTicketModal = ({
@@ -52,6 +53,7 @@ export const CustomizeTicketModal = ({
     attendeeName: productUserInformation.attendeeName,
     attendeeEmail: productUserInformation.attendeeEmail,
     answers: productUserInformation.answers,
+    isMe: productUserInformation.isMe,
   });
 
   const taglineQuestion = ticket.item.questions.find(
@@ -82,8 +84,8 @@ export const CustomizeTicketModal = ({
           <Button
             disabled={updatingTicket}
             size="small"
-            role="secondary"
             onClick={() => saveChanges(formState.values)}
+            variant="secondary"
           >
             <FormattedMessage id="profile.tickets.save" />
           </Button>

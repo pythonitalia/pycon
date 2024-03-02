@@ -16,12 +16,14 @@ export const PublicProfilePageHandler = () => {
       conference: process.env.conferenceCode,
     },
   });
-  console.log("participant", participant);
 
   return (
     <Page endSeparator={false}>
       <Section>
-        <ParticipantInfoSection participant={participant} />
+        <ParticipantInfoSection
+          fullname={participant.fullname}
+          participant={participant}
+        />
       </Section>
     </Page>
   );

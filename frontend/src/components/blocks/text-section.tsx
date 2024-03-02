@@ -1,15 +1,18 @@
 import {
-  Heading,
-  StyledHTMLText,
-  Spacer,
-  Section,
-  Container,
-  MultiplePartsCard,
-  CardPart,
   Button,
+  CardPart,
+  Container,
+  Heading,
+  MultiplePartsCard,
+  Section,
+  Spacer,
+  StyledHTMLText,
 } from "@python-italia/pycon-styleguide";
 
 import { BodyTextSize, TextSection as TextSectionType } from "~/types";
+
+import { Fragment } from "react";
+import { useSetCurrentModal } from "../modal/context";
 
 export const TextSection = ({
   title,
@@ -21,7 +24,18 @@ export const TextSection = ({
   accordions,
   cta,
 }: TextSectionType) => {
+  const setCurrentModal = useSetCurrentModal();
   const onlyAccordions = !title && !subtitle && !body && !cta;
+  const isModalCTA = cta?.link?.startsWith("modal:");
+  const openModal = (e) => {
+    if (!isModalCTA) {
+      return;
+    }
+    e.preventDefault();
+
+    const modalId = cta.link.replace("modal:", "");
+    setCurrentModal(modalId);
+  };
   return (
     <Section
       spacingSize={isMainTitle ? "2xl" : "xl"}
@@ -54,7 +68,12 @@ export const TextSection = ({
         )}
         {cta && (
           <>
-            <Button href={cta.link} role="secondary" fullWidth="mobile">
+            <Button
+              variant="secondary"
+              onClick={openModal}
+              href={isModalCTA ? null : cta.link}
+              fullWidth="mobile"
+            >
               {cta.label}
             </Button>
           </>
@@ -65,9 +84,8 @@ export const TextSection = ({
           <>
             {!onlyAccordions && <Spacer size="xl" />}
             {accordions?.map((accordion, index) => (
-              <>
+              <Fragment key={index}>
                 <MultiplePartsCard
-                  key={index}
                   clickablePart="heading"
                   expandTarget="content"
                   openByDefault={accordion.isOpen}
@@ -81,7 +99,7 @@ export const TextSection = ({
                 </MultiplePartsCard>
                 {/* todo replace with MultiplePartsCardCollection */}
                 {index !== accordions.length - 1 && <Spacer size="small" />}
-              </>
+              </Fragment>
             ))}
           </>
         )}

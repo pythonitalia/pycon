@@ -49,11 +49,66 @@ COPY pyproject.toml pdm.lock ${FUNCTION_DIR}
 
 RUN pdm install --prod --group lambda
 
+# Create GraphQL schema
+
+FROM python:3.11-slim as schema-stage
+
+ARG FUNCTION_DIR
+
+WORKDIR ${FUNCTION_DIR}
+
+COPY --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
+COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
+COPY --from=build-stage /libs.tar.gz /libs.tar.gz
+
+RUN tar -xvf /libs.tar.gz -C / && rm /libs.tar.gz && ldconfig
+
+COPY . ${FUNCTION_DIR}
+
+ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod
+
+RUN AWS_MEDIA_BUCKET=example \
+    AWS_REGION_NAME=eu-central-1 \
+    SECRET_KEY=DEMO \
+    STRIPE_SECRET_API_KEY=demo \
+    STRIPE_SUBSCRIPTION_PRICE_ID=demo \
+    STRIPE_WEBHOOK_SIGNATURE_SECRET=demo \
+    CELERY_BROKER_URL=demo \
+    CELERY_RESULT_BACKEND=demo \
+    HASHID_DEFAULT_SECRET_SALT=demo \
+    ${FUNCTION_DIR}/.venv/bin/python manage.py graphql_schema
+
+# Build custom admin components
+
+FROM node:18.17.1 as js-stage
+
+ARG FUNCTION_DIR
+
+WORKDIR ${FUNCTION_DIR}
+
+RUN npm install -g pnpm
+
+COPY custom_admin/package.json custom_admin/pnpm-lock.yaml ./
+
+RUN pnpm install
+
+COPY custom_admin/ .
+
+COPY --from=schema-stage ${FUNCTION_DIR}/schema.graphql schema.graphql
+
+RUN ADMIN_GRAPHQL_URL=schema.graphql pnpm codegen
+RUN pnpm build
+
+# Final stage
+
 FROM python:3.11-slim
 
 ARG FUNCTION_DIR
 
 WORKDIR ${FUNCTION_DIR}
+
+COPY --from=js-stage ${FUNCTION_DIR}/dist/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/
+COPY --from=js-stage ${FUNCTION_DIR}/dist/_astro ${FUNCTION_DIR}/custom_admin/static/_astro/
 
 COPY --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
 COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
@@ -73,6 +128,9 @@ RUN AWS_MEDIA_BUCKET=example \
     STRIPE_SECRET_API_KEY=demo \
     STRIPE_SUBSCRIPTION_PRICE_ID=demo \
     STRIPE_WEBHOOK_SIGNATURE_SECRET=demo \
+    CELERY_BROKER_URL=demo \
+    CELERY_RESULT_BACKEND=demo \
+    HASHID_DEFAULT_SECRET_SALT=demo \
     ${FUNCTION_DIR}/.venv/bin/python manage.py collectstatic --noinput
 
 ENTRYPOINT ["/home/app/.venv/bin/python", "-m", "awslambdaric"]

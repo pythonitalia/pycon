@@ -1,9 +1,12 @@
+from custom_admin.admin import validate_single_conference_selection
 from import_export.resources import ModelResource
-from collections import Counter
 from datetime import timedelta
-from itertools import groupby
 from typing import Dict, List, Optional
-
+from countries.filters import CountryFilter
+from django.urls import path
+from django.template.response import TemplateResponse
+from django.db.models import Count, Sum
+from helpers.constants import GENDERS
 from django import forms
 from django.contrib import admin, messages
 from django.db.models.query import QuerySet
@@ -11,20 +14,22 @@ from django.utils import timezone
 from import_export.admin import ExportMixin
 from import_export.fields import Field
 from django.utils.crypto import get_random_string
-
+from users.admin_mixins import ConferencePermissionMixin
 from countries import countries
-from domain_events.publisher import (
+from grants.tasks import (
     send_grant_reply_approved_email,
-    send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
     send_grant_reply_waiting_list_update_email,
+    send_grant_reply_rejected_email,
     send_grant_voucher_email,
 )
 from pretix import create_voucher
 from schedule.models import ScheduleItem
 from submissions.models import Submission
+from .models import Grant
+from django.db.models import Exists, OuterRef
 
-from .models import Grant, GrantRecap
+from django.contrib.admin import SimpleListFilter
 
 EXPORT_GRANTS_FIELDS = (
     "name",
@@ -39,7 +44,6 @@ EXPORT_GRANTS_FIELDS = (
     "why",
     "notes",
     "travelling_from",
-    "traveling_from",
     "conference__code",
     "created",
 )
@@ -149,7 +153,33 @@ class GrantResource(ModelResource):
         export_order = EXPORT_GRANTS_FIELDS
 
 
+def _check_amounts_are_not_empty(grant: Grant, request):
+    if grant.total_amount is None:
+        messages.error(
+            request,
+            f"Grant for {grant.name} is missing 'Total Amount'!",
+        )
+        return False
+
+    if grant.has_approved_accommodation() and grant.accommodation_amount is None:
+        messages.error(
+            request,
+            f"Grant for {grant.name} is missing 'Accommodation Amount'!",
+        )
+        return False
+
+    if grant.has_approved_travel() and grant.travel_amount is None:
+        messages.error(
+            request,
+            f"Grant for {grant.name} is missing 'Travel Amount'!",
+        )
+        return False
+
+    return True
+
+
 @admin.action(description="Send Approved/Waiting List/Rejected reply emails")
+@validate_single_conference_selection
 def send_reply_emails(modeladmin, request, queryset):
     queryset = queryset.filter(
         status__in=(
@@ -175,15 +205,7 @@ def send_reply_emails(modeladmin, request, queryset):
                 )
                 return
 
-            if grant.grant_type != Grant.ApprovedType.ticket_only and (
-                grant.total_amount is None
-                or grant.accommodation_amount is None
-                or grant.total_amount is None
-            ):
-                messages.error(
-                    request,
-                    f"Grant for {grant.name} is missing 'Approved Amount'!",
-                )
+            if not _check_amounts_are_not_empty(grant, request):
                 return
 
             now = timezone.now()
@@ -191,7 +213,7 @@ def send_reply_emails(modeladmin, request, queryset):
                 now.year, now.month, now.day, 23, 59, 59
             ) + timedelta(days=14)
             grant.save()
-            send_grant_reply_approved_email(grant)
+            send_grant_reply_approved_email.delay(grant_id=grant.id, is_reminder=False)
 
             messages.info(request, f"Sent Approved reply email to {grant.name}")
 
@@ -199,15 +221,16 @@ def send_reply_emails(modeladmin, request, queryset):
             grant.status == Grant.Status.waiting_list
             or grant.status == Grant.Status.waiting_list_maybe
         ):
-            send_grant_reply_waiting_list_email(grant)
+            send_grant_reply_waiting_list_email.delay(grant_id=grant.id)
             messages.info(request, f"Sent Waiting List reply email to {grant.name}")
 
         if grant.status == Grant.Status.rejected:
-            send_grant_reply_rejected_email(grant)
+            send_grant_reply_rejected_email.delay(grant_id=grant.id)
             messages.info(request, f"Sent Rejected reply email to {grant.name}")
 
 
 @admin.action(description="Send reminder to waiting confirmation grants")
+@validate_single_conference_selection
 def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryset):
     queryset = queryset.filter(
         status__in=(Grant.Status.waiting_for_confirmation,),
@@ -222,24 +245,15 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
             )
             return
 
-        if grant.grant_type != Grant.ApprovedType.ticket_only and (
-            grant.total_amount is None
-            or grant.accommodation_amount is None
-            or grant.total_amount is None
-        ):
-            messages.add_message(
-                request,
-                messages.ERROR,
-                f"Grant for {grant.name} is missing 'Grant Approved Amount'!",
-            )
-            return
+        _check_amounts_are_not_empty(grant, request)
 
-        send_grant_reply_approved_email(grant, is_reminder=True)
+        send_grant_reply_approved_email.delay(grant_id=grant.id, is_reminder=True)
 
         messages.info(request, f"Grant reminder sent to {grant.name}")
 
 
 @admin.action(description="Send Waiting List update email")
+@validate_single_conference_selection
 def send_reply_email_waiting_list_update(modeladmin, request, queryset):
     queryset = queryset.filter(
         status__in=(
@@ -249,23 +263,16 @@ def send_reply_email_waiting_list_update(modeladmin, request, queryset):
     )
 
     for grant in queryset:
-        send_grant_reply_waiting_list_update_email(grant)
+        send_grant_reply_waiting_list_update_email.delay(grant_id=grant.id)
         messages.info(request, f"Sent Waiting List update reply email to {grant.name}")
 
 
 @admin.action(description="Send voucher via email")
+@validate_single_conference_selection
 def send_voucher_via_email(modeladmin, request, queryset):
-    is_filtered_by_conference = (
-        queryset.values_list("conference_id").distinct().count() == 1
-    )
-
-    if not is_filtered_by_conference:
-        messages.error(request, "Please select only one conference")
-        return
-
     count = 0
     for grant in queryset.filter(pretix_voucher_id__isnull=False):
-        send_grant_voucher_email(grant)
+        send_grant_voucher_email.delay(grant_id=grant.id)
         count = count + 1
 
     messages.success(request, f"{count} Voucher emails scheduled!")
@@ -278,16 +285,9 @@ def _generate_voucher_code(prefix: str) -> str:
 
 
 @admin.action(description="Create grant vouchers on Pretix")
+@validate_single_conference_selection
 def create_grant_vouchers_on_pretix(modeladmin, request, queryset):
-    is_filtered_by_conference = (
-        queryset.values_list("conference_id").distinct().count() == 1
-    )
-
-    if not is_filtered_by_conference:
-        messages.error(request, "Please select only one conference")
-        return
-
-    conference = queryset.only("conference_id").first().conference
+    conference = queryset.first().conference
 
     if not conference.pretix_speaker_voucher_quota_id:
         messages.error(
@@ -352,23 +352,56 @@ class GrantAdminForm(forms.ModelForm):
             "why",
             "notes",
             "travelling_from",
-            "traveling_from",
             "country_type",
             "applicant_message",
+            "plain_thread_id",
             "applicant_reply_sent_at",
             "applicant_reply_deadline",
         )
 
 
+class IsProposedSpeakerFilter(SimpleListFilter):
+    title = "Is Proposed Speaker"
+    parameter_name = "is_proposed_speaker"
+
+    def lookups(self, request, model_admin):
+        return (
+            (True, "Yes"),
+            (False, "No"),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            return queryset.filter(is_proposed_speaker=self.value())
+        return queryset
+
+
+class IsConfirmedSpeakerFilter(SimpleListFilter):
+    title = "Is Confirmed Speaker"
+    parameter_name = "is_confirmed_speaker"
+
+    def lookups(self, request, model_admin):
+        return (
+            (True, "Yes"),
+            (False, "No"),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            return queryset.filter(is_confirmed_speaker=self.value())
+        return queryset
+
+
 @admin.register(Grant)
-class GrantAdmin(ExportMixin, admin.ModelAdmin):
-    speaker_ids = []
+class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
+    change_list_template = "admin/grants/grant/change_list.html"
     resource_class = GrantResource
     form = GrantAdminForm
     list_display = (
         "user_display_name",
         "country",
-        "is_speaker",
+        "is_proposed_speaker",
+        "is_confirmed_speaker",
         "conference",
         "status",
         "approved_type",
@@ -381,6 +414,11 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
         "applicant_reply_deadline",
         "voucher_code",
         "voucher_email_sent_at",
+        "created",
+    )
+    readonly_fields = (
+        "applicant_message",
+        "plain_thread_id",
     )
     list_filter = (
         "conference",
@@ -389,7 +427,12 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
         "occupation",
         "grant_type",
         "interested_in_volunteering",
-        "traveling_from",
+        "needs_funds_for_travel",
+        "need_visa",
+        "need_accommodation",
+        IsProposedSpeakerFilter,
+        IsConfirmedSpeakerFilter,
+        ("travelling_from", CountryFilter),
     )
     search_fields = (
         "email",
@@ -399,7 +442,6 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
         "why",
         "notes",
     )
-    user_fk = "user_id"
     actions = [
         send_reply_emails,
         send_grant_reminder_to_waiting_for_confirmation,
@@ -423,6 +465,7 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
                     "accommodation_amount",
                     "total_amount",
                     "applicant_message",
+                    "plain_thread_id",
                     "applicant_reply_sent_at",
                     "applicant_reply_deadline",
                     "pretix_voucher_id",
@@ -451,13 +494,20 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
                 "fields": (
                     "grant_type",
                     "needs_funds_for_travel",
+                    "need_visa",
+                    "need_accommodation",
                     "travelling_from",
-                    "traveling_from",
                     "why",
                     "python_usage",
                     "been_to_other_events",
+                    "community_contribution",
                     "interested_in_volunteering",
                     "notes",
+                    "website",
+                    "twitter_handle",
+                    "github_handle",
+                    "linkedin_url",
+                    "mastodon_handle",
                 )
             },
         ),
@@ -475,155 +525,220 @@ class GrantAdmin(ExportMixin, admin.ModelAdmin):
         description="C",
     )
     def country(self, obj):
-        if obj.traveling_from:
-            country = countries.get(code=obj.traveling_from)
+        if obj.travelling_from:
+            country = countries.get(code=obj.travelling_from)
             if country:
                 return country.emoji
 
         return ""
 
-    @admin.display(
-        description="S",
-    )
-    def is_speaker(self, obj):
-        if obj.user_id in self.speaker_ids:
+    @admin.display(description="✍️")
+    def is_proposed_speaker(self, obj):
+        if obj.is_proposed_speaker:
+            return "✍️"
+        return ""
+
+    @admin.display(description="🗣️")
+    def is_confirmed_speaker(self, obj):
+        if obj.is_confirmed_speaker:
             return "🗣️"
         return ""
 
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if not self.speaker_ids:
-            conference_id = request.GET.get("conference__id__exact")
-            self.speaker_ids = ScheduleItem.objects.filter(
-                conference__id=conference_id,
-                submission__speaker_id__isnull=False,
-            ).values_list("submission__speaker_id", flat=True)
+        qs = (
+            super()
+            .get_queryset(request)
+            .annotate(
+                is_proposed_speaker=Exists(
+                    Submission.objects.non_cancelled().filter(
+                        conference_id=OuterRef("conference_id"),
+                        speaker_id=OuterRef("user_id"),
+                    )
+                ),
+                is_confirmed_speaker=Exists(
+                    ScheduleItem.objects.filter(
+                        conference_id=OuterRef("conference_id"),
+                        submission__speaker_id=OuterRef("user_id"),
+                    )
+                ),
+            )
+        )
         return qs
 
-    def save_form(self, request, form, change):
-        # If the status, country_type or approved_type changes and the grant is approved
-        # we need to recalculate the totals
-        if form.cleaned_data["status"] == Grant.Status.approved and (
-            form.cleaned_data["status"] != form.initial.get("status")
-            or form.cleaned_data["country_type"] != form.initial.get("country_type")
-            or form.cleaned_data["approved_type"] != form.initial.get("approved_type")
-        ):
-            conference = form.cleaned_data["conference"]
-            form.instance.ticket_amount = conference.grants_default_ticket_amount
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                "summary/",
+                self.admin_site.admin_view(self.summary_view),
+                name="grants-summary",
+            ),
+        ]
+        return custom_urls + urls
 
-            if form.cleaned_data["approved_type"] not in (
-                Grant.ApprovedType.ticket_only,
-                Grant.ApprovedType.ticket_travel,
-            ):
-                form.instance.accommodation_amount = (
-                    conference.grants_default_accommodation_amount
-                )
+    def summary_view(self, request):
+        """
+        Custom view for summarizing Grant data in the Django admin.
+        Aggregates data by country and status, and applies request filters.
+        """
+        statuses = Grant.Status.choices
 
-            if form.cleaned_data["country_type"] == Grant.CountryType.italy:
-                form.instance.travel_amount = (
-                    conference.grants_default_travel_from_italy_amount
-                )
-            elif form.cleaned_data["country_type"] == Grant.CountryType.europe:
-                form.instance.travel_amount = (
-                    conference.grants_default_travel_from_europe_amount
-                )
-            elif form.cleaned_data["country_type"] == Grant.CountryType.extra_eu:
-                form.instance.travel_amount = (
-                    conference.grants_default_travel_from_extra_eu_amount
-                )
+        filtered_grants, formatted_filters = self._filter_and_format_grants(request)
 
-            form.instance.total_amount = (
-                form.instance.ticket_amount
-                + form.instance.accommodation_amount
-                + form.instance.travel_amount
+        grants_by_country = filtered_grants.values(
+            "travelling_from", "status"
+        ).annotate(total=Count("id"))
+
+        (
+            country_stats,
+            status_totals,
+            totals_per_continent,
+        ) = self._aggregate_data_by_country(grants_by_country, statuses)
+        gender_stats = self._aggregate_data_by_gender(filtered_grants, statuses)
+        financial_summary, total_amount = self._aggregate_financial_data_by_status(
+            filtered_grants, statuses
+        )
+
+        sorted_country_stats = dict(
+            sorted(country_stats.items(), key=lambda x: (x[0][0], x[0][2]))
+        )
+
+        context = {
+            "country_stats": sorted_country_stats,
+            "statuses": statuses,
+            "genders": {code: name for code, name in GENDERS},
+            "financial_summary": financial_summary,
+            "total_amount": total_amount,
+            "total_grants": filtered_grants.count(),
+            "status_totals": status_totals,
+            "totals_per_continent": totals_per_continent,
+            "gender_stats": gender_stats,
+            "filters": formatted_filters,
+            **self.admin_site.each_context(request),
+        }
+        return TemplateResponse(request, "admin/grants/grant_summary.html", context)
+
+    def _aggregate_data_by_country(self, grants_by_country, statuses):
+        """
+        Aggregates grant data by country and status.
+        """
+
+        summary = {}
+        status_totals = {status[0]: 0 for status in statuses}
+        totals_per_continent = {}
+
+        for data in grants_by_country:
+            country = countries.get(code=data["travelling_from"])
+            continent = country.continent.name if country else "Unknown"
+            country_name = f"{country.name} {country.emoji}" if country else "Unknown"
+            country_code = country.code if country else "Unknown"
+            key = (continent, country_name, country_code)
+
+            if key not in summary:
+                summary[key] = {status[0]: 0 for status in statuses}
+
+            summary[key][data["status"]] += data["total"]
+            status_totals[data["status"]] += data["total"]
+
+            # Update continent totals
+            if continent not in totals_per_continent:
+                totals_per_continent[continent] = {status[0]: 0 for status in statuses}
+            totals_per_continent[continent][data["status"]] += data["total"]
+
+        return summary, status_totals, totals_per_continent
+
+    def _aggregate_data_by_gender(self, filtered_grants, statuses):
+        """
+        Aggregates grant data by gender and status.
+        """
+        gender_data = filtered_grants.values("gender", "status").annotate(
+            total=Count("id")
+        )
+        gender_summary = {
+            gender: {status[0]: 0 for status in statuses} for gender, _ in GENDERS
+        }
+        gender_summary[""] = {
+            status[0]: 0 for status in statuses
+        }  # For unspecified genders
+
+        for data in gender_data:
+            gender = data["gender"] if data["gender"] else ""
+            status = data["status"]
+            total = data["total"]
+            gender_summary[gender][status] += total
+
+        return gender_summary
+
+    def _aggregate_financial_data_by_status(self, filtered_grants, statuses):
+        """
+        Aggregates financial data (total amounts) by grant status.
+        """
+        financial_data = filtered_grants.values("status").annotate(
+            total_amount_sum=Sum("total_amount")
+        )
+        financial_summary = {status[0]: 0 for status in statuses}
+        overall_total = 0
+
+        for data in financial_data:
+            status = data["status"]
+            total_amount = data["total_amount_sum"] or 0
+            financial_summary[status] += total_amount
+            overall_total += total_amount
+
+        return financial_summary, overall_total
+
+    def _filter_and_format_grants(self, request):
+        """
+        Filters the Grant queryset based on request parameters and
+        formats the filter keys for display.
+        """
+        field_lookups = [
+            "__exact",
+            "__in",
+            "__gt",
+            "__lt",
+            "__contains",
+            "__startswith",
+            "__endswith",
+            "__range",
+            "__isnull",
+        ]
+
+        filter_mapping = {
+            "conference__id": "Conference ID",
+            "status": "Status",
+            "country_type": "Country Type",
+            "occupation": "Occupation",
+            "grant_type": "Grant Type",
+            "travelling_from": "Country",
+        }
+
+        # Construct a set of allowed filters
+        allowed_filters = {
+            f + lookup for f in filter_mapping.keys() for lookup in field_lookups
+        }
+
+        def map_filter_key(key):
+            """Helper function to map raw filter keys to user-friendly names"""
+            base_key = next(
+                (
+                    key[: -len(lookup)]
+                    for lookup in field_lookups
+                    if key.endswith(lookup)
+                ),
+                key,
             )
+            return filter_mapping.get(base_key, base_key.capitalize())
 
-        return_value = super().save_form(request, form, change)
+        # Apply filtered parameters and format filter keys for display
+        raw_filter_params = {
+            k: v for k, v in request.GET.items() if k in allowed_filters
+        }
+        filter_params = {map_filter_key(k): v for k, v in raw_filter_params.items()}
 
-        return return_value
+        filtered_grants = Grant.objects.filter(**raw_filter_params)
+
+        return filtered_grants, filter_params
 
     class Media:
         js = ["admin/js/jquery.init.js"]
-
-
-@admin.register(GrantRecap)
-class GrantsRecap(admin.ModelAdmin):
-    list_filter = ("conference",)
-    qs = None
-
-    def has_change_permission(self, *args, **kwargs) -> bool:
-        return False
-
-    def get_queryset(self, request):
-        if self.qs:
-            return self.qs
-
-        self.qs = super().get_queryset(request)
-        filters = dict(request.GET.items())
-
-        if filters:
-            self.qs = self.qs.filter(**filters)
-
-        return self.qs
-
-    def changelist_view(self, request, extra_context=None):
-        qs = self.get_queryset(request).order_by("traveling_from")
-
-        results = []
-        for country_code, group in groupby(list(qs), key=lambda k: k.traveling_from):
-            country = countries.get(code=country_code)
-            if not country:
-                continue
-            grants = list(group)
-            counter = Counter([g.status for g in grants])
-            results.append(
-                {
-                    "continent": country.continent.name,
-                    "country": country.name,
-                    "total": int(sum([g.total_amount for g in grants])),
-                    "count": len(grants),
-                    "rejected": counter.get(Grant.Status.rejected, 0),
-                    "approved": counter.get(Grant.Status.approved, 0),
-                    "waiting_list": counter.get(Grant.Status.waiting_list, 0)
-                    + counter.get(Grant.Status.waiting_list_maybe, 0),
-                    "waiting_for_confirmation": counter.get(
-                        Grant.Status.waiting_for_confirmation, 0
-                    ),
-                    "refused": counter.get(Grant.Status.refused, 0),
-                    "confirmed": counter.get(Grant.Status.confirmed, 0),
-                }
-            )
-
-        results = sorted(results, key=lambda k: (k["continent"], k["country"]))
-
-        counter = Counter([g.status for g in qs])
-        footer = {
-            "title": "Total",
-            "count": len(qs),
-            "total": int(
-                sum(
-                    [
-                        g.total_amount
-                        for g in qs
-                        if g.status
-                        in (
-                            Grant.Status.confirmed,
-                            Grant.Status.approved,
-                            Grant.Status.waiting_for_confirmation,
-                        )
-                    ]
-                )
-            ),
-            "rejected": counter.get(Grant.Status.rejected, 0),
-            "approved": counter.get(Grant.Status.approved, 0),
-            "waiting_list": counter.get(Grant.Status.waiting_list, 0)
-            + counter.get(Grant.Status.waiting_list_maybe, 0),
-            "waiting_for_confirmation": counter.get(
-                Grant.Status.waiting_for_confirmation, 0
-            ),
-            "refused": counter.get(Grant.Status.refused, 0),
-            "confirmed": counter.get(Grant.Status.confirmed, 0),
-        }
-
-        extra_context = {"results": results, "footer": footer}
-        return super().changelist_view(request, extra_context=extra_context)

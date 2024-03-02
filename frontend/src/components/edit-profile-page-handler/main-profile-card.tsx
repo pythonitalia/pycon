@@ -1,14 +1,14 @@
 import {
-  Text,
-  Heading,
-  Grid,
-  MultiplePartsCard,
   CardPart,
-  InputWrapper,
-  Input,
-  Select,
+  Grid,
   GridColumn,
+  Heading,
+  Input,
+  InputWrapper,
   Link,
+  MultiplePartsCard,
+  Select,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 import { FormState, Inputs, StateErrors } from "react-use-form-state";
@@ -75,7 +75,7 @@ export const MainProfileCard = ({
                 onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
                   const timestamp = Date.parse(event.target.value);
 
-                  if (!isNaN(timestamp)) {
+                  if (!Number.isNaN(timestamp)) {
                     const date = new Date(timestamp);
                     formState.setField("dateBirth", date);
                     return date;
@@ -84,10 +84,7 @@ export const MainProfileCard = ({
                   return formState.values.dateBirth;
                 },
               })}
-              value={
-                formState.values.dateBirth &&
-                formState.values.dateBirth.toISOString().split("T")[0]
-              }
+              value={formState.values.dateBirth?.toISOString().split("T")[0]}
               type="date"
               required={true}
               errors={[

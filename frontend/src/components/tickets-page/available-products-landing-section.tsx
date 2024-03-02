@@ -1,18 +1,18 @@
 import {
-  MultiplePartsCard,
-  CardPart,
-  Spacer,
-  Section,
-  Heading,
-  Text,
   Button,
+  CardPart,
+  Heading,
+  MultiplePartsCard,
+  Section,
+  Spacer,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
-import { TicketsQueryResult, TicketType, TicketItem } from "~/types";
+import { TicketItem, TicketType, TicketsQueryResult } from "~/types";
 
 import { createHref } from "../link";
 
@@ -54,11 +54,11 @@ export const AvailableProductsLandingSection = ({ tickets }: Props) => {
               <Spacer size="2md" />
               <Button
                 size="small"
-                role="secondary"
                 href={createHref({
                   path: "/social-events",
                   locale: language,
                 })}
+                variant="secondary"
               >
                 <FormattedMessage id="tickets.buyNow" />
               </Button>

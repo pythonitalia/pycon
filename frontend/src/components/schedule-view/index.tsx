@@ -1,10 +1,9 @@
 import {
-  Section,
-  Heading,
-  Spacer,
   DaysSelector,
-  Button,
   FilterBar,
+  Heading,
+  Section,
+  Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
 import va from "@vercel/analytics";
@@ -24,12 +23,10 @@ import { useRouter } from "next/router";
 import { useCurrentLanguage } from "~/locale/context";
 import { getDayUrl } from "~/pages/schedule/[day]";
 import {
-  readUserStarredScheduleItemsQueryCache,
   ScheduleQuery,
-  useAddScheduleSlotMutation,
+  readUserStarredScheduleItemsQueryCache,
   useStarScheduleItemMutation,
   useUnstarScheduleItemMutation,
-  useUpdateOrCreateSlotItemMutation,
   useUserStarredScheduleItemsQuery,
   writeUserStarredScheduleItemsQueryCache,
 } from "~/types";
@@ -37,24 +34,15 @@ import {
 import { useLoginState } from "../profile/hooks";
 import { Schedule } from "./schedule";
 import { ScheduleList } from "./schedule-list";
-import { ItemsPanel } from "./staff/items-panel";
 import { Item, Slot } from "./types";
 
 export type ViewMode = "grid" | "list";
 
-const LoadingOverlay = () => (
-  <div className="flex fixed inset-0 bg-black/30 z-10 items-center justify-center">
-    <div className="bg-white border p-4">Updating schedule, please wait...</div>
-  </div>
-);
-
 export const ScheduleView = ({
   day: currentDay,
-  shouldShowAdmin,
   schedule,
   changeDay,
 }: {
-  shouldShowAdmin: boolean;
   day?: string;
   schedule: ScheduleQuery;
   changeDay: (day: string) => void;
@@ -63,22 +51,21 @@ export const ScheduleView = ({
   const [isLoggedIn] = useLoginState();
   const language = useCurrentLanguage();
   const [liveSlot, setLiveSlot] = useState<Slot | null>(null);
-  const code = process.env.conferenceCode;
+
   const {
-    query: { photo },
-  } = useRouter();
-  const isInPhotoMode = photo == "1";
-  const { data: { me: { starredScheduleItems = [] } = {} } = {} } =
-    useUserStarredScheduleItemsQuery({
-      skip: !isLoggedIn,
-      variables: {
-        code: process.env.conferenceCode,
-      },
-    });
+    data: {
+      me: { starredScheduleItems = [] } = {},
+    } = {},
+  } = useUserStarredScheduleItemsQuery({
+    skip: !isLoggedIn,
+    variables: {
+      code: process.env.conferenceCode,
+    },
+  });
 
   const [starScheduleItem] = useStarScheduleItemMutation({
     optimisticResponse: {
-      starScheduleItem: null,
+      starScheduleItem: { ok: true },
     },
     update(cache, _, { variables }) {
       const { me } = readUserStarredScheduleItemsQueryCache({
@@ -103,7 +90,7 @@ export const ScheduleView = ({
   });
   const [unstarScheduleItem] = useUnstarScheduleItemMutation({
     optimisticResponse: {
-      unstarScheduleItem: null,
+      unstarScheduleItem: { ok: true },
     },
     update(cache, _, { variables }) {
       const { me } = readUserStarredScheduleItemsQueryCache({
@@ -151,13 +138,6 @@ export const ScheduleView = ({
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const prevViewMode = useRef(null);
 
-  const [addSlot, { loading: addingSlot }] = useAddScheduleSlotMutation({
-    variables: { code, day: currentDay, duration: 60, language },
-  });
-
-  const [addOrCreateScheduleItem, { loading: updatingSchedule }] =
-    useUpdateOrCreateSlotItemMutation();
-
   const toggleScheduleView = useCallback(() => {
     setViewMode((current) => {
       const nextValue = current === "grid" ? "list" : "grid";
@@ -191,84 +171,11 @@ export const ScheduleView = ({
     };
   }, []);
 
-  const addCustomScheduleItem = useCallback(
-    (slotId: string, itemRooms: string[], title = "Custom") =>
-      addOrCreateScheduleItem({
-        variables: {
-          input: {
-            slotId,
-            rooms: itemRooms,
-            title,
-          },
-          language,
-        },
-      }),
-    [],
-  );
-
-  const addSubmissionToSchedule = useCallback(
-    (slotId: string, itemRooms: string[], submissionId: string) =>
-      addOrCreateScheduleItem({
-        variables: {
-          input: {
-            slotId,
-            submissionId,
-            rooms: itemRooms,
-          },
-          language,
-        },
-      }),
-    [],
-  );
-
-  const addKeynoteToSchedule = useCallback(
-    (slotId: string, itemRooms: string[], keynoteId: string) =>
-      addOrCreateScheduleItem({
-        variables: {
-          input: {
-            slotId,
-            keynoteId,
-            rooms: itemRooms,
-          },
-          language,
-        },
-      }),
-    [],
-  );
-
-  const moveItem = useCallback(
-    (slotId: string, itemRooms: string[], itemId: string) =>
-      addOrCreateScheduleItem({
-        variables: {
-          input: {
-            slotId,
-            itemId,
-            rooms: itemRooms,
-          },
-          language,
-        },
-      }),
-    [],
-  );
-
-  const addScheduleSlot = useCallback(
-    (duration: number) =>
-      addSlot({
-        variables: {
-          code,
-          day: currentDay,
-          duration,
-          language,
-        },
-      }),
-    [code, currentDay],
-  );
-
   if (!schedule) {
     return null;
   }
 
-  const { days, submissions, keynotes } = schedule.conference!;
+  const { days } = schedule.conference!;
   const day = days.find((d) => d.day === currentDay);
   const [currentFilters, setCurrentFilters] = useState({});
   const applyFilters = (newFilters: Record<string, string[]>) => {
@@ -428,17 +335,9 @@ export const ScheduleView = ({
 
   return (
     <Fragment>
-      {shouldShowAdmin && (
-        <ItemsPanel keynotes={keynotes ?? []} submissions={submissions ?? []} />
-      )}
-      {(addingSlot || updatingSchedule) && <LoadingOverlay />}
-      {!isInPhotoMode && (
-        <>
-          <Section illustration="snakeHead">
-            <Heading size="display1">Schedule</Heading>
-          </Section>
-        </>
-      )}
+      <Section illustration="snakeHead">
+        <Heading size="display1">Schedule</Heading>
+      </Section>
 
       <Section noContainer>
         <DaysSelector
@@ -485,11 +384,6 @@ export const ScheduleView = ({
               <Schedule
                 slots={day.slots}
                 rooms={day.rooms}
-                adminMode={shouldShowAdmin}
-                addCustomScheduleItem={addCustomScheduleItem}
-                addSubmissionToSchedule={addSubmissionToSchedule}
-                addKeynoteToSchedule={addKeynoteToSchedule}
-                moveItem={moveItem}
                 currentDay={currentDay}
                 currentFilters={currentFilters}
                 starredScheduleItems={starredScheduleItems}
@@ -508,29 +402,6 @@ export const ScheduleView = ({
                 liveSlot={liveSlot}
               />
             )}
-          </div>
-        )}
-
-        {shouldShowAdmin && (
-          <div className="my-4 ml-24">
-            {schedule.conference.durations.map((duration) => {
-              if (
-                duration.allowedSubmissionTypes.find(
-                  (type) => type.name.toLowerCase() !== "talk",
-                )
-              ) {
-                return null;
-              }
-
-              return (
-                <Button
-                  key={duration.duration}
-                  onClick={() => addScheduleSlot(duration.duration)}
-                >
-                  Add {duration.duration} minutes slot
-                </Button>
-              );
-            })}
           </div>
         )}
       </Section>
@@ -576,7 +447,9 @@ export const isItemVisible = (
     if (choice === "no" && isStarred) {
       // the user wants items not starred and this is one
       return false;
-    } else if (choice === "yes" && !isStarred) {
+    }
+
+    if (choice === "yes" && !isStarred) {
       // the user wants starred items and this is not one
       return false;
     }

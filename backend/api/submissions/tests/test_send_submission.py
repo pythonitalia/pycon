@@ -1,3 +1,4 @@
+from conferences.tests.factories import ConferenceFactory, TopicFactory
 import pytest
 from pytest import mark
 
@@ -604,7 +605,7 @@ def test_submit_talk_with_not_valid_conf_topic(
 ):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("it",),
         submission_types=("talk",),
@@ -612,7 +613,7 @@ def test_submit_talk_with_not_valid_conf_topic(
         durations=("50",),
         audience_levels=("Beginner",),
     )
-    topic = topic_factory(name="random topic")
+    topic = TopicFactory(name="random topic")
 
     resp, _ = _submit_talk(graphql_client, conference, topic=topic.id)
 

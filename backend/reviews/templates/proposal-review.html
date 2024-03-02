@@ -1,0 +1,318 @@
+{% extends "admin/base_site.html" %}
+{% load i18n markdownify %}
+{% load localize countryname hostname %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+  &rsaquo; <a href="{% url 'admin:app_list' 'reviews' %}">Reviews</a>
+  &rsaquo; <a href="{% url 'admin:reviews_reviewsession_changelist' %}">Review sessions</a>
+  &rsaquo; <a href="{% url 'admin:reviews_reviewsession_change' review_session_id %}">{{review_session_repr}}</a>
+  &rsaquo; {{title}}
+</div>
+{% endblock %}
+{% block content %}
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  .review-row {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 50px;
+    padding: 10px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--hairline-color);
+  }
+
+  .my-vote {
+    font-size: 20px;
+    padding: 10px;
+  }
+
+  .my-vote input[type="radio"] {
+    width: 20px;
+    height: 20px;
+  }
+
+  .available-votes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 10px;
+  }
+
+  .comments-wrapper-label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .comments-wrapper textarea {
+    width: 100%;
+  }
+
+  .my-vote .actions {
+    margin-top: 10px;
+  }
+
+  .my-vote .actions input {
+    font-size: 16px;
+  }
+
+  .score-label {
+    margin-bottom: 10px;
+  }
+
+  .tags-to-exclude {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .tags-to-exclude label {
+    font-size: 17px;
+  }
+</style>
+<script type="text/javascript">
+window.addEventListener('load', function() {
+  const selectAllTags = document.querySelector('#select-all-tags');
+  const deselectAllTags = document.querySelector('#deselect-all-tags');
+  const tags = document.querySelectorAll('.tags-to-exclude input[type="checkbox"]');
+
+  selectAllTags.addEventListener('click', function (e) {
+    e.preventDefault();
+    tags.forEach(tag => tag.checked = true);
+  });
+
+  deselectAllTags.addEventListener('click', function (e) {
+    e.preventDefault();
+    tags.forEach(tag => tag.checked = false);
+  });
+});
+</script>
+
+<fieldset class="module aligned">
+  <h2>Proposal</h2>
+
+  <div class="review-row">
+    <strong>Languages</strong>
+    <div>{{proposal.languages.all|join:", "}}</div>
+  </div>
+  <div class="review-row">
+    <strong>Type</strong>
+    <div>{{proposal.type.name}}</div>
+  </div>
+  <div class="review-row">
+    <strong>Duration</strong>
+    <div>{{proposal.duration.duration}} mins</div>
+  </div>
+  <div class="review-row">
+    <strong>Audience Level</strong>
+    <div>{{proposal.audience_level.name}}</div>
+  </div>
+  {% if has_english_language %}
+  <div class="review-row">
+    <strong>Title [English]</strong>
+    <div>{{proposal.title | localize:"en" }}</div>
+  </div>
+  <div class="review-row">
+    <strong>Elevator Pitch [English]</strong>
+    <div>{{proposal.elevator_pitch | localize:"en" | markdownify | linebreaksbr}}</div>
+  </div>
+  <div class="review-row">
+    <strong>Abstract [English]</strong>
+    <div>{{proposal.abstract | localize:"en" | markdownify | linebreaksbr}}</div>
+  </div>
+  {% endif %}
+  {% if has_italian_language %}
+  <div class="review-row">
+    <strong>Title [Italian]</strong>
+    <div>{{proposal.title | localize:"it" }}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Elevator Pitch [Italian]</strong>
+    <div>{{proposal.elevator_pitch | localize:"it" | markdownify | linebreaksbr}}</div>
+  </div>
+  <div class="review-row">
+    <strong>Abstract [Italian]</strong>
+    <div>{{proposal.abstract | localize:"it" | markdownify | linebreaksbr}}</div>
+  </div>
+  {% endif %}
+  <div class="review-row">
+    <strong>Notes</strong>
+    <div>{{proposal.notes | linebreaksbr}}</div>
+  </div>
+  <div class="review-row">
+    <strong>Community Voting</strong>
+    <div>
+      <ul>
+        {% for ranking in proposal.rankings.all %}
+        <li>
+          {{ ranking.tag.name }}: {{ ranking.rank }}/{{ ranking.total_submissions_per_tag }}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="review-row">
+    <strong>Voted by</strong>
+    <div>
+      <span>Total votes: {{proposal.userreview_set.count}}</span>
+      <ul>
+        {% for reviewer in proposal.userreview_set.all %}
+        <li>
+          <strong>{{reviewer.user.full_name}}</strong> voted
+          {{reviewer.score.label}}
+          ({{reviewer.score.numeric_value}})<br />
+          {{reviewer.comment}}
+        </li>
+        {% empty %}
+        <li>No reviews yet</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="review-row">
+    <strong>Open proposal [Website]</strong>
+    <div>
+      <a target="_blank" href="https://pycon.it/submission/{{proposal.hashid}}">Open Proposal in website</a>
+    </div>
+  </div>
+  <div class="review-row">
+    <strong>Open proposal [Admin]</strong>
+    <div>
+      <a target="_blank" href="{% url 'admin:submissions_submission_change' object_id=proposal.id %}">Open Proposal in admin</a>
+    </div>
+  </div>
+</fieldset>
+<fieldset class="module aligned">
+  <h2>Speaker</h2>
+  <div class="review-row">
+    <strong>Name</strong>
+    <div>{{speaker.fullname}}</div>
+  </div>
+  <div class="review-row">
+    <strong>Country</strong>
+    <div>{{speaker.country | countryname}}</div>
+  </div>
+  <div class="review-row">
+    <strong>Speaker Experience</strong>
+    <div>{{participant.get_speaker_level_display}}</div>
+  </div>
+  <div class="review-row">
+    <strong>Previous Talk Video</strong>
+    <div>
+      {% if participant.previous_talk_video %}
+        <a target="_blank" rel="noreferrer noopener" href="{{participant.previous_talk_video}}">
+          {{participant.previous_talk_video}}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="review-row">
+    <strong>Requested a grant?</strong>
+    {% if grant %}
+    <div>
+      <a target="_blank" href="{{grant_link}}">Yes, open grant in admin</a>
+    </div>
+    {% else %}
+    <div>
+      No
+    </div>
+    {% endif %}
+  </div>
+  {% if grant %}
+  <div class="review-row">
+    <strong>Grant status</strong>
+    <div>
+      {{grant.get_status_display}}
+    </div>
+  </div>
+  {% endif %}
+  <div class="review-row">
+    <strong>Bio</strong>
+    <div>{{participant.bio|linebreaksbr}}</div>
+  </div>
+  <div class="review-row">
+    <strong>Participant Info</strong>
+    <div>
+      <a href="{% url 'admin:participants_participant_change' participant.id %}" target="_blank">Open Participant in admin</a>
+    </div>
+  </div>
+  <div class="review-row">
+    <strong>Socials</strong>
+    <div>
+      <ul>
+        {% if participant.website %}
+        <li><a target="_blank" rel="noopener noreferrer" href="{{participant.website}}">Website ({{participant.website|hostname}})</a></li>
+        {% endif %}
+        {% if participant.twitter_handle %}
+        <li><a target="_blank" rel="noopener noreferrer" href="https://twitter.com/@{{participant.twitter_handle}}">Twitter ({{participant.twitter_handle}})</a></li>
+        {% endif %}
+        {% if participant.instagram_handle %}
+        <li><a target="_blank" rel="noopener noreferrer" href="https://instagram.com/{{participant.instagram_handle}}">Instagram ({{participant.instagram_handle}})</a></li>
+        {% endif %}
+        {% if participant.linkedin_url %}
+        <li><a target="_blank" rel="noopener noreferrer" href="{{participant.linkedin_url}}">Linkedin</a></li>
+        {% endif %}
+        {% if participant.facebook_url %}
+        <li><a target="_blank" rel="noopener noreferrer" href="{{participant.facebook_url}}">Facebook</a></li>
+        {% endif %}
+        {% if participant.mastodon_handle %}
+        <li><a target="_blank" rel="noopener noreferrer" href="{{participant.mastodon_handle}}">Mastodon ({{participant.mastodon_handle}})</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</fieldset>
+<fieldset class="module aligned">
+  <h2>Your vote</h2>
+  <form
+    class="my-vote"
+    method="post"
+    action="{% url 'admin:reviews-vote-view' review_session_id proposal_id %}"
+  >
+    {% csrf_token %}
+    <div class="score-label">Score</div>
+    <div class="available-votes">
+      {% for available_score in available_scores %}
+      <label class="my-vote-radio-wrapper">
+        <input {% if user_review.score_id == available_score.id %} checked {% endif %} name="score" type="radio" value="{{ available_score.id }}" />
+        {{available_score.label}}
+      </label>
+      {% endfor %}
+    </div>
+
+    <div class="comments-wrapper">
+      <label class="comments-wrapper-label">Leave a comment?</label>
+      <textarea rows="5" name="comment">{% if existing_comment %}{{existing_comment}}{% else %}{{user_review.comment}}{% endif %}</textarea>
+    </div>
+
+    <div class="actions">
+      <input value="Vote and go to the next" type="submit" name="_next" />
+      <input value="Skip for now" type="submit" name="_skip" />
+    </div>
+
+    <br />
+    <div class="">
+      Exclude proposals with those tags:
+      <ul class="tags-to-exclude">
+        {% for tag in tags_to_filter %}
+          <li>
+            <label>
+              {% with tag_id=tag.id|stringformat:"i" %}
+                <input {% if tag_id in tags_already_excluded %} checked {% endif %} type="checkbox" value="{{tag.id}}" name="exclude" />
+                {{tag.name}}
+              {% endwith %}
+            </label>
+          </li>
+        {% endfor %}
+      </ul>
+      <button id="select-all-tags">Select all</button>
+      <button id="deselect-all-tags">De-select all</button>
+    </div>
+
+    <input type="hidden" name="seen" value="{% for id in seen %}{{id}},{% endfor %}" />
+  </form>
+</fieldset>
+{% endblock %}

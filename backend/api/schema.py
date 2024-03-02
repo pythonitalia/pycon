@@ -14,8 +14,7 @@ from .orders.mutations import OrdersMutations
 from .orders.query import OrdersQuery
 from .pages.schema import PagesQuery
 from .pretix.mutations import AttendeeTicketMutation
-from .schedule.mutations import ScheduleMutations
-from .schedule.schema import ScheduleQuery
+from .schedule.schema import ScheduleQuery, ScheduleMutations
 from .submissions.mutations import SubmissionsMutations
 from .submissions.schema import SubmissionsQuery
 from .volunteers_notifications.mutations import VolunteersNotificationsMutation
@@ -26,6 +25,7 @@ from .participants.queries import ParticipantQueries
 from .users.queries import UserQuery
 from .association_membership.mutation import AssociationMembershipMutation
 from .cms.schema import CMSQuery
+from .sponsors.schema import SponsorsMutation
 
 
 @strawberry.type
@@ -63,11 +63,12 @@ class Mutation(
     ParticipantMutations,
     UsersMutations,
     AssociationMembershipMutation,
+    SponsorsMutation,
 ):
     pass
 
 
-schema = strawberry.federation.Schema(
+schema = strawberry.Schema(
     query=Query,
     mutation=Mutation,
 )

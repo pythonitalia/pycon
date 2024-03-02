@@ -42,7 +42,7 @@ export async function middleware(req: NextRequest) {
   if (LOGIN_REDIRECT_URL.includes(req.nextUrl.pathname) && !isLoggedIn) {
     const url = req.nextUrl.clone();
     url.search = `?next=${req.nextUrl.pathname}`;
-    url.pathname = `/login`;
+    url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 

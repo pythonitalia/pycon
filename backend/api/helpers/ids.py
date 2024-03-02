@@ -8,7 +8,7 @@ def get_hashids(salt: Optional[str] = None, min_length: int = 4):
     salt = salt or settings.SECRET_KEY
 
     return Hashids(
-        salt=settings.SECRET_KEY,
+        salt=salt,
         min_length=min_length,
         alphabet="abcdefghijklmnopqrstuvwxyz",
     )

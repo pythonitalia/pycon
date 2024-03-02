@@ -1,3 +1,4 @@
+from django.template.response import TemplateResponse
 from pathlib import Path
 from django.core.files.storage import storages
 from django import forms
@@ -18,9 +19,9 @@ from ordered_model.admin import (
 from itertools import permutations
 from unicodedata import normalize
 from conferences.models import SpeakerVoucher
-from domain_events.publisher import send_speaker_voucher_email
 from pretix import create_voucher
 from schedule.models import ScheduleItem
+from schedule.tasks import send_speaker_voucher_email
 from sponsors.models import SponsorLevel
 from voting.models import IncludedEvent
 import re
@@ -137,6 +138,7 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                     "slack_new_proposal_comment_incoming_webhook_url",
                     "slack_new_grant_reply_incoming_incoming_webhook_url",
                     "slack_speaker_invitation_answer_incoming_webhook_url",
+                    "slack_new_sponsor_lead_incoming_webhook_url",
                 )
             },
         ),
@@ -186,8 +188,26 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                 "<int:object_id>/video-upload/map-videos",
                 self.admin_site.admin_view(self.map_videos),
                 name="map_videos",
-            )
+            ),
+            path(
+                "<int:object_id>/schedule-builder",
+                self.admin_site.admin_view(self.schedule_builder),
+                name="schedule_builder",
+            ),
         ]
+
+    def schedule_builder(self, request, object_id):
+        conference = Conference.objects.get(pk=object_id)
+        context = dict(
+            self.admin_site.each_context(request),
+            arguments={
+                "conference_id": object_id,
+                "conference_code": conference.code,
+                "conference_repr": str(conference),
+            },
+            title="Schedule Builder",
+        )
+        return TemplateResponse(request, "astro/schedule-builder.html", context)
 
     def map_videos(self, request, object_id):
         if request.method == "POST":
@@ -452,7 +472,7 @@ def send_voucher_via_email(modeladmin, request, queryset):
 
     count = 0
     for speaker_voucher in queryset.filter(pretix_voucher_id__isnull=False):
-        send_speaker_voucher_email(speaker_voucher)
+        send_speaker_voucher_email.delay(speaker_voucher_id=speaker_voucher.id)
         count = count + 1
 
     messages.success(request, f"{count} Voucher emails scheduled!")

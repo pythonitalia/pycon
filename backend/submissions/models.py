@@ -9,7 +9,7 @@ from model_utils.models import TimeStampedModel
 from api.helpers.ids import encode_hashid
 from i18n.fields import I18nCharField, I18nTextField
 
-from .managers import SubmissionManager
+from .querysets import SubmissionQuerySet
 
 
 class SubmissionTag(models.Model):
@@ -33,6 +33,13 @@ class Submission(TimeStampedModel):
         ("rejected", _("Rejected")),
         ("cancelled", _("Cancelled")),
     )
+
+    NON_CANCELLED_STATUSES = [
+        STATUS.proposed,
+        STATUS.accepted,
+        STATUS.waiting_list,
+        STATUS.rejected,
+    ]
 
     conference = models.ForeignKey(
         "conferences.Conference",
@@ -100,7 +107,7 @@ class Submission(TimeStampedModel):
         _("pending status"), choices=STATUS, max_length=20, default="", blank=True
     )
 
-    objects = SubmissionManager()
+    objects = SubmissionQuerySet().as_manager()
 
     @property
     def hashid(self):

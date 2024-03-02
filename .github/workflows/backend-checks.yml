@@ -10,6 +10,10 @@ on:
 jobs:
   check-migrations:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -18,17 +22,17 @@ jobs:
       - run: pip install pdm==2.10.4
 
       - name: Cache PDM
-        uses: actions/cache@v1
+        uses: actions/cache@v4
+        id: cache-deps
         with:
-          path: ./.venv
+          path: backend/.venv
           key: pdm-${{ hashFiles('**/pdm.lock') }}-2
 
       - name: Install python dependencies
-        working-directory: backend
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         run: pdm install
 
       - name: Check missing not pushed migrations
-        working-directory: backend
         run: pdm run python manage.py makemigrations --check
         env:
           DJANGO_SETTINGS_MODULE: pycon.settings.test

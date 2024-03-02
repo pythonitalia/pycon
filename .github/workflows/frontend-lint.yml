@@ -22,19 +22,20 @@ jobs:
       - uses: pnpm/action-setup@v2.2.2
         with:
           version: 7.3.0
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: 1.5.3
       - name: Cache dependencies
         uses: actions/cache@v1
         id: cache
         with:
-          path: ./node_modules
-          key: node_modules-frontend-${{ hashFiles('pnpm-lock.yaml') }}-v4
+          path: ./frontend/node_modules
+          key: node_modules-frontend-${{ hashFiles('./frontend/pnpm-lock.yaml') }}-v4
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: pnpm install
       - name: Codegen
         run: pnpm run codegen
-      - name: Lint
-        run: pnpm run lint
-      - name: TS Lint
-        run: pnpm run lint:ts
-      - name: Prettier
-        run: pnpm run lint:prettier
+      - name: Run Biome
+        run: biome ci .

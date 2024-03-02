@@ -30,7 +30,7 @@ export const GlobalStyles = (): React.ReactElement => (
         ".article li p": {
           display: "inline-block",
         },
-      } as any)
+      }) as any
     }
   />
 );

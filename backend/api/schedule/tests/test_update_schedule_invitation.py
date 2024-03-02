@@ -26,7 +26,10 @@ def test_update_invitation_answer(
     mocker,
 ):
     mock_event = mocker.patch(
-        "api.schedule.mutations.send_new_schedule_invitation_answer"
+        "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
+    )
+    mock_plain = mocker.patch(
+        "api.schedule.mutations.update_schedule_invitation.send_schedule_invitation_plain_message"
     )
 
     graphql_client.force_login(user)
@@ -73,7 +76,11 @@ def test_update_invitation_answer(
     assert schedule_item.status == expected_status
     assert schedule_item.speaker_invitation_notes == "notes"
 
-    mock_event.assert_called_once()
+    mock_event.delay.assert_called_once()
+    mock_plain.delay.assert_called_once_with(
+        schedule_item_id=schedule_item.id,
+        message="notes",
+    )
 
 
 def test_saving_the_same_answer_does_not_trigger_event(
@@ -86,7 +93,10 @@ def test_saving_the_same_answer_does_not_trigger_event(
     mocker,
 ):
     mock_event = mocker.patch(
-        "api.schedule.mutations.send_new_schedule_invitation_answer"
+        "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
+    )
+    mock_plain = mocker.patch(
+        "api.schedule.mutations.update_schedule_invitation.send_schedule_invitation_plain_message"
     )
 
     graphql_client.force_login(user)
@@ -135,7 +145,8 @@ def test_saving_the_same_answer_does_not_trigger_event(
     assert schedule_item.status == ScheduleItem.STATUS.confirmed
     assert schedule_item.speaker_invitation_notes == "notes"
 
-    mock_event.assert_not_called()
+    mock_event.delay.assert_not_called()
+    mock_plain.delay.assert_not_called()
 
 
 def test_changing_notes_triggers_a_new_event(
@@ -148,7 +159,10 @@ def test_changing_notes_triggers_a_new_event(
     mocker,
 ):
     mock_event = mocker.patch(
-        "api.schedule.mutations.send_new_schedule_invitation_answer"
+        "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
+    )
+    mock_plain = mocker.patch(
+        "api.schedule.mutations.update_schedule_invitation.send_schedule_invitation_plain_message"
     )
 
     graphql_client.force_login(user)
@@ -197,7 +211,11 @@ def test_changing_notes_triggers_a_new_event(
     assert schedule_item.status == ScheduleItem.STATUS.confirmed
     assert schedule_item.speaker_invitation_notes == "newnotes"
 
-    mock_event.assert_called()
+    mock_event.delay.assert_called()
+    mock_plain.delay.assert_called_once_with(
+        schedule_item_id=schedule_item.id,
+        message="newnotes",
+    )
 
 
 def test_random_user_cannot_update_an_invitation(
@@ -210,7 +228,7 @@ def test_random_user_cannot_update_an_invitation(
     mocker,
 ):
     mock_event = mocker.patch(
-        "api.schedule.mutations.send_new_schedule_invitation_answer"
+        "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
     )
 
     graphql_client.force_login(user)
@@ -251,14 +269,14 @@ def test_random_user_cannot_update_an_invitation(
     assert schedule_item.status == ScheduleItem.STATUS.waiting_confirmation
     assert schedule_item.speaker_invitation_notes == ""
 
-    mock_event.assert_not_called()
+    mock_event.delay.assert_not_called()
 
 
 def test_cannot_update_schedule_if_submission_doesnt_have_a_matching_schedule(
     submission_factory, graphql_client, user, mocker
 ):
     mock_event = mocker.patch(
-        "api.schedule.mutations.send_new_schedule_invitation_answer"
+        "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
     )
 
     graphql_client.force_login(user)
@@ -286,10 +304,10 @@ def test_cannot_update_schedule_if_submission_doesnt_have_a_matching_schedule(
         "__typename": "ScheduleInvitationNotFound",
     }
 
-    mock_event.assert_not_called()
+    mock_event.delay.assert_not_called()
 
 
-def test_reqires_authentication(
+def test_requires_authentication(
     submission_factory,
     graphql_client,
     schedule_item_factory,
@@ -298,7 +316,7 @@ def test_reqires_authentication(
     mocker,
 ):
     mock_event = mocker.patch(
-        "api.schedule.mutations.send_new_schedule_invitation_answer"
+        "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
     )
 
     submission = submission_factory()
@@ -336,7 +354,7 @@ def test_reqires_authentication(
     assert schedule_item.status == ScheduleItem.STATUS.waiting_confirmation
     assert schedule_item.speaker_invitation_notes == ""
 
-    mock_event.assert_not_called()
+    mock_event.delay.assert_not_called()
 
 
 def test_staff_can_update_invitation_answer(
@@ -349,7 +367,10 @@ def test_staff_can_update_invitation_answer(
     mocker,
 ):
     mock_event = mocker.patch(
-        "api.schedule.mutations.send_new_schedule_invitation_answer"
+        "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
+    )
+    mock_plain = mocker.patch(
+        "api.schedule.mutations.update_schedule_invitation.send_schedule_invitation_plain_message"
     )
 
     graphql_client.force_login(admin_user)
@@ -394,4 +415,8 @@ def test_staff_can_update_invitation_answer(
     assert schedule_item.status == ScheduleItem.STATUS.confirmed
     assert schedule_item.speaker_invitation_notes == "notes"
 
-    mock_event.assert_called_once()
+    mock_event.delay.assert_called_once()
+    mock_plain.delay.assert_called_once_with(
+        schedule_item_id=schedule_item.id,
+        message="notes",
+    )

@@ -1,0 +1,194 @@
+{% extends "admin/base_site.html" %}
+{% load markdownify %}
+{% load localize countryname get_item %}
+{% load i18n l10n admin_urls static admin_list %}
+{% load get_item %}
+{% block extrastyle %}
+    {{ block.super }}
+    <style>
+        .back-button {
+            margin-bottom: 20px;
+        }
+
+        .back-button a.button {
+            padding: 6px 12px;
+        }
+
+        .back-button a.button:hover {
+            background-color: #e6e6e6;
+        }
+
+
+        #financialSummary td,
+        #financialSummary th {
+            text-align: right;
+        }
+
+        .status-filter {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+        .status-filter h3 {
+            margin-top: 0;
+        }
+
+        .checkbox-list {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .status-checkbox {
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+
+        .status-checkbox input {
+            margin-right: 5px;
+        }
+
+        .continent-total {
+            border-top: 2px solid #E8E8E8;
+            border-bottom: 2px solid #000;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="back-button">
+        <a href="{% url 'admin:grants_grant_changelist' %}?{{ request.GET.urlencode }}"
+           class="button">Back to List</a>
+    </div>
+    <h1>Grant Summary</h1>
+    <div class="active-filters">
+        <h3>Active Filters:</h3>
+        <ul>
+            {% for filter_name, value in filters.items %}
+                <li>{{ filter_name }}: {{ value }}</li>
+            {% empty %}
+                <li>No filters applied</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="status-filter">
+        <h3>Toggle Status Columns</h3>
+        <div class="checkbox-list">
+            {% for status in statuses %}
+                <label class="status-checkbox">
+                    <input type="checkbox"
+                           class="toggle-column"
+                           data-column="status-column-{{ forloop.counter }}"
+                           checked>
+                    {{ status.1|title }}
+                </label>
+            {% endfor %}
+        </div>
+    </div>
+    {% localize on %}
+    <h2>Financial Summary</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Total Amount</th>
+                <th></th>
+                {% for status in statuses %}<th class="status-column-{{ forloop.counter }}">{{ status.1|title }}</th>{% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ total_amount|floatformat:"0" }}€</td>
+                <td></td>
+                {% for status in statuses %}
+                    <td class="status-column-{{ forloop.counter }}">
+                        {{ financial_summary|get_item:status.0|default:"0"|floatformat:"0" }}€
+                    </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+{% endlocalize %}
+<h2>by Country</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Continent</th>
+            <th>Country</th>
+            {% for status in statuses %}<th class="status-column-{{ forloop.counter }}">{{ status.1|title }}</th>{% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, counts in country_stats.items %}
+            {% with continent=key.0 country=key.1 %}
+                {% ifchanged continent %}
+                    <tr class="continent-total">
+                        <td colspan="2">
+                            <strong>Total for {{ continent }}: 👇</strong>
+                        </td>
+                        {% for status in statuses %}
+                            <td class="status-column-{{ forloop.counter }}">
+                                <strong>{{ totals_per_continent|get_item:continent|get_item:status.0|default:"0" }}</strong>
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endifchanged %}
+                <tr>
+                    <td>{{ continent }}</td>
+                    <td>{{ country }}</td>
+                    {% for status in statuses %}
+                        <td class="status-column-{{ forloop.counter }}">{{ counts|get_item:status.0|default:"0" }}</td>
+                    {% endfor %}
+                </tr>
+            {% endwith %}
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="2">Total Grants: {{ total_grants }}</td>
+            {% for count in status_totals.values %}<td class="status-column-{{ forloop.counter }}">{{ count }}</td>{% endfor %}
+        </tr>
+    </tfoot>
+</table>
+<h2>by Gender</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Gender</th>
+            <th></th>
+            {% for status in statuses %}<th class="status-column-{{ forloop.counter }}">{{ status.1|title }}</th>{% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for gender, gender_data in gender_stats.items %}
+            <tr>
+                <td>{{ genders|get_item:gender|default:"Not Specified" }}</td>
+                <td></td>
+                {% for status in statuses %}
+                    <td class="status-column-{{ forloop.counter }}">{{ gender_data|get_item:status.0|default:"0" }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // This script allows users to toggle the visibility of columns in the table
+      // based on the status they choose to show or hide.
+      const checkboxes = document.querySelectorAll('.toggle-column');
+      checkboxes.forEach(function(checkbox) {
+          checkbox.addEventListener('change', function() {
+
+              // Use data attributes to target columns.
+              // Each checkbox has a data attribute 'data-column' that corresponds to the column's class to show/hide.
+              const columnClass = checkbox.dataset.column;
+              const columnsToToggle = document.querySelectorAll(`.${columnClass}`);
+
+              columnsToToggle.forEach(function(cell) {
+                  cell.style.display = checkbox.checked ? '' : 'none';
+              });
+          });
+      });
+  });
+</script>
+{% endblock %}

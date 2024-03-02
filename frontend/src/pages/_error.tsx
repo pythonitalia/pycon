@@ -4,7 +4,7 @@ import * as Sentry from "@sentry/nextjs";
 import { GetStaticProps } from "next";
 import NextErrorComponent from "next/error";
 
-import { getApolloClient, addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 
 const ErrorPage = ({ statusCode }) => (

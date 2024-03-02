@@ -1,9 +1,15 @@
 import dataclasses
 import json
 from typing import Any, Dict, Optional
-
+from conferences.tests.factories import ConferenceFactory
+from datetime import date, time
 import pytest
 from django.test import Client as DjangoTestClient
+from schedule.models import DayRoomThroughModel
+from schedule.tests.factories import DayFactory, RoomFactory, SlotFactory
+from wagtail.models import Locale
+from wagtail.coreutils import get_supported_content_language_variant
+from django.conf import settings
 
 
 def query_wrapper(original):
@@ -36,6 +42,8 @@ class DjangoAsyncClientWrapper:
 
 
 class NewGraphQLClient:
+    GRAPHQL_URL = "/graphql"
+
     def __init__(self, *, include_full_response: bool = False):
         self.client = DjangoTestClient()
         self.include_full_response = include_full_response
@@ -53,7 +61,10 @@ class NewGraphQLClient:
             body["variables"] = variables
 
         resp = self.client.post(
-            "/graphql", data=body, headers=headers, content_type="application/json"
+            self.GRAPHQL_URL,
+            data=body,
+            headers=headers,
+            content_type="application/json",
         )
         data = json.loads(resp.content.decode())
 
@@ -65,9 +76,18 @@ class NewGraphQLClient:
         self.client.force_login(user)
 
 
+class AdminGraphQLAPIClient(NewGraphQLClient):
+    GRAPHQL_URL = "/admin/graphql"
+
+
 @pytest.fixture()
 def graphql_client():
     return NewGraphQLClient()
+
+
+@pytest.fixture()
+def admin_graphql_api_client():
+    return AdminGraphQLAPIClient()
 
 
 @pytest.fixture()
@@ -75,10 +95,46 @@ def full_response_graphql_client():
     return NewGraphQLClient(include_full_response=True)
 
 
-@pytest.fixture()
-def admin_graphql_client(graphql_client):
-    from users.tests.factories import UserFactory
+@pytest.fixture(autouse=True)
+def create_languages(db):
+    from languages.models import Language
+    from languages.languages import LANGUAGES
 
-    admin_user = UserFactory(is_staff=True, is_superuser=True)
-    graphql_client.force_login(admin_user)
-    return graphql_client
+    for language in LANGUAGES:
+        Language.objects.create(name=language["English"], code=language["alpha2"])
+
+    Locale.objects.create(
+        language_code=get_supported_content_language_variant(settings.LANGUAGE_CODE),
+    )
+
+
+@pytest.fixture
+def conference_with_schedule_setup():
+    room_a = RoomFactory(name="Room A")
+    room_b = RoomFactory(name="Room B")
+
+    conference = ConferenceFactory()
+    day_apr1 = DayFactory(
+        day=date(2024, 4, 1),
+        conference=conference,
+    )
+
+    DayRoomThroughModel.objects.create(day=day_apr1, room=room_a)
+    DayRoomThroughModel.objects.create(day=day_apr1, room=room_b)
+
+    SlotFactory(
+        day=day_apr1,
+        hour=time(9, 0),
+        duration=30,
+    )
+    SlotFactory(
+        day=day_apr1,
+        hour=time(9, 30),
+        duration=30,
+    )
+    SlotFactory(
+        day=day_apr1,
+        hour=time(10, 0),
+        duration=30,
+    )
+    return conference

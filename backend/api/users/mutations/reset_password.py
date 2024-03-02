@@ -65,7 +65,10 @@ class ResetPasswordInput:
         return errors.if_has_errors
 
 
-ResetPasswordResult = Annotated[Union[ResetPasswordErrors, OperationSuccess], strawberry.union(name="ResetPasswordResult")]
+ResetPasswordResult = Annotated[
+    Union[ResetPasswordErrors, OperationSuccess],
+    strawberry.union(name="ResetPasswordResult"),
+]
 
 
 @strawberry.mutation

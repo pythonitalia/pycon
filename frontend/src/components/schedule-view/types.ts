@@ -51,7 +51,7 @@ export type Slot = {
   duration: number;
   hour: string;
   endHour: string;
-  type: "DEFAULT" | "FREE_TIME";
+  type: "DEFAULT" | "FREE_TIME" | "BREAK";
   items: Item[];
 };
 

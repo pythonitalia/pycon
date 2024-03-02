@@ -6,7 +6,6 @@ query ParticipantPublicProfile($userId: ID!, $conference: String!) {
     bio
     website
     photo
-    publicProfile
     twitterHandle
     instagramHandle
     linkedinUrl

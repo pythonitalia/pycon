@@ -1,6 +1,7 @@
 from .base import *  # noqa
 
 SECRET_KEY = "this-key-should-only-be-used-for-tests"
+HASHID_DEFAULT_SECRET_SALT = "only-for-tests"
 
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
@@ -31,3 +32,6 @@ CACHES = {
     }
 }
 PYTHONIT_EMAIL_BACKEND = "conftest.TestEmailBackend"
+
+CELERY_TASK_ALWAYS_EAGER = True
+CELERY_TASK_EAGER_PROPAGATES = True

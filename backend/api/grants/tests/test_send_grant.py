@@ -22,15 +22,22 @@ def _send_grant(client, grant_factory, conference, **kwargs):
                         validationGender: gender
                         validationGrantType: grantType
                         validationOccupation: occupation
-                        validationOccupation: occupation
                         validationAgeGroup: ageGroup
                         validationPythonUsage: pythonUsage
+                        validationCommunityContribution: communityContribution
                         validationBeenToOtherEvents: beenToOtherEvents
                         validationInterestedInVolunteering: interestedInVolunteering
                         validationNeedsFundsForTravel: needsFundsForTravel
+                        validationNeedVisa: needVisa
+                        validationNeedAccommodation: needAccommodation
                         validationWhy: why
                         validationNotes: notes
                         validationTravellingFrom: travellingFrom
+                        validationWebsite: website
+                        validationTwitterHandle: twitterHandle
+                        validationGithubHandle: githubHandle
+                        validationLinkedinUrl: linkedinUrl
+                        validationMastodonHandle: mastodonHandle
                         nonFieldErrors
                     }
                 }
@@ -47,12 +54,20 @@ def _send_grant(client, grant_factory, conference, **kwargs):
         "occupation": grant.occupation,
         "grantType": grant.grant_type,
         "pythonUsage": grant.python_usage,
+        "communityContribution": grant.community_contribution,
         "beenToOtherEvents": grant.been_to_other_events,
         "interestedInVolunteering": grant.interested_in_volunteering,
         "needsFundsForTravel": grant.needs_funds_for_travel,
+        "needVisa": grant.need_visa,
+        "needAccommodation": grant.need_accommodation,
         "why": grant.why,
         "notes": grant.notes,
         "travellingFrom": grant.travelling_from,
+        "website": grant.website,
+        "twitterHandle": grant.twitter_handle,
+        "githubHandle": grant.github_handle,
+        "linkedinUrl": grant.linkedin_url,
+        "mastodonHandle": grant.mastodon_handle,
     }
 
     variables = {**defaults, **kwargs}
@@ -182,7 +197,6 @@ def test_cannot_send_grant_with_empty_values(
         graphql_client,
         grant_factory,
         conference,
-        name="",
         fullName="",
         pythonUsage="",
         beenToOtherEvents="",
@@ -190,9 +204,6 @@ def test_cannot_send_grant_with_empty_values(
     )
 
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
-    assert response["data"]["sendGrant"]["errors"]["validationName"] == [
-        "name: Cannot be empty"
-    ]
     assert response["data"]["sendGrant"]["errors"]["validationFullName"] == [
         "full_name: Cannot be empty"
     ]

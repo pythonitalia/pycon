@@ -10,6 +10,8 @@ const {
   NEXT_PUBLIC_SOCIAL_CARD_SERVICE,
   NEXT_PUBLIC_VERCEL_URL,
   API_URL_SERVER,
+  CMS_HOSTNAME,
+  CMS_ADMIN_HOST = "admin.pycon.it",
 } = process.env;
 
 module.exports = withSentryConfig({
@@ -28,6 +30,10 @@ module.exports = withSentryConfig({
             key: "X-Frame-Options",
             value: "DENY",
           },
+          {
+            key: "Content-Security-Policy",
+            value: `frame-ancestors ${CMS_ADMIN_HOST};`,
+          },
         ],
       },
     ];
@@ -37,6 +43,11 @@ module.exports = withSentryConfig({
       {
         source: "/admin/:match*",
         destination: "https://admin.pycon.it/admin/:match",
+        permanent: false,
+      },
+      {
+        source: "/cms-admin/:match*",
+        destination: "https://admin.pycon.it/cms-admin/:match",
         permanent: false,
       },
       {
@@ -70,12 +81,13 @@ module.exports = withSentryConfig({
   env: {
     API_URL: API_URL,
     conferenceCode: CONFERENCE_CODE || "pycon-demo",
+    cmsHostname: CMS_HOSTNAME,
     NEXT_PUBLIC_SOCIAL_CARD_SERVICE:
       NEXT_PUBLIC_SOCIAL_CARD_SERVICE ||
       "https://socialcards.python.it/api/card",
     NEXT_PUBLIC_SITE_URL: NEXT_PUBLIC_VERCEL_URL
       ? `https://${NEXT_PUBLIC_VERCEL_URL}/`
-      : `http://localhost:3000/`,
+      : "http://localhost:3000/",
   },
   images: {
     domains: [
@@ -86,7 +98,7 @@ module.exports = withSentryConfig({
     ],
   },
   webpack: (config, options) => {
-    config.resolve.alias["~"] = path.resolve(__dirname) + "/src";
+    config.resolve.alias["~"] = `${path.resolve(__dirname)}/src`;
 
     config.plugins.push(
       new webpack.DefinePlugin({

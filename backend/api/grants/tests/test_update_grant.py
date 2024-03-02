@@ -18,19 +18,25 @@ def _update_grant(graphql_client, grant, **kwargs):
                     validationConference: conference
                     validationName: name
                     validationFullName: fullName
-                    validationAgeGroup: ageGroup
                     validationGender: gender
                     validationGrantType: grantType
                     validationOccupation: occupation
-                    validationOccupation: occupation
                     validationAgeGroup: ageGroup
                     validationPythonUsage: pythonUsage
+                    validationCommunityContribution: communityContribution
                     validationBeenToOtherEvents: beenToOtherEvents
                     validationInterestedInVolunteering: interestedInVolunteering
                     validationNeedsFundsForTravel: needsFundsForTravel
+                    validationNeedVisa: needVisa
+                    validationNeedAccommodation: needAccommodation
                     validationWhy: why
                     validationNotes: notes
                     validationTravellingFrom: travellingFrom
+                    validationWebsite: website
+                    validationTwitterHandle: twitterHandle
+                    validationGithubHandle: githubHandle
+                    validationLinkedinUrl: linkedinUrl
+                    validationMastodonHandle: mastodonHandle
                     nonFieldErrors
                 }
             }
@@ -47,12 +53,20 @@ def _update_grant(graphql_client, grant, **kwargs):
         "occupation": grant.occupation,
         "grantType": grant.grant_type,
         "pythonUsage": grant.python_usage,
+        "communityContribution": grant.community_contribution,
         "beenToOtherEvents": grant.been_to_other_events,
         "interestedInVolunteering": grant.interested_in_volunteering,
         "needsFundsForTravel": grant.needs_funds_for_travel,
+        "needVisa": grant.need_visa,
+        "needAccommodation": grant.need_accommodation,
         "why": grant.why,
         "notes": grant.notes,
         "travellingFrom": grant.travelling_from,
+        "website": grant.website,
+        "twitterHandle": grant.twitter_handle,
+        "githubHandle": grant.github_handle,
+        "linkedinUrl": grant.linkedin_url,
+        "mastodonHandle": grant.mastodon_handle,
     }
 
     variables = {
@@ -82,12 +96,20 @@ def test_update_grant(graphql_client, user, conference_factory, grant_factory):
         occupation="student",
         grantType="diversity",
         pythonUsage="random",
+        communityContribution="Soft toys meetups",
         beenToOtherEvents="no",
         interestedInVolunteering="yes",
         needsFundsForTravel=True,
+        needVisa=True,
+        needAccommodation=True,
         why="why not",
         notes="🧸",
-        travellingFrom="London",
+        travellingFrom="GB",
+        website="https://marcotte.house",
+        twitterHandle="@marcottebear",
+        githubHandle="marcottebear",
+        linkedinUrl="www.linkedin.com/in/marcotteba",
+        mastodonHandle="marcottebear@marcotte.party",
     )
 
     grant.refresh_from_db()

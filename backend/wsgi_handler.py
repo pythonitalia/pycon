@@ -15,34 +15,12 @@ import sys
 import traceback
 from logging import getLogger
 
-import sentry_sdk
-from django.apps import apps
-from django.conf import settings
-from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
-from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.strawberry import StrawberryIntegration
 
 # imports serverless_wsgi from the root
 import serverless_wsgi
 
 logging.getLogger().setLevel(logging.INFO)
 logger = getLogger(__name__)
-
-
-SENTRY_DSN = settings.SENTRY_DSN
-
-if SENTRY_DSN:
-    sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        integrations=[
-            DjangoIntegration(),
-            AwsLambdaIntegration(),
-            StrawberryIntegration(async_execution=False),
-        ],
-        traces_sample_rate=0.2,
-        send_default_pii=True,
-        environment=settings.ENVIRONMENT,
-    )
 
 
 def import_app(config):
@@ -64,23 +42,6 @@ def import_app(config):
 
 
 def handler(event, context):
-    if "Records" in event:
-        logger.info("Received Records from lambda")
-        apps.populate(settings.INSTALLED_APPS)
-        from sqs_messages import process_sqs_messages
-
-        process_sqs_messages(event)
-        return
-
-    if "cronEvent" in event:
-        logger.info("Received cronEvent from lambda")
-        apps.populate(settings.INSTALLED_APPS)
-        from association_membership.handlers import run_handler
-
-        received_event = event["cronEvent"]
-        run_handler("crons", received_event["name"], received_event["payload"])
-        return
-
     """Lambda event handler, invokes the WSGI wrapper and handles command invocation"""
     if "_serverless-wsgi" in event:
         import shlex

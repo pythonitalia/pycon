@@ -11,6 +11,7 @@ from api.pretix.types import UpdateAttendeeTicketInput, Voucher
 from conferences.models.conference import Conference
 from hotels.models import BedLayout, HotelRoom
 from pretix.types import Category, Question, Quota
+import sentry_sdk
 
 from .exceptions import PretixError
 
@@ -24,6 +25,22 @@ def get_api_url(conference: Conference, endpoint: str) -> str:
     )
 
 
+def _pretix_request(
+    conference: Conference,
+    url: str,
+    qs: Optional[Dict[str, Any]] = None,
+    method="get",
+    **kwargs,
+):
+    return requests.request(
+        method,
+        url,
+        params=qs or {},
+        headers={"Authorization": f"Token {settings.PRETIX_API_TOKEN}"},
+        **kwargs,
+    )
+
+
 def pretix(
     conference: Conference,
     endpoint: str,
@@ -31,13 +48,9 @@ def pretix(
     method="get",
     **kwargs,
 ):
-    return requests.request(
-        method,
-        get_api_url(conference, endpoint),
-        params=qs or {},
-        headers={"Authorization": f"Token {settings.PRETIX_API_TOKEN}"},
-        **kwargs,
-    )
+    url = get_api_url(conference, endpoint)
+
+    return _pretix_request(conference, url, qs, method, **kwargs)
 
 
 def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
@@ -181,7 +194,7 @@ def cache_pretix(name: str):
                 return cache.get(cache_key)
 
             value = func(*args, **kwargs)
-            cache.set(cache_key, value, timeout=60 * 60 * 24 * 7)
+            cache.set(cache_key, value, timeout=60 * 3)
             return value
 
         return wrapper
@@ -249,6 +262,8 @@ class InvoiceInformation:
     country: str
     vat_id: str
     fiscal_code: str
+    pec: str | None = None
+    sdi: str | None = None
 
 
 @strawberry.input
@@ -424,6 +439,36 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     response.raise_for_status()
 
     data = response.json()
+
+    if order_data.invoice_information.country == "IT":
+        response = _pretix_request(
+            conference,
+            urljoin(
+                settings.PRETIX_API,
+                f"orders/{data['code']}/update_invoice_information/",
+            ),
+            method="post",
+            json={
+                "pec": order_data.invoice_information.pec,
+                "codice_fiscale": order_data.invoice_information.fiscal_code,
+                "sdi": order_data.invoice_information.sdi,
+            },
+        )
+
+        if response.status_code != 200:
+            with sentry_sdk.push_scope() as scope:
+                scope.user = {"email": order_data.email}
+                scope.set_extra("order-code", data["code"])
+                scope.set_extra("pec", order_data.invoice_information.pec)
+                scope.set_extra(
+                    "codice_fiscale", order_data.invoice_information.fiscal_code
+                )
+                scope.set_extra("sdi", order_data.invoice_information.sdi)
+
+                sentry_sdk.capture_message(
+                    f"Unable to update invoice information for order {data['code']}",
+                    level="error",
+                )
 
     return Order(code=data["code"], payment_url=data["payments"][0]["payment_url"])
 

@@ -212,10 +212,10 @@ def test_send_voucher_via_email(
         None, rf.get("/"), queryset=SpeakerVoucher.objects.filter(conference=conference)
     )
 
-    mock_send_email.assert_has_calls(
+    mock_send_email.delay.assert_has_calls(
         [
-            call(speaker_voucher_1),
-            call(speaker_voucher_2),
+            call(speaker_voucher_id=speaker_voucher_1.id),
+            call(speaker_voucher_id=speaker_voucher_2.id),
         ],
         any_order=True,
     )
@@ -270,7 +270,7 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     mock_messages.error.assert_called_once_with(
         request, "Please select only one conference"
     )
-    mock_send_email.assert_not_called()
+    mock_send_email.delay.assert_not_called()
 
 
 def test_create_speaker_vouchers_on_pretix(
@@ -619,8 +619,7 @@ def test_video_uploaded_path_matcher(
         == "conf/video-2/2-Harrier Du Bois, Klaasje.mp4"
     )
     assert (
-        special_char_speaker.video_uploaded_path
-        == "conf/video-2/5-Marcsed Cazzęfa.mp4"
+        special_char_speaker.video_uploaded_path == "conf/video-2/5-Marcsed Cazzęfa.mp4"
     )
 
     assert (

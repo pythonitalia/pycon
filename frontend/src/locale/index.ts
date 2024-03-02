@@ -1,4 +1,5 @@
 export const messages = {
+  default: {},
   en: {
     titleTemplate: "%s | PyCon Italia",
     description:
@@ -15,12 +16,36 @@ export const messages = {
     "checkout.billing.businessInvoice.description":
       "Turn this option on if your company, university or similar is paying for you or if you need an invoice.",
 
+    "sponsorLeadModal.title": "Download our brochure",
+    "sponsorLeadModal.submit": "Submit",
+    "sponsorLeadModal.body": `Our packages gives you an idea of what we offer and how you can optimize your presence at PyCon Italia, but are not set in stone!
+Let's get in touch to find the best solution for your business' needs!`,
+    "sponsorLeadModal.company": "Company",
+    "sponsorLeadModal.completed":
+      "Thank you! We just sent the brochure via email. If you can't find it, check your spam folder or contact us at sponsor@pycon.it!",
+    "sponsorLeadModal.acceptPrivacyPolicy.heading": "Privacy Policy",
+    "sponsorLeadModal.acceptPrivacyPolicy":
+      "I have read and understood the {link} of Python Italia APS.",
+
+    "sponsorLeadModal.consentToContactViaEmail.heading": "Contact me via email",
+    "sponsorLeadModal.consentToContactViaEmail.body":
+      "I am happy to be contacted via email to discuss sponsorship opportunities.",
+
+    "modal.cancel": "Cancel",
+
     "submission.languageSwitch":
       "This proposal is in multiple languages, click here to see it in {language}",
 
     "profile.tickets.noDetails": "Have fun! 🍻",
 
+    "productQuestions.thisIsMyTicket": "This is for me",
+
     "header.streaming": "Watch live",
+
+    "grants.form.acceptPrivacyPolicy":
+      "I have read and understood the {link} of Python Italia APS.",
+    "grants.form.privacyPolicyHeading":
+      "It is important that all those who register for the event read the Processing of Personal Data ({link}) by the Italian organizer Python Italia APS and authorize the processing of their personal data to enable the collection of registrations and the organization of the event.",
 
     "streaming.roomName": "Room {name}",
     "streaming.eventName": "Current: {name}",
@@ -248,7 +273,11 @@ export const messages = {
     "newsletter.success": "Thanks for subscribing! 🎉",
     "newsletter.confirmViaEmail":
       "Thanks for subscribing! 🎉 Check your emails to confirm your subscription!",
-    "newsletter.error": "Something went wrong, please try again.",
+    "newsletter.error":
+      "Something went wrong, make sure your email is correct and try again.",
+    "newsletter.optinFormRequired":
+      "Your email is currently unsubscribed. If you changed your mind, please confirm your subscription by {link}.",
+    "newsletter.optinFormRequired.link": "going to this link",
     "signup.title": "Signup",
     "signup.email": "Email",
     "signup.password": "Password",
@@ -427,7 +456,7 @@ export const messages = {
     "tickets.pageTitle": "Buy your ticket for PyCon Italia",
     "tickets.loading": "Please wait 🕐",
     "tickets.heading": "Get some tickets",
-    "tickets.explanation": `{br}`,
+    "tickets.explanation": "{br}",
 
     "homepage.schedulePreviewSection.goToSchedule": "Go to schedule",
 
@@ -538,7 +567,8 @@ export const messages = {
       "Your order is still pending and not paid!",
     "orderConfirmation.cardMessage":
       "If you paid by card, click the button below and try again",
-    "orderConfirmation.bankMessage": `If you paid via bank transfer, contact us at {email} with your order code {code} once the transfer is done so we can confirm it when we receive the transfer.`,
+    "orderConfirmation.bankMessage":
+      "If you paid via bank transfer, contact us at {email} with your order code {code} once the transfer is done so we can confirm it when we receive the transfer.",
     "orderConfirmation.manage": "Click here to manage the order",
     "orderConfirmation.home": "Homepage",
     "orderConfirmation.pendingManage": "Try another card or retry",
@@ -566,8 +596,12 @@ export const messages = {
     "orderInformation.zipCode": "Zip Code",
     "orderInformation.city": "City",
     "orderInformation.country": "Country",
+    "orderInformation.italianInvoice": "Italian e-invoice details",
     "orderInformation.fiscalCode": "Fiscal code",
     "orderInformation.invalidFiscalCode": "Fiscal code not valid",
+    "orderInformation.pec": "PEC",
+    "orderInformation.sdi": "SDI",
+    "orderInformation.invalidSDI": "SDI must be 7 characters long",
 
     "orderQuestions.heading": "Order questions",
     "orderQuestions.attendeeName": "Attendee name",
@@ -592,6 +626,15 @@ export const messages = {
     "grants.form.needToBeLoggedIn":
       "Login or create an account to send a grant",
     "grants.form.title": "Request a grant",
+    "grants.form.description": `Welcome to the PyCon Italia 2024 Grant Application Form!
+
+As we’ve had many applications in the past and operate with a limited budget, we kindly ask you to take a moment to tell us about yourself and the reasons you're seeking a grant. Your insights are valuable to us. There’s no wrong answer, and a thoughtful response can truly make a difference.
+
+We are continually striving to increase our budget through the support of our diversity sponsors, including the Python Software Foundation and the EuroPython Society. If your company is interested in contributing, please visit our sponsor page for more information.
+
+We look forward to reading about you and hope to see you at PyCon Italia 2024!
+    `,
+
     "grants.form.sendingRequest": "Sending grant request",
     "grants.form.sent":
       "Grant request sent! We will send you an email as soon as we have updates! Cick {linkGrant} to edit it.",
@@ -605,14 +648,16 @@ export const messages = {
       "Providing this information will help us making sure that the event is as inclusive as possible.",
     "grants.form.fields.fullName": "Legal name",
     "grants.form.fields.fullName.description":
-      "The name that appears on your passport, ID and other legal documents. Will be useful in case we give you a grant.",
+      "The name as it appears on your passport, ID, and other legal documents. This information is essential for processing any grant awarded.",
     "grants.form.fields.name": "Name",
     "grants.form.fields.name.description":
-      "The name you use daily and how you prefer to be called in case we need to contact you.",
+      "The name you use daily and how you prefer to be addressed in case we need to contact you.",
     "grants.form.fields.email": "Email",
     "grants.form.fields.email.description":
       "Here you will receive a notification about your application.",
-    "grants.form.fields.ageGroup": "Age",
+    "grants.form.fields.ageGroup": "Age group",
+    "grants.form.fields.ageGroup.description":
+      "Select your age group. This helps us understand the demographic distribution of our applicants.",
     "grants.form.fields.ageGroup.values.selectOption": "Select Option",
     "grants.form.fields.ageGroup.values.range_less_than_10":
       "10 years old or under",
@@ -624,20 +669,41 @@ export const messages = {
     "grants.form.fields.ageGroup.values.range_55_64": "55 - 64 years old",
     "grants.form.fields.ageGroup.values.range_more_than_65":
       "65 years or older",
-    "grants.form.fields.gender": "Gender",
     "grants.form.fields.occupation": "Occupation",
+    "grants.form.fields.occupation.description":
+      "Select your current occupation.",
     "grants.form.fields.occupation.values.selectOption": "Select Option",
     "grants.form.fields.occupation.values.developer": "Developer",
     "grants.form.fields.occupation.values.student": "Student",
     "grants.form.fields.occupation.values.researcher": "Researcher",
     "grants.form.fields.occupation.values.unemployed": "Unemployed",
     "grants.form.fields.occupation.values.other": "Other",
-    "grants.form.fields.grantType":
-      "Are you asking for a diversity grant or for an unemployed grant?",
+    "grants.form.fields.grantType": "What type of grant are you applying for?",
+    "grants.form.fields.grantType.description":
+      "Note: If you have submitted a talk/workshop proposal, you do not need to apply for a grant to receive a refund. If your proposal is accepted, we will contact you regarding the ticket refund.",
     "grants.form.fields.grantType.values.selectOption": "Select Option",
     "grants.form.fields.grantType.values.diversity": "Diversity",
     "grants.form.fields.grantType.values.unemployed": "Unemployed",
     "grants.form.fields.grantType.values.speaker": "Speaker",
+    "grants.form.fields.travellingFrom": "Where are you travelling from?",
+    "grants.form.fields.travellingFrom.description":
+      "Please indicate the city and country you will be travelling from to attend the conference.",
+    "grants.form.fields.needsFundsForTravel":
+      "Do you need financial aid for travelling to PyCon Italia?",
+    "grants.form.fields.needsFundsForTravel.description":
+      "We don’t have many funds but we will try to help as many people as we can, ask for this help only if absolutely needed!",
+    "grants.form.fields.needVisa":
+      "Do you require an invitation letter for a visa application?",
+    "grants.form.fields.needVisa.description":
+      "We can provide an invitation letter to support your visa application. While we cannot influence the visa decision, we're here to help facilitate your application process.",
+    "grants.form.fields.needAccommodation":
+      "Do you need an accommodation for the duration of the conference?",
+    "grants.form.fields.needAccommodation.description":
+      "We aim to assist as many attendees as possible with accommodation, within our budget constraints. Upon approval of your grant application, we will take care of arranging your accommodation.",
+    "grants.form.fields.why":
+      "Why are you asking for a grant for PyCon Italia?",
+    "grants.form.fields.why.description":
+      "Briefly describe why you're applying for a grant. Please limit your response to approximately 200 words.",
     "grants.form.fields.interestedInVolunteering":
       "Would you like to help PyCon Italia for this and/or upcoming events?",
     "grants.form.validationErrors": "The form submitted is not valid",
@@ -651,19 +717,26 @@ export const messages = {
       "My soul is yours to take!",
     "grants.form.fields.pythonUsage": "What's your use of python?",
     "grants.form.fields.pythonUsage.description":
-      "How do you use Python? Are you studying it or using it for work or for a hobby?",
+      "How do you use Python? Are you studying it or using it for work or for a hobby? Please, limit your response to approximately 200 words.",
     "grants.form.fields.beenToOtherEvents":
-      "Have you ever been to PyCon Italia or other python related events? If yes, what event?",
-    "grants.form.fields.why": "Why are you asking a grant for PyCon Italia?",
+      "Have you ever been to PyCon Italia or other Python-related events? If yes, which events?",
+    "grants.form.fields.beenToOtherEvents.description":
+      "Please, limit your response to approximately 200 words.",
+    "grants.form.fields.communityContribution":
+      "Have you been involved in contributing to the Python community or in organizing Python-related events, conferences, meetups?",
+    "grants.form.fields.communityContribution.description":
+      "Whether it's coding, teaching, writing, speaking at events, or simply being an enthusiastic learner, we'd love to hear about your engagement with Python. This information helps us understand your connection to the community, but it's completely okay if you're new to Python or haven't had these opportunities. Please, limit your response to approximately 200 words.",
+    "grants.form.fields.gender": "Gender",
+    "grants.form.fields.gender.description":
+      "We respect your privacy. If you are comfortable sharing, please indicate your gender. This is optional and helps us ensure diversity and inclusivity.",
     "grants.form.fields.notes": "Would you like to say something more?",
-    "grants.form.fields.travellingFrom": "Where are you travelling from?",
-    "grants.form.fields.needsFundsForTravel":
-      "Do you need financial aid for travelling to PyCon Italia?",
-    "grants.form.fields.needsFundsForTravel.label":
-      "We don’t have many funds but we will try to help as many people as we can, ask for this help only if absolutely needed!",
-
-    "grants.form.fields.needsFundsForTravel.no": "No",
-    "grants.form.fields.needsFundsForTravel.yes": "Yes",
+    "grants.form.fields.notes.description":
+      "Feel free to share any additional information or comments you think might be relevant to your application. Please, limit your response to approximately 200 words.",
+    "grants.form.fields.website": "Website URL",
+    "grants.form.fields.twitterHandle": "Twitter handle",
+    "grants.form.fields.githubHandle": "GitHub profile",
+    "grants.form.fields.linkedinUrl": "LinkedIn profile URL",
+    "grants.form.fields.mastodonHandle": "Mastodon handle",
 
     "grants.form.submit": "Submit",
 
@@ -674,15 +747,20 @@ export const messages = {
       "Congratulations! Your Grant has been approved!",
     "grants.reply.descriptionApproved": `Please, confirm your presence before {replyDeadline}!
 If we don't get news from you before {replyDeadline} we will allocate your grant to another person. `,
-    "grants.reply.confirmed": "Confrim",
+    "grants.reply.confirmed": "Confirm",
     "grants.reply.refused": "Refuse",
     "grants.reply.submitReply": "Submit answer",
     "grants.reply.sendingReply": "Sending your answer!",
     "grants.reply.replySentWithSuccess":
       "Thank you! Your reply has been correctly saved",
     "grants.reply.currentReply": "Your current answer is: {reply}",
-    "grants.reply.messageDescription": `If you have questions, or if you need an invitation letter for a VISA requirement please, write below your personal details
-(complete name/surname, birthdate, nationality, passport number) and we'll send you the invitation letter within 4 days.`,
+    "grants.reply.messageDescription": `If you have questions or need assistance, please feel free to reach out using the message below.
+For any queries regarding the conference, help with the application process, or general information, we're here to assist you.
+
+Note: Please DO NOT send any personal details through this form.
+
+For Visa invitation letter requests, kindly visit our dedicated {visaPageLink} and submit the form there.`,
+    "grants.reply.visaPageLink": "VISA page",
     "homepage.sponsorsSectionText":
       "PyCon Italia can be your platform to gain brand recognition, take leads and recruit from an audience of highly skilled professionals!",
     "homepage.sponsorsSectionCTAText": "Become a sponsor",
@@ -842,10 +920,10 @@ reflects what everyone wants to see!`,
     "schedule.workshop.soldout": "No more seats available",
 
     "schedule.invitation.congratulations":
-      "Congratulations! Your submission {submissionTitle} was accepted!",
-    "schedule.invitation.program": "It is currently scheduled for:",
-    "schedule.invitation.date": "{start} to {end}",
-    "schedule.invitation.notes.placeholder": "Insert your reasons here",
+      "Congratulations! Your submission {submissionTitle} has been accepted!",
+    "schedule.invitation.program": "It is currently scheduled for: {date}",
+    "schedule.invitation.date": "{start} to {end}, {duration} minutes long.",
+    "schedule.invitation.notes.placeholder": "Type here",
     "schedule.invitation.confirmPresence":
       "Please confirm your presence as soon as possible. Request a new time slot ONLY if there is no way you can make the original time slot work.",
     "schedule.invitation.presence.CONFIRM":
@@ -867,6 +945,9 @@ reflects what everyone wants to see!`,
     "schedule.invitation.invitationNotValid":
       "Unable to find this invitation. Please contact us if you think this is a mistake",
     "schedule.invitation.currentAnswer": "Your current answer is: {answer}",
+    "schedule.invitation.durationChanged": `⚠️ Unfortunately, due to time constraints, we had to adjust your submission duration from {originalDuration} mins to {duration} mins. We are sorry for the inconvenience.
+If this new timing doesn't work for you, please don't hesitate to let us know below. We'll do our very best to accommodate your needs, though please keep in mind that due to scheduling limitations, we might not be able to fulfil all requests. In the rare event we can't find an alternative, we may need to cancel your submission.`,
+
     "streaming.qa": "Ask Questions",
 
     "talk.bookToAttend":
@@ -1060,10 +1141,15 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "newsletter.text":
       "Rimani aggiornato, iscriviti per ricevere aggiornamenti via email su eventi, novità e offerte!",
     "newsletter.button": "Iscriviti",
-    "newsletter.success": "Grazie per esserti iscritto! 🎉",
+    "newsletter.success": "Iscrizione completata con successo! 🎉",
     "newsletter.confirmViaEmail":
-      "Grazie per esserti iscritto! 🎉 Controlla le tue email per confermare l'iscrizione!",
-    "newsletter.error": "Si è verificato un errore, riprova più tardi.",
+      "Iscrizione completata con successo! 🎉 Controlla le tue email per confermarla!",
+    "newsletter.error":
+      "Si è verificato un errore, controlla la tua email sia corretta e riprova.",
+    "newsletter.optinFormRequired":
+      "Questo indirizzo email è stato rimosso su richiesta. Se hai cambiato idea, {link}.",
+    "newsletter.optinFormRequired.link":
+      "clicca questo link per iscriverti nuovamente",
     "signup.title": "Registrati",
     "signup.email": "Email",
     "signup.password": "Password",
@@ -1188,7 +1274,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "tickets.pageTitle": "Compra il tuo biglietto per PyCon Italia",
     "tickets.loading": "Caricamento in corso 🕐",
     "tickets.heading": "Acquista biglietti",
-    "tickets.explanation": `{br}`,
+    "tickets.explanation": "{br}",
 
     "signup.acceptPrivacyPolicy": "Accetto la {privacyPolicyLink}",
     "signup.privacyPolicy": "privacy policy",
@@ -1265,8 +1351,12 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "orderInformation.zipCode": "CAP",
     "orderInformation.city": "Città",
     "orderInformation.country": "Nazione",
+    "orderInformation.italianInvoice": "Dettagli fattura elettronica",
     "orderInformation.fiscalCode": "Codice fiscale",
     "orderInformation.invalidFiscalCode": "Codice fiscale non valido",
+    "orderInformation.PEC": "PEC",
+    "orderInformation.sdi": "SDI",
+    "orderInformation.invalidSDI": "Il codice SDI deve essere di 7 caratteri",
 
     "orderQuestions.heading": "Domande aggiuntive",
     "orderQuestions.attendeeName": "Nome partecipante",
@@ -1292,6 +1382,14 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "grants.form.needToBeLoggedIn":
       "Devi effettuare l'accesso per chiedere un grant",
     "grants.form.title": "Chiedi un grant",
+    "grants.form.description": `Benvenuto/a al modulo di domanda per il grant di PyCon Italia 2024!
+
+Avendo ricevuto molte domande in passato e operando con un budget limitato, ti chiediamo di dedicare un momento per raccontarci di te e le ragioni per cui stai cercando un grant. Le tue riflessioni sono preziose per noi. Non esiste una risposta sbagliata, e una risposta ben ponderata può fare davvero la differenza.
+
+Stiamo continuamente lavorando per aumentare il nostro budget grazie al supporto dei nostri sponsor per la diversità, inclusi la Python Software Foundation e la EuroPython Society. Se la tua azienda è interessata a contribuire, visita la nostra pagina degli sponsor per maggiori informazioni.
+
+Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 2024!
+    `,
     "grants.form.sendingRequest": "Invio richiesta in corso",
     "grants.form.sent":
       "Richiesta inviata! Ti contatteremo via email appena ci saranno novità! Clicca {linkGrant} per editarlo.",
@@ -1303,14 +1401,16 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
 
     "grants.form.fields.fullName": "Nome legale",
     "grants.form.fields.fullName.description":
-      "Il nome che appare sul passaporto, Carta di Identità o altri documenti legali. Sarà utile nel caso in cui ti daremo un grant.",
+      "Il nome come appare sul passaporto, sulla carta d'identità e su altri documenti legali. Questa informazione è essenziale per l'elaborazione dell'eventuale grant assegnato.",
     "grants.form.fields.name": "Nome",
     "grants.form.fields.name.description":
-      "Il nome che usi quotidianamente e come preferisci essere chiamato nel caso in cui abbiamo bisogno di contattarti.",
+      "Il nome che usi quotidianamente o come preferisci essere chiamato/a nel caso in cui abbiamo bisogno di contattarti.",
     "grants.form.fields.email": "Email",
     "grants.form.fields.email.description":
       "Qui riceverai una notifica sulla tua richiesta",
-    "grants.form.fields.ageGroup": "Età",
+    "grants.form.fields.ageGroup": "Fascia d'età",
+    "grants.form.fields.ageGroup.description":
+      "Seleziona la tua fascia d'età. Questo ci aiuta a comprendere la distribuzione demografica dei nostri candidati.",
     "grants.form.fields.ageGroup.values.selectOption": "Seleziona un'opzione",
     "grants.form.fields.ageGroup.values.range_less_than_10": "meno di 10 anni",
     "grants.form.fields.ageGroup.values.range_11_18": "11 - 18 anni",
@@ -1320,8 +1420,9 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "grants.form.fields.ageGroup.values.range_45_54": "45 - 54 anni",
     "grants.form.fields.ageGroup.values.range_55_64": "55 - 64 anni",
     "grants.form.fields.ageGroup.values.range_more_than_65": "65 anni o più",
-    "grants.form.fields.gender": "Sesso",
     "grants.form.fields.occupation": "Occupazione",
+    "grants.form.fields.occupation.description":
+      "Seleziona la propria attuale occupazione.",
     "grants.form.fields.occupation.values.selectOption": "Seleziona un'opzione",
     "grants.form.fields.occupation.values.developer": "Sviluppatore",
     "grants.form.fields.occupation.values.student": "Studente",
@@ -1329,10 +1430,31 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "grants.form.fields.occupation.values.unemployed": "Disoccupato",
     "grants.form.fields.occupation.values.other": "Altro",
     "grants.form.fields.grantType": "Che tipo di grant stai richiedendo?",
+    "grants.form.fields.grantType.description":
+      "Nota: Se hai inviato una proposta di talk/workshop, non è necessario fare domanda per un grant per ricevere un rimborso. Se la tua proposta viene accettata, ti contatteremo riguardo al rimborso del biglietto.",
     "grants.form.fields.grantType.values.selectOption": "Seleziona un'opzione",
     "grants.form.fields.grantType.values.diversity": "Diversity",
     "grants.form.fields.grantType.values.unemployed": "Disoccupato",
     "grants.form.fields.grantType.values.speaker": "Speaker",
+    "grants.form.fields.travellingFrom": "Da dove partirai?",
+    "grants.form.fields.travellingFrom.description":
+      "Indica la città e il paese da cui partirai per partecipare alla conferenza.",
+    "grants.form.fields.needsFundsForTravel":
+      "Hai bisogno di aiuti finanziari per le spese di viaggio a Pycon Italia?",
+    "grants.form.fields.needsFundsForTravel.description":
+      "I fondi a nostra disposizione sono limitati, ma faremo il possibile per aiutare tutti i richiedenti. Richiedi questo aiuto solo se ti è strettamente necessario!",
+    "grants.form.fields.needVisa":
+      "Hai bisogno di una lettera d'invito per la domanda di visto?",
+    "grants.form.fields.needVisa.description":
+      "Possiamo fornire una lettera d'invito a supporto della tua domanda di visto. Anche se non possiamo influenzare la decisione sul visto, siamo qui per aiutare a facilitare il processo di domanda.",
+    "grants.form.fields.needAccommodation":
+      "Hai bisogno di un alloggio per la durata della conferenza?",
+    "grants.form.fields.needAccommodation.description":
+      "Il nostro obiettivo è assistere il maggior numero possibile di partecipanti con l'alloggio, tenendo conto delle nostre limitazioni di budget. In caso di approvazione della tua domanda di grant, ci occuperemo di organizzare il tuo alloggio all’Hotel Mediterraneo dove la conferenza avrà luogo.",
+    "grants.form.fields.why":
+      "Perché stai richiedendo un grant per PyCon Italia?",
+    "grants.form.fields.why.description":
+      "Descrivere brevemente perché si sta richiedendo un grant. Per favore, limita la risposta a 200 parole circa.",
     "grants.form.fields.interestedInVolunteering":
       "Vuoi aiutare PyCon Italia in questo e futuri eventi?",
     "grants.form.fields.interestedInVolunteering.description":
@@ -1345,36 +1467,54 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
       "La mia anima è vostra!",
     "grants.form.fields.pythonUsage": "Per cosa usi Python?",
     "grants.form.fields.pythonUsage.description":
-      "Come usi Python? Lo stai studiano, lo usi per lavoro o come hobby?",
+      "Come usi Python? Lo stai studiando, lo usi per lavoro o come hobby? Per favore, limita la risposta a circa 200 parole.",
     "grants.form.fields.beenToOtherEvents":
-      "Hai participato ad altre edizioni di PyCon Italia o eventi simili? Se sì, quali?",
-    "grants.form.fields.why":
-      "Perché stai richiedendo un grant per PyCon Italia?",
+      "Hai partecipato a PyCon Italia o ad altri eventi legati a Python? Se sì, quali?",
+    "grants.form.fields.beenToOtherEvents.description":
+      "Per favore, limita la risposta a circa 200 parole.",
+    "grants.form.fields.communityContribution":
+      "Sei stato coinvolto/a nel contribuire alla comunità Python o nell'organizzare eventi, conferenze o meetup legati a Python?",
+    "grants.form.fields.communityContribution.description":
+      "Che si tratti di programmazione, insegnamento, scrittura, parlare a eventi, o semplicemente essere un appassionato/a apprendista, ci piacerebbe sentire del tuo impegno con Python. Queste informazioni ci aiutano a comprendere la tua connessione con la comunità, ma è completamente normale se sei nuovo/a a Python o non hai avuto queste opportunità. Si prega di limitare la risposta a circa 200 parole.",
+    "grants.form.fields.gender": "Sesso",
+    "grants.form.fields.gender.description":
+      "Rispettiamo la tua privacy. Se sei a tuo agio nel condividerlo, indica il tuo genere. Questo è facoltativo e ci aiuta a garantire diversità e inclusività.",
     "grants.form.fields.notes": "Qualcos'altro da aggiungere?",
-    "grants.form.fields.travellingFrom": "Da dove partirai?",
-    "grants.form.fields.needsFundsForTravel":
-      "Hai bisogno di aiuti finanziari per venire a Pycon Italia?",
-    "grants.form.fields.needsFundsForTravel.label":
-      "I fondi a nostra disposizione sono limitati, ma faremo il possibile per aiutare tutti i richiedenti. Richiedi questo aiuto solo se ti è strettamente necessario!",
+    "grants.form.fields.notes.description":
+      "Sentiti libero/a di condividere qualsiasi informazione aggiuntiva o commento che ritieni possa essere rilevante per la tua candidatura. Per favore, limita la risposta a circa 200 parole.",
+    "grants.form.fields.website": "URL del sito web",
+    "grants.form.fields.twitterHandle": "Handle Twitter",
+    "grants.form.fields.githubHandle": "Profilo GitHub",
+    "grants.form.fields.linkedinUrl": "URL del profilo LinkedIn",
+    "grants.form.fields.mastodonHandle": "Handle Mastodon",
+
     "grants.form.submit": "Invia",
     "grants.form.edit.title": "Modifica il tuo Grant",
 
     "grants.reply.title": "Gestisci il tuo Grant",
     "grants.reply.titleApproved":
       "Congratulazioni! Il tuo Grant e' stato approvato! ",
-    "grants.reply.descriptionApproved": `Perfavore, conferma la tua presenza entro il {replyDeadline}!
-Se non riceveremo una conferma da te prima del {replyDeadlilne}, assegneremo il tuo grant ad un'altra persona.`,
+    "grants.reply.descriptionApproved": `Per favore, conferma la tua presenza entro il {replyDeadline}!
+Se non riceveremo una conferma da te prima del {replyDeadline}, assegneremo il tuo grant ad un'altra persona.`,
     "grants.reply.confirmed": "Conferma",
     "grants.reply.refused": "Rifiuta",
     "grants.reply.submitReply": "Invia risposta",
     "grants.reply.currentReply": "Risposta attuale: {reply}",
-    "grants.reply.messageDescription": `Se hai domande, o se hai bisogno di una lettera di invito per un obbligo di visto per favore, scrivi sotto i tuoi dati personali
-(nome/cognome completo, data di nascita, nazionalità, numero di passaporto) e ti invieremo la lettera di invito entro 4 giorni.`,
+    "grants.reply.sendingReply": "Invio della tua risposta!",
+    "grants.reply.replySentWithSuccess":
+      "Grazie! La tua risposta è stata correttamente salvata",
+    "grants.reply.messageDescription": `Se hai domande o hai bisogno di assistenza, non esitare a contattarci utilizzando il messaggio qui sotto. Per qualsiasi domanda riguardante la conferenza, aiuto con la richiesta di grant o informazioni generali, siamo qui per assisterti.
 
+Nota: Si prega di NON inviare dettagli personali tramite questo modulo.
+
+Per le richieste di lettera d'invito per il visto, si prega gentilmente di visitare la nostra {visaPageLink} e di compilare il modulo.`,
+    "grants.reply.visaPageLink": "pagina Visto",
     "schedule.invitation.sendingReply": "Caricamento in corso",
     "schedule.invitation.replySentWithSuccess":
       "Grazie! La tua risposta è stata salvata",
     "schedule.invitation.currentReply": "Risposta attuale: {answer}",
+    "schedule.invitation.durationChanged": `⚠️ Purtroppo, a causa di vincoli di tempo, abbiamo dovuto ridurre la durata della tua presentazione da {originalDuration} minuti a {duration} minuti. Ci scusiamo per l'inconveniente.
+Se questo nuovo orario non dovesse andare bene per te, per favore non esitare a farcelo sapere qui sotto. Faremo del nostro meglio per soddisfare le tue esigenze, ma tieni presente che a causa dei limiti di programmazione, potremmo non essere in grado di soddisfare tutte le richieste. Nel raro evento in cui non riusciamo a trovare un'alternativa, potremmo dover annullare la tua presentazione.`,
 
     "orderReview.heading": "Recap ordine",
     "orderReview.invoiceInformation": "Informazioni fatturazione",
@@ -1520,10 +1660,11 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
 
     "schedule.invitation.congratulations":
       "Congratulazioni! La tua submission {submissionTitle} è stata accettata!",
-    "schedule.invitation.program": "Il tuo intervento è previsto il:",
-    "schedule.invitation.date": "{start} a {end}",
+    "schedule.invitation.program": "Il tuo intervento è previsto il: {date}",
+    "schedule.invitation.date":
+      "{start} a {end}, con durata {duration} minuti.",
     "schedule.invitation.confirmPresence":
-      "Per favore conferma la tua presenza il prima possibile. Richiedi un nuovo slot orario soltanto se per te è impossibile tenere l'orario proposto.",
+      "Per favore conferma la tua presenza il prima possibile. Richiedi un nuovo slot orario SOLTANTO se per te è impossibile tenere l'orario proposto.",
     "schedule.invitation.presence.CONFIRM": "Lo slot orario va bene per me",
     "schedule.invitation.presence.MAYBE":
       "Lo slot orario va bene ma preferirei un altro",
@@ -1542,6 +1683,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "schedule.invitation.invitationNotValid":
       "Impossibile trovare questo invito",
     "schedule.invitation.currentAnswer": "Risposta attuale: {answer}",
+
     "streaming.qa": "Invia domanda",
 
     "talk.bookToAttend":
@@ -1711,7 +1853,8 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "tickets.landing.title": "Cosa puoi comprare?",
     "tickets.landing.ticketsCopy": `Biglietti per partecipare alla conferenza! PyCon Italia é un evento di 4 giorni dove ogni anno più di 600 persone si riuniscono per partecipare a più di 110+ sessioni (talks e workshops) ed eventi sociali dove puoi fare nuove amicizie e goderti la bellissima Firenze.
 Affrettati a comprare il biglietto!`,
-    "tickets.landing.hotelCopy": `Organizza il tuo viaggio con tranquillità e soggiorna al Grand Hotel Mediterraneo! Abbiamo un numero limitato di stanze scontate al Grand Hotel Mediterraneo, dove la conferenza avviene!`,
+    "tickets.landing.hotelCopy":
+      "Organizza il tuo viaggio con tranquillità e soggiorna al Grand Hotel Mediterraneo! Abbiamo un numero limitato di stanze scontate al Grand Hotel Mediterraneo, dove la conferenza avviene!",
 
     "tickets.landing.membership.cta": "Unisciti a noi!",
 
@@ -1720,8 +1863,6 @@ Affrettati a comprare il biglietto!`,
     "tickets.landing.membershipTitle": "Associazione",
     "blog.publishedOn": "{date} - {author}",
 
-    "grants.form.fields.needsFundsForTravel.no": "No",
-    "grants.form.fields.needsFundsForTravel.yes": "Si",
     "grants.form.yourGrant": "Grant",
     "grants.form.youAndPython": "Tu e Python",
     "grants.form.validationErrors": "Il form inviato non è valido",
@@ -1930,8 +2071,32 @@ Affrettati a comprare il biglietto!`,
     "profile.myProposals.viewIn": "Preview in {language}",
 
     "voting.filter.byTag": "Per Tags",
+
+    "grants.form.acceptPrivacyPolicy":
+      "Ho letto e compreso l'Informativa sulla {link} di Python Italia APS.",
+    "grants.form.privacyPolicyHeading":
+      "È importante che tutti coloro che si registrano all'evento leggano l'Elaborazione dei Dati Personali ({link}) da parte dell'organizzatore italiano Python Italia APS e autorizzino il trattamento dei loro dati personali per consentire la raccolta delle registrazioni e l'organizzazione dell'evento.",
+
+    "productQuestions.thisIsMyTicket": "Questo biglietto è mio",
+
+    "modal.cancel": "Chiudi",
+    "sponsorLeadModal.submit": "Invia",
+    "sponsorLeadModal.company": "Azienda",
+    "sponsorLeadModal.completed":
+      "Grazie! Abbiamo appena inviato la brochure via email. Se non riesci a trovarla, controlla lo spam o contattaci a sponsor@pycon.it!",
+    "sponsorLeadModal.body": `I nostri pacchetti ti danno un'idea di ciò che offriamo e di come puoi ottimizzare la tua presenza a PyCon Italia, ma non sono definitivi!
+
+Mettiamoci in contatto per trovare la soluzione migliore per le esigenze della tua azienda!`,
+    "sponsorLeadModal.acceptPrivacyPolicy.heading": "Privacy Policy",
+    "sponsorLeadModal.acceptPrivacyPolicy":
+      "Ho letto e compreso l'Informativa sulla {link} di Python Italia APS.",
+    "sponsorLeadModal.title": "Scarica brochure",
+
+    "sponsorLeadModal.consentToContactViaEmail.heading": "Contattami via email",
+    "sponsorLeadModal.consentToContactViaEmail.body":
+      "Do il mio permesso per essere contattato/a via email per discutere opportunità di sponsorizzazione.",
   },
 };
 
-messages["default"] = messages["en"];
+messages.default = messages.en;
 export default messages;

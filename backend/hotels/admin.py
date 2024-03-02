@@ -1,6 +1,9 @@
+from import_export.admin import ExportMixin
+from import_export.resources import ModelResource
 from django import forms
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+from import_export.fields import Field
 
 from pretix.db import get_orders_status
 from pretix.utils import order_status_to_text
@@ -22,11 +25,65 @@ class HotelRoomAdmin(admin.ModelAdmin):
 class HotelRoomReservationForm(forms.ModelForm):
     class Meta:
         model = HotelRoomReservation
-        fields = ["order_code", "room", "checkin", "checkout"]
+        fields = ["order_code", "room", "checkin", "checkout", "bed_layout"]
+
+
+HOTEL_ROOM_RESERVATION_EXPORT_FIELDS = [
+    "order_code",
+    "order_status",
+    "room",
+    "checkin",
+    "checkout",
+    "bed_layout",
+    "user_name",
+    "user_email",
+]
+
+
+class HotelRoomReservationResource(ModelResource):
+    room = Field()
+    bed_layout = Field()
+    user_name = Field()
+    order_status = Field()
+    user_email = Field()
+
+    _reservation_status = {}
+
+    def dehydrate_room(self, obj: HotelRoomReservation):
+        return obj.room.name
+
+    def dehydrate_bed_layout(self, obj: HotelRoomReservation):
+        if not obj.bed_layout_id:
+            return ""
+        return obj.bed_layout.name
+
+    def dehydrate_user_name(self, obj: HotelRoomReservation):
+        return obj.user.display_name
+
+    def dehydrate_order_status(self, obj):
+        if obj.order_code not in self._reservation_status:
+            return _("Unknown")
+
+        return order_status_to_text(self._reservation_status[obj.order_code])
+
+    def dehydrate_user_email(self, obj: HotelRoomReservation):
+        return obj.user.email
+
+    def before_export(self, queryset, *args, **kwargs):
+        super().before_export(queryset, *args, **kwargs)
+
+        codes = [reservation.order_code for reservation in queryset]
+        self._reservation_status = get_orders_status(codes)
+
+    class Meta:
+        model = HotelRoomReservation
+        fields = HOTEL_ROOM_RESERVATION_EXPORT_FIELDS
+        export_order = HOTEL_ROOM_RESERVATION_EXPORT_FIELDS
 
 
 @admin.register(HotelRoomReservation)
-class HotelRoomReservationAdmin(admin.ModelAdmin):
+class HotelRoomReservationAdmin(ExportMixin, admin.ModelAdmin):
+    resource_class = HotelRoomReservationResource
     form = HotelRoomReservationForm
     list_display = (
         "order_code",
@@ -43,14 +100,9 @@ class HotelRoomReservationAdmin(admin.ModelAdmin):
         "checkin",
         "checkout",
         "order_code",
-        "room",
-        "bed_layout",
     )
 
     def has_add_permission(self, *args, **kwargs) -> bool:
-        return False
-
-    def has_change_permission(self, *args, **kwargs) -> bool:
         return False
 
     def user_display_name(self, obj):

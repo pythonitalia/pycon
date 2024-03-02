@@ -1,19 +1,23 @@
-from datetime import date, datetime, time, timedelta
-from enum import Enum
+from api.context import Info
+from django.db.models import Case, When, Value, IntegerField
+from django.db.models import Prefetch
+from participants.models import Participant as ParticipantModel
+from datetime import datetime
 from typing import List, Optional
+from api.participants.types import Participant
+from api.schedule.types.day import Day
 
 import strawberry
 from django.conf import settings
 from django.utils import timezone, translation
 from strawberry import ID
-from django.db.models import Case, When, Value, IntegerField
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
 from api.hotels.types import HotelRoom
 from api.languages.types import Language
 from api.pretix.query import get_conference_tickets, get_voucher
 from api.pretix.types import TicketItem, Voucher
-from api.schedule.types import DayRoom, Room, ScheduleItem, ScheduleItemUser
+from api.schedule.types import Room, ScheduleItem, ScheduleItemUser
 from api.sponsors.types import SponsorsByLevel
 from api.submissions.types import Submission, SubmissionType
 from api.voting.types import RankRequest
@@ -85,8 +89,19 @@ class Keynote:
         self.youtube_video_id = youtube_video_id
 
     @classmethod
-    def from_django_model(cls, instance):
-        schedule_item = instance.schedule_item
+    def from_django_model(cls, instance, info):
+        participants_data = info.context._participants_data
+        if not participants_data:
+            participants_data = {
+                participant.user_id: participant
+                for participant in ParticipantModel.objects.filter(
+                    user_id__in=instance.speakers.values_list("user_id"),
+                    conference_id=instance.conference_id,
+                ).all()
+            }
+
+        schedule_item = instance.schedule_items.all().first()
+
         return cls(
             id=instance.id,
             title=instance.title,
@@ -98,7 +113,9 @@ class Keynote:
                     id=speaker.user_id,
                     fullname=speaker.user.full_name,
                     full_name=speaker.user.full_name,
-                    conference_code=instance.conference.code,
+                    participant=Participant.from_model(
+                        participants_data[speaker.user_id]
+                    ),
                 )
                 for speaker in instance.speakers.all()
             ],
@@ -107,129 +124,6 @@ class Keynote:
             rooms=schedule_item.rooms.all() if schedule_item else [],
             youtube_video_id=schedule_item.youtube_video_id if schedule_item else None,
         )
-
-
-@strawberry.enum
-class ScheduleSlotType(Enum):
-    DEFAULT = "default"
-    FREE_TIME = "free_time"
-
-
-@strawberry.type
-class ScheduleSlot:
-    hour: time
-    duration: int
-    type: ScheduleSlotType
-    id: strawberry.ID
-
-    @strawberry.field
-    def is_live(self) -> bool:
-        with timezone.override(self.day.conference.timezone):
-            now = timezone.localtime(timezone.now())
-            end = (
-                datetime.combine(now, self.hour) + timedelta(minutes=self.duration)
-            ).time()
-            return self.hour < now.time() < end
-
-    @strawberry.field
-    def end_hour(self, info) -> time:
-        return (
-            datetime.combine(timezone.datetime.today(), self.hour)
-            + timedelta(minutes=self.duration)
-        ).time()
-
-    @strawberry.field
-    def items(self, info) -> List[ScheduleItem]:
-        return (
-            ScheduleItemModel.objects.annotate(
-                order=Case(
-                    When(type="custom", then=Value(1)),
-                    When(type="talk", then=Value(2)),
-                    When(type="panel", then=Value(3)),
-                    default=Value(4),
-                    output_field=IntegerField(),
-                )
-            )
-            .filter(slot__id=self.id)
-            .select_related(
-                "language",
-                "audience_level",
-                "submission",
-                "submission__type",
-                "submission__duration",
-                "submission__audience_level",
-                "submission__type",
-            )
-            .prefetch_related("additional_speakers", "rooms")
-            .order_by("order")
-        )
-
-
-@strawberry.type
-class Day:
-    day: date
-
-    @strawberry.field
-    def random_events(self, limit: int = 4) -> List[ScheduleItem]:
-        if limit > 10:
-            raise ValueError("Limit cannot be greater than 10")
-
-        return ScheduleItemModel.objects.filter(
-            slot__day=self,
-            type__in=[
-                ScheduleItemModel.TYPES.talk,
-                ScheduleItemModel.TYPES.training,
-                ScheduleItemModel.TYPES.panel,
-            ],
-        ).order_by("?")[:limit]
-
-    @strawberry.field
-    def slots(self, info, room: Optional[strawberry.ID] = None) -> List[ScheduleSlot]:
-        if room:
-            return list(self.slots.filter(items__rooms__id=room))
-        return list(self.slots.all())
-
-    @strawberry.field
-    def running_events(self, info) -> List[ScheduleItem]:
-        current_slot = self.slots.filter(
-            hour__lte=timezone.now().astimezone(self.conference.timezone)
-        ).last()
-
-        if not current_slot:
-            return []
-
-        items = list(current_slot.items.all())
-        if len(items) == 1:
-            first_item = items[0]
-            if first_item.rooms.first().name.lower() == "recruiting":
-                current_slot = self.slots.filter(
-                    hour__lte=timezone.now().astimezone(self.conference.timezone)
-                    - timedelta(minutes=current_slot.duration)
-                ).last()
-
-        return [item for item in current_slot.items.all()]
-
-    @strawberry.field
-    def rooms(self) -> List[DayRoom]:
-        data = self.added_rooms.values(
-            "room__id", "streaming_url", "slido_url", "room__type", "room__name"
-        )
-        return [
-            DayRoom(
-                id=room["room__id"],
-                name=room["room__name"],
-                type=room["room__type"],
-                streaming_url=room["streaming_url"],
-                slido_url=room["slido_url"],
-            )
-            for room in data
-        ]
-
-    @classmethod
-    def from_db(cls, instance):
-        obj = cls(day=instance.day)
-        obj.slots = instance.slots
-        return obj
 
 
 @strawberry.type
@@ -248,67 +142,67 @@ class Conference:
     pretix_event_url: str
 
     @strawberry.field
-    def voucher(self, info, code: str) -> Optional[Voucher]:
+    def voucher(self, info: Info, code: str) -> Optional[Voucher]:
         return get_voucher(self, code)
 
     @strawberry.field
-    def timezone(self, info) -> str:
+    def timezone(self, info: Info) -> str:
         return str(self.timezone)
 
     @strawberry.field
     def tickets(
-        self, info, language: str, show_unavailable_tickets: bool = False
+        self, info: Info, language: str, show_unavailable_tickets: bool = False
     ) -> List[TicketItem]:
         return get_conference_tickets(
             self, language=language, show_unavailable_tickets=show_unavailable_tickets
         )
 
     @strawberry.field
-    def hotel_rooms(self, info) -> List[HotelRoom]:
+    def hotel_rooms(self, info: Info) -> List[HotelRoom]:
         return self.hotel_rooms.all()
 
     @strawberry.field
-    def deadlines(self, info) -> List["Deadline"]:
+    def deadlines(self, info: Info) -> List["Deadline"]:
         return self.deadlines.order_by("start").all()
 
     @strawberry.field(name="isCFPOpen")
-    def is_cfp_open(self, info) -> bool:
+    def is_cfp_open(self, info: Info) -> bool:
         return self.is_cfp_open
 
     @strawberry.field
-    def is_voting_open(self, info) -> bool:
+    def is_voting_open(self, info: Info) -> bool:
         return self.is_voting_open
 
     @strawberry.field
-    def is_voting_closed(self, info) -> bool:
+    def is_voting_closed(self, info: Info) -> bool:
         return self.is_voting_closed
 
     @strawberry.field
-    def deadline(self, info, type: str) -> Optional["Deadline"]:
+    def deadline(self, info: Info, type: str) -> Optional["Deadline"]:
         return self.deadlines.filter(type=type).first()
 
     @strawberry.field
-    def audience_levels(self, info) -> List[AudienceLevel]:
+    def audience_levels(self, info: Info) -> List[AudienceLevel]:
         return self.audience_levels.all()
 
     @strawberry.field
-    def topics(self, info) -> List[Topic]:
+    def topics(self, info: Info) -> List[Topic]:
         return self.topics.all()
 
     @strawberry.field
-    def languages(self, info) -> List[Language]:
+    def languages(self, info: Info) -> List[Language]:
         return self.languages.all()
 
     @strawberry.field
-    def durations(self, info) -> List["Duration"]:
+    def durations(self, info: Info) -> List["Duration"]:
         return self.durations.all()
 
     @strawberry.field
-    def submission_types(self, info) -> List[SubmissionType]:
+    def submission_types(self, info: Info) -> List[SubmissionType]:
         return self.submission_types.all()
 
     @strawberry.field(permission_classes=[CanSeeSubmissions])
-    def submissions(self, info) -> Optional[List[Submission]]:
+    def submissions(self, info: Info) -> Optional[List[Submission]]:
         return self.submissions.filter(
             status__in=(
                 SubmissionModel.STATUS.proposed,
@@ -317,21 +211,23 @@ class Conference:
         ).select_related("audience_level", "duration", "type", "topic")
 
     @strawberry.field
-    def events(self, info) -> List[Event]:
+    def events(self, info: Info) -> List[Event]:
         return self.events.all()
 
     @strawberry.field
-    def faqs(self, info) -> List[FAQ]:
+    def faqs(self, info: Info) -> List[FAQ]:
         return self.faqs.all()
 
     @strawberry.field
-    def sponsors_by_level(self, info) -> List[SponsorsByLevel]:
+    def sponsors_by_level(self, info: Info) -> List[SponsorsByLevel]:
         levels = self.sponsor_levels.all().order_by("order")
 
         return [SponsorsByLevel.from_model(level) for level in levels]
 
     @strawberry.field
-    def copy(self, info, key: str, language: Optional[str] = None) -> Optional[str]:
+    def copy(
+        self, info: Info, key: str, language: Optional[str] = None
+    ) -> Optional[str]:
         copy = GenericCopy.objects.filter(conference=self, key=key).first()
 
         language = language or translation.get_language() or settings.LANGUAGE_CODE
@@ -339,30 +235,32 @@ class Conference:
         return copy.content.localize(language) if copy else None
 
     @strawberry.field
-    def menu(self, info, identifier: str) -> Optional[Menu]:
+    def menu(self, info: Info, identifier: str) -> Optional[Menu]:
         return (
             self.menus.filter(identifier=identifier).prefetch_related("links").first()
         )
 
     @strawberry.field
-    def keynotes(self, info) -> List[Keynote]:
-        return [Keynote.from_django_model(keynote) for keynote in self.keynotes.all()]
+    def keynotes(self, info: Info) -> List[Keynote]:
+        return [
+            Keynote.from_django_model(keynote, info) for keynote in self.keynotes.all()
+        ]
 
     @strawberry.field
-    def keynote(self, info, slug: str) -> Optional[Keynote]:
+    def keynote(self, info: Info, slug: str) -> Optional[Keynote]:
         keynote = self.keynotes.by_slug(slug).first()
-        return Keynote.from_django_model(keynote) if keynote else None
+        return Keynote.from_django_model(keynote, info) if keynote else None
 
     @strawberry.field
-    def talks(self, info) -> List[ScheduleItem]:
+    def talks(self, info: Info) -> List[ScheduleItem]:
         return self.schedule_items.filter(type=ScheduleItemModel.TYPES.submission).all()
 
     @strawberry.field
-    def talk(self, info, slug: str) -> Optional[ScheduleItem]:
+    def talk(self, info: Info, slug: str) -> Optional[ScheduleItem]:
         return self.schedule_items.filter(slug=slug).first()
 
     @strawberry.field
-    def ranking(self, info, topic: strawberry.ID) -> Optional[RankRequest]:
+    def ranking(self, info: Info, topic: strawberry.ID) -> Optional[RankRequest]:
         rank_request = RankRequestModel.objects.filter(conference=self).first()
         if not rank_request:
             return None
@@ -382,17 +280,82 @@ class Conference:
         )
 
     @strawberry.field
-    def days(self, info) -> List[Day]:
-        return self.days.order_by("day").prefetch_related("slots", "slots__items").all()
+    def days(self, info: Info) -> List[Day]:
+        days = list(
+            self.days.order_by("day")
+            .prefetch_related(
+                "slots",
+                "slots__day",
+                "slots__day__added_rooms",
+                "slots__day__added_rooms__room",
+                Prefetch(
+                    "slots__items",
+                    queryset=(
+                        ScheduleItemModel.objects.for_conference(self.id)
+                        .annotate(
+                            order=Case(
+                                When(type="custom", then=Value(1)),
+                                When(type="break", then=Value(1)),
+                                When(type="talk", then=Value(2)),
+                                When(type="panel", then=Value(3)),
+                                default=Value(4),
+                                output_field=IntegerField(),
+                            )
+                        )
+                        .order_by("order")
+                        .prefetch_related(
+                            "audience_level",
+                            "language",
+                            "rooms",
+                            "additional_speakers",
+                            "additional_speakers__user",
+                            "language",
+                            "submission",
+                            "submission__type",
+                            "submission__tags",
+                            "submission__duration",
+                            "submission__audience_level",
+                            "submission__speaker",
+                            "submission__languages",
+                            "submission__schedule_items",
+                            "keynote",
+                            "keynote__schedule_items",
+                            "keynote__schedule_items__rooms",
+                            "keynote__schedule_items__slot",
+                            "keynote__schedule_items__slot__day",
+                            "keynote__speakers",
+                            "keynote__speakers__user",
+                        )
+                    ),
+                ),
+            )
+            .all()
+        )
+        all_speakers = [
+            speaker.id
+            for day in days
+            for slot in day.slots.all()
+            for item in slot.items.all()
+            for speaker in item.speakers
+        ]
+        info.context._participants_data = {
+            participant.user_id: participant
+            for participant in ParticipantModel.objects.for_conference(self.id)
+            .filter(user_id__in=all_speakers)
+            .prefetch_related("user")
+            .all()
+        }
+
+        return days
 
     @strawberry.field
-    def current_day(self, info) -> Optional[Day]:
+    def current_day(self, info: Info) -> Optional[Day]:
         start = timezone.now().replace(hour=0, minute=0, second=0)
         end = start.replace(hour=23, minute=59, second=59)
         return self.days.filter(day__gte=start, day__lte=end).first()
 
     @strawberry.field
-    def is_running(self, info) -> bool:
+    def is_running(self, info: Info) -> bool:
         now = timezone.now()
         return self.start <= now <= self.end
 
@@ -421,5 +384,5 @@ class Duration:
     notes: str
 
     @strawberry.field
-    def allowed_submission_types(self, info) -> List[SubmissionType]:
+    def allowed_submission_types(self, info: Info) -> List[SubmissionType]:
         return self.allowed_submission_types.all()

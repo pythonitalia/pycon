@@ -144,7 +144,7 @@ export const FileInput = ({
         }}
       />
       {(error || errors) && (
-        <ErrorsList sx={{ mt: 2 }} errors={[error, ...errors]} />
+        <ErrorsList sx={{ mt: 2 }} errors={[error, ...(errors || [])]} />
       )}
 
       {previewAvailable && (
@@ -153,6 +153,7 @@ export const FileInput = ({
             height: "200px",
             mt: 3,
           }}
+          alt="Selection preview"
           src={previewAvailable}
         />
       )}

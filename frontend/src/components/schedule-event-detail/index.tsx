@@ -1,16 +1,16 @@
 import {
-  StyledText,
+  Button,
   Grid,
   GridColumn,
   Heading,
   Section,
-  Button,
   Spacer,
+  StyledText,
   Text,
 } from "@python-italia/pycon-styleguide";
 import { LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import { SnakeWithPopcorn } from "@python-italia/pycon-styleguide/illustrations";
-import { parseISO, isAfter, isBefore } from "date-fns";
+import { isAfter, isBefore, parseISO } from "date-fns";
 import { zonedTimeToUtc } from "date-fns-tz";
 import React from "react";
 import { FormattedMessage } from "react-intl";
@@ -18,21 +18,22 @@ import { FormattedMessage } from "react-intl";
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 
-import {
-  Participant,
-  ParticipantInfoSection,
-} from "../participant-info-section";
+import { TalkQueryResult } from "~/types";
+import { ParticipantInfoSection } from "../participant-info-section";
 import { EventTag } from "./event-tag";
 import { Sidebar } from "./sidebar";
 
 type Props = {
   id?: string;
   slug?: string;
-  type: "talk" | "workshop" | "keynote" | "lightning-talks" | "panel";
+  type: string;
   eventTitle: string;
   elevatorPitch?: string;
   abstract?: string;
-  speakers: Participant[];
+  speakers: {
+    fullName: string;
+    participant?: TalkQueryResult["data"]["conference"]["talk"]["speakers"][0]["participant"];
+  }[];
   tags?: string[];
   language: string;
   audienceLevel?: string;
@@ -117,7 +118,7 @@ export const ScheduleEventDetail = ({
                 <Spacer size="medium" />
 
                 {slidoUrl && (
-                  <Button size="small" role="secondary" href={slidoUrl}>
+                  <Button size="small" href={slidoUrl} variant="secondary">
                     <FormattedMessage id="streaming.qa" />
                   </Button>
                 )}
@@ -142,6 +143,20 @@ export const ScheduleEventDetail = ({
             </Sidebar>
           </GridColumn>
           <GridColumn colSpan={8}>
+            {eventTitle === "TBA" && (
+              <video
+                muted
+                loop
+                autoPlay
+                src="/videos/nothing-to-see-here.mp4"
+                style={{
+                  width: "100%",
+                  zIndex: 0,
+                  pointerEvents: "none",
+                  objectFit: "cover",
+                }}
+              />
+            )}
             {elevatorPitch && (
               <>
                 <Title>
@@ -186,6 +201,7 @@ export const ScheduleEventDetail = ({
             <SnakeWithPopcorn className="absolute top-0 right-14 z-10 w-[130px] -translate-y-[63%] lg:w-[180px] lg:-translate-y-[68%] hidden md:block" />
             <div className="z-20 relative">
               <iframe
+                title="Recording"
                 src={`https://www.youtube.com/embed/${youtubeVideoId}`}
                 allowFullScreen
                 className="aspect-video p-[3px] top-0 left-0 w-full bg-black"
@@ -198,7 +214,10 @@ export const ScheduleEventDetail = ({
         <Section>
           {speakers.map((speaker, index) => (
             <>
-              <ParticipantInfoSection participant={speaker} />
+              <ParticipantInfoSection
+                fullname={speaker.fullName}
+                participant={speaker.participant}
+              />
               {index !== speakers.length - 1 && <Spacer size="2xl" />}
             </>
           ))}

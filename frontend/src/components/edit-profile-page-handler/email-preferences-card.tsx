@@ -1,14 +1,14 @@
 import {
-  Text,
-  Heading,
-  Grid,
-  Checkbox,
-  MultiplePartsCard,
   CardPart,
+  Checkbox,
+  Grid,
+  Heading,
   HorizontalStack,
+  MultiplePartsCard,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
-import { FormState, StateErrors, Inputs } from "react-use-form-state";
+import { FormState, Inputs, StateErrors } from "react-use-form-state";
 
 import { MeUserFields } from "./types";
 

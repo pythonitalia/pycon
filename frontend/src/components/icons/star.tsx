@@ -15,6 +15,8 @@ export const Star = ({ active }: Props) => (
     height="34"
     fill="none"
     viewBox="0 0 36 34"
+    role="img"
+    aria-label="Star icon"
   >
     <path
       stroke="#000"

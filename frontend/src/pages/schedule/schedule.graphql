@@ -2,11 +2,7 @@
 #import "./fragments/keynote.graphql"
 #import "./fragments/schedule-slot.graphql"
 
-query Schedule(
-  $code: String!
-  $fetchSubmissions: Boolean!
-  $language: String!
-) {
+query Schedule($code: String!, $language: String!) {
   conference(code: $code) {
     id
     timezone
@@ -20,14 +16,6 @@ query Schedule(
       slots {
         ...ScheduleSlotFragment
       }
-    }
-
-    submissions @include(if: $fetchSubmissions) {
-      ...SubmissionFragment
-    }
-
-    keynotes @include(if: $fetchSubmissions) {
-      ...KeynoteFragment
     }
 
     audienceLevels {

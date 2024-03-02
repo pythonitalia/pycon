@@ -1,7 +1,7 @@
 import {
   AgeGroup,
-  InterestedInVolunteering,
   GrantType,
+  InterestedInVolunteering,
   Occupation,
 } from "~/types";
 

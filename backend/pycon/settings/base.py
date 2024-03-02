@@ -1,6 +1,11 @@
 import stripe
 import environ
+import sentry_sdk
 from django.utils.translation import gettext_lazy as _
+from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.strawberry import StrawberryIntegration
+from sentry_sdk.integrations.celery import CeleryIntegration
 
 root = environ.Path(__file__) - 3
 
@@ -12,11 +17,33 @@ env = environ.Env(
 
 environ.Env.read_env(root(".env"))
 
+ENVIRONMENT = env("ENV", default="local")
+
 DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
 FRONTEND_URL = env("FRONTEND_URL")
+
+SENTRY_DSN = env("SENTRY_DSN", default="")
+
+GITHASH = env("GITHASH", default="")
+
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[
+            DjangoIntegration(),
+            AwsLambdaIntegration(),
+            StrawberryIntegration(async_execution=False),
+            CeleryIntegration(monitor_beat_tasks=True),
+        ],
+        traces_sample_rate=0.4,
+        profiles_sample_rate=0.4,
+        send_default_pii=True,
+        environment=ENVIRONMENT,
+        release=GITHASH,
+    )
 
 # Application definition
 
@@ -45,6 +72,7 @@ INSTALLED_APPS = [
     "wagtail",
     "modelcluster",
     "taggit",
+    "wagtail_headless_preview",
     # --
     "schedule.apps.ScheduleConfig",
     "custom_admin",
@@ -92,6 +120,7 @@ INSTALLED_APPS = [
     "google_api.apps.GoogleApiConfig",
     "association_membership.apps.AssociationMembershipConfig",
     "rest_framework",
+    "integrations.apps.IntegrationsConfig",
 ]
 
 MIDDLEWARE = [
@@ -111,7 +140,7 @@ ROOT_URLCONF = "pycon.urls"
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "BACKEND": "custom_admin.template_backends.CustomAdminDjangoTemplate",
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -120,6 +149,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "custom_admin.context_processors.admin_settings",
+                "custom_admin.context_processors.astro_settings",
             ]
         },
     }
@@ -173,7 +203,7 @@ MEDIA_ROOT = root("media")
 AUTH_USER_MODEL = "users.User"
 
 AUTHENTICATION_BACKENDS = (
-    # "custom_auth.backend.UsersAuthBackend",
+    "users.backends.PermissionsBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
 
@@ -207,8 +237,6 @@ if PRETIX_API:
 
 SIMULATE_PRETIX_DB = True
 
-ENVIRONMENT = env("ENV", default="local")
-
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -219,6 +247,16 @@ LOGGING = {
             "handlers": ["console"],
             "level": "WARNING",
             "propagate": True,
+        },
+        "celery": {
+            "level": "INFO",
+            "handlers": ["console"],
+            "propagate": False,
+        },
+        "django": {
+            "level": "INFO",
+            "handlers": ["console"],
+            "propagate": False,
         },
         "qinspect": {"handlers": ["console"], "level": "DEBUG", "propagate": True},
     },
@@ -265,6 +303,7 @@ USER_ID_HASH_SALT = env("USER_ID_HASH_SALT", default="")
 
 PLAIN_API = env("PLAIN_API", default="")
 PLAIN_API_TOKEN = env("PLAIN_API_TOKEN", default="")
+PLAIN_INTEGRATION_TOKEN = env("PLAIN_INTEGRATION_TOKEN", default="")
 
 IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "imagekit.cachefiles.strategies.Optimistic"
 
@@ -317,3 +356,15 @@ if DEEPL_AUTH_KEY:
             "AUTH_KEY": DEEPL_AUTH_KEY,
         },
     }
+
+FLODESK_API_KEY = env("FLODESK_API_KEY", default="")
+FLODESK_SEGMENT_ID = env("FLODESK_SEGMENT_ID", default="")
+
+WAGTAIL_HEADLESS_PREVIEW = {
+    "CLIENT_URLS": {"default": "{SITE_ROOT_URL}/api/page-preview"},
+    "SERVE_BASE_URL": None,
+    "REDIRECT_ON_PREVIEW": False,
+    "ENFORCE_TRAILING_SLASH": False,
+}
+
+X_FRAME_OPTIONS = "SAMEORIGIN"

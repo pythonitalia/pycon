@@ -1,0 +1,587 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% load markdownify %}
+{% load localize countryname get_item %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+  &rsaquo; <a href="{% url 'admin:app_list' 'reviews' %}">Reviews</a>
+  &rsaquo; <a href="{% url 'admin:reviews_reviewsession_changelist' %}">Review sessions</a>
+  &rsaquo; <a href="{% url 'admin:reviews_reviewsession_change' review_session_id %}">{{review_session_repr}}</a>
+  &rsaquo; {{title}}
+</div>
+{% endblock %}
+{% block content %}
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  .results-table {
+    width: 100%;
+  }
+
+  table.results-table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .results-table thead {
+    position: sticky;
+    top: 43px;
+  }
+
+  .results-table ul {
+    margin-left: 0;
+    padding: 0;
+    list-style-type: none;
+    list-style-position: inside;
+  }
+
+  .results-table ul li {
+    list-style-type: none;
+  }
+
+  .results-table .votes-list {
+    max-width: 400px;
+  }
+
+  .votes-list ul li {
+    list-style: square;
+    list-style-position: inside;
+  }
+
+  .decision-input-wrapper label {
+    display: block;
+  }
+
+  .decision-input-wrapper input {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+  }
+
+  .reviews-bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 500;
+    background-color: #417690;
+    color: #fff;
+  }
+
+  .reviews-bottom-bar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .reviews-bottom-bar-stats {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 50px;
+  }
+
+  .reviews-bottom-bar-stats ul {
+    padding: 0 !important;
+  }
+
+  .reviews-bottom-bar-confirm-bar {
+    max-width: 800px;
+  }
+
+  ul.proposal-ranking {
+    margin-top: 0;
+    margin-left: 30px;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  #accepted-proposals-num {
+    color: #48ff5a;
+  }
+
+  #rejected-proposals-num {
+    color: #48ff5a;
+  }
+
+  #waitinglist-proposals-num {
+    color: #48ff5a;
+  }
+
+  .opt-filter {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: max-content auto;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .opt-filter label + label {
+    margin-left: 10px;
+  }
+
+  tr:nth-of-type(odd) {
+    background-color: var(--body-bg);
+  }
+</style>
+
+<script type="application/javascript">
+  const submissionsById = {};
+  let submissions;
+  const audienceLevels = [
+    {% for audience_level in audience_levels %}
+      "{{ audience_level.id }}",
+    {% endfor %}
+  ];
+
+  let acceptedProposalsNumRef;
+  let rejectedProposalsNumRef;
+  let waitinglistProposalsNumRef;
+
+  const getRefs = () => {
+    acceptedProposalsNumRef = document.querySelector("#accepted-proposals-num");
+    rejectedProposalsNumRef = document.querySelector("#rejected-proposals-num");
+    waitinglistProposalsNumRef = document.querySelector("#waitinglist-proposals-num");
+  };
+
+  window.addEventListener("load", () => {
+    submissions = Object.values(submissionsById);
+
+    getRefs();
+    updateBottomBarUI();
+
+    submissions.forEach((submissionData) => {
+      const submissionId = submissionData.id;
+      const acceptInput = document.getElementById(
+        `decision-${submissionId}-accepted`,
+      );
+      const rejectInput = document.getElementById(
+        `decision-${submissionId}-rejected`,
+      );
+      const unsetInput = document.getElementById(
+        `decision-${submissionId}-unset`,
+      );
+      const waitinglistInput = document.getElementById(
+        `decision-${submissionId}-waiting_list`,
+      );
+
+      acceptInput.addEventListener("change", () => {
+        submissionData.status = "accepted";
+        updateBottomBarUI();
+      });
+
+      rejectInput.addEventListener("change", () => {
+        submissionData.status = "rejected";
+        updateBottomBarUI();
+      });
+
+      waitinglistInput.addEventListener("change", () => {
+        submissionData.status = "waiting_list";
+        updateBottomBarUI();
+      });
+
+      unsetInput.addEventListener("change", () => {
+        const proposalRow = document.querySelector(`#submission-${submissionId}`);
+        const originalStatus = proposalRow.dataset.originalStatus;
+
+        if (originalStatus === "accepted") {
+          acceptInput.checked = true;
+        } else if (originalStatus === "rejected") {
+          rejectInput.checked = true;
+        } else if (originalStatus === "waiting_list") {
+          waitinglistInput.checked = true;
+        }
+
+        unsetInput.checked = false;
+        submissionData.status = originalStatus;
+        updateBottomBarUI();
+      });
+    });
+
+    const filterWithReviewsSelect = document.querySelector('#filter-with-n-reviews');
+    filterWithReviewsSelect.addEventListener('change', e => {
+      e.preventDefault();
+
+      const filterValue = parseInt(e.target.value, 10);
+
+      document.querySelectorAll('.proposal-item').forEach(
+        proposalRow => {
+          if (e.target.value === 'all') {
+            proposalRow.classList.remove('hidden')
+            return;
+          }
+
+          const proposalId = parseInt(proposalRow.id.split('-')[1], 10);
+          const proposalData = submissionsById[proposalId];
+
+          const numOfVotes = proposalData.numOfVotes;
+          if (numOfVotes === filterValue) {
+            proposalRow.classList.remove('hidden')
+          } else {
+            proposalRow.classList.add('hidden')
+          }
+        }
+      )
+    });
+
+    const filterByStatusInputs = [...document.querySelectorAll('input[name="filter-by-status"]')];
+    filterByStatusInputs.forEach(
+      filterByStatusInput => {
+        filterByStatusInput.addEventListener('change', e => {
+          e.preventDefault();
+
+          const filterValue = e.target.value;
+          const visibleStatuses = filterByStatusInputs.filter(
+            input => input.checked
+          ).map(
+            input => input.value
+          );
+
+          document.querySelectorAll('.proposal-item').forEach(
+            proposalRow => {
+              const proposalId = parseInt(proposalRow.id.split('-')[1], 10);
+              const proposalData = submissionsById[proposalId];
+
+              if (visibleStatuses.includes(proposalData.originalStatus)) {
+                proposalRow.classList.remove('hidden')
+              } else {
+                proposalRow.classList.add('hidden')
+              }
+            }
+          );
+        });
+      }
+    );
+  });
+
+  const updateBottomBarUI = () => {
+    const acceptedAudienceLevels = {};
+    const rejectedAudienceLevels = {};
+    const waitinglistAudienceLevels = {};
+
+    const results = submissions.reduce(
+      (acc, submission) => {
+        const language = submission.languages.length > 1 ? "en" : submission.languages[0];
+        if (submission.status === "accepted") {
+          acc[0]++;
+          const audienceLevelObject = acceptedAudienceLevels[submission.audienceLevel] || {};
+          audienceLevelObject[language] = (audienceLevelObject[language] || 0) + 1;
+          acceptedAudienceLevels[submission.audienceLevel] = audienceLevelObject;
+        } else if (submission.status === "rejected") {
+          acc[1]++;
+
+          const audienceLevelObject = rejectedAudienceLevels[submission.audienceLevel] || {};
+          audienceLevelObject[language] = (audienceLevelObject[language] || 0) + 1;
+          rejectedAudienceLevels[submission.audienceLevel] = audienceLevelObject;
+        } else if (submission.status === "waiting_list") {
+          acc[2]++;
+
+          const audienceLevelObject = waitinglistAudienceLevels[submission.audienceLevel] || {};
+          audienceLevelObject[language] = (audienceLevelObject[language] || 0) + 1;
+          waitinglistAudienceLevels[submission.audienceLevel] = audienceLevelObject;
+        }
+        return acc;
+      },
+      [0, 0, 0],
+    );
+
+    acceptedProposalsNumRef.innerText = results[0];
+    rejectedProposalsNumRef.innerText = results[1];
+    waitinglistProposalsNumRef.innerText = results[2];
+
+    audienceLevels.forEach(
+      audienceLevel => {
+        const acceptedRef = document.querySelector(`#accepted-audience-level-${audienceLevel}`);
+        const acceptedEnglishRef = document.querySelector(`#accepted-audience-level-${audienceLevel}-english`);
+        const acceptedItalianRef = document.querySelector(`#accepted-audience-level-${audienceLevel}-italian`);
+
+        const rejectedRef = document.querySelector(`#rejected-audience-level-${audienceLevel}`);
+        const rejectedEnglishRef = document.querySelector(`#rejected-audience-level-${audienceLevel}-english`);
+        const rejectedItalianRef = document.querySelector(`#rejected-audience-level-${audienceLevel}-italian`);
+
+        const waitinglistRef = document.querySelector(`#waitinglist-audience-level-${audienceLevel}`);
+        const waitinglistEnglishRef = document.querySelector(`#waitinglist-audience-level-${audienceLevel}-english`);
+        const waitinglistItalianRef = document.querySelector(`#waitinglist-audience-level-${audienceLevel}-italian`);
+
+        acceptedEnglishRef.innerText = acceptedAudienceLevels[audienceLevel]?.en || 0;
+        acceptedItalianRef.innerText = acceptedAudienceLevels[audienceLevel]?.it || 0;
+
+        rejectedEnglishRef.innerText = rejectedAudienceLevels[audienceLevel]?.en || 0;
+        rejectedItalianRef.innerText = rejectedAudienceLevels[audienceLevel]?.it || 0;
+
+        waitinglistEnglishRef.innerText = waitinglistAudienceLevels[audienceLevel]?.en || 0;
+        waitinglistItalianRef.innerText = waitinglistAudienceLevels[audienceLevel]?.it || 0;
+
+        acceptedRef.innerText = Object.values(acceptedAudienceLevels[audienceLevel] || {}).reduce((acc, value) => acc + value, 0);
+        rejectedRef.innerText = Object.values(rejectedAudienceLevels[audienceLevel] || {}).reduce((acc, value) => acc + value, 0);
+        waitinglistRef.innerText = Object.values(waitinglistAudienceLevels[audienceLevel] || {}).reduce((acc, value) => acc + value, 0);
+      }
+    );
+  };
+</script>
+
+<form id="changelist-form" method="post" novalidate="">
+  {% csrf_token %}
+
+  <div id="content-main">
+    <div class="module filtered">
+      <h2>Filters</h2>
+      <div class="opt-filter">
+        <h3>Show proposals with N reviews:</h3>
+        <select name="filter-with-n-reviews" id="filter-with-n-reviews">
+          <option value="all">All</option>
+          {% for i in '0123456789'|make_list %}
+            <option value="{{ i }}">{{ i }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="opt-filter">
+        <h3>Show proposals with status:</h3>
+        <div>
+          {% for status in all_statuses %}
+          <label>
+            <input checked type="checkbox" name="filter-by-status" value="{{ status.0 }}">
+            <span>{{ status.1 }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="module filtered" id="changelist">
+      <div class="changelist-form-container">
+        <div class="results">
+          <table id="result_list" class="results-table">
+            <thead>
+              <tr>
+                <th scope="col">
+                  <div class="text"><span>#</aspan</div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
+                  <div class="text"><span>Title</span></div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
+                  <div class="text"><span>Score</span></div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
+                  <div class="text"><span>Votes</span></div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
+                  <div class="text"><span>Status</span></div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
+                  <div class="text"><span>Decision</span></div>
+                  <div class="clear"></div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in items %}
+              <script>
+                submissionsById[{{ item.id }}] = {
+                  id: {{ item.id }},
+                  status: "{{ item.status }}",
+                  originalStatus: "{{ item.status }}",
+                  audienceLevel: {{ item.audience_level.id }},
+                  languages: [{% for language in item.languages.all %}"{{language.code}}",{% endfor %}],
+                  numOfVotes: {{item.userreview_set.count}},
+                };
+              </script>
+              <tr class="proposal-item" id="submission-{{item.id}}" data-original-status="{{ item.status }}">
+                <td>{{forloop.counter}}</td>
+                <td class="results-title">
+                  <a
+                    target="_blank"
+                    href="{% url 'admin:submissions_submission_change' item.id %}">
+                    <strong>{{item.title}}</strong>
+                  </a>
+                  <ul>
+                    <li>
+                      <strong>Duration:</strong>
+                      <span>{{ item.duration.duration }} mins</span>
+                    </li>
+                    <li>
+                      <strong>Type:</strong>
+                      <span>{{ item.type.name }}</span>
+                    </li>
+                    <li>
+                      <strong>Audience level:</strong>
+                      <span>{{ item.audience_level.name }}</span>
+                    </li>
+                    <li>
+                      <strong>Languages:</strong>
+                      <span>{{ item.languages.all|join:", " }}</span>
+                    </li>
+                    {% with speaker_id=item.speaker_id|stringformat:"i" %}
+                      <li>
+                        <strong>Speaker Name</strong>
+                        <span>{{ item.speaker.fullname }}</span>
+                      </li>
+                      <li>
+                        <strong>Speaker Country</strong>
+                        <span>{{ item.speaker.country|countryname }}</span>
+                      </li>
+                      <li>
+                        <strong>Speaker Gender</strong>
+                        <span>{{ item.speaker.gender }}</span>
+                      </li>
+                      <li>
+                        <strong>Requested a grant?</strong>
+                        {% if speaker_id in grants %}
+                          {% with grant=grants|get_item:speaker_id %}
+                            <span>Yes ({{ grant.get_status_display }})</span>
+                          {% endwith %}
+                        {% else %}
+                          <span>No</span>
+                        {% endif %}
+                      </li>
+                    {% endwith %}
+                    <li>
+                      <strong>Ranking:</strong>
+                      <ul class="proposal-ranking">
+                        {% for ranking in item.rankings.all %}
+                        <li>
+                          <strong>{{ ranking.tag.name }}</strong>: {{ ranking.rank }}/{{ ranking.total_submissions_per_tag }}
+                        </li>
+                        {% endfor %}
+                      </ul>
+                    </li>
+                  </ul>
+                </td>
+
+                <td>{{ item.score }}</td>
+
+                <td class="votes-list">
+                  <ul>
+                    {% for reviewer in item.userreview_set.all %}
+                    <li>
+                      <strong>{{reviewer.user.full_name}}</strong> voted
+                      {{reviewer.score.label}}
+                      ({{reviewer.score.numeric_value}})<br />
+                      {{reviewer.comment}}
+                    </li>
+                    {% empty %}
+                    <li>No reviews yet</li>
+                    {% endfor %}
+                    <li>
+                      <a style="font-weight: bold" target="_blank" href="{% url 'admin:reviews-vote-view' review_session_id=review_session_id review_item_id=item.id %}">
+                        Vote this proposal
+                      </a>
+                    </li>
+                  </ul>
+                </td>
+
+                <td>
+                  {{item.status}}
+                </td>
+
+                <td class="decision-input-wrapper">
+                  <label>
+                    <input
+                      {% if item.status == 'accepted' %}checked{% endif %}
+                      type="radio"
+                      name="decision-{{item.id}}"
+                      value="accepted"
+                      id="decision-{{item.id}}-accepted"/>
+                      Accept
+                  </label>
+                  <label>
+                    <input
+                      {% if item.status == 'rejected' %}checked{% endif %}
+                      type="radio"
+                      name="decision-{{item.id}}"
+                      value="rejected"
+                      id="decision-{{item.id}}-rejected"/>
+                      Reject
+                  </label>
+                  <label>
+                    <input
+                      {% if item.status == 'waiting_list' %}checked{% endif %}
+                      type="radio"
+                      name="decision-{{item.id}}"
+                      value="waiting_list"
+                      id="decision-{{item.id}}-waiting_list"/>
+                      Waiting list
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="decision-{{item.id}}"
+                      value="unset"
+                      id="decision-{{item.id}}-unset"/>
+                      Unset
+                  </label>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div style="height: 150px"></div>
+  </div>
+
+  <div id="content" class="reviews-bottom-bar colM">
+    <div class="reviews-bottom-bar-content">
+      <div class="submit-row reviews-bottom-bar-confirm-bar">
+        <p>
+          Once done, click the button to save your choices.
+          You can change as many times as you need, no emails will be sent.
+        </p>
+        <input value="Submit choices" type="submit" />
+      </div>
+      <div>
+        <div>
+          <p>For multiple languages proposals, we count it as English.</p>
+        </div>
+        <div class="reviews-bottom-bar-stats">
+          <div>
+            <h2>Accepted: <span id="accepted-proposals-num">0</span></h2>
+            <ul>
+              {% for audience_level in audience_levels %}
+              <li>
+                {{audience_level.name}}: <span id="accepted-audience-level-{{audience_level.id}}">0</span>
+                (English: <span id="accepted-audience-level-{{audience_level.id}}-english">0</span>, Italian: <span id="accepted-audience-level-{{audience_level.id}}-italian">0</span>)
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div>
+            <h2>Rejected: <span id="rejected-proposals-num">0</span></h2>
+            <ul>
+              {% for audience_level in audience_levels %}
+              <li>
+                {{audience_level.name}}: <span id="rejected-audience-level-{{audience_level.id}}">0</span>
+                (English: <span id="rejected-audience-level-{{audience_level.id}}-english">0</span>, Italian: <span id="rejected-audience-level-{{audience_level.id}}-italian">0</span>)
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div>
+            <h2>Waiting List: <span id="waitinglist-proposals-num">0</span></h2>
+            <ul>
+              {% for audience_level in audience_levels %}
+              <li>
+                {{audience_level.name}}: <span id="waitinglist-audience-level-{{audience_level.id}}">0</span>
+                (English: <span id="waitinglist-audience-level-{{audience_level.id}}-english">0</span>, Italian: <span id="waitinglist-audience-level-{{audience_level.id}}-italian">0</span>)
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

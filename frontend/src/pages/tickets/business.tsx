@@ -1,18 +1,18 @@
-import { Section, Heading } from "@python-italia/pycon-styleguide";
+import { Heading, Section } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 
-import { getApolloClient, addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Tickets } from "~/components/tickets-page/tickets";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { CheckoutCategory, queryTickets } from "~/types";
 
-export const BusinessTicketsPage = () => {
+export const BusinessTicketsPage = ({ cartCookie }) => {
   return (
-    <TicketsPageWrapper>
+    <TicketsPageWrapper cartCookie={cartCookie}>
       {({ tickets: products, hotelRooms, conference, me }) => (
         <>
           <Section spacingSize="xl" illustration="snakeTailUp">
@@ -43,8 +43,11 @@ export const BusinessTicketsPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  const client = getApolloClient();
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  locale,
+}) => {
+  const client = getApolloClient(null, req.cookies);
 
   await Promise.all([
     prefetchSharedQueries(client, locale),
@@ -58,12 +61,15 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     }),
   ]);
 
+  const cartCookie = req.cookies["tickets-cart-v6"];
   return addApolloState(
     client,
     {
-      props: {},
+      props: {
+        cartCookie,
+      },
     },
-    30,
+    null,
   );
 };
 

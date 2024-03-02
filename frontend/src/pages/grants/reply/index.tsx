@@ -1,6 +1,7 @@
 import {
   Button,
   Heading,
+  Link,
   Page,
   Section,
   Spacer,
@@ -9,25 +10,26 @@ import {
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Radio, Label, Flex, Textarea } from "theme-ui";
+import { Flex, Label, Radio, Textarea } from "theme-ui";
 
 import { GetServerSideProps } from "next";
 
-import { getApolloClient, addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
+import { createHref } from "~/components/link";
 import { PageLoading } from "~/components/page-loading";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import NotFoundPage from "~/pages/404";
 import {
-  useGrantQuery,
-  StatusOption,
   Status as GrantStatus,
-  useSendGrantReplyMutation,
-  queryGrantDeadline,
+  StatusOption,
   queryCurrentUser,
   queryGrant,
+  queryGrantDeadline,
+  useGrantQuery,
+  useSendGrantReplyMutation,
 } from "~/types";
 
 type GrantReplyFrom = {
@@ -84,7 +86,7 @@ const GrantReply = () => {
     },
   });
 
-  const grant = data && data?.me?.grant;
+  const grant = data?.me?.grant;
 
   const submitReply = useCallback(
     (e) => {
@@ -112,7 +114,7 @@ const GrantReply = () => {
   if (loading) {
     return <PageLoading titleId="global.loading" />;
   }
-  console.log(formState.values, grant.status);
+
   const hasSentAnswer = ANSWERS_STATUSES.includes(grant?.status) ?? false;
 
   const answerHasChanged =
@@ -213,7 +215,29 @@ const GrantReply = () => {
           <Spacer size="medium" />
 
           <Text size={2}>
-            <FormattedMessage id="grants.reply.messageDescription" />
+            <FormattedMessage
+              id="grants.reply.messageDescription"
+              values={{
+                visaPageLink: (
+                  <Link
+                    target="_blank"
+                    href={createHref({
+                      path: "/visa/",
+                      locale: language,
+                    })}
+                  >
+                    <Text
+                      decoration="underline"
+                      size={2}
+                      weight="strong"
+                      color="none"
+                    >
+                      <FormattedMessage id="grants.reply.visaPageLink" />
+                    </Text>
+                  </Link>
+                ),
+              }}
+            />
           </Text>
           <Spacer size="small" />
 
@@ -257,7 +281,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
   locale,
 }) => {
-  const identityToken = req.cookies["pythonitalia_sessionid"];
+  const identityToken = req.cookies.pythonitalia_sessionid;
   if (!identityToken) {
     return {
       redirect: {

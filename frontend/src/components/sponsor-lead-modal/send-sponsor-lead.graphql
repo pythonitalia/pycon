@@ -1,0 +1,18 @@
+mutation SendSponsorLead($input: SendSponsorLeadInput!) {
+  sendSponsorLead(input: $input) {
+    __typename
+
+    ... on OperationResult {
+      ok
+    }
+
+    ... on SendSponsorLeadInputErrors {
+      errors {
+        email
+        fullname
+        conferenceCode
+        company
+      }
+    }
+  }
+}

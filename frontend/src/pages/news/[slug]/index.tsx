@@ -1,10 +1,10 @@
 import {
   Container,
-  StyledHTMLText,
   Heading,
   Page,
   Section,
   Spacer,
+  StyledHTMLText,
   Text,
 } from "@python-italia/pycon-styleguide";
 import { parseISO } from "date-fns";
@@ -14,18 +14,25 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { Article } from "~/components/article";
 import { MetaTags } from "~/components/meta-tags";
-import { compile } from "~/helpers/markdown";
+import { usePageOrPreview } from "~/components/page-handler/use-page-or-preview";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import {
+  NewsArticleQuery,
+  PagePreviewQuery,
   queryAllNewsArticles,
   queryNewsArticle,
-  useNewsArticleQuery,
+  queryPagePreview,
 } from "~/types";
 
-export const NewsArticlePage = () => {
+export const NewsArticlePage = ({
+  isPreview,
+  previewData,
+}: {
+  isPreview: boolean;
+  previewData: any;
+}) => {
   const language = useCurrentLanguage();
   const router = useRouter();
   const slug = router.query.slug as string;
@@ -35,22 +42,12 @@ export const NewsArticlePage = () => {
     year: "numeric",
   });
 
-  const { data } = useNewsArticleQuery({
-    variables: {
-      language,
-      slug,
-      code: process.env.conferenceCode,
-    },
+  const post = usePageOrPreview({
+    fetcher: "newsArticle",
+    slug,
+    isPreview,
+    previewData,
   });
-
-  const newsArticle = data.newsArticle;
-  const blogPost = data.blogPost;
-  const post = newsArticle || {
-    ...blogPost,
-    publishedAt: blogPost.published,
-    authorFullname: blogPost.author.fullName,
-    body: blogPost.content,
-  };
 
   return (
     <Page endSeparator={false}>
@@ -58,7 +55,6 @@ export const NewsArticlePage = () => {
         title={post.title}
         description={post.excerpt || post.title}
         useDefaultSocialCard={false}
-        useNewSocialCard={true}
       />
 
       <Section illustration="snakeHead">
@@ -66,7 +62,9 @@ export const NewsArticlePage = () => {
           <FormattedMessage
             id="blog.publishedOn"
             values={{
-              date: dateFormatter.format(parseISO(post.publishedAt)),
+              date: post.publishedAt
+                ? dateFormatter.format(parseISO(post.publishedAt))
+                : "",
               author: post.authorFullname,
             }}
           />
@@ -77,38 +75,55 @@ export const NewsArticlePage = () => {
 
       <Section illustration="snakeTail">
         <Container noPadding center={false} size="medium">
-          {newsArticle && <StyledHTMLText text={post.body} baseTextSize={2} />}
-          {blogPost && <Article>{compile(blogPost.content).tree}</Article>}
+          <StyledHTMLText text={post.body} baseTextSize={2} />
         </Container>
       </Section>
     </Page>
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
+export const getStaticProps: GetStaticProps = async ({
+  params,
+  locale,
+  preview,
+  previewData,
+}: {
+  params: { slug: string };
+  locale: string;
+  preview: boolean;
+  previewData: any;
+}) => {
   const slug = params.slug as string;
   const client = getApolloClient();
 
-  const [_, newsArticle] = await Promise.all([
+  const [_, newsArticleQuery] = await Promise.all([
     prefetchSharedQueries(client, locale),
-    queryNewsArticle(client, {
-      slug,
-      code: process.env.conferenceCode,
-      language: locale,
-    }),
+    preview
+      ? queryPagePreview(client, {
+          contentType: previewData?.contentType,
+          token: previewData?.token,
+        })
+      : queryNewsArticle(client, {
+          slug,
+          hostname: process.env.cmsHostname,
+          language: locale,
+        }),
   ]);
 
-  if (
-    !newsArticle.data ||
-    (!newsArticle.data.newsArticle && !newsArticle.data.blogPost)
-  ) {
+  const newsArticle = preview
+    ? (newsArticleQuery.data as PagePreviewQuery).pagePreview
+    : (newsArticleQuery.data as NewsArticleQuery).newsArticle;
+  if (!newsArticle) {
     return {
       notFound: true,
     };
   }
 
   return addApolloState(client, {
-    props: {},
+    props: {
+      isPreview: preview || false,
+      previewData: previewData || null,
+    },
   });
 };
 
@@ -125,11 +140,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
   ] = await Promise.all([
     queryAllNewsArticles(client, {
       language: "it",
-      code: process.env.conferenceCode,
+      hostname: process.env.cmsHostname,
     }),
     queryAllNewsArticles(client, {
       language: "en",
-      code: process.env.conferenceCode,
+      hostname: process.env.cmsHostname,
     }),
   ]);
 

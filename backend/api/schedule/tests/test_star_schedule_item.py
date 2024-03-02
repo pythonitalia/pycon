@@ -35,7 +35,9 @@ def test_star_schedule_item(
 
     response = graphql_client.query(
         """mutation($id: ID!) {
-        starScheduleItem(id: $id)
+        starScheduleItem(id: $id) {
+            ok
+        }
     }""",
         variables={"id": schedule_item.id},
     )
@@ -76,7 +78,9 @@ def test_unstar_schedule_item(
 
     response = graphql_client.query(
         """mutation($id: ID!) {
-        unstarScheduleItem(id: $id)
+        unstarScheduleItem(id: $id) {
+            ok
+        }
     }""",
         variables={"id": schedule_item.id},
     )

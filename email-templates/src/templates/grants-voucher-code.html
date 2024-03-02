@@ -1,0 +1,174 @@
+---
+title: "[PyCon Italia 2023] Here your Speaker Voucher Code!"
+preheader: "Yay! Here you can find your Speaker Voucher Code"
+---
+
+<extends src="src/layouts/base.html">
+<block name="template">
+<table class="w-full font-sans">
+    <tr>
+        <td align="center" class="bg-gray-100">
+            <table class="w-600 sm:w-full">
+                <tr>
+                    <component src="src/components/head-pycon.html" />
+                </tr>
+                <tr>
+                    <td align="center" class="sm:px-24">
+                        <table class="w-full">
+                            <tr>
+                                <td class="bg-white text-gray-800 text-base text-left p-48 sm:px-24 leading-24">
+                                    <p class="m-0 mb-16">👋 @{{ firstname }}!</p>
+                                    <p class="m-0 mb-8 text-center">English version 🇬🇧 (Versione Italiana sotto)</p>
+                                    <p class="m-0 mb-8">
+                                        As part of the grant, we are pleased to provide you a voucher code
+                                        to redeem your conference ticket.
+                                        @{{#if hasApprovedAccommodation}}
+                                        <br />
+                                        <strong class="font-semibold">No need to worry about accommodation</strong> – your stay at the Grand Hotel
+                                        Mediterraneo is already arranged and included.
+                                        @{{/if}}
+                                        </p>
+                                        <p class="m-0 mb-8">To redeem it:</p>
+                                        <ul class="m-0 mb-24 pl-2 list-decimal list-inside">
+                                            <li>
+                                                <strong class="font-semibold">To start your registration, visit the</strong>
+                                                <a href="https://pycon.it/tickets" target="_blank">PyCon Italia ticket page</a>.
+                                            </li>
+                                            <li>
+                                                <strong class="font-semibold">Select your ticket</strong>:
+                                                add 1 Regular or Late Personal ticket to your basket. (Note: The voucher code is not applicable for other ticket types.)
+                                            </li>
+                                            <li>
+                                                <strong class="font-semibold">Optional add-ons</strong>:
+                                                feel free to add a t-shirt to your basket. Remember, the voucher covers the cost of 1 ticket only.
+                                            </li>
+                                            <li>
+                                                <strong class="font-semibold">Enter your information</strong>:
+                                                fill in your personal details as required.
+                                            </li>
+                                            <li>
+                                                <strong class="font-semibold">Apply your voucher code</strong>:
+                                                use the code below at checkout to redeem your ticket.
+                                                <!-- prettier-ignore -->
+                                                <div class="my-5 p-10 text-center text-white bg-darker">@{{ voucherCode }}</div>
+                                            </li>
+                                            <li>
+                                                <strong class="font-semibold">Complete your purchase</strong>:
+                                                choose your payment method (credit card or bank transfer) and you're done!
+                                            </li>
+                                        </ul>
+                                        <div class="leading-full items-center justify-center flex mb-24">
+                                            <a href="https://pycon.it/tickets"
+                                               target="_blank"
+                                               class="inline-block py-16 px-24 select-none text-base font-semibold text-center no-underline text-white bg-primary hover:bg-darker">
+                                                <!--[if mso
+                            ]><i style=" letter-spacing: 24px; mso-font-width: -100%; mso-text-raise: 30px; ">&#8202;</i><!
+                          [endif]-->
+                                                <span style="mso-text-raise: 16px">Open tickets page</span>
+                                                <!--[if mso
+                            ]><i style="letter-spacing: 24px; mso-font-width: -100%">&#8202;</i><!
+                          [endif]-->
+                                            </a>
+                                        </div>
+                                        <span>
+                                            You don't see a button above?
+                                            <a href="https://pycon.it/tickets" target="_blank">Visit the PyCon Italia tickets page: https://pycon.it/tickets</a>
+                                        </span>
+                                        <p class="m-0 mb-24">
+                                            <strong class="font-semibold">Please try and redeem your ticket as soon as possible!</strong>
+                                            <br />
+                                        </p>
+                                        <h3 class="text-lg text-center font-semibold mb-4 uppercase">Need a VISA Invitation Letter?</h3>
+                                        <p class="m-0 mb-16">
+                                            If you require an invitation letter for a VISA, visit our
+                                            <a href="@{{ visaPageLink }}" class="text-blue-600 underline font-bold">VISA page</a>
+                                            and complete the Visa Information Request form.
+                                            Ensure that you have redeemed your ticket before submitting the form.
+                                        </p>
+                                        <!-- italian -->
+                                        <p class="m-0 mb-8 text-center">Versione Italiana 🇮🇹 (English version above)</p>
+                                        <p class="m-0 mb-8">
+                                            Come parte del grant, siamo lieti di fornirvi un codice sconto
+                                            per riscattare il vostro biglietto per la conferenza.
+                                            <br />
+                                            @{{#if hasApprovedAccommodation}}
+                                            <strong class="font-semibold">Non dovete preoccuparvi dell'alloggio</strong> –
+                                            il vostro soggiorno al Grand Hotel Mediterraneo è già organizzato e incluso.
+                                            @{{/if}}
+                                            </p>
+                                            <p class="m-0 mb-8">Per riscattarlo:</p>
+                                            <ul class="m-0 mb-24 pl-2 list-decimal list-inside">
+                                                <li>
+                                                    <strong class="font-semibold">Per iniziare, visitate la</strong>
+                                                    <a href="https://pycon.it/tickets" target="_blank">pagina dei biglietti di PyCon Italia</a>.
+                                                </li>
+                                                <li>
+                                                    <strong class="font-semibold">Selezionate il vostro biglietto</strong>:
+                                                    aggiungete 1 biglietto Regular o Late Personale al vostro carrello.
+                                                    (Nota: Il codice sconto non è applicabile ad altri tipi di biglietti.)
+                                                </li>
+                                                <li>
+                                                    <strong class="font-semibold">Add-on opzionali</strong>:
+                                                    sentitevi liberi di aggiungere una t-shirt al vostro carrello.
+                                                    Ricordate, il codice sconto copre il costo di 1 solo biglietto.
+                                                </li>
+                                                <li>
+                                                    <strong class="font-semibold">Inserite le vostre informazioni</strong>:
+                                                    compilate i vostri dettagli personali come richiesto.
+                                                </li>
+                                                <li>
+                                                    <strong class="font-semibold">Inserite il vostro codice sconto</strong>:
+                                                    utilizzate il codice qui sotto al momento del pagamento per riscattare il vostro biglietto.
+                                                    <!-- prettier-ignore -->
+                                                    <div class="my-5 p-10 text-center text-white bg-darker">@{{ voucherCode }}</div>
+                                                </li>
+                                                <li>
+                                                    <strong class="font-semibold">Completate il vostro acquisto</strong>:
+                                                    scegliete il metodo di pagamento (carta di credito o bonifico bancario) e avete finito!
+                                                </li>
+                                            </ul>
+                                            <div class="leading-full items-center justify-center flex mb-24">
+                                                <a href="https://pycon.it/tickets"
+                                                   target="_blank"
+                                                   class="inline-block py-16 px-24 select-none text-base font-semibold text-center no-underline text-white bg-primary hover:bg-darker">
+                                                    <!--[if mso
+]><i style=" letter-spacing: 24px; mso-font-width: -100%; mso-text-raise: 30px; ">&#8202;</i><!
+      [endif]-->
+                                                    <span style="mso-text-raise: 16px">Apri la pagina dei biglietti</span>
+                                                    <!--[if mso
+]><i style="letter-spacing: 24px; mso-font-width: -100%">&#8202;</i><
+      [endif]-->
+                                                </a>
+                                            </div>
+                                            <span>
+                                                Non vedete il pulsante qui sopra?
+                                                <a href="https://pycon.it/tickets" target="_blank">Vista la pagina dei biglietti di PyCon Italia: https://pycon.it/tickets</a>
+                                            </span>
+                                            <p class="m-0 mb-24">
+                                                <strong class="font-semibold">Cercate di riscattare il vostro biglietto il prima possibile! Grazie!</strong>
+                                                <br />
+                                            </p>
+                                            <h3 class="text-lg text-center font-semibold mb-4 uppercase">Hai bisogno di una lettera di invito?</h3>
+                                            <p class="m-0 mb-16">
+                                                Se hai bisogno di una lettera di invito per un VISTO visita la nostra
+                                                <a href="@{{ visaPageLink }}" class="text-blue-600 underline font-bold">pagina VISTO</a>
+                                                e compila il form di Richiesta Informazioni per il Visto.
+                                                Assicurati di aver riscattato il tuo biglietto prima di inviare il form.
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="h-48"></td>
+                                    </tr>
+                                    <tr>
+                                        <component src="src/components/footer.html" />
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        </block>
+        </extends>

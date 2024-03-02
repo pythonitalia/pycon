@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { jsx, Box, Label, Grid } from "theme-ui";
+import { Box, Grid, Label, jsx } from "theme-ui";
 
 import { EnglishIcon } from "../icons/english";
 import { ItalianIcon } from "../icons/italian";
@@ -24,7 +24,7 @@ export const MultiLingualInput = ({
   name: originalName,
   ...props
 }: Props) => {
-  let languages;
+  let languages: string[];
   if (unsortedLanguages.length === 0) {
     languages = ["invalid"];
   } else {

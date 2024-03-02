@@ -1,3 +1,6 @@
+from django.contrib import messages
+from functools import wraps
+
 from typing import List
 
 from django.contrib import admin
@@ -30,3 +33,23 @@ class CustomIndexLinks(admin.ModelAdmin):
                 )
             )
         return base_urls + additional_urls
+
+
+def validate_single_conference_selection(func):
+    """
+    Ensure all selected grants in the queryset belong to the same conference.
+    """
+
+    @wraps(func)
+    def wrapper(modeladmin, request, queryset):
+        is_filtered_by_conference = (
+            queryset.values_list("conference_id").distinct().count() == 1
+        )
+
+        if not is_filtered_by_conference:
+            messages.error(request, "Please select only one conference")
+            return
+
+        return func(modeladmin, request, queryset)
+
+    return wrapper

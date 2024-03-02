@@ -1,12 +1,12 @@
 import {
-  Heading,
-  Text,
-  Page,
-  Spacer,
-  InputWrapper,
-  Input,
   Button,
   Grid,
+  Heading,
+  Input,
+  InputWrapper,
+  Page,
+  Spacer,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { useRef } from "react";
 import { FormattedMessage } from "react-intl";
@@ -129,7 +129,7 @@ export const ResetPasswordPageHandler = () => {
             </Grid>
             <Spacer size="large" />
             <div className="flex justify-end">
-              <Button role="secondary" disabled={loading} onClick={onSubmit}>
+              <Button disabled={loading} onClick={onSubmit} variant="secondary">
                 <FormattedMessage id="resetPassword.changePassword" />
               </Button>
             </div>

@@ -1,11 +1,11 @@
 import {
-  Heading,
-  Text,
-  Section,
-  MultiplePartsCard,
   CardPart,
-  Link,
   Grid,
+  Heading,
+  Link,
+  MultiplePartsCard,
+  Section,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { parseISO } from "date-fns";
 
@@ -19,7 +19,7 @@ export const NewsGridSection = () => {
   const { data } = useNewsGridSectionQuery({
     variables: {
       language,
-      code: process.env.conferenceCode,
+      hostname: process.env.cmsHostname,
     },
   });
 
@@ -53,16 +53,18 @@ const BlogPost = ({ post, language }: { post: any; language: string }) => {
       })}
     >
       <MultiplePartsCard>
-        <CardPart
-          rightSideIcon="arrow"
-          rightSideIconSize="small"
-          shrink={false}
-          contentAlign="left"
-        >
-          <Text uppercase size="label3" weight="strong">
-            {dateFormatter.format(parseISO(post.published || post.publishedAt))}
-          </Text>
-        </CardPart>
+        {post.publishedAt && (
+          <CardPart
+            rightSideIcon="arrow"
+            rightSideIconSize="small"
+            shrink={false}
+            contentAlign="left"
+          >
+            <Text uppercase size="label3" weight="strong">
+              {dateFormatter.format(parseISO(post.publishedAt))}
+            </Text>
+          </CardPart>
+        )}
         <CardPart fullHeight background="milk" contentAlign="left">
           <Heading size={4}>{post.title}</Heading>
         </CardPart>
@@ -74,7 +76,7 @@ const BlogPost = ({ post, language }: { post: any; language: string }) => {
 NewsGridSection.dataFetching = (client, language) => {
   return [
     queryNewsGridSection(client, {
-      code: process.env.conferenceCode,
+      hostname: process.env.cmsHostname,
       language,
     }),
   ];

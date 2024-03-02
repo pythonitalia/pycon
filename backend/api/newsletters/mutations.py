@@ -2,11 +2,11 @@ import strawberry
 
 from api.newsletters.forms import SubscribeToNewsletterForm, UnsubscribeToNewsletterForm
 from api.types import OperationResult
-from integrations.mailchimp import SubscriptionResult as MailchimpSubscriptionResult
+from integrations.flodesk import SubscriptionResult as FlodeskSubscriptionResult
 from strawberry_forms.mutations import FormMutation
 
 NewsletterMembershipStatus = strawberry.enum(
-    MailchimpSubscriptionResult, name="NewsletterSubscriptionResult"
+    FlodeskSubscriptionResult, name="NewsletterSubscriptionResult"
 )
 
 

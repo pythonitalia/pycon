@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 
-import { getApolloClient, addApolloState } from "~/apollo/client";
+import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { queryAllJobListings } from "~/types";
 

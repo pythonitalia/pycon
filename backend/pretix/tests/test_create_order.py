@@ -370,3 +370,160 @@ def test_create_order_with_positions_with_voucher_and_one_without(
     body = orders_mock.request_history[0].json()
     assert "voucher" not in body["positions"][0]
     assert body["positions"][1]["voucher"] == "friendly-human-being"
+
+
+@override_settings(PRETIX_API="https://pretix/api/")
+@pytest.mark.django_db
+def test_creates_order_with_additional_info_for_e_invoice(
+    conference, hotel_room, requests_mock, invoice_information, bed_layout_factory
+):
+    bed_layout = bed_layout_factory()
+    hotel_room.conference = conference
+    hotel_room.available_bed_layouts.add(bed_layout)
+    hotel_room.save()
+
+    requests_mock.post(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/orders/",
+        json={"payments": [{"payment_url": "http://example.com"}], "code": 123},
+    )
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
+        json={
+            "results": [
+                {"id": "1", "type": "S"},
+                {"id": "2", "type": "C", "options": [{"id": 1, "identifier": "abc"}]},
+            ]
+        },
+    )
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
+        json={"results": [{"id": "123", "admission": True}]},
+    )
+
+    requests_mock.post(
+        "https://pretix/api/orders/123/update_invoice_information/",
+        json={},
+    )
+
+    order_data = CreateOrderInput(
+        email="my@email.com",
+        locale="en",
+        payment_provider="stripe",
+        invoice_information=InvoiceInformation(
+            is_business=False,
+            company="ABC",
+            name="ABC",
+            street="ABC",
+            zipcode="ABC",
+            city="ABC",
+            country="IT",
+            vat_id="ABC",
+            fiscal_code="ABC",
+            pec="example@example.com",
+            sdi="1231231",
+        ),
+        hotel_rooms=[
+            CreateOrderHotelRoom(
+                room_id=str(hotel_room.id),
+                checkin=timezone.datetime(2020, 1, 1).date(),
+                checkout=timezone.datetime(2020, 1, 3).date(),
+                bed_layout_id=str(bed_layout.id),
+            )
+        ],
+        tickets=[
+            CreateOrderTicket(
+                ticket_id="123",
+                attendee_name="Example",
+                attendee_email="Example",
+                variation=None,
+                voucher=None,
+                answers=[
+                    CreateOrderTicketAnswer(question_id="1", value="ABC"),
+                    CreateOrderTicketAnswer(question_id="2", value="1"),
+                ],
+            )
+        ],
+    )
+
+    result = create_order(conference, order_data)
+
+    assert result.payment_url == "http://example.com"
+
+
+@override_settings(PRETIX_API="https://pretix/api/")
+@pytest.mark.django_db
+def test_creates_order_with_additional_info_for_e_invoice_does_not_break_on_error(
+    conference, hotel_room, requests_mock, invoice_information, bed_layout_factory
+):
+    bed_layout = bed_layout_factory()
+    hotel_room.conference = conference
+    hotel_room.available_bed_layouts.add(bed_layout)
+    hotel_room.save()
+
+    requests_mock.post(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/orders/",
+        json={"payments": [{"payment_url": "http://example.com"}], "code": 123},
+    )
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
+        json={
+            "results": [
+                {"id": "1", "type": "S"},
+                {"id": "2", "type": "C", "options": [{"id": 1, "identifier": "abc"}]},
+            ]
+        },
+    )
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
+        json={"results": [{"id": "123", "admission": True}]},
+    )
+
+    requests_mock.post(
+        "https://pretix/api/orders/123/update_invoice_information/",
+        json={},
+        status_code=400,
+    )
+
+    order_data = CreateOrderInput(
+        email="my@email.com",
+        locale="en",
+        payment_provider="stripe",
+        invoice_information=InvoiceInformation(
+            is_business=False,
+            company="ABC",
+            name="ABC",
+            street="ABC",
+            zipcode="ABC",
+            city="ABC",
+            country="IT",
+            vat_id="ABC",
+            fiscal_code="ABC",
+            pec="example@example.com",
+            sdi="1231231",
+        ),
+        hotel_rooms=[
+            CreateOrderHotelRoom(
+                room_id=str(hotel_room.id),
+                checkin=timezone.datetime(2020, 1, 1).date(),
+                checkout=timezone.datetime(2020, 1, 3).date(),
+                bed_layout_id=str(bed_layout.id),
+            )
+        ],
+        tickets=[
+            CreateOrderTicket(
+                ticket_id="123",
+                attendee_name="Example",
+                attendee_email="Example",
+                variation=None,
+                voucher=None,
+                answers=[
+                    CreateOrderTicketAnswer(question_id="1", value="ABC"),
+                    CreateOrderTicketAnswer(question_id="2", value="1"),
+                ],
+            )
+        ],
+    )
+
+    result = create_order(conference, order_data)
+
+    assert result.payment_url == "http://example.com"

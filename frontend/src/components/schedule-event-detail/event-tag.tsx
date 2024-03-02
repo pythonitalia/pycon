@@ -11,10 +11,14 @@ export const EventTag = ({ type }: Props) => (
     {type === "keynote" && "Keynote"}
     {type === "lightning-talks" && "Lightning Talks"}
     {type === "panel" && "Panel"}
+    {type === "social" && "Social"}
+    {type === "announcements" && "Announcements"}
+    {type === "registration" && "Registration"}
+    {type === "break" && "Break"}
   </Tag>
 );
 
-const getTagColor = (type: string): Color => {
+export const getTagColor = (type: string): Color => {
   switch (type) {
     case "talk":
       return "green";
@@ -27,5 +31,10 @@ const getTagColor = (type: string): Color => {
       return "caramel";
     case "panel":
       return "blue";
+    case "announcements":
+    case "registration":
+      return "purple";
+    case "social":
+      return "coral";
   }
 };

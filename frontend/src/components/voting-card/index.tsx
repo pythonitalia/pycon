@@ -1,13 +1,13 @@
 import {
-  MultiplePartsCard,
   CardPart,
   Grid,
-  Heading,
-  Spacer,
-  Text,
   GridColumn,
+  Heading,
   InputNumber,
   Link,
+  MultiplePartsCard,
+  Spacer,
+  Text,
 } from "@python-italia/pycon-styleguide";
 import { ArrowIcon } from "@python-italia/pycon-styleguide/icons";
 import React, { useCallback } from "react";
@@ -124,7 +124,7 @@ export const VotingCard = ({
         />
 
         <Text size={3} color="error">
-          {error && error.message}
+          {error?.message}
           {submissionData &&
             submissionData.sendVote.__typename === "SendVoteErrors" && (
               <>

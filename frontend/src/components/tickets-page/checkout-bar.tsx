@@ -1,4 +1,4 @@
-import { Heading, Button, BottomBar } from "@python-italia/pycon-styleguide";
+import { BottomBar, Button, Heading } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
 import { useMoneyFormatter } from "~/helpers/formatters";
@@ -34,7 +34,7 @@ export const CheckoutBar = ({ products, hotelRooms, onCheckout }: Props) => {
   return (
     <BottomBar
       action={
-        <Button onClick={onCheckout} role="secondary">
+        <Button onClick={onCheckout} variant="secondary">
           <FormattedMessage id="tickets.checkoutBar.cta" />
         </Button>
       }

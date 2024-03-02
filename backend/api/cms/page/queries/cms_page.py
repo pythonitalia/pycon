@@ -1,5 +1,5 @@
+from api.cms.utils import get_site_by_host
 from cms.components.page.models import GenericPage as GenericPageModel
-from wagtail.models import Site
 
 import strawberry
 
@@ -12,7 +12,9 @@ def cms_page(
     slug: str,
     language: str,
 ) -> GenericPage | SiteNotFoundError | None:
-    if not (site := Site.objects.filter(hostname=hostname).first()):
+    site = get_site_by_host(hostname)
+
+    if not site:
         return SiteNotFoundError(message=f"Site `{hostname}` not found")
 
     page = GenericPageModel.objects.in_site(site).filter(slug=slug).first()
@@ -22,7 +24,7 @@ def cms_page(
 
     translated_page = (
         page.get_translations(inclusive=True)
-        .filter(locale__language_code=language)
+        .filter(locale__language_code=language, live=True)
         .first()
     )
 
