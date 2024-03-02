@@ -1,3 +1,4 @@
+from custom_admin.admin import validate_single_conference_selection
 from import_export.resources import ModelResource
 from datetime import timedelta
 from typing import Dict, List, Optional
@@ -28,7 +29,6 @@ from submissions.models import Submission
 from .models import Grant
 from django.db.models import Exists, OuterRef
 
-from functools import wraps
 from django.contrib.admin import SimpleListFilter
 
 EXPORT_GRANTS_FIELDS = (
@@ -176,26 +176,6 @@ def _check_amounts_are_not_empty(grant: Grant, request):
         return False
 
     return True
-
-
-def validate_single_conference_selection(func):
-    """
-    Ensure all selected grants in the queryset belong to the same conference.
-    """
-
-    @wraps(func)
-    def wrapper(modeladmin, request, queryset):
-        is_filtered_by_conference = (
-            queryset.values_list("conference_id").distinct().count() == 1
-        )
-
-        if not is_filtered_by_conference:
-            messages.error(request, "Please select only one conference")
-            return
-
-        return func(modeladmin, request, queryset)
-
-    return wrapper
 
 
 @admin.action(description="Send Approved/Waiting List/Rejected reply emails")

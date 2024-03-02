@@ -1,3 +1,4 @@
+from custom_admin.admin import validate_single_conference_selection
 from import_export.resources import ModelResource
 from django.db.models import Prefetch
 from typing import Dict
@@ -161,6 +162,13 @@ def send_schedule_invitation_to_uninvited(modeladmin, request, queryset):
     messages.add_message(request, messages.INFO, "Invitations sent")
 
 
+@admin.action(description="Mark as Confirmed")
+@validate_single_conference_selection
+def mark_as_confirmed_action(modeladmin, request, queryset):
+    queryset.update(status=ScheduleItem.STATUS.confirmed)
+    messages.add_message(request, messages.INFO, "Marked as confirmed")
+
+
 def _send_invitations(
     *,
     queryset,
@@ -306,11 +314,12 @@ class ScheduleItemAdminForm(forms.ModelForm):
 @admin.register(ScheduleItem)
 class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     list_display = (
-        "title",
         "conference",
+        "title",
         "status",
         "language",
         "slot",
+        "speakers_names",
         "type",
         "submission",
     )
@@ -383,6 +392,7 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         send_schedule_invitation_reminder_to_waiting,
         mark_speakers_to_receive_vouchers,
         upload_videos_to_youtube,
+        mark_as_confirmed_action,
     ]
     readonly_fields = (
         "spaces_left",
@@ -490,6 +500,9 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             )
 
         return return_value
+
+    def speakers_names(self, obj):
+        return ", ".join([speaker.display_name for speaker in obj.speakers])
 
     def invitation_link(self, obj):
         return f"https://pycon.it/schedule/invitation/{obj.submission.hashid}"

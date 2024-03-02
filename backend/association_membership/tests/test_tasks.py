@@ -13,8 +13,8 @@ from association_membership.enums import (
     PaymentStatus,
     MembershipStatus,
 )
-from association_membership.handlers.crons.membership_check_status import (
-    membership_check_status,
+from association_membership.tasks import (
+    check_association_membership_subscriptions,
 )
 
 pytestmark = pytest.mark.django_db
@@ -49,7 +49,7 @@ def test_no_expired_memberships():
         membership_1.save()
         membership_2.save()
 
-        membership_check_status({})
+        check_association_membership_subscriptions()
 
         updated_membership_1 = Membership.objects.get(id=membership_1.id)
         assert updated_membership_1.status == MembershipStatus.ACTIVE
@@ -87,7 +87,7 @@ def test_one_expired_membership():
         membership_1.save()
         membership_2.save()
 
-        membership_check_status({})
+        check_association_membership_subscriptions()
 
         updated_membership_1 = Membership.objects.get(id=membership_1.id)
         assert updated_membership_1.status == MembershipStatus.CANCELED
@@ -112,7 +112,7 @@ def test_membership_canceled_but_has_payment_for_this_range_is_activated():
 
         membership_1.save()
 
-        membership_check_status({})
+        check_association_membership_subscriptions()
 
         updated_membership_1 = Membership.objects.get(id=membership_1.id)
         assert updated_membership_1.status == MembershipStatus.ACTIVE
@@ -144,7 +144,7 @@ def test_membership_with_multiple_payments():
 
         membership_1.save()
 
-        membership_check_status({})
+        check_association_membership_subscriptions()
 
         updated_membership_1 = Membership.objects.get(id=membership_1.id)
         assert updated_membership_1.status == MembershipStatus.ACTIVE
@@ -180,7 +180,7 @@ def test_membership_with_overlapping_payments():
 
         membership_1.save()
 
-        membership_check_status({})
+        check_association_membership_subscriptions()
 
         updated_membership_1 = Membership.objects.get(id=membership_1.id)
         assert updated_membership_1.status == MembershipStatus.ACTIVE
@@ -216,7 +216,7 @@ def test_expired_membership_with_overlapping_payments():
 
         membership_1.save()
 
-        membership_check_status({})
+        check_association_membership_subscriptions()
 
         updated_membership_1 = Membership.objects.get(id=membership_1.id)
         assert updated_membership_1.status == MembershipStatus.ACTIVE
@@ -252,7 +252,7 @@ def test_membership_gets_activated_with_overlapping_payments():
 
         membership_1.save()
 
-        membership_check_status({})
+        check_association_membership_subscriptions()
 
         updated_membership_1 = Membership.objects.get(id=membership_1.id)
         assert updated_membership_1.status == MembershipStatus.ACTIVE
@@ -268,7 +268,7 @@ def test_pending_memberships_are_ignored():
 
         membership_1.save()
 
-        membership_check_status({})
+        check_association_membership_subscriptions()
 
         updated_membership_1 = Membership.objects.get(id=membership_1.id)
         assert updated_membership_1.status == MembershipStatus.PENDING
@@ -284,7 +284,7 @@ def test_canceled_memberships_with_no_payments_are_left_untouched():
 
         membership_1.save()
 
-        membership_check_status({})
+        check_association_membership_subscriptions()
 
         updated_membership_1 = Membership.objects.get(id=membership_1.id)
         assert updated_membership_1.status == MembershipStatus.CANCELED
@@ -306,7 +306,7 @@ def test_membership_with_canceled_payment_gets_canceled():
 
         membership_1.save()
 
-        membership_check_status({})
+        check_association_membership_subscriptions()
 
         updated_membership_1 = Membership.objects.get(id=membership_1.id)
         assert updated_membership_1.status == MembershipStatus.CANCELED
@@ -339,7 +339,7 @@ def test_membership_with_overlapping_canceled_and_valid_payment_is_marked_active
 
         membership_1.save()
 
-        membership_check_status({})
+        check_association_membership_subscriptions()
 
         updated_membership_1 = Membership.objects.get(id=membership_1.id)
         assert updated_membership_1.status == MembershipStatus.ACTIVE
@@ -372,10 +372,8 @@ def test_membership_with_finished_and_new_payment():
         membership_1.save()
 
     with time_machine.travel("2021-01-01 10:00:00", tick=False):
-        with patch(
-            "association_membership.handlers.crons.membership_check_status.logger"
-        ) as logger_mock:
-            membership_check_status({})
+        with patch("association_membership.tasks.logger") as logger_mock:
+            check_association_membership_subscriptions()
 
         updated_membership_1 = Membership.objects.get(id=membership_1.id)
         assert updated_membership_1.status == MembershipStatus.ACTIVE

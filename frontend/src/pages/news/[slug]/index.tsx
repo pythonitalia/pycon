@@ -55,7 +55,6 @@ export const NewsArticlePage = ({
         title={post.title}
         description={post.excerpt || post.title}
         useDefaultSocialCard={false}
-        useNewSocialCard={true}
       />
 
       <Section illustration="snakeHead">

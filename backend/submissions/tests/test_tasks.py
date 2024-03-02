@@ -3,8 +3,12 @@ from i18n.strings import LazyI18nString
 from unittest.mock import patch
 from conferences.tests.factories import ConferenceFactory
 import pytest
-from pythonit_toolkit.emails.templates import EmailTemplate
-from submissions.tasks import notify_new_cfp_submission, send_proposal_rejected_email
+from submissions.models import Submission
+from submissions.tasks import (
+    notify_new_cfp_submission,
+    send_proposal_in_waiting_list_email,
+    send_proposal_rejected_email,
+)
 from submissions.tests.factories import SubmissionFactory
 from users.tests.factories import UserFactory
 
@@ -41,26 +45,44 @@ def test_handle_new_cfp_submission():
     assert "https://456" in str(slack_mock.send_message.mock_calls[0])
 
 
-def test_send_proposal_rejected_email(mocker):
+def test_send_proposal_rejected_email(sent_emails):
     submission = SubmissionFactory(
         conference__name=LazyI18nString({"en": "Conf"}),
         title=LazyI18nString({"en": "Title"}),
         speaker__full_name="Marco",
+        status=Submission.STATUS.rejected,
     )
-    mock_send_email = mocker.patch("submissions.tasks.send_email")
 
     send_proposal_rejected_email(
         proposal_id=submission.id,
     )
 
-    mock_send_email.assert_called_once_with(
-        template=EmailTemplate.SUBMISSION_REJECTED,
-        to=submission.speaker.email,
-        subject="[Conf] Update about your proposal",
-        variables={
-            "firstname": "Marco",
-            "conferenceName": "Conf",
-            "submissionTitle": "Title",
-            "submissionType": submission.type.name,
-        },
+    assert len(sent_emails) == 1
+    assert sent_emails[0]["to"] == submission.speaker.email
+    assert sent_emails[0]["subject"] == "[Conf] Update about your proposal"
+    assert sent_emails[0]["variables"]["firstname"] == "Marco"
+    assert sent_emails[0]["variables"]["conferenceName"] == "Conf"
+    assert sent_emails[0]["variables"]["submissionTitle"] == "Title"
+    assert sent_emails[0]["variables"]["submissionType"] == submission.type.name
+
+
+def test_send_proposal_in_waiting_list_email(sent_emails):
+    submission = SubmissionFactory(
+        conference__name=LazyI18nString({"en": "Conf"}),
+        title=LazyI18nString({"en": "Title"}),
+        speaker__full_name="Marco",
+        status=Submission.STATUS.waiting_list,
     )
+
+    send_proposal_in_waiting_list_email(
+        proposal_id=submission.id,
+    )
+
+    assert len(sent_emails) == 1
+    assert sent_emails[0]["to"] == submission.speaker.email
+    assert sent_emails[0]["subject"] == "[Conf] Speakers Waiting List"
+    assert sent_emails[0]["variables"]["firstname"] == "Marco"
+    assert sent_emails[0]["variables"]["conferenceName"] == "Conf"
+    assert sent_emails[0]["variables"]["submissionTitle"] == "Title"
+    assert sent_emails[0]["variables"]["submissionType"] == submission.type.name
+    assert sent_emails[0]["reply_to"] == ["speakers@pycon.it"]

@@ -18,7 +18,7 @@ export const EventTag = ({ type }: Props) => (
   </Tag>
 );
 
-const getTagColor = (type: string): Color => {
+export const getTagColor = (type: string): Color => {
   switch (type) {
     case "talk":
       return "green";

@@ -1,8 +1,13 @@
 import datetime
 
+from conferences.tests.factories import ConferenceFactory
+from i18n.strings import LazyI18nString
+from languages.models import Language
 import pytest
 
 from schedule.models import ScheduleItem
+from schedule.tests.factories import ScheduleItemFactory
+from submissions.tests.factories import SubmissionFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -28,6 +33,81 @@ def simple_schedule_item(
         ),
         youtube_video_id="AbCdEfGhIjK",
     )
+
+
+@pytest.mark.parametrize("language_code", ["it", "en"])
+def test_exposes_abstract_elevator_pitch_in_correct_language(
+    graphql_client, user, language_code
+):
+    graphql_client.force_login(user)
+
+    submission = SubmissionFactory(
+        abstract=LazyI18nString({"en": "English abstract", "it": "Italian abstract"}),
+        elevator_pitch=LazyI18nString(
+            {"en": "English elevator pitch", "it": "Italian elevator pitch"}
+        ),
+    )
+
+    schedule_item = ScheduleItemFactory(
+        status=ScheduleItem.STATUS.confirmed,
+        submission=submission,
+        type=ScheduleItem.TYPES.talk,
+        conference=submission.conference,
+        attendees_total_capacity=None,
+        language=Language.objects.get(code=language_code),
+    )
+
+    response = graphql_client.query(
+        """query($slug: String!, $code: String!) {
+            conference(code: $code) {
+                talk(slug: $slug) {
+                    abstract
+                    elevatorPitch
+                }
+            }
+        }""",
+        variables={"slug": schedule_item.slug, "code": schedule_item.conference.code},
+    )
+
+    if language_code == "en":
+        assert response["data"]["conference"]["talk"] == {
+            "abstract": "English abstract",
+            "elevatorPitch": "English elevator pitch",
+        }
+    else:
+        assert response["data"]["conference"]["talk"] == {
+            "abstract": "Italian abstract",
+            "elevatorPitch": "Italian elevator pitch",
+        }
+
+
+def test_empty_abstract_elevator_pitch_with_no_submission(graphql_client, user):
+    graphql_client.force_login(user)
+
+    schedule_item = ScheduleItemFactory(
+        status=ScheduleItem.STATUS.confirmed,
+        submission=None,
+        type=ScheduleItem.TYPES.talk,
+        conference=ConferenceFactory(),
+        attendees_total_capacity=None,
+    )
+
+    response = graphql_client.query(
+        """query($slug: String!, $code: String!) {
+            conference(code: $code) {
+                talk(slug: $slug) {
+                    abstract
+                    elevatorPitch
+                }
+            }
+        }""",
+        variables={"slug": schedule_item.slug, "code": schedule_item.conference.code},
+    )
+
+    assert response["data"]["conference"]["talk"] == {
+        "abstract": "",
+        "elevatorPitch": "",
+    }
 
 
 def test_fetch_schedule_talk(simple_schedule_item, graphql_client, user):

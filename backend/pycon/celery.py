@@ -14,14 +14,17 @@ app.autodiscover_tasks()
 
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
+    import django
+
+    django.setup()
+
     try:
+        from association_membership.tasks import (
+            check_association_membership_subscriptions,
+        )
+
         add = sender.add_periodic_task
 
-        add(timedelta(minutes=2), debug_cron)
+        add(timedelta(minutes=5), check_association_membership_subscriptions)
     except Exception:
         logger.exception("setup_periodic_tasks")
-
-
-@app.task
-def debug_cron():
-    print("debug cron")
