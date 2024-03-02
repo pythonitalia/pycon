@@ -10,13 +10,11 @@ type Props = {
   title?: React.ReactNode | string | null;
   description?: string;
   useDefaultSocialCard?: boolean;
-  useNewSocialCard?: boolean;
 };
 
 const getSocialCardURL = (
   asPath: string,
   useDefaultSocialCard: boolean,
-  useNewSocialCard: boolean,
   locale: string,
 ) => {
   if (useDefaultSocialCard) {
@@ -32,17 +30,11 @@ export const MetaTags = ({
   title,
   description,
   useDefaultSocialCard = true,
-  useNewSocialCard = true,
   children,
 }: React.PropsWithChildren<Props>) => {
   const language = useCurrentLanguage();
   const { asPath, locale } = useRouter();
-  const socialCard = getSocialCardURL(
-    asPath,
-    useDefaultSocialCard,
-    useNewSocialCard,
-    locale,
-  );
+  const socialCard = getSocialCardURL(asPath, useDefaultSocialCard, locale);
 
   const titleTemplate = messages[language].titleTemplate;
 
