@@ -1,4 +1,4 @@
-const { colors } = require('./config-parts');
+const { colors } = require('./src/config-parts');
 
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx,vue}"],
