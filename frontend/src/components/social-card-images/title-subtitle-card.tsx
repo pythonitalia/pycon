@@ -1,4 +1,4 @@
-import { tailwindConfig } from "@python-italia/pycon-styleguide";
+import { colors } from "@python-italia/pycon-styleguide";
 import {
   SnakeHead,
   SnakeTail,
@@ -7,7 +7,6 @@ import { getTagColor } from "../schedule-event-detail/event-tag";
 
 const bgForTag = (tag: string) => {
   const colorName = getTagColor(tag);
-  const colors = tailwindConfig.theme.colors;
   return colors[colorName].light;
 };
 
