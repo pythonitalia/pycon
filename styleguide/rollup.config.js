@@ -111,7 +111,7 @@ export default [
     external,
     output: [
       {
-        file: `dist/config-parts.js`,
+        file: `dist/config-parts.esm.js`,
         format: "es",
         sourcemap: false,
         assetFileNames,
