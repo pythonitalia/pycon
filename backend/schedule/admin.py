@@ -712,6 +712,8 @@ class ScheduleItemSentForVideoUploadAdmin(admin.ModelAdmin):
         "status",
         "video_uploaded",
         "thumbnail_uploaded",
+        "attempts",
+        "last_attempt_at",
     )
     list_filter = ("status", "schedule_item__conference")
     search_fields = ("schedule_item__title",)

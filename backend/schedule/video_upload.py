@@ -41,7 +41,7 @@ def create_video_info(schedule_item: ScheduleItem) -> VideoInfo:
         "abstract": schedule_item.abstract,
         "elevator_pitch": schedule_item.elevator_pitch,
         "conference_name": schedule_item.conference.name.localize("en"),
-        "hashtags": [f"#{tag}" for tag in tags],
+        "hashtags": " ".join([f"#{tag}" for tag in tags]),
     }
 
     title = _process_string_template(
@@ -95,9 +95,9 @@ def extract_video_thumbnail(remote_video_path: str, id: int) -> str:
     return file_path
 
 
-def cleanup_local_files(id: int):
+def cleanup_local_files(id: int, delete_thumbnail: bool = True):
     thumbnail_file_name = get_thumbnail_file_name(id)
-    if local_storage.exists(thumbnail_file_name):
+    if delete_thumbnail and local_storage.exists(thumbnail_file_name):
         local_storage.delete(thumbnail_file_name)
 
     video_file_name = get_video_file_name(id)

@@ -325,12 +325,17 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id):
 
     if not sent_for_video_upload.thumbnail_uploaded:
         video_id = video_id or schedule_item.youtube_video_id
+        assert video_id, "Video marked as uploaded but Video ID is missing"
+
         logger.info("Extracting thumbnail for schedule_item_id=%s", schedule_item.id)
 
         thumbnail_path = extract_video_thumbnail(
             remote_video_path,
             schedule_item.id,
         )
+
+        # we don't need the video file anymore as we already extracted the thumbnail
+        cleanup_local_files(schedule_item.id, delete_thumbnail=False)
 
         try:
             youtube_videos_set_thumbnail(
