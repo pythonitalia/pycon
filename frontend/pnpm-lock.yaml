@@ -215,8 +215,8 @@ devDependencies:
     specifier: ^5.14.1
     version: 5.14.5
   '@xstate/inspect':
-    specifier: ^0.7.0
-    version: 0.7.1(ws@8.16.0)(xstate@4.38.3)
+    specifier: ^0.8.0
+    version: 0.8.0(ws@8.16.0)(xstate@4.38.3)
   autoprefixer:
     specifier: ^10.4.13
     version: 10.4.14(postcss@8.4.35)
@@ -3567,12 +3567,12 @@ packages:
     resolution: {integrity: sha512-N8tkAACJx2ww8vFMneJmaAgmjAG1tnVBZJRLRcx061tmsLRZHSEZSLuGWnwPtunsSLvSqXQ2wfp7Mgqg1I+2dQ==}
     dev: false
 
-  /@xstate/inspect@0.7.1(ws@8.16.0)(xstate@4.38.3):
-    resolution: {integrity: sha512-lEIi6cSvzA9f+GzaJMRVe4xnNjPY/oKdU8rjb+qxqUYx2evLuqysFu0XbPmEjMCwpfdIvG4FFsZJ7Ng7+k9UHw==}
+  /@xstate/inspect@0.8.0(ws@8.16.0)(xstate@4.38.3):
+    resolution: {integrity: sha512-wSkFeOnp+7dhn+zTThO0M4D2FEqZN9lGIWowJu5JLa2ojjtlzRwK8SkjcHZ4rLX8VnMev7kGjgQLrGs8kxy+hw==}
     peerDependencies:
       '@types/ws': ^8.0.0
       ws: ^8.0.0
-      xstate: ^4.35.3
+      xstate: ^4.37.0
     peerDependenciesMeta:
       '@types/ws':
         optional: true
