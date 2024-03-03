@@ -1,3 +1,7 @@
+from django.db.models import Q
+from googleapiclient.errors import HttpError
+from celery_heimdall import HeimdallTask
+from google_api.sdk import youtube_videos_insert, youtube_videos_set_thumbnail
 from integrations import plain
 from pythonit_toolkit.emails.utils import mark_safe
 from pretix import user_has_admission_ticket
@@ -11,6 +15,13 @@ import logging
 from integrations import slack
 
 from pycon.celery import app
+from schedule.models import ScheduleItemSentForVideoUpload
+from schedule.video_upload import (
+    cleanup_local_files,
+    create_video_info,
+    download_video_file,
+    extract_video_thumbnail,
+)
 from users.models import User
 
 logger = logging.getLogger(__name__)
@@ -256,3 +267,131 @@ def send_schedule_invitation_plain_message(*, schedule_item_id, message):
 
     schedule_item.plain_thread_id = thread_id
     schedule_item.save(update_fields=["plain_thread_id"])
+
+
+@app.task
+def upload_schedule_item_video(*, sent_for_video_upload_state_id):
+    sent_for_video_upload = ScheduleItemSentForVideoUpload.objects.get(
+        id=sent_for_video_upload_state_id
+    )
+
+    if not sent_for_video_upload.is_pending:
+        logger.info(
+            "Schedule Item Sent for upload %s is not pending but %s, skipping",
+            sent_for_video_upload_state_id,
+            sent_for_video_upload.status,
+        )
+        return
+
+    sent_for_video_upload.status = ScheduleItemSentForVideoUpload.Status.processing
+    sent_for_video_upload.failed_reason = ""
+    sent_for_video_upload.attempts += 1
+    sent_for_video_upload.last_attempt_at = timezone.now()
+    sent_for_video_upload.save(
+        update_fields=["status", "attempts", "failed_reason", "last_attempt_at"]
+    )
+
+    schedule_item = sent_for_video_upload.schedule_item
+    remote_video_path = schedule_item.video_uploaded_path
+    video_id = None
+
+    if not sent_for_video_upload.video_uploaded:
+        logger.info("Uploading video for schedule_item_id=%s", schedule_item.id)
+
+        video_info = create_video_info(schedule_item)
+
+        logger.info("Downloading video file %s", remote_video_path)
+
+        local_video_path = download_video_file(schedule_item.id, remote_video_path)
+
+        for response in youtube_videos_insert(
+            title=video_info.title,
+            description=video_info.description,
+            tags=video_info.tags_as_str,
+            file_path=local_video_path,
+        ):
+            logger.info(
+                "schedule_item_id=%s Video uploading: %s", schedule_item.id, response
+            )
+
+        sent_for_video_upload.video_uploaded = True
+        sent_for_video_upload.save(update_fields=["video_uploaded"])
+
+        video_id = response["id"]
+        schedule_item.youtube_video_id = video_id
+        schedule_item.save(update_fields=["youtube_video_id"])
+    else:
+        logger.info("Video already uploaded for schedule_item_id=%s", schedule_item.id)
+
+    if not sent_for_video_upload.thumbnail_uploaded:
+        video_id = video_id or schedule_item.youtube_video_id
+        logger.info("Extracting thumbnail for schedule_item_id=%s", schedule_item.id)
+
+        thumbnail_path = extract_video_thumbnail(
+            remote_video_path,
+            schedule_item.id,
+        )
+
+        try:
+            youtube_videos_set_thumbnail(
+                video_id=video_id,
+                thumbnail_path=thumbnail_path,
+            )
+        except HttpError as e:
+            if e.status_code == 429:
+                # we reached the daily thumbnail limit
+                logger.warning(
+                    "Reached the daily thumbnail limit! schedule_item_id=%s moved back to pending",
+                    schedule_item.id,
+                )
+                sent_for_video_upload.status = (
+                    ScheduleItemSentForVideoUpload.Status.pending
+                )
+                sent_for_video_upload.save(update_fields=["status"])
+                return
+
+            raise
+
+        sent_for_video_upload.thumbnail_uploaded = True
+        sent_for_video_upload.save(update_fields=["thumbnail_uploaded"])
+
+    cleanup_local_files(schedule_item.id)
+
+    logger.info("Video uploaded for schedule_item_id=%s", schedule_item.id)
+    sent_for_video_upload.status = ScheduleItemSentForVideoUpload.Status.completed
+    sent_for_video_upload.save(update_fields=["status"])
+
+
+@app.task(
+    base=HeimdallTask,
+    heimdall={
+        "unique": True,
+    },
+)
+def process_schedule_items_videos_to_upload():
+    statuses = (
+        ScheduleItemSentForVideoUpload.objects.filter(
+            Q(last_attempt_at__isnull=True)
+            | Q(
+                last_attempt_at__lt=timezone.now() - timezone.timedelta(hours=1),
+            )
+        )
+        .to_upload()
+        .order_by("last_attempt_at")
+    )
+    for sent_for_video_upload_state in statuses:
+        try:
+            upload_schedule_item_video(
+                sent_for_video_upload_state_id=sent_for_video_upload_state.id
+            )
+        except Exception as e:
+            logger.exception(
+                "Error processing schedule item %s video upload: %s",
+                sent_for_video_upload_state.schedule_item.id,
+                e,
+            )
+            sent_for_video_upload_state.status = (
+                ScheduleItemSentForVideoUpload.Status.failed
+            )
+            sent_for_video_upload_state.failed_reason = str(e)
+            sent_for_video_upload_state.save(update_fields=["status", "failed_reason"])

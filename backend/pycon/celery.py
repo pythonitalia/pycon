@@ -22,9 +22,11 @@ def setup_periodic_tasks(sender, **kwargs):
         from association_membership.tasks import (
             check_association_membership_subscriptions,
         )
+        from schedule.tasks import process_schedule_items_videos_to_upload
 
         add = sender.add_periodic_task
 
         add(timedelta(minutes=5), check_association_membership_subscriptions)
+        add(timedelta(minutes=10), process_schedule_items_videos_to_upload)
     except Exception:
         logger.exception("setup_periodic_tasks")

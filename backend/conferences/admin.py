@@ -178,7 +178,7 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                 )
             },
         ),
-        ("YouTube", {"fields": ("youtube_video_bottom_text",)}),
+        ("YouTube", {"fields": ("video_title_template", "video_description_template")}),
     )
     inlines = [DeadlineInline, DurationInline, SponsorLevelInline, IncludedEventInline]
 

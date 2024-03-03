@@ -71,8 +71,6 @@ class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
                 reverse("admin:google-api-oauth-callback")
             )
 
-        # flow.redirect_uri = flow.redirect_uri + f"?obj_id={obj.id}"
-
         return flow
 
     def auth_callback(self, request):
@@ -115,15 +113,15 @@ class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
         return f"google_api:data:{state}"
 
     def get_urls(self):
-        return super().get_urls() + [
+        return [
             path(
-                "<int:object_id>/auth",
+                "<int:object_id>/auth/",
                 self.admin_site.admin_view(self.auth),
                 name="google-api-oauth-auth",
             ),
             path(
-                "auth-callback",
+                "auth-callback/",
                 self.admin_site.admin_view(self.auth_callback),
                 name="google-api-oauth-callback",
             ),
-        ]
+        ] + super().get_urls()

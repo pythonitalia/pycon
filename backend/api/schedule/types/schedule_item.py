@@ -34,19 +34,8 @@ class ScheduleItem:
     ] | None
     youtube_video_id: str | None
 
-    @strawberry.field
-    def abstract(self) -> str:
-        if self.submission_id:
-            return self.submission.abstract.localize(self.language.code)
-
-        return ""
-
-    @strawberry.field
-    def elevator_pitch(self) -> str:
-        if self.submission_id:
-            return self.submission.elevator_pitch.localize(self.language.code)
-
-        return ""
+    abstract: str
+    elevator_pitch: str
 
     @strawberry.field
     def has_limited_capacity(self) -> bool:

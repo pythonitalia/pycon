@@ -98,6 +98,7 @@ dependencies = [
     "wagtail-localize==1.5.2",
     "celery>=5.3.6",
     "wagtail-headless-preview>=0.7.0",
+    "celery-heimdall>=1.0.0",
 ]
 name = "backend"
 version = "0.1.0"

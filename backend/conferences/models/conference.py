@@ -133,6 +133,15 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         default=None,
     )
 
+    video_title_template = models.TextField(
+        default="",
+        blank=True,
+    )
+    video_description_template = models.TextField(
+        default="",
+        blank=True,
+    )
+
     youtube_video_bottom_text = models.TextField(
         default="",
         blank=True,
