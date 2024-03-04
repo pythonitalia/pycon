@@ -83,7 +83,7 @@ dependencies = [
     "psycopg2<3.0.0,>=2.9.5",
     "django-imagekit<5.0.0,>=4.1.0",
     "pillow<11.0.0,>=10.0.1",
-    "redis[hiredis]<5.0.0,>=4.5.5",
+    "redis[hiredis]==5.0.2",
     "google-api-python-client<3.0.0,>=2.94.0",
     "google-auth<3.0.0,>=2.22.0",
     "google-auth-oauthlib<2.0.0,>=1.0.0",
@@ -98,7 +98,6 @@ dependencies = [
     "wagtail-localize==1.5.2",
     "celery>=5.3.6",
     "wagtail-headless-preview>=0.7.0",
-    "celery-heimdall>=1.0.0",
 ]
 name = "backend"
 version = "0.1.0"

@@ -1,3 +1,4 @@
+from unittest import mock
 from conferences.tests.factories import SpeakerVoucherFactory
 from i18n.strings import LazyI18nString
 from datetime import datetime, timezone
@@ -6,18 +7,22 @@ from django.test import override_settings
 
 from schedule.tasks import (
     notify_new_schedule_invitation_answer_slack,
+    process_schedule_items_videos_to_upload,
     send_schedule_invitation_email,
     send_schedule_invitation_plain_message,
     send_speaker_communication_email,
     send_speaker_voucher_email,
     send_submission_time_slot_changed_email,
 )
-from schedule.tests.factories import ScheduleItemFactory
+from schedule.tests.factories import (
+    ScheduleItemFactory,
+    ScheduleItemSentForVideoUploadFactory,
+)
 from submissions.tests.factories import SubmissionFactory
 import time_machine
 from conferences.models.speaker_voucher import SpeakerVoucher
 from users.tests.factories import UserFactory
-from schedule.models import ScheduleItem
+from schedule.models import ScheduleItem, ScheduleItemSentForVideoUpload
 from pythonit_toolkit.emails.templates import EmailTemplate
 
 import pytest
@@ -366,3 +371,44 @@ def test_send_schedule_invitation_plain_message_with_existing_thread(mocker):
 
     schedule_item.refresh_from_db()
     assert schedule_item.plain_thread_id == "thread_id"
+
+
+def test_process_schedule_items_videos_to_upload(mocker):
+    mock_process = mocker.patch("schedule.tasks.upload_schedule_item_video")
+
+    ScheduleItemSentForVideoUploadFactory(
+        last_attempt_at=None,
+        status=ScheduleItemSentForVideoUpload.Status.failed,
+    )
+
+    # Never attempted - should be scheduled
+    sent_for_upload_1 = ScheduleItemSentForVideoUploadFactory(
+        last_attempt_at=None,
+        status=ScheduleItemSentForVideoUpload.Status.pending,
+    )
+
+    # Recently attempted
+    sent_for_upload_2 = ScheduleItemSentForVideoUploadFactory(
+        last_attempt_at=datetime(2020, 1, 1, 10, 0, 0, tzinfo=timezone.utc),
+        status=ScheduleItemSentForVideoUpload.Status.pending,
+    )
+
+    with time_machine.travel("2020-01-01 10:30:00Z", tick=False):
+        process_schedule_items_videos_to_upload()
+
+    mock_process.assert_called_once_with(
+        sent_for_video_upload_state_id=sent_for_upload_1.id
+    )
+    mock_process.reset()
+
+    # it has been an hour since upload 2 attempt, so it should be rescheduled
+    with time_machine.travel("2020-01-01 11:20:00Z", tick=False):
+        process_schedule_items_videos_to_upload()
+
+    mock_process.assert_has_calls(
+        [
+            mock.call(sent_for_video_upload_state_id=sent_for_upload_1.id),
+            mock.call(sent_for_video_upload_state_id=sent_for_upload_2.id),
+        ],
+        any_order=True,
+    )

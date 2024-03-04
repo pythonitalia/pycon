@@ -1,6 +1,5 @@
 from django.db.models import Q
 from googleapiclient.errors import HttpError
-from celery_heimdall import HeimdallTask
 from google_api.sdk import youtube_videos_insert, youtube_videos_set_thumbnail
 from integrations import plain
 from pythonit_toolkit.emails.utils import mark_safe
@@ -269,8 +268,8 @@ def send_schedule_invitation_plain_message(*, schedule_item_id, message):
     schedule_item.save(update_fields=["plain_thread_id"])
 
 
-@app.task
-def upload_schedule_item_video(*, sent_for_video_upload_state_id):
+@app.task()
+def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
     sent_for_video_upload = ScheduleItemSentForVideoUpload.objects.get(
         id=sent_for_video_upload_state_id
     )
@@ -367,12 +366,7 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id):
     sent_for_video_upload.save(update_fields=["status"])
 
 
-@app.task(
-    base=HeimdallTask,
-    heimdall={
-        "unique": True,
-    },
-)
+@app.task()
 def process_schedule_items_videos_to_upload():
     statuses = (
         ScheduleItemSentForVideoUpload.objects.filter(
@@ -384,7 +378,8 @@ def process_schedule_items_videos_to_upload():
         .to_upload()
         .order_by("last_attempt_at")
     )
-    for sent_for_video_upload_state in statuses:
+
+    for sent_for_video_upload_state in statuses.iterator():
         try:
             upload_schedule_item_video(
                 sent_for_video_upload_state_id=sent_for_video_upload_state.id

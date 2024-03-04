@@ -24,7 +24,6 @@ x-defaults:
     <<: *enviroment_defaults
     CACHE_URL: redis://redis:6379/0
     DATABASE_URL: psql://pycon:pycon@backend-db/pycon
-    DJANGO_SETTINGS_MODULE: pycon.settings.dev
     ALLOWED_HOSTS: "*"
     PRETIX_API_TOKEN: ${PRETIX_API_TOKEN}
     MAILCHIMP_SECRET_KEY: ${MAILCHIMP_SECRET_KEY}
@@ -53,7 +52,8 @@ services:
       dockerfile: ../Dockerfile.python.local
     networks: [pycon_net]
     entrypoint: ""
-    command: sh -c "pdm install &&
+    command: sh -c "export DJANGO_SETTINGS_MODULE=pycon.settings.dev &&
+      pdm install &&
       pdm run python manage.py migrate &&
       pdm run python manage.py create_admin &&
       touch /.ready &&

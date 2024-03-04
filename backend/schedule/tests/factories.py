@@ -13,6 +13,7 @@ from schedule.models import (
     ScheduleItem,
     ScheduleItemAdditionalSpeaker,
     ScheduleItemAttendee,
+    ScheduleItemSentForVideoUpload,
     Slot,
 )
 from submissions.tests.factories import SubmissionFactory
@@ -112,3 +113,11 @@ class ScheduleItemAttendeeFactory(DjangoModelFactory):
 
     class Meta:
         model = ScheduleItemAttendee
+
+
+@register
+class ScheduleItemSentForVideoUploadFactory(DjangoModelFactory):
+    schedule_item = factory.SubFactory(ScheduleItemFactory)
+
+    class Meta:
+        model = ScheduleItemSentForVideoUpload
