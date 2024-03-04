@@ -120,8 +120,8 @@ dependencies:
     specifier: ^2.0.3
     version: 2.0.3
   pdfkit:
-    specifier: ^0.13.0
-    version: 0.13.0
+    specifier: ^0.14.0
+    version: 0.14.0
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -8019,6 +8019,15 @@ packages:
 
   /pdfkit@0.13.0:
     resolution: {integrity: sha512-AW79eHU5eLd2vgRDS9z3bSoi0FA+gYm+100LLosrQQMLUzOBGVOhG7ABcMFpJu7Bpg+MT74XYHi4k9EuU/9EZw==}
+    dependencies:
+      crypto-js: 4.2.0
+      fontkit: 1.9.0
+      linebreak: 1.1.0
+      png-js: 1.0.0
+    dev: false
+
+  /pdfkit@0.14.0:
+    resolution: {integrity: sha512-Hnor8/78jhHm6ONrxWhrqOwAVALlBnFyWOF8sstBZMiqHZgZ5A6RU+Q3yahhw82plxpT7LOfH3b3qcOX6rzMQg==}
     dependencies:
       crypto-js: 4.2.0
       fontkit: 1.9.0
