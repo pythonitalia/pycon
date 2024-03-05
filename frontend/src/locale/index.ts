@@ -2033,7 +2033,7 @@ Affrettati a comprare il biglietto!`,
     "profile.tickets.noDetails": "Divertiti! 🍻",
 
     "profile.publicProfile.optInDescription":
-      "Puoi rendere il tuo profilo pubblico cosi da farlo vedere ai partecipanti quando scannerizzato il tuo QR Code. {viewProfile}",
+      "Puoi rendere il tuo profilo pubblico cosi da farlo vedere ai partecipanti quando scannerizzano il tuo QR Code. {viewProfile}",
     "profile.publicProfile.viewProfile":
       "Clicca qui per vedere il tuo profilo!",
     "profile.edit.success": "Profilo aggiornato!",
