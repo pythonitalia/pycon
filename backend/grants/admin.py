@@ -533,9 +533,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         ),
     )
 
-    @admin.display(
-        description="User",
-    )
+    @admin.display(description="User", ordering="user__full_name")
     def user_display_name(self, obj):
         if obj.user_id:
             return obj.user.display_name
