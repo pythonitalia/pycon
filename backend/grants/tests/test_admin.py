@@ -9,6 +9,7 @@ from grants.admin import (
     create_grant_vouchers_on_pretix,
     send_reply_emails,
     send_voucher_via_email,
+    mark_rejected_and_send_email,
 )
 from grants.models import Grant
 
@@ -504,3 +505,32 @@ def test_create_grant_vouchers_only_for_confirmed_grants(
     assert grant_1.voucher_code is None
     assert grant_2.pretix_voucher_id == 1
     assert grant_2.voucher_code == "GRANT-123ZYZ"
+
+
+def test_mark_rejected_and_send_email(rf, conference, grant_factory, mocker):
+    mock_messages = mocker.patch("grants.admin.messages")
+    grant1 = grant_factory(status=Grant.Status.waiting_list, conference=conference)
+    grant2 = grant_factory(
+        status=Grant.Status.waiting_list_maybe, conference=conference
+    )
+    request = rf.get("/")
+    mock_send_rejected_email = mocker.patch(
+        "grants.admin.send_grant_reply_rejected_email.delay"
+    )
+
+    mark_rejected_and_send_email(None, request=request, queryset=Grant.objects.all())
+
+    grant1.refresh_from_db()
+    grant2.refresh_from_db()
+    assert grant1.status == Grant.Status.rejected
+    assert grant2.status == Grant.Status.rejected
+    mock_messages.info.assert_has_calls(
+        [
+            call(request, f"Sent Rejected reply email to {grant1.name}"),
+            call(request, f"Sent Rejected reply email to {grant2.name}"),
+        ],
+        any_order=True,
+    )
+    mock_send_rejected_email.assert_has_calls(
+        [call(grant_id=grant1.id), call(grant_id=grant2.id)], any_order=True
+    )

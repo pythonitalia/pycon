@@ -326,6 +326,24 @@ def create_grant_vouchers_on_pretix(modeladmin, request, queryset):
     messages.success(request, f"{count} Vouchers created on Pretix!")
 
 
+@admin.action(description="Mark grants as Rejected and send email")
+@validate_single_conference_selection
+def mark_rejected_and_send_email(modeladmin, request, queryset):
+    queryset = queryset.filter(
+        status__in=(
+            Grant.Status.waiting_list,
+            Grant.Status.waiting_list_maybe,
+        ),
+    )
+
+    for grant in queryset:
+        grant.status = Grant.Status.rejected
+        grant.save()
+
+        send_grant_reply_rejected_email.delay(grant_id=grant.id)
+        messages.info(request, f"Sent Rejected reply email to {grant.name}")
+
+
 class GrantAdminForm(forms.ModelForm):
     class Meta:
         model = Grant
@@ -448,6 +466,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         send_reply_email_waiting_list_update,
         create_grant_vouchers_on_pretix,
         send_voucher_via_email,
+        mark_rejected_and_send_email,
         "delete_selected",
     ]
     autocomplete_fields = ("user",)
