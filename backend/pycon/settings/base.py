@@ -224,6 +224,10 @@ STORAGES = {
     "conferencevideos": {
         "BACKEND": "pycon.storages.ConferenceVideosStorage",
     },
+    "localstorage": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "LOCATION": "/tmp/",
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },

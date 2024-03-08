@@ -1,13 +1,11 @@
 from dataclasses import dataclass
 import cv2
-from django.core.files.storage import FileSystemStorage
 from django.core.files.storage import storages
 from schedule.models import ScheduleItem
 
 from django.template import Context, Template
 
-local_storage = FileSystemStorage()
-local_storage.base_location = "/tmp/"
+local_storage = storages["localstorage"]
 
 
 @dataclass
