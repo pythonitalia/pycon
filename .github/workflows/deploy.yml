@@ -250,8 +250,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [terraform]
     steps:
-      - name: Sleep for 20 seconds
-        run: sleep 20s
+      - name: Sleep for 10 seconds
+        run: sleep 10s
         shell: bash
 
   # Migrate the database
