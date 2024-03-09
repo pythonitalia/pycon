@@ -1,3 +1,7 @@
+import time
+import threading
+
+import redis
 from django.db.models import Q
 from google_api.exceptions import NoGoogleCloudQuotaLeftError
 from googleapiclient.errors import HttpError
@@ -13,7 +17,6 @@ from urllib.parse import urljoin
 from django.conf import settings
 import logging
 from integrations import slack
-from django.core.cache import cache
 from pycon.celery import app
 from schedule.models import ScheduleItemSentForVideoUpload
 from schedule.video_upload import (
@@ -367,20 +370,40 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
     sent_for_video_upload.save(update_fields=["status"])
 
 
+def renew_lock(lock, interval):
+    while lock.locked:
+        try:
+            lock.extend(interval, replace_ttl=True)
+        except Exception as e:
+            logger.exception("Error renewing lock: %s", e)
+            break
+
+        if lock.locked:
+            time.sleep(interval)
+
+
 def lock_task(func):
     # This is a dummy lock until we can get celery-heimdall
     def wrapper(*args, **kwargs):
+        timeout = 60 * 5
         lock_id = f"celery_lock_{func.__name__}"
-        lock = cache.add(lock_id, "locked", timeout=60 * 60 * 1)
+        client = redis.Redis.from_url(settings.REDIS_URL)
+        lock = client.lock(lock_id, timeout=timeout, thread_local=False)
+
+        if lock.acquire(blocking=False):
+            renewer_thread = threading.Thread(target=renew_lock, args=(lock, timeout))
+            renewer_thread.daemon = True
+            renewer_thread.start()
+
+            try:
+                return func(*args, **kwargs)
+            finally:
+                lock.release()
+                renewer_thread.join()
 
         if not lock:
             logger.info("Task %s is already running, skipping", func.__name__)
             return
-
-        try:
-            return func(*args, **kwargs)
-        finally:
-            cache.delete(lock_id)
 
     return wrapper
 

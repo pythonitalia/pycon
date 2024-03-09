@@ -62,8 +62,9 @@ jobs:
           exit $STATUS
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports['5432'] }}/postgres
-          CELERY_BROKER_URL: redis://redis:6379/0
-          CELERY_RESULT_BACKEND: redis://redis:6379/1
+          CACHE_URL: redis://redis:6379/0
+          CELERY_BROKER_URL: redis://redis:6379/1
+          CELERY_RESULT_BACKEND: redis://redis:6379/2
           STRIPE_SECRET_API_KEY: fake-key
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
           MEDIA_FILES_STORAGE_BACKEND: django.core.files.storage.FileSystemStorage

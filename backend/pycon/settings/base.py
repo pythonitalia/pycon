@@ -311,6 +311,10 @@ PLAIN_INTEGRATION_TOKEN = env("PLAIN_INTEGRATION_TOKEN", default="")
 
 IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "imagekit.cachefiles.strategies.Optimistic"
 
+REDIS_URL = env("CACHE_URL")
+if not REDIS_URL.startswith("redis://"):
+    raise ValueError("We expect Cache URL to be Redis URL")
+
 CACHES = {
     "default": env.cache(default="locmemcache://snowflake"),
 }
