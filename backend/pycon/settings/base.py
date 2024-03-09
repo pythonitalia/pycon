@@ -224,6 +224,10 @@ STORAGES = {
     "conferencevideos": {
         "BACKEND": "pycon.storages.ConferenceVideosStorage",
     },
+    "localstorage": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "LOCATION": "/tmp/",
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
@@ -307,11 +311,11 @@ PLAIN_INTEGRATION_TOKEN = env("PLAIN_INTEGRATION_TOKEN", default="")
 
 IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "imagekit.cachefiles.strategies.Optimistic"
 
+REDIS_URL = env("CACHE_URL", default="")
+
 CACHES = {
     "default": env.cache(default="locmemcache://snowflake"),
 }
-
-TEMPORAL_ADDRESS = env("TEMPORAL_ADDRESS", default="")
 
 SESSION_COOKIE_NAME = "pythonitalia_sessionid"
 CSRF_USE_SESSIONS = True
@@ -368,3 +372,5 @@ WAGTAIL_HEADLESS_PREVIEW = {
 }
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
+
+CELERY_TASK_IGNORE_RESULT = True

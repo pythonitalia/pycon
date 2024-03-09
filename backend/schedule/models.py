@@ -122,6 +122,44 @@ class Slot(models.Model):
         ordering = ["hour"]
 
 
+class ScheduleItemSentForVideoUploadQuerySet(QuerySet):
+    def to_upload(self):
+        return self.filter(status=ScheduleItemSentForVideoUpload.Status.pending)
+
+
+class ScheduleItemSentForVideoUpload(TimeStampedModel):
+    class Status(models.TextChoices):
+        pending = "pending", _("Pending")
+        processing = "processing", _("Processing")
+        completed = "completed", _("Completed")
+        failed = "failed", _("Failed")
+
+    status = models.CharField(
+        _("Status"),
+        max_length=100,
+        choices=Status.choices,
+        default=Status.pending,
+    )
+    schedule_item = models.OneToOneField(
+        "schedule.ScheduleItem",
+        on_delete=models.CASCADE,
+    )
+    attempts = models.PositiveIntegerField(_("Video upload attempts"), default=0)
+    last_attempt_at = models.DateTimeField(_("Last attempt at"), null=True, blank=True)
+    video_uploaded = models.BooleanField(_("Video uploaded"), default=False)
+    thumbnail_uploaded = models.BooleanField(_("Thumbnail uploaded"), default=False)
+    failed_reason = models.TextField(
+        _("Failed reason"),
+        blank=True,
+        default="",
+    )
+    objects = ScheduleItemSentForVideoUploadQuerySet().as_manager()
+
+    @property
+    def is_pending(self):
+        return self.status == self.Status.pending
+
+
 class ScheduleItemQuerySet(QuerySet, ConferenceQuerySetMixin):
     pass
 
@@ -334,6 +372,30 @@ class ScheduleItem(TimeStampedModel):
             "admin:%s_%s_change" % (self._meta.app_label, self._meta.model_name),
             args=(self.pk,),
         )
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def abstract(self):
+        language_code = self.language.code
+
+        if self.submission_id:
+            return self.submission.abstract.localize(language_code)
+
+        if self.keynote_id:
+            return self.keynote.description.localize(language_code)
+
+        return self.description
+
+    @property
+    def elevator_pitch(self):
+        language_code = self.language.code
+
+        if self.submission_id:
+            return self.submission.elevator_pitch.localize(language_code)
+
+        return ""
 
     class Meta:
         verbose_name = _("Schedule item")

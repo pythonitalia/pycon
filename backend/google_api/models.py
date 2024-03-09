@@ -10,8 +10,8 @@ DAILY_YOUTUBE_QUOTA = 10_000
 
 
 class GoogleCloudOAuthCredentialQuerySet(models.QuerySet):
-    async def get_by_client_id(self, client_id: str) -> "GoogleCloudOAuthCredential":
-        return await self.filter(client_id=client_id).afirst()
+    def get_by_client_id(self, client_id: str) -> "GoogleCloudOAuthCredential":
+        return self.filter(client_id=client_id).first()
 
     def with_quota_left(self, service: str):
         midnight_pacific_time = (
@@ -56,11 +56,11 @@ class GoogleCloudOAuthCredential(models.Model):
     objects = GoogleCloudOAuthCredentialQuerySet.as_manager()
 
     @staticmethod
-    async def get_available_credentials_token(
+    def get_available_credentials_token(
         service: str, min_quota: int
     ) -> Optional["GoogleCloudToken"]:
         credential = (
-            await GoogleCloudOAuthCredential.objects.with_quota_left(service)
+            GoogleCloudOAuthCredential.objects.with_quota_left(service)
             .annotate(
                 has_token=models.Exists(
                     GoogleCloudToken.objects.filter(
@@ -75,9 +75,9 @@ class GoogleCloudOAuthCredential(models.Model):
                 },
             )
             .order_by(f"{service}_quota_left")
-            .afirst()
+            .first()
         )
-        return (await credential.googlecloudtoken_set.afirst()) if credential else None
+        return credential.googlecloudtoken_set.first() if credential else None
 
     class Meta:
         verbose_name = "Google Cloud OAuth Credential"

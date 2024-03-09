@@ -9,7 +9,7 @@ ARG FUNCTION_DIR
 RUN mkdir -p ${FUNCTION_DIR}
 WORKDIR ${FUNCTION_DIR}
 
-RUN pip install pdm==2.10.4
+RUN pip install pdm==2.12.4
 
 COPY pyproject.toml pdm.lock ${FUNCTION_DIR}
 

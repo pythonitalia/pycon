@@ -1,3 +1,4 @@
+from django.db import transaction
 from custom_admin.admin import validate_single_conference_selection
 from import_export.resources import ModelResource
 from django.db.models import Prefetch
@@ -22,15 +23,12 @@ from ordered_model.admin import (
 from conferences.models import SpeakerVoucher
 from pretix import user_has_admission_ticket
 from schedule.tasks import (
+    process_schedule_items_videos_to_upload,
     send_schedule_invitation_email,
     send_speaker_communication_email,
     send_submission_time_slot_changed_email,
 )
 from users.admin_mixins import ConferencePermissionMixin
-from video_upload.workflows.batch_multiple_schedule_items_video_upload import (
-    BatchMultipleScheduleItemsVideoUpload,
-)
-from temporal.sdk import start_workflow
 from schedule.forms import EmailSpeakersForm
 
 from .models import (
@@ -41,6 +39,7 @@ from .models import (
     ScheduleItemAdditionalSpeaker,
     ScheduleItemAttendee,
     ScheduleItemInvitation,
+    ScheduleItemSentForVideoUpload,
     Slot,
 )
 
@@ -205,16 +204,18 @@ def upload_videos_to_youtube(modeladmin, request, queryset):
     videos = queryset.filter(youtube_video_id__exact="").exclude(
         video_uploaded_path__exact=""
     )
-    conference_id = queryset.first().conference_id
-    start_workflow(
-        workflow=BatchMultipleScheduleItemsVideoUpload.run,
-        id=f"batch-upload-video-conference-{conference_id}",
-        task_queue="default",
-        arg=BatchMultipleScheduleItemsVideoUpload.input(
-            schedule_items_ids=list(videos.values_list("id", flat=True))
-        ),
+
+    sent_for_video_upload_objs = []
+    for video in videos:
+        sent_for_video_upload_objs.append(
+            ScheduleItemSentForVideoUpload(schedule_item=video)
+        )
+
+    ScheduleItemSentForVideoUpload.objects.bulk_create(
+        sent_for_video_upload_objs, ignore_conflicts=True
     )
 
+    transaction.on_commit(process_schedule_items_videos_to_upload.delay)
     messages.add_message(
         request, messages.INFO, f"Scheduled {videos.count()} videos to upload"
     )
@@ -691,3 +692,38 @@ class DayAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
     list_display = ("day", "conference")
     list_filter = ("conference",)
     inlines = (SlotInline, DayRoomThroughModelInline)
+
+
+@admin.action(description="Retry video upload")
+def retry_video_upload(modeladmin, request, queryset):
+    queryset.update(
+        status=ScheduleItemSentForVideoUpload.Status.pending, last_attempt_at=None
+    )
+    process_schedule_items_videos_to_upload.delay()
+    messages.add_message(
+        request, messages.INFO, f"Scheduled {queryset.count()} videos to upload"
+    )
+
+
+@admin.action(description="Mark as failed")
+def mark_as_failed(modeladmin, request, queryset):
+    queryset.update(status=ScheduleItemSentForVideoUpload.Status.failed)
+    messages.add_message(
+        request, messages.INFO, f"Marked {queryset.count()} videos as failed"
+    )
+
+
+@admin.register(ScheduleItemSentForVideoUpload)
+class ScheduleItemSentForVideoUploadAdmin(admin.ModelAdmin):
+    list_display = (
+        "schedule_item",
+        "status",
+        "video_uploaded",
+        "thumbnail_uploaded",
+        "attempts",
+        "last_attempt_at",
+    )
+    list_filter = ("status", "schedule_item__conference")
+    search_fields = ("schedule_item__title",)
+    autocomplete_fields = ("schedule_item",)
+    actions = [retry_video_upload, mark_as_failed]

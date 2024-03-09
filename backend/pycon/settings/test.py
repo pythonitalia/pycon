@@ -1,3 +1,4 @@
+from .base import env
 from .base import *  # noqa
 
 SECRET_KEY = "this-key-should-only-be-used-for-tests"
@@ -16,10 +17,13 @@ AZURE_STORAGE_ACCOUNT_KEY = "fake-key"
 
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "django.core.files.storage.memory.InMemoryStorage",
     },
     "conferencevideos": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "django.core.files.storage.memory.InMemoryStorage",
+    },
+    "localstorage": {
+        "BACKEND": "django.core.files.storage.memory.InMemoryStorage",
     },
     "staticfiles": {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
@@ -35,3 +39,8 @@ PYTHONIT_EMAIL_BACKEND = "conftest.TestEmailBackend"
 
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
+
+PASSWORD_HASHERS = ("django.contrib.auth.hashers.MD5PasswordHasher",)
+
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")

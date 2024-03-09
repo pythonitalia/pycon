@@ -1,6 +1,6 @@
 import datetime
 
-from conferences.tests.factories import ConferenceFactory
+from conferences.tests.factories import ConferenceFactory, KeynoteFactory
 from i18n.strings import LazyI18nString
 from languages.models import Language
 import pytest
@@ -81,7 +81,7 @@ def test_exposes_abstract_elevator_pitch_in_correct_language(
         }
 
 
-def test_empty_abstract_elevator_pitch_with_no_submission(graphql_client, user):
+def test_abstract_fallbacks_to_description(graphql_client, user):
     graphql_client.force_login(user)
 
     schedule_item = ScheduleItemFactory(
@@ -90,6 +90,7 @@ def test_empty_abstract_elevator_pitch_with_no_submission(graphql_client, user):
         type=ScheduleItem.TYPES.talk,
         conference=ConferenceFactory(),
         attendees_total_capacity=None,
+        description="Description",
     )
 
     response = graphql_client.query(
@@ -105,7 +106,42 @@ def test_empty_abstract_elevator_pitch_with_no_submission(graphql_client, user):
     )
 
     assert response["data"]["conference"]["talk"] == {
-        "abstract": "",
+        "abstract": "Description",
+        "elevatorPitch": "",
+    }
+
+
+def test_abstract_shows_keynote_description(graphql_client, user):
+    graphql_client.force_login(user)
+    conference = ConferenceFactory()
+
+    schedule_item = ScheduleItemFactory(
+        status=ScheduleItem.STATUS.confirmed,
+        submission=None,
+        keynote=KeynoteFactory(
+            conference=conference,
+            description=LazyI18nString({"en": "Description Keynote", "it": ""}),
+        ),
+        type=ScheduleItem.TYPES.keynote,
+        conference=conference,
+        attendees_total_capacity=None,
+        description="Description",
+    )
+
+    response = graphql_client.query(
+        """query($slug: String!, $code: String!) {
+            conference(code: $code) {
+                talk(slug: $slug) {
+                    abstract
+                    elevatorPitch
+                }
+            }
+        }""",
+        variables={"slug": schedule_item.slug, "code": schedule_item.conference.code},
+    )
+
+    assert response["data"]["conference"]["talk"] == {
+        "abstract": "Description Keynote",
         "elevatorPitch": "",
     }
 
