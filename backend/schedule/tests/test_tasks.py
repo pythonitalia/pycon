@@ -420,7 +420,7 @@ def test_process_schedule_items_videos_to_upload(mocker):
     )
 
 
-def test_process_schedule_items_videos_to_upload_sets_failed_status(mocker):
+def test_failing_to_process_schedule_items_videos_to_upload_sets_failed_status(mocker):
     mock_process = mocker.patch(
         "schedule.tasks.upload_schedule_item_video",
         side_effect=ValueError("test error"),
@@ -591,6 +591,32 @@ def test_upload_schedule_item_with_only_thumbnail_to_upload(mocker):
     assert sent_for_upload.schedule_item.youtube_video_id == "vid_10"
 
 
+@pytest.mark.parametrize(
+    "status",
+    [
+        ScheduleItemSentForVideoUpload.Status.completed,
+        ScheduleItemSentForVideoUpload.Status.failed,
+        ScheduleItemSentForVideoUpload.Status.processing,
+    ],
+)
+def test_upload_schedule_item_ignores_non_pending_jobs(status):
+    sent_for_upload = ScheduleItemSentForVideoUploadFactory(
+        last_attempt_at=None,
+        status=status,
+        schedule_item__type=ScheduleItem.TYPES.talk,
+        schedule_item__submission=None,
+        schedule_item__title="Test Title",
+        schedule_item__description="Test Description",
+        schedule_item__conference__video_title_template="{{ title }}",
+        schedule_item__conference__video_description_template="{{ abstract }}",
+    )
+    upload_schedule_item_video(
+        sent_for_video_upload_state_id=sent_for_upload.id,
+    )
+
+    assert sent_for_upload.status == status
+
+
 def test_upload_schedule_item_video_with_failing_thumbnail_is_rescheduled(mocker):
     file_content = BytesIO(b"File")
     file_content.name = "test.mp4"
@@ -664,3 +690,62 @@ def test_upload_schedule_item_video_with_failing_thumbnail_is_rescheduled(mocker
 
     sent_for_upload.schedule_item.refresh_from_db()
     assert sent_for_upload.schedule_item.youtube_video_id == "vid_123"
+
+
+def test_upload_schedule_item_video_with_failing_thumbnail_upload_fails(mocker):
+    file_content = BytesIO(b"File")
+    file_content.name = "test.mp4"
+    file_content.seek(0)
+
+    image_content = BytesIO(b"Image")
+    image_content.name = "test.jpg"
+    image_content.seek(0)
+
+    conferencevideos_storage = storages["conferencevideos"]
+    conferencevideos_storage.save(
+        "videos/test.mp4",
+        InMemoryUploadedFile(
+            file=file_content,
+            field_name="file_field",
+            name="test.txt",
+            content_type="text/plain",
+            size=file_content.getbuffer().nbytes,
+            charset="utf-8",
+            content_type_extra=None,
+        ),
+    )
+
+    mocker.patch(
+        "schedule.tasks.youtube_videos_insert",
+        autospec=True,
+        return_value=[{"id": "vid_123"}],
+    )
+    mocker.patch(
+        "schedule.tasks.youtube_videos_set_thumbnail",
+        side_effect=HttpError(resp=mock.Mock(status=400), content=b""),
+    )
+    mocker.patch(
+        "schedule.video_upload.cv2.VideoCapture.read",
+        return_value=(True, np.array([1])),
+    )
+
+    sent_for_upload = ScheduleItemSentForVideoUploadFactory(
+        last_attempt_at=None,
+        status=ScheduleItemSentForVideoUpload.Status.pending,
+        video_uploaded=False,
+        thumbnail_uploaded=False,
+        schedule_item__type=ScheduleItem.TYPES.talk,
+        schedule_item__submission=None,
+        schedule_item__title="Test Title",
+        schedule_item__description="Test Description",
+        schedule_item__video_uploaded_path=conferencevideos_storage.path(
+            "videos/test.mp4"
+        ),
+        schedule_item__conference__video_title_template="{{ title }}",
+        schedule_item__conference__video_description_template="{{ abstract }}",
+    )
+
+    with pytest.raises(HttpError):
+        upload_schedule_item_video(
+            sent_for_video_upload_state_id=sent_for_upload.id,
+        )
