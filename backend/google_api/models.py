@@ -60,7 +60,8 @@ class GoogleCloudOAuthCredential(models.Model):
         service: str, min_quota: int
     ) -> Optional["GoogleCloudToken"]:
         credential = (
-            GoogleCloudOAuthCredential.objects.with_quota_left(service)
+            GoogleCloudOAuthCredential.objects.has_token()
+            .with_quota_left(service)
             .annotate(
                 has_token=models.Exists(
                     GoogleCloudToken.objects.filter(

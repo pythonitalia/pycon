@@ -1,3 +1,4 @@
+from google_api.exceptions import NoGoogleCloudQuotaLeftError
 from googleapiclient.errors import HttpError
 import numpy as np
 from io import BytesIO
@@ -419,6 +420,36 @@ def test_process_schedule_items_videos_to_upload(mocker):
         ],
         any_order=True,
     )
+
+
+def test_process_schedule_items_videos_stops_processing_when_the_quota_is_finished(
+    mocker,
+):
+    mock_process = mocker.patch(
+        "schedule.tasks.upload_schedule_item_video",
+        side_effect=NoGoogleCloudQuotaLeftError(),
+    )
+
+    sent_for_upload_1 = ScheduleItemSentForVideoUploadFactory(
+        last_attempt_at=None,
+        status=ScheduleItemSentForVideoUpload.Status.pending,
+    )
+
+    ScheduleItemSentForVideoUploadFactory(
+        last_attempt_at=None,
+        status=ScheduleItemSentForVideoUpload.Status.pending,
+    )
+
+    with time_machine.travel("2020-01-01 10:30:00Z", tick=False):
+        process_schedule_items_videos_to_upload()
+
+    mock_process.assert_called_once_with(
+        sent_for_video_upload_state_id=sent_for_upload_1.id
+    )
+    mock_process.reset()
+
+    sent_for_upload_1.refresh_from_db()
+    assert sent_for_upload_1.status == ScheduleItemSentForVideoUpload.Status.pending
 
 
 def test_failing_to_process_schedule_items_videos_to_upload_sets_failed_status(mocker):

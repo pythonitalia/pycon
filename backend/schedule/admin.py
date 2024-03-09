@@ -705,6 +705,14 @@ def retry_video_upload(modeladmin, request, queryset):
     )
 
 
+@admin.action(description="Mark as failed")
+def mark_as_failed(modeladmin, request, queryset):
+    queryset.update(status=ScheduleItemSentForVideoUpload.Status.failed)
+    messages.add_message(
+        request, messages.INFO, f"Marked {queryset.count()} videos as failed"
+    )
+
+
 @admin.register(ScheduleItemSentForVideoUpload)
 class ScheduleItemSentForVideoUploadAdmin(admin.ModelAdmin):
     list_display = (
@@ -718,4 +726,4 @@ class ScheduleItemSentForVideoUploadAdmin(admin.ModelAdmin):
     list_filter = ("status", "schedule_item__conference")
     search_fields = ("schedule_item__title",)
     autocomplete_fields = ("schedule_item",)
-    actions = [retry_video_upload]
+    actions = [retry_video_upload, mark_as_failed]

@@ -1,4 +1,5 @@
 import inspect
+from google_api.exceptions import NoGoogleCloudQuotaLeftError
 from google_api.models import GoogleCloudOAuthCredential, UsedRequestQuota
 from googleapiclient.discovery import build
 from apiclient.http import MediaFileUpload
@@ -12,6 +13,10 @@ def get_available_credentials(service, min_quota):
     token = GoogleCloudOAuthCredential.get_available_credentials_token(
         service=service, min_quota=min_quota
     )
+
+    if not token:
+        raise NoGoogleCloudQuotaLeftError()
+
     return Credentials.from_authorized_user_info(
         {
             "token": token.token,

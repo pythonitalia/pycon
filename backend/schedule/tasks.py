@@ -1,4 +1,5 @@
 from django.db.models import Q
+from google_api.exceptions import NoGoogleCloudQuotaLeftError
 from googleapiclient.errors import HttpError
 from google_api.sdk import youtube_videos_insert, youtube_videos_set_thumbnail
 from integrations import plain
@@ -384,6 +385,17 @@ def process_schedule_items_videos_to_upload():
             upload_schedule_item_video(
                 sent_for_video_upload_state_id=sent_for_video_upload_state.id
             )
+        except NoGoogleCloudQuotaLeftError:
+            logger.info(
+                "No google cloud quota left to upload the schedule item %s. Moving back to pending and stopping processing.",
+                sent_for_video_upload_state.schedule_item.id,
+            )
+            sent_for_video_upload_state.status = (
+                ScheduleItemSentForVideoUpload.Status.pending
+            )
+            sent_for_video_upload_state.failed_reason = "No Google Cloud Quota Left"
+            sent_for_video_upload_state.save(update_fields=["status", "failed_reason"])
+            break
         except Exception as e:
             logger.exception(
                 "Error processing schedule item %s video upload: %s",
