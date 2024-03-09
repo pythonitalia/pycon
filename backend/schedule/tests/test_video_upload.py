@@ -189,5 +189,5 @@ def test_create_video_info_tags():
 
     output = create_video_info(schedule_item)
 
-    assert output.tags == ["djangogirls", "tag2", "php53"]
-    assert output.tags_as_str == "djangogirls,tag2,php53"
+    assert output.tags == ["DjangoGirls", "tag2", "php53"]
+    assert output.tags_as_str == "DjangoGirls,tag2,php53"

@@ -35,7 +35,7 @@ jobs:
       - name: Check missing not pushed migrations
         run: pdm run python manage.py makemigrations --check
         env:
-          DJANGO_SETTINGS_MODULE: pycon.settings.test
+          DJANGO_SETTINGS_MODULE: pycon.settings.dev
           STRIPE_SECRET_API_KEY: ""
           STRIPE_SUBSCRIPTION_PRICE_ID: ""
           STRIPE_WEBHOOK_SIGNATURE_SECRET: ""
