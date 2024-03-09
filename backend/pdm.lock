@@ -4,7 +4,7 @@
 [metadata]
 groups = ["default", "dev", "lambda"]
 strategy = ["cross_platform"]
-lock_version = "4.4"
+lock_version = "4.4.1"
 content_hash = "sha256:b64dac79b33562fbcf33024422734fd39550c1eafe90c60795c23bb636def78f"
 
 [[package]]

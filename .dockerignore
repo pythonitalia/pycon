@@ -6,6 +6,7 @@
 **/.ruff_cache/**
 **/.pnpm-store/**
 **/__pycache__/**
+**/__pypackages__/**
 .pdm-python
 **/.pytest_cache/**
 Dockerfile
