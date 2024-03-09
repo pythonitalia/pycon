@@ -51,3 +51,32 @@ def test_count_quota(admin_user):
         assert used_quota.cost == 1000
         assert used_quota.service == "youtube"
         assert used_quota.used_at == datetime.datetime.now(tz=datetime.timezone.utc)
+
+
+def test_count_quota_with_generator_function(admin_user):
+    stored_credential = GoogleCloudOAuthCredential.objects.create()
+    GoogleCloudToken.objects.create(
+        oauth_credential=stored_credential, token="token", admin_user=admin_user
+    )
+
+    @count_quota("youtube", 1000)
+    def test_generator_function(*, credentials):
+        yield 1
+        yield 2
+        yield 3
+
+    with time_machine.travel("2023-10-20 12:00:00", tick=False):
+        generator = test_generator_function()
+        vals = []
+
+        for val in generator:
+            vals.append(val)
+
+        assert vals == [1, 2, 3]
+
+        assert stored_credential.usedrequestquota_set.count() == 1
+
+        used_quota = stored_credential.usedrequestquota_set.first()
+        assert used_quota.cost == 1000
+        assert used_quota.service == "youtube"
+        assert used_quota.used_at == datetime.datetime.now(tz=datetime.timezone.utc)
