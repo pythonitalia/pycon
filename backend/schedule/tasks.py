@@ -13,7 +13,7 @@ from urllib.parse import urljoin
 from django.conf import settings
 import logging
 from integrations import slack
-
+from django.core.cache import cache
 from pycon.celery import app
 from schedule.models import ScheduleItemSentForVideoUpload
 from schedule.video_upload import (
@@ -367,7 +367,26 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
     sent_for_video_upload.save(update_fields=["status"])
 
 
+def lock_task(func):
+    # This is a dummy lock until we can get celery-heimdall
+    def wrapper(*args, **kwargs):
+        lock_id = f"celery_lock_{func.__name__}"
+        lock = cache.add(lock_id, "locked", timeout=60 * 60 * 1)
+
+        if not lock:
+            logger.info("Task %s is already running, skipping", func.__name__)
+            return
+
+        try:
+            return func(*args, **kwargs)
+        finally:
+            cache.delete(lock_id)
+
+    return wrapper
+
+
 @app.task()
+@lock_task
 def process_schedule_items_videos_to_upload():
     statuses = (
         ScheduleItemSentForVideoUpload.objects.filter(
