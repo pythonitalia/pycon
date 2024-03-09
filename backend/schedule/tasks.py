@@ -1,3 +1,4 @@
+import os
 import time
 import threading
 
@@ -373,12 +374,12 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
 def renew_lock(lock, interval):
     while lock.locked:
         try:
-            lock.extend(interval, replace_ttl=True)
+            extended = lock.extend(interval, replace_ttl=True)
         except Exception as e:
             logger.exception("Error renewing lock: %s", e)
             break
 
-        if lock.locked:
+        if extended and lock.locked:
             time.sleep(interval)
 
 
@@ -386,10 +387,12 @@ def lock_task(func):
     # This is a dummy lock until we can get celery-heimdall
     def wrapper(*args, **kwargs):
         timeout = 60 * 5
-        lock_id = f"celery_lock_{func.__name__}"
 
-        if settings.PYTEST_XDIST_WORKER:
-            lock_id = f"{lock_id}_{settings.PYTEST_XDIST_WORKER}"
+        lock_id = f"celery_lock_{func.__name__}"
+        PYTEST_XDIST_WORKER = os.environ.get("PYTEST_XDIST_WORKER")
+
+        if PYTEST_XDIST_WORKER:
+            lock_id = f"{lock_id}_{PYTEST_XDIST_WORKER}"
 
         client = redis.Redis.from_url(settings.REDIS_URL)
         lock = client.lock(lock_id, timeout=timeout, thread_local=False)
@@ -403,9 +406,8 @@ def lock_task(func):
                 return func(*args, **kwargs)
             finally:
                 lock.release()
-                renewer_thread.join()
-
-        if not lock:
+                renewer_thread.join(1)
+        else:
             logger.info("Task %s is already running, skipping", func.__name__)
             return
 
