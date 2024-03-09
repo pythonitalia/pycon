@@ -50,12 +50,11 @@ services:
       dockerfile: ../Dockerfile.python.local
     networks: [pycon_net]
     command: sh -c "export DJANGO_SETTINGS_MODULE=pycon.settings.dev &&
-      eval $(pdm venv activate) &&
       pdm install &&
-      python manage.py migrate &&
-      python manage.py create_admin &&
+      pdm run python manage.py migrate &&
+      pdm run python manage.py create_admin &&
       touch /.ready &&
-      python manage.py runserver 0.0.0.0:8000"
+      pdm run python manage.py runserver 0.0.0.0:8000"
     depends_on:
       redis:
         condition: service_healthy
