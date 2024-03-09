@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 import cv2
+from django.core.files.base import ContentFile
 from django.core.files.storage import storages
 from schedule.models import ScheduleItem
 
-from django.template import Context, Template
+from jinja2 import Environment
 
 local_storage = storages["localstorage"]
 
@@ -33,6 +34,9 @@ def create_video_info(schedule_item: ScheduleItem) -> VideoInfo:
     ]
 
     context = {
+        "has_speakers": count_speakers > 0,
+        "has_more_than_2_speakers": count_speakers > 2,
+        "has_zero_or_more_than_2_speakers": count_speakers == 0 or count_speakers > 2,
         "count_speakers": count_speakers,
         "speakers_names": speakers_names,
         "title": schedule_item.title,
@@ -61,7 +65,12 @@ def create_video_info(schedule_item: ScheduleItem) -> VideoInfo:
 
 
 def _process_string_template(template_string: str, context) -> str:
-    return Template(template_string).render(Context(context)).strip()
+    env = Environment(
+        trim_blocks=True,
+        lstrip_blocks=True,
+    )
+    template = env.from_string(template_string)
+    return template.render(context).strip().replace("\n\n\n", "\n\n")
 
 
 def download_video_file(id: int, path: str) -> str:
@@ -89,8 +98,13 @@ def extract_video_thumbnail(remote_video_path: str, id: int) -> str:
     if not success:
         raise ValueError("Unable to extract frame")
 
-    cv2.imwrite(file_path, image)
-    return file_path
+    ret, buffer = cv2.imencode(".jpg", image)
+    if not ret:
+        raise ValueError("Unable to encode frame")
+
+    content_file = ContentFile(buffer.tobytes())
+    local_storage.save(thumbnail_file_name, content_file)
+    return thumbnail_file_name
 
 
 def cleanup_local_files(id: int, delete_thumbnail: bool = True):
@@ -122,4 +136,4 @@ def replace_invalid_chars_with_lookalikes(text: str) -> str:
 
 
 def clean_tag(tag: str) -> str:
-    return tag.strip().replace(" ", "").replace("-", "").lower()
+    return tag.strip().replace(" ", "").replace("-", "").replace(".", "").lower()

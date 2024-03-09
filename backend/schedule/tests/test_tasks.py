@@ -24,6 +24,7 @@ from schedule.tests.factories import (
     ScheduleItemFactory,
     ScheduleItemSentForVideoUploadFactory,
 )
+from schedule.video_upload import get_thumbnail_file_name, get_video_file_name
 from submissions.tests.factories import SubmissionFactory
 import time_machine
 from conferences.models.speaker_voucher import SpeakerVoucher
@@ -452,6 +453,8 @@ def test_upload_schedule_item_video_flow(mocker):
     image_content.name = "test.jpg"
     image_content.seek(0)
 
+    localstorage = storages["localstorage"]
+
     conferencevideos_storage = storages["conferencevideos"]
     conferencevideos_storage.save(
         "videos/test.mp4",
@@ -516,8 +519,13 @@ def test_upload_schedule_item_video_flow(mocker):
     assert sent_for_upload.video_uploaded
     assert sent_for_upload.thumbnail_uploaded
 
-    sent_for_upload.schedule_item.refresh_from_db()
-    assert sent_for_upload.schedule_item.youtube_video_id == "vid_123"
+    schedule_item = sent_for_upload.schedule_item
+    schedule_item.refresh_from_db()
+    assert schedule_item.youtube_video_id == "vid_123"
+
+    # Make sure we cleanup files at the end
+    assert not localstorage.exists(get_thumbnail_file_name(schedule_item.id))
+    assert not localstorage.exists(get_video_file_name(schedule_item.id))
 
 
 def test_upload_schedule_item_with_only_thumbnail_to_upload(mocker):
@@ -690,6 +698,15 @@ def test_upload_schedule_item_video_with_failing_thumbnail_is_rescheduled(mocker
 
     sent_for_upload.schedule_item.refresh_from_db()
     assert sent_for_upload.schedule_item.youtube_video_id == "vid_123"
+
+    localstorage = storages["localstorage"]
+    # thumbnail is not deleted in this case, but the video is
+    assert localstorage.exists(
+        get_thumbnail_file_name(sent_for_upload.schedule_item.id)
+    )
+    assert not localstorage.exists(
+        get_video_file_name(sent_for_upload.schedule_item.id)
+    )
 
 
 def test_upload_schedule_item_video_with_failing_thumbnail_upload_fails(mocker):
