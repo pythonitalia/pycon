@@ -387,6 +387,10 @@ def lock_task(func):
     def wrapper(*args, **kwargs):
         timeout = 60 * 5
         lock_id = f"celery_lock_{func.__name__}"
+
+        if settings.PYTEST_XDIST_WORKER:
+            lock_id = f"{lock_id}_{settings.PYTEST_XDIST_WORKER}"
+
         client = redis.Redis.from_url(settings.REDIS_URL)
         lock = client.lock(lock_id, timeout=timeout, thread_local=False)
 
