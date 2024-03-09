@@ -104,7 +104,7 @@ def extract_video_thumbnail(remote_video_path: str, id: int) -> str:
 
     content_file = ContentFile(buffer.tobytes())
     local_storage.save(thumbnail_file_name, content_file)
-    return thumbnail_file_name
+    return local_storage.path(thumbnail_file_name)
 
 
 def cleanup_local_files(id: int, delete_thumbnail: bool = True):
