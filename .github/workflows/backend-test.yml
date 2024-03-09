@@ -32,7 +32,7 @@ jobs:
         image: redis:7.2.3
         options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
         ports:
-          - 6379/tcp
+          - 6379:6379
 
     steps:
       - uses: actions/checkout@v2
