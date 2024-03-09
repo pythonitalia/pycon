@@ -117,6 +117,8 @@ def test_youtube_videos_insert(mocker, admin_user):
         )
     )
 
+    mock_build.assert_called_with("youtube", "v3", credentials=mocker.ANY)
+
     mock_youtube.videos.return_value.insert.assert_called_with(
         part="snippet,status",
         notifySubscribers=False,
@@ -205,6 +207,8 @@ def test_youtube_videos_set_thumbnail(mocker, admin_user):
     mock_youtube.thumbnails.return_value.set.return_value.execute.return_value = {}
 
     youtube_videos_set_thumbnail(video_id="123", thumbnail_path="/test.png")
+
+    mock_build.assert_called_with("youtube", "v3", credentials=mocker.ANY)
 
     mock_youtube.thumbnails.return_value.set.assert_called_once_with(
         videoId="123", media_body=mock.ANY
