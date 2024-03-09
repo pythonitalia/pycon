@@ -5,4 +5,3 @@ locals {
 }
 
 variable "enable_proxy" {}
-variable "deploy_temporal" {}

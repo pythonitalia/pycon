@@ -129,10 +129,6 @@ locals {
       value = local.is_prod ? "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/8" : "locmemcache://snowflake"
     },
     {
-      name  = "TEMPORAL_ADDRESS",
-      value = var.deploy_temporal ? "${data.aws_instance.temporal_machine[0].private_ip}:7233" : ""
-    },
-    {
       name  = "STRIPE_WEBHOOK_SIGNATURE_SECRET",
       value = module.secrets.value.stripe_webhook_secret
     },

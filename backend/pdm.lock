@@ -5,7 +5,7 @@
 groups = ["default", "dev", "lambda"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:f9ba1cfc33d63fa0a6ffd94345d0949f694251b4c907c36522be36544fa5d6d6"
+content_hash = "sha256:b64dac79b33562fbcf33024422734fd39550c1eafe90c60795c23bb636def78f"
 
 [[package]]
 name = "amqp"
@@ -205,7 +205,7 @@ files = [
 
 [[package]]
 name = "azure-storage-blob"
-version = "12.19.0"
+version = "12.19.1"
 requires_python = ">=3.7"
 summary = "Microsoft Azure Blob Storage Client Library for Python"
 dependencies = [
@@ -215,8 +215,8 @@ dependencies = [
     "typing-extensions>=4.3.0",
 ]
 files = [
-    {file = "azure-storage-blob-12.19.0.tar.gz", hash = "sha256:26c0a4320a34a3c2a1b74528ba6812ebcb632a04cd67b1c7377232c4b01a5897"},
-    {file = "azure_storage_blob-12.19.0-py3-none-any.whl", hash = "sha256:7bbc2c9c16678f7a420367fef6b172ba8730a7e66df7f4d7a55d5b3c8216615b"},
+    {file = "azure-storage-blob-12.19.1.tar.gz", hash = "sha256:13e16ba42fc54ac2c7e8f976062173a5c82b9ec0594728e134aac372965a11b0"},
+    {file = "azure_storage_blob-12.19.1-py3-none-any.whl", hash = "sha256:c5530dc51c21c9564e4eb706cd499befca8819b10dd89716d3fc90d747556243"},
 ]
 
 [[package]]
@@ -273,22 +273,22 @@ files = [
 
 [[package]]
 name = "boto3"
-version = "1.34.54"
+version = "1.34.59"
 requires_python = ">= 3.8"
 summary = "The AWS SDK for Python"
 dependencies = [
-    "botocore<1.35.0,>=1.34.54",
+    "botocore<1.35.0,>=1.34.59",
     "jmespath<2.0.0,>=0.7.1",
     "s3transfer<0.11.0,>=0.10.0",
 ]
 files = [
-    {file = "boto3-1.34.54-py3-none-any.whl", hash = "sha256:f201b6a416f809283d554c652211eecec9fe3a52ed4063dab3f3e7aea7571d9c"},
-    {file = "boto3-1.34.54.tar.gz", hash = "sha256:8b3f5cc7fbedcbb22271c328039df8a6ab343001e746e0cdb24774c426cadcf8"},
+    {file = "boto3-1.34.59-py3-none-any.whl", hash = "sha256:004e67b078be58d34469406f93cc8b95bc43becef4bbe44523a0b8e51f84c668"},
+    {file = "boto3-1.34.59.tar.gz", hash = "sha256:162edf182e53c198137a28432a626dba103f787a8f5000ed4758b73ccd203fa0"},
 ]
 
 [[package]]
 name = "botocore"
-version = "1.34.54"
+version = "1.34.59"
 requires_python = ">= 3.8"
 summary = "Low-level, data-driven core of boto 3."
 dependencies = [
@@ -297,8 +297,8 @@ dependencies = [
     "urllib3<2.1,>=1.25.4; python_version >= \"3.10\"",
 ]
 files = [
-    {file = "botocore-1.34.54-py3-none-any.whl", hash = "sha256:bf215d93e9d5544c593962780d194e74c6ee40b883d0b885e62ef35fc0ec01e5"},
-    {file = "botocore-1.34.54.tar.gz", hash = "sha256:4061ff4be3efcf53547ebadf2c94d419dfc8be7beec24e9fa1819599ffd936fa"},
+    {file = "botocore-1.34.59-py3-none-any.whl", hash = "sha256:4bc112dafb1679ab571117593f7656604726a3da0e5ae5bad00ea772fa40e75c"},
+    {file = "botocore-1.34.59.tar.gz", hash = "sha256:24edb4d21d7c97dea0c6c4a80d36b3809b1443a30b0bd5e317d6c319dfac823f"},
 ]
 
 [[package]]
@@ -931,15 +931,15 @@ files = [
 
 [[package]]
 name = "faker"
-version = "23.3.0"
+version = "24.1.0"
 requires_python = ">=3.8"
 summary = "Faker is a Python package that generates fake data for you."
 dependencies = [
     "python-dateutil>=2.4",
 ]
 files = [
-    {file = "Faker-23.3.0-py3-none-any.whl", hash = "sha256:117ce1a2805c1bc5ca753b3dc6f9d567732893b2294b827d3164261ee8f20267"},
-    {file = "Faker-23.3.0.tar.gz", hash = "sha256:458d93580de34403a8dec1e8d5e6be2fee96c4deca63b95d71df7a6a80a690de"},
+    {file = "Faker-24.1.0-py3-none-any.whl", hash = "sha256:89ae0932f4f269754790569828859eaa0ae2ce73d1f3eb1f30ae7c20d4daf5ce"},
+    {file = "Faker-24.1.0.tar.gz", hash = "sha256:4fb0c16c71ad35d278a5fa7a4106a5c26c2b2b5c5efc47c1d67635db90b6071e"},
 ]
 
 [[package]]
@@ -1007,7 +1007,7 @@ files = [
 
 [[package]]
 name = "google-api-python-client"
-version = "2.120.0"
+version = "2.121.0"
 requires_python = ">=3.7"
 summary = "Google API Client Library for Python"
 dependencies = [
@@ -1018,13 +1018,13 @@ dependencies = [
     "uritemplate<5,>=3.0.1",
 ]
 files = [
-    {file = "google-api-python-client-2.120.0.tar.gz", hash = "sha256:a0c8769cad9576768bcb3191cb1f550f6ab3290cba042badb0fb17bba03f70cc"},
-    {file = "google_api_python_client-2.120.0-py2.py3-none-any.whl", hash = "sha256:e2cdf4497bfc758fb44a4b487920cc1ca0571c2428187697a8e43e3b9feba1c9"},
+    {file = "google-api-python-client-2.121.0.tar.gz", hash = "sha256:df863ece4db8b36ce1053ebd983e43fbc5b664209eed78e82cc84ae56ddac6c0"},
+    {file = "google_api_python_client-2.121.0-py2.py3-none-any.whl", hash = "sha256:bb4da677150dd16c45818620baca8a63208c6f4180a0691ad1c1708b384c10be"},
 ]
 
 [[package]]
 name = "google-auth"
-version = "2.28.1"
+version = "2.28.2"
 requires_python = ">=3.7"
 summary = "Google Authentication Library"
 dependencies = [
@@ -1033,8 +1033,8 @@ dependencies = [
     "rsa<5,>=3.1.4",
 ]
 files = [
-    {file = "google-auth-2.28.1.tar.gz", hash = "sha256:34fc3046c257cedcf1622fc4b31fc2be7923d9b4d44973d481125ecc50d83885"},
-    {file = "google_auth-2.28.1-py2.py3-none-any.whl", hash = "sha256:25141e2d7a14bfcba945f5e9827f98092716e99482562f15306e5b026e21aa72"},
+    {file = "google-auth-2.28.2.tar.gz", hash = "sha256:80b8b4969aa9ed5938c7828308f20f035bc79f9d8fb8120bf9dc8db20b41ba30"},
+    {file = "google_auth-2.28.2-py2.py3-none-any.whl", hash = "sha256:9fd67bbcd40f16d9d42f950228e9cf02a2ded4ae49198b27432d0cded5a74c38"},
 ]
 
 [[package]]
@@ -1522,7 +1522,7 @@ files = [
 
 [[package]]
 name = "mypy"
-version = "1.8.0"
+version = "1.9.0"
 requires_python = ">=3.8"
 summary = "Optional static typing for Python"
 dependencies = [
@@ -1530,18 +1530,18 @@ dependencies = [
     "typing-extensions>=4.1.0",
 ]
 files = [
-    {file = "mypy-1.8.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:855fe27b80375e5c5878492f0729540db47b186509c98dae341254c8f45f42ae"},
-    {file = "mypy-1.8.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:4c886c6cce2d070bd7df4ec4a05a13ee20c0aa60cb587e8d1265b6c03cf91da3"},
-    {file = "mypy-1.8.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d19c413b3c07cbecf1f991e2221746b0d2a9410b59cb3f4fb9557f0365a1a817"},
-    {file = "mypy-1.8.0-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:9261ed810972061388918c83c3f5cd46079d875026ba97380f3e3978a72f503d"},
-    {file = "mypy-1.8.0-cp311-cp311-win_amd64.whl", hash = "sha256:51720c776d148bad2372ca21ca29256ed483aa9a4cdefefcef49006dff2a6835"},
-    {file = "mypy-1.8.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:52825b01f5c4c1c4eb0db253ec09c7aa17e1a7304d247c48b6f3599ef40db8bd"},
-    {file = "mypy-1.8.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:f5ac9a4eeb1ec0f1ccdc6f326bcdb464de5f80eb07fb38b5ddd7b0de6bc61e55"},
-    {file = "mypy-1.8.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:afe3fe972c645b4632c563d3f3eff1cdca2fa058f730df2b93a35e3b0c538218"},
-    {file = "mypy-1.8.0-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:42c6680d256ab35637ef88891c6bd02514ccb7e1122133ac96055ff458f93fc3"},
-    {file = "mypy-1.8.0-cp312-cp312-win_amd64.whl", hash = "sha256:720a5ca70e136b675af3af63db533c1c8c9181314d207568bbe79051f122669e"},
-    {file = "mypy-1.8.0-py3-none-any.whl", hash = "sha256:538fd81bb5e430cc1381a443971c0475582ff9f434c16cd46d2c66763ce85d9d"},
-    {file = "mypy-1.8.0.tar.gz", hash = "sha256:6ff8b244d7085a0b425b56d327b480c3b29cafbd2eff27316a004f9a7391ae07"},
+    {file = "mypy-1.9.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:653265f9a2784db65bfca694d1edd23093ce49740b2244cde583aeb134c008f3"},
+    {file = "mypy-1.9.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:3a3c007ff3ee90f69cf0a15cbcdf0995749569b86b6d2f327af01fd1b8aee9dc"},
+    {file = "mypy-1.9.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2418488264eb41f69cc64a69a745fad4a8f86649af4b1041a4c64ee61fc61129"},
+    {file = "mypy-1.9.0-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:68edad3dc7d70f2f17ae4c6c1b9471a56138ca22722487eebacfd1eb5321d612"},
+    {file = "mypy-1.9.0-cp311-cp311-win_amd64.whl", hash = "sha256:85ca5fcc24f0b4aeedc1d02f93707bccc04733f21d41c88334c5482219b1ccb3"},
+    {file = "mypy-1.9.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:aceb1db093b04db5cd390821464504111b8ec3e351eb85afd1433490163d60cd"},
+    {file = "mypy-1.9.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:0235391f1c6f6ce487b23b9dbd1327b4ec33bb93934aa986efe8a9563d9349e6"},
+    {file = "mypy-1.9.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d4d5ddc13421ba3e2e082a6c2d74c2ddb3979c39b582dacd53dd5d9431237185"},
+    {file = "mypy-1.9.0-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:190da1ee69b427d7efa8aa0d5e5ccd67a4fb04038c380237a0d96829cb157913"},
+    {file = "mypy-1.9.0-cp312-cp312-win_amd64.whl", hash = "sha256:fe28657de3bfec596bbeef01cb219833ad9d38dd5393fc649f4b366840baefe6"},
+    {file = "mypy-1.9.0-py3-none-any.whl", hash = "sha256:a260627a570559181a9ea5de61ac6297aa5af202f06fd7ab093ce74e7181e43e"},
+    {file = "mypy-1.9.0.tar.gz", hash = "sha256:3cc5da0127e6a478cddd906068496a97a7618a21ce9b54bde5bf7e539c7af974"},
 ]
 
 [[package]]
@@ -2059,12 +2059,12 @@ files = [
 
 [[package]]
 name = "pyparsing"
-version = "3.1.1"
+version = "3.1.2"
 requires_python = ">=3.6.8"
 summary = "pyparsing module - Classes and methods to define and execute parsing grammars"
 files = [
-    {file = "pyparsing-3.1.1-py3-none-any.whl", hash = "sha256:32c7c0b711493c72ff18a981d24f28aaf9c1fb7ed5e9667c9e84e3db623bdbfb"},
-    {file = "pyparsing-3.1.1.tar.gz", hash = "sha256:ede28a1a32462f5a9705e07aea48001a08f7cf81a021585011deba701581a0db"},
+    {file = "pyparsing-3.1.2-py3-none-any.whl", hash = "sha256:f9db75911801ed778fe61bb643079ff86601aca99fcae6345aa67292038fb742"},
+    {file = "pyparsing-3.1.2.tar.gz", hash = "sha256:a1bac0ce561155ecc3ed78ca94d3c9378656ad4c94c1270de543f621420f94ad"},
 ]
 
 [[package]]
@@ -2560,25 +2560,6 @@ files = [
 ]
 
 [[package]]
-name = "temporalio"
-version = "1.4.0"
-requires_python = ">=3.7,<4.0"
-summary = "Temporal.io Python SDK"
-dependencies = [
-    "protobuf>=3.20",
-    "types-protobuf>=3.20",
-    "typing-extensions<5.0.0,>=4.2.0",
-]
-files = [
-    {file = "temporalio-1.4.0-cp37-abi3-macosx_10_9_x86_64.whl", hash = "sha256:344a75f559d9a0aabde59da0072688523a0c344e8c916d5b5597e6a618696dd4"},
-    {file = "temporalio-1.4.0-cp37-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:f39b7977d1f7f2e3938172980764ec5c50755653fd986d6e68c6b4db242594d6"},
-    {file = "temporalio-1.4.0-cp37-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:58e29300bdb586160b8d8f2208106ff9e9d9f740bfb3385b82a509fa38d9a743"},
-    {file = "temporalio-1.4.0-cp37-abi3-win_amd64.whl", hash = "sha256:16bc76cb4d57e633f9e26381d941e3c251a42b5bef6b3668cc4cc2fc08ad6696"},
-    {file = "temporalio-1.4.0-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:209369da8e529838a238fc6ec464727f7c922d9314ec0ab8f4c19be6dddf0339"},
-    {file = "temporalio-1.4.0.tar.gz", hash = "sha256:56ef81b4b57e709e8f52d49e16b5c7a77d4b63cb697b1d991dd9eaa7fbbda591"},
-]
-
-[[package]]
 name = "time-machine"
 version = "2.14.0"
 requires_python = ">=3.8"
@@ -2648,16 +2629,6 @@ dependencies = [
 files = [
     {file = "typer-0.9.0-py3-none-any.whl", hash = "sha256:5d96d986a21493606a358cae4461bd8cdf83cbf33a5aa950ae629ca3b51467ee"},
     {file = "typer-0.9.0.tar.gz", hash = "sha256:50922fd79aea2f4751a8e0408ff10d2662bd0c8bbfa84755a699f3bada2978b2"},
-]
-
-[[package]]
-name = "types-protobuf"
-version = "4.24.0.20240302"
-requires_python = ">=3.8"
-summary = "Typing stubs for protobuf"
-files = [
-    {file = "types-protobuf-4.24.0.20240302.tar.gz", hash = "sha256:f22c00cc0cea9722e71e14d389bba429af9e35a74a949719c167203a5abbe2e4"},
-    {file = "types_protobuf-4.24.0.20240302-py3-none-any.whl", hash = "sha256:5c607990f50f14606c2edaf379f8acc7418fef1451b227aa3c6a8a2cbc6ff14a"},
 ]
 
 [[package]]

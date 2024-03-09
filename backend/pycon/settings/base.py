@@ -315,8 +315,6 @@ CACHES = {
     "default": env.cache(default="locmemcache://snowflake"),
 }
 
-TEMPORAL_ADDRESS = env("TEMPORAL_ADDRESS", default="")
-
 SESSION_COOKIE_NAME = "pythonitalia_sessionid"
 CSRF_USE_SESSIONS = True
 CSRF_COOKIE_SECURE = DEBUG is False
