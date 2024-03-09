@@ -39,3 +39,23 @@ jobs:
           STRIPE_SECRET_API_KEY: ""
           STRIPE_SUBSCRIPTION_PRICE_ID: ""
           STRIPE_WEBHOOK_SIGNATURE_SECRET: ""
+
+  check-building-container:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build test
+        uses: docker/build-push-action@v4.0.0
+        with:
+          context: ./${{ matrix.service.dir }}
+          file: ./${{ matrix.service.dir }}/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          provenance: false
+          push: false
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/amd64
