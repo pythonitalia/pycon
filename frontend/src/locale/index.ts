@@ -59,6 +59,12 @@ Let's get in touch to find the best solution for your business' needs!`,
     "schedule.listView": "List View",
     "schedule.gridView": "Grid View",
 
+    "addScheduleToCalendarModal.title": "Add schedule to calendar",
+    "addScheduleToCalendarModal.loginRequired":
+      "You need to login to favourite and add them to your calendar",
+    "addScheduleToCalendarModal.steps":
+      "Favourite the talks or workshops you don't want to miss out and add them to your calendar! Just copy the link below and add it to your calendar app.",
+
     "profile.tickets.ticketReassigned":
       'You assigned this ticket to {to}. Wrong email? You can change it inside "My orders"',
 
@@ -1027,6 +1033,8 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "voting.pagination":
       "Page {currentPage} of {totalPages} ({totalItems, plural, one {1 item} other {{totalItems} items}})",
 
+    "schedule.addToCalendar": "Add to calendar",
+
     "scheduleView.filter.search": "Search",
     "scheduleView.filter.byAudience": "By Audience",
     "scheduleView.filter.byLanguage": "By Language",
@@ -1515,6 +1523,8 @@ Per le richieste di lettera d'invito per il visto, si prega gentilmente di visit
     "schedule.invitation.currentReply": "Risposta attuale: {answer}",
     "schedule.invitation.durationChanged": `⚠️ Purtroppo, a causa di vincoli di tempo, abbiamo dovuto ridurre la durata della tua presentazione da {originalDuration} minuti a {duration} minuti. Ci scusiamo per l'inconveniente.
 Se questo nuovo orario non dovesse andare bene per te, per favore non esitare a farcelo sapere qui sotto. Faremo del nostro meglio per soddisfare le tue esigenze, ma tieni presente che a causa dei limiti di programmazione, potremmo non essere in grado di soddisfare tutte le richieste. Nel raro evento in cui non riusciamo a trovare un'alternativa, potremmo dover annullare la tua presentazione.`,
+
+    "schedule.addToCalendar": "Aggiungi al tuo calendario",
 
     "orderReview.heading": "Recap ordine",
     "orderReview.invoiceInformation": "Informazioni fatturazione",

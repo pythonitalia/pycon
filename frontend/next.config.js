@@ -65,6 +65,12 @@ module.exports = withSentryConfig({
         destination: "/news/:match*",
         permanent: true,
       },
+      {
+        source: "/schedule/ical/:match*",
+        destination:
+          "https://admin.pycon.it/schedule/user-schedule-favourites-calendar/:match",
+        permanent: false,
+      },
     ];
   },
   async rewrites() {

@@ -1,4 +1,4 @@
-query CurrentUser {
+query CurrentUser($conference: String!) {
   me {
     id
     name
@@ -11,5 +11,6 @@ query CurrentUser {
     openToNewsletter
     canEditSchedule
     isPythonItaliaMember
+    userScheduleFavouritesCalendarUrl(conference: $conference)
   }
 }
