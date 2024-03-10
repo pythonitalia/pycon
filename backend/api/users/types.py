@@ -1,8 +1,12 @@
+from django.utils.crypto import get_random_string
 from datetime import date
 from logging import getLogger
 from typing import List, Optional
+from api.permissions import IsAuthenticated
 from django.conf import settings
 
+from django.urls import reverse
+from pycon.signing import sign_path
 import strawberry
 from strawberry.types import Info
 
@@ -65,6 +69,32 @@ class User:
             conference=conference,
             user_id=self.id,
             user_email=self.email,
+        )
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    def custom_schedule_calendar_url(self, info: Info, conference: str) -> str | None:
+        conference_id = (
+            Conference.objects.filter(code=conference)
+            .values_list("id", flat=True)
+            .first()
+        )
+
+        if not conference_id:
+            return
+
+        return (
+            info.context.request.build_absolute_uri(
+                sign_path(
+                    reverse(
+                        "schedule-favourites-calendar",
+                        kwargs={
+                            "conference_id": conference_id,
+                            "hash_user_id": self.hashid(info),
+                        },
+                    )
+                )
+            )
+            + f"&v={get_random_string(5)}"
         )
 
     @strawberry.field

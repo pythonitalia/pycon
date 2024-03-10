@@ -26,6 +26,7 @@ urlpatterns = [
     path("", include("association_membership.urls")),
     path("integrations/", include("integrations.urls")),
     path("sponsors/", include("sponsors.urls")),
+    path("schedule/", include("schedule.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = urlpatterns + [

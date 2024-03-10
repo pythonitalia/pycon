@@ -1,7 +1,7 @@
 from django.urls import reverse
-from django.core.signing import Signer
 
 from pycon.celery import app
+from pycon.signing import sign_path
 from sponsors.models import SponsorLead
 from notifications.emails import send_email
 from integrations import slack
@@ -12,12 +12,10 @@ def send_sponsor_brochure(sponsor_lead_id):
     sponsor_lead = SponsorLead.objects.get(id=sponsor_lead_id)
     subject_prefix = f"[{sponsor_lead.conference.name.localize('en')}]"
 
-    signer = Signer()
     view_brochure_path = reverse("view-brochure", args=[sponsor_lead_id])
-    signed_url = signer.sign(view_brochure_path)
-    signature = signed_url.split(":")[-1]
+    signed_path = sign_path(view_brochure_path)
 
-    brochure_link = f"https://admin.pycon.it{view_brochure_path}?sh={signature}"
+    brochure_link = f"https://admin.pycon.it{signed_path}"
 
     send_email(
         template="sponsorship-brochure",

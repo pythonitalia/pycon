@@ -458,7 +458,14 @@ class ScheduleItemInvitation(ScheduleItem):
         verbose_name_plural = _("Schedule invitations")
 
 
+class ScheduleItemStarQuerySet(ConferenceQuerySetMixin, QuerySet):
+    def of_user(self, user):
+        return self.filter(user=user)
+
+
 class ScheduleItemStar(TimeStampedModel):
+    conference_reference = "schedule_item__conference"
+
     user = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
@@ -473,6 +480,8 @@ class ScheduleItemStar(TimeStampedModel):
         verbose_name=_("schedule item"),
         related_name="stars",
     )
+
+    objects = ScheduleItemStarQuerySet().as_manager()
 
     class Meta:
         unique_together = (
