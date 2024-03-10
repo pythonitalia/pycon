@@ -1,4 +1,3 @@
-from django.utils.crypto import get_random_string
 from datetime import date
 from logging import getLogger
 from typing import List, Optional
@@ -84,19 +83,16 @@ class User:
         if not conference_id:
             return
 
-        return (
-            info.context.request.build_absolute_uri(
-                sign_path(
-                    reverse(
-                        "user-schedule-favourites-calendar",
-                        kwargs={
-                            "conference_id": conference_id,
-                            "hash_user_id": self.hashid(info),
-                        },
-                    )
+        return info.context.request.build_absolute_uri(
+            sign_path(
+                reverse(
+                    "user-schedule-favourites-calendar",
+                    kwargs={
+                        "conference_id": conference_id,
+                        "hash_user_id": self.hashid(info),
+                    },
                 )
             )
-            + f"&v={get_random_string(5)}"
         )
 
     @strawberry.field
