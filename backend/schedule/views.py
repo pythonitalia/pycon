@@ -13,10 +13,12 @@ from django.views.decorators.cache import never_cache
 @require_safe
 @never_cache
 @require_signed_request
-def schedule_favourites_calendar(request, conference_id, hash_user_id):
+def user_schedule_item_favourites_calendar(request, conference_id, hash_user_id):
     conference = Conference.objects.get(id=conference_id)
     user_id = decode_hashid(hash_user_id, salt=settings.USER_ID_HASH_SALT, min_length=6)
-    starred_schedule_items = ScheduleItem.objects.filter(
+    starred_schedule_items = ScheduleItem.objects.prefetch_related(
+        "submission", "keynote", "language", "slot", "rooms"
+    ).filter(
         id__in=ScheduleItemStar.objects.for_conference(conference)
         .of_user(user_id)
         .values_list("schedule_item_id", flat=True)
@@ -47,7 +49,7 @@ def schedule_favourites_calendar(request, conference_id, hash_user_id):
             "description",
             f"""{best_description}
 
-{f'Room(s)/Stanza/e: {rooms}' if rooms else ''}
+Room(s)/Stanza(/e): {rooms}
 
 Info: https://2024.pycon.it/event/{schedule_item.slug}/
 """.strip(),

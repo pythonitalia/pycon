@@ -72,7 +72,9 @@ class User:
         )
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    def custom_schedule_calendar_url(self, info: Info, conference: str) -> str | None:
+    def user_schedule_favourites_calendar_url(
+        self, info: Info, conference: str
+    ) -> str | None:
         conference_id = (
             Conference.objects.filter(code=conference)
             .values_list("id", flat=True)
@@ -86,7 +88,7 @@ class User:
             info.context.request.build_absolute_uri(
                 sign_path(
                     reverse(
-                        "schedule-favourites-calendar",
+                        "user-schedule-favourites-calendar",
                         kwargs={
                             "conference_id": conference_id,
                             "hash_user_id": self.hashid(info),

@@ -1,10 +1,10 @@
 from django.urls import path
-from schedule.views import schedule_favourites_calendar
+from schedule.views import user_schedule_item_favourites_calendar
 
 urlpatterns = [
     path(
-        "ical-schedule-favourites/<int:conference_id>/<str:hash_user_id>",
-        schedule_favourites_calendar,
-        name="schedule-favourites-calendar",
+        "user-schedule-favourites-calendar/<int:conference_id>/<str:hash_user_id>",
+        user_schedule_item_favourites_calendar,
+        name="user-schedule-favourites-calendar",
     ),
 ]
