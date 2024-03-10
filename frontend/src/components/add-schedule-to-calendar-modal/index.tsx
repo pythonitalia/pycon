@@ -29,7 +29,8 @@ export const AddScheduleToCalendarModal = ({ onClose }: Props) => {
       "/schedule/user-schedule-favourites-calendar/",
       "",
     );
-    prettyCalendarUrl = `${location.origin}/schedule/ical/${data}${pattern.search}`;
+    const cacheBuster = Math.random().toString(36).slice(-5);
+    prettyCalendarUrl = `${location.origin}/schedule/ical/${data}${pattern.search}&v=c${cacheBuster}`;
   }
 
   return (
