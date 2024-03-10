@@ -61,6 +61,10 @@ export const AddScheduleToCalendarModal = ({ onClose }: Props) => {
           <InputWrapper>
             <Input readOnly={true} value={prettyCalendarUrl} />
           </InputWrapper>
+          <Spacer size="thin" />
+          <Text size={2}>
+            <FormattedMessage id="addScheduleToCalendarModal.info" />
+          </Text>
         </div>
       )}
     </Modal>

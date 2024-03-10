@@ -68,7 +68,7 @@ module.exports = withSentryConfig({
       {
         source: "/schedule/ical/:match*",
         destination:
-          "https://admin.pycon.it/schedule/user-schedule-favourites-calendar/:match",
+          "https://admin.pycon.it/schedule/user-schedule-favourites-calendar/:match*",
         permanent: false,
       },
     ];

@@ -59,11 +59,13 @@ Let's get in touch to find the best solution for your business' needs!`,
     "schedule.listView": "List View",
     "schedule.gridView": "Grid View",
 
-    "addScheduleToCalendarModal.title": "Add schedule to calendar",
+    "addScheduleToCalendarModal.title": "Add to calendar",
     "addScheduleToCalendarModal.loginRequired":
       "You need to login to favourite and add them to your calendar",
     "addScheduleToCalendarModal.steps":
-      "Favourite the talks or workshops you don't want to miss out and add them to your calendar! Just copy the link below and add it to your calendar app.",
+      "Favourite the talks or workshops you don't want to miss out on and add them to your calendar! Just copy the link below and add it to your calendar app.",
+    "addScheduleToCalendarModal.info":
+      "It might take a few minutes for the changes to appear in your calendar app.",
 
     "profile.tickets.ticketReassigned":
       'You assigned this ticket to {to}. Wrong email? You can change it inside "My orders"',
