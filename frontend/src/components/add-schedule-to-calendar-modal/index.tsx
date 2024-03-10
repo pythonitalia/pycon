@@ -33,6 +33,11 @@ export const AddScheduleToCalendarModal = ({ onClose }: Props) => {
     prettyCalendarUrl = `${location.origin}/schedule/ical/${data}${pattern.search}&v=c${cacheBuster}`;
   }
 
+  const autoSelectInput = (e: React.MouseEvent<HTMLInputElement>) => {
+    (e.target as HTMLInputElement).select();
+    document.execCommand("copy");
+  };
+
   return (
     <Modal
       title={<FormattedMessage id="addScheduleToCalendarModal.title" />}
@@ -40,7 +45,7 @@ export const AddScheduleToCalendarModal = ({ onClose }: Props) => {
       show={true}
       actions={
         <div className="flex flex-col-reverse md:flex-row gap-6 justify-end items-center">
-          <Button variant="secondary">
+          <Button variant="secondary" onClick={onClose}>
             <FormattedMessage id="global.accordion.close" />
           </Button>
         </div>
@@ -60,10 +65,14 @@ export const AddScheduleToCalendarModal = ({ onClose }: Props) => {
           </Text>
           <Spacer size="medium" />
           <InputWrapper>
-            <Input readOnly={true} value={prettyCalendarUrl} />
+            <Input
+              onClick={autoSelectInput}
+              readOnly={true}
+              value={prettyCalendarUrl}
+            />
           </InputWrapper>
           <Spacer size="thin" />
-          <Text size={2}>
+          <Text size={3}>
             <FormattedMessage id="addScheduleToCalendarModal.info" />
           </Text>
         </div>
