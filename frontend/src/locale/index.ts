@@ -61,7 +61,7 @@ Let's get in touch to find the best solution for your business' needs!`,
 
     "addScheduleToCalendarModal.title": "Add to calendar",
     "addScheduleToCalendarModal.loginRequired":
-      "You need to login to favourite and add them to your calendar",
+      "You need to login to favourite talks/workshops and add them to your calendar",
     "addScheduleToCalendarModal.steps":
       "Favourite the talks or workshops you don't want to miss out on and add them to your calendar! Just copy the link below and add it to your calendar app.",
     "addScheduleToCalendarModal.info":
@@ -2042,7 +2042,7 @@ Affrettati a comprare il biglietto!`,
 
     "addScheduleToCalendarModal.title": "Aggiungi al calendario",
     "addScheduleToCalendarModal.loginRequired":
-      "Devi effettuare il login per aggiungere ai preferiti e inserirli nel tuo calendario.",
+      "Devi effettuare il login per aggiungere talks/workshops ai preferiti e inserirli nel tuo calendario.",
     "addScheduleToCalendarModal.steps":
       "Aggiungi ai preferiti i talk o i workshop che non vuoi perdere e inseriscili nel tuo calendario! Copia il link qui sotto e aggiungilo alla tua app del calendario.",
     "addScheduleToCalendarModal.info":
