@@ -17,7 +17,12 @@ def user_schedule_item_favourites_calendar(request, conference_id, hash_user_id)
     conference = Conference.objects.get(id=conference_id)
     user_id = decode_hashid(hash_user_id, salt=settings.USER_ID_HASH_SALT, min_length=6)
     starred_schedule_items = ScheduleItem.objects.prefetch_related(
-        "submission", "keynote", "language", "slot", "rooms"
+        "submission",
+        "keynote",
+        "language",
+        "slot",
+        "rooms",
+        "additional_speakers__user",
     ).filter(
         id__in=ScheduleItemStar.objects.for_conference(conference)
         .of_user(user_id)
@@ -39,20 +44,27 @@ def user_schedule_item_favourites_calendar(request, conference_id, hash_user_id)
     cal.add("version", "2.0")
 
     for schedule_item in starred_schedule_items:
-        best_description = schedule_item.elevator_pitch or schedule_item.abstract
+        event_description = (
+            schedule_item.elevator_pitch or schedule_item.abstract
+        ).strip() + "\n"
         rooms = ", ".join(schedule_item.rooms.values_list("name", flat=True))
+        speakers = [speaker.display_name for speaker in schedule_item.speakers]
+
+        if speakers:
+            event_description += f"\nSpeaker(s)/Relatore(i): {', '.join(speakers)}"
+
+        event_description += f"\nRoom(s)/Stanza(e): {rooms}"
+
+        event_description += (
+            f"\nInfo: https://2024.pycon.it/event/{schedule_item.slug}/"
+        )
 
         event = Event()
         event.add("summary", f"[{conference_name}] {schedule_item.title}")
         event.add("location", rooms)
         event.add(
             "description",
-            f"""{best_description}
-
-Room(s)/Stanza(/e): {rooms}
-
-Info: https://2024.pycon.it/event/{schedule_item.slug}/
-""".strip(),
+            event_description.strip(),
         )
         event.add(
             "uid",
