@@ -13,7 +13,7 @@ def test_view_brochure_view_without_signature_fails(client):
     response = client.get(reverse("view-brochure", args=[sponsor_lead.id]))
 
     assert response.status_code == 403
-    assert response.content.decode() == "Invalid signature."
+    assert response.content.decode() == "Missing signature."
     assert sponsor_lead.brochure_viewed is False
 
 

@@ -5,7 +5,7 @@
 groups = ["default", "dev", "lambda"]
 strategy = ["cross_platform"]
 lock_version = "4.4.1"
-content_hash = "sha256:b64dac79b33562fbcf33024422734fd39550c1eafe90c60795c23bb636def78f"
+content_hash = "sha256:e1b2fccaabc08edf32e89c91fd0c7f7d19d9b5c861e988fcfcea699aba0e57a8"
 
 [[package]]
 name = "amqp"
@@ -1222,6 +1222,20 @@ dependencies = [
 files = [
     {file = "httpx-0.25.2-py3-none-any.whl", hash = "sha256:a05d3d052d9b2dfce0e3896636467f8a5342fb2b902c819428e1ac65413ca118"},
     {file = "httpx-0.25.2.tar.gz", hash = "sha256:8b8fcaa0c8ea7b05edd69a094e63a2094c4efcb48129fb757361bc423c0ad9e8"},
+]
+
+[[package]]
+name = "icalendar"
+version = "5.0.11"
+requires_python = ">=3.7"
+summary = "iCalendar parser/generator"
+dependencies = [
+    "python-dateutil",
+    "pytz",
+]
+files = [
+    {file = "icalendar-5.0.11-py3-none-any.whl", hash = "sha256:81864971ac43a1b7d0a555dc1b667836ce59fc719a7f845a96f2f03205fb83b9"},
+    {file = "icalendar-5.0.11.tar.gz", hash = "sha256:7a298bb864526589d0de81f4b736eeb6ff9e539fefb405f7977aa5c1e201ca00"},
 ]
 
 [[package]]

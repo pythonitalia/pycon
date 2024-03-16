@@ -1,8 +1,9 @@
+from api.helpers.ids import encode_hashid
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
+from django.conf import settings
 from helpers.constants import GENDERS
 
 from .managers import UserManager
@@ -40,6 +41,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.email} ({self.name or 'No name set'})"
+
+    def user_hashid(self):
+        return encode_hashid(self.id, salt=settings.USER_ID_HASH_SALT, min_length=6)
 
     def get_short_name(self):
         return self.email

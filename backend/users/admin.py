@@ -46,6 +46,7 @@ class PyConUserAdmin(UserAdmin):
                     "date_birth",
                     "open_to_recruiting",
                     "open_to_newsletter",
+                    "user_hashid",
                 )
             },
         ),
@@ -77,7 +78,7 @@ class PyConUserAdmin(UserAdmin):
 
     form = PyConUserChangeForm
     add_form = PyConUserCreationForm
-    readonly_fields = ("date_joined",)
+    readonly_fields = ("date_joined", "user_hashid")
     list_display = ("email", "full_name", "is_staff", "is_superuser")
     search_fields = ("email",)
     ordering = ("email",)
