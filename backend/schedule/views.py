@@ -53,8 +53,7 @@ def user_schedule_item_favourites_calendar(request, conference_id, hash_user_id)
         if speakers:
             event_description += f"\nSpeaker(s)/Relatore(i): {', '.join(speakers)}"
 
-        if rooms:
-            event_description += f"\nRoom(s)/Stanza(e): {rooms}"
+        event_description += f"\nRoom(s)/Stanza(e): {rooms}"
 
         event_description += (
             f"\nInfo: https://2024.pycon.it/event/{schedule_item.slug}/"
