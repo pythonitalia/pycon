@@ -366,7 +366,7 @@ export const ScheduleView = ({
               <FormattedMessage id="schedule.addToCalendar" />
             </Text>
 
-            <Spacer size="large" orientation="horizontal" />
+            <Spacer size="small" orientation="horizontal" />
             <div className="hidden md:block">
               <Text
                 select="none"
@@ -384,7 +384,7 @@ export const ScheduleView = ({
                 )}
               </Text>
 
-              <Spacer size="large" orientation="horizontal" />
+              <Spacer size="small" orientation="horizontal" />
             </div>
             <FilterBar
               placement="left"
