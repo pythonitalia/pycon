@@ -31,7 +31,7 @@ class Sponsor(TimeStampedModel, OrderedModel):
 
 
 class SponsorLevel(OrderedModel):
-    name = models.CharField(_("name"), max_length=20)
+    name = models.CharField(_("name"), max_length=100)
     conference = models.ForeignKey(
         "conferences.Conference",
         on_delete=models.CASCADE,
