@@ -1,16 +1,14 @@
 /** @jsxRuntime classic */
-
 /** @jsx jsx */
 import { ApolloProvider } from "@apollo/client";
 import { getMessagesForLocale } from "@python-italia/pycon-styleguide";
 import "@python-italia/pycon-styleguide/custom-style";
+import va from "@vercel/analytics";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { RawIntlProvider, createIntl, createIntlCache } from "react-intl";
 import { Box, Flex, ThemeProvider, jsx } from "theme-ui";
-
-import Script from "next/script";
 
 import { APOLLO_STATE_PROP_NAME, getApolloClient } from "~/apollo/client";
 import { ErrorBoundary } from "~/components/error-boundary";
@@ -31,9 +29,16 @@ const isSocial = (path: string) => path.endsWith("/social");
 
 const MyApp = (props) => {
   const { Component, pageProps, router, err } = props;
-  const [modalId, setCurrentModal] = useState<string | null>(null);
+  const [modalId, setCurrentModalId] = useState<string | null>(null);
   const apolloClient = getApolloClient(props.pageProps[APOLLO_STATE_PROP_NAME]);
   const locale = useCurrentLanguage();
+
+  const setCurrentModal = (modalId: string) => {
+    va.track("open-modal", {
+      modalId,
+    });
+    setCurrentModalId(modalId);
+  };
 
   const modalContext = useMemo(
     () => ({
@@ -41,7 +46,7 @@ const MyApp = (props) => {
       setCurrentModal,
       closeCurrentModal: () => setCurrentModal(null),
     }),
-    [modalId],
+    [modalId, setCurrentModal],
   );
 
   const intl = createIntl(

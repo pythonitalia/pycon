@@ -58,6 +58,7 @@ export const ScheduleList = ({
 
             return (
               <ScheduleItem
+                key={item.id}
                 item={item}
                 currentDay={currentDay}
                 slot={slot}

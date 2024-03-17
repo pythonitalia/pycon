@@ -31,6 +31,7 @@ import {
   writeUserStarredScheduleItemsQueryCache,
 } from "~/types";
 
+import { useSetCurrentModal } from "../modal/context";
 import { useLoginState } from "../profile/hooks";
 import { Schedule } from "./schedule";
 import { ScheduleList } from "./schedule-list";
@@ -47,6 +48,7 @@ export const ScheduleView = ({
   schedule: ScheduleQuery;
   changeDay: (day: string) => void;
 }) => {
+  const setCurrentModal = useSetCurrentModal();
   const router = useRouter();
   const [isLoggedIn] = useLoginState();
   const language = useCurrentLanguage();
@@ -333,10 +335,27 @@ export const ScheduleView = ({
     setViewMode((params.view as ViewMode) || "grid");
   }, [router.isReady]);
 
+  const openAddToCalendarModal = () => {
+    setCurrentModal("add-schedule-to-calendar");
+  };
+
   return (
     <Fragment>
       <Section illustration="snakeHead">
         <Heading size="display1">Schedule</Heading>
+        <div>
+          <Spacer size="large" />
+          <Text
+            select="none"
+            onClick={openAddToCalendarModal}
+            size="label3"
+            uppercase
+            weight="strong"
+            hoverColor="green"
+          >
+            <FormattedMessage id="schedule.addToCalendar" />
+          </Text>
+        </div>
       </Section>
 
       <Section noContainer>

@@ -1,11 +1,7 @@
-/** @jsxRuntime classic */
-
 import { stringify } from "querystring";
-/** @jsx jsx */
 import { Page } from "@python-italia/pycon-styleguide";
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, jsx } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
@@ -82,31 +78,23 @@ export const ScheduleDayPage = () => {
     });
   };
 
-  const { loading, data } = useScheduleQuery({
+  const { data } = useScheduleQuery({
     variables: {
       code,
       language,
     },
   });
 
-  return (
-    <PageContent
-      loading={loading}
-      data={data}
-      day={currentDay}
-      changeDay={changeDay}
-    />
-  );
+  return <PageContent data={data} day={currentDay} changeDay={changeDay} />;
 };
 
 type PageContentProps = {
-  loading: boolean;
   data: ScheduleQuery;
   day: string;
   changeDay: (day: string) => void;
 };
 
-const PageContent = ({ loading, data, day, changeDay }: PageContentProps) => {
+const PageContent = ({ data, day, changeDay }: PageContentProps) => {
   const language = useCurrentLanguage();
 
   return (
@@ -117,18 +105,7 @@ const PageContent = ({ loading, data, day, changeDay }: PageContentProps) => {
         timezone={data?.conference.timezone}
       />
 
-      {loading && (
-        <Box sx={{ borderTop: "primary" }}>
-          <Box
-            sx={{ maxWidth: "largeContainer", p: 3, mx: "auto", fontSize: 3 }}
-          >
-            <FormattedMessage id="schedule.loading" />
-          </Box>
-        </Box>
-      )}
-      {!loading && (
-        <ScheduleView schedule={data} day={day} changeDay={changeDay} />
-      )}
+      <ScheduleView schedule={data} day={day} changeDay={changeDay} />
     </Page>
   );
 };
