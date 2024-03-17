@@ -65,7 +65,7 @@ Let's get in touch to find the best solution for your business' needs!`,
     "addScheduleToCalendarModal.steps":
       "Favourite the talks or workshops you don't want to miss out on and add them to your calendar! Just copy the link below and add it to your calendar app.",
     "addScheduleToCalendarModal.info":
-      "It might take a few hours for the changes to appear in your calendar app. Remove the calendar and add it again if you don't see the changes.",
+      "Depending on your calendar app, changes might take a fews hours to reflect. You can remove and add the calendar again to force an update.",
 
     "profile.tickets.ticketReassigned":
       'You assigned this ticket to {to}. Wrong email? You can change it inside "My orders"',
@@ -2046,7 +2046,7 @@ Affrettati a comprare il biglietto!`,
     "addScheduleToCalendarModal.steps":
       "Segna i talk o workshop che non vuoi perderti come preferiti ed inseriscili nel tuo calendario! Copia il link qui sotto e aggiungilo alla tua app del calendario.",
     "addScheduleToCalendarModal.info":
-      "Potrebbero essere necessarie alcune ore perché le modifiche appaiano nella tua app del calendario. Rimuovi il calendario e aggiungilo di nuovo se non vedi le modifiche.",
+      "A seconda dell'app del calendario, le modifiche potrebbero richiedere alcune ore per essere visualizzate. Puoi rimuovere e aggiungere nuovamente il calendario per forzare un aggiornamento.",
 
     "tickets.productsList.guidedToursTitle": "Tour Guidati",
 
