@@ -203,7 +203,7 @@ def test_cannot_get_user_schedule_item_favourites_calendar_with_invalid_signatur
         "user-schedule-favourites-calendar",
         kwargs={"conference_id": conference.id, "hash_user_id": user.user_hashid()},
     )
-    response = client.get(f"{path}?sh=123")
+    response = client.get(f"{path}?sig=123")
 
     assert response.status_code == 403
 
@@ -229,6 +229,6 @@ def test_cannot_get_user_schedule_item_favourites_calendar_with_other_user_signa
     signed_path = sign_path(path)
     signature = signed_path.split("=")[-1]
 
-    response = client.get(f"{other_path}?sh={signature}")
+    response = client.get(f"{other_path}?sig={signature}")
 
     assert response.status_code == 403
