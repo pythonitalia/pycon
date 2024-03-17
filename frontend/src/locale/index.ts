@@ -1035,7 +1035,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "voting.pagination":
       "Page {currentPage} of {totalPages} ({totalItems, plural, one {1 item} other {{totalItems} items}})",
 
-    "schedule.addToCalendar": "Add to calendar",
+    "schedule.addToCalendar": "Add your favourites to your calendar",
 
     "scheduleView.filter.search": "Search",
     "scheduleView.filter.byAudience": "By Audience",
@@ -1526,7 +1526,7 @@ Per le richieste di lettera d'invito per il visto, si prega gentilmente di visit
     "schedule.invitation.durationChanged": `⚠️ Purtroppo, a causa di vincoli di tempo, abbiamo dovuto ridurre la durata della tua presentazione da {originalDuration} minuti a {duration} minuti. Ci scusiamo per l'inconveniente.
 Se questo nuovo orario non dovesse andare bene per te, per favore non esitare a farcelo sapere qui sotto. Faremo del nostro meglio per soddisfare le tue esigenze, ma tieni presente che a causa dei limiti di programmazione, potremmo non essere in grado di soddisfare tutte le richieste. Nel raro evento in cui non riusciamo a trovare un'alternativa, potremmo dover annullare la tua presentazione.`,
 
-    "schedule.addToCalendar": "Aggiungi al calendario",
+    "schedule.addToCalendar": "Aggiungi i tuoi preferiti al tuo calendario",
 
     "orderReview.heading": "Recap ordine",
     "orderReview.invoiceInformation": "Informazioni fatturazione",
@@ -2042,9 +2042,9 @@ Affrettati a comprare il biglietto!`,
 
     "addScheduleToCalendarModal.title": "Aggiungi al calendario",
     "addScheduleToCalendarModal.loginRequired":
-      "Devi effettuare il login per aggiungere talks/workshops ai preferiti e inserirli nel tuo calendario.",
+      "Devi effettuare il login per aggiungere talk/workshop ai preferiti ed inserirli nel tuo calendario.",
     "addScheduleToCalendarModal.steps":
-      "Aggiungi ai preferiti i talk o i workshop che non vuoi perdere e inseriscili nel tuo calendario! Copia il link qui sotto e aggiungilo alla tua app del calendario.",
+      "Segna i talk o workshop che non vuoi perderti come preferiti ed inseriscili nel tuo calendario! Copia il link qui sotto e aggiungilo alla tua app del calendario.",
     "addScheduleToCalendarModal.info":
       "Potrebbero essere necessarie alcune ore perché le modifiche appaiano nella tua app del calendario. Rimuovi il calendario e aggiungilo di nuovo se non vedi le modifiche.",
 

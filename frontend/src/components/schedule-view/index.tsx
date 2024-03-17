@@ -343,6 +343,19 @@ export const ScheduleView = ({
     <Fragment>
       <Section illustration="snakeHead">
         <Heading size="display1">Schedule</Heading>
+        <div>
+          <Spacer size="large" />
+          <Text
+            select="none"
+            onClick={openAddToCalendarModal}
+            size="label3"
+            uppercase
+            weight="strong"
+            hoverColor="green"
+          >
+            <FormattedMessage id="schedule.addToCalendar" />
+          </Text>
+        </div>
       </Section>
 
       <Section noContainer>
@@ -355,18 +368,6 @@ export const ScheduleView = ({
           language={language}
         >
           <div className="shrink-0 my-3 pl-4 md:pr-4 flex md:items-center md:justify-end">
-            <Text
-              select="none"
-              onClick={openAddToCalendarModal}
-              size="label3"
-              uppercase
-              weight="strong"
-              hoverColor="green"
-            >
-              <FormattedMessage id="schedule.addToCalendar" />
-            </Text>
-
-            <Spacer size="small" orientation="horizontal" />
             <div className="hidden md:block">
               <Text
                 select="none"
@@ -384,7 +385,7 @@ export const ScheduleView = ({
                 )}
               </Text>
 
-              <Spacer size="small" orientation="horizontal" />
+              <Spacer size="large" orientation="horizontal" />
             </div>
             <FilterBar
               placement="left"
