@@ -7,5 +7,8 @@ Sentry.init({
   tracesSampleRate: 0.4,
   replaysSessionSampleRate: 0.2,
   replaysOnErrorSampleRate: 1.0,
-  integrations: [new Sentry.Replay(), new Sentry.BrowserTracing()],
+  integrations: [
+    Sentry.replayIntegration(),
+    Sentry.browserTracingIntegration(),
+  ],
 });
