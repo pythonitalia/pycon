@@ -26,7 +26,15 @@ def setup_periodic_tasks(sender, **kwargs):
 
         add = sender.add_periodic_task
 
-        add(timedelta(minutes=5), check_association_membership_subscriptions)
-        add(timedelta(minutes=30), process_schedule_items_videos_to_upload)
+        add(
+            timedelta(minutes=5),
+            check_association_membership_subscriptions,
+            name="Check Python Italia memberships",
+        )
+        add(
+            timedelta(minutes=30),
+            process_schedule_items_videos_to_upload,
+            name="Process schedule items videos to upload",
+        )
     except Exception:
         logger.exception("setup_periodic_tasks")
