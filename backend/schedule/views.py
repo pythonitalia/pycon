@@ -37,7 +37,7 @@ def user_schedule_item_favourites_calendar(request, conference_id, hash_user_id)
     now = datetime.datetime.now(utc)
 
     cal = Calendar()
-    cal.add("X-WR-CALNAME", f"{conference_name}'s Schedule")
+    cal.add("X-WR-CALNAME", f"Your {conference_name}'s Schedule")
     cal.add("X-PUBLISHED-TTL", "PT15M")
     cal.add("REFRESH-INTERVAL", "PT15M")
     cal.add("prodid", f"-//{conference_name}//")
