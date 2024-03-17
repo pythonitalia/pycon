@@ -65,7 +65,7 @@ Let's get in touch to find the best solution for your business' needs!`,
     "addScheduleToCalendarModal.steps":
       "Favourite the talks or workshops you don't want to miss out on and add them to your calendar! Just copy the link below and add it to your calendar app.",
     "addScheduleToCalendarModal.info":
-      "Depending on your calendar app, changes might take a fews hours to reflect. You can remove and add the calendar again to force an update.",
+      "Depending on your calendar app, changes might take a few hours to reflect. You can remove and add the calendar again to force an update.",
 
     "profile.tickets.ticketReassigned":
       'You assigned this ticket to {to}. Wrong email? You can change it inside "My orders"',
