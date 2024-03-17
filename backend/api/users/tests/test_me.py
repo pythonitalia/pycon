@@ -22,7 +22,7 @@ def test_user_schedule_favourites_calendar_url(graphql_client, user):
 
     me = response["data"]["me"]
     assert (
-        f"/schedule/user-schedule-favourites-calendar/{conference.id}/{user.user_hashid()}?sh="
+        f"/schedule/user-schedule-favourites-calendar/{conference.id}/{user.user_hashid()}?sig="
         in me["userScheduleFavouritesCalendarUrl"]
     )
 
