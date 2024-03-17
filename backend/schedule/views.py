@@ -50,6 +50,11 @@ def user_schedule_item_favourites_calendar(request, conference_id, hash_user_id)
         rooms = ", ".join(schedule_item.rooms.values_list("name", flat=True))
         speakers = [speaker.display_name for speaker in schedule_item.speakers]
 
+        event_description += (
+            f"\nSession format/Formato: {schedule_item.get_type_display()}"
+        )
+        event_description += f"\nLanguage/Lingua: {schedule_item.language.name}"
+
         if speakers:
             event_description += f"\nSpeaker(s)/Relatore(i): {', '.join(speakers)}"
 

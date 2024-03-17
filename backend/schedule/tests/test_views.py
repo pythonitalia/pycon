@@ -29,6 +29,7 @@ def test_user_schedule_item_favourites_calendar(client):
         description="Description",
         submission=None,
         type=ScheduleItem.TYPES.talk,
+        language="en",
         slot=SlotFactory(
             hour=time(10, 0),
             duration=30,
@@ -49,7 +50,8 @@ def test_user_schedule_item_favourites_calendar(client):
         title="Another Schedule Item",
         description="Description",
         submission=None,
-        type=ScheduleItem.TYPES.talk,
+        language="it",
+        type=ScheduleItem.TYPES.panel,
         slot=SlotFactory(
             hour=time(10, 30),
             duration=30,
@@ -102,7 +104,7 @@ def test_user_schedule_item_favourites_calendar(client):
             title="Starred Schedule Item 2",
             description="Description 2",
             submission=None,
-            type=ScheduleItem.TYPES.talk,
+            type=ScheduleItem.TYPES.panel,
             slot=SlotFactory(
                 hour=time(10, 0),
                 duration=30,
@@ -152,6 +154,8 @@ def test_user_schedule_item_favourites_calendar(client):
         event_schedule_item_1.get("description")
         == f"""Description
 
+Session format/Formato: Talk
+Language/Lingua: English
 Speaker(s)/Relatore(i): Jane Doe, John
 Room(s)/Stanza(e): Room Name
 Info: https://2024.pycon.it/event/{schedule_item_1.slug}/
@@ -174,6 +178,8 @@ Info: https://2024.pycon.it/event/{schedule_item_1.slug}/
         event_schedule_no_speaker.get("description")
         == f"""Description
 
+Session format/Formato: Panel
+Language/Lingua: Italian
 Room(s)/Stanza(e): Another Room
 Info: https://2024.pycon.it/event/{schedule_no_speaker.slug}/
 """.strip()

@@ -1,3 +1,4 @@
+from languages.models import Language
 from users.tests.factories import UserFactory
 
 import factory
@@ -48,7 +49,6 @@ class ScheduleItemFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     submission = factory.SubFactory(SubmissionFactory)
     language = factory.SubFactory(LanguageFactory)
-
     title = factory.Faker("text", max_nb_chars=100)
     slug = factory.Faker("slug")
     description = factory.Faker("text")
@@ -60,6 +60,12 @@ class ScheduleItemFactory(DjangoModelFactory):
         _type = kwargs.get("type", None)
         if _type == ScheduleItem.TYPES.custom:
             kwargs.pop("submission", None)
+
+        _language = kwargs.get("language", None)
+        if not _language:
+            kwargs["language"] = Language.objects.get(code="en")
+        elif isinstance(_language, str):
+            kwargs["language"] = Language.objects.get(code=_language)
 
         return super()._create(model_class, *args, **kwargs)
 
