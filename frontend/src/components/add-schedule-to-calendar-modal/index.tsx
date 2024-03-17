@@ -7,6 +7,7 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 import { useCurrentUser } from "~/helpers/use-current-user";
+import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { Modal } from "../modal";
 import { useLoginState } from "../profile/hooks";
 
@@ -38,6 +39,8 @@ export const AddScheduleToCalendarModal = ({ onClose }: Props) => {
     document.execCommand("copy");
   };
 
+  const pleaseWaitMessage = useTranslatedMessage("login.loading");
+
   return (
     <Modal
       title={<FormattedMessage id="addScheduleToCalendarModal.title" />}
@@ -51,14 +54,14 @@ export const AddScheduleToCalendarModal = ({ onClose }: Props) => {
         </div>
       }
     >
-      {!user && (
+      {!isLoggedIn && (
         <div>
           <Text size={2}>
             <FormattedMessage id="addScheduleToCalendarModal.loginRequired" />
           </Text>
         </div>
       )}
-      {user && (
+      {isLoggedIn && (
         <div>
           <Text size={2}>
             <FormattedMessage id="addScheduleToCalendarModal.steps" />
@@ -68,7 +71,8 @@ export const AddScheduleToCalendarModal = ({ onClose }: Props) => {
             <Input
               onClick={autoSelectInput}
               readOnly={true}
-              value={prettyCalendarUrl}
+              value={user ? prettyCalendarUrl : ""}
+              placeholder={user ? "" : pleaseWaitMessage}
             />
           </InputWrapper>
           <Spacer size="thin" />
