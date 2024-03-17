@@ -8,9 +8,9 @@ from cms.components.page.blocks.special_guest_section import SpecialGuestSection
 from cms.components.page.blocks.information_section import InformationSection
 from cms.components.news.blocks.news_grid_section import NewsGridSection
 from cms.components.page.blocks.live_streaming_section import LiveStreamingSection
+from cms.mixins import CustomHeadlessMixin
 from wagtail.models import Page
 from wagtail.admin.panels import FieldPanel
-from wagtail_headless_preview.models import HeadlessMixin
 
 from wagtail.fields import StreamField
 
@@ -39,7 +39,7 @@ class BodyBlock(blocks.StreamBlock):
     homepage_hero = HomepageHero()
 
 
-class GenericPage(HeadlessMixin, Page):
+class GenericPage(CustomHeadlessMixin, Page):
     body = StreamField(
         BodyBlock(),
         use_json_field=True,
