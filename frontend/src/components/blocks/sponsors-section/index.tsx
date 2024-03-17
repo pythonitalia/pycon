@@ -107,6 +107,7 @@ const getSponsorsPerRow = (level: string) => {
       return 1;
     case "Gold":
     case "Silver":
+    case "Exclusive Tech Partner":
       return 2;
     case "Partners":
     case "Partner":
