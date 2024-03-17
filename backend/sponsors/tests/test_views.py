@@ -23,7 +23,7 @@ def test_view_brochure_view_with_wrong_signature_fails(client):
 
     sponsor_lead = SponsorLeadFactory(brochure_viewed=False)
     response = client.get(
-        reverse("view-brochure", args=[sponsor_lead.id]) + f"?sh={signature}"
+        reverse("view-brochure", args=[sponsor_lead.id]) + f"?sig={signature}"
     )
 
     assert response.status_code == 403
@@ -40,7 +40,7 @@ def test_view_brochure_view(client):
     signer = Signer()
     signature = signer.sign(view_brochure_url_path).split(signer.sep)[-1]
 
-    response = client.get(view_brochure_url_path + f"?sh={signature}")
+    response = client.get(view_brochure_url_path + f"?sig={signature}")
 
     assert response.status_code == 302
     assert response.url == brochure.url

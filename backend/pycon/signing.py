@@ -7,7 +7,8 @@ def require_signed_request(view_func):
     @wraps(view_func)
     def _wrapper_view_func(request, *args, **kwargs):
         signer = Signer()
-        signature = request.GET.get("sh", None)
+        # fallback to `sh` for backwards compatibility
+        signature = request.GET.get("sig", request.GET.get("sh", None))
 
         if not signature:
             return HttpResponseForbidden("Missing signature.")
@@ -30,4 +31,4 @@ def sign_path(path: str):
     signer = Signer()
     signed_path = signer.sign(path)
     signature = signed_path.split(signer.sep)[-1]
-    return f"{path}?sh={signature}"
+    return f"{path}?sig={signature}"

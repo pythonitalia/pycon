@@ -26,7 +26,7 @@ def test_send_sponsor_brochure_task(sent_emails):
         == f'[{sponsor_lead.conference.name.localize("en")}] Our Sponsorship Brochure'
     )
 
-    assert f"{view_brochure_path}?sh={signature}" in email["variables"]["brochurelink"]
+    assert f"{view_brochure_path}?sig={signature}" in email["variables"]["brochurelink"]
 
 
 def test_notify_new_sponsor_lead_via_slack(mocker):
