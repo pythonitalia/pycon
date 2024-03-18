@@ -420,6 +420,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "country",
         "is_proposed_speaker",
         "is_confirmed_speaker",
+        "emoji_gender",
         "conference",
         "status",
         "approved_type",
@@ -443,7 +444,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "status",
         "country_type",
         "occupation",
-        "grant_type",
+        "approved_type",
         "interested_in_volunteering",
         "needs_funds_for_travel",
         "need_visa",
@@ -451,6 +452,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         IsProposedSpeakerFilter,
         IsConfirmedSpeakerFilter,
         ("travelling_from", CountryFilter),
+        "user__gender",
     )
     search_fields = (
         "email",
@@ -560,6 +562,17 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         if obj.is_confirmed_speaker:
             return "🗣️"
         return ""
+
+    @admin.display(description="⚤")
+    def emoji_gender(self, obj):
+        emoji = {
+            "": "",
+            "male": "👨🏻‍💻",
+            "female": "👩🏼‍💻",
+            "other": "🧑🏻‍🎤",
+            "not_say": "⛔️",
+        }
+        return emoji[obj.user.gender]
 
     def get_queryset(self, request):
         qs = (
