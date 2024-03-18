@@ -565,6 +565,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
 
     @admin.display(description="⚤")
     def emoji_gender(self, obj):
+        gender = obj.user.gender if obj.user else ""
         emoji = {
             "": "",
             "male": "👨🏻‍💻",
@@ -572,7 +573,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
             "other": "🧑🏻‍🎤",
             "not_say": "⛔️",
         }
-        return emoji[obj.user.gender]
+        return emoji[gender]
 
     def get_queryset(self, request):
         qs = (
