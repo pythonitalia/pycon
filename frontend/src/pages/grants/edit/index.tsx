@@ -93,7 +93,9 @@ export const getServerSideProps: GetServerSideProps = async ({
       queryMyGrant(client, {
         conference: process.env.conferenceCode,
       }),
-      queryCurrentUser(client),
+      queryCurrentUser(client, {
+        conference: process.env.conferenceCode,
+      }),
     ]);
   } catch (e) {
     return {

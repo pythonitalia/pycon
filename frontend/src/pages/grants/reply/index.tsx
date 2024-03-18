@@ -302,7 +302,9 @@ export const getServerSideProps: GetServerSideProps = async ({
       queryGrant(client, {
         conference: process.env.conferenceCode,
       }),
-      queryCurrentUser(client),
+      queryCurrentUser(client, {
+        conference: process.env.conferenceCode,
+      }),
     ]);
   } catch (e) {
     return {

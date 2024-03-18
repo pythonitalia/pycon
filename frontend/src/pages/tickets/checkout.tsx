@@ -50,7 +50,9 @@ export const getServerSideProps: GetServerSideProps = async ({
         conference: process.env.conferenceCode,
         language: "en",
       }),
-      queryCurrentUser(client),
+      queryCurrentUser(client, {
+        conference: process.env.conferenceCode,
+      }),
     ]);
   } catch (e) {
     return {
