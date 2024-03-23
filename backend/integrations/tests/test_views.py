@@ -66,7 +66,8 @@ def test_cannot_get_plain_customer_cards_when_user_doesnt_exist(rest_api_client)
         },
     )
 
-    assert response.status_code == 404
+    assert response.status_code == 200
+    assert response.data == {"cards": []}
 
 
 @override_settings(PLAIN_INTEGRATION_TOKEN="secret")
