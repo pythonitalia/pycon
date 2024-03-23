@@ -66,7 +66,8 @@ def test_cannot_get_plain_customer_cards_when_user_doesnt_exist(rest_api_client)
         },
     )
 
-    assert response.status_code == 404
+    assert response.status_code == 200
+    assert response.data == {"cards": []}
 
 
 @override_settings(PLAIN_INTEGRATION_TOKEN="secret")
@@ -113,6 +114,30 @@ def test_get_plain_customer_cards_with_no_data(rest_api_client):
 
     assert response.status_code == 200
     assert response.data["cards"] == [{"key": "grant", "components": []}]
+
+
+@override_settings(PLAIN_INTEGRATION_TOKEN="secret")
+def test_get_plain_customer_with_no_cards(rest_api_client):
+    conference = ConferenceFactory()
+    user = UserFactory()
+
+    rest_api_client.token_auth("secret")
+    response = rest_api_client.post(
+        reverse("plain_customer_cards"),
+        {
+            "cardKeys": [],
+            "customer": {
+                "email": user.email,
+                "externalId": None,
+            },
+        },
+        headers={
+            "Conference-Id": conference.id,
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.data["cards"] == []
 
 
 @override_settings(PLAIN_INTEGRATION_TOKEN="secret")
