@@ -241,24 +241,17 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-central-1
 
+  # TODO Temporary workaround the fact that the lambda takes a bit to update
+  # so to avoid calling the old deployment, we want 20 seconds
+  # the 20 seconds is not a meaningful value, it is a random delay
+  # it might or might not be enough. This is just an hack until we add a solution for this
+  # e.g lambda versions?
   wait-aws-update:
     runs-on: ubuntu-latest
     needs: [terraform]
     steps:
-      - name: Check for new version
-        run: |
-          while true; do
-              RESPONSE=$(curl -s "https://admin.pycon.it/health/")
-
-              VERSION=$(echo $RESPONSE | jq -r '.version')
-
-              if [ "$VERSION" = "${{ steps.git.outputs.githash }}" ]; then
-                  echo "New version deployed"
-                  exit 0
-              fi
-
-              sleep 5
-          done
+      - name: Sleep for 10 seconds
+        run: sleep 10s
         shell: bash
 
   # Migrate the database
