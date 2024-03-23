@@ -56,3 +56,20 @@ module "buckets" {
 module "cloudwatch" {
   source = "./cloudwatch"
 }
+
+module "lambdas" {
+  source = "./lambdas"
+  providers = {
+    aws    = aws
+    aws.us = aws.us
+  }
+}
+
+module "archives" {
+  source = "./archives"
+
+  providers = {
+    aws    = aws
+    aws.us = aws.us
+  }
+}
