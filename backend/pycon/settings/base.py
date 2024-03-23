@@ -121,6 +121,7 @@ INSTALLED_APPS = [
     "association_membership.apps.AssociationMembershipConfig",
     "rest_framework",
     "integrations.apps.IntegrationsConfig",
+    "healthchecks.apps.HealthchecksConfig",
 ]
 
 MIDDLEWARE = [
