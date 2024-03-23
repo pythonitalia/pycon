@@ -71,7 +71,7 @@ module "lambda" {
     SENTRY_DSN                                = module.secrets.value.sentry_dsn
     VOLUNTEERS_PUSH_NOTIFICATIONS_IOS_ARN     = module.secrets.value.volunteers_push_notifications_ios_arn
     VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN = module.secrets.value.volunteers_push_notifications_android_arn
-    ALLOWED_HOSTS                             = "*"
+    ALLOWED_HOSTS                             = "admin.pycon.it"
     DJANGO_SETTINGS_MODULE                    = "pycon.settings.prod"
     ASSOCIATION_FRONTEND_URL                  = "https://associazione.python.it"
     AWS_MEDIA_BUCKET                          = aws_s3_bucket.backend_media.id
@@ -84,7 +84,6 @@ module "lambda" {
     AWS_S3_CUSTOM_DOMAIN                      = local.cdn_url
     PRETIX_API_TOKEN                          = module.common_secrets.value.pretix_api_token
     PINPOINT_APPLICATION_ID                   = module.secrets.value.pinpoint_application_id
-    FORCE_PYCON_HOST                          = local.is_prod
     SQS_QUEUE_URL                             = aws_sqs_queue.queue.id
     MAILCHIMP_SECRET_KEY                      = module.common_secrets.value.mailchimp_secret_key
     MAILCHIMP_DC                              = module.common_secrets.value.mailchimp_dc
