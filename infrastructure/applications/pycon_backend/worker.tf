@@ -30,7 +30,7 @@ locals {
     },
     {
       name  = "ALLOWED_HOSTS",
-      value = "*"
+      value = "admin.pycon.it"
     },
     {
       name  = "DJANGO_SETTINGS_MODULE",
@@ -83,10 +83,6 @@ locals {
     {
       name  = "PINPOINT_APPLICATION_ID",
       value = module.secrets.value.pinpoint_application_id
-    },
-    {
-      name  = "FORCE_PYCON_HOST",
-      value = local.is_prod ? "true" : "false"
     },
     {
       name  = "SQS_QUEUE_URL",
