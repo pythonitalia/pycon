@@ -38,8 +38,7 @@ resource "aws_cloudfront_distribution" "application" {
         "Authorization",
         "Referer",
         "Accept",
-        "Accept-Language",
-        "Host"
+        "Accept-Language"
       ]
 
       cookies {

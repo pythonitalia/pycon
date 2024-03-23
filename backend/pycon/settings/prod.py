@@ -1,5 +1,5 @@
 from .base import *  # noqa
-from .base import DATABASES, env
+from .base import DATABASES, MIDDLEWARE, env
 
 SECRET_KEY = env("SECRET_KEY")
 
@@ -19,8 +19,11 @@ EMAIL_BACKEND = env(
     "EMAIL_BACKEND", default="django.core.mail.backends.locmem.EmailBackend"
 )
 
-USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+FORCE_PYCON_HOST = env("FORCE_PYCON_HOST", bool, default=True)
+
+if FORCE_PYCON_HOST:  # pragma: no cover
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    MIDDLEWARE += ["pycon.middleware.force_pycon_host"]
 
 DEFAULT_FROM_EMAIL = "noreply@pycon.it"
 
