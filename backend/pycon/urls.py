@@ -27,6 +27,7 @@ urlpatterns = [
     path("integrations/", include("integrations.urls")),
     path("sponsors/", include("sponsors.urls")),
     path("schedule/", include("schedule.urls")),
+    path("", include("healthchecks.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = urlpatterns + [
