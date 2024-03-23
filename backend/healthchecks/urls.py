@@ -3,5 +3,5 @@ from .views import healthcheck
 
 
 urlpatterns = [
-    path("health/", healthcheck),
+    path("health/", healthcheck, name="healthcheck"),
 ]
