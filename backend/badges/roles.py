@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import strawberry
 from enum import Enum
 from typing import Dict, List, Set
@@ -85,22 +83,22 @@ def get_conference_roles_for_user(
         and user_ticket["attendee_email"] == user_email
     ]
 
-    if not admission_tickets:
-        # no matching tickets
-        return []
-
     return _get_roles(
         conference=conference,
         user_id=user_id,
-        ticket=admission_tickets[0],
+        ticket=admission_tickets[0] if admission_tickets else None,
     )
 
 
-def _get_roles(conference: Conference, user_id: int | None, ticket: dict) -> List[Role]:
-    ticket_id = ticket["id"]
+def _get_roles(
+    conference: Conference, user_id: int | None, ticket: dict | None
+) -> List[Role]:
+    filters = Q()
+
+    if ticket:
+        filters |= Q(order_position_id=ticket["id"])
 
     # check if we have overrides for this ticket / user
-    filters = Q(order_position_id=ticket_id)
     if user_id is not None:
         filters |= Q(user_id=user_id)
 
@@ -109,11 +107,13 @@ def _get_roles(conference: Conference, user_id: int | None, ticket: dict) -> Lis
         conference=conference,
     ).first()
 
-    roles = (
-        [Role(role) for role in manual_role.roles]
-        if manual_role
-        else _calculate_roles(conference, user_id, ticket)
-    )
+    roles: List[Role] = []
+
+    if manual_role:
+        roles = [Role(role) for role in manual_role.roles]
+    elif ticket:
+        roles = _calculate_roles(conference, user_id, ticket)
+
     return sorted(
         roles,
         key=lambda role: ROLES_PRIORITY.index(role),
