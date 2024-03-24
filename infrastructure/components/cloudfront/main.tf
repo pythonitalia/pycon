@@ -47,7 +47,7 @@ resource "aws_cloudfront_distribution" "application" {
     max_ttl                = 31536000
 
     lambda_function_association {
-      event_type   = "origin-request"
+      event_type   = "viewer-request"
       lambda_arn   = var.forward_host_header_lambda_arn
       include_body = false
     }

@@ -20,7 +20,7 @@ data "archive_file" "forward_host_code" {
   output_path = "/tmp/forward_host_code.zip"
   source {
     content  = <<EOF
-export function handler(event, context, callback) {
+exports.handler = function(event, context, callback) {
     const request = event.Records[0].cf.request;
 
     request.headers['x-forwarded-host'] = [{
@@ -45,5 +45,5 @@ resource "aws_lambda_function" "forward_host_header" {
   runtime          = "nodejs20.x"
   publish          = true
   provider         = aws.us
-  architectures    = ["arm64"]
+  architectures    = ["x86_64"]
 }
