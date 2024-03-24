@@ -30,7 +30,7 @@ locals {
     },
     {
       name  = "ALLOWED_HOSTS",
-      value = "*"
+      value = "admin.pycon.it"
     },
     {
       name  = "DJANGO_SETTINGS_MODULE",
@@ -49,7 +49,7 @@ locals {
       value = aws_s3_bucket.backend_media.region
     },
     {
-      name = "AWS_DEFAULT_REGION",
+      name  = "AWS_DEFAULT_REGION",
       value = "eu-central-1"
     },
     {
@@ -83,10 +83,6 @@ locals {
     {
       name  = "PINPOINT_APPLICATION_ID",
       value = module.secrets.value.pinpoint_application_id
-    },
-    {
-      name  = "FORCE_PYCON_HOST",
-      value = local.is_prod ? "true" : "false"
     },
     {
       name  = "SQS_QUEUE_URL",
@@ -173,7 +169,7 @@ locals {
       value = data.external.githash.result.githash
     },
     {
-      name = "PLAIN_INTEGRATION_TOKEN"
+      name  = "PLAIN_INTEGRATION_TOKEN"
       value = module.secrets.value.plain_integration_token
     },
     {

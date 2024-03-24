@@ -1,3 +1,11 @@
+data "aws_cloudfront_cache_policy" "caching_disabled" {
+  name = "Managed-CachingDisabled"
+}
+
+data "aws_cloudfront_origin_request_policy" "all_viewer_except_host_header" {
+  name = "Managed-AllViewerExceptHostHeader"
+}
+
 resource "aws_cloudfront_distribution" "application" {
   enabled             = true
   is_ipv6_enabled     = true
@@ -29,28 +37,20 @@ resource "aws_cloudfront_distribution" "application" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "default"
 
-    forwarded_values {
-      query_string = true
-      headers = [
-        "Access-Control-Request-Headers",
-        "Access-Control-Request-Method",
-        "Origin",
-        "Authorization",
-        "Referer",
-        "Accept",
-        "Accept-Language"
-      ]
-
-      cookies {
-        forward = "all"
-      }
-    }
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_except_host_header.id
 
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
     min_ttl                = 0
     default_ttl            = 604800
     max_ttl                = 31536000
+
+    lambda_function_association {
+      event_type   = "viewer-request"
+      lambda_arn   = var.forward_host_header_lambda_arn
+      include_body = false
+    }
   }
 
   restrictions {

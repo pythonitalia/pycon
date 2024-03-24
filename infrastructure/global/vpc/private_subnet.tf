@@ -16,8 +16,8 @@ resource "aws_route_table" "private" {
   vpc_id   = aws_vpc.default.id
 
   route {
-    cidr_block  = "0.0.0.0/0"
-    instance_id = aws_instance.nat[each.key].id
+    cidr_block           = "0.0.0.0/0"
+    network_interface_id = aws_instance.nat[each.key].primary_network_interface_id
   }
 
   tags = {
