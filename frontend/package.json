@@ -21,7 +21,7 @@
     "@emotion/core": "^10.0.35",
     "@emotion/react": ">=11.0.0 <12.0.0",
     "@graphql-codegen/add": "^5.0.2",
-    "@graphql-codegen/cli": "^2.11.3",
+    "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/fragment-matcher": "^3.3.0",
     "@graphql-codegen/introspection": "^2.2.0",
     "@graphql-codegen/near-operation-file-preset": "^3.0.0",
