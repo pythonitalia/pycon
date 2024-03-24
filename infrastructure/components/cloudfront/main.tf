@@ -42,9 +42,6 @@ resource "aws_cloudfront_distribution" "application" {
 
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
-    min_ttl                = 0
-    default_ttl            = 604800
-    max_ttl                = 31536000
 
     lambda_function_association {
       event_type   = "viewer-request"
