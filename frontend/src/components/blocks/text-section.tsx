@@ -12,7 +12,7 @@ import {
 import { BodyTextSize, TextSection as TextSectionType } from "~/types";
 
 import { Fragment } from "react";
-import { useSetCurrentModal } from "../modal/context";
+import { ModalID, useSetCurrentModal } from "../modal/context";
 
 export const TextSection = ({
   title,
@@ -33,7 +33,7 @@ export const TextSection = ({
     }
     e.preventDefault();
 
-    const modalId = cta.link.replace("modal:", "");
+    const modalId = cta.link.replace("modal:", "") as ModalID;
     setCurrentModal(modalId);
   };
   return (
