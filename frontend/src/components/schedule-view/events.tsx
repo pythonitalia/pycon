@@ -1,6 +1,3 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
 import {
   Avatar,
   AvatarGroup,
@@ -19,22 +16,11 @@ import clsx from "clsx";
 import { addMinutes, parseISO } from "date-fns";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { ThemeUIStyleObject, jsx } from "theme-ui";
 
-import { useRouter } from "next/router";
-
-import { getColorForSubmission } from "~/helpers/get-color-for-submission";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
-import {
-  readUserStarredScheduleItemsQueryCache,
-  useStarScheduleItemMutation,
-  useUnstarScheduleItemMutation,
-  writeUserStarredScheduleItemsQueryCache,
-} from "~/types";
 
 import { createHref } from "../link";
-import { useLoginState } from "../profile/hooks";
 import { EventTag } from "../schedule-event-detail/event-tag";
 import {
   Item,
@@ -79,7 +65,6 @@ export const ScheduleEntry = ({
   rooms: Room[];
   day: string;
   style?: CSSStyleDeclaration;
-  sx?: any;
   starred: boolean;
   filteredOut: boolean;
   sameSlotItem: boolean;

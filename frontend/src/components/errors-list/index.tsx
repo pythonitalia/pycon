@@ -1,40 +1,29 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
 import { Text } from "@python-italia/pycon-styleguide";
+import clsx from "clsx";
 import React from "react";
-import { Box, ThemeUIStyleObject, jsx } from "theme-ui";
 
 export const ErrorsList = ({
   errors,
-  ...props
+  className,
 }: {
   errors?: (string | React.ReactNode)[];
-  sx?: ThemeUIStyleObject;
+  className?: string;
 }) => {
   if (!errors || errors.length === 0) {
     return null;
   }
 
   return (
-    <Box
-      as="ul"
-      sx={{
-        listStyle: "none",
-        color: "red",
-        pl: 0,
-      }}
-      {...props}
-    >
+    <ul className={clsx("text-red list-none pl-0", className)}>
       {errors
         .filter((error) => !!error)
         .map((error, index) => (
-          <Box as="li" key={index} sx={{ pl: 0 }}>
+          <li key={index} className="pl-0">
             <Text size="label3" color="red">
               {error}
             </Text>
-          </Box>
+          </li>
         ))}
-    </Box>
+    </ul>
   );
 };

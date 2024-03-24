@@ -8,7 +8,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { useMemo, useState } from "react";
 import { RawIntlProvider, createIntl, createIntlCache } from "react-intl";
-import { Box, Flex, ThemeProvider, jsx } from "theme-ui";
+import { ThemeProvider, jsx } from "theme-ui";
 
 import { APOLLO_STATE_PROP_NAME, getApolloClient } from "~/apollo/client";
 import { ErrorBoundary } from "~/components/error-boundary";
@@ -28,8 +28,6 @@ import { theme } from "~/theme";
 import "../global.css";
 
 const intlCache = createIntlCache();
-
-const isSocial = (path: string) => path.endsWith("/social");
 
 const MyApp = (props) => {
   const { Component, pageProps, router, err } = props;
@@ -78,10 +76,10 @@ const MyApp = (props) => {
 
   if (router.pathname === "/badge") {
     return (
-      <Flex>
+      <div className="flex">
         <GlobalStyles />
         <Component {...pageProps} err={err} />
-      </Flex>
+      </div>
     );
   }
   return (
@@ -91,30 +89,21 @@ const MyApp = (props) => {
           <LocaleProvider lang={locale}>
             <SpeedInsights />
             <GlobalStyles />
-            {isSocial(router.pathname) ? (
-              <Component {...pageProps} />
-            ) : (
-              <Flex
-                sx={{
-                  flexDirection: "column",
-                  minHeight: "100vh",
-                }}
-              >
-                <ErrorBoundary>
-                  <ModalStateContext.Provider value={modalContext}>
-                    <Header />
+            <div className="flex flex-col min-h-screen">
+              <ErrorBoundary>
+                <ModalStateContext.Provider value={modalContext}>
+                  <Header />
 
-                    <Box>
-                      <Component {...pageProps} err={err} />
-                      <ModalRenderer />
-                      <Analytics />
-                    </Box>
+                  <div>
+                    <Component {...pageProps} err={err} />
+                    <ModalRenderer />
+                    <Analytics />
+                  </div>
 
-                    <Footer />
-                  </ModalStateContext.Provider>
-                </ErrorBoundary>
-              </Flex>
-            )}
+                  <Footer />
+                </ModalStateContext.Provider>
+              </ErrorBoundary>
+            </div>
           </LocaleProvider>
         </RawIntlProvider>
       </ApolloProvider>

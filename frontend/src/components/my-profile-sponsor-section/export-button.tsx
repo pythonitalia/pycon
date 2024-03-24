@@ -34,7 +34,7 @@ export const ExportBadgeScansButton = () => {
       </Button>
 
       {error && (
-        <Alert sx={{ mb: 4 }} variant="alert">
+        <Alert variant="alert">
           <FormattedMessage
             id="global.tryAgain"
             values={{ error: error.message }}

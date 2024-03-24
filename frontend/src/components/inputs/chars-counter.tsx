@@ -1,5 +1,5 @@
+import { Text } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
-import { Text } from "theme-ui";
 
 type Props = {
   length: number;
@@ -8,11 +8,7 @@ type Props = {
 
 export const CharsCounter = ({ length, maxLength }: Props) =>
   maxLength ? (
-    <Text
-      variant="labelDescription"
-      as="p"
-      color={length >= maxLength ? "red" : "black"}
-    >
+    <Text size="label2" as="p" color={length >= maxLength ? "red" : "black"}>
       <FormattedMessage
         id="textarea.charsCount"
         values={{

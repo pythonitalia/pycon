@@ -5,7 +5,7 @@ export const EnglishIcon = ({
   ...props
 }: {
   active?: boolean;
-  sx?: any;
+  className?: string;
 }) => (
   <svg
     viewBox="0 0 50 50"

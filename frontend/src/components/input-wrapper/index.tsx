@@ -39,6 +39,6 @@ export const InputWrapper = ({
       {children}
     </Text>
 
-    <ErrorsList sx={{ mt: 2 }} errors={errors} />
+    <ErrorsList className="mt-2" errors={errors} />
   </Box>
 );

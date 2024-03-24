@@ -1,10 +1,6 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
+import { Grid, Text } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Grid, Label, jsx } from "theme-ui";
-
 import { EnglishIcon } from "../icons/english";
 import { ItalianIcon } from "../icons/italian";
 
@@ -32,56 +28,29 @@ export const MultiLingualInput = ({
   }
 
   return (
-    <Grid
-      sx={{
-        gap: "20px",
-      }}
-    >
+    <Grid cols={1} gap="medium">
       {languages.map((language) => {
         const isInvalid = language === "invalid";
         const name = `${originalName}-${language}`;
         return (
-          <Box>
-            <Label
-              htmlFor={name}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                mr: 2,
-                pb: 2,
-                userSelect: "none",
-              }}
-            >
-              {language === "it" && (
-                <ItalianIcon
-                  sx={{
-                    width: 20,
-                    flexShrink: 0,
-                  }}
-                />
-              )}
-              {language === "en" && (
-                <EnglishIcon
-                  sx={{
-                    width: 20,
-                    flexShrink: 0,
-                  }}
-                />
-              )}
-              {!isInvalid && (
-                <Box
-                  sx={{
-                    ml: 2,
-                    fontWeight: "bold",
-                  }}
-                  as="span"
-                >
-                  <FormattedMessage
-                    id={`multilingualinput.language.${language}`}
-                  />
-                </Box>
-              )}
-            </Label>
+          <div>
+            <label htmlFor={name}>
+              <div className="flex items-center select-none mr-2 pb-2">
+                {language === "it" && (
+                  <ItalianIcon className="w-[20px] shrink-0" />
+                )}
+                {language === "en" && (
+                  <EnglishIcon className="w-[20px] shrink-0" />
+                )}
+                {!isInvalid && (
+                  <Text size={2} weight="strong" className="ml-2" as="span">
+                    <FormattedMessage
+                      id={`multilingualinput.language.${language}`}
+                    />
+                  </Text>
+                )}
+              </div>
+            </label>
 
             {React.cloneElement(children, {
               value: isInvalid ? "" : value[language],
@@ -97,7 +66,7 @@ export const MultiLingualInput = ({
               },
               ...props,
             })}
-          </Box>
+          </div>
         );
       })}
     </Grid>
