@@ -40,7 +40,10 @@ const MyApp = (props) => {
   const apolloClient = getApolloClient(props.pageProps[APOLLO_STATE_PROP_NAME]);
   const locale = useCurrentLanguage();
 
-  const setCurrentModal = (modalId: string, props?: object) => {
+  const setCurrentModal = <T extends ModalID>(
+    modalId: T,
+    props?: ModalProps[T],
+  ) => {
     if (modalId !== null) {
       va.track("open-modal", {
         modalId,
