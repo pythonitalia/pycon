@@ -223,7 +223,7 @@ data "template_file" "user_data" {
 
 resource "aws_instance" "instance" {
   ami               = "ami-05ff3e0fe4cf2c226"
-  instance_type     = "t3a.small"
+  instance_type     = "t3a.micro"
   subnet_id         = data.aws_subnet.private_1a.id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [
@@ -258,7 +258,7 @@ resource "aws_ecs_task_definition" "worker" {
       name      = "worker"
       image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_image.image_digest}"
       cpu       = 1024
-      memory    = 975
+      memory    = 450
       essential = true
       entrypoint = [
         "/home/app/.venv/bin/celery",
@@ -303,7 +303,7 @@ resource "aws_ecs_task_definition" "worker" {
       name      = "beat"
       image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_image.image_digest}"
       cpu       = 1024
-      memory    = 975
+      memory    = 450
       essential = true
       entrypoint = [
         "/home/app/.venv/bin/celery",
