@@ -11,7 +11,7 @@ export const useTranslatedMessage = (id: keyof (typeof messages)["en"]) => {
 export const getTranslatedMessage = (
   id: keyof (typeof messages)["en"],
   language: Language,
-) => {
+): string => {
   const message = messages[language][id];
 
   if (!message) {

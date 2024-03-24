@@ -133,6 +133,7 @@ export const CustomizeTicketModal = ({
           : question.answer?.answer;
       return acc;
     }, {}),
+    isMe: false,
   });
   const [errors, setErrors] = useState({});
 

@@ -19,6 +19,7 @@ import {
   MyProfileWithTicketsQuery,
   useUpdateTicketMutation,
 } from "~/types";
+import { Alert } from "../alert";
 import { snakeToCamel } from "../customize-ticket-modal";
 import { Modal } from "../modal";
 
@@ -40,28 +41,10 @@ export const ReassignTicketModal = ({
   ticket,
 }: Props & ReassignTicketModalProps) => {
   const [formState, { email }] = useFormState<Form>();
-  const [errors, setErrors] = useState({});
   const language = useCurrentLanguage();
 
   const [updateTicket, { loading: updatingTicket, error: updateTicketError }] =
     useUpdateTicketMutation({
-      onCompleted(result) {
-        if (
-          result.updateAttendeeTicket.__typename ===
-          "UpdateAttendeeTicketErrors"
-        ) {
-          setErrors(
-            Object.fromEntries(
-              result.updateAttendeeTicket.errors.map((error) => [
-                snakeToCamel(error.field),
-                error.message,
-              ]),
-            ),
-          );
-          return;
-        }
-      },
-
       update(cache, { data }) {
         if (data.updateAttendeeTicket.__typename === "TicketReassigned") {
           const { me } = cache.readQuery<MyProfileWithTicketsQuery>({
@@ -121,6 +104,10 @@ export const ReassignTicketModal = ({
   const emailDoNotMatchError = useTranslatedMessage(
     "orderQuestions.emailsDontMatch",
   );
+  const emailPlaceholder = useTranslatedMessage("orderQuestions.attendeeEmail");
+  const repeatEmailPlaceholder = useTranslatedMessage(
+    "orderQuestions.repeatAttendeeEmail",
+  );
 
   return (
     <Modal
@@ -159,48 +146,42 @@ export const ReassignTicketModal = ({
       <Spacer size="small" />
 
       <form onSubmit={saveChanges} ref={formRef}>
-        <FormattedMessage id="orderQuestions.attendeeEmail">
-          {(emailPlaceholder) => (
-            <InputWrapper
-              required={true}
-              title={<FormattedMessage id="orderQuestions.attendeeEmail" />}
-            >
-              <Input
-                {...email("email")}
-                errors={[formState.errors.email]}
-                placeholder={emailPlaceholder as unknown as string}
-                required={true}
-              />
-            </InputWrapper>
-          )}
-        </FormattedMessage>
+        <InputWrapper
+          required={true}
+          title={<FormattedMessage id="orderQuestions.attendeeEmail" />}
+        >
+          <Input
+            {...email("email")}
+            errors={[formState.errors.email]}
+            placeholder={emailPlaceholder}
+            required={true}
+          />
+        </InputWrapper>
         <Spacer size="small" />
 
-        <FormattedMessage id="orderQuestions.repeatAttendeeEmail">
-          {(emailPlaceholder) => (
-            <InputWrapper
-              required={true}
-              title={
-                <FormattedMessage id="orderQuestions.repeatAttendeeEmail" />
-              }
-            >
-              <Input
-                {...email({
-                  name: "repeatEmail",
-                  validate(value, values) {
-                    if (value !== values.email) {
-                      return emailDoNotMatchError;
-                    }
-                  },
-                  validateOnBlur: true,
-                })}
-                errors={[formState.errors.repeatEmail]}
-                required={true}
-                placeholder={emailPlaceholder as unknown as string}
-              />
-            </InputWrapper>
-          )}
-        </FormattedMessage>
+        <InputWrapper
+          required={true}
+          title={<FormattedMessage id="orderQuestions.repeatAttendeeEmail" />}
+        >
+          <Input
+            {...email({
+              name: "repeatEmail",
+              validate(value, values) {
+                if (value !== values.email) {
+                  return emailDoNotMatchError;
+                }
+              },
+              validateOnBlur: true,
+            })}
+            errors={[formState.errors.repeatEmail]}
+            required={true}
+            placeholder={repeatEmailPlaceholder}
+          />
+        </InputWrapper>
+
+        {updateTicketError && (
+          <Alert variant="alert">{updateTicketError.message}</Alert>
+        )}
       </form>
     </Modal>
   );
