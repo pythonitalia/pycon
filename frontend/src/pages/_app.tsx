@@ -15,7 +15,11 @@ import { ErrorBoundary } from "~/components/error-boundary";
 import { Footer } from "~/components/footer";
 import { Header } from "~/components/header";
 import { ModalRenderer } from "~/components/modal-renderer";
-import { ModalStateContext } from "~/components/modal/context";
+import {
+  ModalID,
+  ModalProps,
+  ModalStateContext,
+} from "~/components/modal/context";
 import { GlobalStyles } from "~/components/styles";
 import messages from "~/locale";
 import { LocaleProvider, useCurrentLanguage } from "~/locale/context";
@@ -30,8 +34,8 @@ const isSocial = (path: string) => path.endsWith("/social");
 const MyApp = (props) => {
   const { Component, pageProps, router, err } = props;
   const [modalData, setCurrentModalData] = useState<{
-    modalId: string | null;
-    props?: object;
+    modalId: ModalID | null;
+    props?: ModalProps[keyof ModalProps];
   }>({ modalId: null });
   const apolloClient = getApolloClient(props.pageProps[APOLLO_STATE_PROP_NAME]);
   const locale = useCurrentLanguage();

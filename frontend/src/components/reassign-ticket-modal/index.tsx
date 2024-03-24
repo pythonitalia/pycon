@@ -134,7 +134,11 @@ export const ReassignTicketModal = ({
           </BasicButton>
           <Button
             disabled={
-              formState.values.email === currentEmail || !formState.touched
+              !formState.values.email ||
+              formState.values.email === currentEmail ||
+              !formState.touched.email ||
+              formState.values.email !== formState.values.repeatEmail ||
+              updatingTicket
             }
             size="small"
             onClick={saveChanges}
