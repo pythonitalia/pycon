@@ -49,7 +49,7 @@ locals {
       value = aws_s3_bucket.backend_media.region
     },
     {
-      name = "AWS_DEFAULT_REGION",
+      name  = "AWS_DEFAULT_REGION",
       value = "eu-central-1"
     },
     {
@@ -169,7 +169,7 @@ locals {
       value = data.external.githash.result.githash
     },
     {
-      name = "PLAIN_INTEGRATION_TOKEN"
+      name  = "PLAIN_INTEGRATION_TOKEN"
       value = module.secrets.value.plain_integration_token
     },
     {

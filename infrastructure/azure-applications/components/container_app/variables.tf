@@ -7,7 +7,7 @@ variable "service_name" {
 }
 
 variable "service_resource_name" {
-  type = string
+  type    = string
   default = null
 }
 

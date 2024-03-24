@@ -37,13 +37,13 @@ EOF
 
 
 resource "aws_lambda_function" "forward_host_header" {
-  function_name = "forward_host_header"
-  role          = aws_iam_role.lambda_edge_exec.arn
-  handler       = "index.handler"
+  function_name    = "forward_host_header"
+  role             = aws_iam_role.lambda_edge_exec.arn
+  handler          = "index.handler"
   filename         = data.archive_file.forward_host_code.output_path
   source_code_hash = data.archive_file.forward_host_code.output_base64sha256
-  runtime = "nodejs20.x"
-  publish = true
-  provider = aws.us
-  architectures = ["arm64"]
+  runtime          = "nodejs20.x"
+  publish          = true
+  provider         = aws.us
+  architectures    = ["arm64"]
 }

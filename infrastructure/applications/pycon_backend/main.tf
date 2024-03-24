@@ -51,6 +51,11 @@ data "aws_acm_certificate" "cert" {
   provider = aws.us
 }
 
+data "aws_lambda_function" "forward_host_header" {
+  function_name = "forward_host_header"
+  provider      = aws.us
+}
+
 data "aws_elasticache_cluster" "redis" {
   cluster_id = "production-pretix"
 }
@@ -122,9 +127,10 @@ module "api" {
 module "admin_distribution" {
   source = "../../components/cloudfront"
 
-  application     = local.application
-  zone_name       = "pycon.it"
-  domain          = local.full_admin_domain
-  certificate_arn = data.aws_acm_certificate.cert.arn
-  origin_url      = module.api.cloudfront_friendly_endpoint
+  application                    = local.application
+  zone_name                      = "pycon.it"
+  domain                         = local.full_admin_domain
+  certificate_arn                = data.aws_acm_certificate.cert.arn
+  origin_url                     = module.api.cloudfront_friendly_endpoint
+  forward_host_header_lambda_arn = data.aws_lambda_function.forward_host_header.qualified_arn
 }

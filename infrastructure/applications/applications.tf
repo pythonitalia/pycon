@@ -1,7 +1,7 @@
 locals {
-  is_prod         = terraform.workspace == "production"
-  deploy_pretix   = local.is_prod
-  enable_proxy    = local.is_prod ? false : false
+  is_prod       = terraform.workspace == "production"
+  deploy_pretix = local.is_prod
+  enable_proxy  = local.is_prod ? false : false
 }
 
 # Applications
@@ -13,8 +13,8 @@ module "pretix" {
 }
 
 module "pycon_backend" {
-  source          = "./pycon_backend"
-  enable_proxy    = local.enable_proxy
+  source       = "./pycon_backend"
+  enable_proxy = local.enable_proxy
 
   providers = {
     aws    = aws
