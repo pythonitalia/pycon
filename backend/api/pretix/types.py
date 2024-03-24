@@ -386,10 +386,12 @@ class UpdateAttendeeTicketInput:
     answers: Optional[List[AnswerInput]] = None
 
     def to_json(self):
-        return {
+        data = {
             "attendee_email": self.email,
             "attendee_name": self.name,
-            "answers": [answer.to_json() for answer in self.answers]
-            if self.answers
-            else [],
         }
+
+        if self.answers is not None:
+            data["answers"] = [answer.to_json() for answer in self.answers]
+
+        return data

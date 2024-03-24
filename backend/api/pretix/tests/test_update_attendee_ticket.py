@@ -109,6 +109,113 @@ def test_invalid_data(graphql_client, mocker, requests_mock, user, conference_fa
     ]
 
 
+@override_settings(PRETIX_API="https://pretix/api/")
+def test_update_ticket_with_answers(
+    graphql_client,
+    mocker,
+    requests_mock,
+    user,
+    conference_factory,
+    pretix_user_tickets,
+    update_user_ticket,
+    pretix_categories,
+    pretix_questions,
+):
+    graphql_client.force_login(user)
+    conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
+    mocker.patch("pretix.is_ticket_owner", return_value=True)
+
+    requests_mock.get(
+        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets?attendee_email={user.email}",
+        [
+            {
+                "json": [
+                    {
+                        **pretix_user_tickets[0],
+                        "id": "999",
+                        "attendee_email": user.email,
+                    }
+                ]
+            },
+            {
+                "json": [
+                    {
+                        **pretix_user_tickets[0],
+                        "id": "999",
+                        "attendee_email": user.email,
+                        "attendee_name": "Penny",
+                    }
+                ]
+            },
+        ],
+    )
+    mock_patch_position = requests_mock.patch(
+        "https://pretix/api/organizers/org/events/event/orderpositions/999/",
+        json=update_user_ticket,
+    )
+    requests_mock.get(
+        "https://pretix/api/organizers/org/events/event/categories",
+        json=pretix_categories,
+    )
+    requests_mock.get(
+        "https://pretix/api/organizers/org/events/event/questions",
+        json=pretix_questions,
+    )
+
+    query = """
+    mutation UpdateTicket($conference: String!, $input: UpdateAttendeeTicketInput!) {
+        updateAttendeeTicket(conference: $conference, input: $input) {
+            __typename
+
+            ... on AttendeeTicket {
+                id
+                name
+                email
+                item {
+                    questions {
+                        answer {
+                            answer
+                        }
+                    }
+                }
+            }
+        }
+    }
+    """
+
+    response = graphql_client.query(
+        query,
+        variables={
+            "conference": conference.code,
+            "input": {
+                "id": "999",
+                "name": "Jane",
+                "email": user.email,
+                "answers": [
+                    {"answer": "No preferences", "question": "31", "options": ["344"]},
+                    {"answer": "Vegan", "question": "32"},
+                    {"answer": "A", "question": "44"},
+                    {"answer": "B", "question": "43"},
+                ],
+            },
+        },
+    )
+
+    assert not response.get("errors")
+
+    assert response["data"]["updateAttendeeTicket"]["__typename"] == "AttendeeTicket"
+
+    last_call_body = mock_patch_position.last_request.json()
+    assert last_call_body["attendee_name"] == "Jane"
+    assert last_call_body["attendee_email"] == user.email
+    assert last_call_body["answers"] == [
+        {"question": "31", "options": ["344"], "answer": "No preferences"},
+        {"question": "32", "answer": "Vegan"},
+        {"question": "44", "answer": "A"},
+        {"question": "43", "answer": "B"},
+    ]
+
+
 @pytest.mark.django_db
 def test_cannot_update_empty_email(graphql_client, user, conference, mocker):
     graphql_client.force_login(user)
@@ -186,7 +293,7 @@ def test_update_ticket(
             },
         ],
     )
-    requests_mock.patch(
+    mock_patch_position = requests_mock.patch(
         "https://pretix/api/organizers/org/events/event/orderpositions/999/",
         json=update_user_ticket,
     )
@@ -228,6 +335,10 @@ def test_update_ticket(
     assert response["data"]["updateAttendeeTicket"]["name"] == "Penny"
     assert response["data"]["updateAttendeeTicket"]["email"] == user.email
     assert response["data"]["updateAttendeeTicket"]["__typename"] == "AttendeeTicket"
+    last_call_body = mock_patch_position.last_request.json()
+    assert last_call_body["attendee_name"] == "Penny"
+    assert last_call_body["attendee_email"] == user.email
+    assert "answers" not in last_call_body
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
@@ -273,7 +384,7 @@ def test_update_email_reassign_the_ticket(
     mutation UpdateTicket($conference: String!, $input: UpdateAttendeeTicketInput!) {
         updateAttendeeTicket(conference: $conference, input: $input) {
             __typename
-             ... on TicketReassigned {
+            ... on TicketReassigned {
                 id
                 email
             }
