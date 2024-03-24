@@ -1,9 +1,5 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
 import React, { ChangeEvent, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, jsx } from "theme-ui";
 
 import { getTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
@@ -124,7 +120,7 @@ export const FileInput = ({
   const previewAvailable = filePreview || value;
 
   return (
-    <Box>
+    <div>
       <input
         ref={fileInput}
         onChange={onChange}
@@ -132,27 +128,17 @@ export const FileInput = ({
         onBlur={onBlur}
         type="file"
         accept="image/png,image/jpg,image/jpeg,image/webp"
-        sx={{
-          width: "100%",
-        }}
+        className="w-full"
       />
 
-      <canvas
-        ref={canvas}
-        sx={{
-          display: "none",
-        }}
-      />
+      <canvas ref={canvas} className="hidden" />
       {(error || errors) && (
-        <ErrorsList sx={{ mt: 2 }} errors={[error, ...(errors || [])]} />
+        <ErrorsList className="mt-2" errors={[error, ...(errors || [])]} />
       )}
 
       {previewAvailable && (
         <img
-          sx={{
-            height: "200px",
-            mt: 3,
-          }}
+          className="h-52 mt-3"
           alt="Selection preview"
           src={previewAvailable}
         />
@@ -163,6 +149,6 @@ export const FileInput = ({
           <FormattedMessage id="fileInput.uploading" />
         </Alert>
       )}
-    </Box>
+    </div>
   );
 };

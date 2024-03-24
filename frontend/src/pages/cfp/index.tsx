@@ -1,10 +1,13 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
-import { Link } from "@python-italia/pycon-styleguide";
+import {
+  Heading,
+  Link,
+  Page,
+  Section,
+  Spacer,
+  Text,
+} from "@python-italia/pycon-styleguide";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, Container, Heading, Text, jsx } from "theme-ui";
 
 import { GetStaticProps } from "next";
 
@@ -32,22 +35,24 @@ const CfpSectionOrClosedMessage = ({ open }: { open: boolean }) => {
   }
 
   return (
-    <Box sx={{ mt: 4, width: [null, null, "50%"] }}>
-      <Heading sx={{ mb: 3 }}>
+    <div>
+      <Heading size={1}>
         <FormattedMessage id="cfp.closed.title" />
       </Heading>
 
-      <Text sx={{ mb: 3 }}>
+      <Spacer size="small" />
+
+      <Text as="p" size={1}>
         <FormattedMessage id="cfp.closed.description" />
       </Text>
 
-      <Text>
+      <Text as="p" size={1}>
         <FormattedMessage id="cfp.closed.voting" />{" "}
         <Link href="/tickets">
           <FormattedMessage id="cfp.closed.buyTicket" />
         </Link>
       </Text>
-    </Box>
+    </div>
   );
 };
 
@@ -61,10 +66,11 @@ export const CFPPage = () => {
   });
 
   return (
-    <Fragment>
+    <Page endSeparator={false}>
       <FormattedMessage id="cfp.pageTitle">
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
+
       <Introduction
         deadline={
           data?.conference.isCFPOpen
@@ -73,24 +79,20 @@ export const CFPPage = () => {
         }
       />
 
-      <Box sx={{ px: 3 }}>
-        <Container sx={{ maxWidth: "container", p: 0 }}>
-          {isLoggedIn ? (
-            !loading && (
-              <CfpSectionOrClosedMessage
-                open={data?.conference.isCFPOpen || false}
-              />
-            )
-          ) : (
-            <Fragment>
-              <Alert variant="info" sx={{ mt: 4 }}>
-                <FormattedMessage id="cfp.needToBeLoggedIn" />
-              </Alert>
-            </Fragment>
-          )}
-        </Container>
-      </Box>
-    </Fragment>
+      <Section>
+        {isLoggedIn ? (
+          !loading && (
+            <CfpSectionOrClosedMessage
+              open={data?.conference.isCFPOpen || false}
+            />
+          )
+        ) : (
+          <Alert variant="info">
+            <FormattedMessage id="cfp.needToBeLoggedIn" />
+          </Alert>
+        )}
+      </Section>
+    </Page>
   );
 };
 

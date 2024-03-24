@@ -1,13 +1,9 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
 import { Separator, Spacer, Text } from "@python-italia/pycon-styleguide";
 import { ArrowIcon, LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import clsx from "clsx";
 import React, { Fragment, useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import useSyncScroll from "react-use-sync-scroll";
-import { ThemeUIStyleObject, jsx } from "theme-ui";
 
 import { isItemVisible } from ".";
 import { ScheduleEntry } from "./events";
@@ -136,7 +132,6 @@ const GridContainer = React.forwardRef<
     totalColumns: number;
     totalRows: number;
     children: React.ReactNode;
-    sx?: ThemeUIStyleObject;
     className?: string;
     totalRooms: number;
   }
@@ -230,19 +225,10 @@ export const Schedule = ({
         className="hidden md:grid sticky top-0 overflow-x-hidden -mb-[3px] no-scrollbar z-50"
       >
         <div
-          sx={{
-            gridRowStart: 1,
+          style={{
             gridRowEnd: rowOffset,
-            backgroundColor: "#FAF5F3",
-            position: "sticky",
-            left: 0,
-            zIndex: "scheduleTimes",
-            borderRight: "primary",
-            marginRight: "-3px",
-            overflow: "hidden",
-            display: "grid",
-            gridTemplateColumns: "1fr auto 1fr",
           }}
+          className="grid row-start-1 bg-white grid-cols-[1fr_auto_1fr] -mr-[3px] border-r border-black overflow-hidden sticky z-[11] left-0"
         >
           <ArrowControl reverse onClick={scrollScheduleBack} />
           <Separator orientation="vertical" />
@@ -250,21 +236,12 @@ export const Schedule = ({
         </div>
         {rooms.map((room, index) => (
           <div
-            key={index}
-            sx={
-              {
-                gridColumnStart: "var(--column-start)",
-                gridRowStart: 1,
-                gridRowEnd: rowOffset,
-                backgroundColor: "#FAF5F3",
-                padding: 24,
-                fontSize: 1,
-                fontWeight: "bold",
-                "--column-start": index + 2,
-                display: "flex",
-                alignItems: "center",
-              } as any
-            }
+            key={room.id}
+            style={{
+              gridColumnStart: index + 2,
+              gridRowEnd: rowOffset,
+            }}
+            className="row-start-1 bg-white p-6 flex items-center"
           >
             <Text uppercase size="label3" weight="strong">
               {room.name}

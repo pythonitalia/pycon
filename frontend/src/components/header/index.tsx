@@ -1,10 +1,7 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
 import { NavBar } from "@python-italia/pycon-styleguide";
 import { Action } from "@python-italia/pycon-styleguide/dist/navbar/types";
+import React from "react";
 import { useEffect, useState } from "react";
-import { jsx } from "theme-ui";
 
 import { useRouter } from "next/router";
 

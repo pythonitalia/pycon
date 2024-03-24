@@ -1,8 +1,4 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
 import { useCallback } from "react";
-import { jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import { Select } from "~/components/select";

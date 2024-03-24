@@ -341,7 +341,7 @@ export const CfpForm = ({
 
   return (
     <Fragment>
-      <Heading mt={5} mb={5} as="h1">
+      <Heading mb={5} as="h1">
         <FormattedMessage id="cfp.youridea" />
       </Heading>
       <form onSubmit={submitSubmission} sx={{ mb: 4 }}>
@@ -686,13 +686,13 @@ export const CfpForm = ({
         </InputWrapper>
 
         {getErrors("nonFieldErrors").map((error) => (
-          <Alert sx={{ mb: 4 }} variant="alert" key={error}>
+          <Alert variant="alert" key={error}>
             {error}
           </Alert>
         ))}
 
         {submissionError && (
-          <Alert sx={{ mb: 4 }} variant="alert">
+          <Alert variant="alert">
             <FormattedMessage
               id="global.tryAgain"
               values={{ error: submissionError.message }}
@@ -702,7 +702,7 @@ export const CfpForm = ({
 
         {submissionData &&
           submissionData.mutationOp.__typename === "Submission" && (
-            <Alert sx={{ mb: 4 }} variant="success">
+            <Alert variant="success">
               <FormattedMessage id="cfp.submissionSent" />
             </Alert>
           )}

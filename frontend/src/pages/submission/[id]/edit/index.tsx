@@ -1,8 +1,6 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
+import { Page, Section } from "@python-italia/pycon-styleguide";
+import React from "react";
 import { FormattedMessage } from "react-intl";
-import { Box, jsx } from "theme-ui";
 
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
@@ -83,37 +81,33 @@ export const EditSubmissionPage = () => {
   };
 
   return (
-    <Box
-      sx={{
-        maxWidth: "container",
-        mx: "auto",
-        px: 3,
-      }}
-    >
-      {submissionError && (
-        <Alert variant="alert">{submissionError.message}</Alert>
-      )}
-      {submissionLoading && (
-        <Alert variant="info">
-          <FormattedMessage id="cfp.loading" />
-        </Alert>
-      )}
-      {submissionData && !submissionData.submission?.canEdit && (
-        <Alert variant="alert">
-          <FormattedMessage id="cfp.cannotEdit" />
-        </Alert>
-      )}
-      {submissionData?.submission?.canEdit && (
-        <CfpForm
-          submission={submissionData.submission as SubmissionStructure}
-          loading={updateSubmissionLoading}
-          error={updateSubmissionError}
-          data={updateSubmissionData}
-          onSubmit={onSubmit}
-          conferenceCode={code}
-        />
-      )}
-    </Box>
+    <Page endSeparator={false}>
+      <Section>
+        {submissionError && (
+          <Alert variant="alert">{submissionError.message}</Alert>
+        )}
+        {submissionLoading && (
+          <Alert variant="info">
+            <FormattedMessage id="cfp.loading" />
+          </Alert>
+        )}
+        {submissionData && !submissionData.submission?.canEdit && (
+          <Alert variant="alert">
+            <FormattedMessage id="cfp.cannotEdit" />
+          </Alert>
+        )}
+        {submissionData?.submission?.canEdit && (
+          <CfpForm
+            submission={submissionData.submission as SubmissionStructure}
+            loading={updateSubmissionLoading}
+            error={updateSubmissionError}
+            data={updateSubmissionData}
+            onSubmit={onSubmit}
+            conferenceCode={code}
+          />
+        )}
+      </Section>
+    </Page>
   );
 };
 

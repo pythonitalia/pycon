@@ -1,6 +1,3 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
 import { ApolloError } from "@apollo/client";
 import {
   Button,
@@ -22,7 +19,6 @@ import {
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { jsx } from "theme-ui";
 
 import { Alert } from "~/components/alert";
 import { MyGrant } from "~/components/profile/my-grant";
@@ -784,7 +780,7 @@ export const GrantForm = ({
       >
         <div>
           <ErrorsList
-            sx={{ mb: 3 }}
+            className="mb-1"
             errors={[
               ...nonFieldErrors,
               ...(grantError ? [grantError.message] : []),

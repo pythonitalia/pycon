@@ -1,9 +1,5 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
 import React, { CSSProperties } from "react";
 import { Props, default as ReactSelect } from "react-select";
-import { jsx } from "theme-ui";
 
 export const Select = (props: Props) => (
   <ReactSelect
@@ -26,7 +22,7 @@ export const Select = (props: Props) => (
       }),
       menu: (base: CSSProperties): CSSProperties => ({
         ...base,
-        border: "4px solid #000",
+        border: "3px solid #000",
       }),
       option: (base: CSSProperties, state: { isSelected: boolean }) => ({
         ...base,
