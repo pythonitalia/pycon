@@ -2,6 +2,10 @@ locals {
   cdn_domain = local.is_prod ? "cdn.pycon.it" : "${terraform.workspace}-cdn.pycon.it"
 }
 
+data "aws_cloudfront_cache_policy" "caching_optimized" {
+  name = "Managed-CachingOptimized"
+}
+
 resource "aws_cloudfront_distribution" "media_cdn" {
   enabled             = true
   is_ipv6_enabled     = true
@@ -33,19 +37,10 @@ resource "aws_cloudfront_distribution" "media_cdn" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "default"
 
-    forwarded_values {
-      query_string = false
-
-      cookies {
-        forward = "none"
-      }
-    }
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_optimized.id
 
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
-    min_ttl                = 0
-    default_ttl            = 604800
-    max_ttl                = 31536000
   }
 
   restrictions {
