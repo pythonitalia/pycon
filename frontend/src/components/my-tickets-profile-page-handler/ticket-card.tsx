@@ -18,149 +18,15 @@ import {
   useUpdateTicketMutation,
 } from "~/types";
 
-import { CustomizeTicketModal } from "./customize-ticket-modal";
-import { QRCodeModal } from "./qrcode-modal";
-import { ReassignTicketModal } from "./reassign-ticket-modal";
+import { useSetCurrentModal } from "../modal/context";
 
 type Props = {
   ticket: MyProfileWithTicketsQuery["me"]["tickets"][0];
   userEmail: string;
 };
 
-const snakeToCamel = (str: string) => {
-  return str.replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
-};
-
 export const TicketCard = ({ ticket, userEmail }: Props) => {
-  const [showEditTicketModal, openEditTicketModal] = useState(false);
-  const [showReassignTicketModal, openReassignTicketModal] = useState(false);
-  const [showQRCodeModal, openQRCodeModal] = useState(false);
-
-  const language = useCurrentLanguage();
-
-  const [productUserInformation, setProductUserInformation] = useState({
-    id: ticket.id,
-    attendeeName: ticket.name ?? "",
-    attendeeEmail: ticket.email ?? "",
-    errors: {},
-    answers: ticket.item.questions.reduce((acc, question) => {
-      acc[question.id] =
-        question.options.length > 0
-          ? question.answer?.options[0] ?? question.options[0].id
-          : question.answer?.answer;
-      return acc;
-    }, {}),
-  });
-  const [errors, setErrors] = useState({});
-
-  const [updateTicket, { loading: updatingTicket, error: updateTicketError }] =
-    useUpdateTicketMutation({
-      onCompleted(result) {
-        if (
-          result.updateAttendeeTicket.__typename ===
-          "UpdateAttendeeTicketErrors"
-        ) {
-          setErrors(
-            Object.fromEntries(
-              result.updateAttendeeTicket.errors.map((error) => [
-                snakeToCamel(error.field),
-                error.message,
-              ]),
-            ),
-          );
-          return;
-        }
-      },
-
-      update(cache, { data }) {
-        if (data.updateAttendeeTicket.__typename === "TicketReassigned") {
-          const { me } = cache.readQuery<MyProfileWithTicketsQuery>({
-            query: MyProfileWithTicketsDocument,
-            variables: {
-              conference: process.env.conferenceCode,
-              language: language,
-            },
-          });
-          cache.writeQuery({
-            query: MyProfileWithTicketsDocument,
-            data: {
-              me: {
-                ...me,
-                tickets: me.tickets.filter(
-                  (ticket) => ticket.id !== data.updateAttendeeTicket.id,
-                ),
-              },
-            },
-            variables: {
-              conference: process.env.conferenceCode,
-              language: language,
-            },
-          });
-        }
-      },
-    });
-
-  const saveTicketChanges = (updatedProductUserInformation: any) => {
-    setErrors({});
-    setProductUserInformation(updatedProductUserInformation);
-    callUpdateUserTicket(updatedProductUserInformation);
-  };
-
-  const onReassignTicket = (newEmail: string) => {
-    setErrors({});
-    const updatedProductUserInformation = {
-      ...productUserInformation,
-      attendeeEmail: newEmail,
-    };
-    setProductUserInformation(updatedProductUserInformation);
-    callUpdateUserTicket(updatedProductUserInformation);
-  };
-
-  const callUpdateUserTicket = (updatedProductUserInformation) => {
-    const answers = ticket.item.questions
-      .map((question) => {
-        let answer: string;
-        let option = null;
-
-        if (question.options.length > 0) {
-          option = question.options.filter(
-            (option) =>
-              option.id === updatedProductUserInformation.answers[question.id],
-          )[0];
-          answer = option.name;
-        } else {
-          answer = updatedProductUserInformation.answers[question.id] || "";
-        }
-
-        const data: {
-          answer: string;
-          question: string;
-          options?: string[];
-        } = {
-          answer,
-          question: question.id,
-        };
-
-        if (option) {
-          data.options = [option.id];
-        }
-        return data;
-      })
-      .filter((item) => item.answer !== "");
-
-    updateTicket({
-      variables: {
-        conference: process.env.conferenceCode,
-        language: language,
-        input: {
-          id: updatedProductUserInformation.id,
-          name: updatedProductUserInformation.attendeeName,
-          email: updatedProductUserInformation.attendeeEmail,
-          answers,
-        },
-      },
-    });
-  };
+  const setCurrentModal = useSetCurrentModal();
 
   const taglineQuestion = ticket.item.questions.find(
     (question) => question.name.toLowerCase() === "tagline",
@@ -173,6 +39,24 @@ export const TicketCard = ({ ticket, userEmail }: Props) => {
     ticket.item.questions.length === 0;
 
   const ticketReassigned = isAdmissionTicket && ticket.email !== userEmail;
+
+  const openQRCodeModal = () => {
+    setCurrentModal("ticket-qr-code", {
+      qrCodeValue: ticket.secret,
+    });
+  };
+
+  const openEditTicketModal = () => {
+    setCurrentModal("customize-ticket", {
+      ticket,
+    });
+  };
+
+  const openReassignTicketModal = () => {
+    setCurrentModal("reassign-ticket", {
+      ticket,
+    });
+  };
 
   return (
     <>
@@ -259,14 +143,14 @@ export const TicketCard = ({ ticket, userEmail }: Props) => {
                 {isAdmissionTicket && !ticketReassigned && (
                   <div
                     className="p-5 flex flex-col items-center justify-center cursor-pointer"
-                    onClick={() => openEditTicketModal(true)}
+                    onClick={openEditTicketModal}
                   >
                     <GearIcon className="w-10 h-10 shrink-0" />
                   </div>
                 )}
                 {isAdmissionTicket && !ticketReassigned && (
                   <div
-                    onClick={() => openReassignTicketModal(true)}
+                    onClick={openReassignTicketModal}
                     className="p-5 flex items-center justify-center cursor-pointer"
                   >
                     <TicketsIcon className="w-10 h-10 shrink-0" />
@@ -276,7 +160,7 @@ export const TicketCard = ({ ticket, userEmail }: Props) => {
               {!ticketReassigned && (
                 <div
                   className="p-2 shrink-0 cursor-pointer"
-                  onClick={() => openQRCodeModal(true)}
+                  onClick={openQRCodeModal}
                 >
                   <QRCode
                     className="w-full h-full"
@@ -290,33 +174,6 @@ export const TicketCard = ({ ticket, userEmail }: Props) => {
           </CardPart>
         )}
       </MultiplePartsCard>
-      {!ticketReassigned && (
-        <QRCodeModal
-          qrCodeValue={ticket.secret}
-          open={showQRCodeModal}
-          openModal={openQRCodeModal}
-        />
-      )}
-      {isAdmissionTicket && (
-        <CustomizeTicketModal
-          ticket={ticket}
-          saveChanges={saveTicketChanges}
-          productUserInformation={productUserInformation}
-          updatingTicket={updatingTicket}
-          updateTicketError={updateTicketError}
-          open={showEditTicketModal}
-          openModal={openEditTicketModal}
-          errors={errors}
-        />
-      )}
-      {isAdmissionTicket && (
-        <ReassignTicketModal
-          open={showReassignTicketModal}
-          openModal={openReassignTicketModal}
-          onReassignTicket={onReassignTicket}
-          currentEmail={productUserInformation.attendeeEmail}
-        />
-      )}
     </>
   );
 };

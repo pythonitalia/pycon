@@ -7,12 +7,19 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 
+import { useCurrentLanguage } from "~/locale/context";
+import {
+  MyProfileWithTicketsDocument,
+  MyProfileWithTicketsQuery,
+  useUpdateTicketMutation,
+} from "~/types";
+import { snakeToCamel } from "../customize-ticket-modal";
 import { Modal } from "../modal";
 
 type Form = {
@@ -21,24 +28,75 @@ type Form = {
 };
 
 type Props = {
-  open: boolean;
-  openModal: (open: boolean) => void;
-  onReassignTicket: (newEmail: string) => void;
-  currentEmail: string;
+  onClose: () => void;
+};
+
+export type ReassignTicketModalProps = {
+  ticket: MyProfileWithTicketsQuery["me"]["tickets"][0];
 };
 
 export const ReassignTicketModal = ({
-  open,
-  openModal,
-  onReassignTicket,
-  currentEmail,
-}: Props) => {
+  onClose,
+  ticket,
+}: Props & ReassignTicketModalProps) => {
   const [formState, { email }] = useFormState<Form>();
+  const [errors, setErrors] = useState({});
+  const language = useCurrentLanguage();
+
+  const [updateTicket, { loading: updatingTicket, error: updateTicketError }] =
+    useUpdateTicketMutation({
+      onCompleted(result) {
+        if (
+          result.updateAttendeeTicket.__typename ===
+          "UpdateAttendeeTicketErrors"
+        ) {
+          setErrors(
+            Object.fromEntries(
+              result.updateAttendeeTicket.errors.map((error) => [
+                snakeToCamel(error.field),
+                error.message,
+              ]),
+            ),
+          );
+          return;
+        }
+      },
+
+      update(cache, { data }) {
+        if (data.updateAttendeeTicket.__typename === "TicketReassigned") {
+          const { me } = cache.readQuery<MyProfileWithTicketsQuery>({
+            query: MyProfileWithTicketsDocument,
+            variables: {
+              conference: process.env.conferenceCode,
+              language: language,
+            },
+          });
+          cache.writeQuery({
+            query: MyProfileWithTicketsDocument,
+            data: {
+              me: {
+                ...me,
+                tickets: me.tickets.filter(
+                  (ticket) => ticket.id !== data.updateAttendeeTicket.id,
+                ),
+              },
+            },
+            variables: {
+              conference: process.env.conferenceCode,
+              language: language,
+            },
+          });
+          onClose();
+        }
+      },
+    });
+
+  const currentEmail = ticket.email;
   const formRef = useRef<HTMLFormElement>();
   const saveChanges = (e) => {
     e.preventDefault();
 
-    if (formRef.current && !formRef.current.checkValidity()) {
+    if (!formRef.current?.checkValidity()) {
       formRef.current.reportValidity();
       return;
     }
@@ -47,20 +105,31 @@ export const ReassignTicketModal = ({
       return;
     }
 
-    onReassignTicket(formState.values.email);
+    updateTicket({
+      variables: {
+        conference: process.env.conferenceCode,
+        language: language,
+        input: {
+          id: ticket.id,
+          name: ticket.name,
+          email: formState.values.email,
+        },
+      },
+    });
   };
+
   const emailDoNotMatchError = useTranslatedMessage(
     "orderQuestions.emailsDontMatch",
   );
 
   return (
     <Modal
-      onClose={() => openModal(false)}
+      onClose={onClose}
       title={<FormattedMessage id="profile.ticketsEdit.reassignTicket" />}
-      show={open}
+      show={true}
       actions={
         <div className="flex flex-col md:flex-row gap-6 justify-end items-center">
-          <BasicButton onClick={() => openModal(false)}>
+          <BasicButton onClick={onClose}>
             <FormattedMessage id="profile.tickets.cancel" />
           </BasicButton>
           <Button

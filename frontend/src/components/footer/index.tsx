@@ -12,10 +12,10 @@ import { useCurrentLanguage } from "~/locale/context";
 import { useFooterQuery } from "~/types";
 
 import { FooterLogo } from "../icons/footer-logo";
-import { NewsletterModal } from "../newsletter";
+import { useSetCurrentModal } from "../modal/context";
 
 export const Footer = () => {
-  const [showNewsletterModal, openNewsletterModal] = useState(false);
+  const setModal = useSetCurrentModal();
   const { data } = useFooterQuery({
     variables: {
       code: process.env.conferenceCode,
@@ -26,7 +26,7 @@ export const Footer = () => {
   const language = useCurrentLanguage();
 
   const openNewsletter = () => {
-    openNewsletterModal(true);
+    setModal("newsletter");
   };
 
   const {
@@ -94,10 +94,6 @@ export const Footer = () => {
             rel: "me",
           },
         ]}
-      />
-      <NewsletterModal
-        show={showNewsletterModal}
-        openModal={openNewsletterModal}
       />
     </>
   );

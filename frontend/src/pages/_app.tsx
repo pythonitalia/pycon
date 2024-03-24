@@ -29,24 +29,33 @@ const isSocial = (path: string) => path.endsWith("/social");
 
 const MyApp = (props) => {
   const { Component, pageProps, router, err } = props;
-  const [modalId, setCurrentModalId] = useState<string | null>(null);
+  const [modalData, setCurrentModalData] = useState<{
+    modalId: string | null;
+    props?: object;
+  }>({ modalId: null });
   const apolloClient = getApolloClient(props.pageProps[APOLLO_STATE_PROP_NAME]);
   const locale = useCurrentLanguage();
 
-  const setCurrentModal = (modalId: string) => {
-    va.track("open-modal", {
+  const setCurrentModal = (modalId: string, props?: object) => {
+    if (modalId !== null) {
+      va.track("open-modal", {
+        modalId,
+      });
+    }
+    setCurrentModalData({
       modalId,
+      props,
     });
-    setCurrentModalId(modalId);
   };
 
   const modalContext = useMemo(
     () => ({
-      modalId,
+      modalId: modalData.modalId,
+      modalProps: modalData.props,
       setCurrentModal,
       closeCurrentModal: () => setCurrentModal(null),
     }),
-    [modalId, setCurrentModal],
+    [modalData, setCurrentModal],
   );
 
   const intl = createIntl(
@@ -85,17 +94,17 @@ const MyApp = (props) => {
                 }}
               >
                 <ErrorBoundary>
-                  <Header />
+                  <ModalStateContext.Provider value={modalContext}>
+                    <Header />
 
-                  <Box>
-                    <ModalStateContext.Provider value={modalContext}>
+                    <Box>
                       <Component {...pageProps} err={err} />
                       <ModalRenderer />
-                    </ModalStateContext.Provider>
-                    <Analytics />
-                  </Box>
+                      <Analytics />
+                    </Box>
 
-                  <Footer />
+                    <Footer />
+                  </ModalStateContext.Provider>
                 </ErrorBoundary>
               </Flex>
             )}

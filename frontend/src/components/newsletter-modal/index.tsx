@@ -15,7 +15,7 @@ import { NewsletterSubscriptionResult, useSubscribeMutation } from "~/types";
 
 import { Modal } from "../modal";
 
-export const NewsletterModal = ({ openModal, show }) => {
+export const NewsletterModal = ({ onClose }) => {
   const formRef = useRef<HTMLFormElement>();
   const [email, setEmail] = useState("");
   const [subscribe, { loading, error, data, reset }] = useSubscribeMutation();
@@ -60,19 +60,15 @@ export const NewsletterModal = ({ openModal, show }) => {
 
   const getErrors = (key: "validationEmail" | "nonFieldErrors") =>
     (hasFormErrors && data.subscribeToNewsletter[key]) || [];
-  const closeModal = () => {
-    openModal(false);
-    reset();
-  };
 
   return (
     <Modal
       title={<FormattedMessage id="footer.stayTuned" />}
-      onClose={() => closeModal()}
-      show={show}
+      onClose={onClose}
+      show={true}
       actions={
         <div className="flex flex-col-reverse md:flex-row gap-6 justify-end items-center">
-          <BasicButton onClick={() => closeModal()}>
+          <BasicButton onClick={onClose}>
             <FormattedMessage id="profile.tickets.cancel" />
           </BasicButton>
           <Button onClick={onSubmit} disabled={!canSubmit} variant="secondary">
