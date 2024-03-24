@@ -135,6 +135,30 @@ def test_get_roles_with_manual_user_id_override(conference_factory, requests_moc
     assert roles == [Role.SPEAKER]
 
 
+def test_get_roles_with_manual_user_id_when_they_have_no_ticket(
+    conference_factory, requests_mock
+):
+    conference = conference_factory()
+
+    attendee_user = UserFactory()
+    AttendeeConferenceRole.objects.create(
+        user_id=attendee_user.id, conference=conference, roles=[Role.SPEAKER.value]
+    )
+
+    requests_mock.get(
+        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
+        status_code=200,
+        json={"next": None, "results": []},
+    )
+
+    roles = _get_roles(
+        conference=conference,
+        user_id=attendee_user.id,
+        ticket=None,
+    )
+    assert roles == [Role.SPEAKER]
+
+
 def test_get_roles_with_manual_order_position_id_override(
     conference_factory, requests_mock
 ):

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import strawberry
 from enum import Enum
 from typing import Dict, List, Set
@@ -92,7 +90,9 @@ def get_conference_roles_for_user(
     )
 
 
-def _get_roles(conference: Conference, user_id: int | None, ticket: dict | None) -> List[Role]:
+def _get_roles(
+    conference: Conference, user_id: int | None, ticket: dict | None
+) -> List[Role]:
     filters = Q()
 
     if ticket:
