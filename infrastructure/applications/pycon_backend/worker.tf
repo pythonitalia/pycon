@@ -222,7 +222,7 @@ data "template_file" "user_data" {
 
 
 resource "aws_instance" "instance" {
-  ami               = "ami-05ff3e0fe4cf2c226"
+  ami               = "ami-0f667aa009598db39"
   instance_type     = "t3a.small"
   subnet_id         = data.aws_subnet.private_1a.id
   availability_zone = "eu-central-1a"

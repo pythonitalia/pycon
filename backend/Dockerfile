@@ -19,31 +19,64 @@ ENV LIBRARY_PATH=/lib:/usr/lib
 
 RUN pip install pdm==2.10.4
 
-RUN tar -czvf /libs.tar.gz /usr/lib/x86_64-linux-gnu/libpq* \
-    /usr/lib/x86_64-linux-gnu/libpq* \
-    /usr/lib/x86_64-linux-gnu/libldap_r* \
-    /usr/lib/x86_64-linux-gnu/libldap* \
-    /usr/lib/x86_64-linux-gnu/liblber* \
-    /usr/lib/x86_64-linux-gnu/libsasl* \
-    /usr/lib/x86_64-linux-gnu/libxml2* \
-    /usr/lib/x86_64-linux-gnu/libgcrypt* \
-    /usr/lib/x86_64-linux-gnu/libstdc++* \
-    /usr/lib/x86_64-linux-gnu/libjpeg* \
-    /usr/lib/x86_64-linux-gnu/libopenjp2* \
-    /usr/lib/x86_64-linux-gnu/libdeflate* \
-    /usr/lib/x86_64-linux-gnu/libjbig* \
-    /usr/lib/x86_64-linux-gnu/liblcms2* \
-    /usr/lib/x86_64-linux-gnu/libwebp* \
-    /usr/lib/x86_64-linux-gnu/libtiff* \
-    /usr/lib/x86_64-linux-gnu/libGL* \
-    /usr/lib/x86_64-linux-gnu/libgthread* \
-    /usr/lib/x86_64-linux-gnu/libglib-* \
-    /usr/lib/x86_64-linux-gnu/libX11* \
-    /usr/lib/x86_64-linux-gnu/libxcb* \
-    /usr/lib/x86_64-linux-gnu/libXau* \
-    /usr/lib/x86_64-linux-gnu/libXdmcp* \
-    /usr/lib/x86_64-linux-gnu/libXext* \
-    /usr/lib/x86_64-linux-gnu/libbsd*
+ARG TARGETPLATFORM
+
+ARG TARGETPLATFORM
+
+RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+        tar -czvf /libs.tar.gz \
+            /usr/lib/aarch64-linux-gnu/libpq* \
+            /usr/lib/aarch64-linux-gnu/libldap_r* \
+            /usr/lib/aarch64-linux-gnu/libldap* \
+            /usr/lib/aarch64-linux-gnu/liblber* \
+            /usr/lib/aarch64-linux-gnu/libsasl* \
+            /usr/lib/aarch64-linux-gnu/libxml2* \
+            /usr/lib/aarch64-linux-gnu/libgcrypt* \
+            /usr/lib/aarch64-linux-gnu/libstdc++* \
+            /usr/lib/aarch64-linux-gnu/libjpeg* \
+            /usr/lib/aarch64-linux-gnu/libopenjp2* \
+            /usr/lib/aarch64-linux-gnu/libdeflate* \
+            /usr/lib/aarch64-linux-gnu/libjbig* \
+            /usr/lib/aarch64-linux-gnu/liblcms2* \
+            /usr/lib/aarch64-linux-gnu/libwebp* \
+            /usr/lib/aarch64-linux-gnu/libtiff* \
+            /usr/lib/aarch64-linux-gnu/libGL* \
+            /usr/lib/aarch64-linux-gnu/libgthread* \
+            /usr/lib/aarch64-linux-gnu/libglib-* \
+            /usr/lib/aarch64-linux-gnu/libX11* \
+            /usr/lib/aarch64-linux-gnu/libxcb* \
+            /usr/lib/aarch64-linux-gnu/libXau* \
+            /usr/lib/aarch64-linux-gnu/libXdmcp* \
+            /usr/lib/aarch64-linux-gnu/libXext* \
+            /usr/lib/aarch64-linux-gnu/libbsd*; \
+    elif [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
+        tar -czvf /libs.tar.gz \
+            /usr/lib/x86_64-linux-gnu/libpq* \
+            /usr/lib/x86_64-linux-gnu/libldap_r* \
+            /usr/lib/x86_64-linux-gnu/libldap* \
+            /usr/lib/x86_64-linux-gnu/liblber* \
+            /usr/lib/x86_64-linux-gnu/libsasl* \
+            /usr/lib/x86_64-linux-gnu/libxml2* \
+            /usr/lib/x86_64-linux-gnu/libgcrypt* \
+            /usr/lib/x86_64-linux-gnu/libstdc++* \
+            /usr/lib/x86_64-linux-gnu/libjpeg* \
+            /usr/lib/x86_64-linux-gnu/libopenjp2* \
+            /usr/lib/x86_64-linux-gnu/libdeflate* \
+            /usr/lib/x86_64-linux-gnu/libjbig* \
+            /usr/lib/x86_64-linux-gnu/liblcms2* \
+            /usr/lib/x86_64-linux-gnu/libwebp* \
+            /usr/lib/x86_64-linux-gnu/libtiff* \
+            /usr/lib/x86_64-linux-gnu/libGL* \
+            /usr/lib/x86_64-linux-gnu/libgthread* \
+            /usr/lib/x86_64-linux-gnu/libglib-* \
+            /usr/lib/x86_64-linux-gnu/libX11* \
+            /usr/lib/x86_64-linux-gnu/libxcb* \
+            /usr/lib/x86_64-linux-gnu/libXau* \
+            /usr/lib/x86_64-linux-gnu/libXdmcp* \
+            /usr/lib/x86_64-linux-gnu/libXext* \
+            /usr/lib/x86_64-linux-gnu/libbsd*; \
+    fi
+
 
 COPY pyproject.toml pdm.lock ${FUNCTION_DIR}
 
