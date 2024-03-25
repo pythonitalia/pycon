@@ -222,7 +222,7 @@ data "template_file" "user_data" {
 
 
 resource "aws_instance" "instance" {
-  ami               = data.aws_ami.ecs.id
+  ami               = "ami-0f667aa009598db39"
   instance_type     = "t3a.small"
   subnet_id         = data.aws_subnet.private_1a.id
   availability_zone = "eu-central-1a"
@@ -238,6 +238,10 @@ resource "aws_instance" "instance" {
 
   tags = {
     Name = "pythonit-${terraform.workspace}-worker"
+  }
+
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
