@@ -68,4 +68,32 @@ jobs:
           push: false
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
+
+  check-building-arm-container:
+    runs-on: [self-hosted,ARM64]
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ matrix.service.name }}
+      - name: Build test
+        uses: docker/build-push-action@v4.0.0
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          provenance: false
+          push: false
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/arm64
