@@ -157,7 +157,7 @@ jobs:
       - name: Get service githash
         id: git
         run: |
-          hash=$(git rev-list -1 HEAD -- backend
+          hash=$(git rev-list -1 HEAD -- backend)
           echo "::set-output name=githash::$hash"
       - name: Check if commit is already on ECR
         id: image
