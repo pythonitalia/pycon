@@ -187,12 +187,17 @@ data "aws_ami" "ecs" {
 
   filter {
     name   = "name"
-    values = ["amzn-ami-*-amazon-ecs-optimized"]
+    values = ["al2023-ami-ecs-hvm-2023.0.20240319-kernel-6.1-arm64"]
   }
 
   filter {
     name   = "virtualization-type"
     values = ["hvm"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = ["arm64"]
   }
 
   owners = ["amazon"]
@@ -222,8 +227,8 @@ data "template_file" "user_data" {
 
 
 resource "aws_instance" "instance" {
-  ami               = "ami-0f667aa009598db39"
-  instance_type     = "t3a.small"
+  ami               = data.aws_ami.ecs.id
+  instance_type     = "t4g.small"
   subnet_id         = data.aws_subnet.private_1a.id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [
@@ -240,9 +245,6 @@ resource "aws_instance" "instance" {
     Name = "pythonit-${terraform.workspace}-worker"
   }
 
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 resource "aws_cloudwatch_log_group" "worker_logs" {
@@ -256,9 +258,9 @@ resource "aws_ecs_task_definition" "worker" {
   container_definitions = jsonencode([
     {
       name      = "worker"
-      image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_image.image_digest}"
+      image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
       cpu       = 1024
-      memory    = 975
+      memory    = 900
       essential = true
       entrypoint = [
         "/home/app/.venv/bin/celery",
@@ -301,9 +303,9 @@ resource "aws_ecs_task_definition" "worker" {
     },
     {
       name      = "beat"
-      image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_image.image_digest}"
+      image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
       cpu       = 1024
-      memory    = 975
+      memory    = 900
       essential = true
       entrypoint = [
         "/home/app/.venv/bin/celery",
