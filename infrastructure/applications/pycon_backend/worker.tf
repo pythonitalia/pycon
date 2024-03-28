@@ -178,6 +178,7 @@ locals {
     },
   ]
 }
+
 resource "aws_ecs_cluster" "worker" {
   name = "pythonit-${terraform.workspace}-worker"
 }
@@ -226,9 +227,9 @@ data "template_file" "user_data" {
 }
 
 
-resource "aws_instance" "instance" {
+resource "aws_instance" "instance_1" {
   ami               = data.aws_ami.ecs.id
-  instance_type     = "t4g.small"
+  instance_type     = "t4g.nano"
   subnet_id         = data.aws_subnet.private_1a.id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [
@@ -244,7 +245,26 @@ resource "aws_instance" "instance" {
   tags = {
     Name = "pythonit-${terraform.workspace}-worker"
   }
+}
 
+resource "aws_instance" "instance_2" {
+  ami               = data.aws_ami.ecs.id
+  instance_type     = "t4g.nano"
+  subnet_id         = data.aws_subnet.private_1a.id
+  availability_zone = "eu-central-1a"
+  vpc_security_group_ids = [
+    data.aws_security_group.rds.id,
+    data.aws_security_group.lambda.id,
+    aws_security_group.instance.id
+  ]
+  source_dest_check    = false
+  user_data            = data.template_file.user_data.rendered
+  iam_instance_profile = aws_iam_instance_profile.worker.name
+  key_name             = "pretix"
+
+  tags = {
+    Name = "pythonit-${terraform.workspace}-worker-2"
+  }
 }
 
 resource "aws_cloudwatch_log_group" "worker_logs" {
@@ -259,8 +279,8 @@ resource "aws_ecs_task_definition" "worker" {
     {
       name      = "worker"
       image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
-      cpu       = 1024
-      memory    = 900
+      cpu       = 2048
+      memory    = 400
       essential = true
       entrypoint = [
         "/home/app/.venv/bin/celery",
@@ -300,12 +320,21 @@ resource "aws_ecs_task_definition" "worker" {
       }
 
       stopTimeout = 300
-    },
+    }
+  ])
+
+  requires_compatibilities = []
+  tags                     = {}
+}
+
+resource "aws_ecs_task_definition" "beat" {
+  family = "pythonit-${terraform.workspace}-beat"
+  container_definitions = jsonencode([
     {
       name      = "beat"
       image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
-      cpu       = 1024
-      memory    = 900
+      cpu       = 2048
+      memory    = 400
       essential = true
       entrypoint = [
         "/home/app/.venv/bin/celery",
@@ -356,6 +385,15 @@ resource "aws_ecs_service" "worker" {
   name                               = "pythonit-${terraform.workspace}-worker"
   cluster                            = aws_ecs_cluster.worker.id
   task_definition                    = aws_ecs_task_definition.worker.arn
+  desired_count                      = 1
+  deployment_minimum_healthy_percent = 0
+  deployment_maximum_percent         = 100
+}
+
+resource "aws_ecs_service" "beat" {
+  name                               = "pythonit-${terraform.workspace}-beat"
+  cluster                            = aws_ecs_cluster.worker.id
+  task_definition                    = aws_ecs_task_definition.beat.arn
   desired_count                      = 1
   deployment_minimum_healthy_percent = 0
   deployment_maximum_percent         = 100
