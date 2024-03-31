@@ -23,7 +23,7 @@ You will find the services at the following ports:
 
 | Service name         | Address               |
 | -------------------- | --------------------- |
-| Backend              | http://localhost:8000 |
+| Backend              | http://localhost:8000/admin - http://localhost:8000/cms-admin |
 | Frontend             | http://localhost:3000 |
 
 Everything you need to get started is already configured
