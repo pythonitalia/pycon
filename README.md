@@ -23,18 +23,14 @@ You will find the services at the following ports:
 
 | Service name         | Address               |
 | -------------------- | --------------------- |
-| PyCon Backend        | http://localhost:8000 |
-| PyCon Frontend       | http://localhost:3000 |
-| Association Frontend | http://localhost:3020 |
-| Association Backend  | http://localhost:8060 |
-| Users Backend        | http://localhost:8050 |
-| GraphQL Gateway      | http://localhost:4000 |
+| Backend              | http://localhost:8000 |
+| Frontend             | http://localhost:3000 |
 
 Everything you need to get started is already configured
 and will work out of the box.
 
 If you need to work with our Stripe or Pretix integration, you will have to ask
-on our Discord channel which secret key you need and why you need it.
+on Slack which secret key you need and why you need it.
 
 Once given, create a `.env` file at the project root with inside:
 
@@ -47,13 +43,14 @@ STRIPE_SECRET_API_KEY=
 
 Adding the secret keys after the `=` symbol.
 
-## Libraries & External repos
+## External repos
 
-Libraries used by this project are in separate repositories.
+Repos used by this project are in separate repositories.
 
 | Name          | Description                                             | Link                                                   |
 | ------------- | ------------------------------------------------------- | ------------------------------------------------------ |
-| Toolkit       | Backend Toolkit used to share code between all services | https://github.com/pythonitalia/pythonit-toolkit       |
-| ESLint Config | ESLint config used by the FE services                   | https://github.com/pythonitalia/eslint-config-pythonit |
+| Toolkit (Deprecated)       | Backend Toolkit used to share code between all services | https://github.com/pythonitalia/pythonit-toolkit       |
+| Pretix Extended API | Pretix plugin to expose more APIs                   | https://github.com/pythonitalia/pretix-plugin-extended-api |
+| Pretix Attendance certificate | Pretix plugin to generate and send Attendance certificates | https://github.com/pythonitalia/pretix-plugin-attendance-certificate |
 
 [<img src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg">](https://vercel.com?utm_source=python-italia&utm_campaign=oss)
