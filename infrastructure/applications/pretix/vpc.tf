@@ -23,6 +23,20 @@ data "aws_subnet" "public" {
   }
 }
 
+data "aws_subnet" "private" {
+  vpc_id = data.aws_vpc.default.id
+
+  filter {
+    name   = "tag:Type"
+    values = ["private"]
+  }
+
+  filter {
+    name   = "tag:AZ"
+    values = ["eu-central-1a"]
+  }
+}
+
 data "aws_subnets" "private" {
   filter {
     name   = "vpc-id"

@@ -229,7 +229,7 @@ data "template_file" "user_data" {
 
 resource "aws_instance" "instance_1" {
   ami               = data.aws_ami.ecs.id
-  instance_type     = "t4g.nano"
+  instance_type     = "t4g.micro"
   subnet_id         = data.aws_subnet.private_1a.id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [
@@ -247,26 +247,6 @@ resource "aws_instance" "instance_1" {
   }
 }
 
-resource "aws_instance" "instance_2" {
-  ami               = data.aws_ami.ecs.id
-  instance_type     = "t4g.nano"
-  subnet_id         = data.aws_subnet.private_1a.id
-  availability_zone = "eu-central-1a"
-  vpc_security_group_ids = [
-    data.aws_security_group.rds.id,
-    data.aws_security_group.lambda.id,
-    aws_security_group.instance.id
-  ]
-  source_dest_check    = false
-  user_data            = data.template_file.user_data.rendered
-  iam_instance_profile = aws_iam_instance_profile.worker.name
-  key_name             = "pretix"
-
-  tags = {
-    Name = "pythonit-${terraform.workspace}-worker-2"
-  }
-}
-
 resource "aws_cloudwatch_log_group" "worker_logs" {
   name              = "/ecs/pythonit-${terraform.workspace}-worker"
   retention_in_days = 7
@@ -279,8 +259,7 @@ resource "aws_ecs_task_definition" "worker" {
     {
       name      = "worker"
       image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
-      cpu       = 2048
-      memory    = 400
+      memoryReservation    = 400
       essential = true
       entrypoint = [
         "/home/app/.venv/bin/celery",
@@ -333,8 +312,7 @@ resource "aws_ecs_task_definition" "beat" {
     {
       name      = "beat"
       image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
-      cpu       = 2048
-      memory    = 400
+      memoryReservation    = 400
       essential = true
       entrypoint = [
         "/home/app/.venv/bin/celery",
