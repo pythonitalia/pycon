@@ -18,7 +18,7 @@ data "aws_ami" "ecs" {
 
   filter {
     name   = "name"
-    values = ["amzn-ami-*-amazon-ecs-optimized"]
+    values = ["al2023-ami-ecs-hvm-2023.0.20240328-kernel-6.1-x86_64"]
   }
 
   filter {
@@ -30,9 +30,8 @@ data "aws_ami" "ecs" {
 }
 
 resource "aws_instance" "pretix" {
-  # ami               = data.aws_ami.ecs.id
-  ami               = "ami-0d24d62eae192fc54"
-  instance_type     = "t3.small"
+  ami               = data.aws_ami.ecs.id
+  instance_type     = "t3a.small"
   subnet_id         = data.aws_subnet.public.id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [
