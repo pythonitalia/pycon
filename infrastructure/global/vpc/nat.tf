@@ -1,39 +1,7 @@
-# data "aws_ami" "nat" {
-#   most_recent = true
-
-#   filter {
-#     name   = "name"
-#     values = ["amzn-ami-vpc-nat-2018.03.0.20190826-x86_64-ebs"]
-#   }
-
-#   owners = ["137112412989"] # Amazon
-# }
-
-resource "aws_eip" "nat" {
-  for_each = toset(keys(local.public_azs_cidr))
-  vpc      = true
+resource "aws_eip" "nat_instance" {
+  domain      = "vpc"
   tags = {
-    Name = "nat public ip ${each.key}"
-  }
-}
-
-resource "aws_eip_association" "nat_ip_assoc" {
-  for_each      = toset(keys(local.public_azs_cidr))
-  instance_id   = aws_instance.nat[each.key].id
-  allocation_id = aws_eip.nat[each.key].id
-}
-
-resource "aws_instance" "nat" {
-  for_each               = toset(keys(local.public_azs_cidr))
-  ami                    = "ami-001b36cbc16911c13"
-  instance_type          = "t3a.nano"
-  subnet_id              = aws_subnet.public[each.key].id
-  availability_zone      = each.key
-  vpc_security_group_ids = [aws_security_group.nat.id]
-  source_dest_check      = false
-
-  tags = {
-    Name = "nat instance - ${each.key}"
+    Name = "nat public ip"
   }
 }
 
@@ -90,4 +58,32 @@ resource "aws_security_group" "nat" {
   tags = {
     Name = "nat instance security group"
   }
+}
+
+data "template_file" "nat_user_data" {
+  template = file("${path.module}/nat_instance_user_data.sh")
+}
+
+resource "aws_instance" "nat_instance" {
+  ami = "ami-0c058ff13c7598bc3"
+  instance_type     = "t4g.nano"
+  availability_zone = "eu-central-1a"
+  subnet_id         = aws_subnet.public["eu-central-1a"].id
+  vpc_security_group_ids = [aws_security_group.nat.id]
+  source_dest_check      = false
+  user_data            = data.template_file.nat_user_data.rendered
+  key_name             = "pretix"
+
+  root_block_device {
+    volume_size = 8
+  }
+
+  tags = {
+    Name = "nat instance"
+  }
+}
+
+resource "aws_eip_association" "nat_instance_ip_assoc" {
+  instance_id   = aws_instance.nat_instance.id
+  allocation_id = aws_eip.nat_instance.id
 }
