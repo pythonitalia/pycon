@@ -1,5 +1,5 @@
 resource "aws_eip" "nat_instance" {
-  domain      = "vpc"
+  domain = "vpc"
   tags = {
     Name = "nat public ip"
   }
@@ -65,14 +65,14 @@ data "template_file" "nat_user_data" {
 }
 
 resource "aws_instance" "nat_instance" {
-  ami = "ami-0c058ff13c7598bc3"
-  instance_type     = "t4g.nano"
-  availability_zone = "eu-central-1a"
-  subnet_id         = aws_subnet.public["eu-central-1a"].id
+  ami                    = "ami-0c058ff13c7598bc3"
+  instance_type          = "t4g.nano"
+  availability_zone      = "eu-central-1a"
+  subnet_id              = aws_subnet.public["eu-central-1a"].id
   vpc_security_group_ids = [aws_security_group.nat.id]
   source_dest_check      = false
-  user_data            = data.template_file.nat_user_data.rendered
-  key_name             = "pretix"
+  user_data              = data.template_file.nat_user_data.rendered
+  key_name               = "pretix"
 
   root_block_device {
     volume_size = 8

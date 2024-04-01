@@ -257,10 +257,10 @@ resource "aws_ecs_task_definition" "worker" {
   family = "pythonit-${terraform.workspace}-worker"
   container_definitions = jsonencode([
     {
-      name      = "worker"
-      image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
-      memoryReservation    = 400
-      essential = true
+      name              = "worker"
+      image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
+      memoryReservation = 400
+      essential         = true
       entrypoint = [
         "/home/app/.venv/bin/celery",
       ]
@@ -310,10 +310,10 @@ resource "aws_ecs_task_definition" "beat" {
   family = "pythonit-${terraform.workspace}-beat"
   container_definitions = jsonencode([
     {
-      name      = "beat"
-      image     = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
-      memoryReservation    = 400
-      essential = true
+      name              = "beat"
+      image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
+      memoryReservation = 400
+      essential         = true
       entrypoint = [
         "/home/app/.venv/bin/celery",
       ]

@@ -37,7 +37,7 @@ resource "aws_cloudfront_distribution" "media_cdn" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "default"
 
-    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_optimized.id
+    cache_policy_id = data.aws_cloudfront_cache_policy.caching_optimized.id
 
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
