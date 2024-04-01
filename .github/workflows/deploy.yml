@@ -163,7 +163,7 @@ jobs:
         id: image
         run: |
           set +e
-          aws ecr describe-images --repository-name=pythonit/pycon-backend --image-ids=imageTag=arm${{ steps.git.outputs.githash }}
+          aws ecr describe-images --repository-name=pythonit/pycon-backend --image-ids=imageTag=arm-${{ steps.git.outputs.githash }}
           if [[ $? == 0 ]]; then
             echo '::set-output name=image_exists::1'
           else
@@ -276,7 +276,7 @@ jobs:
 
   terraform:
     runs-on: ubuntu-latest
-    needs: [build-emails, build-and-push-service, create-db]
+    needs: [build-emails, build-and-push-service, build-and-push-arm-service, create-db]
     environment:
       name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
     defaults:
