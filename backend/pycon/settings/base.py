@@ -258,6 +258,11 @@ LOGGING = {
             "handlers": ["console"],
             "propagate": False,
         },
+        "celery.app.trace": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
         "django": {
             "level": "INFO",
             "handlers": ["console"],
