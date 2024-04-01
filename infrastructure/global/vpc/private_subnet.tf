@@ -17,7 +17,7 @@ resource "aws_route_table" "private" {
 
   route {
     cidr_block           = "0.0.0.0/0"
-    network_interface_id = aws_instance.nat[each.key].primary_network_interface_id
+    network_interface_id = aws_instance.nat_instance.primary_network_interface_id
   }
 
   tags = {
@@ -25,7 +25,7 @@ resource "aws_route_table" "private" {
   }
 
   depends_on = [
-    aws_instance.nat
+    aws_instance.nat_instance
   ]
 }
 

@@ -85,10 +85,10 @@ resource "aws_ecs_task_definition" "pretix_service" {
   family = "${terraform.workspace}-pretix"
   container_definitions = jsonencode([
     {
-      name      = "pretix"
-      image     = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
-      memoryReservation    = 1900
-      essential = true
+      name              = "pretix"
+      image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
+      memoryReservation = 1900
+      essential         = true
       environment = [
         {
           name  = "DATABASE_NAME"
