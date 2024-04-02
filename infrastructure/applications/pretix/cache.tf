@@ -23,24 +23,3 @@ resource "aws_elasticache_cluster" "cache" {
     ignore_changes = [engine_version]
   }
 }
-
-data "aws_ami" "ecs_arm" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["al2023-ami-ecs-hvm-2023.0.20240328-kernel-6.1-arm64"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["arm64"]
-  }
-
-  owners = ["amazon"]
-}
