@@ -31,7 +31,7 @@ data "aws_ami" "ecs" {
 
 resource "aws_instance" "pretix" {
   ami               = data.aws_ami.ecs.id
-  instance_type     = "t3a.small"
+  instance_type     = "t3.small"
   subnet_id         = data.aws_subnet.public.id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [
