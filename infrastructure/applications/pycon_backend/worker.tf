@@ -122,7 +122,7 @@ locals {
     },
     {
       name  = "CACHE_URL",
-      value = local.is_prod ? "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/8" : "locmemcache://snowflake"
+      value = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/8" : "locmemcache://snowflake"
     },
     {
       name  = "STRIPE_WEBHOOK_SIGNATURE_SECRET",
@@ -154,11 +154,11 @@ locals {
     },
     {
       name  = "CELERY_BROKER_URL",
-      value = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/5"
+      value = "redis://${data.aws_instance.redis.private_ip}/5"
     },
     {
       name  = "CELERY_RESULT_BACKEND",
-      value = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/6"
+      value = "redis://${data.aws_instance.redis.private_ip}/6"
     },
     {
       name  = "ENV",
