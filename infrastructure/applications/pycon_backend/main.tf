@@ -56,8 +56,10 @@ data "aws_lambda_function" "forward_host_header" {
   provider      = aws.us
 }
 
-data "aws_elasticache_cluster" "redis" {
-  cluster_id = "production-pretix"
+data "aws_instance" "redis" {
+  instance_tags = {
+    Name = "pythonit-production-redis"
+  }
 }
 
 module "lambda" {
@@ -98,7 +100,7 @@ module "lambda" {
     AZURE_STORAGE_ACCOUNT_KEY                 = module.secrets.value.azure_storage_account_key
     PLAIN_API                                 = "https://core-api.uk.plain.com/graphql/v1"
     PLAIN_API_TOKEN                           = module.secrets.value.plain_api_token
-    CACHE_URL                                 = local.is_prod ? "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/8" : "locmemcache://snowflake"
+    CACHE_URL                                 = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/8" : "locmemcache://snowflake"
     STRIPE_WEBHOOK_SIGNATURE_SECRET           = module.secrets.value.stripe_webhook_secret
     STRIPE_SUBSCRIPTION_PRICE_ID              = module.secrets.value.stripe_membership_price_id
     STRIPE_SECRET_API_KEY                     = module.secrets.value.stripe_secret_api_key
@@ -106,8 +108,8 @@ module "lambda" {
     DEEPL_AUTH_KEY                            = module.secrets.value.deepl_auth_key
     FLODESK_API_KEY                           = module.secrets.value.flodesk_api_key
     FLODESK_SEGMENT_ID                        = module.secrets.value.flodesk_segment_id
-    CELERY_BROKER_URL                         = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/5"
-    CELERY_RESULT_BACKEND                     = "redis://${data.aws_elasticache_cluster.redis.cache_nodes.0.address}/6"
+    CELERY_BROKER_URL                         = "redis://${data.aws_instance.redis.private_ip}/5"
+    CELERY_RESULT_BACKEND                     = "redis://${data.aws_instance.redis.private_ip}/6"
     PLAIN_INTEGRATION_TOKEN                   = module.secrets.value.plain_integration_token
     HASHID_DEFAULT_SECRET_SALT                = module.secrets.value.hashid_default_secret_salt
   }

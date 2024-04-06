@@ -124,7 +124,7 @@ resource "aws_ecs_task_definition" "pretix_service" {
         },
         {
           name  = "PRETIX_REDIS_LOCATION",
-          value = "redis://${aws_elasticache_cluster.cache.cache_nodes.0.address}/0"
+          value = "redis://${aws_instance.redis.private_ip}/0"
         },
         {
           name  = "PRETIX_REDIS_SESSIONS",
@@ -132,11 +132,11 @@ resource "aws_ecs_task_definition" "pretix_service" {
         },
         {
           name  = "PRETIX_CELERY_BROKER",
-          value = "redis://${aws_elasticache_cluster.cache.cache_nodes.0.address}/1"
+          value = "redis://${aws_instance.redis.private_ip}/1"
         },
         {
           name  = "PRETIX_CELERY_BACKEND",
-          value = "redis://${aws_elasticache_cluster.cache.cache_nodes.0.address}/2"
+          value = "redis://${aws_instance.redis.private_ip}/2"
         }
       ]
       portMappings = [
