@@ -27,30 +27,3 @@ echo "15,45 * * * * /usr/local/bin/pretixcron.sh" > /etc/cron.d/pretixcron
 
 sudo mkdir -p /var/pretix/data/media
 sudo chown -R 15371:15371 /var/pretix/data/media
-
-## NAT
-
-sudo yum install iptables-services -y
-sudo systemctl enable iptables
-sudo systemctl start iptables
-
-sudo touch /etc/sysctl.d/custom-ip-forwarding.conf
-sudo chmod 666 /etc/sysctl.d/custom-ip-forwarding.conf
-sudo echo "net.ipv4.ip_forward=1" >> /etc/sysctl.d/custom-ip-forwarding.conf
-sudo sysctl -p /etc/sysctl.d/custom-ip-forwarding.conf
-
-sudo iptables -I INPUT 4 -i docker0 -j ACCEPT
-
-sudo /sbin/iptables -t nat -A POSTROUTING -o ens5 -j MASQUERADE
-sudo /sbin/iptables -F FORWARD
-sudo service iptables save
-
-mkdir /redis-data
-
-## Tailscale
-
-sudo yum install yum-utils -y
-sudo yum-config-manager -y --add-repo https://pkgs.tailscale.com/stable/amazon-linux/2/tailscale.repo
-sudo yum install tailscale -y
-sudo systemctl enable --now tailscaled
-sudo tailscale up --ssh --authkey ${tailscale_auth_key} --advertise-tags=tag:main-server --hostname main-server

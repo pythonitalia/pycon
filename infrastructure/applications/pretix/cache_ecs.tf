@@ -41,9 +41,31 @@ resource "aws_ebs_volume" "redis_data" {
 }
 
 resource "aws_volume_attachment" "redis_data_attachment" {
-  device_name = "/dev/sdg"
+  device_name = "/dev/sdf"
   volume_id   = aws_ebs_volume.redis_data.id
-  instance_id = aws_instance.pretix.id
+  instance_id = aws_instance.redis.id
+}
+
+resource "aws_instance" "redis" {
+  ami               = data.aws_ami.ecs_arm.id
+  instance_type     = "t4g.nano"
+  subnet_id         = data.aws_subnet.private.id
+  availability_zone = "eu-central-1a"
+  vpc_security_group_ids = [
+    aws_security_group.instance.id
+  ]
+  source_dest_check    = true
+  user_data            = data.template_file.redis_data.rendered
+  iam_instance_profile = aws_iam_instance_profile.instance.name
+  key_name             = "pretix"
+
+  root_block_device {
+    volume_size = 30
+  }
+
+  tags = {
+    Name = "pythonit-${terraform.workspace}-redis"
+  }
 }
 
 resource "aws_cloudwatch_log_group" "redis_logs" {
@@ -53,7 +75,6 @@ resource "aws_cloudwatch_log_group" "redis_logs" {
 
 resource "aws_ecs_task_definition" "redis" {
   family = "pythonit-${terraform.workspace}-redis"
-
   container_definitions = jsonencode([
     {
       name              = "redis"
@@ -67,11 +88,11 @@ resource "aws_ecs_task_definition" "redis" {
         }
       ]
 
-      mountPoints = [
+      mountPoints    = [
         {
-          sourceVolume  = "redis-data"
+          sourceVolume = "redis-data"
           containerPath = "/data"
-          readOnly      = false
+          readOnly = false
         }
       ]
       systemControls = []
@@ -95,7 +116,7 @@ resource "aws_ecs_task_definition" "redis" {
         interval = 10
       }
 
-      stopTimeout = 30
+      stopTimeout = 300
     }
   ])
 
@@ -110,7 +131,7 @@ resource "aws_ecs_task_definition" "redis" {
 
 resource "aws_ecs_service" "redis" {
   name                               = "pythonit-${terraform.workspace}-redis"
-  cluster                            = aws_ecs_cluster.pretix.id
+  cluster                            = aws_ecs_cluster.redis.id
   task_definition                    = aws_ecs_task_definition.redis.arn
   desired_count                      = 1
   deployment_minimum_healthy_percent = 0

@@ -58,11 +58,7 @@ data "aws_lambda_function" "forward_host_header" {
 
 data "aws_instance" "redis" {
   instance_tags = {
-    Name = "production-pretix-instance"
-  }
-  filter {
-    name   = "instance-state-name"
-    values = ["running"]
+    Name = "pythonit-production-redis"
   }
 }
 

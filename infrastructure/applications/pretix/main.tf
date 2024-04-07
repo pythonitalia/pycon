@@ -9,8 +9,7 @@ resource "aws_ecs_cluster" "pretix" {
 data "template_file" "user_data" {
   template = file("${path.module}/user_data.sh")
   vars = {
-    ecs_cluster        = aws_ecs_cluster.pretix.name
-    tailscale_auth_key = module.common_secrets.value.tailscale_auth_key
+    ecs_cluster = aws_ecs_cluster.pretix.name
   }
 }
 
@@ -32,7 +31,7 @@ data "aws_ami" "ecs" {
 
 resource "aws_instance" "pretix" {
   ami               = data.aws_ami.ecs.id
-  instance_type     = "t3a.medium"
+  instance_type     = "t3.small"
   subnet_id         = data.aws_subnet.public.id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [
@@ -47,11 +46,6 @@ resource "aws_instance" "pretix" {
   tags = {
     Name = "${terraform.workspace}-pretix-instance"
   }
-
-  credit_specification {
-    cpu_credits = "standard"
-  }
-
   lifecycle {
     prevent_destroy = true
   }
@@ -93,7 +87,7 @@ resource "aws_ecs_task_definition" "pretix_service" {
     {
       name              = "pretix"
       image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
-      memoryReservation = 1000
+      memoryReservation = 1900
       essential         = true
       environment = [
         {
@@ -130,7 +124,7 @@ resource "aws_ecs_task_definition" "pretix_service" {
         },
         {
           name  = "PRETIX_REDIS_LOCATION",
-          value = "redis://${aws_instance.pretix.private_ip}/0"
+          value = "redis://${aws_instance.redis.private_ip}/0"
         },
         {
           name  = "PRETIX_REDIS_SESSIONS",
@@ -138,11 +132,11 @@ resource "aws_ecs_task_definition" "pretix_service" {
         },
         {
           name  = "PRETIX_CELERY_BROKER",
-          value = "redis://${aws_instance.pretix.private_ip}/1"
+          value = "redis://${aws_instance.redis.private_ip}/1"
         },
         {
           name  = "PRETIX_CELERY_BACKEND",
-          value = "redis://${aws_instance.pretix.private_ip}/2"
+          value = "redis://${aws_instance.redis.private_ip}/2"
         }
       ]
       portMappings = [
