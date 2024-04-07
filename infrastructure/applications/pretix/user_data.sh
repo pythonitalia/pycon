@@ -47,11 +47,11 @@ sudo service iptables save
 
 ## Tailscale
 
-# sudo yum install yum-utils -y
-# sudo yum-config-manager -y --add-repo https://pkgs.tailscale.com/stable/amazon-linux/2/tailscale.repo
-# sudo yum install tailscale -y
-# sudo systemctl enable --now tailscaled
-# sudo tailscale up --ssh --authkey ${tailscale_auth_key} --advertise-tags=tag:main-server --hostname main-server
+sudo yum install yum-utils -y
+sudo yum-config-manager -y --add-repo https://pkgs.tailscale.com/stable/amazon-linux/2/tailscale.repo
+sudo yum install tailscale -y
+sudo systemctl enable --now tailscaled
+sudo tailscale up --ssh --authkey ${tailscale_auth_key} --advertise-tags=tag:main-server --hostname main-server
 
 ## Redis
 
