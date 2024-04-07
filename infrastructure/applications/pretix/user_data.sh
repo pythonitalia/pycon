@@ -39,18 +39,27 @@ sudo chmod 666 /etc/sysctl.d/custom-ip-forwarding.conf
 sudo echo "net.ipv4.ip_forward=1" >> /etc/sysctl.d/custom-ip-forwarding.conf
 sudo sysctl -p /etc/sysctl.d/custom-ip-forwarding.conf
 
-sudo iptables -I INPUT 4 -i docker0 -j ACCEPT
+sudo /sbin/iptables -I INPUT 4 -i docker0 -j ACCEPT
 
 sudo /sbin/iptables -t nat -A POSTROUTING -o ens5 -j MASQUERADE
 sudo /sbin/iptables -F FORWARD
 sudo service iptables save
 
-mkdir /redis-data
-
 ## Tailscale
 
-sudo yum install yum-utils -y
-sudo yum-config-manager -y --add-repo https://pkgs.tailscale.com/stable/amazon-linux/2/tailscale.repo
-sudo yum install tailscale -y
-sudo systemctl enable --now tailscaled
-sudo tailscale up --ssh --authkey ${tailscale_auth_key} --advertise-tags=tag:main-server --hostname main-server
+# sudo yum install yum-utils -y
+# sudo yum-config-manager -y --add-repo https://pkgs.tailscale.com/stable/amazon-linux/2/tailscale.repo
+# sudo yum install tailscale -y
+# sudo systemctl enable --now tailscaled
+# sudo tailscale up --ssh --authkey ${tailscale_auth_key} --advertise-tags=tag:main-server --hostname main-server
+
+## Redis
+
+mkdir /redis-data
+
+
+## Mount volumes
+
+sudo echo "UUID=0240a196-f4eb-4a34-8218-75af80d479f6 /var/pretix xfs defaults,nofail 0 2" >> /etc/fstab
+sudo echo "UUID=6dbc6ff5-7b78-47fe-85af-4ab6fa4473cc /redis-data xfs defaults,nofail 0 2" >> /etc/fstab
+sudo mount -a

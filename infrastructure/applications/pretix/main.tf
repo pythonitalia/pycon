@@ -51,10 +51,6 @@ resource "aws_instance" "pretix" {
   credit_specification {
     cpu_credits = "standard"
   }
-
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 resource "aws_volume_attachment" "data_attachment" {
