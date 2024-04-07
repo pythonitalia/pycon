@@ -1,10 +1,3 @@
-resource "aws_eip" "nat_instance" {
-  domain = "vpc"
-  tags = {
-    Name = "nat public ip"
-  }
-}
-
 resource "aws_security_group" "nat" {
   name        = "nat-instance-security-group"
   description = "Allow NAT traffic"
@@ -60,30 +53,12 @@ resource "aws_security_group" "nat" {
   }
 }
 
-data "template_file" "nat_user_data" {
-  template = file("${path.module}/nat_instance_user_data.sh")
-}
-
-resource "aws_instance" "nat_instance" {
-  ami                    = "ami-0c058ff13c7598bc3"
-  instance_type          = "t4g.nano"
-  availability_zone      = "eu-central-1a"
-  subnet_id              = aws_subnet.public["eu-central-1a"].id
-  vpc_security_group_ids = [aws_security_group.nat.id]
-  source_dest_check      = false
-  user_data              = data.template_file.nat_user_data.rendered
-  key_name               = "pretix"
-
-  root_block_device {
-    volume_size = 8
+data "aws_instance" "nat_instance" {
+  instance_tags = {
+    Name = "production-pretix-instance"
   }
-
-  tags = {
-    Name = "nat instance"
+  filter {
+    name   = "instance-state-name"
+    values = ["running"]
   }
-}
-
-resource "aws_eip_association" "nat_instance_ip_assoc" {
-  instance_id   = aws_instance.nat_instance.id
-  allocation_id = aws_eip.nat_instance.id
 }
