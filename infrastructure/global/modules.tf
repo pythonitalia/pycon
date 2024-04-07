@@ -73,3 +73,13 @@ module "archives" {
     aws.us = aws.us
   }
 }
+
+
+module "server" {
+  source = "./server"
+
+  providers = {
+    aws    = aws
+    aws.us = aws.us
+  }
+}

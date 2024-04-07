@@ -17,7 +17,8 @@ resource "aws_route_table" "private" {
 
   route {
     cidr_block           = "0.0.0.0/0"
-    network_interface_id = data.aws_instance.nat_instance.network_interface_id
+    # network_interface_id = data.aws_instance.nat_instance.network_interface_id
+    network_interface_id = aws_instance.nat_instance.primary_network_interface_id
   }
 
   tags = {
