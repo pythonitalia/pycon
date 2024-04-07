@@ -47,6 +47,11 @@ resource "aws_instance" "pretix" {
   tags = {
     Name = "${terraform.workspace}-pretix-instance"
   }
+
+  credit_specification {
+    cpu_credits = "standard"
+  }
+
   lifecycle {
     prevent_destroy = true
   }
