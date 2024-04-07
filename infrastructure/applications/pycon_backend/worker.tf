@@ -183,6 +183,10 @@ resource "aws_ecs_cluster" "worker" {
   name = "pythonit-${terraform.workspace}-worker"
 }
 
+data "aws_ecs_cluster" "pretix" {
+  cluster_name = "${terraform.workspace}-pretix"
+}
+
 data "aws_ami" "ecs" {
   most_recent = true
 
@@ -226,27 +230,6 @@ data "template_file" "user_data" {
   }
 }
 
-
-resource "aws_instance" "instance_1" {
-  ami               = data.aws_ami.ecs.id
-  instance_type     = "t4g.micro"
-  subnet_id         = data.aws_subnet.private_1a.id
-  availability_zone = "eu-central-1a"
-  vpc_security_group_ids = [
-    data.aws_security_group.rds.id,
-    data.aws_security_group.lambda.id,
-    aws_security_group.instance.id
-  ]
-  source_dest_check    = false
-  user_data            = data.template_file.user_data.rendered
-  iam_instance_profile = aws_iam_instance_profile.worker.name
-  key_name             = "pretix"
-
-  tags = {
-    Name = "pythonit-${terraform.workspace}-worker"
-  }
-}
-
 resource "aws_cloudwatch_log_group" "worker_logs" {
   name              = "/ecs/pythonit-${terraform.workspace}-worker"
   retention_in_days = 7
@@ -255,11 +238,12 @@ resource "aws_cloudwatch_log_group" "worker_logs" {
 
 resource "aws_ecs_task_definition" "worker" {
   family = "pythonit-${terraform.workspace}-worker"
+
   container_definitions = jsonencode([
     {
       name              = "worker"
-      image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
-      memoryReservation = 400
+      image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_image.image_digest}"
+      memoryReservation = 200
       essential         = true
       entrypoint = [
         "/home/app/.venv/bin/celery",
@@ -272,12 +256,12 @@ resource "aws_ecs_task_definition" "worker" {
       environment = local.env_vars
 
       mountPoints = []
-      systemControls = [
-        {
-          "namespace" : "net.core.somaxconn",
-          "value" : "4096"
-        }
-      ]
+      # systemControls = [
+      #   {
+      #     "namespace" : "net.core.somaxconn",
+      #     "value" : "4096"
+      #   }
+      # ]
 
       logConfiguration = {
         logDriver = "awslogs"
@@ -298,7 +282,7 @@ resource "aws_ecs_task_definition" "worker" {
         interval = 10
       }
 
-      stopTimeout = 300
+      stopTimeout = 30
     }
   ])
 
@@ -308,11 +292,12 @@ resource "aws_ecs_task_definition" "worker" {
 
 resource "aws_ecs_task_definition" "beat" {
   family = "pythonit-${terraform.workspace}-beat"
+
   container_definitions = jsonencode([
     {
       name              = "beat"
-      image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
-      memoryReservation = 400
+      image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_image.image_digest}"
+      memoryReservation = 200
       essential         = true
       entrypoint = [
         "/home/app/.venv/bin/celery",
@@ -325,12 +310,6 @@ resource "aws_ecs_task_definition" "beat" {
       environment = local.env_vars
 
       mountPoints = []
-      systemControls = [
-        {
-          "namespace" : "net.core.somaxconn",
-          "value" : "4096"
-        }
-      ]
 
       logConfiguration = {
         logDriver = "awslogs"
@@ -361,7 +340,7 @@ resource "aws_ecs_task_definition" "beat" {
 
 resource "aws_ecs_service" "worker" {
   name                               = "pythonit-${terraform.workspace}-worker"
-  cluster                            = aws_ecs_cluster.worker.id
+  cluster                            = data.aws_ecs_cluster.pretix.id
   task_definition                    = aws_ecs_task_definition.worker.arn
   desired_count                      = 1
   deployment_minimum_healthy_percent = 0
@@ -370,7 +349,7 @@ resource "aws_ecs_service" "worker" {
 
 resource "aws_ecs_service" "beat" {
   name                               = "pythonit-${terraform.workspace}-beat"
-  cluster                            = aws_ecs_cluster.worker.id
+  cluster                            = data.aws_ecs_cluster.pretix.id
   task_definition                    = aws_ecs_task_definition.beat.arn
   desired_count                      = 1
   deployment_minimum_healthy_percent = 0
