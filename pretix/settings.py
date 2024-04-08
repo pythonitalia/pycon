@@ -43,6 +43,8 @@ CSP_ADDITIONAL_HEADER = "script-src 'self' 'unsafe-inline'"
 # Config
 PRETIX_REGISTRATION = False
 
+VAT_ID_COUNTRIES = EU_COUNTRIES | {"CH", "NO", "GB"}
+
 if "pretix_fattura_elettronica" in INSTALLED_APPS:  # noqa
     INSTALLED_APPS.remove("pretix_fattura_elettronica")  # noqa
 
