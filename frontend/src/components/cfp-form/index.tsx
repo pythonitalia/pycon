@@ -344,7 +344,7 @@ export const CfpForm = ({
       <Heading mb={5} as="h1">
         <FormattedMessage id="cfp.youridea" />
       </Heading>
-      <form onSubmit={submitSubmission} sx={{ mb: 4 }}>
+      <form onSubmit={submitSubmission} sx={{ mb: 4 }} autoComplete="off">
         <InputWrapper
           isRequired={true}
           label={<FormattedMessage id="cfp.choosetype" />}

@@ -73,7 +73,12 @@ export const RequestResetPasswordPageHandler = () => {
         {(title) => <MetaTags title={title} />}
       </FormattedMessage>
 
-      <form onSubmit={onSubmit} ref={formRef} className="w-full">
+      <form
+        onSubmit={onSubmit}
+        ref={formRef}
+        className="w-full"
+        autoComplete="off"
+      >
         <LoginFlowLayout
           bottomSection={
             <>

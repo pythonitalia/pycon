@@ -229,7 +229,7 @@ export const EditProfilePageHandler = () => {
       </Section>
 
       <Section>
-        <form onSubmit={onFormSubmit}>
+        <form onSubmit={onFormSubmit} autoComplete="off">
           <MainProfileCard
             formState={formState}
             formOptions={formOptions}

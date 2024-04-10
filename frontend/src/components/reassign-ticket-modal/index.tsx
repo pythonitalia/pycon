@@ -145,7 +145,7 @@ export const ReassignTicketModal = ({
       </Text>
       <Spacer size="small" />
 
-      <form onSubmit={saveChanges} ref={formRef}>
+      <form onSubmit={saveChanges} ref={formRef} autoComplete="off">
         <InputWrapper
           required={true}
           title={<FormattedMessage id="orderQuestions.attendeeEmail" />}

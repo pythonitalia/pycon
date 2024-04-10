@@ -35,7 +35,11 @@ export const CheckoutPageHandler = ({
   );
 
   return (
-    <form onSubmit={(e) => e.preventDefault()} className="divide-y-3">
+    <form
+      onSubmit={(e) => e.preventDefault()}
+      className="divide-y-3"
+      autoComplete="off"
+    >
       <Section spacingSize="xl" illustration="snakeTailUp">
         <Heading size="display2">
           <FormattedMessage id="tickets.checkout.title" />

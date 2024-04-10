@@ -77,7 +77,7 @@ export const NewsletterModal = ({ onClose }) => {
         </div>
       }
     >
-      <form onSubmit={onSubmit} ref={formRef}>
+      <form onSubmit={onSubmit} ref={formRef} autoComplete="off">
         <Text size={2}>
           <FormattedMessage id="newsletter.text" />
         </Text>

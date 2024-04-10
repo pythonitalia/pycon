@@ -306,7 +306,7 @@ export const GrantForm = ({
   const nonFieldErrors = getErrors("nonFieldErrors");
 
   return (
-    <form onSubmit={handleOnSubmit}>
+    <form onSubmit={handleOnSubmit} autoComplete="off">
       <MultiplePartsCard>
         <CardPart contentAlign="left">
           <Heading size={3}>
