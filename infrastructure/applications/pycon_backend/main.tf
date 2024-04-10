@@ -78,7 +78,7 @@ module "lambda" {
     SENTRY_DSN                                = module.secrets.value.sentry_dsn
     VOLUNTEERS_PUSH_NOTIFICATIONS_IOS_ARN     = module.secrets.value.volunteers_push_notifications_ios_arn
     VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN = module.secrets.value.volunteers_push_notifications_android_arn
-    ALLOWED_HOSTS                             = "admin.pycon.it"
+    ALLOWED_HOSTS                             = ".pycon.it"
     DJANGO_SETTINGS_MODULE                    = "pycon.settings.prod"
     ASSOCIATION_FRONTEND_URL                  = "https://associazione.python.it"
     AWS_MEDIA_BUCKET                          = aws_s3_bucket.backend_media.id
