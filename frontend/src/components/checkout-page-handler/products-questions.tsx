@@ -47,7 +47,7 @@ export const ProductsQuestions = ({ productsById }: Props) => {
                       <Heading size={4}>
                         {productsById[productId].name} #{index + 1}
                       </Heading>
-                      {index === 0 && (
+                      {index === 0 && productsById[productId].admission && (
                         <>
                           <label className="flex items-center">
                             <Text size="label3" uppercase weight="strong">
