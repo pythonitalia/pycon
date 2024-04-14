@@ -1,4 +1,4 @@
-FROM pretix/standalone:4.18.2
+FROM pretix/standalone:2024.3
 
 COPY ./entrypoint.sh /entrypoint.sh
 COPY ./settings.py /pretix/src/production_settings.py
@@ -14,5 +14,3 @@ RUN cd /pretix/src && DATABASE_HOST=demo make compress
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "all" ]
-
-# Build
