@@ -142,6 +142,14 @@ jobs:
     permissions:
       packages: write
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - name: pycon-backend
+            dir: backend
+          - name: pretix
+            dir: pretix
 
     steps:
       - uses: actions/checkout@v2
@@ -157,13 +165,13 @@ jobs:
       - name: Get service githash
         id: git
         run: |
-          hash=$(git rev-list -1 HEAD -- backend)
+          hash=$(git rev-list -1 HEAD -- ${{ matrix.service.dir }})
           echo "::set-output name=githash::$hash"
       - name: Check if commit is already on ECR
         id: image
         run: |
           set +e
-          aws ecr describe-images --repository-name=pythonit/pycon-backend --image-ids=imageTag=arm-${{ steps.git.outputs.githash }}
+          aws ecr describe-images --repository-name=pythonit/${{ matrix.service.name }} --image-ids=imageTag=arm-${{ steps.git.outputs.githash }}
           if [[ $? == 0 ]]; then
             echo '::set-output name=image_exists::1'
           else
@@ -202,8 +210,8 @@ jobs:
           provenance: false
           push: true
           tags: |
-            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ steps.git.outputs.githash }}
-            ghcr.io/pythonitalia/pycon/pycon-backend:arm-${{ steps.git.outputs.githash }}
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/${{ matrix.service.name }}:arm-${{ steps.git.outputs.githash }}
+            ghcr.io/pythonitalia/pycon/${{ matrix.service.name }}:arm-${{ steps.git.outputs.githash }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
