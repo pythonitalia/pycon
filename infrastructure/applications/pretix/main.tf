@@ -18,7 +18,7 @@ data "aws_ami" "ecs" {
 
   filter {
     name   = "name"
-    values = ["al2023-ami-ecs-hvm-2023.0.20240328-kernel-6.1-x86_64"]
+    values = ["al2023-ami-ecs-hvm-2023.0.20240319-kernel-6.1-arm64"]
   }
 
   filter {
@@ -26,12 +26,17 @@ data "aws_ami" "ecs" {
     values = ["hvm"]
   }
 
+  filter {
+    name   = "architecture"
+    values = ["arm64"]
+  }
+
   owners = ["amazon"]
 }
 
 resource "aws_instance" "pretix" {
   ami               = data.aws_ami.ecs.id
-  instance_type     = "t3.small"
+  instance_type     = "t4g.small"
   subnet_id         = data.aws_subnet.public.id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [
@@ -46,9 +51,6 @@ resource "aws_instance" "pretix" {
   tags = {
     Name = "${terraform.workspace}-pretix-instance"
   }
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 resource "aws_volume_attachment" "data_attachment" {
@@ -57,10 +59,15 @@ resource "aws_volume_attachment" "data_attachment" {
   instance_id = aws_instance.pretix.id
 }
 
+resource "aws_cloudwatch_log_group" "pretix_logs" {
+  name              = "/ecs/pythonit-${terraform.workspace}-pretix"
+  retention_in_days = 7
+}
+
 
 resource "aws_eip" "ip" {
   instance = aws_instance.pretix.id
-  vpc      = true
+  domain = "vpc"
   tags = {
     Name = "${terraform.workspace}-pretix"
   }
@@ -86,8 +93,8 @@ resource "aws_ecs_task_definition" "pretix_service" {
   container_definitions = jsonencode([
     {
       name              = "pretix"
-      image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
-      memoryReservation = 1900
+      image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.arm_image.image_digest}"
+      memoryReservation = 1847
       essential         = true
       environment = [
         {
@@ -161,6 +168,14 @@ resource "aws_ecs_task_definition" "pretix_service" {
           "value" : "4096"
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.pretix_logs.name
+          "awslogs-region"        = "eu-central-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
     },
   ])
 

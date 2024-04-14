@@ -7,6 +7,11 @@ data "aws_ecr_image" "image" {
   image_tag       = data.external.githash.result.githash
 }
 
+data "aws_ecr_image" "arm_image" {
+  repository_name = data.aws_ecr_repository.repo.name
+  image_tag       = "arm-${data.external.githash.result.githash}"
+}
+
 data "aws_caller_identity" "current" {}
 
 data "external" "githash" {
