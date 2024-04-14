@@ -28,11 +28,12 @@ echo "15,45 * * * * /usr/local/bin/pretixcron.sh" > /etc/cron.d/pretixcron
 sudo mkdir -p /var/pretix/data/media
 sudo chown -R 15371:15371 /var/pretix/data/media
 
+sudo su
 sudo dd if=/dev/zero of=/swapfile bs=128M count=32
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
-echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+sudo echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
 
 sudo echo "UUID=0240a196-f4eb-4a34-8218-75af80d479f6 /var/pretix xfs defaults,nofail 0 2" >> /etc/fstab
 sudo mount -a

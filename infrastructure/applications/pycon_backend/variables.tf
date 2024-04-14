@@ -5,3 +5,4 @@ locals {
 }
 
 variable "enable_proxy" {}
+variable "ecs_arm_ami" {}
