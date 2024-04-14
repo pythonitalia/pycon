@@ -13,27 +13,6 @@ data "template_file" "user_data" {
   }
 }
 
-data "aws_ami" "ecs" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["al2023-ami-ecs-hvm-2023.0.20240319-kernel-6.1-x86_64"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-
-  owners = ["amazon"]
-}
-
 resource "aws_instance" "pretix" {
   ami               = var.ecs_x86_ami
   instance_type     = "t3.small"
@@ -49,7 +28,7 @@ resource "aws_instance" "pretix" {
   key_name             = "pretix"
 
   root_block_device {
-    volume_size = 8
+    volume_size = 15
   }
 
   tags = {
