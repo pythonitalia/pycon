@@ -35,7 +35,7 @@ data "aws_ami" "ecs" {
 }
 
 resource "aws_instance" "pretix" {
-  ami               = data.aws_ami.ecs.id
+  ami               = var.ecs_x86_ami
   instance_type     = "t3.small"
   subnet_id         = data.aws_subnet.public.id
   availability_zone = "eu-central-1a"
@@ -67,7 +67,7 @@ resource "aws_cloudwatch_log_group" "pretix_logs" {
 
 resource "aws_eip" "ip" {
   instance = aws_instance.pretix.id
-  domain = "vpc"
+  domain   = "vpc"
   tags = {
     Name = "${terraform.workspace}-pretix"
   }

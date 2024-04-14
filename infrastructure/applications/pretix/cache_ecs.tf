@@ -88,11 +88,11 @@ resource "aws_ecs_task_definition" "redis" {
         }
       ]
 
-      mountPoints    = [
+      mountPoints = [
         {
-          sourceVolume = "redis-data"
+          sourceVolume  = "redis-data"
           containerPath = "/data"
-          readOnly = false
+          readOnly      = false
         }
       ]
       systemControls = []
