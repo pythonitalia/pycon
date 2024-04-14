@@ -1,24 +1,3 @@
-data "aws_ami" "ecs_arm" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["al2023-ami-ecs-hvm-2023.0.20240328-kernel-6.1-arm64"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["arm64"]
-  }
-
-  owners = ["amazon"]
-}
-
 resource "aws_ecs_cluster" "redis" {
   name = "pythonit-${terraform.workspace}-redis"
 }
@@ -47,7 +26,7 @@ resource "aws_volume_attachment" "redis_data_attachment" {
 }
 
 resource "aws_instance" "redis" {
-  ami               = data.aws_ami.ecs_arm.id
+  ami               = var.ecs_arm_ami
   instance_type     = "t4g.nano"
   subnet_id         = data.aws_subnet.private.id
   availability_zone = "eu-central-1a"
@@ -60,7 +39,7 @@ resource "aws_instance" "redis" {
   key_name             = "pretix"
 
   root_block_device {
-    volume_size = 30
+    volume_size = 8
   }
 
   tags = {

@@ -183,27 +183,6 @@ resource "aws_ecs_cluster" "worker" {
   name = "pythonit-${terraform.workspace}-worker"
 }
 
-data "aws_ami" "ecs" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["al2023-ami-ecs-hvm-2023.0.20240319-kernel-6.1-arm64"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["arm64"]
-  }
-
-  owners = ["amazon"]
-}
-
 data "aws_subnet" "private_1a" {
   vpc_id = data.aws_vpc.default.id
 
@@ -228,7 +207,7 @@ data "template_file" "user_data" {
 
 
 resource "aws_instance" "instance_1" {
-  ami               = data.aws_ami.ecs.id
+  ami               = var.ecs_arm_ami
   instance_type     = "t4g.nano"
   subnet_id         = data.aws_subnet.private_1a.id
   availability_zone = "eu-central-1a"
@@ -241,6 +220,10 @@ resource "aws_instance" "instance_1" {
   user_data            = data.template_file.user_data.rendered
   iam_instance_profile = aws_iam_instance_profile.worker.name
   key_name             = "pretix"
+
+  root_block_device {
+    volume_size = 8
+  }
 
   tags = {
     Name = "pythonit-${terraform.workspace}-worker"

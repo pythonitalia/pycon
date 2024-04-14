@@ -48,6 +48,10 @@ resource "aws_instance" "pretix" {
   iam_instance_profile = aws_iam_instance_profile.instance.name
   key_name             = "pretix"
 
+  root_block_device {
+    volume_size = 8
+  }
+
   tags = {
     Name = "${terraform.workspace}-pretix-instance"
   }
