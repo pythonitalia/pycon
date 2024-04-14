@@ -7,7 +7,7 @@ USER root
 RUN chown -R pretixuser:pretixuser /pretix
 USER pretixuser
 
-RUN pip install pretix-plugin-extended-api==0.1.11 pretix-plugin-attendance-certificate==0.1.10 pretix-fattura-elettronica==0.2.11
+RUN pip install pretix-plugin-extended-api==0.1.12 pretix-plugin-attendance-certificate==0.1.10 pretix-fattura-elettronica==0.2.11
 
 RUN cd /pretix/src && DATABASE_HOST=demo make staticfiles
 RUN cd /pretix/src && DATABASE_HOST=demo make compress
