@@ -18,7 +18,7 @@ data "aws_ami" "ecs" {
 
   filter {
     name   = "name"
-    values = ["al2023-ami-ecs-hvm-2023.0.20240319-kernel-6.1-arm64"]
+    values = ["al2023-ami-ecs-hvm-2023.0.20240319-kernel-6.1-x86_64"]
   }
 
   filter {
@@ -28,7 +28,7 @@ data "aws_ami" "ecs" {
 
   filter {
     name   = "architecture"
-    values = ["arm64"]
+    values = ["x86_64"]
   }
 
   owners = ["amazon"]
@@ -36,7 +36,7 @@ data "aws_ami" "ecs" {
 
 resource "aws_instance" "pretix" {
   ami               = data.aws_ami.ecs.id
-  instance_type     = "t4g.small"
+  instance_type     = "t3.small"
   subnet_id         = data.aws_subnet.public.id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [
@@ -93,8 +93,8 @@ resource "aws_ecs_task_definition" "pretix_service" {
   container_definitions = jsonencode([
     {
       name              = "pretix"
-      image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.arm_image.image_digest}"
-      memoryReservation = 1847
+      image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
+      memoryReservation = 1900
       essential         = true
       environment = [
         {
@@ -144,6 +144,10 @@ resource "aws_ecs_task_definition" "pretix_service" {
         {
           name  = "PRETIX_CELERY_BACKEND",
           value = "redis://${aws_instance.redis.private_ip}/2"
+        },
+        {
+          name  = "PRETIX_PRETIX_URL",
+          value = "https://tickets.pycon.it/"
         }
       ]
       portMappings = [
