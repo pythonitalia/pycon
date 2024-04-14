@@ -60,6 +60,11 @@ data "aws_instance" "redis" {
   instance_tags = {
     Name = "pythonit-production-redis"
   }
+
+  filter {
+    name   = "instance-state-name"
+    values = ["running"]
+  }
 }
 
 module "lambda" {

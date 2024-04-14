@@ -17,6 +17,7 @@ module "pretix" {
   count        = local.deploy_pretix ? 1 : 0
   enable_proxy = local.enable_proxy
   ecs_x86_ami  = local.ecs_x86_ami
+  ecs_arm_ami  = local.ecs_arm_ami
 }
 
 module "pycon_backend" {
