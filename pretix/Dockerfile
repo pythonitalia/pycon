@@ -14,3 +14,5 @@ RUN cd /pretix/src && DATABASE_HOST=demo make compress
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "all" ]
+
+# Build

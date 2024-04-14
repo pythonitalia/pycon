@@ -204,8 +204,8 @@ jobs:
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/build-push-action@v4.0.0
         with:
-          context: ./backend
-          file: ./backend/Dockerfile
+          context: ./${{ matrix.service.dir }}
+          file: ./${{ matrix.service.dir }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           provenance: false
           push: true
