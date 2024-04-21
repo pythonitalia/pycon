@@ -124,7 +124,7 @@ class SendGrantInput(BaseGrantInput):
     def validate(self, conference: Conference, user: User) -> GrantErrors:
         errors = super().validate(conference=conference, user=user)
 
-        if GrantModel.objects.filter(user_id=user.id).exists():
+        if GrantModel.objects.of_user(user).for_conference(conference).exists():
             errors.add_error("non_field_errors", "Grant already submitted!")
 
         return errors

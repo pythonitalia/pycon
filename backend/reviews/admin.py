@@ -664,10 +664,11 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
         languages = list(proposal.languages.all())
         speaker = proposal.speaker
-        grant = Grant.objects.filter(
-            conference=proposal.conference_id,
-            user_id=proposal.speaker_id,
-        ).first()
+        grant = (
+            Grant.objects.of_user(proposal.speaker_id)
+            .for_conference(proposal.conference_id)
+            .first()
+        )
         grant_link = (
             reverse("admin:grants_grant_change", args=(grant.id,)) if grant else ""
         )
