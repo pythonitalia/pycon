@@ -7,7 +7,8 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import React, { useCallback, useRef, useState } from "react";
+import type React from "react";
+import { useCallback, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
@@ -59,7 +60,7 @@ export const NewsletterModal = ({ onClose }) => {
   const errorMessage = useTranslatedMessage("newsletter.error");
 
   const getErrors = (key: "validationEmail" | "nonFieldErrors") =>
-    (hasFormErrors && data.subscribeToNewsletter[key]) || [];
+    (hasFormErrors && data.subscribeToNewsletter.errors[key]) || [];
 
   return (
     <Modal

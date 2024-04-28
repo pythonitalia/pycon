@@ -25,14 +25,14 @@ class SendVoteErrors(BaseErrorType):
 
 @strawberry.input
 class SendVoteInput:
-    value: str
+    value: int
     submission: strawberry.ID
 
     def validate(self, info: Info, submission: Submission | None) -> SendVoteErrors:
         errors = SendVoteErrors()
 
-        if not self.value:
-            errors.add_error("value", "Value cannot be empty")
+        if self.value not in Vote.Values.values:
+            errors.add_error("value", f"Value {self.value} is not a valid choice.")
 
         if not submission:
             errors.add_error("submission", "Invalid submission")
@@ -57,7 +57,7 @@ SendVoteOutput = Annotated[
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 def send_vote(info: Info, input: SendVoteInput) -> SendVoteOutput:
     try:
-        submission = Submission.objects.get_by_hashid(id=input.submission)
+        submission = Submission.objects.get_by_hashid(input.submission)
     except Submission.DoesNotExist:
         submission = None
 
@@ -66,7 +66,7 @@ def send_vote(info: Info, input: SendVoteInput) -> SendVoteOutput:
 
     result, _ = Vote.objects.update_or_create(
         user_id=info.context.request.user.id,
-        submission=input.submission,
+        submission=submission,
         defaults={"value": input.value},
     )
 

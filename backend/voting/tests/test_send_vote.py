@@ -27,9 +27,11 @@ def _submit_vote(client, submission, **kwargs):
                     }
 
                     ... on SendVoteErrors {
-                        validationSubmission: submission
-                        validationValue: value
-                        nonFieldErrors
+                        errors {
+                            validationSubmission: submission
+                            validationValue: value
+                            nonFieldErrors
+                        }
                     }
                 }
             }""",
@@ -87,7 +89,7 @@ def test_reject_vote_when_voting_is_not_open(
     resp, variables = _submit_vote(graphql_client, submission)
 
     assert resp["data"]["sendVote"]["__typename"] == "SendVoteErrors"
-    assert resp["data"]["sendVote"]["nonFieldErrors"] == [
+    assert resp["data"]["sendVote"]["errors"]["nonFieldErrors"] == [
         "The voting session is not open!"
     ]
 
@@ -168,7 +170,7 @@ def test_cannot_vote_without_a_ticket_or_membership(
 
     assert not resp.get("errors")
     assert resp["data"]["sendVote"]["__typename"] == "SendVoteErrors"
-    assert resp["data"]["sendVote"]["nonFieldErrors"] == [
+    assert resp["data"]["sendVote"]["errors"]["nonFieldErrors"] == [
         "You cannot vote without a ticket"
     ]
 
@@ -193,6 +195,6 @@ def test_cannot_vote_values_outside_the_range(
     resp, _ = _submit_vote(graphql_client, submission, value_index=score_index)
 
     assert resp["data"]["sendVote"]["__typename"] == "SendVoteErrors"
-    assert resp["data"]["sendVote"]["validationValue"] == [
+    assert resp["data"]["sendVote"]["errors"]["validationValue"] == [
         f"Value {score_index} is not a valid choice."
     ]
