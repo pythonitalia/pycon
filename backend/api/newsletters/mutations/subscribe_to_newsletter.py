@@ -28,6 +28,7 @@ class SubscribeToNewsletterErrors(BaseErrorType):
     @strawberry.type
     class _SubscribeToNewsletterErrors:
         email: list[str] = strawberry.field(default_factory=list)
+        non_field_errors: list[str] = strawberry.field(default_factory=list)
 
     errors: _SubscribeToNewsletterErrors = None
 
