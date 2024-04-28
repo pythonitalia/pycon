@@ -14,7 +14,7 @@ class VoteFactory(DjangoModelFactory):
         django_get_or_create = ("user", "submission")
 
     value = factory.fuzzy.FuzzyInteger(
-        Vote.VALUES.not_interested, Vote.VALUES.must_see, 1
+        Vote.Values.not_interested, Vote.Values.must_see, 1
     )
     submission = factory.SubFactory(SubmissionFactory)
     user = factory.SubFactory(UserFactory)

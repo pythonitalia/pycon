@@ -7,8 +7,10 @@ mutation subscribe($email: String!) {
     }
 
     ... on SubscribeToNewsletterErrors {
-      validationEmail: email
-      nonFieldErrors
+      errors {
+        validationEmail: email
+        nonFieldErrors
+      }
     }
   }
 }

@@ -1,18 +1,16 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from model_utils import Choices
 from model_utils.models import TimeStampedModel
 
 
 class Vote(TimeStampedModel):
-    VALUES = Choices(
-        (1, "not_interested", _("Not Interested")),
-        (2, "maybe", _("Maybe")),
-        (3, "want_to_see", _("Want to See")),
-        (4, "must_see", _("Must See")),
-    )
+    class Values(models.IntegerChoices):
+        not_interested = 1, _("Not Interested")
+        maybe = 2, _("Maybe")
+        want_to_see = 3, _("Want to See")
+        must_see = 4, _("Must See")
 
-    value = models.IntegerField(_("vote"), choices=VALUES)
+    value = models.IntegerField(_("vote"), choices=Values.choices)
 
     user = models.ForeignKey(
         "users.User",

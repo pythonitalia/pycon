@@ -128,9 +128,9 @@ export const VotingCard = ({
           {submissionData &&
             submissionData.sendVote.__typename === "SendVoteErrors" && (
               <>
-                {submissionData.sendVote.nonFieldErrors}{" "}
-                {submissionData.sendVote.validationSubmission}{" "}
-                {submissionData.sendVote.validationValue}
+                {submissionData.sendVote.errors.nonFieldErrors}{" "}
+                {submissionData.sendVote.errors.validationSubmission}{" "}
+                {submissionData.sendVote.errors.validationValue}
               </>
             )}
         </Text>

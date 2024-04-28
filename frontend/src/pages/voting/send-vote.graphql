@@ -8,9 +8,11 @@ mutation SendVote($input: SendVoteInput!) {
     }
 
     ... on SendVoteErrors {
-      validationValue: value
-      validationSubmission: submission
-      nonFieldErrors
+      errors {
+        validationValue: value
+        validationSubmission: submission
+        nonFieldErrors
+      }
     }
   }
 }
