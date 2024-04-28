@@ -60,7 +60,7 @@ export const NewsletterModal = ({ onClose }) => {
   const errorMessage = useTranslatedMessage("newsletter.error");
 
   const getErrors = (key: "validationEmail" | "nonFieldErrors") =>
-    (hasFormErrors && data.subscribeToNewsletter.errors[key]) || [];
+    (hasFormErrors && subscribeToNewsletter.errors[key]) || [];
 
   return (
     <Modal
