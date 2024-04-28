@@ -6,7 +6,7 @@ from api.context import Info
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 import strawberry
-from api.types import BaseErrorType, OperationResult
+from api.types import BaseErrorType
 from integrations.flodesk import SubscriptionResult as FlodeskSubscriptionResult
 
 logger = logging.getLogger(__name__)
@@ -50,7 +50,7 @@ class SubscribeToNewsletterInput:
 
 
 SubscribeToNewsletterOutput = Annotated[
-    Union[OperationResult, SubscribeToNewsletterErrors],
+    Union[NewsletterSubscribeResult, SubscribeToNewsletterErrors],
     strawberry.union(name="SubscribeToNewsletterOutput"),
 ]
 
@@ -58,7 +58,7 @@ SubscribeToNewsletterOutput = Annotated[
 @strawberry.mutation
 def subscribe_to_newsletter(
     info: Info, input: SubscribeToNewsletterInput
-) -> SubscribeToNewsletterErrors:
+) -> SubscribeToNewsletterOutput:
     if errors := input.validate():
         return errors
 

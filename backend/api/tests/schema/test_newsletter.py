@@ -37,39 +37,6 @@ def test_subscribe_to_newsletter(graphql_client):
         assert resp["data"]["subscribeToNewsletter"]["status"] == "SUBSCRIBED"
 
 
-@pytest.mark.skip
-@mark.django_db
-def test_unsubscribe_not_registered_mail_to_newsletter(graphql_client):
-    """If the mail is already unsubscribed (it's not in the subcription table)
-    return true anyway"""
-
-    email = "me@example.it"
-
-    variables = {"email": email}
-
-    query = """
-            mutation($email: String!) {
-                unsubscribeToNewsletter(input: {
-                    email: $email
-                }) {
-                __typename
-
-                ... on UnsubscribeToNewsletterErrors {
-                    email
-                }
-
-                ... on NewsletterSubscribeResult {
-                    status
-                }
-            }
-        }
-        """
-
-    resp = graphql_client.query(query, variables=variables)
-
-    assert resp["data"]["unsubscribeToNewsletter"]["status"] is True
-
-
 def _update_user_newsletter(graphql_client, user, open_to_newsletter):
     query = """
      mutation(
