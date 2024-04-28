@@ -39,7 +39,7 @@ class SubscribeToNewsletterInput:
         errors = SubscribeToNewsletterErrors()
 
         if not self.email:
-            errors.add_error("email", "Email cannot be empty")
+            errors.add_error("email", "Invalid email address")
         else:
             try:
                 validate_email(self.email)

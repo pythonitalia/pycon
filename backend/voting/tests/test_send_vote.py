@@ -8,7 +8,10 @@ from voting.tests.fixtures.vote import get_random_vote
 def _submit_vote(client, submission, **kwargs):
     value_index = kwargs.get("value_index", get_random_vote())
 
-    defaults = {"value": value_index, "submission": submission.hashid}
+    defaults = {
+        "value": value_index,
+        "submission": submission.hashid if submission else "jkby",
+    }
 
     variables = {**defaults, **kwargs}
 
@@ -91,6 +94,25 @@ def test_reject_vote_when_voting_is_not_open(
     assert resp["data"]["sendVote"]["__typename"] == "SendVoteErrors"
     assert resp["data"]["sendVote"]["errors"]["nonFieldErrors"] == [
         "The voting session is not open!"
+    ]
+
+
+def test_reject_vote_when_submission_is_invalid(
+    graphql_client, user, conference_factory, submission_factory, requests_mock
+):
+    graphql_client.force_login(user)
+
+    conference = conference_factory()
+    requests_mock.post(
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
+        json={"user_has_admission_ticket": True},
+    )
+
+    resp, variables = _submit_vote(graphql_client, None)
+
+    assert resp["data"]["sendVote"]["__typename"] == "SendVoteErrors"
+    assert resp["data"]["sendVote"]["errors"]["validationSubmission"] == [
+        "Invalid submission"
     ]
 
 

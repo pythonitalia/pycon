@@ -5,6 +5,7 @@ from pytest import mark
 
 from integrations.flodesk import SubscriptionResult
 from newsletters.models import Subscription
+import requests
 
 
 def test_subscribe_to_newsletter(graphql_client):
@@ -37,6 +38,81 @@ def test_subscribe_to_newsletter(graphql_client):
             == "NewsletterSubscribeResult"
         )
         assert resp["data"]["subscribeToNewsletter"]["status"] == "SUBSCRIBED"
+
+
+@pytest.mark.parametrize(
+    "exception",
+    [
+        requests.exceptions.HTTPError(response=requests.Response()),
+        ValueError("exception"),
+    ],
+)
+def test_subscribe_to_newsletter_fails_on_api_side(graphql_client, exception):
+    email = "me@example.it"
+    variables = {"email": email}
+
+    query = """
+        mutation($email: String!) {
+            subscribeToNewsletter(input: {
+                email: $email
+            }) {
+            __typename
+
+            ... on NewsletterSubscribeResult {
+                status
+            }
+        }
+    }
+    """
+
+    with patch(
+        "api.newsletters.mutations.subscribe_to_newsletter.subscribe"
+    ) as mock_subscription:
+        mock_subscription.side_effect = exception
+
+        resp = graphql_client.query(query, variables=variables)
+
+        assert (
+            resp["data"]["subscribeToNewsletter"]["__typename"]
+            == "NewsletterSubscribeResult"
+        )
+        assert resp["data"]["subscribeToNewsletter"]["status"] == "UNABLE_TO_SUBSCRIBE"
+
+
+@pytest.mark.parametrize("email", ["", "me-invalid"])
+def test_subscribe_to_newsletter_with_invalid_email_fails(graphql_client, email):
+    variables = {"email": email}
+
+    query = """
+        mutation($email: String!) {
+            subscribeToNewsletter(input: {
+                email: $email
+            }) {
+            __typename
+
+            ... on SubscribeToNewsletterErrors {
+                errors {
+                    email
+                }
+            }
+        }
+    }
+    """
+
+    with patch(
+        "api.newsletters.mutations.subscribe_to_newsletter.subscribe"
+    ) as mock_subscription:
+        mock_subscription.return_value = SubscriptionResult.SUBSCRIBED
+
+        resp = graphql_client.query(query, variables=variables)
+
+        assert (
+            resp["data"]["subscribeToNewsletter"]["__typename"]
+            == "SubscribeToNewsletterErrors"
+        )
+        assert resp["data"]["subscribeToNewsletter"]["errors"]["email"] == [
+            "Invalid email address"
+        ]
 
 
 def _update_user_newsletter(graphql_client, user, open_to_newsletter):

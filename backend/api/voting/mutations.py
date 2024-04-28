@@ -31,11 +31,11 @@ class SendVoteInput:
     def validate(self, info: Info, submission: Submission | None) -> SendVoteErrors:
         errors = SendVoteErrors()
 
+        if not submission:
+            return SendVoteErrors.with_error("submission", "Invalid submission")
+
         if self.value not in Vote.Values.values:
             errors.add_error("value", f"Value {self.value} is not a valid choice.")
-
-        if not submission:
-            errors.add_error("submission", "Invalid submission")
 
         if submission.conference_id and not submission.conference.is_voting_open:
             errors.add_error("non_field_errors", "The voting session is not open!")
