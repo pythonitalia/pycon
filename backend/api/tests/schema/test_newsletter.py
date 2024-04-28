@@ -25,7 +25,9 @@ def test_subscribe_to_newsletter(graphql_client):
     }
     """
 
-    with patch("api.newsletters.forms.subscribe") as mock_subscription:
+    with patch(
+        "api.newsletters.mutations.subscribe_to_newsletter.subscribe"
+    ) as mock_subscription:
         mock_subscription.return_value = SubscriptionResult.SUBSCRIBED
 
         resp = graphql_client.query(query, variables=variables)
