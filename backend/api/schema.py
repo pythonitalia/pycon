@@ -1,3 +1,4 @@
+from strawberry.schema_directives import OneOf
 import strawberry
 
 from api.participants.mutations import ParticipantMutations
@@ -48,6 +49,27 @@ class Query(
     pass
 
 
+@strawberry.input
+class ProposalResourceInput:
+    proposal_id: strawberry.ID
+
+
+@strawberry.input
+class GrantExpenseInput:
+    conference_id: strawberry.ID
+
+
+@strawberry.input(directives=[OneOf()])
+class TestOneOfInput:
+    proposal_resource: ProposalResourceInput | None = strawberry.UNSET
+    grant_expense: GrantExpenseInput | None = strawberry.UNSET
+
+
+@strawberry.mutation
+def test_mutation_input(input: TestOneOfInput) -> bool:
+    return True
+
+
 @strawberry.type
 class Mutation(
     SubmissionsMutations,
@@ -65,7 +87,7 @@ class Mutation(
     AssociationMembershipMutation,
     SponsorsMutation,
 ):
-    pass
+    test_mutation_input = test_mutation_input
 
 
 schema = strawberry.Schema(
