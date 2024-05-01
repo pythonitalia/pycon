@@ -131,6 +131,10 @@ resource "aws_ecs_task_definition" "pretix_service" {
         {
           name  = "PRETIX_PRETIX_URL",
           value = "https://tickets.pycon.it/"
+        },
+        {
+          name  = "PRETIX_PRETIX_TRUST_X_FORWARDED_PROTO",
+          value = "true"
         }
       ]
       portMappings = [
