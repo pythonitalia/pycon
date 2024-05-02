@@ -3,6 +3,7 @@ import threading
 
 import redis
 from django.db.models import Q
+from email_speakers.models import EmailSpeaker, EmailSpeakerRecipient
 from google_api.exceptions import NoGoogleCloudQuotaLeftError
 from googleapiclient.errors import HttpError
 from google_api.sdk import youtube_videos_insert, youtube_videos_set_thumbnail
@@ -191,6 +192,67 @@ def send_speaker_voucher_email(speaker_voucher_id):
 
     speaker_voucher.voucher_email_sent_at = timezone.now()
     speaker_voucher.save()
+
+
+@app.task
+def send_speaker_communication_email_v2(
+    *,
+    email_speaker_id,
+    user_id,
+    is_test=False,
+):
+    user = User.objects.get(id=user_id)
+    email_speaker = EmailSpeaker.objects.get(id=email_speaker_id)
+    conference = email_speaker.conference
+
+    if (
+        not is_test
+        and email_speaker.send_only_to_speakers_without_ticket
+        and user_has_admission_ticket(
+            email=user.email,
+            event_organizer=conference.pretix_organizer_id,
+            event_slug=conference.pretix_event_id,
+        )
+    ):
+        return
+
+    email_speaker_recipient, _ = EmailSpeakerRecipient.objects.get_or_create(
+        email_speaker=email_speaker,
+        user=user,
+        is_test=is_test,
+    )
+
+    if not is_test and email_speaker_recipient.is_sent:
+        logger.warning(
+            f"Skipping email to speaker_recipient_id={email_speaker_recipient.id} as it was already sent"
+        )
+        return
+
+    try:
+        send_email(
+            template=EmailTemplate.SPEAKER_COMMUNICATION,
+            to=user.email,
+            subject=f"[{conference.name.localize('en')}] {email_speaker.subject}",
+            variables={
+                "firstname": get_name(user, "there"),
+                "body": mark_safe(email_speaker.body.replace("\n", "<br />")),
+            },
+            reply_to=[
+                settings.SPEAKERS_EMAIL_ADDRESS,
+            ]
+            if settings.SPEAKERS_EMAIL_ADDRESS
+            else [],
+        )
+
+        email_speaker_recipient.status = EmailSpeakerRecipient.Status.sent
+        email_speaker_recipient.sent_at = timezone.now()
+        email_speaker_recipient.save(update_fields=["status", "sent_at"])
+    except Exception:
+        logger.exception(
+            "Error sending email to speaker_recipient_id=%s", email_speaker_recipient.id
+        )
+        email_speaker_recipient.status = EmailSpeakerRecipient.Status.failed
+        email_speaker_recipient.save(update_fields=["status"])
 
 
 @app.task

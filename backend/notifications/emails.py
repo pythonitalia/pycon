@@ -18,7 +18,7 @@ def send_email(
     backend = get_email_backend(
         settings.PYTHONIT_EMAIL_BACKEND, environment=settings.ENVIRONMENT
     )
-    backend.send_email(
+    return backend.send_email(
         template=template,
         from_=from_,
         to=to,

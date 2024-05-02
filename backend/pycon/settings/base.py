@@ -122,6 +122,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "integrations.apps.IntegrationsConfig",
     "healthchecks.apps.HealthchecksConfig",
+    "email_speakers.apps.EmailSpeakersConfig",
 ]
 
 MIDDLEWARE = [
