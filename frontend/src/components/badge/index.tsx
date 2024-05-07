@@ -173,7 +173,7 @@ export const Badge = ({
         >
           <div className="grid grid-cols-[13px_repeat(3,50px)] bg-coral gap-[2px]">
             <div className=" flex items-center justify-center text-[#FFFFFF]">
-              <div className="text-[8px] py-2 uppercase font-bold  whitespace-nowrap	leading-[0.9]">
+              <div className="text-[8px] py-2 pl-[3px] uppercase font-bold  whitespace-nowrap	leading-[0.9]">
                 L<br />u<br />n<br />c<br />h
               </div>
             </div>
