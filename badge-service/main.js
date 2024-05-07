@@ -1,8 +1,8 @@
 require("dotenv").config();
 const chunk = require("lodash.chunk");
 const puppeteer = require("puppeteer");
-const assert = require("assert");
-const fs = require("fs");
+const assert = require("node:assert");
+const fs = require("node:fs");
 const archiver = require("archiver");
 
 const EMPTY_BADGES_COUNT = {
@@ -16,7 +16,7 @@ const EMPTY_BADGES_COUNT = {
 
 const getAllQuestions = async () => {
   const request = await fetch(
-    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2023/questions/",
+    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2024/questions/",
     {
       headers: {
         Authorization: `Token ${process.env.PRETIX_API_TOKEN}`,
@@ -28,7 +28,7 @@ const getAllQuestions = async () => {
 };
 
 const getConferenceRoleForTicketData = async (orderPosition) => {
-  const request = await fetch("https://beri.python.it/graphql", {
+  const request = await fetch("https://admin.pycon.it/graphql", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -46,7 +46,7 @@ const getConferenceRoleForTicketData = async (orderPosition) => {
         }`,
       variables: {
         ticketData: JSON.stringify(orderPosition),
-        conferenceCode: "pycon2023",
+        conferenceCode: "pycon2024",
       },
     }),
   });
@@ -56,7 +56,7 @@ const getConferenceRoleForTicketData = async (orderPosition) => {
 
 const getAllOrderPositions = async () => {
   let next =
-    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2023/checkinlists/24/positions/";
+    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2024/checkinlists/44/positions/";
   const positions = [];
   while (next) {
     const request = await fetch(next, {

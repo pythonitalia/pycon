@@ -25,7 +25,20 @@ export const BADGE_INSIDE_HEIGHT_PX = BADGE_HEIGHT_PX - CUT_SPACE_PX;
 
 const BadgePage = () => {
   // name, pronouns, tagline, role, hashedTicketId
-  const [badgesData, setBadgesData] = useState([{}, {}, {}, {}]);
+  const [badgesData, setBadgesData] = useState([
+    {
+      side: "front",
+    },
+    {
+      side: "back",
+    },
+    {
+      side: "front",
+    },
+    {
+      side: "back",
+    },
+  ]);
   useEffect(() => {
     document.body.classList.remove("bg-milk");
     (window as any).setBadgeData = (badgeData) => {
