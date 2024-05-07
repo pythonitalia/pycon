@@ -93,7 +93,7 @@ export const Badge = ({
             width: "113px",
             height: "34px",
             marginBottom: "20px",
-            marginTop: "30px",
+            marginTop: "40px",
           }}
           src="https://pythonit-email-assets.s3.eu-central-1.amazonaws.com/logo-pycon-2024.png"
         />
