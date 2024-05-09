@@ -12,13 +12,13 @@ import { LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import { SnakeWithPopcorn } from "@python-italia/pycon-styleguide/illustrations";
 import { isAfter, isBefore, parseISO } from "date-fns";
 import { zonedTimeToUtc } from "date-fns-tz";
-import React from "react";
+import type React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 
-import { TalkQueryResult } from "~/types";
+import type { TalkQueryResult } from "~/types";
 import { ParticipantInfoSection } from "../participant-info-section";
 import { EventTag } from "./event-tag";
 import { Sidebar } from "./sidebar";
@@ -87,7 +87,7 @@ export const ScheduleEventDetail = ({
     minute: "2-digit",
     hour12: false,
   });
-  const isLive = isEventLive(startTime, endTime);
+  const isLive = true;
 
   return (
     <>
