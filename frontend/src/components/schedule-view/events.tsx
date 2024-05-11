@@ -10,7 +10,7 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import { Color } from "@python-italia/pycon-styleguide/dist/types";
+import type { Color } from "@python-italia/pycon-styleguide/dist/types";
 import { HeartIcon } from "@python-italia/pycon-styleguide/icons";
 import clsx from "clsx";
 import { addMinutes, parseISO } from "date-fns";
@@ -23,14 +23,18 @@ import { useCurrentLanguage } from "~/locale/context";
 import { createHref } from "../link";
 import { EventTag } from "../schedule-event-detail/event-tag";
 import {
-  Item,
+  type Item,
   ItemTypes,
-  Room,
-  Slot,
+  type Room,
+  type Slot,
   Submission as SubmissionType,
 } from "./types";
 
 export const getItemUrl = (item: Item) => {
+  if (item.link) {
+    return item.link;
+  }
+
   if (
     item.type === "training" ||
     item.type === "talk" ||
@@ -87,6 +91,9 @@ export const ScheduleEntry = ({
         href: createHref({
           path: itemUrl,
           locale: language,
+          external:
+            item.link?.startsWith("http://") ||
+            item.link?.startsWith("https://"),
           params: {
             slug: item.slug,
           },
@@ -256,7 +263,7 @@ export const ScheduleEntry = ({
                           image={speaker.participant?.photo}
                           letter={speaker.fullName}
                           letterBackgroundColor={getAvatarBackgroundColor(
-                            parseInt(item.id, 10),
+                            Number.parseInt(item.id, 10),
                           )}
                         />
                       ))}
