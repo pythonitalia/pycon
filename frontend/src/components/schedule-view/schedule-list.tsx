@@ -6,7 +6,7 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import { Color } from "@python-italia/pycon-styleguide/dist/types";
+import type { Color } from "@python-italia/pycon-styleguide/dist/types";
 import { HeartIcon } from "@python-italia/pycon-styleguide/icons";
 import clsx from "clsx";
 import { addMinutes, parseISO } from "date-fns";
@@ -20,7 +20,7 @@ import { isItemVisible } from ".";
 import { createHref } from "../link";
 import { EventTag } from "../schedule-event-detail/event-tag";
 import { getItemBg, getItemUrl } from "./events";
-import { Item, Room, Slot } from "./types";
+import type { Item, Room, Slot } from "./types";
 
 type Props = {
   slots: Slot[];
@@ -118,6 +118,9 @@ const ScheduleItem = ({
         href: createHref({
           path: itemUrl,
           locale: language,
+          external:
+            item.link?.startsWith("http://") ||
+            item.link?.startsWith("https://"),
           params: {
             slug: item.slug,
           },
