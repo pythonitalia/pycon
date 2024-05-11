@@ -177,6 +177,7 @@ def test_fetch_custom_event(simple_schedule_item, graphql_client, user):
 
     schedule_item = simple_schedule_item
     schedule_item.type = ScheduleItem.TYPES.custom
+    schedule_item.link_to = "https://example.com"
     schedule_item.save()
 
     response = graphql_client.query(
@@ -186,6 +187,7 @@ def test_fetch_custom_event(simple_schedule_item, graphql_client, user):
                     userHasSpot
                     hasSpacesLeft
                     spacesLeft
+                    linkTo
                 }
             }
         }""",
@@ -196,6 +198,7 @@ def test_fetch_custom_event(simple_schedule_item, graphql_client, user):
         "userHasSpot": False,
         "hasSpacesLeft": True,
         "spacesLeft": 0,
+        "linkTo": "https://example.com",
     }
 
 
