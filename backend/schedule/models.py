@@ -230,7 +230,7 @@ class ScheduleItem(TimeStampedModel):
         verbose_name=_("keynote"),
         related_name="schedule_items",
     )
-    link = models.URLField(_("link"), blank=True, default="")
+    link_to = models.URLField(_("link to"), blank=True, default="")
 
     image = models.ImageField(
         _("image"), null=True, blank=True, upload_to="schedule_items"
