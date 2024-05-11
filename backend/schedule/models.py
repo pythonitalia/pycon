@@ -173,6 +173,7 @@ class ScheduleItem(TimeStampedModel):
         ("panel", _("Panel")),
         ("registration", _("Registration")),
         ("announcements", _("Announcements")),
+        ("recruiting", _("Recruiting")),
         ("break", _("Break")),
         ("social", _("Social")),
         ("custom", _("Custom")),
@@ -229,6 +230,7 @@ class ScheduleItem(TimeStampedModel):
         verbose_name=_("keynote"),
         related_name="schedule_items",
     )
+    link = models.URLField(_("link"), blank=True, default="")
 
     image = models.ImageField(
         _("image"), null=True, blank=True, upload_to="schedule_items"
