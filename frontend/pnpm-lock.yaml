@@ -51,8 +51,8 @@ importers:
         specifier: ^3.3.2
         version: 3.3.7(graphql-tag@2.12.6(graphql@16.8.1))(graphql@16.8.1)
       '@python-italia/pycon-styleguide':
-        specifier: 0.1.190
-        version: 0.1.190(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.2.0(react@18.2.0))(react-use@17.5.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(typescript@4.9.5)
+        specifier: 0.1.191
+        version: 0.1.191(@emotion/is-prop-valid@0.8.8)(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.2.0(react@18.2.0))(react-use@17.5.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(typescript@4.9.5)
       '@sentry/nextjs':
         specifier: ^7.107.0
         version: 7.107.0(next@14.0.4(@babel/core@7.23.9)(babel-plugin-macros@3.1.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
@@ -145,7 +145,7 @@ importers:
         version: 6.6.2(react@18.2.0)(typescript@4.9.5)
       react-intl-formatted-duration:
         specifier: ^4.0.0
-        version: 4.0.0(intl-messageformat@10.5.11)(react-intl@6.6.2(react@18.2.0)(typescript@4.9.5))(react@18.2.0)
+        version: 4.0.0(intl-messageformat@10.5.12)(react-intl@6.6.2(react@18.2.0)(typescript@4.9.5))(react@18.2.0)
       react-qr-code:
         specifier: ^2.0.12
         version: 2.0.12(react@18.2.0)
@@ -839,6 +839,14 @@ packages:
       typescript:
         optional: true
 
+  '@formatjs/intl@2.10.2':
+    resolution: {integrity: sha512-raPGWr3JRv3neXV78SqPFrGC05fIbhhNzVghHNxFde27ls2KkXiMhtP7HBybjGpikVSjjhdhaZto+4p1vmm9bQ==}
+    peerDependencies:
+      typescript: ^4.7 || 5
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   '@graphql-codegen/add@3.2.3':
     resolution: {integrity: sha512-sQOnWpMko4JLeykwyjFTxnhqjd/3NOG2OyMuvK76Wnnwh8DRrNf2VEs2kmSvLl7MndMlOj7Kh5U154dVcvhmKQ==}
     peerDependencies:
@@ -1256,8 +1264,8 @@ packages:
   '@python-italia/eslint-config@1.0.13':
     resolution: {integrity: sha512-5H+vykXms8OnVBs4nn6Yu5n1+/EfmJObIhVneMLbIwBPvzsGs6rtnSw3Fnu0e+rZip8BYj2l7QUBn82Ohvxo2Q==}
 
-  '@python-italia/pycon-styleguide@0.1.190':
-    resolution: {integrity: sha512-L3SpoEBpf7o8y81cdsESisZVn92konUPwTJCaBSP3wcUNa0etdGm5+VYtjHEStJ93j/9UGh12LNSxxlg6Ps/HQ==}
+  '@python-italia/pycon-styleguide@0.1.191':
+    resolution: {integrity: sha512-4B6InL8qnI07IKD1Adszy1fFbVWPWqGd+LR1CATiaz0fAO+ehAw2DBsaraQUCXI/5g5I1ZZ2kvBjqmRdRO/Uog==}
     peerDependencies:
       clsx: ^1.1.1
       date-fns: ^2.28.0
@@ -2793,6 +2801,20 @@ packages:
       react-dom:
         optional: true
 
+  framer-motion@11.1.9:
+    resolution: {integrity: sha512-flECDIPV4QDNcOrDafVFiIazp8X01HFpzc01eDKJsdNH/wrATcYydJSH9JbPWMS8UD5lZlw+J1sK8LG2kICgqw==}
+    peerDependencies:
+      '@emotion/is-prop-valid': '*'
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    peerDependenciesMeta:
+      '@emotion/is-prop-valid':
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
 
@@ -3065,6 +3087,9 @@ packages:
 
   intl-messageformat@10.5.11:
     resolution: {integrity: sha512-eYq5fkFBVxc7GIFDzpFQkDOZgNayNTQn4Oufe8jw6YY6OHVw70/4pA3FyCsQ0Gb2DnvEJEMmN2tOaXUGByM+kg==}
+
+  intl-messageformat@10.5.12:
+    resolution: {integrity: sha512-izl0uxhy/melhw8gP2r8pGiVieviZmM4v5Oqx3c1/R7g9cwER2smmGfSjcIsp8Y3Q53bfciL/gkxacJRx/dUvg==}
 
   intl-unofficial-duration-unit-format@3.0.0:
     resolution: {integrity: sha512-BFelPGPIboTjbe56JfLFQ5Jfi/lYsk1Dj6Jf1TesIBHqUGxJaYnRa3IYt8L1ak7xQdH0/8sYjgs53Id+VP4lsw==}
@@ -4062,6 +4087,15 @@ packages:
 
   react-intl@6.6.2:
     resolution: {integrity: sha512-IpW2IkLtGENSFlX3vfH11rjuCIsW0VyjT0Q1pPKMZPtT2z1FxLt4weFT5Ezti2TScT1xiyb3aQBFth9EB7jzAg==}
+    peerDependencies:
+      react: ^16.6.0 || 17 || 18
+      typescript: ^4.7 || 5
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  react-intl@6.6.6:
+    resolution: {integrity: sha512-dKXQNUrhZTlCp8uelYW8PHiM4saNKyLmHCfsJYWK0N/kZ/Ien35wjPHB8x9yQcTJbeN/hBOmb4x16iKUrdL9MA==}
     peerDependencies:
       react: ^16.6.0 || 17 || 18
       typescript: ^4.7 || 5
@@ -5674,6 +5708,18 @@ snapshots:
     optionalDependencies:
       typescript: 4.9.5
 
+  '@formatjs/intl@2.10.2(typescript@4.9.5)':
+    dependencies:
+      '@formatjs/ecma402-abstract': 1.18.2
+      '@formatjs/fast-memoize': 2.2.0
+      '@formatjs/icu-messageformat-parser': 2.7.6
+      '@formatjs/intl-displaynames': 6.6.6
+      '@formatjs/intl-listformat': 7.5.5
+      intl-messageformat: 10.5.12
+      tslib: 2.6.2
+    optionalDependencies:
+      typescript: 4.9.5
+
   '@graphql-codegen/add@3.2.3(graphql@16.8.1)':
     dependencies:
       '@graphql-codegen/plugin-helpers': 3.1.2(graphql@16.8.1)
@@ -6469,17 +6515,18 @@ snapshots:
       - next
       - supports-color
 
-  '@python-italia/pycon-styleguide@0.1.190(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.2.0(react@18.2.0))(react-use@17.5.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(typescript@4.9.5)':
+  '@python-italia/pycon-styleguide@0.1.191(@emotion/is-prop-valid@0.8.8)(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.2.0(react@18.2.0))(react-use@17.5.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(typescript@4.9.5)':
     dependencies:
       clsx: 1.2.1
       date-fns: 2.30.0
-      framer-motion: 10.12.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      framer-motion: 11.1.9(@emotion/is-prop-valid@0.8.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      react-intl: 6.6.2(react@18.2.0)(typescript@4.9.5)
+      react-intl: 6.6.6(react@18.2.0)(typescript@4.9.5)
       react-text-transition: 1.3.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react-use: 17.5.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
     transitivePeerDependencies:
+      - '@emotion/is-prop-valid'
       - typescript
 
   '@react-dnd/asap@4.0.1': {}
@@ -8477,6 +8524,14 @@ snapshots:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
+  framer-motion@11.1.9(@emotion/is-prop-valid@0.8.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+    dependencies:
+      tslib: 2.6.2
+    optionalDependencies:
+      '@emotion/is-prop-valid': 0.8.8
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+
   fs.realpath@1.0.0: {}
 
   fsevents@2.3.3:
@@ -8781,9 +8836,16 @@ snapshots:
       '@formatjs/icu-messageformat-parser': 2.7.6
       tslib: 2.6.2
 
-  intl-unofficial-duration-unit-format@3.0.0(intl-messageformat@10.5.11):
+  intl-messageformat@10.5.12:
     dependencies:
-      intl-messageformat: 10.5.11
+      '@formatjs/ecma402-abstract': 1.18.2
+      '@formatjs/fast-memoize': 2.2.0
+      '@formatjs/icu-messageformat-parser': 2.7.6
+      tslib: 2.6.2
+
+  intl-unofficial-duration-unit-format@3.0.0(intl-messageformat@10.5.12):
+    dependencies:
+      intl-messageformat: 10.5.12
 
   invariant@2.2.4:
     dependencies:
@@ -9942,10 +10004,10 @@ snapshots:
       prop-types: 15.8.1
       react: 18.2.0
 
-  react-intl-formatted-duration@4.0.0(intl-messageformat@10.5.11)(react-intl@6.6.2(react@18.2.0)(typescript@4.9.5))(react@18.2.0):
+  react-intl-formatted-duration@4.0.0(intl-messageformat@10.5.12)(react-intl@6.6.2(react@18.2.0)(typescript@4.9.5))(react@18.2.0):
     dependencies:
-      intl-messageformat: 10.5.11
-      intl-unofficial-duration-unit-format: 3.0.0(intl-messageformat@10.5.11)
+      intl-messageformat: 10.5.12
+      intl-unofficial-duration-unit-format: 3.0.0(intl-messageformat@10.5.12)
       react: 18.2.0
       react-intl: 6.6.2(react@18.2.0)(typescript@4.9.5)
 
@@ -9960,6 +10022,22 @@ snapshots:
       '@types/react': 17.0.59
       hoist-non-react-statics: 3.3.2
       intl-messageformat: 10.5.11
+      react: 18.2.0
+      tslib: 2.6.2
+    optionalDependencies:
+      typescript: 4.9.5
+
+  react-intl@6.6.6(react@18.2.0)(typescript@4.9.5):
+    dependencies:
+      '@formatjs/ecma402-abstract': 1.18.2
+      '@formatjs/icu-messageformat-parser': 2.7.6
+      '@formatjs/intl': 2.10.2(typescript@4.9.5)
+      '@formatjs/intl-displaynames': 6.6.6
+      '@formatjs/intl-listformat': 7.5.5
+      '@types/hoist-non-react-statics': 3.3.1
+      '@types/react': 17.0.59
+      hoist-non-react-statics: 3.3.2
+      intl-messageformat: 10.5.12
       react: 18.2.0
       tslib: 2.6.2
     optionalDependencies:
@@ -9992,7 +10070,7 @@ snapshots:
 
   react-spring@8.0.27(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
-      '@babel/runtime': 7.23.9
+      '@babel/runtime': 7.24.4
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
