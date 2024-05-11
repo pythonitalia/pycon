@@ -20,7 +20,7 @@ fragment ScheduleSlotFragment on ScheduleSlot {
     userHasSpot
     hasSpacesLeft
     spacesLeft
-    link
+    linkTo
 
     audienceLevel {
       id

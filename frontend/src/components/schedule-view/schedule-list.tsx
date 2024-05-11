@@ -119,8 +119,8 @@ const ScheduleItem = ({
           path: itemUrl,
           locale: language,
           external:
-            item.link?.startsWith("http://") ||
-            item.link?.startsWith("https://"),
+            item.linkTo?.startsWith("http://") ||
+            item.linkTo?.startsWith("https://"),
           params: {
             slug: item.slug,
           },
