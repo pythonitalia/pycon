@@ -145,8 +145,6 @@ const Hills3 = ({ isNight }: { isNight: boolean }) => {
 const Hills4 = ({ isNight }: { isNight: boolean }) => {
 	const fill = isNight ? "#223F50" : "#33BC8B";
 
-	console.log("hill", fill);
-
 	return (
 		<svg
 			width="7006"
