@@ -33,7 +33,7 @@ class ScheduleItem:
         "AudienceLevel", strawberry.lazy("api.conferences.types")
     ] | None
     youtube_video_id: str | None
-    link: str
+    link_to: str
 
     abstract: str
     elevator_pitch: str

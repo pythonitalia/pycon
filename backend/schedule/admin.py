@@ -344,7 +344,7 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                     "description",
                     "submission",
                     "keynote",
-                    "link",
+                    "link_to",
                     "slido_url",
                 )
             },
