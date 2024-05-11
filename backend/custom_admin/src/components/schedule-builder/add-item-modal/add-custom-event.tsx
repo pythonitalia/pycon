@@ -150,6 +150,7 @@ const CustomByHand = ({ onCreate }) => {
           <option value="announcements">Announcements</option>
           <option value="break">Break</option>
           <option value="social">Social</option>
+          <option value="recruiting">Recruiting</option>
           <option value="custom">Custom</option>
         </select>
       </div>
