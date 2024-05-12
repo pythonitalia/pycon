@@ -1,5 +1,5 @@
 import { Tag } from "@python-italia/pycon-styleguide";
-import { Color } from "@python-italia/pycon-styleguide/dist/types";
+import type { Color } from "@python-italia/pycon-styleguide/dist/types";
 
 type Props = {
   type: string;
@@ -15,6 +15,7 @@ export const EventTag = ({ type }: Props) => (
     {type === "announcements" && "Announcements"}
     {type === "registration" && "Registration"}
     {type === "break" && "Break"}
+    {type === "recruiting" && "Recruiting"}
   </Tag>
 );
 
@@ -31,6 +32,7 @@ export const getTagColor = (type: string): Color => {
       return "caramel";
     case "panel":
       return "blue";
+    case "recruiting":
     case "announcements":
     case "registration":
       return "purple";
