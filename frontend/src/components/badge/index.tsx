@@ -193,7 +193,7 @@ export const Badge = ({
             <div className="p-[2px] bg-white">
               <QRCode
                 className="shrink-0"
-                value={`https://pycon.it/b/${hashedTicketId}`}
+                value={`https://2024.pycon.it/b/${hashedTicketId}`}
                 size={70}
               />
             </div>
