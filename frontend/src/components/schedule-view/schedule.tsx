@@ -8,7 +8,7 @@ import useSyncScroll from "react-use-sync-scroll";
 import { isItemVisible } from ".";
 import { ScheduleEntry } from "./events";
 import { Placeholder } from "./placeholder";
-import { Item, Room, Slot } from "./types";
+import type { Item, Room, Slot } from "./types";
 
 const getSlotSize = (slot: Slot) => {
   if (["FREE_TIME", "BREAK"].includes(slot.type)) {
@@ -24,7 +24,7 @@ const formatHour = (value: string) => {
 };
 
 const convertHoursToMinutes = (value: string) => {
-  const [hour, minutes] = value.split(":").map((x) => parseInt(x, 10));
+  const [hour, minutes] = value.split(":").map((x) => Number.parseInt(x, 10));
 
   return hour * 60 + minutes;
 };
@@ -65,7 +65,7 @@ const getRowEnd = ({
       .slice(currentSlotIndex, endingSlotIndex + 1)
       .reduce((acc, s) => acc + getSlotSize(s), 0);
     return {
-      itemRowEnd: Math.floor(sizeToNextSlot * 0.9),
+      itemRowEnd: Math.floor(sizeToNextSlot * 0.93),
       sameSlotItem: true,
     };
   }
@@ -366,6 +366,7 @@ export const Schedule = ({
                       style={
                         {
                           position: "relative",
+                          zIndex: 99,
                           ...entryPosition,
                         } as any
                       }
