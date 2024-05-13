@@ -349,6 +349,8 @@ export const Schedule = ({
                       rowStart,
                     },
                   );
+                  const isCustomItem =
+                    item.type === "custom" || item.type === "break";
 
                   return (
                     <ScheduleEntry
@@ -366,7 +368,7 @@ export const Schedule = ({
                       style={
                         {
                           position: "relative",
-                          zIndex: 99,
+                          zIndex: isCustomItem ? 0 : 30,
                           ...entryPosition,
                         } as any
                       }
