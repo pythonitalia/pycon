@@ -6,10 +6,10 @@ const fs = require("node:fs");
 const archiver = require("archiver");
 
 const EMPTY_BADGES_COUNT = {
-  ATTENDEE: 100,
+  ATTENDEE: 70,
   SPEAKER: 25,
   STAFF: 20,
-  SPONSOR: 20,
+  SPONSOR: 30,
   KEYNOTER: 5,
   DJANGO_GIRLS: 25,
 };
