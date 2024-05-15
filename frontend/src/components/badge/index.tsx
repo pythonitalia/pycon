@@ -171,29 +171,27 @@ export const Badge = ({
             justifyContent: "space-between",
           }}
         >
-          {side === "front" ? (
+          {side === "front" && (
             <div className="grid grid-cols-[13px_repeat(3,50px)] bg-coral gap-[2px]">
               <div className=" flex items-center justify-center text-[#FFFFFF]">
                 <div className="text-[8px] py-2 pl-[3px] uppercase font-bold  whitespace-nowrap	leading-[0.9]">
                   L<br />u<br />n<br />c<br />h
                 </div>
               </div>
-              {[1, 2, 3].map((number) => (
+              {[23, 24, 25].map((number) => (
                 <div key={number} className={clsx("bg-[#FFFFFF] relative")}>
-                  <span className="absolute top-0 left-[5px]  text-[#EEEEEE] font-bold">
+                  <span className="absolute top-0 left-[5px]  text-[#b5b5b5] font-bold">
                     {number}
                   </span>
                 </div>
               ))}
             </div>
-          ) : (
-            <div />
           )}
           {!empty && side === "front" && (
             <div className="p-[2px] bg-white">
               <QRCode
                 className="shrink-0"
-                value={`https://2024.pycon.it/b/${hashedTicketId}`}
+                value={`https://pycon.it/b/${hashedTicketId}`}
                 size={70}
               />
             </div>
