@@ -157,7 +157,7 @@ export const Badge = ({
             }}
             className="!text-[13px] [&>span]:text-[13px]"
           >
-            <Balancer>{tagline.substring(0, 200)}</Balancer>
+            <Balancer>{tagline.substring(0, 400)}</Balancer>
           </div>
         </div>
         <div
