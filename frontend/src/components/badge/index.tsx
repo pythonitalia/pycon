@@ -194,12 +194,12 @@ export const Badge = ({
               />
             </div>
           )}
-          {/*(empty || side === "back") && (
+          {(empty || side === "back") && (
             <div className="p-[2px] relative">
               <div className="w-[70px] h-[70px]" />
-              <SnakeLongNeck className="w-[70px] top-[-30px] absolute" />
+              <div />
             </div>
-          )*/}
+          )}
         </div>
       </div>
     </div>
