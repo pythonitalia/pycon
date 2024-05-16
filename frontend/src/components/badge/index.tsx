@@ -154,12 +154,10 @@ export const Badge = ({
             style={{
               fontWeight: 400,
               color: "#FCE8DE",
-              marginRight: "25px",
-              maxWidth: "153px",
             }}
             className="!text-[13px] [&>span]:text-[13px]"
           >
-            <Balancer>{tagline.substring(0, 400)}</Balancer>
+            <Balancer>{tagline.substring(0, 200)}</Balancer>
           </div>
         </div>
         <div
@@ -196,12 +194,12 @@ export const Badge = ({
               />
             </div>
           )}
-          {(empty || side === "back") && (
+          {/*(empty || side === "back") && (
             <div className="p-[2px] relative">
               <div className="w-[70px] h-[70px]" />
               <SnakeLongNeck className="w-[70px] top-[-30px] absolute" />
             </div>
-          )}
+          )*/}
         </div>
       </div>
     </div>

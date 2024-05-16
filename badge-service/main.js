@@ -66,6 +66,9 @@ const getAllOrderPositions = async () => {
     });
     const response = await request.json();
     next = response.next;
+    if (next) {
+      next = next.replace("http://", "https://");
+    }
 
     positions.push(...response.results);
   }
