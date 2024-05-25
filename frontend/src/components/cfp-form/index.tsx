@@ -1,9 +1,10 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { ApolloError } from "@apollo/client";
+import type { ApolloError } from "@apollo/client";
 import { Button, Link } from "@python-italia/pycon-styleguide";
-import React, { Fragment, useEffect } from "react";
+import type React from "react";
+import { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import {
@@ -21,9 +22,9 @@ import {
 
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  MultiLingualInput as MultiLingualInputType,
-  SendSubmissionMutation,
-  UpdateSubmissionMutation,
+  type MultiLingualInput as MultiLingualInputType,
+  type SendSubmissionMutation,
+  type UpdateSubmissionMutation,
   useCfpFormQuery,
   useParticipantDataQuery,
 } from "~/types";
@@ -551,7 +552,7 @@ export const CfpForm = ({
           description={<FormattedMessage id="cfp.speakerPhotoDescription" />}
           errors={getErrors("validationSpeakerPhoto")}
         >
-          <FileInput {...raw("speakerPhoto")} />
+          <FileInput {...raw("speakerPhoto")} purpose="participant_avatar" />
         </InputWrapper>
 
         <InputWrapper

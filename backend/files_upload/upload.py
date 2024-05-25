@@ -3,8 +3,10 @@ from datetime import datetime, timedelta
 
 from azure.storage.blob import BlobSasPermissions, generate_blob_sas
 
-from blob.config import _build_url, get_account_key, get_account_name
-from blob.enum import BlobContainer
+from files_upload.models import File
+from users.models import User
+from files_upload.config import _build_url, get_account_key, get_account_name
+from files_upload.enum import BlobContainer
 
 
 @dataclass(frozen=True)
@@ -45,3 +47,16 @@ def create_blob_upload(container: BlobContainer, blob_name: str) -> BlobUpload:
             blob=tmp_blob_name,
         ),
     )
+
+
+def check_user_can_upload(user: User, purpose: File.Purpose) -> bool:
+    if not user.is_authenticated:
+        return False
+
+    match purpose:
+        case File.Purpose.PARTICIPANT_AVATAR:
+            return True
+        case File.Purpose.PROPOSAL_RESOURCE:
+            return True
+        case _:
+            return False

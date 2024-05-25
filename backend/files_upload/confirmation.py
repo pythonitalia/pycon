@@ -1,8 +1,8 @@
 from azure.storage.blob import BlobServiceClient
 
-from blob.config import get_account_key, get_account_url
-from blob.enum import BlobContainer
-from blob.url_parsing import parse_azure_storage_url, verify_azure_storage_url
+from files_upload.config import get_account_key, get_account_url
+from files_upload.enum import BlobContainer
+from files_upload.url_parsing import parse_azure_storage_url, verify_azure_storage_url
 
 
 def confirm_blob_upload_usage(temporary_upload_url: str, blob_name: str) -> str:

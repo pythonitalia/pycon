@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
-from blob.config import AZURE_STORAGE_URL_PARSE, get_account_name
-from blob.enum import BlobContainer
+from files_upload.config import AZURE_STORAGE_URL_PARSE, get_account_name
+from files_upload.enum import BlobContainer
 
 
 @dataclass(frozen=True)

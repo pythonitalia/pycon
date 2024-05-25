@@ -1,9 +1,12 @@
-import React, { ChangeEvent, useRef, useState } from "react";
+import React, { type ChangeEvent, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { getTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
-import { useGenerateParticipantAvatarUploadUrlMutation } from "~/types";
+import {
+  useGenerateParticipantAvatarUploadUrlMutation,
+  useUploadFileMutation,
+} from "~/types";
 
 import { Alert } from "../alert";
 import { ErrorsList } from "../errors-list";
@@ -16,13 +19,24 @@ export const FileInput = ({
   onBlur,
   value,
   errors = null,
+  purpose,
+}: {
+  onChange: (value: string) => void;
+  name: string;
+  onBlur: () => void;
+  value: string;
+  errors?: string[];
+  purpose: "participant_avatar" | "proposal_resource";
 }) => {
+  const conferenceCode = process.env.conferenceCode;
   const fileInput = useRef<HTMLInputElement>();
   const canvas = useRef<HTMLCanvasElement>();
   const language = useCurrentLanguage();
 
   const [generateParticipantAvatarUploadUrl] =
     useGenerateParticipantAvatarUploadUrlMutation();
+
+  const [uploadFile] = useUploadFileMutation();
 
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -84,32 +98,49 @@ export const FileInput = ({
   const startUploadFlow = async (file) => {
     setIsUploading(true);
 
-    const { data, errors } = await generateParticipantAvatarUploadUrl();
+    let input = {};
+    console.log("purpose", purpose);
+    if (purpose === "participant_avatar") {
+      input = {
+        participantAvatar: {
+          conferenceCode,
+        },
+      };
+    }
 
-    if (errors) {
+    const { data, errors } = await uploadFile({
+      variables: {
+        input,
+      },
+    });
+
+    const response = data.uploadFile;
+
+    if (errors || response.__typename !== "FileUploadRequest") {
       setError(getTranslatedMessage("fileInput.uploadFailed", language));
       return;
     }
 
-    const uploadUrl = data.generateParticipantAvatarUploadUrl.uploadUrl;
+    const uploadUrl = response.uploadUrl;
+    const uploadFields = JSON.parse(response.fields);
     try {
+      const formData = new FormData();
+      Object.keys(uploadFields).forEach((key) => {
+        formData.append(key, uploadFields[key]);
+      });
+      formData.append("file", file);
+
       const uploadRequest = await fetch(uploadUrl, {
-        method: "PUT",
-        headers: {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          "x-ms-blob-type": "BlockBlob",
-          "Content-Type": "image/jpg",
-        },
-        body: file,
+        method: "POST",
+        body: formData,
       });
 
-      if (uploadRequest.status !== 201) {
+      if (uploadRequest.status !== 204) {
         setError(getTranslatedMessage("fileInput.uploadFailed", language));
         return;
       }
 
-      baseOnChange(data.generateParticipantAvatarUploadUrl.fileUrl);
+      baseOnChange(response.id);
     } catch (e) {
       setError(getTranslatedMessage("fileInput.uploadFailed", language));
     } finally {

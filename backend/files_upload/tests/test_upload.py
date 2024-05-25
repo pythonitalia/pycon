@@ -2,8 +2,8 @@ from datetime import datetime
 
 import time_machine
 
-from blob.enum import BlobContainer
-from blob.upload import create_blob_upload
+from files_upload.enum import BlobContainer
+from files_upload.upload import create_blob_upload
 
 
 def test_create_blob_upload(mocker, settings):

@@ -4,8 +4,8 @@ import strawberry
 from strawberry.types import Info
 
 from api.permissions import IsAuthenticated
-from blob.enum import BlobContainer
-from blob.upload import create_blob_upload
+from files_upload.enum import BlobContainer
+from files_upload.upload import create_blob_upload
 
 
 @strawberry.type

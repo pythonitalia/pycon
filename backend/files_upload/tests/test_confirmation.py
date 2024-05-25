@@ -2,7 +2,7 @@ from unittest.mock import call
 
 import pytest
 
-from blob.confirmation import confirm_blob_upload_usage
+from files_upload.confirmation import confirm_blob_upload_usage
 
 
 def test_confirm_blob_upload_usage(mocker, settings):

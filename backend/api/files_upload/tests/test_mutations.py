@@ -1,7 +1,7 @@
 import pytest
 
-from blob.enum import BlobContainer
-from blob.upload import BlobUpload
+from files_upload.enum import BlobContainer
+from files_upload.upload import BlobUpload
 
 pytestmark = pytest.mark.django_db
 

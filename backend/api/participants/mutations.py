@@ -6,9 +6,9 @@ import strawberry
 from strawberry.tools import create_type
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType
-from blob.confirmation import confirm_blob_upload_usage
-from blob.enum import BlobContainer
-from blob.url_parsing import verify_azure_storage_url
+from files_upload.confirmation import confirm_blob_upload_usage
+from files_upload.enum import BlobContainer
+from files_upload.url_parsing import verify_azure_storage_url
 from conferences.models.conference import Conference
 from participants.models import Participant as ParticipantModel
 

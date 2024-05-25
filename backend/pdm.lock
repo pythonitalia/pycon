@@ -5,7 +5,7 @@
 groups = ["default", "dev", "lambda"]
 strategy = ["cross_platform"]
 lock_version = "4.4.1"
-content_hash = "sha256:e1b2fccaabc08edf32e89c91fd0c7f7d19d9b5c861e988fcfcea699aba0e57a8"
+content_hash = "sha256:bf039549939a77a286a7ed6b962be45a55cf0572c8cc865194e10860a6015df0"
 
 [[package]]
 name = "amqp"
@@ -2507,8 +2507,8 @@ files = [
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.219.2"
-requires_python = ">=3.8,<4.0"
+version = "0.227.0.dev1713463204"
+requires_python = "<4.0,>=3.8"
 summary = "A library for creating GraphQL APIs"
 dependencies = [
     "graphql-core<3.3.0,>=3.2.0",
@@ -2516,8 +2516,8 @@ dependencies = [
     "typing-extensions>=4.5.0",
 ]
 files = [
-    {file = "strawberry_graphql-0.219.2-py3-none-any.whl", hash = "sha256:6b26994bcf092714dbd6def4c69a36c279fbdbfdc2390fb6294728dd076ba863"},
-    {file = "strawberry_graphql-0.219.2.tar.gz", hash = "sha256:b7a9b3115398402ec04fceb76b0dd3908dd90009cf20d344071be985c039aac7"},
+    {file = "strawberry_graphql-0.227.0.dev1713463204-py3-none-any.whl", hash = "sha256:c3d5f703fb6ea355ae9d4e2164b8d120339c7f5041db00b4ebfccd30a9cb885d"},
+    {file = "strawberry_graphql-0.227.0.dev1713463204.tar.gz", hash = "sha256:265b299225d5a6b1feaa4c323ee330d7a7e95d222ef7972f4daf30c7a0aea3d6"},
 ]
 
 [[package]]

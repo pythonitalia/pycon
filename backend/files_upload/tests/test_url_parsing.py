@@ -1,5 +1,5 @@
-from blob.enum import BlobContainer
-from blob.url_parsing import parse_azure_storage_url, verify_azure_storage_url
+from files_upload.enum import BlobContainer
+from files_upload.url_parsing import parse_azure_storage_url, verify_azure_storage_url
 
 
 def test_verify_azure_storage_url(settings):
