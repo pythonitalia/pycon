@@ -30,7 +30,7 @@ locals {
     },
     {
       name  = "ALLOWED_HOSTS",
-      value = "admin.pycon.it,2024.pycon.it"
+      value = "admin.pycon.it,2024.pycon.it,2025.pycon.it"
     },
     {
       name  = "DJANGO_SETTINGS_MODULE",
