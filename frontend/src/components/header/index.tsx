@@ -41,29 +41,30 @@ export const Header = () => {
     (room) => !!room.streamingUrl,
   );
 
-  const actions: Action[] = [
-    isRunning && hasSomethingLive
-      ? {
-          text: getTranslatedMessage("header.streaming", language),
-          icon: "live-circle",
-          link: "/streaming",
-          background: "red",
-          hoverBackground: "red",
-        }
-      : {
-          text: getTranslatedMessage("header.tickets", language),
-          icon: "tickets",
-          link: "/tickets",
-        },
-    {
-      text:
-        isReady && loggedIn
-          ? getTranslatedMessage("header.dashboard", language)
-          : getTranslatedMessage("header.login", language),
-      icon: "user",
-      link: isReady && loggedIn ? "/profile" : "/login",
-    },
-  ];
+  const actions = [];
+  // const actions: Action[] = [
+  //   isRunning && hasSomethingLive
+  //     ? {
+  //         text: getTranslatedMessage("header.streaming", language),
+  //         icon: "live-circle",
+  //         link: "/streaming",
+  //         background: "red",
+  //         hoverBackground: "red",
+  //       }
+  //     : {
+  //         text: getTranslatedMessage("header.tickets", language),
+  //         icon: "tickets",
+  //         link: "/tickets",
+  //       },
+  //   {
+  //     text:
+  //       isReady && loggedIn
+  //         ? getTranslatedMessage("header.dashboard", language)
+  //         : getTranslatedMessage("header.login", language),
+  //     icon: "user",
+  //     link: isReady && loggedIn ? "/profile" : "/login",
+  //   },
+  // ];
 
   const conferenceMenu =
     language === "it" ? conferenceMenuIt : conferenceMenuEn;
