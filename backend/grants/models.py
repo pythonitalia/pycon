@@ -28,6 +28,7 @@ class Grant(TimeStampedModel):
         )
         refused = "refused", _("Refused")
         confirmed = "confirmed", _("Confirmed")
+        did_not_attend = "did_not_attend", _("Did Not Attend")
 
     REVIEW_SESSION_STATUSES_OPTIONS = [
         Status.rejected.value,
@@ -216,6 +217,11 @@ class Grant(TimeStampedModel):
     )
     voucher_email_sent_at = models.DateTimeField(
         help_text=_("When the email was last sent"), blank=True, null=True
+    )
+    internal_notes = models.TextField(
+        _("Internal Notes"),
+        help_text=_("Internal notes only available to the Financial Aid Commettie"),
+        blank=True,
     )
 
     objects = GrantQuerySet().as_manager()
