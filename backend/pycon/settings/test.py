@@ -17,13 +17,13 @@ AZURE_STORAGE_ACCOUNT_KEY = "fake-key"
 
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.memory.InMemoryStorage",
+        "BACKEND": "pycon.storages.CustomInMemoryStorage",
     },
     "conferencevideos": {
-        "BACKEND": "django.core.files.storage.memory.InMemoryStorage",
+        "BACKEND": "pycon.storages.CustomInMemoryStorage",
     },
     "localstorage": {
-        "BACKEND": "django.core.files.storage.memory.InMemoryStorage",
+        "BACKEND": "pycon.storages.CustomInMemoryStorage",
     },
     "staticfiles": {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
