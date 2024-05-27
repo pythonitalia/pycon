@@ -49,14 +49,14 @@ def create_blob_upload(container: BlobContainer, blob_name: str) -> BlobUpload:
     )
 
 
-def check_user_can_upload(user: User, purpose: File.Purpose) -> bool:
+def check_user_can_upload(user: User, type: File.Type) -> bool:
     if not user.is_authenticated:
         return False
 
-    match purpose:
-        case File.Purpose.PARTICIPANT_AVATAR:
+    match type:
+        case File.Type.PARTICIPANT_AVATAR:
             return True
-        case File.Purpose.PROPOSAL_RESOURCE:
+        case File.Type.PROPOSAL_RESOURCE:
             return True
         case _:
             return False

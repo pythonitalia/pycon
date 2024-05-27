@@ -33,6 +33,12 @@ class Participant(models.Model):
 
     public_profile = models.BooleanField(_("public profile"), default=False)
     photo = models.TextField(_("photo"))
+    photo_file = models.ForeignKey(
+        "files_upload.File",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+    )
     bio = models.TextField(max_length=2048)
     website = models.URLField(max_length=2048, blank=True)
     twitter_handle = models.CharField(max_length=15, blank=True)
@@ -53,6 +59,10 @@ class Participant(models.Model):
     @property
     def hashid(self):
         return encode_hashid(self.pk, salt=settings.USER_ID_HASH_SALT, min_length=6)
+
+    @property
+    def photo_url(self):
+        return self.photo_file.url if self.photo_file else self.photo
 
     def __str__(self) -> str:
         return f"Participant {self.user_id} for {self.conference}"

@@ -20,6 +20,7 @@ export const FileInput = ({
   value,
   errors = null,
   purpose,
+  previewUrl,
 }: {
   onChange: (value: string) => void;
   name: string;
@@ -27,18 +28,16 @@ export const FileInput = ({
   value: string;
   errors?: string[];
   purpose: "participant_avatar" | "proposal_resource";
+  previewUrl?: string;
 }) => {
   const conferenceCode = process.env.conferenceCode;
   const fileInput = useRef<HTMLInputElement>();
   const canvas = useRef<HTMLCanvasElement>();
   const language = useCurrentLanguage();
 
-  const [generateParticipantAvatarUploadUrl] =
-    useGenerateParticipantAvatarUploadUrlMutation();
-
   const [uploadFile] = useUploadFileMutation();
 
-  const [filePreview, setFilePreview] = useState<string | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(previewUrl);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState("");
 
@@ -99,11 +98,11 @@ export const FileInput = ({
     setIsUploading(true);
 
     let input = {};
-    console.log("purpose", purpose);
     if (purpose === "participant_avatar") {
       input = {
         participantAvatar: {
           conferenceCode,
+          filename: file.name,
         },
       };
     }

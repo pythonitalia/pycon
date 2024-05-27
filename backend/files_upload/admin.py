@@ -7,7 +7,7 @@ from files_upload.models import File
 class FileAdmin(admin.ModelAdmin):
     list_display = ("id", "file", "created", "uploaded_by")
     search_fields = ("file", "uploaded_by")
-    list_filter = ("created",)
+    list_filter = ("created", "type")
     ordering = ("-created",)
     date_hierarchy = "created"
     autocomplete_fields = ("uploaded_by",)

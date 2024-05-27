@@ -6,9 +6,6 @@ import strawberry
 from strawberry.tools import create_type
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType
-from files_upload.confirmation import confirm_blob_upload_usage
-from files_upload.enum import BlobContainer
-from files_upload.url_parsing import verify_azure_storage_url
 from conferences.models.conference import Conference
 from participants.models import Participant as ParticipantModel
 
@@ -82,15 +79,6 @@ class UpdateParticipantInput:
                 "facebook_url", "Facebook URL should be a facebook.com link"
             )
 
-        if self.photo and not verify_azure_storage_url(
-            url=self.photo,
-            allowed_containers=[
-                BlobContainer.TEMPORARY_UPLOADS,
-                BlobContainer.PARTICIPANTS_AVATARS,
-            ],
-        ):
-            errors.add_error("photo", "Invalid photo")
-
         return errors.if_has_errors
 
 
@@ -111,23 +99,12 @@ def update_participant(
 
     conference = Conference.objects.get(code=input.conference)
 
-    photo = input.photo
-    if photo and verify_azure_storage_url(
-        url=photo, allowed_containers=[BlobContainer.TEMPORARY_UPLOADS]
-    ):
-        photo = confirm_blob_upload_usage(
-            photo,
-            blob_name=_participant_avatar_blob_name(
-                conference=conference, user_id=request.user.id
-            ),
-        )
-
     participant, _ = ParticipantModel.objects.update_or_create(
         user_id=request.user.id,
         conference=conference,
         defaults={
             "bio": input.bio,
-            "photo": photo,
+            "photo_file_id": input.photo,
             "website": input.website,
             "public_profile": input.public_profile,
             "speaker_level": input.speaker_level,

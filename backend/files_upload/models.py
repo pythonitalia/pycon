@@ -2,16 +2,17 @@ from django.db import models
 from model_utils.models import TimeStampedModel, UUIDModel
 
 
-def get_upload_to(purpose, id):
-    return f"files/{purpose}/{id}"
+def get_upload_to(type, id, filename):
+    ext = filename.split(".")[-1]
+    return f"files/{type}/{id}.{ext}"
 
 
 def get_upload_to_from_instance(instance, filename):
-    return get_upload_to_from_instance(instance.purpose, instance.id)
+    return get_upload_to_from_instance(instance.type, instance.id, filename)
 
 
 class File(UUIDModel, TimeStampedModel):
-    class Purpose(models.TextChoices):
+    class Type(models.TextChoices):
         PARTICIPANT_AVATAR = "participant_avatar", "Participant Avatar"
         PROPOSAL_RESOURCE = "proposal_resource", "Proposal Resource"
 
@@ -27,11 +28,15 @@ class File(UUIDModel, TimeStampedModel):
         null=False,
         blank=False,
     )
-    purpose = models.CharField(
-        "Purpose",
+    type = models.CharField(
+        "Type",
         max_length=32,
-        choices=Purpose.choices,
+        choices=Type.choices,
     )
 
-    def create_upload_url(self):
+    def create_upload_url(self) -> str:
         return self.file.storage.generate_upload_url(self.file)
+
+    @property
+    def url(self) -> str:
+        return self.file.url

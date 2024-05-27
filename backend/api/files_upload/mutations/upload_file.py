@@ -1,6 +1,6 @@
 from typing import Annotated
 from uuid import uuid4
-from files_upload.upload import check_user_can_upload
+from api.files_upload.permissions import IsFileTypeUploadAllowed
 from files_upload.models import File, get_upload_to
 from strawberry.schema_directives import OneOf
 from api.context import Info
@@ -9,27 +9,40 @@ import strawberry
 
 
 @strawberry.input
-class ProposalResourceInput:
-    proposal_id: strawberry.ID
-
-    @property
-    def purpose(self) -> File.Purpose:
-        return File.Purpose.PROPOSAL_RESOURCE
+class BaseInput:
+    filename: str
 
 
 @strawberry.input
-class ParticipantAvatarInput:
+class ProposalResourceInput(BaseInput):
+    proposal_id: strawberry.ID
+
+    @property
+    def type(self) -> File.Type:
+        return File.Type.PROPOSAL_RESOURCE
+
+
+@strawberry.input
+class ParticipantAvatarInput(BaseInput):
     conference_code: str
 
     @property
-    def purpose(self) -> File.Purpose:
-        return File.Purpose.PARTICIPANT_AVATAR
+    def type(self) -> File.Type:
+        return File.Type.PARTICIPANT_AVATAR
 
 
 @strawberry.input(directives=[OneOf])
 class UploadFileInput:
     proposal_resource: ProposalResourceInput | None = strawberry.UNSET
     participant_avatar: ParticipantAvatarInput | None = strawberry.UNSET
+
+    @property
+    def data(self):
+        return self.proposal_resource or self.participant_avatar
+
+    @property
+    def type(self) -> File.Type:
+        return self.data.type
 
 
 @strawberry.type
@@ -49,21 +62,19 @@ UploadFileOutput = Annotated[
 ]
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated])
+@strawberry.mutation(permission_classes=[IsAuthenticated, IsFileTypeUploadAllowed])
 def upload_file(info: Info, input: UploadFileInput) -> UploadFileOutput:
     user = info.context.request.user
-    input_obj = input.proposal_resource or input.participant_avatar
-    purpose = input_obj.purpose
-
-    if not check_user_can_upload(user, purpose):
-        return False
+    data = input.data
+    type = data.type
+    filename = data.filename
 
     id = uuid4()
     file = File.objects.create(
         id=id,
-        file=get_upload_to(purpose, id),
+        file=get_upload_to(type, id, filename),
         uploaded_by=user,
-        purpose=purpose,
+        type=type,
     )
 
     upload_url = file.create_upload_url()

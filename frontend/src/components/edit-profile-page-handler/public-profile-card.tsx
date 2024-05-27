@@ -101,6 +101,7 @@ export const PublicProfileCard = ({
                 >
                   <FileInput
                     {...raw("participantPhoto")}
+                    previewUrl={me.participant.photo}
                     errors={getParticipantValidationError("photo")}
                     purpose="participant_avatar"
                   />
