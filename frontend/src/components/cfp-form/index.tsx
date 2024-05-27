@@ -557,7 +557,7 @@ export const CfpForm = ({
         >
           <FileInput
             {...raw("speakerPhoto")}
-            purpose="participant_avatar"
+            type="participant_avatar"
             previewUrl={participantData?.me?.participant?.photo}
           />
         </InputWrapper>

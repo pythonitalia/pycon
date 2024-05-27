@@ -19,7 +19,7 @@ export const FileInput = ({
   onBlur,
   value,
   errors = null,
-  purpose,
+  type,
   previewUrl,
 }: {
   onChange: (value: string) => void;
@@ -27,7 +27,7 @@ export const FileInput = ({
   onBlur: () => void;
   value: string;
   errors?: string[];
-  purpose: "participant_avatar" | "proposal_resource";
+  type: "participant_avatar" | "proposal_resource";
   previewUrl?: string;
 }) => {
   const conferenceCode = process.env.conferenceCode;
@@ -98,7 +98,7 @@ export const FileInput = ({
     setIsUploading(true);
 
     let input = {};
-    if (purpose === "participant_avatar") {
+    if (type === "participant_avatar") {
       input = {
         participantAvatar: {
           conferenceCode,

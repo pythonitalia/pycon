@@ -103,7 +103,7 @@ export const PublicProfileCard = ({
                     {...raw("participantPhoto")}
                     previewUrl={me.participant.photo}
                     errors={getParticipantValidationError("photo")}
-                    purpose="participant_avatar"
+                    type="participant_avatar"
                   />
                 </InputWrapper>
               </GridColumn>
