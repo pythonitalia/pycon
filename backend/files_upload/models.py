@@ -8,7 +8,7 @@ def get_upload_to(type, id, filename):
 
 
 def get_upload_to_from_instance(instance, filename):
-    return get_upload_to_from_instance(instance.type, instance.id, filename)
+    return get_upload_to(instance.type, instance.id, filename)
 
 
 class File(UUIDModel, TimeStampedModel):
