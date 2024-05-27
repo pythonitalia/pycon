@@ -21,18 +21,6 @@ FACEBOOK_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?facebook\.com\/")
 LINKEDIN_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?linkedin\.com\/")
 
 
-class SubmissionMutation:
-    @classmethod
-    def transform(cls, result):
-        # lie to strawberry to make it think that the return value is a proper type
-        result.__strawberry_definition__ = Submission.__strawberry_definition__
-        return result
-
-    class Meta:
-        output_types = (Submission,)
-        permission_classes = (IsAuthenticated,)
-
-
 @strawberry.type
 class SendSubmissionErrors(BaseErrorType):
     @strawberry.type
