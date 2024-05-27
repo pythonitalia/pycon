@@ -8,14 +8,10 @@ from strawberry.types import Info
 
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType, MultiLingualInput
-from files_upload.confirmation import confirm_blob_upload_usage
-from files_upload.enum import BlobContainer
-from files_upload.url_parsing import verify_azure_storage_url
 from conferences.models.conference import Conference
 from i18n.strings import LazyI18nString
 from languages.models import Language
 from participants.models import Participant
-from api.participants.mutations import _participant_avatar_blob_name
 from submissions.models import Submission as SubmissionModel
 from submissions.tasks import notify_new_cfp_submission
 
@@ -362,17 +358,6 @@ class SubmissionsMutations:
             short_social_summary=input.short_social_summary,
         )
 
-        speaker_photo = input.speaker_photo
-        if verify_azure_storage_url(
-            url=speaker_photo, allowed_containers=[BlobContainer.TEMPORARY_UPLOADS]
-        ):
-            speaker_photo = confirm_blob_upload_usage(
-                speaker_photo,
-                blob_name=_participant_avatar_blob_name(
-                    conference=conference, user_id=request.user.id
-                ),
-            )
-
         languages = Language.objects.filter(code__in=input.languages).all()
 
         instance.languages.set(languages)
@@ -383,7 +368,7 @@ class SubmissionsMutations:
             conference=conference,
             defaults={
                 "bio": input.speaker_bio,
-                "photo": speaker_photo,
+                "photo_file_id": input.speaker_photo,
                 "website": input.speaker_website,
                 "speaker_level": input.speaker_level,
                 "previous_talk_video": input.previous_talk_video,

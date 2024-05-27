@@ -1,7 +1,5 @@
 import re
 from api.context import Info
-from api.helpers.ids import encode_hashid
-from django.conf import settings
 import strawberry
 from strawberry.tools import create_type
 from api.permissions import IsAuthenticated
@@ -117,11 +115,6 @@ def update_participant(
         },
     )
     return Participant.from_model(participant)
-
-
-def _participant_avatar_blob_name(conference: Conference, user_id: int) -> str:
-    hashed_id = encode_hashid(user_id, salt=settings.USER_ID_HASH_SALT, min_length=6)
-    return f"{conference.code}/{hashed_id}.jpg"
 
 
 ParticipantMutations = create_type("ParticipantMutations", (update_participant,))
