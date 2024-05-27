@@ -3,7 +3,6 @@ from uuid import uuid4
 from api.files_upload.permissions import IsFileTypeUploadAllowed
 from api.extensions import RateLimit
 from files_upload.models import File, get_upload_to
-from strawberry.schema_directives import OneOf
 from api.context import Info
 from api.permissions import IsAuthenticated
 import strawberry
@@ -32,7 +31,7 @@ class ParticipantAvatarInput(BaseInput):
         return File.Type.PARTICIPANT_AVATAR
 
 
-@strawberry.input(directives=[OneOf])
+@strawberry.input(one_of=True)
 class UploadFileInput:
     proposal_resource: ProposalResourceInput | None = strawberry.UNSET
     participant_avatar: ParticipantAvatarInput | None = strawberry.UNSET
