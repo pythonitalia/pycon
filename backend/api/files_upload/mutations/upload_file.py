@@ -1,6 +1,7 @@
 from typing import Annotated
 from uuid import uuid4
 from api.files_upload.permissions import IsFileTypeUploadAllowed
+from api.extensions import RateLimit
 from files_upload.models import File, get_upload_to
 from strawberry.schema_directives import OneOf
 from api.context import Info
@@ -62,7 +63,10 @@ UploadFileOutput = Annotated[
 ]
 
 
-@strawberry.mutation(permission_classes=[IsAuthenticated, IsFileTypeUploadAllowed])
+@strawberry.mutation(
+    permission_classes=[IsAuthenticated, IsFileTypeUploadAllowed],
+    extensions=[RateLimit("10/m")],
+)
 def upload_file(info: Info, input: UploadFileInput) -> UploadFileOutput:
     user = info.context.request.user
     data = input.data
