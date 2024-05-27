@@ -18,6 +18,7 @@ export const FileInput = ({
   errors = null,
   type,
   previewUrl,
+  accept,
 }: {
   onChange: (value: string) => void;
   name: string;
@@ -26,6 +27,7 @@ export const FileInput = ({
   errors?: string[];
   type: "participant_avatar" | "proposal_resource";
   previewUrl?: string;
+  accept: string;
 }) => {
   const conferenceCode = process.env.conferenceCode;
   const fileInput = useRef<HTMLInputElement>();
@@ -154,7 +156,7 @@ export const FileInput = ({
         name={name}
         onBlur={onBlur}
         type="file"
-        accept="image/png,image/jpg,image/jpeg,image/webp"
+        accept={accept}
         className="w-full"
       />
 

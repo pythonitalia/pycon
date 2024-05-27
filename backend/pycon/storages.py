@@ -34,7 +34,7 @@ class CustomS3Boto3Storage(S3Boto3Storage):
             Bucket=bucket_name,
             Key=file.name,
             ExpiresIn=3600,
-            Conditions=[["content-length-range", 1, 5242880]],
+            Conditions=[["content-length-range", 1, 5 * 1024 * 1024]],
         )
         return UploadURL(
             url=response["url"],

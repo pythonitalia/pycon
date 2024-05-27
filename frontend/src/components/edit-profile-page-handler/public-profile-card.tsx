@@ -101,6 +101,7 @@ export const PublicProfileCard = ({
                 >
                   <FileInput
                     {...raw("participantPhoto")}
+                    accept="image/png,image/jpg,image/jpeg,image/webp"
                     previewUrl={me.participant.photo}
                     errors={getParticipantValidationError("photo")}
                     type="participant_avatar"
