@@ -38,6 +38,7 @@ class Participant(models.Model):
         on_delete=models.PROTECT,
         null=True,
         blank=True,
+        related_name="participants",
     )
     bio = models.TextField(max_length=2048)
     website = models.URLField(max_length=2048, blank=True)
