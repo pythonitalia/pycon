@@ -47,11 +47,6 @@ class UploadFileInput:
 
 
 @strawberry.type
-class UploadNotAllowed:
-    message: str
-
-
-@strawberry.type
 class FileUploadRequest:
     id: strawberry.ID
     upload_url: str
@@ -59,7 +54,7 @@ class FileUploadRequest:
 
 
 UploadFileOutput = Annotated[
-    FileUploadRequest | UploadNotAllowed, strawberry.union(name="UploadFileOutput")
+    FileUploadRequest, strawberry.union(name="UploadFileOutput")
 ]
 
 
