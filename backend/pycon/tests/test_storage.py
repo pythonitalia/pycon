@@ -19,6 +19,7 @@ def test_s3_storage_generate_upload_url(mocker):
         Bucket=mock.ANY,
         Key=file.file.name,
         ExpiresIn=3600,
+        Conditions=[["content-length-range", 1, 5242880]],
     )
 
     assert return_value.url == "http://example.org/pycon-test"
