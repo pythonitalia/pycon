@@ -14,16 +14,11 @@ class IsFileTypeUploadAllowed(BasePermission):
         type = input.type
         user = info.context.request.user
 
-        if not user.is_authenticated:
-            return False
-
         match type:
             case File.Type.PARTICIPANT_AVATAR:
                 return True
             case File.Type.PROPOSAL_RESOURCE:
                 return self._check_proposal_resource(user, input)
-            case _:
-                return False
 
     def _check_proposal_resource(self, user, input: "UploadFileInput") -> bool:
         proposal_id = input.data.proposal_id
