@@ -72,7 +72,7 @@ dependencies = [
     "lxml<5.0.0,>=4.5.0",
     "unidecode<2.0.0,>=1.1.1",
     "jsonschema<4.0.0,>=3.2.0",
-    "strawberry-graphql==0.227.0.dev.1713463204",
+    "strawberry-graphql==0.232.0",
     "Werkzeug<2.0.0,>=1.0.1",
     "pythonit-toolkit==0.1.93",
     "django-import-export<4.0.0,>=3.2.0",
