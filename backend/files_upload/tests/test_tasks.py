@@ -20,7 +20,7 @@ def test_delete_unused_files():
     )
     ParticipantFactory(photo_file=file_3)
 
-    with time_machine.travel("2010-10-10 10:20:00Z"):
+    with time_machine.travel("2010-10-10 10:20:00Z", tick=False):
         delete_unused_files()
 
     assert not File.objects.filter(id=file_1.id).exists()

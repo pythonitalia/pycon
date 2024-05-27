@@ -1,5 +1,5 @@
 import time
-from typing import Any, Awaitable, Callable
+from typing import Any, Callable
 import strawberry
 from graphql import GraphQLError
 from strawberry.extensions import FieldExtension
@@ -18,17 +18,6 @@ class RateLimit(FieldExtension):
     ):
         self.allow_request(info)
         result = next(source, info, **kwargs)
-        return result
-
-    async def resolve_async(
-        self,
-        next: Callable[..., Awaitable[Any]],
-        source: Any,
-        info: strawberry.Info,
-        **kwargs,
-    ):
-        self.allow_request(info)
-        result = await next(source, info, **kwargs)
         return result
 
     def allow_request(self, info: strawberry.Info):
