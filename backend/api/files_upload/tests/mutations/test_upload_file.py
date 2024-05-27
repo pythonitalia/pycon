@@ -1,5 +1,7 @@
+from files_upload.models import File
 from submissions.tests.factories import SubmissionFactory
 from conferences.tests.factories import ConferenceFactory
+from django.test import override_settings
 
 
 def _upload_file(client, input):
@@ -124,3 +126,31 @@ def test_cannot_upload_proposal_resource_file_with_invalid_proposal_id_for_confe
 
     assert not response["data"]
     assert response["errors"][0]["message"] == "You cannot upload files of this type"
+
+
+@override_settings(
+    CACHES={
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "unique",
+        }
+    }
+)
+def test_file_upload_is_rate_limited(graphql_client, user):
+    graphql_client.force_login(user)
+
+    conference = ConferenceFactory()
+    for _ in range(20):
+        response = _upload_file(
+            graphql_client,
+            {
+                "participantAvatar": {
+                    "filename": "test.txt",
+                    "conferenceCode": conference.code,
+                }
+            },
+        )
+
+    assert not response["data"]
+    assert response["errors"][0]["message"] == "Rate limit exceeded."
+    assert File.objects.count() == 10
