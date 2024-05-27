@@ -5,6 +5,8 @@ from storages.backends.s3boto3 import S3Boto3Storage
 from tempfile import SpooledTemporaryFile
 from storages.backends.azure_storage import AzureStorage
 from django.core.files.storage.memory import InMemoryStorage
+from django.core.files.storage import FileSystemStorage
+from django.urls import reverse
 
 
 @dataclass
@@ -18,7 +20,8 @@ class UploadURL:
 
 
 class CustomS3Boto3Storage(S3Boto3Storage):
-    def generate_upload_url(self, file):
+    def generate_upload_url(self, file_obj):
+        file = file_obj.file
         bucket_name = self.bucket_name
         s3_client = boto3.client(
             "s3",
@@ -45,9 +48,17 @@ class CustomS3Boto3Storage(S3Boto3Storage):
 
 
 class CustomInMemoryStorage(InMemoryStorage):
-    def generate_upload_url(self, file):
-        return UploadURL(url=f"memory://{file.name}", fields={"in-memory": True})
+    def generate_upload_url(self, file_obj):
+        return UploadURL(
+            url=f"memory://{file_obj.file.name}", fields={"in-memory": True}
+        )
 
 
 class ConferenceVideosStorage(AzureStorage):
     azure_container = "conference-videos"
+
+
+class CustomFileSystemStorage(FileSystemStorage):
+    def generate_upload_url(self, file_obj):
+        url = reverse("local_files_upload", kwargs={"file_id": file_obj.id})
+        return UploadURL(url=url, fields={})

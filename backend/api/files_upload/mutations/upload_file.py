@@ -76,9 +76,10 @@ def upload_file(info: Info, input: UploadFileInput) -> UploadFileOutput:
         type=type,
     )
 
-    upload_url = file.create_upload_url()
+    upload_data = file.create_upload_url()
+    upload_url = upload_data.url
     return FileUploadRequest(
         id=file.id,
-        upload_url=upload_url.url,
-        fields=upload_url.fields_as_json,
+        upload_url=upload_url,
+        fields=upload_data.fields_as_json,
     )

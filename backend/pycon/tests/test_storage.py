@@ -1,6 +1,6 @@
 from unittest import mock
 from files_upload.tests.factories import FileFactory
-from pycon.storages import CustomS3Boto3Storage
+from pycon.storages import CustomFileSystemStorage, CustomS3Boto3Storage
 
 
 def test_s3_storage_generate_upload_url(mocker):
@@ -14,7 +14,7 @@ def test_s3_storage_generate_upload_url(mocker):
     }
     file = FileFactory()
     storage = CustomS3Boto3Storage()
-    return_value = storage.generate_upload_url(file.file)
+    return_value = storage.generate_upload_url(file)
     boto3_mock.return_value.generate_presigned_post.assert_called_once_with(
         Bucket=mock.ANY,
         Key=file.file.name,
@@ -27,3 +27,12 @@ def test_s3_storage_generate_upload_url(mocker):
         "bucket": "pycon-test",
     }
     assert return_value.fields_as_json == '{"key": "test.txt", "bucket": "pycon-test"}'
+
+
+def test_local_storage_generate_upload_url():
+    file = FileFactory()
+    storage = CustomFileSystemStorage()
+    return_value = storage.generate_upload_url(file)
+    assert f"local_files_upload/{file.id}" in return_value.url
+    assert return_value.fields == {}
+    assert return_value.fields_as_json == "{}"

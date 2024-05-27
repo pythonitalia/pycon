@@ -3,10 +3,7 @@ import { FormattedMessage } from "react-intl";
 
 import { getTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
-import {
-  useGenerateParticipantAvatarUploadUrlMutation,
-  useUploadFileMutation,
-} from "~/types";
+import { useUploadFileMutation } from "~/types";
 
 import { Alert } from "../alert";
 import { ErrorsList } from "../errors-list";

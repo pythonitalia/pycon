@@ -220,14 +220,15 @@ PRETIX_API_TOKEN = None
 STORAGES = {
     "default": {
         "BACKEND": env(
-            "MEDIA_FILES_STORAGE_BACKEND", default="pycon.storages.CustomS3Boto3Storage"
+            "MEDIA_FILES_STORAGE_BACKEND",
+            default="pycon.storages.CustomFileSystemStorage",
         )
     },
     "conferencevideos": {
         "BACKEND": "pycon.storages.ConferenceVideosStorage",
     },
     "localstorage": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "pycon.storages.CustomFileSystemStorage",
         "LOCATION": "/tmp/",
     },
     "staticfiles": {
@@ -235,7 +236,7 @@ STORAGES = {
     },
 }
 IMAGEKIT_DEFAULT_FILE_STORAGE = env(
-    "MEDIA_FILES_STORAGE_BACKEND", default="pycon.storages.CustomS3Boto3Storage"
+    "MEDIA_FILES_STORAGE_BACKEND", default="pycon.storages.CustomFileSystemStorage"
 )
 
 if PRETIX_API:

@@ -1,6 +1,6 @@
 require("dotenv").config();
 const webpack = require("webpack");
-const path = require("path");
+const path = require("node:path");
 const { withSentryConfig } = require("@sentry/nextjs");
 
 const {
@@ -74,12 +74,26 @@ module.exports = withSentryConfig({
     ];
   },
   async rewrites() {
-    return [
+    const rewrites = [
       {
         source: "/graphql",
-        destination: API_URL_SERVER,
+        destination: `${API_URL_SERVER}/graphql`,
       },
     ];
+
+    if (API_URL_SERVER.includes("http://backend")) {
+      rewrites.push({
+        source: "/local_files_upload/:match*",
+        destination: `${API_URL_SERVER}/local_files_upload/:match*`,
+      });
+
+      rewrites.push({
+        source: "/media/:match*",
+        destination: `${API_URL_SERVER}/media/:match*`,
+      });
+    }
+
+    return rewrites;
   },
   serverRuntimeConfig: {
     API_TOKEN: API_TOKEN,

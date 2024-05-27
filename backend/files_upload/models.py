@@ -35,7 +35,7 @@ class File(UUIDModel, TimeStampedModel):
     )
 
     def create_upload_url(self) -> str:
-        return self.file.storage.generate_upload_url(self.file)
+        return self.file.storage.generate_upload_url(self)
 
     @property
     def url(self) -> str:
