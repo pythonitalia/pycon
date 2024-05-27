@@ -51,7 +51,8 @@ def test_upload_proposal_resource_file(graphql_client, user):
         {
             "proposalResource": {
                 "filename": "test.txt",
-                "proposalId": proposal.id,
+                "proposalId": proposal.hashid,
+                "conferenceCode": proposal.conference.code,
             }
         },
     )
@@ -63,3 +64,63 @@ def test_upload_proposal_resource_file(graphql_client, user):
         == f"memory://files/proposal_resource/{id}.txt"
     )
     assert response["data"]["uploadFile"]["fields"] == '{"in-memory": true}'
+
+
+def test_cannot_upload_proposal_resource_file_if_not_speaker(graphql_client, user):
+    proposal = SubmissionFactory()
+    graphql_client.force_login(user)
+
+    response = _upload_file(
+        graphql_client,
+        {
+            "proposalResource": {
+                "filename": "test.txt",
+                "proposalId": proposal.hashid,
+                "conferenceCode": proposal.conference.code,
+            }
+        },
+    )
+
+    assert not response["data"]
+    assert response["errors"][0]["message"] == "You cannot upload files of this type"
+
+
+def test_cannot_upload_proposal_resource_file_with_invalid_proposal_id(
+    graphql_client, user
+):
+    graphql_client.force_login(user)
+
+    response = _upload_file(
+        graphql_client,
+        {
+            "proposalResource": {
+                "filename": "test.txt",
+                "proposalId": "abcabc",
+                "conferenceCode": ConferenceFactory().code,
+            }
+        },
+    )
+
+    assert not response["data"]
+    assert response["errors"][0]["message"] == "You cannot upload files of this type"
+
+
+def test_cannot_upload_proposal_resource_file_with_invalid_proposal_id_for_conference(
+    graphql_client, user
+):
+    proposal = SubmissionFactory()
+    graphql_client.force_login(user)
+
+    response = _upload_file(
+        graphql_client,
+        {
+            "proposalResource": {
+                "filename": "test.txt",
+                "proposalId": proposal.hashid,
+                "conferenceCode": ConferenceFactory().code,
+            }
+        },
+    )
+
+    assert not response["data"]
+    assert response["errors"][0]["message"] == "You cannot upload files of this type"

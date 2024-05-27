@@ -5,3 +5,6 @@ class ConferenceQuerySetMixin:
 
     def for_conference(self, conference):
         return self.filter(**{self.conference_lookup_field: conference})
+
+    def for_conference_code(self, conference):
+        return self.filter(**{f"{self.conference_lookup_field}__code": conference})

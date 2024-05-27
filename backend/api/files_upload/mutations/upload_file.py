@@ -16,6 +16,7 @@ class BaseInput:
 @strawberry.input
 class ProposalResourceInput(BaseInput):
     proposal_id: strawberry.ID
+    conference_code: str
 
     @property
     def type(self) -> File.Type:

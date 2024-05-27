@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
-from files_upload.upload import check_user_can_upload
+from submissions.models import Submission
+from files_upload.models import File
 from strawberry.permission import BasePermission
 
 if TYPE_CHECKING:
@@ -12,4 +13,27 @@ class IsFileTypeUploadAllowed(BasePermission):
     def has_permission(self, source, info, input: "UploadFileInput", **kwargs):
         type = input.type
         user = info.context.request.user
-        return check_user_can_upload(user, type)
+
+        if not user.is_authenticated:
+            return False
+
+        match type:
+            case File.Type.PARTICIPANT_AVATAR:
+                return True
+            case File.Type.PROPOSAL_RESOURCE:
+                return self._check_proposal_resource(user, input)
+            case _:
+                return False
+
+    def _check_proposal_resource(self, user, input: "UploadFileInput") -> bool:
+        proposal_id = input.data.proposal_id
+        conference_code = input.data.conference_code
+
+        try:
+            proposal = Submission.objects.for_conference_code(
+                conference_code
+            ).get_by_hashid(proposal_id)
+        except (Submission.DoesNotExist, IndexError):
+            return False
+
+        return proposal.speaker_id == user.id
