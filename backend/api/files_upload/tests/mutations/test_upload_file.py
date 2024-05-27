@@ -44,6 +44,24 @@ def test_upload_participant_avatar_file(graphql_client, user):
     assert response["data"]["uploadFile"]["fields"] == '{"in-memory": true}'
 
 
+def test_upload_participant_avatar_to_invalid_conf_fails(graphql_client, user):
+    graphql_client.force_login(user)
+
+    ConferenceFactory()
+    response = _upload_file(
+        graphql_client,
+        {
+            "participantAvatar": {
+                "filename": "test.txt",
+                "conferenceCode": "aee",
+            }
+        },
+    )
+
+    assert not response["data"]
+    assert response["errors"][0]["message"] == "You cannot upload files of this type"
+
+
 def test_upload_proposal_resource_file(graphql_client, user):
     proposal = SubmissionFactory(speaker=user)
     graphql_client.force_login(user)

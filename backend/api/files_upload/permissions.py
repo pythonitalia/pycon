@@ -1,4 +1,6 @@
 from typing import TYPE_CHECKING
+
+from conferences.models.conference import Conference
 from submissions.models import Submission
 from files_upload.models import File
 from strawberry.permission import BasePermission
@@ -18,9 +20,13 @@ class IsFileTypeUploadAllowed(BasePermission):
 
         match type:
             case File.Type.PARTICIPANT_AVATAR:
-                return True
+                return self._check_participant_avatar(user, input)
             case File.Type.PROPOSAL_RESOURCE:
                 return self._check_proposal_resource(user, input)
+
+    def _check_participant_avatar(self, user, input: "UploadFileInput") -> bool:
+        conference_code = input.data.conference_code
+        return Conference.objects.filter(code=conference_code).exists()
 
     def _check_proposal_resource(self, user, input: "UploadFileInput") -> bool:
         proposal_id = input.data.proposal_id
