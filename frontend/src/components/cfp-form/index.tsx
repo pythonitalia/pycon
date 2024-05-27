@@ -204,7 +204,7 @@ export const CfpForm = ({
       speakerLinkedinUrl: formState.values.speakerLinkedinUrl,
       speakerFacebookUrl: formState.values.speakerFacebookUrl,
       speakerMastodonHandle: formState.values.speakerMastodonHandle,
-      speakerPhoto: formState.values.speakerPhoto.split(/[?#]/)[0],
+      speakerPhoto: formState.values.speakerPhoto,
     });
   };
 
@@ -260,7 +260,10 @@ export const CfpForm = ({
   useEffect(() => {
     if (!participantDataLoading && participantData.me.participant) {
       formState.setField("speakerBio", participantData.me.participant.bio);
-      formState.setField("speakerPhoto", participantData.me.participant.photo);
+      formState.setField(
+        "speakerPhoto",
+        participantData.me.participant.photoId,
+      );
       formState.setField(
         "speakerLevel",
         participantData.me.participant.speakerLevel,
@@ -552,7 +555,11 @@ export const CfpForm = ({
           description={<FormattedMessage id="cfp.speakerPhotoDescription" />}
           errors={getErrors("validationSpeakerPhoto")}
         >
-          <FileInput {...raw("speakerPhoto")} purpose="participant_avatar" />
+          <FileInput
+            {...raw("speakerPhoto")}
+            purpose="participant_avatar"
+            previewUrl={participantData?.me?.participant?.photo}
+          />
         </InputWrapper>
 
         <InputWrapper

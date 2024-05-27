@@ -147,7 +147,7 @@ export const FileInput = ({
     }
   };
 
-  const previewAvailable = filePreview || value;
+  const previewAvailable = filePreview || previewUrl;
 
   return (
     <div>
