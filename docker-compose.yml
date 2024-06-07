@@ -168,6 +168,11 @@ services:
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
 
+  clamav:
+    image: clamav/clamav:1.2.3-47
+    networks: [pycon_net]
+
+
 networks:
   pycon_net:
 

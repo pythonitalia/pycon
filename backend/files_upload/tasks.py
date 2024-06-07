@@ -19,3 +19,8 @@ def delete_unused_files():
         logger.info("Deleting file_id=%s", unused_file.id)
         unused_file.file.delete(save=False)
         unused_file.delete()
+
+
+@app.task
+def post_process_file_upload(file_id: str):
+    pass
