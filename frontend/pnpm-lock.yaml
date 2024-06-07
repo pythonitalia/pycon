@@ -51,8 +51,8 @@ importers:
         specifier: ^3.3.2
         version: 3.3.7(graphql-tag@2.12.6(graphql@16.8.1))(graphql@16.8.1)
       '@python-italia/pycon-styleguide':
-        specifier: 0.1.191
-        version: 0.1.191(@emotion/is-prop-valid@0.8.8)(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.3.1(react@18.3.1))(react-use@17.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(typescript@4.9.5)
+        specifier: 0.1.193
+        version: 0.1.193(@emotion/is-prop-valid@0.8.8)(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.3.1(react@18.3.1))(react-use@17.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(typescript@4.9.5)
       '@sentry/nextjs':
         specifier: ^7.107.0
         version: 7.114.0(next@14.2.3(@babel/core@7.24.5)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
@@ -1254,8 +1254,8 @@ packages:
   '@python-italia/eslint-config@1.0.13':
     resolution: {integrity: sha512-5H+vykXms8OnVBs4nn6Yu5n1+/EfmJObIhVneMLbIwBPvzsGs6rtnSw3Fnu0e+rZip8BYj2l7QUBn82Ohvxo2Q==}
 
-  '@python-italia/pycon-styleguide@0.1.191':
-    resolution: {integrity: sha512-4B6InL8qnI07IKD1Adszy1fFbVWPWqGd+LR1CATiaz0fAO+ehAw2DBsaraQUCXI/5g5I1ZZ2kvBjqmRdRO/Uog==}
+  '@python-italia/pycon-styleguide@0.1.193':
+    resolution: {integrity: sha512-DbiLlIG0W5GB6RQAOXqgzj8Eim6WyFmPNilVgKK025hHp37gtJcGdj15ODGdamyPz7xGYnq2GRS+oHDdxJyivQ==}
     peerDependencies:
       clsx: ^1.1.1
       date-fns: ^2.28.0
@@ -6579,7 +6579,7 @@ snapshots:
       - next
       - supports-color
 
-  '@python-italia/pycon-styleguide@0.1.191(@emotion/is-prop-valid@0.8.8)(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.3.1(react@18.3.1))(react-use@17.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(typescript@4.9.5)':
+  '@python-italia/pycon-styleguide@0.1.193(@emotion/is-prop-valid@0.8.8)(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.3.1(react@18.3.1))(react-use@17.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(typescript@4.9.5)':
     dependencies:
       clsx: 1.2.1
       date-fns: 2.30.0
