@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.5",
+    "@biomejs/biome": "^1.8.0",
     "@rollup/plugin-commonjs": "^21.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@storybook/addon-essentials": "^6.5.16",

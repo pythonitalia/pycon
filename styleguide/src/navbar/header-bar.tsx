@@ -3,7 +3,7 @@ import React from "react";
 
 import { Container } from "../container";
 import { ActionItem } from "./action-item";
-import { Action } from "./types";
+import type { Action } from "./types";
 
 type HeaderBarProps = {
   hidden?: boolean;

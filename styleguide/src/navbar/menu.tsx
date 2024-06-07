@@ -1,10 +1,10 @@
 import React from "react";
-import { Separator } from "../separator";
+import { Container } from "../container";
 import { Heading } from "../heading";
 import { Link } from "../link";
-import { Link as LinkType } from "./types";
+import { Separator } from "../separator";
 import { Text } from "../text";
-import { Container } from "../container";
+import type { Link as LinkType } from "./types";
 
 export const Menu = ({
   mainLinks,
@@ -20,49 +20,60 @@ export const Menu = ({
 
   return (
     <div>
-      <Separator />
-      <Container className="py-8 lg:py-20">
-        <div className="grid grid-cols-1 gap-4 lg:gap-14 lg:grid-cols-2">
-          {mainLinksSplit
-            .filter((split) => split.length > 0)
-            .map((split, index) => (
-              <ul
-                className="grid grid-cols-1 content-start gap-4 lg:gap-6"
-                key={index}
-              >
-                {split.map(({ text, link }) => (
-                  <li key={`${text}${link}`}>
-                    <Link hoverColor="caramel" href={link}>
-                      <Heading color="none" size="display2">
-                        {text}
-                      </Heading>
-                    </Link>
-                  </li>
+      {mainLinks.length > 0 && (
+        <>
+          <Separator />
+          <Container className="py-8 lg:py-20">
+            <div className="grid grid-cols-1 gap-4 lg:gap-14 lg:grid-cols-2">
+              {mainLinksSplit
+                .filter((split) => split.length > 0)
+                .map((split, index) => (
+                  <ul
+                    className="grid grid-cols-1 content-start gap-4 lg:gap-6"
+                    key={index}
+                  >
+                    {split.map(({ text, link }) => (
+                      <li key={`${text}${link}`}>
+                        <Link hoverColor="caramel" href={link}>
+                          <Heading color="none" size="display2">
+                            {text}
+                          </Heading>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 ))}
-              </ul>
-            ))}
-        </div>
-      </Container>
-      <Separator />
-      <Container className="py-8 lg:py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-14">
-          {secondaryLinksSplit
-            .filter((split) => split.length > 0)
-            .map((secondaryLinks, index) => (
-              <ul key={index} className="grid grid-cols-1 gap-4 content-start">
-                {secondaryLinks.map(({ link, text }) => (
-                  <li key={`${text}${link}`}>
-                    <Link hoverColor="caramel" href={link}>
-                      <Heading color="none" size={4}>
-                        {text}
-                      </Heading>
-                    </Link>
-                  </li>
+            </div>
+          </Container>
+        </>
+      )}
+      {secondaryLinks.length > 0 && (
+        <>
+          <Separator />
+          <Container className="py-8 lg:py-10">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-14">
+              {secondaryLinksSplit
+                .filter((split) => split.length > 0)
+                .map((secondaryLinks, index) => (
+                  <ul
+                    key={index}
+                    className="grid grid-cols-1 gap-4 content-start"
+                  >
+                    {secondaryLinks.map(({ link, text }) => (
+                      <li key={`${text}${link}`}>
+                        <Link hoverColor="caramel" href={link}>
+                          <Heading color="none" size={4}>
+                            {text}
+                          </Heading>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 ))}
-              </ul>
-            ))}
-        </div>
-      </Container>
+            </div>
+          </Container>
+        </>
+      )}
       {bottomBarLink && (
         <>
           <Separator />
