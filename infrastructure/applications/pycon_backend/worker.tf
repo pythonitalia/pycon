@@ -179,7 +179,11 @@ locals {
     {
       name = "MEDIA_FILES_STORAGE_BACKEND",
       value = "pycon.storages.CustomS3Boto3Storage"
-    }
+    },
+    {
+      name = "CLAMAV_HOST",
+      value = module.secrets.value.clamav_host
+    },
   ]
 }
 

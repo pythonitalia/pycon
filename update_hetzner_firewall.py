@@ -42,10 +42,17 @@ rules += [
     {
         "description": "NAT instance",
         "direction": "in",
-        "port": "443",
+        "port": "3310",
         "protocol": "tcp",
         "source_ips": [f"{NAT_INSTANCE_IP}/32"],
-    }
+    },
+    {
+        "description": "Tailscale",
+        "direction": "in",
+        "port": "41641",
+        "protocol": "udp",
+        "source_ips": ["0.0.0.0/0", "::/0"],
+    },
 ]
 
 response = requests.post(

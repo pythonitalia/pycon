@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl";
 
 import { getTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
-import { useUploadFileMutation } from "~/types";
+import { useFinalizeUploadMutation, useUploadFileMutation } from "~/types";
 
 import { Alert } from "../alert";
 import { ErrorsList } from "../errors-list";
@@ -35,6 +35,7 @@ export const FileInput = ({
   const language = useCurrentLanguage();
 
   const [uploadFile] = useUploadFileMutation();
+  const [finalizeUpload] = useFinalizeUploadMutation();
 
   const [filePreview, setFilePreview] = useState<string | null>(previewUrl);
   const [isUploading, setIsUploading] = useState(false);
@@ -138,7 +139,18 @@ export const FileInput = ({
         return;
       }
 
-      baseOnChange(response.id);
+      const fileId = response.id;
+      const finalizeUploadRequest = await finalizeUpload({
+        variables: {
+          input: {
+            fileId,
+          },
+        },
+      });
+
+      console.log("finalizeUploadRequest", finalizeUploadRequest);
+
+      baseOnChange(fileId);
     } catch (e) {
       setError(getTranslatedMessage("fileInput.uploadFailed", language));
     } finally {

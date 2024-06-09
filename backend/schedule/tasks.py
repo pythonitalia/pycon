@@ -1,3 +1,4 @@
+import hashlib
 import os
 import threading
 
@@ -385,12 +386,21 @@ def renew_lock(lock, interval, _stop_event):
             break
 
 
+def make_lock_id(fun, *args):
+    hash = hashlib.md5()
+    for arg in args:
+        if not isinstance(arg, str):
+            arg = str(arg)
+        hash.update(arg.encode("utf-8"))
+    return f"celery_lock_-{fun.__module__}-{fun.__name__}-{hash.hexdigest()}"
+
+
 def lock_task(func):
     # This is a dummy lock until we can get celery-heimdall
     def wrapper(*args, **kwargs):
         timeout = 60 * 5
         _stop_event = threading.Event()
-        lock_id = f"celery_lock_{func.__name__}"
+        lock_id = make_lock_id(func, *args)
         PYTEST_XDIST_WORKER = os.environ.get("PYTEST_XDIST_WORKER")
 
         if PYTEST_XDIST_WORKER:

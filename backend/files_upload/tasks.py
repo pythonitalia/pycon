@@ -1,6 +1,8 @@
+from django.db import transaction
 from django.conf import settings
 import requests
 import tempfile
+from schedule.tasks import lock_task
 import pyclamd
 
 from datetime import timedelta
@@ -27,10 +29,12 @@ def delete_unused_files():
 
 
 @app.task
+@lock_task
+@transaction.atomic
 def post_process_file_upload(file_id: str):
-    file = File.objects.get(id=file_id)
-
     with tempfile.NamedTemporaryFile() as temp_file:
+        file = File.objects.select_for_update().get(id=file_id)
+
         with requests.get(file.url, stream=True) as response:
             response.raise_for_status()
 

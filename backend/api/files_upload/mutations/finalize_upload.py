@@ -4,6 +4,7 @@ from files_upload.models import File as FileModel
 from api.files_upload.permissions import IsFileOwner
 from files_upload.tasks import post_process_file_upload
 import strawberry
+from celery.exceptions import TimeoutError
 
 
 @strawberry.input
@@ -15,5 +16,11 @@ class FinalizeUploadInput:
     permission_classes=[IsAuthenticated, IsFileOwner],
 )
 def finalize_upload(input: FinalizeUploadInput) -> File:
-    post_process_file_upload.delay(input.file_id)
+    task = post_process_file_upload.delay(input.file_id)
+
+    try:
+        task.get(timeout=30)
+    except TimeoutError:
+        pass
+
     return File.from_model(FileModel.objects.get(id=input.file_id))
