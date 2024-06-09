@@ -34,7 +34,6 @@ def delete_unused_files():
 @app.task(base=TaskWithLock)
 @transaction.atomic
 def post_process_file_upload(file_id: str):
-    breakpoint()
     logger.info("Processing file_id=%s", file_id)
     magika = Magika()
 

@@ -109,7 +109,7 @@ class CustomFileSystemStorage(FileSystemStorage):
 
     def generate_upload_url(self, file_obj):
         url = reverse("local_files_upload", kwargs={"file_id": file_obj.id})
-        return UploadURL(url=url, fields={})
+        return UploadURL(url=url, fields={}, is_public=False)
 
     def url(self, name, *, querystring_auth=True):
         return super().url(name)
