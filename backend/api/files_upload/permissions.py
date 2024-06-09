@@ -7,6 +7,7 @@ from strawberry.permission import BasePermission
 
 if TYPE_CHECKING:
     from api.files_upload.mutations.upload_file import UploadFileInput
+    from api.files_upload.mutations.finalize_upload import FinalizeUploadInput
 
 
 class IsFileTypeUploadAllowed(BasePermission):
@@ -40,3 +41,14 @@ class IsFileTypeUploadAllowed(BasePermission):
             return False
 
         return proposal.speaker_id == user.id
+
+
+class IsFileOwner(BasePermission):
+    message = "You are not the owner of this file"
+
+    def has_permission(self, source, info, input: "FinalizeUploadInput", **kwargs):
+        user = info.context.request.user
+        file_id = input.file_id
+        file = File.objects.get(id=file_id)
+
+        return file.uploaded_by_id == user.id

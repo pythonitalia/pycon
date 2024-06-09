@@ -46,6 +46,8 @@ x-defaults:
     AWS_MEDIA_BUCKET: ${AWS_MEDIA_BUCKET}
     AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
     AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+    CLAMAV_HOST: clamav
+    CLAMAV_PORT: 3310
 
 services:
   backend:
@@ -171,10 +173,6 @@ services:
   clamav:
     image: clamav/clamav:1.2.3-47
     networks: [pycon_net]
-    ports:
-      - 3310:3310
-    volumes:
-      - /tmp/clamav:/tmp/clamav
 
 
 networks:

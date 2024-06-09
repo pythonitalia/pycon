@@ -5,7 +5,7 @@
 groups = ["default", "dev", "lambda"]
 strategy = ["cross_platform"]
 lock_version = "4.4.1"
-content_hash = "sha256:d259ff295fea34e4a346ac1ea90a519db59b41fd25444b3c1d00d7df02f006c7"
+content_hash = "sha256:5d375d1102d3b83caefd045cc46efa8234d1b62e3f761af374e932199b2a842b"
 
 [[package]]
 name = "amqp"
@@ -1880,6 +1880,14 @@ dependencies = [
 files = [
     {file = "pyasn1_modules-0.3.0-py2.py3-none-any.whl", hash = "sha256:d3ccd6ed470d9ffbc716be08bd90efbd44d0734bc9303818f7336070984a162d"},
     {file = "pyasn1_modules-0.3.0.tar.gz", hash = "sha256:5bd01446b736eb9d31512a30d46c1ac3395d676c6f3cafa4c03eb54b9925631c"},
+]
+
+[[package]]
+name = "pyclamd"
+version = "0.4.0"
+summary = "pyClamd is a python interface to Clamd (Clamav daemon)."
+files = [
+    {file = "pyClamd-0.4.0.tar.gz", hash = "sha256:ddd588577e5db123760b6ddaac46b5c4b1d9044a00b5d9422de59f83a55c20fe"},
 ]
 
 [[package]]

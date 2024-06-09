@@ -13,6 +13,7 @@ env = environ.Env(
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, []),
     FRONTEND_URL=(str, "http://localhost:3000"),
+    CLAMAV_PORT=(int),
 )
 
 environ.Env.read_env(root(".env"))
@@ -388,3 +389,6 @@ AWS_S3_REGION_NAME = env("AWS_REGION_NAME", default="eu-central-1")
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID", default=None)
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default=None)
 AWS_SESSION_TOKEN = env("AWS_SESSION_TOKEN", default=None)
+
+CLAMAV_HOST = env("CLAMAV_HOST", default=None)
+CLAMAV_PORT = env("CLAMAV_PORT", default=None)
