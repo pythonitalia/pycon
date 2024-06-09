@@ -3,7 +3,7 @@ from django.db import transaction
 from django.conf import settings
 import requests
 import tempfile
-from pycon.celery_utils import lock_task
+from pycon.celery_utils import BaseTaskWithLock
 import pyclamd
 
 from datetime import timedelta
@@ -31,10 +31,10 @@ def delete_unused_files():
         unused_file.delete()
 
 
-@lock_task
-@app.task
+@app.task(base=BaseTaskWithLock)
 @transaction.atomic
 def post_process_file_upload(file_id: str):
+    logger.info("Processing file_id=%s", file_id)
     magika = Magika()
 
     with tempfile.NamedTemporaryFile() as temp_file:

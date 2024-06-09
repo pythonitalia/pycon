@@ -1,3 +1,4 @@
+from celery import Task
 import logging
 from django.conf import settings
 import hashlib
@@ -30,38 +31,56 @@ def make_lock_id(func, *args):
         if not isinstance(arg, str):
             arg = str(arg)
         hash.update(arg.encode("utf-8"))
-    return f"celery_lock_{func.__module__}_{func.__name__}_{hash.hexdigest()}"
+
+    PYTEST_XDIST_WORKER = os.environ.get("PYTEST_XDIST_WORKER")
+    key = f"celery_lock_{func.__module__}_{func.__name__}_{hash.hexdigest()}"
+
+    if PYTEST_XDIST_WORKER:
+        key = f"{key}_{PYTEST_XDIST_WORKER}"
+
+    return key
 
 
-def lock_task(func):
-    # This is a dummy lock until we can get celery-heimdall
-    def wrapper(*args, **kwargs):
-        timeout = 60 * 5
-        _stop_event = threading.Event()
-        lock_id = make_lock_id(func, *args)
-        PYTEST_XDIST_WORKER = os.environ.get("PYTEST_XDIST_WORKER")
+class BaseTaskWithLock(Task):
+    timeout = 60 * 5
 
-        if PYTEST_XDIST_WORKER:
-            lock_id = f"{lock_id}_{PYTEST_XDIST_WORKER}"
+    def __init__(self, *args, **kwargs):
+        self.client = redis.Redis.from_url(settings.REDIS_URL)
 
-        client = redis.Redis.from_url(settings.REDIS_URL)
-        lock = client.lock(lock_id, timeout=timeout, thread_local=False)
+    def acquire_lock(self, *args, **kwargs):
+        lock_id = make_lock_id(self, *args)
+        self.lock = self.client.lock(lock_id, timeout=self.timeout, thread_local=False)
+        return self.lock.acquire(blocking=False)
 
-        if lock.acquire(blocking=False):
-            renewer_thread = threading.Thread(
-                target=renew_lock, args=(lock, timeout, _stop_event)
+    def __call__(self, *args, **kwargs):
+        self.lock = None
+        self._stop_event = None
+        self.renewer_thread = None
+
+        if not self.acquire_lock(*args, **kwargs):
+            logger.info(
+                "Task %s.%s is already running, skipping",
+                self.__module__,
+                self.__name__,
             )
-            renewer_thread.daemon = True
-            renewer_thread.start()
-
-            try:
-                return func(*args, **kwargs)
-            finally:
-                lock.release()
-                _stop_event.set()
-                renewer_thread.join()
-        else:
-            logger.info("Task %s is already running, skipping", func.__name__)
             return
 
-    return wrapper
+        self._stop_event = threading.Event()
+
+        self.renewer_thread = threading.Thread(
+            target=renew_lock, args=(self.lock, self.timeout, self._stop_event)
+        )
+        self.renewer_thread.daemon = True
+        self.renewer_thread.start()
+
+        return super().__call__(*args, **kwargs)
+
+    def after_return(self, *args, **kwargs):
+        if self.lock and self.lock.owned():
+            self.lock.release()
+
+        if self._stop_event:
+            self._stop_event.set()
+
+        if self.renewer_thread:
+            self.renewer_thread.join()
