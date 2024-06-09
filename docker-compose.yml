@@ -171,6 +171,10 @@ services:
   clamav:
     image: clamav/clamav:1.2.3-47
     networks: [pycon_net]
+    ports:
+      - 3310:3310
+    volumes:
+      - /tmp/clamav:/tmp/clamav
 
 
 networks:

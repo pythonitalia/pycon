@@ -33,6 +33,11 @@ class File(UUIDModel, TimeStampedModel):
         max_length=32,
         choices=Type.choices,
     )
+    virus = models.BooleanField(
+        "Is detected as virus?",
+        null=True,
+        blank=True,
+    )
 
     def create_upload_url(self) -> str:
         return self.file.storage.generate_upload_url(self)
