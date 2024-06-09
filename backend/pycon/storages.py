@@ -13,10 +13,16 @@ from django.urls import reverse
 class UploadURL:
     url: str
     fields: dict
+    is_public: bool
 
     @property
     def fields_as_json(self) -> str:
-        return json.dumps(self.fields)
+        fields = self.fields.copy()
+
+        if self.is_public:
+            fields["acl"] = "public-read"
+
+        return json.dumps(fields)
 
 
 class CustomS3Boto3Storage(S3Boto3Storage):
@@ -32,16 +38,47 @@ class CustomS3Boto3Storage(S3Boto3Storage):
             region_name=self.region_name,
             endpoint_url=f"https://s3.{self.region_name}.amazonaws.com",
         )
+
+        conditions = [
+            ["content-length-range", 1, 5 * 1024 * 1024],
+        ]
+
+        if file_obj.is_public:
+            conditions.append({"acl": "public-read"})
+
         response = s3_client.generate_presigned_post(
             Bucket=bucket_name,
             Key=file.name,
             ExpiresIn=3600,
-            Conditions=[["content-length-range", 1, 5 * 1024 * 1024]],
+            Conditions=conditions,
         )
+
         return UploadURL(
             url=response["url"],
             fields=response["fields"],
+            is_public=file_obj.is_public,
         )
+
+    def url(
+        self,
+        name,
+        *,
+        parameters=None,
+        expire=None,
+        http_method=None,
+        querystring_auth=True,
+    ):
+        old_value = self.querystring_auth
+
+        if not querystring_auth:
+            self.querystring_auth = False
+
+        try:
+            return super().url(
+                name=name, parameters=parameters, expire=expire, http_method=http_method
+            )
+        finally:
+            self.querystring_auth = old_value
 
     def _save(self, name, content):
         content.seek(0)
@@ -58,6 +95,9 @@ class CustomInMemoryStorage(InMemoryStorage):
             url=f"memory://{file_obj.file.name}", fields={"in-memory": True}
         )
 
+    def url(self, name, *, querystring_auth=True):
+        return super().url(name)
+
 
 class ConferenceVideosStorage(AzureStorage):
     azure_container = "conference-videos"
@@ -69,3 +109,6 @@ class CustomFileSystemStorage(FileSystemStorage):
     def generate_upload_url(self, file_obj):
         url = reverse("local_files_upload", kwargs={"file_id": file_obj.id})
         return UploadURL(url=url, fields={})
+
+    def url(self, name, *, querystring_auth=True):
+        return super().url(name)

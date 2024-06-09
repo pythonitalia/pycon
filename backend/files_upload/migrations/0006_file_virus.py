@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='file',
             name='virus',
-            field=models.BooleanField(blank=True, null=True, verbose_name='Is detected as virus?'),
+            field=models.BooleanField(blank=True, null=True, verbose_name='Is virus'),
         ),
     ]
