@@ -20,6 +20,8 @@ class UploadURL:
 
 
 class CustomS3Boto3Storage(S3Boto3Storage):
+    is_remote = True
+
     def generate_upload_url(self, file_obj):
         file = file_obj.file
         bucket_name = self.bucket_name
@@ -49,6 +51,8 @@ class CustomS3Boto3Storage(S3Boto3Storage):
 
 
 class CustomInMemoryStorage(InMemoryStorage):
+    is_remote = False
+
     def generate_upload_url(self, file_obj):
         return UploadURL(
             url=f"memory://{file_obj.file.name}", fields={"in-memory": True}
@@ -60,6 +64,8 @@ class ConferenceVideosStorage(AzureStorage):
 
 
 class CustomFileSystemStorage(FileSystemStorage):
+    is_remote = False
+
     def generate_upload_url(self, file_obj):
         url = reverse("local_files_upload", kwargs={"file_id": file_obj.id})
         return UploadURL(url=url, fields={})

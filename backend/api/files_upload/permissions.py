@@ -44,11 +44,14 @@ class IsFileTypeUploadAllowed(BasePermission):
 
 
 class IsFileOwner(BasePermission):
-    message = "You are not the owner of this file"
+    message = "File not found"
 
     def has_permission(self, source, info, input: "FinalizeUploadInput", **kwargs):
         user = info.context.request.user
         file_id = input.file_id
-        file = File.objects.get(id=file_id)
+        file = File.objects.filter(id=file_id).first()
+
+        if not file:
+            return False
 
         return file.uploaded_by_id == user.id

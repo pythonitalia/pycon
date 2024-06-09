@@ -16,11 +16,16 @@ class FinalizeUploadInput:
     permission_classes=[IsAuthenticated, IsFileOwner],
 )
 def finalize_upload(input: FinalizeUploadInput) -> File:
-    task = post_process_file_upload.delay(input.file_id)
+    file = FileModel.objects.filter(id=input.file_id).first()
 
-    try:
-        task.get(timeout=30)
-    except TimeoutError:
-        pass
+    if file.virus is None:
+        task = post_process_file_upload.delay(input.file_id)
 
-    return File.from_model(FileModel.objects.get(id=input.file_id))
+        try:
+            task.get(timeout=30)
+        except TimeoutError:
+            pass
+
+        file.refresh_from_db()
+
+    return File.from_django(file)

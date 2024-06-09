@@ -38,6 +38,12 @@ class File(UUIDModel, TimeStampedModel):
         null=True,
         blank=True,
     )
+    mime_type = models.CharField(
+        "Mime Type",
+        max_length=255,
+        null=True,
+        blank=True,
+    )
 
     def create_upload_url(self) -> str:
         return self.file.storage.generate_upload_url(self)
