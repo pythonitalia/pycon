@@ -148,8 +148,6 @@ export const FileInput = ({
         },
       });
 
-      console.log("finalizeUploadRequest", finalizeUploadRequest);
-
       baseOnChange(fileId);
     } catch (e) {
       setError(getTranslatedMessage("fileInput.uploadFailed", language));
