@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 settings = Settings()
-header_scheme = APIKeyHeader(name="x-api-key")
+api_key_header = APIKeyHeader(name="x-api-key")
 
 
 @app.get("/")
@@ -29,7 +29,7 @@ class Scan(BaseModel):
 
 @app.post("/scan")
 def scan(
-    input: Scan, api_key: Annotated[str, Depends(header_scheme)], response: Response
+    input: Scan, api_key: Annotated[str, Depends(api_key_header)], response: Response
 ):
     if api_key != settings.api_key.get_secret_value():
         response.status_code = status.HTTP_401_UNAUTHORIZED
