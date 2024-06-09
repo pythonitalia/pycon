@@ -26,17 +26,19 @@ def renew_lock(lock, interval, _stop_event):
 
 
 def make_lock_id(func, *args):
+    key = f"celery_lock_{func.__module__}_{func.__name__}"
+
     hash = hashlib.md5()
     for arg in args:
         if not isinstance(arg, str):
             arg = str(arg)
         hash.update(arg.encode("utf-8"))
 
-    PYTEST_XDIST_WORKER = os.environ.get("PYTEST_XDIST_WORKER")
-    key = f"celery_lock_{func.__module__}_{func.__name__}_{hash.hexdigest()}"
+    if args:
+        key = f"{key}_{hash.hexdigest()}"
 
-    if PYTEST_XDIST_WORKER:
-        key = f"{key}_{PYTEST_XDIST_WORKER}"
+    if xdist_worker := os.environ.get("PYTEST_XDIST_WORKER"):
+        key = f"{key}_{xdist_worker}"
 
     return key
 
@@ -74,7 +76,12 @@ class BaseTaskWithLock(Task):
         self.renewer_thread.daemon = True
         self.renewer_thread.start()
 
-        return super().__call__(*args, **kwargs)
+        try:
+            super().__call__(*args, **kwargs)
+        finally:
+            # Workaround for now
+            if settings.IS_RUNNING_TESTS:
+                self.after_return()
 
     def after_return(self, *args, **kwargs):
         if self.lock and self.lock.owned():

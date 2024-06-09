@@ -1,6 +1,8 @@
 from .base import env
 from .base import *  # noqa
 
+IS_RUNNING_TESTS = True
+
 SECRET_KEY = "this-key-should-only-be-used-for-tests"
 HASHID_DEFAULT_SECRET_SALT = "only-for-tests"
 

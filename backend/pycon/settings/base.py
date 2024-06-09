@@ -392,3 +392,5 @@ AWS_SESSION_TOKEN = env("AWS_SESSION_TOKEN", default=None)
 
 CLAMAV_HOST = env("CLAMAV_HOST", default=None)
 CLAMAV_PORT = env("CLAMAV_PORT", default=3310)
+
+IS_RUNNING_TESTS = False
