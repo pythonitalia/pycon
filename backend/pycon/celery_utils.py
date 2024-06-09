@@ -79,7 +79,7 @@ class BaseTaskWithLock(Task):
         try:
             super().__call__(*args, **kwargs)
         finally:
-            # Workaround for now
+            # Workaround for unit-tests to release the lock
             if settings.IS_RUNNING_TESTS:
                 self.after_return()
 
