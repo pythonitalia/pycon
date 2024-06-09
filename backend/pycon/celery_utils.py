@@ -4,7 +4,7 @@ from django.conf import settings
 import hashlib
 import os
 import threading
-
+from kombu.utils.encoding import safe_repr
 import redis
 
 logger = logging.getLogger(__name__)
@@ -59,16 +59,17 @@ class BaseTaskWithLock(Task):
 
         if not self.acquire_lock(*args, **kwargs):
             logger.info(
-                "Task %s.%s is already running, skipping",
+                "Task %s.%s[%s] is already running, skipping",
                 self.__module__,
                 self.__name__,
+                ",".join([safe_repr(arg) for arg in args]),
             )
             return
 
         self._stop_event = threading.Event()
 
         self.renewer_thread = threading.Thread(
-            target=renew_lock, args=(self.lock, self.timeout, self._stop_event)
+            target=renew_lock, args=(self.lock, self.timeout - 30, self._stop_event)
         )
         self.renewer_thread.daemon = True
         self.renewer_thread.start()
