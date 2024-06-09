@@ -13,7 +13,7 @@ from django.core.files.storage.memory import InMemoryStorage
 class FakeRemoteStorage(InMemoryStorage):
     is_remote = True
 
-    def url(self, name):
+    def url(self, name, *args, **kwargs):
         return "http://example.org/example.txt"
 
     def generate_upload_url(self, file_obj):

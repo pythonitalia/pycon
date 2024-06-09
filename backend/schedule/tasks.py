@@ -1,5 +1,5 @@
 from django.db.models import Q
-from pycon.celery_utils import BaseTaskWithLock
+from pycon.celery_utils import TaskWithLock
 from google_api.exceptions import NoGoogleCloudQuotaLeftError
 from googleapiclient.errors import HttpError
 from google_api.sdk import youtube_videos_insert, youtube_videos_set_thumbnail
@@ -367,7 +367,7 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
     sent_for_video_upload.save(update_fields=["status"])
 
 
-@app.task(base=BaseTaskWithLock)
+@app.task(base=TaskWithLock)
 def process_schedule_items_videos_to_upload():
     statuses = (
         ScheduleItemSentForVideoUpload.objects.filter(
