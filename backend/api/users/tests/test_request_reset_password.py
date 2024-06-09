@@ -1,4 +1,4 @@
-from pythonit_toolkit.emails.templates import EmailTemplate
+from emails.templates import EmailTemplate
 import pytest
 
 from users.tests.factories import UserFactory

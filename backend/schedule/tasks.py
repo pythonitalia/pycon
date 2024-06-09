@@ -7,11 +7,11 @@ from google_api.exceptions import NoGoogleCloudQuotaLeftError
 from googleapiclient.errors import HttpError
 from google_api.sdk import youtube_videos_insert, youtube_videos_set_thumbnail
 from integrations import plain
-from pythonit_toolkit.emails.utils import mark_safe
+from notifications.emails import mark_safe
 from pretix import user_has_admission_ticket
 from django.utils import timezone
 from grants.tasks import get_name
-from pythonit_toolkit.emails.templates import EmailTemplate
+from emails.templates import EmailTemplate
 from notifications.emails import send_email
 from urllib.parse import urljoin
 from django.conf import settings
