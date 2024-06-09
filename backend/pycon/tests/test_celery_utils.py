@@ -8,6 +8,7 @@ def test_func():
 
 
 def test_make_lock_id(mocker):
+    mocker.patch.dict(os.environ, {"PYTEST_XDIST_WORKER": ""})
     key = make_lock_id(test_func)
     assert key == "celery_lock_pycon.tests.test_celery_utils_test_func"
 
