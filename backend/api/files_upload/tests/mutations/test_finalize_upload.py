@@ -1,3 +1,4 @@
+from celery.exceptions import TimeoutError
 from uuid import uuid4
 from users.tests.factories import UserFactory
 from files_upload.tests.factories import FileFactory
@@ -22,6 +23,22 @@ def test_finalize_upload(graphql_client, user, mocker):
     mock_task = mocker.patch(
         "api.files_upload.mutations.finalize_upload.post_process_file_upload"
     )
+
+    graphql_client.force_login(user)
+    file = FileFactory(uploaded_by=user)
+
+    response = _finalize_upload(graphql_client, {"fileId": file.id})
+
+    mock_task.delay.assert_called()
+    assert not response.get("errors")
+    assert response["data"]["finalizeUpload"]["id"] == str(file.id)
+
+
+def test_finalize_upload_when_the_task_takes_too_long(graphql_client, user, mocker):
+    mock_task = mocker.patch(
+        "api.files_upload.mutations.finalize_upload.post_process_file_upload"
+    )
+    mock_task.delay.return_value.get.side_effect = TimeoutError
 
     graphql_client.force_login(user)
     file = FileFactory(uploaded_by=user)
