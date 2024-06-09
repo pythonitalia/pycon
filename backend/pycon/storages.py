@@ -68,6 +68,7 @@ class CustomS3Boto3Storage(S3Boto3Storage):
         http_method=None,
         querystring_auth=True,
     ):
+        # todo find a better workaround?
         old_value = self.querystring_auth
 
         if not querystring_auth:
