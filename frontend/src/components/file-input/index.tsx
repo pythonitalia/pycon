@@ -140,7 +140,7 @@ export const FileInput = ({
       }
 
       const fileId = response.id;
-      const finalizeUploadRequest = await finalizeUpload({
+      await finalizeUpload({
         variables: {
           input: {
             fileId,
