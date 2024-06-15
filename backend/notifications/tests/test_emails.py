@@ -61,6 +61,6 @@ def test_mark_safe_empty_string():
     assert str(safe_string) == ""
 
 
-def mark_safe_with_none_fails():
+def test_mark_safe_with_none_fails():
     with pytest.raises(ValueError):
         mark_safe(None)
