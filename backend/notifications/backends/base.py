@@ -1,14 +1,12 @@
-from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
 
 from notifications.templates import EmailTemplate
 
 
-class EmailBackend(ABC):
+class EmailBackend:
     def __init__(self, environment: Optional[str] = None) -> None:
         self.environment = environment
 
-    @abstractmethod
     def send_email(
         self,
         *,
@@ -19,4 +17,4 @@ class EmailBackend(ABC):
         variables: Optional[Dict[str, str]] = None,
         reply_to: List[str] = None,
     ) -> str:
-        pass
+        raise NotImplementedError()
