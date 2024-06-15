@@ -23,7 +23,7 @@ def test_loading_same_backend_uses_cache():
     loaded_backend = get_email_backend("notifications.tests.test_emails.TestBackend")
     assert "notifications.tests.test_emails.TestBackend" in str(type(loaded_backend))
 
-    with patch("pythonit_toolkit.emails.utils.importlib.import_module") as mock:
+    with patch("notifications.emails.importlib.import_module") as mock:
         loaded_backend = get_email_backend(
             "notifications.tests.test_emails.TestBackend"
         )
@@ -33,7 +33,7 @@ def test_loading_same_backend_uses_cache():
 
     mock.reset_mock()
 
-    with patch("pythonit_toolkit.emails.utils.importlib.import_module") as mock:
+    with patch("notifications.emails.importlib.import_module") as mock:
         get_email_backend("notifications.tests.test_emails.TestBackend2")
 
     assert mock.called
