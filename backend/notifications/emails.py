@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from django.conf import settings
-from emails.templates import EmailTemplate
+from notifications.templates import EmailTemplate
 
 
 from dataclasses import dataclass

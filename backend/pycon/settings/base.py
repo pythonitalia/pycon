@@ -289,7 +289,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 PYTHONIT_EMAIL_BACKEND = env(
     "PYTHONIT_EMAIL_BACKEND",
-    default="emails.backends.local.LocalEmailBackend",
+    default="notifications.backends.local.LocalEmailBackend",
 )
 DEFAULT_EMAIL_FROM = env("DEFAULT_EMAIL_FROM", default="noreply@pycon.it")
 

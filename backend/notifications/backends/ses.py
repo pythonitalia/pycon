@@ -2,7 +2,7 @@ import json
 from typing import Any, Dict, List, Optional
 import html
 import boto3
-from emails.templates import EmailTemplate
+from notifications.templates import EmailTemplate
 from emails.utils import SafeString
 from emails.backends.base import EmailBackend
 

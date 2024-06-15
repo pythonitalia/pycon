@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
 
-from emails.templates import EmailTemplate
+from notifications.templates import EmailTemplate
 
 
 class EmailBackend(ABC):

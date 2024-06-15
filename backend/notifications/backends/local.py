@@ -1,7 +1,7 @@
 from typing import Dict, List, Optional
 from uuid import uuid4
 
-from emails.templates import EmailTemplate
+from notifications.templates import EmailTemplate
 
 from emails.backends.base import EmailBackend
 

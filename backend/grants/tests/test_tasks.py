@@ -5,7 +5,7 @@ from django.test import override_settings
 
 import pytest
 from users.tests.factories import UserFactory
-from emails.templates import EmailTemplate
+from notifications.templates import EmailTemplate
 
 from grants.tests.factories import GrantFactory
 from grants.tasks import (

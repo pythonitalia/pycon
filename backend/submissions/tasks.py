@@ -1,4 +1,4 @@
-from emails.templates import EmailTemplate
+from notifications.templates import EmailTemplate
 from notifications.emails import send_email
 from integrations import slack
 from grants.tasks import get_name
