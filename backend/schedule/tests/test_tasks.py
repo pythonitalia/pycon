@@ -31,7 +31,7 @@ import time_machine
 from conferences.models.speaker_voucher import SpeakerVoucher
 from users.tests.factories import UserFactory
 from schedule.models import ScheduleItem, ScheduleItemSentForVideoUpload
-from pythonit_toolkit.emails.templates import EmailTemplate
+from notifications.templates import EmailTemplate
 
 import pytest
 
