@@ -93,7 +93,9 @@ class CustomInMemoryStorage(InMemoryStorage):
 
     def generate_upload_url(self, file_obj):
         return UploadURL(
-            url=f"memory://{file_obj.file.name}", fields={"in-memory": True}
+            url=f"memory://{file_obj.file.name}",
+            fields={"in-memory": True},
+            is_public=False,
         )
 
     def url(self, name, *, querystring_auth=True):
