@@ -34,7 +34,7 @@ module "app" {
     { name = "SENTRY_DSN", value = data.azurerm_key_vault_secret.sentry_dsn.value, secret = true },
     { name = "GOOGLE_AUTH_CLIENT_ID", value = "", secret = false },
     { name = "GOOGLE_AUTH_CLIENT_ID", value = "", secret = false },
-    { name = "EMAIL_BACKEND", value = "emails.backends.ses.SESEmailBackend", secret = false },
+    { name = "EMAIL_BACKEND", value = "notifications.backends.ses.SESEmailBackend", secret = false },
     { name = "ASSOCIATION_FRONTEND_URL", value = local.association_frontend_url, secret = false },
     { name = "PASTAPORTO_SECRET", value = data.azurerm_key_vault_secret.pastaporto_secret.value, secret = true },
     { name = "IDENTITY_SECRET", value = data.azurerm_key_vault_secret.pastaporto_secret.value, secret = true },

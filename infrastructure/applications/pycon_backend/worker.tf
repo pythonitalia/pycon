@@ -62,7 +62,7 @@ locals {
     },
     {
       name  = "PYTHONIT_EMAIL_BACKEND",
-      value = "emails.backends.ses.SESEmailBackend"
+      value = "notifications.backends.ses.SESEmailBackend"
     },
     {
       name  = "FRONTEND_URL",

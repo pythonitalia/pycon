@@ -3,8 +3,8 @@ from typing import Any, Dict, List, Optional
 import html
 import boto3
 from notifications.templates import EmailTemplate
-from emails.utils import SafeString
-from emails.backends.base import EmailBackend
+from notifications.emails import SafeString
+from notifications.backends.base import EmailBackend
 
 
 class SESEmailBackend(EmailBackend):

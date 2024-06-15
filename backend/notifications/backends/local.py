@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from notifications.templates import EmailTemplate
 
-from emails.backends.base import EmailBackend
+from notifications.backends.base import EmailBackend
 
 
 class LocalEmailBackend(EmailBackend):

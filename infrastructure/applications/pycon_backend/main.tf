@@ -90,7 +90,7 @@ module "lambda" {
     AWS_REGION_NAME                           = aws_s3_bucket.backend_media.region
     SPEAKERS_EMAIL_ADDRESS                    = module.secrets.value.speakers_email_address
     EMAIL_BACKEND                             = "django_ses.SESBackend"
-    PYTHONIT_EMAIL_BACKEND                    = "emails.backends.ses.SESEmailBackend"
+    PYTHONIT_EMAIL_BACKEND                    = "notifications.backends.ses.SESEmailBackend"
     FRONTEND_URL                              = "https://pycon.it"
     PRETIX_API                                = "https://tickets.pycon.it/api/v1/"
     AWS_S3_CUSTOM_DOMAIN                      = local.cdn_url
