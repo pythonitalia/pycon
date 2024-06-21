@@ -35,6 +35,7 @@ class CustomS3Boto3Storage(S3Boto3Storage):
             "s3",
             aws_access_key_id=self.access_key,
             aws_secret_access_key=self.secret_key,
+            aws_session_token=self.security_token,
             region_name=self.region_name,
             endpoint_url=f"https://s3.{self.region_name}.amazonaws.com",
         )
