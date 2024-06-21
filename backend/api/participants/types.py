@@ -13,6 +13,7 @@ class Participant:
     bio: str
     website: str
     photo: str
+    photo_id: str
     public_profile: bool
     twitter_handle: str
     instagram_handle: str
@@ -46,7 +47,8 @@ class Participant:
             user_id=instance.user_id,
             speaker_id=instance.user_id,
             fullname=instance.user.fullname,
-            photo=instance.photo,
+            photo=instance.photo_url,
+            photo_id=instance.photo_file_id,
             bio=instance.bio,
             website=instance.website,
             public_profile=instance.public_profile,

@@ -4,6 +4,7 @@ query ParticipantData($conference: String!) {
     participant(conference: $conference) {
       id
       photo
+      photoId
       bio
       website
       speakerLevel

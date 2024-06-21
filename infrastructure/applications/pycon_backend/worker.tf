@@ -176,6 +176,14 @@ locals {
       name  = "HASHID_DEFAULT_SECRET_SALT",
       value = module.secrets.value.hashid_default_secret_salt
     },
+    {
+      name = "MEDIA_FILES_STORAGE_BACKEND",
+      value = "pycon.storages.CustomS3Boto3Storage"
+    },
+    {
+      name = "CLAMAV_HOST",
+      value = module.secrets.value.clamav_host
+    },
   ]
 }
 

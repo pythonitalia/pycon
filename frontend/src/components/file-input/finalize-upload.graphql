@@ -1,0 +1,9 @@
+mutation FinalizeUpload($input: FinalizeUploadInput!) {
+  finalizeUpload(input: $input) {
+    ... on File {
+      id
+      virus
+      url
+    }
+  }
+}

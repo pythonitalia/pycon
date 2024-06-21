@@ -1,3 +1,4 @@
+from files_upload.tests.factories import FileFactory
 from pytest import mark
 
 from participants.models import Participant
@@ -23,7 +24,7 @@ def _update_submission(
     new_languages=["en"],
     new_short_social_summary="",
     new_speaker_bio="",
-    new_speaker_photo="https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/fake.jpg",
+    new_speaker_photo=None,
     new_speaker_website="",
     new_speaker_twitter_handle="",
     new_instagram_handle="",
@@ -35,6 +36,7 @@ def _update_submission(
     new_elevator_pitch = new_elevator_pitch or {"en": "This is an elevator pitch"}
     new_abstract = new_abstract or {"en": "abstract here"}
     short_social_summary = new_short_social_summary or ""
+    new_speaker_photo = new_speaker_photo or FileFactory().id
 
     return graphql_client.query(
         """
@@ -317,12 +319,7 @@ def test_update_submission_with_photo_to_upload(
     submission_tag_factory,
     mocker,
 ):
-    mock_confirm_upload = mocker.patch(
-        "api.submissions.mutations.confirm_blob_upload_usage",
-        return_value="https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg",
-    )
-
-    speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/temporary-uploads/participants-avatars/my-photo.jpg"  # noqa
+    file = FileFactory()
 
     conference = conference_factory(
         topics=("life", "diy"),
@@ -365,18 +362,14 @@ def test_update_submission_with_photo_to_upload(
         new_speaker_level=Submission.SPEAKER_LEVELS.experienced,
         new_previous_talk_video="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         new_short_social_summary="test",
-        new_speaker_photo=speaker_photo,
+        new_speaker_photo=file.id,
     )
 
     submission.refresh_from_db()
-    mock_confirm_upload.assert_called()
 
     assert response["data"]["updateSubmission"]["__typename"] == "Submission"
     participant = Participant.objects.get(conference=conference, user_id=user.id)
-    assert (
-        participant.photo
-        == "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"  # noqa
-    )
+    assert participant.photo_file_id == file.id
 
 
 def test_cannot_update_submission_with_lang_outside_allowed_values(

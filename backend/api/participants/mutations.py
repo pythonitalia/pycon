@@ -1,14 +1,9 @@
 import re
 from api.context import Info
-from api.helpers.ids import encode_hashid
-from django.conf import settings
 import strawberry
 from strawberry.tools import create_type
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType
-from blob.confirmation import confirm_blob_upload_usage
-from blob.enum import BlobContainer
-from blob.url_parsing import verify_azure_storage_url
 from conferences.models.conference import Conference
 from participants.models import Participant as ParticipantModel
 
@@ -82,15 +77,6 @@ class UpdateParticipantInput:
                 "facebook_url", "Facebook URL should be a facebook.com link"
             )
 
-        if self.photo and not verify_azure_storage_url(
-            url=self.photo,
-            allowed_containers=[
-                BlobContainer.TEMPORARY_UPLOADS,
-                BlobContainer.PARTICIPANTS_AVATARS,
-            ],
-        ):
-            errors.add_error("photo", "Invalid photo")
-
         return errors.if_has_errors
 
 
@@ -111,23 +97,12 @@ def update_participant(
 
     conference = Conference.objects.get(code=input.conference)
 
-    photo = input.photo
-    if photo and verify_azure_storage_url(
-        url=photo, allowed_containers=[BlobContainer.TEMPORARY_UPLOADS]
-    ):
-        photo = confirm_blob_upload_usage(
-            photo,
-            blob_name=_participant_avatar_blob_name(
-                conference=conference, user_id=request.user.id
-            ),
-        )
-
     participant, _ = ParticipantModel.objects.update_or_create(
         user_id=request.user.id,
         conference=conference,
         defaults={
             "bio": input.bio,
-            "photo": photo,
+            "photo_file_id": input.photo,
             "website": input.website,
             "public_profile": input.public_profile,
             "speaker_level": input.speaker_level,
@@ -140,11 +115,6 @@ def update_participant(
         },
     )
     return Participant.from_model(participant)
-
-
-def _participant_avatar_blob_name(conference: Conference, user_id: int) -> str:
-    hashed_id = encode_hashid(user_id, salt=settings.USER_ID_HASH_SALT, min_length=6)
-    return f"{conference.code}/{hashed_id}.jpg"
 
 
 ParticipantMutations = create_type("ParticipantMutations", (update_participant,))

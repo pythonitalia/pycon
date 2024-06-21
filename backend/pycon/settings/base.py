@@ -13,6 +13,7 @@ env = environ.Env(
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, []),
     FRONTEND_URL=(str, "http://localhost:3000"),
+    CLAMAV_PORT=(int, 3310),
 )
 
 environ.Env.read_env(root(".env"))
@@ -122,6 +123,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "integrations.apps.IntegrationsConfig",
     "healthchecks.apps.HealthchecksConfig",
+    "files_upload.apps.FilesUploadConfig",
 ]
 
 MIDDLEWARE = [
@@ -219,14 +221,15 @@ PRETIX_API_TOKEN = None
 STORAGES = {
     "default": {
         "BACKEND": env(
-            "MEDIA_FILES_STORAGE_BACKEND", default="pycon.storages.CustomS3Boto3Storage"
+            "MEDIA_FILES_STORAGE_BACKEND",
+            default="pycon.storages.CustomFileSystemStorage",
         )
     },
     "conferencevideos": {
         "BACKEND": "pycon.storages.ConferenceVideosStorage",
     },
     "localstorage": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "pycon.storages.CustomFileSystemStorage",
         "LOCATION": "/tmp/",
     },
     "staticfiles": {
@@ -234,7 +237,7 @@ STORAGES = {
     },
 }
 IMAGEKIT_DEFAULT_FILE_STORAGE = env(
-    "MEDIA_FILES_STORAGE_BACKEND", default="pycon.storages.CustomS3Boto3Storage"
+    "MEDIA_FILES_STORAGE_BACKEND", default="pycon.storages.CustomFileSystemStorage"
 )
 
 if PRETIX_API:
@@ -380,3 +383,14 @@ WAGTAIL_HEADLESS_PREVIEW = {
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
 CELERY_TASK_IGNORE_RESULT = True
+
+AWS_STORAGE_BUCKET_NAME = env("AWS_MEDIA_BUCKET", default=None)
+AWS_S3_REGION_NAME = env("AWS_REGION_NAME", default="eu-central-1")
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID", default=None)
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default=None)
+AWS_SESSION_TOKEN = env("AWS_SESSION_TOKEN", default=None)
+
+CLAMAV_HOST = env("CLAMAV_HOST", default=None)
+CLAMAV_PORT = env("CLAMAV_PORT", default=3310)
+
+IS_RUNNING_TESTS = False
