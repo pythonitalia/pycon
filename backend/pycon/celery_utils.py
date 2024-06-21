@@ -43,7 +43,7 @@ def make_lock_id(func, *args):
     return key
 
 
-class TaskWithLock(Task):
+class OnlyOneAtTimeTask(Task):
     timeout = 60 * 5
 
     def __init__(self, *args, **kwargs):

@@ -3,7 +3,7 @@ from django.db import transaction
 from django.conf import settings
 import requests
 import tempfile
-from pycon.celery_utils import TaskWithLock
+from pycon.celery_utils import OnlyOneAtTimeTask
 import pyclamd
 
 from datetime import timedelta
@@ -31,7 +31,7 @@ def delete_unused_files():
         unused_file.delete()
 
 
-@app.task(base=TaskWithLock)
+@app.task(base=OnlyOneAtTimeTask)
 @transaction.atomic
 def post_process_file_upload(file_id: str):
     logger.info("Processing file_id=%s", file_id)
