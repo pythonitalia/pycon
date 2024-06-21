@@ -13,7 +13,7 @@ class Participant:
     bio: str
     website: str
     photo: str
-    photo_id: str
+    photo_id: str | None
     public_profile: bool
     twitter_handle: str
     instagram_handle: str
