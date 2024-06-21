@@ -1,4 +1,5 @@
 import { SnakeLongNeck } from "@python-italia/pycon-styleguide/illustrations";
+import clsx from "clsx";
 import QRCode from "react-qr-code";
 import Balancer from "react-wrap-balancer";
 
@@ -92,7 +93,7 @@ export const Badge = ({
             width: "113px",
             height: "34px",
             marginBottom: "20px",
-            marginTop: "25px",
+            marginTop: "40px",
           }}
           src="https://pythonit-email-assets.s3.eu-central-1.amazonaws.com/logo-pycon-2024.png"
         />
@@ -138,15 +139,26 @@ export const Badge = ({
             border: "1px solid #FAF5F3",
           }}
         />
-        <div
-          style={{
-            fontSize: "32px",
-            color: BADGE_TYPE_TO_COLOR[role],
-            fontWeight: 600,
-            textTransform: "capitalize",
-          }}
-        >
-          {BADGE_TYPE_TO_NAME[role]}
+        <div>
+          <div
+            style={{
+              fontSize: "32px",
+              color: BADGE_TYPE_TO_COLOR[role],
+              fontWeight: 600,
+              textTransform: "capitalize",
+            }}
+          >
+            {BADGE_TYPE_TO_NAME[role]}
+          </div>
+          <div
+            style={{
+              fontWeight: 400,
+              color: "#FCE8DE",
+            }}
+            className="!text-[13px] [&>span]:text-[13px]"
+          >
+            <Balancer>{tagline.substring(0, 400)}</Balancer>
+          </div>
         </div>
         <div
           style={{
@@ -157,18 +169,22 @@ export const Badge = ({
             justifyContent: "space-between",
           }}
         >
-          <div
-            style={{
-              fontWeight: 400,
-              color: "#FCE8DE",
-              marginRight: "25px",
-              maxWidth: "153px",
-            }}
-            className="!text-[13px] [&>span]:text-[13px]"
-          >
-            <Balancer>{tagline.substring(0, 400)}</Balancer>
-          </div>
-
+          {side === "front" && (
+            <div className="grid grid-cols-[13px_repeat(3,50px)] bg-coral gap-[2px]">
+              <div className=" flex items-center justify-center text-[#FFFFFF]">
+                <div className="text-[8px] py-2 pl-[3px] uppercase font-bold  whitespace-nowrap	leading-[0.9]">
+                  L<br />u<br />n<br />c<br />h
+                </div>
+              </div>
+              {[23, 24, 25].map((number) => (
+                <div key={number} className={clsx("bg-[#FFFFFF] relative")}>
+                  <span className="absolute top-0 left-[5px]  text-[#b5b5b5] font-bold">
+                    {number}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
           {!empty && side === "front" && (
             <div className="p-[2px] bg-white">
               <QRCode
@@ -181,7 +197,7 @@ export const Badge = ({
           {(empty || side === "back") && (
             <div className="p-[2px] relative">
               <div className="w-[70px] h-[70px]" />
-              <SnakeLongNeck className="w-[70px] top-[-30px] absolute" />
+              <div />
             </div>
           )}
         </div>

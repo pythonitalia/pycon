@@ -7,12 +7,13 @@ import {
   StyledHTMLText,
   VerticalStack,
 } from "@python-italia/pycon-styleguide";
-import { Illustration } from "@python-italia/pycon-styleguide/dist/illustrations/types";
-import { Color } from "@python-italia/pycon-styleguide/dist/types";
+import type { Illustration } from "@python-italia/pycon-styleguide/dist/illustrations/types";
+import type { Color } from "@python-italia/pycon-styleguide/dist/types";
 import { getIllustration } from "@python-italia/pycon-styleguide/illustrations";
+import { type ModalID, useSetCurrentModal } from "~/components/modal/context";
 
 import {
-  Cta,
+  type Cta,
   queryInformationSection,
   useInformationSectionQuery,
 } from "~/types";
@@ -36,6 +37,7 @@ export const InformationSection = ({
   backgroundColor,
   illustration,
 }: Props) => {
+  const setCurrentModal = useSetCurrentModal();
   const { data } = useInformationSectionQuery({
     variables: {
       code: process.env.conferenceCode,
@@ -46,6 +48,16 @@ export const InformationSection = ({
     countdownToDeadline && Object.hasOwn(data.conference, countdownToDeadline)
       ? new Date(data.conference[countdownToDeadline].start)
       : null;
+  const isModalCTA = cta?.link?.startsWith("modal:");
+  const openModal = (e) => {
+    if (!isModalCTA) {
+      return;
+    }
+    e.preventDefault();
+
+    const modalId = cta.link.replace("modal:", "") as ModalID;
+    setCurrentModal(modalId);
+  };
 
   return (
     <Section
@@ -78,7 +90,11 @@ export const InformationSection = ({
         {cta && (
           <>
             <Spacer size="large" />
-            <Button href={cta.link} variant="primary">
+            <Button
+              onClick={openModal}
+              href={isModalCTA ? null : cta.link}
+              variant="primary"
+            >
               {cta.label}
             </Button>
           </>

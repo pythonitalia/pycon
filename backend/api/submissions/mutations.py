@@ -8,14 +8,10 @@ from strawberry.types import Info
 
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType, MultiLingualInput
-from blob.confirmation import confirm_blob_upload_usage
-from blob.enum import BlobContainer
-from blob.url_parsing import verify_azure_storage_url
 from conferences.models.conference import Conference
 from i18n.strings import LazyI18nString
 from languages.models import Language
 from participants.models import Participant
-from api.participants.mutations import _participant_avatar_blob_name
 from submissions.models import Submission as SubmissionModel
 from submissions.tasks import notify_new_cfp_submission
 
@@ -23,18 +19,6 @@ from .types import Submission
 
 FACEBOOK_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?facebook\.com\/")
 LINKEDIN_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?linkedin\.com\/")
-
-
-class SubmissionMutation:
-    @classmethod
-    def transform(cls, result):
-        # lie to strawberry to make it think that the return value is a proper type
-        result.__strawberry_definition__ = Submission.__strawberry_definition__
-        return result
-
-    class Meta:
-        output_types = (Submission,)
-        permission_classes = (IsAuthenticated,)
 
 
 @strawberry.type
@@ -181,14 +165,6 @@ class BaseSubmissionInput:
 
         if not self.speaker_photo:
             errors.add_error("speaker_photo", "This is required")
-        elif not verify_azure_storage_url(
-            url=self.speaker_photo,
-            allowed_containers=[
-                BlobContainer.TEMPORARY_UPLOADS,
-                BlobContainer.PARTICIPANTS_AVATARS,
-            ],
-        ):
-            errors.add_error("speaker_photo", "Invalid speaker photo")
 
         if self.speaker_linkedin_url and not LINKEDIN_LINK_MATCH.match(
             self.speaker_linkedin_url
@@ -315,23 +291,12 @@ class SubmissionsMutations:
 
         instance.save()
 
-        speaker_photo = input.speaker_photo
-        if verify_azure_storage_url(
-            url=speaker_photo, allowed_containers=[BlobContainer.TEMPORARY_UPLOADS]
-        ):
-            speaker_photo = confirm_blob_upload_usage(
-                speaker_photo,
-                blob_name=_participant_avatar_blob_name(
-                    conference=conference, user_id=request.user.id
-                ),
-            )
-
         Participant.objects.update_or_create(
             user_id=request.user.id,
             conference=conference,
             defaults={
                 "bio": input.speaker_bio,
-                "photo": speaker_photo,
+                "photo_file_id": input.speaker_photo,
                 "website": input.speaker_website,
                 "speaker_level": input.speaker_level,
                 "previous_talk_video": input.previous_talk_video,
@@ -381,17 +346,6 @@ class SubmissionsMutations:
             short_social_summary=input.short_social_summary,
         )
 
-        speaker_photo = input.speaker_photo
-        if verify_azure_storage_url(
-            url=speaker_photo, allowed_containers=[BlobContainer.TEMPORARY_UPLOADS]
-        ):
-            speaker_photo = confirm_blob_upload_usage(
-                speaker_photo,
-                blob_name=_participant_avatar_blob_name(
-                    conference=conference, user_id=request.user.id
-                ),
-            )
-
         languages = Language.objects.filter(code__in=input.languages).all()
 
         instance.languages.set(languages)
@@ -402,7 +356,7 @@ class SubmissionsMutations:
             conference=conference,
             defaults={
                 "bio": input.speaker_bio,
-                "photo": speaker_photo,
+                "photo_file_id": input.speaker_photo,
                 "website": input.speaker_website,
                 "speaker_level": input.speaker_level,
                 "previous_talk_video": input.previous_talk_video,

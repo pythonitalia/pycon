@@ -1,0 +1,9 @@
+mutation UploadFile($input: UploadFileInput!) {
+  uploadFile(input: $input) {
+    ... on FileUploadRequest {
+      id
+      uploadUrl
+      fields
+    }
+  }
+}

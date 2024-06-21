@@ -1,19 +1,15 @@
-import os
-import threading
-
-import redis
 from django.db.models import Q
 from email_speakers.models import EmailSpeaker, EmailSpeakerRecipient
+from pycon.celery_utils import OnlyOneAtTimeTask
 from google_api.exceptions import NoGoogleCloudQuotaLeftError
 from googleapiclient.errors import HttpError
 from google_api.sdk import youtube_videos_insert, youtube_videos_set_thumbnail
 from integrations import plain
-from pythonit_toolkit.emails.utils import mark_safe
 from pretix import user_has_admission_ticket
 from django.utils import timezone
 from grants.tasks import get_name
-from pythonit_toolkit.emails.templates import EmailTemplate
-from notifications.emails import send_email
+from notifications.templates import EmailTemplate
+from notifications.emails import send_email, mark_safe
 from urllib.parse import urljoin
 from django.conf import settings
 import logging
@@ -432,57 +428,7 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
     sent_for_video_upload.save(update_fields=["status"])
 
 
-def renew_lock(lock, interval, _stop_event):
-    while not _stop_event.wait(timeout=interval):
-        if not lock.locked:
-            return
-
-        if _stop_event.is_set():
-            return
-
-        try:
-            lock.extend(interval, replace_ttl=True)
-        except Exception as e:
-            logger.exception("Error renewing lock: %s", e)
-            break
-
-
-def lock_task(func):
-    # This is a dummy lock until we can get celery-heimdall
-    def wrapper(*args, **kwargs):
-        timeout = 60 * 5
-        _stop_event = threading.Event()
-        lock_id = f"celery_lock_{func.__name__}"
-        PYTEST_XDIST_WORKER = os.environ.get("PYTEST_XDIST_WORKER")
-
-        if PYTEST_XDIST_WORKER:
-            lock_id = f"{lock_id}_{PYTEST_XDIST_WORKER}"
-
-        client = redis.Redis.from_url(settings.REDIS_URL)
-        lock = client.lock(lock_id, timeout=timeout, thread_local=False)
-
-        if lock.acquire(blocking=False):
-            renewer_thread = threading.Thread(
-                target=renew_lock, args=(lock, timeout, _stop_event)
-            )
-            renewer_thread.daemon = True
-            renewer_thread.start()
-
-            try:
-                return func(*args, **kwargs)
-            finally:
-                lock.release()
-                _stop_event.set()
-                renewer_thread.join()
-        else:
-            logger.info("Task %s is already running, skipping", func.__name__)
-            return
-
-    return wrapper
-
-
-@app.task()
-@lock_task
+@app.task(base=OnlyOneAtTimeTask)
 def process_schedule_items_videos_to_upload():
     statuses = (
         ScheduleItemSentForVideoUpload.objects.filter(

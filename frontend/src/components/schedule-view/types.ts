@@ -35,6 +35,7 @@ export type Item = {
   language: { code: string };
   type: string;
   rooms: Room[];
+  linkTo: string;
   duration?: number | null;
   submission?: Submission | null;
   keynote?: Keynote | null;

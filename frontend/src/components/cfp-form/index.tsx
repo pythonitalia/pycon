@@ -1,9 +1,10 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import { ApolloError } from "@apollo/client";
+import type { ApolloError } from "@apollo/client";
 import { Button, Link } from "@python-italia/pycon-styleguide";
-import React, { Fragment, useEffect } from "react";
+import type React from "react";
+import { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import {
@@ -21,9 +22,9 @@ import {
 
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  MultiLingualInput as MultiLingualInputType,
-  SendSubmissionMutation,
-  UpdateSubmissionMutation,
+  type MultiLingualInput as MultiLingualInputType,
+  type SendSubmissionMutation,
+  type UpdateSubmissionMutation,
   useCfpFormQuery,
   useParticipantDataQuery,
 } from "~/types";
@@ -203,7 +204,7 @@ export const CfpForm = ({
       speakerLinkedinUrl: formState.values.speakerLinkedinUrl,
       speakerFacebookUrl: formState.values.speakerFacebookUrl,
       speakerMastodonHandle: formState.values.speakerMastodonHandle,
-      speakerPhoto: formState.values.speakerPhoto.split(/[?#]/)[0],
+      speakerPhoto: formState.values.speakerPhoto,
     });
   };
 
@@ -259,7 +260,10 @@ export const CfpForm = ({
   useEffect(() => {
     if (!participantDataLoading && participantData.me.participant) {
       formState.setField("speakerBio", participantData.me.participant.bio);
-      formState.setField("speakerPhoto", participantData.me.participant.photo);
+      formState.setField(
+        "speakerPhoto",
+        participantData.me.participant.photoId,
+      );
       formState.setField(
         "speakerLevel",
         participantData.me.participant.speakerLevel,
@@ -551,7 +555,12 @@ export const CfpForm = ({
           description={<FormattedMessage id="cfp.speakerPhotoDescription" />}
           errors={getErrors("validationSpeakerPhoto")}
         >
-          <FileInput {...raw("speakerPhoto")} />
+          <FileInput
+            {...raw("speakerPhoto")}
+            accept="image/png,image/jpg,image/jpeg,image/webp"
+            type="participant_avatar"
+            previewUrl={participantData?.me?.participant?.photo}
+          />
         </InputWrapper>
 
         <InputWrapper

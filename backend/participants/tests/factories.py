@@ -10,6 +10,7 @@ from participants.models import Participant
 @register
 class ParticipantFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
+    user = factory.SubFactory("users.tests.factories.UserFactory")
     photo = (
         "https://marcopycontest.blob.core.windows.net/participants-avatars/blobblob.jpg"
     )

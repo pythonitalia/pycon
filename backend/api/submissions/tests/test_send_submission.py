@@ -1,5 +1,5 @@
+from files_upload.tests.factories import FileFactory
 from conferences.tests.factories import ConferenceFactory, TopicFactory
-import pytest
 from pytest import mark
 
 from participants.models import Participant
@@ -51,7 +51,7 @@ def _submit_proposal(client, conference, submission, **kwargs):
         "previousTalkVideo": submission.previous_talk_video,
         "shortSocialSummary": "",
         "speakerBio": "bio",
-        "speakerPhoto": "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/fake.jpg",  # noqa
+        "speakerPhoto": FileFactory().id,
         "speakerWebsite": "http://website.it",
         "speakerTwitterHandle": "handle",
         "speakerInstagramHandle": "handleinsta",
@@ -142,7 +142,7 @@ def test_submit_talk(graphql_client, user, conference_factory):
         audience_levels=("Beginner",),
     )
 
-    speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"  # noqa
+    speaker_photo = FileFactory().id
 
     resp, variables = _submit_talk(
         graphql_client,
@@ -180,17 +180,13 @@ def test_submit_talk(graphql_client, user, conference_factory):
 
     participant = Participant.objects.get(conference=conference, user_id=user.id)
     assert participant.bio == "my bio"
-    assert participant.photo == speaker_photo
+    assert participant.photo_file_id == speaker_photo
 
 
 @mark.django_db
 def test_submit_talk_with_photo_to_upload(
     graphql_client, user, conference_factory, mocker
 ):
-    mock_confirm_upload = mocker.patch(
-        "api.submissions.mutations.confirm_blob_upload_usage",
-        return_value="https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg",
-    )
     graphql_client.force_login(user)
 
     conference = conference_factory(
@@ -202,7 +198,7 @@ def test_submit_talk_with_photo_to_upload(
         audience_levels=("Beginner",),
     )
 
-    speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/temporary-uploads/participants-avatars/my-photo.jpg"  # noqa
+    speaker_photo = FileFactory().id
 
     resp, variables = _submit_talk(
         graphql_client,
@@ -218,13 +214,8 @@ def test_submit_talk_with_photo_to_upload(
 
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
 
-    mock_confirm_upload.assert_called()
-
     participant = Participant.objects.get(conference=conference, user_id=user.id)
-    assert (
-        participant.photo
-        == "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"  # noqa
-    )
+    assert participant.photo_file_id == speaker_photo
 
 
 @mark.django_db
@@ -260,60 +251,6 @@ def test_submit_talk_without_photo_fails(
     ]
 
 
-@pytest.mark.parametrize(
-    "speaker_photo",
-    [
-        "https://pytest-fakestorageaccount.blob.core.windows.net/another-container/my-photo.jpg",
-        "https://anotheraccount.blob.core.windows.net/participants-avatars/my-photo.jpg",
-        "https://someotherwebsite.it/photo.jpeg",
-    ],
-)
-@mark.django_db
-def test_submit_talk_with_invalid_speaker_photo(
-    graphql_client, user, conference_factory, speaker_photo, settings
-):
-    settings.AZURE_STORAGE_ACCOUNT_NAME = "pytest-fakestorageaccount"
-
-    graphql_client.force_login(user)
-    valid_speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"  # noqa
-
-    conference = conference_factory(
-        topics=("my-topic",),
-        languages=("en",),
-        submission_types=("talk",),
-        active_cfp=True,
-        durations=("50",),
-        audience_levels=("Beginner",),
-    )
-
-    participant = Participant.objects.create(
-        conference=conference,
-        user_id=user.id,
-        bio="old bio",
-        photo=valid_speaker_photo,
-    )
-
-    resp, variables = _submit_talk(
-        graphql_client,
-        conference,
-        title={
-            "en": "English",
-            "it": "old old",
-        },
-        shortSocialSummary="summary",
-        speakerBio="my bio",
-        speakerPhoto=speaker_photo,
-    )
-
-    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
-    assert resp["data"]["sendSubmission"]["errors"]["validationSpeakerPhoto"] == [
-        "Invalid speaker photo"
-    ]
-
-    participant.refresh_from_db()
-    assert participant.photo == valid_speaker_photo
-
-
 @mark.django_db
 def test_submit_talk_with_existing_participant(
     graphql_client, user, conference_factory
@@ -332,7 +269,7 @@ def test_submit_talk_with_existing_participant(
         conference=conference, user_id=user.id, bio="old bio"
     )
 
-    speaker_photo = "https://pytest-fakestorageaccount.blob.core.windows.net/participants-avatars/my-photo.jpg"  # noqa
+    speaker_photo = FileFactory().id
 
     resp, variables = _submit_talk(
         graphql_client,
@@ -370,7 +307,7 @@ def test_submit_talk_with_existing_participant(
 
     participant.refresh_from_db()
     assert participant.bio == "my bio"
-    assert participant.photo == speaker_photo
+    assert participant.photo_file_id == speaker_photo
 
 
 @mark.django_db

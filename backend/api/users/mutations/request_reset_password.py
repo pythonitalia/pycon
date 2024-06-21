@@ -3,8 +3,8 @@ from django.utils import timezone
 from datetime import timedelta
 from api.users.types import OperationSuccess
 from users.models import User as UserModel
-from pythonit_toolkit.emails.templates import EmailTemplate
-from pythonit_toolkit.emails import get_email_backend
+from notifications.templates import EmailTemplate
+from notifications.emails import get_email_backend
 from django.conf import settings
 import jwt
 import logging

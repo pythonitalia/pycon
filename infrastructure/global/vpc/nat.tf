@@ -34,6 +34,14 @@ resource "aws_security_group" "nat" {
     cidr_blocks = [aws_vpc.default.cidr_block]
   }
 
+  ingress {
+    description = "Clamav traffic"
+    from_port   = 3310
+    to_port     = 3310
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.default.cidr_block]
+  }
+
   egress {
     from_port   = 80
     to_port     = 80
@@ -52,6 +60,13 @@ resource "aws_security_group" "nat" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port = 3310
+    to_port =  3310
+    protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 

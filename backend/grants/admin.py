@@ -492,6 +492,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                     "pretix_voucher_id",
                     "voucher_code",
                     "voucher_email_sent_at",
+                    "internal_notes",
                 )
             },
         ),

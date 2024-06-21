@@ -5,7 +5,7 @@ import {
   InMemoryCache,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
-import { GraphQLError } from "graphql";
+import type { GraphQLError } from "graphql";
 
 import { setLoginState } from "../components/profile/hooks";
 import introspectionQueryResultData from "../generated/fragment-types.json";
@@ -53,7 +53,9 @@ const createHttpLink = (serverCookies: Record<string, string>) => {
     : {};
 
   return new HttpLink({
-    uri: isServer ? process.env.API_URL_SERVER : process.env.API_URL,
+    uri: isServer
+      ? `${process.env.API_URL_SERVER}/graphql`
+      : process.env.API_URL,
     fetch: (input, init) => {
       return fetch(input, {
         ...init,

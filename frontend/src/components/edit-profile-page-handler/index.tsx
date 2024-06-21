@@ -14,7 +14,7 @@ import * as yup from "yup";
 
 import { MetaTags } from "~/components/meta-tags";
 import {
-  MyEditProfileQuery,
+  type MyEditProfileQuery,
   useMyEditProfileQuery,
   useUpdateProfileMutation,
 } from "~/types";
@@ -23,7 +23,7 @@ import { ErrorsList } from "../errors-list";
 import { EmailPreferencesCard } from "./email-preferences-card";
 import { MainProfileCard } from "./main-profile-card";
 import { PublicProfileCard } from "./public-profile-card";
-import { MeUserFields } from "./types";
+import type { MeUserFields } from "./types";
 
 const schema = yup.object().shape({
   name: yup.string().required().ensure(),
@@ -57,7 +57,7 @@ const onMyProfileFetched = (data: MyEditProfileQuery, formState) => {
 
   // Public profile - participant
   formState.setField("participantPublicProfile", me.participant?.publicProfile);
-  formState.setField("participantPhoto", me.participant?.photo ?? "");
+  formState.setField("participantPhoto", me.participant?.photoId ?? "");
   formState.setField("participantBio", me.participant?.bio ?? "");
   formState.setField("participantWebsite", me.participant?.website ?? "");
   formState.setField(
@@ -204,7 +204,7 @@ export const EditProfilePageHandler = () => {
         if (updateParticipantResult?.__typename === "Participant") {
           formState.setField(
             "participantPhoto",
-            updateParticipantResult.photo ?? "",
+            updateParticipantResult.photoId ?? "",
           );
         }
       } catch (err) {

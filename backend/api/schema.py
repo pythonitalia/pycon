@@ -2,7 +2,7 @@ import strawberry
 
 from api.participants.mutations import ParticipantMutations
 from .users.mutations import UsersMutations
-from .blob.schema import BlobMutation
+from .files_upload.schema import FilesUploadMutation
 from .blog.schema import BlogQuery
 from .checklist.query import ChecklistQuery
 from .conferences.schema import ConferenceQuery
@@ -58,7 +58,7 @@ class Mutation(
     ScheduleMutations,
     AttendeeTicketMutation,
     VolunteersNotificationsMutation,
-    BlobMutation,
+    FilesUploadMutation,
     BadgeScannerMutation,
     ParticipantMutations,
     UsersMutations,

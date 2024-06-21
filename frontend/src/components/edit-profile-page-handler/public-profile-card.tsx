@@ -13,15 +13,15 @@ import {
   Textarea,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
-import { FormState, Inputs, StateErrors } from "react-use-form-state";
+import type { FormState, Inputs, StateErrors } from "react-use-form-state";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
-import { MyEditProfileQuery } from "~/types";
+import type { MyEditProfileQuery } from "~/types";
 
 import { FileInput } from "../file-input";
 import { createHref } from "../link";
-import { MeUserFields } from "./types";
+import type { MeUserFields } from "./types";
 
 type Props = {
   formState: FormState<MeUserFields, StateErrors<MeUserFields, string>>;
@@ -101,7 +101,10 @@ export const PublicProfileCard = ({
                 >
                   <FileInput
                     {...raw("participantPhoto")}
+                    accept="image/png,image/jpg,image/jpeg,image/webp"
+                    previewUrl={me.participant.photo}
                     errors={getParticipantValidationError("photo")}
+                    type="participant_avatar"
                   />
                 </InputWrapper>
               </GridColumn>

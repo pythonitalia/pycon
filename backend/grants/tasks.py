@@ -3,7 +3,7 @@ from urllib.parse import urljoin
 
 from django.conf import settings
 from django.utils import timezone
-from pythonit_toolkit.emails.templates import EmailTemplate
+from notifications.templates import EmailTemplate
 
 from users.models import User
 from grants.models import Grant

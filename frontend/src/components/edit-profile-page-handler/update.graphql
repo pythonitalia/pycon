@@ -38,6 +38,7 @@ mutation UpdateProfile(
       bio
       website
       photo
+      photoId
       publicProfile
       twitterHandle
       instagramHandle

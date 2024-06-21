@@ -1,6 +1,8 @@
 from .base import env
 from .base import *  # noqa
 
+IS_RUNNING_TESTS = True
+
 SECRET_KEY = "this-key-should-only-be-used-for-tests"
 HASHID_DEFAULT_SECRET_SALT = "only-for-tests"
 
@@ -17,13 +19,13 @@ AZURE_STORAGE_ACCOUNT_KEY = "fake-key"
 
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.memory.InMemoryStorage",
+        "BACKEND": "pycon.storages.CustomInMemoryStorage",
     },
     "conferencevideos": {
-        "BACKEND": "django.core.files.storage.memory.InMemoryStorage",
+        "BACKEND": "pycon.storages.CustomInMemoryStorage",
     },
     "localstorage": {
-        "BACKEND": "django.core.files.storage.memory.InMemoryStorage",
+        "BACKEND": "pycon.storages.CustomInMemoryStorage",
     },
     "staticfiles": {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",

@@ -30,7 +30,7 @@ locals {
     },
     {
       name  = "ALLOWED_HOSTS",
-      value = "admin.pycon.it,2024.pycon.it"
+      value = "admin.pycon.it,2024.pycon.it,2025.pycon.it"
     },
     {
       name  = "DJANGO_SETTINGS_MODULE",
@@ -62,7 +62,7 @@ locals {
     },
     {
       name  = "PYTHONIT_EMAIL_BACKEND",
-      value = "pythonit_toolkit.emails.backends.ses.SESEmailBackend"
+      value = "notifications.backends.ses.SESEmailBackend"
     },
     {
       name  = "FRONTEND_URL",
@@ -175,6 +175,14 @@ locals {
     {
       name  = "HASHID_DEFAULT_SECRET_SALT",
       value = module.secrets.value.hashid_default_secret_salt
+    },
+    {
+      name = "MEDIA_FILES_STORAGE_BACKEND",
+      value = "pycon.storages.CustomS3Boto3Storage"
+    },
+    {
+      name = "CLAMAV_HOST",
+      value = module.secrets.value.clamav_host
     },
   ]
 }

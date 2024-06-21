@@ -1,9 +1,9 @@
-import React, { ChangeEvent, useRef, useState } from "react";
+import React, { type ChangeEvent, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { getTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
-import { useGenerateParticipantAvatarUploadUrlMutation } from "~/types";
+import { useFinalizeUploadMutation, useUploadFileMutation } from "~/types";
 
 import { Alert } from "../alert";
 import { ErrorsList } from "../errors-list";
@@ -16,15 +16,28 @@ export const FileInput = ({
   onBlur,
   value,
   errors = null,
+  type,
+  previewUrl,
+  accept,
+}: {
+  onChange: (value: string) => void;
+  name: string;
+  onBlur: () => void;
+  value: string;
+  errors?: string[];
+  type: "participant_avatar" | "proposal_resource";
+  previewUrl?: string;
+  accept: string;
 }) => {
+  const conferenceCode = process.env.conferenceCode;
   const fileInput = useRef<HTMLInputElement>();
   const canvas = useRef<HTMLCanvasElement>();
   const language = useCurrentLanguage();
 
-  const [generateParticipantAvatarUploadUrl] =
-    useGenerateParticipantAvatarUploadUrlMutation();
+  const [uploadFile] = useUploadFileMutation();
+  const [finalizeUpload] = useFinalizeUploadMutation();
 
-  const [filePreview, setFilePreview] = useState<string | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(previewUrl);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState("");
 
@@ -84,32 +97,58 @@ export const FileInput = ({
   const startUploadFlow = async (file) => {
     setIsUploading(true);
 
-    const { data, errors } = await generateParticipantAvatarUploadUrl();
+    let input = {};
+    if (type === "participant_avatar") {
+      input = {
+        participantAvatar: {
+          conferenceCode,
+          filename: file.name,
+        },
+      };
+    }
 
-    if (errors) {
+    const { data, errors } = await uploadFile({
+      variables: {
+        input,
+      },
+    });
+
+    const response = data.uploadFile;
+
+    if (errors || response.__typename !== "FileUploadRequest") {
       setError(getTranslatedMessage("fileInput.uploadFailed", language));
       return;
     }
 
-    const uploadUrl = data.generateParticipantAvatarUploadUrl.uploadUrl;
+    const uploadUrl = response.uploadUrl;
+    const uploadFields = JSON.parse(response.fields);
     try {
+      const formData = new FormData();
+      Object.keys(uploadFields).forEach((key) => {
+        formData.append(key, uploadFields[key]);
+      });
+      formData.append("file", file);
+
       const uploadRequest = await fetch(uploadUrl, {
-        method: "PUT",
-        headers: {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          "x-ms-blob-type": "BlockBlob",
-          "Content-Type": "image/jpg",
-        },
-        body: file,
+        method: "POST",
+        body: formData,
       });
 
-      if (uploadRequest.status !== 201) {
+      if (uploadRequest.status !== 204) {
         setError(getTranslatedMessage("fileInput.uploadFailed", language));
         return;
       }
 
-      baseOnChange(data.generateParticipantAvatarUploadUrl.fileUrl);
+      const fileId = response.id;
+      await finalizeUpload({
+        variables: {
+          input: {
+            fileId,
+          },
+        },
+      });
+
+      baseOnChange(fileId);
     } catch (e) {
       setError(getTranslatedMessage("fileInput.uploadFailed", language));
     } finally {
@@ -117,7 +156,7 @@ export const FileInput = ({
     }
   };
 
-  const previewAvailable = filePreview || value;
+  const previewAvailable = filePreview || previewUrl;
 
   return (
     <div>
@@ -127,7 +166,7 @@ export const FileInput = ({
         name={name}
         onBlur={onBlur}
         type="file"
-        accept="image/png,image/jpg,image/jpeg,image/webp"
+        accept={accept}
         className="w-full"
       />
 
