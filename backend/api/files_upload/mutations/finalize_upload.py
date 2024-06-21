@@ -22,7 +22,7 @@ def finalize_upload(input: FinalizeUploadInput) -> File:
         task = post_process_file_upload.delay(input.file_id)
 
         try:
-            task.get(timeout=10)
+            task.get(timeout=60)
         except TimeoutError:
             pass
 
