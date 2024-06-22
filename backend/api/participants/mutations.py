@@ -102,7 +102,7 @@ def update_participant(
         conference=conference,
         defaults={
             "bio": input.bio,
-            "photo_file_id": input.photo,
+            "photo_file_id": input.photo if input.photo else None,
             "website": input.website,
             "public_profile": input.public_profile,
             "speaker_level": input.speaker_level,
