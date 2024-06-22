@@ -1891,6 +1891,7 @@ Affrettati a comprare il biglietto!`,
     "scheduleEventDetail.tags": "Tags",
     "scheduleEventDetail.materials": "Materiali",
     "scheduleEventDetail.materials.open": "Apri ({hostname})",
+    "scheduleEventDetail.materials.download": "Scarica ({mimeType})",
 
     "scheduleEventDetail.eventTime": "{start} - {end}",
     "voting.minutes": "{type} ({duration} minuti)",
