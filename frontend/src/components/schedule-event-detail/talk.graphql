@@ -52,6 +52,14 @@ query Talk($slug: String!, $code: String!, $language: String!) {
           name
           id
         }
+
+        materials {
+          id
+          name
+          url
+          fileUrl
+          fileMimeType
+        }
       }
 
       speakers {

@@ -3,6 +3,7 @@ import {
   Grid,
   GridColumn,
   Heading,
+  Link,
   Section,
   Spacer,
   StyledText,
@@ -12,13 +13,14 @@ import { LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import { SnakeWithPopcorn } from "@python-italia/pycon-styleguide/illustrations";
 import { isAfter, isBefore, parseISO } from "date-fns";
 import { zonedTimeToUtc } from "date-fns-tz";
-import React from "react";
+import type React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 
-import { TalkQueryResult } from "~/types";
+import { Fragment } from "react";
+import type { ProposalMaterial, TalkQueryResult } from "~/types";
 import { ParticipantInfoSection } from "../participant-info-section";
 import { EventTag } from "./event-tag";
 import { Sidebar } from "./sidebar";
@@ -45,6 +47,7 @@ type Props = {
   sidebarExtras?: React.ReactNode;
   rooms?: string[];
   youtubeVideoId?: string;
+  materials?: ProposalMaterial[];
 };
 
 const isEventLive = (startTime: string, endTime: string) => {
@@ -73,6 +76,7 @@ export const ScheduleEventDetail = ({
   sidebarExtras,
   rooms,
   youtubeVideoId,
+  materials,
 }: Props) => {
   const lang = useCurrentLanguage();
   const parsedStartTime = parseISO(startTime);
@@ -88,6 +92,8 @@ export const ScheduleEventDetail = ({
     hour12: false,
   });
   const isLive = isEventLive(startTime, endTime);
+
+  console.log("materials", materials);
 
   return (
     <>
@@ -192,6 +198,52 @@ export const ScheduleEventDetail = ({
                 </Text>
               </>
             )}
+            {materials && (
+              <>
+                <Spacer size="large" />
+                <Title>
+                  <FormattedMessage id="scheduleEventDetail.materials" />
+                </Title>
+                <Spacer size="small" />
+                {materials.map((material) => (
+                  <Fragment key={material.id}>
+                    <Text size={2} weight="strong">
+                      {material.name}
+                    </Text>
+                    {material.url && (
+                      <>
+                        {" - "}
+                        <Text size={2} decoration="underline">
+                          <Link href={material.url} target="_blank">
+                            <FormattedMessage
+                              id="scheduleEventDetail.materials.open"
+                              values={{
+                                hostname: new URL(material.url).hostname,
+                              }}
+                            />
+                          </Link>
+                        </Text>
+                      </>
+                    )}
+                    {material.fileUrl && (
+                      <>
+                        {" - "}
+                        <Text size={2} decoration="underline">
+                          <Link href={material.fileUrl} target="_blank">
+                            <FormattedMessage
+                              id="scheduleEventDetail.materials.download"
+                              values={{
+                                mimeType: material.fileMimeType,
+                              }}
+                            />
+                          </Link>
+                        </Text>
+                      </>
+                    )}
+                  </Fragment>
+                ))}
+              </>
+            )}
           </GridColumn>
         </Grid>
       </Section>
@@ -213,13 +265,13 @@ export const ScheduleEventDetail = ({
       {speakers.length > 0 && (
         <Section>
           {speakers.map((speaker, index) => (
-            <>
+            <Fragment key={speaker.fullName}>
               <ParticipantInfoSection
                 fullname={speaker.fullName}
                 participant={speaker.participant}
               />
               {index !== speakers.length - 1 && <Spacer size="2xl" />}
-            </>
+            </Fragment>
           ))}
         </Section>
       )}

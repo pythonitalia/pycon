@@ -1,6 +1,6 @@
 import { Page } from "@python-italia/pycon-styleguide";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import type { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
@@ -49,6 +49,7 @@ export const TalkPage = () => {
         slidoUrl={talk.slidoUrl}
         rooms={talk.rooms.map((room) => room.name)}
         youtubeVideoId={talk.youtubeVideoId}
+        materials={talk.submission?.materials}
       />
     </Page>
   );

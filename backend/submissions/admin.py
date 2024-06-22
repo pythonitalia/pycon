@@ -16,7 +16,13 @@ from submissions.tasks import (
 from users.admin_mixins import ConferencePermissionMixin
 
 
-from .models import Submission, SubmissionComment, SubmissionTag, SubmissionType
+from .models import (
+    ProposalMaterial,
+    Submission,
+    SubmissionComment,
+    SubmissionTag,
+    SubmissionType,
+)
 
 EXPORT_SUBMISSION_FIELDS = (
     "id",
@@ -177,6 +183,12 @@ def send_proposal_in_waiting_list_email_action(modeladmin, request, queryset):
     )
 
 
+class ProposalMaterialInline(admin.TabularInline):
+    model = ProposalMaterial
+    extra = 0
+    autocomplete_fields = ("file",)
+
+
 @admin.register(Submission)
 class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     resource_class = SubmissionResource
@@ -238,6 +250,7 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         send_proposal_in_waiting_list_email_action,
     ]
     autocomplete_fields = ("speaker",)
+    inlines = [ProposalMaterialInline]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         extra_context = extra_context or {}
