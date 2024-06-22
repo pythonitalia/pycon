@@ -52,3 +52,12 @@ output "invoke_arn" {
 output "function_name" {
   value = local.lambda_name
 }
+
+resource "aws_lambda_function_url" "lambda_url" {
+  function_name      = aws_lambda_function.lambda.function_name
+  authorization_type = "NONE"
+}
+
+output "cloudfront_friendly_lambda_url" {
+  value = replace(aws_lambda_function_url.lambda_url.function_url, "/^https?://([^/]*).*/", "$1")
+}

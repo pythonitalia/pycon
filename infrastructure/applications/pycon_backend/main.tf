@@ -121,17 +121,6 @@ module "lambda" {
   }
 }
 
-
-module "api" {
-  source = "../../components/http_api_gateway"
-
-  application          = local.application
-  use_domain           = false
-  lambda_invoke_arn    = module.lambda.invoke_arn
-  lambda_function_name = module.lambda.function_name
-}
-
-
 module "admin_distribution" {
   source = "../../components/cloudfront"
 
@@ -139,6 +128,6 @@ module "admin_distribution" {
   zone_name                      = "pycon.it"
   domain                         = local.full_admin_domain
   certificate_arn                = data.aws_acm_certificate.cert.arn
-  origin_url                     = module.api.cloudfront_friendly_endpoint
+  origin_url                     = module.lambda.cloudfront_friendly_lambda_url
   forward_host_header_lambda_arn = data.aws_lambda_function.forward_host_header.qualified_arn
 }
