@@ -9,7 +9,10 @@ from django.http.request import HttpRequest
 from django.http.response import HttpResponse
 
 from users.models import User
-from schedule.tasks import send_speaker_communication_email_v2
+from schedule.tasks import (
+    calculate_recipients_for_email_speaker,
+    process_email_speaker_for_sending,
+)
 from email_speakers.models import EmailSpeaker, EmailSpeakerRecipient
 from django import forms
 from django.utils.safestring import mark_safe
@@ -66,6 +69,7 @@ class EmailSpeakerAdmin(admin.ModelAdmin):
         "send_email_to_speakers",
         "sent_at",
         "conference",
+        "show_recipients",
     )
     inlines = [EmailSpeakerRecipientInline]
     date_hierarchy = "created"
@@ -81,15 +85,14 @@ class EmailSpeakerAdmin(admin.ModelAdmin):
         extra_context.update(
             {
                 "show_save_and_add_another": False,
-                "show_save_and_continue": False,
+                "show_save_and_continue": True,
+                "show_save": False,
             }
         )
         return super().changeform_view(request, object_id, form_url, extra_context)
 
-    def get_inlines(self, request: HttpRequest, obj: Any | None = None):
-        if not obj or not obj.is_sent:
-            return []
-        return super().get_inlines(request, obj)
+    def get_inlines(self, request: HttpRequest, obj: Any | None):
+        return super().get_inlines(request, obj) if obj else []
 
     def get_readonly_fields(
         self, request: HttpRequest, obj: Any | None = ...
@@ -106,7 +109,7 @@ class EmailSpeakerAdmin(admin.ModelAdmin):
     def has_change_permission(
         self, request: HttpRequest, obj: Any | None = None
     ) -> bool:
-        if obj and obj.status == EmailSpeaker.Status.sent:
+        if obj and obj.status != EmailSpeaker.Status.draft:
             return False
         return super().has_change_permission(request, obj)
 
@@ -120,6 +123,7 @@ class EmailSpeakerAdmin(admin.ModelAdmin):
         if (
             "_send_test_email" in request.POST
             or "_send_email_to_speakers" in request.POST
+            or "_show_recipients" in request.POST
         ):
             request.POST = request.POST.copy()
             request.POST["_continue"] = 1
@@ -128,7 +132,6 @@ class EmailSpeakerAdmin(admin.ModelAdmin):
 
     def save_form(self, request: Any, form: Any, change: Any) -> Any:
         instance = super().save_form(request, form, change)
-        conference = instance.conference
 
         if "_send_test_email" in form.data:
             test_email = form.cleaned_data.get("test_email")
@@ -151,9 +154,9 @@ class EmailSpeakerAdmin(admin.ModelAdmin):
                 return instance
 
             transaction.on_commit(
-                lambda: send_speaker_communication_email_v2.delay(
+                lambda: process_email_speaker_for_sending.delay(
                     email_speaker_id=instance.id,
-                    user_id=user.id,
+                    recipient_user_id=user.id,
                     is_test=True,
                 )
             )
@@ -165,33 +168,33 @@ class EmailSpeakerAdmin(admin.ModelAdmin):
             )
 
         if "_send_email_to_speakers" in form.data:
-            schedule_items = conference.schedule_items.all()
-            notified_ids = set()
-            for schedule_item in schedule_items.all():
-                speakers = schedule_item.speakers
-                if not speakers:
-                    continue
-
-                for speaker in speakers:
-                    if speaker.id in notified_ids:
-                        continue
-
-                transaction.on_commit(
-                    lambda: send_speaker_communication_email_v2.delay(
-                        email_speaker_id=instance.id,
-                        user_id=schedule_item.submission.speaker_id,
-                    )
-                )
-                notified_ids.add(speaker.id)
-
             instance.sent_at = timezone.now()
-            instance.status = EmailSpeaker.Status.sent
+            instance.status = EmailSpeaker.Status.in_progress
             instance.save(update_fields=["sent_at", "status"])
+
+            transaction.on_commit(
+                lambda: process_email_speaker_for_sending.delay(
+                    email_speaker_id=instance.id, is_test=False
+                )
+            )
 
             self.message_user(
                 request,
                 "Sending the email.",
                 messages.SUCCESS,
+            )
+
+        if "_show_recipients" in form.data:
+            transaction.on_commit(
+                lambda: calculate_recipients_for_email_speaker.delay(
+                    email_speaker_id=instance.id,
+                    status=EmailSpeakerRecipient.Status.draft,
+                )
+            )
+            self.message_user(
+                request,
+                "Calculating recipients in background.",
+                messages.INFO,
             )
 
         return instance
@@ -207,6 +210,15 @@ class EmailSpeakerAdmin(admin.ModelAdmin):
         return mark_safe(
             """
             <input type="submit" name="_send_test_email" value="Send test email" />
+        """
+        )
+
+    def show_recipients(self, obj):
+        if not obj.is_draft:
+            return None
+        return mark_safe(
+            """
+            <input type="submit" name="_show_recipients" value="Show recipients" />
         """
         )
 
@@ -230,7 +242,7 @@ class EmailSpeakerAdmin(admin.ModelAdmin):
             (
                 "Email",
                 {
-                    "fields": ("conference", "subject", "body"),
+                    "fields": ("status", "conference", "subject", "body"),
                 },
             ),
             (
@@ -239,7 +251,10 @@ class EmailSpeakerAdmin(admin.ModelAdmin):
                     "fields": ("test_email", "send_test_email"),
                 },
             ),
-            ("Recipients", {"fields": ("send_only_to_speakers_without_ticket",)}),
+            (
+                "Recipients",
+                {"fields": ("send_only_to_speakers_without_ticket", "show_recipients")},
+            ),
             (
                 "Send",
                 {
@@ -255,7 +270,7 @@ class EmailSpeakerAdmin(admin.ModelAdmin):
             ),
         ]
 
-        if obj.is_sent:
+        if not obj.is_draft:
             fieldsets.pop(1)
             fieldsets.pop(2)
             fieldsets[-1][1]["classes"] = ()

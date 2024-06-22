@@ -5,12 +5,19 @@ from django.db import models
 
 
 class EmailSpeakerQuerySet(ConferenceQuerySetMixin, models.QuerySet):
-    pass
+    def to_send(self):
+        return self.filter(status=self.model.Status.in_progress)
+
+
+class EmailSpeakerRecipientQuerySet(models.QuerySet):
+    def to_send(self):
+        return self.filter(status=self.model.Status.pending)
 
 
 class EmailSpeaker(TimeStampedModel):
     class Status(models.TextChoices):
         draft = "draft", "Draft"
+        in_progress = "in_progress", "In progress"
         sent = "sent", "Sent"
 
     status = models.CharField(
@@ -38,6 +45,10 @@ class EmailSpeaker(TimeStampedModel):
     def is_sent(self):
         return self.status == self.Status.sent
 
+    @property
+    def is_draft(self):
+        return self.status == self.Status.draft
+
     def __str__(self):
         return self.subject
 
@@ -47,6 +58,7 @@ class EmailSpeaker(TimeStampedModel):
 
 class EmailSpeakerRecipient(TimeStampedModel):
     class Status(models.TextChoices):
+        draft = "draft", "Draft"
         pending = "pending", "Pending"
         sent = "sent", "Sent"
         failed = "failed", "Failed"
@@ -54,7 +66,7 @@ class EmailSpeakerRecipient(TimeStampedModel):
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
-        default=Status.sent,
+        default=Status.draft,
         verbose_name="status",
     )
 
@@ -70,6 +82,8 @@ class EmailSpeakerRecipient(TimeStampedModel):
     )
     is_test = models.BooleanField(default=False)
     sent_at = models.DateTimeField(null=True, blank=True)
+
+    objects = EmailSpeakerRecipientQuerySet().as_manager()
 
     @property
     def is_sent(self):

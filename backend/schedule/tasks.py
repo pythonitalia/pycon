@@ -24,6 +24,12 @@ from schedule.video_upload import (
 )
 from users.models import User
 
+from django.db.models import Exists
+
+from django.db.models import OuterRef
+
+from django.db.models import Subquery
+
 logger = logging.getLogger(__name__)
 
 
@@ -191,64 +197,134 @@ def send_speaker_voucher_email(speaker_voucher_id):
 
 
 @app.task
-def send_speaker_communication_email_v2(
-    *,
-    email_speaker_id,
-    user_id,
-    is_test=False,
-):
-    user = User.objects.get(id=user_id)
+def calculate_recipients_for_email_speaker(*, email_speaker_id, status=None):
     email_speaker = EmailSpeaker.objects.get(id=email_speaker_id)
+
+    if email_speaker.is_sent:
+        return
+
+    send_only_to_speakers_without_ticket = (
+        email_speaker.send_only_to_speakers_without_ticket
+    )
     conference = email_speaker.conference
 
-    if (
-        not is_test
-        and email_speaker.send_only_to_speakers_without_ticket
-        and user_has_admission_ticket(
+    schedule_items = conference.schedule_items.all()
+    users = User.objects.filter(
+        id__in=[
+            speaker.id
+            for schedule_item in schedule_items.all()
+            for speaker in schedule_item.speakers
+        ]
+    )
+
+    EmailSpeakerRecipient.objects.filter(
+        email_speaker=email_speaker,
+    ).delete()
+
+    for user in users.all():
+        if send_only_to_speakers_without_ticket and user_has_admission_ticket(
             email=user.email,
             event_organizer=conference.pretix_organizer_id,
             event_slug=conference.pretix_event_id,
+        ):
+            continue
+
+        EmailSpeakerRecipient.objects.create(
+            email_speaker=email_speaker,
+            user=user,
+            is_test=False,
+            status=status or EmailSpeakerRecipient.Status.pending,
         )
+
+
+@app.task
+def process_email_speaker_for_sending(
+    *, email_speaker_id, recipient_user_id=None, is_test=False
+):
+    email_speaker = EmailSpeaker.objects.get(id=email_speaker_id)
+
+    if email_speaker.is_sent:
+        return
+
+    if recipient_user_id:
+        user = User.objects.get(id=recipient_user_id)
+        EmailSpeakerRecipient.objects.create(
+            email_speaker_id=email_speaker_id,
+            user=user,
+            is_test=is_test,
+            status=EmailSpeakerRecipient.Status.pending,
+        )
+    else:
+        calculate_recipients_for_email_speaker(
+            email_speaker_id=email_speaker_id,
+            status=EmailSpeakerRecipient.Status.pending,
+        )
+
+    process_pending_email_speaker_recipients.delay()
+
+
+@app.task(base=OnlyOneAtTimeTask)
+def process_pending_email_speaker_recipients():
+    logger.info("Processing pending email speaker recipients")
+    for email_speaker_recipient in (
+        EmailSpeakerRecipient.objects.prefetch_related(
+            "email_speaker",
+            "user",
+            "email_speaker__conference",
+        )
+        .to_send()
+        .all()
     ):
-        return
+        email_speaker = email_speaker_recipient.email_speaker
+        conference = email_speaker.conference
+        user = email_speaker_recipient.user
 
-    email_speaker_recipient, _ = EmailSpeakerRecipient.objects.get_or_create(
-        email_speaker=email_speaker,
-        user=user,
-        is_test=is_test,
+        try:
+            send_email(
+                template=EmailTemplate.SPEAKER_COMMUNICATION,
+                to=user.email,
+                subject=f"[{conference.name.localize('en')}] {email_speaker.subject}",
+                variables={
+                    "firstname": get_name(user, "there"),
+                    "body": mark_safe(email_speaker.body.replace("\n", "<br />")),
+                },
+                reply_to=[
+                    settings.SPEAKERS_EMAIL_ADDRESS,
+                ]
+                if settings.SPEAKERS_EMAIL_ADDRESS
+                else [],
+            )
+
+            email_speaker_recipient.status = EmailSpeakerRecipient.Status.sent
+            email_speaker_recipient.sent_at = timezone.now()
+            email_speaker_recipient.save(update_fields=["status", "sent_at"])
+            logger.info(
+                "Email sent to speaker_recipient_id=%s", email_speaker_recipient.id
+            )
+        except Exception:
+            logger.exception(
+                "Error sending email to speaker_recipient_id=%s",
+                email_speaker_recipient.id,
+            )
+            email_speaker_recipient.status = EmailSpeakerRecipient.Status.failed
+            email_speaker_recipient.save(update_fields=["status"])
+
+    EmailSpeaker.objects.annotate(
+        pending_recipients=Exists(
+            Subquery(
+                EmailSpeakerRecipient.objects.filter(
+                    email_speaker=OuterRef("pk"),
+                    status=EmailSpeakerRecipient.Status.pending,
+                    is_test=False,
+                ).values("id")
+            )
+        )
+    ).filter(
+        pending_recipients=False,
+        status=EmailSpeaker.Status.in_progress,
+    ).update(
+        status=EmailSpeaker.Status.sent,
     )
-
-    if not is_test and email_speaker_recipient.is_sent:
-        logger.warning(
-            f"Skipping email to speaker_recipient_id={email_speaker_recipient.id} as it was already sent"
-        )
-        return
-
-    try:
-        send_email(
-            template=EmailTemplate.SPEAKER_COMMUNICATION,
-            to=user.email,
-            subject=f"[{conference.name.localize('en')}] {email_speaker.subject}",
-            variables={
-                "firstname": get_name(user, "there"),
-                "body": mark_safe(email_speaker.body.replace("\n", "<br />")),
-            },
-            reply_to=[
-                settings.SPEAKERS_EMAIL_ADDRESS,
-            ]
-            if settings.SPEAKERS_EMAIL_ADDRESS
-            else [],
-        )
-
-        email_speaker_recipient.status = EmailSpeakerRecipient.Status.sent
-        email_speaker_recipient.sent_at = timezone.now()
-        email_speaker_recipient.save(update_fields=["status", "sent_at"])
-    except Exception:
-        logger.exception(
-            "Error sending email to speaker_recipient_id=%s", email_speaker_recipient.id
-        )
-        email_speaker_recipient.status = EmailSpeakerRecipient.Status.failed
-        email_speaker_recipient.save(update_fields=["status"])
 
 
 @app.task
