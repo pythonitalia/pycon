@@ -1,3 +1,5 @@
+from files_upload.tests.factories import FileFactory
+from submissions.tests.factories import ProposalMaterialFactory
 from pytest import mark
 
 from api.helpers.ids import encode_hashid
@@ -151,3 +153,56 @@ def test_can_see_submissions_while_voting_with_ticket(
     )
 
     assert response["data"]["submission"]["id"] == submission.hashid
+
+
+def test_submission_materials(
+    graphql_client, user, submission_factory, mock_has_ticket
+):
+    graphql_client.force_login(user)
+    submission = submission_factory(
+        conference__active_cfp=False, conference__active_voting=True
+    )
+    material_1 = ProposalMaterialFactory(
+        proposal=submission, name="test", url="https://example.com"
+    )
+    material_2 = ProposalMaterialFactory(
+        proposal=submission,
+        name="material 2",
+        file=FileFactory(
+            mime_type="application/pdf",
+        ),
+    )
+    mock_has_ticket(submission.conference)
+
+    response = graphql_client.query(
+        """query Submission($id: ID!) {
+            submission(id: $id) {
+                id
+                materials {
+                    id
+                    name
+                    url
+                    fileUrl
+                    fileMimeType
+                }
+            }
+        }""",
+        variables={"id": submission.hashid},
+    )
+
+    assert response["data"]["submission"]["id"] == submission.hashid
+    materials = response["data"]["submission"]["materials"]
+    assert {
+        "id": str(material_1.id),
+        "name": material_1.name,
+        "url": material_1.url,
+        "fileUrl": None,
+        "fileMimeType": None,
+    } == materials[0]
+    assert {
+        "id": str(material_2.id),
+        "name": material_2.name,
+        "url": None,
+        "fileUrl": material_2.file.url,
+        "fileMimeType": material_2.file.mime_type,
+    } == materials[1]

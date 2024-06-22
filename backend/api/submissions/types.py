@@ -174,7 +174,8 @@ class Submission:
     @strawberry.field
     def materials(self, info) -> list[ProposalMaterial]:
         return [
-            ProposalMaterial.from_django(material) for material in self.materials.all()
+            ProposalMaterial.from_django(material)
+            for material in self.materials.order_by("created").all()
         ]
 
 

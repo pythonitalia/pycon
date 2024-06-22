@@ -93,8 +93,6 @@ export const ScheduleEventDetail = ({
   });
   const isLive = isEventLive(startTime, endTime);
 
-  console.log("materials", materials);
-
   return (
     <>
       <Section illustration="snakeHead">
