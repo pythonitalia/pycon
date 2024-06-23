@@ -79,16 +79,6 @@ data "aws_iam_policy_document" "lambda_role" {
     effect = "Allow"
   }
 
-  statement {
-    actions = [
-      "s3:DeleteObject",
-    ]
-    resources = [
-      "arn:aws:s3:::*-pycon-backend-media/files/*"
-    ]
-    effect = "Allow"
-  }
-
   # SQS
   statement {
     actions = [
