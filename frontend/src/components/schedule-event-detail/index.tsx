@@ -170,11 +170,11 @@ export const ScheduleEventDetail = ({
                 <StyledText baseTextSize={1}>
                   {compile(elevatorPitch).tree}
                 </StyledText>
+                <Spacer size="large" />
               </>
             )}
             {abstract && (
               <>
-                <Spacer size="large" />
                 <Title>
                   <FormattedMessage id="scheduleEventDetail.abstract" />
                 </Title>
@@ -182,11 +182,11 @@ export const ScheduleEventDetail = ({
                 <StyledText baseTextSize={2}>
                   {compile(abstract).tree}
                 </StyledText>
+                <Spacer size="large" />
               </>
             )}
             {tags && (
               <>
-                <Spacer size="large" />
                 <Title>
                   <FormattedMessage id="scheduleEventDetail.tags" />
                 </Title>
@@ -194,6 +194,7 @@ export const ScheduleEventDetail = ({
                 <Text size={2} weight="strong">
                   {tags.join(", ")}
                 </Text>
+                <Spacer size="large" />
               </>
             )}
             {materials && <Materials materials={materials} />}
@@ -249,7 +250,6 @@ const Materials = ({
 }) => {
   return (
     <>
-      <Spacer size="large" />
       <Title>
         <FormattedMessage id="scheduleEventDetail.materials" />
       </Title>
@@ -293,6 +293,7 @@ const Materials = ({
           </li>
         ))}
       </ul>
+      <Spacer size="large" />
     </>
   );
 };
