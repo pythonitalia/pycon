@@ -6,8 +6,6 @@ from schedule.models import ScheduleItem
 
 from jinja2 import Environment
 
-local_storage = storages["localstorage"]
-
 
 @dataclass
 class VideoInfo:
@@ -74,16 +72,18 @@ def _process_string_template(template_string: str, context) -> str:
 
 
 def download_video_file(id: int, path: str) -> str:
-    storage = storages["conferencevideos"]
-    filename = get_video_file_name(id)
+    video_storage = storages["conferencevideos"]
+    local_storage = storages["localstorage"]
 
+    filename = get_video_file_name(id)
     if not local_storage.exists(filename):
-        local_storage.save(filename, storage.open(path))
+        local_storage.save(filename, video_storage.open(path))
 
     return local_storage.path(filename)
 
 
 def extract_video_thumbnail(remote_video_path: str, id: int) -> str:
+    local_storage = storages["localstorage"]
     thumbnail_file_name = get_thumbnail_file_name(id)
     file_path = local_storage.path(thumbnail_file_name)
 
@@ -108,7 +108,9 @@ def extract_video_thumbnail(remote_video_path: str, id: int) -> str:
 
 
 def cleanup_local_files(id: int, delete_thumbnail: bool = True):
+    local_storage = storages["localstorage"]
     thumbnail_file_name = get_thumbnail_file_name(id)
+
     if delete_thumbnail and local_storage.exists(thumbnail_file_name):
         local_storage.delete(thumbnail_file_name)
 

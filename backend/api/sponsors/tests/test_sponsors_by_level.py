@@ -66,6 +66,7 @@ def test_query_sponsors(rf, graphql_client, sponsor_factory, sponsor_level_facto
             }
         ],
     }
-    assert resp["data"]["conference"]["sponsorsByLevel"][1]["sponsors"][0][
-        "image"
-    ].startswith("http://testserver/media/CACHE")
+    assert (
+        "/CACHE/images/sponsors"
+        in resp["data"]["conference"]["sponsorsByLevel"][1]["sponsors"][0]["image"]
+    )
