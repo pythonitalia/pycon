@@ -62,14 +62,14 @@ def test_upload_participant_avatar_to_invalid_conf_fails(graphql_client, user):
     assert response["errors"][0]["message"] == "You cannot upload files of this type"
 
 
-def test_upload_proposal_resource_file(graphql_client, user):
+def test_upload_proposal_material_file(graphql_client, user):
     proposal = SubmissionFactory(speaker=user)
     graphql_client.force_login(user)
 
     response = _upload_file(
         graphql_client,
         {
-            "proposalResource": {
+            "proposalMaterial": {
                 "filename": "test.txt",
                 "proposalId": proposal.hashid,
                 "conferenceCode": proposal.conference.code,
@@ -81,19 +81,19 @@ def test_upload_proposal_resource_file(graphql_client, user):
     assert response["data"]["uploadFile"]["__typename"] == "FileUploadRequest"
     assert (
         response["data"]["uploadFile"]["uploadUrl"]
-        == f"memory://files/proposal_resource/{id}.txt"
+        == f"memory://files/proposal_material/{id}.txt"
     )
     assert response["data"]["uploadFile"]["fields"] == '{"in-memory": true}'
 
 
-def test_cannot_upload_proposal_resource_file_if_not_speaker(graphql_client, user):
+def test_cannot_upload_proposal_material_file_if_not_speaker(graphql_client, user):
     proposal = SubmissionFactory()
     graphql_client.force_login(user)
 
     response = _upload_file(
         graphql_client,
         {
-            "proposalResource": {
+            "proposalMaterial": {
                 "filename": "test.txt",
                 "proposalId": proposal.hashid,
                 "conferenceCode": proposal.conference.code,
@@ -105,7 +105,7 @@ def test_cannot_upload_proposal_resource_file_if_not_speaker(graphql_client, use
     assert response["errors"][0]["message"] == "You cannot upload files of this type"
 
 
-def test_cannot_upload_proposal_resource_file_with_invalid_proposal_id(
+def test_cannot_upload_proposal_material_file_with_invalid_proposal_id(
     graphql_client, user
 ):
     graphql_client.force_login(user)
@@ -113,7 +113,7 @@ def test_cannot_upload_proposal_resource_file_with_invalid_proposal_id(
     response = _upload_file(
         graphql_client,
         {
-            "proposalResource": {
+            "proposalMaterial": {
                 "filename": "test.txt",
                 "proposalId": "abcabc",
                 "conferenceCode": ConferenceFactory().code,
@@ -125,7 +125,7 @@ def test_cannot_upload_proposal_resource_file_with_invalid_proposal_id(
     assert response["errors"][0]["message"] == "You cannot upload files of this type"
 
 
-def test_cannot_upload_proposal_resource_file_with_invalid_proposal_id_for_conference(
+def test_cannot_upload_proposal_material_file_with_invalid_proposal_id_for_conference(
     graphql_client, user
 ):
     proposal = SubmissionFactory()
@@ -134,7 +134,7 @@ def test_cannot_upload_proposal_resource_file_with_invalid_proposal_id_for_confe
     response = _upload_file(
         graphql_client,
         {
-            "proposalResource": {
+            "proposalMaterial": {
                 "filename": "test.txt",
                 "proposalId": proposal.hashid,
                 "conferenceCode": ConferenceFactory().code,

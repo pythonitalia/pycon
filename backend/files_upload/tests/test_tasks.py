@@ -1,3 +1,4 @@
+from submissions.tests.factories import ProposalMaterialFactory
 import pyclamd
 import datetime
 from participants.tests.factories import ParticipantFactory
@@ -22,16 +23,26 @@ class FakeRemoteStorage(InMemoryStorage):
 
 def test_delete_unused_files():
     file_1 = FileFactory(
-        created=timezone.datetime(2010, 8, 10, 10, 0, 0, tzinfo=datetime.timezone.utc)
+        created=timezone.datetime(2010, 8, 10, 10, 0, 0, tzinfo=datetime.timezone.utc),
+        type=File.Type.PARTICIPANT_AVATAR,
     )
+
     file_2 = FileFactory(
-        created=timezone.datetime(2010, 10, 10, 5, 0, 0, tzinfo=datetime.timezone.utc)
+        created=timezone.datetime(2010, 10, 10, 5, 0, 0, tzinfo=datetime.timezone.utc),
+        type=File.Type.PARTICIPANT_AVATAR,
     )
 
     file_3 = FileFactory(
-        created=timezone.datetime(2010, 1, 4, 10, 0, 0, tzinfo=datetime.timezone.utc)
+        created=timezone.datetime(2010, 1, 4, 10, 0, 0, tzinfo=datetime.timezone.utc),
+        type=File.Type.PARTICIPANT_AVATAR,
     )
     ParticipantFactory(photo_file=file_3)
+
+    file_4 = FileFactory(
+        created=timezone.datetime(2009, 1, 4, 10, 0, 0, tzinfo=datetime.timezone.utc),
+        type=File.Type.PROPOSAL_MATERIAL,
+    )
+    ProposalMaterialFactory(file=file_4)
 
     with time_machine.travel("2010-10-10 10:20:00Z", tick=False):
         delete_unused_files()
@@ -39,6 +50,7 @@ def test_delete_unused_files():
     assert not File.objects.filter(id=file_1.id).exists()
     assert File.objects.filter(id=file_2.id).exists()
     assert File.objects.filter(id=file_3.id).exists()
+    assert File.objects.filter(id=file_4.id).exists()
 
 
 def test_post_process_file_upload(requests_mock, mocker):
@@ -123,7 +135,7 @@ def test_post_process_file_upload_remote_file(requests_mock, mocker):
 
 
 def test_check_we_updated_delete_files_job():
-    known_types = ["participant_avatar", "proposal_resource"]
+    known_types = ["participant_avatar", "proposal_material"]
     assert (
         File.Type.values == known_types
     ), "Please update the delete_unused_files job to include new file types"

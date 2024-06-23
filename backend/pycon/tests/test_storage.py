@@ -13,7 +13,7 @@ def test_s3_storage_generate_upload_url(mocker):
             "bucket": "pycon-test",
         },
     }
-    file = FileFactory(type=File.Type.PROPOSAL_RESOURCE)
+    file = FileFactory(type=File.Type.PROPOSAL_MATERIAL)
     storage = CustomS3Boto3Storage()
     return_value = storage.generate_upload_url(file)
     boto3_mock.return_value.generate_presigned_post.assert_called_once_with(

@@ -22,14 +22,14 @@ class IsFileTypeUploadAllowed(BasePermission):
         match type:
             case File.Type.PARTICIPANT_AVATAR:
                 return self._check_participant_avatar(user, input)
-            case File.Type.PROPOSAL_RESOURCE:
-                return self._check_proposal_resource(user, input)
+            case File.Type.PROPOSAL_MATERIAL:  # pragma: no cover
+                return self._check_proposal_material(user, input)
 
     def _check_participant_avatar(self, user, input: "UploadFileInput") -> bool:
         conference_code = input.data.conference_code
         return Conference.objects.filter(code=conference_code).exists()
 
-    def _check_proposal_resource(self, user, input: "UploadFileInput") -> bool:
+    def _check_proposal_material(self, user, input: "UploadFileInput") -> bool:
         proposal_id = input.data.proposal_id
         conference_code = input.data.conference_code
 
