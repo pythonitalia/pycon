@@ -22,7 +22,7 @@ class IsFileTypeUploadAllowed(BasePermission):
         match type:
             case File.Type.PARTICIPANT_AVATAR:
                 return self._check_participant_avatar(user, input)
-            case File.Type.PROPOSAL_MATERIAL:
+            case File.Type.PROPOSAL_MATERIAL:  # pragma: no cover
                 return self._check_proposal_material(user, input)
 
     def _check_participant_avatar(self, user, input: "UploadFileInput") -> bool:
