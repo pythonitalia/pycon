@@ -25,7 +25,7 @@ export const FileInput = ({
   onBlur: () => void;
   value: string;
   errors?: string[];
-  type: "participant_avatar" | "proposal_resource";
+  type: "participant_avatar" | "proposal_material";
   previewUrl?: string;
   accept: string;
 }) => {

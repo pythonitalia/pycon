@@ -14,13 +14,13 @@ class BaseInput:
 
 
 @strawberry.input
-class ProposalResourceInput(BaseInput):
+class ProposalMaterialInput(BaseInput):
     proposal_id: strawberry.ID
     conference_code: str
 
     @property
     def type(self) -> File.Type:
-        return File.Type.PROPOSAL_RESOURCE
+        return File.Type.PROPOSAL_MATERIAL
 
 
 @strawberry.input
@@ -34,12 +34,12 @@ class ParticipantAvatarInput(BaseInput):
 
 @strawberry.input(one_of=True)
 class UploadFileInput:
-    proposal_resource: ProposalResourceInput | None = strawberry.UNSET
+    proposal_material: ProposalMaterialInput | None = strawberry.UNSET
     participant_avatar: ParticipantAvatarInput | None = strawberry.UNSET
 
     @property
     def data(self):
-        return self.proposal_resource or self.participant_avatar
+        return self.proposal_material or self.participant_avatar
 
     @property
     def type(self) -> File.Type:

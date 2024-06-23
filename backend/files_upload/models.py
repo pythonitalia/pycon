@@ -14,7 +14,7 @@ def get_upload_to_from_instance(instance, filename):
 class File(UUIDModel, TimeStampedModel):
     class Type(models.TextChoices):
         PARTICIPANT_AVATAR = "participant_avatar", "Participant Avatar"
-        PROPOSAL_RESOURCE = "proposal_resource", "Proposal Resource"
+        PROPOSAL_MATERIAL = "proposal_material", "Proposal Material"
 
     file = models.FileField(
         "File",
