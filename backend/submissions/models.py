@@ -197,6 +197,28 @@ class Submission(TimeStampedModel):
         )
 
 
+class ProposalMaterial(TimeStampedModel):
+    proposal = models.ForeignKey(
+        "submissions.Submission",
+        on_delete=models.CASCADE,
+        verbose_name=_("proposal"),
+        related_name="materials",
+    )
+
+    name = models.CharField(_("name"), max_length=100)
+    url = models.URLField(_("url"), max_length=2049, blank=True, null=True)
+    file = models.ForeignKey(
+        "files_upload.File",
+        on_delete=models.CASCADE,
+        verbose_name=_("file"),
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self):
+        return f"{self.name} for {self.proposal.title}"
+
+
 class SubmissionType(models.Model):
     name = models.CharField(max_length=100, unique=True)
 

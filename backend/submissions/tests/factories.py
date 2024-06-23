@@ -19,6 +19,7 @@ from submissions.models import (
     SubmissionComment,
     SubmissionTag,
     SubmissionType,
+    ProposalMaterial,
 )
 
 
@@ -138,3 +139,10 @@ class SubmissionCommentFactory(DjangoModelFactory):
     submission = factory.SubFactory(SubmissionFactory)
     text = factory.Faker("text")
     author = factory.SubFactory(UserFactory)
+
+
+class ProposalMaterialFactory(DjangoModelFactory):
+    class Meta:
+        model = ProposalMaterial
+
+    proposal = factory.SubFactory(SubmissionFactory)

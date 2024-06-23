@@ -484,9 +484,9 @@ def test_upload_schedule_item_video_flow(mocker):
     image_content.name = "test.jpg"
     image_content.seek(0)
 
-    localstorage = storages["localstorage"]
-
+    local_storage = storages["localstorage"]
     conferencevideos_storage = storages["conferencevideos"]
+
     conferencevideos_storage.save(
         "videos/test.mp4",
         InMemoryUploadedFile(
@@ -555,8 +555,8 @@ def test_upload_schedule_item_video_flow(mocker):
     assert schedule_item.youtube_video_id == "vid_123"
 
     # Make sure we cleanup files at the end
-    assert not localstorage.exists(get_thumbnail_file_name(schedule_item.id))
-    assert not localstorage.exists(get_video_file_name(schedule_item.id))
+    assert not local_storage.exists(get_thumbnail_file_name(schedule_item.id))
+    assert not local_storage.exists(get_video_file_name(schedule_item.id))
 
 
 def test_upload_schedule_item_with_only_thumbnail_to_upload(mocker):
@@ -730,12 +730,12 @@ def test_upload_schedule_item_video_with_failing_thumbnail_is_rescheduled(mocker
     sent_for_upload.schedule_item.refresh_from_db()
     assert sent_for_upload.schedule_item.youtube_video_id == "vid_123"
 
-    localstorage = storages["localstorage"]
+    local_storage = storages["localstorage"]
     # thumbnail is not deleted in this case, but the video is
-    assert localstorage.exists(
+    assert local_storage.exists(
         get_thumbnail_file_name(sent_for_upload.schedule_item.id)
     )
-    assert not localstorage.exists(
+    assert not local_storage.exists(
         get_video_file_name(sent_for_upload.schedule_item.id)
     )
 

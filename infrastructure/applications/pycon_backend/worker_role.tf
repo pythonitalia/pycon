@@ -58,6 +58,15 @@ resource "aws_iam_role_policy" "worker" {
       ],
       "Effect": "Allow",
       "Resource": "*"
+    },
+    {
+      "Action": [
+        "s3:DeleteObject"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::${terraform.workspace}-pycon-backend-media/files/*"
+      ]
     }
   ]
 }

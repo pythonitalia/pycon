@@ -3,6 +3,7 @@ import {
   Grid,
   GridColumn,
   Heading,
+  Link,
   Section,
   Spacer,
   StyledText,
@@ -12,13 +13,14 @@ import { LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import { SnakeWithPopcorn } from "@python-italia/pycon-styleguide/illustrations";
 import { isAfter, isBefore, parseISO } from "date-fns";
 import { zonedTimeToUtc } from "date-fns-tz";
-import React from "react";
+import type React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 
-import { TalkQueryResult } from "~/types";
+import { Fragment } from "react";
+import type { ProposalMaterial, TalkQueryResult } from "~/types";
 import { ParticipantInfoSection } from "../participant-info-section";
 import { EventTag } from "./event-tag";
 import { Sidebar } from "./sidebar";
@@ -45,6 +47,7 @@ type Props = {
   sidebarExtras?: React.ReactNode;
   rooms?: string[];
   youtubeVideoId?: string;
+  materials?: ProposalMaterial[];
 };
 
 const isEventLive = (startTime: string, endTime: string) => {
@@ -73,6 +76,7 @@ export const ScheduleEventDetail = ({
   sidebarExtras,
   rooms,
   youtubeVideoId,
+  materials,
 }: Props) => {
   const lang = useCurrentLanguage();
   const parsedStartTime = parseISO(startTime);
@@ -166,11 +170,11 @@ export const ScheduleEventDetail = ({
                 <StyledText baseTextSize={1}>
                   {compile(elevatorPitch).tree}
                 </StyledText>
-                <Spacer size="large" />
               </>
             )}
             {abstract && (
               <>
+                <Spacer size="large" />
                 <Title>
                   <FormattedMessage id="scheduleEventDetail.abstract" />
                 </Title>
@@ -178,11 +182,11 @@ export const ScheduleEventDetail = ({
                 <StyledText baseTextSize={2}>
                   {compile(abstract).tree}
                 </StyledText>
-                <Spacer size="large" />
               </>
             )}
             {tags && (
               <>
+                <Spacer size="large" />
                 <Title>
                   <FormattedMessage id="scheduleEventDetail.tags" />
                 </Title>
@@ -192,38 +196,43 @@ export const ScheduleEventDetail = ({
                 </Text>
               </>
             )}
+            {materials && <Materials materials={materials} />}
           </GridColumn>
         </Grid>
       </Section>
-      {youtubeVideoId && (
-        <Section>
-          <div className="relative max-w-[1060px] mx-auto">
-            <SnakeWithPopcorn className="absolute top-0 right-14 z-10 w-[130px] -translate-y-[63%] lg:w-[180px] lg:-translate-y-[68%] hidden md:block" />
-            <div className="z-20 relative">
-              <iframe
-                title="Recording"
-                src={`https://www.youtube.com/embed/${youtubeVideoId}`}
-                allowFullScreen
-                className="aspect-video p-[3px] top-0 left-0 w-full bg-black"
-              />
-            </div>
-          </div>
-        </Section>
-      )}
+      {youtubeVideoId && <YouTubeSection youtubeVideoId={youtubeVideoId} />}
       {speakers.length > 0 && (
         <Section>
           {speakers.map((speaker, index) => (
-            <>
+            <Fragment key={speaker.fullName}>
               <ParticipantInfoSection
                 fullname={speaker.fullName}
                 participant={speaker.participant}
               />
               {index !== speakers.length - 1 && <Spacer size="2xl" />}
-            </>
+            </Fragment>
           ))}
         </Section>
       )}
     </>
+  );
+};
+
+const YouTubeSection = ({ youtubeVideoId }: { youtubeVideoId: string }) => {
+  return (
+    <Section>
+      <div className="relative max-w-[1060px] mx-auto">
+        <SnakeWithPopcorn className="absolute top-0 right-14 z-10 w-[130px] -translate-y-[63%] lg:w-[180px] lg:-translate-y-[68%] hidden md:block" />
+        <div className="z-20 relative">
+          <iframe
+            title="Recording"
+            src={`https://www.youtube.com/embed/${youtubeVideoId}`}
+            allowFullScreen
+            className="aspect-video p-[3px] top-0 left-0 w-full bg-black"
+          />
+        </div>
+      </div>
+    </Section>
   );
 };
 
@@ -232,3 +241,58 @@ const Title = ({ children }: { children: React.ReactNode }) => (
     {children}
   </Text>
 );
+
+const Materials = ({
+  materials,
+}: {
+  materials: ProposalMaterial[];
+}) => {
+  return (
+    <>
+      <Spacer size="large" />
+      <Title>
+        <FormattedMessage id="scheduleEventDetail.materials" />
+      </Title>
+      <Spacer size="small" />
+      <ul>
+        {materials.map((material) => (
+          <li key={material.id}>
+            <Text size={2} weight="strong">
+              {material.name}
+            </Text>
+            {material.url && (
+              <>
+                {" - "}
+                <Text size={2} decoration="underline">
+                  <Link href={material.url} target="_blank">
+                    <FormattedMessage
+                      id="scheduleEventDetail.materials.open"
+                      values={{
+                        hostname: new URL(material.url).hostname,
+                      }}
+                    />
+                  </Link>
+                </Text>
+              </>
+            )}
+            {material.fileUrl && (
+              <>
+                {" - "}
+                <Text size={2} decoration="underline">
+                  <Link href={material.fileUrl} target="_blank">
+                    <FormattedMessage
+                      id="scheduleEventDetail.materials.download"
+                      values={{
+                        mimeType: material.fileMimeType,
+                      }}
+                    />
+                  </Link>
+                </Text>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+};

@@ -268,7 +268,6 @@ def send_schedule_invitation_plain_message(*, schedule_item_id, message):
     schedule_item.save(update_fields=["plain_thread_id"])
 
 
-@app.task()
 def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
     sent_for_video_upload = ScheduleItemSentForVideoUpload.objects.get(
         id=sent_for_video_upload_state_id

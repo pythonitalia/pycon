@@ -62,6 +62,25 @@ class MultiLingualString:
 
 
 @strawberry.type
+class ProposalMaterial:
+    id: strawberry.ID
+    name: str
+    url: str | None
+    file_url: str | None
+    file_mime_type: str | None
+
+    @classmethod
+    def from_django(cls, material):
+        return cls(
+            id=material.id,
+            name=material.name,
+            url=material.url,
+            file_url=material.file.url if material.file_id else None,
+            file_mime_type=material.file.mime_type if material.file_id else None,
+        )
+
+
+@strawberry.type
 class Submission:
     conference: Annotated["Conference", strawberry.lazy("api.conferences.types")]
     title: str
@@ -151,6 +170,13 @@ class Submission:
     @strawberry.field
     def tags(self, info) -> Optional[List[SubmissionTag]]:
         return self.tags.all()
+
+    @strawberry.field
+    def materials(self, info) -> list[ProposalMaterial]:
+        return [
+            ProposalMaterial.from_django(material)
+            for material in self.materials.order_by("created").all()
+        ]
 
 
 @strawberry.type
