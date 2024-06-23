@@ -197,7 +197,9 @@ export const ScheduleEventDetail = ({
                 <Spacer size="large" />
               </>
             )}
-            {materials && <Materials materials={materials} />}
+            {(materials ?? []).length > 0 && (
+              <Materials materials={materials} />
+            )}
           </GridColumn>
         </Grid>
       </Section>
