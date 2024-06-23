@@ -17,6 +17,9 @@ class IsFileTypeUploadAllowed(BasePermission):
         type = input.type
         user = info.context.request.user
 
+        if user.is_superuser:
+            return True
+
         assert type in File.Type.values, f"Invalid file type: {type}"
 
         match type:

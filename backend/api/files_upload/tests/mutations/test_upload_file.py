@@ -1,3 +1,4 @@
+import pytest
 from files_upload.models import File
 from submissions.tests.factories import SubmissionFactory
 from conferences.tests.factories import ConferenceFactory
@@ -144,6 +145,36 @@ def test_cannot_upload_proposal_material_file_with_invalid_proposal_id_for_confe
 
     assert not response["data"]
     assert response["errors"][0]["message"] == "You cannot upload files of this type"
+
+
+@pytest.mark.parametrize(
+    "file_type", [File.Type.PARTICIPANT_AVATAR, File.Type.PROPOSAL_MATERIAL]
+)
+def test_superusers_can_upload_anything(graphql_client, admin_superuser, file_type):
+    proposal = SubmissionFactory()
+    graphql_client.force_login(admin_superuser)
+
+    req_input = {}
+    match file_type:
+        case File.Type.PARTICIPANT_AVATAR:
+            req_input["participantAvatar"] = {
+                "filename": "test.txt",
+                "conferenceCode": "random",
+            }
+        case File.Type.PROPOSAL_MATERIAL:
+            req_input["proposalMaterial"] = {
+                "filename": "test.txt",
+                "proposalId": proposal.hashid,
+                "conferenceCode": proposal.conference.code,
+            }
+
+    response = _upload_file(
+        graphql_client,
+        req_input,
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["uploadFile"]["__typename"] == "FileUploadRequest"
 
 
 @override_settings(
