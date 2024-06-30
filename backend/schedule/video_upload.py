@@ -39,6 +39,7 @@ def create_video_info(schedule_item: ScheduleItem) -> VideoInfo:
         "speakers_names": speakers_names,
         "title": schedule_item.title,
         "abstract": schedule_item.abstract,
+        "slug": schedule_item.slug,
         "elevator_pitch": schedule_item.elevator_pitch,
         "conference_name": schedule_item.conference.name.localize("en"),
         "hashtags": " ".join([f"#{tag}" for tag in tags]),
