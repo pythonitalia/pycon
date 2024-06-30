@@ -67,6 +67,16 @@ resource "aws_iam_role_policy" "worker" {
       "Resource": [
         "arn:aws:s3:::${terraform.workspace}-pycon-backend-media/files/*"
       ]
+    },
+    {
+      "Action": [
+        "s3:GetObject",
+        "s3:HeadObject"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::${terraform.workspace}-pycon-backend-media/cloudfront-private-key.pem"
+      ]
     }
   ]
 }
