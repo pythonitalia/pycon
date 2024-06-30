@@ -11,6 +11,7 @@ def cms_page(
     hostname: str,
     slug: str,
     language: str,
+    password: str | None = None,
 ) -> GenericPage | SiteNotFoundError | None:
     site = get_site_by_host(hostname)
 
@@ -18,6 +19,12 @@ def cms_page(
         return SiteNotFoundError(message=f"Site `{hostname}` not found")
 
     page = GenericPageModel.objects.in_site(site).filter(slug=slug).first()
+    password_restriction = (
+        page.get_view_restrictions().filter(restriction_type="password").first()
+    )
+
+    if password_restriction and password_restriction.value != password:
+        return None
 
     if not page:
         return None
