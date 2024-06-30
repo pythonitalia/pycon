@@ -21,9 +21,6 @@ STORAGES = {
     "default": {
         "BACKEND": "pycon.storages.CustomInMemoryStorage",
     },
-    "conferencevideos": {
-        "BACKEND": "pycon.storages.CustomInMemoryStorage",
-    },
     "localstorage": {
         "BACKEND": "pycon.storages.CustomInMemoryStorage",
     },

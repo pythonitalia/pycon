@@ -36,6 +36,7 @@ resource "aws_cloudfront_distribution" "media_cdn" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "default"
+    trusted_key_groups = [aws_cloudfront_key_group.group.id]
 
     cache_policy_id = data.aws_cloudfront_cache_policy.caching_optimized.id
 
@@ -64,4 +65,22 @@ resource "aws_route53_record" "cdn_record" {
     zone_id                = aws_cloudfront_distribution.media_cdn.hosted_zone_id
     evaluate_target_health = false
   }
+}
+
+resource "tls_private_key" "key" {
+  algorithm = "RSA"
+  rsa_bits  = 2048
+}
+
+
+resource "aws_cloudfront_public_key" "key" {
+  comment     = "pycon.it cdn public key"
+  encoded_key = tls_private_key.key.public_key_pem
+  name        = "pyconit-public-key"
+}
+
+resource "aws_cloudfront_key_group" "group" {
+  comment = "pyconit cdn key group"
+  items   = [aws_cloudfront_public_key.key.id]
+  name    = "pyconit-cdn-key-group"
 }

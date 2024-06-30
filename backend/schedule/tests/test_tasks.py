@@ -485,7 +485,7 @@ def test_upload_schedule_item_video_flow(mocker):
     image_content.seek(0)
 
     local_storage = storages["localstorage"]
-    conferencevideos_storage = storages["conferencevideos"]
+    conferencevideos_storage = storages["default"]
 
     conferencevideos_storage.save(
         "videos/test.mp4",
@@ -568,7 +568,7 @@ def test_upload_schedule_item_with_only_thumbnail_to_upload(mocker):
     image_content.name = "test.jpg"
     image_content.seek(0)
 
-    conferencevideos_storage = storages["conferencevideos"]
+    conferencevideos_storage = storages["default"]
     conferencevideos_storage.save(
         "videos/test.mp4",
         InMemoryUploadedFile(
@@ -665,7 +665,7 @@ def test_upload_schedule_item_video_with_failing_thumbnail_is_rescheduled(mocker
     image_content.name = "test.jpg"
     image_content.seek(0)
 
-    conferencevideos_storage = storages["conferencevideos"]
+    conferencevideos_storage = storages["default"]
     conferencevideos_storage.save(
         "videos/test.mp4",
         InMemoryUploadedFile(
@@ -749,7 +749,7 @@ def test_upload_schedule_item_video_with_failing_thumbnail_upload_fails(mocker):
     image_content.name = "test.jpg"
     image_content.seek(0)
 
-    conferencevideos_storage = storages["conferencevideos"]
+    conferencevideos_storage = storages["default"]
     conferencevideos_storage.save(
         "videos/test.mp4",
         InMemoryUploadedFile(

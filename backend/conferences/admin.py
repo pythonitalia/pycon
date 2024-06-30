@@ -272,8 +272,12 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
         files = cache.get(cache_key)
 
         if not files or ignore_cache:
-            storage = storages["conferencevideos"]
-            files = list(walk_conference_videos_folder(storage, f"{conference.code}/"))
+            storage = storages["default"]
+            files = list(
+                walk_conference_videos_folder(
+                    storage, f"conference-videos/{conference.code}/"
+                )
+            )
             cache.set(cache_key, files, 60 * 60 * 24 * 7)
 
         matched_videos = 0

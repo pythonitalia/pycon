@@ -4,7 +4,6 @@ from files_upload.constants import get_max_upload_size_bytes
 import boto3
 from storages.backends.s3boto3 import S3Boto3Storage
 from tempfile import SpooledTemporaryFile
-from storages.backends.azure_storage import AzureStorage
 from django.core.files.storage.memory import InMemoryStorage
 from django.core.files.storage import FileSystemStorage
 from django.urls import reverse
@@ -102,10 +101,6 @@ class CustomInMemoryStorage(InMemoryStorage):
 
     def url(self, name, *, querystring_auth=True):
         return super().url(name)
-
-
-class ConferenceVideosStorage(AzureStorage):
-    azure_container = "conference-videos"
 
 
 class CustomFileSystemStorage(FileSystemStorage):
