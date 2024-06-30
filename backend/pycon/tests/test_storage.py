@@ -1,4 +1,5 @@
 from unittest import mock
+from files_upload.constants import get_max_upload_size_bytes
 from files_upload.models import File
 from files_upload.tests.factories import FileFactory
 from pycon.storages import CustomFileSystemStorage, CustomS3Boto3Storage
@@ -20,7 +21,7 @@ def test_s3_storage_generate_upload_url(mocker):
         Bucket=mock.ANY,
         Key=file.file.name,
         ExpiresIn=3600,
-        Conditions=[["content-length-range", 1, 5242880]],
+        Conditions=[["content-length-range", 1, get_max_upload_size_bytes(file.type)]],
     )
 
     assert return_value.url == "http://example.org/pycon-test"
