@@ -138,4 +138,6 @@ def replace_invalid_chars_with_lookalikes(text: str) -> str:
 
 
 def clean_tag(tag: str) -> str:
-    return tag.strip().replace(" ", "").replace("-", "").replace(".", "")
+    return (
+        tag.strip().replace(" ", "").replace("-", "").replace(".", "").replace("/", "")
+    )
