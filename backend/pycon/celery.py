@@ -22,7 +22,10 @@ def setup_periodic_tasks(sender, **kwargs):
         from association_membership.tasks import (
             check_association_membership_subscriptions,
         )
-        from schedule.tasks import process_schedule_items_videos_to_upload
+        from schedule.tasks import (
+            process_schedule_items_videos_to_upload,
+            process_pending_email_speaker_recipients,
+        )
         from files_upload.tasks import delete_unused_files
 
         add = sender.add_periodic_task
@@ -41,6 +44,11 @@ def setup_periodic_tasks(sender, **kwargs):
             timedelta(minutes=60),
             delete_unused_files,
             name="Delete unused files",
+        )
+        add(
+            timedelta(minutes=15),
+            process_pending_email_speaker_recipients,
+            name="Process pending email speaker recipients",
         )
     except Exception:
         logger.exception("setup_periodic_tasks")
