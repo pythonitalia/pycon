@@ -3,7 +3,7 @@ from .base import DATABASES, env, AWS_STORAGE_BUCKET_NAME
 
 SECRET_KEY = env("SECRET_KEY")
 
-AWS_QUERYSTRING_AUTH = False
+AWS_QUERYSTRING_AUTH = True
 AWS_S3_FILE_OVERWRITE = False
 AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "public, max-age=31536000"}
 AWS_DEFAULT_ACL = "public-read"
