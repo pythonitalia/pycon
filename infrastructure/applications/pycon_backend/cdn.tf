@@ -84,3 +84,11 @@ resource "aws_cloudfront_key_group" "group" {
   items   = [aws_cloudfront_public_key.key.id]
   name    = "pyconit-cdn-key-group"
 }
+
+resource "aws_s3_object" "private_key_pem" {
+  bucket = aws_s3_bucket.backend_media.bucket
+  key    = "cloudfront-private-key.pem"
+  content_base64 = base64encode(tls_private_key.key.private_key_pem)
+  etag = md5(base64encode(tls_private_key.key.private_key_pem))
+  acl = "private"
+}

@@ -185,8 +185,8 @@ locals {
       value = module.secrets.value.clamav_host
     },
     {
-      name = "AWS_CLOUDFRONT_KEY",
-      value = tls_private_key.key.private_key_pem
+      name = "AWS_CLOUDFRONT_KEY_FILE",
+      value = aws_s3_object.private_key_pem.key
     },
     {
       name = "AWS_CLOUDFRONT_KEY_ID",
