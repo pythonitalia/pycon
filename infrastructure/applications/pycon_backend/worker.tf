@@ -238,7 +238,7 @@ resource "aws_instance" "instance_1" {
   key_name             = "pretix"
 
   root_block_device {
-    volume_size = 8
+    volume_size = 20
   }
 
   tags = {

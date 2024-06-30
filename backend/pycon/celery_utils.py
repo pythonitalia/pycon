@@ -71,7 +71,7 @@ class OnlyOneAtTimeTask(Task):
         self._stop_event = threading.Event()
 
         self.renewer_thread = threading.Thread(
-            target=renew_lock, args=(self.lock, self.timeout - 30, self._stop_event)
+            target=renew_lock, args=(self.lock, self.timeout / 2, self._stop_event)
         )
         self.renewer_thread.daemon = True
         self.renewer_thread.start()
