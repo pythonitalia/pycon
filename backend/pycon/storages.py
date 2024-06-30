@@ -1,5 +1,6 @@
 import json
 from dataclasses import dataclass
+from files_upload.constants import get_max_upload_size_bytes
 import boto3
 from storages.backends.s3boto3 import S3Boto3Storage
 from tempfile import SpooledTemporaryFile
@@ -41,7 +42,7 @@ class CustomS3Boto3Storage(S3Boto3Storage):
         )
 
         conditions = [
-            ["content-length-range", 1, 5 * 1024 * 1024],
+            ["content-length-range", 1, get_max_upload_size_bytes(file_obj.type)],
         ]
 
         if file_obj.is_public:
