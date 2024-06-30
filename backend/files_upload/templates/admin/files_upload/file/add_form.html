@@ -1,0 +1,139 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block content %}
+<form method="post" action="" enctype="multipart/form-data" id="upload-file-form">
+    {% csrf_token %}
+    <fieldset class="module aligned">
+      <div class="form-row">
+        <div class="flex-container">
+          <label class="required">File:</label>
+          <div class="field-box">
+            <input type="file" id="file" />
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="flex-container">
+          <label class="required">Type:</label>
+          <div class="field-box">
+            <select id="type">
+              <option value="participant_avatar">Participant Avatar</option>
+              <option value="proposal_material">Proposal Material</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    <div class="submit-row">
+      <input type="submit" value="Create" class="default" name="upload_file">
+    </div>
+</form>
+{% endblock %}
+
+{% block extrahead %}{{ block.super }}
+<script>
+  window.onload = function() {
+    let processing = false;
+    document.querySelector('#upload-file-form').onsubmit = async function(e) {
+      if (processing) {
+        return;
+      }
+
+      document.querySelector('.submit-row input[type="submit"]').disabled = true;
+
+      processing = true;
+      e.preventDefault();
+      const form = e.target;
+      const type = form.querySelector('#type').value;
+      const file = form.querySelector('#file').files[0];
+
+      const variables = {
+        input: {}
+      };
+
+      if (type === "participant_avatar") {
+        variables.input.participantAvatar = {
+          conferenceCode: 'admin',
+          filename: file.name,
+        }
+      } else if (type === "proposal_material") {
+        variables.input.proposalMaterial = {
+          conferenceCode: 'admin',
+          proposalId: '',
+          filename: file.name,
+        }
+      }
+
+      console.log('type', type);
+      const requestUpload = await fetch('/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({
+          query: `
+            mutation UploadFileViaAdmin($input: UploadFileInput!) {
+              uploadFile(input: $input) {
+                __typename
+                ... on FileUploadRequest {
+                  id
+                  uploadUrl
+                  fields
+                }
+              }
+            }
+          `,
+          variables,
+        })
+      });
+      const response = await requestUpload.json()
+      const parsedFields = JSON.parse(response.data.uploadFile.fields);
+      const fileId = response.data.uploadFile.id;
+
+      const formData = new FormData();
+
+      for (const [key, value] of Object.entries(parsedFields)) {
+        formData.append(key, value);
+      }
+
+      formData.append('file', file);
+
+      const uploadRequest = await fetch(response.data.uploadFile.uploadUrl, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!uploadRequest.ok) {
+        alert('Failed to upload file');
+        return;
+      }
+
+      const finalizeUpload = await fetch('/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({
+          query: `
+            mutation FinalizeUpload($input: FinalizeUploadInput!) {
+              finalizeUpload(input: $input) {
+                id
+              }
+            }
+          `,
+          variables: {
+            input: {
+              fileId: response.data.uploadFile.id,
+            }
+          }
+        })
+      });
+
+      window.location.href = `{% url 'admin:files_upload_file_changelist' %}${fileId}`
+    }
+  }
+</script>
+{% endblock %}
