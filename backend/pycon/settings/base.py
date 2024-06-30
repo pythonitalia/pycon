@@ -225,9 +225,6 @@ STORAGES = {
             default="pycon.storages.CustomFileSystemStorage",
         )
     },
-    "conferencevideos": {
-        "BACKEND": "pycon.storages.ConferenceVideosStorage",
-    },
     "localstorage": {
         "BACKEND": "pycon.storages.CustomFileSystemStorage",
         "LOCATION": "/tmp/",

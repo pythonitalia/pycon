@@ -72,7 +72,7 @@ def _process_string_template(template_string: str, context) -> str:
 
 
 def download_video_file(id: int, path: str) -> str:
-    video_storage = storages["conferencevideos"]
+    video_storage = storages["default"]
     local_storage = storages["localstorage"]
 
     filename = get_video_file_name(id)
