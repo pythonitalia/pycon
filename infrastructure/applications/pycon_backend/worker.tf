@@ -224,7 +224,7 @@ data "template_file" "user_data" {
 
 resource "aws_instance" "instance_1" {
   ami               = var.ecs_arm_ami
-  instance_type     = "t4g.medium"
+  instance_type     = "t4g.nano"
   subnet_id         = data.aws_subnet.private_1a.id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [
