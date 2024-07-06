@@ -185,10 +185,6 @@ locals {
       value = module.secrets.value.clamav_host
     },
     {
-      name = "AWS_CLOUDFRONT_KEY_FILE",
-      value = aws_s3_object.private_key_pem.key
-    },
-    {
       name = "AWS_CLOUDFRONT_KEY_ID",
       value = aws_cloudfront_public_key.key.id
     }
