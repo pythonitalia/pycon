@@ -124,6 +124,7 @@ INSTALLED_APPS = [
     "integrations.apps.IntegrationsConfig",
     "healthchecks.apps.HealthchecksConfig",
     "files_upload.apps.FilesUploadConfig",
+    "email_speakers.apps.EmailSpeakersConfig",
 ]
 
 MIDDLEWARE = [
