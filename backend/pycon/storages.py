@@ -60,28 +60,6 @@ class CustomS3Boto3Storage(S3Boto3Storage):
             is_public=file_obj.is_public,
         )
 
-    def url(
-        self,
-        name,
-        *,
-        parameters=None,
-        expire=None,
-        http_method=None,
-        querystring_auth=True,
-    ):
-        # todo find a better workaround?
-        old_value = self.querystring_auth
-
-        if not querystring_auth:
-            self.querystring_auth = False
-
-        try:
-            return super().url(
-                name=name, parameters=parameters, expire=expire, http_method=http_method
-            )
-        finally:
-            self.querystring_auth = old_value
-
     def _save(self, name, content):
         content.seek(0)
         with SpooledTemporaryFile() as tmp:
@@ -99,9 +77,6 @@ class CustomInMemoryStorage(InMemoryStorage):
             is_public=False,
         )
 
-    def url(self, name, *, querystring_auth=True):
-        return super().url(name)
-
 
 class CustomFileSystemStorage(FileSystemStorage):
     is_remote = False
@@ -109,6 +84,3 @@ class CustomFileSystemStorage(FileSystemStorage):
     def generate_upload_url(self, file_obj):
         url = reverse("local_files_upload", kwargs={"file_id": file_obj.id})
         return UploadURL(url=url, fields={}, is_public=False)
-
-    def url(self, name, *, querystring_auth=True):
-        return super().url(name)
