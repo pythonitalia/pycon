@@ -36,7 +36,6 @@ resource "aws_cloudfront_distribution" "media_cdn" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "default"
-    trusted_key_groups = [aws_cloudfront_key_group.group.id]
 
     cache_policy_id = data.aws_cloudfront_cache_policy.caching_optimized.id
 

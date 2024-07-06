@@ -50,16 +50,8 @@ class File(UUIDModel, TimeStampedModel):
 
     @property
     def url(self) -> str:
-        if self.is_public:
-            storage = self.file.storage
-            return storage.url(self.file.name, querystring_auth=False)
-
         return self.file.url
 
     @property
     def is_public(self) -> bool:
-        match self.type:
-            case File.Type.PARTICIPANT_AVATAR:
-                return True
-            case _:
-                return False
+        return True
