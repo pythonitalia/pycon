@@ -118,8 +118,6 @@ module "lambda" {
     PLAIN_INTEGRATION_TOKEN                   = module.secrets.value.plain_integration_token
     HASHID_DEFAULT_SECRET_SALT                = module.secrets.value.hashid_default_secret_salt
     MEDIA_FILES_STORAGE_BACKEND = "pycon.storages.CustomS3Boto3Storage"
-    AWS_CLOUDFRONT_KEY_FILE = aws_s3_object.private_key_pem.key
-    AWS_CLOUDFRONT_KEY_ID = aws_cloudfront_public_key.key.id
   }
 }
 
