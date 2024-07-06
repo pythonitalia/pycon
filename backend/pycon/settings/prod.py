@@ -1,5 +1,5 @@
 from .base import *  # noqa
-from .base import DATABASES, env, AWS_STORAGE_BUCKET_NAME
+from .base import env, AWS_STORAGE_BUCKET_NAME
 
 SECRET_KEY = env("SECRET_KEY")
 
@@ -17,9 +17,6 @@ USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 DEFAULT_FROM_EMAIL = "noreply@pycon.it"
-
-SIMULATE_PRETIX_DB = False
-DATABASES["pretix"] = {**DATABASES["default"], "NAME": "pretix"}
 
 # TODO: Make this setting dynamic
 CSRF_TRUSTED_ORIGINS = [

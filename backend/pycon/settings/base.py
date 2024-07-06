@@ -240,8 +240,6 @@ IMAGEKIT_DEFAULT_FILE_STORAGE = env(
 if PRETIX_API:
     PRETIX_API_TOKEN = env("PRETIX_API_TOKEN")
 
-SIMULATE_PRETIX_DB = True
-
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
