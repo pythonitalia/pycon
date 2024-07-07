@@ -24,6 +24,7 @@ def setup_periodic_tasks(sender, **kwargs):
         )
         from schedule.tasks import process_schedule_items_videos_to_upload
         from files_upload.tasks import delete_unused_files
+        from pycon.tasks import check_for_idle_heavy_processing_workers
 
         add = sender.add_periodic_task
 
@@ -41,6 +42,11 @@ def setup_periodic_tasks(sender, **kwargs):
             timedelta(minutes=60),
             delete_unused_files,
             name="Delete unused files",
+        )
+        add(
+            timedelta(minutes=5),
+            check_for_idle_heavy_processing_workers,
+            name="Check for idle heavy processing workers",
         )
     except Exception:
         logger.exception("setup_periodic_tasks")

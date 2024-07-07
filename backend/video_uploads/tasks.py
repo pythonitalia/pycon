@@ -9,7 +9,7 @@ from urllib.parse import urlparse, unquote
 import requests
 import logging
 from video_uploads.models import WetransferToS3TransferRequest
-from pycon.celery_utils import launch_large_storage_worker
+from pycon.celery_utils import launch_heavy_processing_worker
 from pycon.celery import app
 from django.db import transaction
 
@@ -40,10 +40,10 @@ def queue_wetransfer_to_s3_transfer_request(request_id):
     wetransfer_to_s3_transfer_request.save(update_fields=["status", "failed_reason"])
 
     process_wetransfer_to_s3_transfer_request.apply_async(
-        args=[request_id], queue="large_storage"
+        args=[request_id], queue="heavy_processing"
     )
 
-    launch_large_storage_worker()
+    launch_heavy_processing_worker()
 
 
 def wetransfer_error_handling(func):

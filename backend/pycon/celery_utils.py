@@ -104,11 +104,11 @@ def _get_ecs_network_config():
     }
 
 
-def launch_large_storage_worker():
+def launch_heavy_processing_worker():
     if settings.ENVIRONMENT == "local":
         return
 
-    cluster_name = f"pythonit-{settings.ENVIRONMENT}-large-storage-worker"
+    cluster_name = f"pythonit-{settings.ENVIRONMENT}-heavy-processing-worker"
     ecs_client = boto3.client("ecs", region_name=settings.AWS_REGION_NAME)
 
     response = ecs_client.list_tasks(cluster=cluster_name, desiredStatus="RUNNING")
@@ -118,7 +118,7 @@ def launch_large_storage_worker():
 
     ecs_client.run_task(
         cluster=cluster_name,
-        taskDefinition=f"pythonit-{settings.ENVIRONMENT}-large-storage-worker",
+        taskDefinition=f"pythonit-{settings.ENVIRONMENT}-heavy-processing-worker",
         count=1,
         networkConfiguration={"awsvpcConfiguration": _get_ecs_network_config()},
         launchType="FARGATE",

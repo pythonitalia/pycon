@@ -1,14 +1,14 @@
-resource "aws_ecs_cluster" "large_storage_worker" {
-  name = "pythonit-${terraform.workspace}-large-storage-worker"
+resource "aws_ecs_cluster" "heavy_processing_worker" {
+  name = "pythonit-${terraform.workspace}-heavy-processing-worker"
 }
 
-resource "aws_cloudwatch_log_group" "large_storage_worker_logs" {
-  name              = "/ecs/pythonit-${terraform.workspace}-large-storage-worker"
+resource "aws_cloudwatch_log_group" "heavy_processing_worker_logs" {
+  name              = "/ecs/pythonit-${terraform.workspace}-heavy-processing-worker"
   retention_in_days = 7
 }
 
-resource "aws_ecs_task_definition" "large_storage_worker" {
-  family = "pythonit-${terraform.workspace}-large-storage-worker"
+resource "aws_ecs_task_definition" "heavy_processing_worker" {
+  family = "pythonit-${terraform.workspace}-heavy-processing-worker"
   requires_compatibilities = ["FARGATE"]
   cpu                      = 1024
   memory                   = 2048
@@ -32,7 +32,7 @@ resource "aws_ecs_task_definition" "large_storage_worker" {
       ]
 
       command = [
-        "-A", "pycon", "worker", "-c", "2", "-l", "info", "-Q", "large_storage"
+        "-A", "pycon", "worker", "-c", "2", "-l", "info", "-Q", "heavy_processing"
       ]
 
       environment = local.env_vars
@@ -48,7 +48,7 @@ resource "aws_ecs_task_definition" "large_storage_worker" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.large_storage_worker_logs.name
+          "awslogs-group"         = aws_cloudwatch_log_group.heavy_processing_worker_logs.name
           "awslogs-region"        = "eu-central-1"
           "awslogs-stream-prefix" = "ecs"
         }
