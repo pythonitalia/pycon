@@ -36,7 +36,8 @@ def queue_wetransfer_to_s3_transfer_request(request_id):
     wetransfer_to_s3_transfer_request.status = (
         WetransferToS3TransferRequest.Status.QUEUED
     )
-    wetransfer_to_s3_transfer_request.save(update_fields=["status"])
+    wetransfer_to_s3_transfer_request.failed_reason = ""
+    wetransfer_to_s3_transfer_request.save(update_fields=["status", "failed_reason"])
 
     process_wetransfer_to_s3_transfer_request.apply_async(
         args=[request_id], queue="large_storage"
