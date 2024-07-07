@@ -183,6 +183,17 @@ locals {
     {
       name = "CLAMAV_HOST",
       value = module.secrets.value.clamav_host
+    },
+    {
+      name = "ECS_NETWORK_CONFIG",
+      value = jsonencode({
+        subnets = [data.aws_subnet.private_1a.id],
+        security_groups = [
+          data.aws_security_group.rds.id,
+          data.aws_security_group.lambda.id,
+          aws_security_group.instance.id
+        ],
+      })
     }
   ]
 }

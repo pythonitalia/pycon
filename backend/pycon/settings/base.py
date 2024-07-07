@@ -1,3 +1,4 @@
+import json
 import stripe
 import environ
 import sentry_sdk
@@ -124,6 +125,7 @@ INSTALLED_APPS = [
     "integrations.apps.IntegrationsConfig",
     "healthchecks.apps.HealthchecksConfig",
     "files_upload.apps.FilesUploadConfig",
+    "video_uploads.apps.VideoUploadsConfig",
 ]
 
 MIDDLEWARE = [
@@ -381,6 +383,7 @@ CELERY_TASK_IGNORE_RESULT = True
 
 AWS_STORAGE_BUCKET_NAME = env("AWS_MEDIA_BUCKET", default=None)
 AWS_S3_REGION_NAME = env("AWS_REGION_NAME", default="eu-central-1")
+AWS_REGION_NAME = env("AWS_REGION_NAME", default="eu-central-1")
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID", default=None)
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default=None)
 AWS_SESSION_TOKEN = env("AWS_SESSION_TOKEN", default=None)
@@ -389,3 +392,5 @@ CLAMAV_HOST = env("CLAMAV_HOST", default=None)
 CLAMAV_PORT = env("CLAMAV_PORT", default=3310)
 
 IS_RUNNING_TESTS = False
+
+ECS_NETWORK_CONFIG = json.loads(env("ECS_NETWORK_CONFIG", default="{}"))

@@ -12,6 +12,14 @@ resource "aws_iam_role" "worker" {
       },
       "Effect": "Allow",
       "Sid": ""
+    },
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
     }
   ]
 }
