@@ -75,13 +75,13 @@ resource "tls_private_key" "key" {
 resource "aws_cloudfront_public_key" "key" {
   comment     = "pycon.it cdn public key"
   encoded_key = tls_private_key.key.public_key_pem
-  name        = "pyconit-public-key"
+  name        = "pyconit-${terraform.workspace}-public-key"
 }
 
 resource "aws_cloudfront_key_group" "group" {
   comment = "pyconit cdn key group"
   items   = [aws_cloudfront_public_key.key.id]
-  name    = "pyconit-cdn-key-group"
+  name    = "pyconit-${terraform.workspace}-cdn-key-group"
 }
 
 resource "aws_s3_object" "private_key_pem" {

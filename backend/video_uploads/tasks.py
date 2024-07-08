@@ -1,3 +1,5 @@
+from functools import wraps
+
 from django.utils import timezone
 from django.core.files.storage import storages
 from io import BytesIO
@@ -39,14 +41,17 @@ def queue_wetransfer_to_s3_transfer_request(request_id):
     wetransfer_to_s3_transfer_request.failed_reason = ""
     wetransfer_to_s3_transfer_request.save(update_fields=["status", "failed_reason"])
 
-    process_wetransfer_to_s3_transfer_request.apply_async(
-        args=[request_id], queue="heavy_processing"
-    )
+    def _on_commit():
+        process_wetransfer_to_s3_transfer_request.apply_async(
+            args=[request_id], queue="heavy_processing"
+        )
+        launch_heavy_processing_worker()
 
-    launch_heavy_processing_worker()
+    transaction.on_commit(_on_commit)
 
 
 def wetransfer_error_handling(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)

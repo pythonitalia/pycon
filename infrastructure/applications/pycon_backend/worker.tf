@@ -30,7 +30,7 @@ locals {
     },
     {
       name  = "ALLOWED_HOSTS",
-      value = "admin.pycon.it,2024.pycon.it,2025.pycon.it"
+      value = ".pycon.it"
     },
     {
       name  = "DJANGO_SETTINGS_MODULE",
@@ -122,7 +122,7 @@ locals {
     },
     {
       name  = "CACHE_URL",
-      value = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/8" : "locmemcache://snowflake"
+      value = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/8" : "redis://${data.aws_instance.redis.private_ip}/13"
     },
     {
       name  = "STRIPE_WEBHOOK_SIGNATURE_SECRET",
@@ -154,11 +154,11 @@ locals {
     },
     {
       name  = "CELERY_BROKER_URL",
-      value = "redis://${data.aws_instance.redis.private_ip}/5"
+      value = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/5" : "redis://${data.aws_instance.redis.private_ip}/14"
     },
     {
       name  = "CELERY_RESULT_BACKEND",
-      value = "redis://${data.aws_instance.redis.private_ip}/6"
+      value = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/6" : "redis://${data.aws_instance.redis.private_ip}/15"
     },
     {
       name  = "ENV",

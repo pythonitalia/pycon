@@ -83,7 +83,7 @@ module "lambda" {
     SENTRY_DSN                                = module.secrets.value.sentry_dsn
     VOLUNTEERS_PUSH_NOTIFICATIONS_IOS_ARN     = module.secrets.value.volunteers_push_notifications_ios_arn
     VOLUNTEERS_PUSH_NOTIFICATIONS_ANDROID_ARN = module.secrets.value.volunteers_push_notifications_android_arn
-    ALLOWED_HOSTS                             = "admin.pycon.it,2024.pycon.it,2025.pycon.it"
+    ALLOWED_HOSTS                             = ".pycon.it"
     DJANGO_SETTINGS_MODULE                    = "pycon.settings.prod"
     ASSOCIATION_FRONTEND_URL                  = "https://associazione.python.it"
     AWS_MEDIA_BUCKET                          = aws_s3_bucket.backend_media.id
@@ -105,7 +105,7 @@ module "lambda" {
     AZURE_STORAGE_ACCOUNT_KEY                 = module.secrets.value.azure_storage_account_key
     PLAIN_API                                 = "https://core-api.uk.plain.com/graphql/v1"
     PLAIN_API_TOKEN                           = module.secrets.value.plain_api_token
-    CACHE_URL                                 = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/8" : "locmemcache://snowflake"
+    CACHE_URL                                 = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/8" : "redis://${data.aws_instance.redis.private_ip}/13"
     STRIPE_WEBHOOK_SIGNATURE_SECRET           = module.secrets.value.stripe_webhook_secret
     STRIPE_SUBSCRIPTION_PRICE_ID              = module.secrets.value.stripe_membership_price_id
     STRIPE_SECRET_API_KEY                     = module.secrets.value.stripe_secret_api_key
@@ -113,8 +113,8 @@ module "lambda" {
     DEEPL_AUTH_KEY                            = module.secrets.value.deepl_auth_key
     FLODESK_API_KEY                           = module.secrets.value.flodesk_api_key
     FLODESK_SEGMENT_ID                        = module.secrets.value.flodesk_segment_id
-    CELERY_BROKER_URL                         = "redis://${data.aws_instance.redis.private_ip}/5"
-    CELERY_RESULT_BACKEND                     = "redis://${data.aws_instance.redis.private_ip}/6"
+    CELERY_BROKER_URL                         = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/5" : "redis://${data.aws_instance.redis.private_ip}/14"
+    CELERY_RESULT_BACKEND                     = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/6" : "redis://${data.aws_instance.redis.private_ip}/15"
     PLAIN_INTEGRATION_TOKEN                   = module.secrets.value.plain_integration_token
     HASHID_DEFAULT_SECRET_SALT                = module.secrets.value.hashid_default_secret_salt
     MEDIA_FILES_STORAGE_BACKEND = "pycon.storages.CustomS3Boto3Storage"

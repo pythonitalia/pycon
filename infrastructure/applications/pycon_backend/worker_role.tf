@@ -62,7 +62,9 @@ resource "aws_iam_role_policy" "worker" {
         "ecr:ListImages",
         "ecr:DescribeImages",
         "ecr:BatchGetImage",
-        "ses:*"
+        "ses:*",
+        "ecs:*",
+        "iam:PassRole"
       ],
       "Effect": "Allow",
       "Resource": "*"
@@ -89,7 +91,8 @@ resource "aws_iam_role_policy" "worker" {
     {
       "Action": [
         "s3:GetObject",
-        "s3:HeadObject"
+        "s3:HeadObject",
+        "s3:ListBucket"
       ],
       "Effect": "Allow",
       "Resource": [

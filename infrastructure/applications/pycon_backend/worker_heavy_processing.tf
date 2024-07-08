@@ -14,6 +14,7 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
   memory                   = 2048
   network_mode             = "awsvpc"
   execution_role_arn = aws_iam_role.worker.arn
+  task_role_arn = aws_iam_role.worker.arn
   ephemeral_storage {
     size_in_gib = 200
   }
