@@ -272,7 +272,7 @@ resource "aws_ecs_task_definition" "worker" {
       ]
 
       command = [
-        "-A", "pycon", "worker", "-c", "2", "-l", "info"
+        "-A", "pycon", "worker", "-c", "2", "-l", "info", "-E"
       ]
 
       environment = local.env_vars

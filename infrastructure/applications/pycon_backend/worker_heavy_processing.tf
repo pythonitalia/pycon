@@ -33,7 +33,7 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
       ]
 
       command = [
-        "-A", "pycon", "worker", "-c", "2", "-l", "info", "-Q", "heavy_processing", "--hostname", "heavyprocessing@%h"
+        "-A", "pycon", "worker", "-c", "2", "-l", "info", "-Q", "heavy_processing", "--hostname", "heavyprocessing@%h", "-E"
       ]
 
       environment = local.env_vars
