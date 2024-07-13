@@ -197,7 +197,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ matrix.service.name }}
+          key: ${{ runner.os }}-buildx-${{ matrix.service.name }}-arm
       - name: Build and push
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/build-push-action@v4.0.0
