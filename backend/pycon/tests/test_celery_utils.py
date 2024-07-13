@@ -21,7 +21,7 @@ def test_make_lock_id(mocker):
     assert key == "celery_lock_pycon.tests.test_celery_utils_test_func_1"
 
 
-def test_launch_large_storage_worker_disabled_in_local_env(settings, mocker):
+def test_launch_heavy_processing_worker_disabled_in_local_env(settings, mocker):
     settings.ENVIRONMENT = "local"
 
     mock_boto = mocker.patch("pycon.celery_utils.boto3")
@@ -31,7 +31,7 @@ def test_launch_large_storage_worker_disabled_in_local_env(settings, mocker):
     assert not mock_boto.client.called
 
 
-def test_launch_large_storage_worker_starts_task(settings, mocker):
+def test_launch_heavy_processing_worker_starts_task(settings, mocker):
     settings.ENVIRONMENT = "production"
     settings.ECS_NETWORK_CONFIG = {
         "subnets": ["a", "b"],
@@ -44,12 +44,12 @@ def test_launch_large_storage_worker_starts_task(settings, mocker):
     launch_heavy_processing_worker()
 
     mock_client.return_value.list_tasks.assert_called_with(
-        cluster="pythonit-production-large-storage-worker", desiredStatus="RUNNING"
+        cluster="pythonit-production-heavy-processing-worker", desiredStatus="RUNNING"
     )
 
     mock_client.return_value.run_task.assert_called_with(
-        cluster="pythonit-production-large-storage-worker",
-        taskDefinition="pythonit-production-large-storage-worker",
+        cluster="pythonit-production-heavy-processing-worker",
+        taskDefinition="pythonit-production-heavy-processing-worker",
         count=1,
         networkConfiguration={
             "awsvpcConfiguration": {
@@ -62,7 +62,7 @@ def test_launch_large_storage_worker_starts_task(settings, mocker):
     )
 
 
-def test_launch_large_storage_worker_does_nothing_if_worker_is_running(
+def test_launch_heavy_processing_worker_does_nothing_if_worker_is_running(
     settings, mocker
 ):
     settings.ENVIRONMENT = "production"
