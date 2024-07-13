@@ -7,6 +7,7 @@ from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.strawberry import StrawberryIntegration
 from sentry_sdk.integrations.celery import CeleryIntegration
+import logfire
 
 root = environ.Path(__file__) - 3
 
@@ -393,3 +394,8 @@ CLAMAV_PORT = env("CLAMAV_PORT", default=3310)
 IS_RUNNING_TESTS = False
 
 ECS_NETWORK_CONFIG = json.loads(env("ECS_NETWORK_CONFIG", default="{}"))
+
+LOGFIRE_TOKEN = env("LOGFIRE_TOKEN", default="")
+
+if LOGFIRE_TOKEN:
+    logfire.configure(token=LOGFIRE_TOKEN)

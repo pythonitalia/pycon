@@ -100,6 +100,7 @@ dependencies = [
     "icalendar>=5.0.11",
     "pyclamd>=0.4.0",
     "magika>=0.5.1",
+    "logfire>=0.46.1",
 ]
 name = "backend"
 version = "0.1.0"

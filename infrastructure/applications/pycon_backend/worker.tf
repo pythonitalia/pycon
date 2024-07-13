@@ -194,6 +194,10 @@ locals {
           aws_security_group.instance.id
         ],
       })
+    },
+    {
+      name = "LOGFIRE_TOKEN",
+      value = module.secrets.value.logfire_token
     }
   ]
 }
