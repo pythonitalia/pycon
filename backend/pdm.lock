@@ -5,7 +5,7 @@
 groups = ["default", "dev", "lambda"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:1d54ac5d03ea5efef51f9a021150e4d42c48d4756ff91c41a4f682ccd06fe428"
+content_hash = "sha256:4e33bb8b6212b2279dfeac16b47689d29b1a708e6569f01a351a6ba5381e40aa"
 
 [[package]]
 name = "amqp"
@@ -1637,16 +1637,18 @@ files = [
 [[package]]
 name = "logfire"
 version = "0.46.1"
-extras = ["celery", "django", "redis", "requests", "system-metrics"]
+extras = ["celery", "django", "psycopg2", "redis", "requests", "system-metrics"]
 summary = "The best Python observability tool! 🪵🔥"
 groups = ["default"]
 dependencies = [
     "logfire==0.46.1",
     "opentelemetry-instrumentation-celery>=0.42b0",
     "opentelemetry-instrumentation-django>=0.42b0",
+    "opentelemetry-instrumentation-psycopg2>=0.42b0",
     "opentelemetry-instrumentation-redis>=0.42b0",
     "opentelemetry-instrumentation-requests>=0.42b0",
     "opentelemetry-instrumentation-system-metrics>=0.42b0",
+    "packaging",
 ]
 files = [
     {file = "logfire-0.46.1-py2.py3-none-any.whl", hash = "sha256:d66ff558bdbdb4a92da0a20bdf79b79d99d5ee5c97098e60acb78637b112042a"},
@@ -1656,7 +1658,7 @@ files = [
 [[package]]
 name = "logfire"
 version = "0.46.1"
-extras = ["celery", "django", "redis", "system-metrics"]
+extras = ["celery", "django", "redis", "requests", "system-metrics"]
 summary = "The best Python observability tool! 🪵🔥"
 groups = ["default"]
 dependencies = [
@@ -1664,6 +1666,7 @@ dependencies = [
     "opentelemetry-instrumentation-celery>=0.42b0",
     "opentelemetry-instrumentation-django>=0.42b0",
     "opentelemetry-instrumentation-redis>=0.42b0",
+    "opentelemetry-instrumentation-requests>=0.42b0",
     "opentelemetry-instrumentation-system-metrics>=0.42b0",
 ]
 files = [
@@ -2179,6 +2182,23 @@ files = [
 ]
 
 [[package]]
+name = "opentelemetry-instrumentation-dbapi"
+version = "0.46b0"
+requires_python = ">=3.8"
+summary = "OpenTelemetry Database API instrumentation"
+groups = ["default"]
+dependencies = [
+    "opentelemetry-api~=1.12",
+    "opentelemetry-instrumentation==0.46b0",
+    "opentelemetry-semantic-conventions==0.46b0",
+    "wrapt<2.0.0,>=1.0.0",
+]
+files = [
+    {file = "opentelemetry_instrumentation_dbapi-0.46b0-py3-none-any.whl", hash = "sha256:01c8a3057ccb5dcdb68d730c92839d7d30e31bf60b0a4d42d37a0c01a2a37783"},
+    {file = "opentelemetry_instrumentation_dbapi-0.46b0.tar.gz", hash = "sha256:f419cfaceaed22964622093970c70a58c1214fc2669f2b4afab76252b6834d92"},
+]
+
+[[package]]
 name = "opentelemetry-instrumentation-django"
 version = "0.46b0"
 requires_python = ">=3.8"
@@ -2194,6 +2214,22 @@ dependencies = [
 files = [
     {file = "opentelemetry_instrumentation_django-0.46b0-py3-none-any.whl", hash = "sha256:ecc85941263122f99dbd96463a981b2d1eeea618ca287a58abe0af9fd67631ee"},
     {file = "opentelemetry_instrumentation_django-0.46b0.tar.gz", hash = "sha256:cc11b2e24f9bdd20759570390ed8619d9c5acbf788b4a5401e36e280dfc20feb"},
+]
+
+[[package]]
+name = "opentelemetry-instrumentation-psycopg2"
+version = "0.46b0"
+requires_python = ">=3.8"
+summary = "OpenTelemetry psycopg2 instrumentation"
+groups = ["default"]
+dependencies = [
+    "opentelemetry-api~=1.12",
+    "opentelemetry-instrumentation-dbapi==0.46b0",
+    "opentelemetry-instrumentation==0.46b0",
+]
+files = [
+    {file = "opentelemetry_instrumentation_psycopg2-0.46b0-py3-none-any.whl", hash = "sha256:1a115ed99165c71cdb467b08e76c09fbfc3d25f8bf76863066cbecbefcb94899"},
+    {file = "opentelemetry_instrumentation_psycopg2-0.46b0.tar.gz", hash = "sha256:8eb4cd345352b6aac1304eadf98039d2c7cc4aa23e51fa288215247aa467552c"},
 ]
 
 [[package]]

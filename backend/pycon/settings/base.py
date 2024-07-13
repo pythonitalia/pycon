@@ -27,6 +27,7 @@ if LOGFIRE_TOKEN:
     logfire.instrument_django()
     logfire.instrument_redis()
     logfire.instrument_requests()
+    logfire.instrument_psycopg()
 
 ENVIRONMENT = env("ENV", default="local")
 
