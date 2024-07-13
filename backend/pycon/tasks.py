@@ -23,12 +23,11 @@ def check_for_idle_heavy_processing_workers():
             cache.delete(cache_key)
             continue
 
-        total_jobs_executed = Counter(stats.get("total", {})).total()
+        current_jobs_executed = Counter(stats.get("total", {})).total()
         now = timezone.now()
 
         last_check_value = cache.get(cache_key)
-
-        if is_worker_idle(last_check_value):
+        if is_worker_idle(last_check_value, current_jobs_executed):
             logfire.info(
                 "Worker {worker_name} is idle, sending shutdown",
                 worker_name=worker_name,
@@ -38,14 +37,14 @@ def check_for_idle_heavy_processing_workers():
             continue
 
         logfire.info(
-            "Worker {worker_name} total jobs executed: {total_jobs_executed}",
+            "Worker {worker_name} total jobs executed: {current_jobs_executed}",
             worker_name=worker_name,
-            total_jobs_executed=total_jobs_executed,
+            current_jobs_executed=current_jobs_executed,
         )
         cache.set(
             cache_key,
             {
-                "total_jobs_executed": total_jobs_executed,
+                "current_jobs_executed": current_jobs_executed,
                 "last_check": now,
             },
         )
@@ -55,7 +54,7 @@ def is_worker_idle(last_check, current_jobs_executed):
     if not last_check:
         return False
 
-    last_check_jobs_executed = last_check["total_jobs_executed"]
+    last_check_jobs_executed = last_check["current_jobs_executed"]
     last_check_time = last_check["last_check"]
 
     if (timezone.now() - last_check_time).total_seconds() < 300:

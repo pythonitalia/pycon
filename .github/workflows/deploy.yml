@@ -321,8 +321,19 @@ jobs:
     runs-on: ubuntu-latest
     needs: [terraform]
     steps:
-      - name: Sleep for 10 seconds
-        run: sleep 10s
+      - name: Check health status
+        run: |
+          while true; do
+            response=$(curl -s "https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/health")
+            commit=$(echo $response | jq -r '.commit')
+            if [ "$commit" == "${{ steps.git.outputs.githash }}" ]; then
+              echo "New version live"
+              break
+            else
+              echo "Commit hash does not match. Retrying..."
+              sleep 3
+            fi
+          done
         shell: bash
 
   # Migrate the database
