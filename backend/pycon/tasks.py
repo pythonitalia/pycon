@@ -47,6 +47,7 @@ def check_for_idle_heavy_processing_workers():
                 "current_jobs_executed": current_jobs_executed,
                 "last_check": now,
             },
+            timeout=600,
         )
 
 
