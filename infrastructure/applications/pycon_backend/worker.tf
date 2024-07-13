@@ -328,7 +328,7 @@ resource "aws_ecs_task_definition" "beat" {
         "-A", "pycon", "beat", "-l", "info"
       ]
 
-      environment = local.env_vars
+      environment = [for item in local.env_vars : item if item.name != "LOGFIRE_TOKEN"]
 
       mountPoints = []
       systemControls = [
