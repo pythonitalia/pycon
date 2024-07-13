@@ -192,12 +192,6 @@ jobs:
         id: buildx
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/setup-buildx-action@v2
-      - name: Cache Docker layers
-        if: ${{ steps.image.outputs.image_exists == 0 }}
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ matrix.service.name }}-arm
       - name: Build and push
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/build-push-action@v4.0.0
@@ -354,5 +348,6 @@ jobs:
     needs: [migrate-pycon-backend-db]
     steps:
       - name: Trigger hook
+        if: github.ref == 'refs/heads/main'
         run: |
           curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }}
