@@ -46,7 +46,7 @@ def setup_periodic_tasks(sender, **kwargs):
             name="Delete unused files",
         )
         add(
-            timedelta(minutes=5),
+            timedelta(minutes=2),
             check_for_idle_heavy_processing_workers,
             name="Check for idle heavy processing workers",
         )
