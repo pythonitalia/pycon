@@ -10,8 +10,8 @@ from urllib.parse import urlparse, unquote
 
 import requests
 import logging
+from pycon.tasks import launch_heavy_processing_worker
 from video_uploads.models import WetransferToS3TransferRequest
-from pycon.celery_utils import launch_heavy_processing_worker
 from pycon.celery import app
 from django.db import transaction
 
@@ -45,7 +45,7 @@ def queue_wetransfer_to_s3_transfer_request(request_id):
         process_wetransfer_to_s3_transfer_request.apply_async(
             args=[request_id], queue="heavy_processing"
         )
-        launch_heavy_processing_worker()
+        launch_heavy_processing_worker.delay()
 
     transaction.on_commit(_on_commit)
 

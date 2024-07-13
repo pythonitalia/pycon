@@ -1,4 +1,3 @@
-import boto3
 from celery import Task
 import logging
 from django.conf import settings
@@ -93,33 +92,3 @@ class OnlyOneAtTimeTask(Task):
 
         if self.renewer_thread:
             self.renewer_thread.join()
-
-
-def _get_ecs_network_config():
-    network_config = settings.ECS_NETWORK_CONFIG
-    return {
-        "subnets": network_config["subnets"],
-        "securityGroups": network_config["security_groups"],
-        "assignPublicIp": "ENABLED",
-    }
-
-
-def launch_heavy_processing_worker():
-    if settings.ENVIRONMENT == "local":
-        return
-
-    cluster_name = f"pythonit-{settings.ENVIRONMENT}-heavy-processing-worker"
-    ecs_client = boto3.client("ecs", region_name=settings.AWS_REGION_NAME)
-
-    response = ecs_client.list_tasks(cluster=cluster_name, desiredStatus="RUNNING")
-
-    if len(response["taskArns"]) > 0:
-        return
-
-    ecs_client.run_task(
-        cluster=cluster_name,
-        taskDefinition=f"pythonit-{settings.ENVIRONMENT}-heavy-processing-worker",
-        count=1,
-        networkConfiguration={"awsvpcConfiguration": _get_ecs_network_config()},
-        launchType="FARGATE",
-    )
