@@ -2,6 +2,8 @@ from datetime import timedelta
 import logging
 import os
 from celery import Celery
+from celery.signals import worker_process_init
+from opentelemetry.instrumentation.celery import CeleryInstrumentor
 
 logger = logging.getLogger(__name__)
 
@@ -50,3 +52,8 @@ def setup_periodic_tasks(sender, **kwargs):
         )
     except Exception:
         logger.exception("setup_periodic_tasks")
+
+
+@worker_process_init.connect(weak=False)
+def init_celery_tracing(*args, **kwargs):
+    CeleryInstrumentor().instrument()

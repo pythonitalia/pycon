@@ -5,7 +5,7 @@
 groups = ["default", "dev", "lambda"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:eac7bdfe040a597257b57aa67cce29c9d68fcd6f88c21257920dc4945cbd5cad"
+content_hash = "sha256:1d54ac5d03ea5efef51f9a021150e4d42c48d4756ff91c41a4f682ccd06fe428"
 
 [[package]]
 name = "amqp"
@@ -1635,6 +1635,43 @@ files = [
 ]
 
 [[package]]
+name = "logfire"
+version = "0.46.1"
+extras = ["celery", "django", "redis", "requests", "system-metrics"]
+summary = "The best Python observability tool! 🪵🔥"
+groups = ["default"]
+dependencies = [
+    "logfire==0.46.1",
+    "opentelemetry-instrumentation-celery>=0.42b0",
+    "opentelemetry-instrumentation-django>=0.42b0",
+    "opentelemetry-instrumentation-redis>=0.42b0",
+    "opentelemetry-instrumentation-requests>=0.42b0",
+    "opentelemetry-instrumentation-system-metrics>=0.42b0",
+]
+files = [
+    {file = "logfire-0.46.1-py2.py3-none-any.whl", hash = "sha256:d66ff558bdbdb4a92da0a20bdf79b79d99d5ee5c97098e60acb78637b112042a"},
+    {file = "logfire-0.46.1.tar.gz", hash = "sha256:f2c56076627de2ab6a60bc835124dc2abed83fad0eb8414644a407c80271a647"},
+]
+
+[[package]]
+name = "logfire"
+version = "0.46.1"
+extras = ["celery", "django", "redis", "system-metrics"]
+summary = "The best Python observability tool! 🪵🔥"
+groups = ["default"]
+dependencies = [
+    "logfire==0.46.1",
+    "opentelemetry-instrumentation-celery>=0.42b0",
+    "opentelemetry-instrumentation-django>=0.42b0",
+    "opentelemetry-instrumentation-redis>=0.42b0",
+    "opentelemetry-instrumentation-system-metrics>=0.42b0",
+]
+files = [
+    {file = "logfire-0.46.1-py2.py3-none-any.whl", hash = "sha256:d66ff558bdbdb4a92da0a20bdf79b79d99d5ee5c97098e60acb78637b112042a"},
+    {file = "logfire-0.46.1.tar.gz", hash = "sha256:f2c56076627de2ab6a60bc835124dc2abed83fad0eb8414644a407c80271a647"},
+]
+
+[[package]]
 name = "lxml"
 version = "4.9.4"
 requires_python = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, != 3.4.*"
@@ -2126,6 +2163,107 @@ files = [
 ]
 
 [[package]]
+name = "opentelemetry-instrumentation-celery"
+version = "0.46b0"
+requires_python = ">=3.8"
+summary = "OpenTelemetry Celery Instrumentation"
+groups = ["default"]
+dependencies = [
+    "opentelemetry-api~=1.12",
+    "opentelemetry-instrumentation==0.46b0",
+    "opentelemetry-semantic-conventions==0.46b0",
+]
+files = [
+    {file = "opentelemetry_instrumentation_celery-0.46b0-py3-none-any.whl", hash = "sha256:431125dc56bced2ade779c15cf094b049d7dccdb1ff6fa59aea0c236443a71c0"},
+    {file = "opentelemetry_instrumentation_celery-0.46b0.tar.gz", hash = "sha256:688b157c1fdddc48b4fdd029d35b4f3472cc2100b38914e3203b9bef9f15cd7f"},
+]
+
+[[package]]
+name = "opentelemetry-instrumentation-django"
+version = "0.46b0"
+requires_python = ">=3.8"
+summary = "OpenTelemetry Instrumentation for Django"
+groups = ["default"]
+dependencies = [
+    "opentelemetry-api~=1.12",
+    "opentelemetry-instrumentation-wsgi==0.46b0",
+    "opentelemetry-instrumentation==0.46b0",
+    "opentelemetry-semantic-conventions==0.46b0",
+    "opentelemetry-util-http==0.46b0",
+]
+files = [
+    {file = "opentelemetry_instrumentation_django-0.46b0-py3-none-any.whl", hash = "sha256:ecc85941263122f99dbd96463a981b2d1eeea618ca287a58abe0af9fd67631ee"},
+    {file = "opentelemetry_instrumentation_django-0.46b0.tar.gz", hash = "sha256:cc11b2e24f9bdd20759570390ed8619d9c5acbf788b4a5401e36e280dfc20feb"},
+]
+
+[[package]]
+name = "opentelemetry-instrumentation-redis"
+version = "0.46b0"
+requires_python = ">=3.8"
+summary = "OpenTelemetry Redis instrumentation"
+groups = ["default"]
+dependencies = [
+    "opentelemetry-api~=1.12",
+    "opentelemetry-instrumentation==0.46b0",
+    "opentelemetry-semantic-conventions==0.46b0",
+    "wrapt>=1.12.1",
+]
+files = [
+    {file = "opentelemetry_instrumentation_redis-0.46b0-py3-none-any.whl", hash = "sha256:e796530808829a9c32f19eaf470f0b01caef13bd89f1d964f536198de881e460"},
+    {file = "opentelemetry_instrumentation_redis-0.46b0.tar.gz", hash = "sha256:8b4639fe52edb6ccdc633c54c01630005ab63faeffd97754cddbf6bdc1f04c5e"},
+]
+
+[[package]]
+name = "opentelemetry-instrumentation-requests"
+version = "0.46b0"
+requires_python = ">=3.8"
+summary = "OpenTelemetry requests instrumentation"
+groups = ["default"]
+dependencies = [
+    "opentelemetry-api~=1.12",
+    "opentelemetry-instrumentation==0.46b0",
+    "opentelemetry-semantic-conventions==0.46b0",
+    "opentelemetry-util-http==0.46b0",
+]
+files = [
+    {file = "opentelemetry_instrumentation_requests-0.46b0-py3-none-any.whl", hash = "sha256:a8c2472800d8686f3f286cd524b8746b386154092e85a791ba14110d1acc9b81"},
+    {file = "opentelemetry_instrumentation_requests-0.46b0.tar.gz", hash = "sha256:ef0ad63bfd0d52631daaf7d687e763dbd89b465f5cb052f12a4e67e5e3d181e4"},
+]
+
+[[package]]
+name = "opentelemetry-instrumentation-system-metrics"
+version = "0.46b0"
+requires_python = ">=3.8"
+summary = "OpenTelemetry System Metrics Instrumentation"
+groups = ["default"]
+dependencies = [
+    "opentelemetry-api~=1.11",
+    "opentelemetry-instrumentation==0.46b0",
+    "psutil~=5.9",
+]
+files = [
+    {file = "opentelemetry_instrumentation_system_metrics-0.46b0-py3-none-any.whl", hash = "sha256:6cd89e55b25d53f8a9f5c0e152c6d13eb3bd878eb59bd5b5b93489c52afed107"},
+    {file = "opentelemetry_instrumentation_system_metrics-0.46b0.tar.gz", hash = "sha256:e7550259d25e4c5bbb12a837730e75ad436a46422e83b7a08234838552148b25"},
+]
+
+[[package]]
+name = "opentelemetry-instrumentation-wsgi"
+version = "0.46b0"
+requires_python = ">=3.8"
+summary = "WSGI Middleware for OpenTelemetry"
+groups = ["default"]
+dependencies = [
+    "opentelemetry-api~=1.12",
+    "opentelemetry-instrumentation==0.46b0",
+    "opentelemetry-semantic-conventions==0.46b0",
+    "opentelemetry-util-http==0.46b0",
+]
+files = [
+    {file = "opentelemetry_instrumentation_wsgi-0.46b0-py3-none-any.whl", hash = "sha256:2386014b026f5307c802417eeab74265785ae3dd6eee8c5581a830e3b2d3435b"},
+    {file = "opentelemetry_instrumentation_wsgi-0.46b0.tar.gz", hash = "sha256:f4e1001e8477eb546cac7c13cff0b0cf127812b1188a37bcaa3e43eb741451e2"},
+]
+
+[[package]]
 name = "opentelemetry-proto"
 version = "1.25.0"
 requires_python = ">=3.8"
@@ -2167,6 +2305,17 @@ dependencies = [
 files = [
     {file = "opentelemetry_semantic_conventions-0.46b0-py3-none-any.whl", hash = "sha256:6daef4ef9fa51d51855d9f8e0ccd3a1bd59e0e545abe99ac6203804e36ab3e07"},
     {file = "opentelemetry_semantic_conventions-0.46b0.tar.gz", hash = "sha256:fbc982ecbb6a6e90869b15c1673be90bd18c8a56ff1cffc0864e38e2edffaefa"},
+]
+
+[[package]]
+name = "opentelemetry-util-http"
+version = "0.46b0"
+requires_python = ">=3.8"
+summary = "Web util for OpenTelemetry"
+groups = ["default"]
+files = [
+    {file = "opentelemetry_util_http-0.46b0-py3-none-any.whl", hash = "sha256:8dc1949ce63caef08db84ae977fdc1848fe6dc38e6bbaad0ae3e6ecd0d451629"},
+    {file = "opentelemetry_util_http-0.46b0.tar.gz", hash = "sha256:03b6e222642f9c7eae58d9132343e045b50aca9761fcb53709bd2b663571fdf6"},
 ]
 
 [[package]]
@@ -2422,6 +2571,22 @@ files = [
     {file = "protobuf-4.25.3-cp39-cp39-win_amd64.whl", hash = "sha256:e3c97a1555fd6388f857770ff8b9703083de6bf1f9274a002a332d65fbb56c8c"},
     {file = "protobuf-4.25.3-py3-none-any.whl", hash = "sha256:f0700d54bcf45424477e46a9f0944155b46fb0639d69728739c0e47bab83f2b9"},
     {file = "protobuf-4.25.3.tar.gz", hash = "sha256:25b5d0b42fd000320bd7830b349e3b696435f3b329810427a6bcce6a5492cc5c"},
+]
+
+[[package]]
+name = "psutil"
+version = "5.9.8"
+requires_python = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
+summary = "Cross-platform lib for process and system monitoring in Python."
+groups = ["default"]
+files = [
+    {file = "psutil-5.9.8-cp36-abi3-macosx_10_9_x86_64.whl", hash = "sha256:aee678c8720623dc456fa20659af736241f575d79429a0e5e9cf88ae0605cc81"},
+    {file = "psutil-5.9.8-cp36-abi3-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:8cb6403ce6d8e047495a701dc7c5bd788add903f8986d523e3e20b98b733e421"},
+    {file = "psutil-5.9.8-cp36-abi3-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d06016f7f8625a1825ba3732081d77c94589dca78b7a3fc072194851e88461a4"},
+    {file = "psutil-5.9.8-cp37-abi3-win32.whl", hash = "sha256:bc56c2a1b0d15aa3eaa5a60c9f3f8e3e565303b465dbf57a1b730e7a2b9844e0"},
+    {file = "psutil-5.9.8-cp37-abi3-win_amd64.whl", hash = "sha256:8db4c1b57507eef143a15a6884ca10f7c73876cdf5d51e713151c1236a0e68cf"},
+    {file = "psutil-5.9.8-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:d16bbddf0693323b8c6123dd804100241da461e41d6e332fb0ba6058f630f8c8"},
+    {file = "psutil-5.9.8.tar.gz", hash = "sha256:6be126e3225486dff286a8fb9a06246a5253f4c7c53b475ea5f5ac934e64194c"},
 ]
 
 [[package]]

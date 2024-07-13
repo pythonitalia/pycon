@@ -20,6 +20,14 @@ env = environ.Env(
 
 environ.Env.read_env(root(".env"))
 
+LOGFIRE_TOKEN = env("LOGFIRE_TOKEN", default="")
+
+if LOGFIRE_TOKEN:
+    logfire.configure(token=LOGFIRE_TOKEN)
+    logfire.instrument_django()
+    logfire.instrument_redis()
+    logfire.instrument_requests()
+
 ENVIRONMENT = env("ENV", default="local")
 
 DEBUG = env("DEBUG")
@@ -394,8 +402,3 @@ CLAMAV_PORT = env("CLAMAV_PORT", default=3310)
 IS_RUNNING_TESTS = False
 
 ECS_NETWORK_CONFIG = json.loads(env("ECS_NETWORK_CONFIG", default="{}"))
-
-LOGFIRE_TOKEN = env("LOGFIRE_TOKEN", default="")
-
-if LOGFIRE_TOKEN:
-    logfire.configure(token=LOGFIRE_TOKEN)
