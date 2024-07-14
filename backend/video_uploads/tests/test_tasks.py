@@ -8,6 +8,29 @@ import zipfile
 pytestmark = pytest.mark.django_db
 
 
+def test_process_wetransfer_s3_request_ignores_non_queued_requests(requests_mock):
+    download_mock = requests_mock.post(
+        "https://wetransfer.com/api/v4/transfers/fake_transfer_id/download",
+        json={"direct_link": "https://wetransfer.com/fake-download-link.txt"},
+    )
+    direct_link_mock = requests_mock.get(
+        "https://wetransfer.com/fake-download-link.txt", content=b"fake file content"
+    )
+
+    request = WetransferToS3TransferRequestFactory(
+        wetransfer_url="https://wetransfer.com/downloads/fake_transfer_id/fake_security_code",
+        status=WetransferToS3TransferRequest.Status.PENDING,
+    )
+
+    process_wetransfer_to_s3_transfer_request(request.id)
+    assert not download_mock.last_request
+    assert not direct_link_mock.last_request
+
+    request.refresh_from_db()
+
+    assert request.status == WetransferToS3TransferRequest.Status.PENDING
+
+
 def test_process_wetransfer_s3_request_with_single_file(requests_mock):
     from django.core.files.storage import storages
 
