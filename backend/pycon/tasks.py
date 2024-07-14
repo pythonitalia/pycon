@@ -53,10 +53,12 @@ def launch_heavy_processing_worker():
             )
             break
 
+        time.sleep(3 * attempts)
         attempts += 1
         response = ecs_client.describe_tasks(cluster=cluster_name, tasks=[task_arn])
+        response_tasks = response["tasks"]
 
-        if len(response["tasks"]) == 0:
+        if not response_tasks:
             logfire.warn(
                 "Heavy processing worker arn={task_arn} was started but describe_tasks returned no tasks [attempt={attempts}]",
                 task_arn=task_arn,
@@ -64,15 +66,13 @@ def launch_heavy_processing_worker():
             )
             continue
 
-        last_status = response["tasks"][0]["lastStatus"]
+        last_status = response_tasks[0]["lastStatus"]
         if last_status == "RUNNING":
             logfire.info(
                 "Heavy processing worker arn={task_arn} running",
                 task_arn=task_arn,
             )
             break
-
-        time.sleep(3 * attempts)
 
 
 @app.task(base=OnlyOneAtTimeTask)
@@ -85,7 +85,7 @@ def check_for_idle_heavy_processing_workers():
         if not worker_name.startswith("heavyprocessing"):
             continue
 
-        cache_key = f"celery-workers-idle:{worker_name}"
+        cache_key = build_idle_worker_cache_key(worker_name)
 
         current_tasks = active_tasks.get(worker_name, [])
         if current_tasks:
@@ -97,7 +97,7 @@ def check_for_idle_heavy_processing_workers():
 
         if last_check := cache.get(cache_key):
             last_check_jobs_executed = last_check["current_jobs_executed"]
-            last_check_time = last_check["last_check"]
+            last_check_time = timezone.datetime.fromisoformat(last_check["last_check"])
 
             if (now - last_check_time).total_seconds() < 300:
                 # We haven't waited enough time to check again
@@ -121,7 +121,11 @@ def check_for_idle_heavy_processing_workers():
             cache_key,
             {
                 "current_jobs_executed": current_jobs_executed,
-                "last_check": now,
+                "last_check": now.isoformat(),
             },
             timeout=600,
         )
+
+
+def build_idle_worker_cache_key(worker_name: str) -> str:
+    return f"celery-workers-idle:{worker_name}"
