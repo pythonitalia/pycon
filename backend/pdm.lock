@@ -5,7 +5,7 @@
 groups = ["default", "dev", "lambda"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:4e33bb8b6212b2279dfeac16b47689d29b1a708e6569f01a351a6ba5381e40aa"
+content_hash = "sha256:6a4df248a5070a52c3e663fff113ca203df7366a0140fa61294ce9efbab7508e"
 
 [[package]]
 name = "amqp"
@@ -735,7 +735,7 @@ files = [
 
 [[package]]
 name = "django"
-version = "4.2.7"
+version = "4.2.14"
 requires_python = ">=3.8"
 summary = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 groups = ["default", "dev"]
@@ -745,8 +745,8 @@ dependencies = [
     "tzdata; sys_platform == \"win32\"",
 ]
 files = [
-    {file = "Django-4.2.7-py3-none-any.whl", hash = "sha256:e1d37c51ad26186de355cbcec16613ebdabfa9689bbade9c538835205a8abbe9"},
-    {file = "Django-4.2.7.tar.gz", hash = "sha256:8e0f1c2c2786b5c0e39fe1afce24c926040fad47c8ea8ad30aaf1188df29fc41"},
+    {file = "Django-4.2.14-py3-none-any.whl", hash = "sha256:3ec32bc2c616ab02834b9cac93143a7dc1cdcd5b822d78ac95fc20a38c534240"},
+    {file = "Django-4.2.14.tar.gz", hash = "sha256:fc6919875a6226c7ffcae1a7d51e0f2ceaf6f160393180818f6c95f51b1e7b96"},
 ]
 
 [[package]]
@@ -1649,25 +1649,6 @@ dependencies = [
     "opentelemetry-instrumentation-requests>=0.42b0",
     "opentelemetry-instrumentation-system-metrics>=0.42b0",
     "packaging",
-]
-files = [
-    {file = "logfire-0.46.1-py2.py3-none-any.whl", hash = "sha256:d66ff558bdbdb4a92da0a20bdf79b79d99d5ee5c97098e60acb78637b112042a"},
-    {file = "logfire-0.46.1.tar.gz", hash = "sha256:f2c56076627de2ab6a60bc835124dc2abed83fad0eb8414644a407c80271a647"},
-]
-
-[[package]]
-name = "logfire"
-version = "0.46.1"
-extras = ["celery", "django", "redis", "requests", "system-metrics"]
-summary = "The best Python observability tool! 🪵🔥"
-groups = ["default"]
-dependencies = [
-    "logfire==0.46.1",
-    "opentelemetry-instrumentation-celery>=0.42b0",
-    "opentelemetry-instrumentation-django>=0.42b0",
-    "opentelemetry-instrumentation-redis>=0.42b0",
-    "opentelemetry-instrumentation-requests>=0.42b0",
-    "opentelemetry-instrumentation-system-metrics>=0.42b0",
 ]
 files = [
     {file = "logfire-0.46.1-py2.py3-none-any.whl", hash = "sha256:d66ff558bdbdb4a92da0a20bdf79b79d99d5ee5c97098e60acb78637b112042a"},
@@ -3226,16 +3207,17 @@ files = [
 
 [[package]]
 name = "sentry-sdk"
-version = "1.32.0"
+version = "2.9.0"
+requires_python = ">=3.6"
 summary = "Python client for Sentry (https://sentry.io)"
 groups = ["default"]
 dependencies = [
     "certifi",
-    "urllib3>=1.26.11; python_version >= \"3.6\"",
+    "urllib3>=1.26.11",
 ]
 files = [
-    {file = "sentry-sdk-1.32.0.tar.gz", hash = "sha256:935e8fbd7787a3702457393b74b13d89a5afb67185bc0af85c00cb27cbd42e7c"},
-    {file = "sentry_sdk-1.32.0-py2.py3-none-any.whl", hash = "sha256:eeb0b3550536f3bbc05bb1c7e0feb3a78d74acb43b607159a606ed2ec0a33a4d"},
+    {file = "sentry_sdk-2.9.0-py2.py3-none-any.whl", hash = "sha256:0bea5fa8b564cc0d09f2e6f55893e8f70286048b0ffb3a341d5b695d1af0e6ee"},
+    {file = "sentry_sdk-2.9.0.tar.gz", hash = "sha256:4c85bad74df9767976afb3eeddc33e0e153300e887d637775a753a35ef99bee6"},
 ]
 
 [[package]]

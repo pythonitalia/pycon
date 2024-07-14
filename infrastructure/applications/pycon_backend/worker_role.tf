@@ -80,8 +80,7 @@ resource "aws_iam_role_policy" "worker" {
     },
     {
       "Action": [
-        "s3:GetObject",
-        "s3:HeadObject"
+        "s3:GetObject"
       ],
       "Effect": "Allow",
       "Resource": [
@@ -91,11 +90,13 @@ resource "aws_iam_role_policy" "worker" {
     {
       "Action": [
         "s3:GetObject",
-        "s3:HeadObject",
-        "s3:ListBucket"
+        "s3:ListBucket",
+        "s3:PutObject",
+        "s3:PutObjectAcl"
       ],
       "Effect": "Allow",
       "Resource": [
+        "arn:aws:s3:::${terraform.workspace}-pycon-backend-media",
         "arn:aws:s3:::${terraform.workspace}-pycon-backend-media/conference-videos/*"
       ]
     }

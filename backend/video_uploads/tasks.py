@@ -1,3 +1,4 @@
+import logfire
 from functools import wraps
 
 from django.utils import timezone
@@ -9,13 +10,10 @@ import tempfile
 from urllib.parse import urlparse, unquote
 
 import requests
-import logging
 from pycon.tasks import launch_heavy_processing_worker
 from video_uploads.models import WetransferToS3TransferRequest
 from pycon.celery import app
 from django.db import transaction
-
-logger = logging.getLogger(__name__)
 
 
 @app.task
@@ -29,7 +27,7 @@ def queue_wetransfer_to_s3_transfer_request(request_id):
         wetransfer_to_s3_transfer_request.status
         != WetransferToS3TransferRequest.Status.PENDING
     ):
-        logger.warning(
+        logfire.warn(
             "WetransferToS3TransferRequest with id=%s is not in PENDING status, skipping",
             request_id,
         )
@@ -56,7 +54,7 @@ def wetransfer_error_handling(func):
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            logger.exception(
+            logfire.exception(
                 "Error processing wetransfer to s3 transfer request: %s", e
             )
             request_id = args[0]
@@ -85,7 +83,7 @@ def process_wetransfer_to_s3_transfer_request(request_id):
         wetransfer_to_s3_transfer_request.status
         != WetransferToS3TransferRequest.Status.QUEUED
     ):
-        logger.warning(
+        logfire.warn(
             "WetransferToS3TransferRequest with id=%s is not in QUEUED status, skipping",
             request_id,
         )
@@ -109,7 +107,13 @@ def process_wetransfer_to_s3_transfer_request(request_id):
         json={"security_hash": security_hash, "intent": "entire_transfer"},
     )
 
-    direct_link = response.json()["direct_link"]
+    if response.status_code == 403:
+        raise Exception("Wetransfer download link expired")
+
+    response.raise_for_status()
+
+    wetransfer_response = response.json()
+    direct_link = wetransfer_response["direct_link"]
     parsed_direct_url = urlparse(direct_link)
     direct_link_filename = unquote(parsed_direct_url.path.split("/")[-1])
     _, ext = os.path.splitext(direct_link_filename)

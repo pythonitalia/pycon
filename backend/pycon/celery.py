@@ -56,4 +56,5 @@ def setup_periodic_tasks(sender, **kwargs):
 
 @worker_process_init.connect(weak=False)
 def init_celery_tracing(*args, **kwargs):
+    logging.info("Initializing Celery tracing")
     CeleryInstrumentor().instrument()

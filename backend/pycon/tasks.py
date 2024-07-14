@@ -41,17 +41,9 @@ def launch_heavy_processing_worker():
     )
     task_arn = response["tasks"][0]["taskArn"]
     attempts = 0
+    last_status = None
 
     while True:
-        response = ecs_client.describe_tasks(cluster=cluster_name, tasks=[task_arn])
-
-        if len(response["tasks"]) == 0:
-            break
-
-        last_status = response["tasks"][0]["lastStatus"]
-        if last_status == "RUNNING":
-            break
-
         if attempts > 10:
             logfire.error(
                 "Heavy processing worker arn={task_arn} failed to start. Checked {attempts} times, giving up (last_status {last_status})",
@@ -62,10 +54,28 @@ def launch_heavy_processing_worker():
             break
 
         attempts += 1
+        response = ecs_client.describe_tasks(cluster=cluster_name, tasks=[task_arn])
+
+        if len(response["tasks"]) == 0:
+            logfire.warn(
+                "Heavy processing worker arn={task_arn} was started but describe_tasks returned no tasks [attempt={attempts}]",
+                task_arn=task_arn,
+                attempts=attempts,
+            )
+            continue
+
+        last_status = response["tasks"][0]["lastStatus"]
+        if last_status == "RUNNING":
+            logfire.info(
+                "Heavy processing worker arn={task_arn} running",
+                task_arn=task_arn,
+            )
+            break
+
         time.sleep(3 * attempts)
 
 
-@app.task
+@app.task(base=OnlyOneAtTimeTask)
 def check_for_idle_heavy_processing_workers():
     inspect = app.control.inspect()
     workers_stats = inspect.stats()

@@ -246,7 +246,9 @@ if PRETIX_API:
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+    },
     "loggers": {
         "pycon.api": {"handlers": ["console"], "level": "WARNING", "propagate": True},
         "pycon.integrations": {
