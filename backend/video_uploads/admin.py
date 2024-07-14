@@ -1,19 +1,29 @@
+from pycon.tasks import launch_heavy_processing_worker
 from django.utils.safestring import mark_safe
 from django.contrib import admin
 from django.db import transaction
 
-from video_uploads.tasks import queue_wetransfer_to_s3_transfer_request
+from video_uploads.tasks import process_wetransfer_to_s3_transfer_request
 from video_uploads.models import WetransferToS3TransferRequest
+
+
+def queue_wetransfer_to_s3_transfer_request(request_obj):
+    request_obj.status = WetransferToS3TransferRequest.Status.QUEUED
+    request_obj.failed_reason = ""
+    request_obj.save(update_fields=["status", "failed_reason"])
+
+    def _on_commit():
+        process_wetransfer_to_s3_transfer_request.apply_async(
+            args=[request_obj.id], queue="heavy_processing"
+        )
+        launch_heavy_processing_worker.delay()
+
+    transaction.on_commit(_on_commit)
 
 
 def retry_transfer(modeladmin, request, queryset):
     for obj in queryset.exclude(status=WetransferToS3TransferRequest.Status.DONE):
-        obj.status = WetransferToS3TransferRequest.Status.PENDING
-        obj.save(update_fields=["status"])
-
-        transaction.on_commit(
-            lambda: queue_wetransfer_to_s3_transfer_request.delay(obj.id)
-        )
+        queue_wetransfer_to_s3_transfer_request(obj)
 
 
 @admin.register(WetransferToS3TransferRequest)
@@ -68,7 +78,7 @@ class WetransferToS3TransferRequestAdmin(admin.ModelAdmin):
         result = super().save_form(request, form, change)
         if "_start_transfer" in form.data:
             transaction.on_commit(
-                lambda: queue_wetransfer_to_s3_transfer_request.delay(form.instance.id)
+                lambda: queue_wetransfer_to_s3_transfer_request(form.instance)
             )
         return result
 

@@ -10,42 +10,8 @@ import tempfile
 from urllib.parse import urlparse, unquote
 
 import requests
-from pycon.tasks import launch_heavy_processing_worker
 from video_uploads.models import WetransferToS3TransferRequest
 from pycon.celery import app
-from django.db import transaction
-
-
-@app.task
-@transaction.atomic
-def queue_wetransfer_to_s3_transfer_request(request_id):
-    wetransfer_to_s3_transfer_request = WetransferToS3TransferRequest.objects.get(
-        id=request_id
-    )
-
-    if (
-        wetransfer_to_s3_transfer_request.status
-        != WetransferToS3TransferRequest.Status.PENDING
-    ):
-        logfire.warn(
-            "WetransferToS3TransferRequest with id=%s is not in PENDING status, skipping",
-            request_id,
-        )
-        return
-
-    wetransfer_to_s3_transfer_request.status = (
-        WetransferToS3TransferRequest.Status.QUEUED
-    )
-    wetransfer_to_s3_transfer_request.failed_reason = ""
-    wetransfer_to_s3_transfer_request.save(update_fields=["status", "failed_reason"])
-
-    def _on_commit():
-        process_wetransfer_to_s3_transfer_request.apply_async(
-            args=[request_id], queue="heavy_processing"
-        )
-        launch_heavy_processing_worker.delay()
-
-    transaction.on_commit(_on_commit)
 
 
 def wetransfer_error_handling(func):
@@ -55,7 +21,7 @@ def wetransfer_error_handling(func):
             return func(*args, **kwargs)
         except Exception as e:
             logfire.exception(
-                "Error processing wetransfer to s3 transfer request: %s", e
+                "Error processing wetransfer to s3 transfer request: {exc}", exc=e
             )
             request_id = args[0]
             wetransfer_to_s3_transfer_request = (
@@ -84,8 +50,8 @@ def process_wetransfer_to_s3_transfer_request(request_id):
         != WetransferToS3TransferRequest.Status.QUEUED
     ):
         logfire.warn(
-            "WetransferToS3TransferRequest with id=%s is not in QUEUED status, skipping",
-            request_id,
+            "WetransferToS3TransferRequest with id={request_id} is not in QUEUED status, skipping",
+            request_id=request_id,
         )
         return
 
@@ -125,6 +91,13 @@ def process_wetransfer_to_s3_transfer_request(request_id):
         "wb", prefix=f"wetransfer_{wetransfer_to_s3_transfer_request.id}", suffix=ext
     )
 
+    def save_file(filename, obj):
+        imported_files.append(filename)
+        storage.save(
+            f"conference-videos/{conference.code}/{filename}",
+            obj,
+        )
+
     try:
         with requests.get(direct_link, stream=True) as response:
             response.raise_for_status()
@@ -132,36 +105,23 @@ def process_wetransfer_to_s3_transfer_request(request_id):
                 if chunk:
                     temp_file.write(chunk)
 
+            temp_file.flush()
+
         with open(temp_file.name, "rb") as temp_file_read:
             match ext[1:]:
                 case "zip":
                     # read the zip upload all files to s3
                     with zipfile.ZipFile(temp_file_read, "r") as zip_ref:
                         for file_info in zip_ref.infolist():
+                            if not is_file_allowed(file_info):
+                                continue
+
                             filename = file_info.filename
-
-                            if file_info.is_dir():
-                                continue
-
-                            if "__MACOSX" in filename:
-                                continue
-
-                            if ".DS_Store" in filename:
-                                continue
-
                             with zip_ref.open(filename) as file_obj:
                                 file_data = BytesIO(file_obj.read())
-                                storage.save(
-                                    f"conference-videos/{conference.code}/{filename}",
-                                    file_data,
-                                )
-                                imported_files.append(filename)
+                                save_file(filename, file_data)
                 case _:
-                    imported_files.append(direct_link_filename)
-                    storage.save(
-                        f"conference-videos/{conference.code}/{direct_link_filename}",
-                        temp_file_read,
-                    )
+                    save_file(direct_link_filename, temp_file_read)
     finally:
         temp_file.close()
 
@@ -171,3 +131,18 @@ def process_wetransfer_to_s3_transfer_request(request_id):
     wetransfer_to_s3_transfer_request.save(
         update_fields=["status", "imported_files", "finished_at"]
     )
+
+
+def is_file_allowed(file_info):
+    filename = file_info.filename
+
+    if file_info.is_dir():
+        return False
+
+    if "__MACOSX" in filename:
+        return False
+
+    if ".DS_Store" in filename:
+        return False
+
+    return True
