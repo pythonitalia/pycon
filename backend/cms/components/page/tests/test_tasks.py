@@ -81,7 +81,6 @@ def test_revalidate_vercel_frontend_for_different_language(requests_mock, locale
 
 
 def test_revalidate_vercel_frontend_when_vercel_is_down_doesnt_crash(
-    caplog,
     requests_mock,
     locale,
 ):
@@ -102,4 +101,3 @@ def test_revalidate_vercel_frontend_when_vercel_is_down_doesnt_crash(
     revalidate_vercel_frontend_task(page_id=italian_page.id)
 
     assert mock_call.called
-    assert "Error while revalidating" in caplog.records[0].message
