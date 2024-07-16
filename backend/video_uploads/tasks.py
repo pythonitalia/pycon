@@ -101,7 +101,7 @@ def process_wetransfer_to_s3_transfer_request(request_id):
     try:
         with requests.get(direct_link, stream=True) as response:
             response.raise_for_status()
-            for chunk in response.iter_content(chunk_size=None):
+            for chunk in response.iter_content(chunk_size=65536):
                 if chunk:
                     temp_file.write(chunk)
 
