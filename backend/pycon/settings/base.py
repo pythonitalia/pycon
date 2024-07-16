@@ -248,27 +248,33 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {
         "console": {"class": "logging.StreamHandler"},
+        "logfire": {"class": "logfire.LogfireLoggingHandler"},
     },
+    "root": {"handlers": ["console", "logfire"], "level": "INFO"},
     "loggers": {
-        "pycon.api": {"handlers": ["console"], "level": "WARNING", "propagate": True},
+        "pycon.api": {
+            "handlers": ["console", "logfire"],
+            "level": "WARNING",
+            "propagate": True,
+        },
         "pycon.integrations": {
-            "handlers": ["console"],
+            "handlers": ["console", "logfire"],
             "level": "WARNING",
             "propagate": True,
         },
         "celery": {
             "level": "INFO",
-            "handlers": ["console"],
+            "handlers": ["console", "logfire"],
             "propagate": False,
         },
         "celery.app.trace": {
-            "handlers": ["console"],
+            "handlers": ["console", "logfire"],
             "level": "INFO",
             "propagate": False,
         },
         "django": {
             "level": "INFO",
-            "handlers": ["console"],
+            "handlers": ["console", "logfire"],
             "propagate": False,
         },
         "qinspect": {"handlers": ["console"], "level": "DEBUG", "propagate": True},
@@ -399,7 +405,11 @@ ECS_NETWORK_CONFIG = json.loads(env("ECS_NETWORK_CONFIG", default="{}"))
 
 LOGFIRE_TOKEN = env("LOGFIRE_TOKEN", default="")
 
-if LOGFIRE_TOKEN:
+
+def enable_logfire():
+    if not LOGFIRE_TOKEN:
+        return
+
     logfire.configure(token=LOGFIRE_TOKEN)
     logfire.instrument_django()
     logfire.instrument_redis()

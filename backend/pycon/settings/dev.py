@@ -1,5 +1,5 @@
 from .base import *  # noqa
-from .base import env
+from .base import env, enable_logfire
 
 SECRET_KEY = "do not use this in production"
 
@@ -13,3 +13,5 @@ CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")
 HASHID_DEFAULT_SECRET_SALT = "do not use in prod"
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
+
+enable_logfire()

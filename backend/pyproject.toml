@@ -111,3 +111,6 @@ license = {text = "MIT"}
 lambda = [
     "awslambdaric<3.0.0,>=2.0.4",
 ]
+
+[tool.logfire]
+ignore_no_config = true
