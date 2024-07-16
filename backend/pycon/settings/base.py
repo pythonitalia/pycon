@@ -412,6 +412,5 @@ def enable_logfire():
 
     logfire.configure(token=LOGFIRE_TOKEN)
     logfire.instrument_django()
-    logfire.instrument_redis()
     logfire.instrument_requests()
     logfire.instrument_psycopg()
