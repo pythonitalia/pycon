@@ -1,5 +1,5 @@
 from .base import *  # noqa
-from .base import env, AWS_STORAGE_BUCKET_NAME, enable_logfire, LOGFIRE_TOKEN
+from .base import env, enable_logfire, LOGFIRE_TOKEN
 
 SECRET_KEY = env("SECRET_KEY")
 
@@ -33,19 +33,5 @@ CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")
 HASHID_DEFAULT_SECRET_SALT = env("HASHID_DEFAULT_SECRET_SALT")
 
 SESSION_COOKIE_SECURE = True
-
-AWS_CLOUDFRONT_KEY_FILE = env("AWS_CLOUDFRONT_KEY_FILE", default=None)
-if AWS_CLOUDFRONT_KEY_FILE:
-    import boto3
-    from io import BytesIO
-
-    buffer = BytesIO()
-
-    s3 = boto3.client("s3")
-    s3.download_fileobj(AWS_STORAGE_BUCKET_NAME, AWS_CLOUDFRONT_KEY_FILE, buffer)
-
-    AWS_CLOUDFRONT_KEY = buffer.getvalue().decode("ascii")
-
-AWS_CLOUDFRONT_KEY_ID = env("AWS_CLOUDFRONT_KEY_ID", default=None)
 
 enable_logfire(LOGFIRE_TOKEN)
