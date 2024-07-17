@@ -1,3 +1,4 @@
+from api.extensions import LogfireExtension
 import strawberry
 
 from api.participants.mutations import ParticipantMutations
@@ -69,6 +70,5 @@ class Mutation(
 
 
 schema = strawberry.Schema(
-    query=Query,
-    mutation=Mutation,
+    query=Query, mutation=Mutation, extensions=[LogfireExtension]
 )

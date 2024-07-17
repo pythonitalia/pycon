@@ -1,5 +1,5 @@
 from .base import *  # noqa
-from .base import env, AWS_STORAGE_BUCKET_NAME, enable_logfire
+from .base import env, AWS_STORAGE_BUCKET_NAME, enable_logfire, LOGFIRE_TOKEN
 
 SECRET_KEY = env("SECRET_KEY")
 
@@ -48,4 +48,4 @@ if AWS_CLOUDFRONT_KEY_FILE:
 
 AWS_CLOUDFRONT_KEY_ID = env("AWS_CLOUDFRONT_KEY_ID", default=None)
 
-enable_logfire()
+enable_logfire(LOGFIRE_TOKEN)

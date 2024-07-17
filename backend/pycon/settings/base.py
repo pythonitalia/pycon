@@ -406,11 +406,11 @@ ECS_NETWORK_CONFIG = json.loads(env("ECS_NETWORK_CONFIG", default="{}"))
 LOGFIRE_TOKEN = env("LOGFIRE_TOKEN", default="")
 
 
-def enable_logfire():
-    if not LOGFIRE_TOKEN:
+def enable_logfire(token):
+    if not token:
         return
 
-    logfire.configure(token=LOGFIRE_TOKEN)
+    logfire.configure(token=token)
     logfire.instrument_django()
     logfire.instrument_requests()
     logfire.instrument_psycopg()

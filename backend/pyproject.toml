@@ -114,3 +114,4 @@ lambda = [
 
 [tool.logfire]
 ignore_no_config = true
+service_name = "backend"
