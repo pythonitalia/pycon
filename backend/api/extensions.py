@@ -64,8 +64,10 @@ class LogfireExtension(SchemaExtension):
         *,
         execution_context=None,
     ) -> None:
-        if execution_context:
-            self.execution_context = execution_context
+        self.strawberry_logfire = logfire.with_settings(
+            custom_scope_suffix="strawberry", tags=["API"]
+        )
+        self.execution_context = execution_context
 
     @cached_property
     def _resource_name(self) -> str:
@@ -100,8 +102,9 @@ class LogfireExtension(SchemaExtension):
                 return span
         ```
         """
-        span = logfire.span(name)
-        return span
+        return self.strawberry_logfire.span(
+            name, lifecycle_step=lifecycle_step.name, **kwargs
+        )
 
     def hash_query(self, query: str) -> str:
         return hashlib.md5(query.encode("utf-8")).hexdigest()
@@ -116,22 +119,17 @@ class LogfireExtension(SchemaExtension):
             LifecycleStep.OPERATION,
             span_name,
             resource=self._resource_name,
-            service="strawberry",
         ) as request_span:
             request_span.set_attribute("graphql.operation_name", self._operation_name)
 
             query = self.execution_context.query
+            query = query.strip()
+            operation_type = "query"
 
-            if query is not None:
-                query = query.strip()
-                operation_type = "query"
-
-                if query.startswith("mutation"):
-                    operation_type = "mutation"
-                elif query.startswith("subscription"):  # pragma: no cover
-                    operation_type = "subscription"
-            else:
-                operation_type = "query_missing"
+            if query.startswith("mutation"):
+                operation_type = "mutation"
+            elif query.startswith("subscription"):  # pragma: no cover
+                operation_type = "subscription"
 
             request_span.set_attribute("graphql.operation_type", operation_type)
 

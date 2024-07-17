@@ -4,7 +4,7 @@ import time_machine
 from unittest.mock import Mock
 from api.context import Info
 import pytest
-from api.extensions import RateLimit
+from api.extensions import LogfireExtension, RateLimit
 from django.test import override_settings
 from django.core.cache import cache
 
@@ -82,3 +82,19 @@ def test_blocks_too_many_requests():
         cache.set(cache_key, [current_time] * 100, 60)
 
         rate_limit.allow_request(info)
+
+
+def test_logfire_extension_resource_name_missing_query(mocker):
+    execution_context = mocker.Mock()
+    execution_context.query = None
+    extension = LogfireExtension(execution_context=execution_context)
+    assert extension._resource_name == "query_missing"
+
+
+def test_logfire_extension_resource_name_with_name(mocker):
+    execution_context = mocker.Mock()
+    execution_context.query = "{ test }"
+    execution_context.operation_name = "name"
+
+    extension = LogfireExtension(execution_context=execution_context)
+    assert extension._resource_name.startswith("name:")
