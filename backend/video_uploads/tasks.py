@@ -102,7 +102,7 @@ def process_wetransfer_to_s3_transfer_request(request_id):
         with requests.get(direct_link, stream=True) as response:
             response.raise_for_status()
             for chunk in response.iter_content(chunk_size=65536):
-                if chunk:  # noqa
+                if chunk:  # pragma: no cover
                     temp_file.write(chunk)
 
             temp_file.flush()
