@@ -1,5 +1,5 @@
 from .base import *  # noqa
-from .base import env, enable_logfire, LOGFIRE_TOKEN
+from .base import env
 
 SECRET_KEY = env("SECRET_KEY")
 
@@ -33,5 +33,3 @@ CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")
 HASHID_DEFAULT_SECRET_SALT = env("HASHID_DEFAULT_SECRET_SALT")
 
 SESSION_COOKIE_SECURE = True
-
-enable_logfire(LOGFIRE_TOKEN)

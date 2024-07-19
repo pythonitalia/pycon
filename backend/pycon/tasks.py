@@ -1,5 +1,5 @@
 import time
-import logfire
+import logging
 import boto3
 from django.conf import settings
 from pycon.celery_utils import OnlyOneAtTimeTask
@@ -8,6 +8,9 @@ from collections import Counter
 from pycon.celery import app
 from django.core.cache import cache
 from django.utils import timezone
+
+
+logger = logging.getLogger(__name__)
 
 
 def _get_ecs_network_config():
@@ -45,11 +48,11 @@ def launch_heavy_processing_worker():
 
     while True:
         if attempts > 10:
-            logfire.error(
-                "Heavy processing worker arn={task_arn} failed to start. Checked {attempts} times, giving up (last_status {last_status})",
-                task_arn=task_arn,
-                attempts=attempts,
-                last_status=last_status,
+            logger.error(
+                "Heavy processing worker arn=%s failed to start. Checked %s times, giving up (last_status %s)",
+                task_arn,
+                attempts,
+                last_status,
             )
             break
 
@@ -59,18 +62,18 @@ def launch_heavy_processing_worker():
         response_tasks = response["tasks"]
 
         if not response_tasks:
-            logfire.warn(
-                "Heavy processing worker arn={task_arn} was started but describe_tasks returned no tasks [attempt={attempts}]",
-                task_arn=task_arn,
-                attempts=attempts,
+            logger.warn(
+                "Heavy processing worker arn=%s was started but describe_tasks returned no tasks [attempt=%s]",
+                task_arn,
+                attempts,
             )
             continue
 
         last_status = response_tasks[0]["lastStatus"]
         if last_status == "RUNNING":
-            logfire.info(
-                "Heavy processing worker arn={task_arn} running",
-                task_arn=task_arn,
+            logger.info(
+                "Heavy processing worker arn=%s running",
+                task_arn,
             )
             break
 
@@ -104,18 +107,18 @@ def check_for_idle_heavy_processing_workers():
                 continue
 
             if last_check_jobs_executed == current_jobs_executed:
-                logfire.info(
-                    "Worker {worker_name} is idle, sending shutdown",
-                    worker_name=worker_name,
+                logger.info(
+                    "Worker %s is idle, sending shutdown",
+                    worker_name,
                 )
                 app.control.broadcast("shutdown", destination=[worker_name])
                 cache.delete(cache_key)
                 continue
 
-        logfire.info(
-            "Worker {worker_name} total jobs executed: {current_jobs_executed}",
-            worker_name=worker_name,
-            current_jobs_executed=current_jobs_executed,
+        logger.info(
+            "Worker %s total jobs executed: %s",
+            worker_name,
+            current_jobs_executed,
         )
         cache.set(
             cache_key,

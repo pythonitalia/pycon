@@ -1,4 +1,4 @@
-import logfire
+import logging
 from functools import wraps
 
 from django.utils import timezone
@@ -14,15 +14,16 @@ from video_uploads.models import WetransferToS3TransferRequest
 from pycon.celery import app
 
 
+logger = logging.getLogger(__name__)
+
+
 def wetransfer_error_handling(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            logfire.exception(
-                "Error processing wetransfer to s3 transfer request: {exc}", exc=e
-            )
+            logger.exception("Error processing wetransfer to s3 transfer request", e)
             request_id = args[0]
             wetransfer_to_s3_transfer_request = (
                 WetransferToS3TransferRequest.objects.get(id=request_id)
@@ -49,9 +50,9 @@ def process_wetransfer_to_s3_transfer_request(request_id):
         wetransfer_to_s3_transfer_request.status
         != WetransferToS3TransferRequest.Status.QUEUED
     ):
-        logfire.warn(
-            "WetransferToS3TransferRequest with id={request_id} is not in QUEUED status, skipping",
-            request_id=request_id,
+        logger.warn(
+            "WetransferToS3TransferRequest with id=%s is not in QUEUED status, skipping",
+            request_id,
         )
         return
 

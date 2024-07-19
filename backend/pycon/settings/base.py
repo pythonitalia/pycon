@@ -7,7 +7,6 @@ from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.strawberry import StrawberryIntegration
 from sentry_sdk.integrations.celery import CeleryIntegration
-import logfire
 
 root = environ.Path(__file__) - 3
 
@@ -248,33 +247,32 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {
         "console": {"class": "logging.StreamHandler"},
-        "logfire": {"class": "logfire.LogfireLoggingHandler"},
     },
-    "root": {"handlers": ["console", "logfire"], "level": "INFO"},
+    "root": {"handlers": ["console"], "level": "INFO"},
     "loggers": {
         "pycon.api": {
-            "handlers": ["console", "logfire"],
+            "handlers": ["console"],
             "level": "WARNING",
             "propagate": True,
         },
         "pycon.integrations": {
-            "handlers": ["console", "logfire"],
+            "handlers": ["console"],
             "level": "WARNING",
             "propagate": True,
         },
         "celery": {
             "level": "INFO",
-            "handlers": ["console", "logfire"],
+            "handlers": ["console"],
             "propagate": False,
         },
         "celery.app.trace": {
-            "handlers": ["console", "logfire"],
+            "handlers": ["console"],
             "level": "INFO",
             "propagate": False,
         },
         "django": {
             "level": "INFO",
-            "handlers": ["console", "logfire"],
+            "handlers": ["console"],
             "propagate": False,
         },
         "qinspect": {"handlers": ["console"], "level": "DEBUG", "propagate": True},
@@ -402,15 +400,3 @@ CLAMAV_PORT = env("CLAMAV_PORT", default=3310)
 IS_RUNNING_TESTS = False
 
 ECS_NETWORK_CONFIG = json.loads(env("ECS_NETWORK_CONFIG", default="{}"))
-
-LOGFIRE_TOKEN = env("LOGFIRE_TOKEN", default="")
-
-
-def enable_logfire(token):
-    if not token:
-        return
-
-    logfire.configure(token=token)
-    logfire.instrument_django()
-    logfire.instrument_requests()
-    logfire.instrument_psycopg()
