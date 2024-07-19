@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 import logging
 from functools import wraps
 
@@ -23,6 +24,7 @@ def wetransfer_error_handling(func):
         try:
             return func(*args, **kwargs)
         except Exception as e:
+            breakpoint()
             logger.exception("Error processing wetransfer to s3 transfer request", e)
             request_id = args[0]
             wetransfer_to_s3_transfer_request = (
@@ -88,10 +90,6 @@ def process_wetransfer_to_s3_transfer_request(request_id):
     imported_files = []
     storage = storages["default"]
 
-    temp_file = tempfile.NamedTemporaryFile(
-        "wb", prefix=f"wetransfer_{wetransfer_to_s3_transfer_request.id}", suffix=ext
-    )
-
     def save_file(filename, obj):
         imported_files.append(filename)
         storage.save(
@@ -99,16 +97,52 @@ def process_wetransfer_to_s3_transfer_request(request_id):
             obj,
         )
 
-    try:
-        with requests.get(direct_link, stream=True) as response:
-            response.raise_for_status()
+    def download_chunk(start, end, index):
+        part_file = tempfile.NamedTemporaryFile(
+            "wb",
+            prefix=f"wetransfer_{wetransfer_to_s3_transfer_request.id}.part{index}",
+            suffix=ext,
+        )
+
+        headers = {"Range": f"bytes={start}-{end}"}
+        with requests.get(direct_link, headers=headers, stream=True) as response:
             for chunk in response.iter_content(chunk_size=65536):
                 if chunk:  # pragma: no cover
-                    temp_file.write(chunk)
+                    part_file.write(chunk)
 
-            temp_file.flush()
+        part_file.flush()
+        return open(part_file.name, "rb")
 
-        with open(temp_file.name, "rb") as temp_file_read:
+    num_chunks = 4
+    try:
+        head_response = requests.head(direct_link)
+        file_size = int(head_response.headers["Content-Length"])
+        chunk_size = file_size // num_chunks
+        files_parts = []
+
+        with ThreadPoolExecutor(max_workers=num_chunks) as executor:
+            futures = []
+            for i in range(num_chunks):
+                start = i * chunk_size
+                end = start + chunk_size - 1 if i < num_chunks - 1 else file_size
+                futures.append(executor.submit(download_chunk, start, end, i))
+
+            for future in futures:
+                files_parts.append(future.result())
+
+            full_file = tempfile.NamedTemporaryFile(
+                "wb",
+                prefix=f"wetransfer_{wetransfer_to_s3_transfer_request.id}",
+                suffix=ext,
+            )
+
+            for file_part in files_parts:
+                full_file.write(file_part.read())
+                file_part.close()
+
+            full_file.flush()
+
+        with open(full_file.name, "rb") as temp_file_read:
             match ext[1:]:
                 case "zip":
                     # read the zip upload all files to s3
@@ -124,7 +158,7 @@ def process_wetransfer_to_s3_transfer_request(request_id):
                 case _:
                     save_file(direct_link_filename, temp_file_read)
     finally:
-        temp_file.close()
+        full_file.close()
 
     wetransfer_to_s3_transfer_request.status = WetransferToS3TransferRequest.Status.DONE
     wetransfer_to_s3_transfer_request.imported_files = imported_files
