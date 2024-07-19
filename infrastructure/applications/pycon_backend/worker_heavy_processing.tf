@@ -10,8 +10,8 @@ resource "aws_cloudwatch_log_group" "heavy_processing_worker_logs" {
 resource "aws_ecs_task_definition" "heavy_processing_worker" {
   family = "pythonit-${terraform.workspace}-heavy-processing-worker"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = 1024
-  memory                   = 2048
+  cpu                      = 2048
+  memory                   = 4096
   network_mode             = "awsvpc"
   execution_role_arn = aws_iam_role.worker.arn
   task_role_arn = aws_iam_role.worker.arn
@@ -27,7 +27,7 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
     {
       name              = "worker"
       image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
-      memoryReservation = 2048
+      memoryReservation = 4096
       essential         = true
       entrypoint = [
         "/home/app/.venv/bin/celery",
