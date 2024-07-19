@@ -96,7 +96,6 @@ module "lambda" {
     AWS_S3_CUSTOM_DOMAIN                      = local.cdn_url
     PRETIX_API_TOKEN                          = module.common_secrets.value.pretix_api_token
     PINPOINT_APPLICATION_ID                   = module.secrets.value.pinpoint_application_id
-    SQS_QUEUE_URL                             = aws_sqs_queue.queue.id
     MAILCHIMP_SECRET_KEY                      = module.common_secrets.value.mailchimp_secret_key
     MAILCHIMP_DC                              = module.common_secrets.value.mailchimp_dc
     MAILCHIMP_LIST_ID                         = module.common_secrets.value.mailchimp_list_id
@@ -118,9 +117,6 @@ module "lambda" {
     PLAIN_INTEGRATION_TOKEN                   = module.secrets.value.plain_integration_token
     HASHID_DEFAULT_SECRET_SALT                = module.secrets.value.hashid_default_secret_salt
     MEDIA_FILES_STORAGE_BACKEND = "pycon.storages.CustomS3Boto3Storage"
-    OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_REQUEST = ".*"
-    OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_RESPONSE=".*"
-    OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SANITIZE_FIELDS=".*session.*,set-cookie"
   }
 }
 

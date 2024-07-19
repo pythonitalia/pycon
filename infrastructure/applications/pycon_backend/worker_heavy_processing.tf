@@ -72,3 +72,13 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
 
   tags                     = {}
 }
+
+resource "aws_ecs_service" "heavy_processing" {
+  name                               = "pythonit-${terraform.workspace}-heavy-processing-service"
+  cluster                            = aws_ecs_cluster.heavy_processing_worker.id
+  task_definition                    = aws_ecs_task_definition.heavy_processing_worker.arn
+  desired_count                      = 0
+  deployment_minimum_healthy_percent = 0
+  deployment_maximum_percent         = 100
+  enable_execute_command = true
+}

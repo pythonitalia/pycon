@@ -24,7 +24,9 @@ def wetransfer_error_handling(func):
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            logger.exception("Error processing wetransfer to s3 transfer request", e)
+            logger.exception(
+                "Error processing wetransfer to s3 transfer request: %s", e
+            )
             request_id = args[0]
             wetransfer_to_s3_transfer_request = (
                 WetransferToS3TransferRequest.objects.get(id=request_id)
@@ -97,6 +99,12 @@ def process_wetransfer_to_s3_transfer_request(request_id):
         )
 
     def download_chunk(start, end, index):
+        logger.info(
+            "Downloading chunk %s-%s for wetransfer_to_s3_transfer_request %s",
+            start,
+            end,
+            wetransfer_to_s3_transfer_request.id,
+        )
         part_file = tempfile.NamedTemporaryFile(
             "wb",
             prefix=f"wetransfer_{wetransfer_to_s3_transfer_request.id}.part{index}",
@@ -107,6 +115,7 @@ def process_wetransfer_to_s3_transfer_request(request_id):
         with requests.get(direct_link, headers=headers, stream=True) as response:
             for chunk in response.iter_content(chunk_size=65536):
                 if chunk:  # pragma: no cover
+                    logger.info("Received chunk of size %s", len(chunk))
                     part_file.write(chunk)
 
         part_file.flush()
@@ -135,7 +144,13 @@ def process_wetransfer_to_s3_transfer_request(request_id):
                 suffix=ext,
             )
 
-            for file_part in files_parts:
+            for part_id, file_part in enumerate(files_parts):
+                logger.info(
+                    "Merging file parts of transfer %s (part id %s)",
+                    wetransfer_to_s3_transfer_request.id,
+                    part_id,
+                )
+
                 full_file.write(file_part.read())
                 file_part.close()
 
@@ -144,6 +159,10 @@ def process_wetransfer_to_s3_transfer_request(request_id):
         with open(full_file.name, "rb") as temp_file_read:
             match ext[1:]:
                 case "zip":
+                    logger.info(
+                        "Unzipping file for wetransfer_to_s3_transfer_request %s",
+                        wetransfer_to_s3_transfer_request.id,
+                    )
                     # read the zip upload all files to s3
                     with zipfile.ZipFile(temp_file_read, "r") as zip_ref:
                         for file_info in zip_ref.infolist():
@@ -151,10 +170,20 @@ def process_wetransfer_to_s3_transfer_request(request_id):
                                 continue
 
                             filename = file_info.filename
+                            logger.info(
+                                "Processing file %s of transfer request %s",
+                                filename,
+                                wetransfer_to_s3_transfer_request.id,
+                            )
+
                             with zip_ref.open(filename) as file_obj:
                                 file_data = BytesIO(file_obj.read())
                                 save_file(filename, file_data)
                 case _:
+                    logger.info(
+                        "Uploading file for wetransfer_to_s3_transfer_request %s",
+                        wetransfer_to_s3_transfer_request.id,
+                    )
                     save_file(direct_link_filename, temp_file_read)
     finally:
         full_file.close()

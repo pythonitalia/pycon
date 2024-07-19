@@ -85,10 +85,6 @@ locals {
       value = module.secrets.value.pinpoint_application_id
     },
     {
-      name  = "SQS_QUEUE_URL",
-      value = aws_sqs_queue.queue.id
-    },
-    {
       name  = "MAILCHIMP_SECRET_KEY",
       value = module.common_secrets.value.mailchimp_secret_key
     },
