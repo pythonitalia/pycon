@@ -115,7 +115,6 @@ def process_wetransfer_to_s3_transfer_request(request_id):
         with requests.get(direct_link, headers=headers, stream=True) as response:
             for chunk in response.iter_content(chunk_size=65536):
                 if chunk:  # pragma: no cover
-                    logger.info("Received chunk of size %s", len(chunk))
                     part_file.write(chunk)
 
         part_file.flush()

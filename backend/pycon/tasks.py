@@ -41,6 +41,7 @@ def launch_heavy_processing_worker():
         count=1,
         networkConfiguration={"awsvpcConfiguration": _get_ecs_network_config()},
         launchType="FARGATE",
+        enableExecuteCommand=True,
     )
     task_arn = response["tasks"][0]["taskArn"]
     attempts = 0
