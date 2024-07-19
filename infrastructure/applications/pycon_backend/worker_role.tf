@@ -64,7 +64,11 @@ resource "aws_iam_role_policy" "worker" {
         "ecr:BatchGetImage",
         "ses:*",
         "ecs:*",
-        "iam:PassRole"
+        "iam:PassRole",
+        "ssmmessages:CreateControlChannel",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:OpenDataChannel"
       ],
       "Effect": "Allow",
       "Resource": "*"
