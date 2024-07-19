@@ -24,7 +24,6 @@ def wetransfer_error_handling(func):
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            breakpoint()
             logger.exception("Error processing wetransfer to s3 transfer request", e)
             request_id = args[0]
             wetransfer_to_s3_transfer_request = (

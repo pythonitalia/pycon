@@ -40,6 +40,10 @@ def test_process_wetransfer_s3_request_with_single_file(requests_mock):
         "https://wetransfer.com/api/v4/transfers/fake_transfer_id/download",
         json={"direct_link": "https://wetransfer.com/fake-download-link.txt"},
     )
+    requests_mock.head(
+        "https://wetransfer.com/fake-download-link.txt",
+        headers={"Content-Length": "16"},
+    )
     direct_link_mock = requests_mock.get(
         "https://wetransfer.com/fake-download-link.txt", content=b"fake file content"
     )
@@ -94,9 +98,14 @@ def test_process_wetransfer_s3_request_with_zip(requests_mock, mocker):
         zf.writestr("nested/file.txt", "This is the content of nested/file.txt.")
 
     zip_buffer.seek(0)
+    content = zip_buffer.getvalue()
 
     direct_link_mock = requests_mock.get(
-        "https://wetransfer.com/fakezip.zip", content=zip_buffer.getvalue()
+        "https://wetransfer.com/fakezip.zip", content=content
+    )
+    requests_mock.head(
+        "https://wetransfer.com/fakezip.zip",
+        headers={"Content-Length": str(len(content))},
     )
 
     request = WetransferToS3TransferRequestFactory(
