@@ -194,10 +194,6 @@ locals {
           aws_security_group.instance.id
         ],
       })
-    },
-    {
-      name = "LOGFIRE_TOKEN",
-      value = module.secrets.value.logfire_token
     }
   ]
 }
@@ -328,7 +324,7 @@ resource "aws_ecs_task_definition" "beat" {
         "-A", "pycon", "beat", "-l", "info"
       ]
 
-      environment = [for item in local.env_vars : item if item.name != "LOGFIRE_TOKEN"]
+      environment = local.env_vars
 
       mountPoints = []
       systemControls = [

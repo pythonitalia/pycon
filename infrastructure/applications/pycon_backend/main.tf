@@ -117,7 +117,6 @@ module "lambda" {
     CELERY_RESULT_BACKEND                     = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/6" : "redis://${data.aws_instance.redis.private_ip}/15"
     PLAIN_INTEGRATION_TOKEN                   = module.secrets.value.plain_integration_token
     HASHID_DEFAULT_SECRET_SALT                = module.secrets.value.hashid_default_secret_salt
-    LOGFIRE_TOKEN = module.secrets.value.logfire_token
     MEDIA_FILES_STORAGE_BACKEND = "pycon.storages.CustomS3Boto3Storage"
     OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_REQUEST = ".*"
     OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_SERVER_RESPONSE=".*"

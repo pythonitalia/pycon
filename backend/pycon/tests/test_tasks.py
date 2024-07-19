@@ -111,7 +111,7 @@ def test_launch_heavy_processing_worker_waits_for_running_task(settings, mocker)
 
 
 def test_launch_heavy_processing_worker_gives_up_waiting_start_after_10_attempts(
-    settings, mocker, capfire
+    settings, mocker
 ):
     mock_time = mocker.patch("pycon.tasks.time")
 
@@ -157,8 +157,6 @@ def test_launch_heavy_processing_worker_gives_up_waiting_start_after_10_attempts
             mocker.call(30),
         ]
     )
-    exporter = capfire.exporter
-    assert "failed to start" in exporter.exported_spans_as_dict()[0]["name"]
 
 
 def test_launch_heavy_processing_worker_does_nothing_if_worker_is_running(

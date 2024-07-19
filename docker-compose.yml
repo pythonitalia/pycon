@@ -50,7 +50,6 @@ x-defaults:
     CLAMAV_PORT: 3310
     AWS_REGION_NAME: ${AWS_REGION_NAME}
     ECS_NETWORK_CONFIG: ${ECS_NETWORK_CONFIG}
-    LOGFIRE_TOKEN: ${LOGFIRE_TOKEN:-}
 
 services:
   backend:
