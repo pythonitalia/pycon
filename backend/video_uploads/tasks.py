@@ -11,6 +11,7 @@ import tempfile
 from urllib.parse import urlparse, unquote
 
 import requests
+from pycon.constants import GB
 from video_uploads.models import WetransferToS3TransferRequest
 from pycon.celery import app
 
@@ -113,7 +114,7 @@ def process_wetransfer_to_s3_transfer_request(request_id):
 
         headers = {"Range": f"bytes={start}-{end}"}
         with requests.get(direct_link, headers=headers, stream=True) as response:
-            for chunk in response.iter_content(chunk_size=65536):
+            for chunk in response.iter_content(chunk_size=GB):
                 if chunk:  # pragma: no cover
                     part_file.write(chunk)
 
