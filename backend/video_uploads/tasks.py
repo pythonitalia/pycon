@@ -154,6 +154,7 @@ def process_wetransfer_to_s3_transfer_request(request_id):
             )
 
             part_file.close()
+            os.unlink(part_file.name)
             return temporary_s3_path
 
         return open(part_file.name, "rb")
