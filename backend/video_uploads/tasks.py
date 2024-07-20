@@ -99,6 +99,17 @@ def process_wetransfer_to_s3_transfer_request(request_id):
             obj,
         )
 
+    def read_and_save_file(file_obj, filename):
+        logger.info(
+            "Processing file %s of transfer request %s",
+            filename,
+            wetransfer_to_s3_transfer_request.id,
+        )
+
+        file_data = BytesIO(file_obj.read())
+        save_file(filename, file_data)
+        file_obj.close()
+
     def download_chunk(start, end, index):
         logger.info(
             "Downloading chunk %s-%s for wetransfer_to_s3_transfer_request %s",
@@ -146,7 +157,7 @@ def process_wetransfer_to_s3_transfer_request(request_id):
 
             for part_id, file_part in enumerate(files_parts):
                 logger.info(
-                    "Merging file parts of transfer %s (part id %s)",
+                    "Merging file parts of transfer %s (part #%s)",
                     wetransfer_to_s3_transfer_request.id,
                     part_id,
                 )
@@ -163,22 +174,27 @@ def process_wetransfer_to_s3_transfer_request(request_id):
                         "Unzipping file for wetransfer_to_s3_transfer_request %s",
                         wetransfer_to_s3_transfer_request.id,
                     )
-                    # read the zip upload all files to s3
-                    with zipfile.ZipFile(temp_file_read, "r") as zip_ref:
-                        for file_info in zip_ref.infolist():
-                            if not is_file_allowed(file_info):
-                                continue
+                    futures = []
 
-                            filename = file_info.filename
-                            logger.info(
-                                "Processing file %s of transfer request %s",
-                                filename,
-                                wetransfer_to_s3_transfer_request.id,
-                            )
+                    with ThreadPoolExecutor(max_workers=num_chunks) as executor:
+                        # read the zip upload all files to s3
+                        with zipfile.ZipFile(temp_file_read, "r") as zip_ref:
+                            for file_info in zip_ref.infolist():
+                                if not is_file_allowed(file_info):
+                                    continue
 
-                            with zip_ref.open(filename) as file_obj:
-                                file_data = BytesIO(file_obj.read())
-                                save_file(filename, file_data)
+                                filename = file_info.filename
+                                file_obj = zip_ref.open(filename)
+                                futures.append(
+                                    executor.submit(
+                                        read_and_save_file,
+                                        file_obj,
+                                        filename,
+                                    )
+                                )
+
+                            for future in futures:
+                                future.result()
                 case _:
                     logger.info(
                         "Uploading file for wetransfer_to_s3_transfer_request %s",
