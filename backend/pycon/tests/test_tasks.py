@@ -58,6 +58,7 @@ def test_launch_heavy_processing_worker_starts_task(settings, mocker):
             }
         },
         launchType="FARGATE",
+        enableExecuteCommand=True,
     )
 
 
