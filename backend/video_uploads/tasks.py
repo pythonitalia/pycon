@@ -11,7 +11,7 @@ import tempfile
 from urllib.parse import urlparse, unquote
 
 import requests
-from pycon.constants import GB, KB
+from pycon.constants import KB, MB
 from video_uploads.models import WetransferToS3TransferRequest
 from pycon.celery import app
 
@@ -106,9 +106,11 @@ def process_wetransfer_to_s3_transfer_request(request_id):
             wetransfer_to_s3_transfer_request.id,
         )
 
-        file_data = BytesIO(file_obj.read())
-        save_file(filename, file_data)
-        file_obj.close()
+        try:
+            file_data = BytesIO(file_obj.read())
+            save_file(filename, file_data)
+        finally:
+            file_obj.close()
 
     def download_chunk(start, end, index):
         logger.info(
@@ -121,6 +123,7 @@ def process_wetransfer_to_s3_transfer_request(request_id):
             "wb",
             prefix=f"wetransfer_{wetransfer_to_s3_transfer_request.id}.part{index}",
             suffix=ext,
+            delete=False,
         )
 
         headers = {"Range": f"bytes={start}-{end}"}
@@ -132,7 +135,7 @@ def process_wetransfer_to_s3_transfer_request(request_id):
         part_file.flush()
         return open(part_file.name, "rb")
 
-    num_chunks = 4
+    num_chunks = 8
     try:
         head_response = requests.head(direct_link)
         file_size = int(head_response.headers["Content-Length"])
@@ -163,13 +166,14 @@ def process_wetransfer_to_s3_transfer_request(request_id):
                 )
 
                 while True:
-                    chunk = file_part.read(2 * GB)
+                    chunk = file_part.read(500 * MB)
                     if not chunk:
                         break
                     full_file.write(chunk)
 
                 full_file.flush()
                 file_part.close()
+                file_part.delete()
 
             full_file.flush()
 
