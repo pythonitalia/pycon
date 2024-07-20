@@ -261,7 +261,6 @@ class WetransferProcessing:
 
     def get_file_total_size(self) -> int:
         head_response = requests.head(self.download_link)
-        breakpoint()
         return int(head_response.headers["Content-Length"])
 
     def get_download_link(self) -> str:
