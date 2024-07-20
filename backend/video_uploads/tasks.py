@@ -11,7 +11,7 @@ import tempfile
 from urllib.parse import urlparse, unquote
 
 import requests
-from pycon.constants import KB, MB
+from pycon.constants import GB, KB, MB
 from video_uploads.models import WetransferToS3TransferRequest
 from pycon.celery import app
 
@@ -107,12 +107,20 @@ def process_wetransfer_to_s3_transfer_request(request_id):
         )
 
         try:
-            file_data = BytesIO(file_obj.read())
+            file_data = BytesIO()
+            while True:
+                chunk = file_obj.read(500 * MB)
+
+                if not chunk:
+                    break
+
+                file_data.write(chunk)
+
             save_file(filename, file_data)
         finally:
             file_obj.close()
 
-    def download_chunk(start, end, index):
+    def download_part(start, end, index, use_s3_as_temporary_storage):
         logger.info(
             "Downloading chunk %s-%s for wetransfer_to_s3_transfer_request %s",
             start,
@@ -133,47 +141,80 @@ def process_wetransfer_to_s3_transfer_request(request_id):
                     part_file.write(chunk)
 
         part_file.flush()
+
+        if use_s3_as_temporary_storage:
+            logging.info(
+                "Moving part file to S3 for wetransfer_to_s3_transfer_request %s",
+                wetransfer_to_s3_transfer_request.id,
+            )
+            temporary_s3_path = f"wetransfer-to-s3-transfers/{wetransfer_to_s3_transfer_request.id}/{part_file.name[5:]}"
+            storage.save(
+                temporary_s3_path,
+                open(part_file.name, "rb"),
+            )
+
+            part_file.close()
+            return temporary_s3_path
+
         return open(part_file.name, "rb")
 
-    num_chunks = 8
+    def _determinate_num_parts(file_size):
+        if file_size >= 50 * GB:
+            return 8
+
+        if file_size >= 10 * GB:
+            return 4
+
+        return 1
+
     try:
         head_response = requests.head(direct_link)
         file_size = int(head_response.headers["Content-Length"])
-        chunk_size = file_size // num_chunks
+        num_parts = _determinate_num_parts(file_size)
+        use_s3_as_temporary_storage = num_parts > 1
+        chunk_size = file_size // num_parts
         files_parts = []
 
-        with ThreadPoolExecutor(max_workers=num_chunks) as executor:
+        with ThreadPoolExecutor(max_workers=num_parts) as executor:
             futures = []
-            for i in range(num_chunks):
+            for i in range(num_parts):
                 start = i * chunk_size
-                end = start + chunk_size - 1 if i < num_chunks - 1 else file_size
-                futures.append(executor.submit(download_chunk, start, end, i))
+                end = start + chunk_size - 1 if i < num_parts - 1 else file_size
+                futures.append(
+                    executor.submit(
+                        download_part, start, end, i, use_s3_as_temporary_storage
+                    )
+                )
 
             for future in futures:
                 files_parts.append(future.result())
 
-            full_file = tempfile.NamedTemporaryFile(
-                "wb",
-                prefix=f"wetransfer_{wetransfer_to_s3_transfer_request.id}",
-                suffix=ext,
-            )
-
-            for part_id, file_part in enumerate(files_parts):
-                logger.info(
-                    "Merging file parts of transfer %s (part #%s)",
-                    wetransfer_to_s3_transfer_request.id,
-                    part_id,
+            if use_s3_as_temporary_storage:
+                full_file = tempfile.NamedTemporaryFile(
+                    "wb",
+                    prefix=f"wetransfer_{wetransfer_to_s3_transfer_request.id}",
+                    suffix=ext,
+                    delete=False,
                 )
 
-                while True:
-                    chunk = file_part.read(500 * MB)
-                    if not chunk:
-                        break
-                    full_file.write(chunk)
+                for part_id, file_part_s3_path in enumerate(files_parts):
+                    logger.info(
+                        "Merging file parts of transfer %s (part #%s)",
+                        wetransfer_to_s3_transfer_request.id,
+                        part_id,
+                    )
 
-                full_file.flush()
-                file_part.close()
-                file_part.delete()
+                    file_part = storage.open(file_part_s3_path)
+                    while True:
+                        chunk = file_part.read(500 * MB)
+                        if not chunk:
+                            break
+                        full_file.write(chunk)
+
+                    full_file.flush()
+                    file_part.close()
+            else:
+                full_file = files_parts[0]
 
             full_file.flush()
 
@@ -186,7 +227,7 @@ def process_wetransfer_to_s3_transfer_request(request_id):
                     )
                     futures = []
 
-                    with ThreadPoolExecutor(max_workers=num_chunks) as executor:
+                    with ThreadPoolExecutor(max_workers=num_parts) as executor:
                         # read the zip upload all files to s3
                         with zipfile.ZipFile(temp_file_read, "r") as zip_ref:
                             for file_info in zip_ref.infolist():
@@ -213,6 +254,14 @@ def process_wetransfer_to_s3_transfer_request(request_id):
                     save_file(direct_link_filename, temp_file_read)
     finally:
         full_file.close()
+        try:
+            os.unlink(full_file.name)
+        except Exception:
+            ...
+
+        if use_s3_as_temporary_storage:
+            for file_part_s3_path in files_parts:
+                storage.delete(file_part_s3_path)
 
     wetransfer_to_s3_transfer_request.status = WetransferToS3TransferRequest.Status.DONE
     wetransfer_to_s3_transfer_request.imported_files = imported_files
