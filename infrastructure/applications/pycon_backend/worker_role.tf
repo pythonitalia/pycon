@@ -93,15 +93,12 @@ resource "aws_iam_role_policy" "worker" {
     },
     {
       "Action": [
-        "s3:GetObject",
-        "s3:ListBucket",
-        "s3:PutObject",
-        "s3:PutObjectAcl"
+        "s3:*"
       ],
       "Effect": "Allow",
       "Resource": [
         "arn:aws:s3:::${terraform.workspace}-pycon-backend-media",
-        "arn:aws:s3:::${terraform.workspace}-pycon-backend-media/conference-videos/*"
+        "arn:aws:s3:::${terraform.workspace}-pycon-backend-media/*"
       ]
     }
   ]
