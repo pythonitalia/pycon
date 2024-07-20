@@ -762,10 +762,8 @@ If we don't get news from you before {replyDeadline} we will allocate your grant
     "grants.reply.replySentWithSuccess":
       "Thank you! Your reply has been correctly saved",
     "grants.reply.currentReply": "Your current answer is: {reply}",
-    "grants.reply.messageDescription": `If you have questions or need assistance, please feel free to reach out using the message below.
+    "grants.reply.messageDescription": `If you have questions or need assistance, please send us an email to {grantsEmail}.
 For any queries regarding the conference, help with the application process, or general information, we're here to assist you.
-
-Note: Please DO NOT send any personal details through this form.
 
 For Visa invitation letter requests, kindly visit our dedicated {visaPageLink} and submit the form there.`,
     "grants.reply.visaPageLink": "VISA page",
@@ -1516,9 +1514,8 @@ Se non riceveremo una conferma da te prima del {replyDeadline}, assegneremo il t
     "grants.reply.sendingReply": "Invio della tua risposta!",
     "grants.reply.replySentWithSuccess":
       "Grazie! La tua risposta è stata correttamente salvata",
-    "grants.reply.messageDescription": `Se hai domande o hai bisogno di assistenza, non esitare a contattarci utilizzando il messaggio qui sotto. Per qualsiasi domanda riguardante la conferenza, aiuto con la richiesta di grant o informazioni generali, siamo qui per assisterti.
-
-Nota: Si prega di NON inviare dettagli personali tramite questo modulo.
+    "grants.reply.messageDescription": `Se hai domande o hai bisogno di assistenza, non esitare a contattarci all'indirizzo email {grantsEmail}.
+    Per qualsiasi domanda riguardante la conferenza, aiuto con la richiesta di grant o informazioni generali, siamo qui per assisterti.
 
 Per le richieste di lettera d'invito per il visto, si prega gentilmente di visitare la nostra {visaPageLink} e di compilare il modulo.`,
     "grants.reply.visaPageLink": "pagina Visto",

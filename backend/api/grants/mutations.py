@@ -15,7 +15,7 @@ from api.grants.types import (
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType
 from conferences.models.conference import Conference
-from grants.tasks import send_new_plain_chat, notify_new_grant_reply_slack
+from grants.tasks import notify_new_grant_reply_slack
 from grants.models import Grant as GrantModel
 from users.models import User
 
@@ -180,7 +180,6 @@ class StatusOption(Enum):
 class SendGrantReplyInput:
     instance: strawberry.ID
     status: Optional[StatusOption]
-    message: str
 
 
 @strawberry.type
@@ -257,14 +256,9 @@ class GrantMutation:
         # Approved, WaitingList
         if input.status != StatusOption.need_info:
             grant.status = input.status.to_grant_status()
-
-        grant.applicant_message = input.message
-        grant.save()
+            grant.save()
 
         admin_url = request.build_absolute_uri(grant.get_admin_url())
         notify_new_grant_reply_slack.delay(grant_id=grant.id, admin_url=admin_url)
-
-        if grant.applicant_message:
-            send_new_plain_chat.delay(grant_id=grant.id, message=input.message)
 
         return Grant.from_model(grant)

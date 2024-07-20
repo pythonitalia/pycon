@@ -12,7 +12,7 @@ import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { Flex, Label, Radio, Textarea } from "theme-ui";
 
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
@@ -34,7 +34,6 @@ import {
 
 type GrantReplyFrom = {
   option: StatusOption | null;
-  message: string;
 };
 
 const APPROVED_STATUSES = [
@@ -68,7 +67,6 @@ const GrantReply = () => {
 
   const [formState, { radio, text }] = useFormState<GrantReplyFrom>({
     option: null,
-    message: "",
   });
 
   const { loading, error, data } = useGrantQuery({
@@ -107,7 +105,6 @@ const GrantReply = () => {
   useEffect(() => {
     if (!loading && grant) {
       formState.setField("option", toStatusOption(grant?.status));
-      formState.setField("message", grant.applicantMessage || "");
     }
   }, [loading]);
 
@@ -118,8 +115,8 @@ const GrantReply = () => {
   const hasSentAnswer = ANSWERS_STATUSES.includes(grant?.status) ?? false;
 
   const answerHasChanged =
-    toStatusOption(grant?.status) !== formState.values.option ||
-    grant?.applicantMessage !== formState.values.message;
+    toStatusOption(grant?.status) !== formState.values.option;
+  console.log(answerHasChanged);
 
   if (error) {
     return (
@@ -236,14 +233,22 @@ const GrantReply = () => {
                     </Text>
                   </Link>
                 ),
+                grantsEmail: (
+                  <Link target="_blank" href="mailto:grants@pycon.it">
+                    <Text
+                      decoration="underline"
+                      size={2}
+                      weight="strong"
+                      color="none"
+                    >
+                      grants@pycon.it
+                    </Text>
+                  </Link>
+                ),
               }}
             />
           </Text>
           <Spacer size="small" />
-
-          <Label>
-            <Textarea {...text("message")} rows={5} />
-          </Label>
         </Flex>
 
         <Button
