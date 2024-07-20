@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 def renew_lock(lock, interval, _stop_event):
     while not _stop_event.wait(timeout=interval):
-        if not lock.locked:
+        if not lock.owned():
             return
 
         if _stop_event.is_set():
