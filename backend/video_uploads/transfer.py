@@ -44,7 +44,14 @@ class WetransferProcessing:
         download_parts = self.determine_download_parts(file_total_size)
         self.has_multiple_parts = len(download_parts) > 1
 
-        max_workers = os.cpu_count()
+        logger.info(
+            "Total size to download %s bytes, file parts %s for wetransfer_to_s3_transfer_request %s",
+            file_total_size,
+            download_parts,
+            self.wetransfer_to_s3_transfer_request.id,
+        )
+
+        max_workers = os.cpu_count() * 2
 
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             self.parts_refs = self.download_parts(download_parts, executor)
@@ -254,6 +261,7 @@ class WetransferProcessing:
 
     def get_file_total_size(self) -> int:
         head_response = requests.head(self.download_link)
+        breakpoint()
         return int(head_response.headers["Content-Length"])
 
     def get_download_link(self) -> str:
