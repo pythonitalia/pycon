@@ -27,20 +27,22 @@ class DownloadPart:
 
 
 class WetransferProcessing:
-    def __init__(self, wetransfer_to_s3_request: WetransferToS3TransferRequest) -> None:
-        self.wetransfer_to_s3_request = wetransfer_to_s3_request
+    def __init__(
+        self, wetransfer_to_s3_transfer_request: WetransferToS3TransferRequest
+    ) -> None:
+        self.wetransfer_to_s3_transfer_request = wetransfer_to_s3_transfer_request
         self.imported_files = []
         self.full_file_name = None
         self.parts_refs = []
 
-    def run(self):
+    def run(self) -> list[str]:
         self.storage = storages["default"]
         self.download_link = self.get_download_link()
         self.filename, self.extension = self.get_filename_and_extension()
 
         file_total_size = self.get_file_total_size()
         download_parts = self.determine_download_parts(file_total_size)
-        self.use_s3_as_temporary_storage = len(download_parts) > 1
+        self.has_multiple_parts = len(download_parts) > 1
 
         max_workers = os.cpu_count()
 
@@ -129,18 +131,22 @@ class WetransferProcessing:
         if self.full_file_name:
             os.unlink(self.full_file_name)
 
-        if self.use_s3_as_temporary_storage:
+        if self.has_multiple_parts:
             for part in self.parts_refs:
                 self.storage.delete(part)
 
     def merge_parts(self, parts_refs: list[str]) -> str:
+        if not self.has_multiple_parts:
+            logger.info(
+                "No multiple parts for wetransfer_to_s3_transfer_request %s",
+                self.wetransfer_to_s3_transfer_request.id,
+            )
+            return parts_refs[0]
+
         logger.info(
             "Merging parts for wetransfer_to_s3_transfer_request %s",
             self.wetransfer_to_s3_transfer_request.id,
         )
-
-        if not self.use_s3_as_temporary_storage:
-            return parts_refs[0]
 
         merged_file = tempfile.NamedTemporaryFile(
             "wb",
@@ -172,17 +178,19 @@ class WetransferProcessing:
         self, download_parts: list[DownloadPart], executor: ThreadPoolExecutor
     ) -> list[str]:
         parts_futures = []
+        parts_paths = []
+
         for download_part in download_parts:
             parts_futures.append(executor.submit(self.download_part, download_part))
 
         for future in parts_futures:
-            future.result()
+            parts_paths.append(future.result())
 
         logger.info(
             "Finished downloading all parts for wetransfer_to_s3_transfer_request %s",
             self.wetransfer_to_s3_transfer_request.id,
         )
-        return parts_futures
+        return parts_paths
 
     def download_part(self, download_part: DownloadPart) -> str:
         logger.info(
@@ -208,7 +216,7 @@ class WetransferProcessing:
 
         part_file.flush()
 
-        if not self.use_s3_as_temporary_storage:
+        if not self.has_multiple_parts:
             return part_file.name
 
         logging.info(
@@ -253,7 +261,7 @@ class WetransferProcessing:
         return int(head_response.headers["Content-Length"])
 
     def get_download_link(self) -> str:
-        wetransfer_url = self.wetransfer_to_s3_request.wetransfer_url
+        wetransfer_url = self.wetransfer_to_s3_transfer_request.wetransfer_url
         parsed_wetransfer_url = urlparse(wetransfer_url)
         hostname = parsed_wetransfer_url.hostname
         _, _, transfer_id, security_hash = parsed_wetransfer_url.path.split("/")
@@ -273,9 +281,9 @@ class WetransferProcessing:
         return direct_link
 
     def get_filename_and_extension(self):
-        direct_link_filename = unquote(self.download_link.path.split("/")[-1])
+        parsed_url = urlparse(self.download_link)
+        direct_link_filename = unquote(parsed_url.path.split("/")[-1])
         _, ext = os.path.splitext(direct_link_filename)
-
         return direct_link_filename, ext
 
     def file_part_s3_path(self, download_part: DownloadPart) -> str:
