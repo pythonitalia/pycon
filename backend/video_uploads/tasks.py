@@ -11,7 +11,7 @@ import tempfile
 from urllib.parse import urlparse, unquote
 
 import requests
-from pycon.constants import KB
+from pycon.constants import GB, KB
 from video_uploads.models import WetransferToS3TransferRequest
 from pycon.celery import app
 
@@ -162,7 +162,13 @@ def process_wetransfer_to_s3_transfer_request(request_id):
                     part_id,
                 )
 
-                full_file.write(file_part.read())
+                while True:
+                    chunk = file_part.read(2 * GB)
+                    if not chunk:
+                        break
+                    full_file.write(chunk)
+
+                full_file.flush()
                 file_part.close()
 
             full_file.flush()

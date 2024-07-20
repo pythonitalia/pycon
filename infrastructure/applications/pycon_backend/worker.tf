@@ -183,7 +183,7 @@ locals {
     {
       name = "ECS_NETWORK_CONFIG",
       value = jsonencode({
-        subnets = [data.aws_subnet.private_1a.id],
+        subnets = [data.aws_subnet.public_1a.id],
         security_groups = [
           data.aws_security_group.rds.id,
           data.aws_security_group.lambda.id,
@@ -204,6 +204,20 @@ data "aws_subnet" "private_1a" {
   filter {
     name   = "tag:Type"
     values = ["private"]
+  }
+
+  filter {
+    name   = "tag:AZ"
+    values = ["eu-central-1a"]
+  }
+}
+
+data "aws_subnet" "public_1a" {
+  vpc_id = data.aws_vpc.default.id
+
+  filter {
+    name   = "tag:Type"
+    values = ["public"]
   }
 
   filter {
