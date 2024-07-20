@@ -74,7 +74,6 @@ class WetransferProcessing:
         self, full_file: BufferedReader, executor: ThreadPoolExecutor
     ) -> list[str]:
         futures = []
-        filenames = []
         with zipfile.ZipFile(full_file, "r") as zip_ref:
             for file_info in zip_ref.infolist():
                 if not is_file_allowed(file_info):
@@ -86,10 +85,7 @@ class WetransferProcessing:
                     executor.submit(self.process_zip_file_obj, file_obj, filename)
                 )
 
-            for future in futures:
-                filenames.append(future.result())
-
-        return filenames
+        return [future.result() for future in futures]
 
     def process_zip_file_obj(self, file_obj: BufferedReader, filename: str):
         logger.info(
