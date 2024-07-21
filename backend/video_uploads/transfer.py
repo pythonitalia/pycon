@@ -163,6 +163,8 @@ class WetransferProcessing:
 
                 merged_file.flush()
 
+            os.unlink(local_path)
+
         return merged_file.name
 
     def download_parts(
