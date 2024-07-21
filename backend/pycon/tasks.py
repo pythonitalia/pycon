@@ -36,16 +36,6 @@ def launch_heavy_processing_worker():
         return
 
     # create EFS volume
-    efs_client = boto3.client("efs")
-    efs_response = efs_client.create_file_system(
-        CreationToken=f"pythonit-{settings.ENVIRONMENT}-heavy-processing-efs",
-        PerformanceMode="generalPurpose",
-        Encrypted=False,
-        AvailabilityZoneName=settings.AWS_REGION_NAME + "a",
-        Backup=False,
-    )
-    file_system_id = efs_response["FileSystemId"]
-
     response = ecs_client.run_task(
         cluster=cluster_name,
         taskDefinition=f"pythonit-{settings.ENVIRONMENT}-heavy-processing-worker",
@@ -53,21 +43,6 @@ def launch_heavy_processing_worker():
         networkConfiguration={"awsvpcConfiguration": _get_ecs_network_config()},
         launchType="FARGATE",
         enableExecuteCommand=True,
-        overrides={
-            "volumes": {
-                "name": "efs",
-                "efsVolumeConfiguration": {
-                    "fileSystemId": file_system_id,
-                    "transitEncryption": "DISABLED",
-                },
-            },
-            "containerOverrides": [
-                {
-                    "name": "worker",
-                    "mountPoints": [{"containerPath": "/tmp", "sourceVolume": "efs"}],
-                }
-            ],
-        },
     )
     task_arn = response["tasks"][0]["taskArn"]
     attempts = 0
