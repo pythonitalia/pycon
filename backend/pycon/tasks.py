@@ -35,8 +35,6 @@ def launch_heavy_processing_worker():
     if len(response["taskArns"]) > 0:
         return
 
-    role = boto3.client("sts").get_caller_identity()["Arn"]
-
     response = ecs_client.run_task(
         cluster=cluster_name,
         taskDefinition=f"pythonit-{settings.ENVIRONMENT}-heavy-processing-worker",
@@ -54,7 +52,7 @@ def launch_heavy_processing_worker():
                     "volumeType": "gp3",
                     "terminationPolicy": {"deleteOnTermination": True},
                     "filesystemType": "xfs",
-                    "roleArn": role,
+                    "roleArn": settings.ECS_SERVICE_ROLE,
                 },
             }
         ],

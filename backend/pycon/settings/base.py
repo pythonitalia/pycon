@@ -398,3 +398,4 @@ CLAMAV_PORT = env("CLAMAV_PORT", default=3310)
 IS_RUNNING_TESTS = False
 
 ECS_NETWORK_CONFIG = json.loads(env("ECS_NETWORK_CONFIG", default="{}"))
+ECS_SERVICE_ROLE = env("ECS_SERVICE_ROLE", default="")

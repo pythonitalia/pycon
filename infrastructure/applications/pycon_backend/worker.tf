@@ -190,8 +190,34 @@ locals {
           aws_security_group.instance.id
         ],
       })
+    },
+    {
+      name = "ECS_SERVICE_ROLE",
+      value = aws_iam_role.ecs_service.arn
     }
   ]
+}
+
+resource "aws_iam_role" "ecs_service" {
+  name = "pythonit-${terraform.workspace}-ecs-service"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "ecs.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "volume_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSInfrastructureRolePolicyForVolumes"
+  role       = aws_iam_role.ecs_service.name
 }
 
 resource "aws_ecs_cluster" "worker" {
