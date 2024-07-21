@@ -65,29 +65,3 @@ resource "aws_route53_record" "cdn_record" {
     evaluate_target_health = false
   }
 }
-
-resource "tls_private_key" "key" {
-  algorithm = "RSA"
-  rsa_bits  = 2048
-}
-
-
-resource "aws_cloudfront_public_key" "key" {
-  comment     = "pycon.it cdn public key"
-  encoded_key = tls_private_key.key.public_key_pem
-  name        = "pyconit-${terraform.workspace}-public-key"
-}
-
-resource "aws_cloudfront_key_group" "group" {
-  comment = "pyconit cdn key group"
-  items   = [aws_cloudfront_public_key.key.id]
-  name    = "pyconit-${terraform.workspace}-cdn-key-group"
-}
-
-resource "aws_s3_object" "private_key_pem" {
-  bucket = aws_s3_bucket.backend_media.bucket
-  key    = "cloudfront-private-key.pem"
-  content_base64 = base64encode(tls_private_key.key.private_key_pem)
-  etag = md5(base64encode(tls_private_key.key.private_key_pem))
-  acl = "private"
-}

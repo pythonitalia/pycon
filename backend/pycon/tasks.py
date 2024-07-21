@@ -35,7 +35,8 @@ def launch_heavy_processing_worker():
     if len(response["taskArns"]) > 0:
         return
 
-    # create EFS volume
+    role = boto3.client("sts").get_caller_identity()["Arn"]
+
     response = ecs_client.run_task(
         cluster=cluster_name,
         taskDefinition=f"pythonit-{settings.ENVIRONMENT}-heavy-processing-worker",
@@ -43,6 +44,20 @@ def launch_heavy_processing_worker():
         networkConfiguration={"awsvpcConfiguration": _get_ecs_network_config()},
         launchType="FARGATE",
         enableExecuteCommand=True,
+        startedBy="celery",
+        volumeConfigurations=[
+            {
+                "name": "storage",
+                "managedEBSVolume": {
+                    "encrypted": False,
+                    "sizeInGB": 300,
+                    "volumeType": "gp3",
+                    "terminationPolicy": {"deleteOnTermination": True},
+                    "filesystemType": "xfs",
+                    "roleArn": role,
+                },
+            }
+        ],
     )
     task_arn = response["tasks"][0]["taskArn"]
     attempts = 0

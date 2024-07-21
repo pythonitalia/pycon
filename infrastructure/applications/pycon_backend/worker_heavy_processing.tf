@@ -7,16 +7,6 @@ resource "aws_cloudwatch_log_group" "heavy_processing_worker_logs" {
   retention_in_days = 7
 }
 
-resource "aws_efs_file_system" "storage" {
-  creation_token = "pythonit-${terraform.workspace}-storage"
-  availability_zone_name = "eu-central-1a"
-  encrypted = false
-
-  tags = {
-    Name = "pythonit-${terraform.workspace}-storage"
-  }
-}
-
 resource "aws_ecs_task_definition" "heavy_processing_worker" {
   family = "pythonit-${terraform.workspace}-heavy-processing-worker"
   requires_compatibilities = ["FARGATE"]
@@ -52,9 +42,11 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
       mountPoints = [
         {
           "containerPath" = "/tmp"
-          "sourceVolume"  = "efs"
+          "sourceVolume"  = "storage"
+          "readOnly"      = false
         }
       ]
+
       systemControls = [
         {
           "namespace" : "net.core.somaxconn",
@@ -85,13 +77,10 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
     }
   ])
 
-  tags                     = {}
-
   volume {
-    name = "efs"
-    efs_volume_configuration {
-      file_system_id = aws_efs_file_system.storage.id
-      transit_encryption = "DISABLED"
-    }
+    name = "storage"
+    configure_at_launch = true
   }
+
+  tags                     = {}
 }
