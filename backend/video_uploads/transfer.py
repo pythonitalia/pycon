@@ -8,7 +8,7 @@ import os
 import tempfile
 import requests
 from urllib.parse import unquote, urlparse
-from pycon.constants import GB, KB, MB
+from pycon.constants import GB, MB
 from video_uploads.models import WetransferToS3TransferRequest
 
 
@@ -60,7 +60,7 @@ class WetransferProcessing:
                 delete=False,
             )
 
-        max_workers = os.cpu_count()
+        max_workers = os.cpu_count() * 2
 
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             self.download_file(parts_info, executor)
@@ -87,6 +87,8 @@ class WetransferProcessing:
         self, full_file: BufferedReader, executor: ThreadPoolExecutor
     ) -> list[str]:
         futures = []
+        all_filenames = []
+
         with zipfile.ZipFile(full_file, "r") as zip_ref:
             for file_info in zip_ref.infolist():
                 if not is_file_allowed(file_info):
@@ -100,11 +102,11 @@ class WetransferProcessing:
 
                 if len(futures) > 5:
                     for future in as_completed(futures):
-                        future.result()
+                        all_filenames.append(future.result())
 
                     futures = []
 
-        return [future.result() for future in futures]
+        return all_filenames
 
     def process_zip_file_obj(self, file_obj: BufferedReader, filename: str):
         logger.info(
@@ -182,25 +184,25 @@ class WetransferProcessing:
 
         os.unlink(filename)
 
-    def download_part(self, download_part: PartInfo) -> str:
+    def download_part(self, part_info: PartInfo) -> str:
         logger.info(
             "Downloading chunk %s-%s for wetransfer_to_s3_transfer_request %s",
-            download_part.start,
-            download_part.end,
+            part_info.start,
+            part_info.end,
             self.wetransfer_to_s3_transfer_request.id,
         )
 
         part_file = tempfile.NamedTemporaryFile(
             "wb",
-            prefix=f"wetransfer_{self.wetransfer_to_s3_transfer_request.id}.part{download_part.index}",
+            prefix=f"wetransfer_{self.wetransfer_to_s3_transfer_request.id}.part{part_info.index}",
             suffix=self.extension,
             delete=False,
         )
 
         with requests.get(
-            self.download_link, headers=download_part.header, stream=True
+            self.download_link, headers=part_info.header, stream=True
         ) as response:
-            for chunk in response.iter_content(chunk_size=512 * KB):
+            for chunk in response.iter_content(chunk_size=2 * MB):
                 if chunk:  # pragma: no cover
                     part_file.write(chunk)
 
@@ -257,9 +259,6 @@ class WetransferProcessing:
         direct_link_filename = unquote(parsed_url.path.split("/")[-1])
         _, ext = os.path.splitext(direct_link_filename)
         return direct_link_filename, ext
-
-    def file_part_s3_path(self, part_info: PartInfo) -> str:
-        return f"wetransfer-to-s3-transfers/{self.wetransfer_to_s3_transfer_request.id}/part{part_info.index}{self.extension}"
 
 
 def is_file_allowed(file_info: zipfile.ZipInfo) -> bool:
