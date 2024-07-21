@@ -1,5 +1,10 @@
 resource "aws_ecs_cluster" "heavy_processing_worker" {
   name = "pythonit-${terraform.workspace}-heavy-processing-worker"
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
 }
 
 resource "aws_cloudwatch_log_group" "heavy_processing_worker_logs" {

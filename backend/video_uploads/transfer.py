@@ -2,7 +2,7 @@ from io import BufferedReader, BytesIO
 import zipfile
 from django.core.files.storage import storages
 import logging
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 import os
 import tempfile
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class DownloadPart:
+class PartInfo:
     index: int
     start: int
     end: int
@@ -32,8 +32,6 @@ class WetransferProcessing:
     ) -> None:
         self.wetransfer_to_s3_transfer_request = wetransfer_to_s3_transfer_request
         self.imported_files = []
-        self.full_file_name = None
-        self.parts_refs = []
 
     def run(self) -> list[str]:
         self.storage = storages["default"]
@@ -41,23 +39,33 @@ class WetransferProcessing:
         self.filename, self.extension = self.get_filename_and_extension()
 
         file_total_size = self.get_file_total_size()
-        download_parts = self.determine_download_parts(file_total_size)
+        parts_info = self.determine_parts_info(file_total_size)
 
         logger.info(
             "Total size to download %s bytes, file parts %s for wetransfer_to_s3_transfer_request %s",
             file_total_size,
-            download_parts,
+            parts_info,
             self.wetransfer_to_s3_transfer_request.id,
         )
 
-        max_workers = os.cpu_count() * 2
+        self.has_multiple_parts = len(parts_info) > 1
+
+        if not self.has_multiple_parts:
+            self.merged_file = None
+        else:
+            self.merged_file = tempfile.NamedTemporaryFile(
+                "wb",
+                prefix=f"wetransfer_{self.wetransfer_to_s3_transfer_request.id}",
+                suffix=self.extension,
+                delete=False,
+            )
+
+        max_workers = os.cpu_count()
 
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            self.parts_refs = self.download_parts(download_parts, executor)
+            self.download_file(parts_info, executor)
             try:
-                self.full_file_name = self.merge_parts(self.parts_refs)
-
-                with open(self.full_file_name, "rb") as full_file:
+                with open(self.merged_file.name, "rb") as full_file:
                     imported_files = self.process_downloaded_file(full_file, executor)
             finally:
                 self.cleanup()
@@ -89,6 +97,12 @@ class WetransferProcessing:
                 futures.append(
                     executor.submit(self.process_zip_file_obj, file_obj, filename)
                 )
+
+                if len(futures) > 5:
+                    for future in as_completed(futures):
+                        future.result()
+
+                    futures = []
 
         return [future.result() for future in futures]
 
@@ -129,55 +143,24 @@ class WetransferProcessing:
         return filename
 
     def cleanup(self):
-        if self.full_file_name:
-            os.unlink(self.full_file_name)
+        if self.merged_file:
+            os.unlink(self.merged_file.name)
 
-    def merge_parts(self, parts_refs: list[str]) -> str:
-        logger.info(
-            "Merging parts for wetransfer_to_s3_transfer_request %s",
-            self.wetransfer_to_s3_transfer_request.id,
-        )
-
-        merged_file = tempfile.NamedTemporaryFile(
-            "wb",
-            prefix=f"wetransfer_{self.wetransfer_to_s3_transfer_request.id}",
-            suffix=self.extension,
-            delete=False,
-        )
-
-        for local_path in parts_refs:
-            logger.info(
-                "Merging part %s for wetransfer_to_s3_transfer_request %s",
-                local_path,
-                self.wetransfer_to_s3_transfer_request.id,
-            )
-
-            with open(local_path, "rb") as file_part:
-                while True:
-                    chunk = file_part.read(500 * MB)
-
-                    if not chunk:
-                        break
-
-                    merged_file.write(chunk)
-
-                merged_file.flush()
-
-            os.unlink(local_path)
-
-        return merged_file.name
-
-    def download_parts(
-        self, download_parts: list[DownloadPart], executor: ThreadPoolExecutor
+    def download_file(
+        self, parts_info: list[PartInfo], executor: ThreadPoolExecutor
     ) -> list[str]:
-        parts_futures = []
+        futures = []
         parts_paths = []
 
-        for download_part in download_parts:
-            parts_futures.append(executor.submit(self.download_part, download_part))
+        for part_info in parts_info:
+            futures.append(executor.submit(self.download_part, part_info))
 
-        for future in parts_futures:
-            parts_paths.append(future.result())
+        for future in futures:
+            filename = future.result()
+            if self.has_multiple_parts:
+                self.merge_part(filename)
+            else:
+                self.merged_file = open(filename, "rb")
 
         logger.info(
             "Finished downloading all parts for wetransfer_to_s3_transfer_request %s",
@@ -185,7 +168,21 @@ class WetransferProcessing:
         )
         return parts_paths
 
-    def download_part(self, download_part: DownloadPart) -> str:
+    def merge_part(self, filename: str):
+        with open(filename, "rb") as file_part:
+            while True:
+                chunk = file_part.read(500 * MB)
+
+                if not chunk:
+                    break
+
+                self.merged_file.write(chunk)
+
+            self.merged_file.flush()
+
+        os.unlink(filename)
+
+    def download_part(self, download_part: PartInfo) -> str:
         logger.info(
             "Downloading chunk %s-%s for wetransfer_to_s3_transfer_request %s",
             download_part.start,
@@ -210,17 +207,17 @@ class WetransferProcessing:
         part_file.flush()
         return part_file.name
 
-    def determine_download_parts(self, file_size: int) -> list[DownloadPart]:
+    def determine_parts_info(self, file_size: int) -> list[PartInfo]:
         num_parts = self._determinate_total_num_of_parts(file_size)
         chunk_size = file_size // num_parts
-        download_parts = []
+        parts_info = []
 
         for i in range(num_parts):
             start = i * chunk_size
             end = start + chunk_size - 1 if i < num_parts - 1 else file_size
-            download_parts.append(DownloadPart(index=i, start=start, end=end))
+            parts_info.append(PartInfo(index=i, start=start, end=end))
 
-        return download_parts
+        return parts_info
 
     def _determinate_total_num_of_parts(self, file_size: int) -> int:
         if file_size >= 50 * GB:
@@ -261,8 +258,8 @@ class WetransferProcessing:
         _, ext = os.path.splitext(direct_link_filename)
         return direct_link_filename, ext
 
-    def file_part_s3_path(self, download_part: DownloadPart) -> str:
-        return f"wetransfer-to-s3-transfers/{self.wetransfer_to_s3_transfer_request.id}/part{download_part.index}{self.extension}"
+    def file_part_s3_path(self, part_info: PartInfo) -> str:
+        return f"wetransfer-to-s3-transfers/{self.wetransfer_to_s3_transfer_request.id}/part{part_info.index}{self.extension}"
 
 
 def is_file_allowed(file_info: zipfile.ZipInfo) -> bool:
