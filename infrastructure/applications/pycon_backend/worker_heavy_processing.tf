@@ -17,7 +17,7 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
   task_role_arn = aws_iam_role.worker.arn
 
   ephemeral_storage {
-    size_in_gib = 200
+    size_in_gib = 30
   }
   runtime_platform {
     operating_system_family = "LINUX"

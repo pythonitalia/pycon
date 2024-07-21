@@ -68,7 +68,11 @@ resource "aws_iam_role_policy" "worker" {
         "ssmmessages:CreateControlChannel",
         "ssmmessages:CreateDataChannel",
         "ssmmessages:OpenControlChannel",
-        "ssmmessages:OpenDataChannel"
+        "ssmmessages:OpenDataChannel",
+        "elasticfilesystem:ClientMount",
+        "elasticfilesystem:ClientWrite",
+        "elasticfilesystem:DescribeMountTargets",
+        "elasticfilesystem:DescribeFileSystems"
       ],
       "Effect": "Allow",
       "Resource": "*"
