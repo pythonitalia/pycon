@@ -100,7 +100,7 @@ class WetransferProcessing:
                     executor.submit(self.process_zip_file_obj, file_obj, filename)
                 )
 
-                if len(futures) > 5:
+                if len(futures) >= 2:
                     for future in as_completed(futures):
                         all_filenames.append(future.result())
 
