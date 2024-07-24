@@ -259,7 +259,7 @@ class WetransferProcessing:
             return None
 
         client_config = botocore.config.Config(
-            max_pool_connections=25,
+            max_pool_connections=100,
         )
         return boto3.client("s3", config=client_config)
 

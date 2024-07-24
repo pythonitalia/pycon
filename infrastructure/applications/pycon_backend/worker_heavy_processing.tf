@@ -16,7 +16,7 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
   family = "pythonit-${terraform.workspace}-heavy-processing-worker"
   requires_compatibilities = ["FARGATE"]
   cpu                      = 4096
-  memory                   = 16384
+  memory                   = 8192
   network_mode             = "awsvpc"
   execution_role_arn = aws_iam_role.worker.arn
   task_role_arn = aws_iam_role.worker.arn
@@ -32,7 +32,7 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
     {
       name              = "worker"
       image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
-      memoryReservation = 16384
+      memoryReservation = 8192
       essential         = true
       entrypoint = [
         "/home/app/.venv/bin/celery",
