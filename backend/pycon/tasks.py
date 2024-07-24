@@ -53,6 +53,8 @@ def launch_heavy_processing_worker():
                     "terminationPolicy": {"deleteOnTermination": True},
                     "filesystemType": "xfs",
                     "roleArn": settings.ECS_SERVICE_ROLE,
+                    "iops": 16_000,
+                    "throughput": 1_000,
                 },
             }
         ],

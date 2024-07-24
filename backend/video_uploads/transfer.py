@@ -68,10 +68,6 @@ class WetransferProcessing:
                 delete=False,
             )
 
-            with open(self.merged_file.name, "wb") as f:
-                f.seek(self.transfer_total_size - 1)
-                f.write(b"\0")
-
         max_workers = os.cpu_count() * 2
 
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
