@@ -1,5 +1,6 @@
 from io import BufferedReader, BytesIO
 import shutil
+import subprocess
 import zipfile
 from django.core.files.storage import storages
 import logging
@@ -177,25 +178,10 @@ class WetransferProcessing:
             self.wetransfer_to_s3_transfer_request.id,
         )
 
-        offset = 0
-        futures = []
-        for file in parts:
-            file_size = os.path.getsize(file)
-            futures.append(executor.submit(self.merge_part, file, offset))
-            offset += file_size
+        subprocess.run(["cat"] + parts, stdout=open(self.merged_file.name, "wb"))
 
-        for future in futures:
-            future.result()
-
-    def merge_part(self, part_filename: str, offset: int):
-        with open(part_filename, "rb") as src_file, open(
-            self.merged_file.name, "a+b"
-        ) as dst_file:
-            src_file.seek(0)
-            dst_file.seek(offset)
-            shutil.copyfileobj(src_file, dst_file, length=256 * MB)
-
-        os.remove(part_filename)
+        for part in parts:
+            os.remove(part)
 
     def download_part(self, part_info: PartInfo) -> str:
         logger.info(
