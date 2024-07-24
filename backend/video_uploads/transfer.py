@@ -101,7 +101,8 @@ class WetransferProcessing:
         futures = []
         all_filenames = []
 
-        with zipfile.ZipFile(full_file, "r") as zip_ref:
+        zip_ref = zipfile.ZipFile(full_file, "r")
+        try:
             for file_info in zip_ref.infolist():
                 if not is_file_allowed(file_info):
                     continue
@@ -111,8 +112,10 @@ class WetransferProcessing:
                     executor.submit(self.process_zip_file_obj, zip_ref, filename)
                 )
 
-        for future in as_completed(futures):
-            all_filenames.append(future.result())
+            for future in as_completed(futures):
+                all_filenames.append(future.result())
+        finally:
+            zip_ref.close()
 
         return all_filenames
 
@@ -185,8 +188,8 @@ class WetransferProcessing:
             future.result()
 
     def merge_part(self, part_filename: str, offset: int):
-        with open(part_filename, "rb") as src_file, os.fdopen(
-            open_direct(self.merged_file.name), "r+b"
+        with open(part_filename, "rb") as src_file, open(
+            self.merged_file.name, "a+b"
         ) as dst_file:
             src_file.seek(0)
             dst_file.seek(offset)
@@ -270,7 +273,7 @@ class WetransferProcessing:
 
 
 def open_direct(filename):
-    return os.open(filename, os.O_RDWR | os.O_DIRECT)
+    return os.open(filename, "a+b", os.O_DIRECT)
 
 
 def is_file_allowed(file_info: zipfile.ZipInfo) -> bool:
