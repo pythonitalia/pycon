@@ -67,7 +67,7 @@ class WetransferProcessing:
                 delete=False,
             )
 
-            with open(self.merged_file, "wb") as f:
+            with open(self.merged_file.name, "wb") as f:
                 f.seek(self.transfer_total_size - 1)
                 f.write(b"\0")
 
