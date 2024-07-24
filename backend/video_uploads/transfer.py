@@ -1,4 +1,5 @@
 from io import BufferedReader, BytesIO
+import shutil
 import zipfile
 from django.core.files.storage import storages
 import logging
@@ -146,7 +147,7 @@ class WetransferProcessing:
 
     def cleanup(self):
         if self.merged_file:
-            os.unlink(self.merged_file.name)
+            os.remove(self.merged_file.name)
 
     def download_file(
         self, parts_info: list[PartInfo], executor: ThreadPoolExecutor
@@ -172,17 +173,10 @@ class WetransferProcessing:
 
     def merge_part(self, filename: str):
         with open(filename, "rb") as file_part:
-            while True:
-                chunk = file_part.read(500 * MB)
+            with open(self.merged_file.name, "ab") as merged_file:
+                shutil.copyfileobj(file_part, merged_file, length=16 * MB)
 
-                if not chunk:
-                    break
-
-                self.merged_file.write(chunk)
-
-            self.merged_file.flush()
-
-        os.unlink(filename)
+        os.remove(filename)
 
     def download_part(self, part_info: PartInfo) -> str:
         logger.info(
@@ -202,9 +196,7 @@ class WetransferProcessing:
         with requests.get(
             self.download_link, headers=part_info.header, stream=True
         ) as response:
-            for chunk in response.iter_content(chunk_size=2 * MB):
-                if chunk:  # pragma: no cover
-                    part_file.write(chunk)
+            shutil.copyfileobj(response.raw, part_file, length=16 * MB)
 
         part_file.flush()
         return part_file.name
