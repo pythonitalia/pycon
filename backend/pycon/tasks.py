@@ -48,7 +48,7 @@ def launch_heavy_processing_worker():
                 "name": "storage",
                 "managedEBSVolume": {
                     "encrypted": False,
-                    "sizeInGiB": 300,
+                    "sizeInGiB": 450,
                     "volumeType": "gp3",
                     "terminationPolicy": {"deleteOnTermination": True},
                     "filesystemType": "xfs",

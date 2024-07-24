@@ -9,11 +9,16 @@ import os
 import tempfile
 import requests
 from urllib.parse import unquote, urlparse
+from pycon.storages import CustomS3Boto3Storage
 from pycon.constants import GB, MB
 from video_uploads.models import WetransferToS3TransferRequest
-
+import boto3
 
 logger = logging.getLogger(__name__)
+
+
+def is_s3_storage(storage):
+    return type(storage) == CustomS3Boto3Storage
 
 
 @dataclass
@@ -36,15 +41,16 @@ class WetransferProcessing:
 
     def run(self) -> list[str]:
         self.storage = storages["default"]
+        self.s3_client = boto3.client("s3") if is_s3_storage(self.storage) else None
         self.download_link = self.get_download_link()
         self.filename, self.extension = self.get_filename_and_extension()
 
-        file_total_size = self.get_file_total_size()
-        parts_info = self.determine_parts_info(file_total_size)
+        self.transfer_total_size = self.get_file_total_size()
+        parts_info = self.determine_parts_info(self.transfer_total_size)
 
         logger.info(
             "Total size to download %s bytes, file parts %s for wetransfer_to_s3_transfer_request %s",
-            file_total_size,
+            self.transfer_total_size,
             parts_info,
             self.wetransfer_to_s3_transfer_request.id,
         )
@@ -61,10 +67,15 @@ class WetransferProcessing:
                 delete=False,
             )
 
+            with open(self.merged_file, "wb") as f:
+                f.seek(self.transfer_total_size - 1)
+                f.write(b"\0")
+
         max_workers = os.cpu_count() * 2
 
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            self.download_file(parts_info, executor)
+            parts = self.download_file(parts_info, executor)
+            self.merge_parts(parts, executor)
             try:
                 with open(self.merged_file.name, "rb") as full_file:
                     imported_files = self.process_downloaded_file(full_file, executor)
@@ -96,40 +107,26 @@ class WetransferProcessing:
                     continue
 
                 filename = file_info.filename
-                file_obj = zip_ref.open(filename)
                 futures.append(
-                    executor.submit(self.process_zip_file_obj, file_obj, filename)
+                    executor.submit(self.process_zip_file_obj, zip_ref, filename)
                 )
 
-                if len(futures) >= 2:
-                    for future in as_completed(futures):
-                        all_filenames.append(future.result())
-
-                    futures = []
+        for future in as_completed(futures):
+            all_filenames.append(future.result())
 
         return all_filenames
 
-    def process_zip_file_obj(self, file_obj: BufferedReader, filename: str):
+    def process_zip_file_obj(self, zip_ref: zipfile.ZipFile, filename: str):
         logger.info(
             "Processing zip file %s for wetransfer_to_s3_transfer_request %s",
             filename,
             self.wetransfer_to_s3_transfer_request.id,
         )
 
-        try:
-            file_data = BytesIO()
-            while True:
-                chunk = file_obj.read(500 * MB)
+        with zip_ref.open(filename) as file_obj:
+            self.save_file_to_s3(filename, file_obj)
 
-                if not chunk:
-                    break
-
-                file_data.write(chunk)
-
-            self.save_file_to_s3(filename, file_data)
-            return filename
-        finally:
-            file_obj.close()
+        return filename
 
     def save_file_to_s3(self, filename: str, file_data: BytesIO):
         logger.info(
@@ -139,10 +136,13 @@ class WetransferProcessing:
         )
 
         conference = self.wetransfer_to_s3_transfer_request.conference
-        self.storage.save(
-            f"conference-videos/{conference.code}/{filename}",
-            file_data,
-        )
+        remote_path = f"conference-videos/{conference.code}/{filename}"
+        if is_s3_storage(self.storage):
+            self.s3_client.upload_fileobj(
+                file_data, self.storage.bucket_name, remote_path
+            )
+        else:
+            self.storage.save(remote_path, file_data)
         return filename
 
     def cleanup(self):
@@ -160,10 +160,7 @@ class WetransferProcessing:
 
         for future in futures:
             filename = future.result()
-            if self.has_multiple_parts:
-                self.merge_part(filename)
-            else:
-                self.merged_file = open(filename, "rb")
+            parts_paths.append(filename)
 
         logger.info(
             "Finished downloading all parts for wetransfer_to_s3_transfer_request %s",
@@ -171,12 +168,31 @@ class WetransferProcessing:
         )
         return parts_paths
 
-    def merge_part(self, filename: str):
-        with open(filename, "rb") as file_part:
-            with open(self.merged_file.name, "ab") as merged_file:
-                shutil.copyfileobj(file_part, merged_file, length=16 * MB)
+    def merge_parts(self, parts: list[str], executor: ThreadPoolExecutor):
+        logger.info(
+            "Merging parts for wetransfer_to_s3_transfer_request %s",
+            self.wetransfer_to_s3_transfer_request.id,
+        )
 
-        os.remove(filename)
+        offset = 0
+        futures = []
+        for file in parts:
+            file_size = os.path.getsize(file)
+            futures.append(executor.submit(self.merge_part, file, offset))
+            offset += file_size
+
+        for future in futures:
+            future.result()
+
+    def merge_part(self, part_filename: str, offset: int):
+        with open(part_filename, "rb") as src_file, os.fdopen(
+            open_direct(self.merged_file.name, "r+b")
+        ) as dst_file:
+            src_file.seek(0)
+            dst_file.seek(offset)
+            shutil.copyfileobj(src_file, dst_file, length=256 * MB)
+
+        os.remove(part_filename)
 
     def download_part(self, part_info: PartInfo) -> str:
         logger.info(
@@ -196,9 +212,9 @@ class WetransferProcessing:
         with requests.get(
             self.download_link, headers=part_info.header, stream=True
         ) as response:
-            shutil.copyfileobj(response.raw, part_file, length=16 * MB)
+            response.raise_for_status()
+            shutil.copyfileobj(response.raw, part_file, length=128 * MB)
 
-        part_file.flush()
         return part_file.name
 
     def determine_parts_info(self, file_size: int) -> list[PartInfo]:
@@ -251,6 +267,10 @@ class WetransferProcessing:
         direct_link_filename = unquote(parsed_url.path.split("/")[-1])
         _, ext = os.path.splitext(direct_link_filename)
         return direct_link_filename, ext
+
+
+def open_direct(filename, mode):
+    return os.open(filename, os.O_RDWR | os.O_DIRECT)
 
 
 def is_file_allowed(file_info: zipfile.ZipInfo) -> bool:
