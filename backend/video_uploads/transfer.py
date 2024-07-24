@@ -14,6 +14,7 @@ from pycon.storages import CustomS3Boto3Storage
 from pycon.constants import GB, MB
 from video_uploads.models import WetransferToS3TransferRequest
 import boto3
+import botocore
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,7 @@ class WetransferProcessing:
 
     def run(self) -> list[str]:
         self.storage = storages["default"]
-        self.s3_client = boto3.client("s3") if is_s3_storage(self.storage) else None
+        self.s3_client = self._get_s3_client()
         self.download_link = self.get_download_link()
         self.filename, self.extension = self.get_filename_and_extension()
 
@@ -252,6 +253,15 @@ class WetransferProcessing:
         direct_link_filename = unquote(parsed_url.path.split("/")[-1])
         _, ext = os.path.splitext(direct_link_filename)
         return direct_link_filename, ext
+
+    def _get_s3_client(self):
+        if not is_s3_storage(self.storage):
+            return None
+
+        client_config = botocore.config.Config(
+            max_pool_connections=25,
+        )
+        return boto3.client("s3", config=client_config)
 
 
 def open_direct(filename):
