@@ -186,7 +186,7 @@ class WetransferProcessing:
 
     def merge_part(self, part_filename: str, offset: int):
         with open(part_filename, "rb") as src_file, os.fdopen(
-            open_direct(self.merged_file.name, "r+b")
+            open_direct(self.merged_file.name, "r+b"), "r+b"
         ) as dst_file:
             src_file.seek(0)
             dst_file.seek(offset)
@@ -270,7 +270,10 @@ class WetransferProcessing:
 
 
 def open_direct(filename, mode):
-    return os.open(filename, os.O_RDWR | os.O_DIRECT)
+    flags = os.O_RDWR
+    if "b" in mode:
+        flags |= os.O_BINARY
+    return os.open(filename, flags | os.O_DIRECT)
 
 
 def is_file_allowed(file_info: zipfile.ZipInfo) -> bool:
