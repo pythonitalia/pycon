@@ -15,6 +15,7 @@ from pycon.constants import GB, MB
 from video_uploads.models import WetransferToS3TransferRequest
 import boto3
 import botocore
+from boto3.s3.transfer import TransferConfig
 
 logger = logging.getLogger(__name__)
 
@@ -139,8 +140,16 @@ class WetransferProcessing:
         conference = self.wetransfer_to_s3_transfer_request.conference
         remote_path = f"conference-videos/{conference.code}/{filename}"
         if is_s3_storage(self.storage):
+            config = TransferConfig(
+                multipart_threshold=512 * MB,
+                max_concurrency=8,
+                multipart_chunksize=64 * MB,
+                use_threads=True,
+                max_io_queue=100,
+            )
+
             self.s3_client.upload_fileobj(
-                file_data, self.storage.bucket_name, remote_path
+                file_data, self.storage.bucket_name, remote_path, Config=config
             )
         else:
             self.storage.save(remote_path, file_data)
