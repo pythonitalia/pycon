@@ -1,3 +1,4 @@
+import json
 import stripe
 import environ
 import sentry_sdk
@@ -124,6 +125,7 @@ INSTALLED_APPS = [
     "integrations.apps.IntegrationsConfig",
     "healthchecks.apps.HealthchecksConfig",
     "files_upload.apps.FilesUploadConfig",
+    "video_uploads.apps.VideoUploadsConfig",
 ]
 
 MIDDLEWARE = [
@@ -243,9 +245,16 @@ if PRETIX_API:
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+    },
+    "root": {"handlers": ["console"], "level": "INFO"},
     "loggers": {
-        "pycon.api": {"handlers": ["console"], "level": "WARNING", "propagate": True},
+        "pycon.api": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": True,
+        },
         "pycon.integrations": {
             "handlers": ["console"],
             "level": "WARNING",
@@ -276,8 +285,6 @@ QUERY_INSPECT_LOG_TRACEBACKS = True
 QUERY_INSPECT_TRACEBACK_ROOTS = [root(".")]
 
 PINPOINT_APPLICATION_ID = env("PINPOINT_APPLICATION_ID", default="")
-
-SQS_QUEUE_URL = env("SQS_QUEUE_URL", default="")
 
 MAILCHIMP_SECRET_KEY = env("MAILCHIMP_SECRET_KEY", default="")
 MAILCHIMP_DC = env("MAILCHIMP_DC", default="us3")
@@ -380,7 +387,7 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 CELERY_TASK_IGNORE_RESULT = True
 
 AWS_STORAGE_BUCKET_NAME = env("AWS_MEDIA_BUCKET", default=None)
-AWS_S3_REGION_NAME = env("AWS_REGION_NAME", default="eu-central-1")
+AWS_REGION_NAME = AWS_S3_REGION_NAME = env("AWS_REGION_NAME", default="eu-central-1")
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID", default=None)
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default=None)
 AWS_SESSION_TOKEN = env("AWS_SESSION_TOKEN", default=None)
@@ -389,3 +396,6 @@ CLAMAV_HOST = env("CLAMAV_HOST", default=None)
 CLAMAV_PORT = env("CLAMAV_PORT", default=3310)
 
 IS_RUNNING_TESTS = False
+
+ECS_NETWORK_CONFIG = json.loads(env("ECS_NETWORK_CONFIG", default="{}"))
+ECS_SERVICE_ROLE = env("ECS_SERVICE_ROLE", default="")

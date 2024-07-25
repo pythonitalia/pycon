@@ -4,44 +4,44 @@ from notifications.emails import SafeString, get_email_backend, mark_safe
 import pytest
 
 
-class TestBackend:
+class FakeBackend:
     pass
 
 
-class TestBackendWithEnv:
+class FakeBackendWithEnv:
     def __init__(self, a: int, b: int) -> None:
         self.a = a
         self.b = b
 
 
 def test_get_email_backend():
-    loaded_backend = get_email_backend("notifications.tests.test_emails.TestBackend")
-    assert "notifications.tests.test_emails.TestBackend" in str(type(loaded_backend))
+    loaded_backend = get_email_backend("notifications.tests.test_emails.FakeBackend")
+    assert "notifications.tests.test_emails.FakeBackend" in str(type(loaded_backend))
 
 
 def test_loading_same_backend_uses_cache():
-    loaded_backend = get_email_backend("notifications.tests.test_emails.TestBackend")
-    assert "notifications.tests.test_emails.TestBackend" in str(type(loaded_backend))
+    loaded_backend = get_email_backend("notifications.tests.test_emails.FakeBackend")
+    assert "notifications.tests.test_emails.FakeBackend" in str(type(loaded_backend))
 
     with patch("notifications.emails.importlib.import_module") as mock:
         loaded_backend = get_email_backend(
-            "notifications.tests.test_emails.TestBackend"
+            "notifications.tests.test_emails.FakeBackend"
         )
 
-    assert "notifications.tests.test_emails.TestBackend" in str(type(loaded_backend))
+    assert "notifications.tests.test_emails.FakeBackend" in str(type(loaded_backend))
     assert not mock.called
 
     mock.reset_mock()
 
     with patch("notifications.emails.importlib.import_module") as mock:
-        get_email_backend("notifications.tests.test_emails.TestBackend2")
+        get_email_backend("notifications.tests.test_emails.FakeBackend2")
 
     assert mock.called
 
 
 def test_get_email_backend_with_envs():
     loaded_backend = get_email_backend(
-        "notifications.tests.test_emails.TestBackendWithEnv", a=1, b=2
+        "notifications.tests.test_emails.FakeBackendWithEnv", a=1, b=2
     )
     assert loaded_backend.a == 1
     assert loaded_backend.b == 2

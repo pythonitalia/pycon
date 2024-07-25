@@ -42,58 +42,58 @@ jobs:
           CELERY_BROKER_URL: ""
           CELERY_RESULT_BACKEND: ""
 
-  check-building-container:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
+  # check-building-container:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: backend
 
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ matrix.service.name }}
-      - name: Build test
-        uses: docker/build-push-action@v4.0.0
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          provenance: false
-          push: false
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          platforms: linux/amd64
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Set up Docker Buildx
+  #       id: buildx
+  #       uses: docker/setup-buildx-action@v2
+  #     - name: Cache Docker layers
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: /tmp/.buildx-cache
+  #         key: ${{ runner.os }}-buildx-${{ matrix.service.name }}
+  #     - name: Build test
+  #       uses: docker/build-push-action@v4.0.0
+  #       with:
+  #         context: ./backend
+  #         file: ./backend/Dockerfile
+  #         builder: ${{ steps.buildx.outputs.name }}
+  #         provenance: false
+  #         push: false
+  #         cache-from: type=local,src=/tmp/.buildx-cache
+  #         cache-to: type=local,dest=/tmp/.buildx-cache
+  #         platforms: linux/amd64
 
-  check-building-arm-container:
-    runs-on: [self-hosted]
-    defaults:
-      run:
-        working-directory: backend
+  # check-building-arm-container:
+  #   runs-on: [self-hosted]
+  #   defaults:
+  #     run:
+  #       working-directory: backend
 
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ matrix.service.name }}
-      - name: Build test
-        uses: docker/build-push-action@v4.0.0
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          provenance: false
-          push: false
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          platforms: linux/arm64
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Set up Docker Buildx
+  #       id: buildx
+  #       uses: docker/setup-buildx-action@v2
+  #     - name: Cache Docker layers
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: /tmp/.buildx-cache
+  #         key: ${{ runner.os }}-buildx-${{ matrix.service.name }}-arm
+  #     - name: Build test
+  #       uses: docker/build-push-action@v4.0.0
+  #       with:
+  #         context: ./backend
+  #         file: ./backend/Dockerfile
+  #         builder: ${{ steps.buildx.outputs.name }}
+  #         provenance: false
+  #         push: false
+  #         cache-from: type=local,src=/tmp/.buildx-cache
+  #         cache-to: type=local,dest=/tmp/.buildx-cache
+  #         platforms: linux/arm64

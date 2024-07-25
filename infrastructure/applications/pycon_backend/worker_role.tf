@@ -12,6 +12,14 @@ resource "aws_iam_role" "worker" {
       },
       "Effect": "Allow",
       "Sid": ""
+    },
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
     }
   ]
 }
@@ -54,7 +62,17 @@ resource "aws_iam_role_policy" "worker" {
         "ecr:ListImages",
         "ecr:DescribeImages",
         "ecr:BatchGetImage",
-        "ses:*"
+        "ses:*",
+        "ecs:*",
+        "iam:PassRole",
+        "ssmmessages:CreateControlChannel",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:OpenDataChannel",
+        "elasticfilesystem:ClientMount",
+        "elasticfilesystem:ClientWrite",
+        "elasticfilesystem:DescribeMountTargets",
+        "elasticfilesystem:DescribeFileSystems"
       ],
       "Effect": "Allow",
       "Resource": "*"
@@ -70,8 +88,7 @@ resource "aws_iam_role_policy" "worker" {
     },
     {
       "Action": [
-        "s3:GetObject",
-        "s3:HeadObject"
+        "s3:GetObject"
       ],
       "Effect": "Allow",
       "Resource": [
@@ -80,12 +97,12 @@ resource "aws_iam_role_policy" "worker" {
     },
     {
       "Action": [
-        "s3:GetObject",
-        "s3:HeadObject"
+        "s3:*"
       ],
       "Effect": "Allow",
       "Resource": [
-        "arn:aws:s3:::${terraform.workspace}-pycon-backend-media/conference-videos/*"
+        "arn:aws:s3:::${terraform.workspace}-pycon-backend-media",
+        "arn:aws:s3:::${terraform.workspace}-pycon-backend-media/*"
       ]
     }
   ]
