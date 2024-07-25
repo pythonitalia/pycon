@@ -76,7 +76,7 @@ class WetransferProcessing:
 
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             parts = self.download_file(parts_info, executor)
-            self.merge_parts(parts, executor)
+            self.merge_parts(parts)
             try:
                 with open(self.merged_file.name, "rb") as full_file:
                     imported_files = self.process_downloaded_file(full_file, executor)
@@ -121,12 +121,6 @@ class WetransferProcessing:
         return all_filenames
 
     def process_zip_file_obj(self, zip_ref: zipfile.ZipFile, filename: str):
-        logger.info(
-            "Processing zip file %s for wetransfer_to_s3_transfer_request %s",
-            filename,
-            self.wetransfer_to_s3_transfer_request.id,
-        )
-
         with zip_ref.open(filename) as file_obj:
             self.save_file_to_s3(filename, file_obj)
 
@@ -180,7 +174,7 @@ class WetransferProcessing:
         )
         return parts_paths
 
-    def merge_parts(self, parts: list[str], executor: ThreadPoolExecutor):
+    def merge_parts(self, parts: list[str]):
         if not self.has_multiple_parts:
             self.merged_file = open(parts[0], "rb")
             return
