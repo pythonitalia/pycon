@@ -19,16 +19,18 @@ def test_transfer_process_with_single_file(requests_mock):
 
     storage = storages["default"]
 
+    content = b"fake file content"
+
     download_mock = requests_mock.post(
         "https://wetransfer.com/api/v4/transfers/fake_transfer_id/download",
         json={"direct_link": "https://wetransfer.com/fake-download-link.txt"},
     )
     requests_mock.head(
         "https://wetransfer.com/fake-download-link.txt",
-        headers={"Content-Length": "16"},
+        headers={"Content-Length": str(len(content))},
     )
     direct_link_mock = requests_mock.get(
-        "https://wetransfer.com/fake-download-link.txt", content=b"fake file content"
+        "https://wetransfer.com/fake-download-link.txt", content=content
     )
 
     request = WetransferToS3TransferRequestFactory(
