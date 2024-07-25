@@ -1,4 +1,4 @@
-from pycon.constants import GB
+from pycon.constants import GB, MB
 import pytest
 from io import BytesIO
 from video_uploads.models import WetransferToS3TransferRequest
@@ -134,12 +134,44 @@ def test_transfer_determinate_num_parts_rules():
     assert process._determinate_total_num_of_parts(100 * GB) == 8
 
 
+def test_transfer_determine_parts_info():
+    process = WetransferProcessing(WetransferToS3TransferRequestFactory())
+    parts = process.determine_parts_info(100 * MB)
+
+    assert len(parts) == 1
+    assert parts[0].byte_start == 0
+    assert parts[0].byte_end == 100 * MB
+    assert parts[0].part_number == 1
+
+    parts = process.determine_parts_info(10 * GB)
+
+    assert len(parts) == 4
+    assert parts[0].byte_start == 0
+    assert parts[0].byte_end == 2.5 * GB
+    assert parts[0].part_number == 1
+
+    assert parts[1].byte_start == 2.5 * GB
+    assert parts[1].byte_end == 5 * GB
+    assert parts[1].part_number == 2
+
+    assert parts[2].byte_start == 5 * GB
+    assert parts[2].byte_end == 7.5 * GB
+    assert parts[2].part_number == 3
+
+    assert parts[3].byte_start == 7.5 * GB
+    assert parts[3].byte_end == 10 * GB
+    assert parts[3].part_number == 4
+
+
 def test_transfer_cleanup():
     process = WetransferProcessing(WetransferToS3TransferRequestFactory())
     process.cleanup()
 
 
 def test_transfer_process_via_s3_and_multi_parts(requests_mock, mocker):
+    mock_getsize = mocker.patch("video_uploads.transfer.os.path.getsize")
+    mock_getsize.return_value = 500 * GB / 8
+
     mock_storages = mocker.patch("video_uploads.transfer.storages")
     mock_storages.__getitem__.return_value.bucket_name = "bucket-name"
     mocker.patch("video_uploads.transfer.is_s3_storage", return_value=True)
@@ -185,3 +217,37 @@ def test_transfer_process_via_s3_and_multi_parts(requests_mock, mocker):
         upload_mock_call_args[2]
         == f"conference-videos/{request.conference.code}/fake-download-link.txt"
     )
+
+
+def test_transfer_process_retries_downloading_parts(requests_mock, mocker):
+    mock_getsize = mocker.patch("video_uploads.transfer.os.path.getsize")
+    mock_getsize.return_value = 100
+
+    mock_storages = mocker.patch("video_uploads.transfer.storages")
+    mock_storages.__getitem__.return_value.bucket_name = "bucket-name"
+    mocker.patch("video_uploads.transfer.is_s3_storage", return_value=True)
+    mocker.patch("video_uploads.transfer.boto3")
+    mocker.patch("video_uploads.transfer.subprocess")
+
+    requests_mock.post(
+        "https://wetransfer.com/api/v4/transfers/fake_transfer_id/download",
+        json={"direct_link": "https://wetransfer.com/fake-download-link.txt"},
+    )
+    requests_mock.head(
+        "https://wetransfer.com/fake-download-link.txt",
+        headers={"Content-Length": str(500 * GB)},
+    )
+    requests_mock.get(
+        "https://wetransfer.com/fake-download-link.txt", content=b"fake file content"
+    )
+
+    request = WetransferToS3TransferRequestFactory(
+        wetransfer_url="https://wetransfer.com/downloads/fake_transfer_id/fake_security_code",
+        status=WetransferToS3TransferRequest.Status.QUEUED,
+    )
+
+    process = WetransferProcessing(request)
+    with pytest.raises(Exception) as exc:
+        process.run()
+
+    assert "Failed to download part" in str(exc.value)

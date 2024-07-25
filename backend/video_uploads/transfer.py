@@ -26,13 +26,24 @@ def is_s3_storage(storage):
 
 @dataclass
 class PartInfo:
-    index: int
-    start: int
-    end: int
+    part_number: int
+    byte_start: int
+    byte_end: int
 
     @property
-    def header(self):
-        return {"Range": f"bytes={self.start}-{self.end}"}
+    def http_range_header(self) -> dict:
+        return {"Range": f"bytes={self.byte_start}-{self.last_byte}"}
+
+    @property
+    def last_byte(self) -> int:
+        return self.byte_end - 1
+
+    @property
+    def size(self) -> int:
+        return self.byte_end - self.byte_start
+
+    def __str__(self):
+        return f"Part {self.part_number} ({self.byte_start}-{self.last_byte})"
 
 
 class WetransferProcessing:
@@ -192,27 +203,56 @@ class WetransferProcessing:
             os.remove(part)
 
     def download_part(self, part_info: PartInfo) -> str:
-        logger.info(
-            "Downloading chunk %s-%s for wetransfer_to_s3_transfer_request %s",
-            part_info.start,
-            part_info.end,
-            self.wetransfer_to_s3_transfer_request.id,
-        )
+        attempts = 1
 
-        part_file = tempfile.NamedTemporaryFile(
-            "wb",
-            prefix=f"wetransfer_{self.wetransfer_to_s3_transfer_request.id}.part{part_info.index}",
-            suffix=self.extension,
-            delete=False,
-        )
+        while True:
+            if attempts > 3:
+                raise Exception(
+                    f"Failed to download part {str(part_info)} for wetransfer_to_s3_transfer_request {self.wetransfer_to_s3_transfer_request.id}"
+                )
 
-        with requests.get(
-            self.download_link, headers=part_info.header, stream=True
-        ) as response:
-            response.raise_for_status()
-            shutil.copyfileobj(response.raw, part_file, length=128 * MB)
+            logger.info(
+                "Downloading part %s for wetransfer_to_s3_transfer_request %s. Attempt = %s",
+                str(part_info),
+                self.wetransfer_to_s3_transfer_request.id,
+                attempts,
+            )
 
-        return part_file.name
+            part_file = tempfile.NamedTemporaryFile(
+                "wb",
+                prefix=f"wetransfer_{self.wetransfer_to_s3_transfer_request.id}.part{part_info.part_number}",
+                suffix=self.extension,
+                delete=False,
+            )
+
+            with requests.get(
+                self.download_link, headers=part_info.http_range_header, stream=True
+            ) as response:
+                response.raise_for_status()
+                shutil.copyfileobj(response.raw, part_file, length=512 * MB)
+
+            part_file.flush()
+            os.fsync(part_file.fileno())
+            part_disk_size = os.path.getsize(part_file.name)
+
+            if part_disk_size != part_info.size:
+                logger.warning(
+                    "Downloaded part %s size does not match the expected size %s (file size %s) for wetransfer_to_s3_transfer_request %s. Trying again",
+                    str(part_info),
+                    part_info.size,
+                    part_disk_size,
+                    self.wetransfer_to_s3_transfer_request.id,
+                )
+                attempts += 1
+                os.remove(part_file.name)
+                continue
+
+            logger.info(
+                "Downloaded part %s for wetransfer_to_s3_transfer_request %s",
+                str(part_info),
+                self.wetransfer_to_s3_transfer_request.id,
+            )
+            return part_file.name
 
     def determine_parts_info(self, file_size: int) -> list[PartInfo]:
         num_parts = self._determinate_total_num_of_parts(file_size)
@@ -220,9 +260,11 @@ class WetransferProcessing:
         parts_info = []
 
         for i in range(num_parts):
-            start = i * chunk_size
-            end = start + chunk_size - 1 if i < num_parts - 1 else file_size
-            parts_info.append(PartInfo(index=i, start=start, end=end))
+            byte_start = i * chunk_size
+            byte_end = byte_start + chunk_size if i < num_parts - 1 else file_size
+            parts_info.append(
+                PartInfo(part_number=i + 1, byte_start=byte_start, byte_end=byte_end)
+            )
 
         return parts_info
 
