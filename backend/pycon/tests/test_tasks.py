@@ -59,6 +59,22 @@ def test_launch_heavy_processing_worker_starts_task(settings, mocker):
         },
         launchType="FARGATE",
         enableExecuteCommand=True,
+        startedBy="celery",
+        volumeConfigurations=[
+            {
+                "name": "storage",
+                "managedEBSVolume": {
+                    "encrypted": False,
+                    "sizeInGiB": 450,
+                    "volumeType": "gp3",
+                    "terminationPolicy": {"deleteOnTermination": True},
+                    "filesystemType": "xfs",
+                    "roleArn": settings.ECS_SERVICE_ROLE,
+                    "iops": 16_000,
+                    "throughput": 1_000,
+                },
+            }
+        ],
     )
 
 

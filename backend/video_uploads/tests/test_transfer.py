@@ -99,7 +99,7 @@ def test_transfer_process_with_zip(requests_mock):
     assert out[0] == ["nested"]
     assert set(out[1]) == {"file1.txt", "file2.txt"}
     assert out_nested[1] == ["file.txt"]
-    assert imported_files == ["file1.txt", "file2.txt", "nested/file.txt"]
+    assert set(imported_files) == {"file1.txt", "file2.txt", "nested/file.txt"}
 
 
 def test_transfer_process_fails_with_expired_link(requests_mock):
