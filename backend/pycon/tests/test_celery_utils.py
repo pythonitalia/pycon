@@ -28,13 +28,14 @@ def test_renew_lock(mocker):
     lock = mocker.Mock()
     lock.owned.return_value = True
 
-    renew_thread = threading.Thread(target=renew_lock, args=(lock, 0.1, stop_event))
+    renew_thread = threading.Thread(target=renew_lock, args=(lock, 0.1, stop_event, 10))
     renew_thread.daemon = True
     renew_thread.start()
 
     time.sleep(0.3)
 
     assert lock.extend.call_count > 0
+    assert lock.extend.mock_calls[0][1] == (10,)
 
     stop_event.set()
     renew_thread.join()
@@ -45,7 +46,7 @@ def test_renew_lock_stops_if_lock_is_not_owned(mocker):
     lock = mocker.Mock()
     lock.owned.return_value = False
 
-    renew_thread = threading.Thread(target=renew_lock, args=(lock, 0.1, stop_event))
+    renew_thread = threading.Thread(target=renew_lock, args=(lock, 0.1, stop_event, 10))
     renew_thread.daemon = True
     renew_thread.start()
 
@@ -63,7 +64,7 @@ def test_renew_lock_stops_if_lock_renew_failed(mocker):
     lock.owned.return_value = True
     lock.extend.side_effect = ValueError("Error")
 
-    renew_thread = threading.Thread(target=renew_lock, args=(lock, 0.1, stop_event))
+    renew_thread = threading.Thread(target=renew_lock, args=(lock, 0.1, stop_event, 10))
     renew_thread.daemon = True
     renew_thread.start()
 
