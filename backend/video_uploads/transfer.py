@@ -41,9 +41,9 @@ class WetransferProcessing:
     ) -> None:
         self.wetransfer_to_s3_transfer_request = wetransfer_to_s3_transfer_request
         self.imported_files = []
+        self.merged_file = None
 
     def run(self) -> list[str]:
-        self.merged_file = None
         self.storage = storages["default"]
         self.s3_client = self._get_s3_client()
         self.download_link = self.get_download_link()

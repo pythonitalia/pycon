@@ -134,6 +134,11 @@ def test_transfer_determinate_num_parts_rules():
     assert process._determinate_total_num_of_parts(100 * GB) == 8
 
 
+def test_transfer_cleanup():
+    process = WetransferProcessing(WetransferToS3TransferRequestFactory())
+    process.cleanup()
+
+
 def test_transfer_process_via_s3_and_multi_parts(requests_mock, mocker):
     mock_storages = mocker.patch("video_uploads.transfer.storages")
     mock_storages.__getitem__.return_value.bucket_name = "bucket-name"
