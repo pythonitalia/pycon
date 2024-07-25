@@ -43,6 +43,7 @@ class WetransferProcessing:
         self.imported_files = []
 
     def run(self) -> list[str]:
+        self.merged_file = None
         self.storage = storages["default"]
         self.s3_client = self._get_s3_client()
         self.download_link = self.get_download_link()
@@ -59,16 +60,6 @@ class WetransferProcessing:
         )
 
         self.has_multiple_parts = len(parts_info) > 1
-
-        if not self.has_multiple_parts:
-            self.merged_file = None
-        else:
-            self.merged_file = tempfile.NamedTemporaryFile(
-                "wb",
-                prefix=f"wetransfer_{self.wetransfer_to_s3_transfer_request.id}",
-                suffix=self.extension,
-                delete=False,
-            )
 
         max_workers = os.cpu_count() * 2
 
@@ -179,9 +170,20 @@ class WetransferProcessing:
         return parts_paths
 
     def merge_parts(self, parts: list[str], executor: ThreadPoolExecutor):
+        if not self.has_multiple_parts:
+            self.merged_file = open(parts[0], "rb")
+            return
+
         logger.info(
             "Merging parts for wetransfer_to_s3_transfer_request %s",
             self.wetransfer_to_s3_transfer_request.id,
+        )
+
+        self.merged_file = tempfile.NamedTemporaryFile(
+            "wb",
+            prefix=f"wetransfer_{self.wetransfer_to_s3_transfer_request.id}",
+            suffix=self.extension,
+            delete=False,
         )
 
         subprocess.run(["cat"] + parts, stdout=open(self.merged_file.name, "wb"))
