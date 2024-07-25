@@ -135,9 +135,8 @@ def test_transfer_determinate_num_parts_rules():
 
 
 def test_transfer_process_via_s3_and_multi_parts(requests_mock, mocker):
-    mocker.patch(
-        "video_uploads.transfer.storages", return_value={"default": FakeStorage()}
-    )
+    mock_storages = mocker.patch("video_uploads.transfer.storages")
+    mock_storages.__getitem__.return_value.bucket_name = "bucket-name"
     mocker.patch("video_uploads.transfer.is_s3_storage", return_value=True)
     mock_boto3 = mocker.patch("video_uploads.transfer.boto3")
     mock_subprocess = mocker.patch("video_uploads.transfer.subprocess")
@@ -176,6 +175,7 @@ def test_transfer_process_via_s3_and_multi_parts(requests_mock, mocker):
     upload_mock_call_args = mock_boto3.client.return_value.upload_fileobj.mock_calls[0][
         1
     ]
+    assert upload_mock_call_args[1] == "bucket-name"
     assert (
         upload_mock_call_args[2]
         == f"conference-videos/{request.conference.code}/fake-download-link.txt"
