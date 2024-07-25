@@ -275,10 +275,6 @@ class WetransferProcessing:
         return boto3.client("s3", config=client_config)
 
 
-def open_direct(filename):
-    return os.open(filename, "a+b", os.O_DIRECT)
-
-
 def is_file_allowed(file_info: zipfile.ZipInfo) -> bool:
     filename = file_info.filename
 
