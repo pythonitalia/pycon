@@ -79,10 +79,12 @@ def user_schedule_item_favourites_calendar(request, conference_id, hash_user_id)
         )
         event.add("url", f"https://2024.pycon.it/event/{schedule_item.slug}/")
         event.add(
-            "dtstart", conference_timezone.localize(schedule_item.start).astimezone(utc)
+            "dtstart",
+            schedule_item.start.replace(tzinfo=conference_timezone).astimezone(utc),
         )
         event.add(
-            "dtend", conference_timezone.localize(schedule_item.end).astimezone(utc)
+            "dtend",
+            schedule_item.end.replace(tzinfo=conference_timezone).astimezone(utc),
         )
         event.add("dtstamp", now)
 

@@ -287,7 +287,10 @@ def test_ranking_does_not_exists_cannot_see_restricted_and_private_fields(
     user,
     submission_factory,
 ):
-    conference = conference_factory(rankrequest=None)
+    conference = conference_factory()
+    conference.rankquest = None
+    conference.save()
+
     submission = _submission(submission_factory, user=user, conference=conference)
 
     data = _query(graphql_client, submission)
