@@ -23,7 +23,7 @@ def process_wetransfer_to_s3_transfer_request(request_id):
             wetransfer_to_s3_transfer_request.status
             != WetransferToS3TransferRequest.Status.QUEUED
         ):
-            logger.warn(
+            logger.warning(
                 "WetransferToS3TransferRequest with id=%s is not in QUEUED status, skipping",
                 request_id,
             )

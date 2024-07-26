@@ -79,7 +79,7 @@ def launch_heavy_processing_worker():
         response_tasks = response["tasks"]
 
         if not response_tasks:
-            logger.warn(
+            logger.warning(
                 "Heavy processing worker arn=%s was started but describe_tasks returned no tasks [attempt=%s]",
                 task_arn,
                 attempts,
