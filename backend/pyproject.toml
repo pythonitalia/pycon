@@ -92,6 +92,7 @@ dependencies = [
     "tzdata>=2024.1",
     "wagtail-factories==4.2.1",
     "google-auth-oauthlib>=1.2.1",
+    "PyJWT>=2.8.0",
 ]
 name = "backend"
 version = "0.1.0"
