@@ -3,7 +3,7 @@ import sqlite3
 from datetime import timedelta
 from decimal import Decimal
 
-import pytz
+import zoneinfo
 from conferences.models import AudienceLevel, Conference, Duration, TicketFare, Topic
 from django.contrib.contenttypes.models import ContentType
 from django.core.management import CommandError
@@ -19,7 +19,7 @@ from tickets.models import Ticket
 from users.models import User
 
 DEFAULT_DB_PATH = root("p3.db")
-OLD_DEAFAULT_TZ = pytz.timezone("Europe/Rome")
+OLD_DEAFAULT_TZ = zoneinfo.ZoneInfo("Europe/Rome")
 TALK_TYPES = {
     "s": "Talk",
     "i": "Interactive",
@@ -89,7 +89,7 @@ def string_to_tzdatetime(s, day_end=False, timezone=None):
     if timezone:
         return unaware_date.replace(tzinfo=timezone)
     else:
-        return pytz.utc.localize(unaware_date)
+        raise ValueError("not used")
 
 
 def create_languages():

@@ -1,10 +1,11 @@
 import factory
 import factory.fuzzy
-import pytz
+from pycon.constants import UTC
+
 from django.utils import timezone
 from factory.django import DjangoModelFactory
 from pytest_factoryboy import register
-
+import zoneinfo
 from conferences.models import (
     AudienceLevel,
     Conference,
@@ -27,10 +28,10 @@ class ConferenceFactory(DjangoModelFactory):
     code = factory.Faker("text", max_nb_chars=10)
     introduction = LanguageFactory("sentence")
 
-    start = factory.Faker("past_datetime", tzinfo=pytz.UTC)
-    end = factory.Faker("future_datetime", tzinfo=pytz.UTC)
+    start = factory.Faker("past_datetime", tzinfo=UTC)
+    end = factory.Faker("future_datetime", tzinfo=UTC)
 
-    timezone = pytz.timezone("Europe/Rome")
+    timezone = zoneinfo.ZoneInfo("Europe/Rome")
 
     pretix_organizer_id = "base-pretix-organizer-id"
     pretix_event_id = "base-pretix-event-id"
@@ -171,8 +172,8 @@ class DeadlineFactory(DjangoModelFactory):
     name = LanguageFactory("sentence")
     description = LanguageFactory("sentence")
 
-    start = factory.Faker("past_datetime", tzinfo=pytz.UTC)
-    end = factory.Faker("future_datetime", tzinfo=pytz.UTC)
+    start = factory.Faker("past_datetime", tzinfo=UTC)
+    end = factory.Faker("future_datetime", tzinfo=UTC)
 
     class Meta:
         model = Deadline

@@ -1,4 +1,4 @@
-import pytz
+import zoneinfo
 from datetime import date, datetime, time, timezone
 import icalendar
 from conferences.tests.factories import ConferenceFactory
@@ -20,7 +20,7 @@ pytestmark = pytest.mark.django_db
 
 def test_user_schedule_item_favourites_calendar(client):
     user = UserFactory()
-    conference = ConferenceFactory(timezone=pytz.timezone("Europe/Rome"))
+    conference = ConferenceFactory(timezone=zoneinfo.ZoneInfo("Europe/Rome"))
     second_conf = ConferenceFactory()
 
     schedule_item_1 = ScheduleItemFactory(

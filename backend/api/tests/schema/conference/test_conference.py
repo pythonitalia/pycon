@@ -1,9 +1,9 @@
 import datetime
 import pytest
-import pytz
 import time_machine
 from django.utils import timezone
 from pytest import mark
+import zoneinfo
 
 from api.conferences.types import DeadlineStatus
 
@@ -39,7 +39,7 @@ def test_get_conference_deadlines_ordered_by_start_date(
 ):
     now = timezone.now()
 
-    conference = conference_factory(timezone=pytz.timezone("America/Los_Angeles"))
+    conference = conference_factory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
 
     deadline_voting = deadline_factory(
         start=now - timezone.timedelta(days=20),
@@ -110,7 +110,7 @@ def test_get_conference_single_deadline(
 ):
     now = timezone.now()
 
-    conference = conference_factory(timezone=pytz.timezone("America/Los_Angeles"))
+    conference = conference_factory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
 
     deadline_cfp = deadline_factory(
         start=now - timezone.timedelta(days=1),
@@ -148,7 +148,7 @@ def test_get_conference_deadline_status(
 ):
     now = timezone.now()
 
-    conference = conference_factory(timezone=pytz.timezone("America/Los_Angeles"))
+    conference = conference_factory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
 
     # CFP happening now
     deadline_factory(
@@ -518,7 +518,7 @@ def test_get_conference_hotel_rooms(
 def test_is_cfp_open(graphql_client, conference_factory, deadline_factory, cfp_open):
     now = timezone.now()
 
-    conference = conference_factory(timezone=pytz.timezone("America/Los_Angeles"))
+    conference = conference_factory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
 
     deadline_factory(
         start=now - timezone.timedelta(days=1),
@@ -564,7 +564,7 @@ def test_is_voting_open(
 ):
     now = timezone.now()
 
-    conference = conference_factory(timezone=pytz.timezone("America/Los_Angeles"))
+    conference = conference_factory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
 
     deadline_factory(
         start=now - timezone.timedelta(days=1),
@@ -610,7 +610,7 @@ def test_is_voting_closed_in_the_past(
     deadline_factory,
 ):
     now = timezone.now()
-    conference = conference_factory(timezone=pytz.timezone("America/Los_Angeles"))
+    conference = conference_factory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
 
     deadline_factory(
         start=now - timezone.timedelta(days=2),
@@ -641,7 +641,7 @@ def test_is_voting_closed_in_the_future(
     deadline_factory,
 ):
     now = timezone.now()
-    conference = conference_factory(timezone=pytz.timezone("America/Los_Angeles"))
+    conference = conference_factory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
 
     deadline_factory(
         start=now + timezone.timedelta(days=1),
