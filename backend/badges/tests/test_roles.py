@@ -1,4 +1,10 @@
 from django.conf import settings
+from conferences.tests.factories import ConferenceFactory
+from submissions.tests.factories import SubmissionFactory
+from schedule.tests.factories import (
+    ScheduleItemAdditionalSpeakerFactory,
+    ScheduleItemFactory,
+)
 from badges.roles import (
     Role,
     _get_roles,
@@ -12,32 +18,25 @@ from users.tests.factories import UserFactory
 pytestmark = pytest.mark.django_db
 
 
-def test_get_all_speakers_user_ids(
-    schedule_item_factory,
-    submission_factory,
-    conference_factory,
-    schedule_item_additional_speaker_factory,
-):
-    schedule_item_1 = schedule_item_factory(
-        type="talk", submission=submission_factory()
-    )
-    schedule_item_2 = schedule_item_factory(
+def test_get_all_speakers_user_ids():
+    schedule_item_1 = ScheduleItemFactory(type="talk", submission=SubmissionFactory())
+    schedule_item_2 = ScheduleItemFactory(
         type="talk",
         conference=schedule_item_1.conference,
-        submission=submission_factory(),
+        submission=SubmissionFactory(),
     )
-    schedule_item_3 = schedule_item_factory(
+    schedule_item_3 = ScheduleItemFactory(
         type="talk",
         conference=schedule_item_1.conference,
-        submission=submission_factory(),
+        submission=SubmissionFactory(),
     )
-    additional_speaker = schedule_item_additional_speaker_factory()
+    additional_speaker = ScheduleItemAdditionalSpeakerFactory()
     schedule_item_3.additional_speakers.add(additional_speaker)
 
-    schedule_item_different_conf = schedule_item_factory(
+    schedule_item_different_conf = ScheduleItemFactory(
         type="talk",
-        conference=conference_factory(),
-        submission=submission_factory(),
+        conference=ConferenceFactory(),
+        submission=SubmissionFactory(),
     )
 
     speaker_ids = speakers_user_ids(schedule_item_1.conference)
@@ -61,10 +60,8 @@ def test_get_all_speakers_user_ids(
         ("community,sushi", "code", [Role.ATTENDEE]),
     ),
 )
-def test_get_roles(
-    conference_factory, requests_mock, voucher_tag, voucher_code, expected_roles
-):
-    conference = conference_factory()
+def test_get_roles(requests_mock, voucher_tag, voucher_code, expected_roles):
+    conference = ConferenceFactory()
     requests_mock.get(
         f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
         status_code=200,
@@ -85,13 +82,11 @@ def test_get_roles(
     assert roles == expected_roles
 
 
-def test_get_roles_for_speaker_without_voucher(
-    conference_factory, requests_mock, schedule_item_factory, submission_factory
-):
-    conference = conference_factory()
+def test_get_roles_for_speaker_without_voucher(requests_mock, submission_factory):
+    conference = ConferenceFactory()
 
-    submission = submission_factory()
-    schedule_item_factory(type="talk", conference=conference, submission=submission)
+    submission = SubmissionFactory()
+    ScheduleItemFactory(type="talk", conference=conference, submission=submission)
 
     requests_mock.get(
         f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
@@ -110,8 +105,8 @@ def test_get_roles_for_speaker_without_voucher(
     assert roles == [Role.SPEAKER, Role.ATTENDEE]
 
 
-def test_get_roles_with_manual_user_id_override(conference_factory, requests_mock):
-    conference = conference_factory()
+def test_get_roles_with_manual_user_id_override(requests_mock):
+    conference = ConferenceFactory()
 
     attendee_user = UserFactory()
     AttendeeConferenceRole.objects.create(
@@ -135,10 +130,8 @@ def test_get_roles_with_manual_user_id_override(conference_factory, requests_moc
     assert roles == [Role.SPEAKER]
 
 
-def test_get_roles_with_manual_user_id_when_they_have_no_ticket(
-    conference_factory, requests_mock
-):
-    conference = conference_factory()
+def test_get_roles_with_manual_user_id_when_they_have_no_ticket(requests_mock):
+    conference = ConferenceFactory()
 
     attendee_user = UserFactory()
     AttendeeConferenceRole.objects.create(
@@ -159,10 +152,8 @@ def test_get_roles_with_manual_user_id_when_they_have_no_ticket(
     assert roles == [Role.SPEAKER]
 
 
-def test_get_roles_with_manual_order_position_id_override(
-    conference_factory, requests_mock
-):
-    conference = conference_factory()
+def test_get_roles_with_manual_order_position_id_override(requests_mock):
+    conference = ConferenceFactory()
 
     AttendeeConferenceRole.objects.create(
         order_position_id=10, conference=conference, roles=[Role.KEYNOTER.value]
@@ -185,8 +176,8 @@ def test_get_roles_with_manual_order_position_id_override(
     assert roles == [Role.KEYNOTER]
 
 
-def test_get_roles_with_unrelated_override(conference_factory, requests_mock):
-    conference = conference_factory()
+def test_get_roles_with_unrelated_override(requests_mock):
+    conference = ConferenceFactory()
 
     AttendeeConferenceRole.objects.create(
         order_position_id=53, conference=conference, roles=[Role.KEYNOTER.value]
@@ -214,8 +205,8 @@ def test_get_roles_with_unrelated_override(conference_factory, requests_mock):
     assert roles == [Role.ATTENDEE]
 
 
-def test_get_conference_roles_for_user(conference_factory, requests_mock):
-    conference = conference_factory()
+def test_get_conference_roles_for_user(requests_mock):
+    conference = ConferenceFactory()
     requests_mock.get(
         f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
         status_code=200,
@@ -245,9 +236,9 @@ def test_get_conference_roles_for_user(conference_factory, requests_mock):
     assert roles == [Role.ATTENDEE]
 
 
-def test_get_conference_roles_for_user_as_sponsor(conference_factory, requests_mock):
+def test_get_conference_roles_for_user_as_sponsor(requests_mock):
     user = UserFactory()
-    conference = conference_factory()
+    conference = ConferenceFactory()
     requests_mock.get(
         f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
         status_code=200,

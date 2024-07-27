@@ -1,4 +1,6 @@
 import datetime
+from submissions.tests.factories import SubmissionFactory
+from conferences.tests.factories import ConferenceFactory, DeadlineFactory
 import pytest
 import time_machine
 from django.utils import timezone
@@ -9,7 +11,8 @@ from api.conferences.types import DeadlineStatus
 
 
 @mark.django_db
-def test_get_conference_info(conference, graphql_client):
+def test_get_conference_info(graphql_client):
+    conference = ConferenceFactory()
     resp = graphql_client.query(
         """
         query($code: String!) {
@@ -39,23 +42,23 @@ def test_get_conference_deadlines_ordered_by_start_date(
 ):
     now = timezone.now()
 
-    conference = conference_factory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
+    conference = ConferenceFactory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
 
-    deadline_voting = deadline_factory(
+    deadline_voting = DeadlineFactory(
         start=now - timezone.timedelta(days=20),
         end=now - timezone.timedelta(days=15),
         conference=conference,
         type="voting",
     )
 
-    deadline_cfp = deadline_factory(
+    deadline_cfp = DeadlineFactory(
         start=now - timezone.timedelta(days=1),
         end=now,
         conference=conference,
         type="cfp",
     )
 
-    deadline_refund = deadline_factory(
+    deadline_refund = DeadlineFactory(
         start=now - timezone.timedelta(days=14),
         end=now - timezone.timedelta(days=10),
         conference=conference,
@@ -110,9 +113,9 @@ def test_get_conference_single_deadline(
 ):
     now = timezone.now()
 
-    conference = conference_factory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
+    conference = ConferenceFactory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
 
-    deadline_cfp = deadline_factory(
+    deadline_cfp = DeadlineFactory(
         start=now - timezone.timedelta(days=1),
         end=now,
         conference=conference,
@@ -148,10 +151,10 @@ def test_get_conference_deadline_status(
 ):
     now = timezone.now()
 
-    conference = conference_factory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
+    conference = ConferenceFactory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
 
     # CFP happening now
-    deadline_factory(
+    DeadlineFactory(
         start=now - timezone.timedelta(days=1),
         end=now + timezone.timedelta(days=3),
         conference=conference,
@@ -159,7 +162,7 @@ def test_get_conference_deadline_status(
     )
 
     # Grants in the past
-    deadline_factory(
+    DeadlineFactory(
         start=now - timezone.timedelta(days=3),
         end=now - timezone.timedelta(days=1),
         conference=conference,
@@ -167,7 +170,7 @@ def test_get_conference_deadline_status(
     )
 
     # Voting in the future
-    deadline_factory(
+    DeadlineFactory(
         start=now + timezone.timedelta(days=10),
         end=now + timezone.timedelta(days=15),
         conference=conference,
@@ -411,7 +414,7 @@ def test_get_conference_without_map(conference, graphql_client):
 
 @mark.django_db
 def test_get_conference_map(conference_factory, graphql_client):
-    conference = conference_factory(latitude=1, longitude=1)
+    conference = ConferenceFactory(latitude=1, longitude=1)
     resp = graphql_client.query(
         """
         query($code: String!) {
@@ -438,7 +441,7 @@ def test_get_conference_submission_types(
 ):
     talk_type = submission_type_factory(name="talk")
     tutorial_type = submission_type_factory(name="tutorial")
-    conference = conference_factory(submission_types=[talk_type, tutorial_type])
+    conference = ConferenceFactory(submission_types=[talk_type, tutorial_type])
 
     resp = graphql_client.query(
         """
@@ -465,7 +468,7 @@ def test_get_conference_submission_types(
 def test_get_conference_hotel_rooms(
     graphql_client, conference_factory, bed_layout_factory, hotel_room
 ):
-    hotel_room.conference = conference_factory(
+    hotel_room.conference = ConferenceFactory(
         start=timezone.datetime(2019, 1, 1, tzinfo=datetime.timezone.utc),
         end=timezone.datetime(2019, 1, 5, tzinfo=datetime.timezone.utc),
     )
@@ -518,9 +521,9 @@ def test_get_conference_hotel_rooms(
 def test_is_cfp_open(graphql_client, conference_factory, deadline_factory, cfp_open):
     now = timezone.now()
 
-    conference = conference_factory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
+    conference = ConferenceFactory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
 
-    deadline_factory(
+    DeadlineFactory(
         start=now - timezone.timedelta(days=1),
         end=now + timezone.timedelta(days=1) if cfp_open else now,
         conference=conference,
@@ -564,9 +567,9 @@ def test_is_voting_open(
 ):
     now = timezone.now()
 
-    conference = conference_factory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
+    conference = ConferenceFactory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
 
-    deadline_factory(
+    DeadlineFactory(
         start=now - timezone.timedelta(days=1),
         end=now + timezone.timedelta(days=1) if voting_open else now,
         conference=conference,
@@ -610,9 +613,9 @@ def test_is_voting_closed_in_the_past(
     deadline_factory,
 ):
     now = timezone.now()
-    conference = conference_factory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
+    conference = ConferenceFactory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
 
-    deadline_factory(
+    DeadlineFactory(
         start=now - timezone.timedelta(days=2),
         end=now - timezone.timedelta(days=1),
         conference=conference,
@@ -641,9 +644,9 @@ def test_is_voting_closed_in_the_future(
     deadline_factory,
 ):
     now = timezone.now()
-    conference = conference_factory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
+    conference = ConferenceFactory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
 
-    deadline_factory(
+    DeadlineFactory(
         start=now + timezone.timedelta(days=1),
         end=now + timezone.timedelta(days=2),
         conference=conference,
@@ -667,7 +670,7 @@ def test_is_voting_closed_in_the_future(
 @mark.django_db
 def test_can_see_submissions_as_staff(graphql_client, submission_factory, user_factory):
     user = user_factory(is_staff=True)
-    submission = submission_factory()
+    submission = SubmissionFactory()
 
     graphql_client.force_login(user)
 
@@ -690,8 +693,8 @@ def test_can_see_submissions_if_they_have_sent_one(
     graphql_client, conference, submission_factory, user_factory
 ):
     user = user_factory()
-    submission_factory(conference=conference)
-    submission_factory(conference=conference, speaker_id=user.id)
+    SubmissionFactory(conference=conference)
+    SubmissionFactory(conference=conference, speaker_id=user.id)
 
     graphql_client.force_login(user)
 
@@ -818,16 +821,15 @@ def test_get_conference_voucher(
 
 
 @mark.django_db
-def test_filter_submission_by_status(
-    graphql_client, submission_factory, conference, user, requests_mock, settings
-):
+def test_filter_submission_by_status(graphql_client, user, requests_mock, settings):
+    conference = ConferenceFactory()
     requests_mock.post(
         f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": True},
     )
 
-    submission_factory(conference=conference, status="cancelled")
-    submission_factory(conference=conference, status="proposed")
+    SubmissionFactory(conference=conference, status="cancelled")
+    SubmissionFactory(conference=conference, status="proposed")
     graphql_client.force_login(user)
 
     query = """

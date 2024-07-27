@@ -1,3 +1,4 @@
+from conferences.tests.factories import ConferenceFactory
 from users.tests.factories import UserFactory
 from unittest.mock import call
 import time_machine
@@ -28,9 +29,9 @@ def add_delete_field_to_form():
 
 
 def test_can_have_multiple_deadlines_only_if_the_other_are_deleted(
-    conference_factory, add_delete_field_to_form
+    add_delete_field_to_form,
 ):
-    conference = conference_factory()
+    conference = ConferenceFactory()
     form_1 = DeadlineForm(
         data={
             "start": "2021-11-10 01:43:58",
@@ -67,10 +68,8 @@ def test_can_have_multiple_deadlines_only_if_the_other_are_deleted(
 
 
 @mark.parametrize("type", ["cfp", "voting", "refund"])
-def test_cannot_have_duplicate_deadlines(
-    conference_factory, type, add_delete_field_to_form
-):
-    conference = conference_factory()
+def test_cannot_have_duplicate_deadlines(type, add_delete_field_to_form):
+    conference = ConferenceFactory()
     form_1 = DeadlineForm(
         data={
             "start": "2021-11-10 01:43:58",
@@ -110,8 +109,8 @@ def test_cannot_have_duplicate_deadlines(
         validate_deadlines_form(forms)
 
 
-def test_start_date_comes_before_end(conference_factory, add_delete_field_to_form):
-    conference = conference_factory()
+def test_start_date_comes_before_end(add_delete_field_to_form):
+    conference = ConferenceFactory()
     form_1 = DeadlineForm(
         data={
             "start": "2021-11-10 01:43:58",
@@ -134,10 +133,8 @@ def test_start_date_comes_before_end(conference_factory, add_delete_field_to_for
         validate_deadlines_form(forms)
 
 
-def test_can_have_as_many_custom_deadlines_as_we_want(
-    conference_factory, add_delete_field_to_form
-):
-    conference = conference_factory()
+def test_can_have_as_many_custom_deadlines_as_we_want(add_delete_field_to_form):
+    conference = ConferenceFactory()
     form_1 = DeadlineForm(
         data={
             "start": "2021-11-10 01:43:58",
@@ -177,7 +174,6 @@ def test_can_have_as_many_custom_deadlines_as_we_want(
 def test_send_voucher_via_email(
     rf,
     schedule_item_factory,
-    conference_factory,
     submission_factory,
     speaker_voucher_factory,
     mocker,
@@ -185,7 +181,7 @@ def test_send_voucher_via_email(
     mocker.patch("conferences.admin.messages")
     mock_send_email = mocker.patch("conferences.admin.send_speaker_voucher_email")
 
-    conference = conference_factory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
     schedule_item_1 = schedule_item_factory(
         type=ScheduleItem.TYPES.talk,
         conference=conference,
@@ -225,7 +221,6 @@ def test_send_voucher_via_email(
 def test_send_voucher_via_email_requires_filtering_by_conference(
     rf,
     schedule_item_factory,
-    conference_factory,
     submission_factory,
     speaker_voucher_factory,
     mocker,
@@ -233,8 +228,8 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     mock_messages = mocker.patch("conferences.admin.messages")
     mock_send_email = mocker.patch("conferences.admin.send_speaker_voucher_email")
 
-    conference = conference_factory(pretix_speaker_voucher_quota_id=123)
-    conference_2 = conference_factory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference_2 = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
 
     schedule_item_1 = schedule_item_factory(
         type=ScheduleItem.TYPES.talk,
@@ -273,9 +268,7 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     mock_send_email.delay.assert_not_called()
 
 
-def test_create_speaker_vouchers_on_pretix(
-    rf, conference_factory, mocker, speaker_voucher_factory
-):
+def test_create_speaker_vouchers_on_pretix(rf, mocker, speaker_voucher_factory):
     mock_create_voucher = mocker.patch(
         "conferences.admin.create_voucher",
         side_effect=[
@@ -286,7 +279,7 @@ def test_create_speaker_vouchers_on_pretix(
     )
     mocker.patch("conferences.admin.messages")
 
-    conference = conference_factory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
 
     voucher_1 = speaker_voucher_factory(
         conference=conference,
@@ -356,7 +349,7 @@ def test_create_speaker_vouchers_on_pretix(
 
 
 def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(
-    rf, conference_factory, mocker, speaker_voucher_factory
+    rf, mocker, speaker_voucher_factory
 ):
     mock_create_voucher = mocker.patch(
         "conferences.admin.create_voucher",
@@ -366,7 +359,7 @@ def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(
     )
     mocker.patch("conferences.admin.messages")
 
-    conference = conference_factory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
 
     voucher_1 = speaker_voucher_factory(
         conference=conference,
@@ -404,7 +397,7 @@ def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(
 
 
 def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences(
-    rf, conference_factory, mocker, speaker_voucher_factory
+    rf, mocker, speaker_voucher_factory
 ):
     mock_create_voucher = mocker.patch(
         "conferences.admin.create_voucher",
@@ -415,8 +408,8 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences
     )
     mock_messages = mocker.patch("conferences.admin.messages")
 
-    conference = conference_factory(pretix_speaker_voucher_quota_id=123)
-    conference_2 = conference_factory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference_2 = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
 
     voucher_1 = speaker_voucher_factory(
         conference=conference,
@@ -453,7 +446,7 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences
 
 
 def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
-    rf, conference_factory, mocker, speaker_voucher_factory
+    rf, mocker, speaker_voucher_factory
 ):
     mock_create_voucher = mocker.patch(
         "conferences.admin.create_voucher",
@@ -464,7 +457,7 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
     )
     mock_messages = mocker.patch("conferences.admin.messages")
 
-    conference = conference_factory(pretix_speaker_voucher_quota_id=None)
+    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=None)
 
     voucher_1 = speaker_voucher_factory(
         conference=conference,
@@ -501,7 +494,6 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
 
 def test_video_uploaded_path_matcher(
     rf,
-    conference_factory,
     schedule_item_factory,
     keynote_factory,
     keynote_speaker_factory,
@@ -509,7 +501,7 @@ def test_video_uploaded_path_matcher(
     settings,
     schedule_item_additional_speaker_factory,
 ):
-    conference = conference_factory(code="conf")
+    conference = ConferenceFactory(code="conf")
 
     kim = UserFactory(id=5, name="Kim", full_name="Kim Kitsuragi")
     klaasje = UserFactory(id=10, name="Klaasje", full_name="")
@@ -647,12 +639,11 @@ def test_storage_walk_conference_videos_folder(mocker):
 
 def test_save_manual_changes(
     rf,
-    conference_factory,
     schedule_item_factory,
     mocker,
     schedule_item_additional_speaker_factory,
 ):
-    conference = conference_factory(code="conf")
+    conference = ConferenceFactory(code="conf")
 
     event_1 = schedule_item_factory(
         conference=conference,

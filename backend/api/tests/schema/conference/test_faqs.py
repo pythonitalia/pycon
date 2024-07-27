@@ -1,13 +1,15 @@
+from conferences.tests.factories import ConferenceFactory
+from cms.tests.factories import FAQFactory
 from i18n.strings import LazyI18nString
 from pytest import mark
 
 
 @mark.django_db
 def test_get_conference_faqs(conference_factory, faq_factory, graphql_client):
-    conference = conference_factory()
-    conference_b = conference_factory()
+    conference = ConferenceFactory()
+    conference_b = ConferenceFactory()
 
-    faq_factory(
+    FAQFactory(
         conference=conference,
         question=LazyI18nString({"en": "Do you love this conference?"}),
         answer=LazyI18nString({"en": "Yes!"}),

@@ -1,4 +1,16 @@
 import datetime
+from conferences.tests.factories import (
+    ConferenceFactory,
+    KeynoteFactory,
+    KeynoteSpeakerFactory,
+)
+from participants.tests.factories import ParticipantFactory
+from schedule.tests.factories import (
+    DayFactory,
+    RoomFactory,
+    ScheduleItemFactory,
+    SlotFactory,
+)
 import time_machine
 from django.utils import timezone
 from pytest import mark
@@ -9,7 +21,7 @@ from schedule.models import DayRoomThroughModel, ScheduleItem
 
 @mark.django_db
 def test_get_conference_keynotes_empty(conference_factory, graphql_client):
-    conference = conference_factory()
+    conference = ConferenceFactory()
 
     resp = graphql_client.query(
         """
@@ -41,9 +53,9 @@ def test_get_conference_keynotes(
     topic_factory,
     participant_factory,
 ):
-    conference = conference_factory()
+    conference = ConferenceFactory()
 
-    keynote = keynote_factory(
+    keynote = KeynoteFactory(
         title=LazyI18nString({"en": "title", "it": "titolo"}),
         conference=conference,
         topic=topic_factory(),
@@ -51,15 +63,15 @@ def test_get_conference_keynotes(
             1995, 12, 1, 5, 10, 3, tzinfo=datetime.timezone.utc
         ),
     )
-    speaker = keynote_speaker_factory(keynote=keynote)
-    participant_factory(
+    speaker = KeynoteSpeakerFactory(keynote=keynote)
+    ParticipantFactory(
         user_id=speaker.user_id,
         conference_id=conference.id,
         bio="test",
         photo="https://test.it/test.jpg",
     )
 
-    future_keynote = keynote_factory(
+    future_keynote = KeynoteFactory(
         title=LazyI18nString({"en": "nope", "it": "noope"}),
         conference=conference,
         topic=topic_factory(),
@@ -67,7 +79,7 @@ def test_get_conference_keynotes(
             2050, 12, 1, 5, 10, 3, tzinfo=datetime.timezone.utc
         ),
     )
-    keynote_speaker_factory(keynote=future_keynote)
+    KeynoteSpeakerFactory(keynote=future_keynote)
 
     resp = graphql_client.query(
         """
@@ -116,18 +128,16 @@ def test_get_single_conference_keynote(
     topic_factory,
     participant_factory,
 ):
-    conference = conference_factory()
+    conference = ConferenceFactory()
 
-    keynote = keynote_factory(
+    keynote = KeynoteFactory(
         slug=LazyI18nString({"en": "title", "it": "titolo"}),
         title=LazyI18nString({"en": "title", "it": "titolo"}),
         conference=conference,
         topic=topic_factory(),
     )
-    speaker = keynote_speaker_factory(keynote=keynote)
-    participant_factory(
-        user_id=speaker.user_id, conference_id=conference.id, bio="test"
-    )
+    speaker = KeynoteSpeakerFactory(keynote=keynote)
+    ParticipantFactory(user_id=speaker.user_id, conference_id=conference.id, bio="test")
 
     resp = graphql_client.query(
         """
@@ -175,28 +185,26 @@ def test_keynote_schedule_info(
     day_factory,
     room_factory,
 ):
-    conference = conference_factory()
+    conference = ConferenceFactory()
 
-    keynote = keynote_factory(
+    keynote = KeynoteFactory(
         slug=LazyI18nString({"en": "title", "it": "titolo"}),
         title=LazyI18nString({"en": "title", "it": "titolo"}),
         conference=conference,
         topic=topic_factory(),
     )
-    speaker = keynote_speaker_factory(keynote=keynote)
-    participant_factory(
-        user_id=speaker.user_id, conference_id=conference.id, bio="test"
-    )
+    speaker = KeynoteSpeakerFactory(keynote=keynote)
+    ParticipantFactory(user_id=speaker.user_id, conference_id=conference.id, bio="test")
 
-    room = room_factory(name="Room 1")
-    room_2 = room_factory(name="Room 2")
-    schedule_item = schedule_item_factory(
+    room = RoomFactory(name="Room 1")
+    room_2 = RoomFactory(name="Room 2")
+    schedule_item = ScheduleItemFactory(
         conference=conference,
         type=ScheduleItem.TYPES.keynote,
         keynote=keynote,
         submission=None,
-        slot=slot_factory(
-            day=day_factory(day=datetime.date(2023, 10, 10), conference=conference),
+        slot=SlotFactory(
+            day=DayFactory(day=datetime.date(2023, 10, 10), conference=conference),
             hour="10:00",
             duration=30,
         ),

@@ -1,3 +1,4 @@
+from conferences.tests.factories import ConferenceFactory
 from badge_scanner.models import BadgeScan
 from users.tests.factories import UserFactory
 import pytest
@@ -25,7 +26,7 @@ def _update_notes_mutation(graphql_client, variables):
     )
 
 
-def test_raises_an_error_when_user_is_not_authenticated(graphql_client, conference):
+def test_raises_an_error_when_user_is_not_authenticated(graphql_client):
     resp = _update_notes_mutation(
         graphql_client,
         variables={
@@ -43,7 +44,8 @@ def test_raises_an_error_when_user_is_not_authenticated(graphql_client, conferen
 # TODO: make sure the user is a sponsor
 
 
-def test_works_when_user_is_logged_in(user, graphql_client, conference):
+def test_works_when_user_is_logged_in(user, graphql_client):
+    conference = ConferenceFactory()
     graphql_client.force_login(user)
 
     badge_scan = BadgeScan.objects.create(
@@ -75,7 +77,9 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference):
     assert badge_scan.notes == "This is a test"
 
 
-def test_fails_when_not_their_scan(user, user_factory, conference, graphql_client):
+def test_fails_when_not_their_scan(user, user_factory, graphql_client):
+    conference = ConferenceFactory()
+
     graphql_client.force_login(user)
     other_user = user_factory()
 

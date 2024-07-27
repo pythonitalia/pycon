@@ -1,6 +1,7 @@
 from datetime import timedelta
 from unittest.mock import call
 
+from grants.tests.factories import GrantFactory
 import time_machine
 import pytest
 from django.utils import timezone
@@ -30,9 +31,9 @@ def test_send_reply_emails_with_grants_from_multiple_conferences_fails(
     mock_messages = mocker.patch("custom_admin.admin.messages")
     conference1 = conference_factory()
     conference2 = conference_factory()
-    grant1 = grant_factory(conference=conference1, status=Grant.Status.approved)
-    grant2 = grant_factory(conference=conference2, status=Grant.Status.waiting_list)
-    grant3 = grant_factory(conference=conference2, status=Grant.Status.rejected)
+    grant1 = GrantFactory(conference=conference1, status=Grant.Status.approved)
+    grant2 = GrantFactory(conference=conference2, status=Grant.Status.waiting_list)
+    grant3 = GrantFactory(conference=conference2, status=Grant.Status.rejected)
     request = rf.get("/")
     mock_send_approved_email = mocker.patch(
         "grants.admin.send_grant_reply_approved_email.delay"
@@ -63,7 +64,7 @@ def test_send_reply_emails_approved_grant_missing_approved_type(
     rf, grant_factory, mocker
 ):
     mock_messages = mocker.patch("grants.admin.messages")
-    grant = grant_factory(status=Grant.Status.approved, approved_type=None)
+    grant = GrantFactory(status=Grant.Status.approved, approved_type=None)
     request = rf.get("/")
     mock_send_approved_email = mocker.patch(
         "grants.admin.send_grant_reply_approved_email.delay"
@@ -80,7 +81,7 @@ def test_send_reply_emails_approved_grant_missing_approved_type(
 
 def test_send_reply_emails_approved_missing_amount(rf, grant_factory, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
-    grant = grant_factory(
+    grant = GrantFactory(
         status=Grant.Status.approved,
         approved_type=Grant.ApprovedType.ticket_accommodation,
         total_amount=None,
@@ -101,11 +102,9 @@ def test_send_reply_emails_approved_missing_amount(rf, grant_factory, mocker):
     mock_send_approved_email.assert_not_called()
 
 
-def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
-    rf, grant_factory, mocker
-):
+def test_send_reply_emails_approved_set_deadline_in_fourteen_days(rf, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
-    grant = grant_factory(
+    grant = GrantFactory(
         status=Grant.Status.approved,
         approved_type=Grant.ApprovedType.ticket_accommodation,
         total_amount=800,
@@ -134,7 +133,7 @@ def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
 
 def test_send_reply_emails_waiting_list(rf, grant_factory, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
-    grant = grant_factory(
+    grant = GrantFactory(
         status=Grant.Status.waiting_list,
     )
     request = rf.get("/")
@@ -152,7 +151,7 @@ def test_send_reply_emails_waiting_list(rf, grant_factory, mocker):
 
 def test_send_reply_emails_waiting_list_maybe(rf, grant_factory, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
-    grant = grant_factory(
+    grant = GrantFactory(
         status=Grant.Status.waiting_list_maybe,
     )
     request = rf.get("/")
@@ -170,7 +169,7 @@ def test_send_reply_emails_waiting_list_maybe(rf, grant_factory, mocker):
 
 def test_send_reply_emails_rejected(rf, grant_factory, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
-    grant = grant_factory(
+    grant = GrantFactory(
         status=Grant.Status.rejected,
     )
     request = rf.get("/")
@@ -198,7 +197,7 @@ def test_send_voucher_via_email(
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
 
-    grant = grant_factory(
+    grant = GrantFactory(
         status=Grant.Status.confirmed,
         conference=conference,
         pretix_voucher_id=2345,
@@ -226,11 +225,11 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     conference_2 = conference_factory(pretix_speaker_voucher_quota_id=1234)
     mock_messages = mocker.patch("custom_admin.admin.messages")
     mock_send_email = mocker.patch("grants.admin.send_grant_voucher_email")
-    grant_factory(
+    GrantFactory(
         status=Grant.Status.confirmed,
         conference=conference,
     )
-    grant_factory(
+    GrantFactory(
         status=Grant.Status.confirmed,
         conference=conference_2,
     )
@@ -264,12 +263,12 @@ def test_create_grant_vouchers_on_pretix(rf, conference_factory, grant_factory, 
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
 
-    grant_1 = grant_factory(
+    grant_1 = GrantFactory(
         status=Grant.Status.confirmed,
         conference=conference,
         pretix_voucher_id=None,
     )
-    grant_2 = grant_factory(
+    grant_2 = GrantFactory(
         status=Grant.Status.confirmed,
         conference=conference,
         pretix_voucher_id=None,
@@ -333,13 +332,13 @@ def test_create_grant_vouchers_on_pretix_only_for_missing_ones(
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=123)
 
-    grant_1 = grant_factory(
+    grant_1 = GrantFactory(
         status=Grant.Status.confirmed,
         conference=conference,
         pretix_voucher_id=None,
     )
 
-    grant_2 = grant_factory(
+    grant_2 = GrantFactory(
         status=Grant.Status.confirmed,
         conference=conference,
         pretix_voucher_id=2345,
@@ -385,11 +384,11 @@ def test_create_grant_vouchers_on_pretix_doesnt_work_with_multiple_conferences(
             {"id": 2},
         ],
     )
-    grant_1 = grant_factory(
+    grant_1 = GrantFactory(
         status=Grant.Status.confirmed,
         conference=conference,
     )
-    grant_2 = grant_factory(
+    grant_2 = GrantFactory(
         status=Grant.Status.confirmed,
         conference=conference_2,
     )
@@ -429,11 +428,11 @@ def test_create_grant_vouchers_on_pretix_doesnt_work_without_pretix_config(
 
     conference = conference_factory(pretix_speaker_voucher_quota_id=None)
 
-    grant_1 = grant_factory(
+    grant_1 = GrantFactory(
         status=Grant.Status.confirmed,
         conference=conference,
     )
-    grant_2 = grant_factory(
+    grant_2 = GrantFactory(
         status=Grant.Status.confirmed,
         conference=conference,
     )
@@ -473,11 +472,11 @@ def test_create_grant_vouchers_only_for_confirmed_grants(
     mocker.patch("grants.admin._generate_voucher_code", return_value="GRANT-123ZYZ")
     mock_messages = mocker.patch("grants.admin.messages")
     conference = conference_factory(pretix_speaker_voucher_quota_id=1223)
-    grant_1 = grant_factory(
+    grant_1 = GrantFactory(
         status=Grant.Status.refused,
         conference=conference,
     )
-    grant_2 = grant_factory(
+    grant_2 = GrantFactory(
         status=Grant.Status.confirmed,
         conference=conference,
     )
@@ -509,10 +508,8 @@ def test_create_grant_vouchers_only_for_confirmed_grants(
 
 def test_mark_rejected_and_send_email(rf, conference, grant_factory, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
-    grant1 = grant_factory(status=Grant.Status.waiting_list, conference=conference)
-    grant2 = grant_factory(
-        status=Grant.Status.waiting_list_maybe, conference=conference
-    )
+    grant1 = GrantFactory(status=Grant.Status.waiting_list, conference=conference)
+    grant2 = GrantFactory(status=Grant.Status.waiting_list_maybe, conference=conference)
     request = rf.get("/")
     mock_send_rejected_email = mocker.patch(
         "grants.admin.send_grant_reply_rejected_email.delay"

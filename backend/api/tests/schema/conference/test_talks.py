@@ -1,11 +1,13 @@
+from conferences.tests.factories import ConferenceFactory
+from schedule.tests.factories import ScheduleItemFactory
 from pytest import mark
 from schedule.models import ScheduleItem
 
 
 @mark.django_db
-def test_get_all_talks(conference_factory, schedule_item_factory, graphql_client):
-    conference = conference_factory()
-    item = schedule_item_factory(
+def test_get_all_talks(graphql_client):
+    conference = ConferenceFactory()
+    item = ScheduleItemFactory(
         type=ScheduleItem.TYPES.submission, conference=conference
     )
 

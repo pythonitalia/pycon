@@ -1,5 +1,12 @@
 from datetime import date, datetime, time
 
+from conferences.tests.factories import ConferenceFactory
+from schedule.tests.factories import (
+    DayFactory,
+    RoomFactory,
+    ScheduleItemFactory,
+    SlotFactory,
+)
 from pytest import mark
 from pycon.constants import UTC
 
@@ -8,13 +15,13 @@ from pycon.constants import UTC
 def test_get_days_with_configuration(
     conference_factory, day_factory, slot_factory, graphql_client
 ):
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=datetime(2020, 4, 2, tzinfo=UTC),
         end=datetime(2020, 4, 2, tzinfo=UTC),
     )
-    day = day_factory(conference=conference, day=conference.start)
+    day = DayFactory(conference=conference, day=conference.start)
 
-    slot_factory(day=day, hour=time(8, 45), duration=60)
+    SlotFactory(day=day, hour=time(8, 45), duration=60)
 
     resp = graphql_client.query(
         """
@@ -43,16 +50,16 @@ def test_get_days_with_configuration(
 def test_get_days_items(
     conference_factory, day_factory, slot_factory, graphql_client, schedule_item_factory
 ):
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=datetime(2020, 4, 2, tzinfo=UTC),
         end=datetime(2020, 4, 2, tzinfo=UTC),
     )
-    day = day_factory(conference=conference, day=date(2020, 4, 2))
+    day = DayFactory(conference=conference, day=date(2020, 4, 2))
 
-    slot = slot_factory(day=day, hour=time(8, 45), duration=60)
-    slot_2 = slot_factory(day=day, hour=time(9, 45), duration=60)
-    schedule_item_factory(conference=conference, slot=slot)
-    schedule_item_factory(conference=conference, slot=slot_2, image=None)
+    slot = SlotFactory(day=day, hour=time(8, 45), duration=60)
+    slot_2 = SlotFactory(day=day, hour=time(9, 45), duration=60)
+    ScheduleItemFactory(conference=conference, slot=slot)
+    ScheduleItemFactory(conference=conference, slot=slot_2, image=None)
 
     resp = graphql_client.query(
         """
@@ -83,16 +90,16 @@ def test_get_days_items(
 def test_days_item_sorted(
     conference_factory, day_factory, slot_factory, graphql_client, schedule_item_factory
 ):
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=datetime(2020, 4, 2, tzinfo=UTC),
         end=datetime(2020, 4, 2, tzinfo=UTC),
     )
-    day = day_factory(conference=conference, day=date(2020, 4, 2))
+    day = DayFactory(conference=conference, day=date(2020, 4, 2))
 
-    slot = slot_factory(day=day, hour=time(8, 45), duration=60)
-    slot_2 = slot_factory(day=day, hour=time(9, 45), duration=60)
-    schedule_item_factory(conference=conference, slot=slot, type="custom")
-    schedule_item_factory(conference=conference, slot=slot_2, image=None, type="talk")
+    slot = SlotFactory(day=day, hour=time(8, 45), duration=60)
+    slot_2 = SlotFactory(day=day, hour=time(9, 45), duration=60)
+    ScheduleItemFactory(conference=conference, slot=slot, type="custom")
+    ScheduleItemFactory(conference=conference, slot=slot_2, image=None, type="talk")
 
     resp = graphql_client.query(
         """
@@ -128,21 +135,21 @@ def test_filter_days_by_room(
     schedule_item_factory,
     room_factory,
 ):
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=datetime(2020, 4, 2, tzinfo=UTC),
         end=datetime(2020, 4, 2, tzinfo=UTC),
     )
 
-    day = day_factory(conference=conference, day=date(2020, 4, 2))
+    day = DayFactory(conference=conference, day=date(2020, 4, 2))
 
-    slot = slot_factory(day=day, hour=time(8, 45), duration=60)
-    slot_2 = slot_factory(day=day, hour=time(9, 45), duration=60)
+    slot = SlotFactory(day=day, hour=time(8, 45), duration=60)
+    slot_2 = SlotFactory(day=day, hour=time(9, 45), duration=60)
 
-    room = room_factory(name="Papa John's")
-    room_2 = room_factory(name="Sushi")
+    room = RoomFactory(name="Papa John's")
+    room_2 = RoomFactory(name="Sushi")
 
-    schedule_item_factory(conference=conference, slot=slot, rooms=[room])
-    item_2 = schedule_item_factory(
+    ScheduleItemFactory(conference=conference, slot=slot, rooms=[room])
+    item_2 = ScheduleItemFactory(
         conference=conference, slot=slot_2, image=None, rooms=[room, room_2]
     )
 
@@ -174,15 +181,15 @@ def test_filter_days_by_room(
 def test_filter_days_by_room_not_found(
     conference_factory, day_factory, slot_factory, graphql_client
 ):
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=datetime(2020, 4, 2, tzinfo=UTC),
         end=datetime(2020, 4, 2, tzinfo=UTC),
     )
 
-    day = day_factory(conference=conference, day=date(2020, 4, 2))
+    day = DayFactory(conference=conference, day=date(2020, 4, 2))
 
-    slot_factory(day=day, hour=time(8, 45), duration=60)
-    slot_factory(day=day, hour=time(9, 45), duration=60)
+    SlotFactory(day=day, hour=time(8, 45), duration=60)
+    SlotFactory(day=day, hour=time(9, 45), duration=60)
 
     resp = graphql_client.query(
         """
