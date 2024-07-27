@@ -21,7 +21,7 @@ from schedule.models import DayRoomThroughModel, ScheduleItem
 
 
 @mark.django_db
-def test_get_conference_keynotes_empty(conference_factory, graphql_client):
+def test_get_conference_keynotes_empty(graphql_client):
     conference = ConferenceFactory()
 
     resp = graphql_client.query(

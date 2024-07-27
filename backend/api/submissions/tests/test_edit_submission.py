@@ -1,3 +1,5 @@
+from conferences.tests.factories import ConferenceFactory
+from submissions.tests.factories import SubmissionFactory, SubmissionTagFactory
 from files_upload.tests.factories import FileFactory
 from pytest import mark
 
@@ -144,10 +146,8 @@ def _update_submission(
     )
 
 
-def test_update_submission(
-    graphql_client, user, conference_factory, submission_factory, submission_tag_factory
-):
-    conference = conference_factory(
+def test_update_submission(graphql_client, user):
+    conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("it", "en"),
         durations=("10", "20"),
@@ -156,7 +156,7 @@ def test_update_submission(
         submission_types=("talk", "workshop"),
     )
 
-    submission = submission_factory(
+    submission = SubmissionFactory(
         speaker_id=user.id,
         custom_topic="life",
         custom_duration="10m",
@@ -173,7 +173,7 @@ def test_update_submission(
 
     new_topic = conference.topics.filter(name="diy").first()
     new_audience = conference.audience_levels.filter(name="senior").first()
-    new_tag = submission_tag_factory(name="yello")
+    new_tag = SubmissionTagFactory(name="yello")
     new_duration = conference.durations.filter(name="20m").first()
     new_type = conference.submission_types.filter(name="workshop").first()
 
@@ -202,9 +202,9 @@ def test_update_submission(
 
 
 def test_update_submission_with_invalid_facebook_social_url(
-    graphql_client, user, conference_factory, submission_factory, submission_tag_factory
+    graphql_client, user, submission_tag_factory
 ):
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("it", "en"),
         durations=("10", "20"),
@@ -213,7 +213,7 @@ def test_update_submission_with_invalid_facebook_social_url(
         submission_types=("talk", "workshop"),
     )
 
-    submission = submission_factory(
+    submission = SubmissionFactory(
         speaker_id=user.id,
         custom_topic="life",
         custom_duration="10m",
@@ -230,7 +230,7 @@ def test_update_submission_with_invalid_facebook_social_url(
 
     new_topic = conference.topics.filter(name="diy").first()
     new_audience = conference.audience_levels.filter(name="senior").first()
-    new_tag = submission_tag_factory(name="yello")
+    new_tag = SubmissionTagFactory(name="yello")
     new_duration = conference.durations.filter(name="20m").first()
     new_type = conference.submission_types.filter(name="workshop").first()
 
@@ -257,9 +257,9 @@ def test_update_submission_with_invalid_facebook_social_url(
 
 
 def test_update_submission_with_invalid_linkedin_social_url(
-    graphql_client, user, conference_factory, submission_factory, submission_tag_factory
+    graphql_client, user, submission_tag_factory
 ):
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("it", "en"),
         durations=("10", "20"),
@@ -268,7 +268,7 @@ def test_update_submission_with_invalid_linkedin_social_url(
         submission_types=("talk", "workshop"),
     )
 
-    submission = submission_factory(
+    submission = SubmissionFactory(
         speaker_id=user.id,
         custom_topic="life",
         custom_duration="10m",
@@ -285,7 +285,7 @@ def test_update_submission_with_invalid_linkedin_social_url(
 
     new_topic = conference.topics.filter(name="diy").first()
     new_audience = conference.audience_levels.filter(name="senior").first()
-    new_tag = submission_tag_factory(name="yello")
+    new_tag = SubmissionTagFactory(name="yello")
     new_duration = conference.durations.filter(name="20m").first()
     new_type = conference.submission_types.filter(name="workshop").first()
 
@@ -315,13 +315,12 @@ def test_update_submission_with_photo_to_upload(
     graphql_client,
     user,
     conference_factory,
-    submission_factory,
     submission_tag_factory,
     mocker,
 ):
     file = FileFactory()
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("it", "en"),
         durations=("10", "20"),
@@ -330,7 +329,7 @@ def test_update_submission_with_photo_to_upload(
         submission_types=("talk", "workshop"),
     )
 
-    submission = submission_factory(
+    submission = SubmissionFactory(
         speaker_id=user.id,
         custom_topic="life",
         custom_duration="10m",
@@ -347,7 +346,7 @@ def test_update_submission_with_photo_to_upload(
 
     new_topic = conference.topics.filter(name="diy").first()
     new_audience = conference.audience_levels.filter(name="senior").first()
-    new_tag = submission_tag_factory(name="yello")
+    new_tag = SubmissionTagFactory(name="yello")
     new_duration = conference.durations.filter(name="20m").first()
     new_type = conference.submission_types.filter(name="workshop").first()
 
@@ -373,9 +372,9 @@ def test_update_submission_with_photo_to_upload(
 
 
 def test_cannot_update_submission_with_lang_outside_allowed_values(
-    graphql_client, user, conference_factory, submission_factory, submission_tag_factory
+    graphql_client, user, submission_tag_factory
 ):
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("en",),
         durations=("10", "20"),
@@ -384,7 +383,7 @@ def test_cannot_update_submission_with_lang_outside_allowed_values(
         submission_types=("talk", "workshop"),
     )
 
-    submission = submission_factory(
+    submission = SubmissionFactory(
         speaker_id=user.id,
         custom_topic="life",
         custom_duration="10m",
@@ -397,7 +396,7 @@ def test_cannot_update_submission_with_lang_outside_allowed_values(
 
     new_topic = conference.topics.filter(name="diy").first()
     new_audience = conference.audience_levels.filter(name="senior").first()
-    new_tag = submission_tag_factory(name="yello")
+    new_tag = SubmissionTagFactory(name="yello")
     new_duration = conference.durations.filter(name="20m").first()
     new_type = conference.submission_types.filter(name="workshop").first()
 
@@ -421,10 +420,8 @@ def test_cannot_update_submission_with_lang_outside_allowed_values(
     ]
 
 
-def test_can_edit_submission_outside_cfp(
-    graphql_client, user, conference_factory, submission_factory, submission_tag_factory
-):
-    conference = conference_factory(
+def test_can_edit_submission_outside_cfp(graphql_client, user, submission_tag_factory):
+    conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("en", "it"),
         durations=("10", "20"),
@@ -433,7 +430,7 @@ def test_can_edit_submission_outside_cfp(
         submission_types=("talk", "workshop"),
     )
 
-    submission = submission_factory(
+    submission = SubmissionFactory(
         speaker_id=user.id,
         custom_topic="life",
         custom_duration="10m",
@@ -446,7 +443,7 @@ def test_can_edit_submission_outside_cfp(
 
     new_topic = conference.topics.filter(name="diy").first()
     new_audience = conference.audience_levels.filter(name="senior").first()
-    new_tag = submission_tag_factory(name="yello")
+    new_tag = SubmissionTagFactory(name="yello")
     new_duration = conference.durations.filter(name="20m").first()
     new_type = conference.submission_types.filter(name="workshop").first()
 
@@ -469,9 +466,9 @@ def test_can_edit_submission_outside_cfp(
 
 
 def test_cannot_edit_submission_if_not_the_owner(
-    graphql_client, user, conference_factory, submission_factory, submission_tag_factory
+    graphql_client, user, submission_tag_factory
 ):
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("en",),
         durations=("10", "20"),
@@ -480,7 +477,7 @@ def test_cannot_edit_submission_if_not_the_owner(
         submission_types=("talk", "workshop"),
     )
 
-    submission = submission_factory(
+    submission = SubmissionFactory(
         custom_topic="life",
         custom_duration="10m",
         custom_audience_level="adult",
@@ -492,7 +489,7 @@ def test_cannot_edit_submission_if_not_the_owner(
 
     new_topic = conference.topics.filter(name="diy").first()
     new_audience = conference.audience_levels.filter(name="senior").first()
-    new_tag = submission_tag_factory(name="yello")
+    new_tag = SubmissionTagFactory(name="yello")
     new_duration = conference.durations.filter(name="20m").first()
     new_type = conference.submission_types.filter(name="workshop").first()
 
@@ -516,10 +513,8 @@ def test_cannot_edit_submission_if_not_the_owner(
     ]
 
 
-def test_make_submission_multi_lingual(
-    graphql_client, user, conference_factory, submission_factory, submission_tag_factory
-):
-    conference = conference_factory(
+def test_make_submission_multi_lingual(graphql_client, user, submission_tag_factory):
+    conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("en", "it"),
         durations=("10", "20"),
@@ -528,7 +523,7 @@ def test_make_submission_multi_lingual(
         submission_types=("talk", "workshop"),
     )
 
-    submission = submission_factory(
+    submission = SubmissionFactory(
         speaker_id=user.id,
         custom_topic="life",
         custom_duration="10m",
@@ -545,7 +540,7 @@ def test_make_submission_multi_lingual(
 
     new_topic = conference.topics.filter(name="diy").first()
     new_audience = conference.audience_levels.filter(name="senior").first()
-    new_tag = submission_tag_factory(name="yello")
+    new_tag = SubmissionTagFactory(name="yello")
     new_duration = conference.durations.filter(name="20m").first()
     new_type = conference.submission_types.filter(name="workshop").first()
 
@@ -589,9 +584,9 @@ def test_make_submission_multi_lingual(
 
 
 def test_edit_submission_multi_lingual_fields_required(
-    graphql_client, user, conference_factory, submission_factory, submission_tag_factory
+    graphql_client, user, submission_tag_factory
 ):
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("en", "it"),
         durations=("10", "20"),
@@ -600,7 +595,7 @@ def test_edit_submission_multi_lingual_fields_required(
         submission_types=("talk", "workshop"),
     )
 
-    submission = submission_factory(
+    submission = SubmissionFactory(
         speaker_id=user.id,
         custom_topic="life",
         custom_duration="10m",
@@ -617,7 +612,7 @@ def test_edit_submission_multi_lingual_fields_required(
 
     new_topic = conference.topics.filter(name="diy").first()
     new_audience = conference.audience_levels.filter(name="senior").first()
-    new_tag = submission_tag_factory(name="yello")
+    new_tag = SubmissionTagFactory(name="yello")
     new_duration = conference.durations.filter(name="20m").first()
     new_type = conference.submission_types.filter(name="workshop").first()
 
