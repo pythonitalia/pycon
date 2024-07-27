@@ -14,7 +14,6 @@ dev = [
     "pytest==7.4.3",
     "pytest-cov==4.1.0",
     "pytest-django==4.6.0",
-    "pytest-factoryboy==2.6.0",
     "factory-boy==3.3.0",
     "pdbpp<1.0.0,>=0.10.3",
     "requests-mock<2.0.0,>=1.11.0",

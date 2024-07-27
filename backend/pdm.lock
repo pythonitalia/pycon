@@ -5,7 +5,7 @@
 groups = ["default", "dev", "lambda"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:eefc4bd3e48652133d9d169b9ed6694dc34d92ab4d3e5c22647d3c8c7e6283da"
+content_hash = "sha256:5edef53bd2e7b5692d5b9f6f0384daa960468c707803b8200a88aa1650ef82a6"
 
 [[package]]
 name = "amqp"
@@ -1159,17 +1159,6 @@ files = [
 ]
 
 [[package]]
-name = "inflection"
-version = "0.5.1"
-requires_python = ">=3.5"
-summary = "A port of Ruby on Rails inflector to Python"
-groups = ["dev"]
-files = [
-    {file = "inflection-0.5.1-py2.py3-none-any.whl", hash = "sha256:f38b2b640938a4f35ade69ac3d053042959b62a0f1076a5bbaa1b9526605a8a2"},
-    {file = "inflection-0.5.1.tar.gz", hash = "sha256:1a29730d366e996aaacffb2f1f1cb9593dc38e2ddd30c91250c6dde09ea9b417"},
-]
-
-[[package]]
 name = "iniconfig"
 version = "2.0.0"
 requires_python = ">=3.7"
@@ -1950,23 +1939,6 @@ dependencies = [
 files = [
     {file = "pytest-django-4.6.0.tar.gz", hash = "sha256:ebc12a64f822a1284a281caf434d693f96bff69a9b09c677f538ecaa2f470b37"},
     {file = "pytest_django-4.6.0-py3-none-any.whl", hash = "sha256:7e90a183dec8c715714864e5dc8da99bb219502d437a9769a3c9e524af57e43a"},
-]
-
-[[package]]
-name = "pytest-factoryboy"
-version = "2.6.0"
-requires_python = ">=3.7"
-summary = "Factory Boy support for pytest."
-groups = ["dev"]
-dependencies = [
-    "factory-boy>=2.10.0",
-    "inflection",
-    "pytest>=6.2",
-    "typing-extensions",
-]
-files = [
-    {file = "pytest_factoryboy-2.6.0-py3-none-any.whl", hash = "sha256:23facf586a1beedea03e875159001bfeb8393fb56ab104d87ad06f688d269e5b"},
-    {file = "pytest_factoryboy-2.6.0.tar.gz", hash = "sha256:d09c37178693d8e594a96faf3c56e870b7753d2622710298b850ef79eb02d63d"},
 ]
 
 [[package]]
