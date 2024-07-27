@@ -6,7 +6,7 @@ from schedule.models import ScheduleItem
 
 
 @mark.django_db
-def test_get_talk_not_found(conference_factory, graphql_client):
+def test_get_talk_not_found(graphql_client):
     conference = ConferenceFactory()
 
     resp = graphql_client.query(

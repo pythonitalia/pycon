@@ -8,10 +8,6 @@ from pytest import mark
 
 @mark.django_db
 def test_get_days_with_configuration(
-    conference_factory,
-    day_factory,
-    slot_factory,
-    schedule_item_factory,
     graphql_client,
 ):
     conference = ConferenceFactory(

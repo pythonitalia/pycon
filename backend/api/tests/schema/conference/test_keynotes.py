@@ -3,6 +3,7 @@ from conferences.tests.factories import (
     ConferenceFactory,
     KeynoteFactory,
     KeynoteSpeakerFactory,
+    TopicFactory,
 )
 from participants.tests.factories import ParticipantFactory
 from schedule.tests.factories import (
@@ -46,19 +47,14 @@ def test_get_conference_keynotes_empty(conference_factory, graphql_client):
 @mark.django_db
 @time_machine.travel("2020-10-10 10:00:00Z", tick=False)
 def test_get_conference_keynotes(
-    conference_factory,
-    keynote_factory,
-    keynote_speaker_factory,
     graphql_client,
-    topic_factory,
-    participant_factory,
 ):
     conference = ConferenceFactory()
 
     keynote = KeynoteFactory(
         title=LazyI18nString({"en": "title", "it": "titolo"}),
         conference=conference,
-        topic=topic_factory(),
+        topic=TopicFactory(),
         published=timezone.datetime(
             1995, 12, 1, 5, 10, 3, tzinfo=datetime.timezone.utc
         ),
@@ -74,7 +70,7 @@ def test_get_conference_keynotes(
     future_keynote = KeynoteFactory(
         title=LazyI18nString({"en": "nope", "it": "noope"}),
         conference=conference,
-        topic=topic_factory(),
+        topic=TopicFactory(),
         published=timezone.datetime(
             2050, 12, 1, 5, 10, 3, tzinfo=datetime.timezone.utc
         ),
@@ -121,12 +117,7 @@ def test_get_conference_keynotes(
 
 @mark.django_db
 def test_get_single_conference_keynote(
-    conference_factory,
-    keynote_factory,
-    keynote_speaker_factory,
     graphql_client,
-    topic_factory,
-    participant_factory,
 ):
     conference = ConferenceFactory()
 
@@ -134,7 +125,7 @@ def test_get_single_conference_keynote(
         slug=LazyI18nString({"en": "title", "it": "titolo"}),
         title=LazyI18nString({"en": "title", "it": "titolo"}),
         conference=conference,
-        topic=topic_factory(),
+        topic=TopicFactory(),
     )
     speaker = KeynoteSpeakerFactory(keynote=keynote)
     ParticipantFactory(user_id=speaker.user_id, conference_id=conference.id, bio="test")
@@ -174,16 +165,7 @@ def test_get_single_conference_keynote(
 
 @mark.django_db
 def test_keynote_schedule_info(
-    conference_factory,
-    keynote_factory,
-    keynote_speaker_factory,
     graphql_client,
-    topic_factory,
-    participant_factory,
-    schedule_item_factory,
-    slot_factory,
-    day_factory,
-    room_factory,
 ):
     conference = ConferenceFactory()
 
@@ -191,7 +173,7 @@ def test_keynote_schedule_info(
         slug=LazyI18nString({"en": "title", "it": "titolo"}),
         title=LazyI18nString({"en": "title", "it": "titolo"}),
         conference=conference,
-        topic=topic_factory(),
+        topic=TopicFactory(),
     )
     speaker = KeynoteSpeakerFactory(keynote=keynote)
     ParticipantFactory(user_id=speaker.user_id, conference_id=conference.id, bio="test")

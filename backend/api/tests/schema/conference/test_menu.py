@@ -28,7 +28,9 @@ def test_get_menu_not_found(graphql_client):
 
 
 @mark.django_db
-def test_get_menu(graphql_client, conference_factory, menu_factory, menu_link_factory):
+def test_get_menu(
+    graphql_client,
+):
     conference = ConferenceFactory()
 
     menu = MenuFactory(identifier="main-nav", conference=conference)

@@ -1,6 +1,14 @@
 import datetime
-from submissions.tests.factories import SubmissionFactory
-from conferences.tests.factories import ConferenceFactory, DeadlineFactory
+from hotels.tests.factories import BedLayoutFactory, HotelRoomFactory
+from users.tests.factories import UserFactory
+from submissions.tests.factories import SubmissionFactory, SubmissionTypeFactory
+from conferences.tests.factories import (
+    AudienceLevelFactory,
+    ConferenceFactory,
+    DeadlineFactory,
+    DurationFactory,
+    TopicFactory,
+)
 import pytest
 import time_machine
 from django.utils import timezone
@@ -38,7 +46,7 @@ def test_get_conference_info(graphql_client):
 
 @mark.django_db
 def test_get_conference_deadlines_ordered_by_start_date(
-    graphql_client, conference_factory, deadline_factory
+    graphql_client,
 ):
     now = timezone.now()
 
@@ -109,7 +117,7 @@ def test_get_conference_deadlines_ordered_by_start_date(
 
 @mark.django_db
 def test_get_conference_single_deadline(
-    graphql_client, conference_factory, deadline_factory
+    graphql_client,
 ):
     now = timezone.now()
 
@@ -147,7 +155,7 @@ def test_get_conference_single_deadline(
 @mark.django_db
 @time_machine.travel("2020-10-10 10:00:00", tick=False)
 def test_get_conference_deadline_status(
-    graphql_client, conference_factory, deadline_factory
+    graphql_client,
 ):
     now = timezone.now()
 
@@ -212,7 +220,7 @@ def test_get_conference_deadline_status(
 
 
 @mark.django_db
-def test_get_not_existent_conference_info(conference, graphql_client):
+def test_get_not_existent_conference_info(graphql_client):
     resp = graphql_client.query(
         """
         {
@@ -228,12 +236,12 @@ def test_get_not_existent_conference_info(conference, graphql_client):
 
 
 @mark.django_db
-def test_query_conference_audience_levels(
-    graphql_client, conference, audience_level_factory
-):
-    level1 = audience_level_factory()
-    level2 = audience_level_factory()
-    level3 = audience_level_factory()
+def test_query_conference_audience_levels(graphql_client):
+    conference = ConferenceFactory()
+
+    level1 = AudienceLevelFactory()
+    level2 = AudienceLevelFactory()
+    level3 = AudienceLevelFactory()
 
     conference.audience_levels.add(level1, level2, level3)
 
@@ -267,10 +275,11 @@ def test_query_conference_audience_levels(
 
 
 @mark.django_db
-def test_query_conference_topics(graphql_client, conference, topic_factory):
-    topic1 = topic_factory()
-    topic2 = topic_factory()
-    topic3 = topic_factory()
+def test_query_conference_topics(graphql_client):
+    conference = ConferenceFactory()
+    topic1 = TopicFactory()
+    topic2 = TopicFactory()
+    topic3 = TopicFactory()
 
     conference.topics.add(topic1, topic2, topic3)
 
@@ -304,7 +313,8 @@ def test_query_conference_topics(graphql_client, conference, topic_factory):
 
 
 @mark.django_db
-def test_query_conference_languages(graphql_client, conference, language):
+def test_query_conference_languages(graphql_client, language):
+    conference = ConferenceFactory()
     lang_it = language("it")
     lang_en = language("en")
 
@@ -338,14 +348,14 @@ def test_query_conference_languages(graphql_client, conference, language):
 
 @mark.django_db
 def test_get_conference_durations(
-    graphql_client, duration_factory, submission_type_factory
+    graphql_client,
 ):
-    talk_type = submission_type_factory(name="talk")
-    tutorial_type = submission_type_factory(name="tutorial")
+    talk_type = SubmissionTypeFactory(name="talk")
+    tutorial_type = SubmissionTypeFactory(name="tutorial")
 
-    d1 = duration_factory()
+    d1 = DurationFactory()
     d1.allowed_submission_types.add(talk_type)
-    d2 = duration_factory(conference=d1.conference)
+    d2 = DurationFactory(conference=d1.conference)
     d2.allowed_submission_types.add(tutorial_type)
 
     conference = d1.conference
@@ -391,7 +401,8 @@ def test_get_conference_durations(
 
 
 @mark.django_db
-def test_get_conference_without_map(conference, graphql_client):
+def test_get_conference_without_map(graphql_client):
+    conference = ConferenceFactory()
     resp = graphql_client.query(
         """
         query($code: String!) {
@@ -413,7 +424,7 @@ def test_get_conference_without_map(conference, graphql_client):
 
 
 @mark.django_db
-def test_get_conference_map(conference_factory, graphql_client):
+def test_get_conference_map(graphql_client):
     conference = ConferenceFactory(latitude=1, longitude=1)
     resp = graphql_client.query(
         """
@@ -437,10 +448,10 @@ def test_get_conference_map(conference_factory, graphql_client):
 
 @mark.django_db
 def test_get_conference_submission_types(
-    graphql_client, conference_factory, submission_type_factory
+    graphql_client,
 ):
-    talk_type = submission_type_factory(name="talk")
-    tutorial_type = submission_type_factory(name="tutorial")
+    talk_type = SubmissionTypeFactory(name="talk")
+    tutorial_type = SubmissionTypeFactory(name="tutorial")
     conference = ConferenceFactory(submission_types=[talk_type, tutorial_type])
 
     resp = graphql_client.query(
@@ -465,15 +476,13 @@ def test_get_conference_submission_types(
 
 
 @mark.django_db
-def test_get_conference_hotel_rooms(
-    graphql_client, conference_factory, bed_layout_factory, hotel_room
-):
-    hotel_room.conference = ConferenceFactory(
-        start=timezone.datetime(2019, 1, 1, tzinfo=datetime.timezone.utc),
-        end=timezone.datetime(2019, 1, 5, tzinfo=datetime.timezone.utc),
+def test_get_conference_hotel_rooms(graphql_client):
+    hotel_room = HotelRoomFactory(
+        conference__start=timezone.datetime(2019, 1, 1, tzinfo=datetime.timezone.utc),
+        conference__end=timezone.datetime(2019, 1, 5, tzinfo=datetime.timezone.utc),
     )
 
-    bed_layout = bed_layout_factory()
+    bed_layout = BedLayoutFactory()
     hotel_room.available_bed_layouts.add(bed_layout)
 
     hotel_room.save()
@@ -518,7 +527,7 @@ def test_get_conference_hotel_rooms(
 
 @mark.django_db
 @mark.parametrize("cfp_open", (True, False))
-def test_is_cfp_open(graphql_client, conference_factory, deadline_factory, cfp_open):
+def test_is_cfp_open(graphql_client, cfp_open):
     now = timezone.now()
 
     conference = ConferenceFactory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
@@ -562,9 +571,7 @@ def test_is_cfp_open_false_when_no_deadline(graphql_client, conference):
 
 @mark.django_db
 @mark.parametrize("voting_open", (True, False))
-def test_is_voting_open(
-    graphql_client, conference_factory, deadline_factory, voting_open
-):
+def test_is_voting_open(graphql_client, voting_open):
     now = timezone.now()
 
     conference = ConferenceFactory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
@@ -609,8 +616,6 @@ def test_is_voting_open_false_when_no_deadlines(graphql_client, conference):
 @mark.django_db
 def test_is_voting_closed_in_the_past(
     graphql_client,
-    conference_factory,
-    deadline_factory,
 ):
     now = timezone.now()
     conference = ConferenceFactory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
@@ -640,8 +645,6 @@ def test_is_voting_closed_in_the_past(
 @mark.django_db
 def test_is_voting_closed_in_the_future(
     graphql_client,
-    conference_factory,
-    deadline_factory,
 ):
     now = timezone.now()
     conference = ConferenceFactory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
@@ -668,8 +671,8 @@ def test_is_voting_closed_in_the_future(
 
 
 @mark.django_db
-def test_can_see_submissions_as_staff(graphql_client, submission_factory, user_factory):
-    user = user_factory(is_staff=True)
+def test_can_see_submissions_as_staff(graphql_client):
+    user = UserFactory(is_staff=True)
     submission = SubmissionFactory()
 
     graphql_client.force_login(user)
@@ -689,10 +692,8 @@ def test_can_see_submissions_as_staff(graphql_client, submission_factory, user_f
 
 
 @mark.django_db
-def test_can_see_submissions_if_they_have_sent_one(
-    graphql_client, conference, submission_factory, user_factory
-):
-    user = user_factory()
+def test_can_see_submissions_if_they_have_sent_one(graphql_client, conference):
+    user = UserFactory()
     SubmissionFactory(conference=conference)
     SubmissionFactory(conference=conference, speaker_id=user.id)
 
@@ -773,9 +774,8 @@ def test_get_conference_voucher_with_valid_until(
 
 
 @mark.django_db
-def test_get_conference_voucher(
-    graphql_client, conference, mocker, requests_mock, settings
-):
+def test_get_conference_voucher(graphql_client, mocker, requests_mock, settings):
+    conference = ConferenceFactory()
     requests_mock.get(
         f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/extended-vouchers/test/",
         status_code=200,

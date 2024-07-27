@@ -12,9 +12,7 @@ from pycon.constants import UTC
 
 
 @mark.django_db
-def test_get_days_with_configuration(
-    conference_factory, day_factory, slot_factory, graphql_client
-):
+def test_get_days_with_configuration(graphql_client):
     conference = ConferenceFactory(
         start=datetime(2020, 4, 2, tzinfo=UTC),
         end=datetime(2020, 4, 2, tzinfo=UTC),
@@ -47,9 +45,7 @@ def test_get_days_with_configuration(
 
 
 @mark.django_db
-def test_get_days_items(
-    conference_factory, day_factory, slot_factory, graphql_client, schedule_item_factory
-):
+def test_get_days_items(graphql_client):
     conference = ConferenceFactory(
         start=datetime(2020, 4, 2, tzinfo=UTC),
         end=datetime(2020, 4, 2, tzinfo=UTC),
@@ -87,9 +83,7 @@ def test_get_days_items(
 
 
 @mark.django_db
-def test_days_item_sorted(
-    conference_factory, day_factory, slot_factory, graphql_client, schedule_item_factory
-):
+def test_days_item_sorted(graphql_client):
     conference = ConferenceFactory(
         start=datetime(2020, 4, 2, tzinfo=UTC),
         end=datetime(2020, 4, 2, tzinfo=UTC),
@@ -128,12 +122,7 @@ def test_days_item_sorted(
 
 @mark.django_db
 def test_filter_days_by_room(
-    conference_factory,
-    day_factory,
-    slot_factory,
     graphql_client,
-    schedule_item_factory,
-    room_factory,
 ):
     conference = ConferenceFactory(
         start=datetime(2020, 4, 2, tzinfo=UTC),
@@ -178,9 +167,7 @@ def test_filter_days_by_room(
 
 
 @mark.django_db
-def test_filter_days_by_room_not_found(
-    conference_factory, day_factory, slot_factory, graphql_client
-):
+def test_filter_days_by_room_not_found(graphql_client):
     conference = ConferenceFactory(
         start=datetime(2020, 4, 2, tzinfo=UTC),
         end=datetime(2020, 4, 2, tzinfo=UTC),

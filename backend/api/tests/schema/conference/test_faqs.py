@@ -5,7 +5,7 @@ from pytest import mark
 
 
 @mark.django_db
-def test_get_conference_faqs(conference_factory, faq_factory, graphql_client):
+def test_get_conference_faqs(graphql_client):
     conference = ConferenceFactory()
     conference_b = ConferenceFactory()
 

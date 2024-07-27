@@ -6,7 +6,7 @@ from i18n.strings import LazyI18nString
 
 
 @mark.django_db
-def test_get_conference_copy(conference_factory, generic_copy_factory, graphql_client):
+def test_get_conference_copy(graphql_client):
     conference = ConferenceFactory()
     conference_b = ConferenceFactory()
 

@@ -68,11 +68,9 @@ def test_conference_ranking_is_not_public(
 
 
 def test_conference_ranking_is_public_anyone_can_see(
-    conference,
-    rank_request_factory,
-    rank_submission_factory,
     graphql_client,
 ):
+    conference = ConferenceFactory()
     rank_request = RankRequestFactory(conference=conference, is_public=True)
     rank_submission = RankSubmissionFactory(rank_request=rank_request)
     query = """
@@ -107,12 +105,10 @@ def test_conference_ranking_is_public_anyone_can_see(
 
 
 def test_conference_ranking_is_not_public_admin_can_see(
-    conference,
-    rank_request_factory,
-    rank_submission_factory,
     graphql_client,
     admin_user,
 ):
+    conference = ConferenceFactory()
     graphql_client.force_login(admin_user)
     rank_request = RankRequestFactory(conference=conference, is_public=False)
     rank_submission = RankSubmissionFactory(rank_request=rank_request)
@@ -148,10 +144,10 @@ def test_conference_ranking_is_not_public_admin_can_see(
 
 
 def test_conference_ranking_is_not_public_users_cannot_see(
-    conference,
     graphql_client,
     user,
 ):
+    conference = ConferenceFactory()
     graphql_client.force_login(user)
     rank_request = RankRequestFactory(conference=conference, is_public=False)
     rank_submission = RankSubmissionFactory(
