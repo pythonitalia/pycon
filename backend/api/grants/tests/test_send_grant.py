@@ -151,9 +151,8 @@ def test_can_send_two_grants_to_different_conferences(graphql_client, user):
 
 def test_invalid_conference(graphql_client, user):
     graphql_client.force_login(user)
-    conference = ConferenceFactory()
 
-    response = _send_grant(graphql_client, conference)
+    response = _send_grant(graphql_client, 5)
 
     assert not response.get("errors")
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"

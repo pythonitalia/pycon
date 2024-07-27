@@ -1,4 +1,4 @@
-from backend.conferences.tests.factories import ConferenceFactory
+from conferences.tests.factories import ConferenceFactory
 import pytest
 from django.test import override_settings
 
