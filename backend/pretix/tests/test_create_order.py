@@ -16,6 +16,9 @@ from pretix import (
 from pretix.exceptions import PretixError
 
 
+pytestmark = pytest.mark.django_db
+
+
 @pytest.fixture
 def invoice_information():
     return InvoiceInformation(
@@ -32,7 +35,6 @@ def invoice_information():
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-@pytest.mark.django_db
 def test_creates_order(requests_mock, invoice_information):
     conference = ConferenceFactory()
     bed_layout = BedLayoutFactory()
@@ -93,7 +95,6 @@ def test_creates_order(requests_mock, invoice_information):
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-@pytest.mark.django_db
 def test_raises_when_response_is_400(requests_mock, invoice_information):
     conference = ConferenceFactory()
     requests_mock.post(
@@ -133,7 +134,6 @@ def test_raises_when_response_is_400(requests_mock, invoice_information):
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-@pytest.mark.django_db
 def test_raises_value_error_if_answer_value_is_wrong(
     requests_mock, invoice_information
 ):
@@ -182,7 +182,6 @@ def test_raises_value_error_if_answer_value_is_wrong(
         create_order(conference, order_data)
 
 
-@pytest.mark.django_db
 def test_create_hotel_positions():
     room = HotelRoomFactory(
         conference__pretix_hotel_ticket_id=1,
@@ -241,7 +240,6 @@ def test_create_hotel_positions():
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-@pytest.mark.django_db
 def test_not_required_and_empty_answer_is_skipped(requests_mock, invoice_information):
     conference = ConferenceFactory()
     orders_mock = requests_mock.post(
@@ -310,7 +308,6 @@ def test_not_required_and_empty_answer_is_skipped(requests_mock, invoice_informa
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-@pytest.mark.django_db
 def test_create_order_with_positions_with_voucher_and_one_without(
     requests_mock, invoice_information
 ):
@@ -375,7 +372,6 @@ def test_create_order_with_positions_with_voucher_and_one_without(
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-@pytest.mark.django_db
 def test_creates_order_with_additional_info_for_e_invoice(requests_mock):
     conference = ConferenceFactory()
     bed_layout = BedLayoutFactory()
@@ -452,7 +448,6 @@ def test_creates_order_with_additional_info_for_e_invoice(requests_mock):
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-@pytest.mark.django_db
 def test_creates_order_with_additional_info_for_e_invoice_does_not_break_on_error(
     requests_mock,
 ):

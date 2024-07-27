@@ -2,6 +2,8 @@ from conferences.tests.factories import ConferenceFactory
 import pytest
 from django.test import override_settings
 
+pytestmark = pytest.mark.django_db
+
 
 @override_settings(PRETIX_API="https://pretix/api/")
 def test_cannot_update_ticket_if_i_am_not_the_owner(
@@ -216,7 +218,6 @@ def test_update_ticket_with_answers(
     ]
 
 
-@pytest.mark.django_db
 def test_cannot_update_empty_email(graphql_client, user, mocker):
     conference = ConferenceFactory()
 

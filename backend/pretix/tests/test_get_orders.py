@@ -4,9 +4,10 @@ from django.test import override_settings
 
 from pretix import get_invoices
 
+pytestmark = pytest.mark.django_db
+
 
 @override_settings(PRETIX_API="https://pretix/api/")
-@pytest.mark.django_db
 def test_gets_invoices(requests_mock):
     conference = ConferenceFactory()
     requests_mock.get(

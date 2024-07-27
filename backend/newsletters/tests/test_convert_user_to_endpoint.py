@@ -12,7 +12,6 @@ from newsletters.exporter import convert_user_to_endpoint
 pytestmark = pytest.mark.skip(reason="disabled export for now")
 
 
-@pytest.mark.django_db
 def test_converts_one_user():
     user = UserFactory()
 
@@ -27,7 +26,6 @@ def test_converts_one_user():
     assert endpoint.has_cancelled_talks == []
 
 
-@pytest.mark.django_db
 def test_adds_submissions_sent():
     conference = ConferenceFactory()
     user = UserFactory()
@@ -45,7 +43,6 @@ def test_adds_submissions_sent():
     assert endpoint.has_cancelled_talks == []
 
 
-@pytest.mark.django_db
 def test_adds_items_in_schedule():
     conference = ConferenceFactory()
     user = UserFactory()
@@ -64,7 +61,6 @@ def test_adds_items_in_schedule():
     assert endpoint.has_cancelled_talks == []
 
 
-@pytest.mark.django_db
 def test_adds_items_in_schedule_even_if_additional_speaker():
     conference = ConferenceFactory()
     user = UserFactory()
@@ -87,7 +83,6 @@ def test_adds_items_in_schedule_even_if_additional_speaker():
     assert endpoint.has_cancelled_talks == []
 
 
-@pytest.mark.django_db
 def test_has_list_of_talks_per_conference():
     conference = ConferenceFactory()
     user = UserFactory()
@@ -109,7 +104,6 @@ def test_has_list_of_talks_per_conference():
     assert endpoint.talks_by_conference == {conference.code: [item.title]}
 
 
-@pytest.mark.django_db
 def test_adds_cancelled_talks():
     conference = ConferenceFactory()
     user = UserFactory()

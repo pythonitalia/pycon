@@ -5,8 +5,10 @@ from django.test import override_settings
 from pretix import get_order
 
 
+pytestmark = pytest.mark.django_db
+
+
 @override_settings(PRETIX_API="https://pretix/api/")
-@pytest.mark.django_db
 def test_gets_order(requests_mock):
     conference = ConferenceFactory()
     requests_mock.get(
@@ -20,7 +22,6 @@ def test_gets_order(requests_mock):
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-@pytest.mark.django_db
 def test_return_none_when_404(requests_mock):
     conference = ConferenceFactory()
     requests_mock.get(

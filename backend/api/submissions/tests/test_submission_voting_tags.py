@@ -2,7 +2,9 @@ from submissions.tests.factories import SubmissionFactory, SubmissionTagFactory
 import pytest
 
 
-@pytest.mark.django_db
+pytestmark = pytest.mark.django_db
+
+
 def test_returns_tags(graphql_client):
     tag = SubmissionTagFactory()
 
@@ -18,7 +20,6 @@ def test_returns_tags(graphql_client):
     assert resp["data"]["submissionTags"] == [{"id": str(tag.id)}]
 
 
-@pytest.mark.django_db
 def test_returns_voting_tags(graphql_client):
     tag_1 = SubmissionTagFactory()
     SubmissionTagFactory()
