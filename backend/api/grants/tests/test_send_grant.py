@@ -5,7 +5,7 @@ import pytest
 pytestmark = pytest.mark.django_db
 
 
-def _send_grant(client, conference, conference_code, **kwargs):
+def _send_grant(client, conference, conference_code=None, **kwargs):
     grant = GrantFactory.build(conference=conference)
     document = """
         mutation SendGrant($input: SendGrantInput!) {
