@@ -1,11 +1,13 @@
+from schedule.tests.factories import ScheduleItemFactory
+from conferences.tests.factories import ConferenceFactory
 from pytest import mark
 
 from schedule.models import ScheduleItem
 
 
 @mark.django_db
-def test_get_talk_not_found(conference_factory, graphql_client):
-    conference = conference_factory()
+def test_get_talk_not_found(graphql_client):
+    conference = ConferenceFactory()
 
     resp = graphql_client.query(
         """
@@ -25,11 +27,11 @@ def test_get_talk_not_found(conference_factory, graphql_client):
 
 
 @mark.django_db
-def test_get_talk_by_slug(conference_factory, schedule_item_factory, graphql_client):
-    conference = conference_factory()
+def test_get_talk_by_slug(graphql_client):
+    conference = ConferenceFactory()
 
-    schedule_item_factory(conference=conference, type=ScheduleItem.TYPES.submission)
-    keynote = schedule_item_factory(
+    ScheduleItemFactory(conference=conference, type=ScheduleItem.TYPES.submission)
+    keynote = ScheduleItemFactory(
         conference=conference, type=ScheduleItem.TYPES.keynote
     )
 

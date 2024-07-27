@@ -1,4 +1,3 @@
-from pytest_factoryboy import register
 from wagtail_factories import (
     PageFactory,
 )
@@ -7,7 +6,6 @@ from wagtail.rich_text import RichText
 import factory
 
 
-@register
 class NewsArticleFactory(PageFactory):
     class Meta:
         model = NewsArticle

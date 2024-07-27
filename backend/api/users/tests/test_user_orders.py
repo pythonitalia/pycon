@@ -1,3 +1,4 @@
+from conferences.tests.factories import ConferenceFactory
 import pytest
 from django.test import override_settings
 
@@ -8,10 +9,10 @@ pytestmark = pytest.mark.django_db
 
 @override_settings(PRETIX_API="https://pretix/api/")
 def test_get_user_orders(
-    user, graphql_client, conference_factory, requests_mock, pretix_order, pretix_items
+    user, graphql_client, requests_mock, pretix_order, pretix_items
 ):
     graphql_client.force_login(user)
-    conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
+    conference = ConferenceFactory(pretix_organizer_id="org", pretix_event_id="event")
 
     requests_mock.get(
         f"https://pretix/api/organizers/org/events/event/orders?email={user.email}",
@@ -46,11 +47,9 @@ def test_get_user_orders(
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-def test_get_user_orders_without_any_order(
-    user, graphql_client, conference_factory, requests_mock
-):
+def test_get_user_orders_without_any_order(user, graphql_client, requests_mock):
     graphql_client.force_login(user)
-    conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
+    conference = ConferenceFactory(pretix_organizer_id="org", pretix_event_id="event")
 
     requests_mock.get(
         f"https://pretix/api/organizers/org/events/event/orders?email={user.email}",

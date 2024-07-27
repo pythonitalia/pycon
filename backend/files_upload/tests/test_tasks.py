@@ -1,3 +1,4 @@
+import pytest
 from submissions.tests.factories import ProposalMaterialFactory
 import pyclamd
 import datetime
@@ -9,6 +10,9 @@ from files_upload.tests.factories import FileFactory
 from django.utils import timezone
 from django.test import override_settings
 from django.core.files.storage.memory import InMemoryStorage
+
+
+mark = pytest.mark.django_db
 
 
 class FakeRemoteStorage(InMemoryStorage):

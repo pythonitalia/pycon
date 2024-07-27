@@ -9,32 +9,11 @@ from rest_framework.test import APIClient
 import pytest
 from django.test.client import Client
 
-from api.tests.factories import *  # noqa
-from api.tests.fixtures import *  # noqa
-from blog.tests.factories import *  # noqa
-from checklist.tests.factories import *  # noqa
-from cms.tests.factories import *  # noqa
-from conferences.tests.factories import *  # noqa
-from events.tests.factories import *  # noqa
-from grants.tests.factories import *  # noqa
-from hotels.tests.factories import *  # noqa
-from job_board.tests.factories import *  # noqa
 from languages.models import Language
-from languages.tests.factories import *  # noqa
-from newsletters.tests.factories import *  # noqa
-from participants.tests.factories import *  # noqa
-from pretix.tests.fixtures import *  # noqa
-from reviews.tests.factories import *  # noqa
-from schedule.tests.factories import *  # noqa
-from sponsors.tests.factories import *  # noqa
-from submissions.tests.factories import *  # noqa
-from users.tests.factories import *  # noqa
-from voting.tests.factories import *  # noqa
-from voting.tests.fixtures import *  # noqa
 from users.tests.factories import UserFactory
-from api.cms.tests.factories import *  # noqa
-from video_uploads.tests.factories import *  # noqa
-from organizers.tests.factories import *  # noqa
+
+from api.tests.fixtures import *  # noqa
+from pretix.tests.fixtures import *  # noqa
 
 
 @pytest.fixture()

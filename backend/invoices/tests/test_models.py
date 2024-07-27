@@ -3,6 +3,9 @@ from invoices.models import Address, Invoice
 from lxml import etree
 
 
+pytestmark = pytest.mark.django_db
+
+
 def _xml_to_string(xml):
     return etree.tostring(xml, pretty_print=True).decode("utf-8")
 
@@ -17,7 +20,6 @@ def test_xml_generation(sample_invoice_xml):
     assert invoice_xml == sample_xml
 
 
-@pytest.mark.django_db
 def test_xml_header_generation(sample_invoice):
     xml = sample_invoice.to_xml()
 
@@ -81,7 +83,6 @@ def test_xml_header_generation(sample_invoice):
     assert ca_data.xpath("Nazione")[0].text == "IT"
 
 
-@pytest.mark.django_db
 def test_xml_header_generation_with_pec(sample_invoice):
     sample_invoice.recipient_code = ""
     sample_invoice.recipient_pec = "patrick@python.it"
@@ -101,7 +102,6 @@ def test_xml_header_generation_with_pec(sample_invoice):
     assert t_data.xpath("PecDestinatario")[0].text == "patrick@python.it"
 
 
-@pytest.mark.django_db
 def test_xml_body_generation(sample_invoice):
     xml = sample_invoice.to_xml()
 
@@ -183,7 +183,6 @@ def test_address_string():
     assert str(ad3) == "Via Roma, 9 Treviglio (BG) [IT]"
 
 
-@pytest.mark.django_db
 def test_invoice_string(sample_invoice):
     assert str(sample_invoice) == "[Fattura/00001A] Patrick A: " + (
         "A" * 200 + "B" * 200
@@ -191,12 +190,10 @@ def test_invoice_string(sample_invoice):
     assert sample_invoice.get_filename() == "00001A.xml"
 
 
-@pytest.mark.django_db
 def test_sender_string(sender):
     assert str(sender) == "Python Italia APS"
 
 
-@pytest.mark.django_db
 @pytest.mark.xfail(reason="Needs to be updated")
 def test_xml_encoding(sample_invoice):
     sample_invoice.recipient_first_name = "Łukasz"

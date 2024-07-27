@@ -1,12 +1,14 @@
+from conferences.tests.factories import ConferenceFactory
+from participants.tests.factories import ParticipantFactory
 import pytest
 
 
 pytestmark = pytest.mark.django_db
 
 
-def test_user_participant(user, graphql_client, participant_factory):
+def test_user_participant(user, graphql_client):
     graphql_client.force_login(user)
-    participant = participant_factory(
+    participant = ParticipantFactory(
         user_id=user.id,
         bio="biiiiio",
         photo="https://marcopycontest.blob.core.windows.net/participants-avatars/blob.jpg",
@@ -47,11 +49,9 @@ def test_user_participant(user, graphql_client, participant_factory):
     assert participant_type["previousTalkVideo"] == ""
 
 
-def test_user_participant_when_it_doesnt_exist(
-    user, graphql_client, conference_factory
-):
+def test_user_participant_when_it_doesnt_exist(user, graphql_client):
     graphql_client.force_login(user)
-    conference_code = conference_factory().code
+    conference_code = ConferenceFactory().code
     response = graphql_client.query(
         """query($conference: String!) {
             me {
@@ -72,8 +72,8 @@ def test_user_participant_when_it_doesnt_exist(
     assert response["data"]["me"]["participant"] is None
 
 
-def test_user_participant_fails_when_not_logged_in(graphql_client, conference_factory):
-    conference_code = conference_factory().code
+def test_user_participant_fails_when_not_logged_in(graphql_client):
+    conference_code = ConferenceFactory().code
     response = graphql_client.query(
         """query($conference: String!) {
             me {

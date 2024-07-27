@@ -1,4 +1,5 @@
 from api.helpers.ids import encode_hashid
+from conferences.tests.factories import ConferenceFactory
 from badge_scanner.models import BadgeScan
 from users.tests.factories import UserFactory
 
@@ -31,7 +32,9 @@ def _scan_badge_mutation(graphql_client, variables):
     )
 
 
-def test_raises_an_error_when_user_is_not_authenticated(graphql_client, conference):
+def test_raises_an_error_when_user_is_not_authenticated(graphql_client):
+    conference = ConferenceFactory()
+
     resp = _scan_badge_mutation(
         graphql_client,
         variables={"url": "https://foo.bar", "conferenceCode": conference.code},
@@ -44,7 +47,9 @@ def test_raises_an_error_when_user_is_not_authenticated(graphql_client, conferen
 # TODO: make sure the user is a sponsor
 
 
-def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
+def test_works_when_user_is_logged_in(user, graphql_client, mocker):
+    conference = ConferenceFactory()
+
     scanned_user = UserFactory.create(email="barko@marco.pizza", full_name="Test User")
     fake_id = encode_hashid(1)
 
@@ -86,8 +91,10 @@ def test_works_when_user_is_logged_in(user, graphql_client, conference, mocker):
 
 
 def test_works_when_user_is_logged_in_but_no_user_on_service(
-    user, graphql_client, conference, mocker
+    user, graphql_client, mocker
 ):
+    conference = ConferenceFactory()
+
     fake_id = encode_hashid(1)
 
     graphql_client.force_login(user)
@@ -143,7 +150,9 @@ def test_fails_when_conference_is_wrong(user, graphql_client):
     assert resp["data"]["scanBadge"]["message"] == "Conference not found"
 
 
-def test_when_url_is_wrong(user, graphql_client, conference):
+def test_when_url_is_wrong(user, graphql_client):
+    conference = ConferenceFactory()
+
     graphql_client.force_login(user)
 
     resp = _scan_badge_mutation(

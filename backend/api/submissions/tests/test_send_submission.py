@@ -1,10 +1,15 @@
 from files_upload.tests.factories import FileFactory
-from conferences.tests.factories import ConferenceFactory, TopicFactory
+from conferences.tests.factories import (
+    AudienceLevelFactory,
+    ConferenceFactory,
+    DurationFactory,
+    TopicFactory,
+)
 from pytest import mark
 
 from participants.models import Participant
 from submissions.models import Submission, SubmissionTag, SubmissionType
-from submissions.tests.factories import SubmissionFactory
+from submissions.tests.factories import SubmissionFactory, SubmissionTypeFactory
 
 
 def _submit_talk(client, conference, **kwargs):
@@ -130,10 +135,10 @@ def _submit_proposal(client, conference, submission, **kwargs):
 
 
 @mark.django_db
-def test_submit_talk(graphql_client, user, conference_factory):
+def test_submit_talk(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("en",),
         submission_types=("talk",),
@@ -184,12 +189,10 @@ def test_submit_talk(graphql_client, user, conference_factory):
 
 
 @mark.django_db
-def test_submit_talk_with_photo_to_upload(
-    graphql_client, user, conference_factory, mocker
-):
+def test_submit_talk_with_photo_to_upload(graphql_client, user, mocker):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("en",),
         submission_types=("talk",),
@@ -219,12 +222,10 @@ def test_submit_talk_with_photo_to_upload(
 
 
 @mark.django_db
-def test_submit_talk_without_photo_fails(
-    graphql_client, user, conference_factory, mocker
-):
+def test_submit_talk_without_photo_fails(graphql_client, user, mocker):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("en",),
         submission_types=("talk",),
@@ -252,11 +253,9 @@ def test_submit_talk_without_photo_fails(
 
 
 @mark.django_db
-def test_submit_talk_with_existing_participant(
-    graphql_client, user, conference_factory
-):
+def test_submit_talk_with_existing_participant(graphql_client, user):
     graphql_client.force_login(user)
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("en",),
         submission_types=("talk",),
@@ -311,12 +310,10 @@ def test_submit_talk_with_existing_participant(
 
 
 @mark.django_db
-def test_submit_talk_with_missing_data_of_other_language_fails(
-    graphql_client, user, conference_factory
-):
+def test_submit_talk_with_missing_data_of_other_language_fails(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("en", "it"),
         submission_types=("talk",),
@@ -345,10 +342,10 @@ def test_submit_talk_with_missing_data_of_other_language_fails(
 
 
 @mark.django_db
-def test_submit_talk_with_missing_data_fails(graphql_client, user, conference_factory):
+def test_submit_talk_with_missing_data_fails(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("en", "it"),
         submission_types=("talk",),
@@ -389,10 +386,10 @@ def test_submit_talk_with_missing_data_fails(graphql_client, user, conference_fa
 
 
 @mark.django_db
-def test_submit_talk_with_multiple_languages(graphql_client, user, conference_factory):
+def test_submit_talk_with_multiple_languages(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("it", "en"),
         submission_types=("talk",),
@@ -433,12 +430,10 @@ def test_submit_talk_with_multiple_languages(graphql_client, user, conference_fa
 
 
 @mark.django_db
-def test_submit_talk_with_not_valid_conf_language(
-    graphql_client, user, conference_factory
-):
+def test_submit_talk_with_not_valid_conf_language(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("it",),
         submission_types=("talk",),
@@ -456,10 +451,10 @@ def test_submit_talk_with_not_valid_conf_language(
 
 
 @mark.django_db
-def test_submit_talk_with_not_valid_duration(graphql_client, user, conference_factory):
+def test_submit_talk_with_not_valid_duration(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("it",),
         submission_types=("talk",),
@@ -477,15 +472,13 @@ def test_submit_talk_with_not_valid_duration(graphql_client, user, conference_fa
 
 
 @mark.django_db
-def test_cannot_use_duration_if_submission_type_is_not_allowed(
-    graphql_client, user, conference_factory, duration_factory, submission_type_factory
-):
+def test_cannot_use_duration_if_submission_type_is_not_allowed(graphql_client, user):
     graphql_client.force_login(user)
 
-    talk_type = submission_type_factory(name="talk")
-    tutorial_type = submission_type_factory(name="tutorial")
+    talk_type = SubmissionTypeFactory(name="talk")
+    tutorial_type = SubmissionTypeFactory(name="tutorial")
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("it",),
         submission_types=("talk", "tutorial"),
@@ -493,10 +486,10 @@ def test_cannot_use_duration_if_submission_type_is_not_allowed(
         audience_levels=("Beginner",),
     )
 
-    duration1 = duration_factory(conference=conference)
+    duration1 = DurationFactory(conference=conference)
     duration1.allowed_submission_types.add(talk_type)
 
-    duration2 = duration_factory(conference=conference)
+    duration2 = DurationFactory(conference=conference)
     duration2.allowed_submission_types.add(tutorial_type)
 
     resp, _ = _submit_talk(
@@ -510,14 +503,12 @@ def test_cannot_use_duration_if_submission_type_is_not_allowed(
 
 
 @mark.django_db
-def test_submit_talk_with_duration_id_of_another_conf(
-    graphql_client, user, conference_factory, duration_factory
-):
+def test_submit_talk_with_duration_id_of_another_conf(graphql_client, user):
     graphql_client.force_login(user)
 
-    another_conf_duration = duration_factory()
+    another_conf_duration = DurationFactory()
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("it",),
         submission_types=("talk",),
@@ -537,9 +528,7 @@ def test_submit_talk_with_duration_id_of_another_conf(
 
 
 @mark.django_db
-def test_submit_talk_with_not_valid_conf_topic(
-    graphql_client, user, conference_factory, topic_factory
-):
+def test_submit_talk_with_not_valid_conf_topic(graphql_client, user):
     graphql_client.force_login(user)
 
     conference = ConferenceFactory(
@@ -562,11 +551,11 @@ def test_submit_talk_with_not_valid_conf_topic(
 
 @mark.django_db
 def test_submit_talk_with_not_valid_allowed_submission_type_in_the_conference(
-    graphql_client, user, conference_factory, topic_factory
+    graphql_client, user
 ):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("it",),
         submission_types=("tutorial",),
@@ -584,12 +573,10 @@ def test_submit_talk_with_not_valid_allowed_submission_type_in_the_conference(
 
 
 @mark.django_db
-def test_submit_talk_with_not_valid_submission_type_id(
-    graphql_client, user, conference_factory, topic_factory
-):
+def test_submit_talk_with_not_valid_submission_type_id(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("it",),
         submission_types=("tutorial",),
@@ -607,12 +594,10 @@ def test_submit_talk_with_not_valid_submission_type_id(
 
 
 @mark.django_db
-def test_submit_talk_with_not_valid_language_code(
-    graphql_client, user, conference_factory, topic_factory
-):
+def test_submit_talk_with_not_valid_language_code(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("it",),
         submission_types=("tutorial",),
@@ -630,12 +615,10 @@ def test_submit_talk_with_not_valid_language_code(
 
 
 @mark.django_db
-def test_submit_talk_with_not_valid_audience_level(
-    graphql_client, user, conference_factory
-):
+def test_submit_talk_with_not_valid_audience_level(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("it",),
         submission_types=("talk",),
@@ -654,13 +637,11 @@ def test_submit_talk_with_not_valid_audience_level(
 
 
 @mark.django_db
-def test_submit_talk_with_not_valid_conf_audience_level(
-    graphql_client, user, conference_factory, audience_level_factory
-):
+def test_submit_talk_with_not_valid_conf_audience_level(graphql_client, user):
     graphql_client.force_login(user)
-    audience_level = audience_level_factory(name="Intermidiate")
+    audience_level = AudienceLevelFactory(name="Intermidiate")
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("it",),
         submission_types=("talk",),
@@ -677,8 +658,8 @@ def test_submit_talk_with_not_valid_conf_audience_level(
 
 
 @mark.django_db
-def test_cannot_propose_a_talk_as_unlogged_user(graphql_client, conference_factory):
-    conference = conference_factory(
+def test_cannot_propose_a_talk_as_unlogged_user(graphql_client):
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("it",),
         submission_types=("talk",),
@@ -692,12 +673,10 @@ def test_cannot_propose_a_talk_as_unlogged_user(graphql_client, conference_facto
 
 
 @mark.django_db
-def test_cannot_propose_a_talk_if_the_cfp_is_not_open(
-    graphql_client, user, conference_factory
-):
+def test_cannot_propose_a_talk_if_the_cfp_is_not_open(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("friends",),
         languages=("it",),
         active_cfp=False,
@@ -715,12 +694,10 @@ def test_cannot_propose_a_talk_if_the_cfp_is_not_open(
 
 
 @mark.django_db
-def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(
-    graphql_client, user, conference_factory
-):
+def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("friends",),
         languages=("it",),
         submission_types=("talk",),
@@ -738,11 +715,11 @@ def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(
 
 @mark.django_db
 def test_same_user_can_propose_multiple_talks_to_the_same_conference(
-    graphql_client, user, conference_factory
+    graphql_client, user
 ):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("friends",),
         languages=("en",),
         active_cfp=True,
@@ -771,10 +748,10 @@ def test_same_user_can_propose_multiple_talks_to_the_same_conference(
 
 
 @mark.django_db
-def test_submit_tutorial(graphql_client, user, conference_factory):
+def test_submit_tutorial(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("friends",),
         languages=("en",),
         active_cfp=True,
@@ -797,12 +774,10 @@ def test_submit_tutorial(graphql_client, user, conference_factory):
 
 
 @mark.django_db
-def test_submit_tutorial_and_talk_to_the_same_conference(
-    graphql_client, user, conference_factory
-):
+def test_submit_tutorial_and_talk_to_the_same_conference(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("friends",),
         languages=("en",),
         active_cfp=True,
@@ -833,10 +808,10 @@ def test_submit_tutorial_and_talk_to_the_same_conference(
 
 
 @mark.django_db
-def test_notes_are_not_required(graphql_client, user, conference_factory):
+def test_notes_are_not_required(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("friends",),
         languages=("en",),
         active_cfp=True,
@@ -857,12 +832,10 @@ def test_notes_are_not_required(graphql_client, user, conference_factory):
 
 
 @mark.django_db
-def test_same_user_can_submit_talks_to_different_conferences(
-    graphql_client, user, conference_factory
-):
+def test_same_user_can_submit_talks_to_different_conferences(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference1 = conference_factory(
+    conference1 = ConferenceFactory(
         topics=("friends",),
         languages=("en",),
         active_cfp=True,
@@ -871,7 +844,7 @@ def test_same_user_can_submit_talks_to_different_conferences(
         audience_levels=("Beginner",),
     )
 
-    conference2 = conference_factory(
+    conference2 = ConferenceFactory(
         topics=("another-stuff",),
         languages=("en",),
         active_cfp=True,
@@ -907,12 +880,10 @@ def test_same_user_can_submit_talks_to_different_conferences(
     )
 
 
-def test_create_submission_tags(
-    graphql_client, user, conference_factory, submission_tag_factory
-):
+def test_create_submission_tags(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("friends",),
         languages=("it",),
         active_cfp=True,
@@ -935,10 +906,10 @@ def test_create_submission_tags(
     ]
 
 
-def test_speaker_level_is_required(graphql_client, user, conference_factory):
+def test_speaker_level_is_required(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("friends",),
         languages=("it",),
         active_cfp=True,
@@ -954,12 +925,10 @@ def test_speaker_level_is_required(graphql_client, user, conference_factory):
     ] == ["You need to specify what is your speaker experience"]
 
 
-def test_speaker_level_only_allows_the_predefined_levels(
-    graphql_client, user, conference_factory
-):
+def test_speaker_level_only_allows_the_predefined_levels(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("friends",),
         languages=("it",),
         active_cfp=True,
@@ -976,12 +945,10 @@ def test_speaker_level_only_allows_the_predefined_levels(
 
 
 @mark.django_db
-def test_submit_talk_with_too_long_title_fails(
-    graphql_client, user, conference_factory
-):
+def test_submit_talk_with_too_long_title_fails(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("en", "it"),
         submission_types=("talk",),
@@ -1012,12 +979,10 @@ def test_submit_talk_with_too_long_title_fails(
 
 
 @mark.django_db
-def test_submit_talk_with_no_languages_and_no_tags_is_not_allowed(
-    graphql_client, user, conference_factory
-):
+def test_submit_talk_with_no_languages_and_no_tags_is_not_allowed(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("en", "it"),
         submission_types=("talk",),
@@ -1042,10 +1007,10 @@ def test_submit_talk_with_no_languages_and_no_tags_is_not_allowed(
 
 
 @mark.django_db
-def test_submit_talk_with_no_conference(graphql_client, user, conference_factory):
+def test_submit_talk_with_no_conference(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("en", "it"),
         submission_types=("talk",),
@@ -1065,12 +1030,10 @@ def test_submit_talk_with_no_conference(graphql_client, user, conference_factory
 
 
 @mark.django_db
-def test_submit_talk_with_too_long_notes_fails(
-    graphql_client, user, conference_factory
-):
+def test_submit_talk_with_too_long_notes_fails(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("en", "it"),
         submission_types=("talk",),
@@ -1094,12 +1057,10 @@ def test_submit_talk_with_too_long_notes_fails(
 
 
 @mark.django_db
-def test_submit_talk_with_too_long_summary_fails(
-    graphql_client, user, conference_factory
-):
+def test_submit_talk_with_too_long_summary_fails(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("en", "it"),
         submission_types=("talk",),
@@ -1123,10 +1084,10 @@ def test_submit_talk_with_too_long_summary_fails(
 
 
 @mark.django_db
-def test_submit_talk_only_allows_5_tags(graphql_client, user, conference_factory):
+def test_submit_talk_only_allows_5_tags(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("en", "it"),
         submission_types=("talk",),
@@ -1158,10 +1119,10 @@ def test_submit_talk_only_allows_5_tags(graphql_client, user, conference_factory
 
 
 @mark.django_db
-def test_submit_talk_with_no_tags_fails(graphql_client, user, conference_factory):
+def test_submit_talk_with_no_tags_fails(graphql_client, user):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=("my-topic",),
         languages=("en", "it"),
         submission_types=("talk",),

@@ -2,14 +2,12 @@ from users.tests.factories import UserFactory
 import factory
 import factory.fuzzy
 from factory.django import DjangoModelFactory
-from pytest_factoryboy import register
 
 from conferences.tests.factories import ConferenceFactory
 from hotels.models import BedLayout, HotelRoom, HotelRoomReservation
 from i18n.tests.factories import LanguageFactory
 
 
-@register
 class HotelRoomFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
 
@@ -23,7 +21,6 @@ class HotelRoomFactory(DjangoModelFactory):
         model = HotelRoom
 
 
-@register
 class HotelRoomReservationFactory(DjangoModelFactory):
     order_code = "AAAABB"
     room = factory.SubFactory(HotelRoomFactory)
@@ -35,7 +32,6 @@ class HotelRoomReservationFactory(DjangoModelFactory):
         model = HotelRoomReservation
 
 
-@register
 class BedLayoutFactory(DjangoModelFactory):
     name = LanguageFactory("name")
 

@@ -1,3 +1,4 @@
+from conferences.tests.factories import ConferenceFactory
 import tablib
 from badge_scanner.models import BadgeScan, BadgeScanExport
 from users.tests.factories import UserFactory
@@ -20,7 +21,9 @@ def _export_badge_scans_mutation(graphql_client, variables):
     )
 
 
-def test_raises_an_error_when_user_is_not_authenticated(graphql_client, conference):
+def test_raises_an_error_when_user_is_not_authenticated(graphql_client):
+    conference = ConferenceFactory()
+
     resp = _export_badge_scans_mutation(
         graphql_client,
         variables={
@@ -32,7 +35,9 @@ def test_raises_an_error_when_user_is_not_authenticated(graphql_client, conferen
     assert resp["errors"][0]["message"] == "User not logged in"
 
 
-def test_works_when_user_is_logged_in(user, graphql_client, conference):
+def test_works_when_user_is_logged_in(user, graphql_client):
+    conference = ConferenceFactory()
+
     graphql_client.force_login(user)
 
     badge_scan = BadgeScan.objects.create(

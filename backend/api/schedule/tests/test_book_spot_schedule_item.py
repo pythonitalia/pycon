@@ -1,5 +1,12 @@
 import datetime
 
+from schedule.tests.factories import (
+    DayFactory,
+    ScheduleItemAttendeeFactory,
+    ScheduleItemFactory,
+    SlotFactory,
+)
+from submissions.tests.factories import SubmissionFactory
 import pytest
 from pytest import mark
 
@@ -9,19 +16,17 @@ pytestmark = mark.django_db
 
 
 @pytest.fixture
-def simple_schedule_item(
-    schedule_item_factory, submission_factory, slot_factory, day_factory
-):
-    submission = submission_factory()
+def simple_schedule_item():
+    submission = SubmissionFactory()
 
-    return schedule_item_factory(
+    return ScheduleItemFactory(
         status=ScheduleItem.STATUS.confirmed,
         submission=submission,
         type=ScheduleItem.TYPES.submission,
         conference=submission.conference,
         attendees_total_capacity=30,
-        slot=slot_factory(
-            day=day_factory(
+        slot=SlotFactory(
+            day=DayFactory(
                 day=datetime.date(2020, 10, 10), conference=submission.conference
             ),
             hour=datetime.time(10, 10, 0),
@@ -95,9 +100,7 @@ def test_needs_ticket_to_book(
     ).exists()
 
 
-def test_cannot_overbook(
-    graphql_client, user, simple_schedule_item, mocker, schedule_item_attendee_factory
-):
+def test_cannot_overbook(graphql_client, user, simple_schedule_item, mocker):
     mocker.patch(
         "api.schedule.mutations.book_schedule_item.user_has_admission_ticket",
         return_value=True,
@@ -109,7 +112,7 @@ def test_cannot_overbook(
     schedule_item.attendees_total_capacity = 1
     schedule_item.save()
 
-    schedule_item_attendee_factory(schedule_item=schedule_item)
+    ScheduleItemAttendeeFactory(schedule_item=schedule_item)
 
     response = graphql_client.query(
         """mutation($id: ID!) {
@@ -127,9 +130,7 @@ def test_cannot_overbook(
     ).exists()
 
 
-def test_user_cannot_book_twice(
-    graphql_client, user, simple_schedule_item, mocker, schedule_item_attendee_factory
-):
+def test_user_cannot_book_twice(graphql_client, user, simple_schedule_item, mocker):
     mocker.patch(
         "api.schedule.mutations.book_schedule_item.user_has_admission_ticket",
         return_value=True,
@@ -139,7 +140,7 @@ def test_user_cannot_book_twice(
 
     schedule_item = simple_schedule_item
 
-    schedule_item_attendee_factory(schedule_item=schedule_item, user_id=user.id)
+    ScheduleItemAttendeeFactory(schedule_item=schedule_item, user_id=user.id)
 
     response = graphql_client.query(
         """mutation($id: ID!) {
@@ -157,9 +158,7 @@ def test_user_cannot_book_twice(
     ).exists()
 
 
-def test_user_cannot_book_any_event(
-    graphql_client, user, simple_schedule_item, mocker, schedule_item_attendee_factory
-):
+def test_user_cannot_book_any_event(graphql_client, user, simple_schedule_item, mocker):
     mocker.patch(
         "api.schedule.mutations.book_schedule_item.user_has_admission_ticket",
         return_value=True,

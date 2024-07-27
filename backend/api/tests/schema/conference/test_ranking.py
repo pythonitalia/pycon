@@ -1,13 +1,14 @@
+from voting.tests.factories.ranking import RankRequestFactory, RankSubmissionFactory
+from conferences.tests.factories import ConferenceFactory
 import pytest
 
 pytestmark = [pytest.mark.django_db]
 
 
 def test_conference_ranking_does_not_exists(
-    conference_factory,
     graphql_client,
 ):
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=[
             "Sushi",
         ]
@@ -37,16 +38,14 @@ def test_conference_ranking_does_not_exists(
 
 
 def test_conference_ranking_is_not_public(
-    conference_factory,
-    rank_request_factory,
     graphql_client,
 ):
-    conference = conference_factory(
+    conference = ConferenceFactory(
         topics=[
             "Sushi",
         ]
     )
-    rank_request_factory(conference=conference, is_public=False)
+    RankRequestFactory(conference=conference, is_public=False)
     query = """
         query($code: String!, $topic: ID!) {
             conference(code: $code) {
@@ -67,13 +66,11 @@ def test_conference_ranking_is_not_public(
 
 
 def test_conference_ranking_is_public_anyone_can_see(
-    conference,
-    rank_request_factory,
-    rank_submission_factory,
     graphql_client,
 ):
-    rank_request = rank_request_factory(conference=conference, is_public=True)
-    rank_submission = rank_submission_factory(rank_request=rank_request)
+    conference = ConferenceFactory()
+    rank_request = RankRequestFactory(conference=conference, is_public=True)
+    rank_submission = RankSubmissionFactory(rank_request=rank_request)
     query = """
         query($code: String!, $topic: ID!) {
             conference(code: $code) {
@@ -106,15 +103,13 @@ def test_conference_ranking_is_public_anyone_can_see(
 
 
 def test_conference_ranking_is_not_public_admin_can_see(
-    conference,
-    rank_request_factory,
-    rank_submission_factory,
     graphql_client,
     admin_user,
 ):
+    conference = ConferenceFactory()
     graphql_client.force_login(admin_user)
-    rank_request = rank_request_factory(conference=conference, is_public=False)
-    rank_submission = rank_submission_factory(rank_request=rank_request)
+    rank_request = RankRequestFactory(conference=conference, is_public=False)
+    rank_submission = RankSubmissionFactory(rank_request=rank_request)
     query = """
         query($code: String!, $topic: ID!) {
             conference(code: $code) {
@@ -147,15 +142,13 @@ def test_conference_ranking_is_not_public_admin_can_see(
 
 
 def test_conference_ranking_is_not_public_users_cannot_see(
-    conference,
-    rank_request_factory,
-    rank_submission_factory,
     graphql_client,
     user,
 ):
+    conference = ConferenceFactory()
     graphql_client.force_login(user)
-    rank_request = rank_request_factory(conference=conference, is_public=False)
-    rank_submission = rank_submission_factory(
+    rank_request = RankRequestFactory(conference=conference, is_public=False)
+    rank_submission = RankSubmissionFactory(
         rank_request=rank_request,
     )
 

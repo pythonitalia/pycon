@@ -1,3 +1,5 @@
+from users.tests.factories import UserFactory
+from conferences.tests.factories import ConferenceFactory
 import pytest
 from badge_scanner.models import BadgeScan
 
@@ -27,13 +29,15 @@ def test_raises_an_error_when_user_is_not_authenticated(graphql_client):
     assert resp["errors"][0]["message"] == "User not logged in"
 
 
-def test_works(user, graphql_client, conference):
+def test_works(user, graphql_client):
+    conference = ConferenceFactory()
+
     graphql_client.force_login(user)
 
     scan = BadgeScan.objects.create(
         scanned_by_id=user.id,
         conference=conference,
-        scanned_user_id=1,
+        scanned_user_id=UserFactory().id,
         badge_url="https://foo.bar",
         notes="",
     )
@@ -57,13 +61,15 @@ def test_returns_none_when_scan_does_not_exist(user, graphql_client):
     assert resp["data"]["badgeScan"] is None
 
 
-def test_returns_none_when_scan_by_other_user(user, graphql_client, conference):
+def test_returns_none_when_scan_by_other_user(user, graphql_client):
+    conference = ConferenceFactory()
+
     graphql_client.force_login(user)
 
     scan = BadgeScan.objects.create(
-        scanned_by_id=2,
+        scanned_by_id=UserFactory().id,
         conference=conference,
-        scanned_user_id=1,
+        scanned_user_id=UserFactory().id,
         badge_url="https://foo.bar",
         notes="",
     )

@@ -1,6 +1,8 @@
-from files_upload.models import File
 import pytest
+from files_upload.models import File
 from files_upload.tests.factories import FileFactory
+
+mark = pytest.mark.django_db
 
 
 @pytest.mark.parametrize(

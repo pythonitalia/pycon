@@ -1,3 +1,4 @@
+from schedule.tests.factories import ScheduleItemFactory
 import pytest
 from django.core import exceptions
 from pytest import mark
@@ -5,8 +6,8 @@ from schedule.models import ScheduleItem
 
 
 @mark.django_db
-def test_submission_is_required_if_type_is_submission(schedule_item_factory):
-    schedule_item = schedule_item_factory(
+def test_submission_is_required_if_type_is_submission():
+    schedule_item = ScheduleItemFactory(
         type=ScheduleItem.TYPES.submission, submission=None, title=""
     )
 
@@ -19,8 +20,8 @@ def test_submission_is_required_if_type_is_submission(schedule_item_factory):
 
 
 @mark.django_db
-def test_title_cannot_be_blank_if_type_is_custom(schedule_item_factory):
-    schedule_item = schedule_item_factory(type=ScheduleItem.TYPES.custom, title="")
+def test_title_cannot_be_blank_if_type_is_custom():
+    schedule_item = ScheduleItemFactory(type=ScheduleItem.TYPES.custom, title="")
 
     with pytest.raises(exceptions.ValidationError) as e:
         schedule_item.clean()
@@ -29,14 +30,14 @@ def test_title_cannot_be_blank_if_type_is_custom(schedule_item_factory):
 
 
 @mark.django_db
-def test_custom_item_with_title_is_correct(schedule_item_factory):
-    schedule_item = schedule_item_factory(type=ScheduleItem.TYPES.custom, title="Hello")
+def test_custom_item_with_title_is_correct():
+    schedule_item = ScheduleItemFactory(type=ScheduleItem.TYPES.custom, title="Hello")
     schedule_item.clean()
 
 
 @mark.django_db
-def test_save_with_update_fields(schedule_item_factory):
-    schedule_item = schedule_item_factory(type=ScheduleItem.TYPES.custom, title="Hello")
+def test_save_with_update_fields():
+    schedule_item = ScheduleItemFactory(type=ScheduleItem.TYPES.custom, title="Hello")
 
     schedule_item.title = "Example"
     schedule_item.save(update_fields=["title"])

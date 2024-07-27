@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+from users.tests.factories import UserFactory
 import pytest
 from pytest import mark
 
@@ -149,8 +150,8 @@ def _update_user_newsletter(graphql_client, user, open_to_newsletter):
 
 @pytest.mark.skip
 @mark.django_db
-def test_subscribe_when_update_user(graphql_client, user_factory):
-    user = user_factory(open_to_newsletter=False)
+def test_subscribe_when_update_user(graphql_client):
+    user = UserFactory(open_to_newsletter=False)
     graphql_client.force_login(user)
 
     resp, variables = _update_user_newsletter(graphql_client, user, True)
@@ -162,8 +163,8 @@ def test_subscribe_when_update_user(graphql_client, user_factory):
 
 @pytest.mark.skip
 @mark.django_db
-def test_unsubscribe_when_update_user(graphql_client, user_factory):
-    user = user_factory(open_to_newsletter=True)
+def test_unsubscribe_when_update_user(graphql_client):
+    user = UserFactory(open_to_newsletter=True)
     graphql_client.force_login(user)
 
     resp, variables = _update_user_newsletter(graphql_client, user, False)

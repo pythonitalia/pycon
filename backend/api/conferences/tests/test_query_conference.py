@@ -1,3 +1,5 @@
+from conferences.tests.factories import ConferenceFactory
+from schedule.tests.factories import DayFactory
 import pytest
 import time_machine
 from django.utils import timezone
@@ -17,11 +19,11 @@ def _query_conference(graphql_client, conference):
     return graphql_client.query(query, variables={"code": conference.code})
 
 
-def test_query_conference_current_day(conference_factory, graphql_client, day_factory):
-    conference = conference_factory()
-    day_factory(conference=conference, day=timezone.datetime(2020, 10, 10))
-    day_factory(conference=conference, day=timezone.datetime(2020, 10, 11))
-    day_factory(conference=conference, day=timezone.datetime(2020, 10, 12))
+def test_query_conference_current_day(graphql_client):
+    conference = ConferenceFactory()
+    DayFactory(conference=conference, day=timezone.datetime(2020, 10, 10))
+    DayFactory(conference=conference, day=timezone.datetime(2020, 10, 11))
+    DayFactory(conference=conference, day=timezone.datetime(2020, 10, 12))
 
     with time_machine.travel("2020-10-10 03:00:00Z", tick=False):
         result = _query_conference(graphql_client, conference)

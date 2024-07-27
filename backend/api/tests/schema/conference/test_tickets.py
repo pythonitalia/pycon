@@ -1,10 +1,11 @@
+from conferences.tests.factories import ConferenceFactory
 from pytest import mark
 
 from api.pretix.types import TicketItem
 
 
 @mark.django_db
-def test_returns_tickets(graphql_client, conference, mocker):
+def test_returns_tickets(graphql_client, mocker):
     get_tickets_mock = mocker.patch("api.conferences.types.get_conference_tickets")
     get_tickets_mock.return_value = [
         TicketItem(
@@ -37,7 +38,7 @@ def test_returns_tickets(graphql_client, conference, mocker):
             }
         }
         """,
-        variables={"code": conference.code},
+        variables={"code": ConferenceFactory().code},
     )
 
     assert "errors" not in resp
@@ -45,7 +46,7 @@ def test_returns_tickets(graphql_client, conference, mocker):
 
 
 @mark.django_db
-def test_is_business(graphql_client, conference, mocker):
+def test_is_business(graphql_client, mocker):
     get_tickets_mock = mocker.patch("api.conferences.types.get_conference_tickets")
     get_tickets_mock.return_value = [
         TicketItem(
@@ -96,7 +97,7 @@ def test_is_business(graphql_client, conference, mocker):
             }
         }
         """,
-        variables={"code": conference.code},
+        variables={"code": ConferenceFactory().code},
     )
 
     assert "errors" not in resp

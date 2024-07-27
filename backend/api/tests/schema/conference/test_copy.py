@@ -1,14 +1,16 @@
+from cms.tests.factories import GenericCopyFactory
+from conferences.tests.factories import ConferenceFactory
 from pytest import mark
 
 from i18n.strings import LazyI18nString
 
 
 @mark.django_db
-def test_get_conference_copy(conference_factory, generic_copy_factory, graphql_client):
-    conference = conference_factory()
-    conference_b = conference_factory()
+def test_get_conference_copy(graphql_client):
+    conference = ConferenceFactory()
+    conference_b = ConferenceFactory()
 
-    generic_copy_factory(
+    GenericCopyFactory(
         conference=conference, key="intro", content=LazyI18nString({"en": "hello!"})
     )
 

@@ -49,7 +49,6 @@ Repos used by this project are in separate repositories.
 
 | Name          | Description                                             | Link                                                   |
 | ------------- | ------------------------------------------------------- | ------------------------------------------------------ |
-| Toolkit (Deprecated)       | Backend Toolkit used to share code between all services | https://github.com/pythonitalia/pythonit-toolkit       |
 | Pretix Extended API | Pretix plugin to expose more APIs                   | https://github.com/pythonitalia/pretix-plugin-extended-api |
 | Pretix Attendance certificate | Pretix plugin to generate and send Attendance certificates | https://github.com/pythonitalia/pretix-plugin-attendance-certificate |
 

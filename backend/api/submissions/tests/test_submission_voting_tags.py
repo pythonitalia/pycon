@@ -1,9 +1,12 @@
+from submissions.tests.factories import SubmissionFactory, SubmissionTagFactory
 import pytest
 
 
-@pytest.mark.django_db
-def test_returns_tags(graphql_client, submission_tag_factory):
-    tag = submission_tag_factory()
+pytestmark = pytest.mark.django_db
+
+
+def test_returns_tags(graphql_client):
+    tag = SubmissionTagFactory()
 
     resp = graphql_client.query(
         """{
@@ -17,14 +20,11 @@ def test_returns_tags(graphql_client, submission_tag_factory):
     assert resp["data"]["submissionTags"] == [{"id": str(tag.id)}]
 
 
-@pytest.mark.django_db
-def test_returns_voting_tags(
-    graphql_client, submission_tag_factory, submission_factory
-):
-    tag_1 = submission_tag_factory()
-    submission_tag_factory()
+def test_returns_voting_tags(graphql_client):
+    tag_1 = SubmissionTagFactory()
+    SubmissionTagFactory()
 
-    submission = submission_factory()
+    submission = SubmissionFactory()
     submission.tags.add(tag_1.id)
 
     resp = graphql_client.query(

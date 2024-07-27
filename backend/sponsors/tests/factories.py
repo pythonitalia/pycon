@@ -1,14 +1,12 @@
 import factory
 import factory.fuzzy
 from factory.django import DjangoModelFactory
-from pytest_factoryboy import register
 
 from conferences.tests.factories import ConferenceFactory
 from pycon.constants import COLORS
 from sponsors.models import Sponsor, SponsorLead, SponsorLevel
 
 
-@register
 class SponsorFactory(DjangoModelFactory):
     name = factory.Faker("word")
     link = factory.Faker("url")
@@ -24,7 +22,6 @@ class SponsorFactory(DjangoModelFactory):
         model = Sponsor
 
 
-@register
 class SponsorLevelFactory(DjangoModelFactory):
     name = factory.Faker("word")
     conference = factory.SubFactory(ConferenceFactory)
@@ -49,7 +46,6 @@ class SponsorLevelFactory(DjangoModelFactory):
                 self.sponsors.add(sponsor)
 
 
-@register
 class SponsorLeadFactory(DjangoModelFactory):
     fullname = factory.Faker("name")
     email = factory.Faker("email")

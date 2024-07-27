@@ -1,11 +1,12 @@
 from django.test import override_settings
 
+from conferences.tests.factories import ConferenceFactory
 from pretix import get_user_ticket
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-def test_user_ticket(requests_mock, user, conference_factory, pretix_user_tickets):
-    conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
+def test_user_ticket(requests_mock, user, pretix_user_tickets):
+    conference = ConferenceFactory(pretix_organizer_id="org", pretix_event_id="event")
     pretix_user_tickets[0]["attendee_email"] = user.email.upper()
 
     requests_mock.get(

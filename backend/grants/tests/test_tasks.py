@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from unittest.mock import patch, ANY
-from conferences.tests.factories import DeadlineFactory
+from conferences.tests.factories import ConferenceFactory, DeadlineFactory
 from django.test import override_settings
 
 import pytest
@@ -21,7 +21,7 @@ from grants.models import Grant
 pytestmark = pytest.mark.django_db
 
 
-def test_send_grant_voucher_email(settings, grant_factory):
+def test_send_grant_voucher_email(settings):
     settings.FRONTEND_URL = "https://pycon.it"
     user = UserFactory(
         full_name="Marco Acierno",
@@ -30,7 +30,7 @@ def test_send_grant_voucher_email(settings, grant_factory):
         username="marco",
     )
 
-    grant = grant_factory(
+    grant = GrantFactory(
         user=user,
         voucher_code="ABC123",
         approved_type=Grant.ApprovedType.ticket_only,
@@ -77,9 +77,9 @@ def test_send_grant_reply_rejected_email():
     )
 
 
-def test_send_grant_reply_waiting_list_email(
-    deadline_factory, conference, grant_factory, settings
-):
+def test_send_grant_reply_waiting_list_email(settings):
+    conference = ConferenceFactory()
+
     settings.FRONTEND_URL = "https://pycon.it"
     user = UserFactory(
         full_name="Marco Acierno",
@@ -88,7 +88,7 @@ def test_send_grant_reply_waiting_list_email(
         username="marco",
     )
 
-    deadline_factory(
+    DeadlineFactory(
         start=datetime(2023, 3, 1, 23, 59, tzinfo=timezone.utc),
         conference=conference,
         type="custom",
@@ -97,7 +97,7 @@ def test_send_grant_reply_waiting_list_email(
             "it": "Update Grants in Waiting List",
         },
     )
-    grant = grant_factory(conference=conference, user=user)
+    grant = GrantFactory(conference=conference, user=user)
 
     with patch("grants.tasks.send_email") as email_mock:
         send_grant_reply_waiting_list_email(grant_id=grant.id)
@@ -116,9 +116,9 @@ def test_send_grant_reply_waiting_list_email(
     )
 
 
-def test_handle_grant_reply_sent_reminder(conference_factory, grant_factory, settings):
+def test_handle_grant_reply_sent_reminder(settings):
     settings.FRONTEND_URL = "https://pycon.it"
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
     )
@@ -128,7 +128,7 @@ def test_handle_grant_reply_sent_reminder(conference_factory, grant_factory, set
         name="Marco",
         username="marco",
     )
-    grant = grant_factory(
+    grant = GrantFactory(
         conference=conference,
         approved_type=Grant.ApprovedType.ticket_only,
         applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
@@ -159,12 +159,10 @@ def test_handle_grant_reply_sent_reminder(conference_factory, grant_factory, set
     )
 
 
-def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(
-    conference_factory, grant_factory, settings
-):
+def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(settings):
     settings.FRONTEND_URL = "https://pycon.it"
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
     )
@@ -175,7 +173,7 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(
         username="marco",
     )
 
-    grant = grant_factory(
+    grant = GrantFactory(
         conference=conference,
         approved_type=Grant.ApprovedType.ticket_travel_accommodation,
         applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
@@ -208,11 +206,11 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(
 
 
 def test_handle_grant_approved_ticket_travel_accommodation_fails_with_no_amount(
-    conference_factory, grant_factory, settings
+    settings,
 ):
     settings.FRONTEND_URL = "https://pycon.it"
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
     )
@@ -223,7 +221,7 @@ def test_handle_grant_approved_ticket_travel_accommodation_fails_with_no_amount(
         username="marco",
     )
 
-    grant = grant_factory(
+    grant = GrantFactory(
         conference=conference,
         approved_type=Grant.ApprovedType.ticket_travel_accommodation,
         applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
@@ -237,12 +235,10 @@ def test_handle_grant_approved_ticket_travel_accommodation_fails_with_no_amount(
         send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
 
 
-def test_handle_grant_approved_ticket_only_reply_sent(
-    conference_factory, grant_factory, settings
-):
+def test_handle_grant_approved_ticket_only_reply_sent(settings):
     settings.FRONTEND_URL = "https://pycon.it"
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
     )
@@ -253,7 +249,7 @@ def test_handle_grant_approved_ticket_only_reply_sent(
         username="marco",
     )
 
-    grant = grant_factory(
+    grant = GrantFactory(
         conference=conference,
         approved_type=Grant.ApprovedType.ticket_only,
         applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
@@ -284,12 +280,10 @@ def test_handle_grant_approved_ticket_only_reply_sent(
     )
 
 
-def test_handle_grant_approved_travel_reply_sent(
-    conference_factory, grant_factory, settings
-):
+def test_handle_grant_approved_travel_reply_sent(settings):
     settings.FRONTEND_URL = "https://pycon.it"
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
         end=datetime(2023, 5, 5, tzinfo=timezone.utc),
     )
@@ -300,7 +294,7 @@ def test_handle_grant_approved_travel_reply_sent(
         username="marco",
     )
 
-    grant = grant_factory(
+    grant = GrantFactory(
         conference=conference,
         approved_type=Grant.ApprovedType.ticket_travel,
         applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),

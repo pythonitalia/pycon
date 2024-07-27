@@ -1,3 +1,4 @@
+from conferences.tests.factories import ConferenceFactory
 import pytest
 from badge_scanner.models import BadgeScan
 from users.tests.factories import UserFactory
@@ -29,7 +30,9 @@ def _list_scans_query(graphql_client, variables):
     )
 
 
-def test_raises_an_error_when_user_is_not_authenticated(graphql_client, conference):
+def test_raises_an_error_when_user_is_not_authenticated(graphql_client):
+    conference = ConferenceFactory()
+
     resp = _list_scans_query(
         graphql_client,
         variables={"conferenceCode": conference.code},
@@ -39,7 +42,9 @@ def test_raises_an_error_when_user_is_not_authenticated(graphql_client, conferen
     assert resp["errors"][0]["message"] == "User not logged in"
 
 
-def test_returns_only_scans_by_current_user(user, graphql_client, conference):
+def test_returns_only_scans_by_current_user(user, graphql_client):
+    conference = ConferenceFactory()
+
     graphql_client.force_login(user)
 
     scan = BadgeScan.objects.create(
@@ -69,7 +74,9 @@ def test_returns_only_scans_by_current_user(user, graphql_client, conference):
     }
 
 
-def test_can_paginate(user, graphql_client, conference):
+def test_can_paginate(user, graphql_client):
+    conference = ConferenceFactory()
+
     graphql_client.force_login(user)
 
     scan_a = BadgeScan.objects.create(
