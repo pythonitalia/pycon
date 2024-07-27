@@ -1,4 +1,4 @@
-from backend.conferences.tests.factories import ConferenceFactory
+from conferences.tests.factories import ConferenceFactory
 import pytest
 from badge_scanner.models import BadgeScan
 

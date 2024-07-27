@@ -1,5 +1,5 @@
 from api.helpers.ids import encode_hashid
-from backend.conferences.tests.factories import ConferenceFactory
+from conferences.tests.factories import ConferenceFactory
 from badge_scanner.models import BadgeScan
 from users.tests.factories import UserFactory
 
