@@ -5,7 +5,7 @@ import pytest
 pytestmark = pytest.mark.django_db
 
 
-def _send_grant(client, conference, **kwargs):
+def _send_grant(client, conference, conference_code, **kwargs):
     grant = GrantFactory.build(conference=conference)
     document = """
         mutation SendGrant($input: SendGrantInput!) {
@@ -50,7 +50,7 @@ def _send_grant(client, conference, **kwargs):
     defaults = {
         "name": grant.name,
         "fullName": grant.full_name,
-        "conference": grant.conference.code,
+        "conference": conference_code or conference.code,
         "ageGroup": grant.age_group,
         "gender": grant.gender,
         "occupation": grant.occupation,
@@ -152,7 +152,9 @@ def test_can_send_two_grants_to_different_conferences(graphql_client, user):
 def test_invalid_conference(graphql_client, user):
     graphql_client.force_login(user)
 
-    response = _send_grant(graphql_client, 5)
+    response = _send_grant(
+        graphql_client, ConferenceFactory(), conference_code="invalid"
+    )
 
     assert not response.get("errors")
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
