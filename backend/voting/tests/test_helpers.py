@@ -1,6 +1,7 @@
 from association_membership.tests.factories import (
     MembershipFactory,
 )
+from voting.tests.factories.included_event import IncludedEventFactory
 from conferences.tests.factories import ConferenceFactory
 from submissions.tests.factories import SubmissionFactory
 import pytest
@@ -56,9 +57,7 @@ def test_user_can_vote_if_is_a_member_of_python_italia(user, mocker, is_member):
     assert check_if_user_can_vote(user, conference) == is_member
 
 
-def test_user_can_vote_if_has_ticket_for_a_previous_conference(
-    user, mocker, included_event_factory
-):
+def test_user_can_vote_if_has_ticket_for_a_previous_conference(user, mocker):
     conference = ConferenceFactory()
 
     def side_effect(email, event_organizer, event_slug, additional_events):
@@ -68,7 +67,7 @@ def test_user_can_vote_if_has_ticket_for_a_previous_conference(
         )
 
     mocker.patch("voting.helpers.user_has_admission_ticket", side_effect=side_effect)
-    included_event_factory(
+    IncludedEventFactory(
         conference=conference,
         pretix_organizer_id="organizer-slug",
         pretix_event_id="event-slug",

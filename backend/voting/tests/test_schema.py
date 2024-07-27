@@ -1,13 +1,14 @@
+from voting.tests.factories.vote import VoteFactory
 from submissions.tests.factories import SubmissionFactory
 from pytest import mark
 
 
 @mark.django_db
 def test_get_logged_user_vote_on_a_submission(
-    graphql_client, user, vote_factory, settings, requests_mock
+    graphql_client, user, settings, requests_mock
 ):
-    vote = vote_factory(user_id=user.id, value=1)
-    vote_factory(value=3)
+    vote = VoteFactory(user_id=user.id, value=1)
+    VoteFactory(value=3)
     conference = vote.submission.conference
 
     requests_mock.post(
@@ -36,9 +37,9 @@ def test_get_logged_user_vote_on_a_submission(
 
 @mark.django_db
 def test_cannot_get_my_vote_without_ticket(
-    graphql_client, user, vote_factory, requests_mock, settings
+    graphql_client, user, requests_mock, settings
 ):
-    vote = vote_factory(user_id=user.id)
+    vote = VoteFactory(user_id=user.id)
     conference = vote.submission.conference
 
     requests_mock.post(
@@ -69,10 +70,8 @@ def test_cannot_get_my_vote_without_ticket(
 
 
 @mark.django_db
-def test_cannot_get_my_vote_unlogged(
-    graphql_client, vote_factory, requests_mock, settings
-):
-    vote = vote_factory()
+def test_cannot_get_my_vote_unlogged(graphql_client, requests_mock, settings):
+    vote = VoteFactory()
     conference = vote.submission.conference
     requests_mock.post(
         f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",

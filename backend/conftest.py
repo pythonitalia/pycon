@@ -12,6 +12,9 @@ from django.test.client import Client
 from languages.models import Language
 from users.tests.factories import UserFactory
 
+from api.tests.fixtures import *  # noqa
+from pretix.tests.fixtures import *  # noqa
+
 
 @pytest.fixture()
 def user(db):

@@ -1,3 +1,4 @@
+from voting.tests.factories.vote import VoteFactory
 from conferences.tests.factories import ConferenceFactory
 from submissions.tests.factories import SubmissionFactory
 import pytest
@@ -165,12 +166,12 @@ def test_filter_submissions_by_tags(graphql_client, user, mock_has_ticket):
     assert {"id": submission_3.hashid} in resp["data"]["submissions"]["items"]
 
 
-def test_filter_by_user_voted_only(graphql_client, user, vote_factory, mock_has_ticket):
+def test_filter_by_user_voted_only(graphql_client, user, mock_has_ticket):
     graphql_client.force_login(user)
     submission = SubmissionFactory()
     SubmissionFactory(conference=submission.conference)
     mock_has_ticket(submission.conference)
-    vote_factory(user_id=user.id, submission=submission)
+    VoteFactory(user_id=user.id, submission=submission)
 
     query = """query Submissions($code: String!, $voted: Boolean!) {
         submissions(code: $code, voted: $voted) {
@@ -189,14 +190,12 @@ def test_filter_by_user_voted_only(graphql_client, user, vote_factory, mock_has_
     assert resp["data"]["submissions"]["items"] == [{"id": submission.hashid}]
 
 
-def test_filter_by_user_has_not_voted(
-    graphql_client, user, vote_factory, mock_has_ticket
-):
+def test_filter_by_user_has_not_voted(graphql_client, user, mock_has_ticket):
     graphql_client.force_login(user)
     submission = SubmissionFactory()
     submission_2 = SubmissionFactory(conference=submission.conference)
     mock_has_ticket(submission.conference)
-    vote_factory(user_id=user.id, submission=submission)
+    VoteFactory(user_id=user.id, submission=submission)
 
     query = """query Submissions($code: String!, $voted: Boolean!) {
         submissions(code: $code, voted: $voted) {
