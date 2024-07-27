@@ -102,3 +102,39 @@ license = {text = "MIT"}
 lambda = [
     "awslambdaric<3.0.0,>=2.0.4",
 ]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "integrations",
+    "healthchecks",
+    "files_upload",
+    "video_uploads",
+    "organizers",
+    "association_membership",
+    "google_api",
+    "badges",
+    "badge_scanner",
+    "reviews",
+    "participants",
+    "checklist",
+    "volunteers_notifications",
+    "job_board",
+    "invoices",
+    "newsletters",
+    "hotels",
+    "notifications",
+    "grants",
+    "events",
+    "cms",
+    "sponsors",
+    "pages",
+    "blog",
+    "voting",
+    "submissions",
+    "languages",
+    "conferences",
+    "api",
+    "custom_admin",
+    "schedule",
+    "users"
+]

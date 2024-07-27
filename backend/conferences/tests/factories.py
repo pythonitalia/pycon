@@ -1,3 +1,4 @@
+from organizers.tests.factories import OrganizerFactory
 import factory
 import factory.fuzzy
 from pycon.constants import UTC
@@ -24,6 +25,7 @@ from submissions.models import SubmissionType
 
 @register
 class ConferenceFactory(DjangoModelFactory):
+    organizer = factory.SubFactory(OrganizerFactory)
     name = LanguageFactory("name")
     code = factory.Faker("text", max_nb_chars=10)
     introduction = LanguageFactory("sentence")
