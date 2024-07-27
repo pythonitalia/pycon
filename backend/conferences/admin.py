@@ -101,10 +101,16 @@ class IncludedEventInline(admin.TabularInline):
 
 @admin.register(Conference)
 class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
+    list_display = (
+        "name",
+        "code",
+        "organizer",
+    )
     search_fields = (
         "name",
         "code",
     )
+    list_filter = ("organizer",)
     readonly_fields = ("created", "modified")
     filter_horizontal = ("topics", "languages", "audience_levels", "submission_types")
     fieldsets = (
@@ -112,6 +118,7 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
             "Details",
             {
                 "fields": (
+                    "organizer",
                     "name",
                     "code",
                     "introduction",

@@ -126,6 +126,7 @@ INSTALLED_APPS = [
     "healthchecks.apps.HealthchecksConfig",
     "files_upload.apps.FilesUploadConfig",
     "video_uploads.apps.VideoUploadsConfig",
+    "organizers.apps.OrganizersConfig",
 ]
 
 MIDDLEWARE = [

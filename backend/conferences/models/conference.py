@@ -12,8 +12,16 @@ from .deadline import Deadline, DeadlineStatus
 
 
 class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
+    organizer = models.ForeignKey(
+        "organizers.Organizer",
+        verbose_name=_("organizer"),
+        on_delete=models.PROTECT,
+        related_name="conferences",
+        null=True,
+    )
+
     name = I18nCharField(_("name"), max_length=100)
-    code = models.CharField(_("code"), max_length=10, unique=True)
+    code = models.CharField(_("code"), max_length=100, unique=True)
     timezone = TimeZoneField()
 
     topics = models.ManyToManyField(
