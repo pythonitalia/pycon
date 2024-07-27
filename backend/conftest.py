@@ -34,6 +34,7 @@ from voting.tests.fixtures import *  # noqa
 from users.tests.factories import UserFactory
 from api.cms.tests.factories import *  # noqa
 from video_uploads.tests.factories import *  # noqa
+from organizers.tests.factories import *  # noqa
 
 
 @pytest.fixture()
