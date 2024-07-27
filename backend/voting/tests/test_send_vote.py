@@ -205,8 +205,17 @@ def test_only_authenticated_users_can_vote(graphql_client):
 
 @mark.django_db
 @mark.parametrize("score_index", [0, -1, 6])
-def test_cannot_vote_values_outside_the_range(graphql_client, user, score_index):
+def test_cannot_vote_values_outside_the_range(
+    graphql_client, user, score_index, requests_mock
+):
     submission = SubmissionFactory()
+    conference = submission.conference
+
+    requests_mock.post(
+        f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
+        json={"user_has_admission_ticket": True},
+    )
+
     graphql_client.force_login(user)
 
     resp, _ = _submit_vote(graphql_client, submission, value_index=score_index)
