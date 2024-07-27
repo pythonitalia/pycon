@@ -4,7 +4,6 @@ from users.tests.factories import UserFactory
 import factory
 import factory.fuzzy
 from factory.django import DjangoModelFactory
-from pytest_factoryboy import register
 
 from conferences.tests.factories import ConferenceFactory
 from languages.tests.factories import LanguageFactory
@@ -20,7 +19,6 @@ from schedule.models import (
 from submissions.tests.factories import SubmissionFactory
 
 
-@register
 class RoomFactory(DjangoModelFactory):
     name = factory.Faker("word")
 
@@ -28,7 +26,6 @@ class RoomFactory(DjangoModelFactory):
         model = Room
 
 
-@register
 class DayFactory(DjangoModelFactory):
     day = factory.Faker("future_date")
 
@@ -36,7 +33,6 @@ class DayFactory(DjangoModelFactory):
         model = Day
 
 
-@register
 class SlotFactory(DjangoModelFactory):
     day = factory.SubFactory(DayFactory)
 
@@ -44,7 +40,6 @@ class SlotFactory(DjangoModelFactory):
         model = Slot
 
 
-@register
 class ScheduleItemFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     submission = factory.SubFactory(SubmissionFactory)
@@ -103,7 +98,6 @@ class ScheduleItemFactory(DjangoModelFactory):
         model = ScheduleItem
 
 
-@register
 class ScheduleItemAdditionalSpeakerFactory(DjangoModelFactory):
     scheduleitem = factory.SubFactory(ScheduleItemFactory)
     user = factory.SubFactory(UserFactory)
@@ -112,7 +106,6 @@ class ScheduleItemAdditionalSpeakerFactory(DjangoModelFactory):
         model = ScheduleItemAdditionalSpeaker
 
 
-@register
 class ScheduleItemAttendeeFactory(DjangoModelFactory):
     schedule_item = factory.SubFactory(ScheduleItemFactory)
     user = factory.SubFactory(UserFactory)
@@ -121,7 +114,6 @@ class ScheduleItemAttendeeFactory(DjangoModelFactory):
         model = ScheduleItemAttendee
 
 
-@register
 class ScheduleItemSentForVideoUploadFactory(DjangoModelFactory):
     schedule_item = factory.SubFactory(ScheduleItemFactory)
 

@@ -4,10 +4,8 @@ from cms.models import FAQ, GenericCopy, Menu, MenuLink
 from conferences.tests.factories import ConferenceFactory
 from factory.django import DjangoModelFactory
 from i18n.tests.factories import LanguageFactory
-from pytest_factoryboy import register
 
 
-@register
 class GenericCopyFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     key = factory.Faker("slug")
@@ -17,7 +15,6 @@ class GenericCopyFactory(DjangoModelFactory):
         model = GenericCopy
 
 
-@register
 class FAQFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     question = LanguageFactory("sentence")
@@ -27,7 +24,6 @@ class FAQFactory(DjangoModelFactory):
         model = FAQ
 
 
-@register
 class MenuFactory(DjangoModelFactory):
     title = LanguageFactory("sentence")
     conference = factory.SubFactory(ConferenceFactory)
@@ -37,7 +33,6 @@ class MenuFactory(DjangoModelFactory):
         model = Menu
 
 
-@register
 class MenuLinkFactory(DjangoModelFactory):
     menu = factory.SubFactory(MenuFactory)
     title = LanguageFactory("sentence")

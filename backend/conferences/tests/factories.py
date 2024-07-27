@@ -5,7 +5,6 @@ from pycon.constants import UTC
 
 from django.utils import timezone
 from factory.django import DjangoModelFactory
-from pytest_factoryboy import register
 import zoneinfo
 from conferences.models import (
     AudienceLevel,
@@ -23,7 +22,6 @@ from users.tests.factories import UserFactory
 from submissions.models import SubmissionType
 
 
-@register
 class ConferenceFactory(DjangoModelFactory):
     organizer = factory.SubFactory(OrganizerFactory)
     name = LanguageFactory("name")
@@ -158,7 +156,6 @@ class ConferenceFactory(DjangoModelFactory):
         django_get_or_create = ("code",)
 
 
-@register
 class TopicFactory(DjangoModelFactory):
     name = factory.Faker("word")
 
@@ -167,7 +164,6 @@ class TopicFactory(DjangoModelFactory):
         django_get_or_create = ("name",)
 
 
-@register
 class DeadlineFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     type = factory.fuzzy.FuzzyChoice([deadline[0] for deadline in Deadline.TYPES])
@@ -181,7 +177,6 @@ class DeadlineFactory(DjangoModelFactory):
         model = Deadline
 
 
-@register
 class AudienceLevelFactory(DjangoModelFactory):
     name = factory.fuzzy.FuzzyChoice(("Beginner", "Intermidiate", "Advanced"))
 
@@ -190,7 +185,6 @@ class AudienceLevelFactory(DjangoModelFactory):
         django_get_or_create = ("name",)
 
 
-@register
 class DurationFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
 
@@ -202,7 +196,6 @@ class DurationFactory(DjangoModelFactory):
         model = Duration
 
 
-@register
 class KeynoteFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     slug = LanguageFactory("slug")
@@ -213,7 +206,6 @@ class KeynoteFactory(DjangoModelFactory):
         model = Keynote
 
 
-@register
 class KeynoteSpeakerFactory(DjangoModelFactory):
     keynote = factory.SubFactory(KeynoteFactory)
     bio = "{}"
@@ -224,7 +216,6 @@ class KeynoteSpeakerFactory(DjangoModelFactory):
         model = KeynoteSpeaker
 
 
-@register
 class SpeakerVoucherFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     voucher_type = SpeakerVoucher.VoucherType.SPEAKER

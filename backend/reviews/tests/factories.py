@@ -1,13 +1,11 @@
 import factory
 import factory.fuzzy
 from factory.django import DjangoModelFactory
-from pytest_factoryboy import register
 
 from conferences.tests.factories import ConferenceFactory
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
 
 
-@register
 class ReviewSessionFactory(DjangoModelFactory):
     class Meta:
         model = ReviewSession
@@ -16,7 +14,6 @@ class ReviewSessionFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
 
 
-@register
 class UserReviewFactory(DjangoModelFactory):
     class Meta:
         model = UserReview
@@ -26,7 +23,6 @@ class UserReviewFactory(DjangoModelFactory):
     grant = None
 
 
-@register
 class AvailableScoreOptionFactory(DjangoModelFactory):
     class Meta:
         model = AvailableScoreOption
