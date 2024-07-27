@@ -1,3 +1,4 @@
+from submissions.tests.factories import SubmissionFactory
 from pytest import mark
 
 
@@ -98,9 +99,9 @@ def test_cannot_get_my_vote_unlogged(
 
 @mark.django_db
 def test_get_my_vote_when_the_user_never_voted(
-    graphql_client, user, submission_factory, requests_mock, settings
+    graphql_client, user, requests_mock, settings
 ):
-    submission = submission_factory()
+    submission = SubmissionFactory()
     conference = submission.conference
 
     requests_mock.post(

@@ -1,13 +1,15 @@
+from conferences.tests.factories import ConferenceFactory
+from submissions.tests.factories import SubmissionFactory
 import pytest
 
 pytestmark = pytest.mark.django_db
 
 
-def test_returns_submissions_paginated(graphql_client, user, submission_factory):
+def test_returns_submissions_paginated(graphql_client, user):
     graphql_client.force_login(user)
 
-    submission = submission_factory(id=1, speaker_id=user.id)
-    submission_2 = submission_factory(id=2, conference=submission.conference)
+    submission = SubmissionFactory(id=1, speaker_id=user.id)
+    submission_2 = SubmissionFactory(id=2, conference=submission.conference)
 
     query = """query Submissions($code: String!, $page: Int) {
         submissions(code: $code, page: $page, pageSize: 1) {
@@ -36,10 +38,10 @@ def test_returns_submissions_paginated(graphql_client, user, submission_factory)
     assert resp_2["data"]["submissions"]["items"] == [{"id": submission_2.hashid}]
 
 
-def test_page_size_cannot_be_less_than_1(graphql_client, user, submission_factory):
+def test_page_size_cannot_be_less_than_1(graphql_client, user):
     graphql_client.force_login(user)
 
-    submission = submission_factory(id=1, speaker_id=user.id)
+    submission = SubmissionFactory(id=1, speaker_id=user.id)
 
     query = """query Submissions($code: String!) {
         submissions(code: $code, pageSize: -1) {
@@ -61,10 +63,10 @@ def test_page_size_cannot_be_less_than_1(graphql_client, user, submission_factor
     assert resp["data"]["submissions"] is None
 
 
-def test_max_allowed_page_size(graphql_client, user, submission_factory):
+def test_max_allowed_page_size(graphql_client, user):
     graphql_client.force_login(user)
 
-    submission = submission_factory(id=1, speaker_id=user.id)
+    submission = SubmissionFactory(id=1, speaker_id=user.id)
 
     query = """query Submissions($code: String!) {
         submissions(code: $code, pageSize: 3000) {
@@ -86,10 +88,10 @@ def test_max_allowed_page_size(graphql_client, user, submission_factory):
     assert resp["data"]["submissions"] is None
 
 
-def test_min_allowed_page(graphql_client, user, submission_factory):
+def test_min_allowed_page(graphql_client, user):
     graphql_client.force_login(user)
 
-    submission = submission_factory(id=1, speaker_id=user.id)
+    submission = SubmissionFactory(id=1, speaker_id=user.id)
 
     query = """query Submissions($code: String!, $page: Int) {
         submissions(code: $code, page: $page) {
@@ -111,12 +113,10 @@ def test_min_allowed_page(graphql_client, user, submission_factory):
     assert resp["data"]["submissions"] is None
 
 
-def test_filter_submissions_by_language(
-    graphql_client, user, submission_factory, mock_has_ticket
-):
+def test_filter_submissions_by_language(graphql_client, user, mock_has_ticket):
     graphql_client.force_login(user)
-    submission = submission_factory(languages=["it", "en"])
-    submission_factory(conference=submission.conference, languages=["it"])
+    submission = SubmissionFactory(languages=["it", "en"])
+    SubmissionFactory(conference=submission.conference, languages=["it"])
     mock_has_ticket(submission.conference)
 
     query = """query Submissions($code: String!, $languages: [String!]) {
@@ -136,13 +136,11 @@ def test_filter_submissions_by_language(
     assert resp["data"]["submissions"]["items"] == [{"id": submission.hashid}]
 
 
-def test_filter_submissions_by_tags(
-    graphql_client, user, submission_factory, mock_has_ticket
-):
+def test_filter_submissions_by_tags(graphql_client, user, mock_has_ticket):
     graphql_client.force_login(user)
-    submission = submission_factory(tags=["cat"])
-    submission_factory(conference=submission.conference, tags=["dog", "bear"])
-    submission_3 = submission_factory(
+    submission = SubmissionFactory(tags=["cat"])
+    SubmissionFactory(conference=submission.conference, tags=["dog", "bear"])
+    submission_3 = SubmissionFactory(
         conference=submission.conference, tags=["cat", "lion"]
     )
     mock_has_ticket(submission.conference)
@@ -167,12 +165,10 @@ def test_filter_submissions_by_tags(
     assert {"id": submission_3.hashid} in resp["data"]["submissions"]["items"]
 
 
-def test_filter_by_user_voted_only(
-    graphql_client, user, submission_factory, vote_factory, mock_has_ticket
-):
+def test_filter_by_user_voted_only(graphql_client, user, vote_factory, mock_has_ticket):
     graphql_client.force_login(user)
-    submission = submission_factory()
-    submission_factory(conference=submission.conference)
+    submission = SubmissionFactory()
+    SubmissionFactory(conference=submission.conference)
     mock_has_ticket(submission.conference)
     vote_factory(user_id=user.id, submission=submission)
 
@@ -194,11 +190,11 @@ def test_filter_by_user_voted_only(
 
 
 def test_filter_by_user_has_not_voted(
-    graphql_client, user, submission_factory, vote_factory, mock_has_ticket
+    graphql_client, user, vote_factory, mock_has_ticket
 ):
     graphql_client.force_login(user)
-    submission = submission_factory()
-    submission_2 = submission_factory(conference=submission.conference)
+    submission = SubmissionFactory()
+    submission_2 = SubmissionFactory(conference=submission.conference)
     mock_has_ticket(submission.conference)
     vote_factory(user_id=user.id, submission=submission)
 
@@ -219,17 +215,13 @@ def test_filter_by_user_has_not_voted(
     assert resp["data"]["submissions"]["items"] == [{"id": submission_2.hashid}]
 
 
-def test_filter_by_type(
-    graphql_client, user, conference_factory, submission_factory, mock_has_ticket
-):
+def test_filter_by_type(graphql_client, user, mock_has_ticket):
     graphql_client.force_login(user)
-    conference = conference_factory(
+    conference = ConferenceFactory(
         submission_types=("talk", "workshop"),
     )
-    submission = submission_factory(
-        conference=conference, custom_submission_type="talk"
-    )
-    submission_factory(conference=conference, custom_submission_type="workshop")
+    submission = SubmissionFactory(conference=conference, custom_submission_type="talk")
+    SubmissionFactory(conference=conference, custom_submission_type="workshop")
     mock_has_ticket(conference)
 
     query = """query Submissions($code: String!, $types: [String!]) {
@@ -249,17 +241,13 @@ def test_filter_by_type(
     assert resp["data"]["submissions"]["items"] == [{"id": submission.hashid}]
 
 
-def test_filter_by_audience_level(
-    graphql_client, user, conference_factory, submission_factory, mock_has_ticket
-):
+def test_filter_by_audience_level(graphql_client, user, mock_has_ticket):
     graphql_client.force_login(user)
-    conference = conference_factory(
+    conference = ConferenceFactory(
         audience_levels=("adult", "senior"),
     )
-    submission = submission_factory(
-        conference=conference, custom_audience_level="adult"
-    )
-    submission_factory(conference=conference, custom_audience_level="senior")
+    submission = SubmissionFactory(conference=conference, custom_audience_level="adult")
+    SubmissionFactory(conference=conference, custom_audience_level="senior")
     mock_has_ticket(conference)
 
     query = """query Submissions($code: String!, $audienceLevels: [String!]) {

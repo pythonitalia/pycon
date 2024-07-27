@@ -1,3 +1,4 @@
+from conferences.tests.factories import ConferenceFactory
 from pytest import mark
 
 from pretix import user_has_admission_ticket
@@ -6,11 +7,9 @@ pytestmark = mark.django_db
 
 
 @mark.parametrize("has_ticket", [True, False])
-def test_user_has_admission_ticket(
-    settings, has_ticket, conference_factory, requests_mock
-):
+def test_user_has_admission_ticket(settings, has_ticket, requests_mock):
     settings.PRETIX_API = "http://localhost:9090/"
-    conference = conference_factory()
+    conference = ConferenceFactory()
 
     requests_mock.post(
         f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",

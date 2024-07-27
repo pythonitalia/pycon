@@ -1,6 +1,7 @@
 from datetime import timedelta
 from unittest.mock import call
 
+from conferences.tests.factories import ConferenceFactory
 from grants.tests.factories import GrantFactory
 import time_machine
 import pytest
@@ -20,17 +21,15 @@ pytestmark = pytest.mark.django_db
 
 def test_send_reply_emails_with_grants_from_multiple_conferences_fails(
     rf,
-    grant_factory,
     mocker,
-    conference_factory,
 ):
     """
     Test that sending reply emails does not proceed when selected grants belong
     to different conferences and appropriately displays an error message.
     """
     mock_messages = mocker.patch("custom_admin.admin.messages")
-    conference1 = conference_factory()
-    conference2 = conference_factory()
+    conference1 = ConferenceFactory()
+    conference2 = ConferenceFactory()
     grant1 = GrantFactory(conference=conference1, status=Grant.Status.approved)
     grant2 = GrantFactory(conference=conference2, status=Grant.Status.waiting_list)
     grant3 = GrantFactory(conference=conference2, status=Grant.Status.rejected)
@@ -60,9 +59,7 @@ def test_send_reply_emails_with_grants_from_multiple_conferences_fails(
     mock_send_rejected_email.assert_not_called()
 
 
-def test_send_reply_emails_approved_grant_missing_approved_type(
-    rf, grant_factory, mocker
-):
+def test_send_reply_emails_approved_grant_missing_approved_type(rf, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
     grant = GrantFactory(status=Grant.Status.approved, approved_type=None)
     request = rf.get("/")
@@ -79,7 +76,7 @@ def test_send_reply_emails_approved_grant_missing_approved_type(
     mock_send_approved_email.assert_not_called()
 
 
-def test_send_reply_emails_approved_missing_amount(rf, grant_factory, mocker):
+def test_send_reply_emails_approved_missing_amount(rf, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
     grant = GrantFactory(
         status=Grant.Status.approved,
@@ -131,7 +128,7 @@ def test_send_reply_emails_approved_set_deadline_in_fourteen_days(rf, mocker):
     )
 
 
-def test_send_reply_emails_waiting_list(rf, grant_factory, mocker):
+def test_send_reply_emails_waiting_list(rf, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
     grant = GrantFactory(
         status=Grant.Status.waiting_list,
@@ -149,7 +146,7 @@ def test_send_reply_emails_waiting_list(rf, grant_factory, mocker):
     mock_send_waiting_list_email.assert_called_once_with(grant_id=grant.id)
 
 
-def test_send_reply_emails_waiting_list_maybe(rf, grant_factory, mocker):
+def test_send_reply_emails_waiting_list_maybe(rf, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
     grant = GrantFactory(
         status=Grant.Status.waiting_list_maybe,
@@ -167,7 +164,7 @@ def test_send_reply_emails_waiting_list_maybe(rf, grant_factory, mocker):
     mock_send_waiting_list_email.assert_called_once_with(grant_id=grant.id)
 
 
-def test_send_reply_emails_rejected(rf, grant_factory, mocker):
+def test_send_reply_emails_rejected(rf, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
     grant = GrantFactory(
         status=Grant.Status.rejected,
@@ -188,14 +185,12 @@ def test_send_reply_emails_rejected(rf, grant_factory, mocker):
 @time_machine.travel("2020-10-10 10:00:00", tick=False)
 def test_send_voucher_via_email(
     rf,
-    grant_factory,
-    conference_factory,
     mocker,
 ):
     mocker.patch("grants.admin.messages")
     mock_send_email = mocker.patch("grants.admin.send_grant_voucher_email")
 
-    conference = conference_factory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
 
     grant = GrantFactory(
         status=Grant.Status.confirmed,
@@ -217,12 +212,10 @@ def test_send_voucher_via_email(
 
 def test_send_voucher_via_email_requires_filtering_by_conference(
     rf,
-    grant_factory,
-    conference_factory,
     mocker,
 ):
-    conference = conference_factory(pretix_speaker_voucher_quota_id=1234)
-    conference_2 = conference_factory(pretix_speaker_voucher_quota_id=1234)
+    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=1234)
+    conference_2 = ConferenceFactory(pretix_speaker_voucher_quota_id=1234)
     mock_messages = mocker.patch("custom_admin.admin.messages")
     mock_send_email = mocker.patch("grants.admin.send_grant_voucher_email")
     GrantFactory(
@@ -247,7 +240,7 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     mock_send_email.delay.assert_not_called()
 
 
-def test_create_grant_vouchers_on_pretix(rf, conference_factory, grant_factory, mocker):
+def test_create_grant_vouchers_on_pretix(rf, mocker):
     mock_create_voucher = mocker.patch(
         "grants.admin.create_voucher",
         side_effect=[
@@ -261,7 +254,7 @@ def test_create_grant_vouchers_on_pretix(rf, conference_factory, grant_factory, 
     )
     mock_messages = mocker.patch("grants.admin.messages")
 
-    conference = conference_factory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
 
     grant_1 = GrantFactory(
         status=Grant.Status.confirmed,
@@ -318,9 +311,7 @@ def test_create_grant_vouchers_on_pretix(rf, conference_factory, grant_factory, 
     )
 
 
-def test_create_grant_vouchers_on_pretix_only_for_missing_ones(
-    rf, conference_factory, grant_factory, mocker
-):
+def test_create_grant_vouchers_on_pretix_only_for_missing_ones(rf, mocker):
     mock_create_voucher = mocker.patch(
         "grants.admin.create_voucher",
         side_effect=[
@@ -330,7 +321,7 @@ def test_create_grant_vouchers_on_pretix_only_for_missing_ones(
     mocker.patch("grants.admin._generate_voucher_code", return_value="GRANT-123ZYZ")
     mocker.patch("grants.admin.messages")
 
-    conference = conference_factory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
 
     grant_1 = GrantFactory(
         status=Grant.Status.confirmed,
@@ -371,10 +362,10 @@ def test_create_grant_vouchers_on_pretix_only_for_missing_ones(
 
 
 def test_create_grant_vouchers_on_pretix_doesnt_work_with_multiple_conferences(
-    rf, conference_factory, grant_factory, mocker
+    rf, mocker
 ):
-    conference = conference_factory(pretix_speaker_voucher_quota_id=1234)
-    conference_2 = conference_factory(pretix_speaker_voucher_quota_id=1234)
+    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=1234)
+    conference_2 = ConferenceFactory(pretix_speaker_voucher_quota_id=1234)
     mock_messages = mocker.patch("custom_admin.admin.messages")
 
     mock_create_voucher = mocker.patch(
@@ -414,9 +405,7 @@ def test_create_grant_vouchers_on_pretix_doesnt_work_with_multiple_conferences(
     assert grant_2.voucher_code is None
 
 
-def test_create_grant_vouchers_on_pretix_doesnt_work_without_pretix_config(
-    rf, conference_factory, grant_factory, mocker
-):
+def test_create_grant_vouchers_on_pretix_doesnt_work_without_pretix_config(rf, mocker):
     mock_create_voucher = mocker.patch(
         "grants.admin.create_voucher",
         side_effect=[
@@ -426,7 +415,7 @@ def test_create_grant_vouchers_on_pretix_doesnt_work_without_pretix_config(
     )
     mock_messages = mocker.patch("grants.admin.messages")
 
-    conference = conference_factory(pretix_speaker_voucher_quota_id=None)
+    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=None)
 
     grant_1 = GrantFactory(
         status=Grant.Status.confirmed,
@@ -460,9 +449,7 @@ def test_create_grant_vouchers_on_pretix_doesnt_work_without_pretix_config(
     assert grant_2.voucher_code is None
 
 
-def test_create_grant_vouchers_only_for_confirmed_grants(
-    rf, conference_factory, grant_factory, mocker
-):
+def test_create_grant_vouchers_only_for_confirmed_grants(rf, mocker):
     mock_create_voucher = mocker.patch(
         "grants.admin.create_voucher",
         side_effect=[
@@ -471,7 +458,7 @@ def test_create_grant_vouchers_only_for_confirmed_grants(
     )
     mocker.patch("grants.admin._generate_voucher_code", return_value="GRANT-123ZYZ")
     mock_messages = mocker.patch("grants.admin.messages")
-    conference = conference_factory(pretix_speaker_voucher_quota_id=1223)
+    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=1223)
     grant_1 = GrantFactory(
         status=Grant.Status.refused,
         conference=conference,
@@ -506,7 +493,9 @@ def test_create_grant_vouchers_only_for_confirmed_grants(
     assert grant_2.voucher_code == "GRANT-123ZYZ"
 
 
-def test_mark_rejected_and_send_email(rf, conference, grant_factory, mocker):
+def test_mark_rejected_and_send_email(rf, mocker):
+    conference = ConferenceFactory()
+
     mock_messages = mocker.patch("grants.admin.messages")
     grant1 = GrantFactory(status=Grant.Status.waiting_list, conference=conference)
     grant2 = GrantFactory(status=Grant.Status.waiting_list_maybe, conference=conference)

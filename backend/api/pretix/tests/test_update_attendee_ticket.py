@@ -217,7 +217,9 @@ def test_update_ticket_with_answers(
 
 
 @pytest.mark.django_db
-def test_cannot_update_empty_email(graphql_client, user, conference, mocker):
+def test_cannot_update_empty_email(graphql_client, user, mocker):
+    conference = ConferenceFactory()
+
     graphql_client.force_login(user)
     mocker.patch("pretix.is_ticket_owner", return_value=True)
     query = """

@@ -42,7 +42,9 @@ def test_raises_an_error_when_user_is_not_authenticated(graphql_client):
     assert resp["errors"][0]["message"] == "User not logged in"
 
 
-def test_returns_only_scans_by_current_user(user, graphql_client, conference):
+def test_returns_only_scans_by_current_user(user, graphql_client):
+    conference = ConferenceFactory()
+
     graphql_client.force_login(user)
 
     scan = BadgeScan.objects.create(

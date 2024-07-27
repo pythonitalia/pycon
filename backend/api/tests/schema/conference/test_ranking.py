@@ -38,8 +38,6 @@ def test_conference_ranking_does_not_exists(
 
 
 def test_conference_ranking_is_not_public(
-    conference_factory,
-    rank_request_factory,
     graphql_client,
 ):
     conference = ConferenceFactory(

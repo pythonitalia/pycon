@@ -201,9 +201,7 @@ def test_update_submission(graphql_client, user):
     assert participant.linkedin_url == "http://linkedin.com/company/pythonpizza"
 
 
-def test_update_submission_with_invalid_facebook_social_url(
-    graphql_client, user, submission_tag_factory
-):
+def test_update_submission_with_invalid_facebook_social_url(graphql_client, user):
     conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("it", "en"),
@@ -256,9 +254,7 @@ def test_update_submission_with_invalid_facebook_social_url(
     ] == ["Facebook URL should be a facebook.com link"]
 
 
-def test_update_submission_with_invalid_linkedin_social_url(
-    graphql_client, user, submission_tag_factory
-):
+def test_update_submission_with_invalid_linkedin_social_url(graphql_client, user):
     conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("it", "en"),
@@ -314,9 +310,6 @@ def test_update_submission_with_invalid_linkedin_social_url(
 def test_update_submission_with_photo_to_upload(
     graphql_client,
     user,
-    conference_factory,
-    submission_tag_factory,
-    mocker,
 ):
     file = FileFactory()
 
@@ -372,7 +365,7 @@ def test_update_submission_with_photo_to_upload(
 
 
 def test_cannot_update_submission_with_lang_outside_allowed_values(
-    graphql_client, user, submission_tag_factory
+    graphql_client, user
 ):
     conference = ConferenceFactory(
         topics=("life", "diy"),
@@ -420,7 +413,7 @@ def test_cannot_update_submission_with_lang_outside_allowed_values(
     ]
 
 
-def test_can_edit_submission_outside_cfp(graphql_client, user, submission_tag_factory):
+def test_can_edit_submission_outside_cfp(graphql_client, user):
     conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("en", "it"),
@@ -465,9 +458,7 @@ def test_can_edit_submission_outside_cfp(graphql_client, user, submission_tag_fa
     assert list(submission.languages.values_list("code", flat=True)) == ["en"]
 
 
-def test_cannot_edit_submission_if_not_the_owner(
-    graphql_client, user, submission_tag_factory
-):
+def test_cannot_edit_submission_if_not_the_owner(graphql_client, user):
     conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("en",),
@@ -513,7 +504,7 @@ def test_cannot_edit_submission_if_not_the_owner(
     ]
 
 
-def test_make_submission_multi_lingual(graphql_client, user, submission_tag_factory):
+def test_make_submission_multi_lingual(graphql_client, user):
     conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("en", "it"),
@@ -583,9 +574,7 @@ def test_make_submission_multi_lingual(graphql_client, user, submission_tag_fact
     assert submission.abstract.localize("it") == "Abstract Italian"
 
 
-def test_edit_submission_multi_lingual_fields_required(
-    graphql_client, user, submission_tag_factory
-):
+def test_edit_submission_multi_lingual_fields_required(graphql_client, user):
     conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("en", "it"),

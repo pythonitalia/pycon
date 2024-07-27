@@ -5,7 +5,7 @@ from io import BytesIO
 from django.core.files.storage import storages
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from unittest import mock
-from conferences.tests.factories import SpeakerVoucherFactory
+from conferences.tests.factories import ConferenceFactory, SpeakerVoucherFactory
 from i18n.strings import LazyI18nString
 from datetime import datetime, timezone
 from unittest.mock import ANY, patch
@@ -250,9 +250,9 @@ def test_send_speaker_voucher_email_cospeaker():
 @override_settings(SPEAKERS_EMAIL_ADDRESS="reply")
 @pytest.mark.parametrize("has_ticket", [True, False])
 def test_send_speaker_communication_email_to_speakers_without_ticket(
-    requests_mock, conference_factory, has_ticket, settings
+    requests_mock, has_ticket, settings
 ):
-    conference = conference_factory()
+    conference = ConferenceFactory()
 
     user = UserFactory(
         full_name="Marco Acierno",
@@ -293,7 +293,7 @@ def test_send_speaker_communication_email_to_speakers_without_ticket(
 @override_settings(SPEAKERS_EMAIL_ADDRESS="reply")
 @pytest.mark.parametrize("has_ticket", [True, False])
 def test_send_speaker_communication_email_to_everyone(
-    settings, requests_mock, conference_factory, has_ticket
+    settings, requests_mock, has_ticket
 ):
     user = UserFactory(
         full_name="Marco Acierno",
@@ -301,7 +301,7 @@ def test_send_speaker_communication_email_to_everyone(
         name="Marco",
         username="marco",
     )
-    conference = conference_factory()
+    conference = ConferenceFactory()
 
     requests_mock.post(
         f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",

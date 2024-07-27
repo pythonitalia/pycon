@@ -77,11 +77,11 @@ def test_works_when_user_is_logged_in(user, graphql_client):
     assert badge_scan.notes == "This is a test"
 
 
-def test_fails_when_not_their_scan(user, user_factory, graphql_client):
+def test_fails_when_not_their_scan(user, graphql_client):
     conference = ConferenceFactory()
 
     graphql_client.force_login(user)
-    other_user = user_factory()
+    other_user = UserFactory()
 
     badge_scan = BadgeScan.objects.create(
         scanned_by_id=other_user.id,

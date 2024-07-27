@@ -177,7 +177,8 @@ def test_cannot_update_a_grant_if_grants_deadline_do_not_exists(graphql_client, 
     ]
 
 
-def test_cannot_send_a_grant_as_unlogged_user(graphql_client, grant):
+def test_cannot_update_a_grant_as_unlogged_user(graphql_client):
+    grant = GrantFactory()
     resp = _update_grant(graphql_client, grant)
 
     assert resp["errors"][0]["message"] == "User not logged in"

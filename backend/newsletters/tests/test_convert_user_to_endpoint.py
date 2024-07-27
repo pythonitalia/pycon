@@ -1,3 +1,10 @@
+from users.tests.factories import UserFactory
+from conferences.tests.factories import ConferenceFactory
+from schedule.tests.factories import (
+    ScheduleItemAdditionalSpeakerFactory,
+    ScheduleItemFactory,
+)
+from submissions.tests.factories import SubmissionFactory
 import pytest
 
 from newsletters.exporter import convert_user_to_endpoint
@@ -6,8 +13,8 @@ pytestmark = pytest.mark.skip(reason="disabled export for now")
 
 
 @pytest.mark.django_db
-def test_converts_one_user(user_factory):
-    user = user_factory()
+def test_converts_one_user():
+    user = UserFactory()
 
     endpoint = convert_user_to_endpoint(user)
 
@@ -21,10 +28,11 @@ def test_converts_one_user(user_factory):
 
 
 @pytest.mark.django_db
-def test_adds_submissions_sent(user_factory, conference, submission_factory):
-    user = user_factory()
+def test_adds_submissions_sent():
+    conference = ConferenceFactory()
+    user = UserFactory()
 
-    submission_factory(speaker_id=user.id, conference=conference)
+    SubmissionFactory(speaker_id=user.id, conference=conference)
 
     endpoint = convert_user_to_endpoint(user)
 
@@ -38,15 +46,12 @@ def test_adds_submissions_sent(user_factory, conference, submission_factory):
 
 
 @pytest.mark.django_db
-def test_adds_items_in_schedule(
-    user_factory, conference, submission_factory, schedule_item_factory
-):
-    user = user_factory()
+def test_adds_items_in_schedule():
+    conference = ConferenceFactory()
+    user = UserFactory()
 
-    submission = submission_factory(speaker_id=user.id, conference=conference)
-    schedule_item_factory(
-        type="submission", submission=submission, conference=conference
-    )
+    submission = SubmissionFactory(speaker_id=user.id, conference=conference)
+    ScheduleItemFactory(type="submission", submission=submission, conference=conference)
 
     endpoint = convert_user_to_endpoint(user)
 
@@ -60,23 +65,16 @@ def test_adds_items_in_schedule(
 
 
 @pytest.mark.django_db
-def test_adds_items_in_schedule_even_if_additional_speaker(
-    user_factory,
-    conference,
-    submission_factory,
-    schedule_item_factory,
-    schedule_item_additional_speaker_factory,
-):
-    user = user_factory()
-    additional_user = user_factory()
+def test_adds_items_in_schedule_even_if_additional_speaker():
+    conference = ConferenceFactory()
+    user = UserFactory()
+    additional_user = UserFactory()
 
-    submission = submission_factory(speaker_id=user.id, conference=conference)
-    item = schedule_item_factory(
+    submission = SubmissionFactory(speaker_id=user.id, conference=conference)
+    item = ScheduleItemFactory(
         type="submission", submission=submission, conference=conference
     )
-    schedule_item_additional_speaker_factory(
-        scheduleitem=item, user_id=additional_user.id
-    )
+    ScheduleItemAdditionalSpeakerFactory(scheduleitem=item, user_id=additional_user.id)
 
     endpoint = convert_user_to_endpoint(additional_user)
 
@@ -90,13 +88,12 @@ def test_adds_items_in_schedule_even_if_additional_speaker(
 
 
 @pytest.mark.django_db
-def test_has_list_of_talks_per_conference(
-    user_factory, conference, submission_factory, schedule_item_factory
-):
-    user = user_factory()
+def test_has_list_of_talks_per_conference():
+    conference = ConferenceFactory()
+    user = UserFactory()
 
-    submission = submission_factory(speaker_id=user.id, conference=conference)
-    item = schedule_item_factory(
+    submission = SubmissionFactory(speaker_id=user.id, conference=conference)
+    item = ScheduleItemFactory(
         type="submission", submission=submission, conference=conference
     )
 
@@ -113,10 +110,11 @@ def test_has_list_of_talks_per_conference(
 
 
 @pytest.mark.django_db
-def test_adds_cancelled_talks(user_factory, conference, submission_factory):
-    user = user_factory()
+def test_adds_cancelled_talks():
+    conference = ConferenceFactory()
+    user = UserFactory()
 
-    submission_factory(speaker_id=user.id, conference=conference, status="cancelled")
+    SubmissionFactory(speaker_id=user.id, conference=conference, status="cancelled")
 
     endpoint = convert_user_to_endpoint(user)
 

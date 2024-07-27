@@ -82,7 +82,7 @@ def test_get_roles(requests_mock, voucher_tag, voucher_code, expected_roles):
     assert roles == expected_roles
 
 
-def test_get_roles_for_speaker_without_voucher(requests_mock, submission_factory):
+def test_get_roles_for_speaker_without_voucher(requests_mock):
     conference = ConferenceFactory()
 
     submission = SubmissionFactory()

@@ -102,9 +102,8 @@ def test_cannot_send_a_grant_if_grants_are_closed(graphql_client, user):
     ]
 
 
-def test_cannot_send_a_grant_if_grants_deadline_do_not_exists(
-    graphql_client, user, conference
-):
+def test_cannot_send_a_grant_if_grants_deadline_do_not_exists(graphql_client, user):
+    conference = ConferenceFactory()
     assert list(conference.deadlines.all()) == []
     graphql_client.force_login(user)
 
@@ -117,7 +116,9 @@ def test_cannot_send_a_grant_if_grants_deadline_do_not_exists(
     ]
 
 
-def test_cannot_send_a_grant_as_unlogged_user(graphql_client, conference):
+def test_cannot_send_a_grant_as_unlogged_user(graphql_client):
+    conference = ConferenceFactory()
+
     resp = _send_grant(graphql_client, conference)
 
     assert resp["errors"][0]["message"] == "User not logged in"

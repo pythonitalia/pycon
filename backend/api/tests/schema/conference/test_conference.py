@@ -554,7 +554,9 @@ def test_is_cfp_open(graphql_client, cfp_open):
 
 
 @mark.django_db
-def test_is_cfp_open_false_when_no_deadline(graphql_client, conference):
+def test_is_cfp_open_false_when_no_deadline(graphql_client):
+    conference = ConferenceFactory()
+
     resp = graphql_client.query(
         """
         query($code: String!) {
@@ -598,7 +600,9 @@ def test_is_voting_open(graphql_client, voting_open):
 
 
 @mark.django_db
-def test_is_voting_open_false_when_no_deadlines(graphql_client, conference):
+def test_is_voting_open_false_when_no_deadlines(graphql_client):
+    conference = ConferenceFactory()
+
     resp = graphql_client.query(
         """
         query($code: String!) {
@@ -692,7 +696,9 @@ def test_can_see_submissions_as_staff(graphql_client):
 
 
 @mark.django_db
-def test_can_see_submissions_if_they_have_sent_one(graphql_client, conference):
+def test_can_see_submissions_if_they_have_sent_one(graphql_client):
+    conference = ConferenceFactory()
+
     user = UserFactory()
     SubmissionFactory(conference=conference)
     SubmissionFactory(conference=conference, speaker_id=user.id)
@@ -714,9 +720,9 @@ def test_can_see_submissions_if_they_have_sent_one(graphql_client, conference):
 
 
 @mark.django_db
-def test_get_conference_voucher_with_invalid_code(
-    graphql_client, conference, mocker, requests_mock
-):
+def test_get_conference_voucher_with_invalid_code(graphql_client, requests_mock):
+    conference = ConferenceFactory()
+
     requests_mock.get(
         "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/extended-vouchers/test/",
         status_code=404,
@@ -737,8 +743,10 @@ def test_get_conference_voucher_with_invalid_code(
 
 @mark.django_db
 def test_get_conference_voucher_with_valid_until(
-    graphql_client, conference, mocker, requests_mock, settings
+    graphql_client, requests_mock, settings
 ):
+    conference = ConferenceFactory()
+
     requests_mock.get(
         f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/extended-vouchers/test/",
         status_code=200,

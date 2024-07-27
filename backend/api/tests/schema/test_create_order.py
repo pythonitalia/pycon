@@ -1,3 +1,5 @@
+from conferences.tests.factories import ConferenceFactory
+from hotels.tests.factories import BedLayoutFactory, HotelRoomFactory
 import pytest
 from django.test import override_settings
 from django.utils import timezone
@@ -7,7 +9,8 @@ from hotels.models import HotelRoomReservation
 from pretix.exceptions import PretixError
 
 
-def test_cannot_create_order_unlogged(graphql_client, user, conference, mocker):
+def test_cannot_create_order_unlogged(graphql_client):
+    conference = ConferenceFactory()
     response = graphql_client.query(
         """mutation CreateOrder($code: String!, $input: CreateOrderInput!) {
             createOrder(conference: $code, input: $input) {
@@ -51,7 +54,9 @@ def test_cannot_create_order_unlogged(graphql_client, user, conference, mocker):
 
 
 @override_settings(FRONTEND_URL="http://test.it")
-def test_calls_create_order(graphql_client, user, conference, mocker):
+def test_calls_create_order(graphql_client, user, mocker):
+    conference = ConferenceFactory()
+
     graphql_client.force_login(user)
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
@@ -106,7 +111,9 @@ def test_calls_create_order(graphql_client, user, conference, mocker):
 
 
 @override_settings(FRONTEND_URL="http://test.it")
-def test_handles_payment_url_set_to_none(graphql_client, user, conference, mocker):
+def test_handles_payment_url_set_to_none(graphql_client, user, mocker):
+    conference = ConferenceFactory()
+
     graphql_client.force_login(user)
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
@@ -161,7 +168,9 @@ def test_handles_payment_url_set_to_none(graphql_client, user, conference, mocke
     create_order_mock.assert_called_once()
 
 
-def test_handles_errors(graphql_client, user, conference, mocker):
+def test_handles_errors(graphql_client, user, mocker):
+    conference = ConferenceFactory()
+
     graphql_client.force_login(user)
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
@@ -215,15 +224,12 @@ def test_handles_errors(graphql_client, user, conference, mocker):
 @mark.django_db
 def test_order_hotel_room(
     graphql_client,
-    hotel_room_factory,
     user,
-    conference_factory,
     mocker,
-    bed_layout_factory,
 ):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
         end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
     )
@@ -232,9 +238,9 @@ def test_order_hotel_room(
     create_order_mock.return_value.payment_url = "https://example.com"
     create_order_mock.return_value.code = "123"
 
-    room = hotel_room_factory(conference=conference)
-    bed_layout = bed_layout_factory()
-    bed_layout_2 = bed_layout_factory()
+    room = HotelRoomFactory(conference=conference)
+    bed_layout = BedLayoutFactory()
+    bed_layout_2 = BedLayoutFactory()
     room.available_bed_layouts.add(bed_layout)
     room.available_bed_layouts.add(bed_layout_2)
 
@@ -295,15 +301,12 @@ def test_order_hotel_room(
 @mark.django_db
 def test_cannot_order_hotel_room_with_bed_layout_of_another_room(
     graphql_client,
-    hotel_room_factory,
     user,
-    conference_factory,
     mocker,
-    bed_layout_factory,
 ):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
         end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
     )
@@ -312,10 +315,10 @@ def test_cannot_order_hotel_room_with_bed_layout_of_another_room(
     create_order_mock.return_value.payment_url = "https://example.com"
     create_order_mock.return_value.code = "123"
 
-    room = hotel_room_factory(conference=conference)
-    bed_layout = bed_layout_factory()
+    room = HotelRoomFactory(conference=conference)
+    bed_layout = BedLayoutFactory()
     room.available_bed_layouts.add(bed_layout)
-    invalid_bed_layout = bed_layout_factory()
+    invalid_bed_layout = BedLayoutFactory()
 
     response = graphql_client.query(
         """mutation CreateOrder($code: String!, $input: CreateOrderInput!) {
@@ -365,23 +368,20 @@ def test_cannot_order_hotel_room_with_bed_layout_of_another_room(
 
 def test_cannot_order_hotel_room_with_checkin_before_conference(
     graphql_client,
-    hotel_room_factory,
     user,
-    conference_factory,
     mocker,
-    bed_layout_factory,
 ):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
         end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
     )
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
 
-    room = hotel_room_factory(conference=conference)
-    bed_layout = bed_layout_factory()
+    room = HotelRoomFactory(conference=conference)
+    bed_layout = BedLayoutFactory()
     room.available_bed_layouts.add(bed_layout)
 
     response = graphql_client.query(
@@ -437,23 +437,20 @@ def test_cannot_order_hotel_room_with_checkin_before_conference(
 
 def test_cannot_order_hotel_room_with_checkin_after_conference(
     graphql_client,
-    hotel_room_factory,
     user,
-    conference_factory,
     mocker,
-    bed_layout_factory,
 ):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
         end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
     )
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
 
-    room = hotel_room_factory(conference=conference)
-    bed_layout = bed_layout_factory()
+    room = HotelRoomFactory(conference=conference)
+    bed_layout = BedLayoutFactory()
     room.available_bed_layouts.add(bed_layout)
 
     response = graphql_client.query(
@@ -509,23 +506,20 @@ def test_cannot_order_hotel_room_with_checkin_after_conference(
 
 def test_cannot_order_hotel_room_with_checkout_after_conference(
     graphql_client,
-    hotel_room_factory,
     user,
-    conference_factory,
     mocker,
-    bed_layout_factory,
 ):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
         end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
     )
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
 
-    room = hotel_room_factory(conference=conference)
-    bed_layout = bed_layout_factory()
+    room = HotelRoomFactory(conference=conference)
+    bed_layout = BedLayoutFactory()
     room.available_bed_layouts.add(bed_layout)
 
     response = graphql_client.query(
@@ -581,23 +575,20 @@ def test_cannot_order_hotel_room_with_checkout_after_conference(
 
 def test_cannot_order_hotel_room_with_checkout_before_the_checkin(
     graphql_client,
-    hotel_room_factory,
     user,
-    conference_factory,
     mocker,
-    bed_layout_factory,
 ):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
         end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
     )
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
 
-    room = hotel_room_factory(conference=conference)
-    bed_layout = bed_layout_factory()
+    room = HotelRoomFactory(conference=conference)
+    bed_layout = BedLayoutFactory()
     room.available_bed_layouts.add(bed_layout)
 
     response = graphql_client.query(
@@ -653,23 +644,20 @@ def test_cannot_order_hotel_room_with_checkout_before_the_checkin(
 
 def test_cannot_order_room_with_random_room_id(
     graphql_client,
-    hotel_room_factory,
     user,
-    conference_factory,
     mocker,
-    bed_layout_factory,
 ):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
         end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
     )
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
 
-    room = hotel_room_factory(conference=conference)
-    bed_layout = bed_layout_factory()
+    room = HotelRoomFactory(conference=conference)
+    bed_layout = BedLayoutFactory()
     room.available_bed_layouts.add(bed_layout)
 
     response = graphql_client.query(
@@ -725,23 +713,20 @@ def test_cannot_order_room_with_random_room_id(
 
 def test_cannot_order_sold_out_room(
     graphql_client,
-    hotel_room_factory,
     user,
-    conference_factory,
     mocker,
-    bed_layout_factory,
 ):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
         end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
     )
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
 
-    room = hotel_room_factory(conference=conference, total_capacity=0)
-    bed_layout = bed_layout_factory()
+    room = HotelRoomFactory(conference=conference, total_capacity=0)
+    bed_layout = BedLayoutFactory()
     room.available_bed_layouts.add(bed_layout)
 
     response = graphql_client.query(
@@ -797,23 +782,20 @@ def test_cannot_order_sold_out_room(
 
 def test_cannot_order_room_of_a_different_conference(
     graphql_client,
-    hotel_room_factory,
     user,
-    conference_factory,
     mocker,
-    bed_layout_factory,
 ):
     graphql_client.force_login(user)
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
         end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
     )
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
 
-    room = hotel_room_factory(total_capacity=5)
-    bed_layout = bed_layout_factory()
+    room = HotelRoomFactory(total_capacity=5)
+    bed_layout = BedLayoutFactory()
     room.available_bed_layouts.add(bed_layout)
 
     response = graphql_client.query(
@@ -869,11 +851,8 @@ def test_cannot_order_room_of_a_different_conference(
 
 def test_cannot_buy_more_room_than_available(
     graphql_client,
-    hotel_room_factory,
     user,
-    conference_factory,
     mocker,
-    bed_layout_factory,
 ):
     graphql_client.force_login(user)
 
@@ -881,13 +860,13 @@ def test_cannot_buy_more_room_than_available(
     create_order_mock.return_value.payment_url = "https://example.com"
     create_order_mock.return_value.code = "123"
 
-    conference = conference_factory(
+    conference = ConferenceFactory(
         start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
         end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
     )
 
-    room = hotel_room_factory(conference=conference, total_capacity=2)
-    bed_layout = bed_layout_factory()
+    room = HotelRoomFactory(conference=conference, total_capacity=2)
+    bed_layout = BedLayoutFactory()
     room.available_bed_layouts.add(bed_layout)
 
     response = graphql_client.query(
@@ -955,8 +934,9 @@ def test_cannot_buy_more_room_than_available(
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_fails_without_fiscal_code_in_country_italy(
-    graphql_client, user, conference, mocker
+    graphql_client, user, mocker
 ):
+    conference = ConferenceFactory()
     graphql_client.force_login(user)
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
@@ -1015,8 +995,9 @@ def test_invoice_validation_fails_without_fiscal_code_in_country_italy(
     "field_to_delete", ["name", "street", "zipcode", "city", "country"]
 )
 def test_invoice_validation_fails_with_missing_required_fields(
-    graphql_client, user, conference, mocker, field_to_delete
+    graphql_client, user, mocker, field_to_delete
 ):
+    conference = ConferenceFactory()
     graphql_client.force_login(user)
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
@@ -1076,9 +1057,8 @@ def test_invoice_validation_fails_with_missing_required_fields(
 
 
 @override_settings(FRONTEND_URL="http://test.it")
-def test_fiscal_code_not_required_for_non_it_orders(
-    graphql_client, user, conference, mocker
-):
+def test_fiscal_code_not_required_for_non_it_orders(graphql_client, user, mocker):
+    conference = ConferenceFactory()
     graphql_client.force_login(user)
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
@@ -1133,8 +1113,9 @@ def test_fiscal_code_not_required_for_non_it_orders(
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_fails_with_invalid_fiscal_code_in_country_italy(
-    graphql_client, user, conference, mocker
+    graphql_client, user, mocker
 ):
+    conference = ConferenceFactory()
     graphql_client.force_login(user)
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
@@ -1190,8 +1171,9 @@ def test_invoice_validation_fails_with_invalid_fiscal_code_in_country_italy(
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_fails_with_empty_vat_for_businesses(
-    graphql_client, user, conference, mocker
+    graphql_client, user, mocker
 ):
+    conference = ConferenceFactory()
     graphql_client.force_login(user)
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
@@ -1247,8 +1229,9 @@ def test_invoice_validation_fails_with_empty_vat_for_businesses(
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_fails_with_empty_business_name_for_businesses(
-    graphql_client, user, conference, mocker
+    graphql_client, user, mocker
 ):
+    conference = ConferenceFactory()
     graphql_client.force_login(user)
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
@@ -1304,8 +1287,9 @@ def test_invoice_validation_fails_with_empty_business_name_for_businesses(
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_fails_when_italian_business_and_no_sdi(
-    graphql_client, user, conference, mocker
+    graphql_client, user, mocker
 ):
+    conference = ConferenceFactory()
     graphql_client.force_login(user)
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
@@ -1362,8 +1346,9 @@ def test_invoice_validation_fails_when_italian_business_and_no_sdi(
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_works_when_not_italian_and_no_sdi(
-    graphql_client, user, conference, mocker
+    graphql_client, user, mocker
 ):
+    conference = ConferenceFactory()
     graphql_client.force_login(user)
 
     create_order_mock = mocker.patch("api.orders.mutations.create_order")

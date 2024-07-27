@@ -1,10 +1,15 @@
 from files_upload.tests.factories import FileFactory
-from conferences.tests.factories import ConferenceFactory, TopicFactory
+from conferences.tests.factories import (
+    AudienceLevelFactory,
+    ConferenceFactory,
+    DurationFactory,
+    TopicFactory,
+)
 from pytest import mark
 
 from participants.models import Participant
 from submissions.models import Submission, SubmissionTag, SubmissionType
-from submissions.tests.factories import SubmissionFactory
+from submissions.tests.factories import SubmissionFactory, SubmissionTypeFactory
 
 
 def _submit_talk(client, conference, **kwargs):
@@ -467,13 +472,11 @@ def test_submit_talk_with_not_valid_duration(graphql_client, user):
 
 
 @mark.django_db
-def test_cannot_use_duration_if_submission_type_is_not_allowed(
-    graphql_client, user, duration_factory, submission_type_factory
-):
+def test_cannot_use_duration_if_submission_type_is_not_allowed(graphql_client, user):
     graphql_client.force_login(user)
 
-    talk_type = submission_type_factory(name="talk")
-    tutorial_type = submission_type_factory(name="tutorial")
+    talk_type = SubmissionTypeFactory(name="talk")
+    tutorial_type = SubmissionTypeFactory(name="tutorial")
 
     conference = ConferenceFactory(
         topics=("my-topic",),
@@ -483,10 +486,10 @@ def test_cannot_use_duration_if_submission_type_is_not_allowed(
         audience_levels=("Beginner",),
     )
 
-    duration1 = duration_factory(conference=conference)
+    duration1 = DurationFactory(conference=conference)
     duration1.allowed_submission_types.add(talk_type)
 
-    duration2 = duration_factory(conference=conference)
+    duration2 = DurationFactory(conference=conference)
     duration2.allowed_submission_types.add(tutorial_type)
 
     resp, _ = _submit_talk(
@@ -500,12 +503,10 @@ def test_cannot_use_duration_if_submission_type_is_not_allowed(
 
 
 @mark.django_db
-def test_submit_talk_with_duration_id_of_another_conf(
-    graphql_client, user, duration_factory
-):
+def test_submit_talk_with_duration_id_of_another_conf(graphql_client, user):
     graphql_client.force_login(user)
 
-    another_conf_duration = duration_factory()
+    another_conf_duration = DurationFactory()
 
     conference = ConferenceFactory(
         topics=("my-topic",),
@@ -527,7 +528,7 @@ def test_submit_talk_with_duration_id_of_another_conf(
 
 
 @mark.django_db
-def test_submit_talk_with_not_valid_conf_topic(graphql_client, user, topic_factory):
+def test_submit_talk_with_not_valid_conf_topic(graphql_client, user):
     graphql_client.force_login(user)
 
     conference = ConferenceFactory(
@@ -550,7 +551,7 @@ def test_submit_talk_with_not_valid_conf_topic(graphql_client, user, topic_facto
 
 @mark.django_db
 def test_submit_talk_with_not_valid_allowed_submission_type_in_the_conference(
-    graphql_client, user, topic_factory
+    graphql_client, user
 ):
     graphql_client.force_login(user)
 
@@ -572,9 +573,7 @@ def test_submit_talk_with_not_valid_allowed_submission_type_in_the_conference(
 
 
 @mark.django_db
-def test_submit_talk_with_not_valid_submission_type_id(
-    graphql_client, user, topic_factory
-):
+def test_submit_talk_with_not_valid_submission_type_id(graphql_client, user):
     graphql_client.force_login(user)
 
     conference = ConferenceFactory(
@@ -595,7 +594,7 @@ def test_submit_talk_with_not_valid_submission_type_id(
 
 
 @mark.django_db
-def test_submit_talk_with_not_valid_language_code(graphql_client, user, topic_factory):
+def test_submit_talk_with_not_valid_language_code(graphql_client, user):
     graphql_client.force_login(user)
 
     conference = ConferenceFactory(
@@ -638,11 +637,9 @@ def test_submit_talk_with_not_valid_audience_level(graphql_client, user):
 
 
 @mark.django_db
-def test_submit_talk_with_not_valid_conf_audience_level(
-    graphql_client, user, audience_level_factory
-):
+def test_submit_talk_with_not_valid_conf_audience_level(graphql_client, user):
     graphql_client.force_login(user)
-    audience_level = audience_level_factory(name="Intermidiate")
+    audience_level = AudienceLevelFactory(name="Intermidiate")
 
     conference = ConferenceFactory(
         topics=("my-topic",),
@@ -883,7 +880,7 @@ def test_same_user_can_submit_talks_to_different_conferences(graphql_client, use
     )
 
 
-def test_create_submission_tags(graphql_client, user, submission_tag_factory):
+def test_create_submission_tags(graphql_client, user):
     graphql_client.force_login(user)
 
     conference = ConferenceFactory(
