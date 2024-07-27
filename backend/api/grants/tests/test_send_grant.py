@@ -1,10 +1,12 @@
+from conferences.tests.factories import ConferenceFactory
+from grants.tests.factories import GrantFactory
 import pytest
 
 pytestmark = pytest.mark.django_db
 
 
-def _send_grant(client, grant_factory, conference, **kwargs):
-    grant = grant_factory.build(conference=conference)
+def _send_grant(client, conference, **kwargs):
+    grant = GrantFactory.build(conference=conference)
     document = """
         mutation SendGrant($input: SendGrantInput!) {
             sendGrant(input: $input) {
@@ -77,23 +79,21 @@ def _send_grant(client, grant_factory, conference, **kwargs):
     return response
 
 
-def test_send_grant(graphql_client, user, conference_factory, grant_factory):
+def test_send_grant(graphql_client, user):
     graphql_client.force_login(user)
-    conference = conference_factory(active_grants=True)
+    conference = ConferenceFactory(active_grants=True)
 
-    response = _send_grant(graphql_client, grant_factory, conference)
+    response = _send_grant(graphql_client, conference)
 
     assert response["data"]["sendGrant"]["__typename"] == "Grant"
     assert response["data"]["sendGrant"]["id"]
 
 
-def test_cannot_send_a_grant_if_grants_are_closed(
-    graphql_client, user, conference_factory, grant_factory
-):
+def test_cannot_send_a_grant_if_grants_are_closed(graphql_client, user):
     graphql_client.force_login(user)
-    conference = conference_factory(active_grants=False)
+    conference = ConferenceFactory(active_grants=False)
 
-    response = _send_grant(graphql_client, grant_factory, conference)
+    response = _send_grant(graphql_client, conference)
 
     assert not response.get("errors")
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
@@ -103,12 +103,12 @@ def test_cannot_send_a_grant_if_grants_are_closed(
 
 
 def test_cannot_send_a_grant_if_grants_deadline_do_not_exists(
-    graphql_client, user, conference, grant_factory
+    graphql_client, user, conference
 ):
     assert list(conference.deadlines.all()) == []
     graphql_client.force_login(user)
 
-    response = _send_grant(graphql_client, grant_factory, conference)
+    response = _send_grant(graphql_client, conference)
 
     assert not response.get("errors")
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
@@ -117,22 +117,18 @@ def test_cannot_send_a_grant_if_grants_deadline_do_not_exists(
     ]
 
 
-def test_cannot_send_a_grant_as_unlogged_user(
-    graphql_client, conference, grant_factory
-):
-    resp = _send_grant(graphql_client, grant_factory, conference)
+def test_cannot_send_a_grant_as_unlogged_user(graphql_client, conference):
+    resp = _send_grant(graphql_client, conference)
 
     assert resp["errors"][0]["message"] == "User not logged in"
 
 
-def test_cannot_send_two_grants_to_the_same_conference(
-    graphql_client, user, grant_factory, conference_factory
-):
+def test_cannot_send_two_grants_to_the_same_conference(graphql_client, user):
     graphql_client.force_login(user)
-    conference = conference_factory(active_grants=True)
-    _send_grant(graphql_client, grant_factory, conference)
+    conference = ConferenceFactory(active_grants=True)
+    _send_grant(graphql_client, conference)
 
-    response = _send_grant(graphql_client, grant_factory, conference)
+    response = _send_grant(graphql_client, conference)
 
     assert not response.get("errors")
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
@@ -141,25 +137,23 @@ def test_cannot_send_two_grants_to_the_same_conference(
     ]
 
 
-def test_can_send_two_grants_to_different_conferences(
-    graphql_client, user, grant_factory, conference_factory
-):
+def test_can_send_two_grants_to_different_conferences(graphql_client, user):
     graphql_client.force_login(user)
-    conference = conference_factory(active_grants=True)
-    conference_2 = conference_factory(active_grants=True)
-    _send_grant(graphql_client, grant_factory, conference)
+    conference = ConferenceFactory(active_grants=True)
+    conference_2 = ConferenceFactory(active_grants=True)
+    _send_grant(graphql_client, conference)
 
-    response = _send_grant(graphql_client, grant_factory, conference_2)
+    response = _send_grant(graphql_client, conference_2)
 
     assert not response.get("errors")
     assert response["data"]["sendGrant"]["__typename"] == "Grant"
 
 
-def test_invalid_conference(graphql_client, user, conference_factory, grant_factory):
+def test_invalid_conference(graphql_client, user):
     graphql_client.force_login(user)
-    conference = conference_factory.build()
+    conference = ConferenceFactory()
 
-    response = _send_grant(graphql_client, grant_factory, conference)
+    response = _send_grant(graphql_client, conference)
 
     assert not response.get("errors")
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
@@ -171,17 +165,14 @@ def test_invalid_conference(graphql_client, user, conference_factory, grant_fact
 def test_cannot_send_grant_outside_allowed_values(
     graphql_client,
     user,
-    conference_factory,
-    grant_factory,
 ):
     graphql_client.force_login(user)
-    conference = conference_factory(
+    conference = ConferenceFactory(
         active_grants=True,
     )
 
     response = _send_grant(
         graphql_client,
-        grant_factory,
         conference,
         name="Marcotte" * 50,
         travellingFrom="Very long location" * 50,
@@ -199,17 +190,14 @@ def test_cannot_send_grant_outside_allowed_values(
 def test_cannot_send_grant_with_empty_values(
     graphql_client,
     user,
-    conference_factory,
-    grant_factory,
 ):
     graphql_client.force_login(user)
-    conference = conference_factory(
+    conference = ConferenceFactory(
         active_grants=True,
     )
 
     response = _send_grant(
         graphql_client,
-        grant_factory,
         conference,
         fullName="",
         pythonUsage="",
