@@ -206,6 +206,17 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         review_session = ReviewSession.objects.get(id=review_session_id)
         next_to_review = get_next_to_review_item_id(review_session, request.user)
 
+        if not next_to_review:
+            messages.warning(request, "No new proposal to review.")
+            return redirect(
+                reverse(
+                    "admin:reviews-recap",
+                    kwargs={
+                        "review_session_id": review_session_id,
+                    },
+                )
+            )
+
         return redirect(
             reverse(
                 "admin:reviews-vote-view",

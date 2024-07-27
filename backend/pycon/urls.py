@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from api.schema import schema
 from api.views import GraphQLView
+from pycon.views import disabled_view
 from submissions.views import SubmissionAutocomplete
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
@@ -21,6 +22,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("graphql", csrf_exempt(GraphQLView.as_view(schema=schema)), name="graphql"),
     path("user/", include("users.urls")),
+    path("cms-admin/users/", disabled_view),
     path("cms-admin/", include(wagtailadmin_urls)),
     path("cms-documents/", include(wagtaildocs_urls)),
     path("", include("association_membership.urls")),

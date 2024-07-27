@@ -33,8 +33,8 @@ class WetransferToS3TransferRequestAdmin(admin.ModelAdmin):
         "status",
         "wetransfer_url",
     ]
-    search_fields = ["conference__name", "wetransfer_url"]
-    list_filter = ["conference__name"]
+    search_fields = ["conference", "wetransfer_url"]
+    list_filter = ["conference"]
     ordering = ["-created"]
     date_hierarchy = "created"
     autocomplete_fields = ["conference"]

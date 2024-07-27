@@ -1,7 +1,7 @@
 from datetime import date, datetime, time
 
-import pytz
 from pytest import mark
+from pycon.constants import UTC
 
 
 @mark.django_db
@@ -9,8 +9,8 @@ def test_get_days_with_configuration(
     conference_factory, day_factory, slot_factory, graphql_client
 ):
     conference = conference_factory(
-        start=datetime(2020, 4, 2, tzinfo=pytz.UTC),
-        end=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+        start=datetime(2020, 4, 2, tzinfo=UTC),
+        end=datetime(2020, 4, 2, tzinfo=UTC),
     )
     day = day_factory(conference=conference, day=conference.start)
 
@@ -44,8 +44,8 @@ def test_get_days_items(
     conference_factory, day_factory, slot_factory, graphql_client, schedule_item_factory
 ):
     conference = conference_factory(
-        start=datetime(2020, 4, 2, tzinfo=pytz.UTC),
-        end=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+        start=datetime(2020, 4, 2, tzinfo=UTC),
+        end=datetime(2020, 4, 2, tzinfo=UTC),
     )
     day = day_factory(conference=conference, day=date(2020, 4, 2))
 
@@ -84,8 +84,8 @@ def test_days_item_sorted(
     conference_factory, day_factory, slot_factory, graphql_client, schedule_item_factory
 ):
     conference = conference_factory(
-        start=datetime(2020, 4, 2, tzinfo=pytz.UTC),
-        end=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+        start=datetime(2020, 4, 2, tzinfo=UTC),
+        end=datetime(2020, 4, 2, tzinfo=UTC),
     )
     day = day_factory(conference=conference, day=date(2020, 4, 2))
 
@@ -129,8 +129,8 @@ def test_filter_days_by_room(
     room_factory,
 ):
     conference = conference_factory(
-        start=datetime(2020, 4, 2, tzinfo=pytz.UTC),
-        end=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+        start=datetime(2020, 4, 2, tzinfo=UTC),
+        end=datetime(2020, 4, 2, tzinfo=UTC),
     )
 
     day = day_factory(conference=conference, day=date(2020, 4, 2))
@@ -175,8 +175,8 @@ def test_filter_days_by_room_not_found(
     conference_factory, day_factory, slot_factory, graphql_client
 ):
     conference = conference_factory(
-        start=datetime(2020, 4, 2, tzinfo=pytz.UTC),
-        end=datetime(2020, 4, 2, tzinfo=pytz.UTC),
+        start=datetime(2020, 4, 2, tzinfo=UTC),
+        end=datetime(2020, 4, 2, tzinfo=UTC),
     )
 
     day = day_factory(conference=conference, day=date(2020, 4, 2))
