@@ -6,26 +6,24 @@ from languages.models import Language
 import pytest
 
 from schedule.models import ScheduleItem
-from schedule.tests.factories import ScheduleItemFactory
+from schedule.tests.factories import DayFactory, ScheduleItemFactory, SlotFactory
 from submissions.tests.factories import SubmissionFactory
 
 pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
-def simple_schedule_item(
-    schedule_item_factory, submission_factory, slot_factory, day_factory
-):
-    submission = submission_factory()
+def simple_schedule_item():
+    submission = SubmissionFactory()
 
-    return schedule_item_factory(
+    return ScheduleItemFactory(
         status=ScheduleItem.STATUS.confirmed,
         submission=submission,
         type=ScheduleItem.TYPES.submission,
         conference=submission.conference,
         attendees_total_capacity=None,
-        slot=slot_factory(
-            day=day_factory(
+        slot=SlotFactory(
+            day=DayFactory(
                 day=datetime.date(2020, 10, 10), conference=submission.conference
             ),
             hour=datetime.time(10, 10, 0),

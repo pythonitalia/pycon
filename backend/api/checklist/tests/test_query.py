@@ -1,12 +1,13 @@
+from checklist.tests.factories import ChecklistItemFactory
 import pytest
 
 pytestmark = pytest.mark.django_db
 
 
-def test_fetch_checklist_items(graphql_client, checklist_item_factory):
-    item_1 = checklist_item_factory(text="Abbracciare Ernesto", order=2)
-    item_2 = checklist_item_factory(text="Abbracciare Patrick", order=1)
-    item_3 = checklist_item_factory(
+def test_fetch_checklist_items(graphql_client):
+    item_1 = ChecklistItemFactory(text="Abbracciare Ernesto", order=2)
+    item_2 = ChecklistItemFactory(text="Abbracciare Patrick", order=1)
+    item_3 = ChecklistItemFactory(
         text="Assicurarsi ci sia abbastanza sushi in sala", order=0
     )
 
