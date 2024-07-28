@@ -1,19 +1,6 @@
-from countries import countries
 from typing import Annotated
 from api.billing.types import BillingAddress
 from api.types import BaseErrorType
-from billing.validation import (
-    validate_cap_code,
-    validate_fiscal_code,
-    validate_italian_partita_iva,
-    validate_sdi_code,
-)
-from billing.exceptions import (
-    CapCodeValidationError,
-    FiscalCodeValidationError,
-    PartitaIvaValidationError,
-    SdiValidationError,
-)
 from conferences.models.conference import Conference
 import strawberry
 from api.permissions import IsAuthenticated
@@ -59,73 +46,7 @@ class UpdateBillingAddressInput:
     def validate(self) -> UpdateBillingAddressErrors:
         errors = UpdateBillingAddressErrors()
 
-        if not self.user_name:
-            errors.add_error("user_name", "User name is required")
-
-        if not self.address:
-            errors.add_error("address", "Address is required")
-
-        if not self.country:
-            errors.add_error("country", "Country is required")
-        elif not countries.is_valid(self.country):
-            errors.add_error("country", "Invalid country code")
-
-        if not self.city:
-            errors.add_error("city", "City is required")
-
-        if not self.zip_code:
-            errors.add_error("zip_code", "Zip code is required")
-        elif self.country == "IT":
-            self.validate_cap_code(errors)
-
-        if not self.vat_id:
-            errors.add_error("vat_id", "VAT ID is required")
-
-        if self.country == "IT" and self.is_business:
-            if not self.sdi:
-                errors.add_error("sdi", "SDI is required")
-            else:
-                self.validate_sdi(errors)
-
-            if not self.vat_id:
-                errors.add_error("vat_id", "VAT ID is required")
-            else:
-                self.validate_partita_iva(errors)
-
-        if self.country == "IT" and not self.is_business:
-            if not self.fiscal_code:
-                errors.add_error("fiscal_code", "Fiscal code is required")
-            else:
-                self.validate_fiscal_code(errors)
-
-        if self.is_business and not self.company_name:
-            errors.add_error("company_name", "Company name is required")
-
         return errors.if_has_errors
-
-    def validate_fiscal_code(self, errors: UpdateBillingAddressErrors):
-        try:
-            validate_fiscal_code(self.fiscal_code)
-        except FiscalCodeValidationError as exc:
-            errors.add_error("fiscal_code", str(exc))
-
-    def validate_partita_iva(self, errors: UpdateBillingAddressErrors):
-        try:
-            validate_italian_partita_iva(self.vat_id)
-        except PartitaIvaValidationError as exc:
-            errors.add_error("vat_id", str(exc))
-
-    def validate_cap_code(self, errors: UpdateBillingAddressErrors):
-        try:
-            validate_cap_code(self.zip_code)
-        except CapCodeValidationError as exc:
-            errors.add_error("zip_code", str(exc))
-
-    def validate_sdi(self, errors: UpdateBillingAddressErrors):
-        try:
-            validate_sdi_code(self.sdi)
-        except SdiValidationError as exc:
-            errors.add_error("sdi", str(exc))
 
 
 UpdateBillingAddressOutput = Annotated[

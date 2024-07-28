@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional
 from urllib.parse import urljoin
 from django.utils.dateparse import parse_datetime
 import requests
+from api.types import BaseErrorType
 import strawberry
 from django.conf import settings
 from django.core.cache import cache
@@ -12,6 +13,18 @@ from conferences.models.conference import Conference
 from hotels.models import BedLayout, HotelRoom
 from pretix.types import Category, Question, Quota
 import sentry_sdk
+from billing.validation import (
+    validate_cap_code,
+    validate_fiscal_code,
+    validate_italian_partita_iva,
+    validate_sdi_code,
+)
+from billing.exceptions import (
+    CapCodeValidationError,
+    FiscalCodeValidationError,
+    PartitaIvaValidationError,
+    SdiValidationError,
+)
 
 from .exceptions import PretixError
 
@@ -227,6 +240,31 @@ def get_quotas(conference: Conference) -> Dict[str, Quota]:
     return {str(result["id"]): result for result in data["results"]}
 
 
+@strawberry.type
+class InvoiceInformationErrors:
+    company: list[str] = strawberry.field(default_factory=list)
+    name: list[str] = strawberry.field(default_factory=list)
+    street: list[str] = strawberry.field(default_factory=list)
+    zipcode: list[str] = strawberry.field(default_factory=list)
+    city: list[str] = strawberry.field(default_factory=list)
+    country: list[str] = strawberry.field(default_factory=list)
+    vat_id: list[str] = strawberry.field(default_factory=list)
+    fiscal_code: list[str] = strawberry.field(default_factory=list)
+    pec: list[str] = strawberry.field(default_factory=list)
+    sdi: list[str] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
+class CreateOrderErrors(BaseErrorType):
+    @strawberry.type
+    class _CreateOrderErrors:
+        invoice_information: InvoiceInformationErrors = strawberry.field(
+            default_factory=InvoiceInformationErrors
+        )
+
+    errors: _CreateOrderErrors = None
+
+
 @strawberry.input
 class CreateOrderTicketAnswer:
     question_id: str
@@ -265,6 +303,68 @@ class InvoiceInformation:
     pec: str | None = None
     sdi: str | None = None
 
+    def validate(self, errors: CreateOrderErrors) -> CreateOrderErrors:
+        required_fields = [
+            "name",
+            "street",
+            "zipcode",
+            "city",
+            "country",
+        ]
+
+        if self.is_business:
+            required_fields += ["vat_id", "company"]
+
+        if self.country == "IT":
+            if self.is_business:
+                required_fields += ["sdi"]
+            else:
+                required_fields += ["fiscal_code"]
+
+        for required_field in required_fields:
+            value = getattr(self, required_field)
+
+            if not value:
+                errors.add_error(
+                    f"invoice_information.{required_field}",
+                    f"{required_field} is required",
+                )
+
+        if self.country == "IT":
+            self.validate_cap_code(errors)
+
+        if self.is_business:
+            self.validate_sdi(errors)
+            self.validate_partita_iva(errors)
+        else:
+            self.validate_fiscal_code(errors)
+
+        return errors
+
+    def validate_fiscal_code(self, errors: CreateOrderErrors):
+        try:
+            validate_fiscal_code(self.fiscal_code)
+        except FiscalCodeValidationError as exc:
+            errors.add_error("invoice_information.fiscal_code", str(exc))
+
+    def validate_partita_iva(self, errors: CreateOrderErrors):
+        try:
+            validate_italian_partita_iva(self.vat_id)
+        except PartitaIvaValidationError as exc:
+            errors.add_error("invoice_information.vat_id", str(exc))
+
+    def validate_cap_code(self, errors: CreateOrderErrors):
+        try:
+            validate_cap_code(self.zipcode)
+        except CapCodeValidationError as exc:
+            errors.add_error("invoice_information.zipcode", str(exc))
+
+    def validate_sdi(self, errors: CreateOrderErrors):
+        try:
+            validate_sdi_code(self.sdi)
+        except SdiValidationError as exc:
+            errors.add_error("invoice_information.sdi", str(exc))
+
 
 @strawberry.input
 class CreateOrderInput:
@@ -274,6 +374,11 @@ class CreateOrderInput:
     invoice_information: InvoiceInformation
     tickets: List[CreateOrderTicket]
     hotel_rooms: List[CreateOrderHotelRoom]
+
+    def validate(self) -> CreateOrderErrors:
+        errors = CreateOrderErrors()
+        self.invoice_information.validate(errors)
+        return errors.if_has_errors
 
 
 @strawberry.type
