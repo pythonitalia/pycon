@@ -1,3 +1,4 @@
+from countries import countries
 from typing import Annotated
 from api.billing.types import BillingAddress
 from api.types import BaseErrorType
@@ -58,17 +59,44 @@ class UpdateBillingAddressInput:
     def validate(self) -> UpdateBillingAddressErrors:
         errors = UpdateBillingAddressErrors()
 
-        if self.country == "IT" and self.sdi:
-            self.validate_sdi(errors)
+        if not self.user_name:
+            errors.add_error("user_name", "User name is required")
 
-        if self.country == "IT" and self.zip_code:
+        if not self.address:
+            errors.add_error("address", "Address is required")
+
+        if not self.country:
+            errors.add_error("country", "Country is required")
+        elif not countries.is_valid(self.country):
+            errors.add_error("country", "Invalid country code")
+
+        if not self.city:
+            errors.add_error("city", "City is required")
+
+        if not self.zip_code:
+            errors.add_error("zip_code", "Zip code is required")
+        elif self.country == "IT":
             self.validate_cap_code(errors)
 
-        if self.country == "IT" and self.vat_id:
-            self.validate_partita_iva(errors)
+        if not self.vat_id:
+            errors.add_error("vat_id", "VAT ID is required")
 
-        if self.country == "IT" and self.fiscal_code:
-            self.validate_fiscal_code(errors)
+        if self.country == "IT":
+            if self.is_business and not self.sdi:
+                errors.add_error("sdi", "SDI is required")
+            else:
+                self.validate_sdi(errors)
+
+            if self.vat_id:
+                self.validate_partita_iva(errors)
+
+            if not self.is_business and not self.fiscal_code:
+                errors.add_error("fiscal_code", "Fiscal code is required")
+            else:
+                self.validate_fiscal_code(errors)
+
+        if self.is_business and not self.company_name:
+            errors.add_error("company_name", "Company name is required")
 
         return errors.if_has_errors
 
