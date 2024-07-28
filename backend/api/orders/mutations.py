@@ -3,6 +3,7 @@ import typing
 from urllib.parse import urljoin
 
 from api.context import Info
+from pretix import CreateOrderErrors
 import strawberry
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
@@ -39,21 +40,11 @@ class OrdersMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def create_order(
         self, info: Info, conference: str, input: CreateOrderInput
-    ) -> typing.Union[CreateOrderResult, Error]:
+    ) -> typing.Union[CreateOrderResult, CreateOrderErrors]:
         conference_obj = Conference.objects.get(code=conference)
-        validation_error = validate_hotel_rooms(
-            input.hotel_rooms, conference=conference_obj
-        )
 
-        if validation_error:
-            return validation_error
-
-        invoice_validation_error = validate_order_invoice_information(
-            invoice_information=input.invoice_information
-        )
-
-        if invoice_validation_error:
-            return invoice_validation_error
+        if errors := input.validate():
+            return errors
 
         try:
             pretix_order = create_order(conference_obj, input)
