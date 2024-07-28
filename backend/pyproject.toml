@@ -135,5 +135,7 @@ known-first-party = [
     "api",
     "custom_admin",
     "schedule",
-    "users"
+    "users",
+    "billing",
+    "organizers"
 ]
