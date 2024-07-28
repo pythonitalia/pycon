@@ -87,12 +87,14 @@ class UpdateBillingAddressInput:
             else:
                 self.validate_sdi(errors)
 
-            if self.vat_id:
+            if self.is_business and not self.vat_id:
+                errors.add_error("vat_id", "VAT ID is required")
+            elif self.vat_id:
                 self.validate_partita_iva(errors)
 
             if not self.is_business and not self.fiscal_code:
                 errors.add_error("fiscal_code", "Fiscal code is required")
-            else:
+            elif self.fiscal_code:
                 self.validate_fiscal_code(errors)
 
         if self.is_business and not self.company_name:
