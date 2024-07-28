@@ -20,17 +20,26 @@ import { useFormState } from "react-use-form-state";
 import { useCountries } from "~/helpers/use-countries";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 
-import { InvoiceInformationState } from "../tickets-page/types";
+import type { CurrentUserQueryResult } from "~/types";
+import type { InvoiceInformationState } from "../tickets-page/types";
 import { useCart } from "../tickets-page/use-cart";
 
 const FISCAL_CODE_REGEX =
   /^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}$/;
 
-export const BillingCard = () => {
+export const BillingCard = ({
+  me,
+}: {
+  me: CurrentUserQueryResult["data"]["me"];
+}) => {
   const {
     state: { invoiceInformation, hasAdmissionTicket },
     updateInformation,
   } = useCart();
+  const savedBillingInformation = me?.billingAddresses.find(
+    (billingAddress) =>
+      billingAddress.isBusiness === invoiceInformation.isBusiness,
+  );
 
   const invalidFiscalCodeMessage = useTranslatedMessage(
     "orderInformation.invalidFiscalCode",
@@ -45,6 +54,26 @@ export const BillingCard = () => {
   const isItalian = formState.values.country === "IT";
 
   const inputPlaceholder = useTranslatedMessage("input.placeholder");
+
+  useEffect(() => {
+    const emptyInvoiceInformation = Object.entries(invoiceInformation).every(
+      ([key, value]) => key === "isBusiness" || !value,
+    );
+    if (emptyInvoiceInformation && savedBillingInformation) {
+      formState.setField("companyName", savedBillingInformation.companyName);
+      formState.setField("name", savedBillingInformation.userName);
+      formState.setField("fiscalCode", savedBillingInformation.fiscalCode);
+      formState.setField("pec", savedBillingInformation.pec);
+      formState.setField("sdi", savedBillingInformation.sdi);
+      formState.setField("vatId", savedBillingInformation.vatId);
+      formState.setField("address", savedBillingInformation.address);
+      formState.setField("zipCode", savedBillingInformation.zipCode);
+      formState.setField("city", savedBillingInformation.city);
+      formState.setField("country", savedBillingInformation.country);
+
+      updateInformation(formState.values);
+    }
+  }, []);
 
   useEffect(() => {
     if (invoiceInformation.isBusiness && !formState.values.isBusiness) {
