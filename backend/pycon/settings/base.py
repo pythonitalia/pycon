@@ -127,6 +127,7 @@ INSTALLED_APPS = [
     "files_upload.apps.FilesUploadConfig",
     "video_uploads.apps.VideoUploadsConfig",
     "organizers.apps.OrganizersConfig",
+    "billing.apps.BillingConfig",
 ]
 
 MIDDLEWARE = [
