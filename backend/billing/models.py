@@ -26,7 +26,9 @@ class BillingAddress(TimeStampedModel):
     city = models.TextField(_("city"))
     address = models.TextField(_("address"))
     country = models.CharField(
-        _("country"), choices=[(country.code, country.name) for country in countries]
+        _("country"),
+        choices=[(country.code, country.name) for country in countries],
+        max_length=10,
     )
     vat_id = models.TextField(_("vat id"), blank=True)
     fiscal_code = models.TextField(_("fiscal code"), blank=True)
