@@ -12,7 +12,7 @@ query CurrentUser($conference: String!) {
     canEditSchedule
     isPythonItaliaMember
     userScheduleFavouritesCalendarUrl(conference: $conference)
-		billingAddresses(conference: $conference) {
+    billingAddresses(conference: $conference) {
       isBusiness
       companyName
       userName
