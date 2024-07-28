@@ -26,7 +26,6 @@ from .users.queries import UserQuery
 from .association_membership.mutation import AssociationMembershipMutation
 from .cms.schema import CMSQuery
 from .sponsors.schema import SponsorsMutation
-from .billing.mutation import BillingMutation
 
 
 @strawberry.type
@@ -65,7 +64,6 @@ class Mutation(
     UsersMutations,
     AssociationMembershipMutation,
     SponsorsMutation,
-    BillingMutation,
 ):
     pass
 

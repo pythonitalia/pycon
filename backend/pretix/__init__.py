@@ -333,11 +333,11 @@ class InvoiceInformation:
         if self.country == "IT":
             self.validate_cap_code(errors)
 
-        if self.is_business:
-            self.validate_sdi(errors)
-            self.validate_partita_iva(errors)
-        else:
-            self.validate_fiscal_code(errors)
+            if self.is_business:
+                self.validate_sdi(errors)
+                self.validate_partita_iva(errors)
+            else:
+                self.validate_fiscal_code(errors)
 
         return errors
 

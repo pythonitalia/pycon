@@ -1,4 +1,3 @@
-import re
 import typing
 from urllib.parse import urljoin
 
@@ -14,15 +13,11 @@ from hotels.models import HotelRoom, HotelRoomReservation
 from pretix import (
     CreateOrderHotelRoom,
     CreateOrderInput,
-    InvoiceInformation,
     Order,
     create_order,
 )
 from pretix.exceptions import PretixError
-
-FISCAL_CODE_REGEX = re.compile(
-    r"^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}$"
-)
+from billing.models import BillingAddress as BillingAddressModel
 
 
 @strawberry.type
@@ -45,6 +40,24 @@ class OrdersMutations:
 
         if errors := input.validate():
             return errors
+
+        BillingAddressModel.objects.update_or_create(
+            user=info.context.request.user,
+            organizer_id=conference_obj.organizer_id,
+            is_business=input.invoice_information.is_business,
+            defaults={
+                "company_name": input.invoice_information.company,
+                "user_name": input.invoice_information.name,
+                "zip_code": input.invoice_information.zipcode,
+                "city": input.invoice_information.city,
+                "address": input.invoice_information.street,
+                "country": input.invoice_information.country,
+                "vat_id": input.invoice_information.vat_id,
+                "fiscal_code": input.invoice_information.fiscal_code or "",
+                "sdi": input.invoice_information.sdi or "",
+                "pec": input.invoice_information.pec or "",
+            },
+        )
 
         try:
             pretix_order = create_order(conference_obj, input)
@@ -122,37 +135,3 @@ def create_hotel_reservations(
             user_id=user_id,
             bed_layout_id=room.bed_layout_id,
         )
-
-
-def validate_order_invoice_information(
-    *, invoice_information: InvoiceInformation
-) -> typing.Optional[Error]:
-    required_fields = [
-        "name",
-        "street",
-        "zipcode",
-        "city",
-        "country",
-    ]
-
-    if invoice_information.is_business:
-        required_fields += ["vat_id", "company"]
-
-    if invoice_information.country == "IT":
-        if invoice_information.is_business:
-            required_fields += ["sdi"]
-        else:
-            required_fields += ["fiscal_code"]
-
-    for required_field in required_fields:
-        value = getattr(invoice_information, required_field)
-
-        if not value:
-            return Error(message=_("%(field)s is required") % {"field": required_field})
-
-    if (
-        not invoice_information.is_business
-        and invoice_information.country == "IT"
-        and not FISCAL_CODE_REGEX.match(invoice_information.fiscal_code)
-    ):
-        return Error(message=_("Invalid fiscal code"))
