@@ -327,7 +327,7 @@ class InvoiceInformation:
             if not value:
                 errors.add_error(
                     f"invoice_information.{required_field}",
-                    f"{required_field} is required",
+                    "This field is required",
                 )
 
         if self.country == "IT":

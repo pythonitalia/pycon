@@ -6,11 +6,9 @@ from billing.exceptions import (
     PartitaIvaInvalidCharsError,
     PartitaIvaInvalidCodeError,
     SdiCodeIncorrectLengthError,
-    SdiIncorrectDigitError,
     SdiInvalidCharsError,
     CapCodeIncorrectLengthError,
     CapCodeInvalidCharsError,
-    CapCodeInvalidFirstDigitError,
 )
 from billing.constants import (
     ITALIAN_FISCAL_CODE_CONTROL_CODE,
@@ -28,18 +26,6 @@ def validate_sdi_code(sdi_code: str) -> bool:
     if not sdi_code.isalnum():
         raise SdiInvalidCharsError()
 
-    def char_to_value(char):
-        if char.isalpha():
-            return ord(char) - ord("A")
-
-        return int(char) + 26
-
-    sum_value = sum(char_to_value(sdi_code[i]) * (2 if i % 2 else 1) for i in range(6))
-    expected_check_digit = chr((sum_value % 26) + ord("A"))
-
-    if sdi_code[-1] != expected_check_digit:
-        raise SdiIncorrectDigitError(expected_check_digit, sdi_code[-1])
-
     return True
 
 
@@ -49,10 +35,6 @@ def validate_cap_code(cap_code: str) -> bool:
 
     if not cap_code.isnumeric():
         raise CapCodeInvalidCharsError()
-
-    first_digit = int(cap_code[0])
-    if not (0 <= first_digit <= 9):
-        raise CapCodeInvalidFirstDigitError()
 
     return True
 

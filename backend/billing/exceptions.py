@@ -12,18 +12,6 @@ class SdiInvalidCharsError(SdiValidationError):
         return "SDI code must contain only letters and digits"
 
 
-class SdiIncorrectDigitError(SdiValidationError):
-    expected: str
-    got: str
-
-    def __init__(self, expected: str, got: str):
-        self.expected = expected
-        self.got = got
-
-    def __str__(self):
-        return "Invalid SDI code"
-
-
 class CapCodeValidationError(ValueError):
     ...
 
@@ -36,11 +24,6 @@ class CapCodeIncorrectLengthError(CapCodeValidationError):
 class CapCodeInvalidCharsError(CapCodeValidationError):
     def __str__(self):
         return "CAP code must contain only digits"
-
-
-class CapCodeInvalidFirstDigitError(CapCodeValidationError):
-    def __str__(self):
-        return "First digit of CAP code must be between 0 and 9"
 
 
 class PartitaIvaValidationError(ValueError):
