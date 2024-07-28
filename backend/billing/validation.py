@@ -1,4 +1,4 @@
-from api.billing.exceptions import (
+from billing.exceptions import (
     FiscalCodeIncorrectLengthError,
     FiscalCodeInvalidCharsError,
     FiscalCodeInvalidControlCodeError,
@@ -12,7 +12,7 @@ from api.billing.exceptions import (
     CapCodeInvalidCharsError,
     CapCodeInvalidFirstDigitError,
 )
-from api.billing.constants import (
+from billing.constants import (
     ITALIAN_FISCAL_CODE_CONTROL_CODE,
     ITALIAN_FISCAL_CODE_EVEN_VALUES,
     ITALIAN_FISCAL_CODE_ODD_VALUES,

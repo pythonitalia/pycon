@@ -2,13 +2,13 @@ from countries import countries
 from typing import Annotated
 from api.billing.types import BillingAddress
 from api.types import BaseErrorType
-from api.billing.validation import (
+from billing.validation import (
     validate_cap_code,
     validate_fiscal_code,
     validate_italian_partita_iva,
     validate_sdi_code,
 )
-from api.billing.exceptions import (
+from billing.exceptions import (
     CapCodeValidationError,
     FiscalCodeValidationError,
     PartitaIvaValidationError,
