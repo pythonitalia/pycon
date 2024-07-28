@@ -2,7 +2,7 @@ import { Heading, Section, Spacer } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
-import {
+import type {
   CurrentUserQueryResult,
   TicketItem,
   TicketsQueryResult,
@@ -47,7 +47,7 @@ export const CheckoutPageHandler = ({
       </Section>
       <Section>
         <ProductsQuestions productsById={productsById} />
-        <BillingCard />
+        <BillingCard me={me} />
         <Spacer size="xs" />
         <VoucherCard />
         <Spacer size="xs" />
