@@ -18,8 +18,8 @@ importers:
         specifier: ^7.12.1
         version: 7.24.6(@babel/core@7.24.6)
       '@emotion/babel-plugin-jsx-pragmatic':
-        specifier: ^0.1.5
-        version: 0.1.5(@babel/core@7.24.6)
+        specifier: ^0.3.0
+        version: 0.3.0(@babel/core@7.24.6)
       '@emotion/core':
         specifier: ^10.0.35
         version: 10.3.1(react@18.3.1)
@@ -713,8 +713,8 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@emotion/babel-plugin-jsx-pragmatic@0.1.5':
-    resolution: {integrity: sha512-y+3AJ0SItMDaAgGPVkQBC/S/BaqaPACkQ6MyCI2CUlrjTxKttTVfD3TMtcs7vLEcLxqzZ1xiG0vzwCXjhopawQ==}
+  '@emotion/babel-plugin-jsx-pragmatic@0.3.0':
+    resolution: {integrity: sha512-XkRI5RdNl+f7HqpJADfTWlzZkd4tNaz2Gjzt97ZqN72jFSOqpL0grGGLdzKJ9dMQHXJBT/KZV+kphTycOblIsQ==}
     peerDependencies:
       '@babel/core': ^7.0.0
 
@@ -5607,7 +5607,7 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@emotion/babel-plugin-jsx-pragmatic@0.1.5(@babel/core@7.24.6)':
+  '@emotion/babel-plugin-jsx-pragmatic@0.3.0(@babel/core@7.24.6)':
     dependencies:
       '@babel/core': 7.24.6
       '@babel/plugin-syntax-jsx': 7.24.6(@babel/core@7.24.6)
