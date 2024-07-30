@@ -3,6 +3,7 @@ import strawberry
 
 @strawberry.type
 class BillingAddress:
+    id: strawberry.ID
     is_business: bool
     company_name: str
     user_name: str
@@ -18,6 +19,7 @@ class BillingAddress:
     @classmethod
     def from_django_model(cls, instance):
         return cls(
+            id=instance.id,
             is_business=instance.is_business,
             company_name=instance.company_name,
             user_name=instance.user_name,
