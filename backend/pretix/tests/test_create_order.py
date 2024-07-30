@@ -99,7 +99,6 @@ def test_raises_when_response_is_400(requests_mock, invoice_information):
         locale="en",
         payment_provider="stripe",
         invoice_information=invoice_information,
-        hotel_rooms=[],
         tickets=[
             CreateOrderTicket(
                 ticket_id="123",
@@ -144,7 +143,6 @@ def test_raises_value_error_if_answer_value_is_wrong(
         locale="en",
         payment_provider="stripe",
         invoice_information=invoice_information,
-        hotel_rooms=[],
         tickets=[
             CreateOrderTicket(
                 ticket_id="123",
@@ -198,7 +196,6 @@ def test_not_required_and_empty_answer_is_skipped(requests_mock, invoice_informa
         locale="en",
         payment_provider="stripe",
         invoice_information=invoice_information,
-        hotel_rooms=[],
         tickets=[
             CreateOrderTicket(
                 ticket_id="123",
@@ -261,7 +258,6 @@ def test_create_order_with_positions_with_voucher_and_one_without(
         locale="en",
         payment_provider="stripe",
         invoice_information=invoice_information,
-        hotel_rooms=[],
         tickets=[
             CreateOrderTicket(
                 ticket_id="123",
