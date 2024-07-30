@@ -261,6 +261,7 @@ class CreateOrderErrors(BaseErrorType):
         invoice_information: InvoiceInformationErrors = strawberry.field(
             default_factory=InvoiceInformationErrors
         )
+        non_field_errors: list[str] = strawberry.field(default_factory=list)
 
     errors: _CreateOrderErrors = None
 
@@ -342,24 +343,35 @@ class InvoiceInformation:
         return errors
 
     def validate_fiscal_code(self, errors: CreateOrderErrors):
+        if not self.fiscal_code:
+            return
+
         try:
             validate_fiscal_code(self.fiscal_code)
         except FiscalCodeValidationError as exc:
             errors.add_error("invoice_information.fiscal_code", str(exc))
 
     def validate_partita_iva(self, errors: CreateOrderErrors):
+        if not self.vat_id:
+            return
         try:
             validate_italian_vat_number(self.vat_id)
         except ItalianVatNumberValidationError as exc:
             errors.add_error("invoice_information.vat_id", str(exc))
 
     def validate_cap_code(self, errors: CreateOrderErrors):
+        if not self.zipcode:
+            return
+
         try:
             validate_cap_code(self.zipcode)
         except CapCodeValidationError as exc:
             errors.add_error("invoice_information.zipcode", str(exc))
 
     def validate_sdi(self, errors: CreateOrderErrors):
+        if not self.sdi:
+            return
+
         try:
             validate_sdi_code(self.sdi)
         except SdiValidationError as exc:

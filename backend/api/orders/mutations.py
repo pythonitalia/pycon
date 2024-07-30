@@ -62,7 +62,7 @@ class OrdersMutations:
         try:
             pretix_order = create_order(conference_obj, input)
         except PretixError as e:
-            return Error(message=e.message)
+            return CreateOrderErrors.with_error("non_field_errors", str(e))
 
         if len(input.hotel_rooms) > 0:
             create_hotel_reservations(
