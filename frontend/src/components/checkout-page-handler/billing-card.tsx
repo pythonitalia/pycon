@@ -20,7 +20,7 @@ import { useFormState } from "react-use-form-state";
 import { useCountries } from "~/helpers/use-countries";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 
-import type { CurrentUserQueryResult } from "~/types";
+import type { CurrentUserQueryResult, InvoiceInformationErrors } from "~/types";
 import type { InvoiceInformationState } from "../tickets-page/types";
 import { useCart } from "../tickets-page/use-cart";
 
@@ -29,8 +29,10 @@ const FISCAL_CODE_REGEX =
 
 export const BillingCard = ({
   me,
+  invoiceInformationErrors,
 }: {
   me: CurrentUserQueryResult["data"]["me"];
+  invoiceInformationErrors?: InvoiceInformationErrors;
 }) => {
   const {
     state: { invoiceInformation, hasAdmissionTicket },
@@ -128,6 +130,7 @@ export const BillingCard = ({
                   autoComplete="organization"
                   required={isBusiness}
                   placeholder={inputPlaceholder}
+                  errors={invoiceInformationErrors?.company}
                 />
               </InputWrapper>
             )}
@@ -139,6 +142,7 @@ export const BillingCard = ({
                 {...text("name")}
                 required={true}
                 placeholder={inputPlaceholder}
+                errors={invoiceInformationErrors?.name}
               />
             </InputWrapper>
             {isBusiness && (
@@ -151,6 +155,7 @@ export const BillingCard = ({
                   autoComplete="off"
                   required={true}
                   placeholder={inputPlaceholder}
+                  errors={invoiceInformationErrors?.vatId}
                 />
               </InputWrapper>
             )}
@@ -162,6 +167,7 @@ export const BillingCard = ({
                 {...text("zipCode")}
                 required={true}
                 placeholder={inputPlaceholder}
+                errors={invoiceInformationErrors?.zipcode}
               />
             </InputWrapper>
 
@@ -173,6 +179,7 @@ export const BillingCard = ({
                 {...text("city")}
                 required={true}
                 placeholder={inputPlaceholder}
+                errors={invoiceInformationErrors?.city}
               />
             </InputWrapper>
             <InputWrapper
@@ -185,13 +192,18 @@ export const BillingCard = ({
                 autoComplete="street-address"
                 required={true}
                 placeholder={inputPlaceholder}
+                errors={invoiceInformationErrors?.street}
               />
             </InputWrapper>
             <InputWrapper
               required={true}
               title={<FormattedMessage id="orderInformation.country" />}
             >
-              <Select {...select("country")} required={true}>
+              <Select
+                {...select("country")}
+                required={true}
+                errors={invoiceInformationErrors?.country}
+              >
                 <FormattedMessage id="input.selectCountryPlaceholder">
                   {(msg) => (
                     <option value="" disabled>
@@ -236,7 +248,9 @@ export const BillingCard = ({
                       })}
                       required={true}
                       errors={
-                        formState.errors.sdi ? [formState.errors.sdi] : null
+                        formState.errors.sdi
+                          ? [formState.errors.sdi]
+                          : invoiceInformationErrors?.sdi
                       }
                     />
                   </InputWrapper>
@@ -263,7 +277,7 @@ export const BillingCard = ({
                       errors={
                         formState.errors.fiscalCode
                           ? [formState.errors.fiscalCode]
-                          : null
+                          : invoiceInformationErrors?.fiscalCode
                       }
                     />
                   </InputWrapper>
@@ -276,7 +290,9 @@ export const BillingCard = ({
                       name: "pec",
                     })}
                     errors={
-                      formState.errors.pec ? [formState.errors.pec] : null
+                      formState.errors.pec
+                        ? [formState.errors.pec]
+                        : invoiceInformationErrors?.pec
                     }
                   />
                 </InputWrapper>

@@ -2,6 +2,7 @@ mutation CreateOrder($conference: String!, $input: CreateOrderInput!) {
   createOrder(conference: $conference, input: $input) {
     ... on CreateOrderErrors {
       errors {
+        nonFieldErrors
         invoiceInformation {
           company
           name

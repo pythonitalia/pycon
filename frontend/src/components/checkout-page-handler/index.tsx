@@ -2,16 +2,21 @@ import { Heading, Section, Spacer } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
-import type {
-  CurrentUserQueryResult,
-  TicketItem,
-  TicketsQueryResult,
+import {
+  type CurrentUserQueryResult,
+  type TicketItem,
+  type TicketsQueryResult,
+  useCreateOrderMutation,
 } from "~/types";
 
+import { useCurrentLanguage } from "~/locale/context";
+import { SelectedProducts } from "../tickets-page/types";
+import { useCart } from "../tickets-page/use-cart";
 import { BillingCard } from "./billing-card";
 import { CreateOrderBar } from "./create-order-bar";
 import { ProductsQuestions } from "./products-questions";
 import { RecapCard } from "./recap-card";
+import { useCreateOrder } from "./use-create-order";
 import { VoucherCard } from "./voucher-card";
 
 type Props = {
@@ -34,6 +39,10 @@ export const CheckoutPageHandler = ({
     hotelRooms!.map((room) => [room.id, room]),
   );
 
+  const { createOrder, isCreatingOrder, creationFailed, errors } =
+    useCreateOrder({ userEmail: me?.email });
+  const invoiceInformationErrors = errors?.invoiceInformation;
+
   return (
     <form
       onSubmit={(e) => e.preventDefault()}
@@ -47,7 +56,10 @@ export const CheckoutPageHandler = ({
       </Section>
       <Section>
         <ProductsQuestions productsById={productsById} />
-        <BillingCard me={me} />
+        <BillingCard
+          invoiceInformationErrors={invoiceInformationErrors}
+          me={me}
+        />
         <Spacer size="xs" />
         <VoucherCard />
         <Spacer size="xs" />
@@ -59,8 +71,9 @@ export const CheckoutPageHandler = ({
       <CreateOrderBar
         productsById={productsById}
         hotelRoomsById={hotelRoomsById}
-        conferenceTimeZone={conference.timeZone}
-        userEmail={me?.email}
+        createOrder={createOrder}
+        isCreatingOrder={isCreatingOrder}
+        creationFailed={creationFailed}
       />
     </form>
   );
