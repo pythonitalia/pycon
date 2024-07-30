@@ -1,12 +1,8 @@
 from billing.models import BillingAddress
 from conferences.tests.factories import ConferenceFactory
-from hotels.tests.factories import BedLayoutFactory, HotelRoomFactory
 import pytest
 from django.test import override_settings
-from django.utils import timezone
-from pytest import mark
 
-from hotels.models import HotelRoomReservation
 from pretix.exceptions import PretixError
 
 
@@ -61,7 +57,6 @@ def test_cannot_create_order_unlogged(graphql_client):
                     "answers": [{"questionId": "1", "value": "Example"}],
                 }
             ],
-            "hotelRooms": [],
             "paymentProvider": "stripe",
             "email": "patrick.arminio@gmail.com",
             "invoiceInformation": {
@@ -105,7 +100,6 @@ def test_calls_create_order(graphql_client, user, mocker):
                     "answers": [{"questionId": "1", "value": "Example"}],
                 }
             ],
-            "hotelRooms": [],
             "paymentProvider": "stripe",
             "email": "patrick.arminio@gmail.com",
             "invoiceInformation": {
@@ -167,7 +161,6 @@ def test_handles_payment_url_set_to_none(graphql_client, user, mocker):
                     "answers": [{"questionId": "1", "value": "Example"}],
                 }
             ],
-            "hotelRooms": [],
             "paymentProvider": "stripe",
             "email": "patrick.arminio@gmail.com",
             "invoiceInformation": {
@@ -213,7 +206,6 @@ def test_handles_errors(graphql_client, user, mocker):
                     "variation": "1",
                 }
             ],
-            "hotelRooms": [],
             "paymentProvider": "stripe",
             "email": "patrick.arminio@gmail.com",
             "invoiceInformation": {
@@ -235,597 +227,6 @@ def test_handles_errors(graphql_client, user, mocker):
     assert response["data"]["createOrder"]["errors"]["nonFieldErrors"] == ["Example"]
 
     create_order_mock.assert_called_once()
-
-
-@override_settings(FRONTEND_URL="http://test.it")
-@pytest.mark.skip
-@mark.django_db
-def test_order_hotel_room(
-    graphql_client,
-    user,
-    mocker,
-):
-    graphql_client.force_login(user)
-
-    conference = ConferenceFactory(
-        start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
-        end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
-    )
-
-    create_order_mock = mocker.patch("api.orders.mutations.create_order")
-    create_order_mock.return_value.payment_url = "https://example.com"
-    create_order_mock.return_value.code = "123"
-
-    room = HotelRoomFactory(conference=conference)
-    bed_layout = BedLayoutFactory()
-    bed_layout_2 = BedLayoutFactory()
-    room.available_bed_layouts.add(bed_layout)
-    room.available_bed_layouts.add(bed_layout_2)
-
-    response = _create_order(
-        graphql_client,
-        code=conference.code,
-        input={
-            "tickets": [],
-            "paymentProvider": "stripe",
-            "email": "patrick.arminio@gmail.com",
-            "hotelRooms": [
-                {
-                    "roomId": str(room.id),
-                    "checkin": "2020-01-01",
-                    "checkout": "2020-01-10",
-                    "bedLayoutId": str(bed_layout.id),
-                }
-            ],
-            "invoiceInformation": {
-                "isBusiness": False,
-                "company": "",
-                "name": "Patrick",
-                "street": "street",
-                "zipcode": "92100",
-                "city": "Avellino",
-                "country": "IT",
-                "vatId": "",
-                "fiscalCode": "GNLNCH22T27L523A",
-            },
-            "locale": "en",
-        },
-    )
-
-    assert not response.get("errors")
-    assert response["data"]["createOrder"]["paymentUrl"] == (
-        "https://example.com?return_url=http://test.it/en/orders/123/confirmation"
-    )
-
-    reservation = HotelRoomReservation.objects.filter(room=room).first()
-
-    assert reservation.user_id == user.id
-    assert reservation.checkin == timezone.datetime(2020, 1, 1).date()
-    assert reservation.checkout == timezone.datetime(2020, 1, 10).date()
-    assert reservation.bed_layout_id == bed_layout.id
-
-    create_order_mock.assert_called_once()
-
-
-@override_settings(FRONTEND_URL="http://test.it")
-@pytest.mark.skip
-@mark.django_db
-def test_cannot_order_hotel_room_with_bed_layout_of_another_room(
-    graphql_client,
-    user,
-    mocker,
-):
-    graphql_client.force_login(user)
-
-    conference = ConferenceFactory(
-        start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
-        end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
-    )
-
-    create_order_mock = mocker.patch("api.orders.mutations.create_order")
-    create_order_mock.return_value.payment_url = "https://example.com"
-    create_order_mock.return_value.code = "123"
-
-    room = HotelRoomFactory(conference=conference)
-    bed_layout = BedLayoutFactory()
-    room.available_bed_layouts.add(bed_layout)
-    invalid_bed_layout = BedLayoutFactory()
-
-    response = _create_order(
-        graphql_client,
-        code=conference.code,
-        input={
-            "tickets": [],
-            "paymentProvider": "stripe",
-            "email": "patrick.arminio@gmail.com",
-            "hotelRooms": [
-                {
-                    "roomId": str(room.id),
-                    "checkin": "2020-01-01",
-                    "checkout": "2020-01-10",
-                    "bedLayoutId": str(invalid_bed_layout.id),
-                }
-            ],
-            "invoiceInformation": {
-                "isBusiness": False,
-                "company": "",
-                "name": "Patrick",
-                "street": "street",
-                "zipcode": "92100",
-                "city": "Avellino",
-                "country": "IT",
-                "vatId": "",
-                "fiscalCode": "GNLNCH22T27L523A",
-            },
-            "locale": "en",
-        },
-    )
-    assert not response.get("errors")
-    assert response["data"]["createOrder"]["message"] == ("Invaild bed layout")
-
-    assert HotelRoomReservation.objects.filter(room=room).count() == 0
-
-
-@pytest.mark.skip
-def test_cannot_order_hotel_room_with_checkin_before_conference(
-    graphql_client,
-    user,
-    mocker,
-):
-    graphql_client.force_login(user)
-
-    conference = ConferenceFactory(
-        start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
-        end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
-    )
-
-    create_order_mock = mocker.patch("api.orders.mutations.create_order")
-
-    room = HotelRoomFactory(conference=conference)
-    bed_layout = BedLayoutFactory()
-    room.available_bed_layouts.add(bed_layout)
-
-    response = _create_order(
-        graphql_client,
-        code=conference.code,
-        input={
-            "tickets": [],
-            "paymentProvider": "stripe",
-            "email": "patrick.arminio@gmail.com",
-            "hotelRooms": [
-                {
-                    "roomId": str(room.id),
-                    "checkin": "2019-01-01",
-                    "checkout": "2019-01-10",
-                    "bedLayoutId": str(bed_layout.id),
-                }
-            ],
-            "invoiceInformation": {
-                "isBusiness": False,
-                "company": "",
-                "name": "Patrick",
-                "street": "street",
-                "zipcode": "92100",
-                "city": "Avellino",
-                "country": "IT",
-                "vatId": "",
-                "fiscalCode": "GNLNCH22T27L523A",
-            },
-            "locale": "en",
-        },
-    )
-
-    assert not response.get("errors")
-    assert response["data"]["createOrder"]["__typename"] == "CreateOrderErrors"
-    assert response["data"]["createOrder"]["message"] == "Invaild check-in date"
-
-    create_order_mock.assert_not_called()
-
-
-@pytest.mark.skip
-def test_cannot_order_hotel_room_with_checkin_after_conference(
-    graphql_client,
-    user,
-    mocker,
-):
-    graphql_client.force_login(user)
-
-    conference = ConferenceFactory(
-        start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
-        end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
-    )
-
-    create_order_mock = mocker.patch("api.orders.mutations.create_order")
-
-    room = HotelRoomFactory(conference=conference)
-    bed_layout = BedLayoutFactory()
-    room.available_bed_layouts.add(bed_layout)
-
-    response = _create_order(
-        graphql_client,
-        code=conference.code,
-        input={
-            "tickets": [],
-            "paymentProvider": "stripe",
-            "email": "patrick.arminio@gmail.com",
-            "hotelRooms": [
-                {
-                    "roomId": str(room.id),
-                    "checkin": "2020-01-20",
-                    "checkout": "2020-01-22",
-                    "bedLayoutId": str(bed_layout.id),
-                }
-            ],
-            "invoiceInformation": {
-                "isBusiness": False,
-                "company": "",
-                "name": "Patrick",
-                "street": "street",
-                "zipcode": "92100",
-                "city": "Avellino",
-                "country": "IT",
-                "vatId": "",
-                "fiscalCode": "GNLNCH22T27L523A",
-            },
-            "locale": "en",
-        },
-    )
-
-    assert not response.get("errors")
-    assert response["data"]["createOrder"]["__typename"] == "CreateOrderErrors"
-    assert response["data"]["createOrder"]["message"] == "Invaild check-in date"
-
-    create_order_mock.assert_not_called()
-
-
-@pytest.mark.skip
-def test_cannot_order_hotel_room_with_checkout_after_conference(
-    graphql_client,
-    user,
-    mocker,
-):
-    graphql_client.force_login(user)
-
-    conference = ConferenceFactory(
-        start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
-        end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
-    )
-
-    create_order_mock = mocker.patch("api.orders.mutations.create_order")
-
-    room = HotelRoomFactory(conference=conference)
-    bed_layout = BedLayoutFactory()
-    room.available_bed_layouts.add(bed_layout)
-
-    response = _create_order(
-        graphql_client,
-        code=conference.code,
-        input={
-            "tickets": [],
-            "paymentProvider": "stripe",
-            "email": "patrick.arminio@gmail.com",
-            "hotelRooms": [
-                {
-                    "roomId": str(room.id),
-                    "checkin": "2020-01-02",
-                    "checkout": "2020-01-22",
-                    "bedLayoutId": str(bed_layout.id),
-                }
-            ],
-            "invoiceInformation": {
-                "isBusiness": False,
-                "company": "",
-                "name": "Patrick",
-                "street": "street",
-                "zipcode": "92100",
-                "city": "Avellino",
-                "country": "IT",
-                "vatId": "",
-                "fiscalCode": "GNLNCH22T27L523A",
-            },
-            "locale": "en",
-        },
-    )
-
-    assert not response.get("errors")
-    assert response["data"]["createOrder"]["__typename"] == "CreateOrderErrors"
-    assert response["data"]["createOrder"]["message"] == "Invaild check-out date"
-
-    create_order_mock.assert_not_called()
-
-
-@pytest.mark.skip
-def test_cannot_order_hotel_room_with_checkout_before_the_checkin(
-    graphql_client,
-    user,
-    mocker,
-):
-    graphql_client.force_login(user)
-
-    conference = ConferenceFactory(
-        start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
-        end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
-    )
-
-    create_order_mock = mocker.patch("api.orders.mutations.create_order")
-
-    room = HotelRoomFactory(conference=conference)
-    bed_layout = BedLayoutFactory()
-    room.available_bed_layouts.add(bed_layout)
-
-    response = _create_order(
-        graphql_client,
-        code=conference.code,
-        input={
-            "tickets": [],
-            "paymentProvider": "stripe",
-            "email": "patrick.arminio@gmail.com",
-            "hotelRooms": [
-                {
-                    "roomId": str(room.id),
-                    "checkin": "2020-01-05",
-                    "checkout": "2020-01-03",
-                    "bedLayoutId": str(bed_layout.id),
-                }
-            ],
-            "invoiceInformation": {
-                "isBusiness": False,
-                "company": "",
-                "name": "Patrick",
-                "street": "street",
-                "zipcode": "92100",
-                "city": "Avellino",
-                "country": "IT",
-                "vatId": "",
-                "fiscalCode": "GNLNCH22T27L523A",
-            },
-            "locale": "en",
-        },
-    )
-
-    assert not response.get("errors")
-    assert response["data"]["createOrder"]["__typename"] == "CreateOrderErrors"
-    assert response["data"]["createOrder"]["message"] == "Invaild check-out date"
-
-    create_order_mock.assert_not_called()
-
-
-@pytest.mark.skip
-def test_cannot_order_room_with_random_room_id(
-    graphql_client,
-    user,
-    mocker,
-):
-    graphql_client.force_login(user)
-
-    conference = ConferenceFactory(
-        start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
-        end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
-    )
-
-    create_order_mock = mocker.patch("api.orders.mutations.create_order")
-
-    room = HotelRoomFactory(conference=conference)
-    bed_layout = BedLayoutFactory()
-    room.available_bed_layouts.add(bed_layout)
-
-    response = _create_order(
-        graphql_client,
-        code=conference.code,
-        input={
-            "tickets": [],
-            "paymentProvider": "stripe",
-            "email": "patrick.arminio@gmail.com",
-            "hotelRooms": [
-                {
-                    "roomId": "94990540",
-                    "checkin": "2020-01-05",
-                    "checkout": "2020-01-03",
-                    "bedLayoutId": str(bed_layout.id),
-                }
-            ],
-            "invoiceInformation": {
-                "isBusiness": False,
-                "company": "",
-                "name": "Patrick",
-                "street": "street",
-                "zipcode": "92100",
-                "city": "Avellino",
-                "country": "IT",
-                "vatId": "",
-                "fiscalCode": "GNLNCH22T27L523A",
-            },
-            "locale": "en",
-        },
-    )
-
-    assert not response.get("errors")
-    assert response["data"]["createOrder"]["__typename"] == "CreateOrderErrors"
-    assert response["data"]["createOrder"]["message"] == "Room 94990540 not found"
-
-    create_order_mock.assert_not_called()
-
-
-@pytest.mark.skip
-def test_cannot_order_sold_out_room(
-    graphql_client,
-    user,
-    mocker,
-):
-    graphql_client.force_login(user)
-
-    conference = ConferenceFactory(
-        start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
-        end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
-    )
-
-    create_order_mock = mocker.patch("api.orders.mutations.create_order")
-
-    room = HotelRoomFactory(conference=conference, total_capacity=0)
-    bed_layout = BedLayoutFactory()
-    room.available_bed_layouts.add(bed_layout)
-
-    response = _create_order(
-        graphql_client,
-        code=conference.code,
-        input={
-            "tickets": [],
-            "paymentProvider": "stripe",
-            "email": "patrick.arminio@gmail.com",
-            "hotelRooms": [
-                {
-                    "roomId": str(room.id),
-                    "checkin": "2020-01-05",
-                    "checkout": "2020-01-03",
-                    "bedLayoutId": str(bed_layout.id),
-                }
-            ],
-            "invoiceInformation": {
-                "isBusiness": False,
-                "company": "",
-                "name": "Patrick",
-                "street": "street",
-                "zipcode": "92100",
-                "city": "Avellino",
-                "country": "IT",
-                "vatId": "",
-                "fiscalCode": "GNLNCH22T27L523A",
-            },
-            "locale": "en",
-        },
-    )
-
-    assert not response.get("errors")
-    assert response["data"]["createOrder"]["__typename"] == "CreateOrderErrors"
-    assert response["data"]["createOrder"]["message"] == f"Room {room.id} is sold out"
-
-    create_order_mock.assert_not_called()
-
-
-@pytest.mark.skip
-def test_cannot_order_room_of_a_different_conference(
-    graphql_client,
-    user,
-    mocker,
-):
-    graphql_client.force_login(user)
-
-    conference = ConferenceFactory(
-        start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
-        end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
-    )
-
-    create_order_mock = mocker.patch("api.orders.mutations.create_order")
-
-    room = HotelRoomFactory(total_capacity=5)
-    bed_layout = BedLayoutFactory()
-    room.available_bed_layouts.add(bed_layout)
-
-    response = _create_order(
-        graphql_client,
-        code=conference.code,
-        input={
-            "tickets": [],
-            "paymentProvider": "stripe",
-            "email": "patrick.arminio@gmail.com",
-            "hotelRooms": [
-                {
-                    "roomId": str(room.id),
-                    "checkin": "2020-01-05",
-                    "checkout": "2020-01-03",
-                    "bedLayoutId": str(bed_layout.id),
-                }
-            ],
-            "invoiceInformation": {
-                "isBusiness": False,
-                "company": "",
-                "name": "Patrick",
-                "street": "street",
-                "zipcode": "92100",
-                "city": "Avellino",
-                "country": "IT",
-                "vatId": "",
-                "fiscalCode": "GNLNCH22T27L523A",
-            },
-            "locale": "en",
-        },
-    )
-
-    assert not response.get("errors")
-    assert response["data"]["createOrder"]["__typename"] == "CreateOrderErrors"
-    assert response["data"]["createOrder"]["message"] == f"Room {room.id} not found"
-
-    create_order_mock.assert_not_called()
-
-
-@pytest.mark.skip
-def test_cannot_buy_more_room_than_available(
-    graphql_client,
-    user,
-    mocker,
-):
-    graphql_client.force_login(user)
-
-    create_order_mock = mocker.patch("api.orders.mutations.create_order")
-    create_order_mock.return_value.payment_url = "https://example.com"
-    create_order_mock.return_value.code = "123"
-
-    conference = ConferenceFactory(
-        start=timezone.make_aware(timezone.datetime(2020, 1, 1)),
-        end=timezone.make_aware(timezone.datetime(2020, 1, 10)),
-    )
-
-    room = HotelRoomFactory(conference=conference, total_capacity=2)
-    bed_layout = BedLayoutFactory()
-    room.available_bed_layouts.add(bed_layout)
-
-    response = _create_order(
-        graphql_client,
-        code=conference.code,
-        input={
-            "tickets": [],
-            "paymentProvider": "stripe",
-            "email": "patrick.arminio@gmail.com",
-            "hotelRooms": [
-                {
-                    "roomId": str(room.id),
-                    "checkin": "2020-01-05",
-                    "checkout": "2020-01-06",
-                    "bedLayoutId": str(bed_layout.id),
-                },
-                {
-                    "roomId": str(room.id),
-                    "checkin": "2020-01-05",
-                    "checkout": "2020-01-06",
-                    "bedLayoutId": str(bed_layout.id),
-                },
-                {
-                    "roomId": str(room.id),
-                    "checkin": "2020-01-05",
-                    "checkout": "2020-01-06",
-                    "bedLayoutId": str(bed_layout.id),
-                },
-            ],
-            "invoiceInformation": {
-                "isBusiness": False,
-                "company": "",
-                "name": "Patrick",
-                "street": "street",
-                "zipcode": "92100",
-                "city": "Avellino",
-                "country": "IT",
-                "vatId": "",
-                "fiscalCode": "GNLNCH22T27L523A",
-            },
-            "locale": "en",
-        },
-    )
-
-    assert not response.get("errors")
-    assert response["data"]["createOrder"]["__typename"] == "CreateOrderErrors"
-    assert response["data"]["createOrder"]["message"] == "Too many rooms"
-
-    create_order_mock.assert_not_called()
 
 
 @override_settings(FRONTEND_URL="http://test.it")
@@ -852,7 +253,6 @@ def test_invoice_validation_fails_without_fiscal_code_in_country_italy(
                     "answers": [{"questionId": "1", "value": "Example"}],
                 }
             ],
-            "hotelRooms": [],
             "paymentProvider": "stripe",
             "email": "patrick.arminio@gmail.com",
             "invoiceInformation": {
@@ -919,7 +319,6 @@ def test_invoice_validation_fails_with_missing_required_fields(
                     "answers": [{"questionId": "1", "value": "Example"}],
                 }
             ],
-            "hotelRooms": [],
             "paymentProvider": "stripe",
             "email": "patrick.arminio@gmail.com",
             "invoiceInformation": data,
@@ -958,7 +357,6 @@ def test_fiscal_code_not_required_for_non_it_orders(graphql_client, user, mocker
                     "answers": [{"questionId": "1", "value": "Example"}],
                 }
             ],
-            "hotelRooms": [],
             "paymentProvider": "stripe",
             "email": "patrick.arminio@gmail.com",
             "invoiceInformation": {
@@ -1006,7 +404,6 @@ def test_invoice_validation_fails_with_invalid_fiscal_code_in_country_italy(
                     "answers": [{"questionId": "1", "value": "Example"}],
                 }
             ],
-            "hotelRooms": [],
             "paymentProvider": "stripe",
             "email": "patrick.arminio@gmail.com",
             "invoiceInformation": {
@@ -1057,7 +454,6 @@ def test_invoice_validation_fails_with_empty_vat_for_businesses(
                     "answers": [{"questionId": "1", "value": "Example"}],
                 }
             ],
-            "hotelRooms": [],
             "paymentProvider": "stripe",
             "email": "patrick.arminio@gmail.com",
             "invoiceInformation": {
@@ -1108,7 +504,6 @@ def test_invoice_validation_fails_with_empty_business_name_for_businesses(
                     "answers": [{"questionId": "1", "value": "Example"}],
                 }
             ],
-            "hotelRooms": [],
             "paymentProvider": "stripe",
             "email": "patrick.arminio@gmail.com",
             "invoiceInformation": {
@@ -1159,7 +554,6 @@ def test_invoice_validation_fails_when_italian_business_and_no_sdi(
                     "answers": [{"questionId": "1", "value": "Example"}],
                 }
             ],
-            "hotelRooms": [],
             "paymentProvider": "stripe",
             "email": "patrick.arminio@gmail.com",
             "invoiceInformation": {
@@ -1211,7 +605,6 @@ def test_invoice_validation_fails_when_italian_business_with_invalid_sdi(
                     "answers": [{"questionId": "1", "value": "Example"}],
                 }
             ],
-            "hotelRooms": [],
             "paymentProvider": "stripe",
             "email": "patrick.arminio@gmail.com",
             "invoiceInformation": {
@@ -1263,7 +656,6 @@ def test_invoice_validation_fails_when_italian_zipcode_is_invalid(
                     "answers": [{"questionId": "1", "value": "Example"}],
                 }
             ],
-            "hotelRooms": [],
             "paymentProvider": "stripe",
             "email": "patrick.arminio@gmail.com",
             "invoiceInformation": {
@@ -1315,7 +707,6 @@ def test_invoice_validation_works_when_not_italian_and_no_sdi(
                     "answers": [{"questionId": "1", "value": "Example"}],
                 }
             ],
-            "hotelRooms": [],
             "paymentProvider": "stripe",
             "email": "patrick.arminio@gmail.com",
             "invoiceInformation": {
