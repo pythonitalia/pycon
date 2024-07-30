@@ -1,3 +1,4 @@
+from billing.tests.factories import BillingAddressFactory
 from billing.models import BillingAddress
 from conferences.tests.factories import ConferenceFactory
 import pytest
@@ -731,3 +732,138 @@ def test_invoice_validation_works_when_not_italian_and_no_sdi(
     )
 
     create_order_mock.assert_called()
+
+    billing_address = BillingAddress.objects.get(user=user)
+
+    assert billing_address.user_name == "Patrick"
+    assert billing_address.company_name == "LTD"
+    assert billing_address.is_business
+
+
+@override_settings(FRONTEND_URL="http://test.it")
+def test_create_order_billing_address_stores_both_non_and_business(
+    graphql_client, user, mocker
+):
+    conference = ConferenceFactory()
+    graphql_client.force_login(user)
+
+    existing_billing_address = BillingAddressFactory(
+        user=user,
+        organizer=conference.organizer,
+        is_business=False,
+    )
+
+    create_order_mock = mocker.patch("api.orders.mutations.create_order")
+    create_order_mock.return_value.payment_url = "https://example.com"
+    create_order_mock.return_value.code = "123"
+
+    response = _create_order(
+        graphql_client,
+        code=conference.code,
+        input={
+            "tickets": [
+                {
+                    "ticketId": "1",
+                    "attendeeName": "ABC",
+                    "attendeeEmail": "patrick.arminio@gmail.com",
+                    "variation": "1",
+                    "answers": [{"questionId": "1", "value": "Example"}],
+                }
+            ],
+            "paymentProvider": "stripe",
+            "email": "patrick.arminio@gmail.com",
+            "invoiceInformation": {
+                "isBusiness": True,
+                "company": "LTD",
+                "name": "Patrick",
+                "street": "street",
+                "zipcode": "92100",
+                "city": "Avellino",
+                "country": "UK",
+                "vatId": "123",
+                "sdi": "",
+                "fiscalCode": "",
+            },
+            "locale": "en",
+        },
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["createOrder"]["paymentUrl"] == (
+        "https://example.com?return_url=http://test.it/en/orders/123/confirmation"
+    )
+
+    create_order_mock.assert_called()
+
+    billing_addresses = BillingAddress.objects.filter(user=user)
+
+    assert len(billing_addresses) == 2
+
+    assert billing_addresses.get(is_business=False).id == existing_billing_address.id
+
+    billing_address = billing_addresses.get(is_business=True)
+
+    assert billing_address.user_name == "Patrick"
+    assert billing_address.company_name == "LTD"
+    assert billing_address.is_business
+
+
+@override_settings(FRONTEND_URL="http://test.it")
+def test_create_order_updates_billing_address(graphql_client, user, mocker):
+    conference = ConferenceFactory()
+    graphql_client.force_login(user)
+
+    existing_billing_address = BillingAddressFactory(
+        user=user,
+        organizer=conference.organizer,
+        is_business=True,
+    )
+
+    create_order_mock = mocker.patch("api.orders.mutations.create_order")
+    create_order_mock.return_value.payment_url = "https://example.com"
+    create_order_mock.return_value.code = "123"
+
+    response = _create_order(
+        graphql_client,
+        code=conference.code,
+        input={
+            "tickets": [
+                {
+                    "ticketId": "1",
+                    "attendeeName": "ABC",
+                    "attendeeEmail": "patrick.arminio@gmail.com",
+                    "variation": "1",
+                    "answers": [{"questionId": "1", "value": "Example"}],
+                }
+            ],
+            "paymentProvider": "stripe",
+            "email": "patrick.arminio@gmail.com",
+            "invoiceInformation": {
+                "isBusiness": True,
+                "company": "LTD",
+                "name": "Patrick",
+                "street": "street",
+                "zipcode": "92100",
+                "city": "Avellino",
+                "country": "UK",
+                "vatId": "123",
+                "sdi": "",
+                "fiscalCode": "",
+            },
+            "locale": "en",
+        },
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["createOrder"]["paymentUrl"] == (
+        "https://example.com?return_url=http://test.it/en/orders/123/confirmation"
+    )
+
+    create_order_mock.assert_called()
+
+    billing_address = BillingAddress.objects.get(user=user)
+
+    assert billing_address.id == existing_billing_address.id
+    assert billing_address.user_name == "Patrick"
+    assert billing_address.company_name == "LTD"
+    assert billing_address.is_business
