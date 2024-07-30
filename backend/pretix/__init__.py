@@ -1,5 +1,4 @@
 import logging
-from datetime import date
 from typing import Any, Dict, List, Optional
 from urllib.parse import urljoin
 from django.utils.dateparse import parse_datetime
@@ -10,7 +9,6 @@ from django.conf import settings
 from django.core.cache import cache
 from api.pretix.types import UpdateAttendeeTicketInput, Voucher
 from conferences.models.conference import Conference
-from hotels.models import BedLayout, HotelRoom
 from pretix.types import Category, Question, Quota
 import sentry_sdk
 from billing.validation import (
@@ -283,14 +281,6 @@ class CreateOrderTicket:
 
 
 @strawberry.input
-class CreateOrderHotelRoom:
-    room_id: str
-    bed_layout_id: str
-    checkin: date
-    checkout: date
-
-
-@strawberry.input
 class InvoiceInformation:
     is_business: bool
     company: Optional[str]
@@ -385,7 +375,6 @@ class CreateOrderInput:
     payment_provider: str
     invoice_information: InvoiceInformation
     tickets: List[CreateOrderTicket]
-    hotel_rooms: List[CreateOrderHotelRoom]
 
     def validate(self) -> CreateOrderErrors:
         errors = CreateOrderErrors()
@@ -456,61 +445,6 @@ def normalize_position(ticket: CreateOrderTicket, items: dict, questions: dict):
     return data
 
 
-def create_hotel_positions(
-    hotel_rooms: List[CreateOrderHotelRoom], locale: str, conference: Conference
-):
-    rooms: List[HotelRoom] = list(HotelRoom.objects.filter(conference=conference).all())
-    bed_layouts: List[BedLayout] = list(BedLayout.objects.all())
-
-    positions = []
-
-    for order_room in hotel_rooms:
-        room = [room for room in rooms if str(room.pk) == order_room.room_id][0]
-        bed_layout = next(
-            layout
-            for layout in bed_layouts
-            if str(layout.id) == order_room.bed_layout_id
-        )
-
-        num_nights = (order_room.checkout - order_room.checkin).days
-        total_price = num_nights * room.price
-
-        positions.append(
-            {
-                "item": conference.pretix_hotel_ticket_id,
-                "price": str(total_price),
-                "answers": [
-                    {
-                        "question": conference.pretix_hotel_room_type_question_id,
-                        "answer": room.name.localize(locale),
-                        "options": [],
-                        "option_identifier": [],
-                    },
-                    {
-                        "question": conference.pretix_hotel_checkin_question_id,
-                        "answer": order_room.checkin.strftime("%Y-%m-%d"),
-                        "options": [],
-                        "option_identifier": [],
-                    },
-                    {
-                        "question": conference.pretix_hotel_checkout_question_id,
-                        "answer": order_room.checkout.strftime("%Y-%m-%d"),
-                        "options": [],
-                        "option_identifier": [],
-                    },
-                    {
-                        "question": conference.pretix_hotel_bed_layout_question_id,
-                        "answer": bed_layout.name.localize(locale),
-                        "options": [],
-                        "option_identifier": [],
-                    },
-                ],
-            }
-        )
-
-    return positions
-
-
 def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     questions = get_questions(conference)
     items = get_items(conference)
@@ -518,13 +452,6 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     positions = [
         normalize_position(ticket, items, questions) for ticket in order_data.tickets
     ]
-
-    if len(order_data.hotel_rooms) > 0:
-        positions.extend(
-            create_hotel_positions(
-                order_data.hotel_rooms, order_data.locale, conference
-            )
-        )
 
     payload = {
         "email": order_data.email,
