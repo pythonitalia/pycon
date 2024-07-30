@@ -2,9 +2,9 @@ from billing.exceptions import (
     FiscalCodeIncorrectLengthError,
     FiscalCodeInvalidCharsError,
     FiscalCodeInvalidControlCodeError,
-    PartitaIvaIncorrectLengthError,
-    PartitaIvaInvalidCharsError,
-    PartitaIvaInvalidCodeError,
+    ItalianVatNumberIncorrectLengthError,
+    ItalianVatNumberInvalidCharsError,
+    ItalianVatNumberInvalidCodeError,
     SdiCodeIncorrectLengthError,
     SdiInvalidCharsError,
     CapCodeIncorrectLengthError,
@@ -39,25 +39,29 @@ def validate_cap_code(cap_code: str) -> bool:
     return True
 
 
-def validate_italian_partita_iva(partita_iva: str) -> bool:
-    if len(partita_iva) != 11:
-        raise PartitaIvaIncorrectLengthError()
+def validate_italian_vat_number(vat_number: str) -> bool:
+    if vat_number.startswith("IT"):
+        vat_number = vat_number[2:]
 
-    if not partita_iva.isdigit():
-        raise PartitaIvaInvalidCharsError()
+    if len(vat_number) != 11:
+        raise ItalianVatNumberIncorrectLengthError()
 
-    digits = [int(d) for d in partita_iva]
-    odd_sum = sum(digits[::2])
-    even_sum = 0
+    if not vat_number.isdigit():
+        raise ItalianVatNumberInvalidCharsError()
 
-    for digit in digits[1::2]:
-        double_digit = digit * 2
-        even_sum += (double_digit % 10) + (double_digit // 10)
+    total = 0
+    for i, digit in enumerate(vat_number[:10]):
+        n = int(digit)
+        if i % 2 == 0:
+            total += n
+        else:
+            n *= 2
+            total += n if n < 10 else n - 9
 
-    total = odd_sum + even_sum
+    check = (10 - (total % 10)) % 10
 
-    if not (10 - (total % 10)) % 10 == digits[-1]:
-        raise PartitaIvaInvalidCodeError()
+    if check != int(vat_number[-1]):
+        raise ItalianVatNumberInvalidCodeError()
 
     return True
 

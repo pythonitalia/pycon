@@ -26,23 +26,23 @@ class CapCodeInvalidCharsError(CapCodeValidationError):
         return "CAP code must contain only digits"
 
 
-class PartitaIvaValidationError(ValueError):
+class ItalianVatNumberValidationError(ValueError):
     ...
 
 
-class PartitaIvaIncorrectLengthError(PartitaIvaValidationError):
+class ItalianVatNumberIncorrectLengthError(ItalianVatNumberValidationError):
     def __str__(self):
-        return "Partita IVA must be 11 characters long"
+        return "VAT number must be 11 characters long"
 
 
-class PartitaIvaInvalidCharsError(PartitaIvaValidationError):
+class ItalianVatNumberInvalidCharsError(ItalianVatNumberValidationError):
     def __str__(self):
-        return "Partita IVA must contain only digits"
+        return "VAT number must contain only digits"
 
 
-class PartitaIvaInvalidCodeError(PartitaIvaValidationError):
+class ItalianVatNumberInvalidCodeError(ItalianVatNumberValidationError):
     def __str__(self):
-        return "Invalid Partita IVA code"
+        return "Invalid VAT number"
 
 
 class FiscalCodeValidationError(ValueError):

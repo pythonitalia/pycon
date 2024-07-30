@@ -16,13 +16,13 @@ import sentry_sdk
 from billing.validation import (
     validate_cap_code,
     validate_fiscal_code,
-    validate_italian_partita_iva,
+    validate_italian_vat_number,
     validate_sdi_code,
 )
 from billing.exceptions import (
     CapCodeValidationError,
     FiscalCodeValidationError,
-    PartitaIvaValidationError,
+    ItalianVatNumberValidationError,
     SdiValidationError,
 )
 
@@ -349,8 +349,8 @@ class InvoiceInformation:
 
     def validate_partita_iva(self, errors: CreateOrderErrors):
         try:
-            validate_italian_partita_iva(self.vat_id)
-        except PartitaIvaValidationError as exc:
+            validate_italian_vat_number(self.vat_id)
+        except ItalianVatNumberValidationError as exc:
             errors.add_error("invoice_information.vat_id", str(exc))
 
     def validate_cap_code(self, errors: CreateOrderErrors):

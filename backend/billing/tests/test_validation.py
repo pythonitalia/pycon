@@ -4,6 +4,8 @@ from billing.exceptions import (
     FiscalCodeIncorrectLengthError,
     FiscalCodeInvalidCharsError,
     FiscalCodeInvalidControlCodeError,
+    ItalianVatNumberIncorrectLengthError,
+    ItalianVatNumberInvalidCharsError,
     SdiCodeIncorrectLengthError,
     SdiInvalidCharsError,
 )
@@ -11,6 +13,7 @@ import pytest
 from billing.validation import (
     validate_cap_code,
     validate_fiscal_code,
+    validate_italian_vat_number,
     validate_sdi_code,
 )
 
@@ -45,10 +48,16 @@ def test_validate_sdi_code_invalid_chars(code):
         validate_sdi_code(code)
 
 
-def test_validate_cap_code_with_valid_code():
-    assert validate_cap_code("50121")
-    assert validate_cap_code("40127")
-    assert validate_cap_code("93100")
+@pytest.mark.parametrize(
+    "code",
+    [
+        "50121",
+        "40127",
+        "93100",
+    ],
+)
+def test_validate_cap_code_with_valid_code(code):
+    assert validate_cap_code(code)
 
 
 @pytest.mark.parametrize(
@@ -78,9 +87,15 @@ def test_validate_cap_code_with_non_numeric_code(code):
         validate_cap_code(code)
 
 
-def test_validate_fiscal_code_with_valid_code():
-    assert validate_fiscal_code("DOEJHN80A01D612J")
-    assert validate_fiscal_code("FRNGNN17M62B856J")
+@pytest.mark.parametrize(
+    "code",
+    [
+        "DOEJHN80A01D612J",
+        "FRNGNN17M62B856J",
+    ],
+)
+def test_validate_fiscal_code_with_valid_code(code):
+    assert validate_fiscal_code(code)
 
 
 @pytest.mark.parametrize(
@@ -125,3 +140,29 @@ def test_validate_fiscal_code_with_incorrect_length(code):
 def test_validate_fiscal_code_only_allows_letters_and_numbers(code):
     with pytest.raises(FiscalCodeInvalidCharsError):
         validate_fiscal_code(code)
+
+
+@pytest.mark.parametrize(
+    "code",
+    ["IT00743110157", "00000000000", "44444444440"],
+)
+def test_validate_italian_vat_number_with_valid_code(code):
+    assert validate_italian_vat_number(code)
+
+
+@pytest.mark.parametrize(
+    "code",
+    ["11111", "111333333", "IT1111"],
+)
+def test_validate_italian_vat_number_with_invalid_length(code):
+    with pytest.raises(ItalianVatNumberIncorrectLengthError):
+        validate_italian_vat_number(code)
+
+
+@pytest.mark.parametrize(
+    "code",
+    ["IT11HHHAAA000", "IT994JJAAAEEE", "9394393AX$@"],
+)
+def test_validate_italian_vat_number_with_invalid_chars(code):
+    with pytest.raises(ItalianVatNumberInvalidCharsError):
+        validate_italian_vat_number(code)
