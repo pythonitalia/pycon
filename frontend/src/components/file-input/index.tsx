@@ -1,4 +1,4 @@
-import React, { type ChangeEvent, useRef, useState } from "react";
+import { type ChangeEvent, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { getTranslatedMessage } from "~/helpers/use-translated-message";

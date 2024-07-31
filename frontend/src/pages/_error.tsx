@@ -1,7 +1,7 @@
 import { Heading, Page, Section } from "@python-italia/pycon-styleguide";
 import * as Sentry from "@sentry/nextjs";
 
-import { GetStaticProps } from "next";
+import type { GetStaticProps } from "next";
 import NextErrorComponent from "next/error";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";

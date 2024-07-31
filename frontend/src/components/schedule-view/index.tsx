@@ -9,13 +9,7 @@ import {
 import va from "@vercel/analytics";
 import { isAfter, isBefore, parseISO } from "date-fns";
 import { zonedTimeToUtc } from "date-fns-tz";
-import React, {
-  Fragment,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useRouter } from "next/router";
@@ -23,7 +17,7 @@ import { useRouter } from "next/router";
 import { useCurrentLanguage } from "~/locale/context";
 import { getDayUrl } from "~/pages/schedule/[day]";
 import {
-  ScheduleQuery,
+  type ScheduleQuery,
   readUserStarredScheduleItemsQueryCache,
   useStarScheduleItemMutation,
   useUnstarScheduleItemMutation,
@@ -35,7 +29,7 @@ import { useSetCurrentModal } from "../modal/context";
 import { useLoginState } from "../profile/hooks";
 import { Schedule } from "./schedule";
 import { ScheduleList } from "./schedule-list";
-import { Item, Slot } from "./types";
+import type { Item, Slot } from "./types";
 
 export type ViewMode = "grid" | "list";
 

@@ -9,7 +9,7 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 

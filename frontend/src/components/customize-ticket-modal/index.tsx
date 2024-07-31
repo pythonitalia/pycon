@@ -12,8 +12,7 @@ import { useFormState } from "react-use-form-state";
 
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  MyProfileWithTicketsDocument,
-  MyProfileWithTicketsQuery,
+  type MyProfileWithTicketsQuery,
   useUpdateTicketMutation,
 } from "~/types";
 

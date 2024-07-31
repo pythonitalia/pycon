@@ -7,14 +7,12 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import React from "react";
+import { useRouter } from "next/router";
+import type React from "react";
 import { FormattedMessage } from "react-intl";
 
-import Image from "next/image";
-import { useRouter } from "next/router";
-
 import { useCurrentLanguage } from "~/locale/context";
-import { JobListing } from "~/types";
+import type { JobListing } from "~/types";
 
 import { createHref } from "../link";
 

@@ -1,4 +1,7 @@
-import { Input as BaseInput, InputProps as BaseInputProps } from "theme-ui";
+import {
+  Input as BaseInput,
+  type InputProps as BaseInputProps,
+} from "theme-ui";
 
 import { CharsCounter } from "../chars-counter";
 

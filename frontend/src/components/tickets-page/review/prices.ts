@@ -1,16 +1,16 @@
-import { TicketItem } from "~/types";
+import type { TicketItem } from "~/types";
 
-import { HotelRoom, OrderState, Voucher } from "../types";
+import type { HotelRoom, OrderState, Voucher } from "../types";
 
 export const calculateProductPrice = (
   product: TicketItem,
   voucher?: Voucher | null,
 ): number => {
-  const basePrice = parseFloat(product.defaultPrice);
+  const basePrice = Number.parseFloat(product.defaultPrice);
 
   if (voucher) {
     const priceMode = voucher.priceMode;
-    const value = parseFloat(voucher.value);
+    const value = Number.parseFloat(voucher.value);
 
     switch (priceMode) {
       case "none": {
@@ -57,7 +57,8 @@ export const calculateTotalAmount = (
     .reduce(
       (sum, roomInfo) =>
         sum +
-        parseFloat(hotelRoomsById[roomInfo.id].price) * roomInfo.numNights,
+        Number.parseFloat(hotelRoomsById[roomInfo.id].price) *
+          roomInfo.numNights,
       0,
     );
 

@@ -12,11 +12,10 @@ import {
   SnakeInDragonInverted,
 } from "@python-italia/pycon-styleguide/illustrations";
 import { format } from "date-fns";
-import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { Cta } from "~/types";
+import type { Cta } from "~/types";
 
 import { createHref } from "../link";
 

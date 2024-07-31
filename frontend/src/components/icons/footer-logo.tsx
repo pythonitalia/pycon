@@ -1,5 +1,3 @@
-import React from "react";
-
 type Props = { sx?: any };
 
 export const FooterLogo = (props: Props) => (

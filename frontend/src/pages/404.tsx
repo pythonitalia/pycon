@@ -6,7 +6,7 @@ import {
   Section,
   Spacer,
 } from "@python-italia/pycon-styleguide";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 
 import Head from "next/head";

@@ -1,5 +1,5 @@
-import React, { CSSProperties } from "react";
-import { Props, default as ReactSelect } from "react-select";
+import type { CSSProperties } from "react";
+import { type Props, default as ReactSelect } from "react-select";
 
 export const Select = (props: Props) => (
   <ReactSelect

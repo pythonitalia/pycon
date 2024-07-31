@@ -10,10 +10,10 @@ import {
   Text,
 } from "@python-italia/pycon-styleguide";
 import { ArrowIcon } from "@python-italia/pycon-styleguide/icons";
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { SubmissionAccordionFragment, useSendVoteMutation } from "~/types";
+import { type SubmissionAccordionFragment, useSendVoteMutation } from "~/types";
 
 type Props = {
   submission: SubmissionAccordionFragment;

@@ -11,7 +11,7 @@ import { parseISO } from "date-fns";
 import { FormattedMessage } from "react-intl";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { MyProfileWithSubmissionsQuery } from "~/types";
+import type { MyProfileWithSubmissionsQuery } from "~/types";
 
 import { createHref } from "../link";
 import { EventTag } from "../schedule-event-detail/event-tag";
@@ -39,7 +39,7 @@ export const MyProposalsTable = ({ submissions }: Props) => {
       rowGetter={(row) => {
         const inSchedule = row.scheduleItems.length > 0;
         return [
-          <div>
+          <div key={row.id}>
             <EventTag type={row.type.name.toLowerCase()} />
             <Spacer size="small" />
             <Link

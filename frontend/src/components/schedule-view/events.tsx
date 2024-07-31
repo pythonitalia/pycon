@@ -14,7 +14,6 @@ import type { Color } from "@python-italia/pycon-styleguide/dist/types";
 import { HeartIcon } from "@python-italia/pycon-styleguide/icons";
 import clsx from "clsx";
 import { addMinutes, parseISO } from "date-fns";
-import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
@@ -22,13 +21,7 @@ import { useCurrentLanguage } from "~/locale/context";
 
 import { createHref } from "../link";
 import { EventTag } from "../schedule-event-detail/event-tag";
-import {
-  type Item,
-  ItemTypes,
-  type Room,
-  type Slot,
-  Submission as SubmissionType,
-} from "./types";
+import type { Item, Room, Slot } from "./types";
 
 export const getItemUrl = (item: Item) => {
   if (item.linkTo) {

@@ -7,7 +7,7 @@ import {
   SnakeLetter,
   SnakePencil,
 } from "@python-italia/pycon-styleguide/illustrations";
-import React from "react";
+import type React from "react";
 
 type Props = {
   children: React.ReactNode;

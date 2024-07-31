@@ -1,4 +1,3 @@
-import { SnakeLongNeck } from "@python-italia/pycon-styleguide/illustrations";
 import clsx from "clsx";
 import QRCode from "react-qr-code";
 import Balancer from "react-wrap-balancer";

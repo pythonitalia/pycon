@@ -1,5 +1,6 @@
 import { Heading, Spacer } from "@python-italia/pycon-styleguide";
-import React, { Fragment } from "react";
+import type React from "react";
+import { Fragment } from "react";
 
 type ArticleProps = {
   title?: string;

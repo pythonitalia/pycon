@@ -17,7 +17,6 @@ import {
   Radio,
   Select,
   Text,
-  jsx,
 } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";

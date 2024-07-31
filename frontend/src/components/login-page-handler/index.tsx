@@ -10,7 +10,8 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import React, { useEffect, useRef } from "react";
+import type React from "react";
+import { useEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
@@ -19,7 +20,7 @@ import { useRouter } from "next/router";
 import { MetaTags } from "~/components/meta-tags";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
-import { LoginMutation, useLoginMutation } from "~/types";
+import { type LoginMutation, useLoginMutation } from "~/types";
 
 import { createHref } from "../link";
 import { LoginFlowLayout } from "../login-flow-layout";

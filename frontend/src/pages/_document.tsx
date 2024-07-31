@@ -1,4 +1,3 @@
-import React from "react";
 import { InitializeColorMode } from "theme-ui";
 
 import Document, { Head, Html, Main, NextScript } from "next/document";

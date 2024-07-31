@@ -12,7 +12,7 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import React, { useCallback, useLayoutEffect, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 

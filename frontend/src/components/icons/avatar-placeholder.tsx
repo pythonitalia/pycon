@@ -1,5 +1,3 @@
-import React from "react";
-
 export const AvatarPlaceholder = (props: { style: any }) => (
   <svg
     viewBox="0 0 365 365"

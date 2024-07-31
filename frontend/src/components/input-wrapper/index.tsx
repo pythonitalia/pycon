@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 
 /** @jsx jsx */
-import React from "react";
-import { Box, Text, ThemeUIStyleObject, jsx } from "theme-ui";
+import type React from "react";
+import { Box, Text, type ThemeUIStyleObject } from "theme-ui";
 
 import { ErrorsList } from "../errors-list";
 

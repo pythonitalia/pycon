@@ -7,7 +7,7 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
@@ -16,11 +16,10 @@ import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import {
   MyProfileWithTicketsDocument,
-  MyProfileWithTicketsQuery,
+  type MyProfileWithTicketsQuery,
   useUpdateTicketMutation,
 } from "~/types";
 import { Alert } from "../alert";
-import { snakeToCamel } from "../customize-ticket-modal";
 import { Modal } from "../modal";
 
 type Form = {

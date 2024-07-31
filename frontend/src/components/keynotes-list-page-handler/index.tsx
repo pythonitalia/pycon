@@ -10,7 +10,6 @@ import {
   SpeakerCard,
   VerticalStack,
 } from "@python-italia/pycon-styleguide";
-import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
@@ -52,6 +51,7 @@ export const KeynotesListPageHandler = () => {
         <Grid cols={3} mdCols={2} equalHeight>
           {keynotes.map((keynote) => (
             <Link
+              key={keynote.id}
               noLayout
               noHover
               href={createHref({

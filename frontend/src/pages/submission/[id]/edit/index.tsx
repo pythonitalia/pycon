@@ -1,16 +1,15 @@
 import { Page, Section } from "@python-italia/pycon-styleguide";
-import React from "react";
 import { FormattedMessage } from "react-intl";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import type { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import {
   CfpForm,
-  CfpFormFields,
-  SubmissionStructure,
+  type CfpFormFields,
+  type SubmissionStructure,
 } from "~/components/cfp-form";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";

@@ -1,6 +1,4 @@
-import React from "react";
-
-import { GetStaticPaths } from "next";
+import type { GetStaticPaths } from "next";
 import { useRouter } from "next/router";
 
 import { getApolloClient } from "~/apollo/client";

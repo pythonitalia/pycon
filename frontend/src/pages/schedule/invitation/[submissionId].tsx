@@ -10,12 +10,12 @@ import {
   Text,
   Textarea,
 } from "@python-italia/pycon-styleguide";
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Box, Flex, Label, Radio, jsx } from "theme-ui";
+import { Box, Flex, Label, Radio } from "theme-ui";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import type { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
@@ -23,7 +23,7 @@ import { Alert } from "~/components/alert";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
-import { Language } from "~/locale/languages";
+import type { Language } from "~/locale/languages";
 import {
   ScheduleInvitationOption,
   useGetScheduleInvitationQuery,

@@ -1,5 +1,3 @@
-import React from "react";
-
 export const EnglishIcon = ({
   active = false,
   ...props

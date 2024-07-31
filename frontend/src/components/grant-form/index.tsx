@@ -1,4 +1,4 @@
-import { ApolloError } from "@apollo/client";
+import type { ApolloError } from "@apollo/client";
 import {
   Button,
   CardPart,
@@ -16,7 +16,8 @@ import {
   Text,
   Textarea,
 } from "@python-italia/pycon-styleguide";
-import React, { useCallback, useEffect } from "react";
+import type React from "react";
+import { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
@@ -27,15 +28,15 @@ import { useCurrentUser } from "~/helpers/use-current-user";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  AgeGroup,
-  Grant,
-  GrantType,
-  InterestedInVolunteering,
-  Occupation,
-  SendGrantInput,
-  SendGrantMutation,
-  UpdateGrantInput,
-  UpdateGrantMutation,
+  type AgeGroup,
+  type Grant,
+  type GrantType,
+  type InterestedInVolunteering,
+  type Occupation,
+  type SendGrantInput,
+  type SendGrantMutation,
+  type UpdateGrantInput,
+  type UpdateGrantMutation,
   useMyGrantQuery,
   useSendGrantMutation,
 } from "~/types";
@@ -785,7 +786,12 @@ export const GrantForm = ({
               ...nonFieldErrors,
               ...(grantError ? [grantError.message] : []),
               ...(nonFieldErrors.length === 0 && hasValidationErrors
-                ? [<FormattedMessage id="grants.form.validationErrors" />]
+                ? [
+                    <FormattedMessage
+                      key="validation-error"
+                      id="grants.form.validationErrors"
+                    />,
+                  ]
                 : []),
             ]}
           />

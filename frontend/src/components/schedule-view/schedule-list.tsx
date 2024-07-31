@@ -10,7 +10,6 @@ import type { Color } from "@python-italia/pycon-styleguide/dist/types";
 import { HeartIcon } from "@python-italia/pycon-styleguide/icons";
 import clsx from "clsx";
 import { addMinutes, parseISO } from "date-fns";
-import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";

@@ -14,8 +14,8 @@ import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import {
-  DayRoom,
-  LiveStreamingSectionQuery,
+  type DayRoom,
+  type LiveStreamingSectionQuery,
   queryLiveStreamingSection,
   useLiveStreamingSectionQuery,
 } from "~/types";

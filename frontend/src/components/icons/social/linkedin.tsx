@@ -1,5 +1,3 @@
-import React from "react";
-
 const Linkedin = (props) => (
   <svg
     viewBox="0 0 17 17"

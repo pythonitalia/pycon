@@ -11,7 +11,7 @@ import {
 import { SnakeHead } from "@python-italia/pycon-styleguide/illustrations";
 import { FormattedMessage } from "react-intl";
 
-import { GetStaticProps } from "next";
+import type { GetStaticProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { createHref } from "~/components/link";

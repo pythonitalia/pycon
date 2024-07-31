@@ -1,7 +1,8 @@
 import { Heading } from "@python-italia/pycon-styleguide";
 import { CloseIcon } from "@python-italia/pycon-styleguide/icons";
 import clsx from "clsx";
-import React, { useEffect } from "react";
+import type React from "react";
+import { useEffect } from "react";
 
 type ModalProps = {
   title: string | React.ReactNode;

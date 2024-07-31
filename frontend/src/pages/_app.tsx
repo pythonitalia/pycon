@@ -8,7 +8,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { useMemo, useState } from "react";
 import { RawIntlProvider, createIntl, createIntlCache } from "react-intl";
-import { ThemeProvider, jsx } from "theme-ui";
+import { ThemeProvider } from "theme-ui";
 
 import { APOLLO_STATE_PROP_NAME, getApolloClient } from "~/apollo/client";
 import { ErrorBoundary } from "~/components/error-boundary";
@@ -16,8 +16,8 @@ import { Footer } from "~/components/footer";
 import { Header } from "~/components/header";
 import { ModalRenderer } from "~/components/modal-renderer";
 import {
-  ModalID,
-  ModalProps,
+  type ModalID,
+  type ModalProps,
   ModalStateContext,
 } from "~/components/modal/context";
 import { GlobalStyles } from "~/components/styles";

@@ -9,11 +9,14 @@ import {
   SpeakerCard,
   VerticalStack,
 } from "@python-italia/pycon-styleguide";
-import React from "react";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
-import { Cta, queryKeynotesSection, useKeynotesSectionQuery } from "~/types";
+import {
+  type Cta,
+  queryKeynotesSection,
+  useKeynotesSectionQuery,
+} from "~/types";
 
 import { createHref } from "../../link";
 

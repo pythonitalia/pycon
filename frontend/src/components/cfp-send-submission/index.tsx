@@ -1,11 +1,9 @@
-import React from "react";
-
 import { useRouter } from "next/router";
 
-import { CfpForm, CfpFormFields } from "~/components/cfp-form";
+import { CfpForm, type CfpFormFields } from "~/components/cfp-form";
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  SendSubmissionMutation,
+  type SendSubmissionMutation,
   readMeSubmissionsQueryCache,
   useSendSubmissionMutation,
   writeMeSubmissionsQueryCache,

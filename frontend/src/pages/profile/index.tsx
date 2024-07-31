@@ -1,4 +1,4 @@
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";

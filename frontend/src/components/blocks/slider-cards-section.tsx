@@ -12,9 +12,9 @@ import {
 
 import { useMoneyFormatter } from "~/helpers/formatters";
 import {
-  PriceCard as PriceCardType,
-  SimpleTextCard as SimpleTextCardType,
-  SliderCardsSection as SliderCardsSectionType,
+  type PriceCard as PriceCardType,
+  type SimpleTextCard as SimpleTextCardType,
+  type SliderCardsSection as SliderCardsSectionType,
   Spacing,
 } from "~/types";
 
@@ -117,7 +117,7 @@ const PriceCard = ({ card }: { card: PriceCardType }) => {
 
       <CardPart>
         <Heading size={1}>
-          {moneyFormatter.format(parseFloat(card.price))}
+          {moneyFormatter.format(Number.parseFloat(card.price))}
         </Heading>
         <Spacer size="xs" />
         <Text uppercase size={2}>

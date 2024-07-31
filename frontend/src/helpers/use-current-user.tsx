@@ -1,4 +1,4 @@
-import { CurrentUserQueryResult, useCurrentUserQuery } from "~/types";
+import { type CurrentUserQueryResult, useCurrentUserQuery } from "~/types";
 
 type CurrentUser = {
   loading: boolean;

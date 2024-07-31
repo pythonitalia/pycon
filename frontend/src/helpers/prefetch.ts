@@ -1,4 +1,4 @@
-import { ApolloClient } from "@apollo/client/core";
+import type { ApolloClient } from "@apollo/client/core";
 
 import { queryFooter, queryHeader } from "~/types";
 

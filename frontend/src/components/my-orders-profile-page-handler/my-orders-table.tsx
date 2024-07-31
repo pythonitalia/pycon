@@ -2,7 +2,7 @@ import { Button, Tag, Text } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
 import { useMoneyFormatter } from "~/helpers/formatters";
-import { MyProfileWithOrdersQuery } from "~/types";
+import type { MyProfileWithOrdersQuery } from "~/types";
 
 import { Table } from "../table";
 
@@ -20,7 +20,9 @@ export const MyOrdersTable = ({ orders }: Props) => {
           {data.code}
         </Text>,
         <OrderStatusTag status={data.status} />,
-        <Text size={2}>{moneyFormatter.format(parseFloat(data.total))}</Text>,
+        <Text size={2}>
+          {moneyFormatter.format(Number.parseFloat(data.total))}
+        </Text>,
         <Button href={data.url} variant="secondary">
           <FormattedMessage id="profile.myOrders.open" />
         </Button>,

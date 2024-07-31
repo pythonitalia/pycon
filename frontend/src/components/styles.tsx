@@ -2,8 +2,7 @@
 
 /** @jsx jsx */
 import { Global } from "@emotion/react";
-import React from "react";
-import { jsx } from "theme-ui";
+import type React from "react";
 
 export const GlobalStyles = (): React.ReactElement => (
   <Global

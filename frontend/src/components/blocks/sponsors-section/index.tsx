@@ -9,12 +9,11 @@ import {
   SponsorsGrid,
   Text,
 } from "@python-italia/pycon-styleguide";
-import React from "react";
 
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  Cta,
-  SponsorsSectionLayout,
+  type Cta,
+  type SponsorsSectionLayout,
   querySponsorsSection,
   useSponsorsSectionQuery,
 } from "~/types";

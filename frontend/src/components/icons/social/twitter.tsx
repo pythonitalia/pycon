@@ -1,5 +1,3 @@
-import React from "react";
-
 const Twitter = (props) => (
   <svg
     viewBox="0 0 19 15"

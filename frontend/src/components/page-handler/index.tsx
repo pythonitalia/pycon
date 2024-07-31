@@ -1,5 +1,5 @@
 import { Page as BasePage } from "@python-italia/pycon-styleguide";
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 
 import { BlocksRenderer } from "~/components/blocks-renderer";
 import { MetaTags } from "~/components/meta-tags";

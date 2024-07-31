@@ -1,8 +1,6 @@
-import React from "react";
-
 import { MapBlock } from "~/components/blocks/map";
 import { TextSection } from "~/components/blocks/text-section";
-import { Block } from "~/types";
+import type { Block } from "~/types";
 
 import { CheckoutSection } from "../blocks/checkout-section";
 import { HomeIntroSection } from "../blocks/home-intro-section";

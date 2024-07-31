@@ -1,5 +1,3 @@
-import React from "react";
-
 type DIRECTION = "left" | "right";
 
 const getTransform = (direction: DIRECTION) => {

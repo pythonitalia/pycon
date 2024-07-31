@@ -1,12 +1,12 @@
 import {
+  type MockedProviderProps,
   MockedProvider as OriginalMockedProvider,
-  MockedProviderProps,
 } from "@apollo/client/testing";
 import {
-  RenderOptions,
+  type RenderOptions,
   render as originalRender,
 } from "@testing-library/react";
-import React, { ReactElement } from "react";
+import type { ReactElement } from "react";
 import { RawIntlProvider, createIntl, createIntlCache } from "react-intl";
 
 import messages from "~/locale";

@@ -1,6 +1,6 @@
 import {
   Textarea as BaseTextarea,
-  TextareaProps as BaseTextareaProps,
+  type TextareaProps as BaseTextareaProps,
 } from "theme-ui";
 
 import { CharsCounter } from "../chars-counter";

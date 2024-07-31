@@ -9,9 +9,10 @@ import {
   Page,
   Section,
 } from "@python-italia/pycon-styleguide";
-import { Icon } from "@python-italia/pycon-styleguide/dist/icons/types";
-import { Color } from "@python-italia/pycon-styleguide/dist/types";
-import React, { useEffect, useState } from "react";
+import type { Icon } from "@python-italia/pycon-styleguide/dist/icons/types";
+import type { Color } from "@python-italia/pycon-styleguide/dist/types";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import Router from "next/router";

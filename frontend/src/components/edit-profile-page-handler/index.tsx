@@ -7,7 +7,7 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import * as yup from "yup";

@@ -1,4 +1,4 @@
-import { Language } from "~/locale/languages";
+import type { Language } from "~/locale/languages";
 
 import { messages } from "../locale";
 import { useCurrentLanguage } from "../locale/context";

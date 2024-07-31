@@ -3,7 +3,6 @@ import {
   Heading,
   Text,
 } from "@python-italia/pycon-styleguide";
-import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useRouter } from "next/router";

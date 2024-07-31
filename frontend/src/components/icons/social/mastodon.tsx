@@ -1,5 +1,3 @@
-import React from "react";
-
 const Mastodon = (props) => (
   <svg
     viewBox="0 0 16 16"

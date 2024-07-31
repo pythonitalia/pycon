@@ -9,7 +9,7 @@ import {
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { GetStaticProps } from "next";
+import type { GetStaticProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
