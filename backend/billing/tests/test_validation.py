@@ -1,6 +1,6 @@
 from billing.exceptions import (
     ItalianZipCodeIncorrectLengthError,
-    CapCodeInvalidCharsError,
+    ItalianZipCodeInvalidCharsError,
     FiscalCodeIncorrectLengthError,
     FiscalCodeInvalidCharsError,
     FiscalCodeInvalidControlCodeError,
@@ -84,7 +84,7 @@ def test_validate_italian_zip_code_with_incorrect_length(code):
     ],
 )
 def test_validate_italian_zip_code_with_non_numeric_code(code):
-    with pytest.raises(CapCodeInvalidCharsError):
+    with pytest.raises(ItalianZipCodeInvalidCharsError):
         validate_italian_zip_code(code)
 
 

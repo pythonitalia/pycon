@@ -21,7 +21,7 @@ class ItalianZipCodeIncorrectLengthError(ItalianZipCodeValidationError):
         return "ZIP code must be 5 characters long"
 
 
-class CapCodeInvalidCharsError(ItalianZipCodeValidationError):
+class ItalianZipCodeInvalidCharsError(ItalianZipCodeValidationError):
     def __str__(self):
         return "ZIP code must contain only digits"
 

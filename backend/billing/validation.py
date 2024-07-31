@@ -8,7 +8,7 @@ from billing.exceptions import (
     SdiCodeIncorrectLengthError,
     SdiInvalidCharsError,
     ItalianZipCodeIncorrectLengthError,
-    CapCodeInvalidCharsError,
+    ItalianZipCodeInvalidCharsError,
 )
 from billing.constants import (
     ITALIAN_FISCAL_CODE_CONTROL_CODE,
@@ -34,7 +34,7 @@ def validate_italian_zip_code(zip_code: str) -> bool:
         raise ItalianZipCodeIncorrectLengthError()
 
     if not zip_code.isnumeric():
-        raise CapCodeInvalidCharsError()
+        raise ItalianZipCodeInvalidCharsError()
 
     return True
 
