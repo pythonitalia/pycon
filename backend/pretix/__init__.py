@@ -6,6 +6,7 @@ from urllib.parse import urljoin
 from django.utils.dateparse import parse_datetime
 import requests
 from api.types import BaseErrorType
+from countries import countries
 import strawberry
 from django.conf import settings
 from django.core.cache import cache
@@ -323,6 +324,8 @@ class InvoiceInformation:
                     "This field is required",
                 )
 
+        self.validate_country(errors)
+
         if self.country == "IT":
             self.validate_italian_zip_code(errors)
             self.validate_pec(errors)
@@ -334,6 +337,13 @@ class InvoiceInformation:
                 self.validate_fiscal_code(errors)
 
         return errors
+
+    def validate_country(self, errors: CreateOrderErrors):
+        if not countries.is_valid(self.country):
+            errors.add_error(
+                "invoice_information.country",
+                "Invalid country",
+            )
 
     def validate_pec(self, errors: CreateOrderErrors):
         if not self.pec:

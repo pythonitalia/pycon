@@ -589,6 +589,56 @@ def test_invoice_validation_fails_with_empty_business_name_for_businesses(
 
 
 @override_settings(FRONTEND_URL="http://test.it")
+def test_invoice_validation_fails_with_invalid_country_code(
+    graphql_client, user, mocker
+):
+    conference = ConferenceFactory()
+    graphql_client.force_login(user)
+
+    create_order_mock = mocker.patch("api.orders.mutations.create_order")
+    create_order_mock.return_value.payment_url = "https://example.com"
+    create_order_mock.return_value.code = "123"
+
+    response = _create_order(
+        graphql_client,
+        code=conference.code,
+        input={
+            "tickets": [
+                {
+                    "ticketId": "1",
+                    "attendeeName": "ABC",
+                    "attendeeEmail": "patrick.arminio@gmail.com",
+                    "variation": "1",
+                    "answers": [{"questionId": "1", "value": "Example"}],
+                }
+            ],
+            "paymentProvider": "stripe",
+            "email": "patrick.arminio@gmail.com",
+            "invoiceInformation": {
+                "isBusiness": True,
+                "company": "name",
+                "name": "Patrick",
+                "street": "street",
+                "zipcode": "92100",
+                "city": "Avellino",
+                "country": "XX",
+                "vatId": "123",
+                "fiscalCode": "",
+            },
+            "locale": "en",
+        },
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["createOrder"]["__typename"] == "CreateOrderErrors"
+    assert response["data"]["createOrder"]["errors"]["invoiceInformation"][
+        "country"
+    ] == ["Invalid country"]
+
+    create_order_mock.assert_not_called()
+
+
+@override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_fails_when_italian_business_and_no_sdi(
     graphql_client, user, mocker
 ):
