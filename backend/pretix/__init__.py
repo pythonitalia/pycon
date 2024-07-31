@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 import logging
 from typing import Any, Dict, List, Optional
 from urllib.parse import urljoin
@@ -323,6 +325,7 @@ class InvoiceInformation:
 
         if self.country == "IT":
             self.validate_italian_zip_code(errors)
+            self.validate_pec(errors)
 
             if self.is_business:
                 self.validate_sdi(errors)
@@ -331,6 +334,15 @@ class InvoiceInformation:
                 self.validate_fiscal_code(errors)
 
         return errors
+
+    def validate_pec(self, errors: CreateOrderErrors):
+        if not self.pec:
+            return
+
+        try:
+            validate_email(self.pec)
+        except ValidationError:
+            errors.add_error("invoice_information.pec", "Invalid PEC address")
 
     def validate_fiscal_code(self, errors: CreateOrderErrors):
         if not self.fiscal_code:
