@@ -18,7 +18,7 @@ from billing.validation import (
     validate_sdi_code,
 )
 from billing.exceptions import (
-    CapCodeValidationError,
+    ItalianZipCodeValidationError,
     FiscalCodeValidationError,
     ItalianVatNumberValidationError,
     SdiValidationError,
@@ -355,7 +355,7 @@ class InvoiceInformation:
 
         try:
             validate_italian_zip_code(self.zipcode)
-        except CapCodeValidationError as exc:
+        except ItalianZipCodeValidationError as exc:
             errors.add_error("invoice_information.zipcode", str(exc))
 
     def validate_sdi(self, errors: CreateOrderErrors):
