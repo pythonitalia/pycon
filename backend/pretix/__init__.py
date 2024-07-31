@@ -1,17 +1,31 @@
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 import logging
-from datetime import date
 from typing import Any, Dict, List, Optional
 from urllib.parse import urljoin
 from django.utils.dateparse import parse_datetime
 import requests
+from api.types import BaseErrorType
+from countries import countries
 import strawberry
 from django.conf import settings
 from django.core.cache import cache
 from api.pretix.types import UpdateAttendeeTicketInput, Voucher
 from conferences.models.conference import Conference
-from hotels.models import BedLayout, HotelRoom
 from pretix.types import Category, Question, Quota
 import sentry_sdk
+from billing.validation import (
+    validate_italian_zip_code,
+    validate_fiscal_code,
+    validate_italian_vat_number,
+    validate_sdi_code,
+)
+from billing.exceptions import (
+    ItalianZipCodeValidationError,
+    FiscalCodeValidationError,
+    ItalianVatNumberValidationError,
+    SdiValidationError,
+)
 
 from .exceptions import PretixError
 
@@ -227,6 +241,32 @@ def get_quotas(conference: Conference) -> Dict[str, Quota]:
     return {str(result["id"]): result for result in data["results"]}
 
 
+@strawberry.type
+class InvoiceInformationErrors:
+    company: list[str] = strawberry.field(default_factory=list)
+    name: list[str] = strawberry.field(default_factory=list)
+    street: list[str] = strawberry.field(default_factory=list)
+    zipcode: list[str] = strawberry.field(default_factory=list)
+    city: list[str] = strawberry.field(default_factory=list)
+    country: list[str] = strawberry.field(default_factory=list)
+    vat_id: list[str] = strawberry.field(default_factory=list)
+    fiscal_code: list[str] = strawberry.field(default_factory=list)
+    pec: list[str] = strawberry.field(default_factory=list)
+    sdi: list[str] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
+class CreateOrderErrors(BaseErrorType):
+    @strawberry.type
+    class _CreateOrderErrors:
+        invoice_information: InvoiceInformationErrors = strawberry.field(
+            default_factory=InvoiceInformationErrors
+        )
+        non_field_errors: list[str] = strawberry.field(default_factory=list)
+
+    errors: _CreateOrderErrors = None
+
+
 @strawberry.input
 class CreateOrderTicketAnswer:
     question_id: str
@@ -244,14 +284,6 @@ class CreateOrderTicket:
 
 
 @strawberry.input
-class CreateOrderHotelRoom:
-    room_id: str
-    bed_layout_id: str
-    checkin: date
-    checkout: date
-
-
-@strawberry.input
 class InvoiceInformation:
     is_business: bool
     company: Optional[str]
@@ -265,6 +297,101 @@ class InvoiceInformation:
     pec: str | None = None
     sdi: str | None = None
 
+    def validate(self, errors: CreateOrderErrors) -> CreateOrderErrors:
+        required_fields = [
+            "name",
+            "street",
+            "zipcode",
+            "city",
+            "country",
+        ]
+
+        if self.is_business:
+            required_fields += ["vat_id", "company"]
+
+        if self.country == "IT":
+            if self.is_business:
+                required_fields += ["sdi"]
+            else:
+                required_fields += ["fiscal_code"]
+
+        for required_field in required_fields:
+            value = getattr(self, required_field)
+
+            if not value:
+                errors.add_error(
+                    f"invoice_information.{required_field}",
+                    "This field is required",
+                )
+
+        self.validate_country(errors)
+
+        if self.country == "IT":
+            self.validate_italian_zip_code(errors)
+            self.validate_pec(errors)
+
+            if self.is_business:
+                self.validate_sdi(errors)
+                self.validate_partita_iva(errors)
+            else:
+                self.validate_fiscal_code(errors)
+
+        return errors
+
+    def validate_country(self, errors: CreateOrderErrors):
+        if not self.country:
+            return
+
+        if not countries.is_valid(self.country):
+            errors.add_error(
+                "invoice_information.country",
+                "Invalid country",
+            )
+
+    def validate_pec(self, errors: CreateOrderErrors):
+        if not self.pec:
+            return
+
+        try:
+            validate_email(self.pec)
+        except ValidationError:
+            errors.add_error("invoice_information.pec", "Invalid PEC address")
+
+    def validate_fiscal_code(self, errors: CreateOrderErrors):
+        if not self.fiscal_code:
+            return
+
+        try:
+            validate_fiscal_code(self.fiscal_code)
+        except FiscalCodeValidationError as exc:
+            errors.add_error("invoice_information.fiscal_code", str(exc))
+
+    def validate_partita_iva(self, errors: CreateOrderErrors):
+        if not self.vat_id:
+            return
+        try:
+            validate_italian_vat_number(self.vat_id)
+        except ItalianVatNumberValidationError as exc:
+            errors.add_error("invoice_information.vat_id", str(exc))
+
+    def validate_italian_zip_code(self, errors: CreateOrderErrors):
+        if not self.zipcode:
+            return
+
+        try:
+            validate_italian_zip_code(self.zipcode)
+        except ItalianZipCodeValidationError as exc:
+            errors.add_error("invoice_information.zipcode", str(exc))
+
+    def validate_sdi(self, errors: CreateOrderErrors):
+        if not self.sdi:
+            return
+
+        try:
+            validate_sdi_code(self.sdi)
+        except SdiValidationError as exc:
+            errors.add_error("invoice_information.sdi", str(exc))
+
 
 @strawberry.input
 class CreateOrderInput:
@@ -273,7 +400,11 @@ class CreateOrderInput:
     payment_provider: str
     invoice_information: InvoiceInformation
     tickets: List[CreateOrderTicket]
-    hotel_rooms: List[CreateOrderHotelRoom]
+
+    def validate(self) -> CreateOrderErrors:
+        errors = CreateOrderErrors()
+        self.invoice_information.validate(errors)
+        return errors.if_has_errors
 
 
 @strawberry.type
@@ -339,61 +470,6 @@ def normalize_position(ticket: CreateOrderTicket, items: dict, questions: dict):
     return data
 
 
-def create_hotel_positions(
-    hotel_rooms: List[CreateOrderHotelRoom], locale: str, conference: Conference
-):
-    rooms: List[HotelRoom] = list(HotelRoom.objects.filter(conference=conference).all())
-    bed_layouts: List[BedLayout] = list(BedLayout.objects.all())
-
-    positions = []
-
-    for order_room in hotel_rooms:
-        room = [room for room in rooms if str(room.pk) == order_room.room_id][0]
-        bed_layout = next(
-            layout
-            for layout in bed_layouts
-            if str(layout.id) == order_room.bed_layout_id
-        )
-
-        num_nights = (order_room.checkout - order_room.checkin).days
-        total_price = num_nights * room.price
-
-        positions.append(
-            {
-                "item": conference.pretix_hotel_ticket_id,
-                "price": str(total_price),
-                "answers": [
-                    {
-                        "question": conference.pretix_hotel_room_type_question_id,
-                        "answer": room.name.localize(locale),
-                        "options": [],
-                        "option_identifier": [],
-                    },
-                    {
-                        "question": conference.pretix_hotel_checkin_question_id,
-                        "answer": order_room.checkin.strftime("%Y-%m-%d"),
-                        "options": [],
-                        "option_identifier": [],
-                    },
-                    {
-                        "question": conference.pretix_hotel_checkout_question_id,
-                        "answer": order_room.checkout.strftime("%Y-%m-%d"),
-                        "options": [],
-                        "option_identifier": [],
-                    },
-                    {
-                        "question": conference.pretix_hotel_bed_layout_question_id,
-                        "answer": bed_layout.name.localize(locale),
-                        "options": [],
-                        "option_identifier": [],
-                    },
-                ],
-            }
-        )
-
-    return positions
-
-
 def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     questions = get_questions(conference)
     items = get_items(conference)
@@ -401,13 +477,6 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     positions = [
         normalize_position(ticket, items, questions) for ticket in order_data.tickets
     ]
-
-    if len(order_data.hotel_rooms) > 0:
-        positions.extend(
-            create_hotel_positions(
-                order_data.hotel_rooms, order_data.locale, conference
-            )
-        )
 
     payload = {
         "email": order_data.email,

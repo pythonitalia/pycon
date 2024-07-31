@@ -5,6 +5,7 @@ from api.permissions import IsAuthenticated
 from django.conf import settings
 
 from django.urls import reverse
+from api.billing.types import BillingAddress
 from pycon.signing import sign_path
 import strawberry
 from strawberry.types import Info
@@ -22,6 +23,7 @@ from badges.roles import ConferenceRole, get_conference_roles_for_user
 from association_membership.models import Membership
 from schedule.models import ScheduleItemStar as ScheduleItemStarModel
 from submissions.models import Submission as SubmissionModel
+from billing.models import BillingAddress as BillingAddressModel
 
 logger = getLogger(__name__)
 
@@ -151,6 +153,15 @@ class User:
     @strawberry.field
     def is_python_italia_member(self) -> bool:
         return Membership.objects.active().of_user(self.id).exists()
+
+    @strawberry.field
+    def billing_addresses(self, conference: str) -> list[BillingAddress]:
+        return [
+            BillingAddress.from_django_model(billing_address)
+            for billing_address in BillingAddressModel.objects.of_user(self.id)
+            .for_conference_code(conference)
+            .all()
+        ]
 
     @classmethod
     def from_django_model(cls, user):

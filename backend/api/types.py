@@ -18,9 +18,17 @@ class BaseErrorType:
         if not self.errors:
             self.errors = self.__annotations__["errors"]()
 
-        existing_errors = getattr(self.errors, field, [])
+        parts = field.split(".")
+        current = self.errors
+
+        for part in parts[:-1]:
+            current = getattr(current, part)
+
+        last_part = parts[-1]
+
+        existing_errors = getattr(current, last_part, [])
         existing_errors.append(message)
-        setattr(self.errors, field, existing_errors)
+        setattr(current, last_part, existing_errors)
 
     @property
     def has_errors(self) -> bool:
