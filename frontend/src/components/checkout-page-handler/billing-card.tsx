@@ -212,7 +212,7 @@ export const BillingCard = ({
                   )}
                 </FormattedMessage>
                 {countries.map((c) => (
-                  <option key={c.value} value={c.value}>
+                  <option key={c.value} value={c.value} disabled={c.disabled}>
                     {c.label}
                   </option>
                 ))}
