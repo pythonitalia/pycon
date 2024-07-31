@@ -231,8 +231,12 @@ def test_handles_errors(graphql_client, user, mocker):
 
 
 @override_settings(FRONTEND_URL="http://test.it")
-def test_invoice_validation_fails_without_fiscal_code_in_country_italy(
-    graphql_client, user, mocker
+@pytest.mark.parametrize(
+    "field_to_remove",
+    ["fiscalCode", "zipcode"],
+)
+def test_invoice_validation_fails_without_required_field_in_country_italy(
+    graphql_client, user, mocker, field_to_remove
 ):
     conference = ConferenceFactory()
     graphql_client.force_login(user)
@@ -240,6 +244,19 @@ def test_invoice_validation_fails_without_fiscal_code_in_country_italy(
     create_order_mock = mocker.patch("api.orders.mutations.create_order")
     create_order_mock.return_value.payment_url = "https://example.com"
     create_order_mock.return_value.code = "123"
+
+    data = {
+        "isBusiness": False,
+        "company": "",
+        "name": "Patrick",
+        "street": "street",
+        "zipcode": "92100",
+        "city": "Avellino",
+        "country": "IT",
+        "vatId": "",
+        "fiscalCode": "123",
+    }
+    data[field_to_remove] = ""
 
     response = _create_order(
         graphql_client,
@@ -256,17 +273,7 @@ def test_invoice_validation_fails_without_fiscal_code_in_country_italy(
             ],
             "paymentProvider": "stripe",
             "email": "patrick.arminio@gmail.com",
-            "invoiceInformation": {
-                "isBusiness": False,
-                "company": "",
-                "name": "Patrick",
-                "street": "street",
-                "zipcode": "92100",
-                "city": "Avellino",
-                "country": "IT",
-                "vatId": "",
-                "fiscalCode": "",
-            },
+            "invoiceInformation": data,
             "locale": "en",
         },
     )
@@ -274,7 +281,7 @@ def test_invoice_validation_fails_without_fiscal_code_in_country_italy(
     assert not response.get("errors")
     assert response["data"]["createOrder"]["__typename"] == "CreateOrderErrors"
     assert response["data"]["createOrder"]["errors"]["invoiceInformation"][
-        "fiscalCode"
+        field_to_remove
     ] == ["This field is required"]
 
     create_order_mock.assert_not_called()
