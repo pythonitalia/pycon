@@ -6,7 +6,6 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useMoneyFormatter } from "~/helpers/formatters";

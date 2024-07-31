@@ -1,22 +1,10 @@
-import { Heading, Section, Spacer } from "@python-italia/pycon-styleguide";
 import type React from "react";
-import { FormattedMessage } from "react-intl";
 
-import {
-  type CurrentUserQueryResult,
-  type TicketItem,
-  type TicketsQueryResult,
-  useCreateOrderMutation,
-} from "~/types";
+import { useCreateOrderMutation } from "~/types";
 
 import { useCurrentLanguage } from "~/locale/context";
 import type { SelectedProducts } from "../tickets-page/types";
 import { useCart } from "../tickets-page/use-cart";
-import { BillingCard } from "./billing-card";
-import { CreateOrderBar } from "./create-order-bar";
-import { ProductsQuestions } from "./products-questions";
-import { RecapCard } from "./recap-card";
-import { VoucherCard } from "./voucher-card";
 
 export const useCreateOrder = ({ userEmail }) => {
   const code = process.env.conferenceCode;

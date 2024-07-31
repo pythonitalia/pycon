@@ -1,17 +1,11 @@
 import { Heading, Section, Spacer } from "@python-italia/pycon-styleguide";
-import React from "react";
 import { FormattedMessage } from "react-intl";
 
-import {
-  type CurrentUserQueryResult,
-  type TicketItem,
-  type TicketsQueryResult,
-  useCreateOrderMutation,
+import type {
+  CurrentUserQueryResult,
+  TicketItem,
+  TicketsQueryResult,
 } from "~/types";
-
-import { useCurrentLanguage } from "~/locale/context";
-import { SelectedProducts } from "../tickets-page/types";
-import { useCart } from "../tickets-page/use-cart";
 import { BillingCard } from "./billing-card";
 import { CreateOrderBar } from "./create-order-bar";
 import { ProductsQuestions } from "./products-questions";

@@ -4,14 +4,13 @@ import {
   MultiplePartsCard,
   Text,
 } from "@python-italia/pycon-styleguide";
-import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { HotelRoom, TicketItem } from "~/types";
+import type { HotelRoom, TicketItem } from "~/types";
 
 import { calculateProductPrice } from "../tickets-page/review/prices";
-import { HotelRoomState, ProductState } from "../tickets-page/types";
+import type { HotelRoomState, ProductState } from "../tickets-page/types";
 import { useCart } from "../tickets-page/use-cart";
 
 type Props = {
@@ -91,9 +90,10 @@ const RecapHotelItem = ({
           id="tickets.checkout.recap.hotelRoomsPrice"
           values={{
             price: moneyFormatter.format(
-              parseFloat(hotelRoom.price) * selectedHotelRoomInfo.numNights,
+              Number.parseFloat(hotelRoom.price) *
+                selectedHotelRoomInfo.numNights,
             ),
-            perNight: moneyFormatter.format(parseFloat(hotelRoom.price)),
+            perNight: moneyFormatter.format(Number.parseFloat(hotelRoom.price)),
             taxRate: 0,
           }}
         />
@@ -132,7 +132,7 @@ const RecapItem = ({ selectedProductInfo, product }: RecapItemProps) => {
     <div>
       {!!selectedProductInfo.voucher && (
         <Text decoration="line-through" size="label2">
-          {moneyFormatter.format(parseFloat(product.defaultPrice))}
+          {moneyFormatter.format(Number.parseFloat(product.defaultPrice))}
         </Text>
       )}{" "}
       <Text size="label2">

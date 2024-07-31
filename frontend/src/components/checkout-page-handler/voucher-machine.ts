@@ -1,7 +1,7 @@
 import { assign, createMachine } from "xstate";
 
 import { getApolloClient } from "~/apollo/client";
-import { GetVoucherDocument, GetVoucherQuery } from "~/types";
+import { GetVoucherDocument, type GetVoucherQuery } from "~/types";
 
 type Context = {
   code: string;
