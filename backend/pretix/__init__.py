@@ -339,6 +339,9 @@ class InvoiceInformation:
         return errors
 
     def validate_country(self, errors: CreateOrderErrors):
+        if not self.country:
+            return
+
         if not countries.is_valid(self.country):
             errors.add_error(
                 "invoice_information.country",
