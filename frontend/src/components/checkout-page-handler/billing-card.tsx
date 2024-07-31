@@ -40,11 +40,6 @@ export const BillingCard = ({
       billingAddress.isBusiness === invoiceInformation.isBusiness,
   );
 
-  const invalidFiscalCodeMessage = useTranslatedMessage(
-    "orderInformation.invalidFiscalCode",
-  );
-  const invalidSDIMessage = useTranslatedMessage("orderInformation.invalidSDI");
-
   const countries = useCountries();
   const [formState, { text, email, select, textarea, checkbox }] =
     useFormState<InvoiceInformationState>({ ...invoiceInformation });
@@ -234,21 +229,10 @@ export const BillingCard = ({
                     <Input
                       {...text({
                         name: "sdi",
-                        validate: (value) => {
-                          const isValid = value.length === 7;
-
-                          if (!isValid) {
-                            return invalidSDIMessage;
-                          }
-                        },
-                        validateOnBlur: true,
                       })}
                       required={true}
-                      errors={
-                        formState.errors.sdi
-                          ? [formState.errors.sdi]
-                          : invoiceInformationErrors?.sdi
-                      }
+                      placeholder={inputPlaceholder}
+                      errors={invoiceInformationErrors?.sdi}
                     />
                   </InputWrapper>
                 ) : (
@@ -262,12 +246,9 @@ export const BillingCard = ({
                       {...text({
                         name: "fiscalCode",
                       })}
+                      placeholder={inputPlaceholder}
                       required={true}
-                      errors={
-                        formState.errors.fiscalCode
-                          ? [formState.errors.fiscalCode]
-                          : invoiceInformationErrors?.fiscalCode
-                      }
+                      errors={invoiceInformationErrors?.fiscalCode}
                     />
                   </InputWrapper>
                 )}
@@ -278,6 +259,7 @@ export const BillingCard = ({
                     {...email({
                       name: "pec",
                     })}
+                    placeholder={inputPlaceholder}
                     errors={
                       formState.errors.pec
                         ? [formState.errors.pec]
