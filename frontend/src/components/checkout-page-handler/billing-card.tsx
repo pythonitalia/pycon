@@ -260,11 +260,7 @@ export const BillingCard = ({
                       name: "pec",
                     })}
                     placeholder={inputPlaceholder}
-                    errors={
-                      formState.errors.pec
-                        ? [formState.errors.pec]
-                        : invoiceInformationErrors?.pec
-                    }
+                    errors={invoiceInformationErrors?.pec}
                   />
                 </InputWrapper>
               </Grid>
