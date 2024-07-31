@@ -12,18 +12,18 @@ class SdiInvalidCharsError(SdiValidationError):
         return "SDI code must contain only letters and digits"
 
 
-class CapCodeValidationError(ValueError):
+class ItalianZipCodeValidationError(ValueError):
     ...
 
 
-class CapCodeIncorrectLengthError(CapCodeValidationError):
+class ItalianZipCodeIncorrectLengthError(ItalianZipCodeValidationError):
     def __str__(self):
-        return "CAP code must be 5 characters long"
+        return "ZIP code must be 5 characters long"
 
 
-class CapCodeInvalidCharsError(CapCodeValidationError):
+class CapCodeInvalidCharsError(ItalianZipCodeValidationError):
     def __str__(self):
-        return "CAP code must contain only digits"
+        return "ZIP code must contain only digits"
 
 
 class ItalianVatNumberValidationError(ValueError):

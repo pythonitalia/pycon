@@ -686,7 +686,7 @@ def test_invoice_validation_fails_when_italian_zipcode_is_invalid(
     assert response["data"]["createOrder"]["__typename"] == "CreateOrderErrors"
     assert response["data"]["createOrder"]["errors"]["invoiceInformation"][
         "zipcode"
-    ] == ["CAP code must be 5 characters long"]
+    ] == ["ZIP code must be 5 characters long"]
 
     create_order_mock.assert_not_called()
 

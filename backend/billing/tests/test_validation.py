@@ -1,5 +1,5 @@
 from billing.exceptions import (
-    CapCodeIncorrectLengthError,
+    ItalianZipCodeIncorrectLengthError,
     CapCodeInvalidCharsError,
     FiscalCodeIncorrectLengthError,
     FiscalCodeInvalidCharsError,
@@ -12,7 +12,7 @@ from billing.exceptions import (
 )
 import pytest
 from billing.validation import (
-    validate_cap_code,
+    validate_italian_zip_code,
     validate_fiscal_code,
     validate_italian_vat_number,
     validate_sdi_code,
@@ -57,8 +57,8 @@ def test_validate_sdi_code_invalid_chars(code):
         "93100",
     ],
 )
-def test_validate_cap_code_with_valid_code(code):
-    assert validate_cap_code(code)
+def test_validate_italian_zip_code_with_valid_code(code):
+    assert validate_italian_zip_code(code)
 
 
 @pytest.mark.parametrize(
@@ -69,9 +69,9 @@ def test_validate_cap_code_with_valid_code(code):
         "123",
     ],
 )
-def test_validate_cap_code_with_incorrect_length(code):
-    with pytest.raises(CapCodeIncorrectLengthError):
-        validate_cap_code(code)
+def test_validate_italian_zip_code_with_incorrect_length(code):
+    with pytest.raises(ItalianZipCodeIncorrectLengthError):
+        validate_italian_zip_code(code)
 
 
 @pytest.mark.parametrize(
@@ -83,9 +83,9 @@ def test_validate_cap_code_with_incorrect_length(code):
         "f9449",
     ],
 )
-def test_validate_cap_code_with_non_numeric_code(code):
+def test_validate_italian_zip_code_with_non_numeric_code(code):
     with pytest.raises(CapCodeInvalidCharsError):
-        validate_cap_code(code)
+        validate_italian_zip_code(code)
 
 
 @pytest.mark.parametrize(

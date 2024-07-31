@@ -7,7 +7,7 @@ from billing.exceptions import (
     ItalianVatNumberInvalidCodeError,
     SdiCodeIncorrectLengthError,
     SdiInvalidCharsError,
-    CapCodeIncorrectLengthError,
+    ItalianZipCodeIncorrectLengthError,
     CapCodeInvalidCharsError,
 )
 from billing.constants import (
@@ -29,11 +29,11 @@ def validate_sdi_code(sdi_code: str) -> bool:
     return True
 
 
-def validate_cap_code(cap_code: str) -> bool:
-    if len(cap_code) != 5:
-        raise CapCodeIncorrectLengthError()
+def validate_italian_zip_code(zip_code: str) -> bool:
+    if len(zip_code) != 5:
+        raise ItalianZipCodeIncorrectLengthError()
 
-    if not cap_code.isnumeric():
+    if not zip_code.isnumeric():
         raise CapCodeInvalidCharsError()
 
     return True

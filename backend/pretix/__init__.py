@@ -12,7 +12,7 @@ from conferences.models.conference import Conference
 from pretix.types import Category, Question, Quota
 import sentry_sdk
 from billing.validation import (
-    validate_cap_code,
+    validate_italian_zip_code,
     validate_fiscal_code,
     validate_italian_vat_number,
     validate_sdi_code,
@@ -322,7 +322,7 @@ class InvoiceInformation:
                 )
 
         if self.country == "IT":
-            self.validate_cap_code(errors)
+            self.validate_italian_zip_code(errors)
 
             if self.is_business:
                 self.validate_sdi(errors)
@@ -349,12 +349,12 @@ class InvoiceInformation:
         except ItalianVatNumberValidationError as exc:
             errors.add_error("invoice_information.vat_id", str(exc))
 
-    def validate_cap_code(self, errors: CreateOrderErrors):
+    def validate_italian_zip_code(self, errors: CreateOrderErrors):
         if not self.zipcode:
             return
 
         try:
-            validate_cap_code(self.zipcode)
+            validate_italian_zip_code(self.zipcode)
         except CapCodeValidationError as exc:
             errors.add_error("invoice_information.zipcode", str(exc))
 
