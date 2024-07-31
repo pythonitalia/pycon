@@ -23,12 +23,10 @@ const createOptions = (
   items: {
     name: string;
     code: string;
-    disabled: boolean;
   }[],
 ) => [
-  { label: "", value: "", disabled: true },
   ...items.slice(0, TOP_COUNTRIES.length).map(createOption),
-  { label: "---------", value: "---", disabled: true },
+  { label: "", value: "", disabled: true },
   ...items.slice(TOP_COUNTRIES.length + 1).map(createOption),
 ];
 
