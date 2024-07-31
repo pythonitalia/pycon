@@ -24,9 +24,6 @@ import type { CurrentUserQueryResult, InvoiceInformationErrors } from "~/types";
 import type { InvoiceInformationState } from "../tickets-page/types";
 import { useCart } from "../tickets-page/use-cart";
 
-const FISCAL_CODE_REGEX =
-  /^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}$/;
-
 export const BillingCard = ({
   me,
   invoiceInformationErrors,
@@ -264,14 +261,6 @@ export const BillingCard = ({
                     <Input
                       {...text({
                         name: "fiscalCode",
-                        validate: (value) => {
-                          const isValid = FISCAL_CODE_REGEX.test(value);
-
-                          if (!isValid) {
-                            return invalidFiscalCodeMessage;
-                          }
-                        },
-                        validateOnBlur: true,
                       })}
                       required={true}
                       errors={
