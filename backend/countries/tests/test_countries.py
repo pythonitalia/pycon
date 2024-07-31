@@ -49,3 +49,8 @@ def test_get_continent_by_multiple_arguments():
 
 def test_continent_not_found():
     assert continents.get(name="Narnia") is None
+
+
+def test_is_valid_country():
+    assert countries.is_valid("IT")
+    assert not countries.is_valid("XX")

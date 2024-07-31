@@ -6,6 +6,7 @@ from billing.exceptions import (
     FiscalCodeInvalidControlCodeError,
     ItalianVatNumberIncorrectLengthError,
     ItalianVatNumberInvalidCharsError,
+    ItalianVatNumberInvalidCodeError,
     SdiCodeIncorrectLengthError,
     SdiInvalidCharsError,
 )
@@ -165,4 +166,13 @@ def test_validate_italian_vat_number_with_invalid_length(code):
 )
 def test_validate_italian_vat_number_with_invalid_chars(code):
     with pytest.raises(ItalianVatNumberInvalidCharsError):
+        validate_italian_vat_number(code)
+
+
+@pytest.mark.parametrize(
+    "code",
+    ["IT00743110151", "00000000001"],
+)
+def test_validate_italian_vat_number_with_invalid_check_digit(code):
+    with pytest.raises(ItalianVatNumberInvalidCodeError):
         validate_italian_vat_number(code)
