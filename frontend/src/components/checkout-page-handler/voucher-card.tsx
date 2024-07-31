@@ -9,7 +9,7 @@ import {
 import { useMachine } from "@xstate/react";
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
-import { InputElement, useFormState } from "react-use-form-state";
+import { type InputElement, useFormState } from "react-use-form-state";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 

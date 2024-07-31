@@ -20,22 +20,25 @@ import { useFormState } from "react-use-form-state";
 import { useCountries } from "~/helpers/use-countries";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 
-import { InvoiceInformationState } from "../tickets-page/types";
+import type { CurrentUserQueryResult, InvoiceInformationErrors } from "~/types";
+import type { InvoiceInformationState } from "../tickets-page/types";
 import { useCart } from "../tickets-page/use-cart";
 
-const FISCAL_CODE_REGEX =
-  /^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}$/;
-
-export const BillingCard = () => {
+export const BillingCard = ({
+  me,
+  invoiceInformationErrors,
+}: {
+  me: CurrentUserQueryResult["data"]["me"];
+  invoiceInformationErrors?: InvoiceInformationErrors;
+}) => {
   const {
     state: { invoiceInformation, hasAdmissionTicket },
     updateInformation,
   } = useCart();
-
-  const invalidFiscalCodeMessage = useTranslatedMessage(
-    "orderInformation.invalidFiscalCode",
+  const savedBillingInformation = me?.billingAddresses.find(
+    (billingAddress) =>
+      billingAddress.isBusiness === invoiceInformation.isBusiness,
   );
-  const invalidSDIMessage = useTranslatedMessage("orderInformation.invalidSDI");
 
   const countries = useCountries();
   const [formState, { text, email, select, textarea, checkbox }] =
@@ -45,6 +48,26 @@ export const BillingCard = () => {
   const isItalian = formState.values.country === "IT";
 
   const inputPlaceholder = useTranslatedMessage("input.placeholder");
+
+  useEffect(() => {
+    const emptyInvoiceInformation = Object.entries(invoiceInformation).every(
+      ([key, value]) => key === "isBusiness" || !value,
+    );
+    if (emptyInvoiceInformation && savedBillingInformation) {
+      formState.setField("companyName", savedBillingInformation.companyName);
+      formState.setField("name", savedBillingInformation.userName);
+      formState.setField("fiscalCode", savedBillingInformation.fiscalCode);
+      formState.setField("pec", savedBillingInformation.pec);
+      formState.setField("sdi", savedBillingInformation.sdi);
+      formState.setField("vatId", savedBillingInformation.vatId);
+      formState.setField("address", savedBillingInformation.address);
+      formState.setField("zipCode", savedBillingInformation.zipCode);
+      formState.setField("city", savedBillingInformation.city);
+      formState.setField("country", savedBillingInformation.country);
+
+      updateInformation(formState.values);
+    }
+  }, []);
 
   useEffect(() => {
     if (invoiceInformation.isBusiness && !formState.values.isBusiness) {
@@ -99,6 +122,7 @@ export const BillingCard = () => {
                   autoComplete="organization"
                   required={isBusiness}
                   placeholder={inputPlaceholder}
+                  errors={invoiceInformationErrors?.company}
                 />
               </InputWrapper>
             )}
@@ -110,6 +134,7 @@ export const BillingCard = () => {
                 {...text("name")}
                 required={true}
                 placeholder={inputPlaceholder}
+                errors={invoiceInformationErrors?.name}
               />
             </InputWrapper>
             {isBusiness && (
@@ -122,6 +147,7 @@ export const BillingCard = () => {
                   autoComplete="off"
                   required={true}
                   placeholder={inputPlaceholder}
+                  errors={invoiceInformationErrors?.vatId}
                 />
               </InputWrapper>
             )}
@@ -133,6 +159,7 @@ export const BillingCard = () => {
                 {...text("zipCode")}
                 required={true}
                 placeholder={inputPlaceholder}
+                errors={invoiceInformationErrors?.zipcode}
               />
             </InputWrapper>
 
@@ -144,6 +171,7 @@ export const BillingCard = () => {
                 {...text("city")}
                 required={true}
                 placeholder={inputPlaceholder}
+                errors={invoiceInformationErrors?.city}
               />
             </InputWrapper>
             <InputWrapper
@@ -156,13 +184,18 @@ export const BillingCard = () => {
                 autoComplete="street-address"
                 required={true}
                 placeholder={inputPlaceholder}
+                errors={invoiceInformationErrors?.street}
               />
             </InputWrapper>
             <InputWrapper
               required={true}
               title={<FormattedMessage id="orderInformation.country" />}
             >
-              <Select {...select("country")} required={true}>
+              <Select
+                {...select("country")}
+                required={true}
+                errors={invoiceInformationErrors?.country}
+              >
                 <FormattedMessage id="input.selectCountryPlaceholder">
                   {(msg) => (
                     <option value="" disabled>
@@ -171,7 +204,7 @@ export const BillingCard = () => {
                   )}
                 </FormattedMessage>
                 {countries.map((c) => (
-                  <option key={c.value} value={c.value}>
+                  <option key={c.value} value={c.value} disabled={c.disabled}>
                     {c.label}
                   </option>
                 ))}
@@ -196,19 +229,10 @@ export const BillingCard = () => {
                     <Input
                       {...text({
                         name: "sdi",
-                        validate: (value) => {
-                          const isValid = value.length === 7;
-
-                          if (!isValid) {
-                            return invalidSDIMessage;
-                          }
-                        },
-                        validateOnBlur: true,
                       })}
                       required={true}
-                      errors={
-                        formState.errors.sdi ? [formState.errors.sdi] : null
-                      }
+                      placeholder={inputPlaceholder}
+                      errors={invoiceInformationErrors?.sdi}
                     />
                   </InputWrapper>
                 ) : (
@@ -221,21 +245,10 @@ export const BillingCard = () => {
                     <Input
                       {...text({
                         name: "fiscalCode",
-                        validate: (value) => {
-                          const isValid = FISCAL_CODE_REGEX.test(value);
-
-                          if (!isValid) {
-                            return invalidFiscalCodeMessage;
-                          }
-                        },
-                        validateOnBlur: true,
                       })}
+                      placeholder={inputPlaceholder}
                       required={true}
-                      errors={
-                        formState.errors.fiscalCode
-                          ? [formState.errors.fiscalCode]
-                          : null
-                      }
+                      errors={invoiceInformationErrors?.fiscalCode}
                     />
                   </InputWrapper>
                 )}
@@ -246,9 +259,8 @@ export const BillingCard = () => {
                     {...email({
                       name: "pec",
                     })}
-                    errors={
-                      formState.errors.pec ? [formState.errors.pec] : null
-                    }
+                    placeholder={inputPlaceholder}
+                    errors={invoiceInformationErrors?.pec}
                   />
                 </InputWrapper>
               </Grid>
