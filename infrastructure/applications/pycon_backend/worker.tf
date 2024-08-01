@@ -276,6 +276,20 @@ resource "aws_instance" "instance_1" {
   iam_instance_profile = aws_iam_instance_profile.worker.name
   key_name             = "pretix"
 
+  dynamic "instance_market_options" {
+    for_each = terraform.workspace == "production" ? [] : [1]
+
+    content {
+      market_type = "spot"
+
+      spot_options {
+        max_price = 0.0031
+        spot_instance_type = "persistent"
+        instance_interruption_behavior = "stop"
+      }
+    }
+  }
+
   root_block_device {
     volume_size = 20
   }
