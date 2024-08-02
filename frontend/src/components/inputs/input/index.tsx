@@ -1,10 +1,8 @@
-import { Input as BaseInput, InputProps as BaseInputProps } from "theme-ui";
+import { Input as BaseInput } from "@python-italia/pycon-styleguide";
 
 import { CharsCounter } from "../chars-counter";
 
-type Props = BaseInputProps & {
-  value?: string;
-};
+type Props = any;
 
 export const Input = ({ maxLength, value, ref, ...props }: Props) => {
   return (

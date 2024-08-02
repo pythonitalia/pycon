@@ -324,10 +324,9 @@ Let's get in touch to find the best solution for your business' needs!`,
       "Don't forget that the voting session will open soon! If you have proposed a talk or if you have bought a ticket you can see all the submitted talks and vote for them!",
     "cfp.closed.buyTicket": "Buy your ticket now!",
     "cfp.yourProposals": "Your proposals",
-    "cfp.pageTitle": "Make a proposal",
+    "cfp.pageTitle": "Submit your proposal",
     "cfp.loading": "Please wait",
-    "cfp.introductionHeading": "Make a proposal",
-    "cfp.introductionSubtitle": "PyCon Italia is looking for you!",
+    "cfp.introductionHeading": "Submit your proposal",
     "cfp.introductionCopy":
       "PyCon Italia is seeking speakers of all experience levels and backgrounds to contribute to our conference program! If you use Python professionally, as a hobbyist or are just excited about Python or programming and open source communities, we’d love to hear from you. We want you and your ideas at PyCon Italia!",
     "cfp.introductionDeadline":
@@ -358,7 +357,7 @@ Let's get in touch to find the best solution for your business' needs!`,
     "cfp.minutes": "minutes",
     "cfp.languagesLabel": "Languages",
     "cfp.languagesDescription":
-      "You can submit a proposal in multiple languages if you want. Voters will see the language that fits their preferences. Don't duplicate your proposals per language or they might be cancelled.",
+      "You can submit a proposal in multiple languages if you want. Voters will see the proposal in the language that fits their preferences. Don't duplicate your proposals per language or they might be cancelled.",
     "cfp.viewSubmission": "Open submission",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
@@ -1200,7 +1199,6 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "cfp.tutorial": "Tutorial",
     "cfp.title": "Titolo",
     "cfp.introductionHeading": "Invia una proposta",
-    "cfp.introductionSubtitle": "PyCon Italia cerca te!",
     "cfp.introductionCopy":
       "PyCon Italia è alla ricerca di speakers con ogni background per contribuire al nostro progamma. Se usi Python professionalmente, come hobbista o se semplicemente sei un appassionato di Python o programmazione, proponi un talk! Vogliamo sentire ciò che hai da condividere!",
     "cfp.introductionDeadline":

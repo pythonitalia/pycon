@@ -10,24 +10,18 @@ import { FormattedMessage } from "react-intl";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { useCurrentLanguage } from "~/locale/context";
 
+import { Fragment } from "react";
 import { createHref } from "../link";
 
 export const Introduction = ({ deadline }: { deadline?: string }) => {
   const language = useCurrentLanguage();
   return (
-    <Section illustration="snakeHead">
+    <Fragment>
       <Heading size={1}>
         <FormattedMessage id="cfp.introductionHeading" />
       </Heading>
-      <Spacer size="thin" />
 
-      <Heading size={3}>
-        <FormattedMessage id="cfp.introductionSubtitle" />
-      </Heading>
       <Spacer size="small" />
-      <Text size={2} as="p">
-        <FormattedMessage id="cfp.introductionCopy" />
-      </Text>
 
       {deadline && (
         <Text size={2} as="p">
@@ -43,17 +37,20 @@ export const Introduction = ({ deadline }: { deadline?: string }) => {
           />
         </Text>
       )}
-      <Spacer size="medium" />
+
+      <Spacer size="small" />
+
       <Link
         href={createHref({
           path: "/call-for-proposals",
           locale: language,
         })}
       >
-        <Text weight="strong" decoration="underline">
+        <Text color="none" weight="strong" decoration="underline" size={2}>
           <FormattedMessage id="global.learnMore" />
         </Text>
       </Link>
-    </Section>
+      <Spacer size="xl" />
+    </Fragment>
   );
 };

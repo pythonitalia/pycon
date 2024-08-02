@@ -9,7 +9,7 @@ import {
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { GetStaticProps } from "next";
+import type { GetStaticProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
@@ -71,15 +71,15 @@ export const CFPPage = () => {
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
 
-      <Introduction
-        deadline={
-          data?.conference.isCFPOpen
-            ? data?.conference.cfpDeadline?.end
-            : undefined
-        }
-      />
-
       <Section>
+        <Introduction
+          deadline={
+            data?.conference.isCFPOpen
+              ? data?.conference.cfpDeadline?.end
+              : undefined
+          }
+        />
+
         {isLoggedIn ? (
           !loading && (
             <CfpSectionOrClosedMessage

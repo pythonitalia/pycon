@@ -2,23 +2,27 @@
 
 /** @jsx jsx */
 import type { ApolloError } from "@apollo/client";
-import { Button, Link } from "@python-italia/pycon-styleguide";
+import {
+  Button,
+  CardPart,
+  Checkbox,
+  Grid,
+  Heading,
+  HorizontalStack,
+  Input,
+  InputWrapper,
+  Link,
+  MultiplePartsCard,
+  Select,
+  Spacer,
+  Text,
+  VerticalStack,
+} from "@python-italia/pycon-styleguide";
 import type React from "react";
 import { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import {
-  Box,
-  Checkbox,
-  Flex,
-  Grid,
-  Heading,
-  Label,
-  Radio,
-  Select,
-  Text,
-  jsx,
-} from "theme-ui";
+import { Box, Radio, jsx } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
 import {
@@ -30,10 +34,10 @@ import {
 } from "~/types";
 
 import { Alert } from "../alert";
+import { PublicProfileCard } from "../edit-profile-page-handler/public-profile-card";
 import { FileInput } from "../file-input";
 import { TagLine } from "../input-tag";
-import { InputWrapper } from "../input-wrapper";
-import { Input, Textarea } from "../inputs";
+import { Textarea } from "../inputs";
 import { createHref } from "../link";
 import { MultiLingualInput } from "../multilingual-input";
 
@@ -133,27 +137,28 @@ export const CfpForm = ({
   data: submissionData,
 }: Props) => {
   const language = useCurrentLanguage();
-  const [formState, { text, textarea, radio, select, checkbox, url, raw }] =
-    useFormState<CfpFormFields>(
-      {
-        title: {
-          en: "",
-          it: "",
-        },
-        abstract: {
-          en: "",
-          it: "",
-        },
-        elevatorPitch: {
-          en: "",
-          it: "",
-        },
-        languages: [],
+  const [formState, formOptions] = useFormState<CfpFormFields>(
+    {
+      title: {
+        en: "",
+        it: "",
       },
-      {
-        withIds: true,
+      abstract: {
+        en: "",
+        it: "",
       },
-    );
+      elevatorPitch: {
+        en: "",
+        it: "",
+      },
+      languages: [],
+    },
+    {
+      withIds: true,
+    },
+  );
+
+  const { text, textarea, radio, select, checkbox, url, raw } = formOptions;
 
   const {
     loading: conferenceLoading,
@@ -345,195 +350,195 @@ export const CfpForm = ({
 
   return (
     <Fragment>
-      <Heading mb={5} as="h1">
-        <FormattedMessage id="cfp.youridea" />
-      </Heading>
-      <form onSubmit={submitSubmission} sx={{ mb: 4 }} autoComplete="off">
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="cfp.choosetype" />}
-          description={<FormattedMessage id="cfp.choosetypeDescription" />}
-        >
-          <Flex>
-            {conferenceData!.conference.submissionTypes.map((type) => (
-              <Label
-                key={type.id}
-                sx={{
-                  width: "auto",
-                  mr: 3,
-                  fontWeight: "bold",
-                }}
+      <form onSubmit={submitSubmission} autoComplete="off">
+        <MultiplePartsCard>
+          <CardPart contentAlign="left">
+            <Heading size={3}>
+              <FormattedMessage id="cfp.youridea" />
+            </Heading>
+          </CardPart>
+          <CardPart background="milk" contentAlign="left">
+            <Grid cols={1} gap="medium">
+              <InputWrapper
+                required={true}
+                title={<FormattedMessage id="cfp.choosetype" />}
+                description={
+                  <FormattedMessage id="cfp.choosetypeDescription" />
+                }
               >
-                <Radio {...radio("type", type.id)} required={true} />{" "}
-                {type.name}
-              </Label>
-            ))}
-          </Flex>
-        </InputWrapper>
+                <VerticalStack gap="small">
+                  {conferenceData!.conference.submissionTypes.map((type) => (
+                    <label key={type.id}>
+                      <HorizontalStack gap="small" alignItems="center">
+                        <Checkbox
+                          {...radio("type", type.id)}
+                          required={true}
+                          size="small"
+                        />
+                        <Text weight="strong" size={2}>
+                          {type.name}
+                        </Text>
+                      </HorizontalStack>
+                    </label>
+                  ))}
+                </VerticalStack>
+              </InputWrapper>
 
-        <InputWrapper
-          as="div"
-          isRequired={true}
-          label={<FormattedMessage id="cfp.languagesLabel" />}
-          description={<FormattedMessage id="cfp.languagesDescription" />}
-          errors={getErrors("validationLanguages")}
-        >
-          <Flex>
-            {conferenceData!.conference.languages.map((language) => (
-              <Label
-                sx={{
-                  width: "auto",
-                  mr: 3,
-                  fontWeight: "bold",
-                }}
-                key={language.code}
+              <InputWrapper
+                required={true}
+                title={<FormattedMessage id="cfp.languagesLabel" />}
+                description={<FormattedMessage id="cfp.languagesDescription" />}
+                errors={getErrors("validationLanguages")}
               >
-                <Checkbox {...checkbox("languages", language.code)} />
-                {language.name}
-              </Label>
-            ))}
-          </Flex>
-        </InputWrapper>
+                <VerticalStack gap="small">
+                  {conferenceData!.conference.languages.map((language) => (
+                    <label key={language.code}>
+                      <HorizontalStack gap="small" alignItems="center">
+                        <Checkbox
+                          size="small"
+                          {...checkbox("languages", language.code)}
+                        />
+                        <Text weight="strong" size={2}>
+                          {language.name}
+                        </Text>
+                      </HorizontalStack>
+                    </label>
+                  ))}
+                </VerticalStack>
+              </InputWrapper>
 
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="cfp.title" />}
-          errors={getErrors("validationTitle")}
-        >
-          <MultiLingualInput
-            {...raw("title")}
-            languages={formState.values.languages}
-          >
-            <Input required={true} maxLength={100} />
-          </MultiLingualInput>
-        </InputWrapper>
-
-        <Grid
-          gap={5}
-          sx={{
-            gridTemplateColumns: [null, "1fr 1fr"],
-          }}
-        >
-          <Box>
-            <InputWrapper
-              isRequired={true}
-              label={<FormattedMessage id="cfp.elevatorPitchLabel" />}
-              description={
-                <FormattedMessage id="cfp.elevatorPitchDescription" />
-              }
-              errors={getErrors("validationElevatorPitch")}
-            >
-              <MultiLingualInput
-                {...raw("elevatorPitch")}
-                languages={formState.values.languages}
+              <InputWrapper
+                required={true}
+                title={<FormattedMessage id="cfp.title" />}
+                errors={getErrors("validationTitle")}
               >
-                <Textarea required={true} maxLength={300} rows={6} />
-              </MultiLingualInput>
-            </InputWrapper>
-          </Box>
-          <Box>
-            <InputWrapper
-              isRequired={true}
-              label={<FormattedMessage id="cfp.lengthLabel" />}
-              description={<FormattedMessage id="cfp.lengthDescription" />}
-              errors={getErrors("validationDuration")}
-            >
-              <Select {...select("length")} required={true}>
-                <FormattedMessage id="cfp.selectDuration">
-                  {(txt) => (
-                    <option value="" disabled={true}>
-                      {txt}
+                <MultiLingualInput
+                  {...raw("title")}
+                  languages={formState.values.languages}
+                >
+                  <Input required={true} maxLength={100} />
+                </MultiLingualInput>
+              </InputWrapper>
+
+              <InputWrapper
+                required={true}
+                title={<FormattedMessage id="cfp.elevatorPitchLabel" />}
+                description={
+                  <FormattedMessage id="cfp.elevatorPitchDescription" />
+                }
+                errors={getErrors("validationElevatorPitch")}
+              >
+                <MultiLingualInput
+                  {...raw("elevatorPitch")}
+                  languages={formState.values.languages}
+                >
+                  <Textarea required={true} maxLength={300} rows={6} />
+                </MultiLingualInput>
+              </InputWrapper>
+
+              <InputWrapper
+                required={true}
+                title={<FormattedMessage id="cfp.lengthLabel" />}
+                description={<FormattedMessage id="cfp.lengthDescription" />}
+                errors={getErrors("validationDuration")}
+              >
+                <Select {...select("length")} required={true}>
+                  <FormattedMessage id="cfp.selectDuration">
+                    {(txt) => (
+                      <option value="" disabled={true}>
+                        {txt}
+                      </option>
+                    )}
+                  </FormattedMessage>
+                  {allowedDurations!.map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.name}
                     </option>
-                  )}
-                </FormattedMessage>
-                {allowedDurations!.map((d) => (
-                  <option key={d.id} value={d.id}>
-                    {d.name}
-                  </option>
-                ))}
-              </Select>
-            </InputWrapper>
+                  ))}
+                </Select>
+              </InputWrapper>
 
-            <InputWrapper
-              isRequired={true}
-              label={<FormattedMessage id="cfp.audienceLevelLabel" />}
-              description={
-                <FormattedMessage id="cfp.audienceLevelDescription" />
-              }
-              errors={getErrors("validationAudienceLevel")}
-            >
-              <Select {...select("audienceLevel")} required={true}>
-                <FormattedMessage id="cfp.selectAudience">
-                  {(txt) => (
-                    <option value="" disabled={true}>
-                      {txt}
+              <InputWrapper
+                required={true}
+                title={<FormattedMessage id="cfp.audienceLevelLabel" />}
+                description={
+                  <FormattedMessage id="cfp.audienceLevelDescription" />
+                }
+                errors={getErrors("validationAudienceLevel")}
+              >
+                <Select {...select("audienceLevel")} required={true}>
+                  <FormattedMessage id="cfp.selectAudience">
+                    {(txt) => (
+                      <option value="" disabled={true}>
+                        {txt}
+                      </option>
+                    )}
+                  </FormattedMessage>
+                  {conferenceData!.conference.audienceLevels.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.name}
                     </option>
-                  )}
-                </FormattedMessage>
-                {conferenceData!.conference.audienceLevels.map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.name}
-                  </option>
-                ))}
-              </Select>
-            </InputWrapper>
-          </Box>
-        </Grid>
+                  ))}
+                </Select>
+              </InputWrapper>
 
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="cfp.abstractLabel" />}
-          description={<FormattedMessage id="cfp.abstractDescription" />}
-          errors={getErrors("validationAbstract")}
-        >
-          <MultiLingualInput
-            {...raw("abstract")}
-            languages={formState.values.languages}
-          >
-            <Textarea required={true} maxLength={5000} rows={6} />
-          </MultiLingualInput>
-        </InputWrapper>
+              <InputWrapper
+                required={true}
+                title={<FormattedMessage id="cfp.abstractLabel" />}
+                description={<FormattedMessage id="cfp.abstractDescription" />}
+                errors={getErrors("validationAbstract")}
+              >
+                <MultiLingualInput
+                  {...raw("abstract")}
+                  languages={formState.values.languages}
+                >
+                  <Textarea required={true} maxLength={5000} rows={6} />
+                </MultiLingualInput>
+              </InputWrapper>
 
-        <InputWrapper
-          label={<FormattedMessage id="cfp.notesLabel" />}
-          description={<FormattedMessage id="cfp.notesDescription" />}
-          errors={getErrors("validationNotes")}
-        >
-          <Textarea {...textarea("notes")} maxLength={1000} rows={4} />
-        </InputWrapper>
+              <InputWrapper
+                title={<FormattedMessage id="cfp.notesLabel" />}
+                description={<FormattedMessage id="cfp.notesDescription" />}
+                errors={getErrors("validationNotes")}
+              >
+                <Textarea {...textarea("notes")} maxLength={1000} rows={4} />
+              </InputWrapper>
 
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="cfp.tagsLabel" />}
-          description={<FormattedMessage id="cfp.tagsDescription" />}
-          errors={getErrors("validationTags")}
-        >
-          <TagLine
-            tags={formState.values.tags || []}
-            onTagChange={(tags: { value: string }[]) => {
-              formState.setField(
-                "tags",
-                tags.map((t) => t.value),
-              );
-            }}
-          />
-        </InputWrapper>
+              <InputWrapper
+                required={true}
+                title={<FormattedMessage id="cfp.tagsLabel" />}
+                description={<FormattedMessage id="cfp.tagsDescription" />}
+                errors={getErrors("validationTags")}
+              >
+                <TagLine
+                  tags={formState.values.tags || []}
+                  onTagChange={(tags: { value: string }[]) => {
+                    formState.setField(
+                      "tags",
+                      tags.map((t) => t.value),
+                    );
+                  }}
+                />
+              </InputWrapper>
 
-        <InputWrapper
-          isRequired={false}
-          label={<FormattedMessage id="cfp.shortSocialSummaryLabel" />}
-          description={
-            <FormattedMessage id="cfp.shortSocialSummaryDescription" />
-          }
-          errors={getErrors("validationShortSocialSummary")}
-        >
-          <Textarea
-            {...textarea("shortSocialSummary")}
-            required={false}
-            maxLength={128}
-            rows={2}
-          />
-        </InputWrapper>
+              <InputWrapper
+                required={false}
+                title={<FormattedMessage id="cfp.shortSocialSummaryLabel" />}
+                description={
+                  <FormattedMessage id="cfp.shortSocialSummaryDescription" />
+                }
+                errors={getErrors("validationShortSocialSummary")}
+              >
+                <Textarea
+                  {...textarea("shortSocialSummary")}
+                  required={false}
+                  maxLength={128}
+                  rows={2}
+                />
+              </InputWrapper>
+            </Grid>
+          </CardPart>
+        </MultiplePartsCard>
 
         <Heading mb={2} as="h2">
           <FormattedMessage id="cfp.aboutYou" />
