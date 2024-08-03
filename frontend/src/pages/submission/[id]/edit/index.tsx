@@ -16,6 +16,7 @@ import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import {
   queryCfpForm,
+  queryGetSubmission,
   queryIsCfpOpen,
   queryParticipantData,
   queryTags,
@@ -38,11 +39,8 @@ export const EditSubmissionPage = () => {
     },
   ] = useUpdateSubmissionMutation();
 
-  const {
-    loading: submissionLoading,
-    error: submissionError,
-    data: submissionData,
-  } = useGetSubmissionQuery({ variables: { id, language } });
+  const { error: submissionError, data: submissionData } =
+    useGetSubmissionQuery({ variables: { id, language } });
 
   const onSubmit = async (input: CfpFormFields) => {
     const response = await updateSubmission({
@@ -61,14 +59,14 @@ export const EditSubmissionPage = () => {
           speakerLevel: input.speakerLevel,
           previousTalkVideo: input.previousTalkVideo,
           shortSocialSummary: input.shortSocialSummary,
-          speakerWebsite: input.speakerWebsite,
-          speakerBio: input.speakerBio,
-          speakerPhoto: input.speakerPhoto,
-          speakerTwitterHandle: input.speakerTwitterHandle,
-          speakerInstagramHandle: input.speakerInstagramHandle,
-          speakerLinkedinUrl: input.speakerLinkedinUrl,
-          speakerFacebookUrl: input.speakerFacebookUrl,
-          speakerMastodonHandle: input.speakerMastodonHandle,
+          speakerWebsite: input.participantWebsite,
+          speakerBio: input.participantBio,
+          speakerPhoto: input.participantPhoto,
+          speakerTwitterHandle: input.participantTwitterHandle,
+          speakerInstagramHandle: input.participantInstagramHandle,
+          speakerLinkedinUrl: input.participantLinkedinUrl,
+          speakerFacebookUrl: input.participantFacebookUrl,
+          speakerMastodonHandle: input.participantMastodonHandle,
         },
         language,
       },
@@ -88,11 +86,7 @@ export const EditSubmissionPage = () => {
         {submissionError && (
           <Alert variant="alert">{submissionError.message}</Alert>
         )}
-        {submissionLoading && (
-          <Alert variant="info">
-            <FormattedMessage id="cfp.loading" />
-          </Alert>
-        )}
+
         {submissionData && !submissionData.submission?.canEdit && (
           <Alert variant="alert">
             <FormattedMessage id="cfp.cannotEdit" />
@@ -115,6 +109,7 @@ export const EditSubmissionPage = () => {
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
+  params,
   locale,
 }) => {
   const identityToken = req.cookies.pythonitalia_sessionid;
@@ -127,6 +122,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     };
   }
 
+  const id = params.id as string;
   const client = getApolloClient(null, req.cookies);
   try {
     await Promise.all([
@@ -141,6 +137,10 @@ export const getServerSideProps: GetServerSideProps = async ({
         conference: process.env.conferenceCode,
       }),
       queryTags(client),
+      queryGetSubmission(client, {
+        id,
+        language: locale,
+      }),
     ]);
   } catch (e) {
     return {

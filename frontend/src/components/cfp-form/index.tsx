@@ -1,6 +1,3 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
 import type { ApolloError } from "@apollo/client";
 import {
   Button,
@@ -23,7 +20,6 @@ import type React from "react";
 import { Fragment, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Box, Radio, jsx } from "theme-ui";
 
 import { useCurrentLanguage } from "~/locale/context";
 import {
@@ -38,10 +34,13 @@ import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { Alert } from "../alert";
 import { createHref } from "../link";
 import { MultiLingualInput } from "../multilingual-input";
-import { PublicProfileCard } from "../public-profile-card";
+import {
+  type ParticipantFormFields,
+  PublicProfileCard,
+} from "../public-profile-card";
 import { TagsSelect } from "../tags-select";
 
-export type CfpFormFields = {
+export type CfpFormFields = ParticipantFormFields & {
   type: string;
   title: { it?: string; en?: string };
   elevatorPitch: { it?: string; en?: string };
@@ -54,14 +53,6 @@ export type CfpFormFields = {
   speakerLevel: string;
   previousTalkVideo: string;
   shortSocialSummary: string;
-  participantBio: string;
-  participantPhoto: any;
-  participantWebsite: string;
-  participantTwitterHandle: string;
-  participantInstagramHandle: string;
-  participantLinkedinUrl: string;
-  participantFacebookUrl: string;
-  participantMastodonHandle: string;
 };
 
 export type SubmissionStructure = {
@@ -158,24 +149,19 @@ export const CfpForm = ({
     },
   );
 
-  const { text, textarea, radio, select, checkbox, url, raw } = formOptions;
+  const { textarea, radio, select, checkbox, url, raw } = formOptions;
 
-  const {
-    loading: conferenceLoading,
-    error: conferenceError,
-    data: conferenceData,
-  } = useCfpFormQuery({
+  const { data: conferenceData } = useCfpFormQuery({
     variables: {
       conference: conferenceCode,
     },
   });
 
-  const { loading: participantDataLoading, data: participantData } =
-    useParticipantDataQuery({
-      variables: {
-        conference: conferenceCode,
-      },
-    });
+  const { data: participantData } = useParticipantDataQuery({
+    variables: {
+      conference: conferenceCode,
+    },
+  });
 
   const submitSubmission = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -202,14 +188,14 @@ export const CfpForm = ({
       speakerLevel: formState.values.speakerLevel,
       previousTalkVideo: formState.values.previousTalkVideo,
       shortSocialSummary: formState.values.shortSocialSummary,
-      speakerWebsite: formState.values.participantWebsite,
-      speakerBio: formState.values.participantBio,
-      speakerTwitterHandle: formState.values.participantTwitterHandle,
-      speakerInstagramHandle: formState.values.participantInstagramHandle,
-      speakerLinkedinUrl: formState.values.participantLinkedinUrl,
-      speakerFacebookUrl: formState.values.participantFacebookUrl,
-      speakerMastodonHandle: formState.values.participantMastodonHandle,
-      speakerPhoto: formState.values.participantPhoto,
+      participantWebsite: formState.values.participantWebsite,
+      participantBio: formState.values.participantBio,
+      participantTwitterHandle: formState.values.participantTwitterHandle,
+      participantInstagramHandle: formState.values.participantInstagramHandle,
+      participantLinkedinUrl: formState.values.participantLinkedinUrl,
+      participantFacebookUrl: formState.values.participantFacebookUrl,
+      participantMastodonHandle: formState.values.participantMastodonHandle,
+      participantPhoto: formState.values.participantPhoto,
     });
   };
 
@@ -239,7 +225,7 @@ export const CfpForm = ({
   }, [formState.values.type]);
 
   useEffect(() => {
-    if (!conferenceLoading && submission) {
+    if (submission) {
       formState.setField("type", submission!.type.id);
       formState.setField("title", submission!.multilingualTitle);
       formState.setField(
@@ -260,10 +246,10 @@ export const CfpForm = ({
       );
       formState.setField("shortSocialSummary", submission!.shortSocialSummary);
     }
-  }, [conferenceLoading]);
+  }, []);
 
   useEffect(() => {
-    if (!participantDataLoading && participantData.me.participant) {
+    if (participantData.me.participant) {
       formState.setField("participantBio", participantData.me.participant.bio);
       formState.setField(
         "participantPhoto",
@@ -302,21 +288,9 @@ export const CfpForm = ({
         participantData.me.participant.mastodonHandle,
       );
     }
-  }, [participantDataLoading]);
+  }, []);
 
   const inputPlaceholder = useTranslatedMessage("input.placeholder");
-
-  if (conferenceLoading) {
-    return (
-      <Alert variant="info">
-        <FormattedMessage id="cfp.loading" />
-      </Alert>
-    );
-  }
-
-  if (conferenceError) {
-    return <Alert variant="alert">{conferenceError.message}</Alert>;
-  }
 
   const hasValidationErrors =
     submissionData?.mutationOp.__typename === "SendSubmissionErrors";
@@ -561,6 +535,62 @@ export const CfpForm = ({
                   rows={2}
                   errors={getErrors("validationShortSocialSummary")}
                   placeholder={inputPlaceholder}
+                />
+              </InputWrapper>
+            </Grid>
+          </CardPart>
+        </MultiplePartsCard>
+
+        <Spacer size="medium" />
+
+        <MultiplePartsCard>
+          <CardPart contentAlign="left">
+            <Heading size={3}>
+              <FormattedMessage id="cfp.aboutYou" />
+            </Heading>
+          </CardPart>
+          <CardPart background="milk" contentAlign="left">
+            <Grid cols={1} gap="medium">
+              <Text size={2}>
+                <FormattedMessage id="cfp.aboutYouDescription" />
+              </Text>
+              <InputWrapper
+                required={true}
+                title={<FormattedMessage id="cfp.speakerLevel" />}
+                description={
+                  <FormattedMessage id="cfp.speakerLevelDescription" />
+                }
+              >
+                <Select
+                  {...select("speakerLevel")}
+                  required={true}
+                  errors={getErrors("validationSpeakerLevel")}
+                >
+                  {SPEAKER_LEVEL_OPTIONS.map(
+                    ({ value, disabled, messageId }) => (
+                      <FormattedMessage id={messageId} key={messageId}>
+                        {(copy) => (
+                          <option disabled={disabled} value={value}>
+                            {copy}
+                          </option>
+                        )}
+                      </FormattedMessage>
+                    ),
+                  )}
+                </Select>
+              </InputWrapper>
+
+              <InputWrapper
+                title={<FormattedMessage id="cfp.previousTalkVideo" />}
+                description={
+                  <FormattedMessage id="cfp.previousTalkVideoDescription" />
+                }
+              >
+                <Input
+                  {...url("previousTalkVideo")}
+                  required={false}
+                  maxLength={2048}
+                  errors={getErrors("validationPreviousTalkVideo")}
                 />
               </InputWrapper>
             </Grid>

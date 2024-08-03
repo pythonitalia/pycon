@@ -1,39 +1,46 @@
 import {
   CardPart,
-  Checkbox,
   Grid,
   GridColumn,
   Heading,
-  HorizontalStack,
   Input,
   InputWrapper,
-  Link,
   MultiplePartsCard,
-  Text,
   Textarea,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
-import type { Inputs, StateErrors } from "react-use-form-state";
+import type { Inputs } from "react-use-form-state";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
-import type { MyEditProfileQuery } from "~/types";
 
-import type { MeUserFields } from "../edit-profile-page-handler/types";
 import { FileInput } from "../file-input";
-import { createHref } from "../link";
 
-type Props = {
-  formOptions: Inputs<MeUserFields>;
-  me: MyEditProfileQuery["me"];
+export type ParticipantFormFields = {
+  participantBio: string;
+  participantPhoto: any;
+  participantWebsite: string;
+  participantTwitterHandle: string;
+  participantInstagramHandle: string;
+  participantLinkedinUrl: string;
+  participantFacebookUrl: string;
+  participantMastodonHandle: string;
+};
+
+type Props<T extends ParticipantFormFields> = {
+  formOptions: Inputs<T>;
+  me: {
+    participant?: {
+      photo?: string;
+    };
+  };
   getParticipantValidationError: (key: string) => string[] | null;
 };
 
-export const PublicProfileCard = ({
+export const PublicProfileCard = <T extends ParticipantFormFields>({
   me,
   formOptions: { raw, url, text },
   getParticipantValidationError,
-}: Props) => {
+}: Props<T>) => {
   const inputPlaceholder = useTranslatedMessage("input.placeholder");
 
   return (

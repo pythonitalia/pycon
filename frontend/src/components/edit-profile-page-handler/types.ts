@@ -1,4 +1,6 @@
-export type MeUserFields = {
+import type { ParticipantFormFields } from "../public-profile-card";
+
+export type MeUserFields = ParticipantFormFields & {
   name: string;
   fullName: string;
   gender: string;
@@ -7,15 +9,6 @@ export type MeUserFields = {
   openToRecruiting: boolean;
   openToNewsletter: boolean;
 
-  participantPublicProfile: boolean;
-  participantPhoto: string;
-  participantBio: string;
-  participantWebsite: string;
   participantSpeakerLevel: string;
   participantPreviousTalkVideo: string;
-  participantTwitterHandle: string;
-  participantInstagramHandle: string;
-  participantLinkedinUrl: string;
-  participantFacebookUrl: string;
-  participantMastodonHandle: string;
 };

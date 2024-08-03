@@ -184,7 +184,7 @@ export const EditProfilePageHandler = () => {
             },
             updateParticipantInput: {
               conference: process.env.conferenceCode,
-              publicProfile: formState.values.participantPublicProfile,
+              publicProfile: true,
               photo: formState.values.participantPhoto,
               bio: formState.values.participantBio,
               website: formState.values.participantWebsite,
@@ -241,7 +241,6 @@ export const EditProfilePageHandler = () => {
 
           <PublicProfileCard
             me={profileData.me}
-            formState={formState}
             formOptions={formOptions}
             getParticipantValidationError={getParticipantValidationError}
           />

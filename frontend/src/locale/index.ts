@@ -382,7 +382,7 @@ Let's get in touch to find the best solution for your business' needs!`,
       "Link to a previous talk you delivered. This is not required, but it is of great help for the program committee and will not be publicly visible.",
     "cfp.aboutYou": "About you",
     "cfp.aboutYouDescription":
-      "This section is all about you. This section is shared between all your proposals.",
+      "Let us know more about you! Any information you share here won't be publicly visible and will only be used by the program committee.",
     "cfp.shortSocialSummaryLabel": "Short social summary",
     "cfp.shortSocialSummaryDescription":
       "Optionally, you can leave a short summary that we could use to promote your proposal on our socials, if accepted.",

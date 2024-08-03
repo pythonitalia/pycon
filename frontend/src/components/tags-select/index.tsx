@@ -1,15 +1,17 @@
-import type { CSSProperties } from "react";
-import { useCallback } from "react";
 import React from "react";
-import { Props, default as ReactSelect } from "react-select";
-import { type DropdownIndicatorProps, components } from "react-select";
+import {
+  type DropdownIndicatorProps,
+  type MultiValue,
+  default as ReactSelect,
+  components,
+} from "react-select";
 
 import { Alert } from "~/components/alert";
 import { useTagsQuery } from "~/types";
 
-type TagLineProps = {
+type TagsSelectProps = {
   tags: string[];
-  onChange?: (tags: { value: string }[]) => void;
+  onChange?: (tags: MultiValue<{ value: string }>) => void;
 };
 
 const DropdownIndicator = (props: DropdownIndicatorProps<any, true>) => {
@@ -34,7 +36,7 @@ const DropdownIndicator = (props: DropdownIndicatorProps<any, true>) => {
   );
 };
 
-export const TagsSelect = ({ tags, onChange }: TagLineProps) => {
+export const TagsSelect = ({ tags, onChange }: TagsSelectProps) => {
   const { loading, error, data } = useTagsQuery();
 
   if (loading) {
@@ -67,40 +69,35 @@ export const TagsSelect = ({ tags, onChange }: TagLineProps) => {
   return (
     <ReactSelect
       styles={{
-        control: (base: CSSProperties) => {
-          return {
-            ...base,
-            position: "relative",
-            border: "none",
-            borderBottom: "3px solid #0E1116",
-            background: "transparent",
-            padding: "0px",
+        control: (base) => ({
+          ...base,
+          position: "relative",
+          border: "none",
+          borderBottom: "3px solid #0E1116",
+          background: "transparent",
+          padding: "0px",
+          overflow: "visible",
+          borderRadius: "0px",
+
+          "> div": {
             overflow: "visible",
-            borderRadius: 0,
+          },
 
-            "> div": {
-              overflow: "visible",
-            },
-
-            "&:hover": {
-              borderColor: "#0E1116",
-            },
-          };
-        },
-        menu: (base: CSSProperties): CSSProperties => ({
+          "&:hover": {
+            borderColor: "#0E1116",
+          },
+        }),
+        menu: (base) => ({
           ...base,
           border: "3px solid #0E1116",
-          borderRadius: 0,
+          borderRadius: "0px",
           background: "#FAF5F3",
         }),
-        valueContainer: (base: CSSProperties): CSSProperties => ({
+        valueContainer: (base) => ({
           ...base,
           padding: "0px",
         }),
-        option: (
-          base: CSSProperties,
-          state: { isFocused: boolean; isDisabled: boolean },
-        ) => {
+        option: (base, state: { isFocused: boolean; isDisabled: boolean }) => {
           return {
             ...base,
             background: state.isFocused ? "rgba(83,138,212,.2)" : "#FAF5F3",
@@ -118,21 +115,21 @@ export const TagsSelect = ({ tags, onChange }: TagLineProps) => {
             },
           };
         },
-        container: (base: CSSProperties): CSSProperties => ({
+        container: (base) => ({
           ...base,
           overflow: "visible",
         }),
-        dropdownIndicator: (base: CSSProperties): CSSProperties => ({
+        dropdownIndicator: (base) => ({
           ...base,
           marginRight: "0.75rem",
           color: "#0E1116",
           padding: "0",
         }),
-        clearIndicator: (base: CSSProperties): CSSProperties => ({
+        clearIndicator: (base) => ({
           ...base,
           color: "#0E1116",
         }),
-        placeholder: (base: CSSProperties): CSSProperties => ({
+        placeholder: (base) => ({
           ...base,
           fontWeight: "500",
           fontFamily: "GeneralSans-Variable",
@@ -140,11 +137,11 @@ export const TagsSelect = ({ tags, onChange }: TagLineProps) => {
           lineHeight: "1.375rem",
           color: "#BFBCBC",
         }),
-        indicatorSeparator: (base: CSSProperties): CSSProperties => ({
+        indicatorSeparator: (base) => ({
           ...base,
           display: "none",
         }),
-        multiValue: (base: CSSProperties): CSSProperties => ({
+        multiValue: (base) => ({
           ...base,
           position: "relative",
           padding: "0",
@@ -155,7 +152,7 @@ export const TagsSelect = ({ tags, onChange }: TagLineProps) => {
           fontSize: "1.25rem",
           lineHeight: "1.375rem",
         }),
-        multiValueLabel: (base: CSSProperties): CSSProperties => ({
+        multiValueLabel: (base) => ({
           ...base,
           padding: "0",
           margin: "0",
@@ -165,7 +162,7 @@ export const TagsSelect = ({ tags, onChange }: TagLineProps) => {
           lineHeight: "1.375rem",
           color: "#0E1116",
         }),
-        multiValueRemove: (base: CSSProperties) => ({
+        multiValueRemove: (base) => ({
           ...base,
           border: "none",
           cursor: "pointer",
