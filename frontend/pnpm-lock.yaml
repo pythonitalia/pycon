@@ -150,8 +150,8 @@ importers:
         specifier: ^2.0.12
         version: 2.0.13(react@18.3.1)
       react-select:
-        specifier: ^3.1.0
-        version: 3.2.0(react-dom@18.3.1)(react@18.3.1)
+        specifier: ^5.8.0
+        version: 5.8.0(@types/react@17.0.80)(react-dom@18.3.1)(react@18.3.1)
       react-use-form-state:
         specifier: ^0.13.2
         version: 0.13.2(react-dom@18.3.1)(react@18.3.1)
@@ -821,6 +821,15 @@ packages:
   '@eslint/js@8.57.0':
     resolution: {integrity: sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
+  '@floating-ui/core@1.6.5':
+    resolution: {integrity: sha512-8GrTWmoFhm5BsMZOTHeGD2/0FLKLQQHvO/ZmQga4tKempYRLz8aqJGqXVuQgisnMObq2YZ2SgkwctN1LOOxcqA==}
+
+  '@floating-ui/dom@1.6.8':
+    resolution: {integrity: sha512-kx62rP19VZ767Q653wsP1XZCGIirkE09E0QUGNYTM/ttbbQHqcGPdSfWFxUyyNLc/W6aoJRBajOSXhP6GXjC0Q==}
+
+  '@floating-ui/utils@0.2.5':
+    resolution: {integrity: sha512-sTcG+QZ6fdEUObICavU+aB3Mp8HY4n14wYHdxK4fXjPmv3PXZZeY5RaguJmGyeH/CJQhX3fqKUtS4qc1LoHwhQ==}
 
   '@formatjs/ecma402-abstract@2.0.0':
     resolution: {integrity: sha512-rRqXOqdFmk7RYvj4khklyqzcfQl9vEL/usogncBHRZfZBDOwMGuSRNFl02fu5KGHXdbinju+YXyuR+Nk8xlr/g==}
@@ -1631,6 +1640,9 @@ packages:
 
   '@types/react-dom@18.3.0':
     resolution: {integrity: sha512-EhwApuTmMBmXuFOikhQLIBUn6uFg81SwLMOAUgodJF14SOBOCMdU04gDoYi0WOJJHD144TL32z4yDqCW3dnkQg==}
+
+  '@types/react-transition-group@4.4.10':
+    resolution: {integrity: sha512-hT/+s0VQs2ojCX823m60m5f0sL5idt9SO6Tj6Dg+rdphGPIeJbJ6CxvBYkgkGKrYeDjvIpKTR38UzmtHJOGW3Q==}
 
   '@types/react@16.14.60':
     resolution: {integrity: sha512-wIFmnczGsTcgwCBeIYOuy2mdXEiKZ5znU/jNOnMZPQyCcIxauMGWlX0TNG4lZ7NxRKj7YUIZRneJQSSdB2jKgg==}
@@ -3743,8 +3755,8 @@ packages:
   mdn-data@2.0.14:
     resolution: {integrity: sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==}
 
-  memoize-one@5.2.1:
-    resolution: {integrity: sha512-zYiwtZUcYyXKo/np96AGZAckk+FWWsUdJ3cHGGmld7+AhvcWmQyGCYUh1hc4Q/pkOhb65dQR/pqCyK0cOaHz4Q==}
+  memoize-one@6.0.0:
+    resolution: {integrity: sha512-rkpe71W0N0c0Xz6QD0eJETuWAJGnJ9afsl1srmwPrI+yBCkge5EycXXbYRyvL29zZVUWQCY7InPRCv3GDXuZNw==}
 
   merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
@@ -4200,11 +4212,6 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18
 
-  react-input-autosize@3.0.0:
-    resolution: {integrity: sha512-nL9uS7jEs/zu8sqwFE5MAPx6pPkNAriACQ2rGLlqmKr2sPGtN7TXTyDdQt4lbNXVx7Uzadb40x8qotIuru6Rhg==}
-    peerDependencies:
-      react: ^16.3.0 || ^17.0.0
-
   react-intl-formatted-duration@4.0.0:
     resolution: {integrity: sha512-d515Fk5T594grm8WbyPer6WKdTgKajaTFT944+4QFDnsNU7cs/ZiDLinGUwaSzn7bu/IFvBCvY0xNGpClKC4uw==}
     peerDependencies:
@@ -4239,11 +4246,11 @@ packages:
       react-native-svg:
         optional: true
 
-  react-select@3.2.0:
-    resolution: {integrity: sha512-B/q3TnCZXEKItO0fFN/I0tWOX3WJvi/X2wtdffmwSQVRwg5BpValScTO1vdic9AxlUgmeSzib2hAZAwIUQUZGQ==}
+  react-select@5.8.0:
+    resolution: {integrity: sha512-TfjLDo58XrhP6VG5M/Mi56Us0Yt8X7xD6cDybC7yoRMUNm7BGO7qk8J0TLQOua/prb8vUOtsfnXZwfm30HGsAA==}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0
-      react-dom: ^16.8.0 || ^17.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
 
   react-spring@8.0.27:
     resolution: {integrity: sha512-nDpWBe3ZVezukNRandTeLSPcwwTMjNVu1IDq9qA/AMiUqHuRN4BeSWvKr3eIxxg1vtiYiOLy4FqdfCP5IoP77g==}
@@ -5817,6 +5824,17 @@ snapshots:
 
   '@eslint/js@8.57.0': {}
 
+  '@floating-ui/core@1.6.5':
+    dependencies:
+      '@floating-ui/utils': 0.2.5
+
+  '@floating-ui/dom@1.6.8':
+    dependencies:
+      '@floating-ui/core': 1.6.5
+      '@floating-ui/utils': 0.2.5
+
+  '@floating-ui/utils@0.2.5': {}
+
   '@formatjs/ecma402-abstract@2.0.0':
     dependencies:
       '@formatjs/intl-localematcher': 0.5.4
@@ -7127,6 +7145,10 @@ snapshots:
       '@types/react': 16.14.60
 
   '@types/react-dom@18.3.0':
+    dependencies:
+      '@types/react': 17.0.80
+
+  '@types/react-transition-group@4.4.10':
     dependencies:
       '@types/react': 17.0.80
 
@@ -9910,7 +9932,7 @@ snapshots:
 
   mdn-data@2.0.14: {}
 
-  memoize-one@5.2.1: {}
+  memoize-one@6.0.0: {}
 
   merge-stream@2.0.0: {}
 
@@ -10369,11 +10391,6 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  react-input-autosize@3.0.0(react@18.3.1):
-    dependencies:
-      prop-types: 15.8.1
-      react: 18.3.1
-
   react-intl-formatted-duration@4.0.0(intl-messageformat@10.5.14)(react-intl@6.6.8)(react@18.3.1):
     dependencies:
       intl-messageformat: 10.5.14
@@ -10408,18 +10425,21 @@ snapshots:
       qr.js: 0.0.0
       react: 18.3.1
 
-  react-select@3.2.0(react-dom@18.3.1)(react@18.3.1):
+  react-select@5.8.0(@types/react@17.0.80)(react-dom@18.3.1)(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.24.6
-      '@emotion/cache': 10.0.29
-      '@emotion/core': 10.3.1(react@18.3.1)
-      '@emotion/css': 10.0.27
-      memoize-one: 5.2.1
+      '@emotion/cache': 11.11.0
+      '@emotion/react': 11.11.4(@types/react@17.0.80)(react@18.3.1)
+      '@floating-ui/dom': 1.6.8
+      '@types/react-transition-group': 4.4.10
+      memoize-one: 6.0.0
       prop-types: 15.8.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-input-autosize: 3.0.0(react@18.3.1)
       react-transition-group: 4.4.5(react-dom@18.3.1)(react@18.3.1)
+      use-isomorphic-layout-effect: 1.1.2(@types/react@17.0.80)(react@18.3.1)
+    transitivePeerDependencies:
+      - '@types/react'
 
   react-spring@8.0.27(react-dom@18.3.1)(react@18.3.1):
     dependencies:

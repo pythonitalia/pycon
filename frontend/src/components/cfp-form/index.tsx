@@ -16,6 +16,7 @@ import {
   Select,
   Spacer,
   Text,
+  Textarea,
   VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import type React from "react";
@@ -36,10 +37,9 @@ import {
 import { Alert } from "../alert";
 import { PublicProfileCard } from "../edit-profile-page-handler/public-profile-card";
 import { FileInput } from "../file-input";
-import { TagLine } from "../input-tag";
-import { Textarea } from "../inputs";
 import { createHref } from "../link";
 import { MultiLingualInput } from "../multilingual-input";
+import { TagsSelect } from "../tags-select";
 
 export type CfpFormFields = {
   type: string;
@@ -390,7 +390,7 @@ export const CfpForm = ({
                 description={<FormattedMessage id="cfp.languagesDescription" />}
                 errors={getErrors("validationLanguages")}
               >
-                <VerticalStack gap="small">
+                <HorizontalStack gap="small">
                   {conferenceData!.conference.languages.map((language) => (
                     <label key={language.code}>
                       <HorizontalStack gap="small" alignItems="center">
@@ -404,7 +404,7 @@ export const CfpForm = ({
                       </HorizontalStack>
                     </label>
                   ))}
-                </VerticalStack>
+                </HorizontalStack>
               </InputWrapper>
 
               <InputWrapper
@@ -484,6 +484,23 @@ export const CfpForm = ({
 
               <InputWrapper
                 required={true}
+                title={<FormattedMessage id="cfp.tagsLabel" />}
+                description={<FormattedMessage id="cfp.tagsDescription" />}
+                errors={getErrors("validationTags")}
+              >
+                <TagsSelect
+                  tags={formState.values.tags || []}
+                  onChange={(tags: { value: string }[]) => {
+                    formState.setField(
+                      "tags",
+                      tags.map((t) => t.value),
+                    );
+                  }}
+                />
+              </InputWrapper>
+
+              <InputWrapper
+                required={true}
                 title={<FormattedMessage id="cfp.abstractLabel" />}
                 description={<FormattedMessage id="cfp.abstractDescription" />}
                 errors={getErrors("validationAbstract")}
@@ -502,23 +519,6 @@ export const CfpForm = ({
                 errors={getErrors("validationNotes")}
               >
                 <Textarea {...textarea("notes")} maxLength={1000} rows={4} />
-              </InputWrapper>
-
-              <InputWrapper
-                required={true}
-                title={<FormattedMessage id="cfp.tagsLabel" />}
-                description={<FormattedMessage id="cfp.tagsDescription" />}
-                errors={getErrors("validationTags")}
-              >
-                <TagLine
-                  tags={formState.values.tags || []}
-                  onTagChange={(tags: { value: string }[]) => {
-                    formState.setField(
-                      "tags",
-                      tags.map((t) => t.value),
-                    );
-                  }}
-                />
               </InputWrapper>
 
               <InputWrapper
