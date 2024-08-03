@@ -1,7 +1,8 @@
 import type { CSSProperties } from "react";
 import { useCallback } from "react";
+import React from "react";
 import { Props, default as ReactSelect } from "react-select";
-import { borderRadius, marginLeft } from "styled-system";
+import { type DropdownIndicatorProps, components } from "react-select";
 
 import { Alert } from "~/components/alert";
 import { useTagsQuery } from "~/types";
@@ -9,6 +10,28 @@ import { useTagsQuery } from "~/types";
 type TagLineProps = {
   tags: string[];
   onChange?: (tags: { value: string }[]) => void;
+};
+
+const DropdownIndicator = (props: DropdownIndicatorProps<any, true>) => {
+  return (
+    <components.DropdownIndicator {...props}>
+      <svg
+        width={20}
+        height={12}
+        fill="none"
+        viewBox="0 0 20 12"
+        role="presentation"
+        aria-label="Dropdown indicator"
+      >
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M19.878 2.16l-9 9-.707.707-.707-.707-9-9L1.878.746l8.293 8.293L18.464.746l1.414 1.414z"
+          fill="#0E1116"
+        />
+      </svg>
+    </components.DropdownIndicator>
+  );
 };
 
 export const TagsSelect = ({ tags, onChange }: TagLineProps) => {
@@ -44,48 +67,57 @@ export const TagsSelect = ({ tags, onChange }: TagLineProps) => {
   return (
     <ReactSelect
       styles={{
-        control: (base: CSSProperties) => ({
-          ...base,
-          position: "relative",
-          border: "none",
-          borderBottom: "3px solid #0E1116",
-          background: "transparent",
-          padding: "0px",
-          overflow: "visible",
-          borderRadius: 0,
-
-          "> div": {
+        control: (base: CSSProperties) => {
+          return {
+            ...base,
+            position: "relative",
+            border: "none",
+            borderBottom: "3px solid #0E1116",
+            background: "transparent",
+            padding: "0px",
             overflow: "visible",
-          },
+            borderRadius: 0,
 
-          "&:hover": {
-            borderColor: "#0E1116",
-          },
-        }),
+            "> div": {
+              overflow: "visible",
+            },
+
+            "&:hover": {
+              borderColor: "#0E1116",
+            },
+          };
+        },
         menu: (base: CSSProperties): CSSProperties => ({
           ...base,
           border: "3px solid #0E1116",
-          zIndex: 1000,
           borderRadius: 0,
+          background: "#FAF5F3",
         }),
         valueContainer: (base: CSSProperties): CSSProperties => ({
           ...base,
           padding: "0px",
         }),
-        option: (base: CSSProperties, state: { isSelected: boolean }) => ({
-          ...base,
-          background: state.isSelected ? "#f6f6f6" : "#fff",
-          fontFamily: "GeneralSans-Variable",
-          fontWeight: "500",
-          fontSize: "1rem",
-          lineHeight: "1.5rem",
-          padding: "1rem",
-          color: "#0E1116",
+        option: (
+          base: CSSProperties,
+          state: { isFocused: boolean; isDisabled: boolean },
+        ) => {
+          return {
+            ...base,
+            background: state.isFocused ? "rgba(83,138,212,.2)" : "#FAF5F3",
+            fontFamily: "GeneralSans-Variable",
+            fontWeight: "500",
+            fontSize: "1rem",
+            lineHeight: "1.5rem",
+            padding: "1rem",
+            color: "#0E1116",
+            cursor: state.isDisabled ? "not-allowed" : "pointer",
+            opacity: state.isDisabled ? 0.5 : 1,
 
-          "&:hover, &:focus": {
-            background: "rgba(83,138,212,.2)",
-          },
-        }),
+            "&:active, &:hover, &:focus": {
+              background: "rgba(83,138,212,.2)",
+            },
+          };
+        },
         container: (base: CSSProperties): CSSProperties => ({
           ...base,
           overflow: "visible",
@@ -151,6 +183,7 @@ export const TagsSelect = ({ tags, onChange }: TagLineProps) => {
       name="tags"
       options={submissionTags}
       placeholder="Add tags"
+      components={{ DropdownIndicator }}
     />
   );
 };
