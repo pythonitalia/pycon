@@ -31,7 +31,6 @@ import {
 } from "~/types";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { Alert } from "../alert";
 import { createHref } from "../link";
 import { MultiLingualInput } from "../multilingual-input";
 import {
