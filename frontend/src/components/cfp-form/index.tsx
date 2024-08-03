@@ -662,12 +662,6 @@ export const CfpForm = ({
             </Button>
           </div>
         </Grid>
-
-        {getErrors("nonFieldErrors").map((error) => (
-          <Alert variant="alert" key={error}>
-            {error}
-          </Alert>
-        ))}
       </form>
     </Fragment>
   );
