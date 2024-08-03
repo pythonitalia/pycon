@@ -602,7 +602,11 @@ export const CfpForm = ({
         <PublicProfileCard
           me={participantData.me}
           formOptions={formOptions}
-          getParticipantValidationError={getErrors}
+          getParticipantValidationError={(field) =>
+            getErrors(
+              `validationSpeaker${field[0].toUpperCase()}${field.substring(1)}` as any,
+            )
+          }
         />
 
         <Spacer size="medium" />
@@ -639,9 +643,22 @@ export const CfpForm = ({
               />
             </Text>
           </div>
-          <div className="flex justify-end items-center">
-            <Button variant="secondary">
-              <FormattedMessage id="cfp.submit" />
+          <div className="flex justify-center items-end flex-col">
+            {(hasValidationErrors || submissionError?.message) && (
+              <Text size="label3" color="red">
+                <FormattedMessage id="cfp.validationErrors" />
+              </Text>
+            )}
+            <Spacer size="small" />
+            <Button
+              variant="secondary"
+              disabled={
+                submissionLoading ||
+                submissionData?.mutationOp?.__typename === "Submission"
+              }
+            >
+              {submissionLoading && <FormattedMessage id="cfp.loading" />}
+              {!submissionLoading && <FormattedMessage id="cfp.submit" />}
             </Button>
           </div>
         </Grid>
@@ -651,34 +668,6 @@ export const CfpForm = ({
             {error}
           </Alert>
         ))}
-
-        {submissionError && (
-          <Alert variant="alert">
-            <FormattedMessage
-              id="global.tryAgain"
-              values={{ error: submissionError.message }}
-            />
-          </Alert>
-        )}
-
-        {submissionData &&
-          submissionData.mutationOp.__typename === "Submission" && (
-            <Alert variant="success">
-              <FormattedMessage id="cfp.submissionSent" />
-            </Alert>
-          )}
-
-        {submissionLoading && (
-          <Alert variant="info">
-            <FormattedMessage id="cfp.loading" />
-          </Alert>
-        )}
-
-        {hasValidationErrors && (
-          <Alert variant="alert">
-            <FormattedMessage id="cfp.validationErrors" />
-          </Alert>
-        )}
       </form>
     </Fragment>
   );
