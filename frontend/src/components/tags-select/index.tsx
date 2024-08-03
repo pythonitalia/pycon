@@ -124,7 +124,9 @@ export const TagsSelect = ({ tags, onChange }: TagLineProps) => {
         }),
         dropdownIndicator: (base: CSSProperties): CSSProperties => ({
           ...base,
+          marginRight: "0.75rem",
           color: "#0E1116",
+          padding: "0",
         }),
         clearIndicator: (base: CSSProperties): CSSProperties => ({
           ...base,
@@ -163,17 +165,18 @@ export const TagsSelect = ({ tags, onChange }: TagLineProps) => {
           lineHeight: "1.375rem",
           color: "#0E1116",
         }),
-        multiValueRemove: (
-          base: CSSProperties,
-          state: { isFocused: boolean },
-        ) => ({
+        multiValueRemove: (base: CSSProperties) => ({
           ...base,
           border: "none",
           cursor: "pointer",
           marginLeft: "5px",
           borderRadius: 0,
-          color: state.isFocused ? "#DE350B" : "#0E1116",
+          color: "#0E1116",
           fontFamily: "GeneralSans-Variable",
+          "&:hover": {
+            backgroundColor: "#D75353",
+            color: "#0E1116",
+          },
         }),
       }}
       value={value}
