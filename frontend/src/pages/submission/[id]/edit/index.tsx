@@ -1,21 +1,23 @@
 import { Page, Section } from "@python-italia/pycon-styleguide";
+import type { GetServerSideProps } from "next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
-import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import {
   CfpForm,
-  CfpFormFields,
-  SubmissionStructure,
+  type CfpFormFields,
+  type SubmissionStructure,
 } from "~/components/cfp-form";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import {
   queryCfpForm,
+  queryIsCfpOpen,
+  queryParticipantData,
   queryTags,
   useGetSubmissionQuery,
   useUpdateSubmissionMutation,
@@ -111,26 +113,51 @@ export const EditSubmissionPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  const client = getApolloClient();
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  locale,
+}) => {
+  const identityToken = req.cookies.pythonitalia_sessionid;
+  if (!identityToken) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
-  await Promise.all([
-    prefetchSharedQueries(client, locale),
-    queryTags(client),
-    queryCfpForm(client, {
-      conference: process.env.conferenceCode,
-    }),
-  ]);
+  const client = getApolloClient(null, req.cookies);
+  try {
+    await Promise.all([
+      prefetchSharedQueries(client, locale),
+      queryIsCfpOpen(client, {
+        conference: process.env.conferenceCode,
+      }),
+      queryParticipantData(client, {
+        conference: process.env.conferenceCode,
+      }),
+      queryCfpForm(client, {
+        conference: process.env.conferenceCode,
+      }),
+      queryTags(client),
+    ]);
+  } catch (e) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
-  return addApolloState(client, {
-    props: {},
-  });
+  return addApolloState(
+    client,
+    {
+      props: {},
+    },
+    null,
+  );
 };
-
-export const getStaticPaths: GetStaticPaths = async () =>
-  Promise.resolve({
-    paths: [],
-    fallback: "blocking",
-  });
 
 export default EditSubmissionPage;

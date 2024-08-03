@@ -34,11 +34,11 @@ import {
   useParticipantDataQuery,
 } from "~/types";
 
+import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { Alert } from "../alert";
-import { PublicProfileCard } from "../edit-profile-page-handler/public-profile-card";
-import { FileInput } from "../file-input";
 import { createHref } from "../link";
 import { MultiLingualInput } from "../multilingual-input";
+import { PublicProfileCard } from "../public-profile-card";
 import { TagsSelect } from "../tags-select";
 
 export type CfpFormFields = {
@@ -54,14 +54,14 @@ export type CfpFormFields = {
   speakerLevel: string;
   previousTalkVideo: string;
   shortSocialSummary: string;
-  speakerBio: string;
-  speakerPhoto: any;
-  speakerWebsite: string;
-  speakerTwitterHandle: string;
-  speakerInstagramHandle: string;
-  speakerLinkedinUrl: string;
-  speakerFacebookUrl: string;
-  speakerMastodonHandle: string;
+  participantBio: string;
+  participantPhoto: any;
+  participantWebsite: string;
+  participantTwitterHandle: string;
+  participantInstagramHandle: string;
+  participantLinkedinUrl: string;
+  participantFacebookUrl: string;
+  participantMastodonHandle: string;
 };
 
 export type SubmissionStructure = {
@@ -202,14 +202,14 @@ export const CfpForm = ({
       speakerLevel: formState.values.speakerLevel,
       previousTalkVideo: formState.values.previousTalkVideo,
       shortSocialSummary: formState.values.shortSocialSummary,
-      speakerWebsite: formState.values.speakerWebsite,
-      speakerBio: formState.values.speakerBio,
-      speakerTwitterHandle: formState.values.speakerTwitterHandle,
-      speakerInstagramHandle: formState.values.speakerInstagramHandle,
-      speakerLinkedinUrl: formState.values.speakerLinkedinUrl,
-      speakerFacebookUrl: formState.values.speakerFacebookUrl,
-      speakerMastodonHandle: formState.values.speakerMastodonHandle,
-      speakerPhoto: formState.values.speakerPhoto,
+      speakerWebsite: formState.values.participantWebsite,
+      speakerBio: formState.values.participantBio,
+      speakerTwitterHandle: formState.values.participantTwitterHandle,
+      speakerInstagramHandle: formState.values.participantInstagramHandle,
+      speakerLinkedinUrl: formState.values.participantLinkedinUrl,
+      speakerFacebookUrl: formState.values.participantFacebookUrl,
+      speakerMastodonHandle: formState.values.participantMastodonHandle,
+      speakerPhoto: formState.values.participantPhoto,
     });
   };
 
@@ -264,9 +264,9 @@ export const CfpForm = ({
 
   useEffect(() => {
     if (!participantDataLoading && participantData.me.participant) {
-      formState.setField("speakerBio", participantData.me.participant.bio);
+      formState.setField("participantBio", participantData.me.participant.bio);
       formState.setField(
-        "speakerPhoto",
+        "participantPhoto",
         participantData.me.participant.photoId,
       );
       formState.setField(
@@ -278,31 +278,33 @@ export const CfpForm = ({
         participantData.me.participant.previousTalkVideo,
       );
       formState.setField(
-        "speakerWebsite",
+        "participantWebsite",
         participantData.me.participant.website,
       );
       formState.setField(
-        "speakerTwitterHandle",
+        "participantTwitterHandle",
         participantData.me.participant.twitterHandle,
       );
       formState.setField(
-        "speakerInstagramHandle",
+        "participantInstagramHandle",
         participantData.me.participant.instagramHandle,
       );
       formState.setField(
-        "speakerLinkedinUrl",
+        "participantLinkedinUrl",
         participantData.me.participant.linkedinUrl,
       );
       formState.setField(
-        "speakerFacebookUrl",
+        "participantFacebookUrl",
         participantData.me.participant.facebookUrl,
       );
       formState.setField(
-        "speakerMastodonHandle",
+        "participantMastodonHandle",
         participantData.me.participant.mastodonHandle,
       );
     }
   }, [participantDataLoading]);
+
+  const inputPlaceholder = useTranslatedMessage("input.placeholder");
 
   if (conferenceLoading) {
     return (
@@ -388,7 +390,6 @@ export const CfpForm = ({
                 required={true}
                 title={<FormattedMessage id="cfp.languagesLabel" />}
                 description={<FormattedMessage id="cfp.languagesDescription" />}
-                errors={getErrors("validationLanguages")}
               >
                 <HorizontalStack gap="small">
                   {conferenceData!.conference.languages.map((language) => (
@@ -410,13 +411,18 @@ export const CfpForm = ({
               <InputWrapper
                 required={true}
                 title={<FormattedMessage id="cfp.title" />}
-                errors={getErrors("validationTitle")}
+                description={<FormattedMessage id="cfp.titleDescription" />}
               >
                 <MultiLingualInput
                   {...raw("title")}
                   languages={formState.values.languages}
                 >
-                  <Input required={true} maxLength={100} />
+                  <Input
+                    required={true}
+                    maxLength={100}
+                    errors={getErrors("validationTitle")}
+                    placeholder={inputPlaceholder}
+                  />
                 </MultiLingualInput>
               </InputWrapper>
 
@@ -426,13 +432,18 @@ export const CfpForm = ({
                 description={
                   <FormattedMessage id="cfp.elevatorPitchDescription" />
                 }
-                errors={getErrors("validationElevatorPitch")}
               >
                 <MultiLingualInput
                   {...raw("elevatorPitch")}
                   languages={formState.values.languages}
                 >
-                  <Textarea required={true} maxLength={300} rows={6} />
+                  <Textarea
+                    required={true}
+                    maxLength={300}
+                    rows={6}
+                    errors={getErrors("validationElevatorPitch")}
+                    placeholder={inputPlaceholder}
+                  />
                 </MultiLingualInput>
               </InputWrapper>
 
@@ -440,9 +451,12 @@ export const CfpForm = ({
                 required={true}
                 title={<FormattedMessage id="cfp.lengthLabel" />}
                 description={<FormattedMessage id="cfp.lengthDescription" />}
-                errors={getErrors("validationDuration")}
               >
-                <Select {...select("length")} required={true}>
+                <Select
+                  {...select("length")}
+                  required={true}
+                  errors={getErrors("validationDuration")}
+                >
                   <FormattedMessage id="cfp.selectDuration">
                     {(txt) => (
                       <option value="" disabled={true}>
@@ -464,9 +478,12 @@ export const CfpForm = ({
                 description={
                   <FormattedMessage id="cfp.audienceLevelDescription" />
                 }
-                errors={getErrors("validationAudienceLevel")}
               >
-                <Select {...select("audienceLevel")} required={true}>
+                <Select
+                  {...select("audienceLevel")}
+                  required={true}
+                  errors={getErrors("validationAudienceLevel")}
+                >
                   <FormattedMessage id="cfp.selectAudience">
                     {(txt) => (
                       <option value="" disabled={true}>
@@ -486,7 +503,6 @@ export const CfpForm = ({
                 required={true}
                 title={<FormattedMessage id="cfp.tagsLabel" />}
                 description={<FormattedMessage id="cfp.tagsDescription" />}
-                errors={getErrors("validationTags")}
               >
                 <TagsSelect
                   tags={formState.values.tags || []}
@@ -503,22 +519,32 @@ export const CfpForm = ({
                 required={true}
                 title={<FormattedMessage id="cfp.abstractLabel" />}
                 description={<FormattedMessage id="cfp.abstractDescription" />}
-                errors={getErrors("validationAbstract")}
               >
                 <MultiLingualInput
                   {...raw("abstract")}
                   languages={formState.values.languages}
                 >
-                  <Textarea required={true} maxLength={5000} rows={6} />
+                  <Textarea
+                    required={true}
+                    maxLength={5000}
+                    rows={6}
+                    errors={getErrors("validationAbstract")}
+                    placeholder={inputPlaceholder}
+                  />
                 </MultiLingualInput>
               </InputWrapper>
 
               <InputWrapper
                 title={<FormattedMessage id="cfp.notesLabel" />}
                 description={<FormattedMessage id="cfp.notesDescription" />}
-                errors={getErrors("validationNotes")}
               >
-                <Textarea {...textarea("notes")} maxLength={1000} rows={4} />
+                <Textarea
+                  {...textarea("notes")}
+                  maxLength={1000}
+                  rows={4}
+                  errors={getErrors("validationNotes")}
+                  placeholder={inputPlaceholder}
+                />
               </InputWrapper>
 
               <InputWrapper
@@ -527,177 +553,68 @@ export const CfpForm = ({
                 description={
                   <FormattedMessage id="cfp.shortSocialSummaryDescription" />
                 }
-                errors={getErrors("validationShortSocialSummary")}
               >
                 <Textarea
                   {...textarea("shortSocialSummary")}
                   required={false}
                   maxLength={128}
                   rows={2}
+                  errors={getErrors("validationShortSocialSummary")}
+                  placeholder={inputPlaceholder}
                 />
               </InputWrapper>
             </Grid>
           </CardPart>
         </MultiplePartsCard>
 
-        <Heading mb={2} as="h2">
-          <FormattedMessage id="cfp.aboutYou" />
-        </Heading>
+        <Spacer size="medium" />
 
-        <Text variant="labelDescription" as="p" mb={4}>
-          <FormattedMessage id="cfp.aboutYouDescription" />
-        </Text>
+        <PublicProfileCard
+          me={participantData.me}
+          formOptions={formOptions}
+          getParticipantValidationError={getErrors}
+        />
 
-        {participantDataLoading && (
-          <Alert variant="info">
-            <FormattedMessage id="global.loading" />
-          </Alert>
-        )}
+        <Spacer size="medium" />
 
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="cfp.speakerPhotoLabel" />}
-          description={<FormattedMessage id="cfp.speakerPhotoDescription" />}
-          errors={getErrors("validationSpeakerPhoto")}
-        >
-          <FileInput
-            {...raw("speakerPhoto")}
-            accept="image/png,image/jpg,image/jpeg,image/webp"
-            type="participant_avatar"
-            previewUrl={participantData?.me?.participant?.photo}
-          />
-        </InputWrapper>
-
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="cfp.speakerBioLabel" />}
-          description={<FormattedMessage id="cfp.speakerBioDescription" />}
-          errors={getErrors("validationSpeakerBio")}
-        >
-          <Textarea
-            {...textarea("speakerBio")}
-            required={true}
-            maxLength={1000}
-            rows={4}
-          />
-        </InputWrapper>
-
-        <InputWrapper
-          label={<FormattedMessage id="cfp.speakerWebsiteLabel" />}
-          description={<FormattedMessage id="cfp.speakerWebsiteDescription" />}
-          errors={getErrors("validationSpeakerWebsite")}
-        >
-          <Input {...url("speakerWebsite")} required={false} maxLength={2048} />
-        </InputWrapper>
-
-        <InputWrapper
-          label={<FormattedMessage id="cfp.socialsLabel" />}
-          description={
-            <FormattedMessage
-              id="cfp.speakerTwitterHandleDescription"
-              values={{
-                br: <br />,
-              }}
-            />
-          }
-          errors={getErrors("validationSpeakerTwitterHandle")}
-        >
-          <Input
-            {...text("speakerTwitterHandle")}
-            required={false}
-            maxLength={15}
-          />
-        </InputWrapper>
-
-        <InputWrapper
-          description={
-            <FormattedMessage
-              id="cfp.speakerMastodonHandleDescription"
-              values={{
-                br: <br />,
-              }}
-            />
-          }
-          errors={getErrors("validationSpeakerMastodonHandle")}
-        >
-          <Input
-            {...text("speakerMastodonHandle")}
-            required={false}
-            maxLength={2048}
-          />
-        </InputWrapper>
-
-        <InputWrapper
-          description={
-            <FormattedMessage id="cfp.speakerInstagramHandleDescription" />
-          }
-          errors={getErrors("validationSpeakerInstagramHandle")}
-        >
-          <Input
-            {...text("speakerInstagramHandle")}
-            required={false}
-            maxLength={30}
-          />
-        </InputWrapper>
-
-        <InputWrapper
-          description={
-            <FormattedMessage id="cfp.speakerLinkedinUrlDescription" />
-          }
-          errors={getErrors("validationSpeakerLinkedinUrl")}
-        >
-          <Input
-            {...url("speakerLinkedinUrl")}
-            required={false}
-            maxLength={2048}
-          />
-        </InputWrapper>
-
-        <InputWrapper
-          description={
-            <FormattedMessage id="cfp.speakerFacebookUrlDescription" />
-          }
-          errors={getErrors("validationSpeakerFacebookUrl")}
-        >
-          <Input
-            {...url("speakerFacebookUrl")}
-            required={false}
-            maxLength={2048}
-          />
-        </InputWrapper>
-
-        <InputWrapper
-          isRequired={true}
-          label={<FormattedMessage id="cfp.speakerLevel" />}
-          description={<FormattedMessage id="cfp.speakerLevelDescription" />}
-          errors={getErrors("validationSpeakerLevel")}
-        >
-          <Select {...select("speakerLevel")} required={true}>
-            {SPEAKER_LEVEL_OPTIONS.map(({ value, disabled, messageId }) => (
-              <FormattedMessage id={messageId} key={messageId}>
-                {(copy) => (
-                  <option disabled={disabled} value={value}>
-                    {copy}
-                  </option>
-                )}
-              </FormattedMessage>
-            ))}
-          </Select>
-        </InputWrapper>
-
-        <InputWrapper
-          label={<FormattedMessage id="cfp.previousTalkVideo" />}
-          description={
-            <FormattedMessage id="cfp.previousTalkVideoDescription" />
-          }
-          errors={getErrors("validationPreviousTalkVideo")}
-        >
-          <Input
-            {...url("previousTalkVideo")}
-            required={false}
-            maxLength={2048}
-          />
-        </InputWrapper>
+        <Grid cols={2}>
+          <div>
+            <Text weight="strong" uppercase color="grey-900" size="label3">
+              <FormattedMessage id="cfp.grantsLabel" />
+            </Text>
+            <Spacer size="thin" />
+            <Text color="grey-700" size="label3">
+              <FormattedMessage
+                id="cfp.grantsCheckbox"
+                values={{
+                  grantsCta: (
+                    <Link
+                      href={createHref({
+                        path: "/grants-info",
+                        locale: language,
+                      })}
+                      target="_blank"
+                    >
+                      <Text
+                        decoration="underline"
+                        color="grey-700"
+                        hoverColor="green"
+                        size="label3"
+                      >
+                        <FormattedMessage id="cfp.grantsCta" />
+                      </Text>
+                    </Link>
+                  ),
+                }}
+              />
+            </Text>
+          </div>
+          <div className="flex justify-end items-center">
+            <Button variant="secondary">
+              <FormattedMessage id="cfp.submit" />
+            </Button>
+          </div>
+        </Grid>
 
         {getErrors("nonFieldErrors").map((error) => (
           <Alert variant="alert" key={error}>
@@ -732,31 +649,6 @@ export const CfpForm = ({
             <FormattedMessage id="cfp.validationErrors" />
           </Alert>
         )}
-
-        <InputWrapper
-          label={<FormattedMessage id="cfp.grantsLabel" />}
-          description={
-            <FormattedMessage
-              id="cfp.grantsCheckbox"
-              values={{
-                grantsCta: (
-                  <Link
-                    href={createHref({
-                      path: "/grants-info",
-                      locale: language,
-                    })}
-                    target="_blank"
-                  >
-                    <FormattedMessage id="cfp.grantsCta" />
-                  </Link>
-                ),
-              }}
-            />
-          }
-        />
-        <Button variant="secondary">
-          <FormattedMessage id="cfp.submit" />
-        </Button>
       </form>
     </Fragment>
   );

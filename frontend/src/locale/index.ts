@@ -350,14 +350,15 @@ Let's get in touch to find the best solution for your business' needs!`,
       "This description will be seen by reviewers and the audience. You should make the description as compelling and exciting as possible - remember, you’re selling the idea to the organisers as well as appealing to attendees",
     "cfp.notesLabel": "Notes",
     "cfp.notesDescription":
-      "Notes will only be seen by organizers. This is where you should explain things such as technical requirements. Feel free to add them in Italian or English.",
+      "This is where you should explain things such as technical requirements. Notes will only be seen by organizers so feel free to write them in Italian or English.",
     "cfp.trackLabel": "Track",
     "cfp.topicDescription": "What this proposal is about?",
     "cfp.submit": "Submit",
     "cfp.minutes": "minutes",
     "cfp.languagesLabel": "Languages",
     "cfp.languagesDescription":
-      "You can submit a proposal in multiple languages if you want. Voters will see the proposal in the language that fits their preferences. Don't duplicate your proposals per language or they might be cancelled.",
+      "You can submit your proposal in multiple languages, and voters will see it in their preferred language. Avoid submitting duplicate proposals in different languages, as that will lead to cancellation.",
+    "cfp.titleDescription": "The title of your proposal",
     "cfp.viewSubmission": "Open submission",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
@@ -407,7 +408,7 @@ Let's get in touch to find the best solution for your business' needs!`,
     "cfp.grantsLabel": "Do you need a grant?",
     "cfp.grantsCheckbox":
       "If financial support is needed for attending the conference, {grantsCta}! We won't accept grant requests after the grants deadline. Make sure you submit your proposal as well.",
-    "cfp.grantsCta": "click here to open a separate page to submit the request",
+    "cfp.grantsCta": "click here to open a separate page to request a grant",
     "header.coronaVirus":
       "🚨 Update regarding COVID-19 - Conference cancelled 😢",
     "header.dashboard": "Dashboard",
@@ -520,15 +521,8 @@ Let's get in touch to find the best solution for your business' needs!`,
     "tickets.checkout.voucher.fetching": "Fetching voucher...",
     "tickets.checkout.voucher.noProductsAffected": "No products affected",
 
-    "profile.publicProfile.optInDescription":
-      "You can make your profile public and let other attendee see your personal details when they scan your badge's QR Code. {viewProfile}",
-    "profile.publicProfile.viewProfile": "Click here to view your profile!",
     "profile.edit.success": "Profile updated!",
 
-    "profile.publicProfile.optedOut":
-      "Your profile is currently private. Tick here to make it public.",
-    "profile.publicProfile.optedIn":
-      "Your profile is currently public. Tick here to make it private.",
     "profile.publicProfile.heading": "Your public profile",
 
     "tickets.checkout.title": "Checkout",
@@ -1198,6 +1192,7 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "cfp.talk": "Talk",
     "cfp.tutorial": "Tutorial",
     "cfp.title": "Titolo",
+    "cfp.titleDescription": "Il titolo della tua proposta",
     "cfp.introductionHeading": "Invia una proposta",
     "cfp.introductionCopy":
       "PyCon Italia è alla ricerca di speakers con ogni background per contribuire al nostro progamma. Se usi Python professionalmente, come hobbista o se semplicemente sei un appassionato di Python o programmazione, proponi un talk! Vogliamo sentire ciò che hai da condividere!",
@@ -2056,16 +2051,8 @@ Affrettati a comprare il biglietto!`,
 
     "profile.tickets.noDetails": "Divertiti! 🍻",
 
-    "profile.publicProfile.optInDescription":
-      "Puoi rendere il tuo profilo pubblico cosi da farlo vedere ai partecipanti quando scannerizzano il tuo QR Code. {viewProfile}",
-    "profile.publicProfile.viewProfile":
-      "Clicca qui per vedere il tuo profilo!",
     "profile.edit.success": "Profilo aggiornato!",
 
-    "profile.publicProfile.optedOut":
-      "Il tuo profilo è privato. Clicca qui per renderlo pubblico.",
-    "profile.publicProfile.optedIn":
-      "Il tuo profilo è pubblico. Clicca qui per renderlo privato.",
     "profile.publicProfile.heading": "Profilo pubblico",
 
     "profile.publicProfile.yourPhoto": "La tua foto",

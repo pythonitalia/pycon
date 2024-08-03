@@ -9,7 +9,7 @@ import {
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 
-import type { GetStaticProps } from "next";
+import type { GetServerSideProps, GetStaticProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
@@ -21,6 +21,7 @@ import { prefetchSharedQueries } from "~/helpers/prefetch";
 import {
   queryCfpForm,
   queryIsCfpOpen,
+  queryParticipantData,
   queryTags,
   useIsCfpOpenQuery,
 } from "~/types";
@@ -96,23 +97,51 @@ export const CFPPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  const client = getApolloClient();
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  locale,
+}) => {
+  const identityToken = req.cookies.pythonitalia_sessionid;
+  if (!identityToken) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
-  await Promise.all([
-    prefetchSharedQueries(client, locale),
-    queryIsCfpOpen(client, {
-      conference: process.env.conferenceCode,
-    }),
-    queryCfpForm(client, {
-      conference: process.env.conferenceCode,
-    }),
-    queryTags(client),
-  ]);
+  const client = getApolloClient(null, req.cookies);
+  try {
+    await Promise.all([
+      prefetchSharedQueries(client, locale),
+      queryIsCfpOpen(client, {
+        conference: process.env.conferenceCode,
+      }),
+      queryParticipantData(client, {
+        conference: process.env.conferenceCode,
+      }),
+      queryCfpForm(client, {
+        conference: process.env.conferenceCode,
+      }),
+      queryTags(client),
+    ]);
+  } catch (e) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
-  return addApolloState(client, {
-    props: {},
-  });
+  return addApolloState(
+    client,
+    {
+      props: {},
+    },
+    null,
+  );
 };
 
 export default CFPPage;
