@@ -28,11 +28,7 @@ import {
 
 const CfpSectionOrClosedMessage = ({ open }: { open: boolean }) => {
   if (open) {
-    return (
-      <Fragment>
-        <CfpSendSubmission />
-      </Fragment>
-    );
+    return <CfpSendSubmission />;
   }
 
   return (
@@ -58,11 +54,8 @@ const CfpSectionOrClosedMessage = ({ open }: { open: boolean }) => {
 };
 
 export const CFPPage = () => {
-  const [isLoggedIn, _] = useLoginState();
-
   const code = process.env.conferenceCode;
-
-  const { loading, data } = useIsCfpOpenQuery({
+  const { data } = useIsCfpOpenQuery({
     variables: { conference: code },
   });
 
@@ -73,25 +66,8 @@ export const CFPPage = () => {
       </FormattedMessage>
 
       <Section>
-        <Introduction
-          deadline={
-            data?.conference.isCFPOpen
-              ? data?.conference.cfpDeadline?.end
-              : undefined
-          }
-        />
-
-        {isLoggedIn ? (
-          !loading && (
-            <CfpSectionOrClosedMessage
-              open={data?.conference.isCFPOpen || false}
-            />
-          )
-        ) : (
-          <Alert variant="info">
-            <FormattedMessage id="cfp.needToBeLoggedIn" />
-          </Alert>
-        )}
+        <Introduction deadline={data.conference.cfpDeadline?.end} />
+        <CfpSectionOrClosedMessage open={data.conference.isCFPOpen || false} />
       </Section>
     </Page>
   );

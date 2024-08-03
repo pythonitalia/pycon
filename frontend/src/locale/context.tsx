@@ -3,7 +3,7 @@ import React from "react";
 import cookies from "next-cookies";
 import { useRouter } from "next/router";
 
-import { Language } from "~/locale/languages";
+import type { Language } from "~/locale/languages";
 
 export const LocaleProvider = ({
   children,

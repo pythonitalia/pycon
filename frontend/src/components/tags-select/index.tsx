@@ -7,6 +7,7 @@ import {
 } from "react-select";
 
 import { Alert } from "~/components/alert";
+import { useIsClient } from "~/helpers/use-is-client";
 import { useTagsQuery } from "~/types";
 
 type TagsSelectProps = {
@@ -37,15 +38,8 @@ const DropdownIndicator = (props: DropdownIndicatorProps<any, true>) => {
 };
 
 export const TagsSelect = ({ tags, onChange }: TagsSelectProps) => {
-  const { loading, error, data } = useTagsQuery();
-
-  if (loading) {
-    return null;
-  }
-
-  if (error) {
-    return <Alert variant="alert">{error.message}</Alert>;
-  }
+  const { data } = useTagsQuery();
+  const isClient = useIsClient();
 
   const submissionTags = [...data!.submissionTags]!
     .sort((a, b) => {
@@ -65,6 +59,10 @@ export const TagsSelect = ({ tags, onChange }: TagsSelectProps) => {
     }));
 
   const value = tags.map((t) => submissionTags.find((s) => s.value === t)!);
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <ReactSelect

@@ -1,20 +1,17 @@
-import {
-  Heading,
-  Link,
-  Section,
-  Spacer,
-  Text,
-} from "@python-italia/pycon-styleguide";
+import { Heading, Link, Spacer, Text } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { useCurrentLanguage } from "~/locale/context";
 
 import { Fragment } from "react";
+import { useIsClient } from "~/helpers/use-is-client";
 import { createHref } from "../link";
 
 export const Introduction = ({ deadline }: { deadline?: string }) => {
+  const isClient = useIsClient();
   const language = useCurrentLanguage();
+
   return (
     <Fragment>
       <Heading size={1}>
@@ -23,7 +20,7 @@ export const Introduction = ({ deadline }: { deadline?: string }) => {
 
       <Spacer size="small" />
 
-      {deadline && (
+      {deadline && isClient && (
         <Text size={2} as="p">
           <FormattedMessage
             id="cfp.introductionDeadline"
