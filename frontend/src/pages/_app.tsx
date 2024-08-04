@@ -19,7 +19,6 @@ import {
 } from "~/components/modal/context";
 import messages from "~/locale";
 import { LocaleProvider, useCurrentLanguage } from "~/locale/context";
-import { theme } from "~/theme";
 
 import "../global.css";
 
