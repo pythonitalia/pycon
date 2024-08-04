@@ -185,7 +185,7 @@ export const EditProfilePageHandler = () => {
             updateParticipantInput: {
               conference: process.env.conferenceCode,
               publicProfile: true,
-              photo: formState.values.participantPhoto,
+              photo: formState.values.participantPhoto ?? "",
               bio: formState.values.participantBio,
               website: formState.values.participantWebsite,
               speakerLevel: formState.values.participantSpeakerLevel,
