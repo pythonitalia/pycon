@@ -647,6 +647,7 @@ export const CfpForm = ({
           )}
           <Spacer size="small" />
           <Button
+            fullWidth="mobile"
             variant="secondary"
             disabled={
               submissionLoading ||
