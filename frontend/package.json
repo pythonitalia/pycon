@@ -30,10 +30,6 @@
 		"@graphql-codegen/typescript-react-apollo": "^3.3.2",
 		"@python-italia/pycon-styleguide": "0.1.194",
 		"@sentry/nextjs": "^7.107.0",
-		"@theme-ui/core": "^0.15.3",
-		"@theme-ui/css": "^0.15.3",
-		"@theme-ui/match-media": "^0.15.3",
-		"@types/styled-system": "^5.1.10",
 		"@vercel/analytics": "^1.1.1",
 		"@vercel/og": "^0.6.2",
 		"@vercel/speed-insights": "^1.0.0",
@@ -67,7 +63,6 @@
 		"react-wrap-balancer": "^0.5.0",
 		"styled-system": "^5.1.5",
 		"svg-to-pdfkit": "^0.1.8",
-		"theme-ui": "0.15.3",
 		"xstate": "^4.38.3",
 		"yup": "^0.29.3"
 	},

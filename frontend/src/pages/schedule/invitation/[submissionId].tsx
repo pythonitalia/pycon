@@ -1,21 +1,19 @@
-/** @jsxRuntime classic */
-
-/** @jsx jsx */
 import {
   Button,
+  Checkbox,
   Heading,
   Page,
   Section,
   Spacer,
   Text,
   Textarea,
+  VerticalStack,
 } from "@python-italia/pycon-styleguide";
+import type { GetServerSideProps } from "next";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Box, Flex, Label, Radio, jsx } from "theme-ui";
 
-import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
@@ -23,9 +21,11 @@ import { Alert } from "~/components/alert";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
-import { Language } from "~/locale/languages";
+import type { Language } from "~/locale/languages";
+import NotFoundPage from "~/pages/404";
 import {
   ScheduleInvitationOption,
+  queryGetScheduleInvitation,
   useGetScheduleInvitationQuery,
   useUpdateScheduleInvitationMutation,
 } from "~/types";
@@ -58,7 +58,7 @@ const Invitation = () => {
   const language = useCurrentLanguage();
   const router = useRouter();
   const submissionId = router.query.submissionId as string;
-  const { loading, data } = useGetScheduleInvitationQuery({
+  const { data } = useGetScheduleInvitationQuery({
     variables: {
       submissionId,
       language,
@@ -107,33 +107,17 @@ const Invitation = () => {
     invitation?.option !== ScheduleInvitationOption.NoAnswer ?? false;
 
   useEffect(() => {
-    if (!loading && invitation) {
+    if (invitation) {
       formState.setField(
         "option",
         hasSentAnswer ? invitation.option : ScheduleInvitationOption.Confirm,
       );
       formState.setField("notes", invitation.notes);
     }
-  }, [loading]);
-
-  if (loading) {
-    return (
-      <Box sx={{ borderTop: "primary" }}>
-        <Box sx={{ maxWidth: "largeContainer", p: 3, mx: "auto" }}>
-          <FormattedMessage id="schedule.invitation.wait" />
-        </Box>
-      </Box>
-    );
-  }
+  }, []);
 
   if (!invitation) {
-    return (
-      <Box sx={{ borderTop: "primary" }}>
-        <Box sx={{ maxWidth: "largeContainer", p: 3, mx: "auto" }}>
-          <FormattedMessage id="schedule.invitation.invitationNotValid" />
-        </Box>
-      </Box>
-    );
+    return <NotFoundPage />;
   }
 
   const scheduleDates = invitation.dates.map((date) => ({
@@ -226,105 +210,135 @@ const Invitation = () => {
             />
           </Text>
         )}
-        <Flex
-          as="form"
-          sx={{
-            flexDirection: "column",
-            mt: 2,
-            gap: 2,
-            alignItems: "flex-start",
-          }}
-        >
-          <Label>
-            <Radio {...radio("option", ScheduleInvitationOption.Confirm)} />
-            <Text as="span">
-              <FormattedMessage id="schedule.invitation.presence.CONFIRM" />
-            </Text>
-          </Label>
-
-          <Label>
-            <Radio {...radio("option", ScheduleInvitationOption.Reject)} />
-            <Text as="span">
-              <FormattedMessage id="schedule.invitation.presence.REJECT" />
-            </Text>
-          </Label>
-
-          <Label>
-            <Radio {...radio("option", ScheduleInvitationOption.CantAttend)} />
-            <Text as="span">
-              <FormattedMessage id="schedule.invitation.presence.CANT_ATTEND" />
-            </Text>
-          </Label>
-
-          {EXTRA_NOTES_OPTIONS.includes(formState.values.option) && (
-            <Label
-              sx={{
-                flexDirection: "column",
-              }}
-            >
-              <Text as="p">
-                <FormattedMessage id="schedule.invitation.presence.notes" />
-              </Text>
-              <Spacer size="small" />
-              <Textarea
-                {...text("notes")}
-                placeholder={notesPlaceholder}
-                rows={4}
+        <form>
+          <VerticalStack gap="small" alignItems="start">
+            <label className="flex gap-2">
+              <Checkbox
+                size="small"
+                {...radio("option", ScheduleInvitationOption.Confirm)}
               />
-            </Label>
-          )}
+              <Text as="span">
+                <FormattedMessage id="schedule.invitation.presence.CONFIRM" />
+              </Text>
+            </label>
 
-          <Button
-            variant="secondary"
-            onClick={submitAnswer}
-            disabled={
-              EXTRA_NOTES_OPTIONS.includes(formState.values.option) &&
-              !formState.values.notes
-            }
-          >
-            <FormattedMessage id="schedule.invitation.submitAnswer" />
-          </Button>
+            <label className="flex gap-2">
+              <Checkbox
+                size="small"
+                {...radio("option", ScheduleInvitationOption.Reject)}
+              />
+              <Text as="span">
+                <FormattedMessage id="schedule.invitation.presence.REJECT" />
+              </Text>
+            </label>
 
-          {isSubmitting && (
-            <Alert variant="info">
-              <FormattedMessage id="schedule.invitation.sendingAnswer" />
-            </Alert>
-          )}
-          {!isSubmitting &&
-            submitAnswerData?.updateScheduleInvitation.__typename ===
-              "ScheduleInvitation" && (
-              <Alert variant="success">
-                <FormattedMessage id="schedule.invitation.answerSentWithSuccess" />
+            <label className="flex gap-2">
+              <Checkbox
+                size="small"
+                {...radio("option", ScheduleInvitationOption.CantAttend)}
+              />
+              <Text as="span">
+                <FormattedMessage id="schedule.invitation.presence.CANT_ATTEND" />
+              </Text>
+            </label>
+
+            {EXTRA_NOTES_OPTIONS.includes(formState.values.option) && (
+              <label
+                sx={{
+                  flexDirection: "column",
+                }}
+              >
+                <Text as="p">
+                  <FormattedMessage id="schedule.invitation.presence.notes" />
+                </Text>
+                <Spacer size="small" />
+                <Textarea
+                  {...text("notes")}
+                  placeholder={notesPlaceholder}
+                  rows={4}
+                />
+              </label>
+            )}
+
+            <Button
+              variant="secondary"
+              onClick={submitAnswer}
+              disabled={
+                EXTRA_NOTES_OPTIONS.includes(formState.values.option) &&
+                !formState.values.notes
+              }
+            >
+              <FormattedMessage id="schedule.invitation.submitAnswer" />
+            </Button>
+
+            {isSubmitting && (
+              <Alert variant="info">
+                <FormattedMessage id="schedule.invitation.sendingAnswer" />
               </Alert>
             )}
-          {!isSubmitting &&
-            submitAnswerData?.updateScheduleInvitation.__typename ===
-              "ScheduleInvitationNotFound" && (
-              <Alert variant="alert">
-                <FormattedMessage id="schedule.invitation.unableToFindInvitation" />
-              </Alert>
-            )}
-        </Flex>
+            {!isSubmitting &&
+              submitAnswerData?.updateScheduleInvitation.__typename ===
+                "ScheduleInvitation" && (
+                <Alert variant="success">
+                  <FormattedMessage id="schedule.invitation.answerSentWithSuccess" />
+                </Alert>
+              )}
+            {!isSubmitting &&
+              submitAnswerData?.updateScheduleInvitation.__typename ===
+                "ScheduleInvitationNotFound" && (
+                <Alert variant="alert">
+                  <FormattedMessage id="schedule.invitation.unableToFindInvitation" />
+                </Alert>
+              )}
+          </VerticalStack>
+        </form>
       </Section>
     </Page>
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  const client = getApolloClient();
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  params,
+  locale,
+}) => {
+  const identityToken = req.cookies.pythonitalia_sessionid;
+  if (!identityToken) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
-  await Promise.all([prefetchSharedQueries(client, locale)]);
+  const client = getApolloClient(null, req.cookies);
+  const submissionId = params?.submissionId as string;
 
-  return addApolloState(client, {
-    props: {},
-  });
-};
+  try {
+    await Promise.all([
+      prefetchSharedQueries(client, locale),
+      queryGetScheduleInvitation(client, {
+        language: locale,
+        submissionId,
+      }),
+    ]);
+  } catch (e) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: [],
-    fallback: "blocking",
-  };
+  return addApolloState(
+    client,
+    {
+      props: {},
+    },
+    null,
+  );
 };
 
 export default Invitation;

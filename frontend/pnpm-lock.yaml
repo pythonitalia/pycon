@@ -56,18 +56,6 @@ importers:
       '@sentry/nextjs':
         specifier: ^7.107.0
         version: 7.116.0(next@14.2.3(@babel/core@7.24.6)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
-      '@theme-ui/core':
-        specifier: ^0.15.3
-        version: 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1)
-      '@theme-ui/css':
-        specifier: ^0.15.3
-        version: 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))
-      '@theme-ui/match-media':
-        specifier: ^0.15.3
-        version: 0.15.7(@theme-ui/core@0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1))(@theme-ui/css@0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1)))(react@18.3.1)
-      '@types/styled-system':
-        specifier: ^5.1.10
-        version: 5.1.22
       '@vercel/analytics':
         specifier: ^1.1.1
         version: 1.3.1(next@14.2.3(@babel/core@7.24.6)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
@@ -167,9 +155,6 @@ importers:
       svg-to-pdfkit:
         specifier: ^0.1.8
         version: 0.1.8
-      theme-ui:
-        specifier: 0.15.3
-        version: 0.15.3(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1)
       xstate:
         specifier: ^4.38.3
         version: 4.38.3
@@ -746,9 +731,6 @@ packages:
 
   '@emotion/memoize@0.7.4':
     resolution: {integrity: sha512-Ja/Vfqe3HpuzRsG1oBtWTHk2PGZ7GR+2Vz5iYGelAw8dx32K0y7PjVuxK6z1nMpZOqAFsRUPCkK1YjJ56qJlgw==}
-
-  '@emotion/memoize@0.7.5':
-    resolution: {integrity: sha512-igX9a37DR2ZPGYtV6suZ6whr8pTFtyHL3K/oLUotxpSVO2ASaprmAe2Dkq7tBo7CRY7MMDrAa9nuQP9/YG8FxQ==}
 
   '@emotion/memoize@0.8.1':
     resolution: {integrity: sha512-W2P2c/VRW1/1tLox0mVUalvnWXxavmv/Oum2aPsRcoDJuob75FC3Y8FbpfLwUegRcxINtGUMPq0tFCvYNTBXNA==}
@@ -1426,9 +1408,6 @@ packages:
   '@styled-system/shadow@5.1.2':
     resolution: {integrity: sha512-wqniqYb7XuZM7K7C0d1Euxc4eGtqEe/lvM0WjuAFsQVImiq6KGT7s7is+0bNI8O4Dwg27jyu4Lfqo/oIQXNzAg==}
 
-  '@styled-system/should-forward-prop@5.1.5':
-    resolution: {integrity: sha512-+rPRomgCGYnUIaFabDoOgpSDc4UUJ1KsmlnzcEp0tu5lFrBQKgZclSo18Z1URhaZm7a6agGtS5Xif7tuC2s52Q==}
-
   '@styled-system/space@5.1.2':
     resolution: {integrity: sha512-+zzYpR8uvfhcAbaPXhH8QgDAV//flxqxSjHiS9cDFQQUSznXMQmxJegbhcdEF7/eNnJgHeIXv1jmny78kipgBA==}
 
@@ -1480,42 +1459,6 @@ packages:
     engines: {node: '>=10', npm: '>=6'}
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
-
-  '@theme-ui/color-modes@0.15.7':
-    resolution: {integrity: sha512-iF44OeCJD7+Fq+JiVaCkG0dqJJlksF39u3trEP2PyZ2GVkZE9j9UZh5/AozFnfGXek4T0I8Pn6lyNbs0lAEOrQ==}
-    peerDependencies:
-      '@emotion/react': ^11
-      react: '>=18'
-
-  '@theme-ui/components@0.15.7':
-    resolution: {integrity: sha512-niSZQyFJQ/rojYdUyFl53OJ3J6g3w6GBO76Wc/AHDLJXsXlRvC3+Y3m5AlDlAE0q/v+qfHNhnVo16ufXIxlfwQ==}
-    peerDependencies:
-      '@emotion/react': ^11
-      react: '>=18'
-
-  '@theme-ui/core@0.15.7':
-    resolution: {integrity: sha512-87GcBbnpOvOwx0RYvWt4apuJEQ0+O8JvZuSYxdSVMXMbW0BUV6cU61KYRVArXIilNQgj49vYqiE6MGDBecoPmA==}
-    peerDependencies:
-      '@emotion/react': ^11
-      react: '>=18'
-
-  '@theme-ui/css@0.15.7':
-    resolution: {integrity: sha512-RBCoA3ElO3+DrMPeBKcwbP668Kjj/d5z9SSxJFnfVnawKQfYK0ZNWqMnyV89XO3rZm342rCNG0uVhc19jVQifg==}
-    peerDependencies:
-      '@emotion/react': ^11
-
-  '@theme-ui/match-media@0.15.7':
-    resolution: {integrity: sha512-mCv2pvAR+7zgEno0xiH7Bj39XRv0TzxV8rLhn3klsZ0w/uljzV2wr4H54S4a3mEgUZeL3obTwcldbSuNdE+ygw==}
-    peerDependencies:
-      '@theme-ui/core': ^0.15.7
-      '@theme-ui/css': ^0.15.7
-      react: '>=18'
-
-  '@theme-ui/theme-provider@0.15.7':
-    resolution: {integrity: sha512-p0HLpFGhK9KrLdgshBULGHtkVmbfwAkkTbGDSMaCTLT5lxGPVKRlgaibYwbqT/4+bFX/BGm2/aC9y2pjEWGcFw==}
-    peerDependencies:
-      '@emotion/react': ^11
-      react: '>=18'
 
   '@trivago/prettier-plugin-sort-imports@4.3.0':
     resolution: {integrity: sha512-r3n0onD3BTOVUNPhR4lhVK4/pABGpbA7bW3eumZnYdKaHkf1qEC+Mag6DPbGNuuh0eG8AaYj+YqmVHSiGslaTQ==}
@@ -1624,9 +1567,6 @@ packages:
 
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
-
-  '@types/styled-system@5.1.22':
-    resolution: {integrity: sha512-NbRp37zWcrf/+Qf2NumdyZfhSx1dzJ50zgfKvnezYJx1HTRUMVYY8jtWvK1eoIAa6F5sXwHLhE8oXNu15ThBAA==}
 
   '@types/testing-library__jest-dom@5.14.9':
     resolution: {integrity: sha512-FSYhIjFlfOpGSRyVoMBMuS3ws5ehFQODymf3vlI7U1K8c7PHwWwFY7VREfmsuzHSOnoKs/9/Y983ayOs7eRzqw==}
@@ -4679,11 +4619,6 @@ packages:
   text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
 
-  theme-ui@0.15.3:
-    resolution: {integrity: sha512-XhQKCwE4iIDNJaWTPkz7298xbOrDL3oK9SB0BLlEsTZdzPJine/DYgBcOXatk4KdyBlwJbA1Ujyziasg703UtA==}
-    peerDependencies:
-      react: '>=18'
-
   thenify-all@1.6.0:
     resolution: {integrity: sha512-RNxQH/qI8/t3thXJDwcstUO4zeqo64+Uy/+sNVRBx4Xn2OX+OZ9oP+iJnNFqplFra2ZUVeKCSa2oVWi3T4uVmA==}
     engines: {node: '>=0.8'}
@@ -5665,10 +5600,9 @@ snapshots:
   '@emotion/is-prop-valid@0.8.8':
     dependencies:
       '@emotion/memoize': 0.7.4
+    optional: true
 
   '@emotion/memoize@0.7.4': {}
-
-  '@emotion/memoize@0.7.5': {}
 
   '@emotion/memoize@0.8.1': {}
 
@@ -6816,12 +6750,6 @@ snapshots:
     dependencies:
       '@styled-system/core': 5.1.2
 
-  '@styled-system/should-forward-prop@5.1.5':
-    dependencies:
-      '@emotion/is-prop-valid': 0.8.8
-      '@emotion/memoize': 0.7.5
-      styled-system: 5.1.5
-
   '@styled-system/space@5.1.2':
     dependencies:
       '@styled-system/core': 5.1.2
@@ -6911,50 +6839,6 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.24.6
       '@testing-library/dom': 8.20.1
-
-  '@theme-ui/color-modes@0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@emotion/react': 11.11.4(@types/react@17.0.80)(react@18.3.1)
-      '@theme-ui/core': 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1)
-      '@theme-ui/css': 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))
-      deepmerge: 4.3.1
-      react: 18.3.1
-
-  '@theme-ui/components@0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@emotion/react': 11.11.4(@types/react@17.0.80)(react@18.3.1)
-      '@styled-system/color': 5.1.2
-      '@styled-system/should-forward-prop': 5.1.5
-      '@styled-system/space': 5.1.2
-      '@theme-ui/css': 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))
-      '@types/styled-system': 5.1.22
-      react: 18.3.1
-
-  '@theme-ui/core@0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@emotion/react': 11.11.4(@types/react@17.0.80)(react@18.3.1)
-      '@theme-ui/css': 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))
-      deepmerge: 4.3.1
-      react: 18.3.1
-
-  '@theme-ui/css@0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))':
-    dependencies:
-      '@emotion/react': 11.11.4(@types/react@17.0.80)(react@18.3.1)
-      csstype: 3.1.3
-
-  '@theme-ui/match-media@0.15.7(@theme-ui/core@0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1))(@theme-ui/css@0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1)))(react@18.3.1)':
-    dependencies:
-      '@theme-ui/core': 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1)
-      '@theme-ui/css': 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))
-      react: 18.3.1
-
-  '@theme-ui/theme-provider@0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@emotion/react': 11.11.4(@types/react@17.0.80)(react@18.3.1)
-      '@theme-ui/color-modes': 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1)
-      '@theme-ui/core': 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1)
-      '@theme-ui/css': 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))
-      react: 18.3.1
 
   '@trivago/prettier-plugin-sort-imports@4.3.0(prettier@3.2.5)':
     dependencies:
@@ -7072,10 +6956,6 @@ snapshots:
   '@types/scheduler@0.16.8': {}
 
   '@types/stack-utils@2.0.3': {}
-
-  '@types/styled-system@5.1.22':
-    dependencies:
-      csstype: 3.1.3
 
   '@types/testing-library__jest-dom@5.14.9':
     dependencies:
@@ -10781,17 +10661,6 @@ snapshots:
       minimatch: 3.1.2
 
   text-table@0.2.0: {}
-
-  theme-ui@0.15.3(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1):
-    dependencies:
-      '@theme-ui/color-modes': 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1)
-      '@theme-ui/components': 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1)
-      '@theme-ui/core': 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1)
-      '@theme-ui/css': 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))
-      '@theme-ui/theme-provider': 0.15.7(@emotion/react@11.11.4(@types/react@17.0.80)(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-    transitivePeerDependencies:
-      - '@emotion/react'
 
   thenify-all@1.6.0:
     dependencies:
