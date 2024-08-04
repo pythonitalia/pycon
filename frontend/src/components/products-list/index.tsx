@@ -4,11 +4,11 @@ import { FormattedMessage } from "react-intl";
 
 import {
   CheckoutCategory,
-  CurrentUserQueryResult,
-  HotelRoom,
-  TicketItem,
+  type CurrentUserQueryResult,
+  type HotelRoom,
+  type TicketItem,
   TicketType,
-  TicketsQuery,
+  type TicketsQuery,
 } from "~/types";
 
 import { HotelRow } from "./hotel-row";

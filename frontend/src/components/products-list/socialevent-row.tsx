@@ -6,12 +6,12 @@ import {
   TagsCollection,
   Text,
 } from "@python-italia/pycon-styleguide";
-import { Icon } from "@python-italia/pycon-styleguide/dist/icons/types";
+import type { Icon } from "@python-italia/pycon-styleguide/dist/icons/types";
 import { FormattedMessage } from "react-intl";
 
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
-import { TicketItem } from "~/types";
+import type { TicketItem } from "~/types";
 
 import { useCart } from "../tickets-page/use-cart";
 import { AddRemoveRow } from "./ticket-row";

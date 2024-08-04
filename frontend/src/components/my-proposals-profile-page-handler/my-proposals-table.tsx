@@ -11,7 +11,7 @@ import { parseISO } from "date-fns";
 import { FormattedMessage } from "react-intl";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { MyProfileWithSubmissionsQuery } from "~/types";
+import type { MyProfileWithSubmissionsQuery } from "~/types";
 
 import { createHref } from "../link";
 import { EventTag } from "../schedule-event-detail/event-tag";

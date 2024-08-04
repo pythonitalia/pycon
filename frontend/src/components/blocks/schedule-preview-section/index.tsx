@@ -18,8 +18,8 @@ import { FormattedMessage } from "react-intl";
 
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  Cta,
-  SchedulePreviewSectionQuery,
+  type Cta,
+  type SchedulePreviewSectionQuery,
   querySchedulePreviewSection,
   useSchedulePreviewSectionQuery,
 } from "~/types";

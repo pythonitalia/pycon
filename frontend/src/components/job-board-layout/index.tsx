@@ -14,7 +14,7 @@ import { FormattedMessage } from "react-intl";
 
 import { JobListingAccordion } from "~/components/job-listing-accordion";
 import { compile } from "~/helpers/markdown";
-import { AllJobListingsQueryResult } from "~/types";
+import type { AllJobListingsQueryResult } from "~/types";
 
 import { Article } from "../article";
 import { MetaTags } from "../meta-tags";

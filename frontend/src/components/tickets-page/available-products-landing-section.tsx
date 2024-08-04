@@ -12,7 +12,7 @@ import { FormattedMessage } from "react-intl";
 
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
-import { TicketItem, TicketType, TicketsQueryResult } from "~/types";
+import { type TicketItem, TicketType, type TicketsQueryResult } from "~/types";
 
 import { createHref } from "../link";
 
