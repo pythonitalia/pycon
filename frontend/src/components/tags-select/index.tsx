@@ -28,17 +28,7 @@ export const TagsSelect = ({ tags, onChange }: TagsSelectProps) => {
   const isClient = useIsClient();
 
   const submissionTags = [...data!.submissionTags]!
-    .sort((a, b) => {
-      if (a.name < b.name) {
-        return -1;
-      }
-
-      if (a.name > b.name) {
-        return 1;
-      }
-
-      return 0;
-    })
+    .sort((a, b) => a.name.localeCompare(b.name))
     .map((t) => ({
       value: t.id,
       label: t.name,
@@ -53,25 +43,28 @@ export const TagsSelect = ({ tags, onChange }: TagsSelectProps) => {
   return (
     <ReactSelect
       styles={{
-        control: (base) => ({
+        control: (base, state: { isFocused: boolean }) => ({
           ...base,
           position: "relative",
           border: "none",
-          borderBottom: "3px solid #0E1116",
+          borderBottomWidth: "3px",
+          borderBottomStyle: "solid",
+          borderBottomColor: state.isFocused ? "#9473B0" : "#0E1116",
           background: "transparent",
           padding: "0px",
           overflow: "visible",
           borderRadius: "0px",
+          outline: "none",
 
           "> div": {
             overflow: "visible",
           },
 
           "&:hover": {
-            borderColor: "#0E1116",
+            borderBottomColor: state.isFocused ? "#9473B0" : "#0E1116",
           },
         }),
-        menu: (base) => ({
+        menu: (base, state) => ({
           ...base,
           border: "3px solid #0E1116",
           borderRadius: "0px",
@@ -102,6 +95,9 @@ export const TagsSelect = ({ tags, onChange }: TagsSelectProps) => {
         container: (base) => ({
           ...base,
           overflow: "visible",
+          "&:focus": {
+            borderBottomColor: "#9473B0",
+          },
         }),
         dropdownIndicator: (base) => ({
           ...base,
