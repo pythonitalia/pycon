@@ -142,9 +142,9 @@ export const TagsSelect = ({ tags, onChange }: TagsSelectProps) => {
         multiValue: (base) => ({
           ...base,
           position: "relative",
-          padding: "0",
-          marginRight: "16px",
-          background: "none",
+          padding: "8px",
+          marginRight: "4px",
+          background: "#79CDE0",
           fontFamily: "GeneralSans-Variable",
           fontWeight: "500",
           fontSize: "1.25rem",
