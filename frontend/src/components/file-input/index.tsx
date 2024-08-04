@@ -1,11 +1,18 @@
+import {
+  FileInput as FileInputUI,
+  Text,
+} from "@python-italia/pycon-styleguide";
+
 import React, { type ChangeEvent, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { getTranslatedMessage } from "~/helpers/use-translated-message";
+import {
+  getTranslatedMessage,
+  useTranslatedMessage,
+} from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import { useFinalizeUploadMutation, useUploadFileMutation } from "~/types";
 
-import { Alert } from "../alert";
 import { ErrorsList } from "../errors-list";
 
 const MAX_UPLOAD_SIZE_IN_MB = 1 * 1024 * 1024;
@@ -13,7 +20,6 @@ const MAX_UPLOAD_SIZE_IN_MB = 1 * 1024 * 1024;
 export const FileInput = ({
   onChange: baseOnChange,
   name,
-  onBlur,
   value,
   errors = null,
   type,
@@ -22,7 +28,6 @@ export const FileInput = ({
 }: {
   onChange: (value: string) => void;
   name: string;
-  onBlur: () => void;
   value: string;
   errors?: string[];
   type: "participant_avatar" | "proposal_material";
@@ -30,7 +35,6 @@ export const FileInput = ({
   accept: string;
 }) => {
   const conferenceCode = process.env.conferenceCode;
-  const fileInput = useRef<HTMLInputElement>();
   const canvas = useRef<HTMLCanvasElement>();
   const language = useCurrentLanguage();
 
@@ -40,6 +44,7 @@ export const FileInput = ({
   const [filePreview, setFilePreview] = useState<string | null>(previewUrl);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const resetInput = () => {
     setError("");
@@ -52,8 +57,9 @@ export const FileInput = ({
     setFilePreview(null);
   };
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files[0];
+  const onChange = (file: File) => {
+    setSelectedFile(file);
+    console.log("file", file);
 
     if (!file) {
       resetInput();
@@ -64,7 +70,7 @@ export const FileInput = ({
       resetInput();
       setError(getTranslatedMessage("fileInput.fileSize", language));
 
-      fileInput.current.value = "";
+      setSelectedFile(null);
       return;
     }
 
@@ -157,22 +163,26 @@ export const FileInput = ({
   };
 
   const previewAvailable = filePreview || previewUrl;
+  const placeholder = useTranslatedMessage("fileInput.placeholder");
+  const allErrors = error ? [error] : errors;
 
   return (
     <div>
-      <input
-        ref={fileInput}
+      <FileInputUI
+        placeholder={placeholder}
         onChange={onChange}
         name={name}
-        onBlur={onBlur}
-        type="file"
         accept={accept}
-        className="w-full"
+        value={selectedFile}
+        errors={allErrors}
       />
 
       <canvas ref={canvas} className="hidden" />
-      {(error || errors) && (
-        <ErrorsList className="mt-2" errors={[error, ...(errors || [])]} />
+
+      {isUploading && (
+        <Text color="blue" size="label3">
+          <FormattedMessage id="fileInput.uploading" />
+        </Text>
       )}
 
       {previewAvailable && (
@@ -181,12 +191,6 @@ export const FileInput = ({
           alt="Selection preview"
           src={previewAvailable}
         />
-      )}
-
-      {isUploading && (
-        <Alert variant="info">
-          <FormattedMessage id="fileInput.uploading" />
-        </Alert>
       )}
     </div>
   );
