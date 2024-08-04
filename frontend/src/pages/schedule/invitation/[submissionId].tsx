@@ -186,21 +186,12 @@ const Invitation = () => {
         <Spacer size="medium" />
 
         {hasSentAnswer && (
-          <Text
-            sx={{
-              mt: 2,
-            }}
-          >
+          <Text>
             <FormattedMessage
               id="schedule.invitation.currentAnswer"
               values={{
                 answer: (
-                  <Text
-                    as="span"
-                    sx={{
-                      fontWeight: "bold",
-                    }}
-                  >
+                  <Text as="span" weight="strong">
                     <FormattedMessage
                       id={`schedule.invitation.presence.${invitation.option}`}
                     />
@@ -243,11 +234,7 @@ const Invitation = () => {
             </label>
 
             {EXTRA_NOTES_OPTIONS.includes(formState.values.option) && (
-              <label
-                sx={{
-                  flexDirection: "column",
-                }}
-              >
+              <label className="flex flex-col">
                 <Text as="p">
                   <FormattedMessage id="schedule.invitation.presence.notes" />
                 </Text>
