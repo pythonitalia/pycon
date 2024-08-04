@@ -1,4 +1,4 @@
-import type { ParsedUrlQuery } from "node:querystring";
+import type { ParsedUrlQuery } from "querystring";
 
 export const createHref = ({
   path,

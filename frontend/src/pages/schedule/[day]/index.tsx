@@ -1,4 +1,4 @@
-import { stringify } from "node:querystring";
+import { stringify } from "querystring";
 import { Page } from "@python-italia/pycon-styleguide";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
