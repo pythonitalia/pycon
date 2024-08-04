@@ -21,7 +21,7 @@ import { SnakeTail } from "@python-italia/pycon-styleguide/illustrations";
 import React from "react";
 
 import { compile } from "~/helpers/markdown";
-import { TalkQueryResult } from "~/types";
+import type { TalkQueryResult } from "~/types";
 
 export const ParticipantInfoSection = ({
   fullname,

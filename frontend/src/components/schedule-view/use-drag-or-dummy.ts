@@ -1,8 +1,8 @@
 import {
-  ConnectDragPreview,
-  ConnectDragSource,
-  DragObjectWithType,
-  DragSourceHookSpec,
+  type ConnectDragPreview,
+  type ConnectDragSource,
+  type DragObjectWithType,
+  type DragSourceHookSpec,
   useDrag,
 } from "react-dnd";
 

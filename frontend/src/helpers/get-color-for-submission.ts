@@ -1,4 +1,4 @@
-import { Keynote, Submission } from "~/components/schedule-view/types";
+import type { Keynote, Submission } from "~/components/schedule-view/types";
 
 type Item = {
   id: string;

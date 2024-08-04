@@ -6,7 +6,8 @@ import {
   Text,
 } from "@python-italia/pycon-styleguide";
 import * as Sentry from "@sentry/nextjs";
-import React, { Component } from "react";
+import type React from "react";
+import { Component } from "react";
 
 type Props = {
   children: React.ReactNode;

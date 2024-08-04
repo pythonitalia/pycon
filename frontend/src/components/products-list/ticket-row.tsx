@@ -14,7 +14,7 @@ import { FormattedMessage } from "react-intl";
 import { useMoneyFormatter } from "~/helpers/formatters";
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
-import { TicketItem } from "~/types";
+import type { TicketItem } from "~/types";
 
 import { useCart } from "../tickets-page/use-cart";
 

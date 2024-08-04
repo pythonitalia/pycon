@@ -1,11 +1,11 @@
-import { GetStaticProps } from "next";
+import type { GetStaticProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { blocksDataFetching } from "~/components/blocks-renderer";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import {
-  PagePreviewQuery,
-  PageQuery,
+  type PagePreviewQuery,
+  type PageQuery,
   queryPage,
   queryPagePreview,
 } from "~/types";

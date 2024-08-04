@@ -1,4 +1,4 @@
-import { Item } from "./types";
+import type { Item } from "./types";
 
 // TODO: let's be consistent with naming (training vs tutorial)
 export const isTraining = (item: Item) => {

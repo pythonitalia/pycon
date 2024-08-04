@@ -1,5 +1,6 @@
 import { Page, Section } from "@python-italia/pycon-styleguide";
-import React, { useEffect } from "react";
+import type React from "react";
+import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useRouter } from "next/router";
@@ -10,10 +11,10 @@ import { useLoginState } from "~/components/profile/hooks";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  CurrentUserQueryResult,
-  TicketItem,
+  type CurrentUserQueryResult,
+  type TicketItem,
   TicketType,
-  TicketsQueryResult,
+  type TicketsQueryResult,
   useTicketsQuery,
 } from "~/types";
 

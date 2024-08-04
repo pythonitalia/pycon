@@ -7,7 +7,7 @@ import {
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  CheckoutCategory,
+  type CheckoutCategory,
   queryCheckoutSection,
   useCheckoutSectionQuery,
 } from "~/types";

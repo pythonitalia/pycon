@@ -16,7 +16,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { GetStaticProps } from "next";
+import type { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
@@ -131,7 +131,7 @@ export const VotingPage = () => {
       audienceLevels: getAsArray(router.query.audienceLevels) ?? [],
     });
 
-    setCurrentPage(parseInt(router.query.page as string) || 1);
+    setCurrentPage(Number.parseInt(router.query.page as string) || 1);
   }, [router.isReady]);
 
   const { data: votingMetadata } = useVotingMetadataQuery({

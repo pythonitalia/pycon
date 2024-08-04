@@ -11,7 +11,7 @@ import {
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import type { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";

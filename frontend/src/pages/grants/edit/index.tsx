@@ -1,13 +1,13 @@
 import { Heading, Page, Section } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { GrantForm } from "~/components/grant-form";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import {
-  UpdateGrantInput,
+  type UpdateGrantInput,
   queryCurrentUser,
   queryGrantDeadline,
   queryMyGrant,

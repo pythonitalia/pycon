@@ -1,6 +1,6 @@
 import { differenceInCalendarDays, parseISO } from "date-fns";
 
-import {
+import type {
   OrderAction,
   OrderState,
   UpdateHotelRoomAction,

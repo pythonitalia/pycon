@@ -7,7 +7,7 @@ import {
 } from "react";
 
 import { reducer } from "./reducer";
-import { InvoiceInformationState, OrderState, Voucher } from "./types";
+import type { InvoiceInformationState, OrderState, Voucher } from "./types";
 
 type CartContextType = {
   state: OrderState;

@@ -4,13 +4,13 @@ import {
   InputWrapper,
   Select,
 } from "@python-italia/pycon-styleguide";
-import React from "react";
+import type React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { TicketItem } from "~/types";
+import type { TicketItem } from "~/types";
 
-import { ProductState } from "../tickets-page/types";
+import type { ProductState } from "../tickets-page/types";
 
 type Props = {
   index: number;

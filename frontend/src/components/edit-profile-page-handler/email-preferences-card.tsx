@@ -8,9 +8,9 @@ import {
   Text,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
-import { FormState, Inputs, StateErrors } from "react-use-form-state";
+import type { FormState, Inputs, StateErrors } from "react-use-form-state";
 
-import { MeUserFields } from "./types";
+import type { MeUserFields } from "./types";
 
 type Props = {
   formState: FormState<MeUserFields, StateErrors<MeUserFields, string>>;

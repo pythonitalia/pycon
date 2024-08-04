@@ -1,4 +1,4 @@
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 
 import { getApolloClient } from "~/apollo/client";
 import { queryTicketIdToUserHashid } from "~/types";

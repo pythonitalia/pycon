@@ -1,4 +1,4 @@
-import { GetStaticProps } from "next";
+import type { GetStaticProps } from "next";
 
 import { PageHandler } from "~/components/page-handler";
 import { getStaticProps as baseGetStaticProps } from "~/components/page-handler/page-static-props";

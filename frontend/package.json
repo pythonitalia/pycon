@@ -15,11 +15,6 @@
 	},
 	"dependencies": {
 		"@apollo/client": "^3.7.3",
-		"@babel/plugin-transform-react-jsx": "^7.12.1",
-		"@babel/plugin-transform-react-pure-annotations": "^7.12.1",
-		"@emotion/babel-plugin-jsx-pragmatic": "^0.1.5",
-		"@emotion/core": "^10.0.35",
-		"@emotion/react": ">=11.0.0 <12.0.0",
 		"@graphql-codegen/add": "^5.0.2",
 		"@graphql-codegen/cli": "^2.11.3",
 		"@graphql-codegen/fragment-matcher": "^3.3.0",

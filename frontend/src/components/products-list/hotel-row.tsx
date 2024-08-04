@@ -14,9 +14,9 @@ import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useMoneyFormatter } from "~/helpers/formatters";
-import { HotelRoom } from "~/types";
+import type { HotelRoom } from "~/types";
 
-import { HotelRoomState } from "../tickets-page/types";
+import type { HotelRoomState } from "../tickets-page/types";
 import { useCart } from "../tickets-page/use-cart";
 
 type Props = {

@@ -13,8 +13,8 @@ import React from "react";
 
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  Cta,
-  SponsorsSectionLayout,
+  type Cta,
+  type SponsorsSectionLayout,
   querySponsorsSection,
   useSponsorsSectionQuery,
 } from "~/types";

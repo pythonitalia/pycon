@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
-import { CustomizeTicketModalProps } from "../customize-ticket-modal";
-import { ReassignTicketModalProps } from "../reassign-ticket-modal";
-import { TicketQRCodeModalProps } from "../ticket-qrcode-modal";
+import type { CustomizeTicketModalProps } from "../customize-ticket-modal";
+import type { ReassignTicketModalProps } from "../reassign-ticket-modal";
+import type { TicketQRCodeModalProps } from "../ticket-qrcode-modal";
 
 export type ModalProps = {
   "sponsor-lead": null;

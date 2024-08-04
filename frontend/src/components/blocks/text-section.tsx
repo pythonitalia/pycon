@@ -9,10 +9,10 @@ import {
   StyledHTMLText,
 } from "@python-italia/pycon-styleguide";
 
-import { BodyTextSize, TextSection as TextSectionType } from "~/types";
+import { BodyTextSize, type TextSection as TextSectionType } from "~/types";
 
 import { Fragment } from "react";
-import { ModalID, useSetCurrentModal } from "../modal/context";
+import { type ModalID, useSetCurrentModal } from "../modal/context";
 
 export const TextSection = ({
   title,

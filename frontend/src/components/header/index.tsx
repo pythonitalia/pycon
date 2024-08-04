@@ -1,5 +1,5 @@
 import { NavBar } from "@python-italia/pycon-styleguide";
-import { Action } from "@python-italia/pycon-styleguide/dist/navbar/types";
+import type { Action } from "@python-italia/pycon-styleguide/dist/navbar/types";
 import React, { useEffect, useState } from "react";
 
 import { useRouter } from "next/router";

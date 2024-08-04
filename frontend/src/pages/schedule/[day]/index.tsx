@@ -1,9 +1,9 @@
 import { stringify } from "querystring";
 import { Page } from "@python-italia/pycon-styleguide";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import type { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
@@ -13,9 +13,9 @@ import { ScheduleView } from "~/components/schedule-view";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useCurrentLanguage } from "~/locale/context";
-import { Language } from "~/locale/languages";
+import type { Language } from "~/locale/languages";
 import {
-  ScheduleQuery,
+  type ScheduleQuery,
   querySchedule,
   queryScheduleDays,
   useScheduleQuery,
