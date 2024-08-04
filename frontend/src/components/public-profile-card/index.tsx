@@ -34,12 +34,14 @@ type Props<T extends ParticipantFormFields> = {
     };
   };
   getParticipantValidationError: (key: string) => string[] | null;
+  photoRequired?: boolean;
 };
 
 export const PublicProfileCard = <T extends ParticipantFormFields>({
   me,
   formOptions: { raw, url, text },
   getParticipantValidationError,
+  photoRequired = false,
 }: Props<T>) => {
   const inputPlaceholder = useTranslatedMessage("input.placeholder");
 
@@ -54,6 +56,7 @@ export const PublicProfileCard = <T extends ParticipantFormFields>({
         <Grid cols={3}>
           <GridColumn colSpan={3}>
             <InputWrapper
+              required={photoRequired}
               title={<FormattedMessage id="profile.publicProfile.yourPhoto" />}
               description={
                 <FormattedMessage id="profile.publicProfile.yourPhoto.description" />

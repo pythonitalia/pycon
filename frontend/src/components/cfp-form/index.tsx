@@ -194,7 +194,9 @@ export const CfpForm = ({
       participantLinkedinUrl: formState.values.participantLinkedinUrl,
       participantFacebookUrl: formState.values.participantFacebookUrl,
       participantMastodonHandle: formState.values.participantMastodonHandle,
-      participantPhoto: formState.values.participantPhoto,
+      participantPhoto:
+        formState.values.participantPhoto ??
+        participantData.me.participant?.photoId,
     });
   };
 
@@ -583,6 +585,7 @@ export const CfpForm = ({
                 required={false}
                 maxLength={2048}
                 errors={getErrors("validationPreviousTalkVideo")}
+                placeholder={inputPlaceholder}
               />
             </InputWrapper>
           </Grid>
@@ -594,6 +597,7 @@ export const CfpForm = ({
       <PublicProfileCard
         me={participantData.me}
         formOptions={formOptions}
+        photoRequired={true}
         getParticipantValidationError={(field) =>
           getErrors(
             `validationSpeaker${field[0].toUpperCase()}${field.substring(1)}` as any,
