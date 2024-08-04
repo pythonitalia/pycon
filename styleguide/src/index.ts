@@ -63,7 +63,9 @@ export { Checkbox } from "./checkbox";
 export { StyledHTMLText, StyledText } from "./styled-text";
 export { FilterBar } from "./filter-bar";
 export { HeroIllustration } from "./hero-illustration";
+export { FileInput } from "./file-input";
 
 // tailwind config
 export { default as tailwindConfig } from "../tailwind.config";
-export { colors } from './config-parts'
+export { colors } from "./config-parts";
+export { getIcon } from "./icons";

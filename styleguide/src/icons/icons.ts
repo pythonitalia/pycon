@@ -1,31 +1,32 @@
 import { ArrowIcon } from "./arrow";
 import { ArrowDownIcon } from "./arrow-down";
+import { CircleIcon } from "./circle";
 import { CloseIcon } from "./close";
+import { DrinkIcon } from "./drink";
+import { EmailIcon } from "./email";
 import { FacebookIcon } from "./facebook";
+import { FileUploadIcon } from "./file-upload";
+import { ForksIcon } from "./forks";
+import { GearIcon } from "./gear";
 import { GithubIcon } from "./github";
 import { HeartIcon } from "./heart";
 import { HotelIcon } from "./hotel";
 import { InstagramIcon } from "./instagram";
 import { LinkedinIcon } from "./linkedin";
 import { LiveIcon } from "./live";
+import { LiveCircleIcon } from "./live-circle";
 import { MastodonIcon } from "./mastodon";
 import { MenuIcon } from "./menu";
 import { MinusIcon } from "./minus";
 import { PlusIcon } from "./plus";
+import { SignOutIcon } from "./signout";
 import { StarIcon } from "./star";
 import { TicketsIcon } from "./tickets";
 import { TShirtIcon } from "./tshirt";
 import { TwitterIcon } from "./twitter";
-import { Icon } from "./types";
+import type { Icon } from "./types";
 import { UserIcon } from "./user";
-import { SignOutIcon } from "./signout";
-import { GearIcon } from "./gear";
-import { EmailIcon } from "./email";
-import { CircleIcon } from "./circle";
 import { WebIcon } from "./web";
-import { DrinkIcon } from "./drink";
-import { ForksIcon } from "./forks";
-import { LiveCircleIcon } from "./live-circle";
 
 export const getIcon = (name: Icon) => {
   switch (name) {
@@ -83,5 +84,7 @@ export const getIcon = (name: Icon) => {
       return ForksIcon;
     case "live-circle":
       return LiveCircleIcon;
+    case "file-upload":
+      return FileUploadIcon;
   }
 };

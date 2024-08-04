@@ -24,3 +24,6 @@ export { WebIcon } from "./web";
 export { ForksIcon } from "./forks";
 export { DrinkIcon } from "./drink";
 export { LiveCircleIcon } from "./live-circle";
+export { FileUploadIcon } from "./file-upload";
+
+export { getIcon } from "./icons";

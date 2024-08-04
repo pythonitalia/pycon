@@ -47,7 +47,7 @@ jobs:
         id: metadata
         run: echo "::set-output name=commit::$(git rev-parse HEAD)"
       - name: Find Release Comment
-        uses: peter-evans/find-comment@v1
+        uses: peter-evans/find-comment@v3
         id: find_comment
         if: ${{ github.ref != 'refs/heads/main' }}
         with:
@@ -57,7 +57,7 @@ jobs:
           body-includes: "Pre-release"
       - name: Create or update comment
         id: initial-comment
-        uses: peter-evans/create-or-update-comment@v1
+        uses: peter-evans/create-or-update-comment@v4
         if: ${{ github.ref != 'refs/heads/main' }}
         with:
           token: ${{ secrets.BOT_TOKEN }}
@@ -100,7 +100,7 @@ jobs:
           git commit -m "🔨 Publish Styleguide v$new_version [skip ci]"
           git push
       - name: Create or update comment
-        uses: peter-evans/create-or-update-comment@v1
+        uses: peter-evans/create-or-update-comment@v3
         if: ${{ github.ref != 'refs/heads/main' }}
         with:
           token: ${{ secrets.BOT_TOKEN }}
