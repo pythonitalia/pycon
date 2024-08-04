@@ -42,7 +42,7 @@
 		"dotenv": "^16.3.1",
 		"eslint-config-next": "^13.0.5",
 		"framer-motion": "^10.11.6",
-		"graphql": "^16.8.1",
+		"graphql": "^16.9.0",
 		"graphql-tag": "^2.12.6",
 		"marksy": "^8.0.0",
 		"moment": "^2.29.1",
