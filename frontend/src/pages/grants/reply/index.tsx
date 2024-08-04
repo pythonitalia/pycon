@@ -1,18 +1,20 @@
 import {
   Button,
+  Checkbox,
   Heading,
   Link,
   Page,
   Section,
   Spacer,
   Text,
+  Textarea,
+  VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { Flex, Label, Radio, Textarea } from "theme-ui";
 
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
@@ -188,63 +190,63 @@ const GrantReply = () => {
           )}
         </div>
 
-        <Flex
-          as="form"
-          sx={{
-            flexDirection: "column",
-            gap: 2,
-            alignItems: "flex-start",
-            mb: 4,
-          }}
-        >
-          {APPROVED_STATUSES.includes(grant?.status) && (
-            <Label>
-              <Radio {...radio("option", StatusOption.Confirmed)} />
+        <form>
+          <VerticalStack gap="small">
+            {APPROVED_STATUSES.includes(grant?.status) && (
+              <label>
+                <Checkbox
+                  size="small"
+                  {...radio("option", StatusOption.Confirmed)}
+                />
+                <Text as="span">
+                  <FormattedMessage id="grants.reply.confirmed" />
+                </Text>
+              </label>
+            )}
+
+            <label>
+              <Checkbox
+                size="small"
+                {...radio("option", GrantStatus.Refused)}
+              />
               <Text as="span">
-                <FormattedMessage id="grants.reply.confirmed" />
+                <FormattedMessage id="grants.reply.refused" />
               </Text>
-            </Label>
-          )}
+            </label>
+            <Spacer size="medium" />
 
-          <Label>
-            <Radio {...radio("option", GrantStatus.Refused)} />
-            <Text as="span">
-              <FormattedMessage id="grants.reply.refused" />
-            </Text>
-          </Label>
-          <Spacer size="medium" />
-
-          <Text size={2}>
-            <FormattedMessage
-              id="grants.reply.messageDescription"
-              values={{
-                visaPageLink: (
-                  <Link
-                    target="_blank"
-                    href={createHref({
-                      path: "/visa/",
-                      locale: language,
-                    })}
-                  >
-                    <Text
-                      decoration="underline"
-                      size={2}
-                      weight="strong"
-                      color="none"
+            <Text size={2}>
+              <FormattedMessage
+                id="grants.reply.messageDescription"
+                values={{
+                  visaPageLink: (
+                    <Link
+                      target="_blank"
+                      href={createHref({
+                        path: "/visa/",
+                        locale: language,
+                      })}
                     >
-                      <FormattedMessage id="grants.reply.visaPageLink" />
-                    </Text>
-                  </Link>
-                ),
-              }}
-            />
-          </Text>
-          <Spacer size="small" />
+                      <Text
+                        decoration="underline"
+                        size={2}
+                        weight="strong"
+                        color="none"
+                      >
+                        <FormattedMessage id="grants.reply.visaPageLink" />
+                      </Text>
+                    </Link>
+                  ),
+                }}
+              />
+            </Text>
+            <Spacer size="small" />
 
-          <Label>
-            <Textarea {...text("message")} rows={5} />
-          </Label>
-        </Flex>
+            <label>
+              <Textarea {...text("message")} rows={5} />
+            </label>
+          </VerticalStack>
+        </form>
 
         <Button
           onClick={submitReply}
