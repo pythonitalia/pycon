@@ -181,8 +181,8 @@ importers:
         specifier: ^17.0.33
         version: 17.0.80
       '@types/react-dom':
-        specifier: ^16.9.9
-        version: 16.9.24
+        specifier: ^18.3.0
+        version: 18.3.0
       '@types/testing-library__jest-dom':
         specifier: ^5.14.1
         version: 5.14.9
@@ -1491,17 +1491,11 @@ packages:
   '@types/prop-types@15.7.12':
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
 
-  '@types/react-dom@16.9.24':
-    resolution: {integrity: sha512-Gcmq2JTDheyWn/1eteqyzzWKSqDjYU6KYsIvH7thb7CR5OYInAWOX+7WnKf6PaU/cbdOc4szJItcDEJO7UGmfA==}
-
   '@types/react-dom@18.3.0':
     resolution: {integrity: sha512-EhwApuTmMBmXuFOikhQLIBUn6uFg81SwLMOAUgodJF14SOBOCMdU04gDoYi0WOJJHD144TL32z4yDqCW3dnkQg==}
 
   '@types/react-transition-group@4.4.10':
     resolution: {integrity: sha512-hT/+s0VQs2ojCX823m60m5f0sL5idt9SO6Tj6Dg+rdphGPIeJbJ6CxvBYkgkGKrYeDjvIpKTR38UzmtHJOGW3Q==}
-
-  '@types/react@16.14.60':
-    resolution: {integrity: sha512-wIFmnczGsTcgwCBeIYOuy2mdXEiKZ5znU/jNOnMZPQyCcIxauMGWlX0TNG4lZ7NxRKj7YUIZRneJQSSdB2jKgg==}
 
   '@types/react@17.0.80':
     resolution: {integrity: sha512-LrgHIu2lEtIo8M7d1FcI3BdwXWoRQwMoXOZ7+dPTW0lYREjmlHl3P0U1VD0i/9tppOuv8/sam7sOjx34TxSFbA==}
@@ -6804,10 +6798,6 @@ snapshots:
 
   '@types/prop-types@15.7.12': {}
 
-  '@types/react-dom@16.9.24':
-    dependencies:
-      '@types/react': 16.14.60
-
   '@types/react-dom@18.3.0':
     dependencies:
       '@types/react': 17.0.80
@@ -6815,12 +6805,6 @@ snapshots:
   '@types/react-transition-group@4.4.10':
     dependencies:
       '@types/react': 17.0.80
-
-  '@types/react@16.14.60':
-    dependencies:
-      '@types/prop-types': 15.7.12
-      '@types/scheduler': 0.16.8
-      csstype: 3.1.3
 
   '@types/react@17.0.80':
     dependencies:
