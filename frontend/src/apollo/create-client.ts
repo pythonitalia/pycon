@@ -5,12 +5,12 @@ import {
   InMemoryCache,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
-import type { GraphQLError } from "graphql";
+import type { GraphQLFormattedError } from "graphql";
 
 import { setLoginState } from "../components/profile/hooks";
 import introspectionQueryResultData from "../generated/fragment-types.json";
 
-const isUserLoggedOut = (graphErrors: readonly GraphQLError[]) =>
+const isUserLoggedOut = (graphErrors: readonly GraphQLFormattedError[]) =>
   !!graphErrors.find(
     (e) =>
       e.message === "User not logged in" || e.message === "Not authenticated",
