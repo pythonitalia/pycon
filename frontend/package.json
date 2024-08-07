@@ -55,7 +55,7 @@
 		"react-select": "^5.8.0",
 		"react-use-form-state": "^0.13.2",
 		"react-use-sync-scroll": "^0.1.0",
-		"react-wrap-balancer": "^0.5.0",
+		"react-wrap-balancer": "^1.1.1",
 		"styled-system": "^5.1.5",
 		"svg-to-pdfkit": "^0.1.8",
 		"xstate": "^4.38.3",

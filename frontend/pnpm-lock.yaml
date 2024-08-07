@@ -132,8 +132,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0(react@18.3.1)
       react-wrap-balancer:
-        specifier: ^0.5.0
-        version: 0.5.0(react@18.3.1)
+        specifier: ^1.1.1
+        version: 1.1.1(react@18.3.1)
       styled-system:
         specifier: ^5.1.5
         version: 5.1.5
@@ -4513,8 +4513,8 @@ packages:
       react: '*'
       react-dom: '*'
 
-  react-wrap-balancer@0.5.0:
-    resolution: {integrity: sha512-5vwe5QDczQ9zwAtv3iEVj8hdMbNwQtM/QlSNLJfDUzRE9noPtxevb+Kon916Mu2RUorCrAtashQ1F9BVBjdeZg==}
+  react-wrap-balancer@1.1.1:
+    resolution: {integrity: sha512-AB+l7FPRWl6uZ28VcJ8skkwLn2+UC62bjiw8tQUrZPlEWDVnR9MG0lghyn7EyxuJSsFEpht4G+yh2WikEqQ/5Q==}
     peerDependencies:
       react: '>=16.8.0 || ^17.0.0 || ^18'
 
@@ -10496,7 +10496,7 @@ snapshots:
 
   nano-css@5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.4.15
+      '@jridgewell/sourcemap-codec': 1.5.0
       css-tree: 1.1.3
       csstype: 3.1.3
       fastest-stable-stringify: 2.0.2
@@ -11038,7 +11038,7 @@ snapshots:
       ts-easing: 0.2.0
       tslib: 2.6.2
 
-  react-wrap-balancer@0.5.0(react@18.3.1):
+  react-wrap-balancer@1.1.1(react@18.3.1):
     dependencies:
       react: 18.3.1
 
