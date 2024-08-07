@@ -298,7 +298,7 @@ def create_grant_vouchers_on_pretix(modeladmin, request, queryset):
         return
 
     count = 0
-    for grant in queryset.filter(pretix_voucher_id__isnull=True):
+    for grant in queryset.filter(pretix_voucher_id__isnull=True).order_by("id"):
         if grant.status != Grant.Status.confirmed:
             messages.error(
                 request,
