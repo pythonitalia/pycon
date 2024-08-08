@@ -29,7 +29,13 @@ export const useCreateOrder = ({ userEmail }) => {
       .map((product) => ({
         ticketId: product.id,
         variation: product.variation,
-        attendeeName: product.attendeeName,
+        attendeeName: {
+          parts: {
+            given_name: product.attendeeGivenName,
+            family_name: product.attendeeFamilyName,
+          },
+          scheme: "given_family",
+        },
         attendeeEmail: product.attendeeEmail,
         voucher: product.voucher?.code ?? undefined,
         answers: Object.entries(product.answers).map(([key, value]) => ({
