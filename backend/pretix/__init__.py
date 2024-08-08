@@ -10,7 +10,7 @@ from countries import countries
 import strawberry
 from django.conf import settings
 from django.core.cache import cache
-from api.pretix.types import UpdateAttendeeTicketInput, Voucher
+from api.pretix.types import AttendeeNameInput, UpdateAttendeeTicketInput, Voucher
 from conferences.models.conference import Conference
 from pretix.types import Category, Question, Quota
 import sentry_sdk
@@ -35,7 +35,7 @@ logger = logging.getLogger(__file__)
 def get_api_url(conference: Conference, endpoint: str) -> str:
     return urljoin(
         settings.PRETIX_API,
-        f"organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/{endpoint}",  # noqa
+        f"organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/{endpoint}/",  # noqa
     )
 
 
@@ -68,7 +68,7 @@ def pretix(
 
 
 def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
-    response = pretix(conference, f"extended-vouchers/{code}/")
+    response = pretix(conference, f"extended-vouchers/{code}")
 
     if response.status_code == 404:
         return None
@@ -130,13 +130,13 @@ def create_voucher(
         "quota": quota_id,
         "subevent": None,
     }
-    response = pretix(conference, "vouchers/", method="post", json=payload)
+    response = pretix(conference, "vouchers", method="post", json=payload)
     response.raise_for_status()
     return response.json()
 
 
 def get_order(conference: Conference, code: str):
-    response = pretix(conference, f"orders/{code}/")
+    response = pretix(conference, f"orders/{code}")
 
     if response.status_code == 404:
         return None
@@ -276,7 +276,7 @@ class CreateOrderTicketAnswer:
 @strawberry.input
 class CreateOrderTicket:
     ticket_id: str
-    attendee_name: str
+    attendee_name: AttendeeNameInput
     attendee_email: str
     variation: Optional[str] = None
     answers: Optional[List[CreateOrderTicketAnswer]] = None
@@ -464,7 +464,7 @@ def normalize_position(ticket: CreateOrderTicket, items: dict, questions: dict):
         data["voucher"] = ticket.voucher
 
     if item["admission"]:
-        data["attendee_name"] = ticket.attendee_name
+        data["attendee_name_parts"] = ticket.attendee_name.to_pretix_api()
         data["attendee_email"] = ticket.attendee_email
 
     return data
@@ -498,7 +498,7 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     }
 
     # it needs the / at the end...
-    response = pretix(conference, "orders/", method="post", json=payload)
+    response = pretix(conference, "orders", method="post", json=payload)
 
     if response.status_code == 400:
         logger.warning("Unable to create order on pretix %s", response.content)
@@ -560,7 +560,7 @@ def user_has_admission_ticket(
         conference=Conference(
             pretix_organizer_id=event_organizer, pretix_event_id=event_slug
         ),
-        endpoint="tickets/attendee-has-ticket/",
+        endpoint="tickets/attendee-has-ticket",
         method="post",
         json={
             "attendee_email": email,
@@ -620,7 +620,7 @@ def is_ticket_owner(conference: Conference, email: str, id: str) -> bool:
 def update_ticket(conference: Conference, attendee_ticket: UpdateAttendeeTicketInput):
     response = pretix(
         conference=conference,
-        endpoint=f"orderpositions/{attendee_ticket.id}/",
+        endpoint=f"orderpositions/{attendee_ticket.id}",
         method="PATCH",
         json=attendee_ticket.to_json(),
     )
@@ -633,7 +633,7 @@ def update_ticket(conference: Conference, attendee_ticket: UpdateAttendeeTicketI
 def get_order_position(conference: Conference, id: str):
     response = pretix(
         conference=conference,
-        endpoint=f"orderpositions/{id}/",
+        endpoint=f"orderpositions/{id}",
         method="GET",
     )
 
