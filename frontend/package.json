@@ -14,7 +14,7 @@
 		"test": "jest src/"
 	},
 	"dependencies": {
-		"@apollo/client": "^3.11.3",
+		"@apollo/client": "^3.11.4",
 		"@graphql-codegen/add": "^5.0.3",
 		"@graphql-codegen/cli": "^2.11.3",
 		"@graphql-codegen/fragment-matcher": "^3.3.0",
