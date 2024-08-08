@@ -11,7 +11,7 @@ pytestmark = pytest.mark.django_db
 def test_gets_invoices(requests_mock):
     conference = ConferenceFactory()
     requests_mock.get(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/invoices",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/invoices/",
         json={"next": None, "results": []},
     )
 

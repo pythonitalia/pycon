@@ -18,17 +18,17 @@ def test_get_user_tickets(
     conference = ConferenceFactory(pretix_organizer_id="org", pretix_event_id="event")
 
     requests_mock.get(
-        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets?attendee_email={user.email}",
+        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets/?attendee_email={user.email}",
         json=pretix_user_tickets,
     )
 
     requests_mock.get(
-        "https://pretix/api/organizers/org/events/event/categories",
+        "https://pretix/api/organizers/org/events/event/categories/",
         json=pretix_categories,
     )
 
     requests_mock.get(
-        "https://pretix/api/organizers/org/events/event/questions",
+        "https://pretix/api/organizers/org/events/event/questions/",
         json=pretix_questions,
     )
 
@@ -38,7 +38,10 @@ def test_get_user_tickets(
             me {
                 tickets(conference: $conference, language: "en") {
                     id
-                    name
+                    name {
+                        parts
+                        scheme
+                    }
                     email
                     item {
                         id
@@ -77,7 +80,13 @@ def test_get_user_tickets(
     ticket = tickets[0]
 
     assert ticket["id"] == "2"
-    assert ticket["name"] == "Sheldon Cooper"
+    assert ticket["name"] == {
+        "parts": {
+            "given_name": "Sheldon",
+            "family_name": "Cooper",
+        },
+        "scheme": "given_family",
+    }
     assert ticket["email"] == "sheldon@cooper.com"
 
     assert ticket["item"]["id"] == "1"
@@ -127,7 +136,7 @@ def test_get_user_tickets_returns_all_tickets(
     conference = ConferenceFactory(pretix_organizer_id="org", pretix_event_id="event")
 
     requests_mock.get(
-        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets?attendee_email={user.email}",
+        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets/?attendee_email={user.email}",
         json=[
             pretix_user_tickets[0],
             pretix_user_non_admission_ticket,
@@ -135,12 +144,12 @@ def test_get_user_tickets_returns_all_tickets(
     )
 
     requests_mock.get(
-        "https://pretix/api/organizers/org/events/event/categories",
+        "https://pretix/api/organizers/org/events/event/categories/",
         json=pretix_categories,
     )
 
     requests_mock.get(
-        "https://pretix/api/organizers/org/events/event/questions",
+        "https://pretix/api/organizers/org/events/event/questions/",
         json=pretix_questions,
     )
 
