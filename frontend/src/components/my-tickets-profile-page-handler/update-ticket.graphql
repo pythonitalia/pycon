@@ -13,7 +13,10 @@ mutation UpdateTicket(
 
     ... on AttendeeTicket {
       id
-      name
+      name {
+        scheme
+        parts
+      }
       email
       item {
         id

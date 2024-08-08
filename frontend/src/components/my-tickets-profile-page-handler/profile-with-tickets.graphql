@@ -8,7 +8,10 @@ query MyProfileWithTickets($conference: String!, $language: String!) {
     tickets(conference: $conference, language: $language) {
       id
       hashid
-      name
+      name {
+        scheme
+        parts
+      }
       email
       secret
       variation

@@ -19,6 +19,7 @@ import {
   useUpdateTicketMutation,
 } from "~/types";
 
+import { displayAttendeeName } from "~/helpers/attendee-name";
 import { useSetCurrentModal } from "../modal/context";
 
 type Props = {
@@ -59,6 +60,8 @@ export const TicketCard = ({ ticket, userEmail }: Props) => {
     });
   };
 
+  console.log("ticket", ticket);
+
   return (
     <>
       <MultiplePartsCard>
@@ -90,7 +93,7 @@ export const TicketCard = ({ ticket, userEmail }: Props) => {
                     label={
                       <FormattedMessage id="profile.tickets.attendeeName" />
                     }
-                    value={ticket.name}
+                    value={displayAttendeeName(ticket.name)}
                   />
                 )}
                 {ticket.variation && (

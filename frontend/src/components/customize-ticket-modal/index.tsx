@@ -18,6 +18,10 @@ import {
 } from "~/types";
 
 import { useState } from "react";
+import {
+  displayAttendeeName,
+  formatAttendeeName,
+} from "~/helpers/attendee-name";
 import { Badge } from "../badge";
 import { createHref } from "../link";
 import { Modal } from "../modal";
@@ -37,7 +41,8 @@ export type CustomizeTicketModalProps = {
 
 type Form = {
   id: string;
-  attendeeName: string;
+  attendeeGivenName: string;
+  attendeeFamilyName: string;
   attendeeEmail: string;
   answers: { [key: string]: string };
   isMe: boolean;
@@ -87,7 +92,13 @@ export const CustomizeTicketModal = ({
         language: language,
         input: {
           id: updatedProductUserInformation.id,
-          name: updatedProductUserInformation.attendeeName,
+          name: {
+            parts: {
+              givenName: updatedProductUserInformation.attendeeGivenName,
+              familyName: updatedProductUserInformation.attendeeFamilyName,
+            },
+            scheme: "given_family",
+          },
           email: updatedProductUserInformation.attendeeEmail,
           answers,
         },
@@ -123,7 +134,8 @@ export const CustomizeTicketModal = ({
 
   const [productUserInformation, setProductUserInformation] = useState({
     id: ticket.id,
-    attendeeName: ticket.name ?? "",
+    attendeeGivenName: ticket.name.parts.given_name ?? "",
+    attendeeFamilyName: ticket.name.parts.family_name ?? "",
     attendeeEmail: ticket.email ?? "",
     errors: {},
     answers: ticket.item.questions.reduce((acc, question) => {
@@ -139,7 +151,8 @@ export const CustomizeTicketModal = ({
 
   const [formState] = useFormState<Form>({
     id: productUserInformation.id,
-    attendeeName: productUserInformation.attendeeName,
+    attendeeGivenName: productUserInformation.attendeeGivenName,
+    attendeeFamilyName: productUserInformation.attendeeFamilyName,
     attendeeEmail: productUserInformation.attendeeEmail,
     answers: productUserInformation.answers,
     isMe: productUserInformation.isMe,
@@ -211,7 +224,13 @@ export const CustomizeTicketModal = ({
         <GridColumn>
           <div className="max-w-[302px] max-h-[453px]">
             <Badge
-              name={formState.values.attendeeName}
+              name={displayAttendeeName({
+                parts: {
+                  given_name: formState.values.attendeeGivenName,
+                  family_name: formState.values.attendeeFamilyName,
+                },
+                scheme: "given_family",
+              })}
               pronouns={pronounsAnswer}
               tagline={taglineAnswer}
               cutLines={false}

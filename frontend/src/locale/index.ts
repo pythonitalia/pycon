@@ -606,7 +606,11 @@ Let's get in touch to find the best solution for your business' needs!`,
     "orderInformation.invalidSDI": "SDI must be 7 characters long",
 
     "orderQuestions.heading": "Order questions",
-    "orderQuestions.attendeeName": "Attendee name",
+    "orderQuestions.attendeeGivenName": "Attendee Given name",
+    "orderQuestions.attendeeGivenName.placeholder": "Your given name, e.g. Ada",
+    "orderQuestions.attendeeFamilyName": "Attendee Family name",
+    "orderQuestions.attendeeFamilyName.placeholder":
+      "Your family name, e.g. Lovelace",
     "orderQuestions.attendeeEmail": "Attendee email",
     "orderQuestions.repeatAttendeeEmail": "Confirm Attendee email",
 
