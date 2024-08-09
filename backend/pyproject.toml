@@ -39,7 +39,7 @@ authors = [
 ]
 requires-python = "<3.13,>=3.11"
 dependencies = [
-    "django==5.0.7",
+    "django==5.0.8",
     "django-environ==0.10.0",
     "django-model-utils==4.5.1",
     "django-timezone-field==7.0",
