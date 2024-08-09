@@ -1,0 +1,33 @@
+query MyProfileWithGrant($conference: String!) {
+  me {
+    id
+    name
+    fullName
+    email
+
+    grant(conference: $conference) {
+      id
+      status
+      name
+      fullName
+      ageGroup
+      travellingFrom
+      gender
+      occupation
+      applicantReplyDeadline
+
+      needVisa
+      needsFundsForTravel
+      needAccommodation
+      grantType
+    }
+  }
+  conference(code: $conference) {
+    id
+    deadline(type: "grants") {
+      id
+      status
+      end
+    }
+  }
+}
