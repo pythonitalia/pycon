@@ -5,7 +5,7 @@
 groups = ["default", "dev", "lambda"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:5edef53bd2e7b5692d5b9f6f0384daa960468c707803b8200a88aa1650ef82a6"
+content_hash = "sha256:928b558eddf105355761ba811eb75ea29dcbe5403616c9140c6fd569dc87e710"
 
 [[package]]
 name = "amqp"
@@ -562,7 +562,7 @@ files = [
 
 [[package]]
 name = "django"
-version = "5.0.7"
+version = "5.0.8"
 requires_python = ">=3.10"
 summary = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 groups = ["default", "dev"]
@@ -572,8 +572,8 @@ dependencies = [
     "tzdata; sys_platform == \"win32\"",
 ]
 files = [
-    {file = "Django-5.0.7-py3-none-any.whl", hash = "sha256:f216510ace3de5de01329463a315a629f33480e893a9024fc93d8c32c22913da"},
-    {file = "Django-5.0.7.tar.gz", hash = "sha256:bd4505cae0b9bd642313e8fb71810893df5dc2ffcacaa67a33af2d5cd61888f2"},
+    {file = "Django-5.0.8-py3-none-any.whl", hash = "sha256:333a7988f7ca4bc14d360d3d8f6b793704517761ae3813b95432043daec22a45"},
+    {file = "Django-5.0.8.tar.gz", hash = "sha256:ebe859c9da6fead9c9ee6dbfa4943b04f41342f4cea2c4d8c978ef0d10694f2b"},
 ]
 
 [[package]]
