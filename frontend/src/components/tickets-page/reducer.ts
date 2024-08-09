@@ -23,7 +23,8 @@ const updateProductReducer = (
         variation: action.variation,
         admission: action.admission,
         answers: {},
-        attendeeName: "",
+        attendeeGivenName: "",
+        attendeeFamilyName: "",
         attendeeEmail: "",
         isMe: false,
       });
