@@ -1,0 +1,20 @@
+query MyProfileWithGrant($conference: String!) {
+  me {
+    id
+    name
+    fullName
+    email
+
+    grant(conference: $conference) {
+      id
+      status
+    }
+  }
+  conference(code: $conference) {
+    id
+    deadline(type: "grants") {
+      id
+      status
+    }
+  }
+}

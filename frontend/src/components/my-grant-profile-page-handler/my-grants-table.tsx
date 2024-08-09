@@ -1,0 +1,197 @@
+import {
+  Button,
+  Heading,
+  Link,
+  Spacer,
+  Tag,
+  Text,
+  VerticalStack,
+} from "@python-italia/pycon-styleguide";
+import { parseISO } from "date-fns";
+import { FormattedMessage } from "react-intl";
+
+import { useCurrentLanguage } from "~/locale/context";
+import type { MyProfileWithGrantQuery } from "~/types";
+
+import { createHref } from "../link";
+import { EventTag } from "../schedule-event-detail/event-tag";
+import { Table } from "../table";
+
+type Props = {
+  grant: MyProfileWithGrantQuery["me"]["grant"];
+};
+
+export const MyGrantTable = ({ grant }: Props) => {
+  const language = useCurrentLanguage();
+  const dateFormatter = new Intl.DateTimeFormat(language, {
+    day: "2-digit",
+    month: "long",
+    weekday: "long",
+  });
+  const hourFormatter = new Intl.DateTimeFormat(language, {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  return (
+    <Table
+      cols={4}
+      rowGetter={(row) => {
+        const inSchedule = row.scheduleItems.length > 0;
+        return [
+          <div>
+            <EventTag type={row.type.name.toLowerCase()} />
+            <Spacer size="small" />
+            <Link
+              href={createHref({
+                path: `/grant/${row.id}`,
+                locale: language,
+              })}
+            >
+              <Heading color="none" size={4}>
+                {row.title}
+              </Heading>
+            </Link>
+          </div>,
+          row.status === "accepted" ? (
+            inSchedule ? (
+              <StatusTag status={row.status} />
+            ) : (
+              <StatusTag status={"proposed"} />
+            )
+          ) : (
+            <StatusTag status={row.status} />
+          ),
+          <div>
+            {!inSchedule && (
+              <Text size={2} weight="strong" as="p">
+                <FormattedMessage id="profile.myProposals.notScheduled" />
+              </Text>
+            )}
+            {inSchedule &&
+              row.scheduleItems.map((scheduleItem) => {
+                const parsedStartTime = parseISO(scheduleItem.start);
+                const parsedEndTime = parseISO(scheduleItem.end);
+
+                return (
+                  <VerticalStack gap="small" alignItems="start">
+                    <Text size={2} weight="strong" as="p">
+                      <FormattedMessage
+                        id="profile.myProposals.date"
+                        values={{
+                          day: dateFormatter.format(parsedStartTime),
+                          start: hourFormatter.format(parsedStartTime),
+                          end: hourFormatter.format(parsedEndTime),
+                        }}
+                      />
+                    </Text>
+                    <StatusTag status={scheduleItem.status} />
+                  </VerticalStack>
+                );
+              })}
+          </div>,
+          <div className="flex flex-col items-start gap-2">
+            {inSchedule && (
+              <Button
+                href={createHref({
+                  path: `/schedule/invitation/${row.id}`,
+                  locale: language,
+                })}
+                size="small"
+                variant="secondary"
+              >
+                <FormattedMessage id="profile.myProposals.viewInvitation" />
+              </Button>
+            )}
+            <Button
+              href={createHref({
+                path: `/grant/${row.id}/edit`,
+                locale: language,
+              })}
+              size="small"
+              variant="secondary"
+            >
+              <FormattedMessage id="profile.myProposals.edit" />
+            </Button>
+          </div>,
+        ];
+      }}
+      keyGetter={(row) => row.id}
+      data={[grant]}
+    />
+  );
+};
+
+const StatusTag = ({
+  status,
+}: {
+  status:
+    | string
+    | "waiting_confirmation"
+    | "waiting_list"
+    | "proposed"
+    | "accepted"
+    | "confirmed"
+    | "rejected"
+    | "cant_attend"
+    | "cancelled"
+    | "maybe";
+}) => {
+  switch (status) {
+    case "waiting_confirmation":
+      return (
+        <Tag color="yellow">
+          <FormattedMessage id="profile.myProposals.status.waiting" />
+        </Tag>
+      );
+    case "confirmed":
+      return (
+        <Tag color="green">
+          <FormattedMessage id="profile.myProposals.status.confirmed" />
+        </Tag>
+      );
+    case "rejected":
+      return (
+        <Tag color="red">
+          <FormattedMessage id="profile.myProposals.status.speakerRejected" />
+        </Tag>
+      );
+    case "cant_attend":
+      return (
+        <Tag color="red">
+          <FormattedMessage id="profile.myProposals.status.speakerCantAttend" />
+        </Tag>
+      );
+    case "maybe":
+      return (
+        <Tag color="yellow">
+          <FormattedMessage id="profile.myProposals.status.maybe" />
+        </Tag>
+      );
+    case "proposed":
+      return (
+        <Tag color="yellow">
+          <FormattedMessage id="profile.myProposals.status.proposed" />
+        </Tag>
+      );
+    case "accepted":
+      return (
+        <Tag color="green">
+          <FormattedMessage id="profile.myProposals.status.accepted" />
+        </Tag>
+      );
+    case "waiting_list":
+      return (
+        <Tag color="blue">
+          <FormattedMessage id="profile.myProposals.status.waiting_list" />
+        </Tag>
+      );
+    case "cancelled":
+      return (
+        <Tag color="red">
+          <FormattedMessage id="profile.myProposals.status.canceled" />
+        </Tag>
+      );
+  }
+};
