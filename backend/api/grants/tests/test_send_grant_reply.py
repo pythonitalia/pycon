@@ -28,7 +28,6 @@ def _send_grant_reply(graphql_client, grant, *, status, message=""):
 
     variables = {
         "status": status,
-        "message": message,
         "instance": grant.id,
     }
 
@@ -75,18 +74,6 @@ def test_user_cannot_reply_if_status_is_rejected(graphql_client, user):
     )
 
 
-def test_status_is_not_updated_when_the_reply_is_need_info(graphql_client, user):
-    graphql_client.force_login(user)
-    grant = GrantFactory(user_id=user.id, status=Grant.Status.waiting_for_confirmation)
-
-    response = _send_grant_reply(graphql_client, grant, status="need_info")
-
-    assert response["data"]["sendGrantReply"]["__typename"] == "Grant"
-
-    grant.refresh_from_db()
-    assert grant.status == Grant.Status.waiting_for_confirmation
-
-
 def test_status_is_updated_when_reply_is_confirmed(graphql_client, user):
     graphql_client.force_login(user)
     grant = GrantFactory(user_id=user.id, status=Grant.Status.waiting_for_confirmation)
@@ -111,27 +98,12 @@ def test_status_is_updated_when_reply_is_refused(graphql_client, user):
     assert grant.status == Grant.Status.refused
 
 
-def test_send_plain_when_user_send_a_message(graphql_client, user, mocker):
-    graphql_client.force_login(user)
-    grant = GrantFactory(user_id=user.id, status=Grant.Status.waiting_for_confirmation)
-    mock_publisher = mocker.patch("api.grants.mutations.send_new_plain_chat")
-
-    response = _send_grant_reply(
-        graphql_client, grant, status="need_info", message="wtf"
-    )
-
-    assert response["data"]["sendGrantReply"]["__typename"] == "Grant"
-    mock_publisher.delay.assert_called_once_with(grant_id=grant.id, message="wtf")
-
-
 def test_call_notify_new_grant_reply(graphql_client, user, mocker):
     graphql_client.force_login(user)
     grant = GrantFactory(user_id=user.id, status=Grant.Status.waiting_for_confirmation)
     mock_publisher = mocker.patch("api.grants.mutations.notify_new_grant_reply_slack")
-    mock_plain_publisher = mocker.patch("api.grants.mutations.send_new_plain_chat")
 
     response = _send_grant_reply(graphql_client, grant, status="refused", message="wtf")
 
     assert response["data"]["sendGrantReply"]["__typename"] == "Grant"
     mock_publisher.delay.assert_called_once_with(grant_id=grant.id, admin_url=ANY)
-    mock_plain_publisher.delay.assert_called()

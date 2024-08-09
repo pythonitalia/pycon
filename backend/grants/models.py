@@ -196,13 +196,6 @@ class Grant(TimeStampedModel):
     applicant_reply_deadline = models.DateTimeField(
         _("applicant reply deadline"), null=True, blank=True
     )
-    applicant_message = models.TextField(_("applicant message"), null=True, blank=True)
-    plain_thread_id = models.CharField(
-        _("Plain threadID"),
-        max_length=50,
-        null=True,
-        blank=True,
-    )
 
     # Voucher Management
     voucher_code = models.TextField(

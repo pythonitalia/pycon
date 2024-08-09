@@ -35,7 +35,6 @@ class Grant:
     notes: str
     travelling_from: str
     applicant_reply_deadline: Optional[datetime]
-    applicant_message: Optional[str]
     website: str
     twitter_handle: str
     github_handle: str
@@ -66,7 +65,6 @@ class Grant:
             notes=grant.notes,
             travelling_from=grant.travelling_from,
             applicant_reply_deadline=grant.applicant_reply_deadline,
-            applicant_message=grant.applicant_message,
             website=grant.website,
             twitter_handle=grant.twitter_handle,
             github_handle=grant.github_handle,
