@@ -74,18 +74,6 @@ def test_user_cannot_reply_if_status_is_rejected(graphql_client, user):
     )
 
 
-def test_status_is_not_updated_when_the_reply_is_need_info(graphql_client, user):
-    graphql_client.force_login(user)
-    grant = GrantFactory(user_id=user.id, status=Grant.Status.waiting_for_confirmation)
-
-    response = _send_grant_reply(graphql_client, grant, status="need_info")
-
-    assert response["data"]["sendGrantReply"]["__typename"] == "Grant"
-
-    grant.refresh_from_db()
-    assert grant.status == Grant.Status.waiting_for_confirmation
-
-
 def test_status_is_updated_when_reply_is_confirmed(graphql_client, user):
     graphql_client.force_login(user)
     grant = GrantFactory(user_id=user.id, status=Grant.Status.waiting_for_confirmation)
@@ -108,17 +96,6 @@ def test_status_is_updated_when_reply_is_refused(graphql_client, user):
 
     grant.refresh_from_db()
     assert grant.status == Grant.Status.refused
-
-
-def test_send_plain_when_user_send_a_message(graphql_client, user, mocker):
-    graphql_client.force_login(user)
-    grant = GrantFactory(user_id=user.id, status=Grant.Status.waiting_for_confirmation)
-
-    response = _send_grant_reply(
-        graphql_client, grant, status="need_info", message="wtf"
-    )
-
-    assert response["data"]["sendGrantReply"]["__typename"] == "Grant"
 
 
 def test_call_notify_new_grant_reply(graphql_client, user, mocker):

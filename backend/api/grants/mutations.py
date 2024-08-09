@@ -170,7 +170,6 @@ UpdateGrantResult = Annotated[
 class StatusOption(Enum):
     confirmed = "confirmed"
     refused = "refused"
-    need_info = "need_info"
 
     def to_grant_status(self) -> GrantModel.Status:
         return GrantModel.Status(self.name)
@@ -252,11 +251,8 @@ class GrantMutation:
         if grant.status in (GrantModel.Status.pending, GrantModel.Status.rejected):
             return SendGrantReplyError(message="You cannot reply to this grant")
 
-        # do not update to need_info, otherwise we will lose the original status:
-        # Approved, WaitingList
-        if input.status != StatusOption.need_info:
-            grant.status = input.status.to_grant_status()
-            grant.save()
+        grant.status = input.status.to_grant_status()
+        grant.save()
 
         admin_url = request.build_absolute_uri(grant.get_admin_url())
         notify_new_grant_reply_slack.delay(grant_id=grant.id, admin_url=admin_url)

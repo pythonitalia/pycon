@@ -101,7 +101,7 @@ const GrantReply = () => {
         },
       });
     },
-    [formState.values]
+    [formState.values],
   );
 
   useEffect(() => {
@@ -160,7 +160,7 @@ const GrantReply = () => {
                     <Text size={2} weight="strong">
                       {formatDeadlineDateTime(
                         grant?.applicantReplyDeadline,
-                        language
+                        language,
                       )}
                     </Text>
                   ),
@@ -326,7 +326,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     {
       props: {},
     },
-    null
+    null,
   );
 };
 
