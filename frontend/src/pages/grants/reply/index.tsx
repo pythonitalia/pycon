@@ -118,7 +118,6 @@ const GrantReply = () => {
 
   const answerHasChanged =
     toStatusOption(grant?.status) !== formState.values.option;
-  console.log(answerHasChanged);
 
   if (error) {
     return (
