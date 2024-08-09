@@ -1,7 +1,7 @@
 import {
-  ConnectDropTarget,
-  DragObjectWithType,
-  DropTargetHookSpec,
+  type ConnectDropTarget,
+  type DragObjectWithType,
+  type DropTargetHookSpec,
   useDrop,
 } from "react-dnd";
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { CheckoutPageHandler } from "~/components/checkout-page-handler";

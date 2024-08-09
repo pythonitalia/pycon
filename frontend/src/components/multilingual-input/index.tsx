@@ -33,7 +33,7 @@ export const MultiLingualInput = ({
         const isInvalid = language === "invalid";
         const name = `${originalName}-${language}`;
         return (
-          <div>
+          <div key={language}>
             <label htmlFor={name}>
               <div className="flex items-center select-none mr-2 pb-2">
                 {language === "it" && (
@@ -43,7 +43,7 @@ export const MultiLingualInput = ({
                   <EnglishIcon className="w-[20px] shrink-0" />
                 )}
                 {!isInvalid && (
-                  <Text size={2} weight="strong" className="ml-2" as="span">
+                  <Text size={3} weight="strong" className="ml-2" as="span">
                     <FormattedMessage
                       id={`multilingualinput.language.${language}`}
                     />

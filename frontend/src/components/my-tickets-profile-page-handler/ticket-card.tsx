@@ -7,14 +7,15 @@ import {
   Text,
 } from "@python-italia/pycon-styleguide";
 import { GearIcon, TicketsIcon } from "@python-italia/pycon-styleguide/icons";
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import QRCode from "react-qr-code";
 
 import { useCurrentLanguage } from "~/locale/context";
 import {
   MyProfileWithTicketsDocument,
-  MyProfileWithTicketsQuery,
+  type MyProfileWithTicketsQuery,
   useUpdateTicketMutation,
 } from "~/types";
 

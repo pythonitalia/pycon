@@ -3,7 +3,6 @@ import random
 import factory.fuzzy
 from django.conf import settings
 from factory.django import DjangoModelFactory
-from pytest_factoryboy import register
 
 from conferences.tests.factories import (
     AudienceLevelFactory,
@@ -23,7 +22,6 @@ from submissions.models import (
 )
 
 
-@register
 class SubmissionTypeFactory(DjangoModelFactory):
     class Meta:
         model = SubmissionType
@@ -32,7 +30,6 @@ class SubmissionTypeFactory(DjangoModelFactory):
     name = factory.fuzzy.FuzzyChoice(["talk", "tutorial"])
 
 
-@register
 class SubmissionTagFactory(DjangoModelFactory):
     class Meta:
         model = SubmissionTag
@@ -41,7 +38,6 @@ class SubmissionTagFactory(DjangoModelFactory):
     name = factory.Faker("word")
 
 
-@register
 class SubmissionFactory(DjangoModelFactory):
     class Meta:
         model = Submission
@@ -131,7 +127,6 @@ class SubmissionFactory(DjangoModelFactory):
             obj.save()
 
 
-@register
 class SubmissionCommentFactory(DjangoModelFactory):
     class Meta:
         model = SubmissionComment

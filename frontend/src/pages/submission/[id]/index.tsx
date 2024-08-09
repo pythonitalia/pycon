@@ -7,7 +7,7 @@ import {
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";

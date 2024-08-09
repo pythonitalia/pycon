@@ -1,5 +1,5 @@
 from files_upload.tests.factories import FileFactory
-from submissions.tests.factories import ProposalMaterialFactory
+from submissions.tests.factories import ProposalMaterialFactory, SubmissionFactory
 from pytest import mark
 
 from api.helpers.ids import encode_hashid
@@ -37,9 +37,9 @@ def test_returns_none_with_invalid_id_string(graphql_client):
     assert resp["data"]["submission"] is None
 
 
-def test_returns_correct_submission(graphql_client, user, submission_factory):
+def test_returns_correct_submission(graphql_client, user):
     graphql_client.force_login(user)
-    submission = submission_factory(speaker_id=user.id)
+    submission = SubmissionFactory(speaker_id=user.id)
 
     resp = graphql_client.query(
         """query SubmissionQuery($id: ID!) {
@@ -55,10 +55,10 @@ def test_returns_correct_submission(graphql_client, user, submission_factory):
 
 
 def test_user_can_edit_submission_if_within_cfp_time_and_is_the_owner(
-    graphql_client, user, submission_factory
+    graphql_client, user
 ):
     graphql_client.force_login(user)
-    submission = submission_factory(speaker_id=user.id, conference__active_cfp=True)
+    submission = SubmissionFactory(speaker_id=user.id, conference__active_cfp=True)
 
     response = graphql_client.query(
         """
@@ -75,11 +75,9 @@ def test_user_can_edit_submission_if_within_cfp_time_and_is_the_owner(
     assert response["data"]["submission"]["canEdit"] is True
 
 
-def test_cannot_edit_submission_if_not_the_owner(
-    graphql_client, user, submission_factory
-):
+def test_cannot_edit_submission_if_not_the_owner(graphql_client, user):
     graphql_client.force_login(user)
-    submission = submission_factory(conference__active_cfp=True)
+    submission = SubmissionFactory(conference__active_cfp=True)
     ScheduleItemFactory(
         conference=submission.conference,
         submission=submission,
@@ -99,9 +97,9 @@ def test_cannot_edit_submission_if_not_the_owner(
     assert response["data"]["submission"] == {"id": submission.hashid, "canEdit": False}
 
 
-def test_can_edit_submission_if_cfp_is_closed(graphql_client, user, submission_factory):
+def test_can_edit_submission_if_cfp_is_closed(graphql_client, user):
     graphql_client.force_login(user)
-    submission = submission_factory(speaker_id=user.id, conference__active_cfp=False)
+    submission = SubmissionFactory(speaker_id=user.id, conference__active_cfp=False)
 
     response = graphql_client.query(
         """
@@ -118,9 +116,9 @@ def test_can_edit_submission_if_cfp_is_closed(graphql_client, user, submission_f
     assert response["data"]["submission"]["canEdit"] is True
 
 
-def test_cannot_see_submissions_if_restricted(graphql_client, user, submission_factory):
+def test_cannot_see_submissions_if_restricted(graphql_client, user):
     graphql_client.force_login(user)
-    submission = submission_factory(conference__active_cfp=True)
+    submission = SubmissionFactory(conference__active_cfp=True)
 
     response = graphql_client.query(
         """query Submission($id: ID!) {
@@ -135,10 +133,10 @@ def test_cannot_see_submissions_if_restricted(graphql_client, user, submission_f
 
 
 def test_can_see_submissions_while_voting_with_ticket(
-    graphql_client, user, submission_factory, mock_has_ticket
+    graphql_client, user, mock_has_ticket
 ):
     graphql_client.force_login(user)
-    submission = submission_factory(
+    submission = SubmissionFactory(
         conference__active_cfp=False, conference__active_voting=True
     )
     mock_has_ticket(submission.conference)
@@ -155,11 +153,9 @@ def test_can_see_submissions_while_voting_with_ticket(
     assert response["data"]["submission"]["id"] == submission.hashid
 
 
-def test_submission_materials(
-    graphql_client, user, submission_factory, mock_has_ticket
-):
+def test_submission_materials(graphql_client, user, mock_has_ticket):
     graphql_client.force_login(user)
-    submission = submission_factory(
+    submission = SubmissionFactory(
         conference__active_cfp=False, conference__active_voting=True
     )
     material_1 = ProposalMaterialFactory(

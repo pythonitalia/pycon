@@ -1,6 +1,6 @@
-import { ApolloClient, Operation } from "@apollo/client/core";
+import type { ApolloClient, Operation } from "@apollo/client/core";
 import merge from "deepmerge";
-import { DefinitionNode } from "graphql";
+import type { DefinitionNode } from "graphql";
 
 import isEqual from "../helpers/lodash-is-equal";
 import { createClient } from "./create-client";

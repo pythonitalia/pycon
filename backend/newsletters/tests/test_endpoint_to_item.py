@@ -1,3 +1,7 @@
+from users.tests.factories import UserFactory
+from conferences.tests.factories import ConferenceFactory
+from schedule.tests.factories import ScheduleItemFactory
+from submissions.tests.factories import SubmissionFactory
 import pytest
 
 from newsletters.exporter import convert_user_to_endpoint
@@ -6,13 +10,12 @@ pytestmark = pytest.mark.skip(reason="disabled export for now")
 
 
 @pytest.mark.django_db
-def test_convert_to_item(
-    user_factory, conference, submission_factory, schedule_item_factory
-):
-    user = user_factory()
+def test_convert_to_item():
+    conference = ConferenceFactory()
+    user = UserFactory()
 
-    submission = submission_factory(speaker_id=user.id, conference=conference)
-    item = schedule_item_factory(
+    submission = SubmissionFactory(speaker_id=user.id, conference=conference)
+    item = ScheduleItemFactory(
         type="submission", submission=submission, conference=conference
     )
 

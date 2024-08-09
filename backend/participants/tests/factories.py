@@ -1,13 +1,11 @@
 import factory
 import factory.fuzzy
 from factory.django import DjangoModelFactory
-from pytest_factoryboy import register
 
 from conferences.tests.factories import ConferenceFactory
 from participants.models import Participant
 
 
-@register
 class ParticipantFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     user = factory.SubFactory("users.tests.factories.UserFactory")

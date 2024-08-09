@@ -2,10 +2,10 @@ import React from "react";
 
 import { useRouter } from "next/router";
 
-import { CfpForm, CfpFormFields } from "~/components/cfp-form";
+import { CfpForm, type CfpFormFields } from "~/components/cfp-form";
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  SendSubmissionMutation,
+  type SendSubmissionMutation,
   readMeSubmissionsQueryCache,
   useSendSubmissionMutation,
   writeMeSubmissionsQueryCache,
@@ -67,14 +67,14 @@ export const CfpSendSubmission = () => {
           speakerLevel: input.speakerLevel,
           previousTalkVideo: input.previousTalkVideo,
           shortSocialSummary: input.shortSocialSummary,
-          speakerWebsite: input.speakerWebsite,
-          speakerBio: input.speakerBio,
-          speakerPhoto: input.speakerPhoto,
-          speakerTwitterHandle: input.speakerTwitterHandle,
-          speakerInstagramHandle: input.speakerInstagramHandle,
-          speakerLinkedinUrl: input.speakerLinkedinUrl,
-          speakerFacebookUrl: input.speakerFacebookUrl,
-          speakerMastodonHandle: input.speakerMastodonHandle,
+          speakerWebsite: input.participantWebsite,
+          speakerBio: input.participantBio,
+          speakerPhoto: input.participantPhoto,
+          speakerTwitterHandle: input.participantTwitterHandle,
+          speakerInstagramHandle: input.participantInstagramHandle,
+          speakerLinkedinUrl: input.participantLinkedinUrl,
+          speakerFacebookUrl: input.participantFacebookUrl,
+          speakerMastodonHandle: input.participantMastodonHandle,
         },
         language,
       },

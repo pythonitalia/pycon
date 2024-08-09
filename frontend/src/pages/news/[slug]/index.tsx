@@ -10,7 +10,7 @@ import {
 import { parseISO } from "date-fns";
 import { FormattedMessage } from "react-intl";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import type { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
@@ -19,8 +19,8 @@ import { usePageOrPreview } from "~/components/page-handler/use-page-or-preview"
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  NewsArticleQuery,
-  PagePreviewQuery,
+  type NewsArticleQuery,
+  type PagePreviewQuery,
   queryAllNewsArticles,
   queryNewsArticle,
   queryPagePreview,

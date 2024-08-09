@@ -1,6 +1,5 @@
 import factory.fuzzy
 from factory.django import DjangoModelFactory
-from pytest_factoryboy import register
 
 from conferences.tests.factories import ConferenceFactory
 from grants.models import Grant
@@ -9,7 +8,6 @@ from users.tests.factories import UserFactory
 from countries import countries
 
 
-@register
 class GrantFactory(DjangoModelFactory):
     class Meta:
         model = Grant

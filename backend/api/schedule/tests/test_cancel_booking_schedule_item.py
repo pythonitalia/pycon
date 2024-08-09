@@ -1,5 +1,12 @@
 import datetime
 
+from schedule.tests.factories import (
+    DayFactory,
+    ScheduleItemAttendeeFactory,
+    ScheduleItemFactory,
+    SlotFactory,
+)
+from submissions.tests.factories import SubmissionFactory
 import pytest
 from pytest import mark
 
@@ -9,19 +16,17 @@ pytestmark = mark.django_db
 
 
 @pytest.fixture
-def simple_schedule_item(
-    schedule_item_factory, submission_factory, slot_factory, day_factory
-):
-    submission = submission_factory()
+def simple_schedule_item():
+    submission = SubmissionFactory()
 
-    return schedule_item_factory(
+    return ScheduleItemFactory(
         status=ScheduleItem.STATUS.confirmed,
         submission=submission,
         type=ScheduleItem.TYPES.submission,
         conference=submission.conference,
         attendees_total_capacity=30,
-        slot=slot_factory(
-            day=day_factory(
+        slot=SlotFactory(
+            day=DayFactory(
                 day=datetime.date(2020, 10, 10), conference=submission.conference
             ),
             hour=datetime.time(10, 10, 0),
@@ -31,13 +36,15 @@ def simple_schedule_item(
 
 
 def test_cancel_booking(
-    graphql_client, user, simple_schedule_item, mocker, schedule_item_attendee_factory
+    graphql_client,
+    user,
+    simple_schedule_item,
 ):
     graphql_client.force_login(user)
 
     schedule_item = simple_schedule_item
 
-    schedule_item_attendee_factory(schedule_item=schedule_item, user_id=user.id)
+    ScheduleItemAttendeeFactory(schedule_item=schedule_item, user_id=user.id)
 
     response = graphql_client.query(
         """mutation($id: ID!) {

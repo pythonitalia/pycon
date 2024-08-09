@@ -1,3 +1,6 @@
+from users.tests.factories import UserFactory
+from conferences.tests.factories import ConferenceFactory
+from grants.tests.factories import GrantFactory
 import pytest
 
 pytestmark = pytest.mark.django_db
@@ -81,10 +84,10 @@ def _update_grant(graphql_client, grant, **kwargs):
     return response
 
 
-def test_update_grant(graphql_client, user, conference_factory, grant_factory):
+def test_update_grant(graphql_client, user):
     graphql_client.force_login(user)
-    conference = conference_factory(active_grants=True)
-    grant = grant_factory(conference=conference, gender="female", user_id=user.id)
+    conference = ConferenceFactory(active_grants=True)
+    grant = GrantFactory(conference=conference, gender="female", user_id=user.id)
 
     response = _update_grant(
         graphql_client,
@@ -121,13 +124,10 @@ def test_update_grant(graphql_client, user, conference_factory, grant_factory):
 def test_cannot_update_a_grant_if_user_is_not_owner(
     graphql_client,
     user,
-    user_factory,
-    conference_factory,
-    grant_factory,
 ):
-    other_user = user_factory()
-    conference = conference_factory(active_grants=True)
-    grant = grant_factory(conference=conference, user_id=user.id)
+    other_user = UserFactory()
+    conference = ConferenceFactory(active_grants=True)
+    grant = GrantFactory(conference=conference, user_id=user.id)
     graphql_client.force_login(other_user)
 
     response = _update_grant(
@@ -143,11 +143,12 @@ def test_cannot_update_a_grant_if_user_is_not_owner(
 
 
 def test_cannot_update_a_grant_if_grants_are_closed(
-    graphql_client, user, conference_factory, grant_factory
+    graphql_client,
+    user,
 ):
     graphql_client.force_login(user)
-    conference = conference_factory(active_grants=False)
-    grant = grant_factory(conference=conference, user_id=user.id)
+    conference = ConferenceFactory(active_grants=False)
+    grant = GrantFactory(conference=conference, user_id=user.id)
 
     response = _update_grant(
         graphql_client,
@@ -161,12 +162,11 @@ def test_cannot_update_a_grant_if_grants_are_closed(
     ]
 
 
-def test_cannot_update_a_grant_if_grants_deadline_do_not_exists(
-    graphql_client, user, grant_factory, conference
-):
+def test_cannot_update_a_grant_if_grants_deadline_do_not_exists(graphql_client, user):
+    conference = ConferenceFactory()
     assert list(conference.deadlines.all()) == []
     graphql_client.force_login(user)
-    grant = grant_factory(conference=conference, user_id=user.id)
+    grant = GrantFactory(conference=conference, user_id=user.id)
 
     response = _update_grant(graphql_client, grant)
 
@@ -177,7 +177,8 @@ def test_cannot_update_a_grant_if_grants_deadline_do_not_exists(
     ]
 
 
-def test_cannot_send_a_grant_as_unlogged_user(graphql_client, grant):
+def test_cannot_update_a_grant_as_unlogged_user(graphql_client):
+    grant = GrantFactory()
     resp = _update_grant(graphql_client, grant)
 
     assert resp["errors"][0]["message"] == "User not logged in"
@@ -186,15 +187,13 @@ def test_cannot_send_a_grant_as_unlogged_user(graphql_client, grant):
 def test_cannot_update_submission_with_lang_outside_allowed_values(
     graphql_client,
     user,
-    conference_factory,
-    grant_factory,
 ):
     graphql_client.force_login(user)
-    conference = conference_factory(
+    conference = ConferenceFactory(
         active_grants=True,
     )
 
-    grant = grant_factory(
+    grant = GrantFactory(
         user_id=user.id,
         conference=conference,
     )

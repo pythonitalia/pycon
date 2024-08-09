@@ -181,3 +181,91 @@ def test_grants_review_scores(rf, scores, avg):
 
     assert grant_to_check.id == grant_1.id
     assert grant_to_check.score == avg
+
+
+def test_review_start_view_when_no_items_are_left(rf, mocker):
+    mock_messages = mocker.patch("reviews.admin.messages")
+
+    tag = SubmissionTagFactory()
+    user = UserFactory(is_staff=True, is_superuser=True)
+
+    conference = ConferenceFactory()
+
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.PROPOSALS,
+    )
+    score = AvailableScoreOptionFactory(review_session=review_session, numeric_value=0)
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+
+    submission_1 = SubmissionFactory(conference=conference)
+    submission_1.tags.add(tag)
+    submission_2 = SubmissionFactory(conference=conference)
+    submission_2.tags.add(tag)
+
+    UserReviewFactory(
+        review_session=review_session,
+        proposal=submission_1,
+        user=user,
+        score=score,
+    )
+
+    UserReviewFactory(
+        review_session=review_session,
+        proposal=submission_2,
+        user=user,
+        score=score,
+    )
+
+    request = rf.get("/")
+    request.user = user
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    response = admin.review_start_view(request, review_session.id)
+
+    assert response.status_code == 302
+    assert (
+        response.url
+        == f"/admin/reviews/reviewsession/{review_session.id}/review/recap/"
+    )
+    mock_messages.warning.assert_called_once_with(request, "No new proposal to review.")
+
+
+def test_review_start_view(rf, mocker):
+    mocker.patch("reviews.admin.messages")
+
+    tag = SubmissionTagFactory()
+    user = UserFactory(is_staff=True, is_superuser=True)
+
+    conference = ConferenceFactory()
+
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.PROPOSALS,
+    )
+    score = AvailableScoreOptionFactory(review_session=review_session, numeric_value=0)
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+
+    submission_1 = SubmissionFactory(conference=conference)
+    submission_1.tags.add(tag)
+    submission_2 = SubmissionFactory(conference=conference)
+    submission_2.tags.add(tag)
+
+    UserReviewFactory(
+        review_session=review_session,
+        proposal=submission_2,
+        user=user,
+        score=score,
+    )
+
+    request = rf.get("/")
+    request.user = user
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    response = admin.review_start_view(request, review_session.id)
+
+    assert response.status_code == 302
+    assert (
+        response.url
+        == f"/admin/reviews/reviewsession/{review_session.id}/review/{submission_1.id}/"
+    )

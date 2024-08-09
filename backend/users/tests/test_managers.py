@@ -4,8 +4,9 @@ import pytest
 from users.managers import UserManager
 from users.models import User
 
+pytestmark = pytest.mark.django_db
 
-@pytest.mark.django_db
+
 def test_create_user_empty_email():
     with pytest.raises(ValueError) as error:
         UserManager().create_user("", "johnpassword")
@@ -13,7 +14,6 @@ def test_create_user_empty_email():
     assert "The given email must be set" in str(error.value)
 
 
-@pytest.mark.django_db
 def test_create_user_with_email_and_password():
     user = User.objects.create_user("lennon@thebeatles.com", "johnpassword")
 
@@ -22,7 +22,6 @@ def test_create_user_with_email_and_password():
     assert not user.is_staff
 
 
-@pytest.mark.django_db
 def test_create_user_with_extra_fields():
     user = User.objects.create_user(
         "lennon@thebeatles.com",
@@ -39,7 +38,6 @@ def test_create_user_with_extra_fields():
     assert user.date_birth == datetime.datetime.strptime("09/10/1940", "%d/%m/%Y")
 
 
-@pytest.mark.django_db
 def test_create_user_superuser_with_email_and_password():
     user = User.objects.create_user(
         "lennon@thebeatles.com", "johnpassword", is_superuser=True
@@ -50,7 +48,6 @@ def test_create_user_superuser_with_email_and_password():
     assert not user.is_staff
 
 
-@pytest.mark.django_db
 def test_cannot_create_superuser_not_superuser_flag():
     with pytest.raises(ValueError) as error:
         User.objects.create_superuser(
@@ -60,7 +57,6 @@ def test_cannot_create_superuser_not_superuser_flag():
     assert "Superuser must have is_superuser=True." in str(error.value)
 
 
-@pytest.mark.django_db
 def test_create_superuser_with_email_and_password():
     user = User.objects.create_superuser("lennon@thebeatles.com", "johnpassword")
 

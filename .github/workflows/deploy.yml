@@ -192,12 +192,6 @@ jobs:
         id: buildx
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/setup-buildx-action@v2
-      - name: Cache Docker layers
-        if: ${{ steps.image.outputs.image_exists == 0 }}
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ matrix.service.name }}
       - name: Build and push
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/build-push-action@v4.0.0
@@ -327,8 +321,19 @@ jobs:
     runs-on: ubuntu-latest
     needs: [terraform]
     steps:
-      - name: Sleep for 10 seconds
-        run: sleep 10s
+      - name: Check health status
+        run: |
+          while true; do
+            response=$(curl -s "https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/health")
+            commit=$(echo $response | jq -r '.commit')
+            if [ "$commit" == "${{ steps.git.outputs.githash }}" ]; then
+              echo "New version live"
+              break
+            else
+              echo "Commit hash does not match. Retrying..."
+              sleep 3
+            fi
+          done
         shell: bash
 
   # Migrate the database
@@ -354,5 +359,6 @@ jobs:
     needs: [migrate-pycon-backend-db]
     steps:
       - name: Trigger hook
+        if: github.ref == 'refs/heads/main'
         run: |
           curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }}

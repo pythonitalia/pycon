@@ -1,13 +1,16 @@
+from conferences.tests.factories import ConferenceFactory
 import pytest
 from django.test import override_settings
+
+pytestmark = pytest.mark.django_db
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
 def test_cannot_update_ticket_if_i_am_not_the_owner(
-    graphql_client, requests_mock, user, conference_factory, pretix_user_tickets
+    graphql_client, requests_mock, user, pretix_user_tickets
 ):
     graphql_client.force_login(user)
-    conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
+    conference = ConferenceFactory(pretix_organizer_id="org", pretix_event_id="event")
     pretix_user_tickets[0]["attendee_email"] = "not@my.com"
 
     requests_mock.get(
@@ -43,9 +46,9 @@ def test_cannot_update_ticket_if_i_am_not_the_owner(
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-def test_invalid_data(graphql_client, mocker, requests_mock, user, conference_factory):
+def test_invalid_data(graphql_client, mocker, requests_mock, user):
     graphql_client.force_login(user)
-    conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
+    conference = ConferenceFactory(pretix_organizer_id="org", pretix_event_id="event")
     mocker.patch("pretix.is_ticket_owner", return_value=True)
 
     requests_mock.patch(
@@ -115,14 +118,13 @@ def test_update_ticket_with_answers(
     mocker,
     requests_mock,
     user,
-    conference_factory,
     pretix_user_tickets,
     update_user_ticket,
     pretix_categories,
     pretix_questions,
 ):
     graphql_client.force_login(user)
-    conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
+    conference = ConferenceFactory(pretix_organizer_id="org", pretix_event_id="event")
     mocker.patch("pretix.is_ticket_owner", return_value=True)
 
     requests_mock.get(
@@ -216,8 +218,9 @@ def test_update_ticket_with_answers(
     ]
 
 
-@pytest.mark.django_db
-def test_cannot_update_empty_email(graphql_client, user, conference, mocker):
+def test_cannot_update_empty_email(graphql_client, user, mocker):
+    conference = ConferenceFactory()
+
     graphql_client.force_login(user)
     mocker.patch("pretix.is_ticket_owner", return_value=True)
     query = """
@@ -258,14 +261,13 @@ def test_update_ticket(
     graphql_client,
     requests_mock,
     user,
-    conference_factory,
     pretix_user_tickets,
     update_user_ticket,
     pretix_categories,
     pretix_questions,
 ):
     graphql_client.force_login(user)
-    conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
+    conference = ConferenceFactory(pretix_organizer_id="org", pretix_event_id="event")
     pretix_user_tickets[0]["attendee_email"] = user.email
     pretix_user_tickets[0]["id"] = 999
 
@@ -346,13 +348,12 @@ def test_update_email_reassign_the_ticket(
     graphql_client,
     requests_mock,
     user,
-    conference_factory,
     pretix_user_tickets,
     update_user_ticket,
     pretix_categories,
 ):
     graphql_client.force_login(user)
-    conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
+    conference = ConferenceFactory(pretix_organizer_id="org", pretix_event_id="event")
     pretix_user_tickets[0]["attendee_email"] = user.email
     pretix_user_tickets[0]["id"] = "999"
 

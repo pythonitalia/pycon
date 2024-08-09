@@ -1,3 +1,5 @@
+from conferences.tests.factories import ConferenceFactory
+from submissions.tests.factories import SubmissionFactory, SubmissionTagFactory
 import pytest
 
 from voting.models import RankRequest
@@ -5,50 +7,49 @@ from voting.models import RankRequest
 pytestmark = pytest.mark.django_db
 
 
-def test_tag_count_should_remain_the_same(
-    submission_factory, submission_tag_factory, conference
-):
-    pizza = submission_tag_factory(name="Pizza")
-    sushi = submission_tag_factory(name="Sushi")
-    polenta = submission_tag_factory(name="Polenta")
+def test_tag_count_should_remain_the_same():
+    conference = ConferenceFactory()
+    pizza = SubmissionTagFactory(name="Pizza")
+    sushi = SubmissionTagFactory(name="Sushi")
+    polenta = SubmissionTagFactory(name="Polenta")
 
-    submission_factory(
+    SubmissionFactory(
         conference=conference,
         tags=["Polenta"],
     )
-    submission_factory(
+    SubmissionFactory(
         conference=conference,
         tags=["Polenta"],
     )
-    submission_factory(
+    SubmissionFactory(
         conference=conference,
         tags=["Pizza", "Sushi"],
     )
-    submission_factory(
+    SubmissionFactory(
         conference=conference,
         tags=["Pizza", "Sushi"],
     )
-    submission_factory(
+    SubmissionFactory(
         conference=conference,
         tags=["Pizza", "Polenta"],
     )
-    submission_factory(
+    SubmissionFactory(
         conference=conference,
         tags=["Pizza", "Polenta"],
     )
-    submission_factory(
+    SubmissionFactory(
         conference=conference,
         tags=["Polenta", "Sushi", "Sushi"],
     )
-    submission_factory(
+    SubmissionFactory(
         conference=conference,
         tags=["Pizza"],
     )
-    submission_factory(
+    SubmissionFactory(
         conference=conference,
         tags=["Pizza"],
     )
-    submission_factory(
+    SubmissionFactory(
         conference=conference,
         tags=["Polenta"],
     )

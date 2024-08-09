@@ -16,7 +16,7 @@ import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import {
   MyProfileWithTicketsDocument,
-  MyProfileWithTicketsQuery,
+  type MyProfileWithTicketsQuery,
   useUpdateTicketMutation,
 } from "~/types";
 import { Alert } from "../alert";

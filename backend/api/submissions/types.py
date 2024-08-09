@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 import strawberry
-from strawberry.field import StrawberryField
+from strawberry.types.field import StrawberryField
 from strawberry.types import Info
 
 from api.languages.types import Language

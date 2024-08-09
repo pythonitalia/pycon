@@ -8,10 +8,12 @@
     "rules": {
       "recommended": true,
       "correctness": {
-        "useExhaustiveDependencies": "off"
+        "useExhaustiveDependencies": "off",
+        "useJsxKeyInIterable": "off"
       },
       "style": {
-        "noNonNullAssertion": "off"
+        "noNonNullAssertion": "off",
+        "useNodejsImportProtocol": "off"
       },
       "suspicious": {
         "noExplicitAny": "off",

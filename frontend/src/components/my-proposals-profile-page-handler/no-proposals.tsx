@@ -8,7 +8,7 @@ import {
 import { FormattedMessage } from "react-intl";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { DeadlineStatus, MyProfileWithSubmissionsQuery } from "~/types";
+import { DeadlineStatus, type MyProfileWithSubmissionsQuery } from "~/types";
 
 import { createHref } from "../link";
 

@@ -1,18 +1,18 @@
 import { AddScheduleToCalendarModal } from "../add-schedule-to-calendar-modal";
 import {
   CustomizeTicketModal,
-  CustomizeTicketModalProps,
+  type CustomizeTicketModalProps,
 } from "../customize-ticket-modal";
 import { useModal } from "../modal/context";
 import { NewsletterModal } from "../newsletter-modal";
 import {
   ReassignTicketModal,
-  ReassignTicketModalProps,
+  type ReassignTicketModalProps,
 } from "../reassign-ticket-modal";
 import { SponsorLeadModal } from "../sponsor-lead-modal";
 import {
   TicketQRCodeModal,
-  TicketQRCodeModalProps,
+  type TicketQRCodeModalProps,
 } from "../ticket-qrcode-modal";
 
 export const ModalRenderer = () => {

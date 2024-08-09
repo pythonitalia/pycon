@@ -81,5 +81,8 @@ class Countries(Base):
     def __init__(self):
         self.items = [Country.from_dict(country) for country in COUNTRIES]
 
+    def is_valid(self, country_code: str) -> bool:
+        return any(country.code == country_code for country in self.items)
+
 
 countries = Countries()

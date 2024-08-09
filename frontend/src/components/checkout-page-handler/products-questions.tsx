@@ -9,7 +9,7 @@ import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useCurrentUser } from "~/helpers/use-current-user";
-import { TicketItem } from "~/types";
+import type { TicketItem } from "~/types";
 
 import { ProductQuestionnaire } from "../product-questionnaire";
 import { useLoginState } from "../profile/hooks";
@@ -34,15 +34,15 @@ export const ProductsQuestions = ({ productsById }: Props) => {
     <>
       {Object.entries(selectedProducts)
         .filter(([productId]) => productsById[productId].questions.length > 0)
-        .map(([productId, selection]) => {
+        .map(([productId, selection], productIndex) => {
           return (
-            <Fragment>
+            <Fragment key={productIndex}>
               <AnswersCard
                 title={productsById[productId].name}
                 openByDefault={true}
               >
                 {selection.map((productUserInformation, index) => (
-                  <>
+                  <Fragment key={index}>
                     <HorizontalStack justifyContent="spaceBetween">
                       <Heading size={4}>
                         {productsById[productId].name} #{index + 1}
@@ -88,7 +88,7 @@ export const ProductsQuestions = ({ productsById }: Props) => {
                       updateQuestionAnswer={updateQuestionAnswer}
                     />
                     {index !== selection.length - 1 && <Spacer size="large" />}
-                  </>
+                  </Fragment>
                 ))}
               </AnswersCard>
               <Spacer size="xs" />

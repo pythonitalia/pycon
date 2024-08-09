@@ -2,7 +2,7 @@ import { Page, Text } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
-import { GetServerSideProps } from "next";
+import type { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { MyGrantOrForm } from "~/components/grant-form";

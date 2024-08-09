@@ -1,3 +1,5 @@
+from conferences.tests.factories import ConferenceFactory
+from job_board.tests.factories import JobListingFactory
 from pytest import mark
 
 from helpers.tests import get_image_url_from_request
@@ -24,9 +26,9 @@ def _query_job_board(client, conference):
 
 
 @mark.django_db
-def test_query_job_board(rf, graphql_client, job_listing_factory, conference_factory):
-    listing = job_listing_factory()
-    job_listing_factory(conference=conference_factory())
+def test_query_job_board(rf, graphql_client):
+    listing = JobListingFactory()
+    JobListingFactory(conference=ConferenceFactory())
 
     request = rf.get("/")
 
@@ -46,8 +48,8 @@ def test_query_job_board(rf, graphql_client, job_listing_factory, conference_fac
 
 
 @mark.django_db
-def test_query_single_job_listing(rf, graphql_client, job_listing_factory):
-    listing = job_listing_factory(
+def test_query_single_job_listing(rf, graphql_client):
+    listing = JobListingFactory(
         slug=LazyI18nString({"en": "demo", "it": "esempio"}),
         company_logo=None,
     )
@@ -88,8 +90,8 @@ def test_query_single_job_listing(rf, graphql_client, job_listing_factory):
 
 
 @mark.django_db
-def test_passing_language(graphql_client, job_listing_factory):
-    job_listing_factory(
+def test_passing_language(graphql_client):
+    JobListingFactory(
         title=LazyI18nString({"en": "this is a test", "it": "diventa una lumaca"}),
         slug=LazyI18nString({"en": "slug", "it": "lumaca"}),
     )

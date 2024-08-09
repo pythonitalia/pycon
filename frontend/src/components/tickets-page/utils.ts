@@ -1,6 +1,6 @@
-import { TicketItem } from "~/types";
+import type { TicketItem } from "~/types";
 
-import { InvoiceInformationState, OrderState } from "./types";
+import type { InvoiceInformationState, OrderState } from "./types";
 
 export const hasSelectedAtLeastOneProduct = (state: OrderState): boolean =>
   Object.values(state.selectedProducts).length > 0 ||

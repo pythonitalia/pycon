@@ -1,3 +1,8 @@
+from schedule.tests.factories import ScheduleItemFactory
+from users.tests.factories import UserFactory
+from conferences.tests.factories import ConferenceFactory
+from voting.tests.factories.ranking import RankRequestFactory
+from submissions.tests.factories import SubmissionFactory
 import pytest
 
 from schedule.models import ScheduleItem
@@ -42,12 +47,12 @@ QUERY = """
 
 
 @pytest.fixture
-def other_user(user_factory):
-    return user_factory()
+def other_user():
+    return UserFactory()
 
 
-def _submission(submission_factory, user, **kwargs):
-    return submission_factory(
+def _submission(user, **kwargs):
+    return SubmissionFactory(
         speaker_id=user.id, languages=("it", "en"), tags=("python", "GraphQL"), **kwargs
     )
 
@@ -62,10 +67,8 @@ def _query(graphql_client, submission):
     return response["data"]
 
 
-def test_voting_open_and_user_cannot_vote(
-    graphql_client, submission_factory, user, other_user, mocker
-):
-    submission = _submission(submission_factory, user)
+def test_voting_open_and_user_cannot_vote(graphql_client, user, other_user, mocker):
+    submission = _submission(user)
     graphql_client.force_login(other_user)
     mocker.patch(
         "api.submissions.permissions.check_if_user_can_vote", return_value=False
@@ -76,10 +79,8 @@ def test_voting_open_and_user_cannot_vote(
     assert data["submission"] is None
 
 
-def test_voting_open_and_user_can_vote(
-    graphql_client, submission_factory, user, other_user, mocker
-):
-    submission = _submission(submission_factory, user)
+def test_voting_open_and_user_can_vote(graphql_client, user, other_user, mocker):
+    submission = _submission(user)
     graphql_client.force_login(other_user)
     can_vote_mock = mocker.patch(
         "api.submissions.permissions.check_if_user_can_vote", return_value=True
@@ -112,10 +113,8 @@ def test_voting_open_and_user_can_vote(
     can_vote_mock.assert_called()
 
 
-def test_voting_closed_and_user_is_authenticated(
-    graphql_client, other_user, submission_factory, user
-):
-    submission = _submission(submission_factory, user, conference__active_voting=False)
+def test_voting_closed_and_user_is_authenticated(graphql_client, other_user, user):
+    submission = _submission(user, conference__active_voting=False)
     graphql_client.force_login(other_user)
 
     data = _query(graphql_client, submission)
@@ -123,10 +122,8 @@ def test_voting_closed_and_user_is_authenticated(
     assert data["submission"] is None
 
 
-def test_voting_closed_and_user_is_not_authenticated(
-    graphql_client, submission_factory, user
-):
-    submission = _submission(submission_factory, user, conference__active_voting=False)
+def test_voting_closed_and_user_is_not_authenticated(graphql_client, user):
+    submission = _submission(user, conference__active_voting=False)
 
     data = _query(graphql_client, submission)
 
@@ -134,10 +131,10 @@ def test_voting_closed_and_user_is_not_authenticated(
 
 
 def test_accepted_submission_user_can_see_public_and_restricted_fields(
-    graphql_client, submission_factory, user, schedule_item_factory
+    graphql_client, user
 ):
-    submission = _submission(submission_factory, user)
-    schedule_item_factory(
+    submission = _submission(user)
+    ScheduleItemFactory(
         submission=submission,
         conference=submission.conference,
         type=ScheduleItem.TYPES.submission,
@@ -168,10 +165,8 @@ def test_accepted_submission_user_can_see_public_and_restricted_fields(
     assert data["submission"]["notes"] is None
 
 
-def test_admin_user_can_see_everything(
-    graphql_client, admin_user, submission_factory, user
-):
-    submission = _submission(submission_factory, user)
+def test_admin_user_can_see_everything(graphql_client, admin_user, user):
+    submission = _submission(user)
     graphql_client.force_login(admin_user)
 
     data = _query(graphql_client, submission)
@@ -200,8 +195,8 @@ def test_admin_user_can_see_everything(
     assert data["submission"]["notes"] == submission.notes
 
 
-def test_submission_author_can_see_everything(graphql_client, submission_factory, user):
-    submission = _submission(submission_factory, user)
+def test_submission_author_can_see_everything(graphql_client, user):
+    submission = _submission(user)
     graphql_client.force_login(user)
 
     data = _query(graphql_client, submission)
@@ -232,15 +227,11 @@ def test_submission_author_can_see_everything(graphql_client, submission_factory
 
 def test_ranked_submission_user_can_see_public_and_restricted_fields(
     graphql_client,
-    conference,
     user,
-    submission_factory,
-    rank_request_factory,
 ):
-    submission = _submission(submission_factory, user=user, conference=conference)
-    rank_request_factory(
-        conference=conference, submissions=[submission], is_public=True
-    )
+    conference = ConferenceFactory()
+    submission = _submission(user=user, conference=conference)
+    RankRequestFactory(conference=conference, submissions=[submission], is_public=True)
 
     data = _query(graphql_client, submission)
 
@@ -269,12 +260,11 @@ def test_ranked_submission_user_can_see_public_and_restricted_fields(
 
 
 def test_ranking_is_not_public_cannot_see_restricted_and_private_fields(
-    graphql_client, rank_request_factory, conference, user, submission_factory
+    graphql_client, user
 ):
-    submission = _submission(submission_factory, user=user, conference=conference)
-    rank_request_factory(
-        conference=conference, submissions=[submission], is_public=False
-    )
+    conference = ConferenceFactory()
+    submission = _submission(user=user, conference=conference)
+    RankRequestFactory(conference=conference, submissions=[submission], is_public=False)
 
     data = _query(graphql_client, submission)
 
@@ -283,12 +273,13 @@ def test_ranking_is_not_public_cannot_see_restricted_and_private_fields(
 
 def test_ranking_does_not_exists_cannot_see_restricted_and_private_fields(
     graphql_client,
-    conference_factory,
     user,
-    submission_factory,
 ):
-    conference = conference_factory(rankrequest=None)
-    submission = _submission(submission_factory, user=user, conference=conference)
+    conference = ConferenceFactory()
+    conference.rankquest = None
+    conference.save()
+
+    submission = _submission(user=user, conference=conference)
 
     data = _query(graphql_client, submission)
 

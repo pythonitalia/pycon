@@ -1,5 +1,5 @@
-import time
 from typing import Any, Callable
+import time
 import strawberry
 from graphql import GraphQLError
 from strawberry.extensions import FieldExtension

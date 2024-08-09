@@ -11,12 +11,12 @@ import {
   Text,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
-import { FormState, Inputs, StateErrors } from "react-use-form-state";
+import type { FormState, Inputs, StateErrors } from "react-use-form-state";
 
 import { useCountries } from "~/helpers/use-countries";
-import { MyEditProfileQuery } from "~/types";
+import type { MyEditProfileQuery } from "~/types";
 
-import { MeUserFields } from "./types";
+import type { MeUserFields } from "./types";
 
 type Props = {
   formState: FormState<MeUserFields, StateErrors<MeUserFields, string>>;
@@ -153,6 +153,13 @@ export const MainProfileCard = ({
                 formState.errors?.country || getValidationError("country"),
               ]}
             >
+              <FormattedMessage id="input.selectCountryPlaceholder">
+                {(msg) => (
+                  <option value="" disabled>
+                    {msg}
+                  </option>
+                )}
+              </FormattedMessage>
               {countries.map((c) => (
                 <option key={c.value} value={c.value}>
                   {c.label}

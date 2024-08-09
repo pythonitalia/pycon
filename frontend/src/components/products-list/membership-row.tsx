@@ -9,7 +9,7 @@ import { FormattedMessage } from "react-intl";
 
 import { useMoneyFormatter } from "~/helpers/formatters";
 import { compile } from "~/helpers/markdown";
-import { CurrentUserQueryResult, TicketItem } from "~/types";
+import type { CurrentUserQueryResult, TicketItem } from "~/types";
 
 import { useCart } from "../tickets-page/use-cart";
 

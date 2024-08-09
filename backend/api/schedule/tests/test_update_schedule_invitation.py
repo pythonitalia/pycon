@@ -1,3 +1,5 @@
+from submissions.tests.factories import SubmissionFactory
+from schedule.tests.factories import DayFactory, ScheduleItemFactory, SlotFactory
 from pytest import mark
 
 from schedule.models import ScheduleItem
@@ -15,12 +17,8 @@ pytestmark = mark.django_db
     ),
 )
 def test_update_invitation_answer(
-    submission_factory,
     graphql_client,
     user,
-    schedule_item_factory,
-    slot_factory,
-    day_factory,
     option,
     expected_status,
     mocker,
@@ -33,16 +31,16 @@ def test_update_invitation_answer(
     )
 
     graphql_client.force_login(user)
-    submission = submission_factory(
+    submission = SubmissionFactory(
         speaker_id=user.id,
     )
 
-    schedule_item = schedule_item_factory(
+    schedule_item = ScheduleItemFactory(
         submission=submission,
         type=ScheduleItem.TYPES.submission,
         conference=submission.conference,
-        slot=slot_factory(
-            day=day_factory(conference=submission.conference), hour="10:00", duration=30
+        slot=SlotFactory(
+            day=DayFactory(conference=submission.conference), hour="10:00", duration=30
         ),
     )
 
@@ -84,12 +82,8 @@ def test_update_invitation_answer(
 
 
 def test_saving_the_same_answer_does_not_trigger_event(
-    submission_factory,
     graphql_client,
     user,
-    schedule_item_factory,
-    slot_factory,
-    day_factory,
     mocker,
 ):
     mock_event = mocker.patch(
@@ -100,18 +94,18 @@ def test_saving_the_same_answer_does_not_trigger_event(
     )
 
     graphql_client.force_login(user)
-    submission = submission_factory(
+    submission = SubmissionFactory(
         speaker_id=user.id,
     )
 
-    schedule_item = schedule_item_factory(
+    schedule_item = ScheduleItemFactory(
         status=ScheduleItem.STATUS.confirmed,
         speaker_invitation_notes="notes",
         submission=submission,
         type=ScheduleItem.TYPES.submission,
         conference=submission.conference,
-        slot=slot_factory(
-            day=day_factory(conference=submission.conference), hour="10:00", duration=30
+        slot=SlotFactory(
+            day=DayFactory(conference=submission.conference), hour="10:00", duration=30
         ),
     )
 
@@ -150,12 +144,8 @@ def test_saving_the_same_answer_does_not_trigger_event(
 
 
 def test_changing_notes_triggers_a_new_event(
-    submission_factory,
     graphql_client,
     user,
-    schedule_item_factory,
-    slot_factory,
-    day_factory,
     mocker,
 ):
     mock_event = mocker.patch(
@@ -166,18 +156,18 @@ def test_changing_notes_triggers_a_new_event(
     )
 
     graphql_client.force_login(user)
-    submission = submission_factory(
+    submission = SubmissionFactory(
         speaker_id=user.id,
     )
 
-    schedule_item = schedule_item_factory(
+    schedule_item = ScheduleItemFactory(
         status=ScheduleItem.STATUS.confirmed,
         speaker_invitation_notes="notes",
         submission=submission,
         type=ScheduleItem.TYPES.submission,
         conference=submission.conference,
-        slot=slot_factory(
-            day=day_factory(conference=submission.conference), hour="10:00", duration=30
+        slot=SlotFactory(
+            day=DayFactory(conference=submission.conference), hour="10:00", duration=30
         ),
     )
 
@@ -219,12 +209,8 @@ def test_changing_notes_triggers_a_new_event(
 
 
 def test_random_user_cannot_update_an_invitation(
-    submission_factory,
     graphql_client,
     user,
-    schedule_item_factory,
-    slot_factory,
-    day_factory,
     mocker,
 ):
     mock_event = mocker.patch(
@@ -232,16 +218,16 @@ def test_random_user_cannot_update_an_invitation(
     )
 
     graphql_client.force_login(user)
-    submission = submission_factory()
+    submission = SubmissionFactory()
 
-    schedule_item = schedule_item_factory(
+    schedule_item = ScheduleItemFactory(
         status=ScheduleItem.STATUS.waiting_confirmation,
         speaker_invitation_notes="",
         submission=submission,
         type=ScheduleItem.TYPES.submission,
         conference=submission.conference,
-        slot=slot_factory(
-            day=day_factory(conference=submission.conference), hour="10:00", duration=30
+        slot=SlotFactory(
+            day=DayFactory(conference=submission.conference), hour="10:00", duration=30
         ),
     )
 
@@ -273,14 +259,14 @@ def test_random_user_cannot_update_an_invitation(
 
 
 def test_cannot_update_schedule_if_submission_doesnt_have_a_matching_schedule(
-    submission_factory, graphql_client, user, mocker
+    graphql_client, user, mocker
 ):
     mock_event = mocker.patch(
         "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
     )
 
     graphql_client.force_login(user)
-    submission = submission_factory(
+    submission = SubmissionFactory(
         speaker_id=user.id,
     )
 
@@ -308,27 +294,23 @@ def test_cannot_update_schedule_if_submission_doesnt_have_a_matching_schedule(
 
 
 def test_requires_authentication(
-    submission_factory,
     graphql_client,
-    schedule_item_factory,
-    slot_factory,
-    day_factory,
     mocker,
 ):
     mock_event = mocker.patch(
         "api.schedule.mutations.update_schedule_invitation.notify_new_schedule_invitation_answer_slack"
     )
 
-    submission = submission_factory()
+    submission = SubmissionFactory()
 
-    schedule_item = schedule_item_factory(
+    schedule_item = ScheduleItemFactory(
         status=ScheduleItem.STATUS.waiting_confirmation,
         speaker_invitation_notes="",
         submission=submission,
         type=ScheduleItem.TYPES.submission,
         conference=submission.conference,
-        slot=slot_factory(
-            day=day_factory(conference=submission.conference), hour="10:00", duration=30
+        slot=SlotFactory(
+            day=DayFactory(conference=submission.conference), hour="10:00", duration=30
         ),
     )
 
@@ -358,12 +340,8 @@ def test_requires_authentication(
 
 
 def test_staff_can_update_invitation_answer(
-    submission_factory,
     graphql_client,
     admin_user,
-    schedule_item_factory,
-    slot_factory,
-    day_factory,
     mocker,
 ):
     mock_event = mocker.patch(
@@ -374,14 +352,14 @@ def test_staff_can_update_invitation_answer(
     )
 
     graphql_client.force_login(admin_user)
-    submission = submission_factory()
+    submission = SubmissionFactory()
 
-    schedule_item = schedule_item_factory(
+    schedule_item = ScheduleItemFactory(
         submission=submission,
         type=ScheduleItem.TYPES.submission,
         conference=submission.conference,
-        slot=slot_factory(
-            day=day_factory(conference=submission.conference), hour="10:00", duration=30
+        slot=SlotFactory(
+            day=DayFactory(conference=submission.conference), hour="10:00", duration=30
         ),
     )
 

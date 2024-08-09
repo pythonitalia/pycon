@@ -1,10 +1,11 @@
+from organizers.tests.factories import OrganizerFactory
 import factory
 import factory.fuzzy
-import pytz
+from pycon.constants import UTC
+
 from django.utils import timezone
 from factory.django import DjangoModelFactory
-from pytest_factoryboy import register
-
+import zoneinfo
 from conferences.models import (
     AudienceLevel,
     Conference,
@@ -21,16 +22,16 @@ from users.tests.factories import UserFactory
 from submissions.models import SubmissionType
 
 
-@register
 class ConferenceFactory(DjangoModelFactory):
+    organizer = factory.SubFactory(OrganizerFactory)
     name = LanguageFactory("name")
     code = factory.Faker("text", max_nb_chars=10)
     introduction = LanguageFactory("sentence")
 
-    start = factory.Faker("past_datetime", tzinfo=pytz.UTC)
-    end = factory.Faker("future_datetime", tzinfo=pytz.UTC)
+    start = factory.Faker("past_datetime", tzinfo=UTC)
+    end = factory.Faker("future_datetime", tzinfo=UTC)
 
-    timezone = pytz.timezone("Europe/Rome")
+    timezone = zoneinfo.ZoneInfo("Europe/Rome")
 
     pretix_organizer_id = "base-pretix-organizer-id"
     pretix_event_id = "base-pretix-event-id"
@@ -155,7 +156,6 @@ class ConferenceFactory(DjangoModelFactory):
         django_get_or_create = ("code",)
 
 
-@register
 class TopicFactory(DjangoModelFactory):
     name = factory.Faker("word")
 
@@ -164,21 +164,19 @@ class TopicFactory(DjangoModelFactory):
         django_get_or_create = ("name",)
 
 
-@register
 class DeadlineFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     type = factory.fuzzy.FuzzyChoice([deadline[0] for deadline in Deadline.TYPES])
     name = LanguageFactory("sentence")
     description = LanguageFactory("sentence")
 
-    start = factory.Faker("past_datetime", tzinfo=pytz.UTC)
-    end = factory.Faker("future_datetime", tzinfo=pytz.UTC)
+    start = factory.Faker("past_datetime", tzinfo=UTC)
+    end = factory.Faker("future_datetime", tzinfo=UTC)
 
     class Meta:
         model = Deadline
 
 
-@register
 class AudienceLevelFactory(DjangoModelFactory):
     name = factory.fuzzy.FuzzyChoice(("Beginner", "Intermidiate", "Advanced"))
 
@@ -187,7 +185,6 @@ class AudienceLevelFactory(DjangoModelFactory):
         django_get_or_create = ("name",)
 
 
-@register
 class DurationFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
 
@@ -199,7 +196,6 @@ class DurationFactory(DjangoModelFactory):
         model = Duration
 
 
-@register
 class KeynoteFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     slug = LanguageFactory("slug")
@@ -210,7 +206,6 @@ class KeynoteFactory(DjangoModelFactory):
         model = Keynote
 
 
-@register
 class KeynoteSpeakerFactory(DjangoModelFactory):
     keynote = factory.SubFactory(KeynoteFactory)
     bio = "{}"
@@ -221,7 +216,6 @@ class KeynoteSpeakerFactory(DjangoModelFactory):
         model = KeynoteSpeaker
 
 
-@register
 class SpeakerVoucherFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
     voucher_type = SpeakerVoucher.VoucherType.SPEAKER

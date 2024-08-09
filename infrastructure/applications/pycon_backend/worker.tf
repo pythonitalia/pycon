@@ -30,7 +30,7 @@ locals {
     },
     {
       name  = "ALLOWED_HOSTS",
-      value = "admin.pycon.it,2024.pycon.it,2025.pycon.it"
+      value = ".pycon.it"
     },
     {
       name  = "DJANGO_SETTINGS_MODULE",
@@ -85,10 +85,6 @@ locals {
       value = module.secrets.value.pinpoint_application_id
     },
     {
-      name  = "SQS_QUEUE_URL",
-      value = aws_sqs_queue.queue.id
-    },
-    {
       name  = "MAILCHIMP_SECRET_KEY",
       value = module.common_secrets.value.mailchimp_secret_key
     },
@@ -122,7 +118,7 @@ locals {
     },
     {
       name  = "CACHE_URL",
-      value = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/8" : "locmemcache://snowflake"
+      value = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/8" : "redis://${data.aws_instance.redis.private_ip}/13"
     },
     {
       name  = "STRIPE_WEBHOOK_SIGNATURE_SECRET",
@@ -154,11 +150,11 @@ locals {
     },
     {
       name  = "CELERY_BROKER_URL",
-      value = "redis://${data.aws_instance.redis.private_ip}/5"
+      value = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/5" : "redis://${data.aws_instance.redis.private_ip}/14"
     },
     {
       name  = "CELERY_RESULT_BACKEND",
-      value = "redis://${data.aws_instance.redis.private_ip}/6"
+      value = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/6" : "redis://${data.aws_instance.redis.private_ip}/15"
     },
     {
       name  = "ENV",
@@ -183,8 +179,45 @@ locals {
     {
       name = "CLAMAV_HOST",
       value = module.secrets.value.clamav_host
+    },
+    {
+      name = "ECS_NETWORK_CONFIG",
+      value = jsonencode({
+        subnets = [data.aws_subnet.public_1a.id],
+        security_groups = [
+          data.aws_security_group.rds.id,
+          data.aws_security_group.lambda.id,
+          aws_security_group.instance.id
+        ],
+      })
+    },
+    {
+      name = "ECS_SERVICE_ROLE",
+      value = aws_iam_role.ecs_service.arn
     }
   ]
+}
+
+resource "aws_iam_role" "ecs_service" {
+  name = "pythonit-${terraform.workspace}-ecs-service"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "ecs.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "volume_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSInfrastructureRolePolicyForVolumes"
+  role       = aws_iam_role.ecs_service.name
 }
 
 resource "aws_ecs_cluster" "worker" {
@@ -197,6 +230,20 @@ data "aws_subnet" "private_1a" {
   filter {
     name   = "tag:Type"
     values = ["private"]
+  }
+
+  filter {
+    name   = "tag:AZ"
+    values = ["eu-central-1a"]
+  }
+}
+
+data "aws_subnet" "public_1a" {
+  vpc_id = data.aws_vpc.default.id
+
+  filter {
+    name   = "tag:Type"
+    values = ["public"]
   }
 
   filter {
@@ -229,6 +276,20 @@ resource "aws_instance" "instance_1" {
   iam_instance_profile = aws_iam_instance_profile.worker.name
   key_name             = "pretix"
 
+  dynamic "instance_market_options" {
+    for_each = terraform.workspace == "production" ? [] : [1]
+
+    content {
+      market_type = "spot"
+
+      spot_options {
+        max_price = 0.0031
+        spot_instance_type = "persistent"
+        instance_interruption_behavior = "stop"
+      }
+    }
+  }
+
   root_block_device {
     volume_size = 20
   }
@@ -257,7 +318,7 @@ resource "aws_ecs_task_definition" "worker" {
       ]
 
       command = [
-        "-A", "pycon", "worker", "-c", "2", "-l", "info"
+        "-A", "pycon", "worker", "-l", "info", "-E"
       ]
 
       environment = local.env_vars

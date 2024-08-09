@@ -1,11 +1,12 @@
+from submissions.tests.factories import SubmissionFactory
 from pytest import mark
 
 from i18n.strings import LazyI18nString
 
 
 @mark.django_db
-def test_slug_is_not_regenerated_when_changing_title(submission_factory):
-    submission = submission_factory(title=LazyI18nString({"en": "hello", "it": "hell"}))
+def test_slug_is_not_regenerated_when_changing_title():
+    submission = SubmissionFactory(title=LazyI18nString({"en": "hello", "it": "hell"}))
     assert submission.slug == "hello"
 
     submission.title = LazyI18nString({"en": "ciao", "it": "cia"})

@@ -1,4 +1,4 @@
-import { CmsMap } from "~/types";
+import type { CmsMap } from "~/types";
 
 export const MapBlock = ({ link, image, ...props }: CmsMap) => {
   return (

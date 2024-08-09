@@ -1,5 +1,7 @@
 import datetime
 
+from schedule.tests.factories import DayFactory, ScheduleItemFactory, SlotFactory
+from submissions.tests.factories import SubmissionFactory
 from pytest import mark
 
 from schedule.models import ScheduleItem
@@ -8,26 +10,22 @@ pytestmark = mark.django_db
 
 
 def test_fetch_an_invitation(
-    submission_factory,
     graphql_client,
     user,
-    schedule_item_factory,
-    slot_factory,
-    day_factory,
 ):
     graphql_client.force_login(user)
-    submission = submission_factory(
+    submission = SubmissionFactory(
         speaker=user,
     )
 
-    schedule_item_factory(
+    ScheduleItemFactory(
         status=ScheduleItem.STATUS.confirmed,
         speaker_invitation_notes="notes",
         submission=submission,
         type=ScheduleItem.TYPES.submission,
         conference=submission.conference,
-        slot=slot_factory(
-            day=day_factory(
+        slot=SlotFactory(
+            day=DayFactory(
                 day=datetime.date(2020, 10, 10), conference=submission.conference
             ),
             hour=datetime.time(10, 10, 0),
@@ -58,24 +56,20 @@ def test_fetch_an_invitation(
 
 
 def test_random_user_cannot_fetch_the_invite(
-    submission_factory,
     graphql_client,
     user,
-    schedule_item_factory,
-    slot_factory,
-    day_factory,
 ):
     graphql_client.force_login(user)
-    submission = submission_factory()
+    submission = SubmissionFactory()
 
-    schedule_item_factory(
+    ScheduleItemFactory(
         status=ScheduleItem.STATUS.confirmed,
         speaker_invitation_notes="notes",
         submission=submission,
         type=ScheduleItem.TYPES.submission,
         conference=submission.conference,
-        slot=slot_factory(
-            day=day_factory(
+        slot=SlotFactory(
+            day=DayFactory(
                 day=datetime.date(2020, 10, 10), conference=submission.conference
             ),
             hour=datetime.time(10, 10, 0),
@@ -102,24 +96,20 @@ def test_random_user_cannot_fetch_the_invite(
 
 
 def test_staff_can_fetch_the_invite(
-    submission_factory,
     graphql_client,
     admin_user,
-    schedule_item_factory,
-    slot_factory,
-    day_factory,
 ):
     graphql_client.force_login(admin_user)
-    submission = submission_factory()
+    submission = SubmissionFactory()
 
-    schedule_item_factory(
+    ScheduleItemFactory(
         status=ScheduleItem.STATUS.confirmed,
         speaker_invitation_notes="notes",
         submission=submission,
         type=ScheduleItem.TYPES.submission,
         conference=submission.conference,
-        slot=slot_factory(
-            day=day_factory(
+        slot=SlotFactory(
+            day=DayFactory(
                 day=datetime.date(2020, 10, 10), conference=submission.conference
             ),
             hour=datetime.time(10, 10, 0),
@@ -145,22 +135,18 @@ def test_staff_can_fetch_the_invite(
 
 
 def test_requires_authentication(
-    submission_factory,
     graphql_client,
-    schedule_item_factory,
-    slot_factory,
-    day_factory,
 ):
-    submission = submission_factory()
+    submission = SubmissionFactory()
 
-    schedule_item_factory(
+    ScheduleItemFactory(
         status=ScheduleItem.STATUS.confirmed,
         speaker_invitation_notes="notes",
         submission=submission,
         type=ScheduleItem.TYPES.submission,
         conference=submission.conference,
-        slot=slot_factory(
-            day=day_factory(
+        slot=SlotFactory(
+            day=DayFactory(
                 day=datetime.date(2020, 10, 10), conference=submission.conference
             ),
             hour=datetime.time(10, 10, 0),

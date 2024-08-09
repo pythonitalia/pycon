@@ -324,10 +324,9 @@ Let's get in touch to find the best solution for your business' needs!`,
       "Don't forget that the voting session will open soon! If you have proposed a talk or if you have bought a ticket you can see all the submitted talks and vote for them!",
     "cfp.closed.buyTicket": "Buy your ticket now!",
     "cfp.yourProposals": "Your proposals",
-    "cfp.pageTitle": "Make a proposal",
+    "cfp.pageTitle": "Submit your proposal",
     "cfp.loading": "Please wait",
-    "cfp.introductionHeading": "Make a proposal",
-    "cfp.introductionSubtitle": "PyCon Italia is looking for you!",
+    "cfp.introductionHeading": "Submit your proposal",
     "cfp.introductionCopy":
       "PyCon Italia is seeking speakers of all experience levels and backgrounds to contribute to our conference program! If you use Python professionally, as a hobbyist or are just excited about Python or programming and open source communities, we’d love to hear from you. We want you and your ideas at PyCon Italia!",
     "cfp.introductionDeadline":
@@ -351,14 +350,15 @@ Let's get in touch to find the best solution for your business' needs!`,
       "This description will be seen by reviewers and the audience. You should make the description as compelling and exciting as possible - remember, you’re selling the idea to the organisers as well as appealing to attendees",
     "cfp.notesLabel": "Notes",
     "cfp.notesDescription":
-      "Notes will only be seen by organizers. This is where you should explain things such as technical requirements. Feel free to add them in Italian or English.",
+      "This is where you should explain things such as technical requirements. Notes will only be seen by organizers so feel free to write them in Italian or English.",
     "cfp.trackLabel": "Track",
     "cfp.topicDescription": "What this proposal is about?",
     "cfp.submit": "Submit",
     "cfp.minutes": "minutes",
     "cfp.languagesLabel": "Languages",
     "cfp.languagesDescription":
-      "You can submit a proposal in multiple languages if you want. Voters will see the language that fits their preferences. Don't duplicate your proposals per language or they might be cancelled.",
+      "You can submit your proposal in multiple languages, and voters will see it in their preferred language. Avoid submitting duplicate proposals in different languages, as that will lead to cancellation.",
+    "cfp.titleDescription": "The title of your proposal",
     "cfp.viewSubmission": "Open submission",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
@@ -382,7 +382,7 @@ Let's get in touch to find the best solution for your business' needs!`,
       "Link to a previous talk you delivered. This is not required, but it is of great help for the program committee and will not be publicly visible.",
     "cfp.aboutYou": "About you",
     "cfp.aboutYouDescription":
-      "This section is all about you. This section is shared between all your proposals.",
+      "Let us know more about you! Any information you share here won't be publicly visible and will only be used by the program committee.",
     "cfp.shortSocialSummaryLabel": "Short social summary",
     "cfp.shortSocialSummaryDescription":
       "Optionally, you can leave a short summary that we could use to promote your proposal on our socials, if accepted.",
@@ -402,13 +402,14 @@ Let's get in touch to find the best solution for your business' needs!`,
     "cfp.speakerLinkedinUrlDescription": "Linkedin Profile URL",
     "cfp.speakerFacebookUrlDescription": "Facebook Profile URL",
     "cfp.speakerMastodonHandleDescription": "Mastodon Handle",
+    "fileInput.placeholder": "Select a file",
     "fileInput.fileSize": "Maximum allowed size is 1MB",
     "fileInput.uploadFailed": "Something went wrong while trying to upload",
     "fileInput.uploading": "Uploading...",
     "cfp.grantsLabel": "Do you need a grant?",
     "cfp.grantsCheckbox":
       "If financial support is needed for attending the conference, {grantsCta}! We won't accept grant requests after the grants deadline. Make sure you submit your proposal as well.",
-    "cfp.grantsCta": "click here to open a separate page to submit the request",
+    "cfp.grantsCta": "click here to open a separate page to request a grant",
     "header.coronaVirus":
       "🚨 Update regarding COVID-19 - Conference cancelled 😢",
     "header.dashboard": "Dashboard",
@@ -521,15 +522,8 @@ Let's get in touch to find the best solution for your business' needs!`,
     "tickets.checkout.voucher.fetching": "Fetching voucher...",
     "tickets.checkout.voucher.noProductsAffected": "No products affected",
 
-    "profile.publicProfile.optInDescription":
-      "You can make your profile public and let other attendee see your personal details when they scan your badge's QR Code. {viewProfile}",
-    "profile.publicProfile.viewProfile": "Click here to view your profile!",
     "profile.edit.success": "Profile updated!",
 
-    "profile.publicProfile.optedOut":
-      "Your profile is currently private. Tick here to make it public.",
-    "profile.publicProfile.optedIn":
-      "Your profile is currently public. Tick here to make it private.",
     "profile.publicProfile.heading": "Your public profile",
 
     "tickets.checkout.title": "Checkout",
@@ -1197,8 +1191,8 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "cfp.talk": "Talk",
     "cfp.tutorial": "Tutorial",
     "cfp.title": "Titolo",
+    "cfp.titleDescription": "Il titolo della tua proposta",
     "cfp.introductionHeading": "Invia una proposta",
-    "cfp.introductionSubtitle": "PyCon Italia cerca te!",
     "cfp.introductionCopy":
       "PyCon Italia è alla ricerca di speakers con ogni background per contribuire al nostro progamma. Se usi Python professionalmente, come hobbista o se semplicemente sei un appassionato di Python o programmazione, proponi un talk! Vogliamo sentire ciò che hai da condividere!",
     "cfp.introductionDeadline":
@@ -1764,6 +1758,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "cfp.socialsLabel": "Socials",
     "cfp.speakerTwitterHandleDescription":
       "Lascia qui i tuoi contatti e li useremo per taggarti sui social quando annunceremo la tua proposal!{br}{br}Twitter Handle",
+    "fileInput.placeholder": "Carica un file",
     "fileInput.fileSize": "Dimensione massima 1MB",
     "fileInput.uploadFailed": "Qualcosa è andato storto!",
     "cfp.grantsLabel": "Hai bisogno di un grant?",
@@ -2055,16 +2050,8 @@ Affrettati a comprare il biglietto!`,
 
     "profile.tickets.noDetails": "Divertiti! 🍻",
 
-    "profile.publicProfile.optInDescription":
-      "Puoi rendere il tuo profilo pubblico cosi da farlo vedere ai partecipanti quando scannerizzano il tuo QR Code. {viewProfile}",
-    "profile.publicProfile.viewProfile":
-      "Clicca qui per vedere il tuo profilo!",
     "profile.edit.success": "Profilo aggiornato!",
 
-    "profile.publicProfile.optedOut":
-      "Il tuo profilo è privato. Clicca qui per renderlo pubblico.",
-    "profile.publicProfile.optedIn":
-      "Il tuo profilo è pubblico. Clicca qui per renderlo privato.",
     "profile.publicProfile.heading": "Profilo pubblico",
 
     "profile.publicProfile.yourPhoto": "La tua foto",

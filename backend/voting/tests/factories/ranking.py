@@ -1,19 +1,18 @@
 import random
 
 import factory
-import pytz
+
 from factory import post_generation
-from pytest_factoryboy import register
 
 from conferences.tests.factories import ConferenceFactory
 from submissions.tests.factories import SubmissionFactory, SubmissionTagFactory
 from voting.models import RankRequest, RankSubmission
+from pycon.constants import UTC
 
 
-@register
 class RankRequestFactory(factory.django.DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
-    created = factory.Faker("past_datetime", tzinfo=pytz.UTC)
+    created = factory.Faker("past_datetime", tzinfo=UTC)
     is_public = True
 
     class Meta:
@@ -44,7 +43,6 @@ class RankRequestFactory(factory.django.DjangoModelFactory):
             obj.save()
 
 
-@register
 class RankSubmissionFactory(factory.django.DjangoModelFactory):
     rank_request = factory.SubFactory(RankRequestFactory)
     submission = factory.SubFactory(SubmissionFactory)

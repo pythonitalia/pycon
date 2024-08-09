@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 
 import { createClient } from "~/apollo/create-client";
 import { Logo } from "~/components/logo";
-import { Language } from "~/locale/languages";
+import type { Language } from "~/locale/languages";
 import { querySocialCard } from "~/types";
 
 export const config = {

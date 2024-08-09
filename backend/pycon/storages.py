@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from files_upload.constants import get_max_upload_size_bytes
 import boto3
 from storages.backends.s3boto3 import S3Boto3Storage
-from tempfile import SpooledTemporaryFile
 from django.core.files.storage.memory import InMemoryStorage
 from django.core.files.storage import FileSystemStorage
 from django.urls import reverse
@@ -59,12 +58,6 @@ class CustomS3Boto3Storage(S3Boto3Storage):
             fields=response["fields"],
             is_public=file_obj.is_public,
         )
-
-    def _save(self, name, content):
-        content.seek(0)
-        with SpooledTemporaryFile() as tmp:
-            tmp.write(content.read())
-            return super()._save(name, tmp)
 
 
 class CustomInMemoryStorage(InMemoryStorage):

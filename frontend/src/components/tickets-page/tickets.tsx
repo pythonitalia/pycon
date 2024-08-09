@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { useRouter } from "next/router";
 
-import {
+import type {
   CheckoutCategory,
   CurrentUserQueryResult,
   TicketItem,

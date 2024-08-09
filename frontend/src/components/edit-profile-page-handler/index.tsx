@@ -20,9 +20,9 @@ import {
 } from "~/types";
 
 import { ErrorsList } from "../errors-list";
+import { PublicProfileCard } from "../public-profile-card";
 import { EmailPreferencesCard } from "./email-preferences-card";
 import { MainProfileCard } from "./main-profile-card";
-import { PublicProfileCard } from "./public-profile-card";
 import type { MeUserFields } from "./types";
 
 const schema = yup.object().shape({
@@ -184,8 +184,8 @@ export const EditProfilePageHandler = () => {
             },
             updateParticipantInput: {
               conference: process.env.conferenceCode,
-              publicProfile: formState.values.participantPublicProfile,
-              photo: formState.values.participantPhoto,
+              publicProfile: true,
+              photo: formState.values.participantPhoto ?? "",
               bio: formState.values.participantBio,
               website: formState.values.participantWebsite,
               speakerLevel: formState.values.participantSpeakerLevel,
@@ -241,7 +241,6 @@ export const EditProfilePageHandler = () => {
 
           <PublicProfileCard
             me={profileData.me}
-            formState={formState}
             formOptions={formOptions}
             getParticipantValidationError={getParticipantValidationError}
           />

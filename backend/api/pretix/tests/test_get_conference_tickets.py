@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from conferences.tests.factories import ConferenceFactory
 import pytest
 from django.test import override_settings
 from django.utils import timezone
@@ -12,7 +13,8 @@ pytestmark = pytest.mark.django_db
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
-def test_get_conference_tickets_no_tickets(conference, requests_mock):
+def test_get_conference_tickets_no_tickets(requests_mock):
+    conference = ConferenceFactory()
     requests_mock.get(
         "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
         json={"results": []},
@@ -35,13 +37,13 @@ def test_get_conference_tickets_no_tickets(conference, requests_mock):
 
 @override_settings(PRETIX_API="https://pretix/api/")
 def test_get_conference_tickets(
-    conference,
     requests_mock,
     pretix_items,
     pretix_questions,
     pretix_categories,
     pretix_quotas,
 ):
+    conference = ConferenceFactory()
     requests_mock.get(
         "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
         json=pretix_items,
@@ -98,13 +100,13 @@ def test_get_conference_tickets(
 
 @override_settings(PRETIX_API="https://pretix/api/")
 def test_get_conference_tickets_hides_when_available_from_is_future(
-    conference,
     requests_mock,
     pretix_items,
     pretix_questions,
     pretix_categories,
     pretix_quotas,
 ):
+    conference = ConferenceFactory()
     for item in pretix_items["results"]:
         item["available_from"] = (timezone.now() + timedelta(days=1)).isoformat()
         item["available_until"] = None
@@ -133,13 +135,14 @@ def test_get_conference_tickets_hides_when_available_from_is_future(
 
 @override_settings(PRETIX_API="https://pretix/api/")
 def test_get_conference_tickets_hides_when_available_until_is_past(
-    conference,
     requests_mock,
     pretix_items,
     pretix_questions,
     pretix_categories,
     pretix_quotas,
 ):
+    conference = ConferenceFactory()
+
     for item in pretix_items["results"]:
         item["available_from"] = None
         item["available_until"] = (timezone.now() - timedelta(days=1)).isoformat()

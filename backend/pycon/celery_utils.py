@@ -10,16 +10,16 @@ import redis
 logger = logging.getLogger(__name__)
 
 
-def renew_lock(lock, interval, _stop_event):
+def renew_lock(lock, interval, _stop_event, extend_time):
     while not _stop_event.wait(timeout=interval):
-        if not lock.locked:
+        if not lock.owned():
             return
 
         if _stop_event.is_set():
             return
 
         try:
-            lock.extend(interval, replace_ttl=True)
+            lock.extend(extend_time, replace_ttl=True)
         except Exception as e:
             logger.exception("Error renewing lock: %s", e)
             break
@@ -71,7 +71,7 @@ class OnlyOneAtTimeTask(Task):
         self._stop_event = threading.Event()
 
         self.renewer_thread = threading.Thread(
-            target=renew_lock, args=(self.lock, self.timeout / 2, self._stop_event)
+            target=renew_lock, args=(self.lock, 10, self._stop_event, self.timeout)
         )
         self.renewer_thread.daemon = True
         self.renewer_thread.start()

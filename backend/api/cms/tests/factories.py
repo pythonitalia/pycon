@@ -18,14 +18,9 @@ from wagtail_factories import (
 from wagtail.models import Site
 import factory
 from decimal import Decimal
-from pytest_factoryboy import register
 from wagtail.rich_text import RichText
 
 
-register(PageFactory)
-
-
-@register
 class MapFactory(StructBlockFactory):
     latitude = Decimal(43.766200)
     longitude = Decimal(11.272250)
@@ -35,7 +30,6 @@ class MapFactory(StructBlockFactory):
         model = Map
 
 
-@register
 class TextSectionFactory(StructBlockFactory):
     title = factory.SubFactory(CharBlockFactory)
     subtitle = factory.SubFactory(CharBlockFactory)
@@ -50,7 +44,6 @@ class TextSectionFactory(StructBlockFactory):
         p = factory.Faker("text", max_nb_chars=300)
 
 
-@register
 class SimpleTextCardFactory(StructBlockFactory):
     title = factory.SubFactory(CharBlockFactory)
     body = factory.LazyAttribute(lambda o: RichText(f"<h2>{o.h2}</h2>" f"<p>{o.p}</p>"))
@@ -63,13 +56,11 @@ class SimpleTextCardFactory(StructBlockFactory):
         p = factory.Faker("text", max_nb_chars=300)
 
 
-@register
 class HomepageHeroFactory(StructBlockFactory):
     class Meta:
         model = HomepageHero
 
 
-@register
 class SliderCardsSectionFactory(StreamBlockFactory):
     cards = factory.SubFactory(SimpleTextCardFactory)
 
@@ -77,7 +68,6 @@ class SliderCardsSectionFactory(StreamBlockFactory):
         model = SliderCardsSection
 
 
-@register
 class BodyBlockFactory(StreamBlockFactory):
     text_section = factory.SubFactory(TextSectionFactory)
     map = factory.SubFactory(MapFactory)
@@ -86,7 +76,6 @@ class BodyBlockFactory(StreamBlockFactory):
         model = BodyBlock
 
 
-@register
 class GenericPageFactory(PageFactory):
     body = StreamFieldFactory(BodyBlockFactory)
 
@@ -94,7 +83,6 @@ class GenericPageFactory(PageFactory):
         model = GenericPage
 
 
-@register
 class SiteFactory(SiteFactory):
     """
     Overrides wagtail_factories.SiteFactory to use "testserver" as hostname

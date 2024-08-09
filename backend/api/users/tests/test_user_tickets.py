@@ -1,3 +1,4 @@
+from conferences.tests.factories import ConferenceFactory
 import pytest
 from django.test import override_settings
 
@@ -8,14 +9,13 @@ pytestmark = pytest.mark.django_db
 @override_settings(PRETIX_API="https://pretix/api/")
 def test_get_user_tickets(
     user,
-    conference_factory,
     requests_mock,
     pretix_user_tickets,
     pretix_categories,
     pretix_questions,
     graphql_client,
 ):
-    conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
+    conference = ConferenceFactory(pretix_organizer_id="org", pretix_event_id="event")
 
     requests_mock.get(
         f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets?attendee_email={user.email}",
@@ -117,7 +117,6 @@ def test_get_user_tickets(
 @override_settings(PRETIX_API="https://pretix/api/")
 def test_get_user_tickets_returns_all_tickets(
     user,
-    conference_factory,
     requests_mock,
     pretix_user_tickets,
     pretix_user_non_admission_ticket,
@@ -125,7 +124,7 @@ def test_get_user_tickets_returns_all_tickets(
     pretix_questions,
     graphql_client,
 ):
-    conference = conference_factory(pretix_organizer_id="org", pretix_event_id="event")
+    conference = ConferenceFactory(pretix_organizer_id="org", pretix_event_id="event")
 
     requests_mock.get(
         f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets?attendee_email={user.email}",
