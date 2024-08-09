@@ -96,7 +96,6 @@ const GrantReply = () => {
           input: {
             instance: grant?.id,
             status: formState.values.option,
-            message: formState.values.message,
           },
         },
       });
