@@ -38,7 +38,8 @@ export type ProductState = {
   variation?: string;
   id: string;
   answers: { [id: string]: string };
-  attendeeName: string;
+  attendeeGivenName: string;
+  attendeeFamilyName: string;
   attendeeEmail: string;
   admission?: boolean;
   voucher?: Voucher | null;

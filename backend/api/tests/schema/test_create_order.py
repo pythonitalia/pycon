@@ -53,7 +53,13 @@ def test_cannot_create_order_unlogged(graphql_client):
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -96,7 +102,13 @@ def test_calls_create_order(graphql_client, user, mocker):
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -157,7 +169,13 @@ def test_handles_payment_url_set_to_none(graphql_client, user, mocker):
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -202,7 +220,13 @@ def test_handles_errors(graphql_client, user, mocker):
         input={
             "tickets": [
                 {
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "ticketId": "1",
                     "variation": "1",
@@ -266,7 +290,13 @@ def test_invoice_validation_fails_without_required_field_in_country_italy(
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -322,7 +352,13 @@ def test_invoice_validation_fails_with_missing_required_fields(
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -360,7 +396,13 @@ def test_fiscal_code_not_required_for_non_it_orders(graphql_client, user, mocker
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -407,7 +449,13 @@ def test_invoice_validation_fails_with_invalid_fiscal_code_in_country_italy(
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -455,7 +503,13 @@ def test_invoice_validation_checks_pec_email_if_provided(graphql_client, user, m
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -506,7 +560,13 @@ def test_invoice_validation_fails_with_empty_vat_for_businesses(
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -556,7 +616,13 @@ def test_invoice_validation_fails_with_empty_business_name_for_businesses(
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -606,7 +672,13 @@ def test_invoice_validation_fails_with_invalid_country_code(
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -656,7 +728,13 @@ def test_invoice_validation_fails_when_italian_business_and_no_sdi(
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -707,7 +785,13 @@ def test_invoice_validation_fails_when_italian_business_with_invalid_sdi(
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -758,7 +842,13 @@ def test_invoice_validation_fails_when_italian_zipcode_is_invalid(
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -809,7 +899,13 @@ def test_invoice_validation_works_when_not_italian_and_no_sdi(
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -871,7 +967,13 @@ def test_create_order_billing_address_stores_both_non_and_business(
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],
@@ -937,7 +1039,13 @@ def test_create_order_updates_billing_address(graphql_client, user, mocker):
             "tickets": [
                 {
                     "ticketId": "1",
-                    "attendeeName": "ABC",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "ABC",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
                     "attendeeEmail": "patrick.arminio@gmail.com",
                     "variation": "1",
                     "answers": [{"questionId": "1", "value": "Example"}],

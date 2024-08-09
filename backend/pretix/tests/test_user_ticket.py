@@ -10,7 +10,7 @@ def test_user_ticket(requests_mock, user, pretix_user_tickets):
     pretix_user_tickets[0]["attendee_email"] = user.email.upper()
 
     requests_mock.get(
-        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets?attendee_email={user.email}",
+        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets/?attendee_email={user.email}",
         json=pretix_user_tickets,
     )
 
