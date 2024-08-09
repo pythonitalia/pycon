@@ -119,6 +119,16 @@ export const ProfilePageHandler = () => {
       icon: "circle",
       iconBackground: "purple",
     },
+    {
+      id: "grants",
+      link: createHref({
+        path: "/profile/my-grant",
+        locale: language,
+      }),
+      label: <FormattedMessage id="profile.myGrant" />,
+      icon: "star",
+      iconBackground: "yellow",
+    },
     isStaffOrSponsor
       ? {
           id: "sponsors",
