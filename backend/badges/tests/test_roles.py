@@ -63,7 +63,7 @@ def test_get_all_speakers_user_ids():
 def test_get_roles(requests_mock, voucher_tag, voucher_code, expected_roles):
     conference = ConferenceFactory()
     requests_mock.get(
-        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
+        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers/",
         status_code=200,
         json={
             "next": None,
@@ -89,7 +89,7 @@ def test_get_roles_for_speaker_without_voucher(requests_mock):
     ScheduleItemFactory(type="talk", conference=conference, submission=submission)
 
     requests_mock.get(
-        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
+        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers/",
         status_code=200,
         json={"next": None, "results": []},
     )
@@ -114,7 +114,7 @@ def test_get_roles_with_manual_user_id_override(requests_mock):
     )
 
     requests_mock.get(
-        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
+        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers/",
         status_code=200,
         json={"next": None, "results": []},
     )
@@ -139,7 +139,7 @@ def test_get_roles_with_manual_user_id_when_they_have_no_ticket(requests_mock):
     )
 
     requests_mock.get(
-        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
+        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers/",
         status_code=200,
         json={"next": None, "results": []},
     )
@@ -160,7 +160,7 @@ def test_get_roles_with_manual_order_position_id_override(requests_mock):
     )
 
     requests_mock.get(
-        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
+        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers/",
         status_code=200,
         json={"next": None, "results": []},
     )
@@ -189,7 +189,7 @@ def test_get_roles_with_unrelated_override(requests_mock):
     )
 
     requests_mock.get(
-        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
+        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers/",
         status_code=200,
         json={"next": None, "results": []},
     )
@@ -208,13 +208,13 @@ def test_get_roles_with_unrelated_override(requests_mock):
 def test_get_conference_roles_for_user(requests_mock):
     conference = ConferenceFactory()
     requests_mock.get(
-        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
+        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers/",
         status_code=200,
         json={"next": None, "results": []},
     )
 
     requests_mock.get(
-        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/tickets/attendee-tickets",
+        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/tickets/attendee-tickets/",
         status_code=200,
         json=[
             {
@@ -240,7 +240,7 @@ def test_get_conference_roles_for_user_as_sponsor(requests_mock):
     user = UserFactory()
     conference = ConferenceFactory()
     requests_mock.get(
-        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers",
+        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/vouchers/",
         status_code=200,
         json={
             "next": None,
@@ -255,7 +255,7 @@ def test_get_conference_roles_for_user_as_sponsor(requests_mock):
     )
 
     requests_mock.get(
-        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/tickets/attendee-tickets",
+        f"{settings.PRETIX_API}organizers/base-pretix-organizer-id/events/base-pretix-event-id/tickets/attendee-tickets/",
         status_code=200,
         json=[
             {

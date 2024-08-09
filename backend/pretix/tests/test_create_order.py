@@ -1,3 +1,4 @@
+from api.pretix.types import AttendeeNameInput
 from conferences.tests.factories import ConferenceFactory
 import pytest
 from django.test import override_settings
@@ -39,7 +40,7 @@ def test_creates_order(requests_mock, invoice_information):
         json={"payments": [{"payment_url": "http://example.com"}], "code": 123},
     )
     requests_mock.get(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions/",
         json={
             "results": [
                 {"id": "1", "type": "S"},
@@ -48,7 +49,7 @@ def test_creates_order(requests_mock, invoice_information):
         },
     )
     requests_mock.get(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
         json={"results": [{"id": "123", "admission": True}]},
     )
 
@@ -60,7 +61,10 @@ def test_creates_order(requests_mock, invoice_information):
         tickets=[
             CreateOrderTicket(
                 ticket_id="123",
-                attendee_name="Example",
+                attendee_name=AttendeeNameInput(
+                    scheme="given_family",
+                    parts={"given_name": "John", "family_name": "Doe"},
+                ),
                 attendee_email="Example",
                 variation=None,
                 voucher=None,
@@ -86,11 +90,11 @@ def test_raises_when_response_is_400(requests_mock, invoice_information):
         json={},
     )
     requests_mock.get(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions/",
         json={"results": []},
     )
     requests_mock.get(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
         json={"results": [{"id": "123", "admission": False}]},
     )
 
@@ -102,7 +106,10 @@ def test_raises_when_response_is_400(requests_mock, invoice_information):
         tickets=[
             CreateOrderTicket(
                 ticket_id="123",
-                attendee_name="Example",
+                attendee_name=AttendeeNameInput(
+                    scheme="given_family",
+                    parts={"given_name": "John", "family_name": "Doe"},
+                ),
                 attendee_email="Example",
                 variation=None,
                 answers=None,
@@ -125,7 +132,7 @@ def test_raises_value_error_if_answer_value_is_wrong(
         json={"payments": [{"payment_url": "http://example.com"}], "code": 123},
     )
     requests_mock.get(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions/",
         json={
             "results": [
                 {"id": "1", "type": "S"},
@@ -134,7 +141,7 @@ def test_raises_value_error_if_answer_value_is_wrong(
         },
     )
     requests_mock.get(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
         json={"results": [{"id": "123", "admission": True}]},
     )
 
@@ -146,7 +153,10 @@ def test_raises_value_error_if_answer_value_is_wrong(
         tickets=[
             CreateOrderTicket(
                 ticket_id="123",
-                attendee_name="Example",
+                attendee_name=AttendeeNameInput(
+                    scheme="given_family",
+                    parts={"given_name": "John", "family_name": "Doe"},
+                ),
                 attendee_email="Example",
                 variation=None,
                 voucher=None,
@@ -172,7 +182,7 @@ def test_not_required_and_empty_answer_is_skipped(requests_mock, invoice_informa
     )
 
     requests_mock.get(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions/",
         json={
             "results": [
                 {"id": "1", "type": "S", "required": False},
@@ -187,7 +197,7 @@ def test_not_required_and_empty_answer_is_skipped(requests_mock, invoice_informa
     )
 
     requests_mock.get(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
         json={"results": [{"id": "123", "admission": True}]},
     )
 
@@ -199,7 +209,10 @@ def test_not_required_and_empty_answer_is_skipped(requests_mock, invoice_informa
         tickets=[
             CreateOrderTicket(
                 ticket_id="123",
-                attendee_name="Example",
+                attendee_name=AttendeeNameInput(
+                    scheme="given_family",
+                    parts={"given_name": "John", "family_name": "Doe"},
+                ),
                 attendee_email="Example",
                 variation=None,
                 voucher=None,
@@ -240,7 +253,7 @@ def test_create_order_with_positions_with_voucher_and_one_without(
         json={"payments": [{"payment_url": "http://example.com"}], "code": 123},
     )
     requests_mock.get(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions/",
         json={
             "results": [
                 {"id": "1", "type": "S"},
@@ -249,7 +262,7 @@ def test_create_order_with_positions_with_voucher_and_one_without(
         },
     )
     requests_mock.get(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
         json={"results": [{"id": "123", "admission": True}]},
     )
 
@@ -261,7 +274,10 @@ def test_create_order_with_positions_with_voucher_and_one_without(
         tickets=[
             CreateOrderTicket(
                 ticket_id="123",
-                attendee_name="Example",
+                attendee_name=AttendeeNameInput(
+                    scheme="given_family",
+                    parts={"given_name": "John", "family_name": "Doe"},
+                ),
                 attendee_email="Example",
                 variation=None,
                 voucher=None,
@@ -272,7 +288,10 @@ def test_create_order_with_positions_with_voucher_and_one_without(
             ),
             CreateOrderTicket(
                 ticket_id="123",
-                attendee_name="Example",
+                attendee_name=AttendeeNameInput(
+                    scheme="given_family",
+                    parts={"given_name": "John", "family_name": "Doe"},
+                ),
                 attendee_email="Example",
                 variation=None,
                 voucher="friendly-human-being",
@@ -302,7 +321,7 @@ def test_creates_order_with_additional_info_for_e_invoice(requests_mock):
         json={"payments": [{"payment_url": "http://example.com"}], "code": 123},
     )
     requests_mock.get(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions/",
         json={
             "results": [
                 {"id": "1", "type": "S"},
@@ -311,7 +330,7 @@ def test_creates_order_with_additional_info_for_e_invoice(requests_mock):
         },
     )
     requests_mock.get(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
         json={"results": [{"id": "123", "admission": True}]},
     )
 
@@ -340,7 +359,10 @@ def test_creates_order_with_additional_info_for_e_invoice(requests_mock):
         tickets=[
             CreateOrderTicket(
                 ticket_id="123",
-                attendee_name="Example",
+                attendee_name=AttendeeNameInput(
+                    scheme="given_family",
+                    parts={"given_name": "John", "family_name": "Doe"},
+                ),
                 attendee_email="Example",
                 variation=None,
                 voucher=None,
@@ -368,7 +390,7 @@ def test_creates_order_with_additional_info_for_e_invoice_does_not_break_on_erro
         json={"payments": [{"payment_url": "http://example.com"}], "code": 123},
     )
     requests_mock.get(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/questions/",
         json={
             "results": [
                 {"id": "1", "type": "S"},
@@ -377,7 +399,7 @@ def test_creates_order_with_additional_info_for_e_invoice_does_not_break_on_erro
         },
     )
     requests_mock.get(
-        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items",
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
         json={"results": [{"id": "123", "admission": True}]},
     )
 
@@ -407,7 +429,10 @@ def test_creates_order_with_additional_info_for_e_invoice_does_not_break_on_erro
         tickets=[
             CreateOrderTicket(
                 ticket_id="123",
-                attendee_name="Example",
+                attendee_name=AttendeeNameInput(
+                    scheme="given_family",
+                    parts={"given_name": "John", "family_name": "Doe"},
+                ),
                 attendee_email="Example",
                 variation=None,
                 voucher=None,

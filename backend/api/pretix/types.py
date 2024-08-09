@@ -1,4 +1,5 @@
 from __future__ import annotations
+from strawberry.scalars import JSON
 
 from datetime import datetime
 from enum import Enum
@@ -296,10 +297,33 @@ def get_questions_with_answers(questions: List[QuestionDict], data: OrderPositio
 
 
 @strawberry.type
+class AttendeeName:
+    parts: JSON
+    scheme: str
+
+    @classmethod
+    def from_pretix_api(cls, data):
+        scheme = data.pop("_scheme", data.pop("scheme", "legacy"))
+        return cls(
+            parts=data,
+            scheme=scheme,
+        )
+
+
+@strawberry.input
+class AttendeeNameInput:
+    parts: JSON
+    scheme: str
+
+    def to_pretix_api(self):
+        return self.parts
+
+
+@strawberry.type
 class AttendeeTicket:
     id: strawberry.ID
     hashid: strawberry.ID
-    name: Optional[str]
+    name: Optional[AttendeeName]
     email: Optional[str]
     secret: str
     variation: Optional[strawberry.ID]
@@ -335,7 +359,7 @@ class AttendeeTicket:
         return cls(
             id=data["id"],
             hashid=encode_hashid(data["id"]),
-            name=data["attendee_name"],
+            name=AttendeeName.from_pretix_api(data["attendee_name_parts"]),
             email=data["attendee_email"],
             secret=data["secret"],
             variation=data["variation"],
@@ -381,14 +405,14 @@ class AnswerInput:
 @strawberry.input
 class UpdateAttendeeTicketInput:
     id: strawberry.ID
-    name: str
+    name: AttendeeNameInput
     email: str
     answers: Optional[List[AnswerInput]] = None
 
     def to_json(self):
         data = {
             "attendee_email": self.email,
-            "attendee_name": self.name,
+            "attendee_name_parts": self.name.to_pretix_api(),
         }
 
         if self.answers is not None:

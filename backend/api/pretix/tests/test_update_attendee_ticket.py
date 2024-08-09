@@ -14,7 +14,7 @@ def test_cannot_update_ticket_if_i_am_not_the_owner(
     pretix_user_tickets[0]["attendee_email"] = "not@my.com"
 
     requests_mock.get(
-        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets?attendee_email={user.email}",
+        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets/?attendee_email={user.email}",
         json=pretix_user_tickets,
     )
 
@@ -34,7 +34,13 @@ def test_cannot_update_ticket_if_i_am_not_the_owner(
             "conference": conference.code,
             "input": {
                 "id": pretix_user_tickets[0]["id"],
-                "name": "Ester",
+                "name": {
+                    "parts": {
+                        "given_name": "Ester",
+                        "family_name": "",
+                    },
+                    "scheme": "given_family",
+                },
                 "email": "ester@pycon.it",
             },
         },
@@ -86,7 +92,13 @@ def test_invalid_data(graphql_client, mocker, requests_mock, user):
             "conference": conference.code,
             "input": {
                 "id": "999",
-                "name": " ",
+                "name": {
+                    "parts": {
+                        "given_name": "",
+                        "family_name": "",
+                    },
+                    "scheme": "given_family",
+                },
                 "email": " foo@",
                 "answers": [
                     {"answer": "No preferences", "question": "31", "options": ["344"]},
@@ -128,7 +140,7 @@ def test_update_ticket_with_answers(
     mocker.patch("pretix.is_ticket_owner", return_value=True)
 
     requests_mock.get(
-        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets?attendee_email={user.email}",
+        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets/?attendee_email={user.email}",
         [
             {
                 "json": [
@@ -156,11 +168,11 @@ def test_update_ticket_with_answers(
         json=update_user_ticket,
     )
     requests_mock.get(
-        "https://pretix/api/organizers/org/events/event/categories",
+        "https://pretix/api/organizers/org/events/event/categories/",
         json=pretix_categories,
     )
     requests_mock.get(
-        "https://pretix/api/organizers/org/events/event/questions",
+        "https://pretix/api/organizers/org/events/event/questions/",
         json=pretix_questions,
     )
 
@@ -171,7 +183,10 @@ def test_update_ticket_with_answers(
 
             ... on AttendeeTicket {
                 id
-                name
+                name {
+                    parts
+                    scheme
+                }
                 email
                 item {
                     questions {
@@ -191,7 +206,13 @@ def test_update_ticket_with_answers(
             "conference": conference.code,
             "input": {
                 "id": "999",
-                "name": "Jane",
+                "name": {
+                    "parts": {
+                        "given_name": "Jane",
+                        "family_name": "",
+                    },
+                    "scheme": "given_family",
+                },
                 "email": user.email,
                 "answers": [
                     {"answer": "No preferences", "question": "31", "options": ["344"]},
@@ -208,7 +229,10 @@ def test_update_ticket_with_answers(
     assert response["data"]["updateAttendeeTicket"]["__typename"] == "AttendeeTicket"
 
     last_call_body = mock_patch_position.last_request.json()
-    assert last_call_body["attendee_name"] == "Jane"
+    assert last_call_body["attendee_name_parts"] == {
+        "given_name": "Jane",
+        "family_name": "",
+    }
     assert last_call_body["attendee_email"] == user.email
     assert last_call_body["answers"] == [
         {"question": "31", "options": ["344"], "answer": "No preferences"},
@@ -244,7 +268,13 @@ def test_cannot_update_empty_email(graphql_client, user, mocker):
             "input": {
                 "id": "999",
                 "email": "                            ",
-                "name": "Marco",
+                "name": {
+                    "parts": {
+                        "given_name": "Marco",
+                        "family_name": "",
+                    },
+                    "scheme": "given_family",
+                },
             },
         },
     )
@@ -272,7 +302,7 @@ def test_update_ticket(
     pretix_user_tickets[0]["id"] = 999
 
     requests_mock.get(
-        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets?attendee_email={user.email}",
+        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets/?attendee_email={user.email}",
         [
             {
                 "json": [
@@ -289,7 +319,11 @@ def test_update_ticket(
                         **pretix_user_tickets[0],
                         "id": "999",
                         "attendee_email": user.email,
-                        "attendee_name": "Penny",
+                        "attendee_name_parts": {
+                            "family_name": "",
+                            "given_name": "Penny",
+                            "scheme": "given_family",
+                        },
                     }
                 ]
             },
@@ -300,11 +334,11 @@ def test_update_ticket(
         json=update_user_ticket,
     )
     requests_mock.get(
-        "https://pretix/api/organizers/org/events/event/categories",
+        "https://pretix/api/organizers/org/events/event/categories/",
         json=pretix_categories,
     )
     requests_mock.get(
-        "https://pretix/api/organizers/org/events/event/questions",
+        "https://pretix/api/organizers/org/events/event/questions/",
         json=pretix_questions,
     )
 
@@ -314,7 +348,10 @@ def test_update_ticket(
             __typename
             ... on AttendeeTicket {
                 id
-                name
+                name {
+                    parts
+                    scheme
+                }
                 email
             }
         }
@@ -327,18 +364,33 @@ def test_update_ticket(
             "conference": conference.code,
             "input": {
                 "id": "999",
-                "name": "Penny",
+                "name": {
+                    "parts": {
+                        "given_name": "Penny",
+                        "family_name": "",
+                    },
+                    "scheme": "given_family",
+                },
                 "email": user.email,
             },
         },
     )
 
     assert not response.get("errors")
-    assert response["data"]["updateAttendeeTicket"]["name"] == "Penny"
+    assert response["data"]["updateAttendeeTicket"]["name"] == {
+        "parts": {
+            "given_name": "Penny",
+            "family_name": "",
+        },
+        "scheme": "given_family",
+    }
     assert response["data"]["updateAttendeeTicket"]["email"] == user.email
     assert response["data"]["updateAttendeeTicket"]["__typename"] == "AttendeeTicket"
     last_call_body = mock_patch_position.last_request.json()
-    assert last_call_body["attendee_name"] == "Penny"
+    assert last_call_body["attendee_name_parts"] == {
+        "family_name": "",
+        "given_name": "Penny",
+    }
     assert last_call_body["attendee_email"] == user.email
     assert "answers" not in last_call_body
 
@@ -358,7 +410,7 @@ def test_update_email_reassign_the_ticket(
     pretix_user_tickets[0]["id"] = "999"
 
     requests_mock.get(
-        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets?attendee_email={user.email}",
+        f"https://pretix/api/organizers/org/events/event/tickets/attendee-tickets/?attendee_email={user.email}",
         [
             {
                 "json": [
@@ -377,7 +429,7 @@ def test_update_email_reassign_the_ticket(
         json=update_user_ticket,
     )
     requests_mock.get(
-        "https://pretix/api/organizers/org/events/event/categories",
+        "https://pretix/api/organizers/org/events/event/categories/",
         json=pretix_categories,
     )
 
@@ -399,7 +451,13 @@ def test_update_email_reassign_the_ticket(
             "conference": conference.code,
             "input": {
                 "id": "999",
-                "name": pretix_user_tickets[0]["attendee_name"],
+                "name": {
+                    "parts": {
+                        "given_name": pretix_user_tickets[0]["attendee_name"],
+                        "family_name": "",
+                    },
+                    "scheme": "given_family",
+                },
                 "email": "penny@hofstadter.com",
             },
         },
