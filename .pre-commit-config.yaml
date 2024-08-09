@@ -20,7 +20,7 @@ repos:
       - id: django-upgrade
         args: [--target-version, "4.2"]
     - repo: https://github.com/biomejs/pre-commit
-      rev: "v0.1.0"
+      rev: "v0.4.0"
       hooks:
         - id: biome-check
           additional_dependencies: ["@biomejs/biome@1.8.3"]
