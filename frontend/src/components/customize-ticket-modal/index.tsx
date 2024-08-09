@@ -18,10 +18,7 @@ import {
 } from "~/types";
 
 import { useState } from "react";
-import {
-  displayAttendeeName,
-  formatAttendeeName,
-} from "~/helpers/attendee-name";
+import { displayAttendeeName } from "~/helpers/attendee-name";
 import { Badge } from "../badge";
 import { createHref } from "../link";
 import { Modal } from "../modal";
