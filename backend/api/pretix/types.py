@@ -318,6 +318,25 @@ class AttendeeNameInput:
     def to_pretix_api(self):
         return self.parts
 
+    def validate(self):
+        if not self.parts:
+            return False
+
+        if self.scheme == "given_family":
+            given_name = self.parts.get("given_name", "").strip()
+            family_name = self.parts.get("family_name", "").strip()
+
+            if not given_name or not family_name:
+                return False
+
+        if self.scheme == "legacy":
+            name = self.parts.get("_legacy")
+
+            if not name:
+                return False
+
+        return True
+
 
 @strawberry.type
 class AttendeeTicket:

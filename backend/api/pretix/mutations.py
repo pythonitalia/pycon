@@ -55,6 +55,12 @@ class AttendeeTicketMutation:
             )
             return UpdateAttendeeTicketErrors(id=input.id, errors=[error])
 
+        if not input.name.validate():
+            error = UpdateAttendeeTicketError(
+                field="attendee_name", message="This field may not be blank."
+            )
+            return UpdateAttendeeTicketErrors(id=input.id, errors=[error])
+
         conference = Conference.objects.get(code=conference)
         try:
             pretix.update_ticket(conference, input)

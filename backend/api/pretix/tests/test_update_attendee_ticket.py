@@ -61,7 +61,6 @@ def test_invalid_data(graphql_client, mocker, requests_mock, user):
         "https://pretix/api/organizers/org/events/event/orderpositions/999/",
         status_code=404,
         json={
-            "attendee_name": ["This field may not be blank."],
             "attendee_email": ["Enter a valid email address."],
             "answers": [
                 {"options": ['Invalid pk "344" - object does not exist.']},
@@ -70,6 +69,69 @@ def test_invalid_data(graphql_client, mocker, requests_mock, user):
                 {"answer": ["This field may not be blank."]},
             ],
         },
+    )
+
+    query = """
+    mutation UpdateTicket($conference: String!, $input: UpdateAttendeeTicketInput!) {
+        updateAttendeeTicket(conference: $conference, input: $input) {
+            ... on UpdateAttendeeTicketErrors {
+                id
+                errors {
+                    field
+                    message
+                }
+            }
+        }
+    }
+    """
+
+    response = graphql_client.query(
+        query,
+        variables={
+            "conference": conference.code,
+            "input": {
+                "id": "999",
+                "name": {
+                    "parts": {
+                        "given_name": "A",
+                        "family_name": "B",
+                    },
+                    "scheme": "given_family",
+                },
+                "email": " foo@",
+                "answers": [
+                    {"answer": "No preferences", "question": "31", "options": ["344"]},
+                    {"answer": "Vegan", "question": "32"},
+                    {"answer": "", "question": "44"},
+                    {"answer": "", "question": "43"},
+                ],
+            },
+        },
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["updateAttendeeTicket"]["id"] == "999"
+    assert response["data"]["updateAttendeeTicket"]["errors"] == [
+        {"field": "attendee_email", "message": "Enter a valid email address."},
+        {
+            "field": "31",
+            "message": 'Invalid pk "344" - object does not exist.',
+        },
+        {"field": "44", "message": "This field may not be blank."},
+        {"field": "43", "message": "This field may not be blank."},
+    ]
+
+
+@override_settings(PRETIX_API="https://pretix/api/")
+def test_validate_empty_name(graphql_client, mocker, requests_mock, user):
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(pretix_organizer_id="org", pretix_event_id="event")
+    mocker.patch("pretix.is_ticket_owner", return_value=True)
+
+    requests_mock.patch(
+        "https://pretix/api/organizers/org/events/event/orderpositions/999/",
+        status_code=200,
+        json={},
     )
 
     query = """
@@ -114,13 +176,6 @@ def test_invalid_data(graphql_client, mocker, requests_mock, user):
     assert response["data"]["updateAttendeeTicket"]["id"] == "999"
     assert response["data"]["updateAttendeeTicket"]["errors"] == [
         {"field": "attendee_name", "message": "This field may not be blank."},
-        {"field": "attendee_email", "message": "Enter a valid email address."},
-        {
-            "field": "31",
-            "message": 'Invalid pk "344" - object does not exist.',
-        },
-        {"field": "44", "message": "This field may not be blank."},
-        {"field": "43", "message": "This field may not be blank."},
     ]
 
 
