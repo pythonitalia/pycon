@@ -37,7 +37,7 @@ def test_cannot_update_ticket_if_i_am_not_the_owner(
                 "name": {
                     "parts": {
                         "given_name": "Ester",
-                        "family_name": "",
+                        "family_name": "Bell",
                     },
                     "scheme": "given_family",
                 },
@@ -157,7 +157,7 @@ def test_validate_empty_name(graphql_client, mocker, requests_mock, user):
                 "name": {
                     "parts": {
                         "given_name": "",
-                        "family_name": "",
+                        "family_name": "Bell",
                     },
                     "scheme": "given_family",
                 },
@@ -264,7 +264,7 @@ def test_update_ticket_with_answers(
                 "name": {
                     "parts": {
                         "given_name": "Jane",
-                        "family_name": "",
+                        "family_name": "Bell",
                     },
                     "scheme": "given_family",
                 },
@@ -286,7 +286,7 @@ def test_update_ticket_with_answers(
     last_call_body = mock_patch_position.last_request.json()
     assert last_call_body["attendee_name_parts"] == {
         "given_name": "Jane",
-        "family_name": "",
+        "family_name": "Bell",
     }
     assert last_call_body["attendee_email"] == user.email
     assert last_call_body["answers"] == [
@@ -326,7 +326,7 @@ def test_cannot_update_empty_email(graphql_client, user, mocker):
                 "name": {
                     "parts": {
                         "given_name": "Marco",
-                        "family_name": "",
+                        "family_name": "Bell",
                     },
                     "scheme": "given_family",
                 },
@@ -375,7 +375,7 @@ def test_update_ticket(
                         "id": "999",
                         "attendee_email": user.email,
                         "attendee_name_parts": {
-                            "family_name": "",
+                            "family_name": "Bell",
                             "given_name": "Penny",
                             "scheme": "given_family",
                         },
@@ -422,7 +422,7 @@ def test_update_ticket(
                 "name": {
                     "parts": {
                         "given_name": "Penny",
-                        "family_name": "",
+                        "family_name": "Bell",
                     },
                     "scheme": "given_family",
                 },
@@ -435,7 +435,7 @@ def test_update_ticket(
     assert response["data"]["updateAttendeeTicket"]["name"] == {
         "parts": {
             "given_name": "Penny",
-            "family_name": "",
+            "family_name": "Bell",
         },
         "scheme": "given_family",
     }
@@ -443,7 +443,7 @@ def test_update_ticket(
     assert response["data"]["updateAttendeeTicket"]["__typename"] == "AttendeeTicket"
     last_call_body = mock_patch_position.last_request.json()
     assert last_call_body["attendee_name_parts"] == {
-        "family_name": "",
+        "family_name": "Bell",
         "given_name": "Penny",
     }
     assert last_call_body["attendee_email"] == user.email
@@ -509,7 +509,7 @@ def test_update_email_reassign_the_ticket(
                 "name": {
                     "parts": {
                         "given_name": pretix_user_tickets[0]["attendee_name"],
-                        "family_name": "",
+                        "family_name": "Bell",
                     },
                     "scheme": "given_family",
                 },
