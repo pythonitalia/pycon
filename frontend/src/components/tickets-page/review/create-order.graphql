@@ -15,6 +15,9 @@ mutation CreateOrder($conference: String!, $input: CreateOrderInput!) {
           pec
           sdi
         }
+        tickets {
+          attendeeName
+        }
       }
     }
 

@@ -1,11 +1,13 @@
 import { Heading, Section, Spacer } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
+import { useEffect } from "react";
 import type {
   CurrentUserQueryResult,
   TicketItem,
   TicketsQueryResult,
 } from "~/types";
+import { useCart } from "../tickets-page/use-cart";
 import { BillingCard } from "./billing-card";
 import { CreateOrderBar } from "./create-order-bar";
 import { ProductsQuestions } from "./products-questions";
@@ -36,6 +38,33 @@ export const CheckoutPageHandler = ({
   const { createOrder, isCreatingOrder, creationFailed, errors } =
     useCreateOrder({ userEmail: me?.email });
   const invoiceInformationErrors = errors?.invoiceInformation;
+  const ticketsErrors = errors?.tickets;
+  const {
+    state: { selectedProducts },
+    updateTicketInfo,
+  } = useCart();
+
+  useEffect(() => {
+    Object.values(selectedProducts)
+      .flat()
+      .forEach((productUserInformation, index) => {
+        const matchingErrors = ticketsErrors?.[index];
+        console.log(
+          "productUserInformation",
+          productUserInformation,
+          index,
+          matchingErrors,
+        );
+
+        updateTicketInfo({
+          id: productUserInformation.id,
+          index: productUserInformation.index,
+          key: "errors",
+          value: matchingErrors,
+        });
+      });
+  }, [ticketsErrors]);
+  console.log("ticketsErrors", ticketsErrors);
 
   return (
     <form

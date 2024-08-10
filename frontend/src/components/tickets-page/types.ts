@@ -37,6 +37,7 @@ export type Voucher = {
 export type ProductState = {
   variation?: string;
   id: string;
+  index: number;
   answers: { [id: string]: string };
   attendeeGivenName: string;
   attendeeFamilyName: string;

@@ -63,11 +63,7 @@ export const ProductQuestionnaire = ({
               "orderQuestions.attendeeGivenName.placeholder",
             )}
             value={productUserInformation.attendeeGivenName}
-            errors={
-              productUserInformation?.errors && [
-                productUserInformation?.errors?.attendeeName,
-              ]
-            }
+            errors={productUserInformation?.errors?.attendeeName}
           />
         </InputWrapper>
       )}
@@ -92,11 +88,7 @@ export const ProductQuestionnaire = ({
             )}
             autoComplete="none"
             value={productUserInformation.attendeeFamilyName}
-            errors={
-              productUserInformation?.errors && [
-                productUserInformation?.errors?.attendeeName,
-              ]
-            }
+            errors={productUserInformation?.errors?.attendeeName}
           />
         </InputWrapper>
       )}
@@ -122,11 +114,7 @@ export const ProductQuestionnaire = ({
               })
             }
             value={productUserInformation.attendeeEmail}
-            errors={
-              productUserInformation?.errors && [
-                productUserInformation?.errors?.attendeeEmail,
-              ]
-            }
+            errors={productUserInformation?.errors?.attendeeEmail}
           />
         </InputWrapper>
       )}
@@ -152,11 +140,7 @@ export const ProductQuestionnaire = ({
                 })
               }
               value={answers[question.id]}
-              errors={
-                productUserInformation?.errors && [
-                  productUserInformation?.errors[question.id],
-                ]
-              }
+              errors={productUserInformation?.errors[question.id]}
             />
           ) : (
             <Select

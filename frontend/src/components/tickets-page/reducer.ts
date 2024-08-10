@@ -20,6 +20,7 @@ const updateProductReducer = (
     case "incrementProduct": {
       productItems.push({
         id: action.id,
+        index: productItems.length,
         variation: action.variation,
         admission: action.admission,
         answers: {},

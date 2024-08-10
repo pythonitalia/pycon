@@ -23,13 +23,15 @@ type Props = {
 export const ProductsQuestions = ({ productsById }: Props) => {
   const {
     state: { selectedProducts },
+    updateTicketInfo,
+    updateQuestionAnswer,
   } = useCart();
-  const { updateTicketInfo, updateQuestionAnswer } = useCart();
   const [isLoggedIn] = useLoginState();
   const { user: me } = useCurrentUser({
     skip: !isLoggedIn,
   });
 
+  console.log("selectedProducts", selectedProducts);
   return (
     <>
       {Object.entries(selectedProducts)
