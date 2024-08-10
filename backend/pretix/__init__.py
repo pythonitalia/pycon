@@ -402,7 +402,7 @@ class InvoiceInformation:
         try:
             validate_sdi_code(self.sdi)
         except SdiValidationError as exc:
-            errors.add_error("invoice_information.sdi", str(exc))
+            errors.add_error("sdi", str(exc))
 
 
 @strawberry.input
