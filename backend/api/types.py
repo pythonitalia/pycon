@@ -1,5 +1,6 @@
+from contextlib import contextmanager
 import math
-from typing import Generic, List, TypeVar
+from typing import Generic, List, TypeVar, get_args, get_type_hints
 
 import strawberry
 
@@ -12,17 +13,49 @@ class OperationResult:
 class BaseErrorType:
     _has_errors: strawberry.Private[bool] = False
 
+    @contextmanager
+    def with_prefix(self, prefix: str):
+        self._prefix = prefix
+        yield
+        del self._prefix
+
     def add_error(self, field: str, message: str):
         self._has_errors = True
 
         if not self.errors:
             self.errors = self.__annotations__["errors"]()
 
+        field = f"{self._prefix}.{field}" if hasattr(self, "_prefix") else field
         parts = field.split(".")
         current = self.errors
+        list_type = None
 
         for part in parts[:-1]:
-            current = getattr(current, part)
+            if isinstance(current, list):
+                index = int(part)
+                try:
+                    current = current[index]
+                except IndexError:
+                    for _ in range(index - len(current) + 1):
+                        current.append(list_type())
+
+                new_instance = list_type()
+                current[index] = new_instance
+                current = new_instance
+                continue
+
+            next_current = getattr(current, part)
+
+            if not isinstance(next_current, list):
+                current = next_current
+                continue
+            else:
+                type_hints = get_type_hints(type(current))
+                type_hint = type_hints[part]
+
+                list_type = get_args(type_hint)[0]
+                current = next_current
+                continue
 
         last_part = parts[-1]
 

@@ -256,12 +256,18 @@ class InvoiceInformationErrors:
 
 
 @strawberry.type
+class CreateOrderTicketErrors:
+    attendee_name: list[str] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
 class CreateOrderErrors(BaseErrorType):
     @strawberry.type
     class _CreateOrderErrors:
         invoice_information: InvoiceInformationErrors = strawberry.field(
             default_factory=InvoiceInformationErrors
         )
+        tickets: list[CreateOrderTicketErrors] = strawberry.field(default_factory=list)
         non_field_errors: list[str] = strawberry.field(default_factory=list)
 
     errors: _CreateOrderErrors = None
@@ -281,6 +287,12 @@ class CreateOrderTicket:
     variation: Optional[str] = None
     answers: Optional[List[CreateOrderTicketAnswer]] = None
     voucher: Optional[str] = None
+
+    def validate(self, errors: CreateOrderErrors) -> CreateOrderErrors:
+        if not self.attendee_name.validate():
+            errors.add_error("attendee_name", "This field is required")
+
+        return errors
 
 
 @strawberry.input
@@ -320,7 +332,7 @@ class InvoiceInformation:
 
             if not value:
                 errors.add_error(
-                    f"invoice_information.{required_field}",
+                    required_field,
                     "This field is required",
                 )
 
@@ -344,7 +356,7 @@ class InvoiceInformation:
 
         if not countries.is_valid(self.country):
             errors.add_error(
-                "invoice_information.country",
+                "country",
                 "Invalid country",
             )
 
@@ -355,7 +367,7 @@ class InvoiceInformation:
         try:
             validate_email(self.pec)
         except ValidationError:
-            errors.add_error("invoice_information.pec", "Invalid PEC address")
+            errors.add_error("pec", "Invalid PEC address")
 
     def validate_fiscal_code(self, errors: CreateOrderErrors):
         if not self.fiscal_code:
@@ -364,7 +376,7 @@ class InvoiceInformation:
         try:
             validate_fiscal_code(self.fiscal_code)
         except FiscalCodeValidationError as exc:
-            errors.add_error("invoice_information.fiscal_code", str(exc))
+            errors.add_error("fiscal_code", str(exc))
 
     def validate_partita_iva(self, errors: CreateOrderErrors):
         if not self.vat_id:
@@ -372,7 +384,7 @@ class InvoiceInformation:
         try:
             validate_italian_vat_number(self.vat_id)
         except ItalianVatNumberValidationError as exc:
-            errors.add_error("invoice_information.vat_id", str(exc))
+            errors.add_error("vat_id", str(exc))
 
     def validate_italian_zip_code(self, errors: CreateOrderErrors):
         if not self.zipcode:
@@ -381,7 +393,7 @@ class InvoiceInformation:
         try:
             validate_italian_zip_code(self.zipcode)
         except ItalianZipCodeValidationError as exc:
-            errors.add_error("invoice_information.zipcode", str(exc))
+            errors.add_error("zipcode", str(exc))
 
     def validate_sdi(self, errors: CreateOrderErrors):
         if not self.sdi:
@@ -399,11 +411,18 @@ class CreateOrderInput:
     locale: str
     payment_provider: str
     invoice_information: InvoiceInformation
-    tickets: List[CreateOrderTicket]
+    tickets: list[CreateOrderTicket]
 
     def validate(self) -> CreateOrderErrors:
         errors = CreateOrderErrors()
-        self.invoice_information.validate(errors)
+
+        with errors.with_prefix("invoice_information"):
+            self.invoice_information.validate(errors)
+
+        for index, ticket in enumerate(self.tickets):
+            with errors.with_prefix(f"tickets.{index}"):
+                ticket.validate(errors)
+
         return errors.if_has_errors
 
 

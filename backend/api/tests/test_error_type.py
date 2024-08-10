@@ -1,0 +1,76 @@
+import strawberry
+from api.types import BaseErrorType
+
+
+@strawberry.type
+class NestedTypeError:
+    nested_field_1: list[str] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
+class ArrayTypeError:
+    array_field: list[str] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
+class ErrorClass(BaseErrorType):
+    @strawberry.type
+    class _InnerType:
+        field_1: list[str] = strawberry.field(default_factory=list)
+        field_2: list[str] = strawberry.field(default_factory=list)
+        field_with_type: NestedTypeError = strawberry.field(
+            default_factory=NestedTypeError
+        )
+        field_with_array: list[ArrayTypeError] = strawberry.field(default_factory=list)
+
+    errors: _InnerType = None
+
+
+def test_error_type_with_no_errors():
+    error_class = ErrorClass()
+
+    assert not error_class.has_errors
+
+
+def test_error_prefixing_errors():
+    error_class = ErrorClass()
+
+    error_class.add_error("field_1", "error message 1")
+
+    with error_class.with_prefix("field_with_type"):
+        error_class.add_error("nested_field_1", "error message 2")
+        error_class.add_error("nested_field_1", "error message 3")
+
+    error_class.add_error("field_1", "no prefix again")
+
+    assert error_class.has_errors
+
+    assert error_class.errors.field_1 == ["error message 1", "no prefix again"]
+    assert error_class.errors.field_with_type.nested_field_1 == [
+        "error message 2",
+        "error message 3",
+    ]
+
+
+def test_error_type_add_error():
+    error_class = ErrorClass()
+
+    error_class.add_error("field_1", "error message 1")
+    error_class.add_error("field_1", "error message 2")
+    error_class.add_error("field_2", "error field 2")
+    error_class.add_error("field_with_type.nested_field_1", "error nested field")
+    error_class.add_error("field_with_array.3.array_field", "error field 3")
+    error_class.add_error("field_with_array.5.array_field", "error array field")
+
+    assert error_class.has_errors
+    assert error_class.errors.field_1 == ["error message 1", "error message 2"]
+    assert error_class.errors.field_2 == ["error field 2"]
+    assert error_class.errors.field_with_type.nested_field_1 == ["error nested field"]
+
+    assert error_class.errors.field_with_array[0].array_field == []
+    assert error_class.errors.field_with_array[1].array_field == []
+    assert error_class.errors.field_with_array[2].array_field == []
+    assert error_class.errors.field_with_array[3].array_field == ["error field 3"]
+    assert error_class.errors.field_with_array[4].array_field == []
+    assert error_class.errors.field_with_array[5].array_field == ["error array field"]
+    assert len(error_class.errors.field_with_array) == 6

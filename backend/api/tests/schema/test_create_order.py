@@ -33,6 +33,9 @@ def _create_order(graphql_client, code, input):
                             city
                             pec
                         }
+                        tickets {
+                            attendeeName
+                        }
                     }
                 }
             }
@@ -877,6 +880,61 @@ def test_invoice_validation_fails_when_italian_zipcode_is_invalid(
     assert response["data"]["createOrder"]["errors"]["invoiceInformation"][
         "zipcode"
     ] == ["ZIP code must be 5 characters long"]
+
+    create_order_mock.assert_not_called()
+
+
+@override_settings(FRONTEND_URL="http://test.it")
+def test_order_creation_fails_if_attendee_name_is_empty(graphql_client, user, mocker):
+    conference = ConferenceFactory()
+    graphql_client.force_login(user)
+
+    create_order_mock = mocker.patch("api.orders.mutations.create_order")
+    create_order_mock.return_value.payment_url = "https://example.com"
+    create_order_mock.return_value.code = "123"
+
+    response = _create_order(
+        graphql_client,
+        code=conference.code,
+        input={
+            "tickets": [
+                {
+                    "ticketId": "1",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
+                    "attendeeEmail": "example@example.com",
+                    "variation": "1",
+                    "answers": [{"questionId": "1", "value": "Example"}],
+                }
+            ],
+            "paymentProvider": "stripe",
+            "email": "example@example.com",
+            "invoiceInformation": {
+                "isBusiness": False,
+                "company": "LTD",
+                "name": "Patrick",
+                "street": "street",
+                "zipcode": "921",
+                "city": "Avellino",
+                "country": "GB",
+                "vatId": "123",
+                "sdi": "",
+                "fiscalCode": "",
+            },
+            "locale": "en",
+        },
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["createOrder"]["__typename"] == "CreateOrderErrors"
+    assert response["data"]["createOrder"]["errors"]["tickets"][0]["attendeeName"] == [
+        "This field is required"
+    ]
 
     create_order_mock.assert_not_called()
 
