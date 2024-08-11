@@ -1,10 +1,9 @@
-from __future__ import annotations
 from api.types import BaseErrorType
 from strawberry.scalars import JSON
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Self
 
 import strawberry
 
@@ -36,15 +35,14 @@ class AnswerInputError:
 
 
 @strawberry.type
-class _UpdateAttendeeTicketErrors:
-    id: list[str] = strawberry.field(default_factory=list)
-    name: list[str] = strawberry.field(default_factory=list)
-    email: list[str] = strawberry.field(default_factory=list)
-    answers: list[AnswerInputError] = strawberry.field(default_factory=list)
-
-
-@strawberry.type
 class UpdateAttendeeTicketErrors(BaseErrorType):
+    @strawberry.type
+    class _UpdateAttendeeTicketErrors:
+        id: list[str] = strawberry.field(default_factory=list)
+        name: list[str] = strawberry.field(default_factory=list)
+        email: list[str] = strawberry.field(default_factory=list)
+        answers: list[AnswerInputError] = strawberry.field(default_factory=list)
+
     errors: _UpdateAttendeeTicketErrors = None
 
 
@@ -65,7 +63,7 @@ class PretixOrder:
     email: str
 
     @classmethod
-    def from_data(cls, data) -> PretixOrder:
+    def from_data(cls, data) -> Self:
         return cls(
             code=data["code"],
             status=PretixOrderStatus(data["status"]),
@@ -92,7 +90,7 @@ class ProductVariation:
         language: str,
         quotas: Optional[Dict[str, QuotaDict]],
         parent_item_id: int,
-    ) -> ProductVariation:
+    ) -> Self:
         quantity_left = TicketItem._get_quantity_left(
             data, quotas, parent_item_id=parent_item_id
         )
@@ -115,7 +113,7 @@ class Option:
     name: str
 
     @classmethod
-    def from_data(cls, data: OptionDict, language: str) -> Option:
+    def from_data(cls, data: OptionDict, language: str) -> Self:
         return cls(
             id=data["id"],
             name=_get_by_language(data, "answer", language),
@@ -128,7 +126,7 @@ class Answer:
     options: Optional[List[str]]
 
     @classmethod
-    def from_data(cls, data: QuestionDict, language: str) -> Answer:
+    def from_data(cls, data: QuestionDict, language: str) -> Self:
         # If it's an option answer it's not translated
         if data.get("options"):
             options = [
@@ -156,7 +154,7 @@ class Question:
     answer: Optional[Answer]
 
     @classmethod
-    def from_data(cls, data: QuestionDict, language: str) -> Question:
+    def from_data(cls, data: QuestionDict, language: str) -> Self:
         return cls(
             id=data["id"],
             name=_get_by_language(data, "question", language),
