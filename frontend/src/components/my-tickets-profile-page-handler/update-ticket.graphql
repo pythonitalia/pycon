@@ -13,11 +13,11 @@ mutation UpdateTicket(
 
     ... on AttendeeTicket {
       id
-      name {
+      attendeeName {
         scheme
         parts
       }
-      email
+      attendeeEmail
       item {
         id
         name
@@ -47,8 +47,8 @@ mutation UpdateTicket(
     ... on UpdateAttendeeTicketErrors {
       errors {
         id
-        name
-        email
+        attendeeName
+        attendeeEmail
         answers {
           answer
           question

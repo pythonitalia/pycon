@@ -94,8 +94,8 @@ export const ReassignTicketModal = ({
         language: language,
         input: {
           id: ticket.id,
-          name: ticket.name,
-          email: formState.values.email,
+          attendeeName: ticket.attendeeName,
+          attendeeEmail: formState.values.email,
         },
       },
     });

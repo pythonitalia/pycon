@@ -92,14 +92,14 @@ export const CustomizeTicketModal = ({
         language: language,
         input: {
           id: updatedProductUserInformation.id,
-          name: {
+          attendeeName: {
             parts: {
               given_name: updatedProductUserInformation.attendeeGivenName,
               family_name: updatedProductUserInformation.attendeeFamilyName,
             },
             scheme: "given_family",
           },
-          email: updatedProductUserInformation.attendeeEmail,
+          attendeeEmail: updatedProductUserInformation.attendeeEmail,
           answers,
         },
       },
@@ -137,9 +137,9 @@ export const CustomizeTicketModal = ({
   const [productUserInformation, setProductUserInformation] = useState({
     id: ticket.id,
     index: 0,
-    attendeeGivenName: ticket.name.parts.given_name ?? "",
-    attendeeFamilyName: ticket.name.parts.family_name ?? "",
-    attendeeEmail: ticket.email ?? "",
+    attendeeGivenName: ticket.attendeeName.parts.given_name ?? "",
+    attendeeFamilyName: ticket.attendeeName.parts.family_name ?? "",
+    attendeeEmail: ticket.attendeeEmail ?? "",
     errors: {},
     answers: ticket.item.questions.reduce((acc, question) => {
       acc[question.id] =
