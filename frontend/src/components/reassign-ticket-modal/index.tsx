@@ -60,6 +60,7 @@ export const ReassignTicketModal = ({
               me: {
                 ...me,
                 tickets: me.tickets.filter(
+                  // @ts-ignore
                   (ticket) => ticket.id !== data.updateAttendeeTicket.id,
                 ),
               },

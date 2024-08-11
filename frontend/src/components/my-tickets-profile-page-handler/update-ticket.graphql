@@ -41,7 +41,7 @@ mutation UpdateTicket(
 
     ... on TicketReassigned {
       id
-      email
+      attendeeEmail
     }
 
     ... on UpdateAttendeeTicketErrors {
