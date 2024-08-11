@@ -1,5 +1,5 @@
 from __future__ import annotations
-from backend.api.types import BaseErrorType
+from api.types import BaseErrorType
 from strawberry.scalars import JSON
 
 from datetime import datetime
