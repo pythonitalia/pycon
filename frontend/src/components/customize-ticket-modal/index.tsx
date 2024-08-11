@@ -38,6 +38,7 @@ export type CustomizeTicketModalProps = {
 
 type Form = {
   id: string;
+  index: string;
   attendeeGivenName: string;
   attendeeFamilyName: string;
   attendeeEmail: string;
@@ -50,8 +51,10 @@ export const CustomizeTicketModal = ({
   ticket,
 }: Props & CustomizeTicketModalProps) => {
   const language = useCurrentLanguage();
+  const [updateTicket, { loading: updatingTicket, error: updateTicketError }] =
+    useUpdateTicketMutation();
 
-  const callUpdateUserTicket = (updatedProductUserInformation) => {
+  const callUpdateUserTicket = async (updatedProductUserInformation) => {
     const answers = ticket.item.questions
       .map((question) => {
         let answer: string;
@@ -83,7 +86,7 @@ export const CustomizeTicketModal = ({
       })
       .filter((item) => item.answer !== "");
 
-    updateTicket({
+    const response = await updateTicket({
       variables: {
         conference: process.env.conferenceCode,
         language: language,
@@ -91,8 +94,8 @@ export const CustomizeTicketModal = ({
           id: updatedProductUserInformation.id,
           name: {
             parts: {
-              givenName: updatedProductUserInformation.attendeeGivenName,
-              familyName: updatedProductUserInformation.attendeeFamilyName,
+              given_name: updatedProductUserInformation.attendeeGivenName,
+              family_name: updatedProductUserInformation.attendeeFamilyName,
             },
             scheme: "given_family",
           },
@@ -101,20 +104,29 @@ export const CustomizeTicketModal = ({
         },
       },
     });
-  };
 
-  const [updateTicket, { loading: updatingTicket, error: updateTicketError }] =
-    useUpdateTicketMutation({
-      onCompleted(result) {
-        if (
-          result.updateAttendeeTicket.__typename ===
-          "UpdateAttendeeTicketErrors"
-        ) {
-          setErrors(result.updateAttendeeTicket.errors);
-          return;
-        }
-      },
-    });
+    const responseData = response.data;
+
+    if (
+      responseData.updateAttendeeTicket.__typename ===
+      "UpdateAttendeeTicketErrors"
+    ) {
+      const newErrors = responseData.updateAttendeeTicket.errors;
+      setErrors({
+        ...newErrors,
+        answers: answers.reduce((acc, answer, index) => {
+          acc[answer.question] = [
+            ...(newErrors.answers[index]?.answer ?? []),
+            ...(newErrors.answers[index]?.nonFieldErrors ?? []),
+            ...(newErrors.answers[index]?.options ?? []),
+            ...(newErrors.answers[index]?.question ?? []),
+          ];
+          return acc;
+        }, {}),
+      });
+      return;
+    }
+  };
 
   const saveTicketChanges = (updatedProductUserInformation: any) => {
     setErrors({});
@@ -124,6 +136,7 @@ export const CustomizeTicketModal = ({
 
   const [productUserInformation, setProductUserInformation] = useState({
     id: ticket.id,
+    index: 0,
     attendeeGivenName: ticket.name.parts.given_name ?? "",
     attendeeFamilyName: ticket.name.parts.family_name ?? "",
     attendeeEmail: ticket.email ?? "",
@@ -141,6 +154,7 @@ export const CustomizeTicketModal = ({
 
   const [formState] = useFormState<Form>({
     id: productUserInformation.id,
+    index: productUserInformation.index,
     attendeeGivenName: productUserInformation.attendeeGivenName,
     attendeeFamilyName: productUserInformation.attendeeFamilyName,
     attendeeEmail: productUserInformation.attendeeEmail,

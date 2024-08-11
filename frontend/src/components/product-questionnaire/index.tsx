@@ -40,7 +40,6 @@ export const ProductQuestionnaire = ({
   const inputPlaceholder = useTranslatedMessage("input.placeholder");
   const getTranslatedString = (id) => getTranslatedMessage(id, language);
 
-  console.log("productUserInformation?.errors", productUserInformation?.errors);
   return (
     <Grid cols={cols} alignItems="end">
       {product.admission && (
@@ -54,7 +53,7 @@ export const ProductQuestionnaire = ({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               updateTicketInfo({
                 id: productUserInformation.id,
-                index,
+                index: productUserInformation.index,
                 key: "attendeeGivenName",
                 value: e.target.value,
               })
@@ -79,7 +78,7 @@ export const ProductQuestionnaire = ({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               updateTicketInfo({
                 id: productUserInformation.id,
-                index,
+                index: productUserInformation.index,
                 key: "attendeeFamilyName",
                 value: e.target.value,
               })
@@ -109,7 +108,7 @@ export const ProductQuestionnaire = ({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               updateTicketInfo({
                 id: productUserInformation.id,
-                index,
+                index: productUserInformation.index,
                 key: "attendeeEmail",
                 value: e.target.value,
               })
@@ -135,13 +134,13 @@ export const ProductQuestionnaire = ({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateQuestionAnswer({
                   id: productUserInformation.id,
-                  index,
+                  index: productUserInformation.index,
                   question: question.id,
                   answer: e.target.value,
                 })
               }
               value={answers[question.id]}
-              errors={productUserInformation?.errors[question.id]}
+              errors={productUserInformation?.errors?.answers?.[question.id]}
             />
           ) : (
             <Select
@@ -150,11 +149,12 @@ export const ProductQuestionnaire = ({
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                 updateQuestionAnswer({
                   id: productUserInformation.id,
-                  index,
+                  index: productUserInformation.index,
                   question: question.id,
                   answer: e.target.value,
                 });
               }}
+              errors={productUserInformation?.errors?.answers?.[question.id]}
             >
               {question.options.map((option) => (
                 <option key={option.id} value={option.id}>

@@ -64,7 +64,6 @@ export const CheckoutPageHandler = ({
         });
       });
   }, [ticketsErrors]);
-  console.log("ticketsErrors", ticketsErrors);
 
   return (
     <form

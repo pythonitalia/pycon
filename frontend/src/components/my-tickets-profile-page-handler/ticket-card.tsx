@@ -60,8 +60,6 @@ export const TicketCard = ({ ticket, userEmail }: Props) => {
     });
   };
 
-  console.log("ticket", ticket);
-
   return (
     <>
       <MultiplePartsCard>

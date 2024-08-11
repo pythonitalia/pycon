@@ -63,14 +63,14 @@ export const ProductsQuestions = ({ productsById }: Props) => {
                                 const isMe = !productUserInformation.isMe;
                                 updateTicketInfo({
                                   id: productUserInformation.id,
-                                  index,
+                                  index: productUserInformation.index,
                                   key: "isMe",
                                   value: isMe,
                                 });
                                 if (isMe) {
                                   updateTicketInfo({
                                     id: productUserInformation.id,
-                                    index,
+                                    index: productUserInformation.index,
                                     key: "attendeeEmail",
                                     value: me.email,
                                   });

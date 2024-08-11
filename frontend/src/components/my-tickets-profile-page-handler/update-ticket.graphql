@@ -53,6 +53,8 @@ mutation UpdateTicket(
           answer
           question
           options
+          nonFieldErrors
+          __typename
         }
       }
     }
