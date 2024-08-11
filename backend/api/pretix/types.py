@@ -28,6 +28,26 @@ from badges.roles import ConferenceRole, get_conference_roles_for_ticket_data
 from api.helpers.ids import encode_hashid
 
 
+@strawberry.type
+class AnswerInputError:
+    answer: list[str] = strawberry.field(default_factory=list)
+    question: list[str] = strawberry.field(default_factory=list)
+    options: list[str] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
+class _UpdateAttendeeTicketErrors:
+    id: list[str] = strawberry.field(default_factory=list)
+    name: list[str] = strawberry.field(default_factory=list)
+    email: list[str] = strawberry.field(default_factory=list)
+    answers: list[AnswerInputError] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
+class UpdateAttendeeTicketErrors(BaseErrorType):
+    errors: _UpdateAttendeeTicketErrors = None
+
+
 @strawberry.enum
 class PretixOrderStatus(Enum):
     PENDING = "n"
@@ -422,25 +442,6 @@ class AnswerInput:
         return data
 
 
-@strawberry.type
-class AnswerInputError:
-    answer: list[str] = strawberry.field(default_factory=list)
-    question: list[str] = strawberry.field(default_factory=list)
-    options: list[str] = strawberry.field(default_factory=list)
-
-
-@strawberry.type
-class UpdateAttendeeTicketErrors(BaseErrorType):
-    @strawberry.type
-    class _UpdateAttendeeTicketErrors:
-        id: list[str] = strawberry.field(default_factory=list)
-        name: list[str] = strawberry.field(default_factory=list)
-        email: list[str] = strawberry.field(default_factory=list)
-        answers: list[AnswerInputError] = strawberry.field(default_factory=list)
-
-    errors: _UpdateAttendeeTicketErrors = None
-
-
 @strawberry.input
 class UpdateAttendeeTicketInput:
     id: strawberry.ID
@@ -450,6 +451,7 @@ class UpdateAttendeeTicketInput:
 
     def validate(self) -> UpdateAttendeeTicketErrors | None:
         errors = UpdateAttendeeTicketErrors()
+
         if not self.email.strip():
             errors.add_error("email", "This field may not be blank.")
 
