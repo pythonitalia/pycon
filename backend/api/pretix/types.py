@@ -362,8 +362,8 @@ class AttendeeNameInput:
 class AttendeeTicket:
     id: strawberry.ID
     hashid: strawberry.ID
-    name: Optional[AttendeeName]
-    email: Optional[str]
+    attendee_name: Optional[AttendeeName]
+    attendee_email: Optional[str]
     secret: str
     variation: Optional[strawberry.ID]
     item: TicketItem
@@ -398,8 +398,8 @@ class AttendeeTicket:
         return cls(
             id=data["id"],
             hashid=encode_hashid(data["id"]),
-            name=AttendeeName.from_pretix_api(data["attendee_name_parts"]),
-            email=data["attendee_email"],
+            attendee_name=AttendeeName.from_pretix_api(data["attendee_name_parts"]),
+            attendee_email=data["attendee_email"],
             secret=data["secret"],
             variation=data["variation"],
             item=TicketItem.from_data(
