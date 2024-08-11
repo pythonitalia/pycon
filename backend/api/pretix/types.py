@@ -40,8 +40,8 @@ class UpdateAttendeeTicketErrors(BaseErrorType):
     @strawberry.type
     class _UpdateAttendeeTicketErrors:
         id: list[str] = strawberry.field(default_factory=list)
-        name: list[str] = strawberry.field(default_factory=list)
-        email: list[str] = strawberry.field(default_factory=list)
+        attendeeName: list[str] = strawberry.field(default_factory=list)
+        attendeeEmail: list[str] = strawberry.field(default_factory=list)
         answers: list[AnswerInputError] = strawberry.field(default_factory=list)
 
     errors: _UpdateAttendeeTicketErrors = None
@@ -444,25 +444,25 @@ class AnswerInput:
 @strawberry.input
 class UpdateAttendeeTicketInput:
     id: strawberry.ID
-    name: AttendeeNameInput
-    email: str
+    attendee_name: AttendeeNameInput
+    attendee_email: str
     answers: Optional[List[AnswerInput]] = None
 
     def validate(self) -> UpdateAttendeeTicketErrors | None:
         errors = UpdateAttendeeTicketErrors()
 
-        if not self.email.strip():
-            errors.add_error("email", "This field may not be blank.")
+        if not self.attendee_email.strip():
+            errors.add_error("attendee_email", "This field may not be blank.")
 
-        if not self.name.validate():
-            errors.add_error("name", "This field may not be blank.")
+        if not self.attendee_name.validate():
+            errors.add_error("attendee_name", "This field may not be blank.")
 
         return errors.if_has_errors
 
     def to_json(self):
         data = {
-            "attendee_email": self.email,
-            "attendee_name_parts": self.name.to_pretix_api(),
+            "attendee_email": self.attendee_email,
+            "attendee_name_parts": self.attendee_name.to_pretix_api(),
         }
 
         if self.answers is not None:

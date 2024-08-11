@@ -77,10 +77,10 @@ def _get_update_tickets_errors(
     errors = UpdateAttendeeTicketErrors()
 
     if error := response.get("attendee_name"):
-        errors.add_error("name", error[0])
+        errors.add_error("attendee_name", error[0])
 
     if error := response.get("attendee_email"):
-        errors.add_error("email", error[0])
+        errors.add_error("attendee_email", error[0])
 
     if response_answers := response.get("answers"):
         for index in range(len(input.answers)):
