@@ -85,18 +85,24 @@ def _get_update_tickets_errors(
 
     if response_answers := response.get("answers"):
         for index, answer in enumerate(input.answers):
-            answer_error = response_answers[index]
+            answer_errors = response_answers[index]
 
-            if not answer_error:
+            if not answer_errors:
                 continue
 
-            if answer_error := answer_error.get("answer"):
+            if answer_error := answer_errors.get("answer"):
                 errors.add_error(f"answers.{index}.answer", answer_error[0])
 
-            if options_error := answer_error.get("options"):
+            if options_error := answer_errors.get("options"):
                 errors.add_error(
-                    f"answers.{index}.{answer.question}",
+                    f"answers.{index}.options",
                     options_error[0],
+                )
+
+            if non_field_errors := answer_errors.get("non_field_errors"):
+                errors.add_error(
+                    f"answers.{index}.non_field_errors",
+                    non_field_errors[0],
                 )
 
     return errors

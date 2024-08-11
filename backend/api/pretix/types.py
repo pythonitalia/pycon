@@ -32,6 +32,7 @@ class AnswerInputError:
     answer: list[str] = strawberry.field(default_factory=list)
     question: list[str] = strawberry.field(default_factory=list)
     options: list[str] = strawberry.field(default_factory=list)
+    non_field_errors: list[str] = strawberry.field(default_factory=list)
 
 
 @strawberry.type
