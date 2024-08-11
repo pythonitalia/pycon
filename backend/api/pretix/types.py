@@ -1,4 +1,5 @@
 from __future__ import annotations
+from backend.api.types import BaseErrorType
 from strawberry.scalars import JSON
 
 from datetime import datetime
@@ -421,12 +422,41 @@ class AnswerInput:
         return data
 
 
+@strawberry.type
+class AnswerInputError:
+    answer: list[str] = strawberry.field(default_factory=list)
+    question: list[str] = strawberry.field(default_factory=list)
+    options: list[str] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
+class UpdateAttendeeTicketErrors(BaseErrorType):
+    @strawberry.type
+    class _UpdateAttendeeTicketErrors:
+        id: list[str] = strawberry.field(default_factory=list)
+        name: list[str] = strawberry.field(default_factory=list)
+        email: list[str] = strawberry.field(default_factory=list)
+        answers: list[AnswerInputError] = strawberry.field(default_factory=list)
+
+    errors: _UpdateAttendeeTicketErrors = None
+
+
 @strawberry.input
 class UpdateAttendeeTicketInput:
     id: strawberry.ID
     name: AttendeeNameInput
     email: str
     answers: Optional[List[AnswerInput]] = None
+
+    def validate(self) -> UpdateAttendeeTicketErrors | None:
+        errors = UpdateAttendeeTicketErrors()
+        if not self.email.strip():
+            errors.add_error("email", "This field may not be blank.")
+
+        if not self.name.validate():
+            errors.add_error("name", "This field may not be blank.")
+
+        return errors.if_has_errors
 
     def to_json(self):
         data = {

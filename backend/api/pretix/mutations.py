@@ -1,5 +1,5 @@
 import logging
-from typing import Annotated, Union, List, Optional
+from typing import Annotated, Union, Optional
 
 import strawberry
 from requests import HTTPError
@@ -8,7 +8,11 @@ from strawberry.types import Info
 import pretix
 from api.pretix.permissions import IsTicketOwner
 from api.pretix.query import get_user_tickets
-from api.pretix.types import AttendeeTicket, UpdateAttendeeTicketInput
+from api.pretix.types import (
+    AttendeeTicket,
+    UpdateAttendeeTicketErrors,
+    UpdateAttendeeTicketInput,
+)
 from conferences.models.conference import Conference
 
 logger = logging.getLogger(__name__)
@@ -27,12 +31,6 @@ class UpdateAttendeeTicketError:
     message: str
 
 
-@strawberry.type
-class UpdateAttendeeTicketErrors:
-    id: strawberry.ID
-    errors: List[UpdateAttendeeTicketError]
-
-
 UpdateAttendeeTicketResult = Annotated[
     Union[TicketReassigned, AttendeeTicket, UpdateAttendeeTicketErrors],
     strawberry.union(name="UpdateAttendeeTicketResult"),
@@ -49,17 +47,8 @@ class AttendeeTicketMutation:
         input: UpdateAttendeeTicketInput,
         language: str = "en",
     ) -> UpdateAttendeeTicketResult:
-        if not input.email.strip():
-            error = UpdateAttendeeTicketError(
-                field="attendee_email", message="This field may not be blank."
-            )
-            return UpdateAttendeeTicketErrors(id=input.id, errors=[error])
-
-        if not input.name.validate():
-            error = UpdateAttendeeTicketError(
-                field="attendee_name", message="This field may not be blank."
-            )
-            return UpdateAttendeeTicketErrors(id=input.id, errors=[error])
+        if errors := input.validate():
+            return errors
 
         conference = Conference.objects.get(code=conference)
         try:
@@ -86,23 +75,28 @@ class AttendeeTicketMutation:
 def _get_update_tickets_errors(
     response, input: UpdateAttendeeTicketInput
 ) -> UpdateAttendeeTicketErrors:
-    errors = []
-    for field in ("attendee_name", "attendee_email"):
-        if response.get(field):
-            errors.append(
-                UpdateAttendeeTicketError(field=field, message=response[field][0])
-            )
+    errors = UpdateAttendeeTicketErrors()
 
-    if response.get("answers"):
+    if error := response.get("attendee_name"):
+        errors.add_error("name", error[0])
+
+    if error := response.get("attendee_email"):
+        errors.add_error("email", error[0])
+
+    if response_answers := response.get("answers"):
         for index, answer in enumerate(input.answers):
-            answer_error = response["answers"][index]
-            if answer_error:
-                for field in ("answer", "options"):
-                    if answer_error.get(field):
-                        error = UpdateAttendeeTicketError(
-                            field=answer.question,
-                            message=answer_error[field][0],
-                        )
-                        errors.append(error)
+            answer_error = response_answers[index]
 
-    return UpdateAttendeeTicketErrors(id=input.id, errors=errors)
+            if not answer_error:
+                continue
+
+            if answer_error := answer_error.get("answer"):
+                errors.add_error(f"answers.{index}.answer", answer_error[0])
+
+            if options_error := answer_error.get("options"):
+                errors.add_error(
+                    f"answers.{index}.{answer.question}",
+                    options_error[0],
+                )
+
+    return errors
