@@ -40,8 +40,8 @@ class UpdateAttendeeTicketErrors(BaseErrorType):
     @strawberry.type
     class _UpdateAttendeeTicketErrors:
         id: list[str] = strawberry.field(default_factory=list)
-        attendeeName: list[str] = strawberry.field(default_factory=list)
-        attendeeEmail: list[str] = strawberry.field(default_factory=list)
+        attendee_name: list[str] = strawberry.field(default_factory=list)
+        attendee_email: list[str] = strawberry.field(default_factory=list)
         answers: list[AnswerInputError] = strawberry.field(default_factory=list)
 
     errors: _UpdateAttendeeTicketErrors = None

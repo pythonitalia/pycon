@@ -38,11 +38,11 @@ def test_get_user_tickets(
             me {
                 tickets(conference: $conference, language: "en") {
                     id
-                    name {
+                    attendeeName {
                         parts
                         scheme
                     }
-                    email
+                    attendeeEmail
                     item {
                         id
                         name
@@ -80,14 +80,14 @@ def test_get_user_tickets(
     ticket = tickets[0]
 
     assert ticket["id"] == "2"
-    assert ticket["name"] == {
+    assert ticket["attendeeName"] == {
         "parts": {
             "given_name": "Sheldon",
             "family_name": "Cooper",
         },
         "scheme": "given_family",
     }
-    assert ticket["email"] == "sheldon@cooper.com"
+    assert ticket["attendeeEmail"] == "sheldon@cooper.com"
 
     assert ticket["item"]["id"] == "1"
     assert ticket["item"]["name"] == "Regular ticket"

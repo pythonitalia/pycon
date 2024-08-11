@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 class TicketReassigned:
     id: strawberry.ID
     # optional because AttendeeTicket.email is optional
-    email: Optional[str]
+    attendee_email: Optional[str]
 
 
 @strawberry.type
@@ -68,7 +68,7 @@ class AttendeeTicketMutation:
 
         # If the user has changed the email, the ticket will not be returned but
         # the mutation succeeded.
-        return TicketReassigned(id=input.id, email=input.email)
+        return TicketReassigned(id=input.id, attendee_email=input.attendee_email)
 
 
 def _get_update_tickets_errors(

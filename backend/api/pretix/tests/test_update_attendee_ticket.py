@@ -34,14 +34,14 @@ def test_cannot_update_ticket_if_i_am_not_the_owner(
             "conference": conference.code,
             "input": {
                 "id": pretix_user_tickets[0]["id"],
-                "name": {
+                "attendeeName": {
                     "parts": {
                         "given_name": "Ester",
                         "family_name": "Bell",
                     },
                     "scheme": "given_family",
                 },
-                "email": "ester@pycon.it",
+                "attendeeEmail": "ester@pycon.it",
             },
         },
     )
@@ -75,10 +75,13 @@ def test_invalid_data(graphql_client, mocker, requests_mock, user):
     mutation UpdateTicket($conference: String!, $input: UpdateAttendeeTicketInput!) {
         updateAttendeeTicket(conference: $conference, input: $input) {
             ... on UpdateAttendeeTicketErrors {
-                id
                 errors {
-                    field
-                    message
+                    attendeeEmail
+                    attendeeName
+                    answers {
+                        answer
+                        options
+                    }
                 }
             }
         }
@@ -91,14 +94,14 @@ def test_invalid_data(graphql_client, mocker, requests_mock, user):
             "conference": conference.code,
             "input": {
                 "id": "999",
-                "name": {
+                "attendeeName": {
                     "parts": {
                         "given_name": "A",
                         "family_name": "B",
                     },
                     "scheme": "given_family",
                 },
-                "email": " foo@",
+                "attendeeEmail": " foo@",
                 "answers": [
                     {"answer": "No preferences", "question": "31", "options": ["344"]},
                     {"answer": "Vegan", "question": "32"},
@@ -110,16 +113,11 @@ def test_invalid_data(graphql_client, mocker, requests_mock, user):
     )
 
     assert not response.get("errors")
-    assert response["data"]["updateAttendeeTicket"]["id"] == "999"
-    assert response["data"]["updateAttendeeTicket"]["errors"] == [
-        {"field": "attendee_email", "message": "Enter a valid email address."},
-        {
-            "field": "31",
-            "message": 'Invalid pk "344" - object does not exist.',
-        },
-        {"field": "44", "message": "This field may not be blank."},
-        {"field": "43", "message": "This field may not be blank."},
-    ]
+    errors_answers = response["data"]["updateAttendeeTicket"]["errors"]["answers"]
+    assert errors_answers[0]["options"] == ['Invalid pk "344" - object does not exist.']
+    assert errors_answers[1]["answer"] == []
+    assert errors_answers[2]["answer"] == ["This field may not be blank."]
+    assert errors_answers[3]["answer"] == ["This field may not be blank."]
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
@@ -138,10 +136,13 @@ def test_validate_empty_name(graphql_client, mocker, requests_mock, user):
     mutation UpdateTicket($conference: String!, $input: UpdateAttendeeTicketInput!) {
         updateAttendeeTicket(conference: $conference, input: $input) {
             ... on UpdateAttendeeTicketErrors {
-                id
                 errors {
-                    field
-                    message
+                    attendeeEmail
+                    attendeeName
+                    answers {
+                        answer
+                        options
+                    }
                 }
             }
         }
@@ -154,14 +155,14 @@ def test_validate_empty_name(graphql_client, mocker, requests_mock, user):
             "conference": conference.code,
             "input": {
                 "id": "999",
-                "name": {
+                "attendeeName": {
                     "parts": {
                         "given_name": "",
                         "family_name": "Bell",
                     },
                     "scheme": "given_family",
                 },
-                "email": " foo@",
+                "attendeeEmail": " foo@",
                 "answers": [
                     {"answer": "No preferences", "question": "31", "options": ["344"]},
                     {"answer": "Vegan", "question": "32"},
@@ -173,9 +174,8 @@ def test_validate_empty_name(graphql_client, mocker, requests_mock, user):
     )
 
     assert not response.get("errors")
-    assert response["data"]["updateAttendeeTicket"]["id"] == "999"
-    assert response["data"]["updateAttendeeTicket"]["errors"] == [
-        {"field": "attendee_name", "message": "This field may not be blank."},
+    assert response["data"]["updateAttendeeTicket"]["errors"]["attendeeName"] == [
+        "This field may not be blank."
     ]
 
 
@@ -238,11 +238,11 @@ def test_update_ticket_with_answers(
 
             ... on AttendeeTicket {
                 id
-                name {
+                attendeeName {
                     parts
                     scheme
                 }
-                email
+                attendeeEmail
                 item {
                     questions {
                         answer {
@@ -261,14 +261,14 @@ def test_update_ticket_with_answers(
             "conference": conference.code,
             "input": {
                 "id": "999",
-                "name": {
+                "attendeeName": {
                     "parts": {
                         "given_name": "Jane",
                         "family_name": "Bell",
                     },
                     "scheme": "given_family",
                 },
-                "email": user.email,
+                "attendeeEmail": user.email,
                 "answers": [
                     {"answer": "No preferences", "question": "31", "options": ["344"]},
                     {"answer": "Vegan", "question": "32"},
@@ -306,10 +306,8 @@ def test_cannot_update_empty_email(graphql_client, user, mocker):
     mutation UpdateTicket($conference: String!, $input: UpdateAttendeeTicketInput!) {
         updateAttendeeTicket(conference: $conference, input: $input) {
             ... on UpdateAttendeeTicketErrors {
-                id
                 errors {
-                    field
-                    message
+                    attendeeEmail
                 }
             }
         }
@@ -322,8 +320,8 @@ def test_cannot_update_empty_email(graphql_client, user, mocker):
             "conference": conference.code,
             "input": {
                 "id": "999",
-                "email": "                            ",
-                "name": {
+                "attendeeEmail": "                            ",
+                "attendeeName": {
                     "parts": {
                         "given_name": "Marco",
                         "family_name": "Bell",
@@ -335,9 +333,8 @@ def test_cannot_update_empty_email(graphql_client, user, mocker):
     )
 
     assert not response.get("errors")
-    assert response["data"]["updateAttendeeTicket"]["id"] == "999"
-    assert response["data"]["updateAttendeeTicket"]["errors"] == [
-        {"field": "attendee_email", "message": "This field may not be blank."},
+    assert response["data"]["updateAttendeeTicket"]["errors"]["attendeeEmail"] == [
+        "This field may not be blank."
     ]
 
 
@@ -403,11 +400,11 @@ def test_update_ticket(
             __typename
             ... on AttendeeTicket {
                 id
-                name {
+                attendeeName {
                     parts
                     scheme
                 }
-                email
+                attendeeEmail
             }
         }
     }
@@ -419,27 +416,27 @@ def test_update_ticket(
             "conference": conference.code,
             "input": {
                 "id": "999",
-                "name": {
+                "attendeeName": {
                     "parts": {
                         "given_name": "Penny",
                         "family_name": "Bell",
                     },
                     "scheme": "given_family",
                 },
-                "email": user.email,
+                "attendeeEmail": user.email,
             },
         },
     )
 
     assert not response.get("errors")
-    assert response["data"]["updateAttendeeTicket"]["name"] == {
+    assert response["data"]["updateAttendeeTicket"]["attendeeName"] == {
         "parts": {
             "given_name": "Penny",
             "family_name": "Bell",
         },
         "scheme": "given_family",
     }
-    assert response["data"]["updateAttendeeTicket"]["email"] == user.email
+    assert response["data"]["updateAttendeeTicket"]["attendeeEmail"] == user.email
     assert response["data"]["updateAttendeeTicket"]["__typename"] == "AttendeeTicket"
     last_call_body = mock_patch_position.last_request.json()
     assert last_call_body["attendee_name_parts"] == {
@@ -494,7 +491,7 @@ def test_update_email_reassign_the_ticket(
             __typename
             ... on TicketReassigned {
                 id
-                email
+                attendeeEmail
             }
         }
     }
@@ -506,19 +503,22 @@ def test_update_email_reassign_the_ticket(
             "conference": conference.code,
             "input": {
                 "id": "999",
-                "name": {
+                "attendeeName": {
                     "parts": {
                         "given_name": pretix_user_tickets[0]["attendee_name"],
                         "family_name": "Bell",
                     },
                     "scheme": "given_family",
                 },
-                "email": "penny@hofstadter.com",
+                "attendeeEmail": "penny@hofstadter.com",
             },
         },
     )
 
     assert not response.get("errors")
     assert response["data"]["updateAttendeeTicket"]["id"] == "999"
-    assert response["data"]["updateAttendeeTicket"]["email"] == "penny@hofstadter.com"
+    assert (
+        response["data"]["updateAttendeeTicket"]["attendeeEmail"]
+        == "penny@hofstadter.com"
+    )
     assert response["data"]["updateAttendeeTicket"]["__typename"] == "TicketReassigned"
