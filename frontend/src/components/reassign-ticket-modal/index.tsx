@@ -74,7 +74,7 @@ export const ReassignTicketModal = ({
       },
     });
 
-  const currentEmail = ticket.email;
+  const currentEmail = ticket.attendeeEmail;
   const formRef = useRef<HTMLFormElement>();
   const saveChanges = (e) => {
     e.preventDefault();
@@ -94,7 +94,10 @@ export const ReassignTicketModal = ({
         language: language,
         input: {
           id: ticket.id,
-          attendeeName: ticket.attendeeName,
+          attendeeName: {
+            parts: ticket.attendeeName.parts,
+            scheme: ticket.attendeeName.scheme,
+          },
           attendeeEmail: formState.values.email,
         },
       },
