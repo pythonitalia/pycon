@@ -40,6 +40,7 @@ export const ProductQuestionnaire = ({
   const inputPlaceholder = useTranslatedMessage("input.placeholder");
   const getTranslatedString = (id) => getTranslatedMessage(id, language);
 
+  console.log("productUserInformation?.errors", productUserInformation?.errors);
   return (
     <Grid cols={cols} alignItems="end">
       {product.admission && (
@@ -63,7 +64,7 @@ export const ProductQuestionnaire = ({
               "orderQuestions.attendeeGivenName.placeholder",
             )}
             value={productUserInformation.attendeeGivenName}
-            errors={productUserInformation?.errors?.attendeeName}
+            errors={productUserInformation?.errors?.name}
           />
         </InputWrapper>
       )}
@@ -88,7 +89,7 @@ export const ProductQuestionnaire = ({
             )}
             autoComplete="none"
             value={productUserInformation.attendeeFamilyName}
-            errors={productUserInformation?.errors?.attendeeName}
+            errors={productUserInformation?.errors?.name}
           />
         </InputWrapper>
       )}
@@ -114,7 +115,7 @@ export const ProductQuestionnaire = ({
               })
             }
             value={productUserInformation.attendeeEmail}
-            errors={productUserInformation?.errors?.attendeeEmail}
+            errors={productUserInformation?.errors?.email}
           />
         </InputWrapper>
       )}

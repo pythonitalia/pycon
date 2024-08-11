@@ -45,10 +45,15 @@ mutation UpdateTicket(
     }
 
     ... on UpdateAttendeeTicketErrors {
-      id
       errors {
-        field
-        message
+        id
+        name
+        email
+        answers {
+          answer
+          question
+          options
+        }
       }
     }
   }

@@ -110,14 +110,7 @@ export const CustomizeTicketModal = ({
           result.updateAttendeeTicket.__typename ===
           "UpdateAttendeeTicketErrors"
         ) {
-          setErrors(
-            Object.fromEntries(
-              result.updateAttendeeTicket.errors.map((error) => [
-                snakeToCamel(error.field),
-                error.message,
-              ]),
-            ),
-          );
+          setErrors(result.updateAttendeeTicket.errors);
           return;
         }
       },
