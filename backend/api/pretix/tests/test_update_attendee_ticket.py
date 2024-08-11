@@ -113,6 +113,9 @@ def test_invalid_data(graphql_client, mocker, requests_mock, user):
     )
 
     assert not response.get("errors")
+    assert response["data"]["updateAttendeeTicket"]["errors"]["attendeeEmail"] == [
+        "Enter a valid email address."
+    ]
     errors_answers = response["data"]["updateAttendeeTicket"]["errors"]["answers"]
     assert errors_answers[0]["options"] == ['Invalid pk "344" - object does not exist.']
     assert errors_answers[1]["answer"] == []
