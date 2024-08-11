@@ -352,7 +352,7 @@ class AttendeeNameInput:
         if self.scheme == "legacy":
             name = self.parts.get("_legacy")
 
-            if not name:
+            if not name.strip():
                 return False
 
         return True
