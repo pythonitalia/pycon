@@ -54,7 +54,6 @@ class AttendeeTicketMutation:
         try:
             pretix.update_ticket(conference, input)
         except HTTPError as e:
-            logger.error(e, exc_info=True)
             data = e.response.json()
             return _get_update_tickets_errors(data, input)
 
@@ -84,25 +83,25 @@ def _get_update_tickets_errors(
         errors.add_error("email", error[0])
 
     if response_answers := response.get("answers"):
-        for index, answer in enumerate(input.answers):
+        for index in range(len(input.answers)):
             answer_errors = response_answers[index]
 
             if not answer_errors:
                 continue
 
-            if answer_error := answer_errors.get("answer"):
-                errors.add_error(f"answers.{index}.answer", answer_error[0])
+            if error := answer_errors.get("answer"):
+                errors.add_error(f"answers.{index}.answer", error[0])
 
-            if options_error := answer_errors.get("options"):
+            if error := answer_errors.get("options"):
                 errors.add_error(
                     f"answers.{index}.options",
-                    options_error[0],
+                    error[0],
                 )
 
-            if non_field_errors := answer_errors.get("non_field_errors"):
+            if error := answer_errors.get("non_field_errors"):
                 errors.add_error(
                     f"answers.{index}.non_field_errors",
-                    non_field_errors[0],
+                    error[0],
                 )
 
     return errors
