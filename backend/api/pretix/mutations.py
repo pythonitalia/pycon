@@ -55,7 +55,7 @@ class AttendeeTicketMutation:
             pretix.update_ticket(conference, input)
         except HTTPError as e:
             data = e.response.json()
-            return _get_update_tickets_errors(data, input)
+            return convert_pretix_errors_to_graphql(data, input)
 
         # TODO: filter by orderposition in the Pretix API
         tickets = get_user_tickets(
@@ -71,37 +71,21 @@ class AttendeeTicketMutation:
         return TicketReassigned(id=input.id, attendee_email=input.attendee_email)
 
 
-def _get_update_tickets_errors(
+def convert_pretix_errors_to_graphql(
     response, input: UpdateAttendeeTicketInput
 ) -> UpdateAttendeeTicketErrors:
     errors = UpdateAttendeeTicketErrors()
 
-    if error := response.get("attendee_name"):
-        errors.add_error("attendee_name", error[0])
-
     if error := response.get("attendee_email"):
         errors.add_error("attendee_email", error[0])
 
+    answers_errors_keys = ["options", "answer", "non_field_errors"]
     if response_answers := response.get("answers"):
         for index in range(len(input.answers)):
             answer_errors = response_answers[index]
 
-            if not answer_errors:
-                continue
-
-            if error := answer_errors.get("answer"):
-                errors.add_error(f"answers.{index}.answer", error[0])
-
-            if error := answer_errors.get("options"):
-                errors.add_error(
-                    f"answers.{index}.options",
-                    error[0],
-                )
-
-            if error := answer_errors.get("non_field_errors"):
-                errors.add_error(
-                    f"answers.{index}.non_field_errors",
-                    error[0],
-                )
+            for key in answers_errors_keys:
+                if error := answer_errors.get(key):
+                    errors.add_error(f"answers.{index}.{key}", error[0])
 
     return errors
