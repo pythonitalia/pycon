@@ -2112,6 +2112,12 @@ Mettiamoci in contatto per trovare la soluzione migliore per le esigenze della t
     "sponsorLeadModal.consentToContactViaEmail.heading": "Contattami via email",
     "sponsorLeadModal.consentToContactViaEmail.body":
       "Do il mio permesso per essere contattato/a via email per discutere opportunità di sponsorizzazione.",
+
+    "orderQuestions.attendeeGivenName": "Nome partecipante",
+    "orderQuestions.attendeeGivenName.placeholder": "Il tuo nome, e.g. Ada",
+    "orderQuestions.attendeeFamilyName": "Cognome partecipante",
+    "orderQuestions.attendeeFamilyName.placeholder":
+      "Il tuo cognome, e.g. Lovelace",
   },
 };
 
