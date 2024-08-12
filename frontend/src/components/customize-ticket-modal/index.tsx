@@ -38,7 +38,7 @@ export type CustomizeTicketModalProps = {
 
 type Form = {
   id: string;
-  index: string;
+  index: number;
   attendeeGivenName: string;
   attendeeFamilyName: string;
   attendeeEmail: string;
@@ -207,6 +207,7 @@ export const CustomizeTicketModal = ({
             hideAttendeeEmail={true}
             productUserInformation={{
               ...formState.values,
+              index: formState.values.index as unknown as number,
               errors,
             }}
             updateTicketInfo={({ key, value }) => {
