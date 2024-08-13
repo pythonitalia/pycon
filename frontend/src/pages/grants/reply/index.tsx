@@ -36,7 +36,6 @@ import {
 
 type GrantReplyFrom = {
   option: StatusOption | null;
-  message: string;
 };
 
 const APPROVED_STATUSES = [
@@ -70,7 +69,6 @@ const GrantReply = () => {
 
   const [formState, { radio, text }] = useFormState<GrantReplyFrom>({
     option: null,
-    message: "",
   });
 
   const { loading, error, data } = useGrantQuery({
@@ -98,7 +96,6 @@ const GrantReply = () => {
           input: {
             instance: grant?.id,
             status: formState.values.option,
-            message: formState.values.message,
           },
         },
       });
@@ -109,7 +106,6 @@ const GrantReply = () => {
   useEffect(() => {
     if (!loading && grant) {
       formState.setField("option", toStatusOption(grant?.status));
-      formState.setField("message", grant.applicantMessage || "");
     }
   }, [loading]);
 
@@ -120,8 +116,7 @@ const GrantReply = () => {
   const hasSentAnswer = ANSWERS_STATUSES.includes(grant?.status) ?? false;
 
   const answerHasChanged =
-    toStatusOption(grant?.status) !== formState.values.option ||
-    grant?.applicantMessage !== formState.values.message;
+    toStatusOption(grant?.status) !== formState.values.option;
 
   if (error) {
     return (
@@ -237,14 +232,22 @@ const GrantReply = () => {
                       </Text>
                     </Link>
                   ),
+                  grantsEmail: (
+                    <Link target="_blank" href="mailto:grants@pycon.it">
+                      <Text
+                        decoration="underline"
+                        size={2}
+                        weight="strong"
+                        color="none"
+                      >
+                        grants@pycon.it
+                      </Text>
+                    </Link>
+                  ),
                 }}
               />
             </Text>
             <Spacer size="small" />
-
-            <label>
-              <Textarea {...text("message")} rows={5} />
-            </label>
           </VerticalStack>
         </form>
 
