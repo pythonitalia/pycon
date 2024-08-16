@@ -161,8 +161,8 @@ Use the 'Manage' button on the page to confirm or decline the grant. You have un
     "profile.myGrant.editInfo":
       "Ensure all the information provided are correct. You have until {editDeadline} to edit your information.",
     "profile.myGrant.manage": "Manage",
-    "profile.myGrant.manage.warning":
-      "If your plans change or you cannot attend the conference anymore, please let us know by clicking the 'Manage' button to refuse your grant or email us at grants@pycon.it as soon as possible. Failing to notify us may impact your eligibility for financial aid at future events.",
+    "profile.myGrant.manage.warning": `If your plans change or you cannot attend the conference anymore, please let us know by clicking the 'Manage' button to refuse your grant or email us at {grantsEmail} as soon as possible.
+Failing to notify us may impact your eligibility for financial aid at future events.`,
     "profile.myGrant.noGrant.heading": "You haven't requested a grant yet",
     "profile.myGrant.noGrant.body.canSubmit":
       "If you're facing financial difficulties and wish to attend PyCon Italia, our grant application form is currently open. Submit your grant request today!",
@@ -1977,8 +1977,8 @@ Affrettati a comprare il biglietto!`,
     "profile.myGrant.editInfo":
       "Assicurati che tutte le informazioni fornite siano corrette. Hai tempo fino al {editDeadline} per modificare il tuo grant.",
     "profile.myGrant.manage": "Gestisci",
-    "profile.myGrant.manage.warning":
-      "Se i tuoi piani cambiano o non puoi più partecipare alla conferenza, per favore faccelo sapere cliccando sul pulsante 'Gestisci' per rifiutare il tuo grant o inviaci un'e-mail a {grantsEmail} il prima possibile. La mancata comunicazione potrebbe influenzare la tua idoneità a ricevere aiuti finanziari per eventi futuri.",
+    "profile.myGrant.manage.warning": `Se i tuoi piani cambiano o non puoi più partecipare alla conferenza, per favore faccelo sapere cliccando sul pulsante 'Gestisci' per rifiutare il tuo grant o inviaci un'e-mail a {grantsEmail} il prima possibile.
+La mancata comunicazione potrebbe influenzare la tua idoneità a ricevere aiuti finanziari per eventi futuri.`,
     "profile.myGrant.status": "Stato",
     "profile.myGrant.status.pending": "In attesa",
     "profile.myGrant.status.pending.nextSteps":
