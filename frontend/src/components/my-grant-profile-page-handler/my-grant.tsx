@@ -1,12 +1,9 @@
 import {
   Button,
-  CardPart,
   Grid,
   GridColumn,
-  HorizontalStack,
-  MultiplePartsCard,
+  Link,
   Spacer,
-  Tag,
   Text,
   VerticalStack,
 } from "@python-italia/pycon-styleguide";
@@ -16,7 +13,6 @@ import { useCurrentLanguage } from "~/locale/context";
 import { DeadlineStatus, Status as GrantStatus } from "~/types";
 import type { MyProfileWithGrantQuery } from "~/types";
 
-import { Link } from "@python-italia/pycon-styleguide";
 import { useCountries } from "~/helpers/use-countries";
 import { createHref } from "../link";
 import { Sidebar } from "./sidebar";

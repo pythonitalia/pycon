@@ -9,13 +9,14 @@ import {
   Text,
   VerticalStack,
 } from "@python-italia/pycon-styleguide";
+import type { Color } from "@python-italia/pycon-styleguide/dist/types";
 import type React from "react";
-import type { GrantType, Status } from "~/types";
+import { Status as GrantStatus, type GrantType } from "~/types";
 
 import { FormattedMessage } from "react-intl";
 
 type Props = {
-  status: Status;
+  status: GrantStatus;
   grantType: GrantType;
   needsFundsForTravel: boolean;
   needAccommodation: boolean;
@@ -27,23 +28,11 @@ export const Sidebar = ({
   needsFundsForTravel,
   needAccommodation,
 }: Props) => {
-  const grantStatusColors = {
-    approved: "green",
-    confirmed: "green",
-    did_not_attend: "red",
-    pending: "gray",
-    refused: "red",
-    rejected: "red",
-    waiting_for_confirmation: "yellow",
-    waiting_list: "coral",
-    waiting_list_maybe: "coral",
-  };
-
   return (
     <>
       <MultiplePartsCard>
         <GrantInfo label={<FormattedMessage id="profile.myGrant.status" />}>
-          <Tag color={grantStatusColors[status]}>
+          <Tag color={getStatusColor(status)}>
             <FormattedMessage id={`profile.myGrant.status.${status}`} />
           </Tag>
         </GrantInfo>
@@ -94,3 +83,22 @@ const GrantInfo = ({
     </Text>
   </CardPart>
 );
+
+const getStatusColor = (status: GrantStatus): Color => {
+  switch (status) {
+    case GrantStatus.Approved:
+    case GrantStatus.Confirmed:
+      return "green";
+    case GrantStatus.Pending:
+      return "grey";
+    case GrantStatus.Refused:
+    case GrantStatus.Rejected:
+    case GrantStatus.DidNotAttend:
+      return "red";
+    case GrantStatus.WaitingForConfirmation:
+      return "yellow";
+    case GrantStatus.WaitingList:
+    case GrantStatus.WaitingListMaybe:
+      return "coral";
+  }
+};
