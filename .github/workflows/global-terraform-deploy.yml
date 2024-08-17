@@ -18,7 +18,7 @@ jobs:
       run:
         working-directory: ./infrastructure/global
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.2.4
