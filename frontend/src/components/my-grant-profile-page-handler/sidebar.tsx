@@ -29,39 +29,37 @@ export const Sidebar = ({
   needAccommodation,
 }: Props) => {
   return (
-    <>
-      <MultiplePartsCard>
-        <GrantInfo label={<FormattedMessage id="profile.myGrant.status" />}>
-          <Tag color={getStatusColor(status)}>
-            <FormattedMessage id={`profile.myGrant.status.${status}`} />
-          </Tag>
-        </GrantInfo>
+    <MultiplePartsCard>
+      <GrantInfo label={<FormattedMessage id="profile.myGrant.status" />}>
+        <Tag color={getStatusColor(status)}>
+          <FormattedMessage id={`profile.myGrant.status.${status}`} />
+        </Tag>
+      </GrantInfo>
 
-        <GrantInfo label={<FormattedMessage id="profile.myGrant.grantType" />}>
-          <FormattedMessage
-            id={`grants.form.fields.grantType.values.${grantType}`}
-          />
-        </GrantInfo>
+      <GrantInfo label={<FormattedMessage id="profile.myGrant.grantType" />}>
+        <FormattedMessage
+          id={`grants.form.fields.grantType.values.${grantType}`}
+        />
+      </GrantInfo>
 
-        <GrantInfo label={<FormattedMessage id="profile.myGrant.appliedFor" />}>
-          <VerticalStack gap="small">
-            <FormattedMessage id="profile.myGrant.appliedFor.ticket" />
+      <GrantInfo label={<FormattedMessage id="profile.myGrant.appliedFor" />}>
+        <VerticalStack gap="small">
+          <FormattedMessage id="profile.myGrant.appliedFor.ticket" />
 
-            {needsFundsForTravel && (
-              <Text size="label2" weight="strong">
-                <FormattedMessage id="profile.myGrant.appliedFor.travel" />
-              </Text>
-            )}
+          {needsFundsForTravel && (
+            <Text size="label2" weight="strong">
+              <FormattedMessage id="profile.myGrant.appliedFor.travel" />
+            </Text>
+          )}
 
-            {needAccommodation && (
-              <Text size="label2" weight="strong">
-                <FormattedMessage id="profile.myGrant.appliedFor.accommodation" />
-              </Text>
-            )}
-          </VerticalStack>
-        </GrantInfo>
-      </MultiplePartsCard>
-    </>
+          {needAccommodation && (
+            <Text size="label2" weight="strong">
+              <FormattedMessage id="profile.myGrant.appliedFor.accommodation" />
+            </Text>
+          )}
+        </VerticalStack>
+      </GrantInfo>
+    </MultiplePartsCard>
   );
 };
 

@@ -163,9 +163,9 @@ Use the 'Manage' button on the page to confirm or decline the grant. You have un
     "profile.myGrant.manage": "Manage",
     "profile.myGrant.manage.warning": `If your plans change or you cannot attend the conference anymore, please let us know by clicking the 'Manage' button to refuse your grant or email us at {grantsEmail} as soon as possible.
 Failing to notify us may impact your eligibility for financial aid at future events.`,
-    "profile.myGrant.noGrant.heading": "You haven't requested a grant yet",
-    "profile.myGrant.noGrant.body.canSubmit":
-      "If you're facing financial difficulties and wish to attend PyCon Italia, our grant application form is currently open. Submit your grant request today!",
+    "profile.myGrant.noGrant.heading": "You haven't requested a grant",
+    "profile.myGrant.noGrant.body.canSubmit": `If you're facing financial difficulties and wish to attend PyCon Italia, our grant application form is currently open!
+Find our more information {grantInfoLink} and submit your application below.`,
     "profile.myGrant.noGrant.submitGrant": "Request a grant",
     "profile.myGrant.noGrant.body.closed":
       "The grant application form is currently closed. Stay tuned for future opportunities.",
@@ -2008,12 +2008,12 @@ Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai
     "profile.myGrant.status.did_not_attend": "Non ha partecipato",
     "profile.myGrant.status.did_not_attend.nextSteps":
       "Non hai partecipato alla conferenza.",
-    "profile.myGrant.noGrant.heading": "Non hai ancora richiesto un grant",
-    "profile.myGrant.noGrant.body.canSubmit":
-      "Se ti trovi in difficoltà economica e desideri partecipare a PyCon Italia, il nostro modulo per la richiesta di grant è attualmente aperto. Invia la tua richiesta oggi stesso!",
+    "profile.myGrant.noGrant.heading": "Non hai richiesto un grant",
+    "profile.myGrant.noGrant.body.canSubmit": `Se ti trovi in difficoltà economica e desideri partecipare a PyCon Italia, il nostro modulo per la richiesta di grant è attualmente aperto.
+Guarda {grantInfoLink} per maggiori informazioni e invia la richiesta qui sotto.`,
     "profile.myGrant.noGrant.submitGrant": "Richiedi un grant",
     "profile.myGrant.noGrant.body.closed":
-      "Il modulo per la richiesta di grant è attualmente chiuso. Continua a seguirci per future opportunità.",
+      "Il modulo per la richiesta di grant è attualmente chiuso. Purtroppo non possiamo accettare nuove richieste dopo la scadenza.",
     "profile.myGrant.noGrant.body.openingSoon":
       "Il nostro modulo per la richiesta di grant aprirà presto! Visita la nostra pagina informativa per ulteriori dettagli.",
 

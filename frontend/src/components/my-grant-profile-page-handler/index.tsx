@@ -20,7 +20,7 @@ export const MyGrantProfilePageHandler = () => {
     },
   });
 
-  const grant = me?.grant;
+  const grant = me.grant;
 
   return (
     <Page endSeparator={false}>

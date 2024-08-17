@@ -2,6 +2,7 @@ import {
   Button,
   Container,
   Heading,
+  Link,
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
@@ -26,9 +27,26 @@ export const NoGrant = ({ deadline }: Props) => {
         <FormattedMessage id="profile.myGrant.noGrant.heading" />
       </Heading>
       <Spacer size="small" />
-      <Text size={2}>
+      <Text>
         {deadlineStatus === DeadlineStatus.HappeningNow && (
-          <FormattedMessage id="profile.myGrant.noGrant.body.canSubmit" />
+          <FormattedMessage
+            id="profile.myGrant.noGrant.body.canSubmit"
+            values={{
+              grantInfoLink: (
+                <Link
+                  href={createHref({
+                    path: "/grants-info",
+                    locale: language,
+                  })}
+                  target="_blank"
+                >
+                  <Text decoration="underline">
+                    <FormattedMessage id="global.here" />
+                  </Text>
+                </Link>
+              ),
+            }}
+          />
         )}
         {deadlineStatus === DeadlineStatus.InThePast && (
           <FormattedMessage id="profile.myGrant.noGrant.body.closed" />
@@ -37,28 +55,20 @@ export const NoGrant = ({ deadline }: Props) => {
           <FormattedMessage id="profile.myGrant.noGrant.body.openingSoon" />
         )}
       </Text>
-      <Spacer size="large" />
-      {deadlineStatus === DeadlineStatus.HappeningNow && (
-        <Button
-          href={createHref({
-            path: "/grants",
-            locale: language,
-          })}
-          variant="secondary"
-        >
-          <FormattedMessage id="profile.myGrant.noGrant.submitGrant" />
-        </Button>
-      )}
-      {deadlineStatus === DeadlineStatus.InTheFuture && (
-        <Button
-          href={createHref({
-            path: "/grants-info",
-            locale: language,
-          })}
-          variant="secondary"
-        >
-          <FormattedMessage id="profile.myGrant.noGrant.submitGrant" />
-        </Button>
+      {(deadlineStatus === DeadlineStatus.HappeningNow ||
+        deadlineStatus === DeadlineStatus.InTheFuture) && (
+        <>
+          <Spacer size="large" />
+          <Button
+            href={createHref({
+              path: "/grants-info",
+              locale: language,
+            })}
+            variant="secondary"
+          >
+            <FormattedMessage id="profile.myGrant.noGrant.submitGrant" />
+          </Button>
+        </>
       )}
     </Container>
   );
