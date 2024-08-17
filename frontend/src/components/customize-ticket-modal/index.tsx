@@ -113,9 +113,8 @@ export const CustomizeTicketModal = ({
       "UpdateAttendeeTicketErrors"
     ) {
       const newErrors = responseData.updateAttendeeTicket.errors;
-      setErrors({
-        ...newErrors,
-        answers: answers.reduce((acc, answer, index) => {
+      const answersErrors = answers.reduce<{ [questionId: string]: string[] }>(
+        (acc, answer, index) => {
           acc[answer.question] = [
             ...(newErrors.answers[index]?.answer ?? []),
             ...(newErrors.answers[index]?.nonFieldErrors ?? []),
@@ -123,14 +122,20 @@ export const CustomizeTicketModal = ({
             ...(newErrors.answers[index]?.question ?? []),
           ];
           return acc;
-        }, {}),
-      });
+        },
+        {},
+      );
+
+      setErrors({
+        ...newErrors,
+        answers: answersErrors,
+      } as unknown as ProductStateErrors);
       return;
     }
   };
 
   const saveTicketChanges = (updatedProductUserInformation: any) => {
-    setErrors({});
+    setErrors(null);
     setProductUserInformation(updatedProductUserInformation);
     callUpdateUserTicket(updatedProductUserInformation);
   };
@@ -151,7 +156,7 @@ export const CustomizeTicketModal = ({
     }, {}),
     isMe: false,
   });
-  const [errors, setErrors] = useState<ProductStateErrors>(null);
+  const [errors, setErrors] = useState<ProductStateErrors | null>(null);
 
   const [formState] = useFormState<Form>({
     id: productUserInformation.id,
