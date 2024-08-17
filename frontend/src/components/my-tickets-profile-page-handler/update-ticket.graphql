@@ -47,7 +47,11 @@ mutation UpdateTicket(
     ... on UpdateAttendeeTicketErrors {
       errors {
         id
-        attendeeName
+        attendeeName {
+          givenName
+          familyName
+          nonFieldErrors
+        }
         attendeeEmail
         answers {
           answer

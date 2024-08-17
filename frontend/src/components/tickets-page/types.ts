@@ -44,7 +44,14 @@ export type ProductState = {
   attendeeEmail: string;
   admission?: boolean;
   voucher?: Voucher | null;
-  errors?: { [id: string]: string[] };
+  errors?: {
+    [K in string]: K extends "attendeeName"
+      ? {
+          givenName: string[];
+          familyName: string[];
+        }
+      : string[];
+  };
   isMe: boolean;
 };
 

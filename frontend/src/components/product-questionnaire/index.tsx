@@ -63,7 +63,7 @@ export const ProductQuestionnaire = ({
               "orderQuestions.attendeeGivenName.placeholder",
             )}
             value={productUserInformation.attendeeGivenName}
-            errors={productUserInformation?.errors?.attendeeName}
+            errors={productUserInformation?.errors?.attendeeName.givenName}
           />
         </InputWrapper>
       )}
@@ -88,7 +88,7 @@ export const ProductQuestionnaire = ({
             )}
             autoComplete="none"
             value={productUserInformation.attendeeFamilyName}
-            errors={productUserInformation?.errors?.attendeeName}
+            errors={productUserInformation?.errors?.attendeeName.familyName}
           />
         </InputWrapper>
       )}

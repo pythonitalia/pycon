@@ -16,7 +16,12 @@ mutation CreateOrder($conference: String!, $input: CreateOrderInput!) {
           sdi
         }
         tickets {
-          attendeeName
+          attendeeName {
+            givenName
+            familyName
+            nonFieldErrors
+          }
+          attendeeEmail
         }
       }
     }

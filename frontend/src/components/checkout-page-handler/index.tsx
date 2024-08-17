@@ -49,13 +49,6 @@ export const CheckoutPageHandler = ({
       .flat()
       .forEach((productUserInformation, index) => {
         const matchingErrors = ticketsErrors?.[index];
-        console.log(
-          "productUserInformation",
-          productUserInformation,
-          index,
-          matchingErrors,
-        );
-
         updateTicketInfo({
           id: productUserInformation.id,
           index: productUserInformation.index,
