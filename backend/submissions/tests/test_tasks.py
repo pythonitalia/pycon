@@ -24,7 +24,6 @@ def test_handle_new_cfp_submission():
     )
 
     conference = ConferenceFactory(
-        slack_new_proposal_comment_incoming_webhook_url="https://123",
         slack_new_proposal_incoming_webhook_url="https://456",
     )
 

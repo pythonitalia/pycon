@@ -78,5 +78,6 @@ def notify_new_sponsor_lead_via_slack(*, sponsor_lead_id, admin_absolute_uri):
             }
         ],
         text=message,
-        token=conference.slack_new_sponsor_lead_incoming_webhook_url,
+        oauth_token=conference.get_slack_oauth_token(),
+        channel_id=conference.slack_new_sponsor_lead_channel_id,
     )

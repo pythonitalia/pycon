@@ -11,22 +11,36 @@ class SlackIncomingWebhookError(Exception):
 
 
 def send_message(
-    blocks: List[dict], attachments: List[dict], text: str = "", *, token: str
+    blocks: List[dict],
+    attachments: List[dict],
+    text: str = "",
+    *,
+    oauth_token: str,
+    channel_id: str,
 ):
     """
     Performs a HTTP post to the Incoming Webhooks slack api.
     Blocks reference: https://api.slack.com/reference/messaging/blocks
     """
-    if not token:
-        logger.info(
-            "Incoming webhook variable is not set," "skipping slack notification"
-        )
+    if not oauth_token:
+        logger.info("No oauth token provided for sending a slack message.")
         return
 
     response = post(
-        url=token,
-        json={"blocks": blocks, "attachments": attachments, "text": text},
+        url="https://slack.com/api/chat.postMessage",
+        headers={
+            "Authorization": f"Bearer {oauth_token}",
+        },
+        json={
+            "blocks": blocks,
+            "attachments": attachments,
+            "text": text,
+            "channel": channel_id,
+        },
     )
+    response.raise_for_status()
 
-    if response.status_code != 200:
-        raise SlackIncomingWebhookError(response.text)
+    payload = response.json()
+
+    if not payload["ok"]:
+        raise SlackIncomingWebhookError(payload["error"])
