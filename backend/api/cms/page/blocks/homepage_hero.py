@@ -18,7 +18,8 @@ class HomepageHero:
 
     @classmethod
     def from_block(cls, block) -> Self:
+        city = block.value.get("city")
         return cls(
             id=block.id,
-            city=HomepageHeroCity(block.value["city"]) if block.value["city"] else None,
+            city=HomepageHeroCity(city) if city else None,
         )
