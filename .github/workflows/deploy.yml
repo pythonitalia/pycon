@@ -32,12 +32,12 @@ jobs:
           fetch-depth: 0
       - name: Configure AWS credentials
         if: github.ref != 'refs/heads/main'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.aws_access_key_id }}
           aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
           aws-region: eu-central-1
-      - uses: hashicorp/setup-terraform@v1
+      - uses: hashicorp/setup-terraform@v3
         if: github.ref != 'refs/heads/main'
         with:
           terraform_version: 1.2.4
@@ -78,7 +78,7 @@ jobs:
           ref: ${{ github.ref }}
           fetch-depth: 0
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.aws_access_key_id }}
           aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
@@ -155,7 +155,7 @@ jobs:
           ref: ${{ github.ref }}
           fetch-depth: 0
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.aws_access_key_id }}
           aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
@@ -291,7 +291,7 @@ jobs:
         with:
           name: built-email-templates
           path: email-templates/build_production
-      - uses: hashicorp/setup-terraform@v1
+      - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.2.4
       - name: Terraform Init

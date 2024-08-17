@@ -19,7 +19,7 @@ jobs:
         working-directory: ./infrastructure/global
     steps:
       - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v1
+      - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.2.4
       - name: Terraform Init
