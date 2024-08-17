@@ -34,7 +34,11 @@ def _create_order(graphql_client, code, input):
                             pec
                         }
                         tickets {
-                            attendeeName
+                            attendeeName {
+                                givenName
+                                familyName
+                                nonFieldErrors
+                            }
                             attendeeEmail
                         }
                     }
@@ -933,9 +937,9 @@ def test_order_creation_fails_if_attendee_name_is_empty(graphql_client, user, mo
 
     assert not response.get("errors")
     assert response["data"]["createOrder"]["__typename"] == "CreateOrderErrors"
-    assert response["data"]["createOrder"]["errors"]["tickets"][0]["attendeeName"] == [
-        "This field is required"
-    ]
+    assert response["data"]["createOrder"]["errors"]["tickets"][0]["attendeeName"][
+        "givenName"
+    ] == ["This field may not be blank."]
 
     create_order_mock.assert_not_called()
 

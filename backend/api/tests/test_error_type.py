@@ -3,8 +3,16 @@ from api.types import BaseErrorType
 
 
 @strawberry.type
+class SecondLevelNestedTypeError:
+    second_level_1: list[str] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
 class NestedTypeError:
     nested_field_1: list[str] = strawberry.field(default_factory=list)
+    second_level: SecondLevelNestedTypeError = strawberry.field(
+        default_factory=SecondLevelNestedTypeError
+    )
 
 
 @strawberry.type
@@ -92,3 +100,18 @@ def test_error_type_add_error():
     assert error_class.errors.field_with_array[5].array_field == ["error array field"]
     assert error_class.errors.field_with_array[6].array_field == ["error array field 6"]
     assert len(error_class.errors.field_with_array) == 7
+
+
+def test_nested_prefixes():
+    error_class = ErrorClass()
+
+    with error_class.with_prefix("field_with_type"):
+        error_class.add_error("nested_field_1", "error message")
+        with error_class.with_prefix("second_level"):
+            error_class.add_error("second_level_1", "second level error")
+
+    assert error_class.has_errors
+    assert error_class.errors.field_with_type.nested_field_1 == ["error message"]
+    assert error_class.errors.field_with_type.second_level.second_level_1 == [
+        "second level error"
+    ]

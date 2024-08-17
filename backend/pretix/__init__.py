@@ -9,7 +9,12 @@ from countries import countries
 import strawberry
 from django.conf import settings
 from django.core.cache import cache
-from api.pretix.types import AttendeeNameInput, UpdateAttendeeTicketInput, Voucher
+from api.pretix.types import (
+    AttendeeNameInput,
+    AttendeeNameInputError,
+    UpdateAttendeeTicketInput,
+    Voucher,
+)
 from conferences.models.conference import Conference
 from pretix.types import Category, Question, Quota
 import sentry_sdk
@@ -256,7 +261,9 @@ class InvoiceInformationErrors:
 
 @strawberry.type
 class CreateOrderTicketErrors:
-    attendee_name: list[str] = strawberry.field(default_factory=list)
+    attendee_name: AttendeeNameInputError = strawberry.field(
+        default_factory=AttendeeNameInputError
+    )
     attendee_email: list[str] = strawberry.field(default_factory=list)
 
 
@@ -289,8 +296,8 @@ class CreateOrderTicket:
     voucher: Optional[str] = None
 
     def validate(self, errors: CreateOrderErrors) -> CreateOrderErrors:
-        if not self.attendee_name.validate():
-            errors.add_error("attendee_name", "This field is required")
+        with errors.with_prefix("attendee_name"):
+            self.attendee_name.validate(errors)
 
         if not self.attendee_email.strip():
             errors.add_error("attendee_email", "This field is required")

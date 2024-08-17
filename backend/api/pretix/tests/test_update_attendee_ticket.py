@@ -77,7 +77,11 @@ def test_invalid_data(graphql_client, mocker, requests_mock, user):
             ... on UpdateAttendeeTicketErrors {
                 errors {
                     attendeeEmail
-                    attendeeName
+                    attendeeName {
+                        givenName
+                        familyName
+                        nonFieldErrors
+                    }
                     answers {
                         answer
                         options
@@ -141,7 +145,11 @@ def test_validate_empty_name(graphql_client, mocker, requests_mock, user):
             ... on UpdateAttendeeTicketErrors {
                 errors {
                     attendeeEmail
-                    attendeeName
+                    attendeeName {
+                        givenName
+                        familyName
+                        nonFieldErrors
+                    }
                     answers {
                         answer
                         options
@@ -177,9 +185,13 @@ def test_validate_empty_name(graphql_client, mocker, requests_mock, user):
     )
 
     assert not response.get("errors")
-    assert response["data"]["updateAttendeeTicket"]["errors"]["attendeeName"] == [
-        "This field may not be blank."
-    ]
+    assert response["data"]["updateAttendeeTicket"]["errors"]["attendeeName"][
+        "givenName"
+    ] == ["This field may not be blank."]
+    assert (
+        response["data"]["updateAttendeeTicket"]["errors"]["attendeeName"]["familyName"]
+        == []
+    )
 
 
 @override_settings(PRETIX_API="https://pretix/api/")

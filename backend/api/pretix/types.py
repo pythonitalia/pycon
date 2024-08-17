@@ -36,11 +36,20 @@ class AnswerInputError:
 
 
 @strawberry.type
+class AttendeeNameInputError:
+    given_name: list[str] = strawberry.field(default_factory=list)
+    family_name: list[str] = strawberry.field(default_factory=list)
+    non_field_errors: list[str] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
 class UpdateAttendeeTicketErrors(BaseErrorType):
     @strawberry.type
     class _UpdateAttendeeTicketErrors:
         id: list[str] = strawberry.field(default_factory=list)
-        attendee_name: list[str] = strawberry.field(default_factory=list)
+        attendee_name: AttendeeNameInputError = strawberry.field(
+            default_factory=AttendeeNameInputError
+        )
         attendee_email: list[str] = strawberry.field(default_factory=list)
         answers: list[AnswerInputError] = strawberry.field(default_factory=list)
 
@@ -338,24 +347,28 @@ class AttendeeNameInput:
     def to_pretix_api(self):
         return self.parts
 
-    def validate(self):
+    def validate(self, errors: BaseErrorType):
         if not self.parts:
+            errors.add_error("non_field_errors", "This field may not be blank.")
             return False
 
         if self.scheme == "given_family":
             given_name = self.parts.get("given_name", "").strip()
             family_name = self.parts.get("family_name", "").strip()
 
-            if not given_name or not family_name:
-                return False
+            if not given_name:
+                errors.add_error("given_name", "This field may not be blank.")
+
+            if not family_name:
+                errors.add_error("family_name", "This field may not be blank.")
 
         if self.scheme == "legacy":
             name = self.parts.get("_legacy")
 
             if not name.strip():
-                return False
+                errors.add_error("non_field_errors", "This field may not be blank.")
 
-        return True
+        return errors
 
 
 @strawberry.type
@@ -454,8 +467,8 @@ class UpdateAttendeeTicketInput:
         if not self.attendee_email.strip():
             errors.add_error("attendee_email", "This field may not be blank.")
 
-        if not self.attendee_name.validate():
-            errors.add_error("attendee_name", "This field may not be blank.")
+        with errors.with_prefix("attendee_name"):
+            self.attendee_name.validate(errors)
 
         return errors.if_has_errors
 

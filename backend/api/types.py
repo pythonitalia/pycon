@@ -12,12 +12,23 @@ class OperationResult:
 
 class BaseErrorType:
     _has_errors: strawberry.Private[bool] = False
+    _prefixes: strawberry.Private[list[str]] = None
+
+    @property
+    def prefix(self):
+        return ".".join(self._prefixes or [])
+
+    def build_field_name(self, field: str) -> str:
+        return f"{self.prefix}.{field}" if self.prefix else field
 
     @contextmanager
     def with_prefix(self, *prefixes: list[str | int]):
-        self._prefix = ".".join([str(prefix) for prefix in prefixes])
+        if not self._prefixes:
+            self._prefixes = []
+
+        self._prefixes.extend([str(prefix) for prefix in prefixes])
         yield
-        del self._prefix
+        self._prefixes = self._prefixes[: -len(prefixes)]
 
     def add_error(self, field: str, message: str):
         self._has_errors = True
@@ -25,7 +36,7 @@ class BaseErrorType:
         if not self.errors:
             self.errors = self.__annotations__["errors"]()
 
-        field = f"{self._prefix}.{field}" if hasattr(self, "_prefix") else field
+        field = self.build_field_name(field)
         parts = field.split(".")
         current = self.errors
         list_type = None
