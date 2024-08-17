@@ -16,6 +16,7 @@ import type { MyProfileWithGrantQuery } from "~/types";
 import { getCountryLabel } from "~/helpers/country-utils";
 import { useCountries } from "~/helpers/use-countries";
 import { createHref } from "../link";
+import GrantTableInfo from "./grant-table-info";
 import { Sidebar } from "./sidebar";
 
 type Props = {
@@ -32,7 +33,6 @@ const grantManageableStatuses = [
 
 export const MyGrant = ({ grant, deadline }: Props) => {
   const language = useCurrentLanguage();
-  const countries = useCountries();
 
   const canManageGrant = grantManageableStatuses.includes(grant.status);
 
@@ -57,9 +57,9 @@ export const MyGrant = ({ grant, deadline }: Props) => {
         <GridColumn colSpan={8}>
           <VerticalStack gap="medium" justifyContent="spaceBetween" fullHeight>
             <div>
-              <Title>
+              <Text size="label3" uppercase weight="strong">
                 <FormattedMessage id="profile.myGrant.nextSteps" />
-              </Title>
+              </Text>
               <Spacer size="xs" />
               <Text>
                 <FormattedMessage
@@ -91,66 +91,7 @@ export const MyGrant = ({ grant, deadline }: Props) => {
               </div>
             )}
 
-            <Grid cols={3} gap="small" fullWidth>
-              <div>
-                <Title>
-                  <FormattedMessage id="grants.form.fields.name" />
-                </Title>
-                <Spacer size="xs" />
-                <Text>{grant.name}</Text>
-              </div>
-
-              <div>
-                <Title>
-                  <FormattedMessage id="grants.form.fields.fullName" />
-                </Title>
-                <Spacer size="xs" />
-                <Text>{grant.fullName}</Text>
-              </div>
-
-              <div>
-                <Title>
-                  <FormattedMessage id="grants.form.fields.ageGroup" />
-                </Title>
-                <Spacer size="xs" />
-
-                <Text>
-                  <FormattedMessage
-                    id={`grants.form.fields.ageGroup.values.${grant.ageGroup}`}
-                  />
-                </Text>
-              </div>
-
-              <div>
-                <Title>
-                  <FormattedMessage id="grants.form.fields.travellingFrom" />
-                </Title>
-                <Spacer size="xs" />
-                <Text>{getCountryLabel(countries, grant.travellingFrom)}</Text>
-              </div>
-
-              <div>
-                <Title>
-                  <FormattedMessage id="grants.form.fields.gender" />
-                </Title>
-                <Spacer size="xs" />
-                <Text>
-                  <FormattedMessage id={`profile.gender.${grant.gender}`} />
-                </Text>
-              </div>
-
-              <div>
-                <Title>
-                  <FormattedMessage id="grants.form.fields.occupation" />
-                </Title>
-                <Spacer size="xs" />
-                <Text>
-                  <FormattedMessage
-                    id={`grants.form.fields.occupation.values.${grant.occupation}`}
-                  />
-                </Text>
-              </div>
-            </Grid>
+            <GrantTableInfo grant={grant} />
           </VerticalStack>
         </GridColumn>
       </Grid>
@@ -215,9 +156,3 @@ export const MyGrant = ({ grant, deadline }: Props) => {
     </>
   );
 };
-
-const Title = ({ children }: { children: React.ReactNode }) => (
-  <Text size="label3" uppercase weight="strong">
-    {children}
-  </Text>
-);
