@@ -34,6 +34,20 @@ export type Voucher = {
   variationId?: string;
 };
 
+type ProductStateAttendeeNameErrors = {
+  attendeeName: {
+    givenName: string[];
+    familyName: string[];
+  };
+};
+
+type ProductStateGenericErrors = {
+  [key: string]: string[];
+};
+
+type ProductStateErrors = ProductStateGenericErrors &
+  ProductStateAttendeeNameErrors;
+
 export type ProductState = {
   variation?: string;
   id: string;
@@ -44,14 +58,7 @@ export type ProductState = {
   attendeeEmail: string;
   admission?: boolean;
   voucher?: Voucher | null;
-  errors?: {
-    [K in string]: K extends "attendeeName"
-      ? {
-          givenName: string[];
-          familyName: string[];
-        }
-      : string[];
-  };
+  errors?: ProductStateErrors;
   isMe: boolean;
 };
 
