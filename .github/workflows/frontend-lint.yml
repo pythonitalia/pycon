@@ -25,6 +25,7 @@ jobs:
         with:
           node-version: '18'
           cache: 'pnpm'
+          cache-dependency-path: 'frontend/pnpm-lock.yaml'
       - name: Setup Biome
         uses: biomejs/setup-biome@v2
         with:
