@@ -41,6 +41,15 @@ def test_error_prefixing_errors():
         error_class.add_error("nested_field_1", "error message 2")
         error_class.add_error("nested_field_1", "error message 3")
 
+    with error_class.with_prefix("field_with_array.3"):
+        error_class.add_error("array_field", "test 3")
+
+    with error_class.with_prefix("field_with_array", 1):
+        error_class.add_error("array_field", "test 1")
+
+    with error_class.with_prefix("field_with_array", 1):
+        error_class.add_error("array_field", "second error")
+
     error_class.add_error("field_1", "no prefix again")
 
     assert error_class.has_errors
@@ -49,6 +58,13 @@ def test_error_prefixing_errors():
     assert error_class.errors.field_with_type.nested_field_1 == [
         "error message 2",
         "error message 3",
+    ]
+    assert error_class.errors.field_with_array[1].array_field == [
+        "test 1",
+        "second error",
+    ]
+    assert error_class.errors.field_with_array[3].array_field == [
+        "test 3",
     ]
 
 

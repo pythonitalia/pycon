@@ -65,7 +65,7 @@ def test_creates_order(requests_mock, invoice_information):
                     scheme="given_family",
                     parts={"given_name": "John", "family_name": "Doe"},
                 ),
-                attendee_email="Example",
+                attendee_email="example@example.org",
                 variation=None,
                 voucher=None,
                 answers=[
@@ -110,7 +110,7 @@ def test_raises_when_response_is_400(requests_mock, invoice_information):
                     scheme="given_family",
                     parts={"given_name": "John", "family_name": "Doe"},
                 ),
-                attendee_email="Example",
+                attendee_email="example@example.org",
                 variation=None,
                 answers=None,
                 voucher=None,
@@ -157,7 +157,7 @@ def test_raises_value_error_if_answer_value_is_wrong(
                     scheme="given_family",
                     parts={"given_name": "John", "family_name": "Doe"},
                 ),
-                attendee_email="Example",
+                attendee_email="example@example.org",
                 variation=None,
                 voucher=None,
                 answers=[
@@ -213,7 +213,7 @@ def test_not_required_and_empty_answer_is_skipped(requests_mock, invoice_informa
                     scheme="given_family",
                     parts={"given_name": "John", "family_name": "Doe"},
                 ),
-                attendee_email="Example",
+                attendee_email="example@example.org",
                 variation=None,
                 voucher=None,
                 answers=[
@@ -278,7 +278,7 @@ def test_create_order_with_positions_with_voucher_and_one_without(
                     scheme="given_family",
                     parts={"given_name": "John", "family_name": "Doe"},
                 ),
-                attendee_email="Example",
+                attendee_email="example@example.org",
                 variation=None,
                 voucher=None,
                 answers=[
@@ -292,7 +292,7 @@ def test_create_order_with_positions_with_voucher_and_one_without(
                     scheme="given_family",
                     parts={"given_name": "John", "family_name": "Doe"},
                 ),
-                attendee_email="Example",
+                attendee_email="example@example.org",
                 variation=None,
                 voucher="friendly-human-being",
                 answers=[
@@ -363,7 +363,7 @@ def test_creates_order_with_additional_info_for_e_invoice(requests_mock):
                     scheme="given_family",
                     parts={"given_name": "John", "family_name": "Doe"},
                 ),
-                attendee_email="Example",
+                attendee_email="example@example.org",
                 variation=None,
                 voucher=None,
                 answers=[
@@ -433,7 +433,7 @@ def test_creates_order_with_additional_info_for_e_invoice_does_not_break_on_erro
                     scheme="given_family",
                     parts={"given_name": "John", "family_name": "Doe"},
                 ),
-                attendee_email="Example",
+                attendee_email="example@example.org",
                 variation=None,
                 voucher=None,
                 answers=[

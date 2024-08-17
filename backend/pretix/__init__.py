@@ -1,5 +1,4 @@
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
+from api.utils import validate_email
 import logging
 from typing import Any, Dict, List, Optional
 from urllib.parse import urljoin
@@ -258,6 +257,7 @@ class InvoiceInformationErrors:
 @strawberry.type
 class CreateOrderTicketErrors:
     attendee_name: list[str] = strawberry.field(default_factory=list)
+    attendee_email: list[str] = strawberry.field(default_factory=list)
 
 
 @strawberry.type
@@ -291,6 +291,11 @@ class CreateOrderTicket:
     def validate(self, errors: CreateOrderErrors) -> CreateOrderErrors:
         if not self.attendee_name.validate():
             errors.add_error("attendee_name", "This field is required")
+
+        if not self.attendee_email.strip():
+            errors.add_error("attendee_email", "This field is required")
+        elif not validate_email(self.attendee_email):
+            errors.add_error("attendee_email", "Invalid email address")
 
         return errors
 
@@ -364,9 +369,7 @@ class InvoiceInformation:
         if not self.pec:
             return
 
-        try:
-            validate_email(self.pec)
-        except ValidationError:
+        if not validate_email(self.pec):
             errors.add_error("pec", "Invalid PEC address")
 
     def validate_fiscal_code(self, errors: CreateOrderErrors):
@@ -420,7 +423,7 @@ class CreateOrderInput:
             self.invoice_information.validate(errors)
 
         for index, ticket in enumerate(self.tickets):
-            with errors.with_prefix(f"tickets.{index}"):
+            with errors.with_prefix("tickets", index):
                 ticket.validate(errors)
 
         return errors.if_has_errors

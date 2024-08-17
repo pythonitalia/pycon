@@ -14,8 +14,8 @@ class BaseErrorType:
     _has_errors: strawberry.Private[bool] = False
 
     @contextmanager
-    def with_prefix(self, prefix: str):
-        self._prefix = prefix
+    def with_prefix(self, *prefixes: list[str | int]):
+        self._prefix = ".".join([str(prefix) for prefix in prefixes])
         yield
         del self._prefix
 
@@ -34,14 +34,14 @@ class BaseErrorType:
             if isinstance(current, list):
                 index = int(part)
                 try:
-                    current = current[index]
+                    current[index]
                 except IndexError:
                     for _ in range(index - len(current) + 1):
                         current.append(list_type())
 
-                new_instance = list_type()
-                current[index] = new_instance
-                current = new_instance
+                instance = current[index]
+                current[index] = instance
+                current = instance
                 continue
 
             next_current = getattr(current, part)
