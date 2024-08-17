@@ -77,6 +77,7 @@ def test_error_type_add_error():
     error_class.add_error("field_with_type.nested_field_1", "error nested field")
     error_class.add_error("field_with_array.3.array_field", "error field 3")
     error_class.add_error("field_with_array.5.array_field", "error array field")
+    error_class.add_error("field_with_array.6.array_field", "error array field 6")
 
     assert error_class.has_errors
     assert error_class.errors.field_1 == ["error message 1", "error message 2"]
@@ -89,4 +90,5 @@ def test_error_type_add_error():
     assert error_class.errors.field_with_array[3].array_field == ["error field 3"]
     assert error_class.errors.field_with_array[4].array_field == []
     assert error_class.errors.field_with_array[5].array_field == ["error array field"]
-    assert len(error_class.errors.field_with_array) == 6
+    assert error_class.errors.field_with_array[6].array_field == ["error array field 6"]
+    assert len(error_class.errors.field_with_array) == 7

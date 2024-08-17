@@ -33,9 +33,8 @@ class BaseErrorType:
         for part in parts[:-1]:
             if isinstance(current, list):
                 index = int(part)
-                try:
-                    current[index]
-                except IndexError:
+
+                if len(current) <= index:
                     for _ in range(index - len(current) + 1):
                         current.append(list_type())
 
