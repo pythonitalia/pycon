@@ -13,6 +13,7 @@ import { useCurrentLanguage } from "~/locale/context";
 import { DeadlineStatus, Status as GrantStatus } from "~/types";
 import type { MyProfileWithGrantQuery } from "~/types";
 
+import { getCountryLabel } from "~/helpers/country-utils";
 import { useCountries } from "~/helpers/use-countries";
 import { createHref } from "../link";
 import { Sidebar } from "./sidebar";
@@ -22,21 +23,18 @@ type Props = {
   deadline: MyProfileWithGrantQuery["conference"]["deadline"];
 };
 
+const grantManageableStatuses = [
+  GrantStatus.WaitingForConfirmation,
+  GrantStatus.Confirmed,
+  GrantStatus.WaitingList,
+  GrantStatus.WaitingListMaybe,
+];
+
 export const MyGrant = ({ grant, deadline }: Props) => {
   const language = useCurrentLanguage();
   const countries = useCountries();
 
-  const canManageGrant = [
-    GrantStatus.WaitingForConfirmation,
-    GrantStatus.Confirmed,
-    GrantStatus.WaitingList,
-    GrantStatus.WaitingListMaybe,
-  ].includes(grant.status);
-
-  const getCountryLabel = (value: string): string | undefined => {
-    const country = countries.find((country) => country.value === value);
-    return country ? country.label : undefined;
-  };
+  const canManageGrant = grantManageableStatuses.includes(grant.status);
 
   const dateFormatter = new Intl.DateTimeFormat(language, {
     day: "numeric",
@@ -94,23 +92,23 @@ export const MyGrant = ({ grant, deadline }: Props) => {
             )}
 
             <Grid cols={3} gap="small" fullWidth>
-              <GridColumn>
+              <div>
                 <Title>
                   <FormattedMessage id="grants.form.fields.name" />
                 </Title>
                 <Spacer size="xs" />
                 <Text>{grant.name}</Text>
-              </GridColumn>
+              </div>
 
-              <GridColumn>
+              <div>
                 <Title>
                   <FormattedMessage id="grants.form.fields.fullName" />
                 </Title>
                 <Spacer size="xs" />
                 <Text>{grant.fullName}</Text>
-              </GridColumn>
+              </div>
 
-              <GridColumn>
+              <div>
                 <Title>
                   <FormattedMessage id="grants.form.fields.ageGroup" />
                 </Title>
@@ -121,17 +119,17 @@ export const MyGrant = ({ grant, deadline }: Props) => {
                     id={`grants.form.fields.ageGroup.values.${grant.ageGroup}`}
                   />
                 </Text>
-              </GridColumn>
+              </div>
 
-              <GridColumn>
+              <div>
                 <Title>
                   <FormattedMessage id="grants.form.fields.travellingFrom" />
                 </Title>
                 <Spacer size="xs" />
-                <Text>{getCountryLabel(grant.travellingFrom)}</Text>
-              </GridColumn>
+                <Text>{getCountryLabel(countries, grant.travellingFrom)}</Text>
+              </div>
 
-              <GridColumn>
+              <div>
                 <Title>
                   <FormattedMessage id="grants.form.fields.gender" />
                 </Title>
@@ -139,9 +137,9 @@ export const MyGrant = ({ grant, deadline }: Props) => {
                 <Text>
                   <FormattedMessage id={`profile.gender.${grant.gender}`} />
                 </Text>
-              </GridColumn>
+              </div>
 
-              <GridColumn>
+              <div>
                 <Title>
                   <FormattedMessage id="grants.form.fields.occupation" />
                 </Title>
@@ -151,7 +149,7 @@ export const MyGrant = ({ grant, deadline }: Props) => {
                     id={`grants.form.fields.occupation.values.${grant.occupation}`}
                   />
                 </Text>
-              </GridColumn>
+              </div>
             </Grid>
           </VerticalStack>
         </GridColumn>
