@@ -70,6 +70,7 @@ class SliderCardsSectionFactory(StreamBlockFactory):
 
 class BodyBlockFactory(StreamBlockFactory):
     text_section = factory.SubFactory(TextSectionFactory)
+    homepage_hero = factory.SubFactory(HomepageHeroFactory)
     map = factory.SubFactory(MapFactory)
 
     class Meta:
