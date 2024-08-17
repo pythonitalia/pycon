@@ -125,6 +125,11 @@ fragment Blocks on Block {
     id
     visibleCategories
   }
+
+  ... on HomepageHero {
+    id
+    city
+  }
 }
 
 fragment CTAInfo on CTA {
