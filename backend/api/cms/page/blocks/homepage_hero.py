@@ -5,7 +5,7 @@ import strawberry
 
 
 @strawberry.enum
-class City(Enum):
+class HomepageHeroCity(Enum):
     FLORENCE = "florence"
     BOLOGNA = "bologna"
 
@@ -14,11 +14,11 @@ class City(Enum):
 @strawberry.type
 class HomepageHero:
     id: strawberry.ID
-    city: City | None
+    city: HomepageHeroCity | None
 
     @classmethod
     def from_block(cls, block) -> Self:
         return cls(
             id=block.id,
-            city=City(block.value["city"]) if block.value["city"] else None,
+            city=HomepageHeroCity(block.value["city"]) if block.value["city"] else None,
         )
