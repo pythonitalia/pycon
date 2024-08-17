@@ -4,18 +4,21 @@ import {
   ScrollDownArrowBar,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
+import { HomepageHeroCity } from "~/types";
 
 type Props = {
   cycle: "day" | "night";
+  city: HomepageHeroCity;
 };
 
 const Illustration = React.memo(HeroIllustration);
 
-export const HomepageHero = ({ cycle }: Props) => {
+export const HomepageHero = ({ cycle, city }: Props) => {
   return (
     <div className="h-screen relative -mt-[161px] -mb-[3px]">
       <div className="h-screen lg:h-[calc(100vh-60px)]">
-        <Illustration cycle={cycle} />
+        {city === HomepageHeroCity.Florence && <Illustration cycle={cycle} />}
+        {city === HomepageHeroCity.Bologna && <div>Bologna illustration</div>}
       </div>
 
       <LayoutContent
