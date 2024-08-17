@@ -7,7 +7,7 @@ from notifications.templates import EmailTemplate
 
 from users.models import User
 from grants.models import Grant
-from integrations import plain, slack
+from integrations import slack
 from notifications.emails import send_email
 
 import logging
@@ -96,8 +96,6 @@ def notify_new_grant_reply_slack(*, grant_id, admin_url):
     grant = Grant.objects.get(id=grant_id)
 
     actions = []
-    if grant.applicant_message:
-        actions.append("sent a message")
     if grant.status in (Grant.Status.confirmed, Grant.Status.refused):
         actions.append(f"{Grant.Status(grant.status).label} the grant")
 
@@ -154,22 +152,6 @@ def send_grant_voucher_email(*, grant_id):
     )
 
     grant.voucher_email_sent_at = timezone.now()
-    grant.save()
-
-
-@app.task
-def send_new_plain_chat(*, grant_id, message):
-    if not settings.PLAIN_API:
-        return
-
-    grant = Grant.objects.get(id=grant_id)
-
-    name = get_name(grant.user, "Financial Aid Applicant")
-    thread_id = plain.send_message(
-        grant.user, title=f"{name} has some questions:", message=message
-    )
-
-    grant.plain_thread_id = thread_id
     grant.save()
 
 

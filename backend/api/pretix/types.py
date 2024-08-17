@@ -362,12 +362,6 @@ class AttendeeNameInput:
             if not family_name:
                 errors.add_error("family_name", "This field may not be blank.")
 
-        if self.scheme == "legacy":
-            name = self.parts.get("_legacy")
-
-            if not name.strip():
-                errors.add_error("non_field_errors", "This field may not be blank.")
-
         return errors
 
 

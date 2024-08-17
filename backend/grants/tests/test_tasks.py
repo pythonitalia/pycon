@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
-from unittest.mock import patch, ANY
+from unittest.mock import patch
 from conferences.tests.factories import ConferenceFactory, DeadlineFactory
-from django.test import override_settings
 
 import pytest
 from users.tests.factories import UserFactory
@@ -14,7 +13,6 @@ from grants.tasks import (
     send_grant_reply_approved_email,
     send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
-    send_new_plain_chat,
 )
 from grants.models import Grant
 
@@ -364,40 +362,3 @@ def test_send_grant_reply_waiting_list_update_email(settings):
         reply_to=["grants@pycon.it"],
         subject=f"[{conference_name}] Financial Aid Update",
     )
-
-
-@override_settings(PLAIN_API=None)
-def test_send_new_plain_chat_when_disabled(mocker):
-    plain_mock = mocker.patch("grants.tasks.plain")
-    grant = GrantFactory()
-
-    send_new_plain_chat(
-        grant_id=grant.id,
-        message="Hello",
-    )
-
-    plain_mock.send_message.assert_not_called()
-
-
-@override_settings(PLAIN_API="https://invalid/api")
-def test_send_new_plain_chat(mocker):
-    plain_mock = mocker.patch(
-        "grants.tasks.plain",
-    )
-    plain_mock.send_message.return_value = "th_0123456789ABCDEFGHILMNOPQR"
-    user = UserFactory()
-    grant = GrantFactory(user=user)
-
-    send_new_plain_chat(
-        grant_id=grant.id,
-        message="Hello",
-    )
-
-    plain_mock.send_message.assert_called_once_with(
-        user,
-        title=ANY,
-        message="Hello",
-    )
-
-    grant.refresh_from_db()
-    assert grant.plain_thread_id == "th_0123456789ABCDEFGHILMNOPQR"
