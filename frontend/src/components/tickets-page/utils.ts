@@ -52,7 +52,11 @@ export const hasAnsweredTicketsQuestions = (
         return false;
       }
 
-      if (!product.attendeeEmail || !product.attendeeName) {
+      // todo check this
+      if (
+        !product.attendeeEmail ||
+        (!product.attendeeFamilyName && !product.attendeeGivenName)
+      ) {
         return true;
       }
 

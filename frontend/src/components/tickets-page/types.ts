@@ -34,15 +34,34 @@ export type Voucher = {
   variationId?: string;
 };
 
+type ProductStateComplexErrors = {
+  attendeeName?: {
+    givenName: string[];
+    familyName: string[];
+  };
+  answers?: {
+    [key: string]: string[];
+  };
+};
+
+type ProductStateGenericErrors = {
+  [key: string]: string[];
+};
+
+export type ProductStateErrors = ProductStateComplexErrors &
+  ProductStateGenericErrors;
+
 export type ProductState = {
   variation?: string;
   id: string;
+  index: number;
   answers: { [id: string]: string };
-  attendeeName: string;
+  attendeeGivenName: string;
+  attendeeFamilyName: string;
   attendeeEmail: string;
   admission?: boolean;
   voucher?: Voucher | null;
-  errors?: { [id: string]: string };
+  errors?: ProductStateErrors;
   isMe: boolean;
 };
 

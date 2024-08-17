@@ -606,7 +606,11 @@ Let's get in touch to find the best solution for your business' needs!`,
     "orderInformation.invalidSDI": "SDI must be 7 characters long",
 
     "orderQuestions.heading": "Order questions",
-    "orderQuestions.attendeeName": "Attendee name",
+    "orderQuestions.attendeeGivenName": "Attendee Given name",
+    "orderQuestions.attendeeGivenName.placeholder": "Your given name, e.g. Ada",
+    "orderQuestions.attendeeFamilyName": "Attendee Family name",
+    "orderQuestions.attendeeFamilyName.placeholder":
+      "Your family name, e.g. Lovelace",
     "orderQuestions.attendeeEmail": "Attendee email",
     "orderQuestions.repeatAttendeeEmail": "Confirm Attendee email",
 
@@ -2105,6 +2109,12 @@ Mettiamoci in contatto per trovare la soluzione migliore per le esigenze della t
     "sponsorLeadModal.consentToContactViaEmail.heading": "Contattami via email",
     "sponsorLeadModal.consentToContactViaEmail.body":
       "Do il mio permesso per essere contattato/a via email per discutere opportunità di sponsorizzazione.",
+
+    "orderQuestions.attendeeGivenName": "Nome partecipante",
+    "orderQuestions.attendeeGivenName.placeholder": "Il tuo nome, e.g. Ada",
+    "orderQuestions.attendeeFamilyName": "Cognome partecipante",
+    "orderQuestions.attendeeFamilyName.placeholder":
+      "Il tuo cognome, e.g. Lovelace",
   },
 };
 

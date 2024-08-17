@@ -18,10 +18,12 @@ import {
 } from "~/types";
 
 import { useState } from "react";
+import { displayAttendeeName } from "~/helpers/attendee-name";
 import { Badge } from "../badge";
 import { createHref } from "../link";
 import { Modal } from "../modal";
 import { ProductQuestionnaire } from "../product-questionnaire";
+import type { ProductStateErrors } from "../tickets-page/types";
 
 type Props = {
   onClose: () => void;
@@ -37,7 +39,9 @@ export type CustomizeTicketModalProps = {
 
 type Form = {
   id: string;
-  attendeeName: string;
+  index: number;
+  attendeeGivenName: string;
+  attendeeFamilyName: string;
   attendeeEmail: string;
   answers: { [key: string]: string };
   isMe: boolean;
@@ -48,8 +52,10 @@ export const CustomizeTicketModal = ({
   ticket,
 }: Props & CustomizeTicketModalProps) => {
   const language = useCurrentLanguage();
+  const [updateTicket, { loading: updatingTicket, error: updateTicketError }] =
+    useUpdateTicketMutation();
 
-  const callUpdateUserTicket = (updatedProductUserInformation) => {
+  const callUpdateUserTicket = async (updatedProductUserInformation) => {
     const answers = ticket.item.questions
       .map((question) => {
         let answer: string;
@@ -81,50 +87,65 @@ export const CustomizeTicketModal = ({
       })
       .filter((item) => item.answer !== "");
 
-    updateTicket({
+    const response = await updateTicket({
       variables: {
         conference: process.env.conferenceCode,
         language: language,
         input: {
           id: updatedProductUserInformation.id,
-          name: updatedProductUserInformation.attendeeName,
-          email: updatedProductUserInformation.attendeeEmail,
+          attendeeName: {
+            parts: {
+              given_name: updatedProductUserInformation.attendeeGivenName,
+              family_name: updatedProductUserInformation.attendeeFamilyName,
+            },
+            scheme: "given_family",
+          },
+          attendeeEmail: updatedProductUserInformation.attendeeEmail,
           answers,
         },
       },
     });
+
+    const responseData = response.data;
+
+    if (
+      responseData.updateAttendeeTicket.__typename ===
+      "UpdateAttendeeTicketErrors"
+    ) {
+      const newErrors = responseData.updateAttendeeTicket.errors;
+      const answersErrors = answers.reduce<{ [questionId: string]: string[] }>(
+        (acc, answer, index) => {
+          acc[answer.question] = [
+            ...(newErrors.answers[index]?.answer ?? []),
+            ...(newErrors.answers[index]?.nonFieldErrors ?? []),
+            ...(newErrors.answers[index]?.options ?? []),
+            ...(newErrors.answers[index]?.question ?? []),
+          ];
+          return acc;
+        },
+        {},
+      );
+
+      setErrors({
+        ...newErrors,
+        answers: answersErrors,
+      } as unknown as ProductStateErrors);
+      return;
+    }
   };
 
-  const [updateTicket, { loading: updatingTicket, error: updateTicketError }] =
-    useUpdateTicketMutation({
-      onCompleted(result) {
-        if (
-          result.updateAttendeeTicket.__typename ===
-          "UpdateAttendeeTicketErrors"
-        ) {
-          setErrors(
-            Object.fromEntries(
-              result.updateAttendeeTicket.errors.map((error) => [
-                snakeToCamel(error.field),
-                error.message,
-              ]),
-            ),
-          );
-          return;
-        }
-      },
-    });
-
   const saveTicketChanges = (updatedProductUserInformation: any) => {
-    setErrors({});
+    setErrors(null);
     setProductUserInformation(updatedProductUserInformation);
     callUpdateUserTicket(updatedProductUserInformation);
   };
 
   const [productUserInformation, setProductUserInformation] = useState({
     id: ticket.id,
-    attendeeName: ticket.name ?? "",
-    attendeeEmail: ticket.email ?? "",
+    index: 0,
+    attendeeGivenName: ticket.attendeeName.parts.given_name ?? "",
+    attendeeFamilyName: ticket.attendeeName.parts.family_name ?? "",
+    attendeeEmail: ticket.attendeeEmail ?? "",
     errors: {},
     answers: ticket.item.questions.reduce((acc, question) => {
       acc[question.id] =
@@ -135,11 +156,13 @@ export const CustomizeTicketModal = ({
     }, {}),
     isMe: false,
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<ProductStateErrors | null>(null);
 
   const [formState] = useFormState<Form>({
     id: productUserInformation.id,
-    attendeeName: productUserInformation.attendeeName,
+    index: productUserInformation.index,
+    attendeeGivenName: productUserInformation.attendeeGivenName,
+    attendeeFamilyName: productUserInformation.attendeeFamilyName,
     attendeeEmail: productUserInformation.attendeeEmail,
     answers: productUserInformation.answers,
     isMe: productUserInformation.isMe,
@@ -190,6 +213,7 @@ export const CustomizeTicketModal = ({
             hideAttendeeEmail={true}
             productUserInformation={{
               ...formState.values,
+              index: formState.values.index as unknown as number,
               errors,
             }}
             updateTicketInfo={({ key, value }) => {
@@ -211,7 +235,13 @@ export const CustomizeTicketModal = ({
         <GridColumn>
           <div className="max-w-[302px] max-h-[453px]">
             <Badge
-              name={formState.values.attendeeName}
+              name={displayAttendeeName({
+                parts: {
+                  given_name: formState.values.attendeeGivenName,
+                  family_name: formState.values.attendeeFamilyName,
+                },
+                scheme: "given_family",
+              })}
               pronouns={pronounsAnswer}
               tagline={taglineAnswer}
               cutLines={false}

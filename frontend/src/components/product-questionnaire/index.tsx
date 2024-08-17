@@ -7,9 +7,13 @@ import {
 import type React from "react";
 import { FormattedMessage } from "react-intl";
 
-import { useTranslatedMessage } from "~/helpers/use-translated-message";
+import {
+  getTranslatedMessage,
+  useTranslatedMessage,
+} from "~/helpers/use-translated-message";
 import type { TicketItem } from "~/types";
 
+import { useCurrentLanguage } from "~/locale/context";
 import type { ProductState } from "../tickets-page/types";
 
 type Props = {
@@ -31,35 +35,60 @@ export const ProductQuestionnaire = ({
   hideAttendeeEmail = false,
   cols = 3,
 }: Props) => {
+  const language = useCurrentLanguage();
   const answers = productUserInformation.answers;
   const inputPlaceholder = useTranslatedMessage("input.placeholder");
+  const getTranslatedString = (id) => getTranslatedMessage(id, language);
 
   return (
     <Grid cols={cols} alignItems="end">
       {product.admission && (
         <InputWrapper
-          key="attendeeName"
+          key="attendeeGivenName"
           required={true}
-          title={<FormattedMessage id="orderQuestions.attendeeName" />}
+          title={<FormattedMessage id="orderQuestions.attendeeGivenName" />}
         >
           <Input
             required={true}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               updateTicketInfo({
                 id: productUserInformation.id,
-                index,
-                key: "attendeeName",
+                index: productUserInformation.index,
+                key: "attendeeGivenName",
                 value: e.target.value,
               })
             }
-            autoComplete="name"
-            placeholder={inputPlaceholder}
-            value={productUserInformation.attendeeName}
-            errors={
-              productUserInformation?.errors && [
-                productUserInformation?.errors?.attendeeName,
-              ]
+            autoComplete="none"
+            placeholder={getTranslatedString(
+              "orderQuestions.attendeeGivenName.placeholder",
+            )}
+            value={productUserInformation.attendeeGivenName}
+            errors={productUserInformation?.errors?.attendeeName?.givenName}
+          />
+        </InputWrapper>
+      )}
+      {product.admission && (
+        <InputWrapper
+          key="attendeeFamilyName"
+          required={true}
+          title={<FormattedMessage id="orderQuestions.attendeeFamilyName" />}
+        >
+          <Input
+            required={true}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              updateTicketInfo({
+                id: productUserInformation.id,
+                index: productUserInformation.index,
+                key: "attendeeFamilyName",
+                value: e.target.value,
+              })
             }
+            placeholder={getTranslatedString(
+              "orderQuestions.attendeeFamilyName.placeholder",
+            )}
+            autoComplete="none"
+            value={productUserInformation.attendeeFamilyName}
+            errors={productUserInformation?.errors?.attendeeName?.familyName}
           />
         </InputWrapper>
       )}
@@ -79,17 +108,13 @@ export const ProductQuestionnaire = ({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               updateTicketInfo({
                 id: productUserInformation.id,
-                index,
+                index: productUserInformation.index,
                 key: "attendeeEmail",
                 value: e.target.value,
               })
             }
             value={productUserInformation.attendeeEmail}
-            errors={
-              productUserInformation?.errors && [
-                productUserInformation?.errors?.attendeeEmail,
-              ]
-            }
+            errors={productUserInformation?.errors?.attendeeEmail}
           />
         </InputWrapper>
       )}
@@ -109,17 +134,13 @@ export const ProductQuestionnaire = ({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateQuestionAnswer({
                   id: productUserInformation.id,
-                  index,
+                  index: productUserInformation.index,
                   question: question.id,
                   answer: e.target.value,
                 })
               }
               value={answers[question.id]}
-              errors={
-                productUserInformation?.errors && [
-                  productUserInformation?.errors[question.id],
-                ]
-              }
+              errors={productUserInformation?.errors?.answers?.[question.id]}
             />
           ) : (
             <Select
@@ -128,11 +149,12 @@ export const ProductQuestionnaire = ({
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                 updateQuestionAnswer({
                   id: productUserInformation.id,
-                  index,
+                  index: productUserInformation.index,
                   question: question.id,
                   answer: e.target.value,
                 });
               }}
+              errors={productUserInformation?.errors?.answers?.[question.id]}
             >
               {question.options.map((option) => (
                 <option key={option.id} value={option.id}>

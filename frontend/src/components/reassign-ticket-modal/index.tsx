@@ -7,7 +7,7 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
@@ -20,7 +20,6 @@ import {
   useUpdateTicketMutation,
 } from "~/types";
 import { Alert } from "../alert";
-import { snakeToCamel } from "../customize-ticket-modal";
 import { Modal } from "../modal";
 
 type Form = {
@@ -54,14 +53,13 @@ export const ReassignTicketModal = ({
               language: language,
             },
           });
+          const ticketId = data.updateAttendeeTicket.id;
           cache.writeQuery({
             query: MyProfileWithTicketsDocument,
             data: {
               me: {
                 ...me,
-                tickets: me.tickets.filter(
-                  (ticket) => ticket.id !== data.updateAttendeeTicket.id,
-                ),
+                tickets: me.tickets.filter((ticket) => ticket.id !== ticketId),
               },
             },
             variables: {
@@ -74,7 +72,7 @@ export const ReassignTicketModal = ({
       },
     });
 
-  const currentEmail = ticket.email;
+  const currentEmail = ticket.attendeeEmail;
   const formRef = useRef<HTMLFormElement>();
   const saveChanges = (e) => {
     e.preventDefault();
@@ -94,8 +92,11 @@ export const ReassignTicketModal = ({
         language: language,
         input: {
           id: ticket.id,
-          name: ticket.name,
-          email: formState.values.email,
+          attendeeName: {
+            parts: ticket.attendeeName.parts,
+            scheme: ticket.attendeeName.scheme,
+          },
+          attendeeEmail: formState.values.email,
         },
       },
     });

@@ -20,10 +20,12 @@ const updateProductReducer = (
     case "incrementProduct": {
       productItems.push({
         id: action.id,
+        index: productItems.length,
         variation: action.variation,
         admission: action.admission,
         answers: {},
-        attendeeName: "",
+        attendeeGivenName: "",
+        attendeeFamilyName: "",
         attendeeEmail: "",
         isMe: false,
       });
@@ -48,7 +50,11 @@ const updateProductReducer = (
   if (productItems.length === 0) {
     delete selectedProducts[id];
   } else {
-    selectedProducts[id] = productItems;
+    // for safety we recalculate the index
+    selectedProducts[id] = productItems.map((product, index) => ({
+      ...product,
+      index,
+    }));
   }
 
   return {

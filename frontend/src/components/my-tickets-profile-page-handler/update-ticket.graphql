@@ -13,8 +13,11 @@ mutation UpdateTicket(
 
     ... on AttendeeTicket {
       id
-      name
-      email
+      attendeeName {
+        scheme
+        parts
+      }
+      attendeeEmail
       item {
         id
         name
@@ -38,14 +41,25 @@ mutation UpdateTicket(
 
     ... on TicketReassigned {
       id
-      email
+      attendeeEmail
     }
 
     ... on UpdateAttendeeTicketErrors {
-      id
       errors {
-        field
-        message
+        id
+        attendeeName {
+          givenName
+          familyName
+          nonFieldErrors
+        }
+        attendeeEmail
+        answers {
+          answer
+          question
+          options
+          nonFieldErrors
+          __typename
+        }
       }
     }
   }

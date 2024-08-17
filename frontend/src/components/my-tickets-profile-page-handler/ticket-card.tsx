@@ -19,6 +19,7 @@ import {
   useUpdateTicketMutation,
 } from "~/types";
 
+import { displayAttendeeName } from "~/helpers/attendee-name";
 import { useSetCurrentModal } from "../modal/context";
 
 type Props = {
@@ -39,7 +40,8 @@ export const TicketCard = ({ ticket, userEmail }: Props) => {
     !ticket.variation &&
     ticket.item.questions.length === 0;
 
-  const ticketReassigned = isAdmissionTicket && ticket.email !== userEmail;
+  const ticketReassigned =
+    isAdmissionTicket && ticket.attendeeEmail !== userEmail;
 
   const openQRCodeModal = () => {
     setCurrentModal("ticket-qr-code", {
@@ -75,7 +77,7 @@ export const TicketCard = ({ ticket, userEmail }: Props) => {
                     values={{
                       to: (
                         <Text weight="strong" size={3}>
-                          {ticket.email}
+                          {ticket.attendeeEmail}
                         </Text>
                       ),
                     }}
@@ -90,7 +92,7 @@ export const TicketCard = ({ ticket, userEmail }: Props) => {
                     label={
                       <FormattedMessage id="profile.tickets.attendeeName" />
                     }
-                    value={ticket.name}
+                    value={displayAttendeeName(ticket.attendeeName)}
                   />
                 )}
                 {ticket.variation && (

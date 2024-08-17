@@ -23,13 +23,15 @@ type Props = {
 export const ProductsQuestions = ({ productsById }: Props) => {
   const {
     state: { selectedProducts },
+    updateTicketInfo,
+    updateQuestionAnswer,
   } = useCart();
-  const { updateTicketInfo, updateQuestionAnswer } = useCart();
   const [isLoggedIn] = useLoginState();
   const { user: me } = useCurrentUser({
     skip: !isLoggedIn,
   });
 
+  console.log("selectedProducts", selectedProducts);
   return (
     <>
       {Object.entries(selectedProducts)
@@ -61,14 +63,14 @@ export const ProductsQuestions = ({ productsById }: Props) => {
                                 const isMe = !productUserInformation.isMe;
                                 updateTicketInfo({
                                   id: productUserInformation.id,
-                                  index,
+                                  index: productUserInformation.index,
                                   key: "isMe",
                                   value: isMe,
                                 });
                                 if (isMe) {
                                   updateTicketInfo({
                                     id: productUserInformation.id,
-                                    index,
+                                    index: productUserInformation.index,
                                     key: "attendeeEmail",
                                     value: me.email,
                                   });
