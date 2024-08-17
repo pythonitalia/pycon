@@ -87,16 +87,16 @@ jobs:
         id: git
         run: |
           hash=$(git rev-list -1 HEAD -- ${{ matrix.service.dir }})
-          echo "::set-output name=githash::$hash"
+          echo "githash=$hash" >> $GITHUB_OUTPUT
       - name: Check if commit is already on ECR
         id: image
         run: |
           set +e
           aws ecr describe-images --repository-name=pythonit/${{ matrix.service.name }} --image-ids=imageTag=${{ steps.git.outputs.githash }}
           if [[ $? == 0 ]]; then
-            echo '::set-output name=image_exists::1'
+            echo "image_exists=1" >> $GITHUB_OUTPUT
           else
-            echo '::set-output name=image_exists::0'
+            echo "image_exists=0" >> $GITHUB_OUTPUT
           fi
       - name: Set up QEMU dependency
         if: ${{ steps.image.outputs.image_exists == 0 }}
@@ -164,16 +164,16 @@ jobs:
         id: git
         run: |
           hash=$(git rev-list -1 HEAD -- ${{ matrix.service.dir }})
-          echo "::set-output name=githash::$hash"
+          echo "githash=$hash" >> $GITHUB_OUTPUT
       - name: Check if commit is already on ECR
         id: image
         run: |
           set +e
           aws ecr describe-images --repository-name=pythonit/${{ matrix.service.name }} --image-ids=imageTag=arm-${{ steps.git.outputs.githash }}
           if [[ $? == 0 ]]; then
-            echo '::set-output name=image_exists::1'
+            echo "image_exists=1" >> $GITHUB_OUTPUT
           else
-            echo '::set-output name=image_exists::0'
+            echo "image_exists=0" >> $GITHUB_OUTPUT
           fi
       - name: Set up QEMU dependency
         if: ${{ steps.image.outputs.image_exists == 0 }}
