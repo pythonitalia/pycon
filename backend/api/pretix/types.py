@@ -332,7 +332,7 @@ class AttendeeName:
 
     @classmethod
     def from_pretix_api(cls, data):
-        scheme = data.pop("_scheme", data.pop("scheme"))
+        scheme = data.pop("_scheme", data.pop("scheme", "_legacy"))
         assert scheme
         return cls(
             parts=data,
