@@ -1,8 +1,9 @@
-from __future__ import annotations
+from api.types import BaseErrorType
+from strawberry.scalars import JSON
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Self
 
 import strawberry
 
@@ -26,6 +27,35 @@ from badges.roles import ConferenceRole, get_conference_roles_for_ticket_data
 from api.helpers.ids import encode_hashid
 
 
+@strawberry.type
+class AnswerInputError:
+    answer: list[str] = strawberry.field(default_factory=list)
+    question: list[str] = strawberry.field(default_factory=list)
+    options: list[str] = strawberry.field(default_factory=list)
+    non_field_errors: list[str] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
+class AttendeeNameInputError:
+    given_name: list[str] = strawberry.field(default_factory=list)
+    family_name: list[str] = strawberry.field(default_factory=list)
+    non_field_errors: list[str] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
+class UpdateAttendeeTicketErrors(BaseErrorType):
+    @strawberry.type
+    class _UpdateAttendeeTicketErrors:
+        id: list[str] = strawberry.field(default_factory=list)
+        attendee_name: AttendeeNameInputError = strawberry.field(
+            default_factory=AttendeeNameInputError
+        )
+        attendee_email: list[str] = strawberry.field(default_factory=list)
+        answers: list[AnswerInputError] = strawberry.field(default_factory=list)
+
+    errors: _UpdateAttendeeTicketErrors = None
+
+
 @strawberry.enum
 class PretixOrderStatus(Enum):
     PENDING = "n"
@@ -43,7 +73,7 @@ class PretixOrder:
     email: str
 
     @classmethod
-    def from_data(cls, data) -> PretixOrder:
+    def from_data(cls, data) -> Self:
         return cls(
             code=data["code"],
             status=PretixOrderStatus(data["status"]),
@@ -70,7 +100,7 @@ class ProductVariation:
         language: str,
         quotas: Optional[Dict[str, QuotaDict]],
         parent_item_id: int,
-    ) -> ProductVariation:
+    ) -> Self:
         quantity_left = TicketItem._get_quantity_left(
             data, quotas, parent_item_id=parent_item_id
         )
@@ -93,7 +123,7 @@ class Option:
     name: str
 
     @classmethod
-    def from_data(cls, data: OptionDict, language: str) -> Option:
+    def from_data(cls, data: OptionDict, language: str) -> Self:
         return cls(
             id=data["id"],
             name=_get_by_language(data, "answer", language),
@@ -106,7 +136,7 @@ class Answer:
     options: Optional[List[str]]
 
     @classmethod
-    def from_data(cls, data: QuestionDict, language: str) -> Answer:
+    def from_data(cls, data: QuestionDict, language: str) -> Self:
         # If it's an option answer it's not translated
         if data.get("options"):
             options = [
@@ -134,7 +164,7 @@ class Question:
     answer: Optional[Answer]
 
     @classmethod
-    def from_data(cls, data: QuestionDict, language: str) -> Question:
+    def from_data(cls, data: QuestionDict, language: str) -> Self:
         return cls(
             id=data["id"],
             name=_get_by_language(data, "question", language),
@@ -296,11 +326,52 @@ def get_questions_with_answers(questions: List[QuestionDict], data: OrderPositio
 
 
 @strawberry.type
+class AttendeeName:
+    parts: JSON
+    scheme: str
+
+    @classmethod
+    def from_pretix_api(cls, data):
+        scheme = data.pop("_scheme", data.pop("scheme", "_legacy"))
+        assert scheme
+        return cls(
+            parts=data,
+            scheme=scheme,
+        )
+
+
+@strawberry.input
+class AttendeeNameInput:
+    parts: JSON
+    scheme: str
+
+    def to_pretix_api(self):
+        return self.parts
+
+    def validate(self, errors: BaseErrorType):
+        if not self.parts:
+            errors.add_error("non_field_errors", "This field may not be blank.")
+            return False
+
+        if self.scheme == "given_family":
+            given_name = self.parts.get("given_name", "").strip()
+            family_name = self.parts.get("family_name", "").strip()
+
+            if not given_name:
+                errors.add_error("given_name", "This field may not be blank.")
+
+            if not family_name:
+                errors.add_error("family_name", "This field may not be blank.")
+
+        return errors
+
+
+@strawberry.type
 class AttendeeTicket:
     id: strawberry.ID
     hashid: strawberry.ID
-    name: Optional[str]
-    email: Optional[str]
+    attendee_name: Optional[AttendeeName]
+    attendee_email: Optional[str]
     secret: str
     variation: Optional[strawberry.ID]
     item: TicketItem
@@ -335,8 +406,8 @@ class AttendeeTicket:
         return cls(
             id=data["id"],
             hashid=encode_hashid(data["id"]),
-            name=data["attendee_name"],
-            email=data["attendee_email"],
+            attendee_name=AttendeeName.from_pretix_api(data["attendee_name_parts"]),
+            attendee_email=data["attendee_email"],
             secret=data["secret"],
             variation=data["variation"],
             item=TicketItem.from_data(
@@ -381,14 +452,25 @@ class AnswerInput:
 @strawberry.input
 class UpdateAttendeeTicketInput:
     id: strawberry.ID
-    name: str
-    email: str
+    attendee_name: AttendeeNameInput
+    attendee_email: str
     answers: Optional[List[AnswerInput]] = None
+
+    def validate(self) -> UpdateAttendeeTicketErrors | None:
+        errors = UpdateAttendeeTicketErrors()
+
+        if not self.attendee_email.strip():
+            errors.add_error("attendee_email", "This field may not be blank.")
+
+        with errors.with_prefix("attendee_name"):
+            self.attendee_name.validate(errors)
+
+        return errors.if_has_errors
 
     def to_json(self):
         data = {
-            "attendee_email": self.email,
-            "attendee_name": self.name,
+            "attendee_email": self.attendee_email,
+            "attendee_name_parts": self.attendee_name.to_pretix_api(),
         }
 
         if self.answers is not None:

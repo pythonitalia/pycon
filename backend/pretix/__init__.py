@@ -1,5 +1,4 @@
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
+from api.utils import validate_email
 import logging
 from typing import Any, Dict, List, Optional
 from urllib.parse import urljoin
@@ -10,7 +9,12 @@ from countries import countries
 import strawberry
 from django.conf import settings
 from django.core.cache import cache
-from api.pretix.types import UpdateAttendeeTicketInput, Voucher
+from api.pretix.types import (
+    AttendeeNameInput,
+    AttendeeNameInputError,
+    UpdateAttendeeTicketInput,
+    Voucher,
+)
 from conferences.models.conference import Conference
 from pretix.types import Category, Question, Quota
 import sentry_sdk
@@ -35,7 +39,7 @@ logger = logging.getLogger(__file__)
 def get_api_url(conference: Conference, endpoint: str) -> str:
     return urljoin(
         settings.PRETIX_API,
-        f"organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/{endpoint}",  # noqa
+        f"organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/{endpoint}/",  # noqa
     )
 
 
@@ -68,7 +72,7 @@ def pretix(
 
 
 def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
-    response = pretix(conference, f"extended-vouchers/{code}/")
+    response = pretix(conference, f"extended-vouchers/{code}")
 
     if response.status_code == 404:
         return None
@@ -130,13 +134,13 @@ def create_voucher(
         "quota": quota_id,
         "subevent": None,
     }
-    response = pretix(conference, "vouchers/", method="post", json=payload)
+    response = pretix(conference, "vouchers", method="post", json=payload)
     response.raise_for_status()
     return response.json()
 
 
 def get_order(conference: Conference, code: str):
-    response = pretix(conference, f"orders/{code}/")
+    response = pretix(conference, f"orders/{code}")
 
     if response.status_code == 404:
         return None
@@ -256,12 +260,21 @@ class InvoiceInformationErrors:
 
 
 @strawberry.type
+class CreateOrderTicketErrors:
+    attendee_name: AttendeeNameInputError = strawberry.field(
+        default_factory=AttendeeNameInputError
+    )
+    attendee_email: list[str] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
 class CreateOrderErrors(BaseErrorType):
     @strawberry.type
     class _CreateOrderErrors:
         invoice_information: InvoiceInformationErrors = strawberry.field(
             default_factory=InvoiceInformationErrors
         )
+        tickets: list[CreateOrderTicketErrors] = strawberry.field(default_factory=list)
         non_field_errors: list[str] = strawberry.field(default_factory=list)
 
     errors: _CreateOrderErrors = None
@@ -276,11 +289,22 @@ class CreateOrderTicketAnswer:
 @strawberry.input
 class CreateOrderTicket:
     ticket_id: str
-    attendee_name: str
+    attendee_name: AttendeeNameInput
     attendee_email: str
     variation: Optional[str] = None
     answers: Optional[List[CreateOrderTicketAnswer]] = None
     voucher: Optional[str] = None
+
+    def validate(self, errors: CreateOrderErrors) -> CreateOrderErrors:
+        with errors.with_prefix("attendee_name"):
+            self.attendee_name.validate(errors)
+
+        if not self.attendee_email.strip():
+            errors.add_error("attendee_email", "This field is required")
+        elif not validate_email(self.attendee_email):
+            errors.add_error("attendee_email", "Invalid email address")
+
+        return errors
 
 
 @strawberry.input
@@ -320,7 +344,7 @@ class InvoiceInformation:
 
             if not value:
                 errors.add_error(
-                    f"invoice_information.{required_field}",
+                    required_field,
                     "This field is required",
                 )
 
@@ -344,7 +368,7 @@ class InvoiceInformation:
 
         if not countries.is_valid(self.country):
             errors.add_error(
-                "invoice_information.country",
+                "country",
                 "Invalid country",
             )
 
@@ -352,10 +376,8 @@ class InvoiceInformation:
         if not self.pec:
             return
 
-        try:
-            validate_email(self.pec)
-        except ValidationError:
-            errors.add_error("invoice_information.pec", "Invalid PEC address")
+        if not validate_email(self.pec):
+            errors.add_error("pec", "Invalid PEC address")
 
     def validate_fiscal_code(self, errors: CreateOrderErrors):
         if not self.fiscal_code:
@@ -364,7 +386,7 @@ class InvoiceInformation:
         try:
             validate_fiscal_code(self.fiscal_code)
         except FiscalCodeValidationError as exc:
-            errors.add_error("invoice_information.fiscal_code", str(exc))
+            errors.add_error("fiscal_code", str(exc))
 
     def validate_partita_iva(self, errors: CreateOrderErrors):
         if not self.vat_id:
@@ -372,7 +394,7 @@ class InvoiceInformation:
         try:
             validate_italian_vat_number(self.vat_id)
         except ItalianVatNumberValidationError as exc:
-            errors.add_error("invoice_information.vat_id", str(exc))
+            errors.add_error("vat_id", str(exc))
 
     def validate_italian_zip_code(self, errors: CreateOrderErrors):
         if not self.zipcode:
@@ -381,7 +403,7 @@ class InvoiceInformation:
         try:
             validate_italian_zip_code(self.zipcode)
         except ItalianZipCodeValidationError as exc:
-            errors.add_error("invoice_information.zipcode", str(exc))
+            errors.add_error("zipcode", str(exc))
 
     def validate_sdi(self, errors: CreateOrderErrors):
         if not self.sdi:
@@ -390,7 +412,7 @@ class InvoiceInformation:
         try:
             validate_sdi_code(self.sdi)
         except SdiValidationError as exc:
-            errors.add_error("invoice_information.sdi", str(exc))
+            errors.add_error("sdi", str(exc))
 
 
 @strawberry.input
@@ -399,11 +421,18 @@ class CreateOrderInput:
     locale: str
     payment_provider: str
     invoice_information: InvoiceInformation
-    tickets: List[CreateOrderTicket]
+    tickets: list[CreateOrderTicket]
 
     def validate(self) -> CreateOrderErrors:
         errors = CreateOrderErrors()
-        self.invoice_information.validate(errors)
+
+        with errors.with_prefix("invoice_information"):
+            self.invoice_information.validate(errors)
+
+        for index, ticket in enumerate(self.tickets):
+            with errors.with_prefix("tickets", index):
+                ticket.validate(errors)
+
         return errors.if_has_errors
 
 
@@ -464,7 +493,7 @@ def normalize_position(ticket: CreateOrderTicket, items: dict, questions: dict):
         data["voucher"] = ticket.voucher
 
     if item["admission"]:
-        data["attendee_name"] = ticket.attendee_name
+        data["attendee_name_parts"] = ticket.attendee_name.to_pretix_api()
         data["attendee_email"] = ticket.attendee_email
 
     return data
@@ -498,7 +527,7 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
     }
 
     # it needs the / at the end...
-    response = pretix(conference, "orders/", method="post", json=payload)
+    response = pretix(conference, "orders", method="post", json=payload)
 
     if response.status_code == 400:
         logger.warning("Unable to create order on pretix %s", response.content)
@@ -560,7 +589,7 @@ def user_has_admission_ticket(
         conference=Conference(
             pretix_organizer_id=event_organizer, pretix_event_id=event_slug
         ),
-        endpoint="tickets/attendee-has-ticket/",
+        endpoint="tickets/attendee-has-ticket",
         method="post",
         json={
             "attendee_email": email,
@@ -620,7 +649,7 @@ def is_ticket_owner(conference: Conference, email: str, id: str) -> bool:
 def update_ticket(conference: Conference, attendee_ticket: UpdateAttendeeTicketInput):
     response = pretix(
         conference=conference,
-        endpoint=f"orderpositions/{attendee_ticket.id}/",
+        endpoint=f"orderpositions/{attendee_ticket.id}",
         method="PATCH",
         json=attendee_ticket.to_json(),
     )
@@ -633,7 +662,7 @@ def update_ticket(conference: Conference, attendee_ticket: UpdateAttendeeTicketI
 def get_order_position(conference: Conference, id: str):
     response = pretix(
         conference=conference,
-        endpoint=f"orderpositions/{id}/",
+        endpoint=f"orderpositions/{id}",
         method="GET",
     )
 

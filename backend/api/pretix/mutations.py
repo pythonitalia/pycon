@@ -1,5 +1,5 @@
 import logging
-from typing import Annotated, Union, List, Optional
+from typing import Annotated, Union, Optional
 
 import strawberry
 from requests import HTTPError
@@ -8,7 +8,11 @@ from strawberry.types import Info
 import pretix
 from api.pretix.permissions import IsTicketOwner
 from api.pretix.query import get_user_tickets
-from api.pretix.types import AttendeeTicket, UpdateAttendeeTicketInput
+from api.pretix.types import (
+    AttendeeTicket,
+    UpdateAttendeeTicketErrors,
+    UpdateAttendeeTicketInput,
+)
 from conferences.models.conference import Conference
 
 logger = logging.getLogger(__name__)
@@ -18,19 +22,13 @@ logger = logging.getLogger(__name__)
 class TicketReassigned:
     id: strawberry.ID
     # optional because AttendeeTicket.email is optional
-    email: Optional[str]
+    attendee_email: Optional[str]
 
 
 @strawberry.type
 class UpdateAttendeeTicketError:
     field: str
     message: str
-
-
-@strawberry.type
-class UpdateAttendeeTicketErrors:
-    id: strawberry.ID
-    errors: List[UpdateAttendeeTicketError]
 
 
 UpdateAttendeeTicketResult = Annotated[
@@ -49,19 +47,15 @@ class AttendeeTicketMutation:
         input: UpdateAttendeeTicketInput,
         language: str = "en",
     ) -> UpdateAttendeeTicketResult:
-        if not input.email.strip():
-            error = UpdateAttendeeTicketError(
-                field="attendee_email", message="This field may not be blank."
-            )
-            return UpdateAttendeeTicketErrors(id=input.id, errors=[error])
+        if errors := input.validate():
+            return errors
 
         conference = Conference.objects.get(code=conference)
         try:
             pretix.update_ticket(conference, input)
         except HTTPError as e:
-            logger.error(e, exc_info=True)
             data = e.response.json()
-            return _get_update_tickets_errors(data, input)
+            return convert_pretix_errors_to_graphql(data, input)
 
         # TODO: filter by orderposition in the Pretix API
         tickets = get_user_tickets(
@@ -74,29 +68,24 @@ class AttendeeTicketMutation:
 
         # If the user has changed the email, the ticket will not be returned but
         # the mutation succeeded.
-        return TicketReassigned(id=input.id, email=input.email)
+        return TicketReassigned(id=input.id, attendee_email=input.attendee_email)
 
 
-def _get_update_tickets_errors(
+def convert_pretix_errors_to_graphql(
     response, input: UpdateAttendeeTicketInput
 ) -> UpdateAttendeeTicketErrors:
-    errors = []
-    for field in ("attendee_name", "attendee_email"):
-        if response.get(field):
-            errors.append(
-                UpdateAttendeeTicketError(field=field, message=response[field][0])
-            )
+    errors = UpdateAttendeeTicketErrors()
 
-    if response.get("answers"):
-        for index, answer in enumerate(input.answers):
-            answer_error = response["answers"][index]
-            if answer_error:
-                for field in ("answer", "options"):
-                    if answer_error.get(field):
-                        error = UpdateAttendeeTicketError(
-                            field=answer.question,
-                            message=answer_error[field][0],
-                        )
-                        errors.append(error)
+    if error := response.get("attendee_email"):
+        errors.add_error("attendee_email", error[0])
 
-    return UpdateAttendeeTicketErrors(id=input.id, errors=errors)
+    answers_errors_keys = ["options", "answer", "non_field_errors"]
+    if response_answers := response.get("answers"):
+        for index in range(len(input.answers)):
+            answer_errors = response_answers[index]
+
+            for key in answers_errors_keys:
+                if error := answer_errors.get(key):
+                    errors.add_error(f"answers.{index}.{key}", error[0])
+
+    return errors

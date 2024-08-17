@@ -1,5 +1,6 @@
+from contextlib import contextmanager
 import math
-from typing import Generic, List, TypeVar
+from typing import Generic, List, TypeVar, get_args, get_type_hints
 
 import strawberry
 
@@ -11,6 +12,23 @@ class OperationResult:
 
 class BaseErrorType:
     _has_errors: strawberry.Private[bool] = False
+    _prefixes: strawberry.Private[list[str]] = None
+
+    @property
+    def prefix(self):
+        return ".".join(self._prefixes or [])
+
+    def build_field_name(self, field: str) -> str:
+        return f"{self.prefix}.{field}" if self.prefix else field
+
+    @contextmanager
+    def with_prefix(self, *prefixes: list[str | int]):
+        if not self._prefixes:
+            self._prefixes = []
+
+        self._prefixes.extend([str(prefix) for prefix in prefixes])
+        yield
+        self._prefixes = self._prefixes[: -len(prefixes)]
 
     def add_error(self, field: str, message: str):
         self._has_errors = True
@@ -18,11 +36,36 @@ class BaseErrorType:
         if not self.errors:
             self.errors = self.__annotations__["errors"]()
 
+        field = self.build_field_name(field)
         parts = field.split(".")
         current = self.errors
+        list_type = None
 
         for part in parts[:-1]:
-            current = getattr(current, part)
+            if isinstance(current, list):
+                index = int(part)
+
+                if len(current) <= index:
+                    for _ in range(index - len(current) + 1):
+                        current.append(list_type())
+
+                instance = current[index]
+                current[index] = instance
+                current = instance
+                continue
+
+            next_current = getattr(current, part)
+
+            if not isinstance(next_current, list):
+                current = next_current
+                continue
+            else:
+                type_hints = get_type_hints(type(current))
+                type_hint = type_hints[part]
+
+                list_type = get_args(type_hint)[0]
+                current = next_current
+                continue
 
         last_part = parts[-1]
 
