@@ -45,7 +45,7 @@ type ProductStateGenericErrors = {
   [key: string]: string[];
 };
 
-type ProductStateErrors = ProductStateGenericErrors &
+export type ProductStateErrors = ProductStateGenericErrors &
   ProductStateAttendeeNameErrors;
 
 export type ProductState = {

@@ -23,6 +23,7 @@ import { Badge } from "../badge";
 import { createHref } from "../link";
 import { Modal } from "../modal";
 import { ProductQuestionnaire } from "../product-questionnaire";
+import type { ProductStateErrors } from "../tickets-page/types";
 
 type Props = {
   onClose: () => void;
@@ -150,7 +151,7 @@ export const CustomizeTicketModal = ({
     }, {}),
     isMe: false,
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<ProductStateErrors>(null);
 
   const [formState] = useFormState<Form>({
     id: productUserInformation.id,
