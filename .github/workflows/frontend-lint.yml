@@ -15,23 +15,21 @@ jobs:
       run:
         working-directory: ./frontend
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '14'
+      - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
+        name: Install pnpm
         with:
-          version: 7.3.0
+          version: 9
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+          cache-dependency-path: 'frontend/pnpm-lock.yaml'
       - name: Setup Biome
         uses: biomejs/setup-biome@v2
         with:
           version: 1.8.3
-      - name: Cache dependencies
-        uses: actions/cache@v1
-        id: cache
-        with:
-          path: ./frontend/node_modules
-          key: node_modules-frontend-${{ hashFiles('./frontend/pnpm-lock.yaml') }}-v4
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: pnpm install
