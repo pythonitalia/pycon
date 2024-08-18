@@ -36,6 +36,7 @@ def send_schedule_invitation_email(*, schedule_item_id, is_reminder):
     schedule_item = ScheduleItem.objects.get(id=schedule_item_id)
     submission = schedule_item.submission
     language_code = schedule_item.language.code
+    conference = schedule_item.conference
 
     invitation_url = urljoin(
         settings.FRONTEND_URL, f"/schedule/invitation/{submission.hashid}"
@@ -45,9 +46,9 @@ def send_schedule_invitation_email(*, schedule_item_id, is_reminder):
     submission_title = submission.title.localize(language_code)
 
     speaker = User.objects.get(id=speaker_id)
-    conference_name = schedule_item.conference.name.localize("en")
+    conference_name = conference.name.localize("en")
 
-    email_template = EmailTemplate.objects.get_by_identifier(
+    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
         EmailTemplate.Identifier.proposal_accepted
     )
     email_template.send_email(

@@ -1,9 +1,9 @@
 from django.db import transaction
-
+from django.db.models import Q, UniqueConstraint
 from django.utils.safestring import mark_safe
 from django.db import models
 from users.models import User
-from schedule.video_upload import process_string_template
+from notifications.template_utils import render_template_from_string
 from notifications.querysets import EmailTemplateQuerySet, SentEmailQuerySet
 from model_utils.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
@@ -78,14 +78,14 @@ class EmailTemplate(TimeStampedModel):
 
         recipient_email = recipient_email or recipient.email
         placeholders = placeholders or {}
-        processed_subject = process_string_template(self.subject, placeholders).replace(
-            "\n", "<br/>"
-        )
-        processed_preview_text = process_string_template(
+        processed_subject = render_template_from_string(
+            self.subject, placeholders
+        ).replace("\n", "<br/>")
+        processed_preview_text = render_template_from_string(
             self.preview_text, placeholders
         ).replace("\n", "<br/>")
         processed_body = mark_safe(
-            process_string_template(
+            render_template_from_string(
                 self.body,
                 placeholders,
             ).replace("\n", "<br/>")
@@ -119,6 +119,15 @@ class EmailTemplate(TimeStampedModel):
     @property
     def is_custom(self):
         return self.identifier == self.Identifier.custom
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["identifier", "conference"],
+                condition=~Q(identifier="custom"),
+                name="unique_non_custom_identifier_conference",
+            )
+        ]
 
 
 class SentEmail(TimeStampedModel):
@@ -159,7 +168,7 @@ class SentEmail(TimeStampedModel):
     body = models.TextField(_("body"))
     preview_text = models.TextField(_("preview text"), blank=True)
 
-    reply_to = models.EmailField(_("reply to"), blank=True)
+    reply_to = models.EmailField(_("reply to"), blank=True, default="")
     cc_addresses = models.JSONField(_("cc addresses"), default=list, blank=True)
     bcc_addresses = models.JSONField(_("bcc addresses"), default=list, blank=True)
 

@@ -41,3 +41,7 @@ module "database" {
   source       = "./database"
   enable_proxy = local.enable_proxy
 }
+
+module "emails" {
+  source = "./emails"
+}

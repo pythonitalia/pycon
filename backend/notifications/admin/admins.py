@@ -4,6 +4,7 @@ from django.urls.resolvers import URLPattern
 from notifications.admin.views import view_base_template, view_sent_email
 from users.admin_mixins import ConferencePermissionMixin
 from django.urls import path
+from django.utils.safestring import mark_safe
 
 from notifications.models import EmailTemplate, SentEmail
 
@@ -12,6 +13,24 @@ from notifications.models import EmailTemplate, SentEmail
 class EmailTemplateAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     list_display = ["identifier", "name", "conference"]
     list_filter = ["identifier", "conference"]
+    fields = [
+        "conference",
+        "identifier",
+        "name",
+        "subject",
+        "preview_text",
+        "body",
+        "reply_to",
+        "cc_addresses",
+        "bcc_addresses",
+        "save_and_preview",
+    ]
+    readonly_fields = ["save_and_preview"]
+
+    def save_and_preview(self, obj):
+        return mark_safe(
+            '<input type="submit" name="_save_and_preview" value="Save and preview" />'
+        )
 
 
 @admin.register(SentEmail)

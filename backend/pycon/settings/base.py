@@ -401,3 +401,5 @@ IS_RUNNING_TESTS = False
 
 ECS_NETWORK_CONFIG = json.loads(env("ECS_NETWORK_CONFIG", default="{}"))
 ECS_SERVICE_ROLE = env("ECS_SERVICE_ROLE", default="")
+
+SNS_WEBHOOK_SECRET = env("SNS_WEBHOOK_SECRET", default="")

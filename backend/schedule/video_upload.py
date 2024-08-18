@@ -1,10 +1,9 @@
 from dataclasses import dataclass
+from notifications.template_utils import render_template_from_string
 import cv2
 from django.core.files.base import ContentFile
 from django.core.files.storage import storages
 from schedule.models import ScheduleItem
-
-from jinja2 import Environment
 
 
 @dataclass
@@ -45,14 +44,14 @@ def create_video_info(schedule_item: ScheduleItem) -> VideoInfo:
         "hashtags": " ".join([f"#{tag}" for tag in tags]),
     }
 
-    title = process_string_template(
+    title = render_template_from_string(
         schedule_item.conference.video_title_template, context
     )
 
     if len(title) > 100:
         title = schedule_item.title
 
-    description = process_string_template(
+    description = render_template_from_string(
         schedule_item.conference.video_description_template, context
     )
 
@@ -61,15 +60,6 @@ def create_video_info(schedule_item: ScheduleItem) -> VideoInfo:
         description=replace_invalid_chars_with_lookalikes(description),
         tags=tags,
     )
-
-
-def process_string_template(template_string: str, context: dict) -> str:
-    env = Environment(
-        trim_blocks=True,
-        lstrip_blocks=True,
-    )
-    template = env.from_string(template_string)
-    return template.render(context).strip()
 
 
 def download_video_file(id: int, path: str) -> str:
