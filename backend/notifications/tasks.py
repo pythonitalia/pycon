@@ -1,6 +1,7 @@
 import logging
 from django.utils import timezone
 from django.conf import settings
+from pycon.celery_utils import OnlyOneAtTimeTask
 from notifications.emails import get_email_backend
 from notifications.models import SentEmail
 from django.db import transaction
@@ -9,7 +10,7 @@ from pycon.celery import app
 logger = logging.getLogger(__name__)
 
 
-@app.task
+@app.task(base=OnlyOneAtTimeTask)
 def send_pending_emails():
     pending_emails = SentEmail.objects.pending().values_list("id", flat=True)
     total_pending_emails = pending_emails.count()

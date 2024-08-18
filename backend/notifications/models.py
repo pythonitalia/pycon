@@ -96,6 +96,7 @@ class EmailTemplate(TimeStampedModel):
             subject=processed_subject,
             preview_text=processed_preview_text,
             body=html_body,
+            reply_to=self.reply_to,
             cc_addresses=self.cc_addresses,
             bcc_addresses=self.bcc_addresses,
         )
