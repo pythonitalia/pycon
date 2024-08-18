@@ -3,9 +3,9 @@ import { FormattedMessage } from "react-intl";
 
 import { useMyProfileWithGrantQuery } from "~/types";
 
+import { MyGrant } from "~/components/my-grant-profile-page-handler/my-grant";
+import { NoGrant } from "~/components/my-grant-profile-page-handler/no-grant";
 import { MetaTags } from "../meta-tags";
-import { NoGrant } from "../my-grant-profile-page-handler/no-grant";
-import { MyGrant } from "./my-grant";
 
 export const MyGrantProfilePageHandler = () => {
   const {

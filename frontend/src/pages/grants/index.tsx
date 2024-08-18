@@ -1,11 +1,17 @@
-import { Page, Text } from "@python-italia/pycon-styleguide";
+import {
+  Heading,
+  Page,
+  Section,
+  Spacer,
+  Text,
+} from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import type { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { MyGrantOrForm } from "~/components/grant-form";
+import { GrantForm, GrantSendForm } from "~/components/grant-form";
 import { MetaTags } from "~/components/meta-tags";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -76,7 +82,7 @@ export const GrantsPage = () => {
         {(text) => <MetaTags title={text} />}
       </FormattedMessage>
 
-      {status === DeadlineStatus.HappeningNow && <MyGrantOrForm />}
+      {status === DeadlineStatus.HappeningNow && <GrantSendForm />}
       {status === DeadlineStatus.InTheFuture && (
         <GrantsComingSoon start={start} />
       )}
@@ -102,18 +108,34 @@ export const getServerSideProps: GetServerSideProps = async ({
   const client = getApolloClient(null, req.cookies);
 
   try {
-    await Promise.all([
+    const [
+      _,
+      {
+        data: {
+          me: { grant },
+        },
+      },
+    ] = await Promise.all([
       prefetchSharedQueries(client, locale),
-      queryGrantDeadline(client, {
+      queryMyGrant(client, {
         conference: process.env.conferenceCode,
       }),
-      queryMyGrant(client, {
+      queryGrantDeadline(client, {
         conference: process.env.conferenceCode,
       }),
       queryCurrentUser(client, {
         conference: process.env.conferenceCode,
       }),
     ]);
+
+    if (grant) {
+      return {
+        redirect: {
+          destination: "/profile/my-grant",
+          permanent: false,
+        },
+      };
+    }
   } catch (e) {
     return {
       redirect: {
