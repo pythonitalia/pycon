@@ -109,17 +109,16 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   try {
     const [
-      _,
       {
         data: {
           me: { grant },
         },
       },
     ] = await Promise.all([
-      prefetchSharedQueries(client, locale),
       queryMyGrant(client, {
         conference: process.env.conferenceCode,
       }),
+      prefetchSharedQueries(client, locale),
       queryGrantDeadline(client, {
         conference: process.env.conferenceCode,
       }),
