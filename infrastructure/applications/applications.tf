@@ -6,8 +6,8 @@ locals {
   # AMI
   # Built from https://github.com/aws/amazon-ecs-ami
   # Using 8GB as storage.
-  ecs_x86_ami = "ami-081185af466969baa" # make al2023
-  ecs_arm_ami = "ami-08d9c5f7f3465a286" # make al2023arm
+  ecs_x86_ami = "ami-04467750a630d1f7c" # make al2023
+  ecs_arm_ami = "ami-0bd650c1ca04cc1a4" # make al2023arm
 }
 
 # Applications
