@@ -26,11 +26,13 @@ class SentEmailAdmin(admin.ModelAdmin):
     search_fields = ["recipient_email"]
     readonly_fields = [
         "email_template",
+        "recipient",
         "recipient_email",
         "placeholders",
     ]
     date_hierarchy = "sent_at"
     ordering = ["-sent_at"]
+    autocomplete_fields = ["recipient"]
 
     def email_template_display_name(self, obj):
         if obj.email_template.is_custom:

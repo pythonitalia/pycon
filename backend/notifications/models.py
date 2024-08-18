@@ -2,6 +2,7 @@ from django.db import transaction
 
 from django.utils.safestring import mark_safe
 from django.db import models
+from users.models import User
 from schedule.video_upload import process_string_template
 from notifications.querysets import EmailTemplateQuerySet, SentEmailQuerySet
 from model_utils.models import TimeStampedModel
@@ -63,9 +64,19 @@ class EmailTemplate(TimeStampedModel):
 
         return f"EmailTemplate {self.identifier} ({self.conference})"
 
-    def send_email(self, recipient_email: str, placeholders=None):
+    def send_email(
+        self,
+        *,
+        recipient: User | None = None,
+        recipient_email: str | None = None,
+        placeholders: dict = None,
+    ):
+        if not recipient and not recipient_email:
+            raise ValueError("Either recipient or recipient_email must be provided")
+
         from notifications.tasks import send_pending_emails
 
+        recipient_email = recipient_email or recipient.email
         placeholders = placeholders or {}
         processed_subject = process_string_template(self.subject, placeholders).replace(
             "\n", "<br/>"
@@ -91,6 +102,8 @@ class EmailTemplate(TimeStampedModel):
 
         SentEmail.objects.create(
             email_template=self,
+            conference=self.conference,
+            recipient=recipient,
             recipient_email=recipient_email,
             placeholders=placeholders,
             subject=processed_subject,
@@ -113,6 +126,13 @@ class SentEmail(TimeStampedModel):
         pending = "pending", _("Pending")
         sent = "sent", _("Sent")
 
+    conference = models.ForeignKey(
+        "conferences.Conference",
+        on_delete=models.CASCADE,
+        related_name="sent_emails",
+        verbose_name=_("conference"),
+    )
+
     status = models.CharField(
         _("status"), max_length=200, choices=Status.choices, default=Status.pending
     )
@@ -122,6 +142,14 @@ class SentEmail(TimeStampedModel):
         on_delete=models.CASCADE,
         related_name="sent_emails",
         verbose_name=_("email template"),
+    )
+    recipient = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="sent_emails",
+        verbose_name=_("recipient"),
+        null=True,
+        blank=True,
     )
     recipient_email = models.EmailField(_("recipient email"))
     sent_at = models.DateTimeField(_("sent at"), null=True, blank=True)
@@ -142,14 +170,6 @@ class SentEmail(TimeStampedModel):
     @property
     def is_pending(self):
         return self.status == self.Status.pending
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["email_template", "recipient_email", "sent_at"],
-                name="unique_email_template_recipient_email_sent_at",
-            )
-        ]
 
     def __str__(self):
         return f"Sent email to {self.recipient_email} ({self.email_template})"

@@ -51,7 +51,7 @@ def send_schedule_invitation_email(*, schedule_item_id, is_reminder):
         EmailTemplate.Identifier.proposal_accepted
     )
     email_template.send_email(
-        recipient_email=speaker.email,
+        recipient=speaker,
         placeholders={
             "proposal_title": submission_title,
             "conference_name": conference_name,
