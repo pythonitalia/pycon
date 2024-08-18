@@ -56,7 +56,8 @@ def notify_new_cfp_submission(*, submission_id, conference_id, admin_url):
                 ]
             }
         ],
-        token=conference.slack_new_proposal_incoming_webhook_url,
+        oauth_token=conference.get_slack_oauth_token(),
+        channel_id=conference.slack_new_proposal_channel_id,
     )
 
 

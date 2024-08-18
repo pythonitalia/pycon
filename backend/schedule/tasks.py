@@ -155,7 +155,8 @@ def notify_new_schedule_invitation_answer_slack(
                 ],
             },
         ],
-        token=conference.slack_speaker_invitation_answer_incoming_webhook_url,
+        oauth_token=conference.get_slack_oauth_token(),
+        channel_id=conference.slack_speaker_invitation_answer_channel_id,
     )
 
 

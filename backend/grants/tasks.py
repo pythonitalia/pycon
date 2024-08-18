@@ -99,6 +99,8 @@ def notify_new_grant_reply_slack(*, grant_id, admin_url):
     if grant.status in (Grant.Status.confirmed, Grant.Status.refused):
         actions.append(f"{Grant.Status(grant.status).label} the grant")
 
+    conference = grant.conference
+
     slack.send_message(
         [
             {
@@ -122,7 +124,8 @@ def notify_new_grant_reply_slack(*, grant_id, admin_url):
                 ],
             },
         ],
-        token=grant.conference.slack_new_grant_reply_incoming_incoming_webhook_url,
+        oauth_token=conference.get_slack_oauth_token(),
+        channel_id=conference.slack_new_grant_reply_channel_id,
     )
 
 

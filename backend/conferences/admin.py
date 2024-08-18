@@ -138,14 +138,13 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
             {"fields": ("pretix_speaker_voucher_quota_id",)},
         ),
         (
-            "Integrations",
+            "Slack Integration",
             {
                 "fields": (
-                    "slack_new_proposal_incoming_webhook_url",
-                    "slack_new_proposal_comment_incoming_webhook_url",
-                    "slack_new_grant_reply_incoming_incoming_webhook_url",
-                    "slack_speaker_invitation_answer_incoming_webhook_url",
-                    "slack_new_sponsor_lead_incoming_webhook_url",
+                    "slack_new_proposal_channel_id",
+                    "slack_new_grant_reply_channel_id",
+                    "slack_speaker_invitation_answer_channel_id",
+                    "slack_new_sponsor_lead_channel_id",
                 )
             },
         ),

@@ -24,8 +24,7 @@ def test_handle_new_cfp_submission():
     )
 
     conference = ConferenceFactory(
-        slack_new_proposal_comment_incoming_webhook_url="https://123",
-        slack_new_proposal_incoming_webhook_url="https://456",
+        slack_new_proposal_channel_id="C123456",
     )
 
     submission = SubmissionFactory(
@@ -42,7 +41,6 @@ def test_handle_new_cfp_submission():
 
     slack_mock.send_message.assert_called_once()
     assert "Marco Acierno" in str(slack_mock.send_message.mock_calls[0])
-    assert "https://456" in str(slack_mock.send_message.mock_calls[0])
 
 
 def test_send_proposal_rejected_email(sent_emails):

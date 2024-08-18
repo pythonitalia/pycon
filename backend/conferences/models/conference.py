@@ -69,33 +69,27 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
 
     introduction = I18nTextField(_("introduction"), blank=False)
 
-    slack_new_proposal_incoming_webhook_url = models.URLField(
-        _("New proposal Slack incoming webhook for notification"),
-        max_length=1024,
+    slack_new_proposal_channel_id = models.CharField(
+        _("New proposal Slack channel ID for notification"),
+        max_length=255,
         blank=True,
         default="",
     )
-    slack_new_proposal_comment_incoming_webhook_url = models.URLField(
-        _("New proposal comment Slack incoming webhook for notification"),
-        max_length=1024,
+    slack_new_grant_reply_channel_id = models.CharField(
+        _("New grant reply Slack channel ID for notification"),
+        max_length=255,
         blank=True,
         default="",
     )
-    slack_new_grant_reply_incoming_incoming_webhook_url = models.URLField(
-        _("New grant reply Slack incoming webhook for notification"),
-        max_length=1024,
+    slack_speaker_invitation_answer_channel_id = models.CharField(
+        _("New speaker invitation answer Slack channel ID for notification"),
+        max_length=255,
         blank=True,
         default="",
     )
-    slack_speaker_invitation_answer_incoming_webhook_url = models.URLField(
-        _("New speaker invitation answer Slack incoming webhook for notification"),
-        max_length=1024,
-        blank=True,
-        default="",
-    )
-    slack_new_sponsor_lead_incoming_webhook_url = models.URLField(
-        _("New sponsor lead Slack incoming webhook for notification"),
-        max_length=1024,
+    slack_new_sponsor_lead_channel_id = models.CharField(
+        _("New sponsor lead Slack channel ID for notification"),
+        max_length=255,
         blank=True,
         default="",
     )
@@ -154,6 +148,9 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         default="",
         blank=True,
     )
+
+    def get_slack_oauth_token(self):
+        return self.organizer.slack_oauth_bot_token
 
     @property
     def is_cfp_open(self):
