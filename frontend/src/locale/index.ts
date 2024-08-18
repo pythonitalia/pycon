@@ -695,8 +695,8 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
 
     "grants.form.sendingRequest": "Sending grant request",
     "grants.form.sent":
-      "Grant request sent! We will send you an email as soon as we have updates! Cick {linkGrant} to edit it.",
-    "grants.form.sent.linkGrant.text": "here",
+      "Grant request sent! We will email you as soon as we have updates. Meanwhile, you can check the status and edit your grant on your {linkMyGrant} until {grantsDeadline}.",
+    "grants.form.sent.linkMyGrant.text": "profile page",
     "grants.form.aboutYou": "About you",
     "grants.form.yourGrant": "Your grant",
     "grants.form.youAndPython": "You and Python",
@@ -1453,8 +1453,8 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
     `,
     "grants.form.sendingRequest": "Invio richiesta in corso",
     "grants.form.sent":
-      "Richiesta inviata! Ti contatteremo via email appena ci saranno novità! Clicca {linkGrant} per editarlo.",
-    "grants.form.sent.linkGrant.text": "qui",
+      "Richiesta di grant inviata! Ti invieremo un'email appena ci saranno novità! Nel frattempo, puoi controllare lo stato e modificare il tuo grant nella tua {linkMyGrant} fino al {grantsDeadline}.",
+    "grants.form.sent.linkMyGrant.text": "pagina del profilo",
     "grants.form.aboutYou": "Su di te",
     "grants.form.optionalInformation": "Informazioni opzionali",
     "grants.form.optionalInformation.description":

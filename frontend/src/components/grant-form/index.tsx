@@ -22,7 +22,6 @@ import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
 import { Alert } from "~/components/alert";
-import { MyGrant } from "~/components/profile/my-grant";
 import { useCountries } from "~/helpers/use-countries";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
@@ -37,7 +36,7 @@ import {
   type SendGrantMutation,
   type UpdateGrantInput,
   type UpdateGrantMutation,
-  useMyGrantQuery,
+  useGrantDeadlineQuery,
   useSendGrantMutation,
 } from "~/types";
 
@@ -76,17 +75,8 @@ export type GrantFormFields = {
   acceptedPrivacyPolicy: boolean;
 };
 
-export const MyGrantOrForm = () => {
+export const GrantSendForm = () => {
   const code = process.env.conferenceCode;
-
-  const { error, data } = useMyGrantQuery({
-    errorPolicy: "all",
-    variables: {
-      conference: code,
-    },
-    skip: typeof window === "undefined",
-  });
-  const grant = data?.me?.grant;
 
   const [submitGrant, { loading, error: grantError, data: grantData }] =
     useSendGrantMutation({
@@ -102,14 +92,6 @@ export const MyGrantOrForm = () => {
       },
     });
   };
-
-  if (error) {
-    return <Alert variant="alert">{error.message}</Alert>;
-  }
-
-  if (grant) {
-    return <MyGrant />;
-  }
 
   return (
     <>
@@ -155,6 +137,16 @@ export const GrantForm = ({
   const language = useCurrentLanguage();
   const countries = useCountries();
 
+  const {
+    data: {
+      conference: { deadline },
+    },
+  } = useGrantDeadlineQuery({
+    variables: {
+      conference: conference,
+    },
+  });
+
   const inputPlaceholderText = useTranslatedMessage("input.placeholder");
   const { user, loading: loadingUser } = useCurrentUser({});
   const [formState, { text, textarea, select, checkbox }] =
@@ -166,6 +158,12 @@ export const GrantForm = ({
         withIds: true,
       },
     );
+
+  const dateFormatter = new Intl.DateTimeFormat(language, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 
   useEffect(() => {
     // to not override if we are editing the grant
@@ -274,9 +272,12 @@ export const GrantForm = ({
         <FormattedMessage
           id="grants.form.sent"
           values={{
-            linkGrant: (
+            linkMyGrant: (
               <Link
-                href={createHref({ path: "/grants/edit", locale: language })}
+                href={createHref({
+                  path: "/profile/my-grant",
+                  locale: language,
+                })}
               >
                 <Text
                   color="none"
@@ -284,10 +285,11 @@ export const GrantForm = ({
                   size="inherit"
                   weight="strong"
                 >
-                  <FormattedMessage id="grants.form.sent.linkGrant.text" />
+                  <FormattedMessage id="grants.form.sent.linkMyGrant.text" />
                 </Text>
               </Link>
             ),
+            grantsDeadline: dateFormatter.format(new Date(deadline.end)),
           }}
         />
       </Text>
