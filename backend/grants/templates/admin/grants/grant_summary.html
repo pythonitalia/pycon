@@ -1,4 +1,9 @@
 {% extends "admin/base_site.html" %}
+
+{% block title %}
+    Grant Summary | {{ site_title }}
+{% endblock %}
+
 {% load markdownify %}
 {% load localize countryname get_item %}
 {% load i18n l10n admin_urls static admin_list %}
@@ -14,10 +19,10 @@
             padding: 6px 12px;
         }
 
-        .back-button a.button:hover {
-            background-color: #e6e6e6;
+        .approved, .waiting_for_confirmation, .confirmed {
+            font-weight: 600;
+            color: var(--body-loud-color)
         }
-
 
         #financialSummary td,
         #financialSummary th {
@@ -53,25 +58,39 @@
         .continent-total {
             border-top: 2px solid #E8E8E8;
             border-bottom: 2px solid #000;
+
+        }
+
+        #grants-container table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+
+        #grants-container th,
+        #grants-container td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        #grants-container th,
+        #grants-container td {
+            width: calc(100% / 11);
+        }
+
+        #grants-container th {
+            background-color: #f4f4f4;
         }
     </style>
 {% endblock %}
 {% block content %}
-    <div class="back-button">
-        <a href="{% url 'admin:grants_grant_changelist' %}?{{ request.GET.urlencode }}"
-           class="button">Back to List</a>
+    <div class="submit-row back-button">
+      <a href="{% url 'admin:conferences_conference_change' object_id=conference_id %}" class="button">
+        Back to <strong>{{ conference_repr }}</strong>
+      </a>
     </div>
-    <h1>Grant Summary</h1>
-    <div class="active-filters">
-        <h3>Active Filters:</h3>
-        <ul>
-            {% for filter_name, value in filters.items %}
-                <li>{{ filter_name }}: {{ value }}</li>
-            {% empty %}
-                <li>No filters applied</li>
-            {% endfor %}
-        </ul>
-    </div>
+    <h1>Grant Summary for <strong>{{ conference_repr }}</strong></h1>
     <div class="status-filter">
         <h3>Toggle Status Columns</h3>
         <div class="checkbox-list">
@@ -86,31 +105,36 @@
             {% endfor %}
         </div>
     </div>
+
+
+    <div id="grants-container">
     {% localize on %}
-    <h2>Financial Summary</h2>
-    <table>
+    <h2>Budget</h2>
+     <p>The total budget is calculated based on grants that are in the 'Approved', 'Waiting for Confirmation', or 'Confirmed' statuses </p>
+    <table >
         <thead>
             <tr>
-                <th>Total Amount</th>
+                <th >Total Amount</th>
                 <th></th>
-                {% for status in statuses %}<th class="status-column-{{ forloop.counter }}">{{ status.1|title }}</th>{% endfor %}
+                {% for status in statuses %}<th class="status-column-{{ forloop.counter }} {{status.0}}">{{ status.1|title }}</th>{% endfor %}
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>{{ total_amount|floatformat:"0" }}€</td>
+                <td >{{ total_amount|floatformat:"0" }}€</td>
                 <td></td>
                 {% for status in statuses %}
-                    <td class="status-column-{{ forloop.counter }}">
+                    <td class="status-column-{{ forloop.counter }} {{status.0}}">
                         {{ financial_summary|get_item:status.0|default:"0"|floatformat:"0" }}€
                     </td>
                 {% endfor %}
             </tr>
         </tbody>
     </table>
-{% endlocalize %}
+    {% endlocalize %}
+
 <h2>by Country</h2>
-<table>
+<table >
     <thead>
         <tr>
             <th>Continent</th>
@@ -123,9 +147,10 @@
             {% with continent=key.0 country=key.1 %}
                 {% ifchanged continent %}
                     <tr class="continent-total">
-                        <td colspan="2">
-                            <strong>Total for {{ continent }}: 👇</strong>
+                        <td >
+                            <strong>Total for {{ continent }}: ⬇️</strong>
                         </td>
+                        <td></td>
                         {% for status in statuses %}
                             <td class="status-column-{{ forloop.counter }}">
                                 <strong>{{ totals_per_continent|get_item:continent|get_item:status.0|default:"0" }}</strong>
@@ -151,7 +176,7 @@
     </tfoot>
 </table>
 <h2>by Gender</h2>
-<table>
+<table >
     <thead>
         <tr>
             <th>Gender</th>
@@ -171,6 +196,7 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
       // This script allows users to toggle the visibility of columns in the table
