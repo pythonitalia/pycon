@@ -26,6 +26,10 @@ def send_message(
         logger.info("No oauth token provided for sending a slack message.")
         return
 
+    if not channel_id:
+        logger.info("No channel ID provided for sending a slack message.")
+        return
+
     response = post(
         url="https://slack.com/api/chat.postMessage",
         headers={
