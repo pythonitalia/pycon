@@ -45,3 +45,34 @@ class SESEmailBackend(EmailBackend):
             vars[key] = value
 
         return vars
+
+    def send_raw_email(
+        self,
+        *,
+        from_: str,
+        to: str,
+        subject: str,
+        body: str,
+        reply_to: list[str] = None,
+        cc: list[str] = None,
+        bcc: list[str] = None,
+    ) -> str:
+        response = self.ses.send_email(
+            Source=from_,
+            Destination={
+                "ToAddresses": [to],
+                "CcAddresses": cc or [],
+                "BccAddresses": bcc or [],
+            },
+            Message={
+                "Subject": {"Data": subject},
+                "Body": {
+                    "Text": {"Data": body},
+                    "Html": {"Data": body},
+                },
+            },
+            ReplyToAddresses=reply_to or [],
+            ConfigurationSetName="primary",
+        )
+
+        return response["MessageId"]

@@ -31,6 +31,7 @@ urlpatterns = [
     path("schedule/", include("schedule.urls")),
     path("", include("healthchecks.urls")),
     path("", include("files_upload.urls")),
+    path("", include("notifications.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = urlpatterns + [

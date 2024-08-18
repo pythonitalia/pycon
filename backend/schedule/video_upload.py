@@ -45,14 +45,14 @@ def create_video_info(schedule_item: ScheduleItem) -> VideoInfo:
         "hashtags": " ".join([f"#{tag}" for tag in tags]),
     }
 
-    title = _process_string_template(
+    title = process_string_template(
         schedule_item.conference.video_title_template, context
     )
 
     if len(title) > 100:
         title = schedule_item.title
 
-    description = _process_string_template(
+    description = process_string_template(
         schedule_item.conference.video_description_template, context
     )
 
@@ -63,13 +63,13 @@ def create_video_info(schedule_item: ScheduleItem) -> VideoInfo:
     )
 
 
-def _process_string_template(template_string: str, context) -> str:
+def process_string_template(template_string: str, context: dict) -> str:
     env = Environment(
         trim_blocks=True,
         lstrip_blocks=True,
     )
     template = env.from_string(template_string)
-    return template.render(context).strip().replace("\n\n\n", "\n\n")
+    return template.render(context).strip()
 
 
 def download_video_file(id: int, path: str) -> str:
@@ -135,7 +135,8 @@ def replace_invalid_chars_with_lookalikes(text: str) -> str:
     }
     for char, homoglyph in homoglyphs.items():
         text = text.replace(char, homoglyph)
-    return text
+
+    return text.replace("\n\n\n", "\n\n")
 
 
 def clean_tag(tag: str) -> str:
