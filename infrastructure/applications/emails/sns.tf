@@ -1,5 +1,6 @@
 locals {
   admin_domain = terraform.workspace == "production" ? "admin.pycon.it" : "${terraform.workspace}-admin.pycon.it"
+  sns_webhook_secret = module.common_secrets.value.sns_webhook_secret
 }
 
 resource "aws_sns_topic" "emails_updates" {
@@ -9,5 +10,5 @@ resource "aws_sns_topic" "emails_updates" {
 resource "aws_sns_topic_subscription" "backend" {
   topic_arn = aws_sns_topic.emails_updates.arn
   protocol  = "https"
-  endpoint  = "https://${admin_domain}/notifications/sns-webhook"
+  endpoint  = "https://sns:${local.sns_webhook_secret}@${admin_domain}/notifications/sns-webhook"
 }
