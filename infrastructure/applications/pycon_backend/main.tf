@@ -117,6 +117,7 @@ module "lambda" {
     PLAIN_INTEGRATION_TOKEN                   = module.secrets.value.plain_integration_token
     HASHID_DEFAULT_SECRET_SALT                = module.secrets.value.hashid_default_secret_salt
     MEDIA_FILES_STORAGE_BACKEND = "pycon.storages.CustomS3Boto3Storage"
+    SNS_WEBHOOK_SECRET = module.common_secrets.value.sns_webhook_secret
   }
 }
 

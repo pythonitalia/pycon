@@ -1,26 +1,28 @@
 from django.conf import settings
 from rest_framework.permissions import BasePermission
-from rest_framework.authentication import BasicAuthentication
+from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
 
-class SNSAuthentication(BasicAuthentication):
-    www_authenticate_realm = "sns"
+class APIKeyAuthentication(BaseAuthentication):
+    server_api_key = None
+    user_identifier = None
 
-    def authenticate_credentials(self, userid, password, request=None):
-        """
-        Authenticate the userid and password against username and password
-        with optional request for context.
-        """
-        if userid != "sns":
+    def authenticate(self, request):
+        request_api_key = request.query_params.get("api_key")
+
+        if not self.server_api_key:
             raise AuthenticationFailed()
 
-        settings_sns_webhook_secret = settings.SNS_WEBHOOK_SECRET
-
-        if not settings_sns_webhook_secret or password != settings_sns_webhook_secret:
+        if request_api_key != self.server_api_key:
             raise AuthenticationFailed()
 
-        return ({"sns": True}, None)
+        return ({self.user_identifier: True}, None)
+
+
+class SNSAuthentication(APIKeyAuthentication):
+    server_api_key = settings.SNS_WEBHOOK_SECRET
+    user_identifier = "sns"
 
 
 class IsSNSAuthenticated(BasePermission):
