@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+from functools import cached_property
 from django.db import transaction
 from django.db.models import Q, UniqueConstraint
 from django.utils.safestring import mark_safe
@@ -18,11 +20,12 @@ class EmailTemplate(TimeStampedModel):
             "proposal_in_waiting_list",
             _("Proposal in waiting list"),
         )
-
         proposal_scheduled_time_changed = (
             "proposal_scheduled_time_changed",
             _("Proposal scheduled time changed"),
         )
+
+        voucher_code = "voucher_code", _("Voucher code")
 
         custom = "custom", _("Custom")
 
@@ -49,7 +52,7 @@ class EmailTemplate(TimeStampedModel):
         choices=Identifier.choices,
     )
 
-    reply_to = models.EmailField(_("reply to"), blank=True, null=True)
+    reply_to = models.EmailField(_("reply to"), blank=True)
     subject = models.TextField(_("subject"))
     preview_text = models.TextField(_("preview text"), blank=True)
     body = models.TextField(_("body"))
@@ -64,6 +67,40 @@ class EmailTemplate(TimeStampedModel):
 
         return f"EmailTemplate {self.identifier} ({self.conference})"
 
+    def get_processed_body(self, placeholders: dict) -> str:
+        return mark_safe(
+            render_template_from_string(
+                self.body,
+                placeholders,
+            ).replace("\n", "<br/>")
+        )
+
+    def get_processed_subject(self, placeholders: dict) -> str:
+        return mark_safe(
+            render_template_from_string(self.subject, placeholders).replace(
+                "\n", "<br/>"
+            )
+        )
+
+    def get_processed_preview_text(self, placeholders: dict) -> str:
+        return mark_safe(
+            render_template_from_string(self.preview_text, placeholders).replace(
+                "\n", "<br/>"
+            )
+        )
+
+    def render(
+        self,
+        *,
+        placeholders: dict = None,
+        show_placeholders: bool = False,
+    ) -> "RenderedEmailTemplate":
+        return RenderedEmailTemplate(
+            email_template=self,
+            show_placeholders=show_placeholders,
+            placeholders=placeholders,
+        )
+
     def send_email(
         self,
         *,
@@ -77,28 +114,9 @@ class EmailTemplate(TimeStampedModel):
         from notifications.tasks import send_pending_emails
 
         recipient_email = recipient_email or recipient.email
-        placeholders = placeholders or {}
-        processed_subject = render_template_from_string(
-            self.subject, placeholders
-        ).replace("\n", "<br/>")
-        processed_preview_text = render_template_from_string(
-            self.preview_text, placeholders
-        ).replace("\n", "<br/>")
-        processed_body = mark_safe(
-            render_template_from_string(
-                self.body,
-                placeholders,
-            ).replace("\n", "<br/>")
-        )
 
-        html_body = render_to_string(
-            "notifications/email-template.html",
-            {
-                "subject": processed_subject,
-                "preview_text": processed_preview_text,
-                "body": processed_body,
-            },
-        )
+        placeholders = placeholders or {}
+        processed_email_template = self.render(placeholders=placeholders)
 
         SentEmail.objects.create(
             email_template=self,
@@ -106,9 +124,9 @@ class EmailTemplate(TimeStampedModel):
             recipient=recipient,
             recipient_email=recipient_email,
             placeholders=placeholders,
-            subject=processed_subject,
-            preview_text=processed_preview_text,
-            body=html_body,
+            subject=processed_email_template.subject,
+            preview_text=processed_email_template.preview_text,
+            body=processed_email_template.html_body,
             reply_to=self.reply_to,
             cc_addresses=self.cc_addresses,
             bcc_addresses=self.bcc_addresses,
@@ -119,6 +137,9 @@ class EmailTemplate(TimeStampedModel):
     @property
     def is_custom(self):
         return self.identifier == self.Identifier.custom
+
+    def get_placeholders_available(self):
+        return self.EXPECTED_PLACEHOLDERS.get(self.identifier, [])
 
     class Meta:
         constraints = [
@@ -182,3 +203,43 @@ class SentEmail(TimeStampedModel):
 
     def __str__(self):
         return f"Sent email to {self.recipient_email} ({self.email_template})"
+
+
+@dataclass
+class RenderedEmailTemplate:
+    email_template: EmailTemplate
+    placeholders: dict
+    show_placeholders: bool
+
+    def __post_init__(self):
+        self.placeholders = self.placeholders or {}
+
+    @cached_property
+    def subject(self):
+        return self.render_text(self.email_template.subject)
+
+    @cached_property
+    def preview_text(self):
+        return self.render_text(self.email_template.preview_text)
+
+    @cached_property
+    def body(self):
+        return self.render_text(self.email_template.body)
+
+    @cached_property
+    def html_body(self):
+        return render_to_string(
+            "notifications/email-template.html",
+            {
+                "subject": self.subject,
+                "preview_text": self.preview_text,
+                "body": self.body,
+            },
+        )
+
+    def render_text(self, text: str) -> str:
+        return mark_safe(
+            render_template_from_string(
+                text, self.placeholders, show_placeholders=self.show_placeholders
+            ).replace("\n", "<br/>")
+        )
