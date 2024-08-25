@@ -135,6 +135,7 @@ class SentEmailAdmin(admin.ModelAdmin):
         "message_id",
         "recipient",
         "recipient_email",
+        "from_email",
         "subject",
         "preview_text",
         "placeholders",

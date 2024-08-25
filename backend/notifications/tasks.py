@@ -1,11 +1,10 @@
 import logging
-from django.utils import timezone
-from django.conf import settings
+from uuid import uuid4
 from pycon.celery_utils import OnlyOneAtTimeTask
-from notifications.emails import get_email_backend
 from notifications.models import SentEmail
 from django.db import transaction
 from pycon.celery import app
+from django.core.mail import EmailMultiAlternatives
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +19,7 @@ def send_pending_emails():
 
     logger.info(f"Found {pending_emails.count()} pending emails")
 
-    for email_id in pending_emails.all():
+    for email_id in pending_emails.iterator():
         with transaction.atomic():
             sent_email = (
                 SentEmail.objects.select_for_update(skip_locked=True)
@@ -30,31 +29,26 @@ def send_pending_emails():
                 .first()
             )
 
-            if not sent_email:
-                continue
-
-            if not sent_email.is_pending:
+            if not sent_email or not sent_email.is_pending:
                 continue
 
             logger.info(f"Sending email {sent_email.id}")
 
-            from_email = settings.DEFAULT_EMAIL_FROM
-            backend = get_email_backend(
-                settings.PYTHONIT_EMAIL_BACKEND, environment=settings.ENVIRONMENT
-            )
-            message_id = backend.send_raw_email(
-                from_=from_email,
-                to=sent_email.recipient_email,
+            email_message = EmailMultiAlternatives(
                 subject=sent_email.subject,
-                body=sent_email.body,
-                reply_to=sent_email.reply_to,
+                body=sent_email.text_body,
+                from_email=sent_email.from_email,
+                to=[sent_email.recipient_email],
                 cc=sent_email.cc_addresses,
                 bcc=sent_email.bcc_addresses,
+                reply_to=[sent_email.reply_to],
             )
+            email_message.attach_alternative(sent_email.body, "text/html")
+            email_message.send()
 
-            sent_email.status = SentEmail.Status.sent
-            sent_email.sent_at = timezone.now()
-            sent_email.message_id = message_id
-            sent_email.save(update_fields=["status", "sent_at", "message_id"])
+            message_id = email_message.extra_headers.get(
+                "message_id", f"manual-generated-{uuid4()}"
+            )
+            sent_email.mark_as_sent(message_id)
 
-            logger.info(f"Email {sent_email.id} sent with message id {message_id}")
+            logger.info(f"Email id={sent_email.id} sent with message_id={message_id}")

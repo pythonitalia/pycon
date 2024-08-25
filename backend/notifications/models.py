@@ -1,3 +1,4 @@
+from django.utils import timezone
 from dataclasses import dataclass
 from functools import cached_property
 from django.db import transaction
@@ -10,6 +11,8 @@ from notifications.querysets import EmailTemplateQuerySet, SentEmailQuerySet
 from model_utils.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
 from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.conf import settings
 
 
 class EmailTemplate(TimeStampedModel):
@@ -121,12 +124,14 @@ class EmailTemplate(TimeStampedModel):
         SentEmail.objects.create(
             email_template=self,
             conference=self.conference,
+            from_email=settings.DEFAULT_EMAIL_FROM,
             recipient=recipient,
             recipient_email=recipient_email,
             placeholders=placeholders,
             subject=processed_email_template.subject,
             preview_text=processed_email_template.preview_text,
             body=processed_email_template.html_body,
+            text_body=processed_email_template.text_body,
             reply_to=self.reply_to,
             cc_addresses=self.cc_addresses,
             bcc_addresses=self.bcc_addresses,
@@ -164,7 +169,11 @@ class SentEmail(TimeStampedModel):
     )
 
     status = models.CharField(
-        _("status"), max_length=200, choices=Status.choices, default=Status.pending
+        _("status"),
+        max_length=200,
+        choices=Status.choices,
+        default=Status.pending,
+        db_index=True,
     )
 
     email_template = models.ForeignKey(
@@ -187,8 +196,10 @@ class SentEmail(TimeStampedModel):
 
     subject = models.TextField(_("subject"))
     body = models.TextField(_("body"))
+    text_body = models.TextField(_("text body"))
     preview_text = models.TextField(_("preview text"), blank=True)
 
+    from_email = models.EmailField(_("from email"))
     reply_to = models.EmailField(_("reply to"), blank=True, default="")
     cc_addresses = models.JSONField(_("cc addresses"), default=list, blank=True)
     bcc_addresses = models.JSONField(_("bcc addresses"), default=list, blank=True)
@@ -209,8 +220,11 @@ class SentEmail(TimeStampedModel):
     def is_delivered(self):
         return self.events.filter(event=SentEmailEvent.Event.delivered).exists()
 
-    def __str__(self):
-        return f"Sent email to {self.recipient_email} ({self.email_template})"
+    def mark_as_sent(self, message_id: str):
+        self.status = self.Status.sent
+        self.sent_at = timezone.now()
+        self.message_id = message_id
+        self.save(update_fields=["status", "sent_at", "message_id"])
 
     def record_event(self, event: str, timestamp: str, payload: dict):
         SentEmailEvent.objects.create(
@@ -219,6 +233,9 @@ class SentEmail(TimeStampedModel):
             timestamp=timestamp,
             payload=payload,
         )
+
+    def __str__(self):
+        return f"Sent email to {self.recipient_email} ({self.email_template})"
 
 
 class SentEmailEvent(TimeStampedModel):
@@ -281,6 +298,10 @@ class RenderedEmailTemplate:
                 "body": self.body,
             },
         )
+
+    @cached_property
+    def text_body(self):
+        return strip_tags(self.body.replace("<br/>", "\n"))
 
     def render_text(self, text: str) -> str:
         return mark_safe(

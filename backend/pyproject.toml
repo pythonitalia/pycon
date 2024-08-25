@@ -57,7 +57,7 @@ dependencies = [
     "boto3==1.34.149",
     "pycountry<20.0,>=19.8",
     "countries<1.0.0,>=0.2.0",
-    "django-ses<2.0.0,>=1.0.3",
+    "django-ses==4.1.1",
     "hashids<2.0.0,>=1.2.0",
     "django-autocomplete-light==3.9.4",
     "django-queryinspect<2.0.0,>=1.1.0",
