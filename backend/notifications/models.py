@@ -193,7 +193,7 @@ class SentEmail(TimeStampedModel):
     cc_addresses = models.JSONField(_("cc addresses"), default=list, blank=True)
     bcc_addresses = models.JSONField(_("bcc addresses"), default=list, blank=True)
 
-    message_id = models.TextField(_("message id"), blank=True)
+    message_id = models.TextField(_("message id"), blank=True, db_index=True)
 
     objects = SentEmailQuerySet().as_manager()
 
@@ -201,8 +201,53 @@ class SentEmail(TimeStampedModel):
     def is_pending(self):
         return self.status == self.Status.pending
 
+    @property
+    def is_bounced(self):
+        return self.events.filter(event=SentEmailEvent.Event.bounced).exists()
+
+    @property
+    def is_delivered(self):
+        return self.events.filter(event=SentEmailEvent.Event.delivered).exists()
+
     def __str__(self):
         return f"Sent email to {self.recipient_email} ({self.email_template})"
+
+    def record_event(self, event: str, timestamp: str, payload: dict):
+        SentEmailEvent.objects.create(
+            sent_email=self,
+            event=event,
+            timestamp=timestamp,
+            payload=payload,
+        )
+
+
+class SentEmailEvent(TimeStampedModel):
+    class Event(models.TextChoices):
+        bounced = "bounced", _("Bounced")
+        delivered = "delivered", _("Delivered")
+        opened = "opened", _("Opened")
+        clicked = "clicked", _("Clicked")
+        complaint = "complaint", _("Complaint")
+        unsubscribed = "unsubscribed", _("Unsubscribed")
+
+    sent_email = models.ForeignKey(
+        "notifications.SentEmail",
+        on_delete=models.CASCADE,
+        related_name="events",
+        verbose_name=_("sent email"),
+    )
+
+    event = models.CharField(_("event"), max_length=200, choices=Event.choices)
+    timestamp = models.DateTimeField(_("timestamp"))
+    payload = models.JSONField(_("payload"), default=dict)
+
+    def __str__(self):
+        return f"SentEmailEvent {self.event} for {self.sent_email}"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["sent_email", "event"]),
+        ]
 
 
 @dataclass

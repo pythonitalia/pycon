@@ -13,8 +13,19 @@ from users.admin_mixins import ConferencePermissionMixin
 from django.urls import path
 from django.utils.safestring import mark_safe
 
-from notifications.models import EmailTemplate, SentEmail
+from notifications.models import EmailTemplate, SentEmail, SentEmailEvent
 from django.forms import Textarea
+
+
+class SentEmailEventInline(admin.TabularInline):
+    model = SentEmailEvent
+    extra = 0
+    fields = ["event", "timestamp", "payload"]
+    readonly_fields = ["event", "timestamp", "payload"]
+    ordering = ["timestamp"]
+    show_change_link = False
+    verbose_name = "Event"
+    verbose_name_plural = "Events"
 
 
 @admin.register(EmailTemplate)
@@ -128,11 +139,11 @@ class SentEmailAdmin(admin.ModelAdmin):
         "cc_addresses",
         "bcc_addresses",
         "email_template",
-        "body",
     ]
     date_hierarchy = "sent_at"
     ordering = ["-sent_at"]
     autocomplete_fields = ["recipient"]
+    inlines = [SentEmailEventInline]
 
     def email_template_display_name(self, obj):
         if obj.email_template.is_custom:

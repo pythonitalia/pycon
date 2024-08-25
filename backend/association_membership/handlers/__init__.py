@@ -2,30 +2,33 @@ import logging
 from typing import Any, Callable, Literal, Optional
 
 from association_membership.exceptions import WebhookError
+from association_membership.handlers.sns import ses_event
 
 from .pretix.pretix_event_order_paid import pretix_event_order_paid
 from .stripe.handle_invoice_paid import handle_invoice_paid
 
 logger = logging.getLogger(__file__)
 
+SERVICES = Literal["stripe", "pretix", "sns", "crons"]
 
 HANDLERS = {
     "stripe": {
         "invoice.paid": handle_invoice_paid,
     },
     "pretix": {"pretix.event.order.paid": pretix_event_order_paid},
+    "sns": {
+        "delivery": ses_event,
+        "bounce": ses_event,
+        "complaint": ses_event,
+    },
 }
 
 
-def get_handler(
-    service: Literal["stripe", "pretix"], event: str
-) -> Optional[Callable[[Any], None]]:
+def get_handler(service: SERVICES, event: str) -> Optional[Callable[[Any], None]]:
     return HANDLERS.get(service, {}).get(event, None)
 
 
-def run_handler(
-    service: Literal["stripe", "pretix", "crons"], event_name: str, payload: Any
-):
+def run_handler(service: SERVICES, event_name: str, payload: Any):
     handler = get_handler(service, event_name)
 
     if not handler:

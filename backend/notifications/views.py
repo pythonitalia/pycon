@@ -8,6 +8,7 @@ from rest_framework.decorators import (
     authentication_classes,
 )
 from rest_framework.response import Response
+from association_membership.handlers import run_handler
 
 logger = logging.getLogger(__name__)
 
@@ -19,15 +20,14 @@ def sns_webhook(request):
     payload = request.data
     message_type = request.headers.get("x-amz-sns-message-type")
 
-    logger.info(f"Received SNS message of type {message_type}")
-
     if message_type == "SubscriptionConfirmation":
         subscribe_url = payload["SubscribeURL"]
         requests.get(subscribe_url)
         return Response(status=200)
 
     if message_type == "Notification":
-        # Process the notification
+        type = payload["notificationType"].lower()
+        run_handler("sns", type, payload)
         return Response(status=200)
 
     return Response(status=200)

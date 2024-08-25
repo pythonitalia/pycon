@@ -1,7 +1,7 @@
 from jinja2 import Environment, Undefined
 
 
-class DefaultingUndefined(Undefined):
+class ShowPlaceholdersUndefined(Undefined):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.variable_name = kwargs.get("name")
@@ -19,7 +19,7 @@ def render_template_from_string(
     )
 
     if show_placeholders:
-        env.undefined = DefaultingUndefined
+        env.undefined = ShowPlaceholdersUndefined
 
     template = env.from_string(template_string)
     return template.render(context).strip()

@@ -23,3 +23,6 @@ class SentEmailQuerySet(ConferenceQuerySetMixin, models.QuerySet):
 
     def for_template(self, identifier: "EmailTemplate.Identifier"):
         return self.filter(email_template__identifier=identifier)
+
+    def get_by_message_id(self, message_id):
+        return self.filter(message_id=message_id).first()
