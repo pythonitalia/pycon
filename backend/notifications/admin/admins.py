@@ -111,6 +111,9 @@ class EmailTemplateAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         ] + super().get_urls()
 
     def get_view_on_site_url(self, obj) -> str | None:
+        if not obj:
+            return
+
         return reverse("admin:view-email-template", args=(obj.id,))
 
 
