@@ -1,3 +1,4 @@
+import json
 import logging
 
 import requests
@@ -26,8 +27,9 @@ def sns_webhook(request):
         return Response(status=200)
 
     if message_type == "Notification":
-        type = payload["notificationType"].lower()
-        run_handler("sns", type, payload)
+        message = json.loads(payload["Message"])
+        type = message["eventType"].lower()
+        run_handler("sns", type, message)
         return Response(status=200)
 
     return Response(status=200)
