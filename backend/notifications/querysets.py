@@ -19,4 +19,4 @@ class SentEmailQuerySet(ConferenceQuerySetMixin, models.QuerySet):
         return self.filter(status=self.model.Status.pending)
 
     def get_by_message_id(self, message_id):
-        return self.filter(message_id=message_id).first()
+        return self.get(message_id=message_id)

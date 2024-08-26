@@ -25,9 +25,9 @@ def ses_event(payload: Any) -> None:
     timestamp = _get_timestamp(payload)
     event_type = payload["eventType"]
 
-    sent_email = SentEmail.objects.get_by_message_id(message_id)
-
-    if not sent_email:
+    try:
+        sent_email = SentEmail.objects.get_by_message_id(message_id)
+    except SentEmail.DoesNotExist:
         logger.error("SentEmail not found for message_id=%s", message_id)
         return
 
