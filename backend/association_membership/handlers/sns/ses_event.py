@@ -22,7 +22,7 @@ def ses_event(payload: Any) -> None:
     recipient_email_address = sent_email.recipient_email
 
     if any(
-        recipient_email_address == bounced_recipient["emailAddress"]
+        recipient_email_address == bounced_recipient
         for bounced_recipient in affected_recipients
     ):
         sent_email.record_event(SentEmailEvent.Event.bounced, timestamp, payload)
@@ -32,9 +32,15 @@ def _get_affected_recipients(payload: Any) -> list[str]:
     notification_type = payload["eventType"]
     match notification_type:
         case "Bounce":
-            return payload["bounce"]["bouncedRecipients"]
+            return [
+                recipient["emailAddress"]
+                for recipient in payload["complaint"]["bouncedRecipients"]
+            ]
         case "Complaint":
-            return payload["complaint"]["complainedRecipients"]
+            return [
+                recipient["emailAddress"]
+                for recipient in payload["complaint"]["complainedRecipients"]
+            ]
         case "Delivery":
             return payload["delivery"]["recipients"]
         case _:
