@@ -1,5 +1,9 @@
 resource "aws_sesv2_configuration_set" "main" {
   configuration_set_name = "pythonit-${terraform.workspace}"
+
+  tracking_options {
+    custom_redirect_domain = "mail-${terraform.workspace}.python.it"
+  }
 }
 
 resource "aws_sesv2_configuration_set_event_destination" "backend" {
@@ -11,6 +15,17 @@ resource "aws_sesv2_configuration_set_event_destination" "backend" {
       topic_arn = aws_sns_topic.emails_updates.arn
     }
     enabled              = true
-    matching_event_types = ["SEND", "REJECT", "BOUNCE", "COMPLAINT", "DELIVERY", "RENDERING_FAILURE", "DELIVERY_DELAY", "SUBSCRIPTION"]
+    matching_event_types = [
+      "BOUNCE",
+      "CLICK",
+      "COMPLAINT",
+      "DELIVERY",
+      "DELIVERY_DELAY",
+      "OPEN",
+      "REJECT",
+      "RENDERING_FAILURE",
+      "SEND",
+      "SUBSCRIPTION",
+    ]
   }
 }

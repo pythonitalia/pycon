@@ -16,6 +16,7 @@ resource "aws_sns_topic" "emails_updates" {
         numMinDelayRetries = 0
         backoffFunction    = "linear"
       }
+      disableSubscriptionOverrides = false
       defaultRequestPolicy = {
         headerContentType = "application/json"
       }
