@@ -17,9 +17,13 @@ HANDLERS = {
     },
     "pretix": {"pretix.event.order.paid": pretix_event_order_paid},
     "sns": {
-        "delivery": ses_event,
         "bounce": ses_event,
         "complaint": ses_event,
+        "delivery": ses_event,
+        "send": ses_event,
+        "reject": ses_event,
+        "open": ses_event,
+        "click": ses_event,
     },
 }
 

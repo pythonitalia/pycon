@@ -11,7 +11,7 @@ logger = logging.getLogger(__file__)
 def ses_event(payload: Any) -> None:
     message_id = payload["mail"]["messageId"]
     affected_recipients = _get_affected_recipients(payload)
-    timestamp = payload["bounce"]["timestamp"]
+    timestamp = _get_timestamp(payload)
 
     sent_email = SentEmail.objects.get_by_message_id(message_id)
 
@@ -37,13 +37,18 @@ def _get_affected_recipients(payload: Any) -> list[str]:
             return payload["complaint"]["complainedRecipients"]
         case "Delivery":
             return payload["delivery"]["recipients"]
-        case "Send":
-            return payload["mail"]["destination"]
-        case "Reject":
-            return payload["mail"]["destination"]
-        case "Open":
-            return payload["mail"]["destination"]
-        case "Click":
-            return payload["mail"]["destination"]
         case _:
-            return []
+            return payload["mail"]["destination"]
+
+
+def _get_timestamp(payload: dict) -> str:
+    notification_type = payload["eventType"]
+    match notification_type:
+        case "Bounce":
+            return payload["bounce"]["timestamp"]
+        case "Complaint":
+            return payload["complaint"]["timestamp"]
+        case "Delivery":
+            return payload["delivery"]["timestamp"]
+        case _:
+            return payload["mail"]["timestamp"]

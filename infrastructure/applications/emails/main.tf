@@ -1,8 +1,12 @@
+locals {
+  email_tracking_domain = "mail-${terraform.workspace}.python.it"
+}
+
 resource "aws_sesv2_configuration_set" "main" {
   configuration_set_name = "pythonit-${terraform.workspace}"
 
   tracking_options {
-    custom_redirect_domain = "mail-${terraform.workspace}.python.it"
+    custom_redirect_domain = local.email_tracking_domain
   }
 }
 

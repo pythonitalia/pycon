@@ -44,4 +44,9 @@ module "database" {
 
 module "emails" {
   source = "./emails"
+
+  providers = {
+    aws    = aws
+    aws.us = aws.us
+  }
 }
