@@ -2,7 +2,7 @@ from django.urls import reverse
 
 from notifications.tests.factories import EmailTemplateFactory
 import pytest
-from notifications.models import EmailTemplate
+from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from notifications.admin.admins import EmailTemplateAdmin
 from django.contrib.admin.sites import AdminSite
 
@@ -90,3 +90,32 @@ def test_redirects_to_preview_when_saving_via_preview_button(rf, admin_user):
 
     response = admin.response_post_save_add(request, obj)
     assert response.url != reverse("admin:view-email-template", args=[obj.id])
+
+
+def test_list_placeholders_available():
+    admin = EmailTemplateAdmin(
+        model=EmailTemplate,
+        admin_site=AdminSite(),
+    )
+
+    obj = EmailTemplateFactory(identifier=EmailTemplateIdentifier.proposal_accepted)
+    placeholders = admin.placeholders_available(obj)
+
+    assert "{{proposal_title}}" in placeholders
+
+    obj = EmailTemplateFactory(identifier=EmailTemplateIdentifier.custom)
+    placeholders = admin.placeholders_available(obj)
+
+    assert "{{conference}}" in placeholders
+
+
+def test_save_and_preview_button():
+    admin = EmailTemplateAdmin(
+        model=EmailTemplate,
+        admin_site=AdminSite(),
+    )
+    obj = EmailTemplateFactory(identifier=EmailTemplateIdentifier.proposal_accepted)
+
+    button = admin.save_and_preview(obj)
+
+    assert 'name="_save_and_preview"' in button

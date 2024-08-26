@@ -56,7 +56,7 @@ class EmailTemplateAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
         return super().formfield_for_dbfield(db_field, **kwargs)
 
-    def get_readonly_fields(self, request: HttpRequest, obj: Any | None = ...):
+    def get_readonly_fields(self, request: HttpRequest, obj: Any | None = None):
         fields = super().get_readonly_fields(request, obj)
 
         if obj:
