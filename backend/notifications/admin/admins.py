@@ -5,7 +5,6 @@ from django.urls import reverse
 from django.contrib import admin
 from django.urls.resolvers import URLPattern
 from notifications.admin.views import (
-    view_empty_template,
     view_sent_email,
     view_email_template,
 )
@@ -102,9 +101,6 @@ class EmailTemplateAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     def get_urls(self) -> list[URLPattern]:
         return [
             path(
-                "view-empty-template/", self.admin_site.admin_view(view_empty_template)
-            ),
-            path(
                 "<int:object_id>/view/",
                 self.admin_site.admin_view(view_email_template),
                 name="view-email-template",
@@ -153,18 +149,6 @@ class SentEmailAdmin(admin.ModelAdmin):
     autocomplete_fields = ["recipient"]
     inlines = [SentEmailEventInline]
 
-    @admin.display(boolean=True)
-    def is_bounced(self, obj):
-        return obj.is_bounced
-
-    @admin.display(boolean=True)
-    def is_delivered(self, obj):
-        return obj.is_delivered
-
-    @admin.display(boolean=True)
-    def is_opened(self, obj):
-        return obj.is_opened
-
     def email_template_display_name(self, obj):
         if obj.email_template.is_custom:
             return obj.email_template.name
@@ -186,3 +170,6 @@ class SentEmailAdmin(admin.ModelAdmin):
         self, request: HttpRequest, obj: Any | None = None
     ) -> bool:
         return False
+
+    def get_queryset(self, request: HttpRequest) -> Any:
+        return super().get_queryset(request).prefetch_related("email_template")
