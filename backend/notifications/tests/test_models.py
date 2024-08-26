@@ -171,7 +171,7 @@ def test_sent_email_is_complained():
 
     assert not sent_email.is_complained
 
-    sent_email.record_event(SentEmailEvent.Event.complaint, timezone.now(), {})
+    sent_email.record_event(SentEmailEvent.Event.complained, timezone.now(), {})
 
     assert sent_email.is_complained
 

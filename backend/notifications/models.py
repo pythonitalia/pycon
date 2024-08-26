@@ -213,7 +213,7 @@ class SentEmail(TimeStampedModel):
 
     @property
     def is_complained(self):
-        return self.events.filter(event=SentEmailEvent.Event.complaint).exists()
+        return self.events.filter(event=SentEmailEvent.Event.complained).exists()
 
     @property
     def is_delivered(self):
@@ -253,7 +253,7 @@ class SentEmailEvent(TimeStampedModel):
         delivered = "delivered", _("Delivered")
         opened = "opened", _("Opened")
         clicked = "clicked", _("Clicked")
-        complaint = "complaint", _("Complaint")
+        complained = "complained", _("Complained")
         unsubscribed = "unsubscribed", _("Unsubscribed")
         rejected = "rejected", _("Rejected")
         sent = "sent", _("Sent")

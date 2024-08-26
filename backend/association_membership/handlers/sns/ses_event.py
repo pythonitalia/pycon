@@ -10,7 +10,7 @@ logger = logging.getLogger(__file__)
 
 SES_EVENT_TYPE_TO_LOCAL_EVENT_TYPE = {
     "Bounce": SentEmailEvent.Event.bounced,
-    "Complaint": SentEmailEvent.Event.complaint,
+    "Complaint": SentEmailEvent.Event.complained,
     "Delivery": SentEmailEvent.Event.delivered,
     "Send": SentEmailEvent.Event.sent,
     "Reject": SentEmailEvent.Event.rejected,

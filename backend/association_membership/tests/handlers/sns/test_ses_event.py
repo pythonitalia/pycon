@@ -19,7 +19,7 @@ from notifications.tests.factories import SentEmailFactory
         (OPEN_PAYLOAD, SentEmailEvent.Event.opened),
         (CLICK_PAYLOAD, SentEmailEvent.Event.clicked),
         (DELIVERY_PAYLOAD, SentEmailEvent.Event.delivered),
-        (COMPLAINT_PAYLOAD, SentEmailEvent.Event.complaint),
+        (COMPLAINT_PAYLOAD, SentEmailEvent.Event.complained),
         (SEND_PAYLOAD, SentEmailEvent.Event.sent),
     ],
 )
