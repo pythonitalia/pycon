@@ -37,19 +37,29 @@ def test_render_email_template_showing_placeholders():
     assert result.preview_text == "Preview {{test}}"
 
 
-def test_send_email_template_to_recipient_email():
+def test_send_email_template_to_recipient_email(
+    mocker, django_capture_on_commit_callbacks
+):
     email_template = EmailTemplateFactory(
         subject="Subject {{ test }}",
         body="Body {{ test }}",
         preview_text="Preview {{ test }}",
         reply_to="replyto@example.com",
     )
-    email_template.send_email(
-        recipient_email="example@example.com",
-        placeholders={
-            "test": "abc",
-        },
+
+    mock_send_pending_emails = mocker.patch(
+        "notifications.tasks.send_pending_emails.delay"
     )
+
+    with django_capture_on_commit_callbacks(execute=True):
+        email_template.send_email(
+            recipient_email="example@example.com",
+            placeholders={
+                "test": "abc",
+            },
+        )
+
+    mock_send_pending_emails.assert_called_once()
 
     sent_email = SentEmail.objects.get(
         email_template=email_template,
