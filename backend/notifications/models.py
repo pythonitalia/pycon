@@ -1,11 +1,9 @@
 from django.utils import timezone
 from django.db import transaction
 from django.db.models import Q, UniqueConstraint
-from django.utils.safestring import mark_safe
 from django.db import models
 from notifications.rendered_email_template import RenderedEmailTemplate
 from users.models import User
-from notifications.template_utils import render_template_from_string
 from notifications.querysets import EmailTemplateQuerySet, SentEmailQuerySet
 from model_utils.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
@@ -76,28 +74,6 @@ class EmailTemplate(TimeStampedModel):
             return f"EmailTemplate {self.name} ({self.conference})"
 
         return f"EmailTemplate {self.identifier} ({self.conference})"
-
-    def get_processed_body(self, placeholders: dict) -> str:
-        return mark_safe(
-            render_template_from_string(
-                self.body,
-                placeholders,
-            ).replace("\n", "<br/>")
-        )
-
-    def get_processed_subject(self, placeholders: dict) -> str:
-        return mark_safe(
-            render_template_from_string(self.subject, placeholders).replace(
-                "\n", "<br/>"
-            )
-        )
-
-    def get_processed_preview_text(self, placeholders: dict) -> str:
-        return mark_safe(
-            render_template_from_string(self.preview_text, placeholders).replace(
-                "\n", "<br/>"
-            )
-        )
 
     def render(
         self,
