@@ -29,11 +29,21 @@ def ses_event(payload: Any) -> None:
 
 
 def _get_affected_recipients(payload: Any) -> list[str]:
-    notification_type = payload["notificationType"]
+    notification_type = payload["eventType"]
     match notification_type:
         case "Bounce":
             return payload["bounce"]["bouncedRecipients"]
         case "Complaint":
             return payload["complaint"]["complainedRecipients"]
+        case "Delivery":
+            return payload["delivery"]["recipients"]
+        case "Send":
+            return payload["mail"]["destination"]
+        case "Reject":
+            return payload["mail"]["destination"]
+        case "Open":
+            return payload["mail"]["destination"]
+        case "Click":
+            return payload["mail"]["destination"]
         case _:
             return []
