@@ -246,6 +246,8 @@ class SentEmailEvent(TimeStampedModel):
         clicked = "clicked", _("Clicked")
         complaint = "complaint", _("Complaint")
         unsubscribed = "unsubscribed", _("Unsubscribed")
+        rejected = "rejected", _("Rejected")
+        sent = "sent", _("Sent")
 
     sent_email = models.ForeignKey(
         "notifications.SentEmail",

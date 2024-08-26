@@ -8,10 +8,22 @@ from notifications.models import SentEmail, SentEmailEvent
 logger = logging.getLogger(__file__)
 
 
+SES_EVENT_TYPE_TO_LOCAL_EVENT_TYPE = {
+    "Bounce": SentEmailEvent.Event.bounced,
+    "Complaint": SentEmailEvent.Event.complaint,
+    "Delivery": SentEmailEvent.Event.delivered,
+    "Send": SentEmailEvent.Event.sent,
+    "Reject": SentEmailEvent.Event.rejected,
+    "Open": SentEmailEvent.Event.opened,
+    "Click": SentEmailEvent.Event.clicked,
+}
+
+
 def ses_event(payload: Any) -> None:
     message_id = payload["mail"]["messageId"]
     affected_recipients = _get_affected_recipients(payload)
     timestamp = _get_timestamp(payload)
+    event_type = payload["eventType"]
 
     sent_email = SentEmail.objects.get_by_message_id(message_id)
 
@@ -25,12 +37,14 @@ def ses_event(payload: Any) -> None:
         recipient_email_address == bounced_recipient
         for bounced_recipient in affected_recipients
     ):
-        sent_email.record_event(SentEmailEvent.Event.bounced, timestamp, payload)
+        sent_email.record_event(
+            SES_EVENT_TYPE_TO_LOCAL_EVENT_TYPE.get(event_type), timestamp, payload
+        )
 
 
 def _get_affected_recipients(payload: Any) -> list[str]:
-    notification_type = payload["eventType"]
-    match notification_type:
+    event_type = payload["eventType"]
+    match event_type:
         case "Bounce":
             return [
                 recipient["emailAddress"]
@@ -48,8 +62,8 @@ def _get_affected_recipients(payload: Any) -> list[str]:
 
 
 def _get_timestamp(payload: dict) -> str:
-    notification_type = payload["eventType"]
-    match notification_type:
+    event_type = payload["eventType"]
+    match event_type:
         case "Bounce":
             return payload["bounce"]["timestamp"]
         case "Complaint":
