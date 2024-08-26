@@ -5,6 +5,7 @@ from association_membership.tests.handlers.sns.payloads import (
     COMPLAINT_PAYLOAD,
     DELIVERY_PAYLOAD,
     OPEN_PAYLOAD,
+    SEND_PAYLOAD,
 )
 from association_membership.handlers.sns import ses_event
 from notifications.models import SentEmailEvent
@@ -19,6 +20,7 @@ from notifications.tests.factories import SentEmailFactory
         (CLICK_PAYLOAD, SentEmailEvent.Event.clicked),
         (DELIVERY_PAYLOAD, SentEmailEvent.Event.delivered),
         (COMPLAINT_PAYLOAD, SentEmailEvent.Event.complaint),
+        (SEND_PAYLOAD, SentEmailEvent.Event.sent),
     ],
 )
 def test_receive_ses_event(payload, event_name):

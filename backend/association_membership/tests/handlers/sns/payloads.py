@@ -328,3 +328,53 @@ COMPLAINT_PAYLOAD = {
     },
     "eventType": "Complaint",
 }
+
+SEND_PAYLOAD = {
+    "mail": {
+        "tags": {
+            "ses:operation": ["SendRawEmail"],
+            "ses:source-ip": ["1.1.1.1"],
+            "ses:from-domain": ["example.com"],
+            "ses:caller-identity": ["pythonit-pastaporto-worker"],
+            "ses:configuration-set": ["pythonit-pastaporto"],
+            "ses:source-tls-version": ["TLSv1.3"],
+        },
+        "source": "noreply@example.com",
+        "headers": [
+            {
+                "name": "Content-Type",
+                "value": 'multipart/alternative; boundary="===============4751082878187998702=="',
+            },
+            {"name": "MIME-Version", "value": "1.0"},
+            {
+                "name": "Subject",
+                "value": "ACTION NEEDED: [test 1] Your proposal was accepted!",
+            },
+            {"name": "From", "value": "noreply@example.com"},
+            {"name": "To", "value": "recipient-email@example.com"},
+            {"name": "Reply-To", "value": "noreply@example.com"},
+            {"name": "Date", "value": "Mon, 26 Aug 2024 14:32:06 -0000"},
+            {
+                "name": "Message-ID",
+                "value": "<1111111111111111-11111111-1111@1111-1111>",
+            },
+            {"name": "X-SES-CONFIGURATION-SET", "value": "pythonit-pastaporto"},
+        ],
+        "messageId": "1111111111111111-11111111-1111-1111-1111-111111111111-000000",
+        "sourceArn": "arn:aws:ses:eu-central-1:111111111:identity/noreply@example.com",
+        "timestamp": "2024-08-26T14:32:07.046Z",
+        "destination": ["recipient-email@example.com"],
+        "commonHeaders": {
+            "to": ["recipient-email@example.com"],
+            "date": "Mon, 26 Aug 2024 14:32:06 -0000",
+            "from": ["noreply@example.com"],
+            "replyTo": ["noreply@example.com"],
+            "subject": "ACTION NEEDED: [test 1] Your proposal was accepted!",
+            "messageId": "1111111111111111-11111111-1111-1111-1111-111111111111-000000",
+        },
+        "headersTruncated": False,
+        "sendingAccountId": "111111111",
+    },
+    "send": {},
+    "eventType": "Send",
+}
