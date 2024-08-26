@@ -4,8 +4,10 @@ from rest_framework.permissions import BasePermission
 
 
 class PretixAuthentication(APIKeyAuthentication):
-    server_api_key = settings.PRETIX_WEBHOOK_SECRET
     user_identifier = "pretix"
+
+    def get_server_api_key(self):
+        return settings.PRETIX_WEBHOOK_SECRET
 
 
 class IsPretixAuthenticated(BasePermission):

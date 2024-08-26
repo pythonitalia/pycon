@@ -10,19 +10,22 @@ class APIKeyAuthentication(BaseAuthentication):
 
     def authenticate(self, request):
         request_api_key = request.query_params.get("api_key")
+        server_api_key = self.get_server_api_key()
 
-        if not self.server_api_key:
+        if not server_api_key:
             raise AuthenticationFailed()
 
-        if request_api_key != self.server_api_key:
+        if request_api_key != server_api_key:
             raise AuthenticationFailed()
 
         return ({self.user_identifier: True}, None)
 
 
 class SNSAuthentication(APIKeyAuthentication):
-    server_api_key = settings.SNS_WEBHOOK_SECRET
     user_identifier = "sns"
+
+    def get_server_api_key(self):
+        return settings.SNS_WEBHOOK_SECRET
 
 
 class IsSNSAuthenticated(BasePermission):
