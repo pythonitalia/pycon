@@ -59,3 +59,18 @@ def test_sns_webhook_auto_subscribe(rest_api_client, mocker, requests_mock):
 
     assert example_call.last_request.method == "GET"
     assert response.status_code == 200
+
+
+@override_settings(SNS_WEBHOOK_SECRET="test")
+def test_sns_webhook_unknown_payloads(rest_api_client, mocker, requests_mock):
+    example_call = requests_mock.get("http://example.com")
+
+    mocker.patch("notifications.views.verify_event_message", return_value=True)
+
+    response = rest_api_client.post(
+        reverse("sns_webhook") + "?api_key=test",
+        headers={"x-amz-sns-message-type": "SomethingElse"},
+    )
+
+    assert example_call.last_request.method == "GET"
+    assert response.status_code == 200
