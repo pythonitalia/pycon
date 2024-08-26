@@ -18,16 +18,3 @@ class EmailBackend:
         reply_to: List[str] = None,
     ) -> str:
         raise NotImplementedError()
-
-    def send_raw_email(
-        self,
-        *,
-        from_: str,
-        to: str,
-        subject: str,
-        body: str,
-        reply_to: list[str] = None,
-        cc: list[str] = None,
-        bcc: list[str] = None,
-    ) -> str:
-        raise NotImplementedError()

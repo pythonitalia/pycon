@@ -13,6 +13,9 @@ class EmailTemplateQuerySet(ConferenceQuerySetMixin, models.QuerySet):
     ) -> "EmailTemplate":
         return self.get(identifier=identifier)
 
+    def system(self):
+        return self.filter(is_system_template=True)
+
 
 class SentEmailQuerySet(ConferenceQuerySetMixin, models.QuerySet):
     def pending(self):

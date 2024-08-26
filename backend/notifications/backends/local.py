@@ -32,30 +32,3 @@ class LocalEmailBackend(EmailBackend):
         print("=== End Email sending ===")
 
         return f"messageid-{uuid4()}"
-
-    def send_raw_email(
-        self,
-        *,
-        from_: str,
-        to: str,
-        subject: str,
-        body: str,
-        reply_to: list[str] = None,
-        cc: list[str] = None,
-        bcc: list[str] = None,
-    ) -> str:
-        reply_to = reply_to or []
-        cc = cc or []
-        bcc = bcc or []
-
-        print("=== Raw email sending ===")
-        print(f"From: {from_}")
-        print(f"To: {to}")
-        print(f"Subject: {subject}")
-        print(f"Body: {body}")
-        print(f"Reply to: {str(reply_to)}")
-        print(f"CC: {str(cc)}")
-        print(f"BCC: {str(bcc)}")
-        print("=== End Email sending ===")
-
-        return f"messageid-{uuid4()}"

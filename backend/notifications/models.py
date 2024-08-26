@@ -14,25 +14,28 @@ from django.conf import settings
 BASE_PLACEHOLDERS = ["conference"]
 
 
+class EmailTemplateIdentifier(models.TextChoices):
+    proposal_accepted = "proposal_accepted", _("Proposal accepted")
+    proposal_rejected = "proposal_rejected", _("Proposal rejected")
+    proposal_in_waiting_list = (
+        "proposal_in_waiting_list",
+        _("Proposal in waiting list"),
+    )
+    proposal_scheduled_time_changed = (
+        "proposal_scheduled_time_changed",
+        _("Proposal scheduled time changed"),
+    )
+
+    voucher_code = "voucher_code", _("Voucher code")
+
+    reset_password = "reset_password", _("[System] Reset password")
+
+    custom = "custom", _("Custom")
+
+
 class EmailTemplate(TimeStampedModel):
-    class Identifier(models.TextChoices):
-        proposal_accepted = "proposal_accepted", _("Proposal accepted")
-        proposal_rejected = "proposal_rejected", _("Proposal rejected")
-        proposal_in_waiting_list = (
-            "proposal_in_waiting_list",
-            _("Proposal in waiting list"),
-        )
-        proposal_scheduled_time_changed = (
-            "proposal_scheduled_time_changed",
-            _("Proposal scheduled time changed"),
-        )
-
-        voucher_code = "voucher_code", _("Voucher code")
-
-        custom = "custom", _("Custom")
-
     AVAILABLE_PLACEHOLDERS = {
-        Identifier.proposal_accepted: [
+        EmailTemplateIdentifier.proposal_accepted: [
             *BASE_PLACEHOLDERS,
             "conference_name",
             "proposal_title",
@@ -47,12 +50,16 @@ class EmailTemplate(TimeStampedModel):
         on_delete=models.CASCADE,
         related_name="email_templates",
         verbose_name=_("conference"),
+        blank=True,
+        null=True,
     )
+    is_system_template = models.BooleanField(_("is system template"), default=False)
+
     name = models.CharField(_("name"), max_length=200, blank=True, default="")
     identifier = models.CharField(
         _("identifier"),
         max_length=200,
-        choices=Identifier.choices,
+        choices=EmailTemplateIdentifier.choices,
     )
 
     reply_to = models.EmailField(_("reply to"), blank=True)
@@ -65,7 +72,7 @@ class EmailTemplate(TimeStampedModel):
     objects = EmailTemplateQuerySet().as_manager()
 
     def __str__(self):
-        if self.identifier == self.Identifier.custom:
+        if self.identifier == EmailTemplateIdentifier.custom:
             return f"EmailTemplate {self.name} ({self.conference})"
 
         return f"EmailTemplate {self.identifier} ({self.conference})"
@@ -141,10 +148,21 @@ class EmailTemplate(TimeStampedModel):
 
     @property
     def is_custom(self):
-        return self.identifier == self.Identifier.custom
+        return self.identifier == EmailTemplateIdentifier.custom
 
     def get_placeholders_available(self):
         return self.AVAILABLE_PLACEHOLDERS.get(self.identifier, BASE_PLACEHOLDERS)
+
+    def save(self, *args, **kwargs):
+        if self.is_system_template and self.conference_id:
+            raise ValueError("System templates cannot be associated with a conference")
+
+        if not self.is_system_template and not self.conference_id:
+            raise ValueError(
+                "Templates must be associated with a conference if not system template"
+            )
+
+        return super().save(*args, **kwargs)
 
     class Meta:
         constraints = [

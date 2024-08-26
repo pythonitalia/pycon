@@ -47,7 +47,7 @@ def send_pending_emails():
             email_message.send()
 
             message_id = email_message.extra_headers.get(
-                "message_id", f"manual-generated-{uuid4()}"
+                "message_id", f"local-{uuid4()}"
             )
             sent_email.mark_as_sent(message_id)
 

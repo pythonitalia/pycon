@@ -1,3 +1,4 @@
+from typing import cast
 from django.db.models import Q
 from pycon.celery_utils import OnlyOneAtTimeTask
 from google_api.exceptions import NoGoogleCloudQuotaLeftError
@@ -7,7 +8,7 @@ from integrations import plain
 from pretix import user_has_admission_ticket
 from django.utils import timezone
 from grants.tasks import get_name
-from notifications.models import EmailTemplate
+from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from notifications.emails import (
     send_email,
     mark_safe,
@@ -48,8 +49,11 @@ def send_schedule_invitation_email(*, schedule_item_id, is_reminder):
     speaker = User.objects.get(id=speaker_id)
     conference_name = conference.name.localize("en")
 
-    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
-        EmailTemplate.Identifier.proposal_accepted
+    email_template = cast(
+        EmailTemplate,
+        EmailTemplate.objects.for_conference(conference).get_by_identifier(
+            EmailTemplateIdentifier.proposal_accepted
+        ),
     )
     email_template.send_email(
         recipient=speaker,

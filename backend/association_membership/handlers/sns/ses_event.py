@@ -34,8 +34,8 @@ def ses_event(payload: Any) -> None:
     recipient_email_address = sent_email.recipient_email
 
     if any(
-        recipient_email_address == bounced_recipient
-        for bounced_recipient in affected_recipients
+        recipient_email_address == affected_recipient
+        for affected_recipient in affected_recipients
     ):
         sent_email.record_event(
             SES_EVENT_TYPE_TO_LOCAL_EVENT_TYPE.get(event_type), timestamp, payload

@@ -22,7 +22,7 @@ class SentEmailEventInline(admin.TabularInline):
     extra = 0
     fields = ["event", "timestamp", "payload"]
     readonly_fields = ["event", "timestamp", "payload"]
-    ordering = ["timestamp"]
+    ordering = ["-timestamp"]
     show_change_link = False
     verbose_name = "Event"
     verbose_name_plural = "Events"
@@ -34,6 +34,7 @@ class EmailTemplateAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     list_filter = ["identifier", "conference"]
     fields = [
         "conference",
+        "is_system_template",
         "identifier",
         "name",
         "placeholders_available",
@@ -60,7 +61,7 @@ class EmailTemplateAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         fields = super().get_readonly_fields(request, obj)
 
         if obj:
-            fields = fields + ["conference", "identifier"]
+            fields = fields + ["conference", "is_system_template", "identifier"]
 
         return fields
 
