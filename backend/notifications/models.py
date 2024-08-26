@@ -11,6 +11,8 @@ from model_utils.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
+BASE_PLACEHOLDERS = ["conference"]
+
 
 class EmailTemplate(TimeStampedModel):
     class Identifier(models.TextChoices):
@@ -29,10 +31,11 @@ class EmailTemplate(TimeStampedModel):
 
         custom = "custom", _("Custom")
 
-    EXPECTED_PLACEHOLDERS = {
+    AVAILABLE_PLACEHOLDERS = {
         Identifier.proposal_accepted: [
-            "proposal_title",
+            *BASE_PLACEHOLDERS,
             "conference_name",
+            "proposal_title",
             "invitation_url",
             "speaker_name",
             "is_reminder",
@@ -141,7 +144,7 @@ class EmailTemplate(TimeStampedModel):
         return self.identifier == self.Identifier.custom
 
     def get_placeholders_available(self):
-        return self.EXPECTED_PLACEHOLDERS.get(self.identifier, [])
+        return self.AVAILABLE_PLACEHOLDERS.get(self.identifier, BASE_PLACEHOLDERS)
 
     class Meta:
         constraints = [
