@@ -143,11 +143,26 @@ class SentEmailAdmin(admin.ModelAdmin):
         "cc_addresses",
         "bcc_addresses",
         "email_template",
+        "is_delivered",
+        "is_bounced",
+        "is_opened",
     ]
     date_hierarchy = "sent_at"
     ordering = ["-sent_at"]
     autocomplete_fields = ["recipient"]
     inlines = [SentEmailEventInline]
+
+    @admin.display(boolean=True)
+    def is_bounced(self, obj):
+        return obj.is_bounced
+
+    @admin.display(boolean=True)
+    def is_delivered(self, obj):
+        return obj.is_delivered
+
+    @admin.display(boolean=True)
+    def is_opened(self, obj):
+        return obj.is_opened
 
     def email_template_display_name(self, obj):
         if obj.email_template.is_custom:

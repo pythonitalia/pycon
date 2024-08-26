@@ -44,11 +44,12 @@ def ses_event(payload: Any) -> None:
 
 def _get_affected_recipients(payload: Any) -> list[str]:
     event_type = payload["eventType"]
+
     match event_type:
         case "Bounce":
             return [
                 recipient["emailAddress"]
-                for recipient in payload["complaint"]["bouncedRecipients"]
+                for recipient in payload["bounce"]["bouncedRecipients"]
             ]
         case "Complaint":
             return [
@@ -62,13 +63,8 @@ def _get_affected_recipients(payload: Any) -> list[str]:
 
 
 def _get_timestamp(payload: dict) -> str:
-    event_type = payload["eventType"]
-    match event_type:
-        case "Bounce":
-            return payload["bounce"]["timestamp"]
-        case "Complaint":
-            return payload["complaint"]["timestamp"]
-        case "Delivery":
-            return payload["delivery"]["timestamp"]
-        case _:
-            return payload["mail"]["timestamp"]
+    event_type = payload["eventType"].lower()
+    if event_type in ("bounce", "complaint", "delivery", "click", "open"):
+        return payload[event_type]["timestamp"]
+
+    return payload["mail"]["timestamp"]

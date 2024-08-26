@@ -242,16 +242,14 @@ img {
   <div role="article" aria-roledescription="email" aria-label="{{subject}}" lang="en">
 
     <table class="w-full font-sans" cellpadding="0" cellspacing="0" role="presentation">
-      <tr>
+      {% if conference.logo %}<tr>
         <td align="center" class="bg-gray-100">
           <table class="w-600 sm-w-full" cellpadding="0" cellspacing="0" role="presentation">
             <tr>
               <td class="p-48 sm-py-32 sm-px-24 text-center">
-  <a href="https://pycon.it">
-    <img src="https://pythonit-email-assets.s3.eu-central-1.amazonaws.com/logo-pycon-2024.png" width="200" alt="PyCon Italia">
-  </a>
+    <img src="{{conference.logo.url}}" width="200" alt="{{conference.name}}">
 </td>
-</tr>
+</tr>{% endif %}
             <tr>
               <td align="center" class="sm-px-24">
                 <table class="w-full" cellpadding="0" cellspacing="0" role="presentation">
@@ -263,20 +261,6 @@ img {
                   <tr>
                     <td class="h-48"></td>
                   </tr>
-                  <tr>
-                    <td class="text-center text-gray-600 text-xs px-24">
-  <p class="m-0 mb-4 uppercase">Python Italia</p>
-  <p class="cursor-default">
-    <a href="https://twitter.com/pyconit" target="_blank" class="text-primary no-underline hover-underline">Twitter</a>
-    &bull;
-    <a href="https://www.instagram.com/pycon.it" target="_blank" class="text-primary no-underline hover-underline">Instagram</a>
-    &bull;
-    <a href="https://www.facebook.com/pythonitalia/" target="_blank" class="text-primary no-underline hover-underline">Facebook</a>
-    &bull;
-    <a href="https://social.python.it/" target="_blank" class="text-primary no-underline hover-underline">Mastodon</a>
-  </p>
-</td>
-</tr>
                 </table>
               </td>
             </tr>

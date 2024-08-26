@@ -1,17 +1,14 @@
 from django.utils import timezone
-from dataclasses import dataclass
-from functools import cached_property
 from django.db import transaction
 from django.db.models import Q, UniqueConstraint
 from django.utils.safestring import mark_safe
 from django.db import models
+from notifications.rendered_email_template import RenderedEmailTemplate
 from users.models import User
 from notifications.template_utils import render_template_from_string
 from notifications.querysets import EmailTemplateQuerySet, SentEmailQuerySet
 from model_utils.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
 from django.conf import settings
 
 
@@ -97,7 +94,7 @@ class EmailTemplate(TimeStampedModel):
         *,
         placeholders: dict = None,
         show_placeholders: bool = False,
-    ) -> "RenderedEmailTemplate":
+    ) -> RenderedEmailTemplate:
         return RenderedEmailTemplate(
             email_template=self,
             show_placeholders=show_placeholders,
@@ -220,13 +217,19 @@ class SentEmail(TimeStampedModel):
     def is_delivered(self):
         return self.events.filter(event=SentEmailEvent.Event.delivered).exists()
 
+    @property
+    def is_opened(self):
+        return self.events.filter(event=SentEmailEvent.Event.opened).exists()
+
     def mark_as_sent(self, message_id: str):
         self.status = self.Status.sent
         self.sent_at = timezone.now()
         self.message_id = message_id
         self.save(update_fields=["status", "sent_at", "message_id"])
 
-    def record_event(self, event: str, timestamp: str, payload: dict):
+    def record_event(
+        self, event: "SentEmailEvent.Event", timestamp: str, payload: dict
+    ):
         SentEmailEvent.objects.create(
             sent_email=self,
             event=event,
@@ -267,47 +270,3 @@ class SentEmailEvent(TimeStampedModel):
         indexes = [
             models.Index(fields=["sent_email", "event"]),
         ]
-
-
-@dataclass
-class RenderedEmailTemplate:
-    email_template: EmailTemplate
-    placeholders: dict
-    show_placeholders: bool
-
-    def __post_init__(self):
-        self.placeholders = self.placeholders or {}
-
-    @cached_property
-    def subject(self):
-        return self.render_text(self.email_template.subject)
-
-    @cached_property
-    def preview_text(self):
-        return self.render_text(self.email_template.preview_text)
-
-    @cached_property
-    def body(self):
-        return self.render_text(self.email_template.body)
-
-    @cached_property
-    def html_body(self):
-        return render_to_string(
-            "notifications/email-template.html",
-            {
-                "subject": self.subject,
-                "preview_text": self.preview_text,
-                "body": self.body,
-            },
-        )
-
-    @cached_property
-    def text_body(self):
-        return strip_tags(self.body.replace("<br/>", "\n"))
-
-    def render_text(self, text: str) -> str:
-        return mark_safe(
-            render_template_from_string(
-                text, self.placeholders, show_placeholders=self.show_placeholders
-            ).replace("\n", "<br/>")
-        )

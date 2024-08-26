@@ -11,6 +11,10 @@ from i18n.fields import I18nCharField, I18nTextField
 from .deadline import Deadline, DeadlineStatus
 
 
+def get_upload_to(instance, filename):
+    return f"conferences/{instance.code}/{filename}"
+
+
 class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
     organizer = models.ForeignKey(
         "organizers.Organizer",
@@ -23,6 +27,7 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
     name = I18nCharField(_("name"), max_length=100)
     code = models.CharField(_("code"), max_length=100, unique=True)
     timezone = TimeZoneField()
+    logo = models.ImageField(_("logo"), upload_to=get_upload_to, blank=True)
 
     topics = models.ManyToManyField(
         "conferences.Topic", verbose_name=_("topics"), blank=True
