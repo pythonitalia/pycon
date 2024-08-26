@@ -25,38 +25,45 @@ def send_pending_emails():
     email_backend_connection = get_connection()
 
     for email_id in pending_emails.iterator():
-        with transaction.atomic():
-            sent_email = (
-                SentEmail.objects.select_for_update(skip_locked=True)
-                .filter(
-                    id=email_id,
-                )
-                .first()
+        try:
+            with transaction.atomic():
+                send_email(email_id, email_backend_connection)
+        except Exception as e:
+            logger.exception(
+                f"Failed to send email sent_email_id={email_id} error={e}",
             )
 
-            if not sent_email or not sent_email.is_pending:
-                continue
 
-            logger.info(f"Sending sent_email_id={sent_email.id}")
+def send_email(email_id, email_backend_connection):
+    sent_email = (
+        SentEmail.objects.select_for_update(skip_locked=True)
+        .filter(
+            id=email_id,
+        )
+        .first()
+    )
 
-            email_message = EmailMultiAlternatives(
-                subject=sent_email.subject,
-                body=sent_email.text_body,
-                from_email=sent_email.from_email,
-                to=[sent_email.recipient_email],
-                cc=sent_email.cc_addresses,
-                bcc=sent_email.bcc_addresses,
-                reply_to=[sent_email.reply_to],
-                connection=email_backend_connection,
-            )
-            email_message.attach_alternative(sent_email.body, "text/html")
-            email_message.send()
+    if not sent_email or not sent_email.is_pending:
+        return
 
-            message_id = email_message.extra_headers.get(
-                "message_id", f"local-{uuid4()}"
-            )
-            sent_email.mark_as_sent(message_id)
+    logger.info(f"Sending sent_email_id={sent_email.id}")
 
-            logger.info(
-                f"Email sent_email_id={sent_email.id} sent with message_id={message_id}"
-            )
+    email_message = EmailMultiAlternatives(
+        subject=sent_email.subject,
+        body=sent_email.text_body,
+        from_email=sent_email.from_email,
+        to=[sent_email.recipient_email],
+        cc=sent_email.cc_addresses,
+        bcc=sent_email.bcc_addresses,
+        reply_to=[sent_email.reply_to],
+        connection=email_backend_connection,
+    )
+    email_message.attach_alternative(sent_email.body, "text/html")
+    email_message.send()
+
+    message_id = email_message.extra_headers.get("message_id", f"local-{uuid4()}")
+    sent_email.mark_as_sent(message_id)
+
+    logger.info(
+        f"Email sent_email_id={sent_email.id} sent with message_id={message_id}"
+    )

@@ -211,6 +211,10 @@ class SentEmail(TimeStampedModel):
         return self.events.filter(event=SentEmailEvent.Event.bounced).exists()
 
     @property
+    def is_complained(self):
+        return self.events.filter(event=SentEmailEvent.Event.complaint).exists()
+
+    @property
     def is_delivered(self):
         return self.events.filter(event=SentEmailEvent.Event.delivered).exists()
 

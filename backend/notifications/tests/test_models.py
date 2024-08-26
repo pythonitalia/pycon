@@ -1,7 +1,8 @@
+from django.utils import timezone
 import pytest
 from users.tests.factories import UserFactory
-from notifications.models import SentEmail
-from notifications.tests.factories import EmailTemplateFactory
+from notifications.models import EmailTemplateIdentifier, SentEmail, SentEmailEvent
+from notifications.tests.factories import EmailTemplateFactory, SentEmailFactory
 
 
 def test_render_email_template():
@@ -107,3 +108,89 @@ def test_need_to_specify_recipient():
                 "test": "abc",
             }
         )
+
+
+def test_email_template_placeholders_available():
+    email_template = EmailTemplateFactory(
+        identifier=EmailTemplateIdentifier.proposal_accepted
+    )
+    assert "conference_name" in email_template.get_placeholders_available()
+
+    email_template = EmailTemplateFactory(identifier=EmailTemplateIdentifier.custom)
+    assert "conference" in email_template.get_placeholders_available()
+
+
+def test_email_template_is_custom():
+    email_template = EmailTemplateFactory(
+        identifier=EmailTemplateIdentifier.proposal_accepted
+    )
+    assert not email_template.is_custom
+
+    email_template = EmailTemplateFactory(identifier=EmailTemplateIdentifier.custom)
+    assert email_template.is_custom
+
+
+def test_email_template_requires_conference_when_not_system_template():
+    email_template = EmailTemplateFactory(
+        identifier=EmailTemplateIdentifier.proposal_accepted
+    )
+    email_template.is_system_template = False
+    email_template.conference = None
+
+    with pytest.raises(
+        ValueError,
+        match="Templates must be associated with a conference if not system template",
+    ):
+        email_template.save()
+
+
+def test_email_template_conference_must_be_null_for_system_templates():
+    email_template = EmailTemplateFactory(
+        identifier=EmailTemplateIdentifier.proposal_accepted
+    )
+    email_template.is_system_template = True
+
+    with pytest.raises(
+        ValueError, match="System templates cannot be associated with a conference"
+    ):
+        email_template.save()
+
+
+def test_sent_email_is_bounced():
+    sent_email = SentEmailFactory()
+
+    assert not sent_email.is_bounced
+
+    sent_email.record_event(SentEmailEvent.Event.bounced, timezone.now(), {})
+
+    assert sent_email.is_bounced
+
+
+def test_sent_email_is_complained():
+    sent_email = SentEmailFactory()
+
+    assert not sent_email.is_complained
+
+    sent_email.record_event(SentEmailEvent.Event.complaint, timezone.now(), {})
+
+    assert sent_email.is_complained
+
+
+def test_sent_email_is_delivered():
+    sent_email = SentEmailFactory()
+
+    assert not sent_email.is_delivered
+
+    sent_email.record_event(SentEmailEvent.Event.delivered, timezone.now(), {})
+
+    assert sent_email.is_delivered
+
+
+def test_sent_email_is_opened():
+    sent_email = SentEmailFactory()
+
+    assert not sent_email.is_opened
+
+    sent_email.record_event(SentEmailEvent.Event.opened, timezone.now(), {})
+
+    assert sent_email.is_opened
