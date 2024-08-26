@@ -65,10 +65,6 @@ class EmailTemplateAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         return fields
 
     def response_post_save_add(self, request, obj):
-        """
-        Figure out where to redirect after the 'Save' button has been pressed
-        when adding a new object.
-        """
         if "_save_and_preview" in request.POST:
             return HttpResponseRedirect(
                 reverse("admin:view-email-template", args=[obj.id])
@@ -164,11 +160,17 @@ class SentEmailAdmin(admin.ModelAdmin):
         ] + super().get_urls()
 
     def get_view_on_site_url(self, obj) -> str | None:
+        if not obj:
+            return None
+
         return reverse("admin:view-sent-email", args=(obj.id,))
 
     def has_change_permission(
         self, request: HttpRequest, obj: Any | None = None
     ) -> bool:
+        return False
+
+    def has_add_permission(self, request: HttpRequest) -> bool:
         return False
 
     def get_queryset(self, request: HttpRequest) -> Any:
