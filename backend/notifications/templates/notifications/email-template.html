@@ -242,10 +242,10 @@ img {
   <div role="article" aria-roledescription="email" aria-label="{{subject}}" lang="en">
 
     <table class="w-full font-sans" cellpadding="0" cellspacing="0" role="presentation">
-      {% if conference.logo %}<tr>
+      <tr>
         <td align="center" class="bg-gray-100">
           <table class="w-600 sm-w-full" cellpadding="0" cellspacing="0" role="presentation">
-            <tr>
+            {% if conference.logo %}<tr>
               <td class="p-48 sm-py-32 sm-px-24 text-center">
     <img src="{{conference.logo.url}}" width="200" alt="{{conference.name}}">
 </td>
