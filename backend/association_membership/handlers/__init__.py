@@ -9,7 +9,7 @@ from .stripe.handle_invoice_paid import handle_invoice_paid
 
 logger = logging.getLogger(__file__)
 
-SERVICES = Literal["stripe", "pretix", "sns", "crons"]
+SERVICES = Literal["stripe", "pretix", "sns"]
 
 HANDLERS = {
     "stripe": {

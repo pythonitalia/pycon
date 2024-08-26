@@ -10,6 +10,7 @@ from rest_framework.decorators import (
 )
 from rest_framework.response import Response
 from association_membership.handlers import run_handler
+from django_ses.utils import verify_event_message
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +21,15 @@ logger = logging.getLogger(__name__)
 def sns_webhook(request):
     payload = request.data
     message_type = request.headers.get("x-amz-sns-message-type")
+
+    if not verify_event_message(payload):
+        logger.info(
+            "Invalid SNS message signature",
+            extra={
+                "notification": payload,
+            },
+        )
+        return Response(status=400)
 
     if message_type == "SubscriptionConfirmation":
         subscribe_url = payload["SubscribeURL"]
