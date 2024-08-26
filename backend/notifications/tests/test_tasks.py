@@ -88,9 +88,50 @@ def test_send_pending_emails_task():
     assert pending_email_1.sent_at.isoformat() == "2021-01-01T12:00:00+00:00"
 
     assert pending_email_2.status == SentEmail.Status.sent
-    assert pending_email_1.message_id.startswith("local-")
+    assert pending_email_2.message_id.startswith("local-")
     assert pending_email_2.sent_at.isoformat() == "2021-01-01T12:00:00+00:00"
 
     assert sent_email_1.status == SentEmail.Status.sent
     assert sent_email_1.message_id == "abc-abc"
     assert sent_email_1.sent_at.isoformat() == "2020-01-01T12:00:00+00:00"
+
+
+def test_send_pending_emails_handles_failures(mocker):
+    pending_email_1 = SentEmailFactory(
+        status=SentEmail.Status.pending, created="2020-01-01 12:00Z"
+    )
+    pending_email_2 = SentEmailFactory(
+        status=SentEmail.Status.pending, created="2020-01-02 12:00Z"
+    )
+
+    original_method = SentEmail.mark_as_sent
+
+    def _side_effect(*args, **kwargs):
+        if _side_effect.counter == 0:
+            _side_effect.counter = 1
+            raise ValueError("test")
+
+        return original_method(pending_email_2, *args, **kwargs)
+
+    _side_effect.counter = 0
+
+    mocker.patch("notifications.tasks.SentEmail.mark_as_sent", side_effect=_side_effect)
+
+    with time_machine.travel("2021-01-01 12:00Z", tick=False):
+        send_pending_emails()
+
+    pending_email_1.refresh_from_db()
+    pending_email_2.refresh_from_db()
+
+    assert len(mail.outbox) == 2
+
+    assert mail.outbox[0].to == [pending_email_1.recipient_email]
+    assert mail.outbox[1].to == [pending_email_2.recipient_email]
+
+    assert pending_email_1.status == SentEmail.Status.failed
+    assert pending_email_1.message_id == ""
+    assert pending_email_1.sent_at is None
+
+    assert pending_email_2.status == SentEmail.Status.sent
+    assert pending_email_2.message_id.startswith("local-")
+    assert pending_email_2.sent_at.isoformat() == "2021-01-01T12:00:00+00:00"

@@ -154,6 +154,7 @@ class SentEmail(TimeStampedModel):
     class Status(models.TextChoices):
         pending = "pending", _("Pending")
         sent = "sent", _("Sent")
+        failed = "failed", _("Failed")
 
     conference = models.ForeignKey(
         "conferences.Conference",
@@ -227,6 +228,10 @@ class SentEmail(TimeStampedModel):
         self.sent_at = timezone.now()
         self.message_id = message_id
         self.save(update_fields=["status", "sent_at", "message_id"])
+
+    def mark_as_failed(self):
+        self.status = self.Status.failed
+        self.save(update_fields=["status"])
 
     def record_event(
         self, event: "SentEmailEvent.Event", timestamp: str, payload: dict
