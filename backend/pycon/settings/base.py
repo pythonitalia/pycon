@@ -298,7 +298,6 @@ PYTHONIT_EMAIL_BACKEND = env(
     "PYTHONIT_EMAIL_BACKEND",
     default="notifications.backends.local.LocalEmailBackend",
 )
-DEFAULT_EMAIL_FROM = env("DEFAULT_EMAIL_FROM", default="noreply@pycon.it")
 
 SPEAKERS_EMAIL_ADDRESS = env("SPEAKERS_EMAIL_ADDRESS", default="")
 
@@ -409,3 +408,4 @@ SNS_WEBHOOK_SECRET = env("SNS_WEBHOOK_SECRET", default="")
 USE_SES_V2 = True
 
 AWS_SES_CONFIGURATION_SET = env("AWS_SES_CONFIGURATION_SET", default="")
+DEFAULT_FROM_EMAIL = "noreply@pycon.it"

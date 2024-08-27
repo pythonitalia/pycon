@@ -33,7 +33,7 @@ def request_reset_password(email: str) -> RequestResetPasswordResult:
     )
     backend.send_email(
         template=EmailTemplate.RESET_PASSWORD,
-        from_=settings.DEFAULT_EMAIL_FROM,
+        from_=settings.DEFAULT_FROM_EMAIL,
         to=user.email,
         subject="Reset your password",
         variables={

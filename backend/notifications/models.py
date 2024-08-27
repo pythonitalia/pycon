@@ -103,11 +103,14 @@ class EmailTemplate(TimeStampedModel):
 
         placeholders = placeholders or {}
         processed_email_template = self.render(placeholders=placeholders)
+        from_email = (
+            self.conference.organizer.email_from_address or settings.DEFAULT_FROM_EMAIL
+        )
 
         SentEmail.objects.create(
             email_template=self,
             conference=self.conference,
-            from_email=settings.DEFAULT_EMAIL_FROM,
+            from_email=from_email,
             recipient=recipient,
             recipient_email=recipient_email,
             placeholders=placeholders,

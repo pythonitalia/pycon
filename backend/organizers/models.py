@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from django.db import models
 from model_utils.models import TimeStampedModel
 
@@ -10,6 +11,13 @@ class Organizer(TimeStampedModel):
         max_length=255,
         blank=True,
         help_text="Slack OAuth bot token",
+        default="",
+    )
+
+    email_from_address = models.CharField(
+        _("email from address"),
+        max_length=600,
+        blank=True,
         default="",
     )
 
