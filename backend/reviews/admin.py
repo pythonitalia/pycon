@@ -377,7 +377,6 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 if choice[0] in Grant.REVIEW_SESSION_STATUSES_OPTIONS
             ],
             all_statuses=Grant.Status.choices,
-            all_approved_types=[choice for choice in Grant.ApprovedType.choices],
             review_session=review_session,
             title="Recap",
         )

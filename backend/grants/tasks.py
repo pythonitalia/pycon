@@ -43,14 +43,6 @@ def send_grant_reply_approved_email(*, grant_id, is_reminder):
         "hasApprovedAccommodation": grant.has_approved_accommodation(),
     }
 
-    if grant.has_approved_travel():
-        if not grant.travel_amount:
-            raise ValueError(
-                "Grant travel amount is set to Zero, can't send the email!"
-            )
-
-        variables["amount"] = f"{grant.travel_amount:.0f}"
-
     _send_grant_email(template=template, subject=subject, grant=grant, **variables)
 
     grant.status = Grant.Status.waiting_for_confirmation
