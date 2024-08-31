@@ -139,6 +139,7 @@ class SentEmailAdmin(admin.ModelAdmin):
         "is_delivered",
         "is_bounced",
         "is_opened",
+        "is_complained",
     ]
     date_hierarchy = "sent_at"
     ordering = ["-sent_at"]
