@@ -12,7 +12,7 @@ data "aws_security_group" "rds" {
 }
 
 resource "aws_db_instance" "database" {
-  allocated_storage           = 10
+  allocated_storage           = 20
   storage_type                = "gp3"
   engine                      = "postgres"
   identifier                  = "pythonit-${terraform.workspace}"
