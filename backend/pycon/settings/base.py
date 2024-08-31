@@ -298,7 +298,6 @@ PYTHONIT_EMAIL_BACKEND = env(
     "PYTHONIT_EMAIL_BACKEND",
     default="notifications.backends.local.LocalEmailBackend",
 )
-DEFAULT_EMAIL_FROM = env("DEFAULT_EMAIL_FROM", default="noreply@pycon.it")
 
 SPEAKERS_EMAIL_ADDRESS = env("SPEAKERS_EMAIL_ADDRESS", default="")
 
@@ -389,7 +388,9 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 CELERY_TASK_IGNORE_RESULT = True
 
 AWS_STORAGE_BUCKET_NAME = env("AWS_MEDIA_BUCKET", default=None)
-AWS_REGION_NAME = AWS_S3_REGION_NAME = env("AWS_REGION_NAME", default="eu-central-1")
+AWS_REGION_NAME = AWS_SES_REGION_NAME = AWS_S3_REGION_NAME = env(
+    "AWS_REGION_NAME", default="eu-central-1"
+)
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID", default=None)
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default=None)
 AWS_SESSION_TOKEN = env("AWS_SESSION_TOKEN", default=None)
@@ -401,3 +402,10 @@ IS_RUNNING_TESTS = False
 
 ECS_NETWORK_CONFIG = json.loads(env("ECS_NETWORK_CONFIG", default="{}"))
 ECS_SERVICE_ROLE = env("ECS_SERVICE_ROLE", default="")
+
+SNS_WEBHOOK_SECRET = env("SNS_WEBHOOK_SECRET", default="")
+
+USE_SES_V2 = True
+
+AWS_SES_CONFIGURATION_SET = env("AWS_SES_CONFIGURATION_SET", default="")
+DEFAULT_FROM_EMAIL = "noreply@pycon.it"

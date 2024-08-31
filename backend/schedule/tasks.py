@@ -1,3 +1,4 @@
+from typing import cast
 from django.db.models import Q
 from pycon.celery_utils import OnlyOneAtTimeTask
 from google_api.exceptions import NoGoogleCloudQuotaLeftError
@@ -7,8 +8,12 @@ from integrations import plain
 from pretix import user_has_admission_ticket
 from django.utils import timezone
 from grants.tasks import get_name
-from notifications.templates import EmailTemplate
-from notifications.emails import send_email, mark_safe
+from notifications.models import EmailTemplate, EmailTemplateIdentifier
+from notifications.emails import (
+    send_email,
+    mark_safe,
+    EmailTemplate as EmailTemplateEnum,
+)
 from urllib.parse import urljoin
 from django.conf import settings
 import logging
@@ -22,17 +27,17 @@ from schedule.video_upload import (
     extract_video_thumbnail,
 )
 from users.models import User
+from schedule.models import ScheduleItem
 
 logger = logging.getLogger(__name__)
 
 
 @app.task
 def send_schedule_invitation_email(*, schedule_item_id, is_reminder):
-    from schedule.models import ScheduleItem
-
     schedule_item = ScheduleItem.objects.get(id=schedule_item_id)
     submission = schedule_item.submission
     language_code = schedule_item.language.code
+    conference = schedule_item.conference
 
     invitation_url = urljoin(
         settings.FRONTEND_URL, f"/schedule/invitation/{submission.hashid}"
@@ -42,24 +47,22 @@ def send_schedule_invitation_email(*, schedule_item_id, is_reminder):
     submission_title = submission.title.localize(language_code)
 
     speaker = User.objects.get(id=speaker_id)
-    conference_name = schedule_item.conference.name.localize("en")
+    conference_name = conference.name.localize("en")
 
-    prefix = f"[{conference_name}]"
-    subject = (
-        f"{prefix} Reminder: Your submission has been accepted, confirm your presence"
-        if is_reminder
-        else f"{prefix} Your submission has been accepted!"
+    email_template = cast(
+        EmailTemplate,
+        EmailTemplate.objects.for_conference(conference).get_by_identifier(
+            EmailTemplateIdentifier.proposal_accepted
+        ),
     )
-
-    send_email(
-        template=EmailTemplate.SUBMISSION_ACCEPTED,
-        to=speaker.email,
-        subject=subject,
-        variables={
-            "submissionTitle": submission_title,
-            "conferenceName": conference_name,
-            "firstname": get_name(speaker, "there"),
-            "invitationlink": invitation_url,
+    email_template.send_email(
+        recipient=speaker,
+        placeholders={
+            "proposal_title": submission_title,
+            "conference_name": conference_name,
+            "invitation_url": invitation_url,
+            "speaker_name": get_name(speaker, "there"),
+            "is_reminder": is_reminder,
         },
     )
 
@@ -85,7 +88,7 @@ def send_submission_time_slot_changed_email(*, schedule_item_id):
     conference_name = schedule_item.conference.name.localize("en")
 
     send_email(
-        template=EmailTemplate.SUBMISSION_SCHEDULE_TIME_CHANGED,
+        template=EmailTemplateEnum.SUBMISSION_SCHEDULE_TIME_CHANGED,
         to=speaker.email,
         subject=f"[{conference_name}] Your Submission time slot has been changed!",
         variables={
@@ -172,7 +175,7 @@ def send_speaker_voucher_email(speaker_voucher_id):
     conference_name = speaker_voucher.conference.name.localize("en")
 
     send_email(
-        template=EmailTemplate.SPEAKER_VOUCHER_CODE,
+        template=EmailTemplateEnum.SPEAKER_VOUCHER_CODE,
         to=speaker.email,
         subject=f"[{conference_name}] Your Speaker Voucher Code",
         variables={
@@ -213,7 +216,7 @@ def send_speaker_communication_email(
         return
 
     send_email(
-        template=EmailTemplate.SPEAKER_COMMUNICATION,
+        template=EmailTemplateEnum.SPEAKER_COMMUNICATION,
         to=user.email,
         subject=f"[{conference.name.localize('en')}] {subject}",
         variables={

@@ -67,6 +67,10 @@ data "aws_instance" "redis" {
   }
 }
 
+data "aws_sesv2_configuration_set" "main" {
+  configuration_set_name = "pythonit-${terraform.workspace}"
+}
+
 module "lambda" {
   source = "../../components/application_lambda"
 
@@ -117,6 +121,8 @@ module "lambda" {
     PLAIN_INTEGRATION_TOKEN                   = module.secrets.value.plain_integration_token
     HASHID_DEFAULT_SECRET_SALT                = module.secrets.value.hashid_default_secret_salt
     MEDIA_FILES_STORAGE_BACKEND = "pycon.storages.CustomS3Boto3Storage"
+    SNS_WEBHOOK_SECRET = module.common_secrets.value.sns_webhook_secret
+    AWS_SES_CONFIGURATION_SET = data.aws_sesv2_configuration_set.main.configuration_set_name
   }
 }
 

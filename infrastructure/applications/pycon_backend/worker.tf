@@ -194,6 +194,10 @@ locals {
     {
       name = "ECS_SERVICE_ROLE",
       value = aws_iam_role.ecs_service.arn
+    },
+    {
+      name = "AWS_SES_CONFIGURATION_SET"
+      value = data.aws_sesv2_configuration_set.main.configuration_set_name
     }
   ]
 }

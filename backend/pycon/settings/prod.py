@@ -16,8 +16,6 @@ EMAIL_BACKEND = env(
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-DEFAULT_FROM_EMAIL = "noreply@pycon.it"
-
 # TODO: Make this setting dynamic
 CSRF_TRUSTED_ORIGINS = [
     # Staging domain

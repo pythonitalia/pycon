@@ -51,7 +51,7 @@ def send_email(
     variables: Optional[dict[str, str]] = None,
     reply_to: List[str] = None,
 ):
-    from_ = from_ or settings.DEFAULT_EMAIL_FROM
+    from_ = from_ or settings.DEFAULT_FROM_EMAIL
     backend = get_email_backend(
         settings.PYTHONIT_EMAIL_BACKEND, environment=settings.ENVIRONMENT
     )

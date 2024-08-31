@@ -73,3 +73,7 @@ module "archives" {
     aws.us = aws.us
   }
 }
+
+module "ses" {
+  source = "./ses"
+}

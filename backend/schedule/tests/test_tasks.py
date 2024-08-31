@@ -1,3 +1,4 @@
+from notifications.tests.factories import EmailTemplateFactory
 from google_api.exceptions import NoGoogleCloudQuotaLeftError
 from googleapiclient.errors import HttpError
 import numpy as np
@@ -31,7 +32,8 @@ import time_machine
 from conferences.models.speaker_voucher import SpeakerVoucher
 from users.tests.factories import UserFactory
 from schedule.models import ScheduleItem, ScheduleItemSentForVideoUpload
-from notifications.templates import EmailTemplate
+from notifications.templates import EmailTemplate as EmailTemplateEnum
+from notifications.models import EmailTemplateIdentifier
 
 import pytest
 
@@ -53,21 +55,33 @@ def test_send_schedule_invitation_email():
         type=ScheduleItem.TYPES.talk,
     )
 
-    with patch("schedule.tasks.send_email") as email_mock:
+    EmailTemplateFactory(
+        conference=schedule_item.conference,
+        identifier=EmailTemplateIdentifier.proposal_accepted,
+    )
+    EmailTemplateFactory(identifier=EmailTemplateIdentifier.proposal_accepted)
+
+    with patch("schedule.tasks.EmailTemplate") as mock_email_template:
         send_schedule_invitation_email(
             schedule_item_id=schedule_item.id,
             is_reminder=False,
         )
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplate.SUBMISSION_ACCEPTED,
-        to="marco@placeholder.it",
-        subject="[Conf] Your submission has been accepted!",
-        variables={
-            "submissionTitle": "Title Submission",
-            "firstname": "Marco Acierno",
-            "invitationlink": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
-            "conferenceName": "Conf",
+    mock_email_template.objects.for_conference.assert_called_once_with(
+        schedule_item.conference
+    )
+    mock_email_template.objects.for_conference().get_by_identifier.assert_called_once_with(
+        EmailTemplateIdentifier.proposal_accepted
+    )
+
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "proposal_title": "Title Submission",
+            "conference_name": "Conf",
+            "invitation_url": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
+            "speaker_name": "Marco Acierno",
+            "is_reminder": False,
         },
     )
 
@@ -91,23 +105,26 @@ def test_send_schedule_invitation_email_reminder():
         type=ScheduleItem.TYPES.talk,
     )
 
-    with patch("schedule.tasks.send_email") as email_mock:
+    EmailTemplateFactory(
+        conference=schedule_item.conference,
+        identifier=EmailTemplateIdentifier.proposal_accepted,
+    )
+    EmailTemplateFactory(identifier=EmailTemplateIdentifier.proposal_accepted)
+
+    with patch("schedule.tasks.EmailTemplate.send_email") as email_mock:
         send_schedule_invitation_email(
             schedule_item_id=schedule_item.id,
             is_reminder=True,
         )
 
     email_mock.assert_called_once_with(
-        template=EmailTemplate.SUBMISSION_ACCEPTED,
-        to="marco@placeholder.it",
-        subject=(
-            "[Conf] Reminder: Your submission has been accepted, confirm your presence"
-        ),
-        variables={
-            "submissionTitle": "Title Submission",
-            "firstname": "Marco Acierno",
-            "invitationlink": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
-            "conferenceName": "Conf",
+        recipient=user,
+        placeholders={
+            "proposal_title": "Title Submission",
+            "conference_name": "Conf",
+            "invitation_url": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
+            "speaker_name": "Marco Acierno",
+            "is_reminder": True,
         },
     )
 
@@ -131,7 +148,7 @@ def test_send_submission_time_slot_changed_email():
         send_submission_time_slot_changed_email(schedule_item_id=schedule_item.id)
 
     email_mock.assert_called_once_with(
-        template=EmailTemplate.SUBMISSION_SCHEDULE_TIME_CHANGED,
+        template=EmailTemplateEnum.SUBMISSION_SCHEDULE_TIME_CHANGED,
         to="marco@placeholder.it",
         subject="[Conf] Your Submission time slot has been changed!",
         variables={
@@ -196,7 +213,7 @@ def test_send_speaker_voucher_email():
 
     conf_name = speaker_voucher.conference.name.localize("en")
     email_mock.assert_called_once_with(
-        template=EmailTemplate.SPEAKER_VOUCHER_CODE,
+        template=EmailTemplateEnum.SPEAKER_VOUCHER_CODE,
         to="marco@placeholder.it",
         subject=f"[{conf_name}] Your Speaker Voucher Code",
         variables={
@@ -235,7 +252,7 @@ def test_send_speaker_voucher_email_cospeaker():
 
     conf_name = speaker_voucher.conference.name.localize("en")
     email_mock.assert_called_once_with(
-        template=EmailTemplate.SPEAKER_VOUCHER_CODE,
+        template=EmailTemplateEnum.SPEAKER_VOUCHER_CODE,
         to="marco@placeholder.it",
         subject=f"[{conf_name}] Your Speaker Voucher Code",
         variables={
@@ -277,7 +294,7 @@ def test_send_speaker_communication_email_to_speakers_without_ticket(
 
     if not has_ticket:
         email_mock.assert_called_once_with(
-            template=EmailTemplate.SPEAKER_COMMUNICATION,
+            template=EmailTemplateEnum.SPEAKER_COMMUNICATION,
             to="marco@placeholder.it",
             subject=f"[{conference.name.localize('en')}] test subject",
             variables={
@@ -318,7 +335,7 @@ def test_send_speaker_communication_email_to_everyone(
         )
 
     email_mock.assert_called_once_with(
-        template=EmailTemplate.SPEAKER_COMMUNICATION,
+        template=EmailTemplateEnum.SPEAKER_COMMUNICATION,
         to="marco@placeholder.it",
         subject=f"[{conference.name.localize('en')}] test subject",
         variables={

@@ -121,6 +121,7 @@ class ConferenceAdmin(OrderedInlineModelAdminMixin, admin.ModelAdmin):
                     "organizer",
                     "name",
                     "code",
+                    "logo",
                     "introduction",
                     "timezone",
                     "latitude",
