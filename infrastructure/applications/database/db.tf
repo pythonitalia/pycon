@@ -12,8 +12,8 @@ data "aws_security_group" "rds" {
 }
 
 resource "aws_db_instance" "database" {
-  allocated_storage           = 10
-  storage_type                = "gp2"
+  allocated_storage           = 20
+  storage_type                = "gp3"
   engine                      = "postgres"
   identifier                  = "pythonit-${terraform.workspace}"
   allow_major_version_upgrade = true
@@ -24,7 +24,7 @@ resource "aws_db_instance" "database" {
   password                    = module.common_secrets.value.database_password
   multi_az                    = "false"
   availability_zone           = "eu-central-1a"
-  skip_final_snapshot         = true
+  skip_final_snapshot         = !local.is_prod
   publicly_accessible         = false
   apply_immediately           = true
   backup_retention_period     = local.is_prod ? 7 : 0
