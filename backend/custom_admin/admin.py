@@ -6,7 +6,7 @@ from typing import List
 from django.contrib import admin
 from django.urls import path
 
-SITE_NAME = "PyCon Italia"
+SITE_NAME = "Change Test PyCon Italia"
 
 admin.site.site_header = SITE_NAME
 admin.site.site_title = SITE_NAME
