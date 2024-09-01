@@ -50,3 +50,8 @@ module "emails" {
     aws.us = aws.us
   }
 }
+
+module "server" {
+  source = "./server"
+  ecs_arm_ami  = local.ecs_arm_ami
+}

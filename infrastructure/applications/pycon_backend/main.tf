@@ -1,7 +1,6 @@
 locals {
   is_prod           = terraform.workspace == "production"
-  admin_domain      = "admin"
-  full_admin_domain = local.is_prod ? "${local.admin_domain}.pycon.it" : "${terraform.workspace}-${local.admin_domain}.pycon.it"
+  admin_domain = local.is_prod ? "admin.pycon.it" : "${terraform.workspace}-admin.pycon.it"
   db_connection     = var.enable_proxy ? "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/pycon" : "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/pycon"
   cdn_url           = local.is_prod ? "cdn.pycon.it" : "${terraform.workspace}-cdn.pycon.it"
 }
@@ -126,13 +125,25 @@ module "lambda" {
   }
 }
 
+data "aws_instance" "server" {
+  instance_tags = {
+    Name = "${terraform.workspace}-server"
+  }
+
+  filter {
+    name   = "instance-state-name"
+    values = ["running"]
+  }
+}
+
 module "admin_distribution" {
   source = "../../components/cloudfront"
 
   application                    = local.application
   zone_name                      = "pycon.it"
-  domain                         = local.full_admin_domain
+  domain                         = local.admin_domain
   certificate_arn                = data.aws_acm_certificate.cert.arn
-  origin_url                     = module.lambda.cloudfront_friendly_lambda_url
-  forward_host_header_lambda_arn = data.aws_lambda_function.forward_host_header.qualified_arn
+  # origin_url                     = module.lambda.cloudfront_friendly_lambda_url
+  origin_url                     = data.aws_instance.server.public_dns
+  # forward_host_header_lambda_arn = data.aws_lambda_function.forward_host_header.qualified_arn
 }
