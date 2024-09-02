@@ -417,7 +417,7 @@ resource "aws_ecs_task_definition" "beat" {
 
 resource "aws_ecs_service" "worker" {
   name                               = "pythonit-${terraform.workspace}-worker"
-  cluster                            = aws_ecs_cluster.worker.id
+  cluster                            = data.aws_ecs_cluster.server.id
   task_definition                    = aws_ecs_task_definition.worker.arn
   desired_count                      = 1
   deployment_minimum_healthy_percent = 0
@@ -426,7 +426,7 @@ resource "aws_ecs_service" "worker" {
 
 resource "aws_ecs_service" "beat" {
   name                               = "pythonit-${terraform.workspace}-beat"
-  cluster                            = aws_ecs_cluster.worker.id
+  cluster                            = data.aws_ecs_cluster.server.id
   task_definition                    = aws_ecs_task_definition.beat.arn
   desired_count                      = 1
   deployment_minimum_healthy_percent = 0

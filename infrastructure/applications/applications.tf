@@ -52,6 +52,6 @@ module "emails" {
 }
 
 module "server" {
-  source = "./server"
-  ecs_arm_ami  = local.ecs_arm_ami
+  source      = "./server"
+  ecs_arm_ami = local.ecs_arm_ami
 }

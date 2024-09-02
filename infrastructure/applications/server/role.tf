@@ -14,22 +14,37 @@ data "aws_iam_policy_document" "server_assume_role" {
 data "aws_iam_policy_document" "server_role_policy" {
   statement {
     effect = "Allow"
-    actions = ["ecs:*", "ecr:*", "ec2:DescribeInstances"]
+    actions = [
+      "iam:PassRole",
+      "ses:*",
+      "ecs:*",
+      "ecr:*",
+      "ec2:DescribeInstances",
+    ]
     resources = [
       "*"
     ]
   }
 
   statement {
-    effect = "Allow"
-    actions = ["cloudwatch:PutMetricData", "logs:*"]
+    effect    = "Allow"
+    actions   = ["cloudwatch:PutMetricData", "logs:*"]
     resources = ["*"]
+  }
+
+  statement {
+    effect  = "Allow"
+    actions = ["s3:*"]
+    resources = [
+      "arn:aws:s3:::${terraform.workspace}-pycon-backend-media",
+      "arn:aws:s3:::${terraform.workspace}-pycon-backend-media/*",
+    ]
   }
 }
 
 
 resource "aws_iam_role" "server" {
-  name = "pythonit-${terraform.workspace}-server"
+  name               = "pythonit-${terraform.workspace}-server"
   assume_role_policy = data.aws_iam_policy_document.server_assume_role.json
 }
 
@@ -39,7 +54,7 @@ resource "aws_iam_instance_profile" "server" {
 }
 
 resource "aws_iam_role_policy" "server" {
-  name = "pythonit-${terraform.workspace}-server-policy"
-  role = aws_iam_role.server.id
+  name   = "pythonit-${terraform.workspace}-server-policy"
+  role   = aws_iam_role.server.id
   policy = data.aws_iam_policy_document.server_role_policy.json
 }
