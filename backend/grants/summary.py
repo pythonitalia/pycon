@@ -6,6 +6,14 @@ from .models import Grant
 
 
 class GrantSummary:
+    # Set of grant statuses that should be included in the total
+    # budget calculation.
+    BUDGET_STATUSES = [
+        Grant.Status.approved.value,
+        Grant.Status.waiting_for_confirmation.value,
+        Grant.Status.confirmed.value,
+    ]
+
     def calculate(self, conference_id):
         """
         Custom view for summarizing Grant data in the Django admin.
@@ -113,7 +121,7 @@ class GrantSummary:
             status = data["status"]
             total_amount = data["total_amount_sum"] or 0
             financial_summary[status] += total_amount
-            if status in Grant.BUDGET_STATUSES:
+            if status in self.BUDGET_STATUSES:
                 overall_total += total_amount
 
         return financial_summary, overall_total

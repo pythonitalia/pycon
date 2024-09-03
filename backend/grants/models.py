@@ -37,12 +37,6 @@ class Grant(TimeStampedModel):
         Status.waiting_list_maybe.value,
     ]
 
-    BUDGET_STATUSES = [
-        Status.approved.value,
-        Status.waiting_for_confirmation.value,
-        Status.confirmed.value,
-    ]
-
     class CountryType(models.TextChoices):
         italy = "italy", _("Italy")
         europe = "europe", _("Europe")
