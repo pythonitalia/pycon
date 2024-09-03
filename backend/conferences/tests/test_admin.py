@@ -189,7 +189,7 @@ def test_send_voucher_via_email(
     rf,
     mocker,
 ):
-    mocker.patch("conferences.admin.conference.messages")
+    mocker.patch("conferences.admin.actions.messages")
     mock_send_email = mocker.patch(
         "conferences.admin.actions.send_speaker_voucher_email"
     )
@@ -235,7 +235,7 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     rf,
     mocker,
 ):
-    mock_messages = mocker.patch("conferences.admin.conference.messages")
+    mock_messages = mocker.patch("conferences.admin.actions.messages")
     mock_send_email = mocker.patch(
         "conferences.admin.actions.send_speaker_voucher_email"
     )
@@ -289,7 +289,7 @@ def test_create_speaker_vouchers_on_pretix(rf, mocker):
             {"id": 3},
         ],
     )
-    mocker.patch("conferences.admin.conference.messages")
+    mocker.patch("conferences.admin.actions.messages")
 
     conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
 
@@ -367,7 +367,7 @@ def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(rf, mocker):
             {"id": 1},
         ],
     )
-    mocker.patch("conferences.admin.conference.messages")
+    mocker.patch("conferences.admin.actions.messages")
 
     conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
 
@@ -416,7 +416,7 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences
             {"id": 2},
         ],
     )
-    mock_messages = mocker.patch("conferences.admin.conference.messages")
+    mock_messages = mocker.patch("conferences.admin.actions.messages")
 
     conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
     conference_2 = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
@@ -465,7 +465,7 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
             {"id": 2},
         ],
     )
-    mock_messages = mocker.patch("conferences.admin.conference.messages")
+    mock_messages = mocker.patch("conferences.admin.actions.messages")
 
     conference = ConferenceFactory(pretix_speaker_voucher_quota_id=None)
 
