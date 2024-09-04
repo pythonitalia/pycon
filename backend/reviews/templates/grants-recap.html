@@ -377,7 +377,7 @@
   <li>
     <a
       target="_blank"
-      href="{% url 'admin:grants-summary' %}?conference__id__exact={{ review_session.conference_id }}"
+      href="{% url 'admin:grants_summary' object_id=review_session.conference_id %}"
       class="change-list-object-tools-item"
       >Open Grants Summary</a
     >
