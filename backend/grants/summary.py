@@ -6,8 +6,7 @@ from .models import Grant
 
 
 class GrantSummary:
-    # Set of grant statuses that should be included in the total
-    # budget calculation.
+    # Set of grant statuses included in the total budget calculation.
     BUDGET_STATUSES = [
         Grant.Status.approved.value,
         Grant.Status.waiting_for_confirmation.value,
