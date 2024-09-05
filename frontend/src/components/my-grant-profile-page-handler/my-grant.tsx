@@ -50,6 +50,21 @@ export const MyGrant = ({ grant, deadline }: Props) => {
             needsFundsForTravel={grant.needsFundsForTravel}
             needAccommodation={grant.needAccommodation}
           />
+          {deadline.status === DeadlineStatus.HappeningNow && (
+            <>
+              <Spacer size="medium" />
+              <Button
+                href={createHref({
+                  path: "/grants/edit",
+                  locale: language,
+                })}
+                size="small"
+                variant="secondary"
+              >
+                <FormattedMessage id="profile.myGrant.edit" />
+              </Button>
+            </>
+          )}
         </GridColumn>
 
         <GridColumn colSpan={8}>
@@ -74,6 +89,7 @@ export const MyGrant = ({ grant, deadline }: Props) => {
                 />
               </Text>
             </div>
+
             {canManageGrant && (
               <div>
                 <Button
@@ -90,65 +106,37 @@ export const MyGrant = ({ grant, deadline }: Props) => {
             )}
 
             <GrantTableInfo grant={grant} />
-          </VerticalStack>
-        </GridColumn>
-      </Grid>
 
-      <Spacer size="large" />
-
-      <Grid cols={12} gap="medium">
-        <GridColumn colSpan={4}>
-          {deadline.status === DeadlineStatus.HappeningNow && (
-            <Button
-              href={createHref({
-                path: "/grants/edit",
-                locale: language,
-              })}
-              size="small"
-              variant="secondary"
-            >
-              <FormattedMessage id="profile.myGrant.edit" />
-            </Button>
-          )}
-        </GridColumn>
-        <GridColumn colSpan={8}>
-          {deadline.status === DeadlineStatus.HappeningNow && (
-            <Text>
-              <FormattedMessage
-                id="profile.myGrant.editInfo"
-                values={{
-                  editDeadline: (
-                    <Text as="span" weight="strong">
-                      {dateFormatter.format(new Date(deadline.end))}
-                    </Text>
-                  ),
-                }}
-              />
-            </Text>
-          )}
-          {canManageGrant && (
-            <>
-              <Spacer size="small" />
+            {deadline.status === DeadlineStatus.HappeningNow && (
               <Text>
                 <FormattedMessage
-                  id="profile.myGrant.manage.warning"
+                  id="profile.myGrant.editInfo"
                   values={{
-                    grantsEmail: (
-                      <Link target="_blank" href="mailto:grants@pycon.it">
-                        <Text
-                          decoration="underline"
-                          weight="strong"
-                          color="none"
-                        >
-                          grants@pycon.it
-                        </Text>
-                      </Link>
+                    editDeadline: (
+                      <Text as="span" weight="strong">
+                        {dateFormatter.format(new Date(deadline.end))}
+                      </Text>
                     ),
                   }}
                 />
               </Text>
-            </>
-          )}
+            )}
+
+            <Text>
+              <FormattedMessage
+                id="profile.myGrant.manage.warning"
+                values={{
+                  grantsEmail: (
+                    <Link target="_blank" href="mailto:grants@pycon.it">
+                      <Text decoration="underline" weight="strong" color="none">
+                        grants@pycon.it
+                      </Text>
+                    </Link>
+                  ),
+                }}
+              />
+            </Text>
+          </VerticalStack>
         </GridColumn>
       </Grid>
     </>
