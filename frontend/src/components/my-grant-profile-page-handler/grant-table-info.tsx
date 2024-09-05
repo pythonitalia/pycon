@@ -1,27 +1,17 @@
-import {
-  Button,
-  Grid,
-  GridColumn,
-  Link,
-  Spacer,
-  Text,
-  VerticalStack,
-} from "@python-italia/pycon-styleguide";
+import { Grid, Spacer, Text } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
-import { DeadlineStatus, Status as GrantStatus } from "~/types";
 import type { MyProfileWithGrantQuery } from "~/types";
 
+import { Title } from "~/components/title";
 import { getCountryLabel } from "~/helpers/country-utils";
 import { useCountries } from "~/helpers/use-countries";
-import { createHref } from "../link";
-import { Sidebar } from "./sidebar";
 
 type Props = {
   grant: MyProfileWithGrantQuery["me"]["grant"];
 };
-const GrantTableInfo = ({ grant }: Props) => {
+
+export const GrantTableInfo = ({ grant }: Props) => {
   const countries = useCountries();
   return (
     <Grid cols={3} gap="small" fullWidth>
@@ -86,11 +76,3 @@ const GrantTableInfo = ({ grant }: Props) => {
     </Grid>
   );
 };
-
-export default GrantTableInfo;
-
-const Title = ({ children }: { children: React.ReactNode }) => (
-  <Text size="label3" uppercase weight="strong">
-    {children}
-  </Text>
-);

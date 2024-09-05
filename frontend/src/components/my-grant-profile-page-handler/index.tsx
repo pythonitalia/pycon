@@ -10,17 +10,14 @@ import { MetaTags } from "../meta-tags";
 export const MyGrantProfilePageHandler = () => {
   const {
     data: {
-      me,
+      me: { grant },
       conference: { deadline },
     },
-    error,
   } = useMyProfileWithGrantQuery({
     variables: {
       conference: process.env.conferenceCode,
     },
   });
-
-  const grant = me.grant;
 
   return (
     <Page endSeparator={false}>

@@ -13,10 +13,8 @@ import { useCurrentLanguage } from "~/locale/context";
 import { DeadlineStatus, Status as GrantStatus } from "~/types";
 import type { MyProfileWithGrantQuery } from "~/types";
 
-import { getCountryLabel } from "~/helpers/country-utils";
-import { useCountries } from "~/helpers/use-countries";
 import { createHref } from "../link";
-import GrantTableInfo from "./grant-table-info";
+import { GrantTableInfo } from "./grant-table-info";
 import { Sidebar } from "./sidebar";
 
 type Props = {
