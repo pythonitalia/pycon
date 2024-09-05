@@ -1,17 +1,11 @@
-import {
-  Heading,
-  Page,
-  Section,
-  Spacer,
-  Text,
-} from "@python-italia/pycon-styleguide";
+import { Page, Text } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import type { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { GrantForm, GrantSendForm } from "~/components/grant-form";
+import { GrantSendForm } from "~/components/grant-form";
 import { MetaTags } from "~/components/meta-tags";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";

@@ -7,7 +7,6 @@ import {
   Section,
   Spacer,
   Text,
-  Textarea,
   VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import React, { useCallback, useEffect } from "react";
@@ -67,7 +66,7 @@ const GrantReply = () => {
   const language = useCurrentLanguage();
   const code = process.env.conferenceCode;
 
-  const [formState, { radio, text }] = useFormState<GrantReplyFrom>({
+  const [formState, { radio }] = useFormState<GrantReplyFrom>({
     option: null,
   });
 
