@@ -13,66 +13,58 @@ type Props = {
 
 export const GrantTableInfo = ({ grant }: Props) => {
   const countries = useCountries();
+
   return (
     <Grid cols={3} gap="small" fullWidth>
-      <div>
-        <Title>
-          <FormattedMessage id="grants.form.fields.name" />
-        </Title>
-        <Spacer size="xs" />
-        <Text>{grant.name}</Text>
-      </div>
+      <GrantInfo label={<FormattedMessage id="grants.form.fields.name" />}>
+        {grant.name}
+      </GrantInfo>
 
-      <div>
-        <Title>
-          <FormattedMessage id="grants.form.fields.fullName" />
-        </Title>
-        <Spacer size="xs" />
-        <Text>{grant.fullName}</Text>
-      </div>
+      <GrantInfo label={<FormattedMessage id="grants.form.fields.fullName" />}>
+        {grant.fullName}
+      </GrantInfo>
 
-      <div>
-        <Title>
-          <FormattedMessage id="grants.form.fields.ageGroup" />
-        </Title>
-        <Spacer size="xs" />
-
-        <Text>
+      <GrantInfo label={<FormattedMessage id="grants.form.fields.ageGroup" />}>
+        {grant.ageGroup && (
           <FormattedMessage
             id={`grants.form.fields.ageGroup.values.${grant.ageGroup}`}
           />
-        </Text>
-      </div>
+        )}
+      </GrantInfo>
 
-      <div>
-        <Title>
-          <FormattedMessage id="grants.form.fields.travellingFrom" />
-        </Title>
-        <Spacer size="xs" />
-        <Text>{getCountryLabel(countries, grant.travellingFrom)}</Text>
-      </div>
+      <GrantInfo
+        label={<FormattedMessage id="grants.form.fields.travellingFrom" />}
+      >
+        {getCountryLabel(countries, grant.travellingFrom)}
+      </GrantInfo>
 
-      <div>
-        <Title>
-          <FormattedMessage id="grants.form.fields.gender" />
-        </Title>
-        <Spacer size="xs" />
-        <Text>
-          <FormattedMessage id={`profile.gender.${grant.gender}`} />
-        </Text>
-      </div>
+      <GrantInfo label={<FormattedMessage id="grants.form.fields.gender" />}>
+        <FormattedMessage id={`profile.gender.${grant.gender}`} />
+      </GrantInfo>
 
-      <div>
-        <Title>
-          <FormattedMessage id="grants.form.fields.occupation" />
-        </Title>
-        <Spacer size="xs" />
-        <Text>
-          <FormattedMessage
-            id={`grants.form.fields.occupation.values.${grant.occupation}`}
-          />
-        </Text>
-      </div>
+      <GrantInfo
+        label={<FormattedMessage id="grants.form.fields.occupation" />}
+      >
+        <FormattedMessage
+          id={`grants.form.fields.occupation.values.${grant.occupation}`}
+        />
+      </GrantInfo>
     </Grid>
+  );
+};
+
+const GrantInfo = ({
+  label,
+  children,
+}: {
+  label: React.ReactNode;
+  children: React.ReactNode;
+}) => {
+  return (
+    <div>
+      <Title>{label}</Title>
+      <Spacer size="xs" />
+      <Text>{children}</Text>
+    </div>
   );
 };
