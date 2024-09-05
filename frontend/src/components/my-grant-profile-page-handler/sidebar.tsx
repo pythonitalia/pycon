@@ -81,19 +81,21 @@ const GrantInfo = ({
 
 const getStatusColor = (status: GrantStatus): Color => {
   switch (status) {
-    case GrantStatus.Approved:
-    case GrantStatus.Confirmed:
-      return "green";
     case GrantStatus.Pending:
-      return "grey";
+      return "yellow";
     case GrantStatus.Refused:
     case GrantStatus.Rejected:
+      return "red";
+    case GrantStatus.Approved:
+      return "green";
+    case GrantStatus.Confirmed:
+      return "success";
     case GrantStatus.DidNotAttend:
       return "red";
     case GrantStatus.WaitingForConfirmation:
-      return "yellow";
+      return "coral";
     case GrantStatus.WaitingList:
     case GrantStatus.WaitingListMaybe:
-      return "coral";
+      return "grey";
   }
 };
