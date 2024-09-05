@@ -1,8 +1,5 @@
 import {
-  Button,
   CardPart,
-  Grid,
-  GridColumn,
   MultiplePartsCard,
   Spacer,
   Tag,
