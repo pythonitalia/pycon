@@ -78,6 +78,6 @@ resource "aws_ecs_service" "traefik" {
   cluster                            = aws_ecs_cluster.server.id
   task_definition                    = aws_ecs_task_definition.traefik.arn
   desired_count                      = 1
-  deployment_minimum_healthy_percent = 0
-  deployment_maximum_percent         = 100
+  deployment_minimum_healthy_percent = 100
+  deployment_maximum_percent         = 200
 }

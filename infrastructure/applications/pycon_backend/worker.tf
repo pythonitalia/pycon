@@ -198,6 +198,10 @@ locals {
     {
       name = "AWS_SES_CONFIGURATION_SET"
       value = data.aws_sesv2_configuration_set.main.configuration_set_name
+    },
+    {
+      name = "SNS_WEBHOOK_SECRET"
+      value = module.common_secrets.value.sns_webhook_secret
     }
   ]
 }
@@ -420,8 +424,8 @@ resource "aws_ecs_service" "worker" {
   cluster                            = data.aws_ecs_cluster.server.id
   task_definition                    = aws_ecs_task_definition.worker.arn
   desired_count                      = 1
-  deployment_minimum_healthy_percent = 0
-  deployment_maximum_percent         = 100
+  deployment_minimum_healthy_percent = 100
+  deployment_maximum_percent         = 200
 }
 
 resource "aws_ecs_service" "beat" {

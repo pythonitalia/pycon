@@ -39,12 +39,15 @@ resource "aws_autoscaling_group" "server" {
   max_size           = 1
   min_size           = 1
   termination_policies = ["OldestInstance"]
+  protect_from_scale_in = true
 
   instance_refresh {
     strategy = "Rolling"
     preferences {
       min_healthy_percentage = 100
       max_healthy_percentage = 110
+      scale_in_protected_instances = "Refresh"
+      instance_warmup = 30
     }
   }
 
@@ -55,7 +58,13 @@ resource "aws_autoscaling_group" "server" {
 
   tag {
     key                = "Name"
-    value               = "${terraform.workspace}-server"
+    value               = "pythonit-${terraform.workspace}-server"
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "AmazonECSManaged"
+    value               = true
     propagate_at_launch = true
   }
 }

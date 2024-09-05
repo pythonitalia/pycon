@@ -55,3 +55,8 @@ module "server" {
   source      = "./server"
   ecs_arm_ami = local.ecs_arm_ami
 }
+
+module "pretix_arm" {
+  source = "./pretix_arm"
+  ecs_arm_ami = local.ecs_arm_ami
+}

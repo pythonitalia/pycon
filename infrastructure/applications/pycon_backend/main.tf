@@ -127,7 +127,7 @@ module "lambda" {
 
 data "aws_instance" "server" {
   instance_tags = {
-    Name = "${terraform.workspace}-server"
+    Name = "pythonit-${terraform.workspace}-server"
   }
 
   filter {
@@ -136,14 +136,67 @@ data "aws_instance" "server" {
   }
 }
 
-module "admin_distribution" {
-  source = "../../components/cloudfront"
+data "aws_cloudfront_origin_request_policy" "all_viewer" {
+  name = "Managed-AllViewer"
+}
 
-  application                    = local.application
-  zone_name                      = "pycon.it"
-  domain                         = local.admin_domain
-  certificate_arn                = data.aws_acm_certificate.cert.arn
-  # origin_url                     = module.lambda.cloudfront_friendly_lambda_url
-  origin_url                     = data.aws_instance.server.public_dns
-  # forward_host_header_lambda_arn = data.aws_lambda_function.forward_host_header.qualified_arn
+data "aws_cloudfront_cache_policy" "caching_disabled" {
+  name = "Managed-CachingDisabled"
+}
+
+resource "aws_cloudfront_distribution" "application" {
+  enabled             = true
+  is_ipv6_enabled     = true
+  comment             = "${terraform.workspace}-${local.application}"
+  wait_for_deployment = false
+  aliases             = [local.admin_domain]
+
+  origin {
+    domain_name = data.aws_instance.server.public_dns
+    origin_id   = "default"
+
+    custom_origin_config {
+      origin_protocol_policy = "http-only"
+      http_port              = "80"
+      https_port             = "443"
+      origin_ssl_protocols   = ["TLSv1"]
+    }
+  }
+
+  viewer_certificate {
+    cloudfront_default_certificate = false
+    minimum_protocol_version       = "TLSv1"
+    ssl_support_method             = "sni-only"
+    acm_certificate_arn            = data.aws_acm_certificate.cert.arn
+  }
+
+  default_cache_behavior {
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "default"
+
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer.id
+
+    viewer_protocol_policy = "redirect-to-https"
+    compress               = true
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+}
+
+resource "aws_route53_record" "record" {
+  zone_id = data.aws_route53_zone.pycon_zone.zone_id
+  name    = local.admin_domain
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.application.domain_name
+    zone_id                = aws_cloudfront_distribution.application.hosted_zone_id
+    evaluate_target_health = false
+  }
 }
