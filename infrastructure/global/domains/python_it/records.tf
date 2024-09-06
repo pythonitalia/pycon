@@ -400,129 +400,129 @@ resource "aws_route53_record" "social_python_it_fly_challange" {
 
 # Fourth Wall Shop
 
-resource "aws_route53_record" "shop_python_it_a" {
+resource "aws_route53_record" "store_python_it_a" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "shop.python.it"
+  name    = "store.python.it"
   type    = "A"
   records = ["34.117.223.165"]
   ttl     = "3600"
 }
 
-resource "aws_route53_record" "www_shop_python_it_cname" {
+resource "aws_route53_record" "www_store_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "www.shop"
+  name    = "www.store"
   type    = "CNAME"
-  records = ["shop.python.it."]
+  records = ["store.python.it."]
   ttl     = "3600"
 }
 
-resource "aws_route53_record" "em_fw_support_shop_python_it_cname" {
+resource "aws_route53_record" "em_fw_support_store_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "em-fw.support.shop.python.it"
+  name    = "em-fw.support.store"
   type    = "CNAME"
-  records = ["u45139959.wl210.sendgrid.net."]
+  records = ["u32554359.wl110.sendgrid.net."]
   ttl     = "3600"
 }
 
-resource "aws_route53_record" "s1_domainkey_support_shop_python_it_cname" {
+resource "aws_route53_record" "s1_domainkey_support_store_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "s1._domainkey.support.shop"
+  name    = "s1._domainkey.support.store"
   type    = "CNAME"
-  records = ["s1.domainkey.u45139959.wl210.sendgrid.net."]
+  records = ["s1.domainkey.u32554359.wl110.sendgrid.net."]
   ttl     = "3600"
 }
 
-resource "aws_route53_record" "s2_domainkey_support_shop_python_it_cname" {
+resource "aws_route53_record" "s2_domainkey_support_store_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "s2._domainkey.support.shop"
+  name    = "s2._domainkey.support.store"
   type    = "CNAME"
-  records = ["s2.domainkey.u45139959.wl210.sendgrid.net."]
+  records = ["s2.domainkey.u32554359.wl110.sendgrid.net."]
   ttl     = "3600"
 }
 
-resource "aws_route53_record" "zendesk1_domainkey_support_shop_python_it_cname" {
+resource "aws_route53_record" "zendesk1_domainkey_support_store_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "zendesk1._domainkey.support.shop"
+  name    = "zendesk1._domainkey.support.store"
   type    = "CNAME"
   records = ["zendesk1._domainkey.zendesk.com."]
   ttl     = "3600"
 }
 
-resource "aws_route53_record" "zendesk2_domainkey_support_shop_python_it_cname" {
+resource "aws_route53_record" "zendesk2_domainkey_support_store_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "zendesk2._domainkey.support.shop"
+  name    = "zendesk2._domainkey.support.store"
   type    = "CNAME"
   records = ["zendesk2._domainkey.zendesk.com."]
   ttl     = "3600"
 }
 
 
-resource "aws_route53_record" "zendesk1_support_shop_python_it_cname" {
+resource "aws_route53_record" "zendesk1_support_store_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "zendesk1.support.shop"
+  name    = "zendesk1.support.store"
   type    = "CNAME"
   records = ["mail1.zendesk.com."]
   ttl     = "3600"
 }
 
 
-resource "aws_route53_record" "zendesk2_support_shop_python_it_cname" {
+resource "aws_route53_record" "zendesk2_support_store_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "zendesk2.support.shop"
+  name    = "zendesk2.support.store"
   type    = "CNAME"
   records = ["mail2.zendesk.com."]
   ttl     = "3600"
 }
 
 
-resource "aws_route53_record" "zendesk3_support_shop_python_it_cname" {
+resource "aws_route53_record" "zendesk3_support_store_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "zendesk3.support.shop"
+  name    = "zendesk3.support.store"
   type    = "CNAME"
   records = ["mail3.zendesk.com."]
   ttl     = "3600"
 }
 
 
-resource "aws_route53_record" "zendesk4_support_shop_python_it_cname" {
+resource "aws_route53_record" "zendesk4_support_store_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "zendesk4.support.shop"
+  name    = "zendesk4.support.store"
   type    = "CNAME"
   records = ["mail4.zendesk.com."]
   ttl     = "3600"
 }
 
 
-resource "aws_route53_record" "zendeskverification_support_shop_python_it_txt" {
+resource "aws_route53_record" "zendeskverification_support_store_python_it_txt" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "zendeskverification.support.shop"
+  name    = "zendeskverification.support.store"
   type    = "TXT"
-  records = ["822351933ae865c6"]
+  records = ["44c8d8249e7a0c99"]
   ttl     = "3600"
 }
 
 
-resource "aws_route53_record" "_dmarc_support_shop_python_it_txt" {
+resource "aws_route53_record" "_dmarc_support_store_python_it_txt" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "_dmarc.support.shop"
+  name    = "_dmarc.support.store"
   type    = "TXT"
   records = ["v=DMARC1; p=reject; pct=100; rua=mailto:dmarc@fourthwall.com"]
   ttl     = "3600"
 }
 
 
-resource "aws_route53_record" "support_shop_python_it_txt" {
+resource "aws_route53_record" "support_store_python_it_txt" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "support.shop"
+  name    = "support.store"
   type    = "TXT"
   records = ["v=spf1 include:_spf.google.com include:mail.zendesk.com include:spf.improvmx.com include:sendgrid.net ~all"]
   ttl     = "3600"
 }
 
 
-resource "aws_route53_record" "support_shop_python_it_mx" {
+resource "aws_route53_record" "support_store_python_it_mx" {
   zone_id = aws_route53_zone.pythonit.id
-  name    = "support.shop"
+  name    = "support.store"
   type    = "MX"
   records = ["10 mx1.improvmx.com.", "20 mx2.improvmx.com."]
   ttl     = "3600"
