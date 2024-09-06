@@ -105,7 +105,7 @@ jobs:
         with:
           context: ./pretix
           file: ./pretix/Dockerfile
-          builder: pretix-base
+          builder: ${{ steps.buildx.outputs.name }}
           provenance: false
           push: true
           tags: |
