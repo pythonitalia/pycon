@@ -420,19 +420,31 @@ resource "aws_ecs_task_definition" "beat" {
 }
 
 resource "aws_ecs_service" "worker" {
-  name                               = "pythonit-${terraform.workspace}-worker"
+  name                               = "backend-worker"
   cluster                            = data.aws_ecs_cluster.server.id
   task_definition                    = aws_ecs_task_definition.worker.arn
   desired_count                      = 1
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
+
+  lifecycle {
+    ignore_changes = [
+      capacity_provider_strategy
+    ]
+  }
 }
 
 resource "aws_ecs_service" "beat" {
-  name                               = "pythonit-${terraform.workspace}-beat"
+  name                               = "backend-beat"
   cluster                            = data.aws_ecs_cluster.server.id
   task_definition                    = aws_ecs_task_definition.beat.arn
   desired_count                      = 1
   deployment_minimum_healthy_percent = 0
   deployment_maximum_percent         = 100
+
+  lifecycle {
+    ignore_changes = [
+      capacity_provider_strategy
+    ]
+  }
 }

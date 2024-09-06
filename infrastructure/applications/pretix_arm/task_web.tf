@@ -1,32 +1,13 @@
-data "aws_ecs_cluster" "server" {
-  cluster_name = "${terraform.workspace}-server"
-}
-
-data "aws_instance" "redis" {
-  instance_tags = {
-    Name = "pythonit-production-redis"
-  }
-
-  filter {
-    name   = "instance-state-name"
-    values = ["running"]
-  }
-}
-
-resource "aws_cloudwatch_log_group" "pretix" {
-  name              = "/ecs/pythonit-${terraform.workspace}-pretix-arm"
-  retention_in_days = 7
-}
-
-resource "aws_ecs_task_definition" "pretix_service" {
-  family = "pythonit-${terraform.workspace}-pretix"
-  container_definitions = jsonencode([
+locals {
+  env_vars = [
     {
-      name              = "pretix"
-      image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
-      memoryReservation = 200
-      essential         = true
-      environment = [
+      name = "VIRTUAL_ENV",
+      value = "/var/pretix/venv"
+    },
+    {
+      name = "PATH",
+      value = "/var/pretix/venv/bin:/usr/local/bin:/usr/bin:/bin"
+    },
         {
           name  = "DATABASE_NAME"
           value = "pretix"
@@ -84,12 +65,50 @@ resource "aws_ecs_task_definition" "pretix_service" {
           value = "true"
         }
       ]
+}
+data "aws_ecs_cluster" "server" {
+  cluster_name = "${terraform.workspace}-server"
+}
+
+data "aws_instance" "redis" {
+  instance_tags = {
+    Name = "pythonit-production-redis"
+  }
+
+  filter {
+    name   = "instance-state-name"
+    values = ["running"]
+  }
+}
+
+resource "aws_cloudwatch_log_group" "pretix" {
+  name              = "/ecs/pythonit-${terraform.workspace}-pretix-arm"
+  retention_in_days = 7
+}
+
+resource "aws_ecs_task_definition" "pretix_web" {
+  family = "pythonit-${terraform.workspace}-pretix"
+  container_definitions = jsonencode([
+    {
+      name              = "pretix"
+      image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
+      memoryReservation = 200
+      essential         = true
+      environment = local.env_vars
       portMappings = [
         {
-          containerPort = 80
+          containerPort = 8000
           hostPort      = 0
         }
       ]
+      command = ["webworker"]
+
+      workingDirectory = "/var/pretix"
+
+      dockerLabels = {
+        "traefik.enable" = "true"
+        "traefik.http.routers.backend.rule" = "Host(`tickets.pycon.it`)"
+      }
       mountPoints = [
         {
           sourceVolume  = "media"
@@ -131,11 +150,17 @@ resource "aws_ecs_task_definition" "pretix_service" {
   tags                     = {}
 }
 
-resource "aws_ecs_service" "pretix" {
-  name                               = "pythonit-${terraform.workspace}-pretix"
+resource "aws_ecs_service" "pretix_web" {
+  name                               = "pretix-web"
   cluster                            = data.aws_ecs_cluster.server.id
-  task_definition                    = aws_ecs_task_definition.pretix_service.arn
+  task_definition                    = aws_ecs_task_definition.pretix_web.arn
   desired_count                      = 1
-  deployment_minimum_healthy_percent = 0
-  deployment_maximum_percent         = 100
+  deployment_minimum_healthy_percent = 100
+  deployment_maximum_percent         = 200
+
+  lifecycle {
+    ignore_changes = [
+      capacity_provider_strategy
+    ]
+  }
 }
