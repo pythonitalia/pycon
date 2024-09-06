@@ -92,7 +92,7 @@ jobs:
         with:
           context: ./pretix-clone
           file: ./pretix-clone/Dockerfile
-          builder: pretix-base
+          builder: ${{ steps.buildx.outputs.name }}
           provenance: false
           push: false
           tags: pretix-base:${{ steps.git.outputs.githash }}
