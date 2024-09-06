@@ -50,6 +50,70 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-central-1
 
+  build-pretix:
+    runs-on: [self-hosted]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: pretix/pretix
+          ref: v2024.8.0
+          path: ./pretix-clone
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.aws_access_key_id }}
+          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+          aws-region: eu-central-1
+      - name: Get service githash
+        id: git
+        run: |
+          hash=$(git rev-list -1 HEAD -- pretix
+          echo "githash=$hash" >> $GITHUB_OUTPUT
+      - name: Check if commit is already on ECR
+        id: image
+        run: |
+          set +e
+          aws ecr describe-images --repository-name=pythonit/pretix --image-ids=imageTag=arm-${{ steps.git.outputs.githash }}
+          if [[ $? == 0 ]]; then
+            echo "image_exists=1" >> $GITHUB_OUTPUT
+          else
+            echo "image_exists=0" >> $GITHUB_OUTPUT
+          fi
+      - name: Login to Amazon ECR
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Set up Docker Buildx
+        id: buildx
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        uses: docker/setup-buildx-action@v3
+      - name: Build pretix base
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ./pretix-clone
+          file: ./pretix-clone/Dockerfile
+          builder: pretix-base
+          provenance: false
+          push: false
+          tags: pretix-base:${{ steps.git.outputs.githash }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/arm64
+      - name: Build and push pretix
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ./pretix
+          file: ./pretix/Dockerfile
+          builder: pretix-base
+          provenance: false
+          push: true
+          tags: |
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pretix:arm-${{ steps.git.outputs.githash }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/arm64
+
   build-and-push-arm-service:
     runs-on: [self-hosted]
     permissions:
@@ -61,8 +125,6 @@ jobs:
         service:
           - name: pycon-backend
             dir: backend
-          - name: pretix
-            dir: pretix
 
     steps:
       - uses: actions/checkout@v4
@@ -148,7 +210,7 @@ jobs:
 
   terraform:
     runs-on: ubuntu-latest
-    needs: [build-emails, build-and-push-arm-service, create-db]
+    needs: [build-emails, build-and-push-arm-service, build-pretix, create-db]
     environment:
       name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
     defaults:
