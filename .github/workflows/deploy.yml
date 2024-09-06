@@ -141,6 +141,8 @@ jobs:
         service:
           - name: pycon-backend
             dir: backend
+          - name: pretix
+            dir: pretix
 
     steps:
       - uses: actions/checkout@v4
