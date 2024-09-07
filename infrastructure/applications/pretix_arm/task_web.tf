@@ -102,25 +102,24 @@ resource "aws_ecs_task_definition" "pretix_web" {
         }
       ]
 
-      entrypoint = ["/var/pretix/venv/bin/gunicorn"]
-      command = ["pretix.wsgi", "--name pretix", "--bind 0.0.0.0:8000",]
-
+      entrypoint = ["gunicorn"]
+      command = ["pretix.wsgi", "--name pretix", "--bind 0.0.0.0:8000", "--max-requests 1200", "--max-requests-jitter 50"]
       workingDirectory = "/var/pretix"
 
       dockerLabels = {
         "traefik.enable" = "true"
         "traefik.http.routers.backend.rule" = "Host(`tickets.pycon.it`)"
       }
-      mountPoints = [
-        {
-          sourceVolume  = "media"
-          containerPath = "/data/media"
-        },
-        {
-          sourceVolume  = "data"
-          containerPath = "/var/pretix-data"
-        }
-      ]
+      # mountPoints = [
+      #   {
+      #     sourceVolume  = "media"
+      #     containerPath = "/data/media"
+      #   },
+      #   {
+      #     sourceVolume  = "data"
+      #     containerPath = "/var/pretix-data"
+      #   }
+      # ]
       systemControls = [
         {
           "namespace" : "net.core.somaxconn",
@@ -138,15 +137,15 @@ resource "aws_ecs_task_definition" "pretix_web" {
     },
   ])
 
-  volume {
-    name      = "media"
-    host_path = "/var/pretix/data/media"
-  }
+  # volume {
+  #   name      = "media"
+  #   host_path = "/var/pretix/data/media"
+  # }
 
-  volume {
-    name      = "data"
-    host_path = "/var/pretix-data"
-  }
+  # volume {
+  #   name      = "data"
+  #   host_path = "/var/pretix-data"
+  # }
 
   requires_compatibilities = []
   tags                     = {}

@@ -5,6 +5,15 @@ data "template_file" "server_user_data" {
   }
 }
 
+data "aws_ami" "ecs" {
+  owners           = ["self"]
+
+  filter {
+    name   = "image-id"
+    values = [var.ecs_arm_ami]
+  }
+}
+
 data "aws_security_group" "tempone" {
   name        = "pythonit-${terraform.workspace}-worker-instance"
 }
@@ -18,6 +27,14 @@ resource "aws_launch_template" "server" {
 
   iam_instance_profile {
     name = aws_iam_instance_profile.server.name
+  }
+
+  block_device_mappings {
+    device_name = data.aws_ami.ecs.root_device_name
+
+    ebs {
+      volume_size = 20
+    }
   }
 
   network_interfaces {
