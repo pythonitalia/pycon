@@ -103,8 +103,9 @@ resource "aws_ecs_task_definition" "pretix_web" {
       ]
 
       entrypoint = ["gunicorn"]
-      command = ["pretix.wsgi", "--name pretix", "--bind 0.0.0.0:8000", "--max-requests 1200", "--max-requests-jitter 50"]
+      command = ["pretix.wsgi", "--name=pretix", "--bind=0.0.0.0:8000", "--max-requests=1200", "--max-requests-jitter=50"]
       workingDirectory = "/var/pretix"
+      user = "pretixuser"
 
       dockerLabels = {
         "traefik.enable" = "true"
