@@ -1,4 +1,5 @@
-FROM pretix-base:${PRETIX_BASE_TAG}
+ARG PRETIX_BASE_TAG
+FROM pyconit-local-pretix-base:${PRETIX_BASE_TAG}
 
 COPY ./entrypoint.sh /entrypoint.sh
 COPY ./settings.py /pretix/src/production_settings.py

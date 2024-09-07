@@ -95,7 +95,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           provenance: false
           push: false
-          tags: pretix-base:${{ steps.git.outputs.githash }}
+          tags: pyconit-local-pretix-base:${{ steps.git.outputs.githash }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
@@ -113,6 +113,8 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
+          build-args: |
+            PRETIX_BASE_TAG=${{ steps.git.outputs.githash }}
 
   build-and-push-arm-service:
     runs-on: [self-hosted]
