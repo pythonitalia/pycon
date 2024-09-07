@@ -103,7 +103,7 @@ resource "aws_ecs_task_definition" "pretix_web" {
       ]
 
       entrypoint = ["/var/pretix/venv/bin/gunicorn"]
-      command = ["pretix.wsgi", "--name pretix", "--bind 0.0.0.0:8000", "--max-requests-jitter 50"]
+      command = ["pretix.wsgi", "--name pretix", "--bind 0.0.0.0:8000",]
 
       workingDirectory = "/var/pretix"
 
