@@ -82,34 +82,39 @@ jobs:
       - name: Login to Amazon ECR
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: aws-actions/amazon-ecr-login@v2
+      - name: Set up Docker Buildx
+        id: buildx
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        uses: docker/setup-buildx-action@v3
       - name: Build pretix base
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/build-push-action@v6
-        id: build-pretix-base
         with:
           context: ./pretix-clone
           file: ./pretix-clone/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          provenance: false
           load: true
-
-      - name: Show Docker images
-        run: docker images
-
-      - name: Inspect pretix-base image
-        run: docker inspect pyconit-local-pretix-base:${{ steps.git.outputs.githash }}
-
+          tags: pyconit-local-pretix-base:${{ steps.git.outputs.githash }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/arm64
       - name: Build and push pretix
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/build-push-action@v6
         with:
           context: ./pretix
           file: ./pretix/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
           provenance: false
           push: true
-          pull: false
           tags: |
             ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pretix:arm-${{ steps.git.outputs.githash }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/arm64
           build-args: |
-            PRETIX_BASE_IMAGE_ID=${{ steps.build-pretix-base.outputs.imageid }}
+            PRETIX_BASE_TAG=${{ steps.git.outputs.githash }}
 
   build-and-push-arm-service:
     runs-on: [self-hosted]
