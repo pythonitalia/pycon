@@ -93,7 +93,7 @@ jobs:
         with:
           context: ./pretix-clone
           file: ./pretix-clone/Dockerfile
-          builder: docker
+          builder: ${{ steps.buildx.outputs.name }}
           provenance: false
           push: true
           tags: |
@@ -107,7 +107,7 @@ jobs:
         with:
           context: ./pretix
           file: ./pretix/Dockerfile
-          builder: docker
+          builder: ${{ steps.buildx.outputs.name }}
           provenance: false
           push: true
           tags: |
