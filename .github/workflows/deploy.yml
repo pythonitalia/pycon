@@ -99,6 +99,12 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
+      - name: Show Docker images
+        run: docker images
+
+      - name: Inspect pretix-base image
+        run: docker inspect pretix-base:${{ steps.git.outputs.githash }}
+
       - name: Build and push pretix
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/build-push-action@v6
