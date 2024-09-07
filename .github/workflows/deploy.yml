@@ -95,7 +95,8 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           provenance: false
           load: true
-          tags: pyconit-local-pretix-base:${{ steps.git.outputs.githash }}
+          tags: |
+            ghcr.io/pythonitalia/pycon/pretix-base-image:arm-${{ steps.git.outputs.githash }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
@@ -103,7 +104,7 @@ jobs:
         run: docker images
 
       - name: Inspect pretix-base image
-        run: docker inspect pyconit-local-pretix-base:${{ steps.git.outputs.githash }}
+        run: docker inspect ghcr.io/pythonitalia/pycon/pretix-base-image:arm-${{ steps.git.outputs.githash }}
 
       - name: Build and push pretix
         if: ${{ steps.image.outputs.image_exists == 0 }}
