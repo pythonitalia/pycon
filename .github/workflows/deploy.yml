@@ -86,26 +86,27 @@ jobs:
         id: buildx
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/setup-buildx-action@v3
-      # - name: Build pretix base
-      #   if: ${{ steps.image.outputs.image_exists == 0 }}
-      #   uses: docker/build-push-action@v6
-      #   with:
-      #     context: ./pretix-clone
-      #     file: ./pretix-clone/Dockerfile
-      #     builder: ${{ steps.buildx.outputs.name }}
-      #     provenance: false
-      #     load: true
-      #     tags: pyconit-local-pretix-base:${{ steps.git.outputs.githash }}
-      #     cache-from: type=local,src=/tmp/.buildx-cache
-      #     cache-to: type=local,dest=/tmp/.buildx-cache
-      #     platforms: linux/arm64
+      - name: Build pretix base
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        uses: docker/build-push-action@v6
+        id: build-pretix-base
+        with:
+          context: ./pretix-clone
+          file: ./pretix-clone/Dockerfile
+          builder: docker
+          provenance: false
+          load: true
+          tags: pyconit-local-pretix-base:${{ steps.git.outputs.githash }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/arm64
       - name: Build and push pretix
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/build-push-action@v6
         with:
           context: ./pretix
           file: ./pretix/Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
+          builder: docker
           provenance: false
           push: true
           tags: |
@@ -114,7 +115,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
           build-args: |
-            PRETIX_BASE_TAG=${{ steps.git.outputs.githash }}
+            PRETIX_IMAGE=${{ steps.build-pretix-base.outputs.imageid }}
 
   build-and-push-arm-service:
     runs-on: [self-hosted]

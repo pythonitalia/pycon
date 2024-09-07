@@ -1,6 +1,5 @@
-# ARG PRETIX_BASE_TAG
-# FROM pyconit-local-pretix-base:${PRETIX_BASE_TAG}
-FROM --platform=linux/arm64 pretix/standalone:2024.7.0
+ARG PRETIX_IMAGE
+FROM ${PRETIX_IMAGE}
 
 COPY ./entrypoint.sh /entrypoint.sh
 COPY ./settings.py /pretix/src/production_settings.py
