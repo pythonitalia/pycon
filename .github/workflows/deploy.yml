@@ -94,7 +94,7 @@ jobs:
           file: ./pretix-clone/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           provenance: false
-          push: false
+          load: true
           tags: pyconit-local-pretix-base:${{ steps.git.outputs.githash }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
