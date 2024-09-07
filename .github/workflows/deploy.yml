@@ -95,8 +95,9 @@ jobs:
           file: ./pretix-clone/Dockerfile
           builder: docker
           provenance: false
-          load: true
-          tags: pyconit-local-pretix-base:${{ steps.git.outputs.githash }}
+          push: true
+          tags: |
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pretix:pretix-base-${{ steps.git.outputs.githash }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
@@ -115,7 +116,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
           build-args: |
-            PRETIX_IMAGE=${{ steps.build-pretix-base.outputs.imageid }}
+            PRETIX_IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pretix:pretix-base-${{ steps.git.outputs.githash }}
 
   build-and-push-arm-service:
     runs-on: [self-hosted]
