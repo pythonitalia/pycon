@@ -54,6 +54,11 @@ module "emails" {
 module "server" {
   source      = "./server"
   ecs_arm_ami = local.ecs_arm_ami
+
+  providers = {
+    aws    = aws
+    aws.us = aws.us
+  }
 }
 
 module "pretix_arm" {

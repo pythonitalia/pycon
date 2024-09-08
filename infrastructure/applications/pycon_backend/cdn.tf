@@ -6,6 +6,13 @@ data "aws_cloudfront_cache_policy" "caching_optimized" {
   name = "Managed-CachingOptimized"
 }
 
+data "aws_acm_certificate" "cert" {
+  domain   = "*.pycon.it"
+  statuses = ["ISSUED"]
+  provider = aws.us
+}
+
+
 resource "aws_cloudfront_distribution" "media_cdn" {
   enabled             = true
   is_ipv6_enabled     = true

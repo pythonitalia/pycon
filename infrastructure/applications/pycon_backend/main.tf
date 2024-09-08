@@ -1,8 +1,8 @@
 locals {
   is_prod           = terraform.workspace == "production"
-  admin_domain = local.is_prod ? "admin.pycon.it" : "${terraform.workspace}-admin.pycon.it"
   db_connection     = var.enable_proxy ? "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/pycon" : "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/pycon"
   cdn_url           = local.is_prod ? "cdn.pycon.it" : "${terraform.workspace}-cdn.pycon.it"
+  web_domain = local.is_prod ? "admin.pycon.it" : "${terraform.workspace}-admin.pycon.it"
 }
 
 data "aws_vpc" "default" {
@@ -42,12 +42,6 @@ data "aws_db_instance" "database" {
 data "aws_db_proxy" "proxy" {
   count = var.enable_proxy ? 1 : 0
   name  = "pythonit-${terraform.workspace}-database-proxy"
-}
-
-data "aws_acm_certificate" "cert" {
-  domain   = "*.pycon.it"
-  statuses = ["ISSUED"]
-  provider = aws.us
 }
 
 data "aws_lambda_function" "forward_host_header" {
@@ -122,81 +116,5 @@ module "lambda" {
     MEDIA_FILES_STORAGE_BACKEND = "pycon.storages.CustomS3Boto3Storage"
     SNS_WEBHOOK_SECRET = module.common_secrets.value.sns_webhook_secret
     AWS_SES_CONFIGURATION_SET = data.aws_sesv2_configuration_set.main.configuration_set_name
-  }
-}
-
-data "aws_instance" "server" {
-  instance_tags = {
-    Name = "pythonit-${terraform.workspace}-server"
-  }
-
-  filter {
-    name   = "instance-state-name"
-    values = ["running"]
-  }
-}
-
-data "aws_cloudfront_origin_request_policy" "all_viewer" {
-  name = "Managed-AllViewer"
-}
-
-data "aws_cloudfront_cache_policy" "caching_disabled" {
-  name = "Managed-CachingDisabled"
-}
-
-resource "aws_cloudfront_distribution" "application" {
-  enabled             = true
-  is_ipv6_enabled     = true
-  comment             = "${terraform.workspace}-${local.application}"
-  wait_for_deployment = false
-  aliases             = [local.admin_domain]
-
-  origin {
-    domain_name = data.aws_instance.server.public_dns
-    origin_id   = "default"
-
-    custom_origin_config {
-      origin_protocol_policy = "http-only"
-      http_port              = "80"
-      https_port             = "443"
-      origin_ssl_protocols   = ["TLSv1"]
-    }
-  }
-
-  viewer_certificate {
-    cloudfront_default_certificate = false
-    minimum_protocol_version       = "TLSv1"
-    ssl_support_method             = "sni-only"
-    acm_certificate_arn            = data.aws_acm_certificate.cert.arn
-  }
-
-  default_cache_behavior {
-    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "default"
-
-    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
-    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer.id
-
-    viewer_protocol_policy = "redirect-to-https"
-    compress               = true
-  }
-
-  restrictions {
-    geo_restriction {
-      restriction_type = "none"
-    }
-  }
-}
-
-resource "aws_route53_record" "record" {
-  zone_id = data.aws_route53_zone.pycon_zone.zone_id
-  name    = local.admin_domain
-  type    = "A"
-
-  alias {
-    name                   = aws_cloudfront_distribution.application.domain_name
-    zone_id                = aws_cloudfront_distribution.application.hosted_zone_id
-    evaluate_target_health = false
   }
 }

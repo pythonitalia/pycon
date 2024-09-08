@@ -1,4 +1,6 @@
 locals {
+  domain = local.is_prod ? "tickets.pycon.it" : "${terraform.workspace}-tickets.pycon.it"
+
   env_vars = [
     {
       name  = "VIRTUAL_ENV",
@@ -94,7 +96,7 @@ locals {
     },
     {
       name  = "PRETIX_PRETIX_URL",
-      value = "https://tickets.pycon.it/"
+      value = "https://${local.domain}/"
     },
     {
       name  = "PRETIX_PRETIX_TRUST_X_FORWARDED_PROTO",
@@ -173,8 +175,9 @@ resource "aws_ecs_task_definition" "pretix_web" {
       user             = "pretixuser"
 
       dockerLabels = {
-        "traefik.enable"                    = "true"
-        "traefik.http.routers.pretix-web.rule" = "Host(`tickets.pycon.it`)"
+        "traefik.enable" = "true"
+        "traefik.http.routers.pretix-web.rule" = "Host(`${local.domain}`)"
+        "traefik.http.routers.pretix-web.service" = "pretix-web"
       }
 
       systemControls = [
