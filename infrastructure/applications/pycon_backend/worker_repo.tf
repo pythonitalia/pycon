@@ -2,11 +2,6 @@ data "aws_ecr_repository" "be_repo" {
   name = "pythonit/pycon-backend"
 }
 
-data "aws_ecr_image" "be_image" {
-  repository_name = data.aws_ecr_repository.be_repo.name
-  image_tag       = data.external.githash.result.githash
-}
-
 data "aws_ecr_image" "be_arm_image" {
   repository_name = data.aws_ecr_repository.be_repo.name
   image_tag       = "arm-${data.external.githash.result.githash}"
