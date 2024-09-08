@@ -67,7 +67,7 @@ jobs:
       - name: Get service githash
         id: git
         run: |
-          hash=$(git rev-list -1 HEAD -- ./pretix)
+          hash=$(git rev-list -1 HEAD -- pretix)
           echo "githash=$hash" >> $GITHUB_OUTPUT
       - name: Check if commit is already on ECR
         id: image
