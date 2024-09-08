@@ -26,7 +26,7 @@ resource "aws_ecs_task_definition" "backend" {
 
       dockerLabels = {
         "traefik.enable" = "true"
-        "traefik.http.routers.backend.rule" = "Host(`${local.admin_domain}`)"
+        "traefik.http.routers.backend-web.rule" = "Host(`${local.admin_domain}`)"
       }
 
       environment = local.env_vars
