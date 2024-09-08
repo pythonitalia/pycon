@@ -177,6 +177,16 @@ resource "aws_ecs_task_definition" "pretix_web" {
         "traefik.http.routers.pretix-web.rule" = "Host(`${local.domain}`)"
       }
 
+      healthCheck = {
+        retries = 3
+        command = [
+          "CMD-SHELL",
+          "curl -f http://localhost/healthcheck/ || exit 1"
+        ]
+        timeout  = 3
+        interval = 10
+      }
+
       systemControls = [
         {
           "namespace" : "net.core.somaxconn",

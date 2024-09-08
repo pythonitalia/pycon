@@ -25,7 +25,7 @@ resource "aws_ecs_task_definition" "backend" {
       ]
 
       dockerLabels = {
-        "traefik.enable" = "true"
+        "traefik.enable"                        = "true"
         "traefik.http.routers.backend-web.rule" = "Host(`${local.web_domain}`)"
       }
 
@@ -58,7 +58,7 @@ resource "aws_ecs_task_definition" "backend" {
         retries = 3
         command = [
           "CMD-SHELL",
-          "echo 1"
+          "curl -f http://localhost:8000/health/ || exit 1"
         ]
         timeout  = 3
         interval = 10

@@ -1,131 +1,92 @@
-# resource "aws_ecs_task_definition" "pretix_web" {
-#   family = "pythonit-${terraform.workspace}-pretix"
-#   container_definitions = jsonencode([
-#     {
-#       name              = "pretix"
-#       image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
-#       memoryReservation = 200
-#       essential         = true
-#       environment = [
-#         {
-#           name  = "DATABASE_NAME"
-#           value = "pretix"
-#         },
-#         {
-#           name  = "DATABASE_USERNAME"
-#           value = data.aws_db_instance.database.master_username
-#         },
-#         {
-#           name  = "DATABASE_PASSWORD"
-#           value = module.common_secrets.value.database_password
-#         },
-#         {
-#           name  = "DATABASE_HOST"
-#           value = data.aws_db_instance.database.address
-#         },
-#         {
-#           name  = "MAIL_USER"
-#           value = module.secrets.value.mail_user
-#         },
-#         {
-#           name  = "MAIL_PASSWORD"
-#           value = module.secrets.value.mail_password
-#         },
-#         {
-#           name  = "PRETIX_SENTRY_DSN"
-#           value = module.secrets.value.sentry_dsn
-#         },
-#         {
-#           name  = "SECRET_KEY"
-#           value = module.secrets.value.secret_key
-#         },
-#         {
-#           name  = "PRETIX_REDIS_LOCATION",
-#           value = "redis://${data.aws_instance.redis.private_ip}/0"
-#         },
-#         {
-#           name  = "PRETIX_REDIS_SESSIONS",
-#           value = "false"
-#         },
-#         {
-#           name  = "PRETIX_CELERY_BROKER",
-#           value = "redis://${data.aws_instance.redis.private_ip}/1"
-#         },
-#         {
-#           name  = "PRETIX_CELERY_BACKEND",
-#           value = "redis://${data.aws_instance.redis.private_ip}/2"
-#         },
-#         {
-#           name  = "PRETIX_PRETIX_URL",
-#           value = "https://tickets.pycon.it/"
-#         },
-#         {
-#           name  = "PRETIX_PRETIX_TRUST_X_FORWARDED_PROTO",
-#           value = "true"
-#         }
-#       ]
-#       portMappings = [
-#         {
-#           containerPort = 80
-#           hostPort      = 0
-#         }
-#       ]
-#       dockerLabels = {
-#         "traefik.enable" = "true"
-#         "traefik.http.routers.backend.rule" = "Host(`tickets.pycon.it`)"
-#       }
-#       mountPoints = [
-#         {
-#           sourceVolume  = "media"
-#           containerPath = "/data/media"
-#         },
-#         {
-#           sourceVolume  = "data"
-#           containerPath = "/var/pretix-data"
-#         }
-#       ]
-#       systemControls = [
-#         {
-#           "namespace" : "net.core.somaxconn",
-#           "value" : "4096"
-#         }
-#       ]
-#       logConfiguration = {
-#         logDriver = "awslogs"
-#         options = {
-#           "awslogs-group"         = aws_cloudwatch_log_group.pretix.name
-#           "awslogs-region"        = "eu-central-1"
-#           "awslogs-stream-prefix" = "ecs"
-#         }
-#       }
-#     },
-#   ])
+resource "aws_cloudwatch_log_group" "pretix_worker" {
+  name              = "/ecs/pythonit-${terraform.workspace}-pretix-worker"
+  retention_in_days = 7
+}
 
-#   volume {
-#     name      = "media"
-#     host_path = "/var/pretix/data/media"
-#   }
+resource "aws_ecs_task_definition" "pretix_worker" {
+  family = "pythonit-${terraform.workspace}-pretix-worker"
+  container_definitions = jsonencode([
+    {
+      name              = "worker"
+      image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
+      memoryReservation = 200
+      essential         = true
+      environment       = local.env_vars
 
-#   volume {
-#     name      = "data"
-#     host_path = "/var/pretix-data"
-#   }
+      entrypoint       = ["pretix"]
+      command          = ["taskworker"]
 
-#   requires_compatibilities = []
-#   tags                     = {}
-# }
+      workingDirectory = "/pretix/src"
+      user             = "pretixuser"
 
-# resource "aws_ecs_service" "pretix_web" {
-#   name                               = "pretix-worker"
-#   cluster                            = data.aws_ecs_cluster.server.id
-#   task_definition                    = aws_ecs_task_definition.pretix_web.arn
-#   desired_count                      = 1
-#   deployment_minimum_healthy_percent = 100
-#   deployment_maximum_percent         = 200
+      healthCheck = {
+        retries = 3
+        command = [
+          "CMD-SHELL",
+          "celery -A pretix.celery_app inspect ping"
+        ]
+        timeout  = 3
+        interval = 10
+      }
 
-#   lifecycle {
-#     ignore_changes = [
-#       capacity_provider_strategy
-#     ]
-#   }
-# }
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.pretix_worker.name
+          "awslogs-region"        = "eu-central-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
+    },
+    {
+      name              = "cron"
+      image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
+      memoryReservation = 200
+      essential         = true
+      environment       = local.env_vars
+
+      entrypoint       = ["bash", "-c"]
+      command          = ["while true; do pretix cron; sleep 60; done"]
+
+      healthCheck = {
+        retries = 3
+        command = [
+          "CMD-SHELL",
+          "echo 1"
+        ]
+        timeout  = 3
+        interval = 10
+      }
+
+      workingDirectory = "/pretix/src"
+      user             = "pretixuser"
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.pretix_worker.name
+          "awslogs-region"        = "eu-central-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
+    },
+  ])
+
+  requires_compatibilities = []
+  tags                     = {}
+}
+
+resource "aws_ecs_service" "pretix_worker" {
+  name                               = "pretix-worker"
+  cluster                            = data.aws_ecs_cluster.server.id
+  task_definition                    = aws_ecs_task_definition.pretix_worker.arn
+  desired_count                      = 1
+  deployment_minimum_healthy_percent = 100
+  deployment_maximum_percent         = 200
+
+  lifecycle {
+    ignore_changes = [
+      capacity_provider_strategy
+    ]
+  }
+}

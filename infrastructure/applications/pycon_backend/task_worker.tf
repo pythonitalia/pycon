@@ -173,11 +173,11 @@ locals {
       value = module.secrets.value.hashid_default_secret_salt
     },
     {
-      name = "MEDIA_FILES_STORAGE_BACKEND",
+      name  = "MEDIA_FILES_STORAGE_BACKEND",
       value = "pycon.storages.CustomS3Boto3Storage"
     },
     {
-      name = "CLAMAV_HOST",
+      name  = "CLAMAV_HOST",
       value = module.secrets.value.clamav_host
     },
     {
@@ -192,15 +192,15 @@ locals {
       })
     },
     {
-      name = "ECS_SERVICE_ROLE",
+      name  = "ECS_SERVICE_ROLE",
       value = aws_iam_role.ecs_service.arn
     },
     {
-      name = "AWS_SES_CONFIGURATION_SET"
+      name  = "AWS_SES_CONFIGURATION_SET"
       value = data.aws_sesv2_configuration_set.main.configuration_set_name
     },
     {
-      name = "SNS_WEBHOOK_SECRET"
+      name  = "SNS_WEBHOOK_SECRET"
       value = module.common_secrets.value.sns_webhook_secret
     }
   ]
@@ -291,8 +291,8 @@ resource "aws_instance" "instance_1" {
       market_type = "spot"
 
       spot_options {
-        max_price = 0.0031
-        spot_instance_type = "persistent"
+        max_price                      = 0.0031
+        spot_instance_type             = "persistent"
         instance_interruption_behavior = "stop"
       }
     }
@@ -352,7 +352,7 @@ resource "aws_ecs_task_definition" "worker" {
         retries = 3
         command = [
           "CMD-SHELL",
-          "echo 1"
+          "celery -A pycon inspect ping"
         ]
         timeout  = 3
         interval = 10

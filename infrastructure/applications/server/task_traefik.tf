@@ -14,19 +14,19 @@ resource "aws_ecs_task_definition" "traefik" {
 
       environment = [
         {
-          name = "TRAEFIK_PROVIDERS_ECS_CLUSTERS"
+          name  = "TRAEFIK_PROVIDERS_ECS_CLUSTERS"
           value = aws_ecs_cluster.server.name
         },
         {
-          name = "TRAEFIK_PROVIDERS_ECS_AUTODISCOVERCLUSTERS"
+          name  = "TRAEFIK_PROVIDERS_ECS_AUTODISCOVERCLUSTERS"
           value = "false",
         },
         {
-          name = "TRAEFIK_PROVIDERS_ECS_EXPOSEDBYDEFAULT",
+          name  = "TRAEFIK_PROVIDERS_ECS_EXPOSEDBYDEFAULT",
           value = "false",
         },
         {
-          name = "TRAEFIK_ENTRYPOINTS_WEB_ADDRESS",
+          name  = "TRAEFIK_ENTRYPOINTS_WEB_ADDRESS",
           value = ":80"
         },
       ]

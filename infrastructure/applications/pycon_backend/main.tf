@@ -1,8 +1,8 @@
 locals {
-  is_prod           = terraform.workspace == "production"
-  db_connection     = var.enable_proxy ? "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/pycon" : "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/pycon"
-  cdn_url           = local.is_prod ? "cdn.pycon.it" : "${terraform.workspace}-cdn.pycon.it"
-  web_domain = local.is_prod ? "admin.pycon.it" : "${terraform.workspace}-admin.pycon.it"
+  is_prod       = terraform.workspace == "production"
+  db_connection = var.enable_proxy ? "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/pycon" : "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/pycon"
+  cdn_url       = local.is_prod ? "cdn.pycon.it" : "${terraform.workspace}-cdn.pycon.it"
+  web_domain    = local.is_prod ? "admin.pycon.it" : "${terraform.workspace}-admin.pycon.it"
 }
 
 data "aws_vpc" "default" {
@@ -113,8 +113,8 @@ module "lambda" {
     CELERY_RESULT_BACKEND                     = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/6" : "redis://${data.aws_instance.redis.private_ip}/15"
     PLAIN_INTEGRATION_TOKEN                   = module.secrets.value.plain_integration_token
     HASHID_DEFAULT_SECRET_SALT                = module.secrets.value.hashid_default_secret_salt
-    MEDIA_FILES_STORAGE_BACKEND = "pycon.storages.CustomS3Boto3Storage"
-    SNS_WEBHOOK_SECRET = module.common_secrets.value.sns_webhook_secret
-    AWS_SES_CONFIGURATION_SET = data.aws_sesv2_configuration_set.main.configuration_set_name
+    MEDIA_FILES_STORAGE_BACKEND               = "pycon.storages.CustomS3Boto3Storage"
+    SNS_WEBHOOK_SECRET                        = module.common_secrets.value.sns_webhook_secret
+    AWS_SES_CONFIGURATION_SET                 = data.aws_sesv2_configuration_set.main.configuration_set_name
   }
 }

@@ -13,20 +13,20 @@ resource "aws_cloudwatch_log_group" "heavy_processing_worker_logs" {
 }
 
 resource "aws_ecs_task_definition" "heavy_processing_worker" {
-  family = "pythonit-${terraform.workspace}-heavy-processing-worker"
+  family                   = "pythonit-${terraform.workspace}-heavy-processing-worker"
   requires_compatibilities = ["FARGATE"]
   cpu                      = 4096
   memory                   = 16384
   network_mode             = "awsvpc"
-  execution_role_arn = aws_iam_role.worker.arn
-  task_role_arn = aws_iam_role.worker.arn
+  execution_role_arn       = aws_iam_role.worker.arn
+  task_role_arn            = aws_iam_role.worker.arn
 
   ephemeral_storage {
     size_in_gib = 21
   }
   runtime_platform {
     operating_system_family = "LINUX"
-    cpu_architecture = "ARM64"
+    cpu_architecture        = "ARM64"
   }
   container_definitions = jsonencode([
     {
@@ -83,9 +83,9 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
   ])
 
   volume {
-    name = "storage"
+    name                = "storage"
     configure_at_launch = true
   }
 
-  tags                     = {}
+  tags = {}
 }

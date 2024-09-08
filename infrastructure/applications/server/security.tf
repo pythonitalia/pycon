@@ -29,12 +29,3 @@ resource "aws_security_group_rule" "web_http" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.server.id
 }
-
-resource "aws_security_group_rule" "web_dashboard" {
-  type              = "ingress"
-  from_port         = 8080
-  to_port           = 8080
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.server.id
-}
