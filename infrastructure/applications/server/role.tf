@@ -38,6 +38,8 @@ data "aws_iam_policy_document" "server_role_policy" {
     resources = [
       "arn:aws:s3:::${terraform.workspace}-pycon-backend-media",
       "arn:aws:s3:::${terraform.workspace}-pycon-backend-media/*",
+      "arn:aws:s3:::${terraform.workspace}-pretix-media",
+      "arn:aws:s3:::${terraform.workspace}-pretix-media/*",
     ]
   }
 }

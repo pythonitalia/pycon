@@ -177,7 +177,6 @@ resource "aws_ecs_task_definition" "pretix_web" {
       dockerLabels = {
         "traefik.enable" = "true"
         "traefik.http.routers.pretix-web.rule" = "Host(`${local.domain}`)"
-        "traefik.http.routers.pretix-web.service" = "pretix-web"
       }
 
       systemControls = [
