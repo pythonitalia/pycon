@@ -326,7 +326,7 @@ resource "aws_ecs_task_definition" "worker" {
       ]
 
       command = [
-        "-A", "pycon", "worker", "-l", "info", "-E"
+        "-A pycon", "worker", "-l info", "-E"
       ]
 
       environment = local.env_vars
@@ -352,7 +352,7 @@ resource "aws_ecs_task_definition" "worker" {
         retries = 3
         command = [
           "CMD-SHELL",
-          "celery -A pycon inspect ping"
+          "/home/app/.venv/bin/celery -A pycon inspect ping"
         ]
         timeout  = 3
         interval = 10
