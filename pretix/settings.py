@@ -14,6 +14,4 @@ if "pretix_fattura_elettronica" in INSTALLED_APPS:  # noqa
     INSTALLED_APPS.insert(0, "pretix_fattura_elettronica")  # noqa
 
 STORAGES["default"]["BACKEND"] = "storages.backends.s3.S3Storage"
-STORAGES["staticfiles"]["BACKEND"] = "storages.backends.s3.S3Storage"
 AWS_STORAGE_BUCKET_NAME = config.get("pycon", "storage_bucket_name", fallback="")
-COMPRESS_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.eu-central-1.amazonaws.com/"

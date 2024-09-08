@@ -9,8 +9,8 @@ RUN pip install boto3==1.35.14 \
     pretix-plugin-attendance-certificate==0.1.11 \
     pretix-fattura-elettronica==0.2.15
 
-# RUN cd /pretix/src && DATABASE_HOST=demo make staticfiles
-# RUN cd /pretix/src && DATABASE_HOST=demo make compress
+RUN cd /pretix/src && DATABASE_HOST=demo make staticfiles
+RUN cd /pretix/src && DATABASE_HOST=demo make compress
 
 ENTRYPOINT ["pretix"]
 CMD [ "all" ]

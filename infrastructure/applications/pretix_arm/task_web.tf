@@ -161,16 +161,14 @@ resource "aws_ecs_task_definition" "pretix_web" {
       environment       = local.env_vars
       portMappings = [
         {
-          containerPort = 8000
+          containerPort = 80
           hostPort      = 0
         }
       ]
 
-      entrypoint       = ["gunicorn"]
-      command          = [
-        "pretix.wsgi", "--name=pretix", "--bind=0.0.0.0:8000", "--max-requests=1200", "--max-requests-jitter=50",
-        "--workers=4"
-      ]
+      entrypoint       = ["pretix"]
+      command          = ["web"]
+
       workingDirectory = "/pretix/src"
       user             = "pretixuser"
 
