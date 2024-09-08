@@ -55,6 +55,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.ref }}
+      - uses: actions/checkout@v4
+        with:
           repository: pretix/pretix
           ref: v2024.8.0
           path: ./pretix-clone
