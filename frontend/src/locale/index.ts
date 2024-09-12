@@ -138,7 +138,7 @@ Let's get in touch to find the best solution for your business' needs!`,
       "Your grant request is approved. We will send you an email very soon with further instructions. Check your email regularly.",
     "profile.myGrant.status.waiting_list": "Waiting List",
     "profile.myGrant.status.waiting_list.nextSteps":
-      "You are on the waiting list. We will notify you if additional funds become available or if someone withdraws their grant.",
+      "You are on the waiting list. We will notify you as soon as we can accept your grant.",
     "profile.myGrant.status.waiting_list_maybe": "Waiting List",
     "profile.myGrant.status.waiting_list_maybe.nextSteps":
       "You are on the waiting list. We will notify you if additional funds become available or if someone withdraws their grant.",
@@ -153,7 +153,7 @@ Use the 'Manage' button on the page to confirm or decline the grant. You have un
       "You have declined the grant offer. If this was a mistake, please contact us immediately.",
     "profile.myGrant.status.confirmed": "Confirmed",
     "profile.myGrant.status.confirmed.nextSteps":
-      "Thank you for confirming your grant. We look forward to seeing you at the conference! We will send you the voucher for the ticket soon, please keep check your email regularly.",
+      "Thank you for confirming your grant. We look forward to seeing you at the conference! We will send you the voucher for the ticket soon, please check your email regularly.",
     "profile.myGrant.status.did_not_attend": "Did Not Attend",
     "profile.myGrant.status.did_not_attend.nextSteps":
       "You did not attend the conference.",
@@ -1985,13 +1985,13 @@ La mancata comunicazione potrebbe influenzare la tua idoneità a ricevere aiuti 
       "La tua domanda è in fase di revisione. Non è richiesta alcuna azione in questo momento.",
     "profile.myGrant.status.rejected": "Respinto",
     "profile.myGrant.status.rejected.nextSteps":
-      "Purtroppo, a causa dei fondi limitati e del grande numero di richieste, la tua richiesta di grant non è stata approvata. Controlla la tua email per maggiori dettagli.",
+      "Purtroppo, a causa di fondi limitati e del grande numero di richieste, la tua richiesta di grant non è stata approvata. Controlla la tua email per ulteriori dettagli.",
     "profile.myGrant.status.approved": "Approvato",
     "profile.myGrant.status.approved.nextSteps":
-      "La tua richiesta di grant è stata approvata. Ti invieremo un'email molto presto con ulteriori istruzioni. Per favore, controlla la tua email per queste istruzioni.",
+      "La tua richiesta di grant è stata approvata. Ti invieremo un'email molto presto con ulteriori istruzioni. Per favore, controlla la tua email per i prossimi passi.",
     "profile.myGrant.status.waiting_list": "Lista d'attesa",
     "profile.myGrant.status.waiting_list.nextSteps":
-      "Sei in lista d'attesa. Ti informeremo non appena diventano disponibili ulteriori fondi o se qualcuno rifiuta il suo grant.",
+      "Sei in lista d'attesa. Ti informeremo non appena potremo accettare il tuo grant.",
     "profile.myGrant.status.waiting_list_maybe": "Lista d'attesa",
     "profile.myGrant.status.waiting_list_maybe.nextSteps":
       "Sei in lista d'attesa. Ti informeremo non appena diventano disponibili ulteriori fondi o se qualcuno rifiuta il suo grant.",
@@ -2009,11 +2009,11 @@ Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai
     "profile.myGrant.status.did_not_attend.nextSteps":
       "Non hai partecipato alla conferenza.",
     "profile.myGrant.noGrant.heading": "Non hai richiesto un grant",
-    "profile.myGrant.noGrant.body.canSubmit": `Se ti trovi in difficoltà economica e desideri partecipare a PyCon Italia, il nostro modulo per la richiesta di grant è attualmente aperto.
+    "profile.myGrant.noGrant.body.canSubmit": `Se ti trovi in difficoltà economica e desideri partecipare a PyCon Italia, il nostro modulo per la richiesta di grant è al momento aperto.
 Guarda {grantInfoLink} per maggiori informazioni e invia la richiesta qui sotto.`,
     "profile.myGrant.noGrant.submitGrant": "Richiedi un grant",
     "profile.myGrant.noGrant.body.closed":
-      "Il modulo per la richiesta di grant è attualmente chiuso. Purtroppo non possiamo accettare nuove richieste dopo la scadenza.",
+      "Il modulo per la richiesta di grant è al momento chiuso. Purtroppo non possiamo accettare nuove richieste dopo la scadenza.",
     "profile.myGrant.noGrant.body.openingSoon":
       "Il nostro modulo per la richiesta di grant aprirà presto! Visita la nostra pagina informativa per ulteriori dettagli.",
 
