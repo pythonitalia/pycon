@@ -141,7 +141,7 @@ Let's get in touch to find the best solution for your business' needs!`,
       "You are on the waiting list. We will notify you as soon as we can accept your grant.",
     "profile.myGrant.status.waiting_list_maybe": "Waiting List",
     "profile.myGrant.status.waiting_list_maybe.nextSteps":
-      "You are on the waiting list. We will notify you if additional funds become available or if someone withdraws their grant.",
+      "You are on the waiting list. We will notify you as soon as we can accept your grant.",
     "profile.myGrant.status.waiting_for_confirmation":
       "Waiting for Confirmation",
     "profile.myGrant.status.waiting_for_confirmation.nextSteps": `Congratulations, your grant request has been approved!
@@ -170,8 +170,8 @@ Find our more information {grantInfoLink} and submit your application below.`,
     "profile.myGrant.noGrant.body.closed":
       "The grant application form is currently closed. Stay tuned for future opportunities.",
     "profile.myGrant.noGrant.body.openingSoon":
-      "Our grant application form will open soon! Check our information page for more details.",
-
+      "Our grant application form will open soon! Check our {grantInfoLink} for more details.",
+    "profile.myGrant.noGrant.body.openingSoon.link": "information page",
     "profile.logout": "Sign Out",
     "profile.logout.title": "Sign Out",
     "profile.logout.body": "{name}, are you sure you want to sign out?",
@@ -1994,7 +1994,7 @@ La mancata comunicazione potrebbe influenzare la tua idoneità a ricevere aiuti 
       "Sei in lista d'attesa. Ti informeremo non appena potremo accettare il tuo grant.",
     "profile.myGrant.status.waiting_list_maybe": "Lista d'attesa",
     "profile.myGrant.status.waiting_list_maybe.nextSteps":
-      "Sei in lista d'attesa. Ti informeremo non appena diventano disponibili ulteriori fondi o se qualcuno rifiuta il suo grant.",
+      "Sei in lista d'attesa. Ti informeremo non appena potremo accettare il tuo grant.",
     "profile.myGrant.status.waiting_for_confirmation": "Da confermare",
     "profile.myGrant.status.waiting_for_confirmation.nextSteps": `Congratulazioni, la tua richiesta di grant è stata approvata!
 
@@ -2015,8 +2015,9 @@ Guarda {grantInfoLink} per maggiori informazioni e invia la richiesta qui sotto.
     "profile.myGrant.noGrant.body.closed":
       "Il modulo per la richiesta di grant è al momento chiuso. Purtroppo non possiamo accettare nuove richieste dopo la scadenza.",
     "profile.myGrant.noGrant.body.openingSoon":
-      "Il nostro modulo per la richiesta di grant aprirà presto! Visita la nostra pagina informativa per ulteriori dettagli.",
+      "Il nostro modulo per la richiesta di grant aprirà presto! Visita la nostra {grantInfoLink} per ulteriori dettagli.",
 
+    "profile.myGrant.noGrant.body.openingSoon.link": "pagina informativa",
     "profile.editProfile.generalInformation": "Informazioni generali",
     "profile.editProfile.emailPreferences": "Preferenze Email",
     "profile.tickets.attendeeName": "Nome partecipante",
