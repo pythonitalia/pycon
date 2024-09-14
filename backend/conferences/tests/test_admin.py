@@ -19,11 +19,15 @@ from django.contrib.admin.sites import AdminSite
 
 from conferences.admin import (
     ConferenceAdmin,
-    DeadlineForm,
+)
+from conferences.admin.actions import (
     create_speaker_vouchers_on_pretix,
     send_voucher_via_email,
+)
+from conferences.admin.conference import (
     validate_deadlines_form,
     walk_conference_videos_folder,
+    DeadlineForm,
 )
 from conferences.models import SpeakerVoucher
 from schedule.models import ScheduleItem
@@ -185,8 +189,10 @@ def test_send_voucher_via_email(
     rf,
     mocker,
 ):
-    mocker.patch("conferences.admin.messages")
-    mock_send_email = mocker.patch("conferences.admin.send_speaker_voucher_email")
+    mocker.patch("conferences.admin.actions.messages")
+    mock_send_email = mocker.patch(
+        "conferences.admin.actions.send_speaker_voucher_email"
+    )
 
     conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
     schedule_item_1 = ScheduleItemFactory(
@@ -229,8 +235,10 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     rf,
     mocker,
 ):
-    mock_messages = mocker.patch("conferences.admin.messages")
-    mock_send_email = mocker.patch("conferences.admin.send_speaker_voucher_email")
+    mock_messages = mocker.patch("conferences.admin.actions.messages")
+    mock_send_email = mocker.patch(
+        "conferences.admin.actions.send_speaker_voucher_email"
+    )
 
     conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
     conference_2 = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
@@ -274,14 +282,14 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
 
 def test_create_speaker_vouchers_on_pretix(rf, mocker):
     mock_create_voucher = mocker.patch(
-        "conferences.admin.create_voucher",
+        "conferences.admin.actions.create_voucher",
         side_effect=[
             {"id": 1},
             {"id": 2},
             {"id": 3},
         ],
     )
-    mocker.patch("conferences.admin.messages")
+    mocker.patch("conferences.admin.actions.messages")
 
     conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
 
@@ -354,12 +362,12 @@ def test_create_speaker_vouchers_on_pretix(rf, mocker):
 
 def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(rf, mocker):
     mock_create_voucher = mocker.patch(
-        "conferences.admin.create_voucher",
+        "conferences.admin.actions.create_voucher",
         side_effect=[
             {"id": 1},
         ],
     )
-    mocker.patch("conferences.admin.messages")
+    mocker.patch("conferences.admin.actions.messages")
 
     conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
 
@@ -402,13 +410,13 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences
     rf, mocker
 ):
     mock_create_voucher = mocker.patch(
-        "conferences.admin.create_voucher",
+        "conferences.admin.actions.create_voucher",
         side_effect=[
             {"id": 1},
             {"id": 2},
         ],
     )
-    mock_messages = mocker.patch("conferences.admin.messages")
+    mock_messages = mocker.patch("conferences.admin.actions.messages")
 
     conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
     conference_2 = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
@@ -451,13 +459,13 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
     rf, mocker
 ):
     mock_create_voucher = mocker.patch(
-        "conferences.admin.create_voucher",
+        "conferences.admin.actions.create_voucher",
         side_effect=[
             {"id": 1},
             {"id": 2},
         ],
     )
-    mock_messages = mocker.patch("conferences.admin.messages")
+    mock_messages = mocker.patch("conferences.admin.actions.messages")
 
     conference = ConferenceFactory(pretix_speaker_voucher_quota_id=None)
 
@@ -507,7 +515,7 @@ def test_video_uploaded_path_matcher(
     marcsed = UserFactory(id=99, name="Marcsed", full_name="Marcsed Cazzęfa")
 
     mocker.patch(
-        "conferences.admin.walk_conference_videos_folder",
+        "conferences.admin.conference.walk_conference_videos_folder",
         return_value=[
             "conf/video-1/1-Kim Kitsuragi.mp4",
             "conf/video-2/2-Opening.mp4",
