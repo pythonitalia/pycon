@@ -1,4 +1,5 @@
 from django.contrib.postgres.expressions import ArraySubquery
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models.expressions import ExpressionWrapper
 from django.db.models import FloatField
 from django.db.models.functions import Cast
@@ -340,6 +341,9 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                     )
                     .values("id")
                 ),
+                approved_aid_categories=ArrayAgg(
+                    "allocations__category_id",
+                ),
             )
             .order_by(F("score").desc(nulls_last=True))
             .prefetch_related(
@@ -378,8 +382,8 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             ],
             all_approved_category=[
                 category
-                for category in AidCategory.objects.filter(
-                    conference_id=review_session.conference_id
+                for category in AidCategory.objects.for_conference(
+                    conference=review_session.conference
                 )
             ],
             all_statuses=Grant.Status.choices,
