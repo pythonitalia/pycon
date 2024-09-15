@@ -37,6 +37,8 @@ class AidCategory(models.Model):
         help_text="Automatically include this category in grants by default",
     )
 
+    objects = GrantQuerySet().as_manager()
+
     def __str__(self):
         return f"{self.name} ({self.conference.name})"
 
@@ -54,6 +56,8 @@ class CountryAidAmount(models.Model):
     max_amount = models.DecimalField(
         max_digits=6, decimal_places=0, help_text=_("Maximum amount for this category")
     )
+
+    objects = GrantQuerySet().as_manager()
 
     def __str__(self):
         return f"{self.country} ({self.conference.name}) - {self.max_amount}€"

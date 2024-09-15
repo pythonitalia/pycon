@@ -17,7 +17,7 @@ from django.template.response import TemplateResponse
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
 
-from grants.models import Grant
+from grants.models import Grant, AidCategory
 from participants.models import Participant
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
 from submissions.models import Submission, SubmissionTag
@@ -375,6 +375,12 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 choice
                 for choice in Grant.Status.choices
                 if choice[0] in Grant.REVIEW_SESSION_STATUSES_OPTIONS
+            ],
+            all_approved_category=[
+                category
+                for category in AidCategory.objects.filter(
+                    conference_id=review_session.conference_id
+                )
             ],
             all_statuses=Grant.Status.choices,
             review_session=review_session,
