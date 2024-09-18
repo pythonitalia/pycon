@@ -28,7 +28,7 @@ pytestmark = pytest.mark.django_db
 
 def test_mark_speakers_to_receive_vouchers(rf, mocker):
     mocker.patch(
-        "conferences.models.speaker_voucher.get_random_string",
+        "conferences.models.conference_voucher.get_random_string",
         side_effect=[
             "1",
             "2",
@@ -62,26 +62,27 @@ def test_mark_speakers_to_receive_vouchers(rf, mocker):
 
     assert ConferenceVoucher.objects.count() == 2
 
-    speaker_voucher_1 = ConferenceVoucher.objects.get(
+    conference_voucher_1 = ConferenceVoucher.objects.get(
         user_id=schedule_item_1.submission.speaker_id
     )
-    assert speaker_voucher_1.voucher_code == "SPEAKER-1"
-    assert speaker_voucher_1.conference_id == conference.id
-    assert speaker_voucher_1.pretix_voucher_id is None
-    assert speaker_voucher_1.voucher_type == ConferenceVoucher.VoucherType.SPEAKER
+    assert conference_voucher_1.voucher_code == "SPEAKER-1"
+    assert conference_voucher_1.conference_id == conference.id
+    assert conference_voucher_1.pretix_voucher_id is None
+    assert conference_voucher_1.voucher_type == ConferenceVoucher.VoucherType.SPEAKER
 
-    speaker_voucher_2 = ConferenceVoucher.objects.get(
+    conference_voucher_2 = ConferenceVoucher.objects.get(
         user_id=schedule_item_2.submission.speaker_id
     )
-    assert speaker_voucher_2.voucher_code == "SPEAKER-2"
-    assert speaker_voucher_2.conference_id == conference.id
-    assert speaker_voucher_2.pretix_voucher_id is None
-    assert speaker_voucher_2.voucher_type == ConferenceVoucher.VoucherType.SPEAKER
+    assert conference_voucher_2.voucher_code == "SPEAKER-2"
+    assert conference_voucher_2.conference_id == conference.id
+    assert conference_voucher_2.pretix_voucher_id is None
+    assert conference_voucher_2.voucher_type == ConferenceVoucher.VoucherType.SPEAKER
 
 
 def test_mark_speakers_to_receive_vouchers_includes_co_speakers(rf, mocker):
     mocker.patch(
-        "conferences.models.speaker_voucher.get_random_string", side_effect=["1", "2"]
+        "conferences.models.conference_voucher.get_random_string",
+        side_effect=["1", "2"],
     )
     mocker.patch("schedule.admin.messages")
 
@@ -104,26 +105,26 @@ def test_mark_speakers_to_receive_vouchers_includes_co_speakers(rf, mocker):
 
     assert ConferenceVoucher.objects.count() == 2
 
-    speaker_voucher_1 = ConferenceVoucher.objects.get(
+    conference_voucher_1 = ConferenceVoucher.objects.get(
         user_id=schedule_item_1.submission.speaker_id
     )
-    assert speaker_voucher_1.voucher_code == "SPEAKER-1"
-    assert speaker_voucher_1.conference_id == conference.id
-    assert speaker_voucher_1.pretix_voucher_id is None
-    assert speaker_voucher_1.voucher_type == ConferenceVoucher.VoucherType.SPEAKER
+    assert conference_voucher_1.voucher_code == "SPEAKER-1"
+    assert conference_voucher_1.conference_id == conference.id
+    assert conference_voucher_1.pretix_voucher_id is None
+    assert conference_voucher_1.voucher_type == ConferenceVoucher.VoucherType.SPEAKER
 
-    speaker_voucher_2 = ConferenceVoucher.objects.get(user_id=additional_speaker)
-    assert speaker_voucher_2.voucher_code == "SPEAKER-2"
-    assert speaker_voucher_2.conference_id == conference.id
-    assert speaker_voucher_2.pretix_voucher_id is None
-    assert speaker_voucher_2.voucher_type == ConferenceVoucher.VoucherType.CO_SPEAKER
+    conference_voucher_2 = ConferenceVoucher.objects.get(user_id=additional_speaker)
+    assert conference_voucher_2.voucher_code == "SPEAKER-2"
+    assert conference_voucher_2.conference_id == conference.id
+    assert conference_voucher_2.pretix_voucher_id is None
+    assert conference_voucher_2.voucher_type == ConferenceVoucher.VoucherType.CO_SPEAKER
 
 
 def test_additional_speakers_without_main_speaker_are_marked_for_a_speaker_voucher(
     rf, mocker
 ):
     mocker.patch(
-        "conferences.models.speaker_voucher.get_random_string", side_effect=["1"]
+        "conferences.models.conference_voucher.get_random_string", side_effect=["1"]
     )
     mocker.patch("schedule.admin.messages")
 
@@ -158,7 +159,7 @@ def test_speaker_with_both_main_talk_and_co_speaker_gets_a_speaker_voucher(
     mocker,
 ):
     mocker.patch(
-        "conferences.models.speaker_voucher.get_random_string",
+        "conferences.models.conference_voucher.get_random_string",
         side_effect=["1", "2", "3"],
     )
     mocker.patch("schedule.admin.messages")
@@ -206,7 +207,8 @@ def test_mark_speakers_to_receive_vouchers_doesnt_work_with_multiple_conferences
     rf, mocker
 ):
     mocker.patch(
-        "conferences.models.speaker_voucher.get_random_string", side_effect=["1", "2"]
+        "conferences.models.conference_voucher.get_random_string",
+        side_effect=["1", "2"],
     )
     mock_messages = mocker.patch("schedule.admin.messages")
 
@@ -244,7 +246,7 @@ def test_mark_speakers_to_receive_vouchers_only_created_once(
     mocker,
 ):
     mocker.patch(
-        "conferences.models.speaker_voucher.get_random_string", side_effect=["2"]
+        "conferences.models.conference_voucher.get_random_string", side_effect=["2"]
     )
     mocker.patch("schedule.admin.messages")
 
@@ -276,24 +278,25 @@ def test_mark_speakers_to_receive_vouchers_only_created_once(
     assert ConferenceVoucher.objects.count() == 2
 
     # existing one untouched
-    speaker_voucher_1 = ConferenceVoucher.objects.get(
+    conference_voucher_1 = ConferenceVoucher.objects.get(
         user_id=schedule_item_1.submission.speaker_id
     )
-    assert speaker_voucher_1.voucher_code == "SPEAKER-ABC"
-    assert speaker_voucher_1.conference_id == conference.id
-    assert speaker_voucher_1.pretix_voucher_id == 123
+    assert conference_voucher_1.voucher_code == "SPEAKER-ABC"
+    assert conference_voucher_1.conference_id == conference.id
+    assert conference_voucher_1.pretix_voucher_id == 123
 
-    speaker_voucher_2 = ConferenceVoucher.objects.get(
+    conference_voucher_2 = ConferenceVoucher.objects.get(
         user_id=schedule_item_2.submission.speaker_id
     )
-    assert speaker_voucher_2.voucher_code == "SPEAKER-2"
-    assert speaker_voucher_2.conference_id == conference.id
-    assert speaker_voucher_2.pretix_voucher_id is None
+    assert conference_voucher_2.voucher_code == "SPEAKER-2"
+    assert conference_voucher_2.conference_id == conference.id
+    assert conference_voucher_2.pretix_voucher_id is None
 
 
 def test_mark_speakers_to_receive_vouchers_ignores_excluded_speakers(rf, mocker):
     mocker.patch(
-        "conferences.models.speaker_voucher.get_random_string", side_effect=["1", "2"]
+        "conferences.models.conference_voucher.get_random_string",
+        side_effect=["1", "2"],
     )
     mocker.patch("schedule.admin.messages")
 
@@ -318,19 +321,20 @@ def test_mark_speakers_to_receive_vouchers_ignores_excluded_speakers(rf, mocker)
 
     assert ConferenceVoucher.objects.count() == 1
 
-    speaker_voucher_1 = ConferenceVoucher.objects.get(
+    conference_voucher_1 = ConferenceVoucher.objects.get(
         user_id=schedule_item_1.submission.speaker_id
     )
-    assert speaker_voucher_1.voucher_code == "SPEAKER-1"
-    assert speaker_voucher_1.conference_id == conference.id
-    assert speaker_voucher_1.pretix_voucher_id is None
+    assert conference_voucher_1.voucher_code == "SPEAKER-1"
+    assert conference_voucher_1.conference_id == conference.id
+    assert conference_voucher_1.pretix_voucher_id is None
 
 
 def test_mark_speakers_to_receive_vouchers_ignores_excluded_speakers_multiple_items(
     rf, mocker
 ):
     mocker.patch(
-        "conferences.models.speaker_voucher.get_random_string", side_effect=["1", "2"]
+        "conferences.models.conference_voucher.get_random_string",
+        side_effect=["1", "2"],
     )
     mocker.patch("schedule.admin.messages")
 
@@ -363,12 +367,12 @@ def test_mark_speakers_to_receive_vouchers_ignores_excluded_speakers_multiple_it
 
     assert ConferenceVoucher.objects.count() == 1
 
-    speaker_voucher_1 = ConferenceVoucher.objects.get(
+    conference_voucher_1 = ConferenceVoucher.objects.get(
         user_id=schedule_item_1.submission.speaker_id
     )
-    assert speaker_voucher_1.voucher_code == "SPEAKER-1"
-    assert speaker_voucher_1.conference_id == conference.id
-    assert speaker_voucher_1.pretix_voucher_id is None
+    assert conference_voucher_1.voucher_code == "SPEAKER-1"
+    assert conference_voucher_1.conference_id == conference.id
+    assert conference_voucher_1.pretix_voucher_id is None
 
 
 def test_send_schedule_invitation_to_all(rf, mocker):
