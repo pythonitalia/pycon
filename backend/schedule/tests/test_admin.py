@@ -37,7 +37,7 @@ def test_mark_speakers_to_receive_vouchers(rf, mocker):
     )
     mocker.patch("schedule.admin.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
     schedule_item_1 = ScheduleItemFactory(
         type=ScheduleItem.TYPES.talk,
         conference=conference,
@@ -85,7 +85,7 @@ def test_mark_speakers_to_receive_vouchers_includes_co_speakers(rf, mocker):
     )
     mocker.patch("schedule.admin.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
     schedule_item_1 = ScheduleItemFactory(
         type=ScheduleItem.TYPES.talk,
         conference=conference,
@@ -127,7 +127,7 @@ def test_additional_speakers_without_main_speaker_are_marked_for_a_speaker_vouch
     )
     mocker.patch("schedule.admin.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
     schedule_item_1 = ScheduleItemFactory(
         type=ScheduleItem.TYPES.talk,
         conference=conference,
@@ -163,7 +163,7 @@ def test_speaker_with_both_main_talk_and_co_speaker_gets_a_speaker_voucher(
     )
     mocker.patch("schedule.admin.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
 
     schedule_item_2 = ScheduleItemFactory(
         type=ScheduleItem.TYPES.talk,
@@ -210,8 +210,8 @@ def test_mark_speakers_to_receive_vouchers_doesnt_work_with_multiple_conferences
     )
     mock_messages = mocker.patch("schedule.admin.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
-    conference_2 = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
+    conference_2 = ConferenceFactory(pretix_conference_voucher_quota_id=123)
 
     ScheduleItemFactory(
         type=ScheduleItem.TYPES.talk,
@@ -248,7 +248,7 @@ def test_mark_speakers_to_receive_vouchers_only_created_once(
     )
     mocker.patch("schedule.admin.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
     schedule_item_1 = ScheduleItemFactory(
         type=ScheduleItem.TYPES.talk,
         conference=conference,
@@ -297,7 +297,7 @@ def test_mark_speakers_to_receive_vouchers_ignores_excluded_speakers(rf, mocker)
     )
     mocker.patch("schedule.admin.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
     schedule_item_1 = ScheduleItemFactory(
         type=ScheduleItem.TYPES.talk,
         conference=conference,
@@ -334,7 +334,7 @@ def test_mark_speakers_to_receive_vouchers_ignores_excluded_speakers_multiple_it
     )
     mocker.patch("schedule.admin.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
     schedule_item_1 = ScheduleItemFactory(
         type=ScheduleItem.TYPES.talk,
         conference=conference,

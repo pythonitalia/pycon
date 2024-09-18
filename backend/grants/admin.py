@@ -286,7 +286,7 @@ def _generate_voucher_code(prefix: str) -> str:
 def create_grant_vouchers_on_pretix(modeladmin, request, queryset):
     conference = queryset.first().conference
 
-    if not conference.pretix_speaker_voucher_quota_id:
+    if not conference.pretix_conference_voucher_quota_id:
         messages.error(
             request,
             "Please configure the grant voucher quota ID in the conference settings",
@@ -309,7 +309,7 @@ def create_grant_vouchers_on_pretix(modeladmin, request, queryset):
             code=voucher_code,
             comment=f"Voucher for user_id={grant.user_id}",
             tag="grants",
-            quota_id=grant.conference.pretix_speaker_voucher_quota_id,
+            quota_id=grant.conference.pretix_conference_voucher_quota_id,
             price_mode="set",
             value="0.00",
         )

@@ -194,7 +194,7 @@ def test_send_voucher_via_email(
         "conferences.admin.actions.send_speaker_voucher_email"
     )
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
     schedule_item_1 = ScheduleItemFactory(
         type=ScheduleItem.TYPES.talk,
         conference=conference,
@@ -242,8 +242,8 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
         "conferences.admin.actions.send_speaker_voucher_email"
     )
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
-    conference_2 = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
+    conference_2 = ConferenceFactory(pretix_conference_voucher_quota_id=123)
 
     schedule_item_1 = ScheduleItemFactory(
         type=ScheduleItem.TYPES.talk,
@@ -293,7 +293,7 @@ def test_create_speaker_vouchers_on_pretix(rf, mocker):
     )
     mocker.patch("conferences.admin.actions.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
 
     voucher_1 = ConferenceVoucherFactory(
         conference=conference,
@@ -371,7 +371,7 @@ def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(rf, mocker):
     )
     mocker.patch("conferences.admin.actions.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
 
     voucher_1 = ConferenceVoucherFactory(
         conference=conference,
@@ -420,8 +420,8 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences
     )
     mock_messages = mocker.patch("conferences.admin.actions.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
-    conference_2 = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
+    conference_2 = ConferenceFactory(pretix_conference_voucher_quota_id=123)
 
     voucher_1 = ConferenceVoucherFactory(
         conference=conference,
@@ -469,7 +469,7 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
     )
     mock_messages = mocker.patch("conferences.admin.actions.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=None)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=None)
 
     voucher_1 = ConferenceVoucherFactory(
         conference=conference,

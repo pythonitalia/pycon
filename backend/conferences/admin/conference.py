@@ -138,8 +138,8 @@ class ConferenceAdmin(
             {"fields": ("pretix_organizer_id", "pretix_event_id", "pretix_event_url")},
         ),
         (
-            "Speaker Voucher",
-            {"fields": ("pretix_speaker_voucher_quota_id",)},
+            "Conference Voucher",
+            {"fields": ("pretix_conference_voucher_quota_id",)},
         ),
         (
             "Slack Integration",

@@ -49,6 +49,19 @@ class ConferenceVoucher(TimeStampedModel):
         help_text=_("When the email was last sent"), blank=True, null=True
     )
 
+    def get_voucher_configuration(self):
+        if self.voucher_type in (
+            ConferenceVoucher.VoucherType.SPEAKER,
+            ConferenceVoucher.VoucherType.GRANT,
+        ):
+            price_mode = "set"
+            value = "0.00"
+        elif self.voucher_type == ConferenceVoucher.VoucherType.CO_SPEAKER:
+            price_mode = "percent"
+            value = "25.00"
+
+        return price_mode, value
+
     @staticmethod
     def generate_code() -> str:
         charset = list("ABCDEFGHKLMNPQRSTUVWXYZ23456789")

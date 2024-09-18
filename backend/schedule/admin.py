@@ -45,6 +45,7 @@ from .models import (
 
 
 @admin.action(description="Mark Speakers to receive Vouchers")
+@validate_single_conference_selection
 def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
     queryset = queryset.filter(
         type__in=[
@@ -52,14 +53,6 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
             ScheduleItem.TYPES.training,
         ],
     )
-
-    is_filtered_by_conference = (
-        queryset.values_list("conference_id").distinct().count() == 1
-    )
-
-    if not is_filtered_by_conference:
-        messages.error(request, "Please select only one conference")
-        return
 
     excluded_speakers = (
         queryset.filter(exclude_from_voucher_generation=True)
