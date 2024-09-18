@@ -36,7 +36,7 @@ def create_speaker_vouchers_on_pretix(modeladmin, request, queryset):
             conference=conference_voucher.conference,
             code=conference_voucher.voucher_code,
             comment=f"Voucher for user_id={conference_voucher.user_id}",
-            tag="speakers",
+            tag=conference_voucher.voucher_type,
             quota_id=conference_voucher.conference.pretix_conference_voucher_quota_id,
             price_mode=price_mode,
             value=value,
