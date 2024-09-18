@@ -213,7 +213,7 @@ def test_mark_speakers_to_receive_vouchers_doesnt_work_with_multiple_conferences
             "CODE2",
         ],
     )
-    mock_messages = mocker.patch("schedule.admin.messages")
+    mock_messages = mocker.patch("custom_admin.admin.messages")
 
     conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
     conference_2 = ConferenceFactory(pretix_conference_voucher_quota_id=123)

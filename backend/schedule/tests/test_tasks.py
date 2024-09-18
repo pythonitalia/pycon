@@ -29,7 +29,7 @@ from schedule.tests.factories import (
 from schedule.video_upload import get_thumbnail_file_name, get_video_file_name
 from submissions.tests.factories import SubmissionFactory
 import time_machine
-from backend.conferences.models.conference_voucher import ConferenceVoucher
+from conferences.models.conference_voucher import ConferenceVoucher
 from users.tests.factories import UserFactory
 from schedule.models import ScheduleItem, ScheduleItemSentForVideoUpload
 from notifications.templates import EmailTemplate as EmailTemplateEnum
