@@ -165,9 +165,9 @@ def notify_new_schedule_invitation_answer_slack(
 
 @app.task
 def send_speaker_voucher_email(speaker_voucher_id):
-    from conferences.models import SpeakerVoucher
+    from conferences.models import ConferenceVoucher
 
-    speaker_voucher = SpeakerVoucher.objects.get(id=speaker_voucher_id)
+    speaker_voucher = ConferenceVoucher.objects.get(id=speaker_voucher_id)
 
     speaker = speaker_voucher.user
     voucher_code = speaker_voucher.voucher_code
@@ -182,7 +182,7 @@ def send_speaker_voucher_email(speaker_voucher_id):
             "firstname": get_name(speaker, "there"),
             "voucherCode": voucher_code,
             "is_speaker_voucher": speaker_voucher.voucher_type
-            == SpeakerVoucher.VoucherType.SPEAKER,
+            == ConferenceVoucher.VoucherType.SPEAKER,
         },
         reply_to=[
             settings.SPEAKERS_EMAIL_ADDRESS,

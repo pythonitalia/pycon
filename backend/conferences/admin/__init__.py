@@ -2,7 +2,7 @@ from .conference import (
     ConferenceAdmin,
     DeadlineAdmin,
     AudienceLevelAdmin,
-    SpeakerVoucherAdmin,
+    ConferenceVoucherAdmin,
     TopicAdmin,
 )
 
@@ -10,6 +10,6 @@ __all__ = [
     "AudienceLevelAdmin",
     "ConferenceAdmin",
     "DeadlineAdmin",
-    "SpeakerVoucherAdmin",
+    "ConferenceVoucherAdmin",
     "TopicAdmin",
 ]

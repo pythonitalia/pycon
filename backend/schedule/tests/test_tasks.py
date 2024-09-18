@@ -6,7 +6,7 @@ from io import BytesIO
 from django.core.files.storage import storages
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from unittest import mock
-from conferences.tests.factories import ConferenceFactory, SpeakerVoucherFactory
+from conferences.tests.factories import ConferenceFactory, ConferenceVoucherFactory
 from i18n.strings import LazyI18nString
 from datetime import datetime, timezone
 from unittest.mock import ANY, patch
@@ -29,7 +29,7 @@ from schedule.tests.factories import (
 from schedule.video_upload import get_thumbnail_file_name, get_video_file_name
 from submissions.tests.factories import SubmissionFactory
 import time_machine
-from conferences.models.speaker_voucher import SpeakerVoucher
+from backend.conferences.models.conference_voucher import ConferenceVoucher
 from users.tests.factories import UserFactory
 from schedule.models import ScheduleItem, ScheduleItemSentForVideoUpload
 from notifications.templates import EmailTemplate as EmailTemplateEnum
@@ -202,9 +202,9 @@ def test_send_speaker_voucher_email():
         username="marco",
     )
 
-    speaker_voucher = SpeakerVoucherFactory(
+    speaker_voucher = ConferenceVoucherFactory(
         user=user,
-        voucher_type=SpeakerVoucher.VoucherType.SPEAKER,
+        voucher_type=ConferenceVoucher.VoucherType.SPEAKER,
         voucher_code="ABC123",
     )
 
@@ -234,9 +234,9 @@ def test_send_speaker_voucher_email_cospeaker():
         username="marco",
     )
 
-    speaker_voucher = SpeakerVoucherFactory(
+    speaker_voucher = ConferenceVoucherFactory(
         user=user,
-        voucher_type=SpeakerVoucher.VoucherType.CO_SPEAKER,
+        voucher_type=ConferenceVoucher.VoucherType.CO_SPEAKER,
         voucher_code="ABC123",
     )
 

@@ -7,7 +7,7 @@ from conferences.tests.factories import (
     ConferenceFactory,
     KeynoteFactory,
     KeynoteSpeakerFactory,
-    SpeakerVoucherFactory,
+    ConferenceVoucherFactory,
 )
 from users.tests.factories import UserFactory
 from unittest.mock import call
@@ -29,7 +29,7 @@ from conferences.admin.conference import (
     walk_conference_videos_folder,
     DeadlineForm,
 )
-from conferences.models import SpeakerVoucher
+from conferences.models import ConferenceVoucher
 from schedule.models import ScheduleItem
 
 pytestmark = mark.django_db
@@ -206,19 +206,21 @@ def test_send_voucher_via_email(
         submission=SubmissionFactory(conference=conference),
     )
 
-    speaker_voucher_1 = SpeakerVoucherFactory(
+    speaker_voucher_1 = ConferenceVoucherFactory(
         conference=conference,
         user_id=schedule_item_1.submission.speaker_id,
         pretix_voucher_id=1,
     )
-    speaker_voucher_2 = SpeakerVoucherFactory(
+    speaker_voucher_2 = ConferenceVoucherFactory(
         conference=conference,
         user_id=schedule_item_2.submission.speaker_id,
         pretix_voucher_id=2,
     )
 
     send_voucher_via_email(
-        None, rf.get("/"), queryset=SpeakerVoucher.objects.filter(conference=conference)
+        None,
+        rf.get("/"),
+        queryset=ConferenceVoucher.objects.filter(conference=conference),
     )
 
     mock_send_email.delay.assert_has_calls(
@@ -254,12 +256,12 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
         submission=SubmissionFactory(conference=conference_2),
     )
 
-    SpeakerVoucherFactory(
+    ConferenceVoucherFactory(
         conference=conference,
         user_id=schedule_item_1.submission.speaker_id,
         pretix_voucher_id=1,
     )
-    SpeakerVoucherFactory(
+    ConferenceVoucherFactory(
         conference=conference_2,
         user_id=schedule_item_2.submission.speaker_id,
         pretix_voucher_id=2,
@@ -269,7 +271,7 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     send_voucher_via_email(
         None,
         request,
-        queryset=SpeakerVoucher.objects.filter(
+        queryset=ConferenceVoucher.objects.filter(
             conference__in=[conference, conference_2]
         ),
     )
@@ -293,29 +295,29 @@ def test_create_speaker_vouchers_on_pretix(rf, mocker):
 
     conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
 
-    voucher_1 = SpeakerVoucherFactory(
+    voucher_1 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-123",
         pretix_voucher_id=None,
     )
 
-    voucher_2 = SpeakerVoucherFactory(
+    voucher_2 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-456",
         pretix_voucher_id=None,
     )
 
-    voucher_3 = SpeakerVoucherFactory(
+    voucher_3 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-999",
         pretix_voucher_id=None,
-        voucher_type=SpeakerVoucher.VoucherType.CO_SPEAKER,
+        voucher_type=ConferenceVoucher.VoucherType.CO_SPEAKER,
     )
 
     create_speaker_vouchers_on_pretix(
         None,
         request=rf.get("/"),
-        queryset=SpeakerVoucher.objects.filter(conference=conference),
+        queryset=ConferenceVoucher.objects.filter(conference=conference),
     )
 
     mock_create_voucher.assert_has_calls(
@@ -371,13 +373,13 @@ def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(rf, mocker):
 
     conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
 
-    voucher_1 = SpeakerVoucherFactory(
+    voucher_1 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-123",
         pretix_voucher_id=None,
     )
 
-    voucher_2 = SpeakerVoucherFactory(
+    voucher_2 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-456",
         pretix_voucher_id=1155,
@@ -386,7 +388,7 @@ def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(rf, mocker):
     create_speaker_vouchers_on_pretix(
         None,
         request=rf.get("/"),
-        queryset=SpeakerVoucher.objects.filter(conference=conference),
+        queryset=ConferenceVoucher.objects.filter(conference=conference),
     )
 
     mock_create_voucher.assert_called_once_with(
@@ -421,13 +423,13 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences
     conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
     conference_2 = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
 
-    voucher_1 = SpeakerVoucherFactory(
+    voucher_1 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-123",
         pretix_voucher_id=None,
     )
 
-    voucher_2 = SpeakerVoucherFactory(
+    voucher_2 = ConferenceVoucherFactory(
         conference=conference_2,
         voucher_code="SPEAKER-456",
         pretix_voucher_id=None,
@@ -438,7 +440,7 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences
     create_speaker_vouchers_on_pretix(
         None,
         request=request,
-        queryset=SpeakerVoucher.objects.filter(
+        queryset=ConferenceVoucher.objects.filter(
             conference__in=[conference, conference_2]
         ),
     )
@@ -469,13 +471,13 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
 
     conference = ConferenceFactory(pretix_speaker_voucher_quota_id=None)
 
-    voucher_1 = SpeakerVoucherFactory(
+    voucher_1 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-123",
         pretix_voucher_id=None,
     )
 
-    voucher_2 = SpeakerVoucherFactory(
+    voucher_2 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-456",
         pretix_voucher_id=None,
@@ -486,7 +488,7 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
     create_speaker_vouchers_on_pretix(
         None,
         request=request,
-        queryset=SpeakerVoucher.objects.filter(conference=conference),
+        queryset=ConferenceVoucher.objects.filter(conference=conference),
     )
 
     mock_create_voucher.assert_not_called()
