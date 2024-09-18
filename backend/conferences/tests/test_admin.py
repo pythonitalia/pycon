@@ -494,7 +494,7 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
     mock_create_voucher.assert_not_called()
     mock_messages.error.assert_called_once_with(
         request,
-        "Please configure the speaker voucher quota ID in the conference settings",
+        "Please configure the conference voucher quota ID in the conference settings",
     )
 
     voucher_1.refresh_from_db()
