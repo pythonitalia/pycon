@@ -208,12 +208,12 @@ def test_send_voucher_via_email(
         submission=SubmissionFactory(conference=conference),
     )
 
-    speaker_voucher_1 = ConferenceVoucherFactory(
+    conference_voucher_1 = ConferenceVoucherFactory(
         conference=conference,
         user_id=schedule_item_1.submission.speaker_id,
         pretix_voucher_id=1,
     )
-    speaker_voucher_2 = ConferenceVoucherFactory(
+    conference_voucher_2 = ConferenceVoucherFactory(
         conference=conference,
         user_id=schedule_item_2.submission.speaker_id,
         pretix_voucher_id=2,
@@ -227,8 +227,8 @@ def test_send_voucher_via_email(
 
     mock_send_email.delay.assert_has_calls(
         [
-            call(speaker_voucher_id=speaker_voucher_1.id),
-            call(speaker_voucher_id=speaker_voucher_2.id),
+            call(conference_voucher_id=conference_voucher_1.id),
+            call(conference_voucher_id=conference_voucher_2.id),
         ],
         any_order=True,
     )
