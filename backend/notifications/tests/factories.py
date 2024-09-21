@@ -14,6 +14,7 @@ class EmailTemplateFactory(DjangoModelFactory):
 
     class Meta:
         model = EmailTemplate
+        django_get_or_create = ("conference", "identifier")
 
 
 class SentEmailFactory(DjangoModelFactory):
