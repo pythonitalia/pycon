@@ -6,7 +6,7 @@ from io import BytesIO
 from django.core.files.storage import storages
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from unittest import mock
-from conferences.tests.factories import ConferenceFactory, ConferenceVoucherFactory
+from conferences.tests.factories import ConferenceFactory
 from i18n.strings import LazyI18nString
 from datetime import datetime, timezone
 from unittest.mock import ANY, patch
@@ -18,7 +18,6 @@ from schedule.tasks import (
     send_schedule_invitation_email,
     send_schedule_invitation_plain_message,
     send_speaker_communication_email,
-    send_speaker_voucher_email,
     send_submission_time_slot_changed_email,
     upload_schedule_item_video,
 )
@@ -29,7 +28,6 @@ from schedule.tests.factories import (
 from schedule.video_upload import get_thumbnail_file_name, get_video_file_name
 from submissions.tests.factories import SubmissionFactory
 import time_machine
-from conferences.models.conference_voucher import ConferenceVoucher
 from users.tests.factories import UserFactory
 from schedule.models import ScheduleItem, ScheduleItemSentForVideoUpload
 from notifications.templates import EmailTemplate as EmailTemplateEnum
@@ -191,77 +189,6 @@ def test_notify_new_schedule_invitation_answer_slack(status):
         )
 
     slack_mock.send_message.assert_called_once()
-
-
-@override_settings(SPEAKERS_EMAIL_ADDRESS="speakers@placeholder.com")
-def test_send_speaker_voucher_email():
-    user = UserFactory(
-        full_name="Marco Acierno",
-        email="marco@placeholder.it",
-        name="Marco",
-        username="marco",
-    )
-
-    speaker_voucher = ConferenceVoucherFactory(
-        user=user,
-        voucher_type=ConferenceVoucher.VoucherType.SPEAKER,
-        voucher_code="ABC123",
-    )
-
-    with patch("schedule.tasks.send_email") as email_mock:
-        send_speaker_voucher_email(speaker_voucher_id=speaker_voucher.id)
-
-    conf_name = speaker_voucher.conference.name.localize("en")
-    email_mock.assert_called_once_with(
-        template=EmailTemplateEnum.SPEAKER_VOUCHER_CODE,
-        to="marco@placeholder.it",
-        subject=f"[{conf_name}] Your Speaker Voucher Code",
-        variables={
-            "firstname": "Marco Acierno",
-            "voucherCode": "ABC123",
-            "is_speaker_voucher": True,
-        },
-        reply_to=["speakers@placeholder.com"],
-    )
-
-
-@override_settings(SPEAKERS_EMAIL_ADDRESS="speakers@placeholder.com")
-def test_send_speaker_voucher_email_cospeaker():
-    user = UserFactory(
-        full_name="Marco Acierno",
-        email="marco@placeholder.it",
-        name="Marco",
-        username="marco",
-    )
-
-    speaker_voucher = ConferenceVoucherFactory(
-        user=user,
-        voucher_type=ConferenceVoucher.VoucherType.CO_SPEAKER,
-        voucher_code="ABC123",
-    )
-
-    with patch("schedule.tasks.send_email") as email_mock, time_machine.travel(
-        "2020-10-10 10:00:00Z", tick=False
-    ):
-        send_speaker_voucher_email(speaker_voucher_id=speaker_voucher.id)
-
-    speaker_voucher.refresh_from_db()
-    assert speaker_voucher.voucher_email_sent_at == datetime(
-        2020, 10, 10, 10, 0, 0, tzinfo=timezone.utc
-    )
-
-    conf_name = speaker_voucher.conference.name.localize("en")
-    email_mock.assert_called_once_with(
-        template=EmailTemplateEnum.SPEAKER_VOUCHER_CODE,
-        to="marco@placeholder.it",
-        subject=f"[{conf_name}] Your Speaker Voucher Code",
-        variables={
-            "firstname": "Marco Acierno",
-            "voucherCode": "ABC123",
-            "is_speaker_voucher": False,
-        },
-        reply_to=["speakers@placeholder.com"],
-    )
 
 
 @override_settings(SPEAKERS_EMAIL_ADDRESS="reply")

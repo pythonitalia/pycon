@@ -41,6 +41,12 @@ class EmailTemplate(TimeStampedModel):
             "speaker_name",
             "is_reminder",
         ],
+        EmailTemplateIdentifier.voucher_code: [
+            *BASE_PLACEHOLDERS,
+            "voucher_code",
+            "voucher_type",
+            "user_name",
+        ],
     }
 
     conference = models.ForeignKey(

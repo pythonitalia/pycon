@@ -1,7 +1,7 @@
 from django.contrib import admin, messages
+from conferences.tasks import send_conference_voucher_email
 from custom_admin.admin import validate_single_conference_selection
 from pretix import create_voucher
-from schedule.tasks import send_speaker_voucher_email
 
 
 @admin.action(description="Send voucher via email")
@@ -9,7 +9,7 @@ from schedule.tasks import send_speaker_voucher_email
 def send_voucher_via_email(modeladmin, request, queryset):
     count = 0
     for conference_voucher in queryset.filter(pretix_voucher_id__isnull=False):
-        send_speaker_voucher_email.delay(speaker_voucher_id=conference_voucher.id)
+        send_conference_voucher_email.delay(conference_voucher_id=conference_voucher.id)
         count = count + 1
 
     messages.success(request, f"{count} Voucher emails scheduled!")
