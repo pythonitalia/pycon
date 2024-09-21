@@ -21,7 +21,7 @@ from conferences.admin import (
     ConferenceAdmin,
 )
 from conferences.admin.actions import (
-    create_speaker_vouchers_on_pretix,
+    create_conference_vouchers_on_pretix,
     send_voucher_via_email,
 )
 from conferences.admin.conference import (
@@ -284,7 +284,7 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     mock_send_email.delay.assert_not_called()
 
 
-def test_create_speaker_vouchers_on_pretix(rf, mocker):
+def test_create_conference_vouchers_on_pretix(rf, mocker):
     mock_create_voucher = mocker.patch(
         "conferences.admin.actions.create_voucher",
         side_effect=[
@@ -317,7 +317,7 @@ def test_create_speaker_vouchers_on_pretix(rf, mocker):
         voucher_type=ConferenceVoucher.VoucherType.CO_SPEAKER,
     )
 
-    create_speaker_vouchers_on_pretix(
+    create_conference_vouchers_on_pretix(
         None,
         request=rf.get("/"),
         queryset=ConferenceVoucher.objects.filter(conference=conference),
@@ -365,7 +365,7 @@ def test_create_speaker_vouchers_on_pretix(rf, mocker):
     assert voucher_3.pretix_voucher_id == 3
 
 
-def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(rf, mocker):
+def test_create_conference_vouchers_on_pretix_only_for_missing_ones(rf, mocker):
     mock_create_voucher = mocker.patch(
         "conferences.admin.actions.create_voucher",
         side_effect=[
@@ -388,7 +388,7 @@ def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(rf, mocker):
         pretix_voucher_id=1155,
     )
 
-    create_speaker_vouchers_on_pretix(
+    create_conference_vouchers_on_pretix(
         None,
         request=rf.get("/"),
         queryset=ConferenceVoucher.objects.filter(conference=conference),
@@ -411,7 +411,7 @@ def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(rf, mocker):
     assert voucher_2.pretix_voucher_id == 1155
 
 
-def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences(
+def test_create_conference_vouchers_on_pretix_doesnt_work_with_multiple_conferences(
     rf, mocker
 ):
     mock_create_voucher = mocker.patch(
@@ -440,7 +440,7 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences
 
     request = rf.get("/")
 
-    create_speaker_vouchers_on_pretix(
+    create_conference_vouchers_on_pretix(
         None,
         request=request,
         queryset=ConferenceVoucher.objects.filter(
@@ -460,7 +460,7 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences
     assert voucher_2.pretix_voucher_id is None
 
 
-def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
+def test_create_conference_vouchers_on_pretix_doesnt_work_without_pretix_config(
     rf, mocker
 ):
     mock_create_voucher = mocker.patch(
@@ -488,7 +488,7 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
 
     request = rf.get("/")
 
-    create_speaker_vouchers_on_pretix(
+    create_conference_vouchers_on_pretix(
         None,
         request=request,
         queryset=ConferenceVoucher.objects.filter(conference=conference),

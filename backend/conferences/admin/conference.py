@@ -33,7 +33,7 @@ from conferences.models import (
     Topic,
 )
 from conferences.admin.views import grants_summary
-from .actions import send_voucher_via_email, create_speaker_vouchers_on_pretix
+from .actions import send_voucher_via_email, create_conference_vouchers_on_pretix
 
 
 def validate_deadlines_form(forms):
@@ -512,7 +512,7 @@ class ConferenceVoucherAdmin(admin.ModelAdmin):
         "created",
     )
     actions = [
-        create_speaker_vouchers_on_pretix,
+        create_conference_vouchers_on_pretix,
         send_voucher_via_email,
     ]
 

@@ -15,9 +15,9 @@ def send_voucher_via_email(modeladmin, request, queryset):
     messages.success(request, f"{count} Voucher emails scheduled!")
 
 
-@admin.action(description="Create speaker vouchers on Pretix")
+@admin.action(description="Create vouchers on Pretix")
 @validate_single_conference_selection
-def create_speaker_vouchers_on_pretix(modeladmin, request, queryset):
+def create_conference_vouchers_on_pretix(modeladmin, request, queryset):
     conference = queryset.only("conference_id").first().conference
 
     if not conference.pretix_conference_voucher_quota_id:
