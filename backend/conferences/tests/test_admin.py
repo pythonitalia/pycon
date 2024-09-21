@@ -291,6 +291,7 @@ def test_create_conference_vouchers_on_pretix(rf, mocker):
             {"id": 1},
             {"id": 2},
             {"id": 3},
+            {"id": 4},
         ],
     )
     mocker.patch("custom_admin.admin.messages")
@@ -315,6 +316,13 @@ def test_create_conference_vouchers_on_pretix(rf, mocker):
         voucher_code="SPEAKER-999",
         pretix_voucher_id=None,
         voucher_type=ConferenceVoucher.VoucherType.CO_SPEAKER,
+    )
+
+    voucher_4 = ConferenceVoucherFactory(
+        conference=conference,
+        voucher_code="SPEAKER-888",
+        pretix_voucher_id=None,
+        voucher_type=ConferenceVoucher.VoucherType.GRANT,
     )
 
     create_conference_vouchers_on_pretix(
@@ -351,6 +359,15 @@ def test_create_conference_vouchers_on_pretix(rf, mocker):
                 quota_id=123,
                 price_mode="percent",
                 value="25.00",
+            ),
+            call(
+                conference=conference,
+                code="SPEAKER-888",
+                comment=f"Voucher for user_id={voucher_4.user_id}",
+                tag="grant",
+                quota_id=123,
+                price_mode="set",
+                value="0.00",
             ),
         ],
         any_order=True,
