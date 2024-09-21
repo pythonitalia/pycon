@@ -9,6 +9,8 @@ from django.utils.html import strip_tags
 if TYPE_CHECKING:
     from notifications.models import EmailTemplate
 
+SPACER = '<div class="spacer"></div>'
+
 
 @dataclass
 class RenderedEmailTemplate:
@@ -52,11 +54,11 @@ class RenderedEmailTemplate:
 
     @cached_property
     def text_body(self):
-        return strip_tags(self.body.replace("<br/>", "\n"))
+        return strip_tags(self.body.replace(SPACER, "\n"))
 
     def render_text(self, text: str) -> str:
         return mark_safe(
             render_template_from_string(
                 text, self.all_placeholders, show_placeholders=self.show_placeholders
-            ).replace("\n", "<br/>")
+            ).replace("\n", SPACER)
         )

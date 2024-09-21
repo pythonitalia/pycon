@@ -1,4 +1,3 @@
-from typing import cast
 from django.db.models import Q
 from pycon.celery_utils import OnlyOneAtTimeTask
 from google_api.exceptions import NoGoogleCloudQuotaLeftError
@@ -49,12 +48,10 @@ def send_schedule_invitation_email(*, schedule_item_id, is_reminder):
     speaker = User.objects.get(id=speaker_id)
     conference_name = conference.name.localize("en")
 
-    email_template = cast(
-        EmailTemplate,
-        EmailTemplate.objects.for_conference(conference).get_by_identifier(
-            EmailTemplateIdentifier.proposal_accepted
-        ),
+    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
+        EmailTemplateIdentifier.proposal_accepted
     )
+
     email_template.send_email(
         recipient=speaker,
         placeholders={
@@ -161,36 +158,6 @@ def notify_new_schedule_invitation_answer_slack(
         oauth_token=conference.get_slack_oauth_token(),
         channel_id=conference.slack_speaker_invitation_answer_channel_id,
     )
-
-
-@app.task
-def send_speaker_voucher_email(speaker_voucher_id):
-    from conferences.models import ConferenceVoucher
-
-    speaker_voucher = ConferenceVoucher.objects.get(id=speaker_voucher_id)
-
-    speaker = speaker_voucher.user
-    voucher_code = speaker_voucher.voucher_code
-
-    conference_name = speaker_voucher.conference.name.localize("en")
-
-    send_email(
-        template=EmailTemplateEnum.SPEAKER_VOUCHER_CODE,
-        to=speaker.email,
-        subject=f"[{conference_name}] Your Speaker Voucher Code",
-        variables={
-            "firstname": get_name(speaker, "there"),
-            "voucherCode": voucher_code,
-            "is_speaker_voucher": speaker_voucher.voucher_type
-            == ConferenceVoucher.VoucherType.SPEAKER,
-        },
-        reply_to=[
-            settings.SPEAKERS_EMAIL_ADDRESS,
-        ],
-    )
-
-    speaker_voucher.voucher_email_sent_at = timezone.now()
-    speaker_voucher.save()
 
 
 @app.task

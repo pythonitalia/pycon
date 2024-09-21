@@ -6,7 +6,10 @@ from notifications.models import EmailTemplate, SentEmail
 
 def view_email_template(request, object_id):
     email_template = cast(EmailTemplate, EmailTemplate.objects.get(id=object_id))
-    html_body = email_template.render(show_placeholders=True).html_body
+    html_body = email_template.render(
+        show_placeholders=True,
+        placeholders={key: values[0] for key, values in dict(request.GET).items()},
+    ).html_body
     return HttpResponse(html_body)
 
 

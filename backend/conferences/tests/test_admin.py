@@ -193,7 +193,7 @@ def test_send_voucher_via_email(
     mocker.patch("custom_admin.admin.messages")
 
     mock_send_email = mocker.patch(
-        "conferences.admin.actions.send_speaker_voucher_email"
+        "conferences.admin.actions.send_conference_voucher_email"
     )
 
     conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
@@ -241,7 +241,7 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
 ):
     mock_messages = mocker.patch("custom_admin.admin.messages")
     mock_send_email = mocker.patch(
-        "conferences.admin.actions.send_speaker_voucher_email"
+        "conferences.admin.actions.send_conference_voucher_email"
     )
 
     conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
