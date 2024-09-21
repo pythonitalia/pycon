@@ -20,7 +20,7 @@ from ordered_model.admin import (
     OrderedModelAdmin,
     OrderedTabularInline,
 )
-from conferences.models import SpeakerVoucher
+from conferences.models import ConferenceVoucher
 from pretix import user_has_admission_ticket
 from schedule.tasks import (
     process_schedule_items_videos_to_upload,
@@ -45,6 +45,7 @@ from .models import (
 
 
 @admin.action(description="Mark Speakers to receive Vouchers")
+@validate_single_conference_selection
 def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
     queryset = queryset.filter(
         type__in=[
@@ -52,14 +53,6 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
             ScheduleItem.TYPES.training,
         ],
     )
-
-    is_filtered_by_conference = (
-        queryset.values_list("conference_id").distinct().count() == 1
-    )
-
-    if not is_filtered_by_conference:
-        messages.error(request, "Please select only one conference")
-        return
 
     excluded_speakers = (
         queryset.filter(exclude_from_voucher_generation=True)
@@ -69,13 +62,13 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
 
     conference = queryset.only("conference_id").first().conference
 
-    existing_vouchers: dict[int, SpeakerVoucher.VoucherType] = {
+    existing_vouchers: dict[int, ConferenceVoucher.VoucherType] = {
         user_id: voucher_type
-        for user_id, voucher_type in SpeakerVoucher.objects.filter(
+        for user_id, voucher_type in ConferenceVoucher.objects.filter(
             conference_id=conference.id,
         ).values_list("user_id", "voucher_type")
     }
-    vouchers_to_create: dict[int, SpeakerVoucher.VoucherType] = {}
+    vouchers_to_create: dict[int, ConferenceVoucher.VoucherType] = {}
 
     created_codes = 0
 
@@ -98,7 +91,7 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
             if not voucher_exists(existing_vouchers, speaker_id):
                 # Create the voucher, if the speaker is already in the list,
                 # we upgrade the voucher type to speaker
-                vouchers_to_create[speaker_id] = SpeakerVoucher.VoucherType.SPEAKER
+                vouchers_to_create[speaker_id] = ConferenceVoucher.VoucherType.SPEAKER
                 created_codes = created_codes + 1
 
         first_co_speaker = (
@@ -110,9 +103,9 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
             existing_vouchers, first_co_speaker.user_id
         ):
             voucher_type = (
-                SpeakerVoucher.VoucherType.CO_SPEAKER
+                ConferenceVoucher.VoucherType.CO_SPEAKER
                 if has_main_speaker
-                else SpeakerVoucher.VoucherType.SPEAKER
+                else ConferenceVoucher.VoucherType.SPEAKER
             )
             vouchers_to_create[first_co_speaker.user_id] = voucher_type
 
@@ -121,21 +114,21 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
     vouchers_objects = []
     for user_id, voucher_type in vouchers_to_create.items():
         vouchers_objects.append(
-            SpeakerVoucher(
+            ConferenceVoucher(
                 conference_id=conference.id,
                 user_id=user_id,
-                voucher_code=SpeakerVoucher.generate_code(),
+                voucher_code=ConferenceVoucher.generate_code(),
                 voucher_type=voucher_type,
             )
         )
 
-    SpeakerVoucher.objects.bulk_create(vouchers_objects)
+    ConferenceVoucher.objects.bulk_create(vouchers_objects)
 
     messages.info(request, f"Created {created_codes} new vouchers")
 
 
 def voucher_exists(
-    existing_vouchers: Dict[int, SpeakerVoucher.VoucherType],
+    existing_vouchers: Dict[int, ConferenceVoucher.VoucherType],
     speaker_id: int,
 ) -> bool:
     return speaker_id in existing_vouchers

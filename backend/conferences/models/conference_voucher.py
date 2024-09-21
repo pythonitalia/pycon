@@ -6,10 +6,11 @@ from model_utils.models import TimeStampedModel
 from conferences.models import Conference
 
 
-class SpeakerVoucher(TimeStampedModel):
+class ConferenceVoucher(TimeStampedModel):
     class VoucherType(models.TextChoices):
         SPEAKER = "speaker", _("Speaker")
         CO_SPEAKER = "co_speaker", _("Co-Speaker")
+        GRANT = "grant", _("Grant")
 
     conference = models.ForeignKey(
         Conference,
@@ -32,8 +33,8 @@ class SpeakerVoucher(TimeStampedModel):
 
     voucher_code = models.TextField(
         help_text=_(
-            "Voucher code generated for this speaker. "
-            "If the speaker has multiple events, only one code will be generated."
+            "Voucher code generated for this user. "
+            "A user can only have one code associated to them."
         ),
         blank=False,
         null=False,
@@ -48,15 +49,28 @@ class SpeakerVoucher(TimeStampedModel):
         help_text=_("When the email was last sent"), blank=True, null=True
     )
 
+    def get_voucher_configuration(self):
+        if self.voucher_type in (
+            ConferenceVoucher.VoucherType.SPEAKER,
+            ConferenceVoucher.VoucherType.GRANT,
+        ):
+            price_mode = "set"
+            value = "0.00"
+        elif self.voucher_type == ConferenceVoucher.VoucherType.CO_SPEAKER:
+            price_mode = "percent"
+            value = "25.00"
+
+        return price_mode, value
+
     @staticmethod
     def generate_code() -> str:
         charset = list("ABCDEFGHKLMNPQRSTUVWXYZ23456789")
-        random_string = get_random_string(length=20, allowed_chars=charset)
-        return f"SPEAKER-{random_string}"
+        random_string = get_random_string(length=30, allowed_chars=charset)
+        return random_string
 
     class Meta:
-        verbose_name = _("Speakers Voucher")
-        verbose_name_plural = _("Speakers Vouchers")
+        verbose_name = _("Voucher")
+        verbose_name_plural = _("Vouchers")
         unique_together = (
             "conference",
             "user",

@@ -7,7 +7,7 @@ from conferences.tests.factories import (
     ConferenceFactory,
     KeynoteFactory,
     KeynoteSpeakerFactory,
-    SpeakerVoucherFactory,
+    ConferenceVoucherFactory,
 )
 from users.tests.factories import UserFactory
 from unittest.mock import call
@@ -21,7 +21,7 @@ from conferences.admin import (
     ConferenceAdmin,
 )
 from conferences.admin.actions import (
-    create_speaker_vouchers_on_pretix,
+    create_conference_vouchers_on_pretix,
     send_voucher_via_email,
 )
 from conferences.admin.conference import (
@@ -29,7 +29,7 @@ from conferences.admin.conference import (
     walk_conference_videos_folder,
     DeadlineForm,
 )
-from conferences.models import SpeakerVoucher
+from conferences.models import ConferenceVoucher
 from schedule.models import ScheduleItem
 
 pytestmark = mark.django_db
@@ -190,11 +190,13 @@ def test_send_voucher_via_email(
     mocker,
 ):
     mocker.patch("conferences.admin.actions.messages")
+    mocker.patch("custom_admin.admin.messages")
+
     mock_send_email = mocker.patch(
         "conferences.admin.actions.send_speaker_voucher_email"
     )
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
     schedule_item_1 = ScheduleItemFactory(
         type=ScheduleItem.TYPES.talk,
         conference=conference,
@@ -206,19 +208,21 @@ def test_send_voucher_via_email(
         submission=SubmissionFactory(conference=conference),
     )
 
-    speaker_voucher_1 = SpeakerVoucherFactory(
+    speaker_voucher_1 = ConferenceVoucherFactory(
         conference=conference,
         user_id=schedule_item_1.submission.speaker_id,
         pretix_voucher_id=1,
     )
-    speaker_voucher_2 = SpeakerVoucherFactory(
+    speaker_voucher_2 = ConferenceVoucherFactory(
         conference=conference,
         user_id=schedule_item_2.submission.speaker_id,
         pretix_voucher_id=2,
     )
 
     send_voucher_via_email(
-        None, rf.get("/"), queryset=SpeakerVoucher.objects.filter(conference=conference)
+        None,
+        rf.get("/"),
+        queryset=ConferenceVoucher.objects.filter(conference=conference),
     )
 
     mock_send_email.delay.assert_has_calls(
@@ -235,13 +239,13 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     rf,
     mocker,
 ):
-    mock_messages = mocker.patch("conferences.admin.actions.messages")
+    mock_messages = mocker.patch("custom_admin.admin.messages")
     mock_send_email = mocker.patch(
         "conferences.admin.actions.send_speaker_voucher_email"
     )
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
-    conference_2 = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
+    conference_2 = ConferenceFactory(pretix_conference_voucher_quota_id=123)
 
     schedule_item_1 = ScheduleItemFactory(
         type=ScheduleItem.TYPES.talk,
@@ -254,12 +258,12 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
         submission=SubmissionFactory(conference=conference_2),
     )
 
-    SpeakerVoucherFactory(
+    ConferenceVoucherFactory(
         conference=conference,
         user_id=schedule_item_1.submission.speaker_id,
         pretix_voucher_id=1,
     )
-    SpeakerVoucherFactory(
+    ConferenceVoucherFactory(
         conference=conference_2,
         user_id=schedule_item_2.submission.speaker_id,
         pretix_voucher_id=2,
@@ -269,7 +273,7 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     send_voucher_via_email(
         None,
         request,
-        queryset=SpeakerVoucher.objects.filter(
+        queryset=ConferenceVoucher.objects.filter(
             conference__in=[conference, conference_2]
         ),
     )
@@ -280,42 +284,51 @@ def test_send_voucher_via_email_requires_filtering_by_conference(
     mock_send_email.delay.assert_not_called()
 
 
-def test_create_speaker_vouchers_on_pretix(rf, mocker):
+def test_create_conference_vouchers_on_pretix(rf, mocker):
     mock_create_voucher = mocker.patch(
         "conferences.admin.actions.create_voucher",
         side_effect=[
             {"id": 1},
             {"id": 2},
             {"id": 3},
+            {"id": 4},
         ],
     )
+    mocker.patch("custom_admin.admin.messages")
     mocker.patch("conferences.admin.actions.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
 
-    voucher_1 = SpeakerVoucherFactory(
+    voucher_1 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-123",
         pretix_voucher_id=None,
     )
 
-    voucher_2 = SpeakerVoucherFactory(
+    voucher_2 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-456",
         pretix_voucher_id=None,
     )
 
-    voucher_3 = SpeakerVoucherFactory(
+    voucher_3 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-999",
         pretix_voucher_id=None,
-        voucher_type=SpeakerVoucher.VoucherType.CO_SPEAKER,
+        voucher_type=ConferenceVoucher.VoucherType.CO_SPEAKER,
     )
 
-    create_speaker_vouchers_on_pretix(
+    voucher_4 = ConferenceVoucherFactory(
+        conference=conference,
+        voucher_code="SPEAKER-888",
+        pretix_voucher_id=None,
+        voucher_type=ConferenceVoucher.VoucherType.GRANT,
+    )
+
+    create_conference_vouchers_on_pretix(
         None,
         request=rf.get("/"),
-        queryset=SpeakerVoucher.objects.filter(conference=conference),
+        queryset=ConferenceVoucher.objects.filter(conference=conference),
     )
 
     mock_create_voucher.assert_has_calls(
@@ -324,7 +337,7 @@ def test_create_speaker_vouchers_on_pretix(rf, mocker):
                 conference=conference,
                 code="SPEAKER-123",
                 comment=f"Voucher for user_id={voucher_1.user_id}",
-                tag="speakers",
+                tag="speaker",
                 quota_id=123,
                 price_mode="set",
                 value="0.00",
@@ -333,7 +346,7 @@ def test_create_speaker_vouchers_on_pretix(rf, mocker):
                 conference=conference,
                 code="SPEAKER-456",
                 comment=f"Voucher for user_id={voucher_2.user_id}",
-                tag="speakers",
+                tag="speaker",
                 quota_id=123,
                 price_mode="set",
                 value="0.00",
@@ -342,10 +355,19 @@ def test_create_speaker_vouchers_on_pretix(rf, mocker):
                 conference=conference,
                 code="SPEAKER-999",
                 comment=f"Voucher for user_id={voucher_3.user_id}",
-                tag="speakers",
+                tag="co_speaker",
                 quota_id=123,
                 price_mode="percent",
                 value="25.00",
+            ),
+            call(
+                conference=conference,
+                code="SPEAKER-888",
+                comment=f"Voucher for user_id={voucher_4.user_id}",
+                tag="grant",
+                quota_id=123,
+                price_mode="set",
+                value="0.00",
             ),
         ],
         any_order=True,
@@ -360,7 +382,7 @@ def test_create_speaker_vouchers_on_pretix(rf, mocker):
     assert voucher_3.pretix_voucher_id == 3
 
 
-def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(rf, mocker):
+def test_create_conference_vouchers_on_pretix_only_for_missing_ones(rf, mocker):
     mock_create_voucher = mocker.patch(
         "conferences.admin.actions.create_voucher",
         side_effect=[
@@ -369,31 +391,31 @@ def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(rf, mocker):
     )
     mocker.patch("conferences.admin.actions.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
 
-    voucher_1 = SpeakerVoucherFactory(
+    voucher_1 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-123",
         pretix_voucher_id=None,
     )
 
-    voucher_2 = SpeakerVoucherFactory(
+    voucher_2 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-456",
         pretix_voucher_id=1155,
     )
 
-    create_speaker_vouchers_on_pretix(
+    create_conference_vouchers_on_pretix(
         None,
         request=rf.get("/"),
-        queryset=SpeakerVoucher.objects.filter(conference=conference),
+        queryset=ConferenceVoucher.objects.filter(conference=conference),
     )
 
     mock_create_voucher.assert_called_once_with(
         conference=conference,
         code="SPEAKER-123",
         comment=f"Voucher for user_id={voucher_1.user_id}",
-        tag="speakers",
+        tag="speaker",
         quota_id=123,
         price_mode="set",
         value="0.00",
@@ -406,7 +428,7 @@ def test_create_speaker_vouchers_on_pretix_only_for_missing_ones(rf, mocker):
     assert voucher_2.pretix_voucher_id == 1155
 
 
-def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences(
+def test_create_conference_vouchers_on_pretix_doesnt_work_with_multiple_conferences(
     rf, mocker
 ):
     mock_create_voucher = mocker.patch(
@@ -416,18 +438,18 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences
             {"id": 2},
         ],
     )
-    mock_messages = mocker.patch("conferences.admin.actions.messages")
+    mock_messages = mocker.patch("custom_admin.admin.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
-    conference_2 = ConferenceFactory(pretix_speaker_voucher_quota_id=123)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=123)
+    conference_2 = ConferenceFactory(pretix_conference_voucher_quota_id=123)
 
-    voucher_1 = SpeakerVoucherFactory(
+    voucher_1 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-123",
         pretix_voucher_id=None,
     )
 
-    voucher_2 = SpeakerVoucherFactory(
+    voucher_2 = ConferenceVoucherFactory(
         conference=conference_2,
         voucher_code="SPEAKER-456",
         pretix_voucher_id=None,
@@ -435,10 +457,10 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences
 
     request = rf.get("/")
 
-    create_speaker_vouchers_on_pretix(
+    create_conference_vouchers_on_pretix(
         None,
         request=request,
-        queryset=SpeakerVoucher.objects.filter(
+        queryset=ConferenceVoucher.objects.filter(
             conference__in=[conference, conference_2]
         ),
     )
@@ -455,7 +477,7 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_with_multiple_conferences
     assert voucher_2.pretix_voucher_id is None
 
 
-def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
+def test_create_conference_vouchers_on_pretix_doesnt_work_without_pretix_config(
     rf, mocker
 ):
     mock_create_voucher = mocker.patch(
@@ -467,15 +489,15 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
     )
     mock_messages = mocker.patch("conferences.admin.actions.messages")
 
-    conference = ConferenceFactory(pretix_speaker_voucher_quota_id=None)
+    conference = ConferenceFactory(pretix_conference_voucher_quota_id=None)
 
-    voucher_1 = SpeakerVoucherFactory(
+    voucher_1 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-123",
         pretix_voucher_id=None,
     )
 
-    voucher_2 = SpeakerVoucherFactory(
+    voucher_2 = ConferenceVoucherFactory(
         conference=conference,
         voucher_code="SPEAKER-456",
         pretix_voucher_id=None,
@@ -483,16 +505,16 @@ def test_create_speaker_vouchers_on_pretix_doesnt_work_without_pretix_config(
 
     request = rf.get("/")
 
-    create_speaker_vouchers_on_pretix(
+    create_conference_vouchers_on_pretix(
         None,
         request=request,
-        queryset=SpeakerVoucher.objects.filter(conference=conference),
+        queryset=ConferenceVoucher.objects.filter(conference=conference),
     )
 
     mock_create_voucher.assert_not_called()
     mock_messages.error.assert_called_once_with(
         request,
-        "Please configure the speaker voucher quota ID in the conference settings",
+        "Please configure the conference voucher quota ID in the conference settings",
     )
 
     voucher_1.refresh_from_db()

@@ -66,7 +66,7 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         _("pretix hotel bed layout question id"), blank=True, null=True
     )
 
-    pretix_speaker_voucher_quota_id = models.IntegerField(
+    pretix_conference_voucher_quota_id = models.IntegerField(
         _("Pretix speaker voucher quota id"),
         blank=True,
         null=True,

@@ -18,7 +18,7 @@ from ordered_model.admin import (
 )
 from itertools import permutations
 from unicodedata import normalize
-from conferences.models import SpeakerVoucher
+from conferences.models import ConferenceVoucher
 from schedule.models import ScheduleItem
 from sponsors.models import SponsorLevel
 from voting.models import IncludedEvent
@@ -33,7 +33,7 @@ from conferences.models import (
     Topic,
 )
 from conferences.admin.views import grants_summary
-from .actions import send_voucher_via_email, create_speaker_vouchers_on_pretix
+from .actions import send_voucher_via_email, create_conference_vouchers_on_pretix
 
 
 def validate_deadlines_form(forms):
@@ -138,8 +138,8 @@ class ConferenceAdmin(
             {"fields": ("pretix_organizer_id", "pretix_event_id", "pretix_event_url")},
         ),
         (
-            "Speaker Voucher",
-            {"fields": ("pretix_speaker_voucher_quota_id",)},
+            "Conference Voucher",
+            {"fields": ("pretix_conference_voucher_quota_id",)},
         ),
         (
             "Slack Integration",
@@ -479,9 +479,9 @@ class KeynoteAdmin(OrderedInlineModelAdminMixin, OrderedModelAdmin):
         return Keynote.all_objects.all()
 
 
-class SpeakerVoucherForm(forms.ModelForm):
+class ConferenceVoucherForm(forms.ModelForm):
     class Meta:
-        model = SpeakerVoucher
+        model = ConferenceVoucher
         fields = [
             "conference",
             "user",
@@ -492,9 +492,9 @@ class SpeakerVoucherForm(forms.ModelForm):
         ]
 
 
-@admin.register(SpeakerVoucher)
-class SpeakerVoucherAdmin(admin.ModelAdmin):
-    form = SpeakerVoucherForm
+@admin.register(ConferenceVoucher)
+class ConferenceVoucherAdmin(admin.ModelAdmin):
+    form = ConferenceVoucherForm
     search_fields = ("voucher_code", "user__name", "user__full_name")
     autocomplete_fields = ("user",)
     list_filter = (
@@ -512,7 +512,7 @@ class SpeakerVoucherAdmin(admin.ModelAdmin):
         "created",
     )
     actions = [
-        create_speaker_vouchers_on_pretix,
+        create_conference_vouchers_on_pretix,
         send_voucher_via_email,
     ]
 
@@ -523,7 +523,7 @@ class SpeakerVoucherAdmin(admin.ModelAdmin):
         return obj.pretix_voucher_id is not None
 
     def get_changeform_initial_data(self, request):
-        return {"voucher_code": SpeakerVoucher.generate_code()}
+        return {"voucher_code": ConferenceVoucher.generate_code()}
 
     def user_display_name(self, obj):
         return obj.user.display_name
