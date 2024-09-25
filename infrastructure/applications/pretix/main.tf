@@ -15,7 +15,7 @@ data "template_file" "user_data" {
 
 resource "aws_instance" "pretix" {
   ami               = var.ecs_x86_ami
-  instance_type     = "t3.small"
+  instance_type     = "t4g.small"
   subnet_id         = data.aws_subnet.public.id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [
@@ -81,35 +81,11 @@ resource "aws_ecs_task_definition" "pretix_service" {
       essential         = true
       environment = [
         {
-          name  = "DATABASE_NAME"
-          value = "pretix"
-        },
-        {
-          name  = "DATABASE_USERNAME"
-          value = data.aws_db_instance.database.master_username
-        },
-        {
-          name  = "DATABASE_PASSWORD"
-          value = module.common_secrets.value.database_password
-        },
-        {
-          name  = "DATABASE_HOST"
-          value = var.enable_proxy ? data.aws_db_proxy.proxy[0].endpoint : data.aws_db_instance.database.address
-        },
-        {
-          name  = "MAIL_USER"
-          value = module.secrets.value.mail_user
-        },
-        {
-          name  = "MAIL_PASSWORD"
-          value = module.secrets.value.mail_password
-        },
-        {
           name  = "PRETIX_SENTRY_DSN"
           value = module.secrets.value.sentry_dsn
         },
         {
-          name  = "SECRET_KEY"
+          name  = "PRETIX_DJANGO_SECRET"
           value = module.secrets.value.secret_key
         },
         {
@@ -135,7 +111,89 @@ resource "aws_ecs_task_definition" "pretix_service" {
         {
           name  = "PRETIX_PRETIX_TRUST_X_FORWARDED_PROTO",
           value = "true"
-        }
+        },
+        {
+          name  = "VIRTUAL_ENV",
+          value = "/var/pretix/venv"
+        },
+        {
+          name  = "PATH",
+          value = "/var/pretix/venv/bin:/usr/local/bin:/usr/bin:/bin"
+        },
+        {
+          name  = "PRETIX_DATABASE_BACKEND",
+          value = "postgresql"
+        },
+        {
+          name  = "PRETIX_DATABASE_NAME"
+          value = "pretix"
+        },
+        {
+          name  = "PRETIX_DATABASE_USER"
+          value = data.aws_db_instance.database.master_username
+        },
+        {
+          name  = "PRETIX_DATABASE_PASSWORD"
+          value = module.common_secrets.value.database_password
+        },
+        {
+          name  = "PRETIX_DATABASE_HOST"
+          value = data.aws_db_instance.database.address
+        },
+        {
+          name  = "PRETIX_DATABASE_PORT"
+          value = "5432"
+        },
+        {
+          name  = "PRETIX_MAIL_USER"
+          value = module.secrets.value.mail_user
+        },
+        {
+          name  = "PRETIX_MAIL_PASSWORD"
+          value = module.secrets.value.mail_password
+        },
+        {
+          name  = "PRETIX_MAIL_HOST"
+          value = "email-smtp.eu-central-1.amazonaws.com"
+        },
+        {
+          name  = "PRETIX_MAIL_PORT"
+          value = "587"
+        },
+        {
+          name  = "PRETIX_MAIL_TLS"
+          value = "true"
+        },
+        {
+          name  = "PRETIX_MAIL_SSL"
+          value = "false"
+        },
+        {
+          name  = "PRETIX_MAIL_FROM"
+          value = "noreply@pycon.it"
+        },
+        {
+          # this is is needed for our hack that updates the order view
+          # without having to rewrite the whole template
+          name  = "PRETIX_PRETIX_CSP_ADDITIONAL_HEADER",
+          value = "script-src 'self' 'unsafe-inline'"
+        },
+        {
+          name  = "PRETIX_PRETIX_INSTANCE_NAME",
+          value = "Python Italia"
+        },
+        {
+          name = "DJANGO_SETTINGS_MODULE",
+          value = "production_settings"
+        },
+        {
+          name = "DATA_DIR",
+          value = "/data/"
+        },
+        {
+          name = "HOME",
+          value = "/pretix"
+        },
       ]
       portMappings = [
         {
