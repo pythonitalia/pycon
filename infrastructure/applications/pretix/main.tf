@@ -14,7 +14,7 @@ data "template_file" "user_data" {
 }
 
 resource "aws_instance" "pretix" {
-  ami               = var.ecs_x86_ami
+  ami               = var.ecs_arm_ami
   instance_type     = "t4g.small"
   subnet_id         = data.aws_subnet.public.id
   availability_zone = "eu-central-1a"
