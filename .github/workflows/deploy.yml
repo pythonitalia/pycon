@@ -79,6 +79,7 @@ jobs:
             echo "image_exists=0" >> $GITHUB_OUTPUT
           fi
       - uses: actions/checkout@v4
+        if: ${{ steps.image.outputs.image_exists == 0 }}
         with:
           repository: pretix/pretix
           ref: v2024.8.0
