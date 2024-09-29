@@ -1,0 +1,9 @@
+query GetBrochureData($conferenceCode: String!) {
+  conference(code: $conferenceCode) {
+    id
+    name
+    start
+    end
+    introduction
+  }
+}

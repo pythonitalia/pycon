@@ -1,7 +1,7 @@
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
 
-from .models import Sponsor, SponsorLead, SponsorLevel
+from .models import Sponsor, SponsorLead, SponsorLevel, SponsorLevelBenefit
 
 
 @admin.register(Sponsor)
@@ -14,10 +14,18 @@ class SponsorAdmin(OrderedModelAdmin):
     readonly_fields = ("order",)
 
 
+class SponsorLevelBenefitInline(admin.TabularInline):
+    model = SponsorLevelBenefit
+    extra = 1
+
+
 @admin.register(SponsorLevel)
 class SponsorLevelAdmin(OrderedModelAdmin):
     list_display = ("name", "conference", "move_up_down_links")
     readonly_fields = ("order",)
+
+    inlines = [SponsorLevelBenefitInline]
+    exclude = ("benefits",)
 
 
 @admin.register(SponsorLead)

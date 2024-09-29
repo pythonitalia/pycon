@@ -80,16 +80,18 @@ export const Header = () => {
   });
 
   return (
-    <NavBar
-      mainLinks={mainLinks}
-      secondaryLinks={secondaryLinks}
-      actions={actions}
-      logo={Logo}
-      mobileLogo={MobileLogo}
-      bottomBarLink={{
-        text: getTranslatedMessage("header.switchLanguage", language),
-        link: languageSwitchHref,
-      }}
-    />
+    <header>
+      <NavBar
+        mainLinks={mainLinks}
+        secondaryLinks={secondaryLinks}
+        actions={actions}
+        logo={Logo}
+        mobileLogo={MobileLogo}
+        bottomBarLink={{
+          text: getTranslatedMessage("header.switchLanguage", language),
+          link: languageSwitchHref,
+        }}
+      />
+    </header>
   );
 };

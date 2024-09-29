@@ -4,15 +4,33 @@
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
 }
 
-/* test */
+body:has(.brochure-page) {
+    #__next > div > div.mt-auto > footer {
+        display: none;
+    }
+
+    #__next > div > header {
+        display: none;
+    }
+
+    @apply bg-cream;
+}
+
+.brochure-page .page {
+    padding-block: 2cm;
+
+    width: 21cm;
+    height: 29.7cm;
+    page-break-before: always;
+}
