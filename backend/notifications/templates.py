@@ -13,7 +13,6 @@ class EmailTemplate(str, Enum):
     RESET_PASSWORD = "reset-password"
 
     # Submissions
-    SUBMISSION_SCHEDULE_TIME_CHANGED = "submission-schedule-time-change"
     SPEAKER_COMMUNICATION = "speaker-communication"
 
     def __str__(self) -> str:

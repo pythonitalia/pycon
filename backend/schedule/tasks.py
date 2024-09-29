@@ -75,24 +75,26 @@ def send_submission_time_slot_changed_email(*, schedule_item_id):
     submission = schedule_item.submission
 
     speaker_id = submission.speaker_id
-    submission_title = submission.title.localize(schedule_item.language.code)
+    proposal_title = submission.title.localize(schedule_item.language.code)
 
     invitation_url = urljoin(
         settings.FRONTEND_URL, f"/schedule/invitation/{submission.hashid}"
     )
 
-    speaker = User.objects.get(id=speaker_id)
+    proposal_speaker = User.objects.get(id=speaker_id)
+    conference = schedule_item.conference
     conference_name = schedule_item.conference.name.localize("en")
 
-    send_email(
-        template=EmailTemplateEnum.SUBMISSION_SCHEDULE_TIME_CHANGED,
-        to=speaker.email,
-        subject=f"[{conference_name}] Your Submission time slot has been changed!",
-        variables={
-            "submissionTitle": submission_title,
-            "firstname": get_name(speaker, "there"),
-            "invitationlink": invitation_url,
-            "conferenceName": conference_name,
+    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
+        EmailTemplateIdentifier.proposal_scheduled_time_changed
+    )
+    email_template.send_email(
+        recipient=proposal_speaker,
+        placeholders={
+            "proposal_title": proposal_title,
+            "invitation_url": invitation_url,
+            "conference_name": conference_name,
+            "speaker_name": get_name(proposal_speaker, "there"),
         },
     )
 

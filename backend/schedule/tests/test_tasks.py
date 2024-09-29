@@ -142,18 +142,16 @@ def test_send_submission_time_slot_changed_email():
         type=ScheduleItem.TYPES.talk,
     )
 
-    with patch("schedule.tasks.send_email") as email_mock:
+    with patch("schedule.tasks.EmailTemplate") as mock_email_template:
         send_submission_time_slot_changed_email(schedule_item_id=schedule_item.id)
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplateEnum.SUBMISSION_SCHEDULE_TIME_CHANGED,
-        to="marco@placeholder.it",
-        subject="[Conf] Your Submission time slot has been changed!",
-        variables={
-            "submissionTitle": "Title Submission",
-            "firstname": "Marco Acierno",
-            "invitationlink": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
-            "conferenceName": "Conf",
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=schedule_item.submission.speaker,
+        placeholders={
+            "proposal_title": "Title Submission",
+            "speaker_name": "Marco Acierno",
+            "invitation_url": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
+            "conference_name": "Conf",
         },
     )
 

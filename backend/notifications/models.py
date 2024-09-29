@@ -61,6 +61,13 @@ class EmailTemplate(TimeStampedModel):
             "proposal_title",
             "proposal_type",
         ],
+        EmailTemplateIdentifier.proposal_scheduled_time_changed: [
+            *BASE_PLACEHOLDERS,
+            "conference_name",
+            "speaker_name",
+            "proposal_title",
+            "invitation_url",
+        ],
     }
 
     conference = models.ForeignKey(
