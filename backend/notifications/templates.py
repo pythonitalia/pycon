@@ -13,7 +13,6 @@ class EmailTemplate(str, Enum):
     RESET_PASSWORD = "reset-password"
 
     # Submissions
-    SUBMISSION_IN_WAITING_LIST = "submission-in-waiting-list"
     SUBMISSION_SCHEDULE_TIME_CHANGED = "submission-schedule-time-change"
     SPEAKER_COMMUNICATION = "speaker-communication"
 
