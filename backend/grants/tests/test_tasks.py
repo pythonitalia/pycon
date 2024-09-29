@@ -4,7 +4,6 @@ from conferences.tests.factories import ConferenceFactory, DeadlineFactory
 
 import pytest
 from users.tests.factories import UserFactory
-from notifications.templates import EmailTemplate
 
 from grants.tests.factories import GrantFactory
 from grants.tasks import (
@@ -34,20 +33,18 @@ def test_send_grant_voucher_email(settings):
         approved_type=Grant.ApprovedType.ticket_only,
     )
 
-    with patch("grants.tasks.send_email") as email_mock:
+    with patch("grants.tasks.EmailTemplate") as mock_email_template:
         send_grant_voucher_email(grant_id=grant.id)
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_VOUCHER_CODE,
-        to="marco@placeholder.it",
-        subject=f"[{grant.conference.name}] Your Grant Voucher Code",
-        variables={
-            "firstname": "Marco Acierno",
-            "voucherCode": "ABC123",
-            "hasApprovedAccommodation": False,
-            "visaPageLink": "https://pycon.it/visa",
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": "Marco Acierno",
+            "voucher_code": "ABC123",
+            "has_approved_accommodation": False,
+            "visa_page_link": "https://pycon.it/visa",
+            "conference_name": grant.conference.name.localize("en"),
         },
-        reply_to=["grants@pycon.it"],
     )
 
 
