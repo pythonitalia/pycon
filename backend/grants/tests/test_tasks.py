@@ -66,7 +66,7 @@ def test_send_grant_reply_rejected_email():
     mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
         recipient=user,
         placeholders={
-            "user_name": "Marco",
+            "user_name": "Marco Acierno",
             "conference_name": grant.conference.name.localize("en"),
         },
     )
