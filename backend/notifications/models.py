@@ -131,6 +131,11 @@ class EmailTemplate(TimeStampedModel):
             "has_approved_accommodation",
             "visa_page_link",
         ],
+        EmailTemplateIdentifier.sponsorship_brochure: [
+            *BASE_PLACEHOLDERS,
+            "brochure_link",
+            "conference_name",
+        ],
     }
 
     conference = models.ForeignKey(
