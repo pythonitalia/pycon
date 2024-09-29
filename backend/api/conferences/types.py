@@ -18,7 +18,14 @@ from api.languages.types import Language
 from api.pretix.query import get_conference_tickets, get_voucher
 from api.pretix.types import TicketItem, Voucher
 from api.schedule.types import Room, ScheduleItem, ScheduleItemUser
-from api.sponsors.types import SponsorsByLevel
+from api.sponsors.types import (
+    SponsorBrochure,
+    SponsorBrochureLocationText,
+    SponsorBrochureStats,
+    SponsorBrochureText,
+    SponsorBrochureWhySponsorText,
+    SponsorsByLevel,
+)
 from api.submissions.types import Submission, SubmissionType
 from api.voting.types import RankRequest
 from cms.models import GenericCopy
@@ -26,6 +33,7 @@ from conferences.models.deadline import DeadlineStatus
 from schedule.models import ScheduleItem as ScheduleItemModel
 from submissions.models import Submission as SubmissionModel
 from voting.models import RankRequest as RankRequestModel
+from sponsors.models import SponsorBrochure as SponsorBrochureModel
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
@@ -358,6 +366,38 @@ class Conference:
     def is_running(self, info: Info) -> bool:
         now = timezone.now()
         return self.start <= now <= self.end
+
+    @strawberry.field
+    def sponsor_brochure(self) -> SponsorBrochure | None:
+        brochure: SponsorBrochureModel | None = SponsorBrochureModel.objects.filter(
+            conference=self
+        ).first()
+
+        if not brochure:
+            return None
+
+        return SponsorBrochure(
+            stats=SponsorBrochureStats(
+                attendees=brochure.stats_attendees,
+                speakers=brochure.stats_speakers,
+                talks=brochure.stats_talks,
+                unique_online_visitors=brochure.stats_unique_online_visitors,
+                sponsors_and_partners=brochure.stats_sponsors,
+                grants_given=brochure.stats_grants_given,
+                coffees=brochure.stats_coffee,
+            ),
+            introduction=SponsorBrochureText(text=brochure.introduction),
+            tags=SponsorBrochureText(text=brochure.tags),
+            location=SponsorBrochureLocationText(
+                city=SponsorBrochureText(text=brochure.city_description),
+                country=SponsorBrochureText(text=brochure.country_description),
+            ),
+            community=SponsorBrochureText(text=brochure.community),
+            why_sponsor=SponsorBrochureWhySponsorText(
+                introduction=SponsorBrochureText(text=brochure.why_sponsor_intro),
+                text=brochure.why_sponsor,
+            ),
+        )
 
 
 DeadlineStatusType = strawberry.enum(DeadlineStatus)

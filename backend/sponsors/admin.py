@@ -1,7 +1,13 @@
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
 
-from .models import Sponsor, SponsorLead, SponsorLevel, SponsorLevelBenefit
+from .models import (
+    Sponsor,
+    SponsorLead,
+    SponsorLevel,
+    SponsorLevelBenefit,
+    SponsorBrochure,
+)
 
 
 @admin.register(Sponsor)
@@ -44,3 +50,9 @@ class SponsorLeadAdmin(admin.ModelAdmin):
         "company",
     )
     list_filter = ("conference",)
+
+
+@admin.register(SponsorBrochure)
+class SponsorBrochureAdmin(admin.ModelAdmin):
+    list_display = ("conference", "created")
+    search_fields = ("conference__name",)

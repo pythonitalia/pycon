@@ -40,3 +40,41 @@ class SponsorsByLevel:
         return cls(
             level=level.name, sponsors=sponsors, highlight_color=level.highlight_color
         )
+
+
+@strawberry.type
+class SponsorBrochureStats:
+    attendees: str
+    speakers: str
+    talks: str
+    unique_online_visitors: str
+    sponsors_and_partners: str
+    grants_given: str
+    coffees: str
+
+
+@strawberry.type
+class SponsorBrochureText:
+    text: str
+
+
+@strawberry.type
+class SponsorBrochureLocationText:
+    city: SponsorBrochureText
+    country: SponsorBrochureText
+
+
+@strawberry.type
+class SponsorBrochureWhySponsorText:
+    introduction: SponsorBrochureText
+    text: str
+
+
+@strawberry.type
+class SponsorBrochure:
+    stats: SponsorBrochureStats
+    introduction: SponsorBrochureText
+    tags: SponsorBrochureText
+    location: SponsorBrochureLocationText
+    community: SponsorBrochureText
+    why_sponsor: SponsorBrochureWhySponsorText

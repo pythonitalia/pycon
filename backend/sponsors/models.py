@@ -99,7 +99,7 @@ def get_upload_to(instance, filename):
     return f"conferences/{instance.code}/{filename}"
 
 
-class SponsorBrochure(GeoLocalizedModel, TimeStampedModel):
+class SponsorBrochure(TimeStampedModel):
     conference = models.OneToOneField(
         "conferences.Conference",
         verbose_name=_("conference"),
@@ -138,4 +138,4 @@ class SponsorBrochure(GeoLocalizedModel, TimeStampedModel):
     community = I18nTextField(_("community"), blank=True)
 
     why_sponsor_intro = I18nTextField(_("why sponsor intro"), blank=True)
-    why_sponsor = models.TextField(_("why sponsor"), blank=True)
+    why_sponsor = I18nTextField(_("why sponsor"), blank=True)
