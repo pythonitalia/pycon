@@ -77,6 +77,24 @@ class EmailTemplate(TimeStampedModel):
             "proposal_title",
             "invitation_url",
         ],
+        EmailTemplateIdentifier.grant_approved: [
+            *BASE_PLACEHOLDERS,
+            "reply_url",
+            "start_date",
+            "end_date",
+            "deadline_date_time",
+            "deadline_date",
+            "visa_page_link",
+            "has_approved_travel",
+            "has_approved_accommodation",
+            "travel_amount",
+            "is_reminder",
+        ],
+        EmailTemplateIdentifier.grant_rejected: [
+            *BASE_PLACEHOLDERS,
+            "conference_name",
+            "user_name",
+        ],
     }
 
     conference = models.ForeignKey(
