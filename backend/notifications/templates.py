@@ -7,7 +7,6 @@ class EmailTemplate(str, Enum):
     GRANT_WAITING_LIST = "grants-waiting-list"
     GRANT_WAITING_LIST_UPDATE = "grants-waiting-list-update"
     GRANT_VOUCHER_CODE = "grants-voucher-code"
-    GRANT_REJECTED = "grants-rejected"
 
     # Users
     RESET_PASSWORD = "reset-password"

@@ -28,6 +28,8 @@ class EmailTemplateIdentifier(models.TextChoices):
 
     reset_password = "reset_password", _("[System] Reset password")
 
+    grant_rejected = "grant_rejected", _("Grant rejected")
+
     custom = "custom", _("Custom")
 
 

@@ -60,18 +60,15 @@ def test_send_grant_reply_rejected_email():
     )
     grant = GrantFactory(user=user)
 
-    with patch("grants.tasks.send_email") as email_mock:
+    with patch("grants.tasks.EmailTemplate") as mock_email_template:
         send_grant_reply_rejected_email(grant_id=grant.id)
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_REJECTED,
-        to="marco@placeholder.it",
-        subject=f"[{grant.conference.name}] Financial Aid Update",
-        variables={
-            "firstname": "Marco Acierno",
-            "conferenceName": grant.conference.name.localize("en"),
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": "Marco",
+            "conference_name": grant.conference.name.localize("en"),
         },
-        reply_to=["grants@pycon.it"],
     )
 
 
