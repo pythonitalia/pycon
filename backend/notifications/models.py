@@ -109,6 +109,10 @@ class EmailTemplate(TimeStampedModel):
             "reply_url",
             "grants_update_deadline",
         ],
+        EmailTemplateIdentifier.reset_password: [
+            "user_name",
+            "reset_password_link",
+        ],
     }
 
     conference = models.ForeignKey(
@@ -171,9 +175,14 @@ class EmailTemplate(TimeStampedModel):
 
         placeholders = placeholders or {}
         processed_email_template = self.render(placeholders=placeholders)
-        from_email = (
-            self.conference.organizer.email_from_address or settings.DEFAULT_FROM_EMAIL
-        )
+
+        if self.is_system_template:
+            from_email = settings.DEFAULT_FROM_EMAIL
+        else:
+            from_email = (
+                self.conference.organizer.email_from_address
+                or settings.DEFAULT_FROM_EMAIL
+            )
 
         SentEmail.objects.create(
             email_template=self,
@@ -232,6 +241,8 @@ class SentEmail(TimeStampedModel):
         on_delete=models.CASCADE,
         related_name="sent_emails",
         verbose_name=_("conference"),
+        null=True,
+        blank=True,
     )
 
     status = models.CharField(
