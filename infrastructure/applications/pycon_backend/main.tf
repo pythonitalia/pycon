@@ -94,12 +94,10 @@ module "lambda" {
     AWS_REGION_NAME                           = aws_s3_bucket.backend_media.region
     SPEAKERS_EMAIL_ADDRESS                    = module.secrets.value.speakers_email_address
     EMAIL_BACKEND                             = "django_ses.SESBackend"
-    PYTHONIT_EMAIL_BACKEND                    = "notifications.backends.ses.SESEmailBackend"
     FRONTEND_URL                              = "https://pycon.it"
     PRETIX_API                                = "https://tickets.pycon.it/api/v1/"
     AWS_S3_CUSTOM_DOMAIN                      = local.cdn_url
     PRETIX_API_TOKEN                          = module.common_secrets.value.pretix_api_token
-    PINPOINT_APPLICATION_ID                   = module.secrets.value.pinpoint_application_id
     MAILCHIMP_SECRET_KEY                      = module.common_secrets.value.mailchimp_secret_key
     MAILCHIMP_DC                              = module.common_secrets.value.mailchimp_dc
     MAILCHIMP_LIST_ID                         = module.common_secrets.value.mailchimp_list_id

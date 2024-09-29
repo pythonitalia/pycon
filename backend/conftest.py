@@ -75,22 +75,6 @@ def change_azure_account_to_test_name(settings):
     settings.AZURE_STORAGE_ACCOUNT_NAME = "pytest-fakestorageaccount"
 
 
-class TestEmailBackend:
-    ALL_EMAIL_BACKEND_CALLS = []
-
-    def __init__(self, *args, **kwargs) -> None:
-        pass
-
-    def send_email(self, **kwargs):
-        TestEmailBackend.ALL_EMAIL_BACKEND_CALLS.append(kwargs)
-
-
-@pytest.fixture
-def sent_emails():
-    TestEmailBackend.ALL_EMAIL_BACKEND_CALLS = []
-    yield TestEmailBackend.ALL_EMAIL_BACKEND_CALLS
-
-
 @pytest.fixture
 def image_file():
     def wrapper(filename: str = "test.jpg"):
