@@ -1,16 +1,17 @@
+from grants.tasks import get_name
+from notifications.models import EmailTemplate, EmailTemplateIdentifier
 import strawberry
 from django.utils import timezone
 from datetime import timedelta
 from api.users.types import OperationSuccess
 from users.models import User as UserModel
-from notifications.templates import EmailTemplate
-from notifications.emails import get_email_backend
 from django.conf import settings
 import jwt
 import logging
 from typing import Annotated, Union
 
 logger = logging.getLogger(__file__)
+
 RequestResetPasswordResult = Annotated[
     Union[OperationSuccess], strawberry.union(name="RequestResetPasswordResult")
 ]
@@ -28,19 +29,18 @@ def request_reset_password(email: str) -> RequestResetPasswordResult:
 
     token = _create_reset_password_token(user=user)
 
-    backend = get_email_backend(
-        settings.PYTHONIT_EMAIL_BACKEND, environment=settings.ENVIRONMENT
+    email_template = EmailTemplate.objects.system_templates().get_by_identifier(
+        EmailTemplateIdentifier.reset_password
     )
-    backend.send_email(
-        template=EmailTemplate.RESET_PASSWORD,
-        from_=settings.DEFAULT_FROM_EMAIL,
-        to=user.email,
-        subject="Reset your password",
-        variables={
-            "firstname": user.name,
-            "resetpasswordlink": f"https://pycon.it/reset-password/{token}",
+
+    email_template.send_email(
+        recipient=user,
+        placeholders={
+            "user_name": get_name(user, "there"),
+            "reset_password_link": f"https://pycon.it/reset-password/{token}",
         },
     )
+
     logger.info("Sent reset password token to user_id=%s", user.id)
     return OperationSuccess(ok=True)
 

@@ -8,11 +8,6 @@ from pretix import user_has_admission_ticket
 from django.utils import timezone
 from grants.tasks import get_name
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
-from notifications.emails import (
-    send_email,
-    mark_safe,
-    EmailTemplate as EmailTemplateEnum,
-)
 from urllib.parse import urljoin
 from django.conf import settings
 import logging
@@ -75,24 +70,26 @@ def send_submission_time_slot_changed_email(*, schedule_item_id):
     submission = schedule_item.submission
 
     speaker_id = submission.speaker_id
-    submission_title = submission.title.localize(schedule_item.language.code)
+    proposal_title = submission.title.localize(schedule_item.language.code)
 
     invitation_url = urljoin(
         settings.FRONTEND_URL, f"/schedule/invitation/{submission.hashid}"
     )
 
-    speaker = User.objects.get(id=speaker_id)
+    proposal_speaker = User.objects.get(id=speaker_id)
+    conference = schedule_item.conference
     conference_name = schedule_item.conference.name.localize("en")
 
-    send_email(
-        template=EmailTemplateEnum.SUBMISSION_SCHEDULE_TIME_CHANGED,
-        to=speaker.email,
-        subject=f"[{conference_name}] Your Submission time slot has been changed!",
-        variables={
-            "submissionTitle": submission_title,
-            "firstname": get_name(speaker, "there"),
-            "invitationlink": invitation_url,
-            "conferenceName": conference_name,
+    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
+        EmailTemplateIdentifier.proposal_scheduled_time_changed
+    )
+    email_template.send_email(
+        recipient=proposal_speaker,
+        placeholders={
+            "proposal_title": proposal_title,
+            "invitation_url": invitation_url,
+            "conference_name": conference_name,
+            "speaker_name": get_name(proposal_speaker, "there"),
         },
     )
 
@@ -182,17 +179,17 @@ def send_speaker_communication_email(
     ):
         return
 
-    send_email(
-        template=EmailTemplateEnum.SPEAKER_COMMUNICATION,
-        to=user.email,
-        subject=f"[{conference.name.localize('en')}] {subject}",
-        variables={
-            "firstname": get_name(user, "there"),
-            "body": mark_safe(body.replace("\n", "<br />")),
+    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
+        EmailTemplateIdentifier.speaker_communication
+    )
+    email_template.send_email(
+        recipient=user,
+        placeholders={
+            "conference_name": conference.name.localize("en"),
+            "user_name": get_name(user, "there"),
+            "body": body.replace("\n", "<br />"),
+            "subject": subject,
         },
-        reply_to=[
-            settings.SPEAKERS_EMAIL_ADDRESS,
-        ],
     )
 
 

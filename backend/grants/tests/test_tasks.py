@@ -4,7 +4,6 @@ from conferences.tests.factories import ConferenceFactory, DeadlineFactory
 
 import pytest
 from users.tests.factories import UserFactory
-from notifications.templates import EmailTemplate
 
 from grants.tests.factories import GrantFactory
 from grants.tasks import (
@@ -34,20 +33,18 @@ def test_send_grant_voucher_email(settings):
         approved_type=Grant.ApprovedType.ticket_only,
     )
 
-    with patch("grants.tasks.send_email") as email_mock:
+    with patch("grants.tasks.EmailTemplate") as mock_email_template:
         send_grant_voucher_email(grant_id=grant.id)
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_VOUCHER_CODE,
-        to="marco@placeholder.it",
-        subject=f"[{grant.conference.name}] Your Grant Voucher Code",
-        variables={
-            "firstname": "Marco Acierno",
-            "voucherCode": "ABC123",
-            "hasApprovedAccommodation": False,
-            "visaPageLink": "https://pycon.it/visa",
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": "Marco Acierno",
+            "voucher_code": "ABC123",
+            "has_approved_accommodation": False,
+            "visa_page_link": "https://pycon.it/visa",
+            "conference_name": grant.conference.name.localize("en"),
         },
-        reply_to=["grants@pycon.it"],
     )
 
 
@@ -60,18 +57,15 @@ def test_send_grant_reply_rejected_email():
     )
     grant = GrantFactory(user=user)
 
-    with patch("grants.tasks.send_email") as email_mock:
+    with patch("grants.tasks.EmailTemplate") as mock_email_template:
         send_grant_reply_rejected_email(grant_id=grant.id)
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_REJECTED,
-        to="marco@placeholder.it",
-        subject=f"[{grant.conference.name}] Financial Aid Update",
-        variables={
-            "firstname": "Marco Acierno",
-            "conferenceName": grant.conference.name.localize("en"),
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": "Marco Acierno",
+            "conference_name": grant.conference.name.localize("en"),
         },
-        reply_to=["grants@pycon.it"],
     )
 
 
@@ -97,20 +91,17 @@ def test_send_grant_reply_waiting_list_email(settings):
     )
     grant = GrantFactory(conference=conference, user=user)
 
-    with patch("grants.tasks.send_email") as email_mock:
+    with patch("grants.tasks.EmailTemplate") as mock_email_template:
         send_grant_reply_waiting_list_email(grant_id=grant.id)
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_WAITING_LIST,
-        to="marco@placeholder.it",
-        subject=f"[{grant.conference.name}] Financial Aid Update",
-        variables={
-            "firstname": "Marco Acierno",
-            "conferenceName": grant.conference.name.localize("en"),
-            "replyLink": "https://pycon.it/grants/reply/",
-            "grantsUpdateDeadline": "1 March 2023",
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": "Marco Acierno",
+            "conference_name": grant.conference.name.localize("en"),
+            "grants_update_deadline": "1 March 2023",
+            "reply_url": "https://pycon.it/grants/reply/",
         },
-        reply_to=["grants@pycon.it"],
     )
 
 
@@ -134,26 +125,24 @@ def test_handle_grant_reply_sent_reminder(settings):
         user=user,
     )
 
-    with patch("grants.tasks.send_email") as email_mock:
+    with patch("grants.tasks.EmailTemplate") as mock_email_template:
         send_grant_reply_approved_email(grant_id=grant.id, is_reminder=True)
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_APPROVED,
-        to="marco@placeholder.it",
-        subject=f"[{grant.conference.name}] Reminder: Financial Aid Update",
-        variables={
-            "firstname": "Marco Acierno",
-            "conferenceName": grant.conference.name.localize("en"),
-            "startDate": "2 May",
-            "endDate": "6 May",
-            "deadlineDateTime": "1 February 2023 23:59 UTC",
-            "deadlineDate": "1 February 2023",
-            "replyLink": "https://pycon.it/grants/reply/",
-            "visaPageLink": "https://pycon.it/visa",
-            "hasApprovedTravel": False,
-            "hasApprovedAccommodation": False,
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": "Marco Acierno",
+            "conference_name": grant.conference.name.localize("en"),
+            "start_date": "2 May",
+            "end_date": "6 May",
+            "deadline_date_time": "1 February 2023 23:59 UTC",
+            "deadline_date": "1 February 2023",
+            "reply_url": "https://pycon.it/grants/reply/",
+            "visa_page_link": "https://pycon.it/visa",
+            "has_approved_travel": False,
+            "has_approved_accommodation": False,
+            "is_reminder": True,
         },
-        reply_to=["grants@pycon.it"],
     )
 
 
@@ -179,27 +168,25 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(settings):
         user=user,
     )
 
-    with patch("grants.tasks.send_email") as email_mock:
+    with patch("grants.tasks.EmailTemplate") as mock_email_template:
         send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_APPROVED,
-        to="marco@placeholder.it",
-        subject=f"[{grant.conference.name}] Financial Aid Update",
-        variables={
-            "firstname": "Marco Acierno",
-            "conferenceName": grant.conference.name.localize("en"),
-            "startDate": "2 May",
-            "endDate": "6 May",
-            "amount": "680",
-            "deadlineDateTime": "1 February 2023 23:59 UTC",
-            "deadlineDate": "1 February 2023",
-            "replyLink": "https://pycon.it/grants/reply/",
-            "visaPageLink": "https://pycon.it/visa",
-            "hasApprovedTravel": True,
-            "hasApprovedAccommodation": True,
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": "Marco Acierno",
+            "conference_name": grant.conference.name.localize("en"),
+            "start_date": "2 May",
+            "end_date": "6 May",
+            "travel_amount": "680",
+            "deadline_date_time": "1 February 2023 23:59 UTC",
+            "deadline_date": "1 February 2023",
+            "reply_url": "https://pycon.it/grants/reply/",
+            "visa_page_link": "https://pycon.it/visa",
+            "has_approved_travel": True,
+            "has_approved_accommodation": True,
+            "is_reminder": False,
         },
-        reply_to=["grants@pycon.it"],
     )
 
 
@@ -255,26 +242,24 @@ def test_handle_grant_approved_ticket_only_reply_sent(settings):
         user=user,
     )
 
-    with patch("grants.tasks.send_email") as email_mock:
+    with patch("grants.tasks.EmailTemplate") as mock_email_template:
         send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_APPROVED,
-        to="marco@placeholder.it",
-        subject=f"[{grant.conference.name}] Financial Aid Update",
-        variables={
-            "firstname": "Marco Acierno",
-            "conferenceName": grant.conference.name.localize("en"),
-            "startDate": "2 May",
-            "endDate": "6 May",
-            "deadlineDateTime": "1 February 2023 23:59 UTC",
-            "deadlineDate": "1 February 2023",
-            "replyLink": "https://pycon.it/grants/reply/",
-            "visaPageLink": "https://pycon.it/visa",
-            "hasApprovedTravel": False,
-            "hasApprovedAccommodation": False,
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": "Marco Acierno",
+            "conference_name": grant.conference.name.localize("en"),
+            "start_date": "2 May",
+            "end_date": "6 May",
+            "deadline_date_time": "1 February 2023 23:59 UTC",
+            "deadline_date": "1 February 2023",
+            "reply_url": "https://pycon.it/grants/reply/",
+            "visa_page_link": "https://pycon.it/visa",
+            "has_approved_travel": False,
+            "has_approved_accommodation": False,
+            "is_reminder": False,
         },
-        reply_to=["grants@pycon.it"],
     )
 
 
@@ -301,27 +286,25 @@ def test_handle_grant_approved_travel_reply_sent(settings):
         user=user,
     )
 
-    with patch("grants.tasks.send_email") as email_mock:
+    with patch("grants.tasks.EmailTemplate") as mock_email_template:
         send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_APPROVED,
-        to="marco@placeholder.it",
-        subject=f"[{grant.conference.name}] Financial Aid Update",
-        variables={
-            "firstname": "Marco Acierno",
-            "conferenceName": grant.conference.name.localize("en"),
-            "startDate": "2 May",
-            "endDate": "6 May",
-            "deadlineDateTime": "1 February 2023 23:59 UTC",
-            "deadlineDate": "1 February 2023",
-            "replyLink": "https://pycon.it/grants/reply/",
-            "visaPageLink": "https://pycon.it/visa",
-            "hasApprovedTravel": True,
-            "hasApprovedAccommodation": False,
-            "amount": "400",
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": "Marco Acierno",
+            "conference_name": grant.conference.name.localize("en"),
+            "start_date": "2 May",
+            "end_date": "6 May",
+            "deadline_date_time": "1 February 2023 23:59 UTC",
+            "deadline_date": "1 February 2023",
+            "reply_url": "https://pycon.it/grants/reply/",
+            "visa_page_link": "https://pycon.it/visa",
+            "has_approved_travel": True,
+            "has_approved_accommodation": False,
+            "travel_amount": "400",
+            "is_reminder": False,
         },
-        reply_to=["grants@pycon.it"],
     )
 
 
@@ -345,20 +328,17 @@ def test_send_grant_reply_waiting_list_update_email(settings):
     )
     conference_name = grant.conference.name.localize("en")
 
-    with patch("grants.tasks.send_email") as email_mock:
+    with patch("grants.tasks.EmailTemplate") as mock_email_template:
         send_grant_reply_waiting_list_update_email(
             grant_id=grant.id,
         )
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_WAITING_LIST_UPDATE,
-        to="marco@placeholder.it",
-        variables={
-            "firstname": "Marco Acierno",
-            "conferenceName": conference_name,
-            "grantsUpdateDeadline": "1 March 2023",
-            "replyLink": "https://pycon.it/grants/reply/",
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": "Marco Acierno",
+            "conference_name": conference_name,
+            "grants_update_deadline": "1 March 2023",
+            "reply_url": "https://pycon.it/grants/reply/",
         },
-        reply_to=["grants@pycon.it"],
-        subject=f"[{conference_name}] Financial Aid Update",
     )

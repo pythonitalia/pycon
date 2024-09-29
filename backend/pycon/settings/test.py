@@ -34,7 +34,6 @@ CACHES = {
         "BACKEND": "django.core.cache.backends.dummy.DummyCache",
     }
 }
-PYTHONIT_EMAIL_BACKEND = "conftest.TestEmailBackend"
 
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True

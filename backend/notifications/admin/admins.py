@@ -175,4 +175,9 @@ class SentEmailAdmin(admin.ModelAdmin):
         return False
 
     def get_queryset(self, request: HttpRequest) -> Any:
-        return super().get_queryset(request).prefetch_related("email_template")
+        qs = super().get_queryset(request).prefetch_related("email_template")
+
+        if not request.user.is_superuser:
+            qs = qs.filter(email_template__is_system_template=False)
+
+        return qs

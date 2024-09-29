@@ -30,7 +30,6 @@ from submissions.tests.factories import SubmissionFactory
 import time_machine
 from users.tests.factories import UserFactory
 from schedule.models import ScheduleItem, ScheduleItemSentForVideoUpload
-from notifications.templates import EmailTemplate as EmailTemplateEnum
 from notifications.models import EmailTemplateIdentifier
 
 import pytest
@@ -142,18 +141,16 @@ def test_send_submission_time_slot_changed_email():
         type=ScheduleItem.TYPES.talk,
     )
 
-    with patch("schedule.tasks.send_email") as email_mock:
+    with patch("schedule.tasks.EmailTemplate") as mock_email_template:
         send_submission_time_slot_changed_email(schedule_item_id=schedule_item.id)
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplateEnum.SUBMISSION_SCHEDULE_TIME_CHANGED,
-        to="marco@placeholder.it",
-        subject="[Conf] Your Submission time slot has been changed!",
-        variables={
-            "submissionTitle": "Title Submission",
-            "firstname": "Marco Acierno",
-            "invitationlink": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
-            "conferenceName": "Conf",
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=schedule_item.submission.speaker,
+        placeholders={
+            "proposal_title": "Title Submission",
+            "speaker_name": "Marco Acierno",
+            "invitation_url": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
+            "conference_name": "Conf",
         },
     )
 
@@ -210,7 +207,7 @@ def test_send_speaker_communication_email_to_speakers_without_ticket(
         json={"user_has_admission_ticket": has_ticket},
     )
 
-    with patch("schedule.tasks.send_email") as email_mock:
+    with patch("schedule.tasks.EmailTemplate") as mock_email_template:
         send_speaker_communication_email(
             subject="test subject",
             body="test body",
@@ -220,18 +217,17 @@ def test_send_speaker_communication_email_to_speakers_without_ticket(
         )
 
     if not has_ticket:
-        email_mock.assert_called_once_with(
-            template=EmailTemplateEnum.SPEAKER_COMMUNICATION,
-            to="marco@placeholder.it",
-            subject=f"[{conference.name.localize('en')}] test subject",
-            variables={
-                "firstname": "Marco Acierno",
+        mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+            recipient=user,
+            placeholders={
+                "user_name": "Marco Acierno",
+                "conference_name": conference.name.localize("en"),
                 "body": "test body",
+                "subject": "test subject",
             },
-            reply_to=[settings.SPEAKERS_EMAIL_ADDRESS],
         )
     else:
-        email_mock.assert_not_called()
+        mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_not_called()
 
 
 @override_settings(SPEAKERS_EMAIL_ADDRESS="reply")
@@ -252,7 +248,7 @@ def test_send_speaker_communication_email_to_everyone(
         json={"user_has_admission_ticket": has_ticket},
     )
 
-    with patch("schedule.tasks.send_email") as email_mock:
+    with patch("schedule.tasks.EmailTemplate") as mock_email_template:
         send_speaker_communication_email(
             subject="test subject",
             body="test body",
@@ -261,15 +257,14 @@ def test_send_speaker_communication_email_to_everyone(
             only_speakers_without_ticket=False,
         )
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplateEnum.SPEAKER_COMMUNICATION,
-        to="marco@placeholder.it",
-        subject=f"[{conference.name.localize('en')}] test subject",
-        variables={
-            "firstname": "Marco Acierno",
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": "Marco Acierno",
             "body": "test body",
+            "conference_name": conference.name.localize("en"),
+            "subject": "test subject",
         },
-        reply_to=[settings.SPEAKERS_EMAIL_ADDRESS],
     )
 
 

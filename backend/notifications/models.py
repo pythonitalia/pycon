@@ -23,10 +23,22 @@ class EmailTemplateIdentifier(models.TextChoices):
         "proposal_scheduled_time_changed",
         _("Proposal scheduled time changed"),
     )
+    speaker_communication = "speaker_communication", _("Speaker communication")
 
     voucher_code = "voucher_code", _("Voucher code")
 
     reset_password = "reset_password", _("[System] Reset password")
+
+    grant_approved = "grant_approved", _("Grant approved")
+    grant_rejected = "grant_rejected", _("Grant rejected")
+    grant_waiting_list = "grant_waiting_list", _("Grant waiting list")
+    grant_waiting_list_update = (
+        "grant_waiting_list_update",
+        _("Grant waiting list update"),
+    )
+    grant_voucher_code = "grant_voucher_code", _("Grant voucher code")
+
+    sponsorship_brochure = "sponsorship_brochure", _("Sponsorship brochure")
 
     custom = "custom", _("Custom")
 
@@ -46,6 +58,83 @@ class EmailTemplate(TimeStampedModel):
             "voucher_code",
             "voucher_type",
             "user_name",
+        ],
+        EmailTemplateIdentifier.proposal_rejected: [
+            *BASE_PLACEHOLDERS,
+            "conference_name",
+            "speaker_name",
+            "proposal_title",
+            "proposal_type",
+        ],
+        EmailTemplateIdentifier.proposal_in_waiting_list: [
+            *BASE_PLACEHOLDERS,
+            "conference_name",
+            "speaker_name",
+            "proposal_title",
+            "proposal_type",
+        ],
+        EmailTemplateIdentifier.proposal_scheduled_time_changed: [
+            *BASE_PLACEHOLDERS,
+            "conference_name",
+            "speaker_name",
+            "proposal_title",
+            "invitation_url",
+        ],
+        EmailTemplateIdentifier.grant_approved: [
+            *BASE_PLACEHOLDERS,
+            "reply_url",
+            "start_date",
+            "end_date",
+            "deadline_date_time",
+            "deadline_date",
+            "visa_page_link",
+            "has_approved_travel",
+            "has_approved_accommodation",
+            "travel_amount",
+            "is_reminder",
+        ],
+        EmailTemplateIdentifier.grant_rejected: [
+            *BASE_PLACEHOLDERS,
+            "conference_name",
+            "user_name",
+        ],
+        EmailTemplateIdentifier.grant_waiting_list: [
+            *BASE_PLACEHOLDERS,
+            "conference_name",
+            "user_name",
+            "reply_url",
+            "grants_update_deadline",
+        ],
+        EmailTemplateIdentifier.grant_waiting_list_update: [
+            *BASE_PLACEHOLDERS,
+            "conference_name",
+            "user_name",
+            "reply_url",
+            "grants_update_deadline",
+        ],
+        EmailTemplateIdentifier.reset_password: [
+            "user_name",
+            "reset_password_link",
+        ],
+        EmailTemplateIdentifier.speaker_communication: [
+            *BASE_PLACEHOLDERS,
+            "user_name",
+            "conference_name",
+            "body",
+            "subject",
+        ],
+        EmailTemplateIdentifier.grant_voucher_code: [
+            *BASE_PLACEHOLDERS,
+            "conference_name",
+            "voucher_code",
+            "user_name",
+            "has_approved_accommodation",
+            "visa_page_link",
+        ],
+        EmailTemplateIdentifier.sponsorship_brochure: [
+            *BASE_PLACEHOLDERS,
+            "brochure_url",
+            "conference_name",
         ],
     }
 
@@ -109,9 +198,14 @@ class EmailTemplate(TimeStampedModel):
 
         placeholders = placeholders or {}
         processed_email_template = self.render(placeholders=placeholders)
-        from_email = (
-            self.conference.organizer.email_from_address or settings.DEFAULT_FROM_EMAIL
-        )
+
+        if self.is_system_template:
+            from_email = settings.DEFAULT_FROM_EMAIL
+        else:
+            from_email = (
+                self.conference.organizer.email_from_address
+                or settings.DEFAULT_FROM_EMAIL
+            )
 
         SentEmail.objects.create(
             email_template=self,
@@ -170,6 +264,8 @@ class SentEmail(TimeStampedModel):
         on_delete=models.CASCADE,
         related_name="sent_emails",
         verbose_name=_("conference"),
+        null=True,
+        blank=True,
     )
 
     status = models.CharField(

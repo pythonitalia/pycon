@@ -1,5 +1,4 @@
-from notifications.templates import EmailTemplate
-from notifications.emails import send_email
+from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from integrations import slack
 from grants.tasks import get_name
 from users.models import User
@@ -65,48 +64,52 @@ def notify_new_cfp_submission(*, submission_id, conference_id, admin_url):
 def send_proposal_rejected_email(proposal_id):
     from submissions.models import Submission
 
-    submission = Submission.objects.get(id=proposal_id)
-    submission_speaker = submission.speaker
+    proposal = Submission.objects.get(id=proposal_id)
+    proposal_speaker = proposal.speaker
 
-    language_code = submission.languages.first().code
-    conference_name = submission.conference.name.localize(language_code)
+    conference = proposal.conference
+    language_code = proposal.languages.first().code
+    conference_name = proposal.conference.name.localize(language_code)
 
-    send_email(
-        template=EmailTemplate.SUBMISSION_REJECTED,
-        to=submission_speaker.email,
-        subject=f"[{conference_name}] Update about your proposal",
-        variables={
-            "firstname": get_name(submission_speaker, "there"),
-            "conferenceName": conference_name,
-            "submissionTitle": submission.title.localize(language_code),
-            "submissionType": submission.type.name,
+    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
+        EmailTemplateIdentifier.proposal_rejected
+    )
+    email_template.send_email(
+        recipient=proposal_speaker,
+        placeholders={
+            "proposal_title": proposal.title.localize(language_code),
+            "proposal_type": proposal.type.name,
+            "conference_name": conference_name,
+            "speaker_name": get_name(proposal_speaker, "there"),
         },
     )
-    logger.info("Sending email to speaker for rejected proposal %s", submission.id)
+
+    logger.info("Sending email to speaker for rejected proposal %s", proposal.id)
 
 
 @app.task
 def send_proposal_in_waiting_list_email(proposal_id):
     from submissions.models import Submission
 
-    submission = Submission.objects.get(id=proposal_id)
-    submission_speaker = submission.speaker
+    proposal = Submission.objects.get(id=proposal_id)
+    proposal_speaker = proposal.speaker
 
-    language_code = submission.languages.first().code
-    conference_name = submission.conference.name.localize(language_code)
+    conference = proposal.conference
+    language_code = proposal.languages.first().code
+    conference_name = proposal.conference.name.localize(language_code)
 
-    send_email(
-        template=EmailTemplate.SUBMISSION_IN_WAITING_LIST,
-        to=submission_speaker.email,
-        reply_to=["speakers@pycon.it"],
-        subject=f"[{conference_name}] Speakers Waiting List",
-        variables={
-            "firstname": get_name(submission_speaker, "there"),
-            "conferenceName": conference_name,
-            "submissionTitle": submission.title.localize(language_code),
-            "submissionType": submission.type.name,
+    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
+        EmailTemplateIdentifier.proposal_in_waiting_list
+    )
+
+    email_template.send_email(
+        recipient=proposal_speaker,
+        placeholders={
+            "proposal_title": proposal.title.localize(language_code),
+            "proposal_type": proposal.type.name,
+            "conference_name": conference_name,
+            "speaker_name": get_name(proposal_speaker, "there"),
         },
     )
-    logger.info(
-        "Sending email to speaker in waiting list for proposal %s", submission.id
-    )
+
+    logger.info("Sending email to speaker in waiting list for proposal %s", proposal.id)
