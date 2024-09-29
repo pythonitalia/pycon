@@ -62,7 +62,7 @@ export { AvatarGroup } from "./avatar-group";
 export { Checkbox } from "./checkbox";
 export { StyledHTMLText, StyledText } from "./styled-text";
 export { FilterBar } from "./filter-bar";
-export { HeroIllustration } from "./hero-illustration";
+export { HeroIllustration, HeroIllustrationBologna } from "./hero-illustration";
 export { FileInput } from "./file-input";
 
 // tailwind config
