@@ -95,6 +95,20 @@ class EmailTemplate(TimeStampedModel):
             "conference_name",
             "user_name",
         ],
+        EmailTemplateIdentifier.grant_waiting_list: [
+            *BASE_PLACEHOLDERS,
+            "conference_name",
+            "user_name",
+            "reply_url",
+            "grants_update_deadline",
+        ],
+        EmailTemplateIdentifier.grant_waiting_list_update: [
+            *BASE_PLACEHOLDERS,
+            "conference_name",
+            "user_name",
+            "reply_url",
+            "grants_update_deadline",
+        ],
     }
 
     conference = models.ForeignKey(
