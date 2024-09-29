@@ -54,6 +54,13 @@ class EmailTemplate(TimeStampedModel):
             "proposal_title",
             "proposal_type",
         ],
+        EmailTemplateIdentifier.proposal_in_waiting_list: [
+            *BASE_PLACEHOLDERS,
+            "conference_name",
+            "speaker_name",
+            "proposal_title",
+            "proposal_type",
+        ],
     }
 
     conference = models.ForeignKey(

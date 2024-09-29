@@ -82,15 +82,22 @@ def test_send_proposal_in_waiting_list_email(sent_emails):
         status=Submission.STATUS.waiting_list,
     )
 
-    send_proposal_in_waiting_list_email(
-        proposal_id=submission.id,
+    EmailTemplateFactory(
+        conference=submission.conference,
+        identifier=EmailTemplateIdentifier.proposal_in_waiting_list,
     )
 
-    assert len(sent_emails) == 1
-    assert sent_emails[0]["to"] == submission.speaker.email
-    assert sent_emails[0]["subject"] == "[Conf] Speakers Waiting List"
-    assert sent_emails[0]["variables"]["firstname"] == "Marco"
-    assert sent_emails[0]["variables"]["conferenceName"] == "Conf"
-    assert sent_emails[0]["variables"]["submissionTitle"] == "Title"
-    assert sent_emails[0]["variables"]["submissionType"] == submission.type.name
-    assert sent_emails[0]["reply_to"] == ["speakers@pycon.it"]
+    with patch("submissions.tasks.EmailTemplate") as mock_email_template:
+        send_proposal_in_waiting_list_email(
+            proposal_id=submission.id,
+        )
+
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=submission.speaker,
+        placeholders={
+            "proposal_title": "Title",
+            "proposal_type": submission.type.name,
+            "conference_name": "Conf",
+            "speaker_name": "Marco",
+        },
+    )
