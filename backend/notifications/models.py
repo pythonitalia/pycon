@@ -38,6 +38,8 @@ class EmailTemplateIdentifier(models.TextChoices):
     )
     grant_voucher_code = "grant_voucher_code", _("Grant voucher code")
 
+    sponsorship_brochure = "sponsorship_brochure", _("Sponsorship brochure")
+
     custom = "custom", _("Custom")
 
 
@@ -128,6 +130,11 @@ class EmailTemplate(TimeStampedModel):
             "user_name",
             "has_approved_accommodation",
             "visa_page_link",
+        ],
+        EmailTemplateIdentifier.sponsorship_brochure: [
+            *BASE_PLACEHOLDERS,
+            "brochure_url",
+            "conference_name",
         ],
     }
 
