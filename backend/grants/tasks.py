@@ -3,13 +3,11 @@ from urllib.parse import urljoin
 
 from django.conf import settings
 from django.utils import timezone
-from notifications.models import EmailTemplateIdentifier
-from notifications.templates import EmailTemplate
+from notifications.models import EmailTemplate, EmailTemplateIdentifier
 
 from users.models import User
 from grants.models import Grant
 from integrations import slack
-from notifications.emails import send_email
 
 import logging
 
@@ -138,22 +136,21 @@ def send_grant_voucher_email(*, grant_id):
     user = grant.user
     voucher_code = grant.voucher_code
 
+    conference = grant.conference
     conference_name = grant.conference.name.localize("en")
-    subject_prefix = f"[{conference_name}]"
 
-    send_email(
-        template=EmailTemplate.GRANT_VOUCHER_CODE,
-        to=user.email,
-        subject=f"{subject_prefix} Your Grant Voucher Code",
-        variables={
-            "firstname": get_name(user, "there"),
-            "voucherCode": voucher_code,
-            "hasApprovedAccommodation": grant.has_approved_accommodation(),
-            "visaPageLink": urljoin(settings.FRONTEND_URL, "/visa"),
+    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
+        EmailTemplateIdentifier.grant_voucher_code
+    )
+    email_template.send_email(
+        recipient=user,
+        placeholders={
+            "user_name": get_name(user, "there"),
+            "voucher_code": voucher_code,
+            "has_approved_accommodation": grant.has_approved_accommodation(),
+            "conference_name": conference_name,
+            "visa_page_link": urljoin(settings.FRONTEND_URL, "/visa"),
         },
-        reply_to=[
-            "grants@pycon.it",
-        ],
     )
 
     grant.voucher_email_sent_at = timezone.now()
@@ -202,33 +199,3 @@ def _new_send_grant_email(
 
     grant.applicant_reply_sent_at = timezone.now()
     grant.save()
-
-
-def _send_grant_email(template: EmailTemplate, subject: str, grant: Grant, **kwargs):
-    try:
-        user = grant.user
-
-        conference_name = grant.conference.name.localize("en")
-        subject_prefix = f"[{conference_name}]"
-
-        send_email(
-            template=template,
-            to=user.email,
-            subject=f"{subject_prefix} {subject}",
-            variables={
-                "firstname": get_name(user, "there"),
-                "conferenceName": conference_name,
-                **kwargs,
-            },
-            reply_to=["grants@pycon.it"],
-        )
-
-        grant.applicant_reply_sent_at = timezone.now()
-        grant.save()
-    except Exception as e:
-        logger.error(
-            "Something went wrong while sending email Reply for Grant %s:\n%s",
-            grant.id,
-            e,
-            exc_info=True,
-        )
