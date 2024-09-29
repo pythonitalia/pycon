@@ -64,7 +64,9 @@ def send_grant_reply_approved_email(*, grant_id, is_reminder):
 def send_grant_reply_waiting_list_email(*, grant_id):
     logger.info("Sending Reply WAITING LIST email for Grant %s", grant_id)
 
-    _send_grant_waiting_list_email(grant_id, template=EmailTemplate.GRANT_WAITING_LIST)
+    _send_grant_waiting_list_email(
+        grant_id, template_identifier=EmailTemplateIdentifier.grant_waiting_list
+    )
 
 
 @app.task
@@ -72,7 +74,7 @@ def send_grant_reply_waiting_list_update_email(*, grant_id):
     logger.info("Sending Reply WAITING LIST UPDATE email for Grant %s", grant_id)
 
     _send_grant_waiting_list_email(
-        grant_id, template=EmailTemplate.GRANT_WAITING_LIST_UPDATE
+        grant_id, template_identifier=EmailTemplateIdentifier.grant_waiting_list_update
     )
 
 
@@ -158,21 +160,21 @@ def send_grant_voucher_email(*, grant_id):
     grant.save()
 
 
-def _send_grant_waiting_list_email(grant_id, template):
+def _send_grant_waiting_list_email(grant_id, template_identifier):
     grant = Grant.objects.get(id=grant_id)
     reply_url = urljoin(settings.FRONTEND_URL, "/grants/reply/")
 
-    subject = "Financial Aid Update"
     deadline = grant.conference.deadlines.filter(
         type="custom", name__contains={"en": "Update Grants in Waiting List"}
     ).first()
 
-    _send_grant_email(
-        template=template,
-        subject=subject,
+    _new_send_grant_email(
+        template_identifier=template_identifier,
         grant=grant,
-        replyLink=reply_url,
-        grantsUpdateDeadline=f"{deadline.start:%-d %B %Y}",
+        placeholders={
+            "reply_url": reply_url,
+            "grants_update_deadline": f"{deadline.start:%-d %B %Y}",
+        },
     )
 
     logger.info("Email sent for Grant %s", grant.id)

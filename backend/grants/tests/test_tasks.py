@@ -94,20 +94,17 @@ def test_send_grant_reply_waiting_list_email(settings):
     )
     grant = GrantFactory(conference=conference, user=user)
 
-    with patch("grants.tasks.send_email") as email_mock:
+    with patch("grants.tasks.EmailTemplate") as mock_email_template:
         send_grant_reply_waiting_list_email(grant_id=grant.id)
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_WAITING_LIST,
-        to="marco@placeholder.it",
-        subject=f"[{grant.conference.name}] Financial Aid Update",
-        variables={
-            "firstname": "Marco Acierno",
-            "conferenceName": grant.conference.name.localize("en"),
-            "replyLink": "https://pycon.it/grants/reply/",
-            "grantsUpdateDeadline": "1 March 2023",
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": "Marco Acierno",
+            "conference_name": grant.conference.name.localize("en"),
+            "grants_update_deadline": "1 March 2023",
+            "reply_url": "https://pycon.it/grants/reply/",
         },
-        reply_to=["grants@pycon.it"],
     )
 
 
@@ -334,20 +331,17 @@ def test_send_grant_reply_waiting_list_update_email(settings):
     )
     conference_name = grant.conference.name.localize("en")
 
-    with patch("grants.tasks.send_email") as email_mock:
+    with patch("grants.tasks.EmailTemplate") as mock_email_template:
         send_grant_reply_waiting_list_update_email(
             grant_id=grant.id,
         )
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplate.GRANT_WAITING_LIST_UPDATE,
-        to="marco@placeholder.it",
-        variables={
-            "firstname": "Marco Acierno",
-            "conferenceName": conference_name,
-            "grantsUpdateDeadline": "1 March 2023",
-            "replyLink": "https://pycon.it/grants/reply/",
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": "Marco Acierno",
+            "conference_name": conference_name,
+            "grants_update_deadline": "1 March 2023",
+            "reply_url": "https://pycon.it/grants/reply/",
         },
-        reply_to=["grants@pycon.it"],
-        subject=f"[{conference_name}] Financial Aid Update",
     )
