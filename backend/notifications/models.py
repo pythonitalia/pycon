@@ -47,6 +47,13 @@ class EmailTemplate(TimeStampedModel):
             "voucher_type",
             "user_name",
         ],
+        EmailTemplateIdentifier.proposal_rejected: [
+            *BASE_PLACEHOLDERS,
+            "conference_name",
+            "speaker_name",
+            "proposal_title",
+            "proposal_type",
+        ],
     }
 
     conference = models.ForeignKey(
