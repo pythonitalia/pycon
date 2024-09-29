@@ -28,20 +28,16 @@ def send_grant_reply_approved_email(*, grant_id, is_reminder):
     grant = Grant.objects.get(id=grant_id)
     reply_url = urljoin(settings.FRONTEND_URL, "/grants/reply/")
 
-    subject = (
-        "Reminder: Financial Aid Update" if is_reminder else "Financial Aid Update"
-    )
-
-    template = EmailTemplate.GRANT_APPROVED
     variables = {
-        "replyLink": reply_url,
-        "startDate": f"{grant.conference.start:%-d %B}",
-        "endDate": f"{grant.conference.end+timedelta(days=1):%-d %B}",
-        "deadlineDateTime": f"{grant.applicant_reply_deadline:%-d %B %Y %H:%M %Z}",
-        "deadlineDate": f"{grant.applicant_reply_deadline:%-d %B %Y}",
-        "visaPageLink": urljoin(settings.FRONTEND_URL, "/visa"),
-        "hasApprovedTravel": grant.has_approved_travel(),
-        "hasApprovedAccommodation": grant.has_approved_accommodation(),
+        "reply_url": reply_url,
+        "start_date": f"{grant.conference.start:%-d %B}",
+        "end_date": f"{grant.conference.end+timedelta(days=1):%-d %B}",
+        "deadline_date_time": f"{grant.applicant_reply_deadline:%-d %B %Y %H:%M %Z}",
+        "deadline_date": f"{grant.applicant_reply_deadline:%-d %B %Y}",
+        "visa_page_link": urljoin(settings.FRONTEND_URL, "/visa"),
+        "has_approved_travel": grant.has_approved_travel(),
+        "has_approved_accommodation": grant.has_approved_accommodation(),
+        "is_reminder": is_reminder,
     }
 
     if grant.has_approved_travel():
@@ -50,9 +46,13 @@ def send_grant_reply_approved_email(*, grant_id, is_reminder):
                 "Grant travel amount is set to Zero, can't send the email!"
             )
 
-        variables["amount"] = f"{grant.travel_amount:.0f}"
+        variables["travel_amount"] = f"{grant.travel_amount:.0f}"
 
-    _send_grant_email(template=template, subject=subject, grant=grant, **variables)
+    _new_send_grant_email(
+        template_identifier=EmailTemplateIdentifier.grant_approved,
+        grant=grant,
+        placeholders=variables,
+    )
 
     grant.status = Grant.Status.waiting_for_confirmation
     grant.save()
@@ -81,24 +81,12 @@ def send_grant_reply_rejected_email(grant_id):
     logger.info("Sending Reply REJECTED email for Grant %s", grant_id)
 
     grant = Grant.objects.get(id=grant_id)
-    conference = grant.conference
-    user = grant.user
-    conference_name = grant.conference.name.localize("en")
 
-    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
-        EmailTemplateIdentifier.grant_rejected
+    _new_send_grant_email(
+        template_identifier=EmailTemplateIdentifier.grant_rejected,
+        grant=grant,
+        placeholders={},
     )
-
-    email_template.send_email(
-        recipient=user,
-        placeholders={
-            "conference_name": conference_name,
-            "user_name": get_name(user, "there"),
-        },
-    )
-
-    grant.applicant_reply_sent_at = timezone.now()
-    grant.save()
 
     logger.info("Rejection email sent for Grant %s", grant.id)
 
@@ -188,6 +176,30 @@ def _send_grant_waiting_list_email(grant_id, template):
     )
 
     logger.info("Email sent for Grant %s", grant.id)
+
+
+def _new_send_grant_email(
+    template_identifier: EmailTemplateIdentifier, grant: Grant, placeholders
+):
+    conference = grant.conference
+    user = grant.user
+    conference_name = grant.conference.name.localize("en")
+
+    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
+        template_identifier
+    )
+
+    email_template.send_email(
+        recipient=user,
+        placeholders={
+            "conference_name": conference_name,
+            "user_name": get_name(user, "there"),
+            **placeholders,
+        },
+    )
+
+    grant.applicant_reply_sent_at = timezone.now()
+    grant.save()
 
 
 def _send_grant_email(template: EmailTemplate, subject: str, grant: Grant, **kwargs):

@@ -3,7 +3,6 @@ from enum import Enum
 
 class EmailTemplate(str, Enum):
     # Grants
-    GRANT_APPROVED = "grants-approved"
     GRANT_WAITING_LIST = "grants-waiting-list"
     GRANT_WAITING_LIST_UPDATE = "grants-waiting-list-update"
     GRANT_VOUCHER_CODE = "grants-voucher-code"
