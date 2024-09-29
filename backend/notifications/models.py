@@ -113,6 +113,12 @@ class EmailTemplate(TimeStampedModel):
             "user_name",
             "reset_password_link",
         ],
+        EmailTemplateIdentifier.speaker_communication: [
+            *BASE_PLACEHOLDERS,
+            "user_name",
+            "conference_name",
+            "body",
+        ],
     }
 
     conference = models.ForeignKey(

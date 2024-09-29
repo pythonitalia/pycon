@@ -30,7 +30,6 @@ from submissions.tests.factories import SubmissionFactory
 import time_machine
 from users.tests.factories import UserFactory
 from schedule.models import ScheduleItem, ScheduleItemSentForVideoUpload
-from notifications.templates import EmailTemplate as EmailTemplateEnum
 from notifications.models import EmailTemplateIdentifier
 
 import pytest
@@ -208,7 +207,7 @@ def test_send_speaker_communication_email_to_speakers_without_ticket(
         json={"user_has_admission_ticket": has_ticket},
     )
 
-    with patch("schedule.tasks.send_email") as email_mock:
+    with patch("schedule.tasks.EmailTemplate") as mock_email_template:
         send_speaker_communication_email(
             subject="test subject",
             body="test body",
@@ -218,18 +217,16 @@ def test_send_speaker_communication_email_to_speakers_without_ticket(
         )
 
     if not has_ticket:
-        email_mock.assert_called_once_with(
-            template=EmailTemplateEnum.SPEAKER_COMMUNICATION,
-            to="marco@placeholder.it",
-            subject=f"[{conference.name.localize('en')}] test subject",
-            variables={
-                "firstname": "Marco Acierno",
+        mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+            recipient=user,
+            placeholders={
+                "user_name": "Marco Acierno",
+                "conference_name": conference.name.localize("en"),
                 "body": "test body",
             },
-            reply_to=[settings.SPEAKERS_EMAIL_ADDRESS],
         )
     else:
-        email_mock.assert_not_called()
+        mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_not_called()
 
 
 @override_settings(SPEAKERS_EMAIL_ADDRESS="reply")
@@ -250,7 +247,7 @@ def test_send_speaker_communication_email_to_everyone(
         json={"user_has_admission_ticket": has_ticket},
     )
 
-    with patch("schedule.tasks.send_email") as email_mock:
+    with patch("schedule.tasks.EmailTemplate") as mock_email_template:
         send_speaker_communication_email(
             subject="test subject",
             body="test body",
@@ -259,15 +256,13 @@ def test_send_speaker_communication_email_to_everyone(
             only_speakers_without_ticket=False,
         )
 
-    email_mock.assert_called_once_with(
-        template=EmailTemplateEnum.SPEAKER_COMMUNICATION,
-        to="marco@placeholder.it",
-        subject=f"[{conference.name.localize('en')}] test subject",
-        variables={
-            "firstname": "Marco Acierno",
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": "Marco Acierno",
             "body": "test body",
+            "conference_name": conference.name.localize("en"),
         },
-        reply_to=[settings.SPEAKERS_EMAIL_ADDRESS],
     )
 
 

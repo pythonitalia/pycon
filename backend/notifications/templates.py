@@ -8,8 +8,5 @@ class EmailTemplate(str, Enum):
     # Users
     RESET_PASSWORD = "reset-password"
 
-    # Submissions
-    SPEAKER_COMMUNICATION = "speaker-communication"
-
     def __str__(self) -> str:
         return str.__str__(self)
