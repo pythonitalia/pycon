@@ -1,7 +1,14 @@
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
 
-from .models import Sponsor, SponsorLead, SponsorLevel
+from .models import (
+    Sponsor,
+    SponsorLead,
+    SponsorLevel,
+    SponsorLevelBenefit,
+    SponsorBenefit,
+    SponsorBrochure,
+)
 
 
 @admin.register(Sponsor)
@@ -14,10 +21,24 @@ class SponsorAdmin(OrderedModelAdmin):
     readonly_fields = ("order",)
 
 
+@admin.register(SponsorBenefit)
+class SponsorBenefitAdmin(admin.ModelAdmin):
+    list_display = ("name", "conference", "category")
+    list_filter = ("category",)
+
+
+class SponsorLevelBenefitInline(admin.TabularInline):
+    model = SponsorLevelBenefit
+    extra = 1
+
+
 @admin.register(SponsorLevel)
 class SponsorLevelAdmin(OrderedModelAdmin):
     list_display = ("name", "conference", "move_up_down_links")
     readonly_fields = ("order",)
+
+    inlines = [SponsorLevelBenefitInline]
+    exclude = ("benefits",)
 
 
 @admin.register(SponsorLead)
@@ -36,3 +57,9 @@ class SponsorLeadAdmin(admin.ModelAdmin):
         "company",
     )
     list_filter = ("conference",)
+
+
+@admin.register(SponsorBrochure)
+class SponsorBrochureAdmin(admin.ModelAdmin):
+    list_display = ("conference", "created")
+    search_fields = ("conference__name",)
