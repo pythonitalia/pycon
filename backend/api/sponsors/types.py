@@ -43,6 +43,36 @@ class SponsorsByLevel:
 
 
 @strawberry.type
+class SponsorBenefit:
+    name: str
+    category: str
+    description: str
+
+
+@strawberry.type
+class SponsorLevelBenefit:
+    category: str
+    name: str
+    value: str
+    description: str
+
+
+@strawberry.type
+class SponsorLevel:
+    name: str
+    price: str
+    slots: int | None
+    benefits: list[SponsorLevelBenefit]
+
+
+@strawberry.type
+class SponsorSpecialOption:
+    name: str
+    price: str
+    description: str
+
+
+@strawberry.type
 class SponsorBrochureStats:
     attendees: str
     speakers: str

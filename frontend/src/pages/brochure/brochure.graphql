@@ -5,7 +5,6 @@ query GetBrochureData($conferenceCode: String!) {
     start
     end
     introduction
-
     sponsorBrochure {
       stats {
         attendees
@@ -39,6 +38,25 @@ query GetBrochureData($conferenceCode: String!) {
         }
         text
       }
+    }
+    sponsorBenefits {
+      name
+      category
+      description
+    }
+    sponsorLevels {
+      name
+      price
+      slots
+      benefits {
+        name
+        value
+      }
+    }
+    sponsorSpecialOptions {
+      name
+      price
+      description
     }
   }
 }

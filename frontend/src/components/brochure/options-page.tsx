@@ -6,7 +6,7 @@ export const OptionsPage = ({
   background,
 }: {
   title: string;
-  options: Array<{ name: string; description: string; price?: number }>;
+  options: Array<{ name: string; description: string; price?: string }>;
   background?: string;
 }) => {
   return (

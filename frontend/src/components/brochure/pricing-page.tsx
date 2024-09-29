@@ -84,31 +84,37 @@ function TableBenefit({
 }
 
 export function PricingPage({
-  packages,
+  levels,
   benefits,
 }: {
-  packages: Package[];
-  benefits: Benefit[];
+  levels: {
+    name: string;
+    price: string;
+    slots?: number;
+    benefits: { name: string; value: number | string | boolean }[];
+  }[];
+  benefits: { name: string; category: string }[];
 }) {
-  const benefitsByGroup = benefits.reduce(
+  console.log(benefits);
+  const benefitsByCategory = benefits.reduce(
     (acc, benefit) => {
-      if (!acc[benefit.group]) {
-        acc[benefit.group] = [];
+      if (!acc[benefit.category]) {
+        acc[benefit.category] = [];
       }
-      acc[benefit.group].push(benefit);
+
+      acc[benefit.category].push(benefit);
+
       return acc;
     },
-    {} as Record<string, Benefit[]>,
+    {} as Record<string, { name: string; category: string }[]>,
   );
 
-  const groupsAndBenefits = Object.entries(benefitsByGroup).flatMap(
-    ([group, benefits]) => [
-      { type: "group", group },
-      ...benefits.map((b) => ({ type: "benefit", benefit: b })),
-    ],
-  ) as Array<
-    { type: "group"; group: string } | { type: "benefit"; benefit: Benefit }
-  >;
+  const getBenefitForLevel = (
+    benefit: { name: string },
+    level: { benefits: { name: string; value: number | string | boolean }[] },
+  ) => {
+    return level.benefits.find((b) => b.name === benefit.name);
+  };
 
   return (
     <div className="page bg-cream flex flex-col gap-[1cm] pt-[2cm] !h-auto">
@@ -121,7 +127,7 @@ export function PricingPage({
           <tr className="uppercase [&>th]:font-medium border-b">
             <th />
 
-            {packages.map((p, i) => (
+            {levels.map((p, i) => (
               <th
                 className={clsx(
                   "py-[0.5cm] w-[2.1cm] text-center border-l",
@@ -136,42 +142,38 @@ export function PricingPage({
         </thead>
 
         <tbody>
-          <TableSection title="Pricing" totalPackages={packages.length} />
+          <TableSection title="Pricing" totalPackages={levels.length} />
           <TableBenefit
             title="Package price (VAT not included)"
-            values={packages.map((p) => `${p.price.toLocaleString()}€`)}
+            values={levels.map((p) => `${p.price.toLocaleString()}€`)}
           />
 
-          <TableSection title="Availability" totalPackages={packages.length} />
+          <TableSection title="Availability" totalPackages={levels.length} />
           <TableBenefit
             title="Number of slots available"
-            values={packages.map((p) => `${p.availability}`)}
+            values={levels.map((p) => `${p.slots}`)}
           />
 
-          {groupsAndBenefits.map((item) => {
-            if (item.type === "group") {
-              return (
+          {Object.entries(benefitsByCategory).map(([category, benefits]) => {
+            return (
+              <>
                 <TableSection
-                  title={item.group}
-                  totalPackages={packages.length}
-                  key={item.group}
+                  title={category}
+                  totalPackages={levels.length}
+                  key={category}
                 />
-              );
-            } else {
-              return (
-                <TableBenefit
-                  title={item.benefit.name}
-                  values={packages.map((p) => {
-                    const benefit = p.benefits.find(
-                      (b) => b.id === item.benefit.id,
-                    );
-
-                    return benefit?.value ?? "-";
-                  })}
-                  key={item.benefit.id}
-                />
-              );
-            }
+                {benefits.map((benefit) => (
+                  <TableBenefit
+                    title={benefit.name}
+                    values={levels.map((p) => {
+                      const levelBenefit = getBenefitForLevel(benefit, p);
+                      return levelBenefit ? levelBenefit.value : "-";
+                    })}
+                    key={benefit.name}
+                  />
+                ))}
+              </>
+            );
           })}
         </tbody>
       </table>

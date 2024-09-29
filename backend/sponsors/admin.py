@@ -6,6 +6,7 @@ from .models import (
     SponsorLead,
     SponsorLevel,
     SponsorLevelBenefit,
+    SponsorBenefit,
     SponsorBrochure,
 )
 
@@ -18,6 +19,12 @@ class SponsorAdmin(OrderedModelAdmin):
         "levels__name",
     )
     readonly_fields = ("order",)
+
+
+@admin.register(SponsorBenefit)
+class SponsorBenefitAdmin(admin.ModelAdmin):
+    list_display = ("name", "conference", "category")
+    list_filter = ("category",)
 
 
 class SponsorLevelBenefitInline(admin.TabularInline):

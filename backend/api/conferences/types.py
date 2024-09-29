@@ -19,11 +19,15 @@ from api.pretix.query import get_conference_tickets, get_voucher
 from api.pretix.types import TicketItem, Voucher
 from api.schedule.types import Room, ScheduleItem, ScheduleItemUser
 from api.sponsors.types import (
+    SponsorBenefit,
     SponsorBrochure,
     SponsorBrochureLocationText,
     SponsorBrochureStats,
     SponsorBrochureText,
     SponsorBrochureWhySponsorText,
+    SponsorLevel,
+    SponsorLevelBenefit,
+    SponsorSpecialOption,
     SponsorsByLevel,
 )
 from api.submissions.types import Submission, SubmissionType
@@ -33,7 +37,10 @@ from conferences.models.deadline import DeadlineStatus
 from schedule.models import ScheduleItem as ScheduleItemModel
 from submissions.models import Submission as SubmissionModel
 from voting.models import RankRequest as RankRequestModel
-from sponsors.models import SponsorBrochure as SponsorBrochureModel
+from sponsors.models import (
+    SponsorBrochure as SponsorBrochureModel,
+    SponsorLevel as SponsorLevelModel,
+)
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
@@ -366,6 +373,57 @@ class Conference:
     def is_running(self, info: Info) -> bool:
         now = timezone.now()
         return self.start <= now <= self.end
+
+    @strawberry.field
+    def sponsor_benefits(self) -> list[SponsorBenefit]:
+        benefits = self.sponsor_benefits.all()
+
+        return [
+            SponsorBenefit(
+                name=benefit.name,
+                category=benefit.category,
+                description=benefit.description,
+            )
+            for benefit in benefits
+        ]
+
+    @strawberry.field
+    def sponsor_levels(self) -> list[SponsorLevel]:
+        levels = SponsorLevelModel.objects.filter(conference=self).prefetch_related(
+            "sponsorlevelbenefit_set",
+            "sponsorlevelbenefit_set__benefit",
+        )
+
+        return [
+            SponsorLevel(
+                name=level.name,
+                price=level.price,
+                slots=level.slots,
+                benefits=[
+                    SponsorLevelBenefit(
+                        name=level_benefit.benefit.name,
+                        category=level_benefit.benefit.category,
+                        value=level_benefit.value,
+                        description=level_benefit.benefit.description,
+                    )
+                    for level_benefit in level.sponsorlevelbenefit_set.all()
+                ],
+            )
+            for level in levels
+        ]
+
+    @strawberry.field
+    def sponsor_special_options(self) -> list[SponsorSpecialOption]:
+        options = self.sponsor_special_options.all()
+
+        return [
+            SponsorSpecialOption(
+                name=option.name,
+                description=option.description,
+                price=option.price,
+            )
+            for option in options
+        ]
 
     @strawberry.field
     def sponsor_brochure(self) -> SponsorBrochure | None:
