@@ -38,6 +38,8 @@ class EmailTemplateIdentifier(models.TextChoices):
     )
     grant_voucher_code = "grant_voucher_code", _("Grant voucher code")
 
+    sponsorship_brochure = "sponsorship_brochure", _("Sponsorship brochure")
+
     custom = "custom", _("Custom")
 
 

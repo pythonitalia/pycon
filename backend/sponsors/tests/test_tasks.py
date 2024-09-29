@@ -1,3 +1,4 @@
+from unittest.mock import patch
 from django.urls import reverse
 from django.core.signing import Signer
 import pytest
@@ -7,7 +8,7 @@ from sponsors.tests.factories import SponsorLeadFactory
 pytestmark = pytest.mark.django_db
 
 
-def test_send_sponsor_brochure_task(sent_emails):
+def test_send_sponsor_brochure_task():
     sponsor_lead = SponsorLeadFactory()
 
     signer = Signer()
@@ -15,18 +16,16 @@ def test_send_sponsor_brochure_task(sent_emails):
     signed_url = signer.sign(view_brochure_path)
     signature = signed_url.split(signer.sep)[-1]
 
-    send_sponsor_brochure(sponsor_lead.id)
+    with patch("sponsors.tasks.EmailTemplate") as mock_email_template:
+        send_sponsor_brochure(sponsor_lead.id)
 
-    email = sent_emails[0]
-    assert email["template"] == "sponsorship-brochure"
-    assert email["to"] == sponsor_lead.email
-    assert email["reply_to"] == ["sponsor@pycon.it"]
-    assert (
-        email["subject"]
-        == f'[{sponsor_lead.conference.name.localize("en")}] Our Sponsorship Brochure'
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient_email=sponsor_lead.email,
+        placeholders={
+            "brochure_link": f"https://admin.pycon.it{view_brochure_path}?sig={signature}",
+            "conference_name": sponsor_lead.conference.name.localize("en"),
+        },
     )
-
-    assert f"{view_brochure_path}?sig={signature}" in email["variables"]["brochurelink"]
 
 
 def test_notify_new_sponsor_lead_via_slack(mocker):

@@ -1,30 +1,31 @@
 from django.urls import reverse
 
+from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from pycon.celery import app
 from pycon.signing import sign_path
 from sponsors.models import SponsorLead
-from notifications.emails import send_email
 from integrations import slack
 
 
 @app.task
 def send_sponsor_brochure(sponsor_lead_id):
     sponsor_lead = SponsorLead.objects.get(id=sponsor_lead_id)
-    subject_prefix = f"[{sponsor_lead.conference.name.localize('en')}]"
+    conference = sponsor_lead.conference
 
     view_brochure_path = reverse("view-brochure", args=[sponsor_lead_id])
     signed_path = sign_path(view_brochure_path)
 
     brochure_link = f"https://admin.pycon.it{signed_path}"
 
-    send_email(
-        template="sponsorship-brochure",
-        to=sponsor_lead.email,
-        subject=f"{subject_prefix} Our Sponsorship Brochure",
-        variables={"brochurelink": brochure_link},
-        reply_to=[
-            "sponsor@pycon.it",
-        ],
+    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
+        EmailTemplateIdentifier.sponsorship_brochure
+    )
+    email_template.send_email(
+        recipient_email=sponsor_lead.email,
+        placeholders={
+            "brochure_link": brochure_link,
+            "conference_name": conference.name.localize("en"),
+        },
     )
 
 
