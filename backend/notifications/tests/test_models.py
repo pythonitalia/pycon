@@ -1,7 +1,12 @@
 from django.utils import timezone
 import pytest
 from users.tests.factories import UserFactory
-from notifications.models import EmailTemplateIdentifier, SentEmail, SentEmailEvent
+from notifications.models import (
+    EmailTemplate,
+    EmailTemplateIdentifier,
+    SentEmail,
+    SentEmailEvent,
+)
 from notifications.tests.factories import EmailTemplateFactory, SentEmailFactory
 
 
@@ -95,6 +100,41 @@ def test_send_email_template_to_recipient_user():
 
     assert sent_email.recipient == user
     assert sent_email.recipient_email == user.email
+
+    assert sent_email.subject == "Subject abc"
+    assert "Body abc" in sent_email.body
+    assert sent_email.preview_text == "Preview abc"
+    assert sent_email.reply_to == "replyto@example.com"
+
+
+def test_send_system_template_email(settings):
+    settings.DEFAULT_FROM_EMAIL = "example@example.com"
+
+    user = UserFactory()
+    email_template = EmailTemplateFactory(
+        subject="Subject {{ test }}",
+        body="Body {{ test }}",
+        preview_text="Preview {{ test }}",
+        reply_to="replyto@example.com",
+        is_system_template=True,
+        conference=None,
+        identifier=EmailTemplateIdentifier.reset_password,
+    )
+    email_template.send_email(
+        recipient=user,
+        placeholders={
+            "test": "abc",
+        },
+    )
+
+    sent_email = SentEmail.objects.get(
+        email_template=email_template,
+    )
+
+    assert sent_email.conference_id is None
+    assert sent_email.recipient == user
+    assert sent_email.recipient_email == user.email
+    assert sent_email.from_email == "example@example.com"
 
     assert sent_email.subject == "Subject abc"
     assert "Body abc" in sent_email.body
@@ -204,3 +244,23 @@ def test_sent_email_is_opened():
     sent_email.record_event(SentEmailEvent.Event.opened, timezone.now(), {})
 
     assert sent_email.is_opened
+
+
+def test_email_template_system_templates_filter():
+    email_template = EmailTemplateFactory(
+        subject="Subject {{ test }}",
+        body="Body {{ test }}",
+        preview_text="Preview {{ test }}",
+        reply_to="replyto@example.com",
+        is_system_template=True,
+        conference=None,
+        identifier=EmailTemplateIdentifier.reset_password,
+    )
+
+    EmailTemplateFactory(
+        identifier=EmailTemplateIdentifier.proposal_accepted,
+        is_system_template=False,
+    )
+
+    assert EmailTemplate.objects.system_templates().count() == 1
+    assert EmailTemplate.objects.system_templates().first().id == email_template.id
