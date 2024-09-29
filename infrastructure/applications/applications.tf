@@ -31,10 +31,6 @@ module "pycon_backend" {
   }
 }
 
-module "email_templates" {
-  source = "./email_templates"
-}
-
 # Other resources
 
 module "database" {

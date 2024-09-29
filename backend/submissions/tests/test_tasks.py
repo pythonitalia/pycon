@@ -74,7 +74,7 @@ def test_send_proposal_rejected_email():
     )
 
 
-def test_send_proposal_in_waiting_list_email(sent_emails):
+def test_send_proposal_in_waiting_list_email():
     submission = SubmissionFactory(
         conference__name=LazyI18nString({"en": "Conf"}),
         title=LazyI18nString({"en": "Title"}),

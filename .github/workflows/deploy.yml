@@ -272,32 +272,9 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
 
-  build-emails:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./email-templates/
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          version: 9
-          run_install: false
-      - name: Install dependencies
-        run: pnpm install
-      - name: Build templates
-        run: pnpm run build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: built-email-templates
-          path: email-templates/build_production
-
   terraform:
     runs-on: ubuntu-latest
-    needs: [build-emails, build-and-push-service, build-and-push-arm-service, build-pretix, create-db]
+    needs: [build-and-push-service, build-and-push-arm-service, build-pretix, create-db]
     environment:
       name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
     defaults:
@@ -308,10 +285,6 @@ jobs:
         with:
           ref: ${{ github.ref }}
           fetch-depth: 0
-      - uses: actions/download-artifact@v4
-        with:
-          name: built-email-templates
-          path: email-templates/build_production
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.2.4
