@@ -15,7 +15,7 @@ def send_sponsor_brochure(sponsor_lead_id):
     view_brochure_path = reverse("view-brochure", args=[sponsor_lead_id])
     signed_path = sign_path(view_brochure_path)
 
-    brochure_link = f"https://admin.pycon.it{signed_path}"
+    brochure_url = f"https://admin.pycon.it{signed_path}"
 
     email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
         EmailTemplateIdentifier.sponsorship_brochure
@@ -23,7 +23,7 @@ def send_sponsor_brochure(sponsor_lead_id):
     email_template.send_email(
         recipient_email=sponsor_lead.email,
         placeholders={
-            "brochure_link": brochure_link,
+            "brochure_url": brochure_url,
             "conference_name": conference.name.localize("en"),
         },
     )

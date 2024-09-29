@@ -133,7 +133,7 @@ class EmailTemplate(TimeStampedModel):
         ],
         EmailTemplateIdentifier.sponsorship_brochure: [
             *BASE_PLACEHOLDERS,
-            "brochure_link",
+            "brochure_url",
             "conference_name",
         ],
     }

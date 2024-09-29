@@ -22,7 +22,7 @@ def test_send_sponsor_brochure_task():
     mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
         recipient_email=sponsor_lead.email,
         placeholders={
-            "brochure_link": f"https://admin.pycon.it{view_brochure_path}?sig={signature}",
+            "brochure_url": f"https://admin.pycon.it{view_brochure_path}?sig={signature}",
             "conference_name": sponsor_lead.conference.name.localize("en"),
         },
     )
