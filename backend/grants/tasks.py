@@ -3,6 +3,7 @@ from urllib.parse import urljoin
 
 from django.conf import settings
 from django.utils import timezone
+from notifications.models import EmailTemplateIdentifier
 from notifications.templates import EmailTemplate
 
 from users.models import User
@@ -78,17 +79,28 @@ def send_grant_reply_waiting_list_update_email(*, grant_id):
 @app.task
 def send_grant_reply_rejected_email(grant_id):
     logger.info("Sending Reply REJECTED email for Grant %s", grant_id)
+
     grant = Grant.objects.get(id=grant_id)
+    conference = grant.conference
+    user = grant.user
+    conference_name = grant.conference.name.localize("en")
 
-    subject = "Financial Aid Update"
-
-    _send_grant_email(
-        template=EmailTemplate.GRANT_REJECTED,
-        subject=subject,
-        grant=grant,
+    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
+        EmailTemplateIdentifier.grant_rejected
     )
 
-    logger.info("Email sent for Grant %s", grant.id)
+    email_template.send_email(
+        recipient=user,
+        placeholders={
+            "conference_name": conference_name,
+            "user_name": get_name(user, "there"),
+        },
+    )
+
+    grant.applicant_reply_sent_at = timezone.now()
+    grant.save()
+
+    logger.info("Rejection email sent for Grant %s", grant.id)
 
 
 @app.task
