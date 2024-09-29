@@ -14,7 +14,6 @@ from grants.tasks import (
     send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
 )
-from grants.models import Grant
 
 pytestmark = pytest.mark.django_db
 
@@ -31,7 +30,6 @@ def test_send_grant_voucher_email(settings):
     grant = GrantFactory(
         user=user,
         voucher_code="ABC123",
-        approved_type=Grant.ApprovedType.ticket_only,
     )
 
     with patch("grants.tasks.send_email") as email_mock:
@@ -125,9 +123,7 @@ def test_handle_grant_reply_sent_reminder(settings):
     )
     grant = GrantFactory(
         conference=conference,
-        approved_type=Grant.ApprovedType.ticket_only,
         applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
-        total_amount=680,
         user=user,
     )
 
@@ -170,9 +166,7 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(settings):
 
     grant = GrantFactory(
         conference=conference,
-        approved_type=Grant.ApprovedType.ticket_travel_accommodation,
         applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
-        travel_amount=680,
         user=user,
     )
 
@@ -218,9 +212,7 @@ def test_handle_grant_approved_ticket_travel_accommodation_fails_with_no_amount(
 
     grant = GrantFactory(
         conference=conference,
-        approved_type=Grant.ApprovedType.ticket_travel_accommodation,
         applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
-        travel_amount=0,
         user=user,
     )
 
@@ -246,9 +238,7 @@ def test_handle_grant_approved_ticket_only_reply_sent(settings):
 
     grant = GrantFactory(
         conference=conference,
-        approved_type=Grant.ApprovedType.ticket_only,
         applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
-        total_amount=680,
         user=user,
     )
 
@@ -291,10 +281,7 @@ def test_handle_grant_approved_travel_reply_sent(settings):
 
     grant = GrantFactory(
         conference=conference,
-        approved_type=Grant.ApprovedType.ticket_travel,
         applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
-        total_amount=680,
-        travel_amount=400,
         user=user,
     )
 

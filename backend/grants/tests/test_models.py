@@ -1,162 +1,104 @@
-from grants.models import Grant
 from grants.tests.factories import GrantFactory
+from conferences.tests.factories import ConferenceFactory
 import pytest
 
+from grants.models import AidCategory
+from grants.models import GrantAllocation
+from grants.tests.factories import (
+    AidCategoryFactory,
+    CountryAidAmountFactory,
+    GrantAllocationFactory,
+)
 
 pytestmark = pytest.mark.django_db
 
 
-@pytest.mark.parametrize(
-    "data",
-    [
-        {
-            "approved_type": Grant.ApprovedType.ticket_travel,
-            "travelling_from": "IT",
-            "expected_ticket_amount": 100,
-            "expected_accommodation_amount": 0,
-            "expected_travel_amount": 300,
-        },
-        {
-            "approved_type": Grant.ApprovedType.ticket_only,
-            "travelling_from": "IT",
-            "expected_ticket_amount": 100,
-            "expected_accommodation_amount": 0,
-            "expected_travel_amount": 0,
-        },
-        {
-            "approved_type": Grant.ApprovedType.ticket_accommodation,
-            "travelling_from": "FR",
-            "expected_ticket_amount": 100,
-            "expected_accommodation_amount": 200,
-            "expected_travel_amount": 0,
-        },
-        {
-            "approved_type": Grant.ApprovedType.ticket_travel,
-            "travelling_from": "FR",
-            "expected_ticket_amount": 100,
-            "expected_accommodation_amount": 0,
-            "expected_travel_amount": 400,
-        },
-        {
-            "approved_type": Grant.ApprovedType.ticket_travel_accommodation,
-            "travelling_from": "AU",
-            "expected_ticket_amount": 100,
-            "expected_accommodation_amount": 200,
-            "expected_travel_amount": 500,
-        },
-    ],
-)
-def test_calculate_grant_amounts(data):
-    approved_type = data["approved_type"]
-    travelling_from = data["travelling_from"]
-    expected_ticket_amount = data["expected_ticket_amount"]
-    expected_accommodation_amount = data["expected_accommodation_amount"]
-    expected_travel_amount = data["expected_travel_amount"]
+def test_grant_with_default_aid_categories():
+    # Create an AidCategory that should be included by default
+    default_category = AidCategoryFactory(included_by_default=True)
 
+    # Create a Grant
+    grant = GrantFactory(conference=default_category.conference)
+
+    # Ensure that the default AidCategory is included in the Grant's allocations
+    assert GrantAllocation.objects.filter(
+        grant=grant, category=default_category
+    ).exists()
+
+
+def test_grant_travel_aid_calculation():
+    # Create a conference and country-specific travel cost
+    conference = ConferenceFactory()
+    country_aid = CountryAidAmountFactory(conference=conference, max_amount=300)
+
+    # Create a travel-related AidCategory
+    travel_category = AidCategoryFactory(
+        conference=conference, category=AidCategory.AidType.TRAVEL
+    )
+
+    # Create a Grant with travelling_from matching the country aid
     grant = GrantFactory(
-        status=Grant.Status.pending,
-        approved_type=approved_type,
-        travelling_from=travelling_from,
-        conference__grants_default_ticket_amount=100,
-        conference__grants_default_accommodation_amount=200,
-        conference__grants_default_travel_from_italy_amount=300,
-        conference__grants_default_travel_from_europe_amount=400,
-        conference__grants_default_travel_from_extra_eu_amount=500,
+        conference=conference,
+        travelling_from=country_aid.country,
+        needs_funds_for_travel=True,
     )
 
-    grant.status = Grant.Status.approved
+    # Trigger save to assign aid categories
     grant.save()
 
-    grant.refresh_from_db()
+    # Check that the travel allocation is correctly calculated
+    travel_allocation = GrantAllocation.objects.get(
+        grant=grant, category=travel_category
+    )
+    assert travel_allocation.allocated_amount == country_aid.max_amount
 
-    assert grant.ticket_amount == expected_ticket_amount
-    assert grant.accommodation_amount == expected_accommodation_amount
-    assert grant.travel_amount == expected_travel_amount
-    assert (
-        grant.total_amount
-        == expected_ticket_amount
-        + expected_accommodation_amount
-        + expected_travel_amount
+
+def test_grant_with_custom_allocated_amount():
+    # Create a custom AidCategory
+    custom_category = AidCategoryFactory(max_amount=400)
+
+    # Create a Grant and manually allocate a custom amount
+    grant = GrantFactory()
+    allocation = GrantAllocationFactory(
+        grant=grant, category=custom_category, allocated_amount=350
     )
 
+    # Ensure that the allocation is correct
+    assert allocation.allocated_amount == 350
+    assert allocation.category == custom_category
+    assert allocation.grant == grant
 
-def test_resets_amounts_on_approved_type_change():
-    grant = GrantFactory(
-        status=Grant.Status.pending,
-        approved_type=Grant.ApprovedType.ticket_only,
-        travelling_from="IT",
-        conference__grants_default_ticket_amount=100,
-        conference__grants_default_accommodation_amount=200,
-        conference__grants_default_travel_from_italy_amount=300,
-        conference__grants_default_travel_from_europe_amount=400,
-        conference__grants_default_travel_from_extra_eu_amount=500,
+
+@pytest.mark.django_db
+def test_grant_has_approved_travel_true():
+    travel_category = AidCategoryFactory(category=AidCategory.AidType.TRAVEL)
+    grant = GrantFactory()
+    GrantAllocationFactory(grant=grant, category=travel_category)
+
+    # Test that has_approved_travel returns True
+    assert grant.has_approved_travel() is True
+
+
+@pytest.mark.django_db
+def test_grant_has_approved_travel_false():
+    grant = GrantFactory()
+
+    assert grant.has_approved_travel() is False
+
+
+@pytest.mark.django_db
+def test_grant_has_approved_accommodation_true():
+    accommodation_category = AidCategoryFactory(
+        category=AidCategory.AidType.ACCOMMODATION
     )
+    grant = GrantFactory()
+    GrantAllocationFactory(grant=grant, category=accommodation_category)
 
-    grant.status = Grant.Status.approved
-    grant.save()
-
-    assert grant.ticket_amount == 100
-    assert grant.accommodation_amount == 0
-    assert grant.travel_amount == 0
-    assert grant.total_amount == 100
-
-    grant.approved_type = Grant.ApprovedType.ticket_travel_accommodation
-    grant.save()
-
-    assert grant.ticket_amount == 100
-    assert grant.accommodation_amount == 200
-    assert grant.travel_amount == 300
-    assert grant.total_amount == 600
+    assert grant.has_approved_accommodation() is True
 
 
-def test_can_manually_change_amounts():
-    grant = GrantFactory(
-        status=Grant.Status.pending,
-        approved_type=Grant.ApprovedType.ticket_only,
-        travelling_from="IT",
-        conference__grants_default_ticket_amount=100,
-        conference__grants_default_accommodation_amount=200,
-        conference__grants_default_travel_from_italy_amount=300,
-        conference__grants_default_travel_from_europe_amount=400,
-        conference__grants_default_travel_from_extra_eu_amount=500,
-    )
+@pytest.mark.django_db
+def test_grant_has_approved_accommodation_false():
+    grant = GrantFactory()
 
-    grant.status = Grant.Status.approved
-    grant.save(update_fields=["status"])
-
-    assert grant.ticket_amount == 100
-    assert grant.accommodation_amount == 0
-    assert grant.travel_amount == 0
-    assert grant.total_amount == 100
-
-    grant.ticket_amount = 20
-    grant.accommodation_amount = 50
-    grant.travel_amount = 0
-    grant.total_amount = 70
-    grant.save()
-
-    assert grant.ticket_amount == 20
-    assert grant.accommodation_amount == 50
-    assert grant.travel_amount == 0
-    assert grant.total_amount == 70
-
-
-@pytest.mark.parametrize(
-    "travelling_from,country_type",
-    [
-        ("IT", Grant.CountryType.italy),
-        ("FR", Grant.CountryType.europe),
-        ("AU", Grant.CountryType.extra_eu),
-        ("US", Grant.CountryType.extra_eu),
-    ],
-)
-def test_sets_country_type(travelling_from, country_type):
-    grant = GrantFactory(travelling_from=travelling_from)
-
-    assert grant.country_type == country_type
-
-
-def test_sets_country_type_does_nothing_if_unset():
-    grant = GrantFactory(travelling_from=None)
-
-    assert grant.country_type is None
+    assert grant.has_approved_accommodation() is False

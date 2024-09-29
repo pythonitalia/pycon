@@ -61,7 +61,9 @@ def test_send_reply_emails_with_grants_from_multiple_conferences_fails(
 
 def test_send_reply_emails_approved_grant_missing_approved_type(rf, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
-    grant = GrantFactory(status=Grant.Status.approved, approved_type=None)
+    grant = GrantFactory(
+        status=Grant.Status.approved,
+    )
     request = rf.get("/")
     mock_send_approved_email = mocker.patch(
         "grants.admin.send_grant_reply_approved_email.delay"
@@ -80,11 +82,7 @@ def test_send_reply_emails_approved_missing_amount(rf, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
     grant = GrantFactory(
         status=Grant.Status.approved,
-        approved_type=Grant.ApprovedType.ticket_accommodation,
-        total_amount=None,
     )
-    grant.total_amount = None
-    grant.save()
     request = rf.get("/")
     mock_send_approved_email = mocker.patch(
         "grants.admin.send_grant_reply_approved_email.delay"
@@ -103,8 +101,6 @@ def test_send_reply_emails_approved_set_deadline_in_fourteen_days(rf, mocker):
     mock_messages = mocker.patch("grants.admin.messages")
     grant = GrantFactory(
         status=Grant.Status.approved,
-        approved_type=Grant.ApprovedType.ticket_accommodation,
-        total_amount=800,
     )
     request = rf.get("/")
     mock_send_approved_email = mocker.patch(
