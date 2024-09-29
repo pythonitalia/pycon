@@ -9,9 +9,7 @@ from django.utils import timezone
 from grants.tasks import get_name
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from notifications.emails import (
-    send_email,
     mark_safe,
-    EmailTemplate as EmailTemplateEnum,
 )
 from urllib.parse import urljoin
 from django.conf import settings
@@ -184,17 +182,17 @@ def send_speaker_communication_email(
     ):
         return
 
-    send_email(
-        template=EmailTemplateEnum.SPEAKER_COMMUNICATION,
-        to=user.email,
-        subject=f"[{conference.name.localize('en')}] {subject}",
-        variables={
-            "firstname": get_name(user, "there"),
+    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
+        EmailTemplateIdentifier.speaker_communication
+    )
+    email_template.send_email(
+        recipient=user,
+        placeholders={
+            "conference_name": conference.name.localize("en"),
+            "user_name": get_name(user, "there"),
             "body": mark_safe(body.replace("\n", "<br />")),
+            "subject": subject,
         },
-        reply_to=[
-            settings.SPEAKERS_EMAIL_ADDRESS,
-        ],
     )
 
 
