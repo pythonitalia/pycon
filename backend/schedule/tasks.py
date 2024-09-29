@@ -8,9 +8,6 @@ from pretix import user_has_admission_ticket
 from django.utils import timezone
 from grants.tasks import get_name
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
-from notifications.emails import (
-    mark_safe,
-)
 from urllib.parse import urljoin
 from django.conf import settings
 import logging
@@ -190,7 +187,7 @@ def send_speaker_communication_email(
         placeholders={
             "conference_name": conference.name.localize("en"),
             "user_name": get_name(user, "there"),
-            "body": mark_safe(body.replace("\n", "<br />")),
+            "body": body.replace("\n", "<br />"),
             "subject": subject,
         },
     )

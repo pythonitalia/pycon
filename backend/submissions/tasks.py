@@ -1,5 +1,4 @@
-from notifications.models import EmailTemplateIdentifier
-from notifications.templates import EmailTemplate
+from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from integrations import slack
 from grants.tasks import get_name
 from users.models import User

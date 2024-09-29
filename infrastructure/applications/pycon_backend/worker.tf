@@ -61,10 +61,6 @@ locals {
       value = "django_ses.SESBackend"
     },
     {
-      name  = "PYTHONIT_EMAIL_BACKEND",
-      value = "notifications.backends.ses.SESEmailBackend"
-    },
-    {
       name  = "FRONTEND_URL",
       value = "https://pycon.it"
     },
@@ -79,10 +75,6 @@ locals {
     {
       name  = "PRETIX_API_TOKEN",
       value = module.common_secrets.value.pretix_api_token
-    },
-    {
-      name  = "PINPOINT_APPLICATION_ID",
-      value = module.secrets.value.pinpoint_application_id
     },
     {
       name  = "MAILCHIMP_SECRET_KEY",

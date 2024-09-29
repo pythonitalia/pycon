@@ -286,18 +286,11 @@ QUERY_INSPECT_LOG_QUERIES = True
 QUERY_INSPECT_LOG_TRACEBACKS = True
 QUERY_INSPECT_TRACEBACK_ROOTS = [root(".")]
 
-PINPOINT_APPLICATION_ID = env("PINPOINT_APPLICATION_ID", default="")
-
 MAILCHIMP_SECRET_KEY = env("MAILCHIMP_SECRET_KEY", default="")
 MAILCHIMP_DC = env("MAILCHIMP_DC", default="us3")
 MAILCHIMP_LIST_ID = env("MAILCHIMP_LIST_ID", default="")
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
-
-PYTHONIT_EMAIL_BACKEND = env(
-    "PYTHONIT_EMAIL_BACKEND",
-    default="notifications.backends.local.LocalEmailBackend",
-)
 
 SPEAKERS_EMAIL_ADDRESS = env("SPEAKERS_EMAIL_ADDRESS", default="")
 

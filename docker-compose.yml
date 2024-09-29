@@ -154,19 +154,6 @@ services:
       backend:
         condition: service_healthy
 
-  email-templates:
-    build:
-      context: ./email-templates
-      dockerfile: ../Dockerfile.node.local
-    command: sh -c "pnpm install && pnpm run dev"
-    networks: [pycon_net]
-    ports:
-      - 3500:3500
-      - 3501:3501
-    volumes:
-      - ./email-templates/:/home/node/app
-      - /home/node/app/node_modules/
-
   redis:
     image: redis:6
     networks: [pycon_net]
