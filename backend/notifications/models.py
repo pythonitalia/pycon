@@ -23,12 +23,19 @@ class EmailTemplateIdentifier(models.TextChoices):
         "proposal_scheduled_time_changed",
         _("Proposal scheduled time changed"),
     )
+    speaker_communication = "speaker_communication", _("Speaker communication")
 
     voucher_code = "voucher_code", _("Voucher code")
 
     reset_password = "reset_password", _("[System] Reset password")
 
+    grant_approved = "grant_approved", _("Grant approved")
     grant_rejected = "grant_rejected", _("Grant rejected")
+    grant_waiting_list = "grant_waiting_list", _("Grant waiting list")
+    grant_waiting_list_update = (
+        "grant_waiting_list_update",
+        _("Grant waiting list update"),
+    )
 
     custom = "custom", _("Custom")
 
