@@ -33,7 +33,7 @@ def test_get_view_on_site_url():
     )
 
 
-def test_sent_email_admin_queryset(rf):
+def test_sent_email_admin_queryset(rf, admin_user):
     sent_email = SentEmailFactory(
         email_template__identifier=EmailTemplateIdentifier.custom,
         email_template__name="Custom template",
@@ -43,7 +43,10 @@ def test_sent_email_admin_queryset(rf):
         model=SentEmail,
         admin_site=AdminSite(),
     )
-    qs = admin.get_queryset(rf.get("/"))
+
+    request = rf.get("/")
+    request.user = admin_user
+    qs = admin.get_queryset(request)
 
     assert qs.first().email_template.name == sent_email.email_template.name
 
