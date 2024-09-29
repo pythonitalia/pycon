@@ -118,6 +118,7 @@ class EmailTemplate(TimeStampedModel):
             "user_name",
             "conference_name",
             "body",
+            "subject",
         ],
     }
 

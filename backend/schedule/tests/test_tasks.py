@@ -223,6 +223,7 @@ def test_send_speaker_communication_email_to_speakers_without_ticket(
                 "user_name": "Marco Acierno",
                 "conference_name": conference.name.localize("en"),
                 "body": "test body",
+                "subject": "test subject",
             },
         )
     else:
@@ -262,6 +263,7 @@ def test_send_speaker_communication_email_to_everyone(
             "user_name": "Marco Acierno",
             "body": "test body",
             "conference_name": conference.name.localize("en"),
+            "subject": "test subject",
         },
     )
 

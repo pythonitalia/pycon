@@ -191,6 +191,7 @@ def send_speaker_communication_email(
             "conference_name": conference.name.localize("en"),
             "user_name": get_name(user, "there"),
             "body": mark_safe(body.replace("\n", "<br />")),
+            "subject": subject,
         },
     )
 
