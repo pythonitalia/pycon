@@ -2,6 +2,7 @@ import typing
 from urllib.parse import urljoin
 
 from api.context import Info
+from privacy_policy.record import record_privacy_policy_acceptance
 from pretix import CreateOrderErrors
 import strawberry
 from django.conf import settings
@@ -54,6 +55,8 @@ class OrdersMutations:
                 "pec": input.invoice_information.pec or "",
             },
         )
+
+        record_privacy_policy_acceptance(info.context.request, "checkout-order")
 
         try:
             pretix_order = create_order(conference_obj, input)
