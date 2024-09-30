@@ -1,5 +1,6 @@
 import {
   HeroIllustration,
+  HeroIllustrationBologna,
   LayoutContent,
   ScrollDownArrowBar,
 } from "@python-italia/pycon-styleguide";
@@ -11,14 +12,19 @@ type Props = {
   city: HomepageHeroCity;
 };
 
-const Illustration = React.memo(HeroIllustration);
+const HeroIllustrationFlorenceMemo = React.memo(HeroIllustration);
+const HeroIllustrationBolognaMemo = React.memo(HeroIllustrationBologna);
 
 export const HomepageHero = ({ cycle, city }: Props) => {
   return (
     <div className="h-screen relative -mt-[161px] -mb-[3px]">
       <div className="h-screen lg:h-[calc(100vh-60px)]">
-        {city === HomepageHeroCity.Florence && <Illustration cycle={cycle} />}
-        {city === HomepageHeroCity.Bologna && <div>Bologna illustration</div>}
+        {city === HomepageHeroCity.Florence && (
+          <HeroIllustrationFlorenceMemo cycle={cycle} />
+        )}
+        {city === HomepageHeroCity.Bologna && (
+          <HeroIllustrationBolognaMemo cycle={cycle} />
+        )}
       </div>
 
       <LayoutContent
