@@ -31,7 +31,6 @@ def test_sponsor_information(graphql_client):
             conference(code: $code) {
                 sponsorLevels {
                     name
-                    price
                     slots
                     benefits {
                         name
@@ -48,7 +47,6 @@ def test_sponsor_information(graphql_client):
                 sponsorSpecialOptions {
                     name
                     description
-                    price
                 }
             }
         }
@@ -62,7 +60,6 @@ def test_sponsor_information(graphql_client):
         "sponsorLevels": [
             {
                 "name": sponsor_level.name,
-                "price": str(sponsor_level.price),
                 "slots": sponsor_level.slots,
                 "benefits": [
                     {
@@ -85,7 +82,6 @@ def test_sponsor_information(graphql_client):
             {
                 "name": sponsor_special_option.name,
                 "description": sponsor_special_option.description,
-                "price": str(sponsor_special_option.price),
             }
         ],
     }
