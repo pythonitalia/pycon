@@ -8,31 +8,47 @@ import { BackCoverPage } from "./backcover-page";
 import { CommunityPage } from "./community-page";
 import { WhySponsorPage } from "./why-sponsor-page";
 
-import { useGetBrochureDataQuery } from "~/types";
+import type { useGetBrochureDataQuery } from "~/types";
 
 export function Brochure({
   conference,
   testimonials,
+  content,
 }: {
   conference: ReturnType<typeof useGetBrochureDataQuery>["data"]["conference"];
   testimonials: Array<{ text: string; author: string }>;
+  content: {
+    stats: {
+      attendees: string;
+      speakers: string;
+      talks: string;
+      uniqueOnlineVisitors: string;
+      sponsorsAndPartners: string;
+      grantsGiven: string;
+      coffees: string;
+    };
+    introduction: string;
+    tags: string;
+    location: {
+      city: string;
+      cityDescription: string;
+      country: string;
+      countryDescription: string;
+      imageUrl: string;
+    };
+    community: string;
+    whySponsor: { introduction: string; text: string };
+  };
 }) {
-  if (!conference.sponsorBrochure) {
-    throw new Error("No sponsor brochure data found");
-  }
-
   return (
     <div className="brochure-page">
-      <CoverPage conference={conference} />
+      <CoverPage conference={conference} content={content} />
 
-      <OverviewPage
-        brochure={conference.sponsorBrochure}
-        conference={conference}
-      />
-      <LocationPage location={conference.sponsorBrochure.location} />
+      <OverviewPage content={content} conference={conference} />
+      <LocationPage location={content.location} />
 
-      <CommunityPage community={conference.sponsorBrochure.community} />
-      <WhySponsorPage whySponsor={conference.sponsorBrochure.whySponsor} />
+      <CommunityPage community={content.community} />
+      <WhySponsorPage whySponsor={content.whySponsor} />
       <PricingPage
         levels={conference.sponsorLevels}
         benefits={conference.sponsorBenefits}

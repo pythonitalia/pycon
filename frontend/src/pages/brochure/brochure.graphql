@@ -5,40 +5,6 @@ query GetBrochureData($conferenceCode: String!) {
     start
     end
     introduction
-    sponsorBrochure {
-      stats {
-        attendees
-        speakers
-        talks
-        uniqueOnlineVisitors
-        sponsorsAndPartners
-        grantsGiven
-        coffees
-      }
-      introduction {
-        text
-      }
-      tags {
-        text
-      }
-      location {
-        city {
-          text
-        }
-        country {
-          text
-        }
-      }
-      community {
-        text
-      }
-      whySponsor {
-        introduction {
-          text
-        }
-        text
-      }
-    }
     sponsorBenefits {
       name
       category

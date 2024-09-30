@@ -4,11 +4,18 @@ import { Logo } from "~/components/logo";
 
 export function CoverPage({
   conference,
+  content,
 }: {
   conference: {
     name: string;
     start: string;
     end: string;
+  };
+  content: {
+    location: {
+      city: string;
+      country: string;
+    };
   };
 }) {
   const start = parseISO(conference.start);
@@ -44,7 +51,9 @@ export function CoverPage({
       <div className="text-right px-[2cm] font-medium">
         <p>{date}</p>
         {/* TODO: add location */}
-        <p>Bologna, Italy</p>
+        <p>
+          {content.location.city}, {content.location.country}
+        </p>
         <p>
           <a href="https://pycon.it" className="no-underline font-medium">
             https://pycon.it
