@@ -5,7 +5,7 @@
 groups = ["default", "dev", "lambda"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:8d83b96cdac030470ad83e003a6c3dd6f775374db3fca0816d7510dbf233d5b7"
+content_hash = "sha256:73aab1d66c88715df6805b9c4054565b1eec802d27baa412638cd28879f12a93"
 
 [[package]]
 name = "amqp"
@@ -601,18 +601,18 @@ files = [
 
 [[package]]
 name = "django"
-version = "5.0.8"
+version = "5.1.1"
 requires_python = ">=3.10"
 summary = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 groups = ["default", "dev"]
 dependencies = [
-    "asgiref<4,>=3.7.0",
+    "asgiref<4,>=3.8.1",
     "sqlparse>=0.3.1",
     "tzdata; sys_platform == \"win32\"",
 ]
 files = [
-    {file = "Django-5.0.8-py3-none-any.whl", hash = "sha256:333a7988f7ca4bc14d360d3d8f6b793704517761ae3813b95432043daec22a45"},
-    {file = "Django-5.0.8.tar.gz", hash = "sha256:ebe859c9da6fead9c9ee6dbfa4943b04f41342f4cea2c4d8c978ef0d10694f2b"},
+    {file = "Django-5.1.1-py3-none-any.whl", hash = "sha256:71603f27dac22a6533fb38d83072eea9ddb4017fead6f67f2562a40402d61c3f"},
+    {file = "Django-5.1.1.tar.gz", hash = "sha256:021ffb7fdab3d2d388bc8c7c2434eb9c1f6f4d09e6119010bbb1694dda286bc2"},
 ]
 
 [[package]]
@@ -2273,7 +2273,7 @@ files = [
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.237.1"
+version = "0.243.1"
 requires_python = "<4.0,>=3.8"
 summary = "A library for creating GraphQL APIs"
 groups = ["default"]
@@ -2283,8 +2283,8 @@ dependencies = [
     "typing-extensions>=4.5.0",
 ]
 files = [
-    {file = "strawberry_graphql-0.237.1-py3-none-any.whl", hash = "sha256:a0bc050961395e50f2e5a2353951e0b2e0381826fc575904d9d1cf90bfe19f2a"},
-    {file = "strawberry_graphql-0.237.1.tar.gz", hash = "sha256:6ebe17d451705c90d1e252a7f3f8917d8f13a30b87ce5dfc8f4a4b1f0911bde9"},
+    {file = "strawberry_graphql-0.243.1-py3-none-any.whl", hash = "sha256:7c4ddb97cd424fa23a540816cb169ef760822c9acfb63901e6717042bcda6cfe"},
+    {file = "strawberry_graphql-0.243.1.tar.gz", hash = "sha256:0ef8b0b100cb0ebd25eea1723105166625820b18d075e4f7cae744468b81d23e"},
 ]
 
 [[package]]
@@ -2526,7 +2526,7 @@ files = [
 
 [[package]]
 name = "wagtail"
-version = "6.1.3"
+version = "6.2.2"
 requires_python = ">=3.8"
 summary = "A Django content management system."
 groups = ["default", "dev"]
@@ -2539,7 +2539,7 @@ dependencies = [
     "django-filter<25,>=23.3",
     "django-modelcluster<7.0,>=6.2.1",
     "django-permissionedforms<1.0,>=0.1",
-    "django-taggit<5.1,>=4.0",
+    "django-taggit<5.1,>=5.0",
     "django-treebeard<5.0,>=4.5.1",
     "djangorestframework<4.0,>=3.15.1",
     "draftjs-exporter<6.0,>=2.1.5",
@@ -2550,8 +2550,8 @@ dependencies = [
     "telepath<1,>=0.3.1",
 ]
 files = [
-    {file = "wagtail-6.1.3-py3-none-any.whl", hash = "sha256:b6c4d5705adf51a5e49ea416032dd0a6534588fc31c5c9a95f698e6ddec0a203"},
-    {file = "wagtail-6.1.3.tar.gz", hash = "sha256:8f4908ab1b6b963a8aa7adf8f0ec738cd1dc79b9816c6d5f59018f600a404378"},
+    {file = "wagtail-6.2.2-py3-none-any.whl", hash = "sha256:d0382603aef5d7e4a46529aa125857774a317c2870c9b6836767932969829429"},
+    {file = "wagtail-6.2.2.tar.gz", hash = "sha256:506ac2b59dae85069ae754b45bc13b91cbd86e92d4f5d663658773b0ed7a16b9"},
 ]
 
 [[package]]
@@ -2584,19 +2584,19 @@ files = [
 
 [[package]]
 name = "wagtail-localize"
-version = "1.9"
-requires_python = ">=3.8"
+version = "1.10"
+requires_python = ">=3.9"
 summary = "Translation plugin for Wagtail CMS"
 groups = ["default"]
 dependencies = [
-    "Django<5.1,>=3.2",
+    "Django<6.0,>=4.2",
     "Wagtail>=5.2",
     "polib<2.0,>=1.1",
     "typing-extensions>=4.0",
 ]
 files = [
-    {file = "wagtail_localize-1.9-py3-none-any.whl", hash = "sha256:a680fc33c17145e6726f03a57b2ec465405847ae7cb77943ecc0e56463ad68c7"},
-    {file = "wagtail_localize-1.9.tar.gz", hash = "sha256:f4fa9c36d8dbab5c27d1b675ed6fd7b9e8f012cf4bb308464168de7ebbad8324"},
+    {file = "wagtail_localize-1.10-py3-none-any.whl", hash = "sha256:11746223d5f20d898efff36042f730a3d499135b4a92945db01fc9769c47cb28"},
+    {file = "wagtail_localize-1.10.tar.gz", hash = "sha256:ecde7efd366485ea325904efbbae5e50297f094f4b91ca8ac94aec04dd3b0ded"},
 ]
 
 [[package]]

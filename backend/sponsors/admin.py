@@ -7,7 +7,6 @@ from .models import (
     SponsorLevel,
     SponsorLevelBenefit,
     SponsorBenefit,
-    SponsorBrochure,
 )
 
 
@@ -57,9 +56,3 @@ class SponsorLeadAdmin(admin.ModelAdmin):
         "company",
     )
     list_filter = ("conference",)
-
-
-@admin.register(SponsorBrochure)
-class SponsorBrochureAdmin(admin.ModelAdmin):
-    list_display = ("conference", "created")
-    search_fields = ("conference__name",)
