@@ -38,7 +38,7 @@ const TableSection = ({
         {title}
       </td>
       {new Array(totalPackages).fill(null).map((_, i) => (
-        <td className={clsx("border-l", getBackgroundColor(i))}></td>
+        <td className={clsx("border-l", getBackgroundColor(i))} />
       ))}
     </tr>
   );

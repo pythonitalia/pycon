@@ -1,11 +1,11 @@
+import { BackCoverPage } from "./backcover-page";
+import { CommunityPage } from "./community-page";
 import { CoverPage } from "./cover-page";
 import { LocationPage } from "./location-page";
 import { OptionsPage } from "./options-page";
 import { OverviewPage } from "./overview-page";
 import { Benefit, Package, PricingPage } from "./pricing-page";
 import { TestimonialsPage } from "./testimonial-page";
-import { BackCoverPage } from "./backcover-page";
-import { CommunityPage } from "./community-page";
 import { WhySponsorPage } from "./why-sponsor-page";
 
 import type { useGetBrochureDataQuery } from "~/types";

@@ -9,6 +9,7 @@ export function CommunityPage({ community }: { community: string }) {
       <img
         className="w-full border-4 border-black aspect-[9/12] object-cover"
         src="https://live.staticflickr.com/65535/53774457009_168efb54ef_h.jpg"
+        alt=""
       />
 
       <p className="bg-blue border-4 border-black px-[1cm] py-[0.5cm] absolute w-[65%] top-[4cm] left-[1cm]">
