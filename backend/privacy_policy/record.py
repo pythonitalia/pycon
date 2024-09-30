@@ -8,7 +8,7 @@ def record_privacy_policy_acceptance(
 ) -> PrivacyPolicyAcceptanceRecord:
     user = request.user
     ip = get_ip(request)
-    user_agent = request.headers.get("HTTP_USER_AGENT", "")
+    user_agent = request.headers.get("User-Agent", "")
 
     return PrivacyPolicyAcceptanceRecord.objects.create(
         user=user,
