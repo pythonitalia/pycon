@@ -128,6 +128,7 @@ INSTALLED_APPS = [
     "video_uploads.apps.VideoUploadsConfig",
     "organizers.apps.OrganizersConfig",
     "billing.apps.BillingConfig",
+    "privacy_policy.apps.PrivacyPolicyConfig",
 ]
 
 MIDDLEWARE = [
