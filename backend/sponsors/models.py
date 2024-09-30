@@ -51,7 +51,7 @@ class SponsorLevel(OrderedModel):
     )
     objects = SponsorLevelManager()
     order_with_respect_to = "conference"
-    price = models.CharField(_("price"), max_length=10, default="Ask us")
+    price = models.DecimalField(_("price"), max_digits=10, decimal_places=2, default=0)
     slots = models.PositiveSmallIntegerField(
         default=0, help_text=_("0 means unlimited")
     )
@@ -127,7 +127,7 @@ class SponsorSpecialOption(models.Model):
     )
     name = models.CharField(_("name"), max_length=255)
     description = models.TextField(_("description"))
-    price = models.CharField(_("price"), max_length=10)
+    price = models.DecimalField(_("price"), max_digits=10, decimal_places=2)
 
     class Meta:
         verbose_name = _("special option")

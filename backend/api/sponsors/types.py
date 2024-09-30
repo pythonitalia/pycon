@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from decimal import Decimal
+
 import typing
 
 import strawberry
@@ -60,7 +62,7 @@ class SponsorLevelBenefit:
 @strawberry.type
 class SponsorLevel:
     name: str
-    price: str
+    price: Decimal
     slots: int | None
     benefits: list[SponsorLevelBenefit]
 
@@ -68,5 +70,5 @@ class SponsorLevel:
 @strawberry.type
 class SponsorSpecialOption:
     name: str
-    price: str
+    price: Decimal
     description: str
