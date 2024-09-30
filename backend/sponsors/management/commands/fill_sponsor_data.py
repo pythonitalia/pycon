@@ -7,6 +7,7 @@ from sponsors.models import (
     SponsorLevelBenefit,
     SponsorSpecialOption,
 )
+from decimal import Decimal
 
 
 class Command(BaseCommand):
@@ -25,43 +26,43 @@ class Command(BaseCommand):
         levels = [
             {
                 "name": "Keystone",
-                "price": "€ 10,000",
+                "price": Decimal("10000.00"),
                 "slots": 1,
                 "highlight_color": "blue",
             },
             {
                 "name": "Gold",
-                "price": "€ 7,000",
+                "price": Decimal("7000.00"),
                 "slots": 2,
                 "highlight_color": "yellow",
             },
             {
                 "name": "Silver",
-                "price": "€ 5,000",
+                "price": Decimal("5000.00"),
                 "slots": 5,
                 "highlight_color": "gray",
             },
             {
                 "name": "Bronze",
-                "price": "€ 3,000",
+                "price": Decimal("3000.00"),
                 "slots": 0,
                 "highlight_color": "brown",
             },
             {
                 "name": "Patron",
-                "price": "€ 1,000",
+                "price": Decimal("1000.00"),
                 "slots": 0,
                 "highlight_color": "purple",
             },
             {
                 "name": "Startup",
-                "price": "€ 500",
+                "price": Decimal("500.00"),
                 "slots": 0,
                 "highlight_color": "green",
             },
             {
                 "name": "Diversity",
-                "price": "€ 1,000",
+                "price": Decimal("1000.00"),
                 "slots": 0,
                 "highlight_color": "pink",
             },
