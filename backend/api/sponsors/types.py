@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from decimal import Decimal
+
 import typing
 
 import strawberry
@@ -40,3 +42,33 @@ class SponsorsByLevel:
         return cls(
             level=level.name, sponsors=sponsors, highlight_color=level.highlight_color
         )
+
+
+@strawberry.type
+class SponsorBenefit:
+    name: str
+    category: str
+    description: str
+
+
+@strawberry.type
+class SponsorLevelBenefit:
+    category: str
+    name: str
+    value: str
+    description: str
+
+
+@strawberry.type
+class SponsorLevel:
+    name: str
+    price: Decimal
+    slots: int | None
+    benefits: list[SponsorLevelBenefit]
+
+
+@strawberry.type
+class SponsorSpecialOption:
+    name: str
+    price: Decimal
+    description: str
