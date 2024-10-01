@@ -749,7 +749,7 @@ export const GrantForm = ({
               />
               <Text size={2} weight="strong">
                 <FormattedMessage
-                  id="grants.form.acceptPrivacyPolicy"
+                  id="global.acceptPrivacyPolicy"
                   values={{
                     link: (
                       <Link

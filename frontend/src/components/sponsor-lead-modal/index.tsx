@@ -161,7 +161,7 @@ export const SponsorLeadModal = ({ onClose }) => {
               />
               <Text size={2} weight="strong">
                 <FormattedMessage
-                  id="sponsorLeadModal.acceptPrivacyPolicy"
+                  id="global.acceptPrivacyPolicy"
                   values={{
                     link: (
                       <Link

@@ -26,6 +26,7 @@ type CartContextType = {
   updateQuestionAnswer: ({ id, index, question, answer }) => void;
   updateTicketInfo: ({ id, index, key, value }) => void;
   updateInformation: (invoiceInformation: InvoiceInformationState) => void;
+  updateAcceptedPrivacyPolicy: (accepted: boolean) => void;
 };
 
 export const CartContext = createContext<CartContextType>(null);
@@ -214,6 +215,15 @@ export const createCartContext = ({
     [],
   );
 
+  const updateAcceptedPrivacyPolicy = useCallback(
+    (accepted: boolean) =>
+      dispatcher({
+        type: "updateAcceptedPrivacyPolicy",
+        accepted,
+      }),
+    [],
+  );
+
   return {
     state,
     addHotelRoom,
@@ -226,5 +236,6 @@ export const createCartContext = ({
     updateQuestionAnswer,
     updateTicketInfo,
     updateInformation,
+    updateAcceptedPrivacyPolicy,
   };
 };

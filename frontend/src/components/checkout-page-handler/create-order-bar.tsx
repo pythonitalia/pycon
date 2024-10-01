@@ -38,13 +38,15 @@ export const CreateOrderBar = ({
   const totalAmount = calculateTotalAmount(state, productsById, hotelRoomsById);
   const savedAmount = calculateSavedAmount(state, productsById);
 
+  const checkoutIsDisabled = isCreatingOrder || !state.acceptedPrivacyPolicy;
+
   return (
     <BottomBar
       action={
         <div>
           <div className="flex flex-col-reverse lg:flex-row">
             <BasicButton
-              disabled={isCreatingOrder}
+              disabled={checkoutIsDisabled}
               onClick={(e) => {
                 createOrder(e, "banktransfer");
               }}
@@ -60,7 +62,7 @@ export const CreateOrderBar = ({
             />
             <Button
               variant="secondary"
-              disabled={isCreatingOrder}
+              disabled={checkoutIsDisabled}
               onClick={(e) => {
                 createOrder(e, "stripe");
               }}
