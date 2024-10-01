@@ -1,3 +1,4 @@
+from privacy_policy.models import PrivacyPolicyAcceptanceRecord
 from billing.tests.factories import BillingAddressFactory
 from billing.models import BillingAddress
 from conferences.tests.factories import ConferenceFactory
@@ -157,6 +158,10 @@ def test_calls_create_order(graphql_client, user, mocker):
     assert billing_address.country == "IT"
     assert billing_address.vat_id == ""
     assert billing_address.fiscal_code == "GNLNCH22T27L523A"
+
+    assert PrivacyPolicyAcceptanceRecord.objects.filter(
+        user=user, privacy_policy="checkout-order"
+    ).exists()
 
 
 @override_settings(FRONTEND_URL="http://test.it")
