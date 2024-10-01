@@ -1,4 +1,3 @@
-import { Snake1 } from "@python-italia/pycon-styleguide/illustrations";
 import { CoverLogo } from "./cover-logo";
 
 export function BackCoverPage() {

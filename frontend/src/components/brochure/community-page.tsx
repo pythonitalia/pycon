@@ -1,4 +1,3 @@
-import { Snake4 } from "@python-italia/pycon-styleguide/illustrations";
 import { compile } from "~/helpers/markdown";
 
 const Snakes = (props: React.SVGProps<SVGSVGElement>) => (

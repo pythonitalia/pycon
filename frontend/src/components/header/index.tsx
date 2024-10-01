@@ -42,19 +42,19 @@ export const Header = () => {
   );
 
   const actions: Action[] = [
-    isRunning && hasSomethingLive
-      ? {
-          text: getTranslatedMessage("header.streaming", language),
-          icon: "live-circle",
-          link: "/streaming",
-          background: "red",
-          hoverBackground: "red",
-        }
-      : {
-          text: getTranslatedMessage("header.tickets", language),
-          icon: "tickets",
-          link: "/tickets",
-        },
+    // isRunning && hasSomethingLive
+    //   ? {
+    //       text: getTranslatedMessage("header.streaming", language),
+    //       icon: "live-circle",
+    //       link: "/streaming",
+    //       background: "red",
+    //       hoverBackground: "red",
+    //     }
+    //   : {
+    //       text: getTranslatedMessage("header.tickets", language),
+    //       icon: "tickets",
+    //       link: "/tickets",
+    //     },
     {
       text:
         isReady && loggedIn

@@ -107,7 +107,7 @@ const handler = async (req: NextRequest) => {
               textTransform: "uppercase",
             }}
           >
-            Florence
+            Bologna
           </div>
           <div
             style={{
