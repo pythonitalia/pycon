@@ -56,12 +56,12 @@ class OrdersMutations:
             },
         )
 
-        record_privacy_policy_acceptance(info.context.request, "checkout-order")
-
         try:
             pretix_order = create_order(conference_obj, input)
         except PretixError as e:
             return CreateOrderErrors.with_error("non_field_errors", str(e))
+
+        record_privacy_policy_acceptance(info.context.request, "checkout-order")
 
         return_url = urljoin(
             settings.FRONTEND_URL,
