@@ -7,6 +7,7 @@ from .models import (
     SponsorLevel,
     SponsorLevelBenefit,
     SponsorBenefit,
+    SponsorSpecialOption,
 )
 
 
@@ -33,11 +34,18 @@ class SponsorLevelBenefitInline(admin.TabularInline):
 
 @admin.register(SponsorLevel)
 class SponsorLevelAdmin(OrderedModelAdmin):
-    list_display = ("name", "conference", "move_up_down_links")
+    list_display = ("name", "conference", "price", "slots", "move_up_down_links")
     readonly_fields = ("order",)
+    list_filter = ("conference",)
 
     inlines = [SponsorLevelBenefitInline]
     exclude = ("benefits",)
+
+
+@admin.register(SponsorSpecialOption)
+class SponsorSpecialOptionAdmin(admin.ModelAdmin):
+    list_display = ("name", "conference", "price")
+    list_filter = ("conference",)
 
 
 @admin.register(SponsorLead)
