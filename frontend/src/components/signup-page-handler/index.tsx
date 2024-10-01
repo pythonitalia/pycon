@@ -239,18 +239,19 @@ export const SignupPageHandler = () => {
               </InputWrapper>
 
               <GridColumn colSpan={2}>
-                <label>
+                <label htmlFor="acceptPrivacyPolicy">
                   <HorizontalStack gap="medium" alignItems="center">
                     <Checkbox
                       {...checkbox("acceptPrivacyPolicy")}
                       required
                       size="small"
+                      id="acceptPrivacyPolicy"
                     />
                     <Text as="span" size={3}>
                       <FormattedMessage
-                        id="signup.acceptPrivacyPolicy"
+                        id="global.acceptPrivacyPolicy"
                         values={{
-                          privacyPolicyLink: (
+                          link: (
                             <Link
                               href={createHref({
                                 path: "/privacy-policy",

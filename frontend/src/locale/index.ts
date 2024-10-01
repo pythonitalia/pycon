@@ -24,8 +24,6 @@ Let's get in touch to find the best solution for your business' needs!`,
     "sponsorLeadModal.completed":
       "Thank you! We just sent the brochure via email. If you can't find it, check your spam folder or contact us at sponsor@pycon.it!",
     "sponsorLeadModal.acceptPrivacyPolicy.heading": "Privacy Policy",
-    "sponsorLeadModal.acceptPrivacyPolicy":
-      "I have read and understood the {link} of Python Italia APS.",
 
     "sponsorLeadModal.consentToContactViaEmail.heading": "Contact me via email",
     "sponsorLeadModal.consentToContactViaEmail.body":
@@ -42,7 +40,7 @@ Let's get in touch to find the best solution for your business' needs!`,
 
     "header.streaming": "Watch live",
 
-    "grants.form.acceptPrivacyPolicy":
+    "global.acceptPrivacyPolicy":
       "I have read and understood the {link} of Python Italia APS.",
     "grants.form.privacyPolicyHeading":
       "It is important that all those who register for the event read the Processing of Personal Data ({link}) by the Italian organizer Python Italia APS and authorize the processing of their personal data to enable the collection of registrations and the organization of the event.",
@@ -2086,7 +2084,7 @@ Affrettati a comprare il biglietto!`,
 
     "voting.filter.byTag": "Per Tags",
 
-    "grants.form.acceptPrivacyPolicy":
+    "global.acceptPrivacyPolicy":
       "Ho letto e compreso l'Informativa sulla {link} di Python Italia APS.",
     "grants.form.privacyPolicyHeading":
       "È importante che tutti coloro che si registrano all'evento leggano l'Elaborazione dei Dati Personali ({link}) da parte dell'organizzatore italiano Python Italia APS e autorizzino il trattamento dei loro dati personali per consentire la raccolta delle registrazioni e l'organizzazione dell'evento.",
@@ -2102,8 +2100,6 @@ Affrettati a comprare il biglietto!`,
 
 Mettiamoci in contatto per trovare la soluzione migliore per le esigenze della tua azienda!`,
     "sponsorLeadModal.acceptPrivacyPolicy.heading": "Privacy Policy",
-    "sponsorLeadModal.acceptPrivacyPolicy":
-      "Ho letto e compreso l'Informativa sulla {link} di Python Italia APS.",
     "sponsorLeadModal.title": "Scarica brochure",
 
     "sponsorLeadModal.consentToContactViaEmail.heading": "Contattami via email",

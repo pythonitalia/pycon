@@ -235,5 +235,10 @@ export const reducer = (state: OrderState, action: OrderAction): OrderState => {
       return applyVoucher(state, action.voucher);
     case "removeVoucher":
       return removeVoucher(state);
+    case "updateAcceptedPrivacyPolicy":
+      return {
+        ...state,
+        acceptedPrivacyPolicy: action.accepted,
+      };
   }
 };

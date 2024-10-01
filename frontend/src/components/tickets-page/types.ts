@@ -88,6 +88,7 @@ export type OrderState = {
   voucherCode: string;
   voucherUsed: boolean;
   hasAdmissionTicket: boolean;
+  acceptedPrivacyPolicy: boolean;
 };
 
 export type UpdateProductAction =
@@ -134,4 +135,8 @@ export type OrderAction =
     }
   | {
       type: "removeVoucher";
+    }
+  | {
+      type: "updateAcceptedPrivacyPolicy";
+      accepted: boolean;
     };

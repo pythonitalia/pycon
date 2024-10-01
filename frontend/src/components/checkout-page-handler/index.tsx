@@ -10,6 +10,7 @@ import type {
 import { useCart } from "../tickets-page/use-cart";
 import { BillingCard } from "./billing-card";
 import { CreateOrderBar } from "./create-order-bar";
+import { PrivacyPolicy } from "./privacy-policy";
 import { ProductsQuestions } from "./products-questions";
 import { RecapCard } from "./recap-card";
 import { useCreateOrder } from "./use-create-order";
@@ -82,6 +83,8 @@ export const CheckoutPageHandler = ({
           hotelRoomsById={hotelRoomsById}
           productsById={productsById}
         />
+        <Spacer size="medium" />
+        <PrivacyPolicy />
       </Section>
       <CreateOrderBar
         productsById={productsById}
