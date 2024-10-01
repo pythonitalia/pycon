@@ -13,12 +13,16 @@ export function BackCoverPage() {
           <span className="inline-block mr-2">📞</span> +39 3495577593
         </p>
         <p>
-          <span className="inline-block mr-2 font-medium">📧</span>{" "}
-          <a href="mailto:info@pycon.it">info@pycon.it</a>
+          <span className="inline-block mr-2">📧</span>{" "}
+          <a className="font-medium" href="mailto:info@pycon.it">
+            info@pycon.it
+          </a>
         </p>
         <p>
-          <span className="inline-block mr-2 font-medium">🌐</span>{" "}
-          <a href="https://pycon.it">https://pycon.it</a>
+          <span className="inline-block mr-2">🌐</span>{" "}
+          <a className="font-medium" href="https://pycon.it">
+            https://pycon.it
+          </a>
         </p>
       </div>
     </div>
