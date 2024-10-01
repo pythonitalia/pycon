@@ -51,7 +51,7 @@ class I18nWidget(forms.MultiWidget):
 
     widget = TextInput
 
-    def __init__(self, locales: List[Tuple[str, str]], field: forms.Field, attrs=None):
+    def __init__(self, locales: List[Tuple[str, str]] = None, field: forms.Field = None, attrs=None):
         widgets = []
         self.locales = locales
         self.enabled_locales = locales
@@ -220,6 +220,7 @@ class I18nFormField(forms.MultiValueField):
         self.one_required = kwargs.get("required", True)
         require_all_fields = kwargs.pop("require_all_fields", False)
         kwargs["required"] = False
+        print("kwargs", kwargs)
         kwargs["widget"] = kwargs["widget"](
             locales=self.locales, field=self, **kwargs.pop("widget_kwargs", {})
         )

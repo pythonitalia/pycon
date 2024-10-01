@@ -1,0 +1,28 @@
+query GetBrochureData($conferenceCode: String!) {
+  conference(code: $conferenceCode) {
+    id
+    name
+    start
+    end
+    introduction
+    sponsorBenefits {
+      name
+      category
+      description
+    }
+    sponsorLevels {
+      name
+      price
+      slots
+      benefits {
+        name
+        value
+      }
+    }
+    sponsorSpecialOptions {
+      name
+      price
+      description
+    }
+  }
+}
