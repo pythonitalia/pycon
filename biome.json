@@ -20,7 +20,8 @@
         "noArrayIndexKey": "off"
       },
       "a11y": {
-        "useKeyWithClickEvents": "off"
+        "useKeyWithClickEvents": "off",
+        "noSvgWithoutTitle": "off"
       },
       "complexity": {
         "noForEach": "off"
