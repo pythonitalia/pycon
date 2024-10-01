@@ -2,6 +2,7 @@ import typing
 from urllib.parse import urljoin
 
 from api.context import Info
+from privacy_policy.record import record_privacy_policy_acceptance
 from pretix import CreateOrderErrors
 import strawberry
 from django.conf import settings
@@ -59,6 +60,8 @@ class OrdersMutations:
             pretix_order = create_order(conference_obj, input)
         except PretixError as e:
             return CreateOrderErrors.with_error("non_field_errors", str(e))
+
+        record_privacy_policy_acceptance(info.context.request, "checkout-order")
 
         return_url = urljoin(
             settings.FRONTEND_URL,
