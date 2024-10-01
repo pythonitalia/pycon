@@ -1,6 +1,7 @@
 import { HeroIllustrationBologna } from "@python-italia/pycon-styleguide";
 import { format, parseISO } from "date-fns";
 import { Logo } from "~/components/logo";
+import { CoverLogo } from "./cover-logo";
 
 export function CoverPage({
   conference,
@@ -36,16 +37,16 @@ export function CoverPage({
 
   return (
     <div className="page bg-purple flex flex-col gap-[2cm]">
-      <div className="grid grid-cols-[1fr,2fr] gap-4 px-[2cm]">
-        <Logo />
+      <div className="grid grid-cols-[1fr,2fr] gap-[1cm] px-[2cm]">
+        <CoverLogo className="size-[5cm]" />
         <h1 className="text-2xl font-medium relative top-[-0.5cm]">
           Sponsorship Opportunities
         </h1>
       </div>
 
-      <div className="w-full aspect-[8/5] border-[4px] [&>div>div]:scale-50 [&>div>div]:-translate-x-16 [&>div>div]:origin-bottom">
-        {/* TODO: this should be based on location */}
+      <div className="w-full aspect-[8/5] border-[4px] border-b-[4px] [&>div>div]:scale-50 [&>div>div]:translate-y-[4px] [&>div>div]:-translate-x-16 [&>div>div]:origin-bottom relative">
         <HeroIllustrationBologna cycle="day" />
+        <Logo className="absolute bottom-[-0.8cm] left-[2cm] w-[5cm] h-auto" />
       </div>
 
       <div className="text-right px-[2cm] font-medium">

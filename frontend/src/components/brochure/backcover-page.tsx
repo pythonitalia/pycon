@@ -1,13 +1,10 @@
 import { Snake1 } from "@python-italia/pycon-styleguide/illustrations";
-import { Logo } from "../logo";
+import { CoverLogo } from "./cover-logo";
 
 export function BackCoverPage() {
   return (
     <div className="page bg-yellow flex flex-col gap-[1cm] p-[2cm]">
-      <div>
-        <Snake1 className="size-[4cm] border-[2px] border-black bg-purple border-b-0" />
-        <Logo className="w-[4cm]" />
-      </div>
+      <CoverLogo className="size-[4cm]" />
 
       <h1 className="text-xl font-bold">PyCon Italia</h1>
 
@@ -16,10 +13,12 @@ export function BackCoverPage() {
           <span className="inline-block mr-2">📞</span> +39 3495577593
         </p>
         <p>
-          <span className="inline-block mr-2">📧</span> info@pycon.it
+          <span className="inline-block mr-2 font-medium">📧</span>{" "}
+          <a href="mailto:info@pycon.it">info@pycon.it</a>
         </p>
         <p>
-          <span className="inline-block mr-2">🌐</span> https://pycon.it
+          <span className="inline-block mr-2 font-medium">🌐</span>{" "}
+          <a href="https://pycon.it">https://pycon.it</a>
         </p>
       </div>
     </div>
