@@ -650,17 +650,19 @@ export const HeroIllustrationBologna = ({
 
   const [scope, animate] = useAnimate();
   const snakeScaleX = useMotionValue(1);
-  const snakeX = useMotionValue(400);
+  const snakeX = useMotionValue(200);
   const snakeY = useMotionValue(600);
   const snakeTailX = useMotionValue(1300);
   const snakeTailY = useMotionValue(600);
   const snakeOpacity = useMotionValue(0);
-  const cocktailX = useMotionValue(50);
+  const cocktailX = useMotionValue(-150);
   const cocktailOpacity = useMotionValue(0);
   const nightTailOpacity = useMotionValue(0);
   const backgroundColor = useMotionValue(isNight ? "#151C28" : "#6A80EF");
 
-  const cocktailXEnd = -180;
+  const snakeXEnd = -560;
+  const snakeXEndNight = -520;
+  const cocktailXEnd = -350;
 
   const animateClouds = (enter: boolean, delay = 0.2) => {
     animate(
@@ -703,7 +705,11 @@ export const HeroIllustrationBologna = ({
         delay: 0,
         ease: "easeInOut",
       });
-      animate(snakeX, -360, { duration: 2.4, delay: 0, ease: "easeInOut" });
+      animate(snakeX, snakeXEnd, {
+        duration: 2.4,
+        delay: 0,
+        ease: "easeInOut",
+      });
     });
 
     animateClouds(true);
@@ -713,7 +719,7 @@ export const HeroIllustrationBologna = ({
     nightTailOpacity.set(1);
     cocktailOpacity.set(1);
     snakeOpacity.set(1);
-    snakeX.set(-360);
+    snakeX.set(snakeXEndNight);
     snakeScaleX.set(-1);
 
     animate(snakeY, -60, { duration: 0.5, delay: 1.4, ease: "linear" });
@@ -770,6 +776,12 @@ export const HeroIllustrationBologna = ({
       ),
     ]);
 
+    if (!isNight) {
+      snakeX.set(snakeXEndNight);
+    } else {
+      snakeX.set(snakeXEnd);
+    }
+
     nightTailOpacity.set(isNight ? 0 : 1);
     cocktailOpacity.set(isNight ? 0 : 1);
     snakeScaleX.set(isNight ? 1 : -1);
@@ -805,9 +817,9 @@ export const HeroIllustrationBologna = ({
         <div className="landmark absolute -bottom-full flex justify-center min-w-full z-[5] left-1/2 -translate-x-1/2">
           <AnimatePresence>
             <motion.div
-              className="relative left-[-550px] top-[-550px]"
+              className="relative left-[-750px]"
               initial={{ top: 0 }}
-              animate={{ top: -550 }}
+              animate={{ top: -650 }}
               exit={{ top: 0 }}
               key={isNight ? "moon" : "sun"}
               transition={{ duration: 0.5 }}
@@ -844,12 +856,12 @@ export const HeroIllustrationBologna = ({
             <Cocktail />
           </motion.div>
 
-          <div className="relative z-20">
+          <div className="relative z-20 -translate-x-[150px]">
             <Church onClick={toggle} />
           </div>
 
           <motion.div
-            className="night-tail absolute bottom-[275px] left-[180px] min-w-full flex justify-center z-30 pointer-events-none"
+            className="night-tail absolute bottom-[285px] left-[-80px] min-w-full flex justify-center z-30 pointer-events-none"
             style={{
               opacity: nightTailOpacity,
             }}
@@ -862,7 +874,7 @@ export const HeroIllustrationBologna = ({
 
         <motion.div
           className="landmark two-towers absolute -bottom-full min-w-full flex justify-center z-30 left-1/2 -translate-x-1/2 pointer-events-none"
-          animate={{ x: "-50%", translateX: 550 }}
+          animate={{ x: "-50%", translateX: 360 }}
         >
           <div>
             <TwoTowers />
