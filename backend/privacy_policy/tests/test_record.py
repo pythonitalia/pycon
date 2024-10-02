@@ -24,6 +24,7 @@ def test_record_privacy_policy_acceptance(rf):
         )
 
     assert record.user_id == request.user.id
+    assert record.conference_id == conference.id
     assert record.accepted_at == accepted_at
     assert record.ip_address == "192.168.0.1"
     assert record.user_agent == "Test User Agent"
