@@ -62,7 +62,7 @@ class OrdersMutations:
             return CreateOrderErrors.with_error("non_field_errors", str(e))
 
         record_privacy_policy_acceptance(
-            info.context.request, conference, "checkout-order"
+            info.context.request, conference_obj, "checkout-order"
         )
 
         return_url = urljoin(
