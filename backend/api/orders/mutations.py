@@ -61,7 +61,9 @@ class OrdersMutations:
         except PretixError as e:
             return CreateOrderErrors.with_error("non_field_errors", str(e))
 
-        record_privacy_policy_acceptance(info.context.request, "checkout-order")
+        record_privacy_policy_acceptance(
+            info.context.request, conference_obj, "checkout-order"
+        )
 
         return_url = urljoin(
             settings.FRONTEND_URL,

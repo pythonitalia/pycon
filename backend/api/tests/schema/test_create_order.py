@@ -160,7 +160,7 @@ def test_calls_create_order(graphql_client, user, mocker):
     assert billing_address.fiscal_code == "GNLNCH22T27L523A"
 
     assert PrivacyPolicyAcceptanceRecord.objects.filter(
-        user=user, privacy_policy="checkout-order"
+        user=user, conference=conference, privacy_policy="checkout-order"
     ).exists()
 
 

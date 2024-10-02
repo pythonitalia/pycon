@@ -2,6 +2,7 @@ from django.db import models
 
 
 class PrivacyPolicyAcceptanceRecord(models.Model):
+    conference = models.ForeignKey("conferences.Conference", on_delete=models.PROTECT)
     user = models.ForeignKey("users.User", on_delete=models.PROTECT)
     accepted_at = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField()
