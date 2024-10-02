@@ -22,7 +22,7 @@
 		"@graphql-codegen/near-operation-file-preset": "^3.0.0",
 		"@graphql-codegen/typescript": "^2.7.2",
 		"@graphql-codegen/typescript-operations": "^2.5.2",
-		"@graphql-codegen/typescript-react-apollo": "^4.3.0",
+		"@graphql-codegen/typescript-react-apollo": "^4.3.2",
 		"@python-italia/pycon-styleguide": "0.1.197",
 		"@sentry/nextjs": "^8.24.0",
 		"@vercel/analytics": "^1.1.1",
