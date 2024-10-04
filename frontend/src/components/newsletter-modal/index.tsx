@@ -27,6 +27,7 @@ type NewsletterForm = {
 };
 
 export const NewsletterModal = ({ onClose }) => {
+  const conferenceCode = process.env.conferenceCode;
   const formRef = useRef<HTMLFormElement>();
   const [formState, { text, checkbox }] = useFormState<NewsletterForm>({
     email: "",
@@ -66,7 +67,10 @@ export const NewsletterModal = ({ onClose }) => {
 
       subscribe({
         variables: {
-          email: formState.values.email,
+          input: {
+            email: formState.values.email,
+            conferenceCode,
+          },
         },
       });
     },
