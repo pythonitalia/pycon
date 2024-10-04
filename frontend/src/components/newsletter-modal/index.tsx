@@ -1,6 +1,8 @@
 import {
   BasicButton,
   Button,
+  Checkbox,
+  HorizontalStack,
   Input,
   InputWrapper,
   Link,
@@ -14,11 +16,22 @@ import { FormattedMessage } from "react-intl";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { NewsletterSubscriptionResult, useSubscribeMutation } from "~/types";
 
+import { useFormState } from "react-use-form-state";
+import { useCurrentLanguage } from "~/locale/context";
+import { createHref } from "../link";
 import { Modal } from "../modal";
+
+type NewsletterForm = {
+  email: string;
+  acceptedPrivacyPolicy: boolean;
+};
 
 export const NewsletterModal = ({ onClose }) => {
   const formRef = useRef<HTMLFormElement>();
-  const [email, setEmail] = useState("");
+  const [formState, { text, checkbox }] = useFormState<NewsletterForm>({
+    email: "",
+    acceptedPrivacyPolicy: false,
+  });
   const [subscribe, { loading, error, data, reset }] = useSubscribeMutation();
   const subscribeToNewsletter = data?.subscribeToNewsletter;
 
@@ -30,12 +43,15 @@ export const NewsletterModal = ({ onClose }) => {
     hasCompletedSubscription &&
     subscribeToNewsletter?.status ===
       NewsletterSubscriptionResult.UnableToSubscribe;
+  const language = useCurrentLanguage();
 
   const canSubmit =
-    email.trim() !== "" &&
+    formState.values.email.trim() !== "" &&
+    formState.values.acceptedPrivacyPolicy &&
     !loading &&
     (!hasCompletedSubscription ||
       (hasCompletedSubscription && isUnableToSubscribe));
+
   const onSubmit = useCallback(
     async (e) => {
       e.preventDefault();
@@ -50,11 +66,11 @@ export const NewsletterModal = ({ onClose }) => {
 
       subscribe({
         variables: {
-          email,
+          email: formState.values.email,
         },
       });
     },
-    [email, hasCompletedSubscription, loading],
+    [formState.values, hasCompletedSubscription, loading],
   );
 
   const errorMessage = useTranslatedMessage("newsletter.error");
@@ -87,10 +103,7 @@ export const NewsletterModal = ({ onClose }) => {
         <InputWrapper title={<FormattedMessage id="signup.email" />}>
           <Input
             placeholder="guido@python.org"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setEmail(e.target.value)
-            }
-            value={email}
+            {...text("email")}
             required={true}
             type="email"
             errors={[
@@ -100,38 +113,84 @@ export const NewsletterModal = ({ onClose }) => {
           />
         </InputWrapper>
 
-        {hasCompletedSubscription && !isUnableToSubscribe && (
-          <Text size={2}>
-            {subscribeToNewsletter.status ===
-              NewsletterSubscriptionResult.Subscribed && (
-              <FormattedMessage id="newsletter.success" />
-            )}
-            {subscribeToNewsletter.status ===
-              NewsletterSubscriptionResult.WaitingConfirmation && (
-              <FormattedMessage id="newsletter.confirmViaEmail" />
-            )}
-            {subscribeToNewsletter.status ===
-              NewsletterSubscriptionResult.OptInFormRequired && (
+        <Spacer size="small" />
+
+        <label htmlFor="acceptedPrivacyPolicy">
+          <HorizontalStack gap="small" alignItems="center">
+            <Checkbox
+              {...checkbox("acceptedPrivacyPolicy")}
+              checked={formState.values.acceptedPrivacyPolicy}
+              required
+              id="acceptedPrivacyPolicy"
+            />
+            <Text size={2} weight="strong" hoverColor="none">
               <FormattedMessage
-                id="newsletter.optinFormRequired"
+                id="global.acceptPrivacyPolicy"
                 values={{
                   link: (
                     <Link
-                      href="https://pythonitalia.myflodesk.com/manual-optin"
+                      className="underline"
                       target="_blank"
-                      rel="noopener noreferrer"
+                      href={createHref({
+                        path: "/privacy-policy",
+                        locale: language,
+                      })}
                     >
-                      <Text decoration="underline" color="none" size="inherit">
-                        <FormattedMessage
-                          id={"newsletter.optinFormRequired.link"}
-                        />
+                      <Text
+                        size="inherit"
+                        weight="strong"
+                        decoration="underline"
+                        hoverColor="green"
+                      >
+                        <FormattedMessage id="signup.privacyPolicy" />
                       </Text>
                     </Link>
                   ),
                 }}
               />
-            )}
-          </Text>
+            </Text>
+          </HorizontalStack>
+        </label>
+
+        {hasCompletedSubscription && !isUnableToSubscribe && (
+          <>
+            <Spacer size="small" />
+            <Text size={2}>
+              {subscribeToNewsletter.status ===
+                NewsletterSubscriptionResult.Subscribed && (
+                <FormattedMessage id="newsletter.success" />
+              )}
+              {subscribeToNewsletter.status ===
+                NewsletterSubscriptionResult.WaitingConfirmation && (
+                <FormattedMessage id="newsletter.confirmViaEmail" />
+              )}
+              {subscribeToNewsletter.status ===
+                NewsletterSubscriptionResult.OptInFormRequired && (
+                <FormattedMessage
+                  id="newsletter.optinFormRequired"
+                  values={{
+                    link: (
+                      <Link
+                        href="https://pythonitalia.myflodesk.com/manual-optin"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Text
+                          decoration="underline"
+                          color="none"
+                          size="inherit"
+                        >
+                          <FormattedMessage
+                            id={"newsletter.optinFormRequired.link"}
+                          />
+                        </Text>
+                      </Link>
+                    ),
+                  }}
+                />
+              )}
+            </Text>
+          </>
         )}
       </form>
     </Modal>
