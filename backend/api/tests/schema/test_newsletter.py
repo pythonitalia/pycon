@@ -1,5 +1,7 @@
 from unittest.mock import patch
 
+from privacy_policy.models import PrivacyPolicyAcceptanceRecord
+from conferences.tests.factories import ConferenceFactory
 from users.tests.factories import UserFactory
 import pytest
 from pytest import mark
@@ -10,14 +12,13 @@ import requests
 
 
 def test_subscribe_to_newsletter(graphql_client):
+    conference = ConferenceFactory()
     email = "me@example.it"
-    variables = {"email": email}
+    variables = {"email": email, "conferenceCode": conference.code}
 
     query = """
-        mutation($email: String!) {
-            subscribeToNewsletter(input: {
-                email: $email
-            }) {
+        mutation($input: SubscribeToNewsletterInput!) {
+            subscribeToNewsletter(input: $input) {
             __typename
 
             ... on NewsletterSubscribeResult {
@@ -32,13 +33,17 @@ def test_subscribe_to_newsletter(graphql_client):
     ) as mock_subscription:
         mock_subscription.return_value = SubscriptionResult.SUBSCRIBED
 
-        resp = graphql_client.query(query, variables=variables)
+        resp = graphql_client.query(query, variables={"input": variables})
 
-        assert (
-            resp["data"]["subscribeToNewsletter"]["__typename"]
-            == "NewsletterSubscribeResult"
-        )
-        assert resp["data"]["subscribeToNewsletter"]["status"] == "SUBSCRIBED"
+    assert (
+        resp["data"]["subscribeToNewsletter"]["__typename"]
+        == "NewsletterSubscribeResult"
+    )
+    assert resp["data"]["subscribeToNewsletter"]["status"] == "SUBSCRIBED"
+
+    assert PrivacyPolicyAcceptanceRecord.objects.filter(
+        user=None, email=email, conference=conference, privacy_policy="newsletter"
+    ).exists()
 
 
 @pytest.mark.parametrize(
@@ -49,14 +54,13 @@ def test_subscribe_to_newsletter(graphql_client):
     ],
 )
 def test_subscribe_to_newsletter_fails_on_api_side(graphql_client, exception):
+    conference = ConferenceFactory()
     email = "me@example.it"
-    variables = {"email": email}
+    variables = {"email": email, "conferenceCode": conference.code}
 
     query = """
-        mutation($email: String!) {
-            subscribeToNewsletter(input: {
-                email: $email
-            }) {
+        mutation($input: SubscribeToNewsletterInput!) {
+            subscribeToNewsletter(input: $input) {
             __typename
 
             ... on NewsletterSubscribeResult {
@@ -71,7 +75,7 @@ def test_subscribe_to_newsletter_fails_on_api_side(graphql_client, exception):
     ) as mock_subscription:
         mock_subscription.side_effect = exception
 
-        resp = graphql_client.query(query, variables=variables)
+        resp = graphql_client.query(query, variables={"input": variables})
 
         assert (
             resp["data"]["subscribeToNewsletter"]["__typename"]
@@ -82,13 +86,12 @@ def test_subscribe_to_newsletter_fails_on_api_side(graphql_client, exception):
 
 @pytest.mark.parametrize("email", ["", "me-invalid"])
 def test_subscribe_to_newsletter_with_invalid_email_fails(graphql_client, email):
-    variables = {"email": email}
+    conference = ConferenceFactory()
+    variables = {"email": email, "conferenceCode": conference.code}
 
     query = """
-        mutation($email: String!) {
-            subscribeToNewsletter(input: {
-                email: $email
-            }) {
+        mutation($input: SubscribeToNewsletterInput!) {
+            subscribeToNewsletter(input: $input) {
             __typename
 
             ... on SubscribeToNewsletterErrors {
@@ -105,7 +108,7 @@ def test_subscribe_to_newsletter_with_invalid_email_fails(graphql_client, email)
     ) as mock_subscription:
         mock_subscription.return_value = SubscriptionResult.SUBSCRIBED
 
-        resp = graphql_client.query(query, variables=variables)
+        resp = graphql_client.query(query, variables={"input": variables})
 
         assert (
             resp["data"]["subscribeToNewsletter"]["__typename"]
@@ -116,9 +119,46 @@ def test_subscribe_to_newsletter_with_invalid_email_fails(graphql_client, email)
         ]
 
 
+@pytest.mark.parametrize("conference_code", ["", "invalid-conf"])
+def test_subscribe_to_newsletter_with_invalid_conference_code(
+    graphql_client, conference_code
+):
+    ConferenceFactory(code="valid")
+    variables = {"email": "example@example.com", "conferenceCode": conference_code}
+
+    query = """
+        mutation($input: SubscribeToNewsletterInput!) {
+            subscribeToNewsletter(input: $input) {
+            __typename
+
+            ... on SubscribeToNewsletterErrors {
+                errors {
+                    email
+                    conferenceCode
+                }
+            }
+        }
+    }
+    """
+
+    with patch(
+        "api.newsletters.mutations.subscribe_to_newsletter.subscribe"
+    ) as mock_subscription:
+        mock_subscription.return_value = SubscriptionResult.SUBSCRIBED
+        resp = graphql_client.query(query, variables={"input": variables})
+
+    assert (
+        resp["data"]["subscribeToNewsletter"]["__typename"]
+        == "SubscribeToNewsletterErrors"
+    )
+    assert resp["data"]["subscribeToNewsletter"]["errors"]["conferenceCode"] == [
+        "Invalid conference code"
+    ]
+
+
 def _update_user_newsletter(graphql_client, user, open_to_newsletter):
     query = """
-     mutation(
+    mutation(
         $open_to_newsletter: Boolean!,
         $open_to_recruiting: Boolean!,
         $date_birth: String
