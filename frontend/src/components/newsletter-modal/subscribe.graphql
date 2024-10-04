@@ -1,5 +1,5 @@
-mutation subscribe($email: String!) {
-  subscribeToNewsletter(input: { email: $email }) {
+mutation subscribe($input: SubscribeToNewsletterInput!) {
+  subscribeToNewsletter(input: $input) {
     __typename
 
     ... on NewsletterSubscribeResult {
