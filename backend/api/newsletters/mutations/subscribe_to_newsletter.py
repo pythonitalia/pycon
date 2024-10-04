@@ -77,7 +77,9 @@ def subscribe_to_newsletter(
 
     try:
         result = NewsletterSubscribeResult(status=subscribe(email, ip=get_ip(request)))
-        record_privacy_policy_acceptance(info.context.request, conference, "newsletter")
+        record_privacy_policy_acceptance(
+            info.context.request, conference, "newsletter", email=email
+        )
         return result
     except requests.exceptions.HTTPError as e:
         logger.error(

@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+from privacy_policy.models import PrivacyPolicyAcceptanceRecord
 from conferences.tests.factories import ConferenceFactory
 from users.tests.factories import UserFactory
 import pytest
@@ -32,13 +33,17 @@ def test_subscribe_to_newsletter(graphql_client):
     ) as mock_subscription:
         mock_subscription.return_value = SubscriptionResult.SUBSCRIBED
 
-        resp = graphql_client.query(query, variables={"input": {variables}})
+        resp = graphql_client.query(query, variables={"input": variables})
 
-        assert (
-            resp["data"]["subscribeToNewsletter"]["__typename"]
-            == "NewsletterSubscribeResult"
-        )
-        assert resp["data"]["subscribeToNewsletter"]["status"] == "SUBSCRIBED"
+    assert (
+        resp["data"]["subscribeToNewsletter"]["__typename"]
+        == "NewsletterSubscribeResult"
+    )
+    assert resp["data"]["subscribeToNewsletter"]["status"] == "SUBSCRIBED"
+
+    assert PrivacyPolicyAcceptanceRecord.objects.filter(
+        user=None, email=email, conference=conference, privacy_policy="newsletter"
+    ).exists()
 
 
 @pytest.mark.parametrize(
