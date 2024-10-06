@@ -2,9 +2,10 @@ from dataclasses import asdict
 from enum import Enum
 from typing import Annotated, Union, Optional
 
+from privacy_policy.record import record_privacy_policy_acceptance
 import strawberry
 from strawberry.types import Info
-
+from django.db import transaction
 from api.grants.types import (
     AgeGroup,
     Grant,
@@ -121,13 +122,13 @@ class SendGrantInput(BaseGrantInput):
     linkedin_url: str
     mastodon_handle: str
 
-    def validate(self, conference: Conference, user: User) -> GrantErrors:
+    def validate(self, conference: Conference, user: User) -> GrantErrors | None:
         errors = super().validate(conference=conference, user=user)
 
         if GrantModel.objects.of_user(user).for_conference(conference).exists():
             errors.add_error("non_field_errors", "Grant already submitted!")
 
-        return errors
+        return errors.if_has_errors
 
 
 @strawberry.input
@@ -155,6 +156,9 @@ class UpdateGrantInput(BaseGrantInput):
     github_handle: str
     linkedin_url: str
     mastodon_handle: str
+
+    def validate(self, conference: Conference, user: User) -> GrantErrors | None:
+        return super().validate(conference=conference, user=user).if_has_errors
 
 
 SendGrantResult = Annotated[
@@ -199,17 +203,23 @@ class GrantMutation:
 
         conference = Conference.objects.filter(code=input.conference).first()
 
-        errors = input.validate(conference=conference, user=request.user)
-        if errors.has_errors:
+        if errors := input.validate(conference=conference, user=request.user):
             return errors
 
-        instance = GrantModel.objects.create(
-            **{
-                **asdict(input),
-                "user_id": request.user.id,
-                "conference": conference,
-            }
-        )
+        with transaction.atomic():
+            instance = GrantModel.objects.create(
+                **{
+                    **asdict(input),
+                    "user_id": request.user.id,
+                    "conference": conference,
+                }
+            )
+
+            record_privacy_policy_acceptance(
+                info.context.request,
+                conference,
+                "grant",
+            )
 
         # hack because we return django models
         instance.__strawberry_definition__ = Grant.__strawberry_definition__
@@ -226,8 +236,7 @@ class GrantMutation:
             )
 
         input.conference = instance.conference
-        errors = input.validate(conference=input.conference, user=request.user)
-        if errors.has_errors:
+        if errors := input.validate(conference=input.conference, user=request.user):
             return errors
 
         for attr, value in asdict(input).items():
