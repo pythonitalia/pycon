@@ -1,3 +1,4 @@
+from privacy_policy.models import PrivacyPolicyAcceptanceRecord
 from conferences.tests.factories import ConferenceFactory
 from grants.tests.factories import GrantFactory
 import pytest
@@ -87,6 +88,10 @@ def test_send_grant(graphql_client, user):
 
     assert response["data"]["sendGrant"]["__typename"] == "Grant"
     assert response["data"]["sendGrant"]["id"]
+
+    assert PrivacyPolicyAcceptanceRecord.objects.filter(
+        user=user, conference=conference, privacy_policy="grant"
+    ).exists()
 
 
 def test_cannot_send_a_grant_if_grants_are_closed(graphql_client, user):

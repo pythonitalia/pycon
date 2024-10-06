@@ -2,6 +2,7 @@ from dataclasses import asdict
 from enum import Enum
 from typing import Annotated, Union, Optional
 
+from privacy_policy.record import record_privacy_policy_acceptance
 import strawberry
 from strawberry.types import Info
 
@@ -199,8 +200,7 @@ class GrantMutation:
 
         conference = Conference.objects.filter(code=input.conference).first()
 
-        errors = input.validate(conference=conference, user=request.user)
-        if errors.has_errors:
+        if errors := input.validate(conference=conference, user=request.user):
             return errors
 
         instance = GrantModel.objects.create(
@@ -209,6 +209,12 @@ class GrantMutation:
                 "user_id": request.user.id,
                 "conference": conference,
             }
+        )
+
+        record_privacy_policy_acceptance(
+            info.context.request,
+            conference,
+            "grant",
         )
 
         # hack because we return django models
