@@ -22,6 +22,3 @@ variable "memory_size" {
 variable "local_path" {
   default = null
 }
-variable "architecture" {
-  default = "x86_64"
-}
