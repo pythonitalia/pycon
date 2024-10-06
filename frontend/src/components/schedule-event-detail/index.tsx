@@ -20,6 +20,7 @@ import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 
 import { Fragment } from "react";
+import { Title } from "~/components/title";
 import type { ProposalMaterial, TalkQueryResult } from "~/types";
 import { ParticipantInfoSection } from "../participant-info-section";
 import { EventTag } from "./event-tag";
@@ -238,12 +239,6 @@ const YouTubeSection = ({ youtubeVideoId }: { youtubeVideoId: string }) => {
     </Section>
   );
 };
-
-const Title = ({ children }: { children: React.ReactNode }) => (
-  <Text size="label3" uppercase weight="strong">
-    {children}
-  </Text>
-);
 
 const Materials = ({
   materials,
