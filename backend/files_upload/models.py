@@ -21,6 +21,7 @@ class File(UUIDModel, TimeStampedModel):
         upload_to=get_upload_to_from_instance,
         null=False,
         blank=False,
+        max_length=1024,
     )
     uploaded_by = models.ForeignKey(
         "users.User",
