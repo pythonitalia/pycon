@@ -5,7 +5,7 @@ from typing import Annotated, Union, Optional
 from privacy_policy.record import record_privacy_policy_acceptance
 import strawberry
 from strawberry.types import Info
-
+from django.db import transaction
 from api.grants.types import (
     AgeGroup,
     Grant,
@@ -206,19 +206,20 @@ class GrantMutation:
         if errors := input.validate(conference=conference, user=request.user):
             return errors
 
-        instance = GrantModel.objects.create(
-            **{
-                **asdict(input),
-                "user_id": request.user.id,
-                "conference": conference,
-            }
-        )
+        with transaction.atomic():
+            instance = GrantModel.objects.create(
+                **{
+                    **asdict(input),
+                    "user_id": request.user.id,
+                    "conference": conference,
+                }
+            )
 
-        record_privacy_policy_acceptance(
-            info.context.request,
-            conference,
-            "grant",
-        )
+            record_privacy_policy_acceptance(
+                info.context.request,
+                conference,
+                "grant",
+            )
 
         # hack because we return django models
         instance.__strawberry_definition__ = Grant.__strawberry_definition__
