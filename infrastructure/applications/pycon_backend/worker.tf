@@ -93,14 +93,6 @@ locals {
       value = module.secrets.value.userid_hash_salt
     },
     {
-      name  = "AZURE_STORAGE_ACCOUNT_NAME",
-      value = module.secrets.value.azure_storage_account_name
-    },
-    {
-      name  = "AZURE_STORAGE_ACCOUNT_KEY",
-      value = module.secrets.value.azure_storage_account_key
-    },
-    {
       name  = "PLAIN_API",
       value = "https://core-api.uk.plain.com/graphql/v1"
     },

@@ -3,8 +3,6 @@ on:
     paths:
       - "infrastructure/applications/**/*"
       - "infrastructure/applications/*"
-      - "infrastructure/azure-applications/*"
-      - "infrastructure/azure-applications/**/*"
 
 name: Terraform Lint
 
