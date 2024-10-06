@@ -56,11 +56,6 @@ resource "aws_eip" "ip" {
   }
 }
 
-data "aws_db_proxy" "proxy" {
-  count = var.enable_proxy ? 1 : 0
-  name  = "pythonit-${terraform.workspace}-database-proxy"
-}
-
 resource "aws_ebs_volume" "data" {
   availability_zone = "eu-central-1a"
   size              = 20

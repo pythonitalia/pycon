@@ -18,7 +18,7 @@ resource "aws_db_instance" "database" {
   identifier                  = "pythonit-${terraform.workspace}"
   allow_major_version_upgrade = true
   engine_version              = "14.12"
-  instance_class              = local.is_prod ? "db.t4g.micro" : "db.t4g.micro"
+  instance_class              = "db.t4g.micro"
   db_name                     = "${local.normalized_workspace}backend"
   username                    = "root"
   password                    = module.common_secrets.value.database_password

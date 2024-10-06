@@ -4,5 +4,4 @@ locals {
   local_path  = "backend"
 }
 
-variable "enable_proxy" {}
 variable "ecs_arm_ami" {}

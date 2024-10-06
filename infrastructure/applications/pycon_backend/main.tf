@@ -2,7 +2,7 @@ locals {
   is_prod           = terraform.workspace == "production"
   admin_domain      = "admin"
   full_admin_domain = local.is_prod ? "${local.admin_domain}.pycon.it" : "${terraform.workspace}-${local.admin_domain}.pycon.it"
-  db_connection     = var.enable_proxy ? "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_proxy.proxy[0].endpoint}:${data.aws_db_instance.database.port}/pycon" : "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/pycon"
+  db_connection     = "postgres://${data.aws_db_instance.database.master_username}:${module.common_secrets.value.database_password}@${data.aws_db_instance.database.address}:${data.aws_db_instance.database.port}/pycon"
   cdn_url           = local.is_prod ? "cdn.pycon.it" : "${terraform.workspace}-cdn.pycon.it"
 }
 
@@ -38,11 +38,6 @@ data "aws_security_group" "lambda" {
 
 data "aws_db_instance" "database" {
   db_instance_identifier = "pythonit-${terraform.workspace}"
-}
-
-data "aws_db_proxy" "proxy" {
-  count = var.enable_proxy ? 1 : 0
-  name  = "pythonit-${terraform.workspace}-database-proxy"
 }
 
 data "aws_acm_certificate" "cert" {
