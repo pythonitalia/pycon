@@ -1,21 +1,15 @@
 resource "aws_s3_bucket" "backend_media" {
   bucket        = "${terraform.workspace}-pycon-backend-media"
   force_destroy = !local.is_prod
+}
 
-  cors_rule {
-    allowed_headers = ["*"]
-    allowed_methods = ["PUT", "POST"]
-    allowed_origins = ["*"]
-    expose_headers  = ["ETag"]
-    max_age_seconds = 3000
-  }
+resource "aws_s3_bucket_server_side_encryption_configuration" "backend_media" {
+  bucket = aws_s3_bucket.backend_media.id
 
-  server_side_encryption_configuration {
-    rule {
-      bucket_key_enabled = false
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+  rule {
+    bucket_key_enabled = false
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
   }
 }
