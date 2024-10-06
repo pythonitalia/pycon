@@ -32,7 +32,7 @@ class Participant(models.Model):
     )
 
     public_profile = models.BooleanField(_("public profile"), default=False)
-    photo = models.TextField(_("photo"))
+    photo = models.TextField(_("photo"), null=True, blank=True)
     photo_file = models.ForeignKey(
         "files_upload.File",
         on_delete=models.PROTECT,
