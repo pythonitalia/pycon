@@ -122,13 +122,13 @@ class SendGrantInput(BaseGrantInput):
     linkedin_url: str
     mastodon_handle: str
 
-    def validate(self, conference: Conference, user: User) -> GrantErrors:
+    def validate(self, conference: Conference, user: User) -> GrantErrors | None:
         errors = super().validate(conference=conference, user=user)
 
         if GrantModel.objects.of_user(user).for_conference(conference).exists():
             errors.add_error("non_field_errors", "Grant already submitted!")
 
-        return errors
+        return errors.if_has_errors
 
 
 @strawberry.input
@@ -156,6 +156,9 @@ class UpdateGrantInput(BaseGrantInput):
     github_handle: str
     linkedin_url: str
     mastodon_handle: str
+
+    def validate(self, conference: Conference, user: User) -> GrantErrors | None:
+        return super().validate(conference=conference, user=user).if_has_errors
 
 
 SendGrantResult = Annotated[
@@ -232,8 +235,7 @@ class GrantMutation:
             )
 
         input.conference = instance.conference
-        errors = input.validate(conference=input.conference, user=request.user)
-        if errors.has_errors:
+        if errors := input.validate(conference=input.conference, user=request.user):
             return errors
 
         for attr, value in asdict(input).items():
