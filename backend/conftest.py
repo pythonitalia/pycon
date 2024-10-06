@@ -70,11 +70,6 @@ def pytest_runtest_setup(item):
         pytest.skip("pass --integration option to pytest to run this test")
 
 
-@pytest.fixture(autouse=True)
-def change_azure_account_to_test_name(settings):
-    settings.AZURE_STORAGE_ACCOUNT_NAME = "pytest-fakestorageaccount"
-
-
 @pytest.fixture
 def image_file():
     def wrapper(filename: str = "test.jpg"):
