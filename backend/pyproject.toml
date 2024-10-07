@@ -100,7 +100,7 @@ license = {text = "MIT"}
 
 [project.optional-dependencies]
 lambda = [
-    "awslambdaric<3.0.0,>=2.0.4",
+    "awslambdaric==2.2.1",
 ]
 
 [tool.ruff.lint.isort]
