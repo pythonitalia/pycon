@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl";
 
 import type { MyProfileWithGrantQuery } from "~/types";
 
-import { Title } from "~/components/title";
+import { TableItemHeader } from "~/components/table-item-header";
 import { getCountryLabel } from "~/helpers/country-utils";
 import { useCountries } from "~/helpers/use-countries";
 
@@ -66,7 +66,7 @@ const GrantInfo = ({
 }) => {
   return (
     <div>
-      <Title>{label}</Title>
+      <TableItemHeader>{label}</TableItemHeader>
       <Spacer size="xs" />
       <Text>{children}</Text>
     </div>

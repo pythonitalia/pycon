@@ -20,7 +20,7 @@ import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 
 import { Fragment } from "react";
-import { Title } from "~/components/title";
+import { TableItemHeader } from "~/components/table-item-header";
 import type { ProposalMaterial, TalkQueryResult } from "~/types";
 import { ParticipantInfoSection } from "../participant-info-section";
 import { EventTag } from "./event-tag";
@@ -164,9 +164,9 @@ export const ScheduleEventDetail = ({
             )}
             {elevatorPitch && (
               <>
-                <Title>
+                <TableItemHeader>
                   <FormattedMessage id="scheduleEventDetail.elevatorPitch" />
-                </Title>
+                </TableItemHeader>
                 <Spacer size="small" />
                 <StyledText baseTextSize={1}>
                   {compile(elevatorPitch).tree}
@@ -176,9 +176,9 @@ export const ScheduleEventDetail = ({
             )}
             {abstract && (
               <>
-                <Title>
+                <TableItemHeader>
                   <FormattedMessage id="scheduleEventDetail.abstract" />
-                </Title>
+                </TableItemHeader>
                 <Spacer size="small" />
                 <StyledText baseTextSize={2}>
                   {compile(abstract).tree}
@@ -188,9 +188,9 @@ export const ScheduleEventDetail = ({
             )}
             {tags && (
               <>
-                <Title>
+                <TableItemHeader>
                   <FormattedMessage id="scheduleEventDetail.tags" />
-                </Title>
+                </TableItemHeader>
                 <Spacer size="small" />
                 <Text size={2} weight="strong">
                   {tags.join(", ")}
@@ -247,9 +247,9 @@ const Materials = ({
 }) => {
   return (
     <>
-      <Title>
+      <TableItemHeader>
         <FormattedMessage id="scheduleEventDetail.materials" />
-      </Title>
+      </TableItemHeader>
       <Spacer size="small" />
       <ul>
         {materials.map((material) => (
