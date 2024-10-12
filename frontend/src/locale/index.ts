@@ -132,7 +132,7 @@ Let's get in touch to find the best solution for your business' needs!`,
       "Your application is under review. No further action is needed from you at this moment.",
     "profile.myGrant.status.rejected": "Rejected",
     "profile.myGrant.status.rejected.nextSteps":
-      "Unfortunately, your grant request has been rejected due to limited funds and a high number of applications. For details, check the email we sent you.",
+      "Unfortunately, your grant request has been rejected due to limited funds and a high number of applications.",
     "profile.myGrant.status.approved": "Approved",
     "profile.myGrant.status.approved.nextSteps":
       "Your grant request has been approved! We will send you an email very soon with further instructions, please check your email regularly.",
@@ -1988,7 +1988,7 @@ Il mancato avviso potrebbe influire sulla tua idoneità a ricevere assistenza fi
       "La tua domanda è in fase di revisione. Non è richiesta alcuna azione in questo momento.",
     "profile.myGrant.status.rejected": "Respinto",
     "profile.myGrant.status.rejected.nextSteps":
-      "Purtroppo, a causa di fondi limitati e del grande numero di richieste, la tua richiesta di grant non è stata approvata. Controlla la tua email per ulteriori dettagli.",
+      "Purtroppo, a causa di fondi limitati e del grande numero di richieste, la tua richiesta di grant non è stata approvata.",
     "profile.myGrant.status.approved": "Approvato",
     "profile.myGrant.status.approved.nextSteps":
       "La tua richiesta di grant è stata approvata! Ti invieremo un'email molto presto con ulteriori istruzioni; per favore controlla regolarmente la tua email.",
