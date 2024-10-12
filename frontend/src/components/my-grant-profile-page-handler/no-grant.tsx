@@ -52,24 +52,7 @@ export const NoGrant = ({ deadline }: Props) => {
           <FormattedMessage id="profile.myGrant.noGrant.body.closed" />
         )}
         {deadlineStatus === DeadlineStatus.InTheFuture && (
-          <FormattedMessage
-            id="profile.myGrant.noGrant.body.openingSoon"
-            values={{
-              grantInfoLink: (
-                <Link
-                  href={createHref({
-                    path: "/grants-info",
-                    locale: language,
-                  })}
-                  target="_blank"
-                >
-                  <Text decoration="underline">
-                    <FormattedMessage id="global.here" />
-                  </Text>
-                </Link>
-              ),
-            }}
-          />
+          <FormattedMessage id="profile.myGrant.noGrant.body.openingSoon" />
         )}
       </Text>
       {(deadlineStatus === DeadlineStatus.HappeningNow ||
