@@ -58,6 +58,16 @@ resource "aws_iam_role_policy" "pretix" {
       ],
       "Effect": "Allow",
       "Resource": "*"
+    },
+    {
+      "Action": [
+        "s3:*"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::${aws_s3_bucket.media.bucket}/*",
+        "arn:aws:s3:::${aws_s3_bucket.media.bucket}"
+      ]
     }
   ]
 }
