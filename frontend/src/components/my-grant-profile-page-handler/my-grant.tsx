@@ -50,7 +50,7 @@ export const MyGrant = ({ grant, deadline }: Props) => {
             needsFundsForTravel={grant.needsFundsForTravel}
             needAccommodation={grant.needAccommodation}
           />
-          {deadline.status === DeadlineStatus.HappeningNow && (
+          {deadline?.status === DeadlineStatus.HappeningNow && (
             <>
               <Spacer size="medium" />
               <Button
@@ -107,7 +107,7 @@ export const MyGrant = ({ grant, deadline }: Props) => {
 
             <GrantTableInfo grant={grant} />
 
-            {deadline.status === DeadlineStatus.HappeningNow && (
+            {deadline?.status === DeadlineStatus.HappeningNow && (
               <Text>
                 <FormattedMessage
                   id="profile.myGrant.editInfo"
