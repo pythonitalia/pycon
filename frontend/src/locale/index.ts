@@ -165,6 +165,8 @@ Use the 'Manage' button on the page to confirm or decline the grant. You have un
 
 Failing to notify us may impact your eligibility for financial aid at future events.`,
     "profile.myGrant.noGrant.heading": "You haven't requested a grant",
+    "profile.myGrant.noGrant.body.deadlineNull":
+      "Check our information page for more details",
     "profile.myGrant.noGrant.body.canSubmit":
       "If you're facing financial difficulties and wish to attend PyCon Italia, our grant application form is currently open!",
     "profile.myGrant.noGrant.submitGrant": "Find out more",
@@ -2010,6 +2012,8 @@ Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai
     "profile.myGrant.status.did_not_attend.nextSteps":
       "Non hai partecipato alla conferenza.",
     "profile.myGrant.noGrant.heading": "Non hai richiesto un grant",
+    "profile.myGrant.noGrant.body.deadlineNull":
+      "Visita la nostra pagina informativa per ulteriori dettagli.",
     "profile.myGrant.noGrant.body.canSubmit":
       "Se ti trovi in difficoltà economica e desideri partecipare a PyCon Italia, il nostro modulo per la richiesta di grant è al momento aperto.",
     "profile.myGrant.noGrant.submitGrant": "Scopri di più",

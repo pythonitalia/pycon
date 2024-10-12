@@ -18,7 +18,7 @@ type Props = {
 };
 
 export const NoGrant = ({ deadline }: Props) => {
-  const deadlineStatus = deadline.status;
+  const deadlineStatus = deadline?.status;
   const language = useCurrentLanguage();
 
   return (
@@ -28,6 +28,9 @@ export const NoGrant = ({ deadline }: Props) => {
       </Heading>
       <Spacer size="small" />
       <Text>
+        {!deadline && (
+          <FormattedMessage id="profile.myGrant.noGrant.body.deadlineNull" />
+        )}
         {deadlineStatus === DeadlineStatus.HappeningNow && (
           <FormattedMessage id="profile.myGrant.noGrant.body.canSubmit" />
         )}
@@ -38,7 +41,8 @@ export const NoGrant = ({ deadline }: Props) => {
           <FormattedMessage id="profile.myGrant.noGrant.body.openingSoon" />
         )}
       </Text>
-      {(deadlineStatus === DeadlineStatus.HappeningNow ||
+      {(!deadline ||
+        deadlineStatus === DeadlineStatus.HappeningNow ||
         deadlineStatus === DeadlineStatus.InTheFuture) && (
         <>
           <Spacer size="large" />
