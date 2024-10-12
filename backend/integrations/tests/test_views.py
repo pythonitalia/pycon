@@ -145,8 +145,6 @@ def test_get_plain_customer_cards_grant_card(rest_api_client):
     user = UserFactory()
     grant = GrantFactory(
         user=user,
-        approved_type=Grant.ApprovedType.ticket_travel_accommodation,
-        travel_amount=100,
     )
     conference_id = grant.conference_id
     rest_api_client.token_auth("secret")
@@ -200,8 +198,6 @@ def test_get_plain_customer_cards_grant_card_with_no_travel(rest_api_client):
     user = UserFactory()
     grant = GrantFactory(
         user=user,
-        approved_type=Grant.ApprovedType.ticket_only,
-        travel_amount=100,
     )
     conference_id = grant.conference_id
     rest_api_client.token_auth("secret")

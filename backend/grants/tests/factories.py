@@ -2,10 +2,31 @@ import factory.fuzzy
 from factory.django import DjangoModelFactory
 
 from conferences.tests.factories import ConferenceFactory
-from grants.models import Grant
+from grants.models import Grant, AidCategory, CountryAidAmount, GrantAllocation
 from helpers.constants import GENDERS
 from users.tests.factories import UserFactory
 from countries import countries
+
+
+class AidCategoryFactory(DjangoModelFactory):
+    class Meta:
+        model = AidCategory
+
+    name = factory.Faker("word")
+    description = factory.Faker("sentence")
+    conference = factory.SubFactory(ConferenceFactory)
+    max_amount = factory.fuzzy.FuzzyDecimal(50, 500)
+    category = factory.fuzzy.FuzzyChoice(AidCategory.AidType)
+    included_by_default = factory.Faker("boolean")
+
+
+class CountryAidAmountFactory(DjangoModelFactory):
+    class Meta:
+        model = CountryAidAmount
+
+    conference = factory.SubFactory(ConferenceFactory)
+    country = factory.fuzzy.FuzzyChoice([country.code for country in countries])
+    max_amount = factory.fuzzy.FuzzyDecimal(100, 1000)
 
 
 class GrantFactory(DjangoModelFactory):
@@ -36,3 +57,12 @@ class GrantFactory(DjangoModelFactory):
     github_handle = factory.Faker("user_name")
     linkedin_url = factory.Faker("user_name")
     mastodon_handle = factory.Faker("user_name")
+
+
+class GrantAllocationFactory(DjangoModelFactory):
+    class Meta:
+        model = GrantAllocation
+
+    grant = factory.SubFactory(GrantFactory)
+    category = factory.SubFactory(AidCategoryFactory)
+    allocated_amount = factory.fuzzy.FuzzyDecimal(50, 500)

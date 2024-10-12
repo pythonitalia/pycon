@@ -99,47 +99,6 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         default="",
     )
 
-    grants_default_ticket_amount = models.DecimalField(
-        verbose_name=_("grants default ticket amount"),
-        null=True,
-        blank=True,
-        max_digits=6,
-        decimal_places=2,
-        default=None,
-    )
-    grants_default_accommodation_amount = models.DecimalField(
-        verbose_name=_("grants default accommodation amount"),
-        null=True,
-        blank=True,
-        max_digits=6,
-        decimal_places=2,
-        default=None,
-    )
-    grants_default_travel_from_italy_amount = models.DecimalField(
-        verbose_name=_("grants default travel from Italy amount"),
-        null=True,
-        blank=True,
-        max_digits=6,
-        decimal_places=2,
-        default=None,
-    )
-    grants_default_travel_from_europe_amount = models.DecimalField(
-        verbose_name=_("grants default travel from Europe amount"),
-        null=True,
-        blank=True,
-        max_digits=6,
-        decimal_places=2,
-        default=None,
-    )
-    grants_default_travel_from_extra_eu_amount = models.DecimalField(
-        verbose_name=_("grants default travel from Extra EU amount"),
-        null=True,
-        blank=True,
-        max_digits=6,
-        decimal_places=2,
-        default=None,
-    )
-
     video_title_template = models.TextField(
         default="",
         blank=True,

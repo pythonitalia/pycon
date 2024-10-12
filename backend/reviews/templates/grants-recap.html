@@ -22,18 +22,22 @@
     width: 150px;
   }
 
-  .approved-type-choices {
+  .approved-aid-categories-choices {
     width: 200px;
   }
 
   .status-choices,
-  .approved-type-choices {
+  .approved-aid-categories-choices {
     list-style: none;
   }
 
   .status-choices li,
-  .approved-type-choices li {
+  .approved-aid-categories-choices li {
     list-style: none;
+  }
+
+  label:has(input.approved-aid-category:disabled) {
+      opacity: 0.6;
   }
 
   .needs-list {
@@ -289,18 +293,26 @@
               const grantRow = document.querySelector(`#grant-${grantId}`);
 
               const originalStatus = grantRow.dataset.originalStatus;
-              const originalApprovedType = grantRow.dataset.originalApprovedType;
-
+              const originalApprovedAidCategories = grantRow.dataset.originalApprovedAidCategories;
               grantRow.querySelector(`.status-decision-radio[value="${originalStatus}"]`).checked = true;
 
-              if (originalApprovedType !== 'None') {
-                  grantRow.querySelector(`.approved-type-choices input[value="${originalApprovedType}"]`).checked = true;
-              }
+              const checkboxes = grantRow.querySelectorAll(`.approved-aid-categories-choices input[type="checkbox"]`);
+              checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+
+                if (originalApprovedAidCategories.includes(checkbox.value)) {
+                    checkbox.checked = true;
+                }
+              });
 
               if (originalStatus === "approved") {
-                  grantRow.querySelector(`.approved-type-choices`).classList.remove('hidden');
+                  checkboxes.forEach(checkbox => {
+                      checkbox.disabled = false;
+                  });
               } else {
-                  grantRow.querySelector(`.approved-type-choices`).classList.add('hidden');
+                  checkboxes.forEach(checkbox => {
+                      checkbox.disabled = true;
+                  });
               }
           });
       });
@@ -308,13 +320,17 @@
       document.querySelectorAll('.status-decision-radio').forEach(radio => {
           radio.addEventListener('click', () => {
               const grantId = radio.name.split('-')[1];
-
-              const approvedTypeSection = document.querySelector(`.approved-type-choices[data-item-id="${grantId}"]`)
+              const approvedAidCategorySection = document.querySelector(`.approved-aid-categories-choices[data-item-id="${grantId}"]`);
+              const checkboxes = approvedAidCategorySection.querySelectorAll('input[type="checkbox"]');
 
               if (radio.value === "approved") {
-                  approvedTypeSection.classList.remove('hidden');
+                  checkboxes.forEach(checkbox => {
+                      checkbox.disabled = false;
+                  });
               } else {
-                  approvedTypeSection.classList.add('hidden');
+                  checkboxes.forEach(checkbox => {
+                      checkbox.disabled = true;
+                  });
               }
           });
       });
@@ -452,7 +468,7 @@
                 </th>
                 <th scope="col">
                   <div class="text">
-                    <span>Approved type</span>
+                    <span>Approved Aids</span>
                   </div>
                   <div class="clear"></div>
                 </th>
@@ -470,7 +486,7 @@
               </script>
               <tr
                 data-original-status="{{ item.status }}"
-                data-original-approved-type="{{ item.approved_type }}"
+                data-original-approved-aid-categories="{{ item.approved_aid_categories }}"
                 class="grant-item"
                 id="grant-{{ item.id }}"
                 data-type="{{ item.type }}"
@@ -623,24 +639,30 @@
                 <td>
                   {% if perms.reviews.decision_reviewsession %}
                   <ul
-                    data-item-id="{{ item.id }}"
-                    class="approved-type-choices {% if item.status != 'approved' %}hidden{% endif %}"
+                  data-item-id="{{ item.id }}"
+                  class="approved-aid-categories-choices"
                   >
-                    {% for approved_type in all_approved_types %}
+                    {% for category in all_approved_category %}
                     <li>
                       <label>
-                        <input {% if item.approved_type == approved_type.0 %}checked{% endif %}
-                          type="radio" name="approvedtype-{{item.id}}" value="{{approved_type.0}}" />
-                        {{approved_type.1}}
+
+                          <input
+                              type="checkbox"
+                              name="approvedaidcategory-{{item.id}}"
+                              class="approved-aid-category"
+                              value="{{category.id}}"
+                              {% if item.status != 'approved' %}disabled{% endif %}
+                              {% if category.id in item.approved_aid_categories %}
+                                  checked
+                              {% elif not item.approved_aid_categories and item.status == 'approved' and category.included_by_default %}
+                              {% comment %} TODO FIX THIS IF {% endcomment %}
+                                  checked
+                              {% endif %}
+                          />
+                        {{category.name}}
                       </label>
                     </li>
                     {% endfor %}
-                    <li>
-                      <label>
-                        <input class="unset-radio" type="radio" name="approvedtype-{{item.id}}" value="unset" />
-                          Unset
-                      </label>
-                    </li>
                   </ul>
                   {% else %} No permission to change. {% endif %}
                 </td>

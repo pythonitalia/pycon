@@ -1,4 +1,5 @@
 from django.contrib.postgres.expressions import ArraySubquery
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models.expressions import ExpressionWrapper
 from django.db.models import FloatField
 from django.db.models.functions import Cast
@@ -17,7 +18,7 @@ from django.template.response import TemplateResponse
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
 
-from grants.models import Grant
+from grants.models import Grant, AidCategory
 from participants.models import Participant
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
 from submissions.models import Submission, SubmissionTag
@@ -340,6 +341,9 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                     )
                     .values("id")
                 ),
+                approved_aid_categories=ArrayAgg(
+                    "allocations__category_id",
+                ),
             )
             .order_by(F("score").desc(nulls_last=True))
             .prefetch_related(
@@ -376,8 +380,13 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 for choice in Grant.Status.choices
                 if choice[0] in Grant.REVIEW_SESSION_STATUSES_OPTIONS
             ],
+            all_approved_category=[
+                category
+                for category in AidCategory.objects.for_conference(
+                    conference=review_session.conference
+                )
+            ],
             all_statuses=Grant.Status.choices,
-            all_approved_types=[choice for choice in Grant.ApprovedType.choices],
             review_session=review_session,
             title="Recap",
         )

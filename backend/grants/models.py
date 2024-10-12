@@ -14,6 +14,55 @@ class GrantQuerySet(ConferenceQuerySetMixin, models.QuerySet):
         return self.filter(user=user)
 
 
+class AidCategory(models.Model):
+    class AidType(models.TextChoices):
+        TRAVEL = "travel", _("Travel")
+        TICKET = "ticket", _("Ticket")
+        ACCOMMODATION = "accommodation", _("Accommodation")
+        OTHER = "other", _("Other")
+
+    conference = models.ForeignKey(
+        "conferences.Conference",
+        on_delete=models.CASCADE,
+        related_name="aid_categories",
+    )
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    max_amount = models.DecimalField(
+        max_digits=6, decimal_places=0, help_text=_("Maximum amount for this category")
+    )
+    category = models.CharField(max_length=20, choices=AidType.choices)
+    included_by_default = models.BooleanField(
+        default=False,
+        help_text="Automatically include this category in grants by default",
+    )
+
+    objects = GrantQuerySet().as_manager()
+
+    def __str__(self):
+        return f"{self.name} ({self.conference.name})"
+
+
+class CountryAidAmount(models.Model):
+    conference = models.ForeignKey(
+        "conferences.Conference", on_delete=models.CASCADE, related_name="travel_costs"
+    )
+    country = models.CharField(
+        "Country",
+        choices=[(country.code, country.name) for country in countries],
+        null=True,
+        blank=True,
+    )
+    max_amount = models.DecimalField(
+        max_digits=6, decimal_places=0, help_text=_("Maximum amount for this category")
+    )
+
+    objects = GrantQuerySet().as_manager()
+
+    def __str__(self):
+        return f"{self.country} ({self.conference.name}) - {self.max_amount}€"
+
+
 class Grant(TimeStampedModel):
     # TextChoices
     class Status(models.TextChoices):
@@ -36,11 +85,6 @@ class Grant(TimeStampedModel):
         Status.waiting_list.value,
         Status.waiting_list_maybe.value,
     ]
-
-    class CountryType(models.TextChoices):
-        italy = "italy", _("Italy")
-        europe = "europe", _("Europe")
-        extra_eu = "extra_eu", _("Extra EU")
 
     class AgeGroup(models.TextChoices):
         range_less_than_10 = "range_less_than_10", _("10 years old or under")
@@ -68,12 +112,6 @@ class Grant(TimeStampedModel):
         no = "no", _("No")
         yes = "yes", _("Yes")
         absolutely = "absolutely", _("My soul is yours to take!")
-
-    class ApprovedType(models.TextChoices):
-        ticket_only = "ticket_only", _("Ticket Only")
-        ticket_travel = "ticket_travel", _("Ticket + Travel")
-        ticket_accommodation = "ticket_accommodation", _("Ticket + Accommodation")
-        ticket_travel_accommodation = "Ticket", _("Ticket + Travel + Accommodation")
 
     conference = models.ForeignKey(
         "conferences.Conference",
@@ -143,51 +181,9 @@ class Grant(TimeStampedModel):
     status = models.CharField(
         _("status"), choices=Status.choices, max_length=30, default=Status.pending
     )
-    approved_type = models.CharField(
-        verbose_name=_("approved type"),
-        choices=ApprovedType.choices,
-        max_length=30,
-        blank=True,
-        null=True,
-    )
 
     # Financial amounts
-    ticket_amount = models.DecimalField(
-        verbose_name=_("ticket amount"),
-        null=True,
-        max_digits=6,
-        decimal_places=2,
-        default=0,
-    )
-    accommodation_amount = models.DecimalField(
-        verbose_name=_("accommodation amount"),
-        null=True,
-        max_digits=6,
-        decimal_places=2,
-        default=0,
-    )
-    travel_amount = models.DecimalField(
-        verbose_name=_("travel amount"),
-        null=True,
-        max_digits=6,
-        decimal_places=2,
-        default=0,
-    )
-    total_amount = models.DecimalField(
-        verbose_name=_("total amount"),
-        null=True,
-        max_digits=6,
-        decimal_places=2,
-        default=0,
-    )
-
-    country_type = models.CharField(
-        _("Country type"),
-        max_length=10,
-        choices=CountryType.choices,
-        null=True,
-        blank=True,
-    )
+    aid_categories = models.ManyToManyField(AidCategory, through="GrantAllocation")
 
     # Applicant Communication Tracking
     applicant_reply_sent_at = models.DateTimeField(
@@ -219,95 +215,8 @@ class Grant(TimeStampedModel):
 
     objects = GrantQuerySet().as_manager()
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._original_status = self.status
-        self._original_approved_type = self.approved_type
-        self._original_country_type = self.country_type
-
     def __str__(self):
         return f"{self.full_name}"
-
-    def save(self, *args, **kwargs):
-        self._update_country_type()
-        self._calculate_grant_amounts()
-
-        update_fields = kwargs.get("update_fields", None)
-        if update_fields:
-            update_fields.append("total_amount")
-            update_fields.append("ticket_amount")
-            update_fields.append("accommodation_amount")
-            update_fields.append("travel_amount")
-            update_fields.append("country_type")
-
-        super().save(*args, **kwargs)
-
-        self._original_approved_type = self.approved_type
-        self._original_country_type = self.country_type
-        self._original_status = self.status
-
-    def _calculate_grant_amounts(self):
-        if self.status != Grant.Status.approved:
-            return
-
-        if (
-            self._original_status == self.status
-            and self._original_approved_type == self.approved_type
-            and self._original_country_type == self.country_type
-        ):
-            return
-
-        conference = self.conference
-        self.ticket_amount = conference.grants_default_ticket_amount or 0
-        self.accommodation_amount = 0
-        self.travel_amount = 0
-
-        default_accommodation_amount = (
-            conference.grants_default_accommodation_amount or 0
-        )
-        default_travel_from_italy_amount = (
-            conference.grants_default_travel_from_italy_amount or 0
-        )
-        default_travel_from_europe_amount = (
-            conference.grants_default_travel_from_europe_amount or 0
-        )
-        default_travel_from_extra_eu_amount = (
-            conference.grants_default_travel_from_extra_eu_amount or 0
-        )
-
-        if self.approved_type in (
-            Grant.ApprovedType.ticket_accommodation,
-            Grant.ApprovedType.ticket_travel_accommodation,
-        ):
-            self.accommodation_amount = default_accommodation_amount
-
-        if self.approved_type in (
-            Grant.ApprovedType.ticket_travel_accommodation,
-            Grant.ApprovedType.ticket_travel,
-        ):
-            if self.country_type == Grant.CountryType.italy:
-                self.travel_amount = default_travel_from_italy_amount
-            elif self.country_type == Grant.CountryType.europe:
-                self.travel_amount = default_travel_from_europe_amount
-            elif self.country_type == Grant.CountryType.extra_eu:
-                self.travel_amount = default_travel_from_extra_eu_amount
-
-        self.total_amount = (
-            self.ticket_amount + self.accommodation_amount + self.travel_amount
-        )
-
-    def _update_country_type(self):
-        if not self.travelling_from:
-            return
-
-        country = countries.get(code=self.travelling_from)
-        assert country
-        if country.code == "IT":
-            self.country_type = Grant.CountryType.italy
-        elif country.continent == "EU":
-            self.country_type = Grant.CountryType.europe
-        else:
-            self.country_type = Grant.CountryType.extra_eu
 
     def can_edit(self, user: User):
         return self.user_id == user.id
@@ -319,13 +228,26 @@ class Grant(TimeStampedModel):
         )
 
     def has_approved_travel(self):
-        return (
-            self.approved_type == Grant.ApprovedType.ticket_travel_accommodation
-            or self.approved_type == Grant.ApprovedType.ticket_travel
-        )
+        return self.aid_categories.filter(category=AidCategory.AidType.TRAVEL).exists()
 
     def has_approved_accommodation(self):
+        return self.aid_categories.filter(
+            category=AidCategory.AidType.ACCOMMODATION
+        ).exists()
+
+
+class GrantAllocation(models.Model):
+    grant = models.ForeignKey(
+        Grant, on_delete=models.CASCADE, related_name="allocations"
+    )
+    category = models.ForeignKey(AidCategory, on_delete=models.CASCADE)
+    allocated_amount = models.DecimalField(
+        max_digits=6,
+        decimal_places=0,
+        help_text="Actual amount allocated for this category",
+    )
+
+    def __str__(self):
         return (
-            self.approved_type == Grant.ApprovedType.ticket_accommodation
-            or self.approved_type == Grant.ApprovedType.ticket_travel_accommodation
+            f"{self.grant.full_name} - {self.category.name} - {self.allocated_amount}€"
         )
