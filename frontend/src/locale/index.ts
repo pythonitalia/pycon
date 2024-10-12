@@ -135,7 +135,7 @@ Let's get in touch to find the best solution for your business' needs!`,
       "Unfortunately, your grant request has been rejected due to limited funds and a high number of applications. For details, check the email we sent you.",
     "profile.myGrant.status.approved": "Approved",
     "profile.myGrant.status.approved.nextSteps":
-      "Your grant request is approved. We will send you an email very soon with further instructions. Check your email regularly.",
+      "Your grant request has been approved! We will send you an email very soon with further instructions, please check your email regularly.",
     "profile.myGrant.status.waiting_list": "Waiting List",
     "profile.myGrant.status.waiting_list.nextSteps":
       "You are on the waiting list. We will notify you as soon as we can accept your grant.",
@@ -161,13 +161,13 @@ Use the 'Manage' button on the page to confirm or decline the grant. You have un
     "profile.myGrant.editInfo":
       "Ensure all the information provided are correct. You have until {editDeadline} to edit your information.",
     "profile.myGrant.manage": "Manage",
-    "profile.myGrant.manage.warning": `If your plans change or you cannot attend the conference anymore, please let us know by clicking the 'Manage' button to refuse your grant or email us at {grantsEmail} as soon as possible.
+    "profile.myGrant.manage.warning": `If you cannot attend the conference anymore, please let us know by clicking the 'Manage' button to refuse your grant as soon as possible.
 
 Failing to notify us may impact your eligibility for financial aid at future events.`,
     "profile.myGrant.noGrant.heading": "You haven't requested a grant",
-    "profile.myGrant.noGrant.body.canSubmit": `If you're facing financial difficulties and wish to attend PyCon Italia, our grant application form is currently open!
-Find our more information {grantInfoLink} and submit your application below.`,
-    "profile.myGrant.noGrant.submitGrant": "Request a grant",
+    "profile.myGrant.noGrant.body.canSubmit":
+      "If you're facing financial difficulties and wish to attend PyCon Italia, our grant application form is currently open!",
+    "profile.myGrant.noGrant.submitGrant": "Find out more",
     "profile.myGrant.noGrant.body.closed":
       "The grant application form is currently closed. Stay tuned for future opportunities.",
     "profile.myGrant.noGrant.body.openingSoon":
@@ -1977,7 +1977,7 @@ Affrettati a comprare il biglietto!`,
     "profile.myGrant.editInfo":
       "Assicurati che tutte le informazioni fornite siano corrette. Hai tempo fino al {editDeadline} per modificare il tuo grant.",
     "profile.myGrant.manage": "Gestisci",
-    "profile.myGrant.manage.warning": `Se per qualsiasi motivo non puoi più partecipare alla conferenza, ti preghiamo di comunicarcelo al più presto cliccando sul pulsante 'Gestisci' per rifiutare il grant oppure inviandoci un'email a {grantsEmail}.
+    "profile.myGrant.manage.warning": `Se per qualsiasi motivo non puoi più partecipare alla conferenza, ti preghiamo di comunicarcelo al più presto cliccando sul pulsante 'Gestisci' per rifiutare il grant.
 
 Il mancato avviso potrebbe influire sulla tua idoneità a ricevere assistenza finanziaria per eventi futuri."`,
     "profile.myGrant.status": "Stato",
@@ -1989,7 +1989,7 @@ Il mancato avviso potrebbe influire sulla tua idoneità a ricevere assistenza fi
       "Purtroppo, a causa di fondi limitati e del grande numero di richieste, la tua richiesta di grant non è stata approvata. Controlla la tua email per ulteriori dettagli.",
     "profile.myGrant.status.approved": "Approvato",
     "profile.myGrant.status.approved.nextSteps":
-      "La tua richiesta di grant è stata approvata. Ti invieremo un'email molto presto con ulteriori istruzioni. Per favore, controlla la tua email per i prossimi passi.",
+      "La tua richiesta di grant è stata approvata! Ti invieremo un'email molto presto con ulteriori istruzioni; per favore controlla regolarmente la tua email.",
     "profile.myGrant.status.waiting_list": "Lista d'attesa",
     "profile.myGrant.status.waiting_list.nextSteps":
       "Sei in lista d'attesa. Ti informeremo non appena potremo accettare il tuo grant.",
@@ -2010,9 +2010,9 @@ Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai
     "profile.myGrant.status.did_not_attend.nextSteps":
       "Non hai partecipato alla conferenza.",
     "profile.myGrant.noGrant.heading": "Non hai richiesto un grant",
-    "profile.myGrant.noGrant.body.canSubmit": `Se ti trovi in difficoltà economica e desideri partecipare a PyCon Italia, il nostro modulo per la richiesta di grant è al momento aperto.
-Guarda {grantInfoLink} per maggiori informazioni e invia la richiesta qui sotto.`,
-    "profile.myGrant.noGrant.submitGrant": "Richiedi un grant",
+    "profile.myGrant.noGrant.body.canSubmit":
+      "Se ti trovi in difficoltà economica e desideri partecipare a PyCon Italia, il nostro modulo per la richiesta di grant è al momento aperto.",
+    "profile.myGrant.noGrant.submitGrant": "Scopri di più",
     "profile.myGrant.noGrant.body.closed":
       "Il modulo per la richiesta di grant è al momento chiuso. Purtroppo non possiamo accettare nuove richieste dopo la scadenza.",
     "profile.myGrant.noGrant.body.openingSoon":
