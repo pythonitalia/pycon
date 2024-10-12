@@ -12,3 +12,12 @@ EMAIL_SUBJECT_PREFIX = "[PyCon Tickets] "
 if "pretix_fattura_elettronica" in INSTALLED_APPS:
     INSTALLED_APPS.remove("pretix_fattura_elettronica")
     INSTALLED_APPS.insert(0, "pretix_fattura_elettronica")
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+    },
+}
