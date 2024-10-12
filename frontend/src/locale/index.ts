@@ -169,7 +169,7 @@ Failing to notify us may impact your eligibility for financial aid at future eve
       "If you're facing financial difficulties and wish to attend PyCon Italia, our grant application form is currently open!",
     "profile.myGrant.noGrant.submitGrant": "Find out more",
     "profile.myGrant.noGrant.body.closed":
-      "The grant application form is currently closed. Stay tuned for future opportunities.",
+      "The grant application form is currently closed. Unfortunately we can't accept new applications after our deadline.",
     "profile.myGrant.noGrant.body.openingSoon":
       "Our grant application form will open soon! Check our information page for more details.",
     "profile.logout": "Sign Out",
@@ -2014,7 +2014,7 @@ Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai
       "Se ti trovi in difficoltà economica e desideri partecipare a PyCon Italia, il nostro modulo per la richiesta di grant è al momento aperto.",
     "profile.myGrant.noGrant.submitGrant": "Scopri di più",
     "profile.myGrant.noGrant.body.closed":
-      "Il modulo per la richiesta di grant è al momento chiuso. Purtroppo non possiamo accettare nuove richieste dopo la scadenza.",
+      "Il form per la richiesta di grant è al momento chiuso. Purtroppo non possiamo accettare nuove richieste dopo la scadenza.",
     "profile.myGrant.noGrant.body.openingSoon":
       "Il form per la richiesta del grant aprirà presto! Visita la nostra pagina informativa per ulteriori dettagli.",
     "profile.editProfile.generalInformation": "Informazioni generali",
