@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "media" {
-  bucket        = "${terraform.workspace}-pretix-media"
+  bucket        = "pythonit-${terraform.workspace}-pretix-media"
   force_destroy = !local.is_prod
 }
 
