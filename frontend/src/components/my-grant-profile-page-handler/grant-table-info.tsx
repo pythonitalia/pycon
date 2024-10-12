@@ -39,7 +39,11 @@ export const GrantTableInfo = ({ grant }: Props) => {
       </GrantInfo>
 
       <GrantInfo label={<FormattedMessage id="grants.form.fields.gender" />}>
-        <FormattedMessage id={`profile.gender.${grant.gender}`} />
+        {grant.gender ? (
+          <FormattedMessage id={`profile.gender.${grant.gender}`} />
+        ) : (
+          "-"
+        )}
       </GrantInfo>
 
       <GrantInfo
