@@ -1,3 +1,4 @@
+from conferences.models.conference_voucher import ConferenceVoucher
 from pycon.constants import UTC
 from custom_admin.admin import validate_single_conference_selection
 from import_export.resources import ModelResource
@@ -10,7 +11,6 @@ from django.db.models.query import QuerySet
 from django.utils import timezone
 from import_export.admin import ExportMixin
 from import_export.fields import Field
-from django.utils.crypto import get_random_string
 from users.admin_mixins import ConferencePermissionMixin
 from countries import countries
 from grants.tasks import (
@@ -18,9 +18,7 @@ from grants.tasks import (
     send_grant_reply_waiting_list_email,
     send_grant_reply_waiting_list_update_email,
     send_grant_reply_rejected_email,
-    send_grant_voucher_email,
 )
-from pretix import create_voucher
 from schedule.models import ScheduleItem
 from submissions.models import Submission
 from .models import Grant
@@ -264,36 +262,11 @@ def send_reply_email_waiting_list_update(modeladmin, request, queryset):
         messages.info(request, f"Sent Waiting List update reply email to {grant.name}")
 
 
-@admin.action(description="Send voucher via email")
-@validate_single_conference_selection
-def send_voucher_via_email(modeladmin, request, queryset):
-    count = 0
-    for grant in queryset.filter(pretix_voucher_id__isnull=False):
-        send_grant_voucher_email.delay(grant_id=grant.id)
-        count = count + 1
-
-    messages.success(request, f"{count} Voucher emails scheduled!")
-
-
-def _generate_voucher_code(prefix: str) -> str:
-    charset = list("ABCDEFGHKLMNPQRSTUVWXYZ23456789")
-    random_string = get_random_string(length=20, allowed_chars=charset)
-    return f"{prefix}-{random_string}"
-
-
 @admin.action(description="Create grant vouchers on Pretix")
 @validate_single_conference_selection
 def create_grant_vouchers_on_pretix(modeladmin, request, queryset):
-    conference = queryset.first().conference
+    vouchers_to_create = []
 
-    if not conference.pretix_conference_voucher_quota_id:
-        messages.error(
-            request,
-            "Please configure the grant voucher quota ID in the conference settings",
-        )
-        return
-
-    count = 0
     for grant in queryset.filter(pretix_voucher_id__isnull=True).order_by("id"):
         if grant.status != Grant.Status.confirmed:
             messages.error(
@@ -303,24 +276,17 @@ def create_grant_vouchers_on_pretix(modeladmin, request, queryset):
             )
             continue
 
-        voucher_code = _generate_voucher_code("GRANT")
-        pretix_voucher = create_voucher(
-            conference=grant.conference,
-            code=voucher_code,
-            comment=f"Voucher for user_id={grant.user_id}",
-            tag="grants",
-            quota_id=grant.conference.pretix_conference_voucher_quota_id,
-            price_mode="set",
-            value="0.00",
+        vouchers_to_create.append(
+            ConferenceVoucher(
+                conference_id=grant.conference_id,
+                user_id=grant.user_id,
+                voucher_code=ConferenceVoucher.generate_code(),
+                voucher_type=ConferenceVoucher.VoucherType.GRANT,
+            )
         )
 
-        pretix_voucher_id = pretix_voucher["id"]
-        grant.pretix_voucher_id = pretix_voucher_id
-        grant.voucher_code = voucher_code
-        grant.save()
-        count += 1
-
-    messages.success(request, f"{count} Vouchers created on Pretix!")
+    ConferenceVoucher.objects.bulk_create(vouchers_to_create, ignore_conflicts=True)
+    messages.success(request, "Vouchers created!")
 
 
 @admin.action(description="Mark grants as Rejected and send email")
@@ -458,7 +424,6 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         send_grant_reminder_to_waiting_for_confirmation,
         send_reply_email_waiting_list_update,
         create_grant_vouchers_on_pretix,
-        send_voucher_via_email,
         mark_rejected_and_send_email,
         "delete_selected",
     ]
