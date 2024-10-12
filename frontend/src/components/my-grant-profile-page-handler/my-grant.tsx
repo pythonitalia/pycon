@@ -123,18 +123,24 @@ export const MyGrant = ({ grant, deadline }: Props) => {
             )}
 
             <Text>
-              <FormattedMessage
-                id="profile.myGrant.manage.warning"
-                values={{
-                  grantsEmail: (
-                    <Link target="_blank" href="mailto:grants@pycon.it">
-                      <Text decoration="underline" weight="strong" color="none">
-                        grants@pycon.it
-                      </Text>
-                    </Link>
-                  ),
-                }}
-              />
+              {canManageGrant && (
+                <FormattedMessage
+                  id="profile.myGrant.manage.warning"
+                  values={{
+                    grantsEmail: (
+                      <Link target="_blank" href="mailto:grants@pycon.it">
+                        <Text
+                          decoration="underline"
+                          weight="strong"
+                          color="none"
+                        >
+                          grants@pycon.it
+                        </Text>
+                      </Link>
+                    ),
+                  }}
+                />
+              )}
             </Text>
           </VerticalStack>
         </GridColumn>
