@@ -118,6 +118,62 @@ Let's get in touch to find the best solution for your business' needs!`,
 
     "profile.welcome": "Ciao {name}!",
     "profile.myProfile": "My Profile",
+
+    "profile.myGrant": "My Grant",
+    "profile.myGrant.nextSteps": "Next steps",
+    "profile.myGrant.grantType": "Type of Grant",
+    "profile.myGrant.appliedFor": "Applied for",
+    "profile.myGrant.appliedFor.ticket": "Ticket",
+    "profile.myGrant.appliedFor.travel": "Travel",
+    "profile.myGrant.appliedFor.accommodation": "Accommodation",
+    "profile.myGrant.status": "Status",
+    "profile.myGrant.status.pending": "Pending",
+    "profile.myGrant.status.pending.nextSteps":
+      "Your application is under review. No further action is needed from you at this moment.",
+    "profile.myGrant.status.rejected": "Rejected",
+    "profile.myGrant.status.rejected.nextSteps":
+      "Unfortunately, your grant request has been rejected due to limited funds and a high number of applications.",
+    "profile.myGrant.status.approved": "Approved",
+    "profile.myGrant.status.approved.nextSteps":
+      "Your grant request has been approved! We will send you an email very soon with further instructions.",
+    "profile.myGrant.status.waiting_list": "Waiting List",
+    "profile.myGrant.status.waiting_list.nextSteps":
+      "You are on the waiting list. We will notify you as soon as we can accept your grant.",
+    "profile.myGrant.status.waiting_list_maybe": "Waiting List",
+    "profile.myGrant.status.waiting_list_maybe.nextSteps":
+      "You are on the waiting list. We will notify you as soon as we can accept your grant.",
+    "profile.myGrant.status.waiting_for_confirmation":
+      "Waiting for Confirmation",
+    "profile.myGrant.status.waiting_for_confirmation.nextSteps": `Congratulations, your grant request has been approved!
+
+Use the 'Manage' button on the page to confirm or decline the grant. You have until {replyDeadline} to confirm or decline the grant, after which your grant will be automatically revoked.
+`,
+    "profile.myGrant.status.refused": "Refused",
+    "profile.myGrant.status.refused.nextSteps":
+      "You have declined the grant offer. If this was a mistake, please contact us immediately.",
+    "profile.myGrant.status.confirmed": "Confirmed",
+    "profile.myGrant.status.confirmed.nextSteps":
+      "Thank you for confirming your grant. We look forward to seeing you at the conference! We will send you the voucher for the ticket soon, please check your email regularly.",
+    "profile.myGrant.status.did_not_attend": "Did Not Attend",
+    "profile.myGrant.status.did_not_attend.nextSteps":
+      "You did not attend the conference.",
+    "profile.myGrant.edit": "Edit",
+    "profile.myGrant.editInfo":
+      "Ensure all the information provided are correct. You have until {editDeadline} to edit your information.",
+    "profile.myGrant.manage": "Manage",
+    "profile.myGrant.manage.warning": `If you cannot attend the conference anymore, please let us know by clicking the 'Manage' button to refuse your grant as soon as possible.
+
+Failing to notify us may impact your eligibility for financial aid at future events.`,
+    "profile.myGrant.noGrant.heading": "You haven't requested a grant",
+    "profile.myGrant.noGrant.body.deadlineNull":
+      "Check our information page for more details",
+    "profile.myGrant.noGrant.body.canSubmit":
+      "If you're facing financial difficulties and wish to attend PyCon Italia, our grant application form is currently open!",
+    "profile.myGrant.noGrant.submitGrant": "Find out more",
+    "profile.myGrant.noGrant.body.closed":
+      "The grant application form is currently closed. Unfortunately we can't accept new applications after our deadline.",
+    "profile.myGrant.noGrant.body.openingSoon":
+      "Our grant application form will open soon! Check our information page for more details.",
     "profile.logout": "Sign Out",
     "profile.logout.title": "Sign Out",
     "profile.logout.body": "{name}, are you sure you want to sign out?",
@@ -641,8 +697,8 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
 
     "grants.form.sendingRequest": "Sending grant request",
     "grants.form.sent":
-      "Grant request sent! We will send you an email as soon as we have updates! Cick {linkGrant} to edit it.",
-    "grants.form.sent.linkGrant.text": "here",
+      "Grant request sent! We will email you as soon as we have updates. Meanwhile, you can check the status and edit your grant on your {linkMyGrant} until {grantsDeadline}.",
+    "grants.form.sent.linkMyGrant.text": "profile page",
     "grants.form.aboutYou": "About you",
     "grants.form.yourGrant": "Your grant",
     "grants.form.youAndPython": "You and Python",
@@ -1399,8 +1455,8 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
     `,
     "grants.form.sendingRequest": "Invio richiesta in corso",
     "grants.form.sent":
-      "Richiesta inviata! Ti contatteremo via email appena ci saranno novità! Clicca {linkGrant} per editarlo.",
-    "grants.form.sent.linkGrant.text": "qui",
+      "Richiesta di grant inviata! Ti invieremo un'email appena ci saranno novità! Nel frattempo, puoi controllare lo stato e modificare il tuo grant nella tua {linkMyGrant} fino al {grantsDeadline}.",
+    "grants.form.sent.linkMyGrant.text": "pagina del profilo",
     "grants.form.aboutYou": "Su di te",
     "grants.form.optionalInformation": "Informazioni opzionali",
     "grants.form.optionalInformation.description":
@@ -1431,10 +1487,11 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
     "grants.form.fields.occupation.description":
       "Seleziona la propria attuale occupazione.",
     "grants.form.fields.occupation.values.selectOption": "Seleziona un'opzione",
-    "grants.form.fields.occupation.values.developer": "Sviluppatore",
-    "grants.form.fields.occupation.values.student": "Studente",
-    "grants.form.fields.occupation.values.researcher": "Ricercatore",
-    "grants.form.fields.occupation.values.unemployed": "Disoccupato",
+    "grants.form.fields.occupation.values.developer":
+      "Sviluppatore/Sviluppatrice",
+    "grants.form.fields.occupation.values.student": "Studente/Studentessa",
+    "grants.form.fields.occupation.values.researcher": "Ricerca",
+    "grants.form.fields.occupation.values.unemployed": "Disoccupato/a",
     "grants.form.fields.occupation.values.other": "Altro",
     "grants.form.fields.grantType": "Che tipo di grant stai richiedendo?",
     "grants.form.fields.grantType.description":
@@ -1911,6 +1968,59 @@ Affrettati a comprare il biglietto!`,
     "profile.myProfile": "Il mio profilo",
     "profile.myProposals": "Le mie proposte",
 
+    "profile.myGrant": "Il mio grant",
+    "profile.myGrant.nextSteps": "I prossimi passi",
+    "profile.myGrant.grantType": "Tipo di Grant",
+    "profile.myGrant.appliedFor": "Richiesto",
+    "profile.myGrant.appliedFor.ticket": "Biglietto",
+    "profile.myGrant.appliedFor.travel": "Viaggio",
+    "profile.myGrant.appliedFor.accommodation": "Alloggio",
+    "profile.myGrant.edit": "Modifica",
+    "profile.myGrant.editInfo":
+      "Assicurati che tutte le informazioni fornite siano corrette. Hai tempo fino al {editDeadline} per modificare il tuo grant.",
+    "profile.myGrant.manage": "Gestisci",
+    "profile.myGrant.manage.warning": `Se per qualsiasi motivo non puoi più partecipare alla conferenza, ti preghiamo di comunicarcelo al più presto cliccando sul pulsante 'Gestisci' per rifiutare il grant.
+
+Il mancato avviso potrebbe influire sulla tua idoneità a ricevere assistenza finanziaria per eventi futuri.`,
+    "profile.myGrant.status": "Stato",
+    "profile.myGrant.status.pending": "In attesa",
+    "profile.myGrant.status.pending.nextSteps":
+      "La tua domanda è in fase di revisione. Non è richiesta alcuna azione in questo momento.",
+    "profile.myGrant.status.rejected": "Respinto",
+    "profile.myGrant.status.rejected.nextSteps":
+      "Purtroppo, a causa di fondi limitati e del grande numero di richieste, la tua richiesta di grant non è stata approvata.",
+    "profile.myGrant.status.approved": "Approvato",
+    "profile.myGrant.status.approved.nextSteps":
+      "La tua richiesta di grant è stata approvata! Ti invieremo un'email molto presto con ulteriori istruzioni.",
+    "profile.myGrant.status.waiting_list": "Lista d'attesa",
+    "profile.myGrant.status.waiting_list.nextSteps":
+      "Sei in lista d'attesa. Ti informeremo non appena potremo accettare il tuo grant.",
+    "profile.myGrant.status.waiting_list_maybe": "Lista d'attesa",
+    "profile.myGrant.status.waiting_list_maybe.nextSteps":
+      "Sei in lista d'attesa. Ti informeremo non appena potremo accettare il tuo grant.",
+    "profile.myGrant.status.waiting_for_confirmation": "Da confermare",
+    "profile.myGrant.status.waiting_for_confirmation.nextSteps": `Congratulazioni, la tua richiesta di grant è stata approvata!
+
+Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai tempo fino al {replyDeadline} per confermare o rifiutare il grant, dopodiché il tuo grant sarà automaticamente revocato.`,
+    "profile.myGrant.status.refused": "Rifiutato",
+    "profile.myGrant.status.refused.nextSteps":
+      "Hai rifiutato l'offerta di grant. Se si tratta di un errore, contattaci immediatamente.",
+    "profile.myGrant.status.confirmed": "Confermato",
+    "profile.myGrant.status.confirmed.nextSteps":
+      "Grazie per aver confermato il tuo grant. Non vediamo l'ora di vederti alla conferenza! Ti invieremo a breve il voucher per il biglietto, tieni controllata la tua email",
+    "profile.myGrant.status.did_not_attend": "Non ha partecipato",
+    "profile.myGrant.status.did_not_attend.nextSteps":
+      "Non hai partecipato alla conferenza.",
+    "profile.myGrant.noGrant.heading": "Non hai richiesto un grant",
+    "profile.myGrant.noGrant.body.deadlineNull":
+      "Visita la nostra pagina informativa per ulteriori dettagli.",
+    "profile.myGrant.noGrant.body.canSubmit":
+      "Se ti trovi in difficoltà economica e desideri partecipare a PyCon Italia, il nostro modulo per la richiesta di grant è al momento aperto.",
+    "profile.myGrant.noGrant.submitGrant": "Scopri di più",
+    "profile.myGrant.noGrant.body.closed":
+      "Il form per la richiesta di grant è al momento chiuso. Purtroppo non possiamo accettare nuove richieste dopo la scadenza.",
+    "profile.myGrant.noGrant.body.openingSoon":
+      "Il form per la richiesta del grant aprirà presto! Visita la nostra pagina informativa per ulteriori dettagli.",
     "profile.editProfile.generalInformation": "Informazioni generali",
     "profile.editProfile.emailPreferences": "Preferenze Email",
     "profile.tickets.attendeeName": "Nome partecipante",

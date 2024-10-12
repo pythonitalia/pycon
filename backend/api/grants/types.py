@@ -33,7 +33,7 @@ class Grant:
     need_accommodation: bool
     why: str
     notes: str
-    travelling_from: str
+    travelling_from: Optional[str]
     applicant_reply_deadline: Optional[datetime]
     website: str
     twitter_handle: str
