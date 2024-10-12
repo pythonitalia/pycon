@@ -2014,7 +2014,7 @@ Guarda {grantInfoLink} per maggiori informazioni e invia la richiesta qui sotto.
     "profile.myGrant.noGrant.body.closed":
       "Il modulo per la richiesta di grant è al momento chiuso. Purtroppo non possiamo accettare nuove richieste dopo la scadenza.",
     "profile.myGrant.noGrant.body.openingSoon":
-      "Il nostro modulo per la richiesta di grant aprirà presto! Visita la nostra pagina informativa per ulteriori dettagli.",
+      "Il form per la richiesta del grant aprirà presto! Visita la nostra pagina informativa per ulteriori dettagli.",
     "profile.editProfile.generalInformation": "Informazioni generali",
     "profile.editProfile.emailPreferences": "Preferenze Email",
     "profile.tickets.attendeeName": "Nome partecipante",
