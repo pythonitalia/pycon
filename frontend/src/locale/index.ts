@@ -135,7 +135,7 @@ Let's get in touch to find the best solution for your business' needs!`,
       "Unfortunately, your grant request has been rejected due to limited funds and a high number of applications.",
     "profile.myGrant.status.approved": "Approved",
     "profile.myGrant.status.approved.nextSteps":
-      "Your grant request has been approved! We will send you an email very soon with further instructions, please check your email regularly.",
+      "Your grant request has been approved! We will send you an email very soon with further instructions.",
     "profile.myGrant.status.waiting_list": "Waiting List",
     "profile.myGrant.status.waiting_list.nextSteps":
       "You are on the waiting list. We will notify you as soon as we can accept your grant.",
@@ -1981,7 +1981,7 @@ Affrettati a comprare il biglietto!`,
     "profile.myGrant.manage": "Gestisci",
     "profile.myGrant.manage.warning": `Se per qualsiasi motivo non puoi più partecipare alla conferenza, ti preghiamo di comunicarcelo al più presto cliccando sul pulsante 'Gestisci' per rifiutare il grant.
 
-Il mancato avviso potrebbe influire sulla tua idoneità a ricevere assistenza finanziaria per eventi futuri."`,
+Il mancato avviso potrebbe influire sulla tua idoneità a ricevere assistenza finanziaria per eventi futuri.`,
     "profile.myGrant.status": "Stato",
     "profile.myGrant.status.pending": "In attesa",
     "profile.myGrant.status.pending.nextSteps":
@@ -1991,7 +1991,7 @@ Il mancato avviso potrebbe influire sulla tua idoneità a ricevere assistenza fi
       "Purtroppo, a causa di fondi limitati e del grande numero di richieste, la tua richiesta di grant non è stata approvata.",
     "profile.myGrant.status.approved": "Approvato",
     "profile.myGrant.status.approved.nextSteps":
-      "La tua richiesta di grant è stata approvata! Ti invieremo un'email molto presto con ulteriori istruzioni; per favore controlla regolarmente la tua email.",
+      "La tua richiesta di grant è stata approvata! Ti invieremo un'email molto presto con ulteriori istruzioni.",
     "profile.myGrant.status.waiting_list": "Lista d'attesa",
     "profile.myGrant.status.waiting_list.nextSteps":
       "Sei in lista d'attesa. Ti informeremo non appena potremo accettare il tuo grant.",
