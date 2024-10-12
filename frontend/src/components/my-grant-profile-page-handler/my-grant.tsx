@@ -122,11 +122,11 @@ export const MyGrant = ({ grant, deadline }: Props) => {
               </Text>
             )}
 
-            <Text>
-              {canManageGrant && (
+            {canManageGrant && (
+              <Text>
                 <FormattedMessage id="profile.myGrant.manage.warning" />
-              )}
-            </Text>
+              </Text>
+            )}
           </VerticalStack>
         </GridColumn>
       </Grid>
