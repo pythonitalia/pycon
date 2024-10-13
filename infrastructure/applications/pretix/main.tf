@@ -189,6 +189,14 @@ resource "aws_ecs_task_definition" "pretix_service" {
           name = "HOME",
           value = "/pretix"
         },
+        {
+          name = "AWS_STORAGE_BUCKET_NAME",
+          value = aws_s3_bucket.media.bucket
+        },
+        {
+          name = "AWS_S3_REGION_NAME",
+          value = "eu-central-1"
+        }
       ]
       portMappings = [
         {
