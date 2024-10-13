@@ -22,7 +22,7 @@ EOF
 chmod +x /usr/local/bin/claimspace.sh
 chmod +x /usr/local/bin/pretixcron.sh
 
-cat << "EOF" > /etc/systemd/system/claimspace.service
+sudo cat << "EOF" > /etc/systemd/system/claimspace.service
 [Unit]
 Description=Run fstrim on Docker containers
 
@@ -34,7 +34,7 @@ ExecStart=/usr/local/bin/claimspace.sh
 WantedBy=multi-user.target
 EOF
 
-cat << "EOF" > /etc/systemd/system/pretixcron.service
+sudo cat << "EOF" > /etc/systemd/system/pretixcron.service
 [Unit]
 Description=Run Pretix cron job
 
@@ -46,7 +46,7 @@ ExecStart=/usr/local/bin/pretixcron.sh
 WantedBy=multi-user.target
 EOF
 
-cat << "EOF" > /etc/systemd/system/claimspace.timer
+sudo cat << "EOF" > /etc/systemd/system/claimspace.timer
 [Unit]
 Description=Run fstrim on Docker containers daily
 
@@ -58,7 +58,7 @@ Persistent=true
 WantedBy=timers.target
 EOF
 
-cat << "EOF" > /etc/systemd/system/pretixcron.timer
+sudo cat << "EOF" > /etc/systemd/system/pretixcron.timer
 [Unit]
 Description=Run Pretix cron job
 
