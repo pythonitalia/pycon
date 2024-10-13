@@ -36,33 +36,16 @@ resource "aws_instance" "pretix" {
   }
 }
 
-resource "aws_volume_attachment" "data_attachment" {
-  device_name = "/dev/sdf"
-  volume_id   = aws_ebs_volume.data.id
-  instance_id = aws_instance.pretix.id
-}
-
 resource "aws_cloudwatch_log_group" "pretix_logs" {
   name              = "/ecs/pythonit-${terraform.workspace}-pretix"
   retention_in_days = 7
 }
-
 
 resource "aws_eip" "ip" {
   instance = aws_instance.pretix.id
   domain   = "vpc"
   tags = {
     Name = "${terraform.workspace}-pretix"
-  }
-}
-
-resource "aws_ebs_volume" "data" {
-  availability_zone = "eu-central-1a"
-  size              = 20
-  type              = "gp3"
-
-  tags = {
-    Name = "pretix-data"
   }
 }
 
@@ -204,16 +187,6 @@ resource "aws_ecs_task_definition" "pretix_service" {
           hostPort      = 80
         }
       ]
-      mountPoints = [
-        {
-          sourceVolume  = "media"
-          containerPath = "/data/media"
-        },
-        {
-          sourceVolume  = "data"
-          containerPath = "/var/pretix-data"
-        }
-      ]
       systemControls = [
         {
           "namespace" : "net.core.somaxconn",
@@ -230,16 +203,6 @@ resource "aws_ecs_task_definition" "pretix_service" {
       }
     },
   ])
-
-  volume {
-    name      = "media"
-    host_path = "/var/pretix/data/media"
-  }
-
-  volume {
-    name      = "data"
-    host_path = "/var/pretix-data"
-  }
 
   requires_compatibilities = []
   tags                     = {}
