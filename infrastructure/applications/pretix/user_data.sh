@@ -22,7 +22,7 @@ EOF
 chmod +x /usr/local/bin/claimspace.sh
 chmod +x /usr/local/bin/pretixcron.sh
 
-sudo cat << "EOF" > /etc/systemd/system/claimspace.service
+cat << "EOF" > /etc/systemd/system/claimspace.service
 [Unit]
 Description=Run fstrim on Docker containers
 
@@ -34,7 +34,7 @@ ExecStart=/usr/local/bin/claimspace.sh
 WantedBy=multi-user.target
 EOF
 
-sudo cat << "EOF" > /etc/systemd/system/pretixcron.service
+cat << "EOF" > /etc/systemd/system/pretixcron.service
 [Unit]
 Description=Run Pretix cron job
 
@@ -46,7 +46,7 @@ ExecStart=/usr/local/bin/pretixcron.sh
 WantedBy=multi-user.target
 EOF
 
-sudo cat << "EOF" > /etc/systemd/system/claimspace.timer
+cat << "EOF" > /etc/systemd/system/claimspace.timer
 [Unit]
 Description=Run fstrim on Docker containers daily
 
@@ -58,7 +58,7 @@ Persistent=true
 WantedBy=timers.target
 EOF
 
-sudo cat << "EOF" > /etc/systemd/system/pretixcron.timer
+cat << "EOF" > /etc/systemd/system/pretixcron.timer
 [Unit]
 Description=Run Pretix cron job
 
@@ -70,14 +70,13 @@ Persistent=true
 WantedBy=timers.target
 EOF
 
-sudo systemctl daemon-reload
+systemctl daemon-reload
 
-sudo systemctl enable --now claimspace.timer
-sudo systemctl enable --now pretixcron.timer
+systemctl enable --now claimspace.timer
+systemctl enable --now pretixcron.timer
 
-sudo su
-sudo dd if=/dev/zero of=/swapfile bs=128M count=32
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
-sudo echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+dd if=/dev/zero of=/swapfile bs=128M count=32
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
