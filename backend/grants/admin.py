@@ -1,3 +1,8 @@
+from django.db import transaction
+from custom_admin.audit import (
+    create_addition_admin_log_entry,
+    create_change_admin_log_entry,
+)
 from conferences.models.conference_voucher import ConferenceVoucher
 from pycon.constants import UTC
 from custom_admin.admin import validate_single_conference_selection
@@ -262,12 +267,22 @@ def send_reply_email_waiting_list_update(modeladmin, request, queryset):
         messages.info(request, f"Sent Waiting List update reply email to {grant.name}")
 
 
-@admin.action(description="Create grant vouchers on Pretix")
+@admin.action(description="Create grant vouchers")
 @validate_single_conference_selection
-def create_grant_vouchers_on_pretix(modeladmin, request, queryset):
-    vouchers_to_create = []
+@transaction.atomic
+def create_grant_vouchers(modeladmin, request, queryset):
+    conference = queryset.first().conference
+    existing_vouchers_by_user_id = {
+        voucher.user_id: voucher
+        for voucher in ConferenceVoucher.objects.for_conference(conference).filter(
+            user_id__in=queryset.values_list("user_id", flat=True),
+        )
+    }
 
-    for grant in queryset.filter(pretix_voucher_id__isnull=True).order_by("id"):
+    vouchers_to_create = []
+    vouchers_to_update = []
+
+    for grant in queryset.order_by("id"):
         if grant.status != Grant.Status.confirmed:
             messages.error(
                 request,
@@ -276,16 +291,46 @@ def create_grant_vouchers_on_pretix(modeladmin, request, queryset):
             )
             continue
 
-        vouchers_to_create.append(
-            ConferenceVoucher(
-                conference_id=grant.conference_id,
-                user_id=grant.user_id,
-                voucher_code=ConferenceVoucher.generate_code(),
-                voucher_type=ConferenceVoucher.VoucherType.GRANT,
+        existing_voucher = existing_vouchers_by_user_id.get(grant.user_id)
+
+        if not existing_voucher:
+            create_addition_admin_log_entry(
+                request.user,
+                grant,
+                change_message="Created voucher for this grant",
             )
-        )
+
+            vouchers_to_create.append(
+                ConferenceVoucher(
+                    conference_id=grant.conference_id,
+                    user_id=grant.user_id,
+                    voucher_code=ConferenceVoucher.generate_code(),
+                    voucher_type=ConferenceVoucher.VoucherType.GRANT,
+                )
+            )
+            continue
+
+        if existing_voucher.voucher_type == ConferenceVoucher.VoucherType.CO_SPEAKER:
+            messages.warning(
+                request,
+                f"Grant for {grant.name} already has a Co-Speaker voucher. Upgrading to a Grant voucher.",
+            )
+            create_change_admin_log_entry(
+                request.user,
+                existing_voucher,
+                change_message="Upgraded Co-Speaker voucher to Grant voucher",
+            )
+            create_change_admin_log_entry(
+                request.user,
+                grant,
+                change_message="Updated existing Co-Speaker voucher to grant",
+            )
+            existing_voucher.voucher_type = ConferenceVoucher.VoucherType.GRANT
+            vouchers_to_update.append(existing_voucher)
 
     ConferenceVoucher.objects.bulk_create(vouchers_to_create, ignore_conflicts=True)
+    ConferenceVoucher.objects.bulk_update(vouchers_to_update, ["voucher_type"])
+
     messages.success(request, "Vouchers created!")
 
 
@@ -423,7 +468,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         send_reply_emails,
         send_grant_reminder_to_waiting_for_confirmation,
         send_reply_email_waiting_list_update,
-        create_grant_vouchers_on_pretix,
+        create_grant_vouchers,
         mark_rejected_and_send_email,
         "delete_selected",
     ]
