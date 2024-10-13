@@ -1,5 +1,5 @@
 from pretix.settings import *  # noqa
-from pretix.settings import INSTALLED_APPS, ALL_LANGUAGES, LOGGING
+from pretix.settings import INSTALLED_APPS, ALL_LANGUAGES, LOGGING, config
 
 LOGGING["handlers"]["mail_admins"]["include_html"] = True
 
@@ -21,3 +21,5 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
     },
 }
+
+AWS_STORAGE_BUCKET_NAME = config.get("pycon", "media_bucket_name", fallback="")

@@ -190,7 +190,7 @@ resource "aws_ecs_task_definition" "pretix_service" {
           value = "/pretix"
         },
         {
-          name = "AWS_STORAGE_BUCKET_NAME",
+          name = "PRETIX_PYCON_MEDIA_BUCKET_NAME",
           value = aws_s3_bucket.media.bucket
         },
         {
