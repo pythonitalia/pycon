@@ -1,7 +1,7 @@
 locals {
   image_uri_prefix = "${data.aws_caller_identity.current.account_id}.dkr.ecr.eu-central-1.amazonaws.com"
   repository_name  = "pythonit/${var.docker_repository_name != "" ? var.docker_repository_name : var.application}"
-  image_uri        = "${local.image_uri_prefix}/${local.repository_name}:${data.external.githash.result.githash}"
+  image_uri        = "${local.image_uri_prefix}/${local.repository_name}:arm-${data.external.githash.result.githash}"
 }
 
 data "aws_caller_identity" "current" {}
