@@ -1,3 +1,6 @@
+from django.db import models
+
+
 class ConferenceQuerySetMixin:
     @property
     def conference_lookup_field(self):
@@ -8,3 +11,7 @@ class ConferenceQuerySetMixin:
 
     def for_conference_code(self, conference):
         return self.filter(**{f"{self.conference_lookup_field}__code": conference})
+
+
+class ConferenceVoucherQuerySet(ConferenceQuerySetMixin, models.QuerySet):
+    pass

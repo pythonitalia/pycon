@@ -122,7 +122,7 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
             )
         )
 
-    ConferenceVoucher.objects.bulk_create(vouchers_objects)
+    ConferenceVoucher.objects.bulk_create(vouchers_objects, ignore_conflicts=True)
 
     messages.info(request, f"Created {created_codes} new vouchers")
 
