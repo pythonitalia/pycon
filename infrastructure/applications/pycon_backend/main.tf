@@ -104,7 +104,7 @@ module "lambda" {
     STRIPE_SUBSCRIPTION_PRICE_ID              = module.secrets.value.stripe_membership_price_id
     STRIPE_SECRET_API_KEY                     = module.secrets.value.stripe_secret_api_key
     PRETIX_WEBHOOK_SECRET                     = module.secrets.value.pretix_webhook_secret
-    DEEPL_AUTH_KEY                            = module.secrets.value.deepl_auth_key
+    OPENAI_API_KEY                            = module.secrets.value.openai_api_key
     FLODESK_API_KEY                           = module.secrets.value.flodesk_api_key
     FLODESK_SEGMENT_ID                        = module.secrets.value.flodesk_segment_id
     CELERY_BROKER_URL                         = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/5" : "redis://${data.aws_instance.redis.private_ip}/14"
