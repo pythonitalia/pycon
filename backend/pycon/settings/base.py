@@ -350,13 +350,13 @@ WAGTAILSEARCH_BACKENDS = {
 WAGTAIL_SITE_NAME = "cms"
 WAGTAIL_I18N_ENABLED = True
 
-DEEPL_AUTH_KEY = env("DEEPL_AUTH_KEY", default="")
+OPENAI_API_KEY = env("OPENAI_API_KEY", default="")
 
-if DEEPL_AUTH_KEY:
+if OPENAI_API_KEY:
     WAGTAILLOCALIZE_MACHINE_TRANSLATOR = {
-        "CLASS": "wagtail_localize.machine_translators.deepl.DeepLTranslator",
+        "CLASS": "wagtail_localize_openai_translator.translate.OpenAITranslator",
         "OPTIONS": {
-            "AUTH_KEY": DEEPL_AUTH_KEY,
+            "api_key": OPENAI_API_KEY,
         },
     }
 
