@@ -354,10 +354,8 @@ OPENAI_API_KEY = env("OPENAI_API_KEY", default="")
 
 if OPENAI_API_KEY:
     WAGTAILLOCALIZE_MACHINE_TRANSLATOR = {
-        "CLASS": "wagtail_localize_openai_translator.translate.OpenAITranslator",
-        "OPTIONS": {
-            "api_key": OPENAI_API_KEY,
-        },
+        "CLASS": "cms.translator.OpenAITranslator",
+        "OPTIONS": {},
     }
 
 FLODESK_API_KEY = env("FLODESK_API_KEY", default="")

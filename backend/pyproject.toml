@@ -92,7 +92,8 @@ dependencies = [
     "google-auth-oauthlib>=1.2.1",
     "PyJWT>=2.8.0",
     "cryptography>=43.0.0",
-    "wagtail-localize-openai-translator>=0.4.0",
+    "openai>=1.52.0",
+    "pydantic>=2.9.2",
 ]
 name = "backend"
 version = "0.1.0"
