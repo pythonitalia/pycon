@@ -121,8 +121,8 @@ locals {
       value = module.secrets.value.pretix_webhook_secret
     },
     {
-      name  = "DEEPL_AUTH_KEY",
-      value = module.secrets.value.deepl_auth_key
+      name  = "OPENAI_API_KEY",
+      value = module.secrets.value.openai_api_key
     },
     {
       name  = "FLODESK_API_KEY",
