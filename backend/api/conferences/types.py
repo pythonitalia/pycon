@@ -25,7 +25,7 @@ from api.sponsors.types import (
     SponsorSpecialOption,
     SponsorsByLevel,
 )
-from api.submissions.types import Submission, SubmissionType
+from api.submissions.types import Submission, SubmissionTag, SubmissionType
 from api.voting.types import RankRequest
 from cms.models import GenericCopy
 from conferences.models.deadline import DeadlineStatus
@@ -207,6 +207,10 @@ class Conference:
     @strawberry.field
     def submission_types(self, info: Info) -> List[SubmissionType]:
         return self.submission_types.all()
+
+    @strawberry.field
+    def proposal_tags(self, info: Info) -> List[SubmissionTag]:
+        return self.proposal_tags.all()
 
     @strawberry.field(permission_classes=[CanSeeSubmissions])
     def submissions(self, info: Info) -> Optional[List[Submission]]:
