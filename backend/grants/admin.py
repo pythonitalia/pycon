@@ -23,7 +23,7 @@ from grants.tasks import (
 from pretix import create_voucher
 from schedule.models import ScheduleItem
 from submissions.models import Submission
-from .models import Grant
+from .models import Grant, AidCategory, CountryAidAmount, GrantAllocation
 from django.db.models import Exists, OuterRef
 
 from django.contrib.admin import SimpleListFilter
@@ -150,31 +150,6 @@ class GrantResource(ModelResource):
         export_order = EXPORT_GRANTS_FIELDS
 
 
-def _check_amounts_are_not_empty(grant: Grant, request):
-    if grant.total_amount is None:
-        messages.error(
-            request,
-            f"Grant for {grant.name} is missing 'Total Amount'!",
-        )
-        return False
-
-    if grant.has_approved_accommodation() and grant.accommodation_amount is None:
-        messages.error(
-            request,
-            f"Grant for {grant.name} is missing 'Accommodation Amount'!",
-        )
-        return False
-
-    if grant.has_approved_travel() and grant.travel_amount is None:
-        messages.error(
-            request,
-            f"Grant for {grant.name} is missing 'Travel Amount'!",
-        )
-        return False
-
-    return True
-
-
 @admin.action(description="Send Approved/Waiting List/Rejected reply emails")
 @validate_single_conference_selection
 def send_reply_emails(modeladmin, request, queryset):
@@ -195,16 +170,6 @@ def send_reply_emails(modeladmin, request, queryset):
 
     for grant in queryset:
         if grant.status in (Grant.Status.approved,):
-            if grant.approved_type is None:
-                messages.error(
-                    request,
-                    f"Grant for {grant.name} is missing 'Grant Approved Type'!",
-                )
-                return
-
-            if not _check_amounts_are_not_empty(grant, request):
-                return
-
             now = timezone.now()
             grant.applicant_reply_deadline = timezone.datetime(
                 now.year, now.month, now.day, 23, 59, 59, tzinfo=UTC
@@ -241,8 +206,6 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
                 f"Grant for {grant.name} is missing 'Grant Approved Type'!",
             )
             return
-
-        _check_amounts_are_not_empty(grant, request)
 
         send_grant_reply_approved_email.delay(grant_id=grant.id, is_reminder=True)
 
@@ -348,11 +311,6 @@ class GrantAdminForm(forms.ModelForm):
             "id",
             "name",
             "status",
-            "approved_type",
-            "ticket_amount",
-            "travel_amount",
-            "accommodation_amount",
-            "total_amount",
             "full_name",
             "conference",
             "user",
@@ -367,7 +325,6 @@ class GrantAdminForm(forms.ModelForm):
             "why",
             "notes",
             "travelling_from",
-            "country_type",
             "applicant_reply_sent_at",
             "applicant_reply_deadline",
         )
@@ -405,6 +362,53 @@ class IsConfirmedSpeakerFilter(SimpleListFilter):
         return queryset
 
 
+@admin.register(AidCategory)
+class AidCategoryAdmin(admin.ModelAdmin):
+    list_display = (
+        "name",
+        "conference",
+        "category",
+        "max_amount",
+        "included_by_default",
+    )
+
+    list_filter = ("conference", "category")
+    search_fields = ("name", "description", "conference", "max_amount")
+
+
+@admin.register(CountryAidAmount)
+class CountryAidAmountAdmin(admin.ModelAdmin):
+    list_display = ("conference", "_country", "max_amount")
+
+    def _country(self, obj):
+        if obj.country:
+            country = countries.get(code=obj.country)
+            if country:
+                return f"{country.name} {country.emoji}"
+
+        return ""
+
+
+class GrantAllocationFormSet:
+    pass
+
+
+class GrantAllocationInline(admin.StackedInline):
+    model = GrantAllocation
+
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+        if db_field.name == "category":
+            grant_id = request.resolver_match.kwargs.get("object_id")
+            if grant_id:
+                grant = Grant.objects.get(pk=grant_id)
+                kwargs["queryset"] = AidCategory.objects.filter(
+                    conference=grant.conference
+                )
+            else:
+                kwargs["queryset"] = AidCategory.objects.none()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
 @admin.register(Grant)
 class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     change_list_template = "admin/grants/grant/change_list.html"
@@ -418,12 +422,6 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "emoji_gender",
         "conference",
         "status",
-        "approved_type",
-        "ticket_amount",
-        "travel_amount",
-        "accommodation_amount",
-        "total_amount",
-        "country_type",
         "applicant_reply_sent_at",
         "applicant_reply_deadline",
         "voucher_code",
@@ -433,9 +431,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     list_filter = (
         "conference",
         "status",
-        "country_type",
         "occupation",
-        "approved_type",
         "interested_in_volunteering",
         "needs_funds_for_travel",
         "need_visa",
@@ -447,6 +443,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     )
     search_fields = (
         "email",
+        "name",
         "full_name",
         "travelling_from",
         "been_to_other_events",
@@ -470,12 +467,6 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
             {
                 "fields": (
                     "status",
-                    "approved_type",
-                    "country_type",
-                    "ticket_amount",
-                    "travel_amount",
-                    "accommodation_amount",
-                    "total_amount",
                     "applicant_reply_sent_at",
                     "applicant_reply_deadline",
                     "pretix_voucher_id",
@@ -523,6 +514,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
             },
         ),
     )
+    inlines = [GrantAllocationInline]
 
     @admin.display(description="User", ordering="user__full_name")
     def user_display_name(self, obj):
