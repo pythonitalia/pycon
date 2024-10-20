@@ -41,6 +41,9 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
     submission_types = models.ManyToManyField(
         "submissions.SubmissionType", verbose_name=_("submission types"), blank=True
     )
+    proposal_tags = models.ManyToManyField(
+        "submissions.SubmissionTag", verbose_name=_("proposal tags"), blank=True
+    )
 
     pretix_organizer_id = models.CharField(
         _("pretix organizer id"), max_length=200, blank=True, default=""

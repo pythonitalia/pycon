@@ -115,7 +115,13 @@ class ConferenceAdmin(
     )
     list_filter = ("organizer",)
     readonly_fields = ("created", "modified")
-    filter_horizontal = ("topics", "languages", "audience_levels", "submission_types")
+    filter_horizontal = (
+        "topics",
+        "languages",
+        "audience_levels",
+        "submission_types",
+        "proposal_tags",
+    )
     fieldsets = (
         (
             "Details",
@@ -173,6 +179,7 @@ class ConferenceAdmin(
                     "topics",
                     "audience_levels",
                     "languages",
+                    "proposal_tags",
                 )
             },
         ),

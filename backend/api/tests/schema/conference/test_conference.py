@@ -1,7 +1,11 @@
 import datetime
 from hotels.tests.factories import BedLayoutFactory, HotelRoomFactory
 from users.tests.factories import UserFactory
-from submissions.tests.factories import SubmissionFactory, SubmissionTypeFactory
+from submissions.tests.factories import (
+    SubmissionFactory,
+    SubmissionTagFactory,
+    SubmissionTypeFactory,
+)
 from conferences.tests.factories import (
     AudienceLevelFactory,
     ConferenceFactory,
@@ -18,7 +22,9 @@ import zoneinfo
 from api.conferences.types import DeadlineStatus
 
 
-@mark.django_db
+pytestmark = mark.django_db
+
+
 def test_get_conference_info(graphql_client):
     conference = ConferenceFactory()
     resp = graphql_client.query(
@@ -44,7 +50,6 @@ def test_get_conference_info(graphql_client):
     } == resp["data"]["conference"]
 
 
-@mark.django_db
 def test_get_conference_deadlines_ordered_by_start_date(
     graphql_client,
 ):
@@ -115,7 +120,6 @@ def test_get_conference_deadlines_ordered_by_start_date(
     } == resp["data"]["conference"]["deadlines"][2]
 
 
-@mark.django_db
 def test_get_conference_single_deadline(
     graphql_client,
 ):
@@ -152,7 +156,6 @@ def test_get_conference_single_deadline(
     } == resp["data"]["conference"]["deadline"]
 
 
-@mark.django_db
 @time_machine.travel("2020-10-10 10:00:00", tick=False)
 def test_get_conference_deadline_status(
     graphql_client,
@@ -219,7 +222,6 @@ def test_get_conference_deadline_status(
     ]
 
 
-@mark.django_db
 def test_get_not_existent_conference_info(graphql_client):
     resp = graphql_client.query(
         """
@@ -235,7 +237,6 @@ def test_get_not_existent_conference_info(graphql_client):
     assert resp["errors"][0]["message"] == "Conference matching query does not exist."
 
 
-@mark.django_db
 def test_query_conference_audience_levels(graphql_client):
     conference = ConferenceFactory()
 
@@ -274,7 +275,6 @@ def test_query_conference_audience_levels(graphql_client):
     ]
 
 
-@mark.django_db
 def test_query_conference_topics(graphql_client):
     conference = ConferenceFactory()
     topic1 = TopicFactory()
@@ -312,7 +312,6 @@ def test_query_conference_topics(graphql_client):
     ]
 
 
-@mark.django_db
 def test_query_conference_languages(graphql_client, language):
     conference = ConferenceFactory()
     lang_it = language("it")
@@ -346,7 +345,6 @@ def test_query_conference_languages(graphql_client, language):
     ]["conference"]["languages"]
 
 
-@mark.django_db
 def test_get_conference_durations(
     graphql_client,
 ):
@@ -400,7 +398,6 @@ def test_get_conference_durations(
     } in resp["data"]["conference"]["durations"]
 
 
-@mark.django_db
 def test_get_conference_without_map(graphql_client):
     conference = ConferenceFactory()
     resp = graphql_client.query(
@@ -423,7 +420,6 @@ def test_get_conference_without_map(graphql_client):
     assert resp["data"]["conference"]["map"] is None
 
 
-@mark.django_db
 def test_get_conference_map(graphql_client):
     conference = ConferenceFactory(latitude=1, longitude=1)
     resp = graphql_client.query(
@@ -446,7 +442,6 @@ def test_get_conference_map(graphql_client):
     assert resp["data"]["conference"]["map"] is not None
 
 
-@mark.django_db
 def test_get_conference_submission_types(
     graphql_client,
 ):
@@ -475,7 +470,6 @@ def test_get_conference_submission_types(
     ]
 
 
-@mark.django_db
 def test_get_conference_hotel_rooms(graphql_client):
     hotel_room = HotelRoomFactory(
         conference__start=timezone.datetime(2019, 1, 1, tzinfo=datetime.timezone.utc),
@@ -525,7 +519,6 @@ def test_get_conference_hotel_rooms(graphql_client):
     ]
 
 
-@mark.django_db
 @mark.parametrize("cfp_open", (True, False))
 def test_is_cfp_open(graphql_client, cfp_open):
     now = timezone.now()
@@ -553,7 +546,6 @@ def test_is_cfp_open(graphql_client, cfp_open):
     assert resp["data"]["conference"]["isCFPOpen"] is cfp_open
 
 
-@mark.django_db
 def test_is_cfp_open_false_when_no_deadline(graphql_client):
     conference = ConferenceFactory()
 
@@ -571,7 +563,6 @@ def test_is_cfp_open_false_when_no_deadline(graphql_client):
     assert resp["data"]["conference"]["isCFPOpen"] is False
 
 
-@mark.django_db
 @mark.parametrize("voting_open", (True, False))
 def test_is_voting_open(graphql_client, voting_open):
     now = timezone.now()
@@ -599,7 +590,6 @@ def test_is_voting_open(graphql_client, voting_open):
     assert resp["data"]["conference"]["isVotingOpen"] is voting_open
 
 
-@mark.django_db
 def test_is_voting_open_false_when_no_deadlines(graphql_client):
     conference = ConferenceFactory()
 
@@ -617,7 +607,6 @@ def test_is_voting_open_false_when_no_deadlines(graphql_client):
     assert resp["data"]["conference"]["isVotingOpen"] is False
 
 
-@mark.django_db
 def test_is_voting_closed_in_the_past(
     graphql_client,
 ):
@@ -646,7 +635,6 @@ def test_is_voting_closed_in_the_past(
 
 
 @pytest.mark.xfail(reason="it only check if the deadline has passed atm")
-@mark.django_db
 def test_is_voting_closed_in_the_future(
     graphql_client,
 ):
@@ -674,7 +662,6 @@ def test_is_voting_closed_in_the_future(
     assert resp["data"]["conference"]["isVotingClosed"] is True
 
 
-@mark.django_db
 def test_can_see_submissions_as_staff(graphql_client):
     user = UserFactory(is_staff=True)
     submission = SubmissionFactory()
@@ -695,7 +682,6 @@ def test_can_see_submissions_as_staff(graphql_client):
     assert len(response["data"]["conference"]["submissions"]) == 1
 
 
-@mark.django_db
 def test_can_see_submissions_if_they_have_sent_one(graphql_client):
     conference = ConferenceFactory()
 
@@ -719,7 +705,6 @@ def test_can_see_submissions_if_they_have_sent_one(graphql_client):
     assert len(response["data"]["conference"]["submissions"]) == 2
 
 
-@mark.django_db
 def test_get_conference_voucher_with_invalid_code(graphql_client, requests_mock):
     conference = ConferenceFactory()
 
@@ -741,7 +726,6 @@ def test_get_conference_voucher_with_invalid_code(graphql_client, requests_mock)
     assert response["data"]["conference"]["voucher"] is None
 
 
-@mark.django_db
 def test_get_conference_voucher_with_valid_until(
     graphql_client, requests_mock, settings
 ):
@@ -781,7 +765,6 @@ def test_get_conference_voucher_with_valid_until(
     }
 
 
-@mark.django_db
 def test_get_conference_voucher(graphql_client, mocker, requests_mock, settings):
     conference = ConferenceFactory()
     requests_mock.get(
@@ -828,7 +811,6 @@ def test_get_conference_voucher(graphql_client, mocker, requests_mock, settings)
     }
 
 
-@mark.django_db
 def test_filter_submission_by_status(graphql_client, user, requests_mock, settings):
     conference = ConferenceFactory()
     requests_mock.post(
@@ -858,3 +840,48 @@ def test_filter_submission_by_status(graphql_client, user, requests_mock, settin
 
     assert len(response["data"]["conference"]["submissions"]) == 1
     assert response["data"]["conference"]["submissions"][0]["status"] == "proposed"
+
+
+def test_get_conference_proposal_tags(
+    graphql_client,
+):
+    conference = ConferenceFactory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
+
+    tag1 = SubmissionTagFactory()
+    tag2 = SubmissionTagFactory()
+    tag3 = SubmissionTagFactory()
+    SubmissionTagFactory()
+    SubmissionTagFactory()
+
+    conference.proposal_tags.set([tag1, tag2, tag3])
+
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                proposalTags {
+                    id
+                    name
+                }
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert len(resp["data"]["conference"]["proposalTags"]) == 3
+
+    assert {
+        "name": tag1.name,
+        "id": str(tag1.id),
+    } in resp["data"]["conference"]["proposalTags"]
+
+    assert {
+        "name": tag2.name,
+        "id": str(tag2.id),
+    } in resp["data"]["conference"]["proposalTags"]
+
+    assert {
+        "name": tag3.name,
+        "id": str(tag3.id),
+    } in resp["data"]["conference"]["proposalTags"]
