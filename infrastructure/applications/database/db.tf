@@ -29,6 +29,7 @@ resource "aws_db_instance" "database" {
   apply_immediately           = true
   backup_retention_period     = local.is_prod ? 7 : 0
   deletion_protection         = local.is_prod
+  storage_encrypted           = true
 
   db_subnet_group_name   = data.aws_db_subnet_group.rds.name
   vpc_security_group_ids = [data.aws_security_group.rds.id]
