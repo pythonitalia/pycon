@@ -129,34 +129,6 @@ def notify_new_grant_reply_slack(*, grant_id, admin_url):
     )
 
 
-@app.task
-def send_grant_voucher_email(*, grant_id):
-    grant = Grant.objects.get(id=grant_id)
-
-    user = grant.user
-    voucher_code = grant.voucher_code
-
-    conference = grant.conference
-    conference_name = grant.conference.name.localize("en")
-
-    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
-        EmailTemplateIdentifier.grant_voucher_code
-    )
-    email_template.send_email(
-        recipient=user,
-        placeholders={
-            "user_name": get_name(user, "there"),
-            "voucher_code": voucher_code,
-            "has_approved_accommodation": grant.has_approved_accommodation(),
-            "conference_name": conference_name,
-            "visa_page_link": urljoin(settings.FRONTEND_URL, "/visa"),
-        },
-    )
-
-    grant.voucher_email_sent_at = timezone.now()
-    grant.save()
-
-
 def _send_grant_waiting_list_email(grant_id, template_identifier):
     grant = Grant.objects.get(id=grant_id)
     reply_url = urljoin(settings.FRONTEND_URL, "/grants/reply/")

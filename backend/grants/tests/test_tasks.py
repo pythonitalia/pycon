@@ -8,7 +8,6 @@ from users.tests.factories import UserFactory
 from grants.tests.factories import GrantFactory
 from grants.tasks import (
     send_grant_reply_waiting_list_update_email,
-    send_grant_voucher_email,
     send_grant_reply_approved_email,
     send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
@@ -16,36 +15,6 @@ from grants.tasks import (
 from grants.models import Grant
 
 pytestmark = pytest.mark.django_db
-
-
-def test_send_grant_voucher_email(settings):
-    settings.FRONTEND_URL = "https://pycon.it"
-    user = UserFactory(
-        full_name="Marco Acierno",
-        email="marco@placeholder.it",
-        name="Marco",
-        username="marco",
-    )
-
-    grant = GrantFactory(
-        user=user,
-        voucher_code="ABC123",
-        approved_type=Grant.ApprovedType.ticket_only,
-    )
-
-    with patch("grants.tasks.EmailTemplate") as mock_email_template:
-        send_grant_voucher_email(grant_id=grant.id)
-
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient=user,
-        placeholders={
-            "user_name": "Marco Acierno",
-            "voucher_code": "ABC123",
-            "has_approved_accommodation": False,
-            "visa_page_link": "https://pycon.it/visa",
-            "conference_name": grant.conference.name.localize("en"),
-        },
-    )
 
 
 def test_send_grant_reply_rejected_email():

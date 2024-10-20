@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
+from conferences.querysets import ConferenceVoucherQuerySet
 from model_utils.models import TimeStampedModel
 
 from conferences.models import Conference
@@ -48,6 +49,8 @@ class ConferenceVoucher(TimeStampedModel):
     voucher_email_sent_at = models.DateTimeField(
         help_text=_("When the email was last sent"), blank=True, null=True
     )
+
+    objects = ConferenceVoucherQuerySet().as_manager()
 
     def get_voucher_configuration(self):
         if self.voucher_type in (
