@@ -57,6 +57,20 @@ class Topic:
         )
 
 
+DeadlineStatusType = strawberry.enum(DeadlineStatus)
+
+
+@strawberry.type
+class Deadline:
+    id: strawberry.ID
+    type: str
+    name: str = strawberry.field(resolver=make_localized_resolver("name"))
+    description: str = strawberry.field(resolver=make_localized_resolver("description"))
+    start: datetime
+    end: datetime
+    status: DeadlineStatusType
+
+
 @strawberry.type
 class Keynote:
     id: ID
@@ -168,7 +182,7 @@ class Conference:
         return self.hotel_rooms.all()
 
     @strawberry.field
-    def deadlines(self, info: Info) -> list["Deadline"]:
+    def deadlines(self, info: Info) -> Deadline:
         return self.deadlines.order_by("start").all()
 
     @strawberry.field(name="isCFPOpen")
@@ -184,7 +198,7 @@ class Conference:
         return self.is_voting_closed
 
     @strawberry.field
-    def deadline(self, info: Info, type: str) -> "Deadline" | None:
+    def deadline(self, info: Info, type: str) -> Deadline | None:
         return self.deadlines.filter(type=type).first()
 
     @strawberry.field
@@ -417,21 +431,6 @@ class Conference:
             )
             for option in options
         ]
-
-
-DeadlineStatusType = strawberry.enum(DeadlineStatus)
-
-
-@strawberry.type
-class Deadline:
-    id: strawberry.ID
-    type: str
-    name: str = strawberry.field(resolver=make_localized_resolver("name"))
-    description: str = strawberry.field(resolver=make_localized_resolver("description"))
-    start: datetime
-    end: datetime
-    conference: Conference
-    status: DeadlineStatusType
 
 
 @strawberry.type
