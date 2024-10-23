@@ -1,7 +1,6 @@
 from django.contrib import messages
 from functools import wraps
 
-from typing import List
 
 from django.contrib import admin
 from django.urls import path
@@ -13,10 +12,10 @@ admin.site.site_title = SITE_NAME
 
 
 class CustomIndexLinks(admin.ModelAdmin):
-    def get_index_links(self) -> List:
+    def get_index_links(self) -> list:
         return getattr(self, "index_links", [])
 
-    def get_urls(self) -> List:
+    def get_urls(self) -> list:
         base_urls = super().get_urls()
         index_links = self.get_index_links()
         additional_urls = []

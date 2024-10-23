@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 import strawberry
 from strawberry.types.field import StrawberryField
 from strawberry.types import Info
@@ -86,33 +84,33 @@ class Submission:
     title: str
     slug: str
     status: str
-    speaker_level: Optional[str] = private_field()
-    previous_talk_video: Optional[str] = private_field()
-    short_social_summary: Optional[str] = private_field()
-    topic: Optional[Annotated["Topic", strawberry.lazy("api.conferences.types")]]
-    type: Optional[SubmissionType]
-    duration: Optional[Annotated["Duration", strawberry.lazy("api.conferences.types")]]
-    audience_level: Optional[
-        Annotated["AudienceLevel", strawberry.lazy("api.conferences.types")]
-    ]
-    notes: Optional[str] = private_field()
+    speaker_level: str | None = private_field()
+    previous_talk_video: str | None = private_field()
+    short_social_summary: str | None = private_field()
+    topic: Annotated["Topic", strawberry.lazy("api.conferences.types")] | None
+    type: SubmissionType | None
+    duration: Annotated["Duration", strawberry.lazy("api.conferences.types")] | None
+    audience_level: Annotated[
+        "AudienceLevel", strawberry.lazy("api.conferences.types")
+    ] | None
+    notes: str | None = private_field()
 
     @strawberry.field
     def schedule_items(
         self, info: Info
-    ) -> List[Annotated["ScheduleItem", strawberry.lazy("api.schedule.types")]]:
+    ) -> list[Annotated["ScheduleItem", strawberry.lazy("api.schedule.types")]]:
         return self.schedule_items.all()
 
     @strawberry.field
-    def multilingual_elevator_pitch(self, info: Info) -> Optional[MultiLingualString]:
+    def multilingual_elevator_pitch(self, info: Info) -> MultiLingualString | None:
         return MultiLingualString.create(self.elevator_pitch)
 
     @strawberry.field
-    def multilingual_abstract(self, info: Info) -> Optional[MultiLingualString]:
+    def multilingual_abstract(self, info: Info) -> MultiLingualString | None:
         return MultiLingualString.create(self.abstract)
 
     @strawberry.field
-    def multilingual_title(self, info: Info) -> Optional[MultiLingualString]:
+    def multilingual_title(self, info: Info) -> MultiLingualString | None:
         return MultiLingualString.create(self.title)
 
     @strawberry.field
@@ -120,15 +118,15 @@ class Submission:
         return self.title.localize(language)
 
     @strawberry.field()
-    def elevator_pitch(self, language: str, info: Info) -> Optional[str]:
+    def elevator_pitch(self, language: str, info: Info) -> str | None:
         return self.elevator_pitch.localize(language)
 
     @strawberry.field()
-    def abstract(self, language: str, info: Info) -> Optional[str]:
+    def abstract(self, language: str, info: Info) -> str | None:
         return self.abstract.localize(language)
 
     @strawberry.field
-    def speaker(self, info: Info) -> Optional[SubmissionSpeaker]:
+    def speaker(self, info: Info) -> SubmissionSpeaker | None:
         if not CanSeeSubmissionRestrictedFields().has_permission(
             self, info, is_speaker_data=True
         ):
@@ -149,7 +147,7 @@ class Submission:
         return self.can_edit(info.context.request)
 
     @strawberry.field
-    def my_vote(self, info) -> Optional[VoteType]:
+    def my_vote(self, info) -> VoteType | None:
         request = info.context.request
 
         if not request.user.is_authenticated:
@@ -164,11 +162,11 @@ class Submission:
             return None
 
     @strawberry.field
-    def languages(self, info) -> Optional[List[Language]]:
+    def languages(self, info) -> list[Language] | None:
         return self.languages.all()
 
     @strawberry.field
-    def tags(self, info) -> Optional[List[SubmissionTag]]:
+    def tags(self, info) -> list[SubmissionTag] | None:
         return self.tags.all()
 
     @strawberry.field
@@ -181,5 +179,5 @@ class Submission:
 
 @strawberry.type
 class SubmissionsPagination:
-    submissions: List[Submission]
+    submissions: list[Submission]
     total_pages: int

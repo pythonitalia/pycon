@@ -1,4 +1,3 @@
-import typing
 from urllib.parse import urljoin
 
 from api.context import Info
@@ -32,7 +31,7 @@ class OrdersMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
     def create_order(
         self, info: Info, conference: str, input: CreateOrderInput
-    ) -> typing.Union[CreateOrderResult, CreateOrderErrors]:
+    ) -> CreateOrderResult | CreateOrderErrors:
         conference_obj = Conference.objects.get(code=conference)
 
         if errors := input.validate():

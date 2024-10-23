@@ -1,6 +1,5 @@
 import math
 from decimal import Decimal
-from typing import List, Optional
 
 from dateutil.parser import parse
 from django.utils import timezone
@@ -12,11 +11,11 @@ from conferences.models.conference import Conference
 from .types import AttendeeTicket, PretixOrder, TicketItem, Voucher
 
 
-def get_voucher(conference: Conference, code: str) -> Optional[Voucher]:
+def get_voucher(conference: Conference, code: str) -> Voucher | None:
     return pretix.get_voucher(conference, code)
 
 
-def get_order(conference: Conference, code: str) -> Optional[PretixOrder]:
+def get_order(conference: Conference, code: str) -> PretixOrder | None:
     data = pretix.get_order(conference, code)
 
     if data:
@@ -34,7 +33,7 @@ def get_user_orders(conference, email):
 
 def get_user_tickets(
     conference: Conference, email: str, language: str
-) -> List[AttendeeTicket]:
+) -> list[AttendeeTicket]:
     tickets = pretix.get_user_tickets(conference, email)
 
     if not tickets:
@@ -80,7 +79,7 @@ def _is_ticket_available(item) -> bool:
 
 def get_conference_tickets(
     conference: Conference, language: str, show_unavailable_tickets: bool = False
-) -> List[TicketItem]:
+) -> list[TicketItem]:
     items = pretix.get_items(conference)
 
     # hide non active items and items that are hotels

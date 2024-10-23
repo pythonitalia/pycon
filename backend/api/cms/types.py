@@ -1,5 +1,3 @@
-import typing
-
 import strawberry
 from strawberry import ID
 from api.pages.types import Page
@@ -19,7 +17,7 @@ class MenuLink:
     href: str = strawberry.field(resolver=make_localized_resolver("href"))
     title: str = strawberry.field(resolver=make_localized_resolver("title"))
     is_primary: bool
-    page: typing.Optional[Page]
+    page: Page | None
 
 
 @strawberry.type
@@ -27,5 +25,5 @@ class Menu:
     title: str = strawberry.field(resolver=make_localized_resolver("title"))
 
     @strawberry.field
-    def links(self, info) -> typing.List[MenuLink]:
+    def links(self, info) -> list[MenuLink]:
         return self.links.all()

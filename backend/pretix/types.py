@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional, TypedDict
+from typing import TypedDict
 
 
 class Locale(TypedDict):
@@ -12,10 +12,10 @@ class Quota(TypedDict):
     id: int
     available: bool
     available_number: int
-    items: List[int]
+    items: list[int]
     name: str
     size: int
-    variations: List[int]
+    variations: list[int]
 
 
 class Option(TypedDict):
@@ -25,16 +25,16 @@ class Option(TypedDict):
 
 class Question(TypedDict):
     id: int
-    items: List[int]
+    items: list[int]
     question: Locale
     required: bool
-    options: Optional[List[Option]]
-    answer: Optional[Answer]
+    options: list[Option] | None
+    answer: Answer | None
 
 
 class Answer(TypedDict):
     answer: str
-    options: List[int]
+    options: list[int]
     question: Question
 
 
@@ -62,8 +62,8 @@ class Item(TypedDict):
     available_from: str
     available_until: str
     category: Category
-    variations: List[ProductVariation]
-    questions: Optional[List[Question]]
+    variations: list[ProductVariation]
+    questions: list[Question] | None
 
 
 class OrderPosition(TypedDict):
@@ -71,4 +71,4 @@ class OrderPosition(TypedDict):
     attendee_name: str
     attendee_email: str
     item: Item
-    answers: List[Answer]
+    answers: list[Answer]

@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List
 
 import strawberry
 from strawberry import ID
@@ -27,7 +26,7 @@ class Notification:
 @strawberry.type
 class VolunteersNotificationsQuery:
     @strawberry.field
-    def notifications(self) -> List[Notification]:
+    def notifications(self) -> list[Notification]:
         return [
             Notification.from_django(notification)
             for notification in NotificationModel.objects.all()
