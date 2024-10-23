@@ -136,7 +136,9 @@ export const getServerSideProps: GetServerSideProps = async ({
       queryCfpForm(client, {
         conference: process.env.conferenceCode,
       }),
-      queryTags(client),
+      queryTags(client, {
+        conference: process.env.conferenceCode,
+      }),
       queryGetSubmission(client, {
         id,
         language: locale,

@@ -1,6 +1,9 @@
-query Tags {
-  submissionTags {
-    name
+query Tags($conference: String!) {
+  conference(code: $conference) {
     id
+    proposalTags {
+      name
+      id
+    }
   }
 }

@@ -6,17 +6,14 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 
 import type { GetServerSideProps, GetStaticProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
-import { Alert } from "~/components/alert";
 import { Introduction } from "~/components/cfp-introduction";
 import { CfpSendSubmission } from "~/components/cfp-send-submission";
 import { MetaTags } from "~/components/meta-tags";
-import { useLoginState } from "~/components/profile/hooks";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import {
   queryCfpForm,
@@ -100,7 +97,9 @@ export const getServerSideProps: GetServerSideProps = async ({
       queryCfpForm(client, {
         conference: process.env.conferenceCode,
       }),
-      queryTags(client),
+      queryTags(client, {
+        conference: process.env.conferenceCode,
+      }),
     ]);
   } catch (e) {
     return {
