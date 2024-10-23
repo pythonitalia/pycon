@@ -24,21 +24,26 @@ const DropdownIndicator = (props: DropdownIndicatorProps<any, true>) => {
 };
 
 export const TagsSelect = ({ tags, onChange }: TagsSelectProps) => {
-  const { data } = useTagsQuery();
+  const conferenceCode = process.env.conferenceCode;
+  const { data } = useTagsQuery({
+    variables: {
+      conference: conferenceCode,
+    },
+  });
   const isClient = useIsClient();
 
-  const submissionTags = [...data!.submissionTags]!
+  if (!isClient) {
+    return null;
+  }
+
+  const proposalTags = [...data.conference.proposalTags]
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((t) => ({
       value: t.id,
       label: t.name,
     }));
 
-  const value = tags.map((t) => submissionTags.find((s) => s.value === t)!);
-
-  if (!isClient) {
-    return null;
-  }
+  const value = tags.map((t) => proposalTags.find((s) => s.value === t));
 
   return (
     <ReactSelect
@@ -161,7 +166,7 @@ export const TagsSelect = ({ tags, onChange }: TagsSelectProps) => {
       isMulti={true}
       isOptionDisabled={() => value.length >= 5}
       name="tags"
-      options={submissionTags}
+      options={proposalTags}
       placeholder="Add tags"
       components={{ DropdownIndicator }}
     />
