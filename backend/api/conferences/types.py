@@ -78,7 +78,7 @@ class Keynote:
     description: str = strawberry.field(resolver=make_localized_resolver("description"))
     slug: str = strawberry.field(resolver=make_localized_resolver("slug"))
     topic: Topic | None
-    speakers: list[ScheduleItemUser] | None
+    speakers: list[ScheduleItemUser]
     start: datetime | None
     end: datetime | None
     rooms: list[Room]
@@ -91,7 +91,7 @@ class Keynote:
         description: str,
         slug: str,
         topic: Topic | None,
-        speakers: list[ScheduleItemUser] | None,
+        speakers: list[ScheduleItemUser],
         start: datetime | None,
         end: datetime | None,
         rooms: list[Room],
