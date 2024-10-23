@@ -1,6 +1,5 @@
 from decimal import Decimal
 from enum import Enum
-from typing import List
 
 import strawberry
 
@@ -51,5 +50,5 @@ class RankSubmission:
 @strawberry.type
 class RankRequest:
     is_public: bool
-    ranked_submissions: List[RankSubmission]
-    stats: List[RankStat]
+    ranked_submissions: list[RankSubmission]
+    stats: list[RankStat]

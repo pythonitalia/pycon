@@ -1,5 +1,4 @@
 from logging import getLogger
-from typing import List
 
 from requests import post
 
@@ -11,8 +10,8 @@ class SlackIncomingWebhookError(Exception):
 
 
 def send_message(
-    blocks: List[dict],
-    attachments: List[dict],
+    blocks: list[dict],
+    attachments: list[dict],
     text: str = "",
     *,
     oauth_token: str,

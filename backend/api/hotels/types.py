@@ -1,5 +1,4 @@
 from datetime import timedelta
-from typing import List
 
 import strawberry
 
@@ -22,11 +21,11 @@ class HotelRoom:
     capacity_left: int
 
     @strawberry.field
-    def available_bed_layouts(self) -> List[BedLayout]:
+    def available_bed_layouts(self) -> list[BedLayout]:
         return self.available_bed_layouts.all()
 
     @strawberry.field
-    def check_in_dates(self) -> List[str]:
+    def check_in_dates(self) -> list[str]:
         conference_start = self.conference.start
         conference_end = self.conference.end
 
@@ -36,7 +35,7 @@ class HotelRoom:
         ]
 
     @strawberry.field
-    def check_out_dates(self) -> List[str]:
+    def check_out_dates(self) -> list[str]:
         conference_start = self.conference.start
         conference_end = self.conference.end
 

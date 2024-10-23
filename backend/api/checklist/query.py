@@ -1,5 +1,3 @@
-from typing import List
-
 import strawberry
 
 from checklist.models import ChecklistItem as ChecklistItemModel
@@ -18,7 +16,7 @@ class ChecklistItem:
 @strawberry.type
 class ChecklistQuery:
     @strawberry.field
-    def checklist(self) -> List[ChecklistItem]:
+    def checklist(self) -> list[ChecklistItem]:
         return [
             ChecklistItem.from_django(instance)
             for instance in ChecklistItemModel.objects.all()

@@ -1,6 +1,5 @@
 from datetime import date
 from logging import getLogger
-from typing import List, Optional
 from api.permissions import IsAuthenticated
 from django.conf import settings
 
@@ -51,7 +50,7 @@ class User:
     gender: str
     open_to_recruiting: bool
     open_to_newsletter: bool
-    date_birth: Optional[date]
+    date_birth: date | None
     country: str
     is_staff: bool
 
@@ -64,7 +63,7 @@ class User:
     @strawberry.field
     def conference_roles(
         self, info: Info, conference_code: str
-    ) -> List[ConferenceRole]:
+    ) -> list[ConferenceRole]:
         conference = Conference.objects.get(code=conference_code)
         return get_conference_roles_for_user(
             conference=conference,
@@ -100,14 +99,14 @@ class User:
     @strawberry.field
     def starred_schedule_items(
         self, info: Info, conference: str
-    ) -> List[strawberry.ID]:
+    ) -> list[strawberry.ID]:
         stars = ScheduleItemStarModel.objects.filter(
             schedule_item__conference__code=conference, user_id=self.id
         ).values_list("schedule_item_id", flat=True)
         return stars
 
     @strawberry.field
-    def grant(self, info: Info, conference: str) -> Optional[Grant]:
+    def grant(self, info: Info, conference: str) -> Grant | None:
         grant = GrantModel.objects.filter(
             user_id=self.id, conference__code=conference
         ).first()
@@ -117,7 +116,7 @@ class User:
         return Grant.from_model(grant) if grant else None
 
     @strawberry.field
-    def participant(self, info: Info, conference: str) -> Optional[Participant]:
+    def participant(self, info: Info, conference: str) -> Participant | None:
         participant = ParticipantModel.objects.filter(
             user_id=self.id,
             conference__code=conference,
@@ -125,7 +124,7 @@ class User:
         return Participant.from_model(participant) if participant else None
 
     @strawberry.field
-    def orders(self, info: Info, conference: str) -> List[PretixOrder]:
+    def orders(self, info: Info, conference: str) -> list[PretixOrder]:
         conference = Conference.objects.get(code=conference)
         return sorted(
             get_user_orders(conference, self.email),
@@ -135,13 +134,13 @@ class User:
     @strawberry.field
     def tickets(
         self, info: Info, conference: str, language: str
-    ) -> List[AttendeeTicket]:
+    ) -> list[AttendeeTicket]:
         conference = Conference.objects.get(code=conference)
         attendee_tickets = get_user_tickets(conference, self.email, language)
         return [ticket for ticket in attendee_tickets]
 
     @strawberry.field
-    def submissions(self, info: Info, conference: str) -> List[Submission]:
+    def submissions(self, info: Info, conference: str) -> list[Submission]:
         return SubmissionModel.objects.filter(
             speaker_id=self.id, conference__code=conference
         )

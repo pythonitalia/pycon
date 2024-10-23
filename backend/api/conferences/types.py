@@ -3,7 +3,6 @@ from django.db.models import Case, When, Value, IntegerField
 from django.db.models import Prefetch
 from participants.models import Participant as ParticipantModel
 from datetime import datetime
-from typing import List, Optional
 from api.participants.types import Participant
 from api.schedule.types.day import Day
 
@@ -64,12 +63,12 @@ class Keynote:
     title: str = strawberry.field(resolver=make_localized_resolver("title"))
     description: str = strawberry.field(resolver=make_localized_resolver("description"))
     slug: str = strawberry.field(resolver=make_localized_resolver("slug"))
-    topic: Optional[Topic]
-    speakers: List[ScheduleItemUser]
-    start: Optional[datetime]
-    end: Optional[datetime]
-    rooms: List[Room]
-    youtube_video_id: Optional[str]
+    topic: Topic | None
+    speakers: ScheduleItemUser | None
+    start: datetime | None
+    end: datetime | None
+    rooms: list[Room]
+    youtube_video_id: str | None
 
     def __init__(
         self,
@@ -77,12 +76,12 @@ class Keynote:
         title: str,
         description: str,
         slug: str,
-        topic: Optional[Topic],
-        speakers: List[ScheduleItemUser],
-        start: Optional[datetime],
-        end: Optional[datetime],
-        rooms: List[Room],
-        youtube_video_id: Optional[str],
+        topic: Topic | None,
+        speakers: ScheduleItemUser | None,
+        start: datetime | None,
+        end: datetime | None,
+        rooms: list[Room],
+        youtube_video_id: str | None,
     ):
         self.id = id
         self.title = title
@@ -144,12 +143,12 @@ class Conference:
     code: str
     start: datetime
     end: datetime
-    map: Optional[Map] = strawberry.field(resolver=resolve_map)
+    map: Map | None = strawberry.field(resolver=resolve_map)
 
     pretix_event_url: str
 
     @strawberry.field
-    def voucher(self, info: Info, code: str) -> Optional[Voucher]:
+    def voucher(self, info: Info, code: str) -> Voucher | None:
         return get_voucher(self, code)
 
     @strawberry.field
@@ -159,17 +158,17 @@ class Conference:
     @strawberry.field
     def tickets(
         self, info: Info, language: str, show_unavailable_tickets: bool = False
-    ) -> List[TicketItem]:
+    ) -> list[TicketItem]:
         return get_conference_tickets(
             self, language=language, show_unavailable_tickets=show_unavailable_tickets
         )
 
     @strawberry.field
-    def hotel_rooms(self, info: Info) -> List[HotelRoom]:
+    def hotel_rooms(self, info: Info) -> list[HotelRoom]:
         return self.hotel_rooms.all()
 
     @strawberry.field
-    def deadlines(self, info: Info) -> List["Deadline"]:
+    def deadlines(self, info: Info) -> list["Deadline"]:
         return self.deadlines.order_by("start").all()
 
     @strawberry.field(name="isCFPOpen")
@@ -185,35 +184,35 @@ class Conference:
         return self.is_voting_closed
 
     @strawberry.field
-    def deadline(self, info: Info, type: str) -> Optional["Deadline"]:
+    def deadline(self, info: Info, type: str) -> "Deadline" | None:
         return self.deadlines.filter(type=type).first()
 
     @strawberry.field
-    def audience_levels(self, info: Info) -> List[AudienceLevel]:
+    def audience_levels(self, info: Info) -> list[AudienceLevel]:
         return self.audience_levels.all()
 
     @strawberry.field
-    def topics(self, info: Info) -> List[Topic]:
+    def topics(self, info: Info) -> list[Topic]:
         return self.topics.all()
 
     @strawberry.field
-    def languages(self, info: Info) -> List[Language]:
+    def languages(self, info: Info) -> list[Language]:
         return self.languages.all()
 
     @strawberry.field
-    def durations(self, info: Info) -> List["Duration"]:
+    def durations(self, info: Info) -> list["Duration"]:
         return self.durations.all()
 
     @strawberry.field
-    def submission_types(self, info: Info) -> List[SubmissionType]:
+    def submission_types(self, info: Info) -> list[SubmissionType]:
         return self.submission_types.all()
 
     @strawberry.field
-    def proposal_tags(self, info: Info) -> List[SubmissionTag]:
+    def proposal_tags(self, info: Info) -> list[SubmissionTag]:
         return self.proposal_tags.all()
 
     @strawberry.field(permission_classes=[CanSeeSubmissions])
-    def submissions(self, info: Info) -> Optional[List[Submission]]:
+    def submissions(self, info: Info) -> list[Submission] | None:
         return self.submissions.filter(
             status__in=(
                 SubmissionModel.STATUS.proposed,
@@ -222,23 +221,21 @@ class Conference:
         ).select_related("audience_level", "duration", "type", "topic")
 
     @strawberry.field
-    def events(self, info: Info) -> List[Event]:
+    def events(self, info: Info) -> list[Event]:
         return self.events.all()
 
     @strawberry.field
-    def faqs(self, info: Info) -> List[FAQ]:
+    def faqs(self, info: Info) -> list[FAQ]:
         return self.faqs.all()
 
     @strawberry.field
-    def sponsors_by_level(self, info: Info) -> List[SponsorsByLevel]:
+    def sponsors_by_level(self, info: Info) -> list[SponsorsByLevel]:
         levels = self.sponsor_levels.all().order_by("order")
 
         return [SponsorsByLevel.from_model(level) for level in levels]
 
     @strawberry.field
-    def copy(
-        self, info: Info, key: str, language: Optional[str] = None
-    ) -> Optional[str]:
+    def copy(self, info: Info, key: str, language: str | None = None) -> str | None:
         copy = GenericCopy.objects.filter(conference=self, key=key).first()
 
         language = language or translation.get_language() or settings.LANGUAGE_CODE
@@ -246,32 +243,32 @@ class Conference:
         return copy.content.localize(language) if copy else None
 
     @strawberry.field
-    def menu(self, info: Info, identifier: str) -> Optional[Menu]:
+    def menu(self, info: Info, identifier: str) -> Menu | None:
         return (
             self.menus.filter(identifier=identifier).prefetch_related("links").first()
         )
 
     @strawberry.field
-    def keynotes(self, info: Info) -> List[Keynote]:
+    def keynotes(self, info: Info) -> list[Keynote]:
         return [
             Keynote.from_django_model(keynote, info) for keynote in self.keynotes.all()
         ]
 
     @strawberry.field
-    def keynote(self, info: Info, slug: str) -> Optional[Keynote]:
+    def keynote(self, info: Info, slug: str) -> Keynote | None:
         keynote = self.keynotes.by_slug(slug).first()
         return Keynote.from_django_model(keynote, info) if keynote else None
 
     @strawberry.field
-    def talks(self, info: Info) -> List[ScheduleItem]:
+    def talks(self, info: Info) -> list[ScheduleItem]:
         return self.schedule_items.filter(type=ScheduleItemModel.TYPES.submission).all()
 
     @strawberry.field
-    def talk(self, info: Info, slug: str) -> Optional[ScheduleItem]:
+    def talk(self, info: Info, slug: str) -> ScheduleItem | None:
         return self.schedule_items.filter(slug=slug).first()
 
     @strawberry.field
-    def ranking(self, info: Info, topic: strawberry.ID) -> Optional[RankRequest]:
+    def ranking(self, info: Info, topic: strawberry.ID) -> RankRequest | None:
         rank_request = RankRequestModel.objects.filter(conference=self).first()
         if not rank_request:
             return None
@@ -291,7 +288,7 @@ class Conference:
         )
 
     @strawberry.field
-    def days(self, info: Info) -> List[Day]:
+    def days(self, info: Info) -> list[Day]:
         days = list(
             self.days.order_by("day")
             .prefetch_related(
@@ -360,7 +357,7 @@ class Conference:
         return days
 
     @strawberry.field
-    def current_day(self, info: Info) -> Optional[Day]:
+    def current_day(self, info: Info) -> Day | None:
         start = timezone.now().replace(hour=0, minute=0, second=0)
         end = start.replace(hour=23, minute=59, second=59)
         return self.days.filter(day__gte=start, day__lte=end).first()
@@ -446,5 +443,5 @@ class Duration:
     notes: str
 
     @strawberry.field
-    def allowed_submission_types(self, info: Info) -> List[SubmissionType]:
+    def allowed_submission_types(self, info: Info) -> list[SubmissionType]:
         return self.allowed_submission_types.all()

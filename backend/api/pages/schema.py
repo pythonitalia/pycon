@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from api.context import Info
 import strawberry
 from pages.models import Page
@@ -13,9 +11,9 @@ class PagesQuery:
     # that instead of a generic argument called code
 
     @strawberry.field
-    def pages(self, info: Info, code: str) -> List[PageType]:
+    def pages(self, info: Info, code: str) -> list[PageType]:
         return Page.published_pages.filter(conference__code=code)
 
     @strawberry.field
-    def page(self, info: Info, code: str, slug: str) -> Optional[PageType]:
+    def page(self, info: Info, code: str, slug: str) -> PageType | None:
         return Page.published_pages.by_slug(slug).filter(conference__code=code).first()

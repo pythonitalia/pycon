@@ -1,7 +1,6 @@
 # flake8: noqa
 
 import copy
-from typing import List, Tuple, Union
 
 from django import forms
 from django.conf import settings
@@ -53,7 +52,7 @@ class I18nWidget(forms.MultiWidget):
 
     def __init__(
         self,
-        locales: List[Tuple[str, str]] = None,
+        locales: list[tuple[str, str]] = None,
         field: forms.Field = None,
         attrs=None,
     ):
@@ -67,7 +66,7 @@ class I18nWidget(forms.MultiWidget):
             widgets.append(self.widget(language=language, attrs=a))
         super().__init__(widgets, attrs)
 
-    def decompress(self, value) -> List[Union[str, None]]:
+    def decompress(self, value) -> list[str | None]:
         data = []
         first_enabled = None
         any_enabled_filled = False
@@ -185,7 +184,7 @@ class I18nFormField(forms.MultiValueField):
         found = False
         found_all = True
         clean_data = []
-        errors: List[str] = []
+        errors: list[str] = []
         for i, field in enumerate(self.fields):
             try:
                 field_value = value[i]

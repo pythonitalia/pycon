@@ -6,7 +6,6 @@ from users.admin_mixins import ConferencePermissionMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q, Exists
 import urllib.parse
-from typing import List, Optional
 
 from django import forms
 from django.contrib import admin, messages
@@ -735,10 +734,10 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 def get_next_to_review_item_id(
     review_session: ReviewSession,
     user: User,
-    skip_item: Optional[int] = None,
-    exclude: List[int] = None,
-    seen: List[int] = None,
-) -> Optional[int]:
+    skip_item: int | None = None,
+    exclude: list[int] = None,
+    seen: list[int] = None,
+) -> int | None:
     exclude = exclude or []
     seen = seen or []
     already_reviewed = UserReview.objects.filter(

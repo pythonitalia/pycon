@@ -1,6 +1,5 @@
 import os
 from datetime import date
-from typing import List
 
 import pytest
 from invoices.models import Address, Invoice, Item, Sender
@@ -62,7 +61,7 @@ def sender(supplier_address):
 
 
 @pytest.fixture
-def sample_items() -> List[ProductSummary]:
+def sample_items() -> list[ProductSummary]:
     return [
         Item(row=1, description="item 1", quantity=1, unit_price=1.0, vat_rate=0),
         Item(row=2, description="item 2", quantity=2, unit_price=2, vat_rate=0),
