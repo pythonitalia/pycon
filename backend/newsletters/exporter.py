@@ -1,5 +1,6 @@
 import dataclasses
-import typing
+
+from typing import DefaultDict
 from collections import defaultdict
 
 from django.db.models import Q
@@ -13,18 +14,16 @@ from users.models import User
 
 @dataclasses.dataclass(frozen=True)
 class Endpoint:
-    id: typing.Union[str]
+    id: str
     name: str = dataclasses.field(hash=False)
     email: str = dataclasses.field(hash=False)
     full_name: str = dataclasses.field(hash=False)
     is_staff: bool = dataclasses.field(hash=False)
-    has_sent_submission_to: typing.List[str] = dataclasses.field(hash=False)
-    has_item_in_schedule: typing.List[str] = dataclasses.field(hash=False)
-    has_cancelled_talks: typing.List[str] = dataclasses.field(hash=False)
-    has_ticket: typing.List[str] = dataclasses.field(hash=False)
-    talks_by_conference: typing.Dict[str, typing.List[str]] = dataclasses.field(
-        hash=False
-    )
+    has_sent_submission_to: list[str] = dataclasses.field(hash=False)
+    has_item_in_schedule: list[str] = dataclasses.field(hash=False)
+    has_cancelled_talks: list[str] = dataclasses.field(hash=False)
+    has_ticket: list[str] = dataclasses.field(hash=False)
+    talks_by_conference: dict[str, list[str]] = dataclasses.field(hash=False)
 
     def to_item(self):
         conferences_talks = {
@@ -60,7 +59,7 @@ def convert_user_to_endpoint(user: User) -> Endpoint:
         Q(submission__speaker_id=user.id) | Q(additional_speakers__user_id=user.id)
     ).values("conference__code", "title")
 
-    talks_by_conference: typing.DefaultDict[str, typing.List[str]] = defaultdict(list)
+    talks_by_conference: DefaultDict[str, list[str]] = defaultdict(list)
 
     for item in schedule_items:
         talks_by_conference[item["conference__code"]].append(item["title"])

@@ -1,8 +1,5 @@
-from __future__ import annotations
-
 from decimal import Decimal
-
-import typing
+from typing import Self
 
 import strawberry
 from strawberry import ID
@@ -24,20 +21,17 @@ class Sponsor:
         if not self.image:
             return ""
 
-        # try:
         return info.context.request.build_absolute_uri(self.image_optimized.url)
-        # except Exception as e:
-        # return info.context.request.build_absolute_uri(self.image.url)
 
 
 @strawberry.type
 class SponsorsByLevel:
     level: str
-    sponsors: typing.List[Sponsor]
-    highlight_color: typing.Optional[str]
+    sponsors: list[Sponsor]
+    highlight_color: str | None
 
     @classmethod
-    def from_model(cls, level: SponsorLevelModel) -> SponsorsByLevel:
+    def from_model(cls, level: SponsorLevelModel) -> Self:
         sponsors = [sponsor for sponsor in level.sponsors.all()]
         return cls(
             level=level.name, sponsors=sponsors, highlight_color=level.highlight_color

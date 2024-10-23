@@ -1,5 +1,4 @@
 import random
-import typing
 from api.context import Info
 from api.submissions.permissions import CanSeeSubmissionRestrictedFields
 
@@ -20,7 +19,7 @@ from .types import Submission, SubmissionTag
 @strawberry.type
 class SubmissionsQuery:
     @strawberry.field
-    def submission(self, info: Info, id: strawberry.ID) -> typing.Optional[Submission]:
+    def submission(self, info: Info, id: strawberry.ID) -> Submission | None:
         try:
             submission = SubmissionModel.objects.get_by_hashid(id)
         except SubmissionModel.DoesNotExist:
@@ -40,14 +39,14 @@ class SubmissionsQuery:
         self,
         info: Info,
         code: str,
-        languages: typing.Optional[list[str]] = None,
-        voted: typing.Optional[bool] = None,
-        tags: typing.Optional[list[str]] = None,
-        types: typing.Optional[list[str]] = None,
-        audience_levels: typing.Optional[list[str]] = None,
-        page: typing.Optional[int] = 1,
-        page_size: typing.Optional[int] = 50,
-    ) -> typing.Optional[Paginated[Submission]]:
+        languages: list[str] | None = None,
+        voted: bool | None = None,
+        tags: list[str] | None = None,
+        types: list[str] | None = None,
+        audience_levels: list[str] | None = None,
+        page: int | None = 1,
+        page_size: int | None = 50,
+    ) -> Paginated[Submission] | None:
         if page_size > 150:
             raise ValueError("Page size cannot be greater than 150")
 
@@ -121,11 +120,11 @@ class SubmissionsQuery:
         )
 
     @strawberry.field
-    def submission_tags(self, info: Info) -> typing.List[SubmissionTag]:
+    def submission_tags(self, info: Info) -> list[SubmissionTag]:
         return SubmissionTagModel.objects.order_by("name").all()
 
     @strawberry.field
-    def voting_tags(self, info: Info, conference: str) -> typing.List[SubmissionTag]:
+    def voting_tags(self, info: Info, conference: str) -> list[SubmissionTag]:
         used_tags = (
             SubmissionModel.objects.filter(
                 conference__code=conference,
