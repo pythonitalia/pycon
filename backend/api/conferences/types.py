@@ -78,7 +78,7 @@ class Keynote:
     description: str = strawberry.field(resolver=make_localized_resolver("description"))
     slug: str = strawberry.field(resolver=make_localized_resolver("slug"))
     topic: Topic | None
-    speakers: ScheduleItemUser | None
+    speakers: list[ScheduleItemUser] | None
     start: datetime | None
     end: datetime | None
     rooms: list[Room]
@@ -91,7 +91,7 @@ class Keynote:
         description: str,
         slug: str,
         topic: Topic | None,
-        speakers: ScheduleItemUser | None,
+        speakers: list[ScheduleItemUser] | None,
         start: datetime | None,
         end: datetime | None,
         rooms: list[Room],
@@ -182,7 +182,7 @@ class Conference:
         return self.hotel_rooms.all()
 
     @strawberry.field
-    def deadlines(self, info: Info) -> Deadline:
+    def deadlines(self, info: Info) -> list[Deadline]:
         return self.deadlines.order_by("start").all()
 
     @strawberry.field(name="isCFPOpen")
