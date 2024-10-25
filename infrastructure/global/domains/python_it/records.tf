@@ -231,6 +231,14 @@ resource "aws_route53_record" "bari_cname" {
   ttl     = "3600"
 }
 
+resource "aws_route53_record" "marche_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "marche.python.it"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com."]
+  ttl     = "3600"
+}
+
 resource "aws_route53_record" "torino_cname" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "torino.python.it"
@@ -527,4 +535,3 @@ resource "aws_route53_record" "support_store_python_it_mx" {
   records = ["10 mx1.improvmx.com.", "20 mx2.improvmx.com."]
   ttl     = "3600"
 }
-
