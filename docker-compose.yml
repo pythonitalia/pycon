@@ -53,6 +53,7 @@ services:
       context: ./backend
       dockerfile: ../Dockerfile.python.local
     networks: [pycon_net]
+    restart: unless-stopped
     command: sh -c "export DJANGO_SETTINGS_MODULE=pycon.settings.dev &&
       pdm install &&
       pdm run python manage.py migrate &&
@@ -84,6 +85,7 @@ services:
       context: ./backend
       dockerfile: ../Dockerfile.node.local
     networks: [pycon_net]
+    restart: unless-stopped
     entrypoint: ""
     working_dir: /home/node/app/custom_admin/
     command: sh -c "pnpm install --config.confirmModulesPurge=false && touch /.ready && pnpm run dev"
@@ -110,6 +112,7 @@ services:
   backend-db:
     image: postgres:14.5
     networks: [pycon_net]
+    restart: unless-stopped
     ports:
       - "15501:5432"
     volumes:
@@ -129,6 +132,7 @@ services:
       context: ./frontend
       dockerfile: ../Dockerfile.node.local
     networks: [pycon_net]
+    restart: unless-stopped
     entrypoint: ""
     working_dir: /home/node/app
     command: sh -c "pnpm install && pnpm codegen && pnpm run dev"
@@ -152,12 +156,14 @@ services:
   redis:
     image: redis:6
     networks: [pycon_net]
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
 
   clamav:
     image: clamav/clamav:1.2.3-47
     networks: [pycon_net]
+    restart: unless-stopped
 
 
 networks:
