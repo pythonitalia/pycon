@@ -847,11 +847,11 @@ def test_get_conference_proposal_tags(
 ):
     conference = ConferenceFactory(timezone=zoneinfo.ZoneInfo("America/Los_Angeles"))
 
-    tag1 = SubmissionTagFactory()
-    tag2 = SubmissionTagFactory()
-    tag3 = SubmissionTagFactory()
-    SubmissionTagFactory()
-    SubmissionTagFactory()
+    tag1 = SubmissionTagFactory(name="a")
+    tag2 = SubmissionTagFactory(name="b")
+    tag3 = SubmissionTagFactory(name="c")
+    SubmissionTagFactory(name="d")
+    SubmissionTagFactory(name="e")
 
     conference.proposal_tags.set([tag1, tag2, tag3])
 
