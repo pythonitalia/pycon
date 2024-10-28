@@ -67,16 +67,14 @@ export const TextSection = ({
           </>
         )}
         {cta && (
-          <>
-            <Button
-              variant="secondary"
-              onClick={openModal}
-              href={isModalCTA ? null : cta.link}
-              fullWidth="mobile"
-            >
-              {cta.label}
-            </Button>
-          </>
+          <Button
+            variant="secondary"
+            onClick={openModal}
+            href={isModalCTA ? null : cta.link}
+            fullWidth="mobile"
+          >
+            {cta.label}
+          </Button>
         )}
       </Container>
       <Container noPadding size="2md">
