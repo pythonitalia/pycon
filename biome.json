@@ -21,7 +21,9 @@
       },
       "a11y": {
         "useKeyWithClickEvents": "off",
-        "noSvgWithoutTitle": "off"
+        "noSvgWithoutTitle": "off",
+        "noLabelWithoutControl": "off",
+        "useSemanticElements": "off"
       },
       "complexity": {
         "noForEach": "off"

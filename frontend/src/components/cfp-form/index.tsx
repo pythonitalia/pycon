@@ -52,6 +52,7 @@ export type CfpFormFields = ParticipantFormFields & {
   speakerLevel: string;
   previousTalkVideo: string;
   shortSocialSummary: string;
+  acceptedPrivacyPolicy: boolean;
 };
 
 export type SubmissionStructure = {
@@ -197,6 +198,7 @@ export const CfpForm = ({
       participantPhoto:
         formState.values.participantPhoto ??
         participantData.me.participant?.photoId,
+      acceptedPrivacyPolicy: formState.values.acceptedPrivacyPolicy,
     });
   };
 
@@ -246,6 +248,7 @@ export const CfpForm = ({
         submission!.tags.map((t) => t.id),
       );
       formState.setField("shortSocialSummary", submission!.shortSocialSummary);
+      formState.setField("acceptedPrivacyPolicy", true);
     }
 
     if (participantData.me.participant) {
@@ -607,6 +610,40 @@ export const CfpForm = ({
 
       <Spacer size="medium" />
 
+      {!submission && (
+        <>
+          {" "}
+          <label>
+            <HorizontalStack gap="small" alignItems="center">
+              <Checkbox
+                {...checkbox("acceptedPrivacyPolicy")}
+                checked={formState.values.acceptedPrivacyPolicy}
+              />
+              <Text size={2} weight="strong">
+                <FormattedMessage
+                  id="global.acceptPrivacyPolicy"
+                  values={{
+                    link: (
+                      <Link
+                        className="underline"
+                        target="_blank"
+                        href={createHref({
+                          path: "/privacy-policy",
+                          locale: language,
+                        })}
+                      >
+                        Privacy Policy
+                      </Link>
+                    ),
+                  }}
+                />
+              </Text>
+            </HorizontalStack>
+          </label>
+          <Spacer size="medium" />
+        </>
+      )}
+
       <Grid cols={2}>
         <div>
           <Text weight="strong" uppercase color="grey-900" size="label3">
@@ -651,7 +688,8 @@ export const CfpForm = ({
             variant="secondary"
             disabled={
               submissionLoading ||
-              submissionData?.mutationOp?.__typename === "Submission"
+              submissionData?.mutationOp?.__typename === "Submission" ||
+              !formState.values.acceptedPrivacyPolicy
             }
           >
             {submissionLoading && <FormattedMessage id="cfp.loading" />}

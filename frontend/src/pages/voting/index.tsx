@@ -359,31 +359,29 @@ export const VotingPage = () => {
         )}
 
         {!isVotingClosed && data?.submissions && (
-          <>
-            <MultiplePartsCardCollection>
-              <MultiplePartsCard>
-                <CardPart contentAlign="left" overflow={true}>
-                  <HorizontalStack
-                    justifyContent="spaceBetween"
-                    alignItems="center"
-                  >
-                    <Heading size={2}>
-                      <FormattedMessage id="voting.proposals" />
-                    </Heading>
-                    <FilterBar
-                      placement="left"
-                      onApply={onUpdateFilters}
-                      appliedFilters={currentFilters}
-                      filters={availableFilters}
-                    />
-                  </HorizontalStack>
-                </CardPart>
-              </MultiplePartsCard>
-              {data.submissions.items.map((submission) => (
-                <VotingCard key={submission.id} submission={submission} />
-              ))}
-            </MultiplePartsCardCollection>
-          </>
+          <MultiplePartsCardCollection>
+            <MultiplePartsCard>
+              <CardPart contentAlign="left" overflow={true}>
+                <HorizontalStack
+                  justifyContent="spaceBetween"
+                  alignItems="center"
+                >
+                  <Heading size={2}>
+                    <FormattedMessage id="voting.proposals" />
+                  </Heading>
+                  <FilterBar
+                    placement="left"
+                    onApply={onUpdateFilters}
+                    appliedFilters={currentFilters}
+                    filters={availableFilters}
+                  />
+                </HorizontalStack>
+              </CardPart>
+            </MultiplePartsCard>
+            {data.submissions.items.map((submission) => (
+              <VotingCard key={submission.id} submission={submission} />
+            ))}
+          </MultiplePartsCardCollection>
         )}
         <Spacer size="xl" />
 
@@ -406,25 +404,23 @@ export const VotingPage = () => {
           alignItems="center"
           justifyContent="center"
         >
-          {!isVotingClosed && data?.submissions && (
-            <>
-              {Array(data.submissions.pageInfo.totalPages)
-                .fill(null)
-                .map((_, i) => (
-                  <Button
-                    key={i}
-                    background={currentPage === i + 1 ? "green" : undefined}
-                    onClick={(_) => {
-                      navigateToPage(i + 1);
-                    }}
-                    size="small"
-                    variant="secondary"
-                  >
-                    {i + 1}
-                  </Button>
-                ))}
-            </>
-          )}
+          {!isVotingClosed &&
+            data?.submissions &&
+            Array(data.submissions.pageInfo.totalPages)
+              .fill(null)
+              .map((_, i) => (
+                <Button
+                  key={i}
+                  background={currentPage === i + 1 ? "green" : undefined}
+                  onClick={(_) => {
+                    navigateToPage(i + 1);
+                  }}
+                  size="small"
+                  variant="secondary"
+                >
+                  {i + 1}
+                </Button>
+              ))}
         </HorizontalStack>
       </Section>
     </Page>
