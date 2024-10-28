@@ -1,9 +1,8 @@
 from django.db import models
 
+from conferences.querysets import ConferenceQuerySetMixin
 
-class BillingAddressQuerySet(models.QuerySet):
+
+class BillingAddressQuerySet(ConferenceQuerySetMixin, models.QuerySet):
     def of_user(self, user):
         return self.filter(user=user)
-
-    def for_conference_code(self, conference):
-        return self.filter(organizer__conferences__code=conference)

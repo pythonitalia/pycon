@@ -7,6 +7,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 class BillingAddress(TimeStampedModel):
+    conference_reference = "organizer__conferences"
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
