@@ -31,7 +31,7 @@ export const Modal = ({
   }, [show]);
 
   return (
-    <div
+    <dialog
       className={clsx(
         "fixed overflow-y-auto inset-0 z-[2050] flex items-center justify-center !border-t-0 !border-b-0",
         {
@@ -39,7 +39,6 @@ export const Modal = ({
           hidden: !show,
         },
       )}
-      role="dialog"
     >
       <div className="fixed inset-0 bg-caramel/90" onClick={onClose} />
       <div
@@ -74,6 +73,6 @@ export const Modal = ({
           )}
         </div>
       </div>
-    </div>
+    </dialog>
   );
 };

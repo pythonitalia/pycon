@@ -50,35 +50,33 @@ export const ProductsQuestions = ({ productsById }: Props) => {
                         {productsById[productId].name} #{index + 1}
                       </Heading>
                       {index === 0 && productsById[productId].admission && (
-                        <>
-                          <label className="flex items-center">
-                            <Text size="label3" uppercase weight="strong">
-                              <FormattedMessage id="productQuestions.thisIsMyTicket" />
-                            </Text>
-                            <Spacer size="small" orientation="horizontal" />
-                            <Checkbox
-                              size="small"
-                              checked={productUserInformation.isMe}
-                              onChange={() => {
-                                const isMe = !productUserInformation.isMe;
+                        <label className="flex items-center">
+                          <Text size="label3" uppercase weight="strong">
+                            <FormattedMessage id="productQuestions.thisIsMyTicket" />
+                          </Text>
+                          <Spacer size="small" orientation="horizontal" />
+                          <Checkbox
+                            size="small"
+                            checked={productUserInformation.isMe}
+                            onChange={() => {
+                              const isMe = !productUserInformation.isMe;
+                              updateTicketInfo({
+                                id: productUserInformation.id,
+                                index: productUserInformation.index,
+                                key: "isMe",
+                                value: isMe,
+                              });
+                              if (isMe) {
                                 updateTicketInfo({
                                   id: productUserInformation.id,
                                   index: productUserInformation.index,
-                                  key: "isMe",
-                                  value: isMe,
+                                  key: "attendeeEmail",
+                                  value: me.email,
                                 });
-                                if (isMe) {
-                                  updateTicketInfo({
-                                    id: productUserInformation.id,
-                                    index: productUserInformation.index,
-                                    key: "attendeeEmail",
-                                    value: me.email,
-                                  });
-                                }
-                              }}
-                            />
-                          </label>
-                        </>
+                              }
+                            }}
+                          />
+                        </label>
                       )}
                     </HorizontalStack>
                     <Spacer size="2md" />
