@@ -7,6 +7,7 @@ import type {
   UpdateProductAction,
   Voucher,
 } from "./types";
+import { EMPTY_INITIAL_CART_REDUCER } from "./use-cart";
 
 const updateProductReducer = (
   state: OrderState,
@@ -227,7 +228,7 @@ export const reducer = (state: OrderState, action: OrderAction): OrderState => {
         ...state,
         selectedProducts: {},
         invoiceInformation: {
-          ...state.invoiceInformation,
+          ...EMPTY_INITIAL_CART_REDUCER.invoiceInformation,
           isBusiness: action.isBusiness,
         },
       };
