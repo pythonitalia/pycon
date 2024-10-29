@@ -8,7 +8,7 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Tickets } from "~/components/tickets-page/tickets";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { CheckoutCategory, queryTickets } from "~/types";
+import { CheckoutCategory, queryCurrentUser, queryTickets } from "~/types";
 
 export const BusinessTicketsPage = ({ cartCookie }) => {
   return (
@@ -60,6 +60,12 @@ export const getServerSideProps: GetServerSideProps = async ({
       language: "en",
     }),
   ]);
+
+  try {
+    await queryCurrentUser(client, {
+      conference: process.env.conferenceCode,
+    });
+  } catch (e) {}
 
   const cartCookie = req.cookies["tickets-cart-v6"];
   return addApolloState(
