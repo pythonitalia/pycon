@@ -35,11 +35,6 @@ export const BillingCard = ({
     state: { invoiceInformation, hasAdmissionTicket },
     updateInformation,
   } = useCart();
-  const savedBillingInformation = me?.billingAddresses.find(
-    (billingAddress) =>
-      billingAddress.isBusiness === invoiceInformation.isBusiness,
-  );
-
   const countries = useCountries();
   const [formState, { text, email, select, textarea, checkbox }] =
     useFormState<InvoiceInformationState>({ ...invoiceInformation });
@@ -53,6 +48,12 @@ export const BillingCard = ({
     const emptyInvoiceInformation = Object.entries(invoiceInformation).every(
       ([key, value]) => key === "isBusiness" || !value,
     );
+
+    const savedBillingInformation = me?.billingAddresses.find(
+      (billingAddress) =>
+        billingAddress.isBusiness === invoiceInformation.isBusiness,
+    );
+
     if (emptyInvoiceInformation && savedBillingInformation) {
       formState.setField("companyName", savedBillingInformation.companyName);
       formState.setField("name", savedBillingInformation.userName);
