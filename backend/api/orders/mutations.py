@@ -34,7 +34,7 @@ class OrdersMutations:
     ) -> CreateOrderResult | CreateOrderErrors:
         conference_obj = Conference.objects.get(code=conference)
 
-        if errors := input.validate():
+        if errors := input.validate(conference_obj):
             return errors
 
         BillingAddressModel.objects.update_or_create(

@@ -95,7 +95,12 @@ def test_cannot_create_order_unlogged(graphql_client):
 
 
 @override_settings(FRONTEND_URL="http://test.it")
-def test_calls_create_order(graphql_client, user, mocker):
+def test_calls_create_order(graphql_client, user, mocker, requests_mock, pretix_items):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
+
     conference = ConferenceFactory()
 
     graphql_client.force_login(user)
@@ -165,7 +170,90 @@ def test_calls_create_order(graphql_client, user, mocker):
 
 
 @override_settings(FRONTEND_URL="http://test.it")
-def test_handles_payment_url_set_to_none(graphql_client, user, mocker):
+def test_calls_create_order_doesnt_require_attendee_data_for_non_admission_products(
+    graphql_client, user, mocker, requests_mock, pretix_items
+):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
+
+    conference = ConferenceFactory()
+
+    graphql_client.force_login(user)
+
+    create_order_mock = mocker.patch("api.orders.mutations.create_order")
+    create_order_mock.return_value.payment_url = "https://example.com"
+    create_order_mock.return_value.code = "123"
+
+    response = _create_order(
+        graphql_client,
+        code=conference.code,
+        input={
+            "tickets": [
+                {
+                    "ticketId": "2",
+                    "attendeeName": {
+                        "parts": {
+                            "given_name": "",
+                            "family_name": "",
+                        },
+                        "scheme": "given_family",
+                    },
+                    "attendeeEmail": "",
+                    "answers": [],
+                }
+            ],
+            "paymentProvider": "stripe",
+            "email": "patrick.arminio@gmail.com",
+            "invoiceInformation": {
+                "isBusiness": False,
+                "company": "",
+                "name": "Patrick",
+                "street": "street",
+                "zipcode": "92100",
+                "city": "Avellino",
+                "country": "IT",
+                "vatId": "",
+                "fiscalCode": "GNLNCH22T27L523A",
+            },
+            "locale": "en",
+        },
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["createOrder"]["paymentUrl"] == (
+        "https://example.com?return_url=http://test.it/en/orders/123/confirmation"
+    )
+
+    create_order_mock.assert_called_once()
+
+    billing_address = BillingAddress.objects.get(user=user)
+
+    assert billing_address.user_name == "Patrick"
+    assert billing_address.company_name == ""
+    assert not billing_address.is_business
+    assert billing_address.address == "street"
+    assert billing_address.zip_code == "92100"
+    assert billing_address.city == "Avellino"
+    assert billing_address.country == "IT"
+    assert billing_address.vat_id == ""
+    assert billing_address.fiscal_code == "GNLNCH22T27L523A"
+
+    assert PrivacyPolicyAcceptanceRecord.objects.filter(
+        user=user, conference=conference, privacy_policy="checkout-order"
+    ).exists()
+
+
+@override_settings(FRONTEND_URL="http://test.it")
+def test_handles_payment_url_set_to_none(
+    graphql_client, user, mocker, requests_mock, pretix_items
+):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
+
     conference = ConferenceFactory()
 
     graphql_client.force_login(user)
@@ -219,7 +307,12 @@ def test_handles_payment_url_set_to_none(graphql_client, user, mocker):
     create_order_mock.assert_called_once()
 
 
-def test_handles_errors(graphql_client, user, mocker):
+def test_handles_errors(graphql_client, user, mocker, requests_mock, pretix_items):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
+
     conference = ConferenceFactory()
 
     graphql_client.force_login(user)
@@ -274,8 +367,12 @@ def test_handles_errors(graphql_client, user, mocker):
     ["fiscalCode", "zipcode"],
 )
 def test_invoice_validation_fails_without_required_field_in_country_italy(
-    graphql_client, user, mocker, field_to_remove
+    graphql_client, user, mocker, field_to_remove, requests_mock, pretix_items
 ):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -336,8 +433,12 @@ def test_invoice_validation_fails_without_required_field_in_country_italy(
     "field_to_delete", ["name", "street", "zipcode", "city", "country"]
 )
 def test_invoice_validation_fails_with_missing_required_fields(
-    graphql_client, user, mocker, field_to_delete
+    graphql_client, user, mocker, field_to_delete, requests_mock, pretix_items
 ):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -394,7 +495,13 @@ def test_invoice_validation_fails_with_missing_required_fields(
 
 
 @override_settings(FRONTEND_URL="http://test.it")
-def test_fiscal_code_not_required_for_non_it_orders(graphql_client, user, mocker):
+def test_fiscal_code_not_required_for_non_it_orders(
+    graphql_client, user, mocker, requests_mock, pretix_items
+):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -446,8 +553,12 @@ def test_fiscal_code_not_required_for_non_it_orders(graphql_client, user, mocker
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_fails_with_invalid_fiscal_code_in_country_italy(
-    graphql_client, user, mocker
+    graphql_client, user, mocker, requests_mock, pretix_items
 ):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -501,7 +612,13 @@ def test_invoice_validation_fails_with_invalid_fiscal_code_in_country_italy(
 
 
 @override_settings(FRONTEND_URL="http://test.it")
-def test_invoice_validation_checks_pec_email_if_provided(graphql_client, user, mocker):
+def test_invoice_validation_checks_pec_email_if_provided(
+    graphql_client, user, mocker, requests_mock, pretix_items
+):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -557,8 +674,12 @@ def test_invoice_validation_checks_pec_email_if_provided(graphql_client, user, m
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_fails_with_empty_vat_for_businesses(
-    graphql_client, user, mocker
+    graphql_client, user, mocker, requests_mock, pretix_items
 ):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -613,8 +734,12 @@ def test_invoice_validation_fails_with_empty_vat_for_businesses(
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_fails_with_empty_business_name_for_businesses(
-    graphql_client, user, mocker
+    graphql_client, user, mocker, requests_mock, pretix_items
 ):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -669,8 +794,12 @@ def test_invoice_validation_fails_with_empty_business_name_for_businesses(
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_fails_with_invalid_country_code(
-    graphql_client, user, mocker
+    graphql_client, user, mocker, requests_mock, pretix_items
 ):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -725,8 +854,12 @@ def test_invoice_validation_fails_with_invalid_country_code(
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_fails_when_italian_business_and_no_sdi(
-    graphql_client, user, mocker
+    graphql_client, user, mocker, requests_mock, pretix_items
 ):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -782,8 +915,12 @@ def test_invoice_validation_fails_when_italian_business_and_no_sdi(
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_fails_when_italian_business_with_invalid_sdi(
-    graphql_client, user, mocker
+    graphql_client, user, mocker, requests_mock, pretix_items
 ):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -839,8 +976,12 @@ def test_invoice_validation_fails_when_italian_business_with_invalid_sdi(
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_fails_when_italian_zipcode_is_invalid(
-    graphql_client, user, mocker
+    graphql_client, user, mocker, requests_mock, pretix_items
 ):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -895,7 +1036,13 @@ def test_invoice_validation_fails_when_italian_zipcode_is_invalid(
 
 
 @override_settings(FRONTEND_URL="http://test.it")
-def test_order_creation_fails_if_attendee_name_is_empty(graphql_client, user, mocker):
+def test_order_creation_fails_if_attendee_name_is_empty(
+    graphql_client, user, mocker, requests_mock, pretix_items
+):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -950,7 +1097,13 @@ def test_order_creation_fails_if_attendee_name_is_empty(graphql_client, user, mo
 
 
 @override_settings(FRONTEND_URL="http://test.it")
-def test_order_creation_fails_if_attendee_email_is_empty(graphql_client, user, mocker):
+def test_order_creation_fails_if_attendee_email_is_empty(
+    graphql_client, user, mocker, requests_mock, pretix_items
+):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -1006,8 +1159,12 @@ def test_order_creation_fails_if_attendee_email_is_empty(graphql_client, user, m
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_order_creation_fails_if_attendee_email_is_invalid(
-    graphql_client, user, mocker
+    graphql_client, user, mocker, requests_mock, pretix_items
 ):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -1063,8 +1220,12 @@ def test_order_creation_fails_if_attendee_email_is_invalid(
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_invoice_validation_works_when_not_italian_and_no_sdi(
-    graphql_client, user, mocker
+    graphql_client, user, mocker, requests_mock, pretix_items
 ):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -1125,8 +1286,12 @@ def test_invoice_validation_works_when_not_italian_and_no_sdi(
 
 @override_settings(FRONTEND_URL="http://test.it")
 def test_create_order_billing_address_stores_both_non_and_business(
-    graphql_client, user, mocker
+    graphql_client, user, mocker, requests_mock, pretix_items
 ):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 
@@ -1198,7 +1363,13 @@ def test_create_order_billing_address_stores_both_non_and_business(
 
 
 @override_settings(FRONTEND_URL="http://test.it")
-def test_create_order_updates_billing_address(graphql_client, user, mocker):
+def test_create_order_updates_billing_address(
+    graphql_client, user, mocker, requests_mock, pretix_items
+):
+    requests_mock.get(
+        "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/items/",
+        json=pretix_items,
+    )
     conference = ConferenceFactory()
     graphql_client.force_login(user)
 

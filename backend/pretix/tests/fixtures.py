@@ -662,7 +662,7 @@ def pretix_items():
                 "free_price": False,
                 "tax_rate": "0.00",
                 "tax_rule": None,
-                "admission": True,
+                "admission": False,
                 "position": 1,
                 "picture": None,
                 "available_from": None,

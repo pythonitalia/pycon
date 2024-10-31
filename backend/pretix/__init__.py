@@ -295,7 +295,12 @@ class CreateOrderTicket:
     answers: Optional[List[CreateOrderTicketAnswer]] = None
     voucher: Optional[str] = None
 
-    def validate(self, errors: CreateOrderErrors) -> CreateOrderErrors:
+    def validate(
+        self, errors: CreateOrderErrors, is_admission: bool
+    ) -> CreateOrderErrors:
+        if not is_admission:
+            return errors
+
         with errors.with_prefix("attendee_name"):
             self.attendee_name.validate(errors)
 
@@ -423,7 +428,9 @@ class CreateOrderInput:
     invoice_information: InvoiceInformation
     tickets: list[CreateOrderTicket]
 
-    def validate(self) -> CreateOrderErrors:
+    def validate(self, conference) -> CreateOrderErrors:
+        pretix_items = get_items(conference)
+
         errors = CreateOrderErrors()
 
         with errors.with_prefix("invoice_information"):
@@ -431,7 +438,8 @@ class CreateOrderInput:
 
         for index, ticket in enumerate(self.tickets):
             with errors.with_prefix("tickets", index):
-                ticket.validate(errors)
+                is_admission = pretix_items[ticket.ticket_id]["admission"]
+                ticket.validate(errors, is_admission)
 
         return errors.if_has_errors
 
