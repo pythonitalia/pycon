@@ -65,7 +65,9 @@ export const getServerSideProps: GetServerSideProps = async ({
     await queryCurrentUser(client, {
       conference: process.env.conferenceCode,
     });
-  } catch (e) {}
+  } catch (e) {
+    console.debug("User not logged in");
+  }
 
   const cartCookie = req.cookies["tickets-cart-v6"];
   return addApolloState(
