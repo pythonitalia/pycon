@@ -69,30 +69,32 @@ function fromBinaryStr(binary) {
   return decoder.decode(bytes);
 }
 
+export const EMPTY_INITIAL_CART_REDUCER = {
+  selectedProducts: {},
+  invoiceInformation: {
+    isBusiness: false,
+    companyName: "",
+    name: "",
+    vatId: "",
+    address: "",
+    zipCode: "",
+    city: "",
+    country: "",
+    fiscalCode: "",
+    pec: "",
+    sdi: "",
+  },
+  selectedHotelRooms: {},
+  voucherCode: "",
+  voucherUsed: false,
+  hasAdmissionTicket: false,
+};
+
 export const createCartContext = ({
   cartCookie = "",
 }: {
   cartCookie?: string;
 }) => {
-  const emptyInitialCartReducer = {
-    selectedProducts: {},
-    invoiceInformation: {
-      isBusiness: false,
-      companyName: "",
-      name: "",
-      vatId: "",
-      address: "",
-      zipCode: "",
-      city: "",
-      country: "",
-      fiscalCode: "",
-    },
-    selectedHotelRooms: {},
-    voucherCode: "",
-    voucherUsed: false,
-    hasAdmissionTicket: false,
-  };
-
   let storedCart = null;
 
   try {
@@ -112,7 +114,7 @@ export const createCartContext = ({
 
   const [state, dispatcher] = useReducer(
     reducer,
-    storedCart || emptyInitialCartReducer,
+    storedCart || EMPTY_INITIAL_CART_REDUCER,
   );
 
   useEffect(() => {
