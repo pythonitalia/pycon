@@ -1047,9 +1047,6 @@ If this new timing doesn't work for you, please don't hesitate to let us know be
     "tickets.landing.title": "What else you can buy?",
     "tickets.landing.ticketsCopy": `Tickets to join the conference! PyCon Italia is a fun 4 days event, where every year we are joined by more than 600 people, have more than 110+ sessions (talks and workshops) and social events where you can meet new people and have fun in the beautiful Florence.
 The sooner you buy your ticket, the more you save!`,
-    "tickets.landing.hotelCopy": `Take the stress out of your trip and book your hotel room with us! You can stay in the same hotel as the conference, the Grand Hotel Mediterraneo!
-We have a limited number of discounted rooms, so make sure you grab yours quickly!
-`,
     "tickets.landing.socialEvents.copy":
       "PyCon Italia is more than just a conference! PyDrinks and PyDinner are our two main social events, join us to meet new people from the Python community!",
 
@@ -1872,8 +1869,6 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "tickets.landing.title": "Cosa puoi comprare?",
     "tickets.landing.ticketsCopy": `Biglietti per partecipare alla conferenza! PyCon Italia é un evento di 4 giorni dove ogni anno più di 600 persone si riuniscono per partecipare a più di 110+ sessioni (talks e workshops) ed eventi sociali dove puoi fare nuove amicizie e goderti la bellissima Firenze.
 Affrettati a comprare il biglietto!`,
-    "tickets.landing.hotelCopy":
-      "Organizza il tuo viaggio con tranquillità e soggiorna al Grand Hotel Mediterraneo! Abbiamo un numero limitato di stanze scontate al Grand Hotel Mediterraneo, dove la conferenza avviene!",
 
     "tickets.landing.membership.cta": "Unisciti a noi!",
 

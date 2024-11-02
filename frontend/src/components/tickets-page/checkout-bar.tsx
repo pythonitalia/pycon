@@ -2,7 +2,7 @@ import { BottomBar, Button, Heading } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
 import { useMoneyFormatter } from "~/helpers/formatters";
-import type { HotelRoom, TicketItem } from "~/types";
+import type { TicketItem } from "~/types";
 
 import { calculateTotalAmount } from "./review/prices";
 import { useCart } from "./use-cart";

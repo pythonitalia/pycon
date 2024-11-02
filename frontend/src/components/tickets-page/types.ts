@@ -1,12 +1,3 @@
-export type HotelRoom = {
-  id: string;
-  name: string;
-  description: string;
-  price: string;
-  isSoldOut: boolean;
-  capacityLeft: number;
-};
-
 export type InvoiceInformationState = {
   isBusiness: boolean;
   companyName: string;
@@ -87,19 +78,8 @@ export type UpdateProductAction =
     }
   | { type: "decrementProduct"; id: string; variation?: string };
 
-export type UpdateHotelRoomAction =
-  | {
-      type: "addHotelRoom";
-      id: string;
-      checkin: string;
-      checkout: string;
-      beds: string;
-    }
-  | { type: "removeHotelRoom"; id: string; index: number };
-
 export type OrderAction =
   | UpdateProductAction
-  | UpdateHotelRoomAction
   | { type: "updateInvoiceInformation"; data: InvoiceInformationState }
   | { type: "updateIsBusiness"; isBusiness: boolean }
   | {
