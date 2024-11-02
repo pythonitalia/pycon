@@ -54,11 +54,6 @@ def get_user_tickets(
     ]
 
 
-# TODO: we should probably use a category for this
-def _is_hotel(item: dict):
-    return item.get("default_price") == "0.00"
-
-
 def _is_ticket_available(item) -> bool:
     now = timezone.now()
 
@@ -83,11 +78,7 @@ def get_conference_tickets(
     items = pretix.get_items(conference)
 
     # hide non active items and items that are hotels
-    items = {
-        key: item
-        for key, item in items.items()
-        if item["active"] and not _is_hotel(item)
-    }
+    items = {key: item for key, item in items.items() if item["active"]}
 
     if not show_unavailable_tickets:
         items = {key: item for key, item in items.items() if _is_ticket_available(item)}

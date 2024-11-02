@@ -53,22 +53,6 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
     )
     pretix_event_url = models.URLField(_("pretix event url"), blank=True, default="")
 
-    pretix_hotel_ticket_id = models.IntegerField(
-        _("pretix hotel ticket id"), blank=True, null=True
-    )
-    pretix_hotel_room_type_question_id = models.IntegerField(
-        _("pretix hotel room type question id"), blank=True, null=True
-    )
-    pretix_hotel_checkin_question_id = models.IntegerField(
-        _("pretix hotel check-in question id"), blank=True, null=True
-    )
-    pretix_hotel_checkout_question_id = models.IntegerField(
-        _("pretix hotel checkout question id"), blank=True, null=True
-    )
-    pretix_hotel_bed_layout_question_id = models.IntegerField(
-        _("pretix hotel bed layout question id"), blank=True, null=True
-    )
-
     pretix_conference_voucher_quota_id = models.IntegerField(
         _("Pretix speaker voucher quota id"),
         blank=True,
