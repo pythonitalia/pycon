@@ -180,7 +180,6 @@ class TicketType(Enum):
     STANDARD = "standard"
     BUSINESS = "business"
     ASSOCIATION = "association"
-    HOTEL = "hotel"
     SOCIAL_EVENT = "social-event"
 
 

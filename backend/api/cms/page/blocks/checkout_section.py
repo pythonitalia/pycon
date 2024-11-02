@@ -10,7 +10,6 @@ class CheckoutCategory(Enum):
     TOURS = "tours"
     GADGETS = "gadgets"
     MEMBERSHIP = "membership"
-    HOTEL = "hotel"
 
 
 CheckoutCategoryEnum = strawberry.enum(CheckoutCategory, name="CheckoutCategory")
@@ -41,7 +40,5 @@ class CheckoutSection:
                 categories.append(CheckoutCategory.GADGETS)
             case {"show_membership_products": True}:
                 categories.append(CheckoutCategory.MEMBERSHIP)
-            case {"show_hotel_products": True}:
-                categories.append(CheckoutCategory.HOTEL)
 
         return categories
