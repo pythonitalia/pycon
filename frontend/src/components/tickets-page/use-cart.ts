@@ -13,13 +13,6 @@ type CartContextType = {
   state: OrderState;
   addProduct: (id: string, variation?: string, admission?: boolean) => void;
   removeProduct: (id: string, variation?: string) => void;
-  addHotelRoom: (
-    id: string,
-    checkin: string,
-    checkout: string,
-    beds: string,
-  ) => void;
-  removeHotelRoom: (id: string, index: number) => void;
   updateIsBusiness: (isBusiness: boolean) => void;
   applyVoucher: (voucher: Voucher) => void;
   removeVoucher: () => void;
@@ -172,24 +165,6 @@ export const createCartContext = ({
     [],
   );
 
-  const addHotelRoom = useCallback((id, checkin, checkout, beds) => {
-    dispatcher({
-      type: "addHotelRoom",
-      id,
-      checkin,
-      checkout,
-      beds,
-    });
-  }, []);
-
-  const removeHotelRoom = useCallback((id, index) => {
-    dispatcher({
-      type: "removeHotelRoom",
-      id,
-      index,
-    });
-  }, []);
-
   const applyVoucher = useCallback(
     (voucher: Voucher) =>
       dispatcher({
@@ -227,8 +202,6 @@ export const createCartContext = ({
 
   return {
     state,
-    addHotelRoom,
-    removeHotelRoom,
     removeProduct,
     addProduct,
     updateIsBusiness,
