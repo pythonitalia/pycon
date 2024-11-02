@@ -12,7 +12,6 @@ from django.utils import timezone, translation
 from strawberry import ID
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
-from api.hotels.types import HotelRoom
 from api.languages.types import Language
 from api.pretix.query import get_conference_tickets, get_voucher
 from api.pretix.types import TicketItem, Voucher
@@ -176,10 +175,6 @@ class Conference:
         return get_conference_tickets(
             self, language=language, show_unavailable_tickets=show_unavailable_tickets
         )
-
-    @strawberry.field
-    def hotel_rooms(self, info: Info) -> list[HotelRoom]:
-        return self.hotel_rooms.all()
 
     @strawberry.field
     def deadlines(self, info: Info) -> list[Deadline]:

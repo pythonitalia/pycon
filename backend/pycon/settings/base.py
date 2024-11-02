@@ -105,7 +105,6 @@ INSTALLED_APPS = [
     "importer",
     "storages",
     "notifications.apps.NotificationsConfig",
-    "hotels.apps.HotelsConfig",
     "newsletters.apps.NewslettersConfig",
     "ordered_model",
     "invoices",
