@@ -136,7 +136,8 @@ def _submit_proposal(client, conference, submission, **kwargs):
 
 
 @mark.django_db
-def test_submit_talk(graphql_client, user):
+def test_submit_talk(graphql_client, user, django_capture_on_commit_callbacks, mocker):
+    mock_notify = mocker.patch("api.submissions.mutations.notify_new_cfp_submission")
     graphql_client.force_login(user)
 
     conference = ConferenceFactory(
@@ -150,17 +151,18 @@ def test_submit_talk(graphql_client, user):
 
     speaker_photo = FileFactory().id
 
-    resp, variables = _submit_talk(
-        graphql_client,
-        conference,
-        title={
-            "en": "English",
-            "it": "old old",
-        },
-        shortSocialSummary="summary",
-        speakerBio="my bio",
-        speakerPhoto=speaker_photo,
-    )
+    with django_capture_on_commit_callbacks(execute=True):
+        resp, variables = _submit_talk(
+            graphql_client,
+            conference,
+            title={
+                "en": "English",
+                "it": "old old",
+            },
+            shortSocialSummary="summary",
+            speakerBio="my bio",
+            speakerPhoto=speaker_photo,
+        )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
 
@@ -191,6 +193,8 @@ def test_submit_talk(graphql_client, user):
     assert PrivacyPolicyAcceptanceRecord.objects.filter(
         user=user, conference=conference, privacy_policy="cfp"
     ).exists()
+
+    mock_notify.delay.assert_called_once()
 
 
 @mark.django_db
