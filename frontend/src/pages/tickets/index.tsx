@@ -25,7 +25,7 @@ export const TicketsPage = () => {
   const language = useCurrentLanguage();
   return (
     <TicketsPageWrapper>
-      {({ hotelRooms, tickets }) => (
+      {({ tickets }) => (
         <div>
           <Container>
             <Spacer size="xl" />
@@ -83,10 +83,7 @@ export const TicketsPage = () => {
               </MultiplePartsCard>
             </Grid>
           </Section>
-          <AvailableProductsLandingSection
-            tickets={tickets}
-            hotelRooms={hotelRooms}
-          />
+          <AvailableProductsLandingSection tickets={tickets} />
         </div>
       )}
     </TicketsPageWrapper>

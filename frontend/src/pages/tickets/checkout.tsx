@@ -11,12 +11,11 @@ import { queryCurrentUser, queryTickets } from "~/types";
 export const TicketsCheckoutPage = ({ cartCookie }) => {
   return (
     <TicketsPageWrapper cartCookie={cartCookie}>
-      {({ tickets, hotelRooms, conference, me }) => (
+      {({ tickets, conference, me }) => (
         <CheckoutPageHandler
           me={me}
           conference={conference}
           products={tickets}
-          hotelRooms={hotelRooms}
         />
       )}
     </TicketsPageWrapper>

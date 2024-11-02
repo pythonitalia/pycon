@@ -21,7 +21,7 @@ export const CheckoutSection = ({ visibleCategories }: Props) => {
   const {
     data: {
       conference,
-      conference: { tickets, hotelRooms },
+      conference: { tickets },
     },
   } = useCheckoutSectionQuery({
     variables: {
@@ -39,7 +39,6 @@ export const CheckoutSection = ({ visibleCategories }: Props) => {
     <CartContext.Provider value={cartContext}>
       <Tickets
         products={tickets}
-        hotelRooms={hotelRooms}
         conference={conference}
         me={me}
         business={false}

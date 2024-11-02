@@ -5,20 +5,17 @@ import { FormattedMessage } from "react-intl";
 import {
   CheckoutCategory,
   type CurrentUserQueryResult,
-  type HotelRoom,
   type TicketItem,
   TicketType,
   type TicketsQuery,
 } from "~/types";
 
-import { HotelRow } from "./hotel-row";
 import { MembershipRow } from "./membership-row";
 import { SocialEventRow } from "./socialevent-row";
 import { TicketRow } from "./ticket-row";
 
 type Props = {
   products: TicketItem[];
-  hotelRooms: HotelRoom[];
   conference: TicketsQuery["conference"];
   me: CurrentUserQueryResult["data"]["me"];
   business: boolean;
@@ -29,7 +26,6 @@ type Props = {
 
 export const ProductsList = ({
   products,
-  hotelRooms,
   conference,
   business,
   me,
@@ -45,9 +41,6 @@ export const ProductsList = ({
     (product) => product.type === TicketType.Association,
   )[0];
   const tshirt = products.filter((product) => product.category === "Gadget")[0];
-  const sortedHotelRooms = [...hotelRooms].sort(
-    (a, b) => Number(a.price) - Number(b.price),
-  );
   const socialEvents = products.filter(
     (product) => product.type === TicketType.SocialEvent,
   );
@@ -126,23 +119,6 @@ export const ProductsList = ({
                   iconBackground="neutral"
                   ticket={guidedTour}
                 />
-                <Spacer size="small" />
-              </Fragment>
-            ))}
-          </>
-        )}
-
-      {visibleCategories.includes(CheckoutCategory.Hotel) &&
-        sortedHotelRooms.length > 0 && (
-          <>
-            {showHeadings && (
-              <GroupHeading>
-                <FormattedMessage id="tickets.productsList.hotelRoomsTitle" />
-              </GroupHeading>
-            )}
-            {sortedHotelRooms.map((hotelRoom, index) => (
-              <Fragment key={hotelRoom.id}>
-                <HotelRow openByDefault={index === 0} hotelRoom={hotelRoom} />
                 <Spacer size="small" />
               </Fragment>
             ))}

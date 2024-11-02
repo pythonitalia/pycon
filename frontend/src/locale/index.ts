@@ -525,9 +525,6 @@ Failing to notify us may impact your eligibility for financial aid at future eve
 
     "tickets.buyTickets": "Buy Tickets",
     "tickets.buyNow": "Buy now",
-    "tickets.hotelRow.totalPrice": "{value}",
-    "tickets.hotelRow.pricePerNight":
-      "{nights, plural, =0 {/night} =1 {{price} x # night} other {{price} x # nights}}",
 
     "tickets.checkout.orderCreationFailed":
       "Something went wrong!{br}Make sure you provided all the information{br}or contact us at help@pycon.it",
@@ -541,8 +538,6 @@ Failing to notify us may impact your eligibility for financial aid at future eve
 
     "tickets.checkout.voucher.placeholder": "Enter your voucher code",
     "tickets.checkout.recap.price": "{price} (incl. {taxRate}% VAT)",
-    "tickets.checkout.recap.hotelRoomsPrice":
-      "{price} ({perNight}/night) (incl. 0% VAT)",
 
     "tickets.productsList.soldOut": "Sold-out",
 
@@ -552,13 +547,7 @@ Failing to notify us may impact your eligibility for financial aid at future eve
     "tickets.buyTicketsCta": "Buy tickets",
 
     "tickets.productsList.joinPythonItalia": "Join Python Italia",
-    "tickets.productsList.hotelRoomsTitle": "Where to stay",
     "tickets.productsList.openDescription": "Discover more",
-
-    "tickets.productsList.hotelRow.bedLayout": "Bed layout",
-
-    "tickets.productsList.hotelRow.checkout": "Check-out",
-    "tickets.productsList.hotelRow.checkin": "Check-in",
 
     "tickets.productsList.tshirtTitle": "T-shirt",
 
@@ -586,9 +575,6 @@ Failing to notify us may impact your eligibility for financial aid at future eve
     "tickets.business.title": "Business",
     "tickets.business.description":
       "If your company, university or similar is paying for you, or you need an invoice.",
-
-    "addHotelRoom.checkin": "Check-in",
-    "addHotelRoom.checkout": "Check-out",
 
     "keynote.speakers": "Speakers",
     "keynote.instagram": "Instagram",
@@ -632,12 +618,9 @@ Failing to notify us may impact your eligibility for financial aid at future eve
     "orderConfirmation.tickets": "Tickets",
     "order.soldout": "Sold out",
     "order.price": "Price: {price} EUR.",
-    "order.hotelPrice": "Price: {price}/night EUR.",
 
     "order.inclVat": "(incl. {taxRate}% VAT)",
-    "order.hotelNoVat": "(incl. 0% VAT)",
     "order.selectSize": "Select...",
-    "order.hotelRooms": "Hotel rooms",
     "order.availableUntil": "Available until {date}",
     "order.ticketsLeft":
       "{count, plural, =0 {Sold out} one {# left} other {# left}}",
@@ -840,16 +823,9 @@ For Visa invitation letter requests, kindly visit our dedicated {visaPageLink} a
     "orderReview.attendeeName": "Attendee name",
     "orderReview.attendeeEmail": "Attendee email",
     "orderReview.total": "Total",
-    "orderReview.hotelRooms": "Hotel rooms",
-    "orderReview.night": "night",
-    "orderReview.nights": "nights",
-    "orderReview.checkin": "Check-in",
-    "orderReview.checkout": "Check-out",
     "orderReview.usingVoucher": "Voucher code used",
     "orderReview.ticketPrice": "{finalPrice}",
     "orderReview.ticketPriceWithVoucher": "{basePrice} {finalPrice}",
-    "orderReview.hotelPrice":
-      "{roomPrice}€ x{numNights, plural, one {1 night} other {{numNights} nights}} (incl. 0% VAT)",
     "orderReview.edit": "Edit",
     "orderReview.totalAmount": "{total}",
 
@@ -1342,9 +1318,6 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "signup.acceptPrivacyPolicy": "Accetto la {privacyPolicyLink}",
     "signup.privacyPolicy": "privacy policy",
 
-    "addHotelRoom.checkin": "Check-in",
-    "addHotelRoom.checkout": "Check-out",
-
     "whatsnext.comingUp": "Evento",
     "whatsnext.beings": "Inizio",
     "whatsnext.ends": "Fine",
@@ -1378,12 +1351,9 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "orderConfirmation.tickets": "Biglietti",
     "order.soldout": "Sold out",
     "order.price": "Prezzo: {price} EUR",
-    "order.hotelPrice": "Price: {price}/notte EUR.",
     "order.inclVat": "(incl. {taxRate}% IVA)",
-    "order.hotelNoVat": "(incl. 0% IVA)",
     "order.selectSize": "Taglia...",
     "profile.tickets.size": "Taglia",
-    "order.hotelRooms": "Stanze hotel",
     "order.availableUntil": "Disponibile fino al {date}",
     "order.ticketsLeft":
       "{count, plural, =0 {Sold out} one {# rimasto} other {# rimasti}}",
@@ -1393,8 +1363,6 @@ We have a limited number of discounted rooms, so make sure you grab yours quickl
     "orderReview.ticketPrice": "{finalPrice}",
     "orderReview.ticketPriceWithVoucher": "{basePrice} {finalPrice}",
     "orderReview.totalAmount": "{total}",
-    "orderReview.hotelPrice":
-      "{roomPrice}€ x{numNights, plural, one {1 notte} other {{numNights} notti}} (incl. 0% IVA)",
 
     "voucher.voucherHeading": "Codice sconto",
     "voucher.redeemVoucher": "Usa",
@@ -1598,11 +1566,6 @@ Se questo nuovo orario non dovesse andare bene per te, per favore non esitare a 
     "orderReview.attendeeName": "Nome partecipante",
     "orderReview.attendeeEmail": "Email partecipante",
     "orderReview.total": "Totale",
-    "orderReview.hotelRooms": "Stanze",
-    "orderReview.night": "notte",
-    "orderReview.nights": "notti",
-    "orderReview.checkin": "Check-in",
-    "orderReview.checkout": "Check-out",
 
     "keynote.speakers": "Speakers",
     "keynote.instagram": "Instagram",
@@ -1864,8 +1827,6 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
 
     "tickets.checkout.voucher.placeholder": "Codice sconto",
     "tickets.checkout.recap.price": "{price} (incl. {taxRate}% IVA)",
-    "tickets.checkout.recap.hotelRoomsPrice":
-      "{price} ({perNight}/notte) (incl. 0% IVA)",
 
     "tickets.productsList.soldOut": "Sold-out",
     "tickets.checkout.payWithCard": "Paga con carta",
@@ -1883,16 +1844,8 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "tickets.title": "Biglietti",
 
     "tickets.productsList.joinPythonItalia": "Unisciti a noi",
-    "tickets.productsList.hotelRoomsTitle": "Stanze d'albergo",
     "tickets.productsList.openDescription": "Scopri di più",
 
-    "tickets.productsList.hotelRow.checkout": "Check-out",
-    "tickets.productsList.hotelRow.checkin": "Check-in",
-
-    "tickets.productsList.hotelRow.bedLayout": "Letti",
-    "tickets.hotelRow.totalPrice": "{value}",
-    "tickets.hotelRow.pricePerNight":
-      "{nights, plural, =0 {/notte} =1 {{price} x # notte} other {{price} x # notti}}",
     "tickets.productsList.tshirtTitle": "T-shirt",
 
     "tickets.personal.title": "Personale",

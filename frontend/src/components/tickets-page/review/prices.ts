@@ -1,6 +1,6 @@
 import type { TicketItem } from "~/types";
 
-import type { HotelRoom, OrderState, Voucher } from "../types";
+import type { OrderState, Voucher } from "../types";
 
 export const calculateProductPrice = (
   product: TicketItem,
@@ -38,10 +38,6 @@ export const calculateTotalAmount = (
     [x: string]: TicketItem;
     [x: number]: TicketItem;
   },
-  hotelRoomsById: {
-    [x: string]: HotelRoom;
-    [x: number]: HotelRoom;
-  },
 ): number => {
   const ticketsPrice = Object.values(state.selectedProducts)
     .flat()
@@ -52,17 +48,7 @@ export const calculateTotalAmount = (
       0,
     );
 
-  const hotelRoomsPrice = Object.values(state.selectedHotelRooms)
-    .flat()
-    .reduce(
-      (sum, roomInfo) =>
-        sum +
-        Number.parseFloat(hotelRoomsById[roomInfo.id].price) *
-          roomInfo.numNights,
-      0,
-    );
-
-  return ticketsPrice + hotelRoomsPrice;
+  return ticketsPrice;
 };
 
 export const calculateSavedAmount = (

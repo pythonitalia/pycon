@@ -24,7 +24,6 @@ import { hasSelectedAtLeastOneProduct } from "./utils";
 type Props = {
   children: (props: {
     tickets: TicketItem[];
-    hotelRooms: TicketsQueryResult["data"]["conference"]["hotelRooms"];
     conference: TicketsQueryResult["data"]["conference"];
     me: CurrentUserQueryResult["data"]["me"];
   }) => React.ReactElement;
@@ -46,7 +45,6 @@ export const TicketsPageWrapper = ({ children, cartCookie }: Props) => {
     },
   });
 
-  const hotelRooms = data?.conference.hotelRooms || [];
   const tickets = data?.conference.tickets || [];
   const conference = data?.conference;
   const router = useRouter();
@@ -130,7 +128,7 @@ export const TicketsPageWrapper = ({ children, cartCookie }: Props) => {
         {!loading &&
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          children({ tickets, hotelRooms, conference, me })}
+          children({ tickets, conference, me })}
       </Page>
     </CartContext.Provider>
   );

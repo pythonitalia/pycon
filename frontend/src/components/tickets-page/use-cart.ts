@@ -84,7 +84,6 @@ export const EMPTY_INITIAL_CART_REDUCER = {
     pec: "",
     sdi: "",
   },
-  selectedHotelRooms: {},
   voucherCode: "",
   voucherUsed: false,
   hasAdmissionTicket: false,

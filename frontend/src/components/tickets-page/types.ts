@@ -69,22 +69,9 @@ export type SelectedProducts = {
   [id: string]: ProductState[];
 };
 
-export type SelectedHotelRooms = {
-  [id: string]: HotelRoomState[];
-};
-
-export type HotelRoomState = {
-  id: string;
-  checkin: string;
-  checkout: string;
-  beds: string;
-  numNights: number;
-};
-
 export type OrderState = {
   selectedProducts: SelectedProducts;
   invoiceInformation: InvoiceInformationState;
-  selectedHotelRooms: SelectedHotelRooms;
   voucherCode: string;
   voucherUsed: boolean;
   hasAdmissionTicket: boolean;
