@@ -123,7 +123,6 @@ known-first-party = [
     "job_board",
     "invoices",
     "newsletters",
-    "hotels",
     "notifications",
     "grants",
     "events",

@@ -1,5 +1,3 @@
-import datetime
-from hotels.tests.factories import BedLayoutFactory, HotelRoomFactory
 from users.tests.factories import UserFactory
 from submissions.tests.factories import (
     SubmissionFactory,
@@ -467,55 +465,6 @@ def test_get_conference_submission_types(
     assert resp["data"]["conference"]["submissionTypes"] == [
         {"id": str(talk_type.id), "name": talk_type.name},
         {"id": str(tutorial_type.id), "name": tutorial_type.name},
-    ]
-
-
-def test_get_conference_hotel_rooms(graphql_client):
-    hotel_room = HotelRoomFactory(
-        conference__start=timezone.datetime(2019, 1, 1, tzinfo=datetime.timezone.utc),
-        conference__end=timezone.datetime(2019, 1, 5, tzinfo=datetime.timezone.utc),
-    )
-
-    bed_layout = BedLayoutFactory()
-    hotel_room.available_bed_layouts.add(bed_layout)
-
-    hotel_room.save()
-
-    resp = graphql_client.query(
-        """
-        query($code: String!) {
-            conference(code: $code) {
-                hotelRooms {
-                    id
-                    name(language: "it")
-                    description(language: "it")
-                    price
-                    availableBedLayouts {
-                        id
-                        name(language: "en")
-                    }
-                    checkInDates
-                    checkOutDates
-                }
-            }
-        }
-        """,
-        variables={"code": hotel_room.conference.code},
-    )
-
-    assert "errors" not in resp
-    assert resp["data"]["conference"]["hotelRooms"] == [
-        {
-            "id": str(hotel_room.id),
-            "name": hotel_room.name.localize("it"),
-            "description": hotel_room.description.localize("it"),
-            "price": f"{hotel_room.price:0.2f}",
-            "checkInDates": ["2019-01-01", "2019-01-02", "2019-01-03", "2019-01-04"],
-            "checkOutDates": ["2019-01-02", "2019-01-03", "2019-01-04", "2019-01-05"],
-            "availableBedLayouts": [
-                {"name": bed_layout.name.localize("en"), "id": str(bed_layout.id)},
-            ],
-        }
     ]
 
 
