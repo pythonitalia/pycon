@@ -1,3 +1,4 @@
+from privacy_policy.models import PrivacyPolicyAcceptanceRecord
 from files_upload.tests.factories import FileFactory
 from conferences.tests.factories import (
     AudienceLevelFactory,
@@ -186,6 +187,10 @@ def test_submit_talk(graphql_client, user):
     participant = Participant.objects.get(conference=conference, user_id=user.id)
     assert participant.bio == "my bio"
     assert participant.photo_file_id == speaker_photo
+
+    assert PrivacyPolicyAcceptanceRecord.objects.filter(
+        user=user, conference=conference, privacy_policy="cfp"
+    ).exists()
 
 
 @mark.django_db
