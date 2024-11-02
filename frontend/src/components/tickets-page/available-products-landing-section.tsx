@@ -12,13 +12,12 @@ import { FormattedMessage } from "react-intl";
 
 import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
-import { type TicketItem, TicketType, type TicketsQueryResult } from "~/types";
+import { type TicketItem, TicketType } from "~/types";
 
 import { createHref } from "../link";
 
 type Props = {
   tickets: TicketItem[];
-  hotelRooms: TicketsQueryResult["data"]["conference"]["hotelRooms"];
 };
 
 export const AvailableProductsLandingSection = ({ tickets }: Props) => {

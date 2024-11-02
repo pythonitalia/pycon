@@ -40,19 +40,4 @@ fragment ConferenceProducts on Conference {
       }
     }
   }
-
-  hotelRooms {
-    id
-    name(language: $language)
-    description(language: $language)
-    price
-    isSoldOut
-    capacityLeft
-    availableBedLayouts {
-      id
-      name(language: $language)
-    }
-    checkInDates
-    checkOutDates
-  }
 }

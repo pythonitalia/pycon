@@ -9,7 +9,7 @@ import {
 import { FormattedMessage } from "react-intl";
 
 import { useMoneyFormatter } from "~/helpers/formatters";
-import type { HotelRoom, TicketItem } from "~/types";
+import type { TicketItem } from "~/types";
 
 import {
   calculateSavedAmount,
@@ -19,7 +19,6 @@ import { useCart } from "../tickets-page/use-cart";
 
 type Props = {
   productsById: Record<number, TicketItem>;
-  hotelRoomsById: Record<number, HotelRoom>;
   createOrder: (event: any, method: string) => void;
   isCreatingOrder: boolean;
   creationFailed: boolean;
@@ -27,7 +26,6 @@ type Props = {
 
 export const CreateOrderBar = ({
   productsById,
-  hotelRoomsById,
   createOrder,
   creationFailed,
   isCreatingOrder,
@@ -35,7 +33,7 @@ export const CreateOrderBar = ({
   const moneyFormatter = useMoneyFormatter();
   const { state } = useCart();
 
-  const totalAmount = calculateTotalAmount(state, productsById, hotelRoomsById);
+  const totalAmount = calculateTotalAmount(state, productsById);
   const savedAmount = calculateSavedAmount(state, productsById);
 
   const checkoutIsDisabled = isCreatingOrder || !state.acceptedPrivacyPolicy;

@@ -18,24 +18,14 @@ import { VoucherCard } from "./voucher-card";
 
 type Props = {
   products: TicketItem[];
-  hotelRooms: TicketsQueryResult["data"]["conference"]["hotelRooms"];
   me: CurrentUserQueryResult["data"]["me"];
   conference: TicketsQueryResult["data"]["conference"];
 };
 
-export const CheckoutPageHandler = ({
-  products,
-  hotelRooms,
-  me,
-  conference,
-}: Props) => {
+export const CheckoutPageHandler = ({ products, me, conference }: Props) => {
   const productsById = Object.fromEntries(
     products.map((product) => [product.id, product]),
   );
-  const hotelRoomsById = Object.fromEntries(
-    hotelRooms!.map((room) => [room.id, room]),
-  );
-
   const { createOrder, isCreatingOrder, creationFailed, errors } =
     useCreateOrder({ userEmail: me?.email });
   const invoiceInformationErrors = errors?.invoiceInformation;
@@ -79,16 +69,12 @@ export const CheckoutPageHandler = ({
         <Spacer size="xs" />
         <VoucherCard />
         <Spacer size="xs" />
-        <RecapCard
-          hotelRoomsById={hotelRoomsById}
-          productsById={productsById}
-        />
+        <RecapCard productsById={productsById} />
         <Spacer size="medium" />
         <PrivacyPolicy />
       </Section>
       <CreateOrderBar
         productsById={productsById}
-        hotelRoomsById={hotelRoomsById}
         createOrder={createOrder}
         isCreatingOrder={isCreatingOrder}
         creationFailed={creationFailed}

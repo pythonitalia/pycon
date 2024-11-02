@@ -3,7 +3,6 @@ import { differenceInCalendarDays, parseISO } from "date-fns";
 import type {
   OrderAction,
   OrderState,
-  UpdateHotelRoomAction,
   UpdateProductAction,
   Voucher,
 } from "./types";
@@ -64,44 +63,6 @@ const updateProductReducer = (
     hasAdmissionTicket: Object.values(selectedProducts)
       .flat()
       .some((product) => product.admission),
-  };
-};
-
-const updateHotelRoomReducer = (
-  state: OrderState,
-  action: UpdateHotelRoomAction,
-): OrderState => {
-  const id = action.id;
-  const hotelRooms = { ...state.selectedHotelRooms };
-  const hotelRoomById = hotelRooms[action.id] ? [...hotelRooms[id]] : [];
-
-  switch (action.type) {
-    case "addHotelRoom":
-      hotelRoomById.push({
-        id,
-        checkin: action.checkin,
-        checkout: action.checkout,
-        beds: action.beds,
-        numNights: differenceInCalendarDays(
-          parseISO(action.checkout),
-          parseISO(action.checkin),
-        ),
-      });
-      break;
-    case "removeHotelRoom":
-      hotelRoomById.splice(action.index, 1);
-      break;
-  }
-
-  if (hotelRoomById.length === 0) {
-    delete hotelRooms[id];
-  } else {
-    hotelRooms[id] = hotelRoomById;
-  }
-
-  return {
-    ...state,
-    selectedHotelRooms: hotelRooms,
   };
 };
 
@@ -178,9 +139,6 @@ export const reducer = (state: OrderState, action: OrderAction): OrderState => {
     case "incrementProduct":
     case "decrementProduct":
       return updateProductReducer(state, action);
-    case "addHotelRoom":
-    case "removeHotelRoom":
-      return updateHotelRoomReducer(state, action);
     case "updateTicketAnswer": {
       const products = state.selectedProducts[action.id];
       const newProduct = {

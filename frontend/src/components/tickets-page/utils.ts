@@ -3,8 +3,7 @@ import type { TicketItem } from "~/types";
 import type { InvoiceInformationState, OrderState } from "./types";
 
 export const hasSelectedAtLeastOneProduct = (state: OrderState): boolean =>
-  Object.values(state.selectedProducts).length > 0 ||
-  Object.values(state.selectedHotelRooms).length > 0;
+  Object.values(state.selectedProducts).length > 0;
 
 type InvoiceInformationKeys = (keyof InvoiceInformationState)[];
 

@@ -13,7 +13,7 @@ import { CheckoutCategory, queryCurrentUser, queryTickets } from "~/types";
 export const PersonalTicketsPage = ({ cartCookie }) => {
   return (
     <TicketsPageWrapper cartCookie={cartCookie}>
-      {({ tickets: products, hotelRooms, conference, me }) => (
+      {({ tickets: products, conference, me }) => (
         <>
           <Section spacingSize="xl" illustration="snakeTailUp">
             <Heading size="display2">
@@ -23,7 +23,6 @@ export const PersonalTicketsPage = ({ cartCookie }) => {
 
           <Tickets
             products={products}
-            hotelRooms={hotelRooms}
             conference={conference}
             me={me}
             business={false}

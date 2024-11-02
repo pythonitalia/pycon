@@ -9,22 +9,17 @@ import { useCart } from "./use-cart";
 
 type Props = {
   products: TicketItem[];
-  hotelRooms: HotelRoom[];
   onCheckout: () => void;
 };
 
-export const CheckoutBar = ({ products, hotelRooms, onCheckout }: Props) => {
+export const CheckoutBar = ({ products, onCheckout }: Props) => {
   const { state } = useCart();
 
   const productsById = Object.fromEntries(
     products!.map((product) => [product.id, product]),
   );
 
-  const hotelRoomsById = Object.fromEntries(
-    hotelRooms!.map((room) => [room.id, room]),
-  );
-
-  const totalAmount = calculateTotalAmount(state, productsById, hotelRoomsById);
+  const totalAmount = calculateTotalAmount(state, productsById);
   const moneyFormatter = useMoneyFormatter();
 
   if (totalAmount === 0) {

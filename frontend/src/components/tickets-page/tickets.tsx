@@ -16,7 +16,6 @@ import { useCart } from "./use-cart";
 
 type Props = {
   products: TicketItem[];
-  hotelRooms: TicketsQueryResult["data"]["conference"]["hotelRooms"];
   conference: TicketsQueryResult["data"]["conference"];
   me: CurrentUserQueryResult["data"]["me"];
   business: boolean;
@@ -26,7 +25,6 @@ type Props = {
 
 export const Tickets = ({
   products,
-  hotelRooms,
   conference,
   business,
   me,
@@ -62,7 +60,6 @@ export const Tickets = ({
     <>
       <ProductsList
         products={products}
-        hotelRooms={hotelRooms}
         conference={conference}
         business={business}
         ignoreSoldOut={!!voucherCode}
@@ -70,11 +67,7 @@ export const Tickets = ({
         visibleCategories={visibleCategories}
         showHeadings={showHeadings}
       />
-      <CheckoutBar
-        onCheckout={onCheckout}
-        products={products}
-        hotelRooms={hotelRooms}
-      />
+      <CheckoutBar onCheckout={onCheckout} products={products} />
     </>
   );
 };
