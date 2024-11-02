@@ -1,3 +1,4 @@
+from privacy_policy.models import PrivacyPolicyAcceptanceRecord
 from files_upload.tests.factories import FileFactory
 from conferences.tests.factories import (
     AudienceLevelFactory,
@@ -10,6 +11,8 @@ from pytest import mark
 from participants.models import Participant
 from submissions.models import Submission, SubmissionTag, SubmissionType
 from submissions.tests.factories import SubmissionFactory, SubmissionTypeFactory
+
+pytestmark = mark.django_db
 
 
 def _submit_talk(client, conference, **kwargs):
@@ -134,8 +137,8 @@ def _submit_proposal(client, conference, submission, **kwargs):
     )
 
 
-@mark.django_db
-def test_submit_talk(graphql_client, user):
+def test_submit_talk(graphql_client, user, django_capture_on_commit_callbacks, mocker):
+    mock_notify = mocker.patch("api.submissions.mutations.notify_new_cfp_submission")
     graphql_client.force_login(user)
 
     conference = ConferenceFactory(
@@ -149,17 +152,18 @@ def test_submit_talk(graphql_client, user):
 
     speaker_photo = FileFactory().id
 
-    resp, variables = _submit_talk(
-        graphql_client,
-        conference,
-        title={
-            "en": "English",
-            "it": "old old",
-        },
-        shortSocialSummary="summary",
-        speakerBio="my bio",
-        speakerPhoto=speaker_photo,
-    )
+    with django_capture_on_commit_callbacks(execute=True):
+        resp, variables = _submit_talk(
+            graphql_client,
+            conference,
+            title={
+                "en": "English",
+                "it": "old old",
+            },
+            shortSocialSummary="summary",
+            speakerBio="my bio",
+            speakerPhoto=speaker_photo,
+        )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
 
@@ -187,8 +191,13 @@ def test_submit_talk(graphql_client, user):
     assert participant.bio == "my bio"
     assert participant.photo_file_id == speaker_photo
 
+    assert PrivacyPolicyAcceptanceRecord.objects.filter(
+        user=user, conference=conference, privacy_policy="cfp"
+    ).exists()
 
-@mark.django_db
+    mock_notify.delay.assert_called_once()
+
+
 def test_submit_talk_with_photo_to_upload(graphql_client, user, mocker):
     graphql_client.force_login(user)
 
@@ -221,7 +230,6 @@ def test_submit_talk_with_photo_to_upload(graphql_client, user, mocker):
     assert participant.photo_file_id == speaker_photo
 
 
-@mark.django_db
 def test_submit_talk_without_photo_fails(graphql_client, user, mocker):
     graphql_client.force_login(user)
 
@@ -252,7 +260,6 @@ def test_submit_talk_without_photo_fails(graphql_client, user, mocker):
     ]
 
 
-@mark.django_db
 def test_submit_talk_with_existing_participant(graphql_client, user):
     graphql_client.force_login(user)
     conference = ConferenceFactory(
@@ -309,7 +316,6 @@ def test_submit_talk_with_existing_participant(graphql_client, user):
     assert participant.photo_file_id == speaker_photo
 
 
-@mark.django_db
 def test_submit_talk_with_missing_data_of_other_language_fails(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -341,7 +347,6 @@ def test_submit_talk_with_missing_data_of_other_language_fails(graphql_client, u
     ]
 
 
-@mark.django_db
 def test_submit_talk_with_missing_data_fails(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -385,7 +390,6 @@ def test_submit_talk_with_missing_data_fails(graphql_client, user):
     )
 
 
-@mark.django_db
 def test_submit_talk_with_multiple_languages(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -429,7 +433,6 @@ def test_submit_talk_with_multiple_languages(graphql_client, user):
     assert talk.audience_level.name == "Beginner"
 
 
-@mark.django_db
 def test_submit_talk_with_not_valid_conf_language(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -450,7 +453,6 @@ def test_submit_talk_with_not_valid_conf_language(graphql_client, user):
     ]
 
 
-@mark.django_db
 def test_submit_talk_with_not_valid_duration(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -471,7 +473,6 @@ def test_submit_talk_with_not_valid_duration(graphql_client, user):
     ]
 
 
-@mark.django_db
 def test_cannot_use_duration_if_submission_type_is_not_allowed(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -502,7 +503,6 @@ def test_cannot_use_duration_if_submission_type_is_not_allowed(graphql_client, u
     ]
 
 
-@mark.django_db
 def test_submit_talk_with_duration_id_of_another_conf(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -527,7 +527,6 @@ def test_submit_talk_with_duration_id_of_another_conf(graphql_client, user):
     ]
 
 
-@mark.django_db
 def test_submit_talk_with_not_valid_conf_topic(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -549,7 +548,6 @@ def test_submit_talk_with_not_valid_conf_topic(graphql_client, user):
     ]
 
 
-@mark.django_db
 def test_submit_talk_with_not_valid_allowed_submission_type_in_the_conference(
     graphql_client, user
 ):
@@ -572,7 +570,6 @@ def test_submit_talk_with_not_valid_allowed_submission_type_in_the_conference(
     ]
 
 
-@mark.django_db
 def test_submit_talk_with_not_valid_submission_type_id(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -593,7 +590,6 @@ def test_submit_talk_with_not_valid_submission_type_id(graphql_client, user):
     ]
 
 
-@mark.django_db
 def test_submit_talk_with_not_valid_language_code(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -614,7 +610,6 @@ def test_submit_talk_with_not_valid_language_code(graphql_client, user):
     ]
 
 
-@mark.django_db
 def test_submit_talk_with_not_valid_audience_level(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -636,7 +631,6 @@ def test_submit_talk_with_not_valid_audience_level(graphql_client, user):
     # assert resp["data"]["sendSubmission"]["errors"][0]["field"] == "audience_level"
 
 
-@mark.django_db
 def test_submit_talk_with_not_valid_conf_audience_level(graphql_client, user):
     graphql_client.force_login(user)
     audience_level = AudienceLevelFactory(name="Intermidiate")
@@ -657,7 +651,6 @@ def test_submit_talk_with_not_valid_conf_audience_level(graphql_client, user):
     ]
 
 
-@mark.django_db
 def test_cannot_propose_a_talk_as_unlogged_user(graphql_client):
     conference = ConferenceFactory(
         topics=("my-topic",),
@@ -672,7 +665,6 @@ def test_cannot_propose_a_talk_as_unlogged_user(graphql_client):
     assert resp["errors"][0]["message"] == "User not logged in"
 
 
-@mark.django_db
 def test_cannot_propose_a_talk_if_the_cfp_is_not_open(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -693,7 +685,6 @@ def test_cannot_propose_a_talk_if_the_cfp_is_not_open(graphql_client, user):
     ]
 
 
-@mark.django_db
 def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -713,7 +704,6 @@ def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(graphql_client, user):
     ]
 
 
-@mark.django_db
 def test_same_user_can_propose_multiple_talks_to_the_same_conference(
     graphql_client, user
 ):
@@ -747,7 +737,6 @@ def test_same_user_can_propose_multiple_talks_to_the_same_conference(
     )
 
 
-@mark.django_db
 def test_submit_tutorial(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -773,7 +762,6 @@ def test_submit_tutorial(graphql_client, user):
     )
 
 
-@mark.django_db
 def test_submit_tutorial_and_talk_to_the_same_conference(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -807,7 +795,6 @@ def test_submit_tutorial_and_talk_to_the_same_conference(graphql_client, user):
     )
 
 
-@mark.django_db
 def test_notes_are_not_required(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -831,7 +818,6 @@ def test_notes_are_not_required(graphql_client, user):
     )
 
 
-@mark.django_db
 def test_same_user_can_submit_talks_to_different_conferences(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -944,7 +930,6 @@ def test_speaker_level_only_allows_the_predefined_levels(graphql_client, user):
     ] == ["Select a valid choice"]
 
 
-@mark.django_db
 def test_submit_talk_with_too_long_title_fails(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -978,7 +963,6 @@ def test_submit_talk_with_too_long_title_fails(graphql_client, user):
     )
 
 
-@mark.django_db
 def test_submit_talk_with_no_languages_and_no_tags_is_not_allowed(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -1006,7 +990,6 @@ def test_submit_talk_with_no_languages_and_no_tags_is_not_allowed(graphql_client
     )
 
 
-@mark.django_db
 def test_submit_talk_with_no_conference(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -1029,7 +1012,6 @@ def test_submit_talk_with_no_conference(graphql_client, user):
     )
 
 
-@mark.django_db
 def test_submit_talk_with_too_long_notes_fails(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -1056,7 +1038,6 @@ def test_submit_talk_with_too_long_notes_fails(graphql_client, user):
     )
 
 
-@mark.django_db
 def test_submit_talk_with_too_long_summary_fails(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -1083,7 +1064,6 @@ def test_submit_talk_with_too_long_summary_fails(graphql_client, user):
     )
 
 
-@mark.django_db
 def test_submit_talk_only_allows_5_tags(graphql_client, user):
     graphql_client.force_login(user)
 
@@ -1118,7 +1098,6 @@ def test_submit_talk_only_allows_5_tags(graphql_client, user):
     )
 
 
-@mark.django_db
 def test_submit_talk_with_no_tags_fails(graphql_client, user):
     graphql_client.force_login(user)
 

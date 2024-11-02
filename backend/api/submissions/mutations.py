@@ -1,7 +1,9 @@
+from django.db import transaction
 import math
 import re
 from typing import Annotated, Union, Optional
 
+from privacy_policy.record import record_privacy_policy_acceptance
 import strawberry
 from strawberry import ID
 from strawberry.types import Info
@@ -312,6 +314,7 @@ class SubmissionsMutations:
         return instance
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @transaction.atomic
     def send_submission(
         self, info: Info, input: SendSubmissionInput
     ) -> SendSubmissionOutput:
@@ -368,11 +371,20 @@ class SubmissionsMutations:
             },
         )
 
-        notify_new_cfp_submission.delay(
-            submission_id=instance.id,
-            conference_id=instance.conference_id,
-            admin_url=request.build_absolute_uri(instance.get_admin_url()),
+        record_privacy_policy_acceptance(
+            info.context.request,
+            conference,
+            "cfp",
         )
+
+        def _notify_new_submission():
+            notify_new_cfp_submission.delay(
+                submission_id=instance.id,
+                conference_id=instance.conference_id,
+                admin_url=request.build_absolute_uri(instance.get_admin_url()),
+            )
+
+        transaction.on_commit(_notify_new_submission)
 
         # hack because we return django models
         instance.__strawberry_definition__ = Submission.__strawberry_definition__
