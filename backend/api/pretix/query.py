@@ -77,7 +77,7 @@ def get_conference_tickets(
 ) -> list[TicketItem]:
     items = pretix.get_items(conference)
 
-    # hide non active items and items that are hotels
+    # hide non active items
     items = {key: item for key, item in items.items() if item["active"]}
 
     if not show_unavailable_tickets:
