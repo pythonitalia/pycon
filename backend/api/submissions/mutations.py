@@ -313,8 +313,8 @@ class SubmissionsMutations:
         instance.__strawberry_definition__ = Submission.__strawberry_definition__
         return instance
 
-    @transaction.atomic
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @transaction.atomic
     def send_submission(
         self, info: Info, input: SendSubmissionInput
     ) -> SendSubmissionOutput:
