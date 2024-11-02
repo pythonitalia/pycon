@@ -186,7 +186,7 @@ Failing to notify us may impact your eligibility for financial aid at future eve
     "profile.myProposals.noOrders.heading":
       "You don't have any orders yet. But this is easy to solve!",
     "profile.myProposals.noOrders.body":
-      "Buy your ticket, t-shirt, hotel room and more on our tickets page and join us!",
+      "Buy your ticket, t-shirt and more on our tickets page and join us!",
 
     "input.selectCountryPlaceholder": "Select country...",
 
@@ -597,9 +597,7 @@ Failing to notify us may impact your eligibility for financial aid at future eve
     "order.addMembership": "Add membership",
     "order.removeMembership": "Remove membership",
     "order.needToSelectProducts":
-      "You need to select at least one ticket, a t-shirt or a hotel room before continuing",
-    "order.hotelRoomCartInfo":
-      "{roomName} with check-in the {checkin} and check-out the {checkout}",
+      "You need to select at least one ticket or a t-shirt before continuing",
     "orderConfirmation.heading": "Order paid",
     "orderConfirmation.heading.canceled": "Order canceled",
     "orderConfirmation.heading.pending": "Order pending",
@@ -1053,7 +1051,6 @@ The sooner you buy your ticket, the more you save!`,
     "tickets.landing.membership.cta": "Join us!",
 
     "tickets.landing.ticketsTitle": "Tickets",
-    "tickets.landing.hotelTitle": "Hotel",
     "tickets.landing.socialEvents.title": "Social Events & tours",
     "tickets.landing.membershipTitle": "Membership",
     "blog.publishedOn": "{date} - {author}",
@@ -1324,9 +1321,7 @@ The sooner you buy your ticket, the more you save!`,
     "order.payWithCard": "Paga con carta",
     "order.payWithBankTransfer": "Paga con bonifico bancario",
     "order.needToSelectProducts":
-      "Scegli un biglietto, una maglietta o una stanza di hotel prima di continuare",
-    "order.hotelRoomCartInfo":
-      "{roomName} con check-in il {checkin} e check-out {checkout}",
+      "Scegli un biglietto o una maglietta prima di continuare",
     "order.userAlreadyMember":
       "Fai già parte della nostra associazione. Grazie!",
     "order.addMembership": "Aggiungi iscrizione",
@@ -1479,7 +1474,7 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
     "grants.form.fields.needAccommodation":
       "Hai bisogno di un alloggio per la durata della conferenza?",
     "grants.form.fields.needAccommodation.description":
-      "Il nostro obiettivo è assistere il maggior numero possibile di partecipanti con l'alloggio, tenendo conto delle nostre limitazioni di budget. In caso di approvazione della tua domanda di grant, ci occuperemo di organizzare il tuo alloggio all’Hotel Mediterraneo dove la conferenza avrà luogo.",
+      "Il nostro obiettivo è assistere il maggior numero possibile di partecipanti con l'alloggio, tenendo conto delle nostre limitazioni di budget. In caso di approvazione della tua domanda di grant, ci occuperemo di organizzare il tuo alloggio.",
     "grants.form.fields.why":
       "Perché stai richiedendo un grant per PyCon Italia?",
     "grants.form.fields.why.description":
@@ -1873,7 +1868,6 @@ Affrettati a comprare il biglietto!`,
     "tickets.landing.membership.cta": "Unisciti a noi!",
 
     "tickets.landing.ticketsTitle": "Biglietti",
-    "tickets.landing.hotelTitle": "Hotel",
     "tickets.landing.membershipTitle": "Associazione",
     "blog.publishedOn": "{date} - {author}",
 
@@ -2031,7 +2025,7 @@ Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai
 
     "profile.myProposals.noOrders.heading": "Non hai nessun ordine",
     "profile.myProposals.noOrders.body":
-      "Compra il tuo biglietto, t-shirt, stanza di hotel e tanto altro sulla nostra pagina biglietti ed unisciti a noi!",
+      "Compra il tuo biglietto, t-shirt e tanto altro sulla nostra pagina biglietti ed unisciti a noi!",
     "profile.logout.title": "Logout",
     "profile.logout.body": "{name}, vuoi sloggarti?",
     "input.selectCountryPlaceholder": "Seleziona...",

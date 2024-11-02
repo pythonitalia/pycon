@@ -28,7 +28,6 @@ export const BusinessTicketsPage = ({ cartCookie }) => {
             business={true}
             visibleCategories={[
               CheckoutCategory.Tickets,
-              CheckoutCategory.Hotel,
               CheckoutCategory.Gadgets,
               CheckoutCategory.Membership,
               CheckoutCategory.Tours,
