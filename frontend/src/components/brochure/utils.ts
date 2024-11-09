@@ -1,3 +1,3 @@
 export const humanizeText = (text: string) => {
-  return text.replace("_", " ").toLowerCase();
+  return text.replace("_", " ");
 };
