@@ -378,7 +378,7 @@ class Conference:
 
     @strawberry.field
     def sponsor_benefits(self) -> list[SponsorBenefit]:
-        benefits = self.sponsor_benefits.all()
+        benefits = self.sponsor_benefits.order_by("order").all()
 
         return [
             SponsorBenefit(
@@ -391,9 +391,13 @@ class Conference:
 
     @strawberry.field
     def sponsor_levels(self) -> list[SponsorLevel]:
-        levels = SponsorLevelModel.objects.filter(conference=self).prefetch_related(
-            "sponsorlevelbenefit_set",
-            "sponsorlevelbenefit_set__benefit",
+        levels = (
+            SponsorLevelModel.objects.filter(conference=self)
+            .prefetch_related(
+                "sponsorlevelbenefit_set",
+                "sponsorlevelbenefit_set__benefit",
+            )
+            .order_by("order")
         )
 
         return [
@@ -416,7 +420,7 @@ class Conference:
 
     @strawberry.field
     def sponsor_special_options(self) -> list[SponsorSpecialOption]:
-        options = self.sponsor_special_options.all()
+        options = self.sponsor_special_options.order_by("order").all()
 
         return [
             SponsorSpecialOption(

@@ -1,4 +1,4 @@
-import { SnakeDNA } from "@python-italia/pycon-styleguide/illustrations";
+import { Text } from "@python-italia/pycon-styleguide";
 import { compile } from "~/helpers/markdown";
 
 const Snake1 = (props: React.SVGProps<SVGSVGElement>) => (
@@ -192,9 +192,16 @@ export function WhySponsorPage({
           <Snake3 className="size-[4cm] border-black border-4 bg-yellow -translate-y-32" />
         </div>
 
-        <p className="bg-pink border-4 border-black px-[0.5cm] py-[0.5cm] w-[50%] self-end">
-          {compile(whySponsor.text).tree}
-        </p>
+        <div className="flex justify-between">
+          <div className="self-end bg-green w-[30%] px-[0.5cm] py-[0.5cm] border-4 border-black">
+            <span className="font-sans break-words transition-colors font-medium whitespace-pre-wrap select-auto">
+              Get in touch, we’d be happy to take care of your ideas!
+            </span>
+          </div>
+          <p className="bg-pink border-4 border-black px-[0.5cm] py-[0.5cm] w-[50%] self-end">
+            {compile(whySponsor.text).tree}
+          </p>
+        </div>
       </div>
     </div>
   );

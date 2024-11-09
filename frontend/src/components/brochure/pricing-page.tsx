@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { humanizeText } from "./utils";
 
 export type Benefit = {
   name: string;
@@ -35,7 +36,7 @@ const TableSection = ({
   return (
     <tr>
       <td className="uppercase font-bold text-coral px-[0.5cm] pt-[0.5cm] bg-cream">
-        {title}
+        {humanizeText(title)}
       </td>
       {new Array(totalPackages).fill(null).map((_, i) => (
         <td className={clsx("border-l", getBackgroundColor(i))} />

@@ -71,13 +71,7 @@ class SponsorLevel(OrderedModel):
         unique_together = ["name", "conference"]
 
 
-class SponsorBenefit(TimeStampedModel):
-    conference = models.ForeignKey(
-        "conferences.Conference",
-        on_delete=models.CASCADE,
-        related_name="sponsor_benefits",
-    )
-
+class SponsorBenefit(OrderedModel, TimeStampedModel):
     class Category(models.TextChoices):
         CONTENT = "content", _("Sponsored Content")
         BOOTH = "booth", _("Booth")
@@ -86,11 +80,19 @@ class SponsorBenefit(TimeStampedModel):
         RECRUITING = "recruiting", _("Recruiting")
         ATTENDEE_INTERACTION = "attendee_interaction", _("Attendee Interaction")
 
+    conference = models.ForeignKey(
+        "conferences.Conference",
+        on_delete=models.CASCADE,
+        related_name="sponsor_benefits",
+    )
+
     name = I18nCharField(_("name"), max_length=100)
     category = models.CharField(_("category"), max_length=100, choices=Category.choices)
     description = I18nTextField(_("description"), blank=True)
 
-    class Meta:
+    order_with_respect_to = "conference"
+
+    class Meta(OrderedModel.Meta):
         unique_together = ["name", "conference"]
         verbose_name = _("sponsor benefit")
         verbose_name_plural = _("sponsor benefits")
@@ -119,7 +121,7 @@ class SponsorLevelBenefit(models.Model):
         return f"{self.sponsor_level} - {self.benefit} ({self.value})"
 
 
-class SponsorSpecialOption(models.Model):
+class SponsorSpecialOption(OrderedModel, models.Model):
     conference = models.ForeignKey(
         "conferences.Conference",
         on_delete=models.CASCADE,
@@ -128,8 +130,9 @@ class SponsorSpecialOption(models.Model):
     name = models.CharField(_("name"), max_length=255)
     description = models.TextField(_("description"))
     price = models.DecimalField(_("price"), max_digits=10, decimal_places=2)
+    order_with_respect_to = "conference"
 
-    class Meta:
+    class Meta(OrderedModel.Meta):
         verbose_name = _("special option")
         verbose_name_plural = _("special options")
         unique_together = ["name", "conference"]

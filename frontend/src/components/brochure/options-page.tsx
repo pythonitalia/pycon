@@ -1,4 +1,6 @@
 import clsx from "clsx";
+import { compile } from "~/helpers/markdown";
+import { humanizeText } from "./utils";
 
 export const OptionsPage = ({
   title,
@@ -17,12 +19,12 @@ export const OptionsPage = ({
         {options.map((option) => (
           <div key={option.name}>
             <dt className="font-bold break-after-avoid pt-[0.3cm]">
-              {option.name}
+              {humanizeText(option.name)}
               {option.price && (
                 <span className="text-sm font-normal"> - {option.price}€</span>
               )}
             </dt>
-            <dd>{option.description}</dd>
+            <dd>{compile(option.description).tree}</dd>
           </div>
         ))}
       </dl>
