@@ -13,8 +13,8 @@ export function BackCoverPage() {
         </p>
         <p>
           <span className="inline-block mr-2">📧</span>{" "}
-          <a className="font-medium" href="mailto:info@pycon.it">
-            info@pycon.it
+          <a className="font-medium" href="mailto:sponsor@pycon.it">
+            sponsor@pycon.it
           </a>
         </p>
         <p>
