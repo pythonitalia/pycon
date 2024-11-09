@@ -22,9 +22,12 @@ class SponsorAdmin(OrderedModelAdmin):
 
 
 @admin.register(SponsorBenefit)
-class SponsorBenefitAdmin(admin.ModelAdmin):
-    list_display = ("name", "conference", "category")
-    list_filter = ("category",)
+class SponsorBenefitAdmin(OrderedModelAdmin, admin.ModelAdmin):
+    list_display = ("name", "conference", "category", "order", "move_up_down_links")
+    list_filter = (
+        "conference",
+        "category",
+    )
 
 
 class SponsorLevelBenefitInline(admin.TabularInline):
@@ -43,8 +46,8 @@ class SponsorLevelAdmin(OrderedModelAdmin):
 
 
 @admin.register(SponsorSpecialOption)
-class SponsorSpecialOptionAdmin(admin.ModelAdmin):
-    list_display = ("name", "conference", "price")
+class SponsorSpecialOptionAdmin(OrderedModelAdmin, admin.ModelAdmin):
+    list_display = ("name", "conference", "price", "move_up_down_links")
     list_filter = ("conference",)
 
 

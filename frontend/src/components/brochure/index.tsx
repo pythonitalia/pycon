@@ -55,12 +55,12 @@ export function Brochure({
       />
       <OptionsPage
         options={conference.sponsorBenefits}
-        title="Options"
+        title="Services Details"
         background="bg-yellow"
       />
       <OptionsPage
         options={conference.sponsorSpecialOptions}
-        title="Special Options"
+        title="Available Upgrades"
         background="bg-green"
       />
       <TestimonialsPage testimonials={testimonials} />

@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { humanizeText } from "./utils";
 
 export const OptionsPage = ({
   title,
@@ -17,7 +18,7 @@ export const OptionsPage = ({
         {options.map((option) => (
           <div key={option.name}>
             <dt className="font-bold break-after-avoid pt-[0.3cm]">
-              {option.name}
+              {humanizeText(option.name)}
               {option.price && (
                 <span className="text-sm font-normal"> - {option.price}€</span>
               )}
