@@ -21,6 +21,7 @@ class Deadline(TimeFramedModel):
         ("voting", _("Voting")),
         ("refund", _("Ticket refund")),
         ("grants", _("Grants")),
+        ("badge_preview", _("Badge preview")),
         ("custom", _("Custom deadline")),
     )
 
@@ -33,7 +34,7 @@ class Deadline(TimeFramedModel):
 
     name = I18nCharField(_("name"), max_length=100)
     description = I18nTextField(_("description"), blank=True, null=True)
-    type = models.CharField(_("type"), choices=TYPES, max_length=10)
+    type = models.CharField(_("type"), choices=TYPES, max_length=256)
 
     def __str__(self):
         return f"{self.type} ({self.name}) <{self.conference.code}>"

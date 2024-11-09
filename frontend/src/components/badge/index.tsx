@@ -95,7 +95,7 @@ export const Badge = ({
             marginBottom: "20px",
             marginTop: "40px",
           }}
-          src="https://pythonit-email-assets.s3.eu-central-1.amazonaws.com/logo-pycon-2024.png"
+          src="https://cdn.pycon.it/conferences/pycon2025/pycon-italia-2025-logo.png"
         />
         <div
           style={{

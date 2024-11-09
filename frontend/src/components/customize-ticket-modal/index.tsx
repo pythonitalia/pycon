@@ -35,6 +35,7 @@ export const snakeToCamel = (str: string) => {
 
 export type CustomizeTicketModalProps = {
   ticket: MyProfileWithTicketsQuery["me"]["tickets"][0];
+  showBadgePreview: boolean;
 };
 
 type Form = {
@@ -50,6 +51,7 @@ type Form = {
 export const CustomizeTicketModal = ({
   onClose,
   ticket,
+  showBadgePreview,
 }: Props & CustomizeTicketModalProps) => {
   const language = useCurrentLanguage();
   const [updateTicket, { loading: updatingTicket, error: updateTicketError }] =
@@ -204,7 +206,7 @@ export const CustomizeTicketModal = ({
         </div>
       }
     >
-      <Grid cols={3}>
+      <Grid cols={showBadgePreview ? 3 : 1}>
         <GridColumn colSpan={2}>
           <ProductQuestionnaire
             product={ticket.item}
@@ -232,42 +234,44 @@ export const CustomizeTicketModal = ({
             </Text>
           )}
         </GridColumn>
-        <GridColumn>
-          <div className="max-w-[302px] max-h-[453px]">
-            <Badge
-              name={displayAttendeeName({
-                parts: {
-                  given_name: formState.values.attendeeGivenName,
-                  family_name: formState.values.attendeeFamilyName,
-                },
-                scheme: "given_family",
-              })}
-              pronouns={pronounsAnswer}
-              tagline={taglineAnswer}
-              cutLines={false}
-              role={ticket.role}
-              hashedTicketId={ticket.hashid}
-            />
-          </div>
-          <div>
-            <Spacer size="small" />
-            <Text size="label3" as="p">
-              <FormattedMessage id="profile.ticketsEdit.qrCodeDescription" />
-            </Text>
-            <Spacer size="small" />
-            <Link
-              href={createHref({
-                path: "/profile/edit",
-                locale: language,
-              })}
-              target="_blank"
-            >
-              <Text size="label3" as="p" color="none">
-                <FormattedMessage id="profile.ticketsEdit.editProfile" />
+        {showBadgePreview && (
+          <GridColumn>
+            <div className="max-w-[302px] max-h-[453px]">
+              <Badge
+                name={displayAttendeeName({
+                  parts: {
+                    given_name: formState.values.attendeeGivenName,
+                    family_name: formState.values.attendeeFamilyName,
+                  },
+                  scheme: "given_family",
+                })}
+                pronouns={pronounsAnswer}
+                tagline={taglineAnswer}
+                cutLines={false}
+                role={ticket.role}
+                hashedTicketId={ticket.hashid}
+              />
+            </div>
+            <div>
+              <Spacer size="small" />
+              <Text size="label3" as="p">
+                <FormattedMessage id="profile.ticketsEdit.qrCodeDescription" />
               </Text>
-            </Link>
-          </div>
-        </GridColumn>
+              <Spacer size="small" />
+              <Link
+                href={createHref({
+                  path: "/profile/edit",
+                  locale: language,
+                })}
+                target="_blank"
+              >
+                <Text size="label3" as="p" color="none">
+                  <FormattedMessage id="profile.ticketsEdit.editProfile" />
+                </Text>
+              </Link>
+            </div>
+          </GridColumn>
+        )}
       </Grid>
     </Modal>
   );

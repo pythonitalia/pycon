@@ -3,7 +3,7 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useCurrentLanguage } from "~/locale/context";
-import { useMyProfileWithTicketsQuery } from "~/types";
+import { DeadlineStatus, useMyProfileWithTicketsQuery } from "~/types";
 
 import { MetaTags } from "../meta-tags";
 import { NoTickets } from "./no-tickets";
@@ -13,6 +13,7 @@ export const MyTicketsProfilePageHandler = () => {
   const language = useCurrentLanguage();
   const {
     data: {
+      conference: { badgePreviewDeadline },
       me: { tickets, email },
     },
   } = useMyProfileWithTicketsQuery({
@@ -37,7 +38,15 @@ export const MyTicketsProfilePageHandler = () => {
         <Section>
           <Grid cols={3} mdCols={2} equalHeight>
             {tickets.map((ticket) => (
-              <TicketCard key={ticket.id} ticket={ticket} userEmail={email} />
+              <TicketCard
+                key={ticket.id}
+                ticket={ticket}
+                userEmail={email}
+                showBadgePreview={[
+                  DeadlineStatus.InThePast,
+                  DeadlineStatus.HappeningNow,
+                ].includes(badgePreviewDeadline.status)}
+              />
             ))}
           </Grid>
         </Section>

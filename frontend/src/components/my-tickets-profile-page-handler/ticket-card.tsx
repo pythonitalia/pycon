@@ -25,9 +25,10 @@ import { useSetCurrentModal } from "../modal/context";
 type Props = {
   ticket: MyProfileWithTicketsQuery["me"]["tickets"][0];
   userEmail: string;
+  showBadgePreview: boolean;
 };
 
-export const TicketCard = ({ ticket, userEmail }: Props) => {
+export const TicketCard = ({ ticket, userEmail, showBadgePreview }: Props) => {
   const setCurrentModal = useSetCurrentModal();
 
   const taglineQuestion = ticket.item.questions.find(
@@ -52,6 +53,7 @@ export const TicketCard = ({ ticket, userEmail }: Props) => {
   const openEditTicketModal = () => {
     setCurrentModal("customize-ticket", {
       ticket,
+      showBadgePreview,
     });
   };
 
