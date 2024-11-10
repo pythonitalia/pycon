@@ -9,6 +9,11 @@ import { MetaTags } from "../meta-tags";
 import { NoTickets } from "./no-tickets";
 import { TicketCard } from "./ticket-card";
 
+const VISIBLE_BADGE_PREVIEW_DEADLINES = [
+  DeadlineStatus.InThePast,
+  DeadlineStatus.HappeningNow,
+];
+
 export const MyTicketsProfilePageHandler = () => {
   const language = useCurrentLanguage();
   const {
@@ -42,10 +47,9 @@ export const MyTicketsProfilePageHandler = () => {
                 key={ticket.id}
                 ticket={ticket}
                 userEmail={email}
-                showBadgePreview={[
-                  DeadlineStatus.InThePast,
-                  DeadlineStatus.HappeningNow,
-                ].includes(badgePreviewDeadline.status)}
+                showBadgePreview={VISIBLE_BADGE_PREVIEW_DEADLINES.includes(
+                  badgePreviewDeadline.status,
+                )}
               />
             ))}
           </Grid>
