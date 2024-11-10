@@ -48,7 +48,7 @@ export const MyTicketsProfilePageHandler = () => {
                 ticket={ticket}
                 userEmail={email}
                 showBadgePreview={VISIBLE_BADGE_PREVIEW_DEADLINES.includes(
-                  badgePreviewDeadline.status,
+                  badgePreviewDeadline?.status,
                 )}
               />
             ))}
