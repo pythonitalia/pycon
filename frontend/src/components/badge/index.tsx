@@ -95,7 +95,7 @@ export const Badge = ({
             marginBottom: "20px",
             marginTop: "40px",
           }}
-          src="https://pythonit-email-assets.s3.eu-central-1.amazonaws.com/logo-pycon-2024.png"
+          src="https://cdn.pycon.it/conferences/pycon2025/pycon-italia-2025-logo.png"
         />
         <div
           style={{
@@ -166,25 +166,9 @@ export const Badge = ({
             width: "100%",
             display: "flex",
             alignItems: "flex-end",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
           }}
         >
-          {side === "front" && (
-            <div className="grid grid-cols-[13px_repeat(3,50px)] bg-coral gap-[2px]">
-              <div className=" flex items-center justify-center text-[#FFFFFF]">
-                <div className="text-[8px] py-2 pl-[3px] uppercase font-bold  whitespace-nowrap	leading-[0.9]">
-                  L<br />u<br />n<br />c<br />h
-                </div>
-              </div>
-              {[23, 24, 25].map((number) => (
-                <div key={number} className={clsx("bg-[#FFFFFF] relative")}>
-                  <span className="absolute top-0 left-[5px]  text-[#b5b5b5] font-bold">
-                    {number}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
           {!empty && side === "front" && (
             <div className="p-[2px] bg-white">
               <QRCode
