@@ -88,7 +88,7 @@ export const TicketRow = ({
               </Tag>
             ) : null}
           </TagsCollection>
-          {hasTags && <Spacer size="xs" />}
+          {hasTags ? <Spacer size="xs" /> : null}
 
           <Text size={2}>{compile(ticket.description).tree}</Text>
         </CardPart>
