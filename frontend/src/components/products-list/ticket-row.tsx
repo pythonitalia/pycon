@@ -67,7 +67,7 @@ export const TicketRow = ({
       {ticket.description && (
         <CardPart contentAlign="left" background="milk" id="content">
           <TagsCollection>
-            {ticket.availableUntil && (
+            {ticket.availableUntil ? (
               <Tag color="success">
                 <FormattedMessage
                   id="order.availableUntil"
@@ -76,7 +76,7 @@ export const TicketRow = ({
                   }}
                 />
               </Tag>
-            )}
+            ) : null}
             {ticket.quantityLeft > 0 ? (
               <Tag color="yellow">
                 <FormattedMessage
