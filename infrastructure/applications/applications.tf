@@ -40,3 +40,12 @@ module "emails" {
     aws.us = aws.us
   }
 }
+
+module "cluster" {
+  source = "./cluster"
+
+  providers = {
+    aws    = aws
+    aws.us = aws.us
+  }
+}
