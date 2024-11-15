@@ -152,7 +152,9 @@ export function PricingPage({
           <TableSection title="Availability" totalPackages={levels.length} />
           <TableBenefit
             title="Number of slots available"
-            values={levels.map((p) => `${p.slots}`)}
+            values={levels.map(
+              (p) => `${p.slots === 0 ? "Unlimited" : p.slots}`,
+            )}
           />
 
           {Object.entries(benefitsByCategory).map(([category, benefits]) => {
