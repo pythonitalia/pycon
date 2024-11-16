@@ -108,15 +108,17 @@ export function PricingPage({
 
   const sectionHeaderSize = 56;
   const itemSize = 37;
-  const pagesToRender: Record<string, { name: string; category: string }[]>[] =
-    [];
   let currentPageSize = 0;
   let currentContent = {};
+  const pagesToRender: Record<string, { name: string; category: string }[]>[] =
+    [];
 
   Object.entries(benefitsByCategory).map(([category, benefits]) => {
     currentPageSize += sectionHeaderSize;
-    benefits.map((benefit) => {
-      if (currentPageSize + itemSize > 506) {
+    benefits.forEach((benefit) => {
+      console.log({ currentPageSize, benefit });
+      if (currentPageSize + itemSize > 700) {
+        console.log("creating new page", pagesToRender);
         currentPageSize = sectionHeaderSize;
         pagesToRender.push(currentContent);
         currentContent = {};
@@ -129,18 +131,9 @@ export function PricingPage({
       currentContent[category].push(benefit);
       currentPageSize += itemSize;
     });
-
-    // const thisSectionSize = sectionHeaderSize + itemSize * benefits.length;
-    // if (currentPageSize + thisSectionSize > 506) {
-    //   currentPageSize = 0;
-    //   pagesToRender.push(currentContent);
-    //   currentContent = {};
-    // }
-    // currentContent[category] = benefits;
-    // currentPageSize += thisSectionSize;
   });
 
-  console.log({ pagesToRender });
+  pagesToRender.push(currentContent);
 
   return (
     <div>
