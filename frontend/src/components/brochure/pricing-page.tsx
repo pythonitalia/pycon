@@ -108,7 +108,8 @@ export function PricingPage({
 
   const sectionHeaderSize = 56;
   const itemSize = 37;
-  const pagesToRender = [];
+  const pagesToRender: Record<string, { name: string; category: string }[]>[] =
+    [];
   let currentPageSize = 0;
   let currentContent = {};
 
