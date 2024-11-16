@@ -106,8 +106,8 @@ export function PricingPage({
   };
   const moneyFormatter = useMoneyFormatter({ fractionDigits: 0 });
 
-  const sectionHeaderSize = 56;
-  const itemSize = 37;
+  const sectionHeaderSize = 37;
+  const itemSize = 55;
   let currentPageSize = 0;
   let currentContent = {};
   const pagesToRender: Record<string, { name: string; category: string }[]>[] =
@@ -117,8 +117,7 @@ export function PricingPage({
     currentPageSize += sectionHeaderSize;
     benefits.forEach((benefit) => {
       console.log({ currentPageSize, benefit });
-      if (currentPageSize + itemSize > 700) {
-        console.log("creating new page", pagesToRender);
+      if (currentPageSize + itemSize > 650) {
         currentPageSize = sectionHeaderSize;
         pagesToRender.push(currentContent);
         currentContent = {};
