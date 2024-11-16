@@ -123,72 +123,80 @@ export function PricingPage({
     currentPageSize += thisSectionSize;
   });
 
-  return pagesToRender.map((page, i) => (
-    <div key={i} className="page bg-cream pt-[2cm] !h-auto">
-      <div className="px-[2cm] pb-[10px]">
-        <h1 className="text-xl font-bold">Pricing</h1>
-      </div>
+  return (
+    <div>
+      {pagesToRender.map((page, i) => (
+        <div key={i} className="page bg-cream pt-[2cm] !h-auto">
+          <div className="px-[2cm] pb-[10px]">
+            <h1 className="text-xl font-bold">Pricing</h1>
+          </div>
 
-      <div
-        className="border-[4px] grid gap-0 border-black w-full text-[12px]"
-        style={{
-          gridTemplateColumns: `auto repeat(${levels.length}, 2.1cm)`,
-        }}
-      >
-        <div className="border-b-[4px]" />
-        {levels.map((p, i) => (
-          <th
-            className={clsx(
-              "py-[0.5cm] w-[2.1cm] text-center border-l uppercase border-b-[4px]",
-              getBackgroundColor(i),
-            )}
-            key={p.name}
+          <div
+            className="border-[4px] grid gap-0 border-black w-full text-[12px]"
+            style={{
+              gridTemplateColumns: `auto repeat(${levels.length}, 2.1cm)`,
+            }}
           >
-            {p.name}
-          </th>
-        ))}
-        {i === 0 && (
-          <>
-            <TableSection title="Pricing" totalPackages={levels.length} />
-            <TableBenefit
-              title="Package price (VAT not included)"
-              values={levels.map(
-                (p) => `${moneyFormatter.format(Number.parseFloat(p.price))}`,
-              )}
-            />
-
-            <TableSection title="Availability" totalPackages={levels.length} />
-            <TableBenefit
-              title="Number of slots available"
-              values={levels.map(
-                (p) => `${p.slots === 0 ? "Unlimited" : p.slots}`,
-              )}
-            />
-          </>
-        )}
-
-        {Object.entries(page).map(([category, benefits]) => {
-          return (
-            <>
-              <TableSection
-                title={category}
-                totalPackages={levels.length}
-                key={category}
-              />
-              {benefits.map((benefit) => (
+            <div className="border-b-[4px]" />
+            {levels.map((p, i) => (
+              <th
+                className={clsx(
+                  "py-[0.5cm] w-[2.1cm] text-center border-l uppercase border-b-[4px]",
+                  getBackgroundColor(i),
+                )}
+                key={p.name}
+              >
+                {p.name}
+              </th>
+            ))}
+            {i === 0 && (
+              <>
+                <TableSection title="Pricing" totalPackages={levels.length} />
                 <TableBenefit
-                  title={benefit.name}
-                  values={levels.map((p) => {
-                    const levelBenefit = getBenefitForLevel(benefit, p);
-                    return levelBenefit ? levelBenefit.value : "-";
-                  })}
-                  key={benefit.name}
+                  title="Package price (VAT not included)"
+                  values={levels.map(
+                    (p) =>
+                      `${moneyFormatter.format(Number.parseFloat(p.price))}`,
+                  )}
                 />
-              ))}
-            </>
-          );
-        })}
-      </div>
+
+                <TableSection
+                  title="Availability"
+                  totalPackages={levels.length}
+                />
+                <TableBenefit
+                  title="Number of slots available"
+                  values={levels.map(
+                    (p) => `${p.slots === 0 ? "Unlimited" : p.slots}`,
+                  )}
+                />
+              </>
+            )}
+
+            {Object.entries(page).map(([category, benefits]) => {
+              return (
+                <>
+                  <TableSection
+                    title={category}
+                    totalPackages={levels.length}
+                    key={category}
+                  />
+                  {benefits.map((benefit) => (
+                    <TableBenefit
+                      title={benefit.name}
+                      values={levels.map((p) => {
+                        const levelBenefit = getBenefitForLevel(benefit, p);
+                        return levelBenefit ? levelBenefit.value : "-";
+                      })}
+                      key={benefit.name}
+                    />
+                  ))}
+                </>
+              );
+            })}
+          </div>
+        </div>
+      ))}
     </div>
-  ));
+  );
 }
