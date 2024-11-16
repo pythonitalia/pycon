@@ -11,7 +11,6 @@ Status = strawberry.enum(GrantModel.Status)
 AgeGroup = strawberry.enum(GrantModel.AgeGroup)
 Occupation = strawberry.enum(GrantModel.Occupation)
 GrantType = strawberry.enum(GrantModel.GrantType)
-InterestedInVolunteering = strawberry.enum(GrantModel.InterestedInVolunteering)
 
 
 @strawberry.type
@@ -27,7 +26,6 @@ class Grant:
     python_usage: str
     community_contribution: str
     been_to_other_events: str
-    interested_in_volunteering: InterestedInVolunteering
     needs_funds_for_travel: bool
     need_visa: bool
     need_accommodation: bool
@@ -55,9 +53,6 @@ class Grant:
             python_usage=grant.python_usage,
             community_contribution=grant.community_contribution,
             been_to_other_events=grant.been_to_other_events,
-            interested_in_volunteering=InterestedInVolunteering(
-                grant.interested_in_volunteering
-            ),
             needs_funds_for_travel=grant.needs_funds_for_travel,
             need_visa=grant.need_visa,
             need_accommodation=grant.need_accommodation,

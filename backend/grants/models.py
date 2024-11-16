@@ -64,11 +64,6 @@ class Grant(TimeStampedModel):
         unemployed = "unemployed", _("Unemployed")
         speaker = "speaker", _("Speaker")
 
-    class InterestedInVolunteering(models.TextChoices):
-        no = "no", _("No")
-        yes = "yes", _("Yes")
-        absolutely = "absolutely", _("My soul is yours to take!")
-
     class ApprovedType(models.TextChoices):
         ticket_only = "ticket_only", _("Ticket Only")
         ticket_travel = "ticket_travel", _("Ticket + Travel")
@@ -117,11 +112,6 @@ class Grant(TimeStampedModel):
     need_accommodation = models.BooleanField(_("Need accommodation"), default=False)
 
     why = models.TextField(_("Why are you asking for a grant?"))
-    interested_in_volunteering = models.CharField(
-        _("interested in volunteering"),
-        choices=InterestedInVolunteering.choices,
-        max_length=10,
-    )
 
     # You and Python Section
     python_usage = models.TextField(_("How do they use python"))

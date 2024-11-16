@@ -1,9 +1,4 @@
-import {
-  AgeGroup,
-  GrantType,
-  InterestedInVolunteering,
-  Occupation,
-} from "~/types";
+import { AgeGroup, GrantType, Occupation } from "~/types";
 
 export const GENDER_OPTIONS = [
   {
@@ -86,30 +81,6 @@ export const GRANT_TYPE_OPTIONS = [
     disabled: false,
     value: GrantType.Speaker,
     messageId: "grants.form.fields.grantType.values.speaker",
-  },
-];
-
-export const INTERESTED_IN_VOLUNTEERING_OPTIONS = [
-  {
-    value: "",
-    disabled: true,
-    messageId:
-      "grants.form.fields.interestedInVolunteering.values.selectOption",
-  },
-  {
-    value: InterestedInVolunteering.No,
-    disabled: false,
-    messageId: "grants.form.fields.interestedInVolunteering.values.no",
-  },
-  {
-    value: InterestedInVolunteering.Yes,
-    disabled: false,
-    messageId: "grants.form.fields.interestedInVolunteering.values.yes",
-  },
-  {
-    value: InterestedInVolunteering.Absolutely,
-    disabled: false,
-    messageId: "grants.form.fields.interestedInVolunteering.values.absolutely",
   },
 ];
 

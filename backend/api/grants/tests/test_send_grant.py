@@ -29,7 +29,6 @@ def _send_grant(client, conference, conference_code=None, **kwargs):
                         validationPythonUsage: pythonUsage
                         validationCommunityContribution: communityContribution
                         validationBeenToOtherEvents: beenToOtherEvents
-                        validationInterestedInVolunteering: interestedInVolunteering
                         validationNeedsFundsForTravel: needsFundsForTravel
                         validationNeedVisa: needVisa
                         validationNeedAccommodation: needAccommodation
@@ -59,7 +58,6 @@ def _send_grant(client, conference, conference_code=None, **kwargs):
         "pythonUsage": grant.python_usage,
         "communityContribution": grant.community_contribution,
         "beenToOtherEvents": grant.been_to_other_events,
-        "interestedInVolunteering": grant.interested_in_volunteering,
         "needsFundsForTravel": grant.needs_funds_for_travel,
         "needVisa": grant.need_visa,
         "needAccommodation": grant.need_accommodation,

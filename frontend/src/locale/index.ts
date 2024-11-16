@@ -745,17 +745,6 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
       "Why are you asking for a grant for PyCon Italia?",
     "grants.form.fields.why.description":
       "Briefly describe why you're applying for a grant. Please limit your response to approximately 200 words.",
-    "grants.form.fields.interestedInVolunteering":
-      "Would you like to help PyCon Italia for this and/or upcoming events?",
-    "grants.form.validationErrors": "The form submitted is not valid",
-    "grants.form.fields.interestedInVolunteering.description":
-      "We are always looking for some help during the event. It is also a fun way to make new friends!",
-    "grants.form.fields.interestedInVolunteering.values.selectOption":
-      "Select Option",
-    "grants.form.fields.interestedInVolunteering.values.no": "No",
-    "grants.form.fields.interestedInVolunteering.values.yes": "Yes",
-    "grants.form.fields.interestedInVolunteering.values.absolutely":
-      "My soul is yours to take!",
     "grants.form.fields.pythonUsage": "What's your use of python?",
     "grants.form.fields.pythonUsage.description":
       "How do you use Python? Are you studying it or using it for work or for a hobby? Please, limit your response to approximately 200 words.",
@@ -1479,16 +1468,6 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
       "Perché stai richiedendo un grant per PyCon Italia?",
     "grants.form.fields.why.description":
       "Descrivere brevemente perché si sta richiedendo un grant. Per favore, limita la risposta a 200 parole circa.",
-    "grants.form.fields.interestedInVolunteering":
-      "Vuoi aiutare PyCon Italia in questo e futuri eventi?",
-    "grants.form.fields.interestedInVolunteering.description":
-      "Siamo sempre alla ricerca di una mano durante l'evento. È anche un'ottima opportunità per fare nuovi amici!",
-    "grants.form.fields.interestedInVolunteering.values.selectOption":
-      "Seleziona un'opzione",
-    "grants.form.fields.interestedInVolunteering.values.no": "No",
-    "grants.form.fields.interestedInVolunteering.values.yes": "Sì",
-    "grants.form.fields.interestedInVolunteering.values.absolutely":
-      "La mia anima è vostra!",
     "grants.form.fields.pythonUsage": "Per cosa usi Python?",
     "grants.form.fields.pythonUsage.description":
       "Come usi Python? Lo stai studiando, lo usi per lavoro o come hobby? Per favore, limita la risposta a circa 200 parole.",

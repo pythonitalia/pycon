@@ -10,7 +10,6 @@ from api.grants.types import (
     AgeGroup,
     Grant,
     GrantType,
-    InterestedInVolunteering,
     Occupation,
 )
 from api.permissions import IsAuthenticated
@@ -36,7 +35,6 @@ class GrantErrors(BaseErrorType):
         python_usage: list[str] = strawberry.field(default_factory=list)
         community_contribution: list[str] = strawberry.field(default_factory=list)
         been_to_other_events: list[str] = strawberry.field(default_factory=list)
-        interested_in_volunteering: list[str] = strawberry.field(default_factory=list)
         needs_funds_for_travel: list[str] = strawberry.field(default_factory=list)
         need_visa: list[str] = strawberry.field(default_factory=list)
         need_accommodation: list[str] = strawberry.field(default_factory=list)
@@ -109,7 +107,6 @@ class SendGrantInput(BaseGrantInput):
     python_usage: str
     been_to_other_events: str
     community_contribution: str
-    interested_in_volunteering: InterestedInVolunteering
     needs_funds_for_travel: bool
     need_visa: bool
     need_accommodation: bool
@@ -144,7 +141,6 @@ class UpdateGrantInput(BaseGrantInput):
     python_usage: str
     been_to_other_events: str
     community_contribution: str
-    interested_in_volunteering: InterestedInVolunteering
     needs_funds_for_travel: bool
     need_visa: bool
     need_accommodation: bool

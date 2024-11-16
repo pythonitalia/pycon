@@ -24,9 +24,7 @@ class GrantFactory(DjangoModelFactory):
 
     python_usage = factory.Faker("text")
     been_to_other_events = factory.Faker("text")
-    interested_in_volunteering = factory.fuzzy.FuzzyChoice(
-        Grant.InterestedInVolunteering
-    )
+
     needs_funds_for_travel = factory.Faker("boolean")
     why = factory.Faker("text")
     notes = factory.Faker("text")

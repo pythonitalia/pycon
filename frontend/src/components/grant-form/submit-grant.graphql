@@ -18,7 +18,6 @@ mutation SendGrant($input: SendGrantInput!) {
         validationPythonUsage: pythonUsage
         validationCommunityContribution: communityContribution
         validationBeenToOtherEvents: beenToOtherEvents
-        validationInterestedInVolunteering: interestedInVolunteering
         validationNeedsFundsForTravel: needsFundsForTravel
         validationNeedVisa: needVisa
         validationNeedAccommodation: needAccommodation

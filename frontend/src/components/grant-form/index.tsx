@@ -30,7 +30,6 @@ import {
   type AgeGroup,
   type Grant,
   type GrantType,
-  type InterestedInVolunteering,
   type Occupation,
   type SendGrantInput,
   type SendGrantMutation,
@@ -46,7 +45,6 @@ import {
   AGE_GROUPS_OPTIONS,
   GENDER_OPTIONS,
   GRANT_TYPE_OPTIONS,
-  INTERESTED_IN_VOLUNTEERING_OPTIONS,
   OCCUPATION_OPTIONS,
 } from "./options";
 
@@ -60,7 +58,6 @@ export type GrantFormFields = {
   pythonUsage: string;
   communityContribution: string;
   beenToOtherEvents: string;
-  interestedInVolunteering: InterestedInVolunteering;
   needsFundsForTravel: string;
   needVisa: string;
   needAccommodation: string;
@@ -194,10 +191,6 @@ export const GrantForm = ({
       formState.setField("communityContribution", grant.communityContribution);
       formState.setField("beenToOtherEvents", grant.beenToOtherEvents);
       formState.setField(
-        "interestedInVolunteering",
-        grant.interestedInVolunteering,
-      );
-      formState.setField(
         "needsFundsForTravel",
         grant.needsFundsForTravel.toString(),
       );
@@ -228,7 +221,6 @@ export const GrantForm = ({
         name: formState.values.name,
         gender: formState.values.gender,
         beenToOtherEvents: formState.values.beenToOtherEvents,
-        interestedInVolunteering: formState.values.interestedInVolunteering,
         notes: formState.values.notes,
         grantType: formState.values.grantType,
         needsFundsForTravel: formState.values.needsFundsForTravel === "true",
@@ -526,34 +518,6 @@ export const GrantForm = ({
                 placeholder={inputPlaceholderText}
                 errors={getErrors("why")}
               />
-            </InputWrapper>
-
-            <InputWrapper
-              required={true}
-              title={
-                <FormattedMessage id="grants.form.fields.interestedInVolunteering" />
-              }
-              description={
-                <FormattedMessage id="grants.form.fields.interestedInVolunteering.description" />
-              }
-            >
-              <Select
-                {...select("interestedInVolunteering")}
-                required={true}
-                errors={getErrors("interestedInVolunteering")}
-              >
-                {INTERESTED_IN_VOLUNTEERING_OPTIONS.map(
-                  ({ value, disabled, messageId }) => (
-                    <FormattedMessage id={messageId} key={messageId}>
-                      {(msg) => (
-                        <option disabled={disabled} value={value}>
-                          {msg}
-                        </option>
-                      )}
-                    </FormattedMessage>
-                  ),
-                )}
-              </Select>
             </InputWrapper>
           </Grid>
         </CardPart>
