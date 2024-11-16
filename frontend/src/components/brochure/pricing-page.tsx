@@ -106,8 +106,25 @@ export function PricingPage({
   };
   const moneyFormatter = useMoneyFormatter({ fractionDigits: 0 });
 
-  return (
-    <div className="page bg-cream pt-[2cm] !h-auto">
+  const sectionHeaderSize = 56;
+  const itemSize = 37;
+  const pagesToRender = [];
+  let currentPageSize = 0;
+  let currentContent = {};
+
+  Object.entries(benefitsByCategory).map(([category, benefits]) => {
+    const thisSectionSize = sectionHeaderSize + itemSize * benefits.length;
+    if (currentPageSize + thisSectionSize > 506) {
+      currentPageSize = 0;
+      pagesToRender.push(currentContent);
+      currentContent = {};
+    }
+    currentContent[category] = benefits;
+    currentPageSize += thisSectionSize;
+  });
+
+  return pagesToRender.map((page, i) => (
+    <div key={i} className="page bg-cream pt-[2cm] !h-auto">
       <div className="px-[2cm] pb-[10px]">
         <h1 className="text-xl font-bold">Pricing</h1>
       </div>
@@ -130,21 +147,27 @@ export function PricingPage({
             {p.name}
           </th>
         ))}
-        <TableSection title="Pricing" totalPackages={levels.length} />
-        <TableBenefit
-          title="Package price (VAT not included)"
-          values={levels.map(
-            (p) => `${moneyFormatter.format(Number.parseFloat(p.price))}`,
-          )}
-        />
+        {i === 0 && (
+          <>
+            <TableSection title="Pricing" totalPackages={levels.length} />
+            <TableBenefit
+              title="Package price (VAT not included)"
+              values={levels.map(
+                (p) => `${moneyFormatter.format(Number.parseFloat(p.price))}`,
+              )}
+            />
 
-        <TableSection title="Availability" totalPackages={levels.length} />
-        <TableBenefit
-          title="Number of slots available"
-          values={levels.map((p) => `${p.slots === 0 ? "Unlimited" : p.slots}`)}
-        />
+            <TableSection title="Availability" totalPackages={levels.length} />
+            <TableBenefit
+              title="Number of slots available"
+              values={levels.map(
+                (p) => `${p.slots === 0 ? "Unlimited" : p.slots}`,
+              )}
+            />
+          </>
+        )}
 
-        {Object.entries(benefitsByCategory).map(([category, benefits]) => {
+        {Object.entries(page).map(([category, benefits]) => {
           return (
             <>
               <TableSection
@@ -167,5 +190,5 @@ export function PricingPage({
         })}
       </div>
     </div>
-  );
+  ));
 }
