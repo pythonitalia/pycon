@@ -21,7 +21,7 @@ const getBackgroundColor = (index: number) => {
     1: "bg-yellow",
     2: "bg-grey-100",
     3: "bg-pink",
-    4: "bg-orange",
+    4: "bg-cream",
     5: "bg-blue",
     6: "bg-coral",
   }[index % 7];
@@ -49,11 +49,9 @@ const TableSection = ({
 function TableBenefit({
   title,
   values,
-  lastPageRow,
 }: {
   title: string;
   values: Array<number | string | boolean>;
-  lastPageRow?: boolean;
 }) {
   return (
     <>
@@ -140,7 +138,10 @@ export function PricingPage({
   return (
     <div>
       {pagesToRender.map((page, i) => (
-        <div key={i} className="page flex flex-col gap-[1cm] bg-cream pt-[2cm]">
+        <div
+          key={i}
+          className="page pricing-page-table flex flex-col gap-[1cm] bg-cream pt-[2cm]"
+        >
           <div className="px-[2cm]">
             <h1 className="text-xl font-bold">Pricing</h1>
           </div>
@@ -151,7 +152,7 @@ export function PricingPage({
               gridTemplateColumns: `auto repeat(${levels.length}, 2.1cm)`,
             }}
           >
-            <div className="border-b-[4px]" />
+            <div className="border-b-[4px] bg-cream" />
             {levels.map((p, i) => (
               <th
                 className={clsx(
@@ -187,7 +188,7 @@ export function PricingPage({
               </>
             )}
 
-            {Object.entries(page).map(([category, benefits], index) => {
+            {Object.entries(page).map(([category, benefits]) => {
               return (
                 <>
                   <TableSection
@@ -202,7 +203,6 @@ export function PricingPage({
                         const levelBenefit = getBenefitForLevel(benefit, p);
                         return levelBenefit ? levelBenefit.value : "-";
                       })}
-                      lastPageRow={index === Object.keys(page).length - 1}
                       key={benefit.name}
                     />
                   ))}

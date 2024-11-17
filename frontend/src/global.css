@@ -47,3 +47,7 @@ body:has(.brochure-page) {
     page-break-inside: avoid;
   }
 }
+
+.pricing-page-table div {
+  margin-top: -1px;
+}
