@@ -138,8 +138,8 @@ export function PricingPage({
   return (
     <div>
       {pagesToRender.map((page, i) => (
-        <div key={i} className="page bg-cream pt-[2cm] !h-auto">
-          <div className="px-[2cm] pb-[2cm]">
+        <div key={i} className="page flex flex-col gap-[1cm] bg-cream pt-[2cm]">
+          <div className="px-[2cm]">
             <h1 className="text-xl font-bold">Pricing</h1>
           </div>
 
