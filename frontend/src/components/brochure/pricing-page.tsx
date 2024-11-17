@@ -115,7 +115,7 @@ export function PricingPage({
 
   Object.entries(benefitsByCategory).map(([category, benefits], index) => {
     currentPageSize += sectionHeaderSize;
-    const maxPageSize = index === 0 ? 485 : 629;
+    const maxPageSize = index === 0 ? 500 : 650;
     benefits.forEach((benefit) => {
       console.log({ currentPageSize, benefit });
       if (currentPageSize + itemSize > maxPageSize) {
