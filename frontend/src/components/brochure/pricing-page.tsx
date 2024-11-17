@@ -113,11 +113,12 @@ export function PricingPage({
   const pagesToRender: Record<string, { name: string; category: string }[]>[] =
     [];
 
-  Object.entries(benefitsByCategory).map(([category, benefits]) => {
+  Object.entries(benefitsByCategory).map(([category, benefits], index) => {
     currentPageSize += sectionHeaderSize;
+    const maxPageSize = index === 0 ? 485 : 629;
     benefits.forEach((benefit) => {
       console.log({ currentPageSize, benefit });
-      if (currentPageSize + itemSize > 485) {
+      if (currentPageSize + itemSize > maxPageSize) {
         currentPageSize = sectionHeaderSize;
         pagesToRender.push(currentContent);
         currentContent = {};
