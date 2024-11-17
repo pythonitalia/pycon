@@ -15,6 +15,7 @@ import {
   queryCurrentUser,
   queryGrantDeadline,
   queryMyGrant,
+  queryParticipantData,
   useGrantDeadlineQuery,
 } from "~/types";
 
@@ -117,6 +118,9 @@ export const getServerSideProps: GetServerSideProps = async ({
         conference: process.env.conferenceCode,
       }),
       queryCurrentUser(client, {
+        conference: process.env.conferenceCode,
+      }),
+      queryParticipantData(client, {
         conference: process.env.conferenceCode,
       }),
     ]);

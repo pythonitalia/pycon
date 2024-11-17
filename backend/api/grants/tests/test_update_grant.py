@@ -2,6 +2,7 @@ from users.tests.factories import UserFactory
 from conferences.tests.factories import ConferenceFactory
 from grants.tests.factories import GrantFactory
 import pytest
+from participants.models import Participant
 
 pytestmark = pytest.mark.django_db
 
@@ -34,11 +35,13 @@ def _update_grant(graphql_client, grant, **kwargs):
                     validationWhy: why
                     validationNotes: notes
                     validationTravellingFrom: travellingFrom
-                    validationWebsite: website
-                    validationTwitterHandle: twitterHandle
-                    validationGithubHandle: githubHandle
-                    validationLinkedinUrl: linkedinUrl
-                    validationMastodonHandle: mastodonHandle
+                    validationParticipantBio: participantBio
+                    validationParticipantWebsite: participantWebsite
+                    validationParticipantTwitterHandle: participantTwitterHandle
+                    validationParticipantInstagramHandle: participantInstagramHandle
+                    validationParticipantLinkedinUrl: participantLinkedinUrl
+                    validationParticipantFacebookUrl: participantFacebookUrl
+                    validationparticipantMastodonHandle: participantMastodonHandle
                     nonFieldErrors
                 }
             }
@@ -63,11 +66,13 @@ def _update_grant(graphql_client, grant, **kwargs):
         "why": grant.why,
         "notes": grant.notes,
         "travellingFrom": grant.travelling_from,
-        "website": grant.website,
-        "twitterHandle": grant.twitter_handle,
-        "githubHandle": grant.github_handle,
-        "linkedinUrl": grant.linkedin_url,
-        "mastodonHandle": grant.mastodon_handle,
+        "participantBio": "bio",
+        "participantWebsite": "http://website.it",
+        "participantTwitterHandle": "handle",
+        "participantInstagramHandle": "handleinsta",
+        "participantLinkedinUrl": "https://linkedin.com/fake-link",
+        "participantFacebookUrl": "https://facebook.com/fake-link",
+        "participantMastodonHandle": "fake@mastodon.social",
     }
 
     variables = {
@@ -105,17 +110,18 @@ def test_update_grant(graphql_client, user):
         why="why not",
         notes="🧸",
         travellingFrom="GB",
-        website="https://marcotte.house",
-        twitterHandle="@marcottebear",
-        githubHandle="marcottebear",
-        linkedinUrl="www.linkedin.com/in/marcotteba",
-        mastodonHandle="marcottebear@marcotte.party",
+        participantFacebookUrl="http://facebook.com/pythonpizza",
+        participantLinkedinUrl="http://linkedin.com/company/pythonpizza",
     )
 
     grant.refresh_from_db()
 
     assert not response.get("errors")
     assert response["data"]["updateGrant"]["__typename"] == "Grant"
+
+    participant = Participant.objects.first()
+    assert participant.facebook_url == "http://facebook.com/pythonpizza"
+    assert participant.linkedin_url == "http://linkedin.com/company/pythonpizza"
 
 
 def test_cannot_update_a_grant_if_user_is_not_owner(

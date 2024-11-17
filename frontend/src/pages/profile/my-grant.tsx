@@ -2,7 +2,11 @@ import type { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { queryCountries, queryMyProfileWithGrant } from "~/types";
+import {
+  queryCountries,
+  queryMyProfileWithGrant,
+  queryParticipantData,
+} from "~/types";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -25,6 +29,9 @@ export const getServerSideProps: GetServerSideProps = async ({
       prefetchSharedQueries(client, locale),
       queryCountries(client),
       queryMyProfileWithGrant(client, {
+        conference: process.env.conferenceCode,
+      }),
+      queryParticipantData(client, {
         conference: process.env.conferenceCode,
       }),
     ]);

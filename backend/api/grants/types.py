@@ -4,6 +4,8 @@ from datetime import datetime
 from typing import Optional
 
 import strawberry
+from api.participants.types import Participant
+from participants.models import Participant as ParticipantModel
 
 from grants.models import Grant as GrantModel
 
@@ -33,14 +35,19 @@ class Grant:
     notes: str
     travelling_from: Optional[str]
     applicant_reply_deadline: Optional[datetime]
-    website: str
-    twitter_handle: str
-    github_handle: str
-    linkedin_url: str
-    mastodon_handle: str
+
+    participant: Participant
 
     @classmethod
     def from_model(cls, grant: GrantModel) -> Grant:
+        print(grant.user_id, grant.conference)
+
+        participant = ParticipantModel.objects.filter(
+            user_id=grant.user_id,
+            conference=grant.conference,
+        ).first()
+        print(participant)
+
         return cls(
             id=grant.id,
             status=Status(grant.status),
@@ -60,9 +67,5 @@ class Grant:
             notes=grant.notes,
             travelling_from=grant.travelling_from,
             applicant_reply_deadline=grant.applicant_reply_deadline,
-            website=grant.website,
-            twitter_handle=grant.twitter_handle,
-            github_handle=grant.github_handle,
-            linkedin_url=grant.linkedin_url,
-            mastodon_handle=grant.mastodon_handle,
+            participant=participant,
         )

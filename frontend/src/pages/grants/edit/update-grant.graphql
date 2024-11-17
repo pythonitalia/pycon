@@ -17,11 +17,6 @@ mutation UpdateGrant($input: UpdateGrantInput!) {
       needVisa
       notes
       travellingFrom
-      website
-      twitterHandle
-      githubHandle
-      linkedinUrl
-      mastodonHandle
     }
 
     ... on GrantErrors {
@@ -42,11 +37,13 @@ mutation UpdateGrant($input: UpdateGrantInput!) {
         validationWhy: why
         validationNotes: notes
         validationTravellingFrom: travellingFrom
-        validationWebsite: website
-        validationTwitterHandle: twitterHandle
-        validationGithubHandle: githubHandle
-        validationLinkedinUrl: linkedinUrl
-        validationMastodonHandle: mastodonHandle
+        validationParticipantBio: participantBio
+        validationParticipantWebsite: participantWebsite
+        validationParticipantTwitterHandle: participantTwitterHandle
+        validationparticipantInstagramHandle: participantInstagramHandle
+        validationParticipantLinkedinUrl: participantLinkedinUrl
+        validationParticipantFacebookUrl: participantFacebookUrl
+        validationParticipantMastodonHandle: participantMastodonHandle
         nonFieldErrors
       }
     }

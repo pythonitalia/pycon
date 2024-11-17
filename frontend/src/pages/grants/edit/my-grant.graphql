@@ -20,11 +20,20 @@ query MyGrant($conference: String!) {
       why
       notes
       travellingFrom
+
+
+
+    participant {
+      id
+      photo
+      bio
       website
       twitterHandle
-      githubHandle
+      instagramHandle
       linkedinUrl
+      facebookUrl
       mastodonHandle
+    }
     }
   }
 }

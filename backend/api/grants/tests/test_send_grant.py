@@ -2,6 +2,8 @@ from privacy_policy.models import PrivacyPolicyAcceptanceRecord
 from conferences.tests.factories import ConferenceFactory
 from grants.tests.factories import GrantFactory
 import pytest
+from participants.models import Participant
+
 
 pytestmark = pytest.mark.django_db
 
@@ -35,11 +37,13 @@ def _send_grant(client, conference, conference_code=None, **kwargs):
                         validationWhy: why
                         validationNotes: notes
                         validationTravellingFrom: travellingFrom
-                        validationWebsite: website
-                        validationTwitterHandle: twitterHandle
-                        validationGithubHandle: githubHandle
-                        validationLinkedinUrl: linkedinUrl
-                        validationMastodonHandle: mastodonHandle
+                        validationParticipantBio: participantBio
+                        validationParticipantWebsite: participantWebsite
+                        validationParticipantTwitterHandle: participantTwitterHandle
+                        validationparticipantInstagramHandle: participantInstagramHandle
+                        validationParticipantLinkedinUrl: participantLinkedinUrl
+                        validationParticipantFacebookUrl: participantFacebookUrl
+                        validationParticipantMastodonHandle: participantMastodonHandle
                         nonFieldErrors
                     }
                 }
@@ -64,11 +68,13 @@ def _send_grant(client, conference, conference_code=None, **kwargs):
         "why": grant.why,
         "notes": grant.notes,
         "travellingFrom": grant.travelling_from,
-        "website": grant.website,
-        "twitterHandle": grant.twitter_handle,
-        "githubHandle": grant.github_handle,
-        "linkedinUrl": grant.linkedin_url,
-        "mastodonHandle": grant.mastodon_handle,
+        "participantBio": "my bio",
+        "participantWebsite": "http://website.it",
+        "participantTwitterHandle": "handle",
+        "participantInstagramHandle": "handleinsta",
+        "participantLinkedinUrl": "https://linkedin.com/fake-link",
+        "participantFacebookUrl": "https://facebook.com/fake-link",
+        "participantMastodonHandle": "fake@mastodon.social",
     }
 
     variables = {**defaults, **kwargs}
@@ -86,6 +92,9 @@ def test_send_grant(graphql_client, user):
 
     assert response["data"]["sendGrant"]["__typename"] == "Grant"
     assert response["data"]["sendGrant"]["id"]
+
+    participant = Participant.objects.get(conference=conference, user_id=user.id)
+    assert participant.bio == "my bio"
 
     assert PrivacyPolicyAcceptanceRecord.objects.filter(
         user=user, conference=conference, privacy_policy="grant"

@@ -29,6 +29,7 @@ class ParticipantAdmin(admin.ModelAdmin):
     form = ParticipantForm
     search_fields = ("user__email", "user__full_name")
     list_display = (
+        "id",
         "user_display_name",
         "conference",
     )
