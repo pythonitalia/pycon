@@ -41,10 +41,6 @@ body:has(.brochure-page) {
     print-color-adjust: exact !important;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
-    box-decoration-break: clone;
-    -webkit-box-decoration-break: clone;
-    background-clip: padding-box;
-    page-break-inside: avoid;
   }
 }
 
