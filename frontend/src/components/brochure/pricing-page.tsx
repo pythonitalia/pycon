@@ -49,9 +49,11 @@ const TableSection = ({
 function TableBenefit({
   title,
   values,
+  lastPageRow,
 }: {
   title: string;
   values: Array<number | string | boolean>;
+  lastPageRow?: boolean;
 }) {
   return (
     <>
@@ -65,18 +67,6 @@ function TableBenefit({
             )}
           >
             {typeof value === "boolean" ? (value ? "✓" : "-") : value}
-            <span
-              className={clsx(
-                "absolute top-[-2px] left-0 right-0 h-[4px]",
-                getBackgroundColor(i),
-              )}
-            />
-            <span
-              className={clsx(
-                "absolute bottom-[-2px] left-0 right-0 h-[4px]",
-                getBackgroundColor(i),
-              )}
-            />
           </div>
         );
       })}
@@ -197,7 +187,7 @@ export function PricingPage({
               </>
             )}
 
-            {Object.entries(page).map(([category, benefits]) => {
+            {Object.entries(page).map(([category, benefits], index) => {
               return (
                 <>
                   <TableSection
@@ -212,6 +202,7 @@ export function PricingPage({
                         const levelBenefit = getBenefitForLevel(benefit, p);
                         return levelBenefit ? levelBenefit.value : "-";
                       })}
+                      lastPageRow={index === Object.keys(page).length - 1}
                       key={benefit.name}
                     />
                   ))}

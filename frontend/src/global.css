@@ -34,3 +34,16 @@ body:has(.brochure-page) {
   height: 29.7cm;
   page-break-before: always;
 }
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    background-clip: padding-box;
+    page-break-inside: avoid;
+  }
+}
