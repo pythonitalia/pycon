@@ -117,7 +117,7 @@ export function PricingPage({
     currentPageSize += sectionHeaderSize;
     benefits.forEach((benefit) => {
       console.log({ currentPageSize, benefit });
-      if (currentPageSize + itemSize > 650) {
+      if (currentPageSize + itemSize > 485) {
         currentPageSize = sectionHeaderSize;
         pagesToRender.push(currentContent);
         currentContent = {};
