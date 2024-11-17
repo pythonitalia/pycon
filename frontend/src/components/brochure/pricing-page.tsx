@@ -65,6 +65,18 @@ function TableBenefit({
             )}
           >
             {typeof value === "boolean" ? (value ? "✓" : "-") : value}
+            <span
+              className={clsx(
+                "absolute top-[-2px] left-0 right-0 h-[4px]",
+                getBackgroundColor(i),
+              )}
+            />
+            <span
+              className={clsx(
+                "absolute bottom-[-2px] left-0 right-0 h-[4px]",
+                getBackgroundColor(i),
+              )}
+            />
           </div>
         );
       })}
