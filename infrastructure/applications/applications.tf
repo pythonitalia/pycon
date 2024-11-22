@@ -19,6 +19,10 @@ module "pretix" {
 module "pycon_backend" {
   source       = "./pycon_backend"
   ecs_arm_ami  = local.ecs_arm_ami
+  cluster_id = module.cluster.cluster_id
+  service_connect_namespace = module.cluster.service_connect_namespace
+  security_group_id = module.cluster.security_group_id
+  server_ip = module.cluster.server_ip
 
   providers = {
     aws    = aws
@@ -43,6 +47,7 @@ module "emails" {
 
 module "cluster" {
   source = "./cluster"
+  ecs_arm_ami  = local.ecs_arm_ami
 
   providers = {
     aws    = aws

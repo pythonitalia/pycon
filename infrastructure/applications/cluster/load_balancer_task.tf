@@ -1,5 +1,6 @@
 resource "aws_ecs_task_definition" "traefik" {
   family = "pythonit-${terraform.workspace}-traefik"
+
   container_definitions = jsonencode([
     {
       name              = "traefik"
@@ -81,9 +82,4 @@ resource "aws_ecs_service" "traefik" {
       capacity_provider_strategy
     ]
   }
-
-  # placement_constraints {
-  #   type       = "memberOf"
-  #   expression = "attribute:role == load_balancer"
-  # }
 }

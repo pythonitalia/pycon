@@ -102,7 +102,7 @@ locals {
     },
     {
       name  = "CACHE_URL",
-      value = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/8" : "redis://${data.aws_instance.redis.private_ip}/13"
+      value = local.is_prod ? "redis://${var.server_ip}/8" : "redis://${var.server_ip}/13"
     },
     {
       name  = "STRIPE_WEBHOOK_SIGNATURE_SECRET",
@@ -134,11 +134,11 @@ locals {
     },
     {
       name  = "CELERY_BROKER_URL",
-      value = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/5" : "redis://${data.aws_instance.redis.private_ip}/14"
+      value = local.is_prod ? "redis://${var.server_ip}/5" : "redis://${var.server_ip}/14"
     },
     {
       name  = "CELERY_RESULT_BACKEND",
-      value = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/6" : "redis://${data.aws_instance.redis.private_ip}/15"
+      value = local.is_prod ? "redis://${var.server_ip}/6" : "redis://${var.server_ip}/15"
     },
     {
       name  = "ENV",
@@ -295,6 +295,7 @@ resource "aws_cloudwatch_log_group" "worker_logs" {
 
 resource "aws_ecs_task_definition" "worker" {
   family = "pythonit-${terraform.workspace}-worker"
+
   container_definitions = jsonencode([
     {
       name              = "worker"
@@ -348,6 +349,7 @@ resource "aws_ecs_task_definition" "worker" {
 
 resource "aws_ecs_task_definition" "beat" {
   family = "pythonit-${terraform.workspace}-beat"
+
   container_definitions = jsonencode([
     {
       name              = "beat"
@@ -400,8 +402,8 @@ resource "aws_ecs_task_definition" "beat" {
 }
 
 resource "aws_ecs_service" "worker" {
-  name                               = "pythonit-${terraform.workspace}-worker"
-  cluster                            = aws_ecs_cluster.worker.id
+  name                               = "worker"
+  cluster                            = var.cluster_id
   task_definition                    = aws_ecs_task_definition.worker.arn
   desired_count                      = 1
   deployment_minimum_healthy_percent = 0
@@ -409,8 +411,8 @@ resource "aws_ecs_service" "worker" {
 }
 
 resource "aws_ecs_service" "beat" {
-  name                               = "pythonit-${terraform.workspace}-beat"
-  cluster                            = aws_ecs_cluster.worker.id
+  name                               = "beat"
+  cluster                            = var.cluster_id
   task_definition                    = aws_ecs_task_definition.beat.arn
   desired_count                      = 1
   deployment_minimum_healthy_percent = 0

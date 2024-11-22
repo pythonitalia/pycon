@@ -2,32 +2,20 @@ resource "aws_ecs_cluster" "cluster" {
   name = "pythonit-${terraform.workspace}"
 }
 
-resource "aws_ecs_capacity_provider" "ec2" {
-  name = "pythonit-${terraform.workspace}-ec2"
-
-  auto_scaling_group_provider {
-    auto_scaling_group_arn         = aws_autoscaling_group.server.arn
-    managed_termination_protection = "ENABLED"
-
-    managed_scaling {
-      maximum_scaling_step_size = 2
-      minimum_scaling_step_size = 1
-      status                    = "ENABLED"
-      target_capacity           = 1
-      instance_warmup_period    = 60
-    }
-  }
+output "cluster_id" {
+  value = aws_ecs_cluster.cluster.id
 }
 
-resource "aws_ecs_cluster_capacity_providers" "server" {
-  cluster_name = aws_ecs_cluster.cluster.name
-  capacity_providers = [
-    aws_ecs_capacity_provider.ec2.name,
-  ]
+resource "aws_service_discovery_http_namespace" "cluster" {
+  name        = "pythonit-${terraform.workspace}"
+  description = "pythonit-${terraform.workspace} service discovery namespace"
+}
 
-  default_capacity_provider_strategy {
-    base              = 1
-    weight            = 100
-    capacity_provider = aws_ecs_capacity_provider.ec2.name
-  }
+output "service_connect_namespace" {
+  value = aws_service_discovery_http_namespace.cluster.arn
+}
+
+resource "aws_ecs_account_setting_default" "trunking" {
+  name  = "awsvpcTrunking"
+  value = "enabled"
 }
