@@ -52,8 +52,8 @@ def test_send_email_template_to_recipient_email(
         reply_to="replyto@example.com",
     )
 
-    mock_send_pending_emails = mocker.patch(
-        "notifications.tasks.send_pending_emails.delay"
+    mock_send_pending_email = mocker.patch(
+        "notifications.tasks.send_pending_email.delay"
     )
 
     with django_capture_on_commit_callbacks(execute=True):
@@ -64,11 +64,11 @@ def test_send_email_template_to_recipient_email(
             },
         )
 
-    mock_send_pending_emails.assert_called_once()
-
     sent_email = SentEmail.objects.get(
         email_template=email_template,
     )
+
+    mock_send_pending_email.assert_called_once_with(sent_email.id)
 
     assert sent_email.recipient is None
     assert sent_email.recipient_email == "example@example.com"

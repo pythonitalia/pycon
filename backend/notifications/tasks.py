@@ -10,50 +10,45 @@ from django.core.mail import get_connection
 logger = logging.getLogger(__name__)
 
 
-@app.task(base=OnlyOneAtTimeTask)
-def send_pending_emails():
-    pending_emails = (
-        SentEmail.objects.pending().order_by("created").values_list("id", flat=True)
-    )
-    total_pending_emails = pending_emails.count()
-
-    if total_pending_emails == 0:
-        return
-
-    logger.info("Found %s pending emails", pending_emails.count())
-
+@app.task(
+    base=OnlyOneAtTimeTask,
+    bind=True,
+    autoretry_for=(Exception,),
+    retry_backoff=5,
+    max_retries=5,
+)
+@transaction.atomic()
+def send_pending_email(self, sent_email_id: int):
     email_backend_connection = get_connection()
 
-    for email_id in pending_emails.iterator():
-        with transaction.atomic():
-            sent_email = (
-                SentEmail.objects.select_for_update(skip_locked=True)
-                .filter(
-                    id=email_id,
-                )
-                .first()
-            )
+    sent_email = (
+        SentEmail.objects.select_for_update(skip_locked=True)
+        .pending()
+        .filter(id=sent_email_id)
+        .first()
+    )
 
-            if not sent_email or not sent_email.is_pending:
-                return
+    if not sent_email:
+        return
 
-            try:
-                message_id = send_email(sent_email, email_backend_connection)
-                sent_email.mark_as_sent(message_id)
+    if self.request.retries >= self.max_retries - 1:
+        sent_email.mark_as_failed()
+        logger.error(
+            "Failed to send email sent_email_id=%s",
+            sent_email.id,
+        )
+        return
 
-                logger.info(
-                    "Email sent_email_id=%s sent with message_id=%s",
-                    sent_email.id,
-                    message_id,
-                )
-            except Exception as e:
-                sent_email.mark_as_failed()
-                logger.exception(
-                    "Failed to send email sent_email_id=%s error=%s",
-                    email_id,
-                    e,
-                    exc_info=e,
-                )
+    logger.info("Sending sent_email=%s", sent_email.id)
+
+    message_id = send_email(sent_email, email_backend_connection)
+    sent_email.mark_as_sent(message_id)
+
+    logger.info(
+        "Email sent_email_id=%s sent with message_id=%s",
+        sent_email.id,
+        message_id,
+    )
 
 
 def send_email(sent_email, email_backend_connection):
