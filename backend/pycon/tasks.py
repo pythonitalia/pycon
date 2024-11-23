@@ -27,10 +27,14 @@ def launch_heavy_processing_worker():
     if settings.ENVIRONMENT == "local":
         return
 
-    cluster_name = f"pythonit-{settings.ENVIRONMENT}-heavy-processing-worker"
+    cluster_name = f"pythonit-{settings.ENVIRONMENT}"
     ecs_client = boto3.client("ecs", region_name=settings.AWS_REGION_NAME)
 
-    response = ecs_client.list_tasks(cluster=cluster_name, desiredStatus="RUNNING")
+    response = ecs_client.list_tasks(
+        cluster=cluster_name,
+        desiredStatus="RUNNING",
+        family=f"pythonit-{settings.ENVIRONMENT}-heavy-processing-worker",
+    )
 
     if len(response["taskArns"]) > 0:
         return

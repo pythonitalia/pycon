@@ -26,6 +26,7 @@ module "pycon_backend" {
   security_group_id = module.cluster.security_group_id
   server_ip = module.cluster.server_ip
   logs_group_name = module.cluster.logs_group_name
+  iam_role_arn = module.cluster.iam_role_arn
 
   providers = {
     aws    = aws

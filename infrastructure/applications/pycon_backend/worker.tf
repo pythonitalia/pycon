@@ -169,15 +169,13 @@ locals {
       value = jsonencode({
         subnets = [data.aws_subnet.public_1a.id],
         security_groups = [
-          data.aws_security_group.rds.id,
-          data.aws_security_group.lambda.id,
-          aws_security_group.instance.id
+          var.security_group_id
         ],
       })
     },
     {
       name = "ECS_SERVICE_ROLE",
-      value = aws_iam_role.ecs_service.arn
+      value = var.iam_role_arn
     },
     {
       name = "AWS_SES_CONFIGURATION_SET"

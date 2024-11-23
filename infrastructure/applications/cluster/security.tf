@@ -22,6 +22,25 @@ resource "aws_security_group_rule" "server_rds" {
   security_group_id = aws_security_group.server.id
 }
 
+resource "aws_security_group_rule" "in_redis" {
+  type              = "egress"
+  from_port         = 6379
+  to_port           = 6379
+  protocol          = "tcp"
+  source_security_group_id = aws_security_group.server.id
+  security_group_id = aws_security_group.server.id
+}
+
+resource "aws_security_group_rule" "out_redis" {
+  # needed by fargate to connect to the server with redis
+  type              = "ingress"
+  from_port         = 6379
+  to_port           = 6379
+  protocol          = "tcp"
+  source_security_group_id = aws_security_group.server.id
+  security_group_id = aws_security_group.server.id
+}
+
 resource "aws_security_group_rule" "web_http" {
   type              = "ingress"
   from_port         = 80
