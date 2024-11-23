@@ -19,7 +19,12 @@ logger = logging.getLogger(__name__)
 )
 @transaction.atomic()
 def send_pending_email(self, sent_email_id: int):
-    email_backend_connection = get_connection()
+    logger.info(
+        "Sending sent_email=%s (retry=%s of %s)",
+        sent_email_id,
+        self.request.retries,
+        self.max_retries,
+    )
 
     sent_email = (
         SentEmail.objects.select_for_update(skip_locked=True)
@@ -31,6 +36,8 @@ def send_pending_email(self, sent_email_id: int):
     if not sent_email:
         return
 
+    email_backend_connection = get_connection()
+
     if self.request.retries >= self.max_retries - 1:
         sent_email.mark_as_failed()
         logger.error(
@@ -38,8 +45,6 @@ def send_pending_email(self, sent_email_id: int):
             sent_email.id,
         )
         return
-
-    logger.info("Sending sent_email=%s", sent_email.id)
 
     message_id = send_email(sent_email, email_backend_connection)
     sent_email.mark_as_sent(message_id)
