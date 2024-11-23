@@ -169,9 +169,7 @@ locals {
       value = jsonencode({
         subnets = [data.aws_subnet.public_1a.id],
         security_groups = [
-          data.aws_security_group.rds.id,
-          data.aws_security_group.lambda.id,
-          aws_security_group.instance.id
+          var.security_group_id
         ],
       })
     },

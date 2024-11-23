@@ -39,15 +39,17 @@ def test_launch_heavy_processing_worker_starts_task(settings, mocker):
     launch_heavy_processing_worker()
 
     mock_client.return_value.describe_tasks.assert_called_with(
-        cluster="pythonit-production-heavy-processing-worker", tasks=["arn-abc"]
+        cluster="pythonit-production", tasks=["arn-abc"]
     )
 
     mock_client.return_value.list_tasks.assert_called_with(
-        cluster="pythonit-production-heavy-processing-worker", desiredStatus="RUNNING"
+        cluster="pythonit-production",
+        desiredStatus="RUNNING",
+        family="pythonit-production-heavy-processing-worker",
     )
 
     mock_client.return_value.run_task.assert_called_with(
-        cluster="pythonit-production-heavy-processing-worker",
+        cluster="pythonit-production",
         taskDefinition="pythonit-production-heavy-processing-worker",
         count=1,
         networkConfiguration={
