@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "server_assume_role" {
 
     principals {
       type        = "Service"
-      identifiers = ["ec2.amazonaws.com", "ecs-tasks.amazonaws.com"]
+      identifiers = ["ec2.amazonaws.com", "ecs-tasks.amazonaws.com", "ecs.amazonaws.com"]
     }
 
     actions = ["sts:AssumeRole"]
@@ -35,7 +35,6 @@ data "aws_iam_policy_document" "server_role_policy" {
       "ses:*",
       "ecs:*",
       "ecr:*",
-      "ec2:DescribeInstances",
     ]
     resources = [
       "*"
@@ -74,6 +73,32 @@ data "aws_iam_policy_document" "server_role_policy" {
       "sqs:DeleteMessage",
       "sqs:GetQueueAttributes",
       "sqs:ReceiveMessage",
+    ]
+    resources = ["*"]
+    effect    = "Allow"
+  }
+
+  statement {
+    actions = [
+      "ec2:DescribeAvailabilityZones",
+      "ec2:DescribeInstances",
+      "ec2:CreateVolume",
+      "ec2:AttachVolume",
+      "ec2:DetachVolume",
+      "ec2:CreateTags",
+      "ec2:DeleteVolume",
+      "ec2:DescribeVolumes",
+    ]
+    resources = ["*"]
+    effect    = "Allow"
+  }
+
+  statement {
+    actions = [
+      "ssmmessages:CreateControlChannel",
+      "ssmmessages:CreateDataChannel",
+      "ssmmessages:OpenControlChannel",
+      "ssmmessages:OpenDataChannel"
     ]
     resources = ["*"]
     effect    = "Allow"

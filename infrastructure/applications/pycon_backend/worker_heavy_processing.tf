@@ -10,10 +10,12 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
   ephemeral_storage {
     size_in_gib = 21
   }
+
   runtime_platform {
     operating_system_family = "LINUX"
     cpu_architecture = "ARM64"
   }
+
   container_definitions = jsonencode([
     {
       name              = "worker"
