@@ -35,6 +35,7 @@ type Props<T extends ParticipantFormFields> = {
   };
   getParticipantValidationError: (key: string) => string[] | null;
   photoRequired?: boolean;
+  showPhotoField?: boolean;
 };
 
 export const PublicProfileCard = <T extends ParticipantFormFields>({
@@ -42,6 +43,7 @@ export const PublicProfileCard = <T extends ParticipantFormFields>({
   formOptions: { raw, url, text },
   getParticipantValidationError,
   photoRequired = false,
+  showPhotoField = true,
 }: Props<T>) => {
   const inputPlaceholder = useTranslatedMessage("input.placeholder");
 
@@ -54,23 +56,28 @@ export const PublicProfileCard = <T extends ParticipantFormFields>({
       </CardPart>
       <CardPart background="milk" contentAlign="left">
         <Grid cols={3}>
-          <GridColumn colSpan={3}>
-            <InputWrapper
-              required={photoRequired}
-              title={<FormattedMessage id="profile.publicProfile.yourPhoto" />}
-              description={
-                <FormattedMessage id="profile.publicProfile.yourPhoto.description" />
-              }
-            >
-              <FileInput
-                {...raw("participantPhoto")}
-                accept="image/png,image/jpg,image/jpeg,image/webp"
-                previewUrl={me.participant?.photo}
-                errors={getParticipantValidationError("photo")}
-                type="participant_avatar"
-              />
-            </InputWrapper>
-          </GridColumn>
+          {showPhotoField && (
+            <GridColumn colSpan={3}>
+              <InputWrapper
+                required={photoRequired}
+                title={
+                  <FormattedMessage id="profile.publicProfile.yourPhoto" />
+                }
+                description={
+                  <FormattedMessage id="profile.publicProfile.yourPhoto.description" />
+                }
+              >
+                <FileInput
+                  {...raw("participantPhoto")}
+                  accept="image/png,image/jpg,image/jpeg,image/webp"
+                  previewUrl={me.participant?.photo}
+                  errors={getParticipantValidationError("photo")}
+                  type="participant_avatar"
+                />
+              </InputWrapper>
+            </GridColumn>
+          )}
+
           <GridColumn colSpan={3}>
             <InputWrapper
               title={<FormattedMessage id="profile.publicProfile.yourBio" />}

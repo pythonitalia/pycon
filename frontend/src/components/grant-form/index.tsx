@@ -676,6 +676,7 @@ export const GrantForm = ({
             `validationSpeaker${field[0].toUpperCase()}${field.substring(1)}` as any,
           )
         }
+        showPhotoField={false}
       />
 
       {!grant && (
