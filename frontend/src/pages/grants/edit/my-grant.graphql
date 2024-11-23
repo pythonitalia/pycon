@@ -33,6 +33,10 @@ query MyGrant($conference: String!) {
       linkedinUrl
       facebookUrl
       mastodonHandle
+
+      fullname
+      publicProfile
+      userId
     }
     }
   }

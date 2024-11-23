@@ -64,5 +64,5 @@ class Grant:
             notes=grant.notes,
             travelling_from=grant.travelling_from,
             applicant_reply_deadline=grant.applicant_reply_deadline,
-            participant=participant,
+            participant=Participant.from_model(participant),
         )

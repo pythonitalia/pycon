@@ -24,7 +24,6 @@ const GrantPage = (): JSX.Element => {
     variables: {
       conference: code,
     },
-    skip: typeof window === "undefined",
   });
 
   const grant = data?.me?.grant;
@@ -95,9 +94,6 @@ export const getServerSideProps: GetServerSideProps = async ({
         conference: process.env.conferenceCode,
       }),
       queryCurrentUser(client, {
-        conference: process.env.conferenceCode,
-      }),
-      queryParticipantData(client, {
         conference: process.env.conferenceCode,
       }),
     ]);

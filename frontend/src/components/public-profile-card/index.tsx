@@ -30,7 +30,7 @@ export type ParticipantFormFields = {
 
 type Props<T extends ParticipantFormFields> = {
   formOptions: Inputs<T>;
-  me: {
+  me?: {
     participant?: {
       photo?: string;
     };

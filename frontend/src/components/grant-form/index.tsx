@@ -143,12 +143,6 @@ export const GrantForm = ({
     },
   });
 
-  const { data: participantData } = useParticipantDataQuery({
-    variables: {
-      conference: conference,
-    },
-  });
-
   const inputPlaceholderText = useTranslatedMessage("input.placeholder");
   const { user, loading: loadingUser } = useCurrentUser({});
   const [formState, formOptions] = useFormState<GrantFormFields>(
@@ -208,34 +202,28 @@ export const GrantForm = ({
       formState.setField("notes", grant.notes);
       formState.setField("travellingFrom", grant.travellingFrom);
 
-      if (participantData.me.participant) {
-        formState.setField(
-          "participantBio",
-          participantData.me.participant.bio,
-        );
-        formState.setField(
-          "participantWebsite",
-          participantData.me.participant.website,
-        );
+      if (grant.participant) {
+        formState.setField("participantBio", grant.participant.bio);
+        formState.setField("participantWebsite", grant.participant.website);
         formState.setField(
           "participantTwitterHandle",
-          participantData.me.participant.twitterHandle,
+          grant.participant.twitterHandle,
         );
         formState.setField(
           "participantInstagramHandle",
-          participantData.me.participant.instagramHandle,
+          grant.participant.instagramHandle,
         );
         formState.setField(
           "participantLinkedinUrl",
-          participantData.me.participant.linkedinUrl,
+          grant.participant.linkedinUrl,
         );
         formState.setField(
           "participantFacebookUrl",
-          participantData.me.participant.facebookUrl,
+          grant.participant.facebookUrl,
         );
         formState.setField(
           "participantMastodonHandle",
-          participantData.me.participant.mastodonHandle,
+          grant.participant.mastodonHandle,
         );
       }
       formState.setField("acceptedPrivacyPolicy", true);
@@ -668,7 +656,6 @@ export const GrantForm = ({
       <Spacer size="medium" />
 
       <PublicProfileCard
-        me={participantData.me}
         formOptions={formOptions}
         photoRequired={false}
         getParticipantValidationError={(field) =>
