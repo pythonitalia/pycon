@@ -11,24 +11,6 @@ resource "aws_subnet" "private" {
   }
 }
 
-resource "aws_route_table" "private" {
-  for_each = toset(keys(local.private_azs_cidr))
-  vpc_id   = aws_vpc.default.id
-
-  route {
-    cidr_block           = "0.0.0.0/0"
-    network_interface_id = aws_instance.nat_instance.primary_network_interface_id
-  }
-
-  tags = {
-    Name = "private subnet route table ${each.value}"
-  }
-
-  depends_on = [
-    aws_instance.nat_instance
-  ]
-}
-
 resource "aws_route_table_association" "private_subnet_to_private_route" {
   for_each       = toset(keys(local.private_azs_cidr))
   route_table_id = aws_route_table.private[each.value].id
