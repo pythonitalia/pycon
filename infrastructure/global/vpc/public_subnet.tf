@@ -36,8 +36,6 @@ resource "aws_route_table_association" "public_subnet_to_public_route" {
   subnet_id      = aws_subnet.public[each.value].id
 }
 
-# Internet gateway
-
 resource "aws_internet_gateway" "default" {
   vpc_id = aws_vpc.default.id
 }
