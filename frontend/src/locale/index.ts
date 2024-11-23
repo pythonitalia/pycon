@@ -568,6 +568,8 @@ Failing to notify us may impact your eligibility for financial aid at future eve
     "profile.edit.success": "Profile updated!",
 
     "profile.publicProfile.heading": "Your public profile",
+    "profile.publicProfile.description":
+      "This is your public profile. It may appear as part of your speaker profile or be visible when someone scans your badge QR code. Please avoid adding private information or anything you don’t want to be publicly accessible.",
 
     "tickets.checkout.title": "Checkout",
     "tickets.title": "Buy Tickets",
@@ -2086,6 +2088,8 @@ Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai
     "profile.edit.success": "Profilo aggiornato!",
 
     "profile.publicProfile.heading": "Profilo pubblico",
+    "profile.publicProfile.description":
+      "Questo è il tuo profilo pubblico. Potrebbe essere visibile come parte del tuo profilo speaker o quando qualcuno scansiona il codice QR del tuo badge. Ti invitiamo a non inserire informazioni private o dati che non vuoi rendere pubblici.",
 
     "profile.publicProfile.yourPhoto": "La tua foto",
     "profile.publicProfile.yourPhoto.description":

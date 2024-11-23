@@ -6,6 +6,8 @@ import {
   Input,
   InputWrapper,
   MultiplePartsCard,
+  Spacer,
+  Text,
   Textarea,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
@@ -55,6 +57,10 @@ export const PublicProfileCard = <T extends ParticipantFormFields>({
         </Heading>
       </CardPart>
       <CardPart background="milk" contentAlign="left">
+        <Text size={2}>
+          <FormattedMessage id="profile.publicProfile.description" />
+        </Text>
+        <Spacer size="small" />
         <Grid cols={3}>
           {showPhotoField && (
             <GridColumn colSpan={3}>
