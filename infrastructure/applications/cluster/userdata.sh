@@ -1,8 +1,17 @@
 #!/bin/bash
 set -x
 
-# Config ECS agent
 echo "ECS_CLUSTER=${ecs_cluster}" > /etc/ecs/ecs.config
+
+fallocate -l ${swap_size} /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+
+mkdir /redis-data -p
+echo '/dev/nvme1n1 /redis-data xfs defaults,nofail 0 2' >> /etc/fstab
+mount -a
 
 # Reclaim unused Docker disk space
 cat << "EOF" > /usr/local/bin/claimspace.sh
@@ -74,9 +83,3 @@ systemctl daemon-reload
 
 systemctl enable --now claimspace.timer
 systemctl enable --now pretixcron.timer
-
-dd if=/dev/zero of=/swapfile bs=128M count=32
-chmod 600 /swapfile
-mkswap /swapfile
-swapon /swapfile
-echo "/swapfile swap swap defaults 0 0" >> /etc/fstab

@@ -12,13 +12,20 @@ locals {
 
 module "pretix" {
   source       = "./pretix"
-  count        = local.deploy_pretix ? 1 : 0
+  count        = 1
   ecs_arm_ami  = local.ecs_arm_ami
+  server_ip = module.cluster.server_ip
+  cluster_id = module.cluster.cluster_id
+  logs_group_name = module.cluster.logs_group_name
 }
 
 module "pycon_backend" {
   source       = "./pycon_backend"
   ecs_arm_ami  = local.ecs_arm_ami
+  cluster_id = module.cluster.cluster_id
+  security_group_id = module.cluster.security_group_id
+  server_ip = module.cluster.server_ip
+  logs_group_name = module.cluster.logs_group_name
 
   providers = {
     aws    = aws
@@ -39,4 +46,18 @@ module "emails" {
     aws    = aws
     aws.us = aws.us
   }
+}
+
+module "cluster" {
+  source = "./cluster"
+  ecs_arm_ami  = local.ecs_arm_ami
+
+  providers = {
+    aws    = aws
+    aws.us = aws.us
+  }
+}
+
+output "server_public_ip" {
+  value = module.cluster.server_public_ip
 }

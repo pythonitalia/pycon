@@ -94,6 +94,7 @@ dependencies = [
     "cryptography>=43.0.0",
     "openai>=1.52.0",
     "pydantic>=2.9.2",
+    "gunicorn>=23.0.0",
 ]
 name = "backend"
 version = "0.1.0"

@@ -1,24 +1,38 @@
+locals {
+  pycon_web_domain  = local.is_prod ? "admin.pycon.it" : "${terraform.workspace}-admin.pycon.it"
+  pretix_web_domain = local.is_prod ? "tickets.pycon.it" : "${terraform.workspace}-tickets.pycon.it"
+}
+
+data "aws_cloudfront_origin_request_policy" "all_viewer" {
+  name = "Managed-AllViewer"
+}
+
 data "aws_cloudfront_cache_policy" "caching_disabled" {
   name = "Managed-CachingDisabled"
 }
 
-data "aws_cloudfront_origin_request_policy" "all_viewer_except_host_header" {
-  name = "Managed-AllViewerExceptHostHeader"
+data "aws_acm_certificate" "cert" {
+  domain   = "*.pycon.it"
+  statuses = ["ISSUED"]
+  provider = aws.us
 }
 
 resource "aws_cloudfront_distribution" "application" {
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "${terraform.workspace}-${var.application}"
+  comment             = "${terraform.workspace} server"
   wait_for_deployment = false
-  aliases             = [var.domain]
+  aliases = [
+    local.pycon_web_domain,
+    local.pretix_web_domain
+  ]
 
   origin {
-    domain_name = var.origin_url
+    domain_name = aws_eip.server.public_dns
     origin_id   = "default"
 
     custom_origin_config {
-      origin_protocol_policy = "https-only"
+      origin_protocol_policy = "http-only"
       http_port              = "80"
       https_port             = "443"
       origin_ssl_protocols   = ["TLSv1"]
@@ -29,7 +43,7 @@ resource "aws_cloudfront_distribution" "application" {
     cloudfront_default_certificate = false
     minimum_protocol_version       = "TLSv1"
     ssl_support_method             = "sni-only"
-    acm_certificate_arn            = var.certificate_arn
+    acm_certificate_arn            = data.aws_acm_certificate.cert.arn
   }
 
   default_cache_behavior {
@@ -38,16 +52,10 @@ resource "aws_cloudfront_distribution" "application" {
     target_origin_id = "default"
 
     cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
-    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_except_host_header.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer.id
 
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
-
-    lambda_function_association {
-      event_type   = "viewer-request"
-      lambda_arn   = var.forward_host_header_lambda_arn
-      include_body = false
-    }
   }
 
   restrictions {

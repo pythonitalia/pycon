@@ -102,7 +102,7 @@ locals {
     },
     {
       name  = "CACHE_URL",
-      value = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/8" : "redis://${data.aws_instance.redis.private_ip}/13"
+      value = local.is_prod ? "redis://${var.server_ip}/8" : "redis://${var.server_ip}/13"
     },
     {
       name  = "STRIPE_WEBHOOK_SIGNATURE_SECRET",
@@ -134,11 +134,11 @@ locals {
     },
     {
       name  = "CELERY_BROKER_URL",
-      value = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/5" : "redis://${data.aws_instance.redis.private_ip}/14"
+      value = local.is_prod ? "redis://${var.server_ip}/5" : "redis://${var.server_ip}/14"
     },
     {
       name  = "CELERY_RESULT_BACKEND",
-      value = local.is_prod ? "redis://${data.aws_instance.redis.private_ip}/6" : "redis://${data.aws_instance.redis.private_ip}/15"
+      value = local.is_prod ? "redis://${var.server_ip}/6" : "redis://${var.server_ip}/15"
     },
     {
       name  = "ENV",
@@ -182,6 +182,10 @@ locals {
     {
       name = "AWS_SES_CONFIGURATION_SET"
       value = data.aws_sesv2_configuration_set.main.configuration_set_name
+    },
+    {
+      name = "SNS_WEBHOOK_SECRET",
+      value = "module.common_secrets.value.sns_webhook_secret"
     }
   ]
 }
@@ -201,15 +205,6 @@ resource "aws_iam_role" "ecs_service" {
       }
     ]
   })
-}
-
-resource "aws_iam_role_policy_attachment" "volume_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSInfrastructureRolePolicyForVolumes"
-  role       = aws_iam_role.ecs_service.name
-}
-
-resource "aws_ecs_cluster" "worker" {
-  name = "pythonit-${terraform.workspace}-worker"
 }
 
 data "aws_subnet" "private_1a" {
@@ -240,61 +235,9 @@ data "aws_subnet" "public_1a" {
   }
 }
 
-
-data "template_file" "user_data" {
-  template = file("${path.module}/user_data.sh")
-  vars = {
-    ecs_cluster = aws_ecs_cluster.worker.name
-  }
-}
-
-
-resource "aws_instance" "instance_1" {
-  ami               = var.ecs_arm_ami
-  instance_type     = local.is_prod ? "t4g.micro" : "t4g.nano"
-  subnet_id         = data.aws_subnet.private_1a.id
-  availability_zone = "eu-central-1a"
-  vpc_security_group_ids = [
-    data.aws_security_group.rds.id,
-    data.aws_security_group.lambda.id,
-    aws_security_group.instance.id
-  ]
-  source_dest_check    = false
-  user_data            = data.template_file.user_data.rendered
-  iam_instance_profile = aws_iam_instance_profile.worker.name
-  key_name             = "pretix"
-
-  dynamic "instance_market_options" {
-    for_each = terraform.workspace == "production" ? [] : [1]
-
-    content {
-      market_type = "spot"
-
-      spot_options {
-        max_price = 0.0031
-        spot_instance_type = "persistent"
-        instance_interruption_behavior = "stop"
-      }
-    }
-  }
-
-  root_block_device {
-    volume_size = 20
-  }
-
-  tags = {
-    Name = "pythonit-${terraform.workspace}-worker"
-  }
-}
-
-resource "aws_cloudwatch_log_group" "worker_logs" {
-  name              = "/ecs/pythonit-${terraform.workspace}-worker"
-  retention_in_days = 7
-}
-
-
 resource "aws_ecs_task_definition" "worker" {
   family = "pythonit-${terraform.workspace}-worker"
+
   container_definitions = jsonencode([
     {
       name              = "worker"
@@ -322,9 +265,9 @@ resource "aws_ecs_task_definition" "worker" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.worker_logs.name
+          "awslogs-group"         = var.logs_group_name
           "awslogs-region"        = "eu-central-1"
-          "awslogs-stream-prefix" = "ecs"
+          "awslogs-stream-prefix" = "backend-worker"
         }
       }
 
@@ -348,6 +291,7 @@ resource "aws_ecs_task_definition" "worker" {
 
 resource "aws_ecs_task_definition" "beat" {
   family = "pythonit-${terraform.workspace}-beat"
+
   container_definitions = jsonencode([
     {
       name              = "beat"
@@ -375,9 +319,9 @@ resource "aws_ecs_task_definition" "beat" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.worker_logs.name
+          "awslogs-group"         = var.logs_group_name
           "awslogs-region"        = "eu-central-1"
-          "awslogs-stream-prefix" = "ecs"
+          "awslogs-stream-prefix" = "beat"
         }
       }
 
@@ -400,8 +344,8 @@ resource "aws_ecs_task_definition" "beat" {
 }
 
 resource "aws_ecs_service" "worker" {
-  name                               = "pythonit-${terraform.workspace}-worker"
-  cluster                            = aws_ecs_cluster.worker.id
+  name                               = "backend-worker"
+  cluster                            = var.cluster_id
   task_definition                    = aws_ecs_task_definition.worker.arn
   desired_count                      = 1
   deployment_minimum_healthy_percent = 0
@@ -409,8 +353,8 @@ resource "aws_ecs_service" "worker" {
 }
 
 resource "aws_ecs_service" "beat" {
-  name                               = "pythonit-${terraform.workspace}-beat"
-  cluster                            = aws_ecs_cluster.worker.id
+  name                               = "backend-beat"
+  cluster                            = var.cluster_id
   task_definition                    = aws_ecs_task_definition.beat.arn
   desired_count                      = 1
   deployment_minimum_healthy_percent = 0

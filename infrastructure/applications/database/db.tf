@@ -19,7 +19,7 @@ resource "aws_db_instance" "database" {
   allow_major_version_upgrade = true
   engine_version              = "14.12"
   instance_class              = "db.t4g.micro"
-  db_name                     = "${local.normalized_workspace}backend"
+  db_name                     = local.is_prod ? "${local.normalized_workspace}backend" : "pycon"
   username                    = "root"
   password                    = module.common_secrets.value.database_password
   multi_az                    = "false"
