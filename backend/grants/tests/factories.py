@@ -6,6 +6,8 @@ from grants.models import Grant
 from helpers.constants import GENDERS
 from users.tests.factories import UserFactory
 from countries import countries
+from participants.tests.factories import ParticipantFactory
+from participants.models import Participant
 
 
 class GrantFactory(DjangoModelFactory):
@@ -34,3 +36,14 @@ class GrantFactory(DjangoModelFactory):
     github_handle = factory.Faker("user_name")
     linkedin_url = factory.Faker("user_name")
     mastodon_handle = factory.Faker("user_name")
+
+    @classmethod
+    def _create(self, model_class, *args, **kwargs):
+        grant = super()._create(model_class, *args, **kwargs)
+
+        if not Participant.objects.filter(
+            user_id=grant.user.id, conference=grant.conference
+        ).exists():
+            ParticipantFactory(user_id=grant.user.id, conference=grant.conference)
+
+        return grant
