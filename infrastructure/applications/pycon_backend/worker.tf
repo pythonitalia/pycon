@@ -282,6 +282,50 @@ resource "aws_ecs_task_definition" "worker" {
       }
 
       stopTimeout = 300
+    },
+    {
+      name              = "migrations"
+      image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
+      memoryReservation = 200
+      essential         = false
+      entrypoint = [
+        "/home/app/.venv/bin/python",
+      ]
+
+      command = [
+        "manage.py", "migrate"
+      ]
+
+      environment = local.env_vars
+
+      mountPoints = []
+      systemControls = [
+        {
+          "namespace" : "net.core.somaxconn",
+          "value" : "4096"
+        }
+      ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = var.logs_group_name
+          "awslogs-region"        = "eu-central-1"
+          "awslogs-stream-prefix" = "backend-migrations"
+        }
+      }
+
+      healthCheck = {
+        retries = 3
+        command = [
+          "CMD-SHELL",
+          "echo 1"
+        ]
+        timeout  = 3
+        interval = 10
+      }
+
+      stopTimeout = 300
     }
   ])
 
