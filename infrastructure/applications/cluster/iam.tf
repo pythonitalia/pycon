@@ -58,4 +58,24 @@ data "aws_iam_policy_document" "server_role_policy" {
       "arn:aws:s3:::${terraform.workspace}-pretix-media/*",
     ]
   }
+
+  statement {
+    actions = [
+      "sns:CreatePlatformEndpoint",
+      "sns:Publish"
+    ]
+    resources = ["*"]
+    effect    = "Allow"
+  }
+
+  statement {
+    actions = [
+      "sqs:SendMessage",
+      "sqs:DeleteMessage",
+      "sqs:GetQueueAttributes",
+      "sqs:ReceiveMessage",
+    ]
+    resources = ["*"]
+    effect    = "Allow"
+  }
 }

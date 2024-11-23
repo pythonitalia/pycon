@@ -6,6 +6,6 @@ locals {
 
 variable "ecs_arm_ami" {}
 variable "cluster_id" {}
-variable "service_connect_namespace" {}
 variable "security_group_id" {}
 variable "server_ip" {}
+variable "logs_group_name" {}

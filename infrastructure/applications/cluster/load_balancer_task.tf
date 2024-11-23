@@ -25,6 +25,10 @@ resource "aws_ecs_task_definition" "traefik" {
           name  = "TRAEFIK_ENTRYPOINTS_WEB_ADDRESS",
           value = ":80"
         },
+        {
+          name = "TRAEFIK_LOG_LEVEL",
+          value = "DEBUG"
+        }
       ]
 
       portMappings = [
@@ -76,10 +80,4 @@ resource "aws_ecs_service" "traefik" {
   desired_count                      = 1
   deployment_minimum_healthy_percent = 0
   deployment_maximum_percent         = 100
-
-  lifecycle {
-    ignore_changes = [
-      capacity_provider_strategy
-    ]
-  }
 }

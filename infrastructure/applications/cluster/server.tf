@@ -1,7 +1,7 @@
 locals {
   server_user_data = templatefile("${path.module}/userdata.sh", {
     ecs_cluster = aws_ecs_cluster.cluster.name
-    swap_size = "1G"
+    swap_size = "4G"
   })
 }
 
@@ -11,8 +11,8 @@ resource "aws_eip" "server" {
 }
 
 resource "aws_instance" "server" {
-  ami               = "ami-01c0b647efcf28a90"
-  instance_type     = "t4g.small"
+  ami               = "ami-0d683ccb0045afce1"
+  instance_type     = "t4g.large"
   subnet_id         = data.aws_subnet.public_1a.id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [
@@ -52,4 +52,8 @@ resource "aws_volume_attachment" "redis_data_attachment" {
 
 output "server_ip" {
   value = aws_instance.server.private_ip
+}
+
+output "server_public_ip" {
+  value = aws_eip.server.public_ip
 }

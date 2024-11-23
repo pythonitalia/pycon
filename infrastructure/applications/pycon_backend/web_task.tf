@@ -5,17 +5,28 @@ resource "aws_ecs_task_definition" "web" {
     {
       name              = "web"
       image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
-      memoryReservation = 200
+      memoryReservation = 400
       essential         = true
       entrypoint = [
         "/home/app/.venv/bin/gunicorn",
       ]
 
       command = [
-        "-w", "4", "pycon.wsgi"
+        "-w", "5", "-b", "0.0.0.0:8000", "pycon.wsgi"
       ]
 
+      dockerLabels = {
+        "traefik.enable"                        = "true"
+        "traefik.http.routers.backend-web.rule" = "PathPrefix(`/`)"
+      }
       environment = local.env_vars
+
+      portMappings = [
+        {
+          containerPort = 8000
+          hostPort      = 0
+        },
+      ]
 
       mountPoints = []
       systemControls = [
@@ -28,9 +39,9 @@ resource "aws_ecs_task_definition" "web" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.worker_logs.name
+          "awslogs-group"         = var.logs_group_name
           "awslogs-region"        = "eu-central-1"
-          "awslogs-stream-prefix" = "ecs"
+          "awslogs-stream-prefix" = "backend-web"
         }
       }
 
