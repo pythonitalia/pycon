@@ -6,6 +6,8 @@ import {
   Input,
   InputWrapper,
   MultiplePartsCard,
+  Spacer,
+  Text,
   Textarea,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
@@ -28,13 +30,14 @@ export type ParticipantFormFields = {
 
 type Props<T extends ParticipantFormFields> = {
   formOptions: Inputs<T>;
-  me: {
+  me?: {
     participant?: {
       photo?: string;
     };
   };
   getParticipantValidationError: (key: string) => string[] | null;
   photoRequired?: boolean;
+  showPhotoField?: boolean;
 };
 
 export const PublicProfileCard = <T extends ParticipantFormFields>({
@@ -42,6 +45,7 @@ export const PublicProfileCard = <T extends ParticipantFormFields>({
   formOptions: { raw, url, text },
   getParticipantValidationError,
   photoRequired = false,
+  showPhotoField = true,
 }: Props<T>) => {
   const inputPlaceholder = useTranslatedMessage("input.placeholder");
 
@@ -53,24 +57,33 @@ export const PublicProfileCard = <T extends ParticipantFormFields>({
         </Heading>
       </CardPart>
       <CardPart background="milk" contentAlign="left">
+        <Text size={2}>
+          <FormattedMessage id="profile.publicProfile.description" />
+        </Text>
+        <Spacer size="small" />
         <Grid cols={3}>
-          <GridColumn colSpan={3}>
-            <InputWrapper
-              required={photoRequired}
-              title={<FormattedMessage id="profile.publicProfile.yourPhoto" />}
-              description={
-                <FormattedMessage id="profile.publicProfile.yourPhoto.description" />
-              }
-            >
-              <FileInput
-                {...raw("participantPhoto")}
-                accept="image/png,image/jpg,image/jpeg,image/webp"
-                previewUrl={me.participant?.photo}
-                errors={getParticipantValidationError("photo")}
-                type="participant_avatar"
-              />
-            </InputWrapper>
-          </GridColumn>
+          {showPhotoField && (
+            <GridColumn colSpan={3}>
+              <InputWrapper
+                required={photoRequired}
+                title={
+                  <FormattedMessage id="profile.publicProfile.yourPhoto" />
+                }
+                description={
+                  <FormattedMessage id="profile.publicProfile.yourPhoto.description" />
+                }
+              >
+                <FileInput
+                  {...raw("participantPhoto")}
+                  accept="image/png,image/jpg,image/jpeg,image/webp"
+                  previewUrl={me.participant?.photo}
+                  errors={getParticipantValidationError("photo")}
+                  type="participant_avatar"
+                />
+              </InputWrapper>
+            </GridColumn>
+          )}
+
           <GridColumn colSpan={3}>
             <InputWrapper
               title={<FormattedMessage id="profile.publicProfile.yourBio" />}

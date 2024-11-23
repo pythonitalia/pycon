@@ -12,7 +12,7 @@ class Participant:
     user_id: ID
     bio: str
     website: str
-    photo: str
+    photo: str | None
     photo_id: str | None
     public_profile: bool
     twitter_handle: str

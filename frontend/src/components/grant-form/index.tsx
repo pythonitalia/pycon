@@ -36,11 +36,15 @@ import {
   type UpdateGrantInput,
   type UpdateGrantMutation,
   useGrantDeadlineQuery,
+  useParticipantDataQuery,
   useSendGrantMutation,
 } from "~/types";
-
 import { ErrorsList } from "../errors-list";
 import { createHref } from "../link";
+import {
+  type ParticipantFormFields,
+  PublicProfileCard,
+} from "../public-profile-card";
 import {
   AGE_GROUPS_OPTIONS,
   GENDER_OPTIONS,
@@ -48,7 +52,7 @@ import {
   OCCUPATION_OPTIONS,
 } from "./options";
 
-export type GrantFormFields = {
+export type GrantFormFields = ParticipantFormFields & {
   name: string;
   fullName: string;
   ageGroup: AgeGroup;
@@ -64,11 +68,6 @@ export type GrantFormFields = {
   why: string;
   notes: string;
   travellingFrom: string;
-  website: string;
-  twitterHandle: string;
-  githubHandle: string;
-  linkedinUrl: string;
-  mastodonHandle: string;
   acceptedPrivacyPolicy: boolean;
 };
 
@@ -146,15 +145,15 @@ export const GrantForm = ({
 
   const inputPlaceholderText = useTranslatedMessage("input.placeholder");
   const { user, loading: loadingUser } = useCurrentUser({});
-  const [formState, { text, textarea, select, checkbox }] =
-    useFormState<GrantFormFields>(
-      {
-        needsFundsForTravel: "false",
-      },
-      {
-        withIds: true,
-      },
-    );
+  const [formState, formOptions] = useFormState<GrantFormFields>(
+    {
+      needsFundsForTravel: "false",
+    },
+    {
+      withIds: true,
+    },
+  );
+  const { textarea, select, checkbox, text } = formOptions;
 
   const dateFormatter = new Intl.DateTimeFormat(language, {
     day: "numeric",
@@ -202,11 +201,31 @@ export const GrantForm = ({
       formState.setField("why", grant.why);
       formState.setField("notes", grant.notes);
       formState.setField("travellingFrom", grant.travellingFrom);
-      formState.setField("website", grant.website);
-      formState.setField("twitterHandle", grant.twitterHandle);
-      formState.setField("githubHandle", grant.githubHandle);
-      formState.setField("linkedinUrl", grant.linkedinUrl);
-      formState.setField("mastodonHandle", grant.mastodonHandle);
+
+      if (grant.participant) {
+        formState.setField("participantBio", grant.participant.bio);
+        formState.setField("participantWebsite", grant.participant.website);
+        formState.setField(
+          "participantTwitterHandle",
+          grant.participant.twitterHandle,
+        );
+        formState.setField(
+          "participantInstagramHandle",
+          grant.participant.instagramHandle,
+        );
+        formState.setField(
+          "participantLinkedinUrl",
+          grant.participant.linkedinUrl,
+        );
+        formState.setField(
+          "participantFacebookUrl",
+          grant.participant.facebookUrl,
+        );
+        formState.setField(
+          "participantMastodonHandle",
+          grant.participant.mastodonHandle,
+        );
+      }
       formState.setField("acceptedPrivacyPolicy", true);
     }
   }, [grant]);
@@ -231,11 +250,13 @@ export const GrantForm = ({
         communityContribution: formState.values.communityContribution,
         needVisa: formState.values.needVisa === "true",
         needAccommodation: formState.values.needAccommodation === "true",
-        website: formState.values.website,
-        twitterHandle: formState.values.twitterHandle,
-        githubHandle: formState.values.githubHandle,
-        linkedinUrl: formState.values.linkedinUrl,
-        mastodonHandle: formState.values.mastodonHandle,
+        participantWebsite: formState.values.participantWebsite,
+        participantBio: formState.values.participantBio,
+        participantTwitterHandle: formState.values.participantTwitterHandle,
+        participantInstagramHandle: formState.values.participantInstagramHandle,
+        participantLinkedinUrl: formState.values.participantLinkedinUrl,
+        participantFacebookUrl: formState.values.participantFacebookUrl,
+        participantMastodonHandle: formState.values.participantMastodonHandle,
       });
     },
     [formState.values],
@@ -628,60 +649,22 @@ export const GrantForm = ({
                 placeholder={inputPlaceholderText}
               />
             </InputWrapper>
-
-            <InputWrapper
-              title={<FormattedMessage id="grants.form.fields.website" />}
-            >
-              <Input
-                {...text("website")}
-                errors={getErrors("website")}
-                placeholder={inputPlaceholderText}
-              />
-            </InputWrapper>
-
-            <InputWrapper
-              title={<FormattedMessage id="grants.form.fields.linkedinUrl" />}
-            >
-              <Input
-                {...text("linkedinUrl")}
-                errors={getErrors("linkedinUrl")}
-                placeholder={inputPlaceholderText}
-              />
-            </InputWrapper>
-
-            <InputWrapper
-              title={<FormattedMessage id="grants.form.fields.githubHandle" />}
-            >
-              <Input
-                {...text("githubHandle")}
-                errors={getErrors("githubHandle")}
-                placeholder={inputPlaceholderText}
-              />
-            </InputWrapper>
-
-            <InputWrapper
-              title={<FormattedMessage id="grants.form.fields.twitterHandle" />}
-            >
-              <Input
-                {...text("twitterHandle")}
-                errors={getErrors("twitterHandle")}
-                placeholder={inputPlaceholderText}
-              />
-            </InputWrapper>
-            <InputWrapper
-              title={
-                <FormattedMessage id="grants.form.fields.mastodonHandle" />
-              }
-            >
-              <Input
-                {...text("mastodonHandle")}
-                errors={getErrors("mastodonHandle")}
-                placeholder={inputPlaceholderText}
-              />
-            </InputWrapper>
           </Grid>
         </CardPart>
       </MultiplePartsCard>
+
+      <Spacer size="medium" />
+
+      <PublicProfileCard
+        formOptions={formOptions}
+        photoRequired={false}
+        getParticipantValidationError={(field) =>
+          getErrors(
+            `validationSpeaker${field[0].toUpperCase()}${field.substring(1)}` as any,
+          )
+        }
+        showPhotoField={false}
+      />
 
       {!grant && (
         <>

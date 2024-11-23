@@ -1,6 +1,7 @@
 from dataclasses import asdict
 from enum import Enum
 from typing import Annotated, Union, Optional
+from participants.models import Participant
 
 from privacy_policy.record import record_privacy_policy_acceptance
 import strawberry
@@ -42,11 +43,13 @@ class GrantErrors(BaseErrorType):
         notes: list[str] = strawberry.field(default_factory=list)
         travelling_from: list[str] = strawberry.field(default_factory=list)
         non_field_errors: list[str] = strawberry.field(default_factory=list)
-        website: list[str] = strawberry.field(default_factory=list)
-        twitter_handle: list[str] = strawberry.field(default_factory=list)
-        github_handle: list[str] = strawberry.field(default_factory=list)
-        linkedin_url: list[str] = strawberry.field(default_factory=list)
-        mastodon_handle: list[str] = strawberry.field(default_factory=list)
+        participant_bio: list[str] = strawberry.field(default_factory=list)
+        participant_website: list[str] = strawberry.field(default_factory=list)
+        participant_twitter_handle: list[str] = strawberry.field(default_factory=list)
+        participant_instagram_handle: list[str] = strawberry.field(default_factory=list)
+        participant_linkedin_url: list[str] = strawberry.field(default_factory=list)
+        participant_facebook_url: list[str] = strawberry.field(default_factory=list)
+        participant_mastodon_handle: list[str] = strawberry.field(default_factory=list)
 
     errors: _GrantErrors = None
 
@@ -113,11 +116,14 @@ class SendGrantInput(BaseGrantInput):
     why: str
     notes: str
     travelling_from: str
-    website: str
-    twitter_handle: str
-    github_handle: str
-    linkedin_url: str
-    mastodon_handle: str
+
+    participant_bio: str
+    participant_website: str
+    participant_twitter_handle: str
+    participant_instagram_handle: str
+    participant_linkedin_url: str
+    participant_facebook_url: str
+    participant_mastodon_handle: str
 
     def validate(self, conference: Conference, user: User) -> GrantErrors | None:
         errors = super().validate(conference=conference, user=user)
@@ -147,11 +153,14 @@ class UpdateGrantInput(BaseGrantInput):
     why: str
     notes: str
     travelling_from: str
-    website: str
-    twitter_handle: str
-    github_handle: str
-    linkedin_url: str
-    mastodon_handle: str
+
+    participant_bio: str
+    participant_website: str
+    participant_twitter_handle: str
+    participant_instagram_handle: str
+    participant_linkedin_url: str
+    participant_facebook_url: str
+    participant_mastodon_handle: str
 
     def validate(self, conference: Conference, user: User) -> GrantErrors | None:
         return super().validate(conference=conference, user=user).if_has_errors
@@ -205,9 +214,23 @@ class GrantMutation:
         with transaction.atomic():
             instance = GrantModel.objects.create(
                 **{
-                    **asdict(input),
                     "user_id": request.user.id,
                     "conference": conference,
+                    "name": input.name,
+                    "full_name": input.full_name,
+                    "age_group": input.age_group,
+                    "gender": input.gender,
+                    "occupation": input.occupation,
+                    "grant_type": input.grant_type,
+                    "python_usage": input.python_usage,
+                    "been_to_other_events": input.been_to_other_events,
+                    "community_contribution": input.community_contribution,
+                    "needs_funds_for_travel": input.needs_funds_for_travel,
+                    "need_visa": input.need_visa,
+                    "need_accommodation": input.need_accommodation,
+                    "why": input.why,
+                    "notes": input.notes,
+                    "travelling_from": input.travelling_from,
                 }
             )
 
@@ -215,6 +238,20 @@ class GrantMutation:
                 info.context.request,
                 conference,
                 "grant",
+            )
+
+            Participant.objects.update_or_create(
+                user_id=request.user.id,
+                conference=instance.conference,
+                defaults={
+                    "bio": input.participant_bio,
+                    "website": input.participant_website,
+                    "twitter_handle": input.participant_twitter_handle,
+                    "instagram_handle": input.participant_instagram_handle,
+                    "linkedin_url": input.participant_linkedin_url,
+                    "facebook_url": input.participant_facebook_url,
+                    "mastodon_handle": input.participant_mastodon_handle,
+                },
             )
 
         # hack because we return django models
@@ -238,6 +275,20 @@ class GrantMutation:
         for attr, value in asdict(input).items():
             setattr(instance, attr, value)
         instance.save()
+
+        Participant.objects.update_or_create(
+            user_id=request.user.id,
+            conference=instance.conference,
+            defaults={
+                "bio": input.participant_bio,
+                "website": input.participant_website,
+                "twitter_handle": input.participant_twitter_handle,
+                "instagram_handle": input.participant_instagram_handle,
+                "linkedin_url": input.participant_linkedin_url,
+                "facebook_url": input.participant_facebook_url,
+                "mastodon_handle": input.participant_mastodon_handle,
+            },
+        )
 
         instance.__strawberry_definition__ = Grant.__strawberry_definition__
         return instance

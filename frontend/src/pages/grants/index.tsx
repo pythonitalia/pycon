@@ -15,6 +15,7 @@ import {
   queryCurrentUser,
   queryGrantDeadline,
   queryMyGrant,
+  queryParticipantData,
   useGrantDeadlineQuery,
 } from "~/types";
 

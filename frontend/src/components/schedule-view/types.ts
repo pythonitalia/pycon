@@ -25,7 +25,7 @@ export type Keynote = {
 };
 
 type Participant = {
-  photo: string;
+  photo?: string;
 };
 
 export type Item = {

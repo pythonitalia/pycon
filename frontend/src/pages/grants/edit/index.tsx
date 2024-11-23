@@ -11,6 +11,7 @@ import {
   queryCurrentUser,
   queryGrantDeadline,
   queryMyGrant,
+  queryParticipantData,
   useMyGrantQuery,
   useUpdateGrantMutation,
 } from "~/types";
@@ -23,7 +24,6 @@ const GrantPage = (): JSX.Element => {
     variables: {
       conference: code,
     },
-    skip: typeof window === "undefined",
   });
 
   const grant = data?.me?.grant;
