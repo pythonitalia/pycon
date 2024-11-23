@@ -9,3 +9,4 @@ variable "cluster_id" {}
 variable "security_group_id" {}
 variable "server_ip" {}
 variable "logs_group_name" {}
+variable "iam_role_arn" {}

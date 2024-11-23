@@ -79,3 +79,7 @@ data "aws_iam_policy_document" "server_role_policy" {
     effect    = "Allow"
   }
 }
+
+output "iam_role_arn" {
+  value = aws_iam_role.server.arn
+}
