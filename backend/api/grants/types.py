@@ -40,13 +40,10 @@ class Grant:
 
     @classmethod
     def from_model(cls, grant: GrantModel) -> Grant:
-        print(grant.user_id, grant.conference)
-
         participant = ParticipantModel.objects.filter(
             user_id=grant.user_id,
             conference=grant.conference,
         ).first()
-        print(participant)
 
         return cls(
             id=grant.id,
