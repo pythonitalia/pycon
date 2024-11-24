@@ -46,11 +46,6 @@ data "aws_acm_certificate" "cert" {
   provider = aws.us
 }
 
-data "aws_lambda_function" "forward_host_header" {
-  function_name = "forward_host_header"
-  provider      = aws.us
-}
-
 data "aws_sesv2_configuration_set" "main" {
   configuration_set_name = "pythonit-${terraform.workspace}"
 }
