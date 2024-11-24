@@ -24,7 +24,7 @@ def send_pending_email_failed(self, exc, task_id, args, kwargs, einfo):
 @app.task(
     bind=True,
     autoretry_for=(Exception,),
-    retry_backoff=5,
+    retry_backoff=True,
     max_retries=5,
     default_retry_delay=2,
     on_failure=send_pending_email_failed,
