@@ -36,7 +36,7 @@ def send_pending_email(self, sent_email_id: int):
 
     email_backend_connection = get_connection()
 
-    if self.request.retries >= self.max_retries - 1:
+    if self.request.retries > self.max_retries:
         sent_email.mark_as_failed()
         logger.error(
             "Failed to send email sent_email_id=%s",
