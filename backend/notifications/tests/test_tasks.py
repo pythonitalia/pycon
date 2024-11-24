@@ -1,8 +1,9 @@
 import smtplib
 from unittest.mock import patch
+from uuid import uuid4
 import time_machine
 from django.core import mail
-from notifications.tasks import send_pending_email
+from notifications.tasks import send_pending_email, send_pending_email_failed
 from notifications.models import SentEmail
 from notifications.tests.factories import SentEmailFactory
 
@@ -73,26 +74,19 @@ def test_send_pending_email_task_doesnt_double_send():
     assert len(mail.outbox) == 0
 
 
-def test_send_pending_email_handles_failures(mocker):
+def test_send_pending_email_failure():
     pending_email_1 = SentEmailFactory(
         status=SentEmail.Status.pending, created="2020-01-01 12:00Z"
     )
 
-    original_method = SentEmail.mark_as_sent
-
-    def _side_effect(*args, **kwargs):
-        if _side_effect.counter == 0:
-            _side_effect.counter = 1
-            raise smtplib.SMTPException("test")
-
-        return original_method(pending_email_1, *args, **kwargs)
-
-    _side_effect.counter = 0
-
-    mocker.patch("notifications.tasks.send_email", side_effect=_side_effect)
-
-    with time_machine.travel("2021-01-01 12:00Z", tick=False):
-        send_pending_email.apply(kwargs={"sent_email_id": pending_email_1.id})
+    send_pending_email_failed(
+        None,
+        smtplib.SMTPException("test"),
+        uuid4().hex,
+        (pending_email_1.id,),
+        {},
+        None,
+    )
 
     pending_email_1.refresh_from_db()
 
