@@ -32,7 +32,7 @@ export const OCCUPATION_OPTIONS = [
   {
     value: "",
     disabled: true,
-    messageId: "grants.form.fields.occupation.values.selectOption",
+    messageId: "global.selectOption",
   },
   {
     disabled: false,
@@ -65,7 +65,7 @@ export const GRANT_TYPE_OPTIONS = [
   {
     value: "",
     disabled: true,
-    messageId: "grants.form.fields.grantType.values.selectOption",
+    messageId: "global.selectOption",
   },
   {
     disabled: false,
@@ -88,7 +88,7 @@ export const AGE_GROUPS_OPTIONS = [
   {
     value: "" as AgeGroup,
     disabled: true,
-    messageId: "grants.form.fields.ageGroup.values.selectOption",
+    messageId: "global.selectOption",
   },
   {
     value: AgeGroup.RangeLessThan_10,

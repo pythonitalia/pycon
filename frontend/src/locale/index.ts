@@ -10,6 +10,7 @@ export const messages = {
     "global.here": "here",
     "global.yes": "Yes",
     "global.no": "No",
+    "global.selectOption": "Select Option",
     "profile.tickets.size": "Size",
     "tickets.productsList.guidedToursTitle": "Guided Tours",
     "checkout.billing.businessInvoice": "Do you need an invoice?",
@@ -701,7 +702,6 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
     "grants.form.fields.ageGroup": "Age group",
     "grants.form.fields.ageGroup.description":
       "Select your age group. This helps us understand the demographic distribution of our applicants.",
-    "grants.form.fields.ageGroup.values.selectOption": "Select Option",
     "grants.form.fields.ageGroup.values.range_less_than_10":
       "10 years old or under",
     "grants.form.fields.ageGroup.values.range_11_18": "11 - 18 years old",
@@ -715,7 +715,6 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
     "grants.form.fields.occupation": "Occupation",
     "grants.form.fields.occupation.description":
       "Select your current occupation.",
-    "grants.form.fields.occupation.values.selectOption": "Select Option",
     "grants.form.fields.occupation.values.developer": "Developer",
     "grants.form.fields.occupation.values.student": "Student",
     "grants.form.fields.occupation.values.researcher": "Researcher",
@@ -724,7 +723,6 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
     "grants.form.fields.grantType": "What type of grant are you applying for?",
     "grants.form.fields.grantType.description":
       "Note: If you have submitted a talk/workshop proposal, you do not need to apply for a grant to receive a refund. If your proposal is accepted, we will contact you regarding the ticket refund.",
-    "grants.form.fields.grantType.values.selectOption": "Select Option",
     "grants.form.fields.grantType.values.diversity": "Diversity",
     "grants.form.fields.grantType.values.unemployed": "Unemployed",
     "grants.form.fields.grantType.values.speaker": "Speaker",
@@ -1075,6 +1073,7 @@ The sooner you buy your ticket, the more you save!`,
     "global.somethingWentWrong": "Qualcosa è andato male, prova di nuovo",
     "global.loadMore": "Carica altri",
     "global.tryAgain": "Si è verificato un errore: {error}",
+    "global.selectOption": "Seleziona un'opzione",
 
     "home.title": "Home",
     "home.deadline.begins": "Inizio",
@@ -1425,7 +1424,6 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
     "grants.form.fields.ageGroup": "Fascia d'età",
     "grants.form.fields.ageGroup.description":
       "Seleziona la tua fascia d'età. Questo ci aiuta a comprendere la distribuzione demografica dei nostri candidati.",
-    "grants.form.fields.ageGroup.values.selectOption": "Seleziona un'opzione",
     "grants.form.fields.ageGroup.values.range_less_than_10": "meno di 10 anni",
     "grants.form.fields.ageGroup.values.range_11_18": "11 - 18 anni",
     "grants.form.fields.ageGroup.values.range_19_24": "19 - 24 anni",
@@ -1437,7 +1435,6 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
     "grants.form.fields.occupation": "Occupazione",
     "grants.form.fields.occupation.description":
       "Seleziona la propria attuale occupazione.",
-    "grants.form.fields.occupation.values.selectOption": "Seleziona un'opzione",
     "grants.form.fields.occupation.values.developer":
       "Sviluppatore/Sviluppatrice",
     "grants.form.fields.occupation.values.student": "Studente/Studentessa",
@@ -1447,7 +1444,6 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
     "grants.form.fields.grantType": "Che tipo di grant stai richiedendo?",
     "grants.form.fields.grantType.description":
       "Nota: Se hai inviato una proposta di talk/workshop, non è necessario fare domanda per un grant per ricevere un rimborso. Se la tua proposta viene accettata, ti contatteremo riguardo al rimborso del biglietto.",
-    "grants.form.fields.grantType.values.selectOption": "Seleziona un'opzione",
     "grants.form.fields.grantType.values.diversity": "Diversity",
     "grants.form.fields.grantType.values.unemployed": "Disoccupato",
     "grants.form.fields.grantType.values.speaker": "Speaker",
