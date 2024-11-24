@@ -1,9 +1,7 @@
 from celery.exceptions import MaxRetriesExceededError
 import logging
-import smtplib
 from uuid import uuid4
 from notifications.models import SentEmail
-from django.db import transaction
 from pycon.celery import app
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail import get_connection
@@ -16,7 +14,6 @@ logger = logging.getLogger(__name__)
     retry_backoff=5,
     max_retries=5,
 )
-@transaction.atomic()
 def send_pending_email(self, sent_email_id: int):
     logger.info(
         "Sending sent_email=%s (retry=%s of %s)",
@@ -40,7 +37,13 @@ def send_pending_email(self, sent_email_id: int):
 
         message_id = send_email(sent_email, email_backend_connection)
         sent_email.mark_as_sent(message_id)
-    except smtplib.SMTPException as e:
+
+        logger.info(
+            "Email sent_email_id=%s sent with message_id=%s",
+            sent_email.id,
+            message_id,
+        )
+    except Exception as e:
         try:
             self.retry(e)
         except MaxRetriesExceededError:
@@ -50,19 +53,6 @@ def send_pending_email(self, sent_email_id: int):
                 sent_email.id,
             )
             return
-    except Exception as e:
-        sent_email.mark_as_failed()
-        logger.error(
-            "Failed to send email sent_email_id=%s",
-            sent_email.id,
-        )
-        raise e
-
-    logger.info(
-        "Email sent_email_id=%s sent with message_id=%s",
-        sent_email.id,
-        message_id,
-    )
 
 
 def send_email(sent_email, email_backend_connection):
