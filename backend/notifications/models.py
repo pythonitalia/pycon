@@ -192,7 +192,7 @@ class EmailTemplate(TimeStampedModel):
         if not recipient and not recipient_email:
             raise ValueError("Either recipient or recipient_email must be provided")
 
-        from notifications.tasks import send_pending_emails
+        from notifications.tasks import send_pending_email
 
         recipient_email = recipient_email or recipient.email
 
@@ -207,7 +207,7 @@ class EmailTemplate(TimeStampedModel):
                 or settings.DEFAULT_FROM_EMAIL
             )
 
-        SentEmail.objects.create(
+        sent_email = SentEmail.objects.create(
             email_template=self,
             conference=self.conference,
             from_email=from_email,
@@ -223,7 +223,7 @@ class EmailTemplate(TimeStampedModel):
             bcc_addresses=self.bcc_addresses,
         )
 
-        transaction.on_commit(lambda: send_pending_emails.delay())
+        transaction.on_commit(lambda: send_pending_email.delay(sent_email.id))
 
     @property
     def is_custom(self):
