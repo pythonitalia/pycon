@@ -47,7 +47,7 @@ export const MyGrant = ({ grant, deadline }: Props) => {
           <Sidebar
             status={grant.status}
             grantType={grant.grantType}
-            needsFundsForTravel={grant.needsFundsForTravel}
+            needFundsForTravel={grant.needFundsForTravel}
             needAccommodation={grant.needAccommodation}
           />
           {deadline?.status === DeadlineStatus.HappeningNow && (

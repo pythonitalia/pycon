@@ -15,14 +15,14 @@ import { FormattedMessage } from "react-intl";
 type Props = {
   status: GrantStatus;
   grantType: GrantType;
-  needsFundsForTravel: boolean;
+  needFundsForTravel: boolean;
   needAccommodation: boolean;
 };
 
 export const Sidebar = ({
   status,
   grantType,
-  needsFundsForTravel,
+  needFundsForTravel,
   needAccommodation,
 }: Props) => {
   return (
@@ -43,7 +43,7 @@ export const Sidebar = ({
         <VerticalStack gap="small">
           <FormattedMessage id="profile.myGrant.appliedFor.ticket" />
 
-          {needsFundsForTravel && (
+          {needFundsForTravel && (
             <Text size="label2" weight="strong">
               <FormattedMessage id="profile.myGrant.appliedFor.travel" />
             </Text>

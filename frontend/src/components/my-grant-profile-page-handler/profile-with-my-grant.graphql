@@ -17,7 +17,7 @@ query MyProfileWithGrant($conference: String!) {
       applicantReplyDeadline
 
       needVisa
-      needsFundsForTravel
+      needFundsForTravel
       needAccommodation
       grantType
     }

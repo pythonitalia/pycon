@@ -62,7 +62,7 @@ export type GrantFormFields = ParticipantFormFields & {
   pythonUsage: string;
   communityContribution: string;
   beenToOtherEvents: string;
-  needsFundsForTravel: string;
+  needFundsForTravel: string;
   needVisa: string;
   needAccommodation: string;
   why: string;
@@ -190,8 +190,8 @@ export const GrantForm = ({
       formState.setField("communityContribution", grant.communityContribution);
       formState.setField("beenToOtherEvents", grant.beenToOtherEvents);
       formState.setField(
-        "needsFundsForTravel",
-        grant.needsFundsForTravel.toString(),
+        "needFundsForTravel",
+        grant.needFundsForTravel.toString(),
       );
       formState.setField("needVisa", grant.needVisa.toString());
       formState.setField(
@@ -242,7 +242,7 @@ export const GrantForm = ({
         beenToOtherEvents: formState.values.beenToOtherEvents,
         notes: formState.values.notes,
         grantType: formState.values.grantType,
-        needsFundsForTravel: formState.values.needsFundsForTravel === "true",
+        needFundsForTravel: formState.values.needFundsForTravel === "true",
         why: formState.values.why,
         travellingFrom: formState.values.travellingFrom,
         occupation: formState.values.occupation,
@@ -475,13 +475,13 @@ export const GrantForm = ({
 
             <InputWrapper
               title={
-                <FormattedMessage id="grants.form.fields.needsFundsForTravel" />
+                <FormattedMessage id="grants.form.fields.needFundsForTravel" />
               }
               description={
-                <FormattedMessage id="grants.form.fields.needsFundsForTravel.description" />
+                <FormattedMessage id="grants.form.fields.needFundsForTravel.description" />
               }
             >
-              <Select {...select("needsFundsForTravel")}>
+              <Select {...select("needFundsForTravel")}>
                 <FormattedMessage id="global.no">
                   {(msg) => <option value="false">{msg}</option>}
                 </FormattedMessage>

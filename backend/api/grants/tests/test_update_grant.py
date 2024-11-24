@@ -29,7 +29,7 @@ def _update_grant(graphql_client, grant, **kwargs):
                     validationPythonUsage: pythonUsage
                     validationCommunityContribution: communityContribution
                     validationBeenToOtherEvents: beenToOtherEvents
-                    validationNeedsFundsForTravel: needsFundsForTravel
+                    validationneedFundsForTravel: needFundsForTravel
                     validationNeedVisa: needVisa
                     validationNeedAccommodation: needAccommodation
                     validationWhy: why
@@ -60,7 +60,7 @@ def _update_grant(graphql_client, grant, **kwargs):
         "pythonUsage": grant.python_usage,
         "communityContribution": grant.community_contribution,
         "beenToOtherEvents": grant.been_to_other_events,
-        "needsFundsForTravel": grant.needs_funds_for_travel,
+        "needFundsForTravel": grant.need_funds_for_travel,
         "needVisa": grant.need_visa,
         "needAccommodation": grant.need_accommodation,
         "why": grant.why,
@@ -104,7 +104,7 @@ def test_update_grant(graphql_client, user):
         pythonUsage="random",
         communityContribution="Soft toys meetups",
         beenToOtherEvents="no",
-        needsFundsForTravel=True,
+        needFundsForTravel=True,
         needVisa=True,
         needAccommodation=True,
         why="why not",

@@ -516,9 +516,9 @@
                         <li>VISA</li>
                         {% endif %} {% if item.need_accommodation %}
                         <li>Accommodation</li>
-                        {% endif %} {% if item.needs_funds_for_travel %}
+                        {% endif %} {% if item.need_funds_for_travel %}
                         <li>Funds for Travel</li>
-                        {% endif %} {% if not item.need_visa and not item.need_accommodation and not item.needs_funds_for_travel %}
+                        {% endif %} {% if not item.need_visa and not item.need_accommodation and not item.need_funds_for_travel %}
                         <li>Ticket only</li>
                         {% endif %}
                       </ul>

@@ -731,9 +731,9 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
     "grants.form.fields.travellingFrom": "Where are you travelling from?",
     "grants.form.fields.travellingFrom.description":
       "Please indicate the city and country you will be travelling from to attend the conference.",
-    "grants.form.fields.needsFundsForTravel":
+    "grants.form.fields.needFundsForTravel":
       "Do you need financial aid for travelling to PyCon Italia?",
-    "grants.form.fields.needsFundsForTravel.description":
+    "grants.form.fields.needFundsForTravel.description":
       "We don’t have many funds but we will try to help as many people as we can, ask for this help only if absolutely needed!",
     "grants.form.fields.needVisa":
       "Do you require an invitation letter for a visa application?",
@@ -1454,9 +1454,9 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
     "grants.form.fields.travellingFrom": "Da dove partirai?",
     "grants.form.fields.travellingFrom.description":
       "Indica la città e il paese da cui partirai per partecipare alla conferenza.",
-    "grants.form.fields.needsFundsForTravel":
+    "grants.form.fields.needFundsForTravel":
       "Hai bisogno di aiuti finanziari per le spese di viaggio a Pycon Italia?",
-    "grants.form.fields.needsFundsForTravel.description":
+    "grants.form.fields.needFundsForTravel.description":
       "I fondi a nostra disposizione sono limitati, ma faremo il possibile per aiutare tutti i richiedenti. Richiedi questo aiuto solo se ti è strettamente necessario!",
     "grants.form.fields.needVisa":
       "Hai bisogno di una lettera d'invito per la domanda di visto?",

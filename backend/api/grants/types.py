@@ -28,7 +28,7 @@ class Grant:
     python_usage: str
     community_contribution: str
     been_to_other_events: str
-    needs_funds_for_travel: bool
+    need_funds_for_travel: bool
     need_visa: bool
     need_accommodation: bool
     why: str
@@ -57,7 +57,7 @@ class Grant:
             python_usage=grant.python_usage,
             community_contribution=grant.community_contribution,
             been_to_other_events=grant.been_to_other_events,
-            needs_funds_for_travel=grant.needs_funds_for_travel,
+            need_funds_for_travel=grant.need_funds_for_travel,
             need_visa=grant.need_visa,
             need_accommodation=grant.need_accommodation,
             why=grant.why,

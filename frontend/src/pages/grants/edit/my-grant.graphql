@@ -14,7 +14,7 @@ query MyGrant($conference: String!) {
       pythonUsage
       communityContribution
       beenToOtherEvents
-      needsFundsForTravel
+      needFundsForTravel
       needVisa
       needAccommodation
       why

@@ -13,7 +13,7 @@ mutation UpdateGrant($input: UpdateGrantInput!) {
       pythonUsage
       communityContribution
       beenToOtherEvents
-      needsFundsForTravel
+      needFundsForTravel
       needVisa
       notes
       travellingFrom
@@ -31,7 +31,7 @@ mutation UpdateGrant($input: UpdateGrantInput!) {
         validationPythonUsage: pythonUsage
         validationCommunityContribution: communityContribution
         validationBeenToOtherEvents: beenToOtherEvents
-        validationNeedsFundsForTravel: needsFundsForTravel
+        validationneedFundsForTravel: needFundsForTravel
         validationNeedVisa: needVisa
         validationNeedAccommodation: needAccommodation
         validationWhy: why

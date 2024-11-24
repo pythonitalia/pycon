@@ -36,7 +36,7 @@ class GrantErrors(BaseErrorType):
         python_usage: list[str] = strawberry.field(default_factory=list)
         community_contribution: list[str] = strawberry.field(default_factory=list)
         been_to_other_events: list[str] = strawberry.field(default_factory=list)
-        needs_funds_for_travel: list[str] = strawberry.field(default_factory=list)
+        need_funds_for_travel: list[str] = strawberry.field(default_factory=list)
         need_visa: list[str] = strawberry.field(default_factory=list)
         need_accommodation: list[str] = strawberry.field(default_factory=list)
         why: list[str] = strawberry.field(default_factory=list)
@@ -110,7 +110,7 @@ class SendGrantInput(BaseGrantInput):
     python_usage: str
     been_to_other_events: str
     community_contribution: str
-    needs_funds_for_travel: bool
+    need_funds_for_travel: bool
     need_visa: bool
     need_accommodation: bool
     why: str
@@ -147,7 +147,7 @@ class UpdateGrantInput(BaseGrantInput):
     python_usage: str
     been_to_other_events: str
     community_contribution: str
-    needs_funds_for_travel: bool
+    need_funds_for_travel: bool
     need_visa: bool
     need_accommodation: bool
     why: str
@@ -225,7 +225,7 @@ class GrantMutation:
                     "python_usage": input.python_usage,
                     "been_to_other_events": input.been_to_other_events,
                     "community_contribution": input.community_contribution,
-                    "needs_funds_for_travel": input.needs_funds_for_travel,
+                    "need_funds_for_travel": input.need_funds_for_travel,
                     "need_visa": input.need_visa,
                     "need_accommodation": input.need_accommodation,
                     "why": input.why,

@@ -107,7 +107,9 @@ class Grant(TimeStampedModel):
         null=True,
         choices=[(country.code, country.name) for country in countries],
     )
-    needs_funds_for_travel = models.BooleanField(_("Needs funds for travel"))
+    need_funds_for_travel = models.BooleanField(
+        _("Needs funds for travel"), default=False
+    )
     need_visa = models.BooleanField(_("Need visa/invitation letter?"), default=False)
     need_accommodation = models.BooleanField(_("Need accommodation"), default=False)
 
