@@ -10,7 +10,7 @@ from django.core.mail import get_connection
 logger = logging.getLogger(__name__)
 
 
-def send_pending_email_failed(self, task_id, args, kwargs, einfo):
+def send_pending_email_failed(self, exc, task_id, args, kwargs, einfo):
     sent_email_id = args[0]
 
     sent_email = SentEmail.objects.get(id=sent_email_id)
