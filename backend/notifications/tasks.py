@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
     bind=True,
     retry_backoff=5,
     max_retries=5,
+    default_retry_delay=2,
 )
 def send_pending_email(self, sent_email_id: int):
     logger.info(
@@ -48,7 +49,7 @@ def send_pending_email(self, sent_email_id: int):
             )
     except Exception as e:
         try:
-            self.retry(exc=e)
+            raise self.retry(exc=e)
         except MaxRetriesExceededError:
             sent_email = SentEmail.objects.get(id=sent_email_id)
             sent_email.mark_as_failed()
