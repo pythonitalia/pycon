@@ -48,7 +48,7 @@ def send_pending_email(self, sent_email_id: int):
             )
     except Exception as e:
         try:
-            self.retry(e)
+            self.retry(exc=e)
         except MaxRetriesExceededError:
             sent_email = SentEmail.objects.get(id=sent_email_id)
             sent_email.mark_as_failed()
