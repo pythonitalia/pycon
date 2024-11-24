@@ -42,7 +42,7 @@ def send_pending_email(self, sent_email_id: int):
         sent_email.mark_as_sent(message_id)
     except smtplib.SMTPException as e:
         try:
-            raise self.retry(e)
+            self.retry(e)
         except MaxRetriesExceededError:
             sent_email.mark_as_failed()
             logger.error(
