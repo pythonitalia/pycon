@@ -32,7 +32,7 @@ data "aws_iam_policy_document" "server_role_policy" {
     effect = "Allow"
     actions = [
       "iam:PassRole",
-      "ses:*",
+      # "ses:*",
       "ecs:*",
       "ecr:*",
     ]

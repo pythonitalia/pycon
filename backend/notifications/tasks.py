@@ -1,6 +1,5 @@
 import logging
 from uuid import uuid4
-from pycon.celery_utils import OnlyOneAtTimeTask
 from notifications.models import SentEmail
 from django.db import transaction
 from pycon.celery import app
@@ -11,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 @app.task(
-    base=OnlyOneAtTimeTask,
     bind=True,
     autoretry_for=(Exception,),
     retry_backoff=5,
