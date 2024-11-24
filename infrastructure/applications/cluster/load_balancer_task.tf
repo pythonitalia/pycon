@@ -24,10 +24,6 @@ resource "aws_ecs_task_definition" "traefik" {
         {
           name  = "TRAEFIK_ENTRYPOINTS_WEB_ADDRESS",
           value = ":80"
-        },
-        {
-          name = "TRAEFIK_LOG_LEVEL",
-          value = "DEBUG"
         }
       ]
 
