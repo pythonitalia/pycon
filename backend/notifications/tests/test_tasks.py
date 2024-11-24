@@ -1,4 +1,4 @@
-from unittest import mock
+import smtplib
 from unittest.mock import patch
 import time_machine
 from django.core import mail
@@ -83,19 +83,16 @@ def test_send_pending_email_handles_failures(mocker):
     def _side_effect(*args, **kwargs):
         if _side_effect.counter == 0:
             _side_effect.counter = 1
-            raise ValueError("test")
+            raise smtplib.SMTPException("test")
 
         return original_method(pending_email_1, *args, **kwargs)
 
     _side_effect.counter = 0
 
-    mocker.patch("notifications.tasks.SentEmail.mark_as_sent", side_effect=_side_effect)
+    mocker.patch("notifications.tasks.send_email", side_effect=_side_effect)
 
-    with time_machine.travel("2021-01-01 12:00Z", tick=False), mock.patch(
-        "celery.app.task.Task.request"
-    ) as mock_task_request:
-        mock_task_request.retries = 10
-        send_pending_email(pending_email_1.id)
+    with time_machine.travel("2021-01-01 12:00Z", tick=False):
+        send_pending_email.apply(kwargs={"sent_email_id": pending_email_1.id})
 
     pending_email_1.refresh_from_db()
 
