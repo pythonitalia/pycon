@@ -29,6 +29,10 @@ class EmailTemplateIdentifier(models.TextChoices):
 
     reset_password = "reset_password", _("[System] Reset password")
 
+    grant_application_confirmation = (
+        "grant_application_confirmation",
+        _("Grant application confirmation"),
+    )
     grant_approved = "grant_approved", _("Grant approved")
     grant_rejected = "grant_rejected", _("Grant rejected")
     grant_waiting_list = "grant_waiting_list", _("Grant waiting list")
@@ -79,6 +83,10 @@ class EmailTemplate(TimeStampedModel):
             "speaker_name",
             "proposal_title",
             "invitation_url",
+        ],
+        EmailTemplateIdentifier.grant_application_confirmation: [
+            *BASE_PLACEHOLDERS,
+            "user_name",
         ],
         EmailTemplateIdentifier.grant_approved: [
             *BASE_PLACEHOLDERS,
