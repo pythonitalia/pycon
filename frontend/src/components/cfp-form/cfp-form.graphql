@@ -1,6 +1,8 @@
 query CfpForm($conference: String!) {
   conference(code: $conference) {
     id
+    start
+    end
 
     durations {
       name

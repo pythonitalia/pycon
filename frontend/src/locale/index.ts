@@ -467,6 +467,13 @@ Failing to notify us may impact your eligibility for financial aid at future eve
     "cfp.grantsCta": "click here to open a separate page to request a grant",
     "header.coronaVirus":
       "🚨 Update regarding COVID-19 - Conference cancelled 😢",
+    "cfp.availability.title": "Availability",
+    "cfp.availability.description":
+      "Help our program committee by letting us know your availability during the conference. If your proposal gets accepted, we will try and use this information to schedule your proposal at a time that suits you. All times are in the conference timezone.",
+    "cfp.availability.explanation": `
+✔️ Preferred ❌ Unavailable
+If left empty, we will assume you are available. Please consider your presentation length when marking availability. {duration}
+    `,
     "header.dashboard": "Dashboard",
     "header.login": "Login",
     "header.tickets": "Tickets",
