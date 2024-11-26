@@ -13,10 +13,6 @@ data "aws_vpc" "default" {
   }
 }
 
-data "aws_iam_role" "lambda" {
-  name = "pythonit-lambda-role"
-}
-
 data "aws_subnets" "private" {
   filter {
     name   = "vpc-id"
