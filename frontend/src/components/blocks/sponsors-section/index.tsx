@@ -37,7 +37,9 @@ export const SponsorsSection = ({ title, body, cta }: Props) => {
       code: process.env.conferenceCode,
     },
   });
-  const sponsorsByLevel = conference.sponsorsByLevel;
+  const sponsorsByLevel = conference.sponsorsByLevel.filter(
+    (tier) => tier.sponsors.length > 0,
+  );
 
   if (sponsorsByLevel.length === 0) {
     return null;
