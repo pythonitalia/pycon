@@ -146,9 +146,7 @@ export const GrantForm = ({
   const inputPlaceholderText = useTranslatedMessage("input.placeholder");
   const { user, loading: loadingUser } = useCurrentUser({});
   const [formState, formOptions] = useFormState<GrantFormFields>(
-    {
-      needsFundsForTravel: "false",
-    },
+    {},
     {
       withIds: true,
     },
@@ -480,8 +478,12 @@ export const GrantForm = ({
               description={
                 <FormattedMessage id="grants.form.fields.needsFundsForTravel.description" />
               }
+              required={true}
             >
-              <Select {...select("needsFundsForTravel")}>
+              <Select {...select("needsFundsForTravel")} required={true}>
+                <FormattedMessage id="global.selectOption">
+                  {(msg) => <option value="">{msg}</option>}
+                </FormattedMessage>
                 <FormattedMessage id="global.no">
                   {(msg) => <option value="false">{msg}</option>}
                 </FormattedMessage>
@@ -496,8 +498,12 @@ export const GrantForm = ({
               description={
                 <FormattedMessage id="grants.form.fields.needVisa.description" />
               }
+              required={true}
             >
-              <Select {...select("needVisa")}>
+              <Select {...select("needVisa")} required={true}>
+                <FormattedMessage id="global.selectOption">
+                  {(msg) => <option value="">{msg}</option>}
+                </FormattedMessage>
                 <FormattedMessage id="global.no">
                   {(msg) => <option value="false">{msg}</option>}
                 </FormattedMessage>
@@ -514,8 +520,12 @@ export const GrantForm = ({
               description={
                 <FormattedMessage id="grants.form.fields.needAccommodation.description" />
               }
+              required={true}
             >
-              <Select {...select("needAccommodation")}>
+              <Select {...select("needAccommodation")} required={true}>
+                <FormattedMessage id="global.selectOption">
+                  {(msg) => <option value="">{msg}</option>}
+                </FormattedMessage>
                 <FormattedMessage id="global.no">
                   {(msg) => <option value="false">{msg}</option>}
                 </FormattedMessage>
