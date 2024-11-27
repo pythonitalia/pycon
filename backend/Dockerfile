@@ -80,6 +80,8 @@ RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
 
 COPY pyproject.toml pdm.lock ${FUNCTION_DIR}
 
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+RUN pdm config use_uv true
 RUN pdm install --prod --group lambda
 
 # Create GraphQL schema
