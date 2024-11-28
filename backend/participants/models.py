@@ -54,6 +54,9 @@ class Participant(models.Model):
     previous_talk_video = models.URLField(
         _("previous talk video"), blank=True, max_length=2049
     )
+    speaker_availabilities = models.JSONField(
+        _("speaker availabilities"), null=True, blank=True
+    )
 
     objects = ParticipantQuerySet().as_manager()
 

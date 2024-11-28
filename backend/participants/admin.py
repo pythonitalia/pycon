@@ -8,20 +8,7 @@ from participants.models import Participant
 class ParticipantForm(forms.ModelForm):
     class Meta:
         model = Participant
-        fields = [
-            "conference",
-            "user",
-            "photo",
-            "bio",
-            "website",
-            "twitter_handle",
-            "instagram_handle",
-            "linkedin_url",
-            "facebook_url",
-            "mastodon_handle",
-            "speaker_level",
-            "previous_talk_video",
-        ]
+        fields = "__all__"
 
 
 @admin.register(Participant)
@@ -54,6 +41,7 @@ class ParticipantAdmin(admin.ModelAdmin):
                     "mastodon_handle",
                     "speaker_level",
                     "previous_talk_video",
+                    "speaker_availabilities",
                 ),
             },
         ),

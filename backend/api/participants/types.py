@@ -1,5 +1,6 @@
 from typing import Optional
 
+from strawberry.scalars import JSON
 import strawberry
 from strawberry import ID
 
@@ -22,6 +23,7 @@ class Participant:
     mastodon_handle: str
     speaker_id: strawberry.Private[int]
     fullname: str
+    speaker_availabilities: JSON
 
     _speaker_level: strawberry.Private[str]
     _previous_talk_video: strawberry.Private[str]
@@ -59,4 +61,5 @@ class Participant:
             linkedin_url=instance.linkedin_url,
             facebook_url=instance.facebook_url,
             mastodon_handle=instance.mastodon_handle,
+            speaker_availabilities=instance.speaker_availabilities or {},
         )
