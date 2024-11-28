@@ -120,6 +120,9 @@ export const getServerSideProps: GetServerSideProps = async ({
       queryCurrentUser(client, {
         conference: process.env.conferenceCode,
       }),
+      queryParticipantData(client, {
+        conference: process.env.conferenceCode,
+      }),
     ]);
 
     if (grant) {
