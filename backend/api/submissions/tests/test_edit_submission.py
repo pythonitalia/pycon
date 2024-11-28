@@ -33,12 +33,14 @@ def _update_submission(
     new_speaker_linkedin_url="",
     new_speaker_facebook_url="",
     new_speaker_mastodon_handle="",
+    new_speaker_availabilities=None,
 ):
     new_title = new_title or {"en": "new title to use"}
     new_elevator_pitch = new_elevator_pitch or {"en": "This is an elevator pitch"}
     new_abstract = new_abstract or {"en": "abstract here"}
     short_social_summary = new_short_social_summary or ""
     new_speaker_photo = new_speaker_photo or FileFactory().id
+    new_speaker_availabilities = new_speaker_availabilities or {}
 
     return graphql_client.query(
         """
@@ -141,6 +143,7 @@ def _update_submission(
                 "speakerLinkedinUrl": new_speaker_linkedin_url,
                 "speakerFacebookUrl": new_speaker_facebook_url,
                 "speakerMastodonHandle": new_speaker_mastodon_handle,
+                "speakerAvailabilities": new_speaker_availabilities,
             }
         },
     )
@@ -199,6 +202,67 @@ def test_update_submission(graphql_client, user):
     participant = Participant.objects.first()
     assert participant.facebook_url == "http://facebook.com/pythonpizza"
     assert participant.linkedin_url == "http://linkedin.com/company/pythonpizza"
+
+
+def test_update_submission_speaker_availabilities(graphql_client, user):
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("it", "en"),
+        durations=("10", "20"),
+        active_cfp=True,
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["it"],
+        tags=["python", "ml"],
+        conference=conference,
+        speaker_level=Submission.SPEAKER_LEVELS.intermediate,
+        previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
+    )
+
+    graphql_client.force_login(user)
+
+    new_topic = conference.topics.filter(name="diy").first()
+    new_audience = conference.audience_levels.filter(name="senior").first()
+    new_tag = SubmissionTagFactory(name="yello")
+    new_duration = conference.durations.filter(name="20m").first()
+    new_type = conference.submission_types.filter(name="workshop").first()
+
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_topic=new_topic,
+        new_audience=new_audience,
+        new_tag=new_tag,
+        new_duration=new_duration,
+        new_type=new_type,
+        new_speaker_level=Submission.SPEAKER_LEVELS.experienced,
+        new_speaker_availabilities={
+            "2023-12-10@am": "unavailable",
+            "2023-12-11@pm": "unavailable",
+            "2023-12-12@am": "preferred",
+            "2023-12-13@am": None,
+        },
+    )
+
+    submission.refresh_from_db()
+
+    assert response["data"]["updateSubmission"]["__typename"] == "Submission"
+
+    participant = Participant.objects.first()
+    assert participant.speaker_availabilities == {
+        "2023-12-10@am": "unavailable",
+        "2023-12-11@pm": "unavailable",
+        "2023-12-12@am": "preferred",
+        "2023-12-13@am": None,
+    }
 
 
 def test_update_submission_with_invalid_facebook_social_url(graphql_client, user):

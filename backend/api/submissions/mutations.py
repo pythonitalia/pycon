@@ -210,6 +210,7 @@ class SendSubmissionInput(BaseSubmissionInput):
     speaker_linkedin_url: str
     speaker_facebook_url: str
     speaker_mastodon_handle: str
+    speaker_availabilities: JSON
 
     topic: Optional[ID] = strawberry.field(default=None)
     tags: list[ID] = strawberry.field(default_factory=list)
@@ -372,6 +373,7 @@ class SubmissionsMutations:
                 "linkedin_url": input.speaker_linkedin_url,
                 "facebook_url": input.speaker_facebook_url,
                 "mastodon_handle": input.speaker_mastodon_handle,
+                "speaker_availabilities": input.speaker_availabilities,
             },
         )
 
