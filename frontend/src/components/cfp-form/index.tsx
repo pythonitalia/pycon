@@ -308,7 +308,7 @@ export const CfpForm = ({
   const onChangeAvailability = (date, choice) => {
     formState.setField("selectedAvailabilities", {
       ...formState.values.selectedAvailabilities,
-      [date.getTime()]: choice,
+      [date]: choice,
     });
   };
 

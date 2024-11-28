@@ -20,6 +20,7 @@ import { FormattedMessage } from "react-intl";
 import type { CfpFormQuery } from "~/types";
 
 const CHOICES = ["available", "preferred", "unavailable"];
+const RANGES = ["am", "pm"];
 
 type Props = {
   conferenceData: CfpFormQuery;
@@ -39,15 +40,6 @@ export const AvailabilitySection = ({
   const parsedStart = parseISO(start);
   const parsedEnd = parseISO(end);
   const daysBetween = eachDayOfInterval({ start: parsedStart, end: parsedEnd });
-  const hoursBetween = eachMinuteOfInterval(
-    {
-      start: setHours(parsedStart, 9),
-      end: setHours(parsedStart, 17),
-    },
-    {
-      step: 30,
-    },
-  );
 
   return (
     <MultiplePartsCard>
@@ -64,7 +56,7 @@ export const AvailabilitySection = ({
         <div
           className="grid gap-2 lg:gap-4 select-none"
           style={{
-            gridTemplateColumns: `70px repeat(${daysBetween.length}, 1fr)`,
+            gridTemplateColumns: `150px repeat(${daysBetween.length}, 1fr)`,
           }}
         >
           <div />
@@ -80,34 +72,39 @@ export const AvailabilitySection = ({
             </Text>
           ))}
 
-          {hoursBetween.map((hour) => (
-            <Fragment key={hour.toISOString()}>
+          {RANGES.map((hour) => (
+            <Fragment key={hour}>
               <div>
-                <Text weight="strong" size={"label3"}>
-                  {format(hour, "HH:mm")}
+                <Text weight="strong" size={"label3"} as="p">
+                  {hour === "am" ? (
+                    <FormattedMessage id="cfp.availability.table.morning" />
+                  ) : (
+                    <FormattedMessage id="cfp.availability.table.afternoon" />
+                  )}
+                </Text>
+                <Spacer size="thin" />
+                <Text weight="strong" size={"label3"} as="p">
+                  {hour === "am" ? (
+                    <FormattedMessage id="cfp.availability.table.morning.range" />
+                  ) : (
+                    <FormattedMessage id="cfp.availability.table.afternoon.range" />
+                  )}
                 </Text>
               </div>
               {daysBetween.map((day) => {
-                const mergedDate = setHours(
-                  setMinutes(day, hour.getMinutes()),
-                  hour.getHours(),
-                );
-
+                const availabilityDate = `${format(day, "yyyy-MM-dd")}-${hour}`;
                 const currentChoice =
-                  selectedAvailabilities?.[mergedDate.getTime()] || "available";
+                  selectedAvailabilities?.[availabilityDate] || "available";
 
                 return (
                   <div
-                    className={clsx("w-full cursor-pointer text-center p-1", {
-                      "bg-grey-50 hover:bg-grey-100": true,
-                    })}
+                    className="w-full cursor-pointer text-center p-1 bg-grey-50 hover:bg-grey-100"
                     onClick={(_) => {
-                      const options = ["available", "preferred", "unavailable"];
                       const nextChoice =
-                        options[
-                          (options.indexOf(currentChoice) + 1) % options.length
+                        CHOICES[
+                          (CHOICES.indexOf(currentChoice) + 1) % CHOICES.length
                         ];
-                      onChangeAvailability(mergedDate, nextChoice);
+                      onChangeAvailability(availabilityDate, nextChoice);
                     }}
                   >
                     {currentChoice === "available" && <>&nbsp;</>}
@@ -118,20 +115,9 @@ export const AvailabilitySection = ({
               })}
             </Fragment>
           ))}
-
-          <div />
-          {daysBetween.map((day) => (
-            <div className="flex items-center justify-center gap-1">
-              <Text key={day.toISOString()} size={"label3"}>
-                (Prefer all)
-              </Text>
-              /
-              <Text key={day.toISOString()} size={"label3"}>
-                (Unavailable all)
-              </Text>
-            </div>
-          ))}
         </div>
+
+        <Spacer size="small" />
 
         <Text size={3}>
           <FormattedMessage
