@@ -3,18 +3,9 @@ import {
   Heading,
   MultiplePartsCard,
   Spacer,
-  Tag,
   Text,
 } from "@python-italia/pycon-styleguide";
-import clsx from "clsx";
-import {
-  eachDayOfInterval,
-  eachMinuteOfInterval,
-  format,
-  parseISO,
-  setHours,
-  setMinutes,
-} from "date-fns";
+import { eachDayOfInterval, format, parseISO } from "date-fns";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import type { CfpFormQuery } from "~/types";
