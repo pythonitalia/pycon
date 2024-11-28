@@ -25,13 +25,13 @@ const RANGES = ["am", "pm"];
 type Props = {
   conferenceData: CfpFormQuery;
   selectedDuration: any;
-  selectedAvailabilities: any;
+  speakerAvailabilities: any;
   onChangeAvailability: any;
 };
 export const AvailabilitySection = ({
   conferenceData,
   selectedDuration,
-  selectedAvailabilities,
+  speakerAvailabilities,
   onChangeAvailability,
 }: Props) => {
   const {
@@ -92,9 +92,9 @@ export const AvailabilitySection = ({
                 </Text>
               </div>
               {daysBetween.map((day) => {
-                const availabilityDate = `${format(day, "yyyy-MM-dd")}-${hour}`;
+                const availabilityDate = `${format(day, "yyyy-MM-dd")}@${hour}`;
                 const currentChoice =
-                  selectedAvailabilities?.[availabilityDate] || "available";
+                  speakerAvailabilities?.[availabilityDate] || "available";
 
                 return (
                   <div

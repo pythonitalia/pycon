@@ -2156,7 +2156,7 @@ Mettiamoci in contatto per trovare la soluzione migliore per le esigenze della t
     "cfp.availability.description":
       "Aiuta il nostro comitato di programma facendoci sapere la tua disponibilità durante la conferenza. Se la tua proposta verrà accettata, useremo queste informazioni per programmare il tuo intervento in un momento che ti sia comodo. Tutti gli orari sono nel fuso orario della conferenza.",
     "cfp.availability.explanation": `✔️ Preferito ❌ Non disponibile
-  Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia disponibile. Considera la durata della tua presentazione quando indichi la disponibilità. {duration}`,
+Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia disponibile. Considera la durata della tua presentazione quando indichi la disponibilità. {duration}`,
     "cfp.availability.table.morning": "Mattina",
     "cfp.availability.table.morning.range": "(11:00 - 13:00)",
     "cfp.availability.table.afternoon": "Pomeriggio",

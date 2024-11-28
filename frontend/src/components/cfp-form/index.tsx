@@ -56,7 +56,8 @@ export type CfpFormFields = ParticipantFormFields & {
   previousTalkVideo: string;
   shortSocialSummary: string;
   acceptedPrivacyPolicy: boolean;
-  selectedAvailabilities: { [time: number]: null | boolean };
+  speakerAvailabilities: { [time: number]: null | boolean };
+  speakerAvailabilities: { [time: number]: null | string };
 };
 
 export type SubmissionStructure = {
@@ -180,6 +181,7 @@ export const CfpForm = ({
         formState.values.participantPhoto ??
         participantData.me.participant?.photoId,
       acceptedPrivacyPolicy: formState.values.acceptedPrivacyPolicy,
+      speakerAvailabilities: formState.values.speakerAvailabilities,
     });
   };
 
@@ -270,6 +272,10 @@ export const CfpForm = ({
         "participantMastodonHandle",
         participantData.me.participant.mastodonHandle,
       );
+      formState.setField(
+        "speakerAvailabilities",
+        participantData.me.participant.speakerAvailabilities,
+      );
     }
   }, []);
 
@@ -306,8 +312,8 @@ export const CfpForm = ({
     [];
 
   const onChangeAvailability = (date, choice) => {
-    formState.setField("selectedAvailabilities", {
-      ...formState.values.selectedAvailabilities,
+    formState.setField("speakerAvailabilities", {
+      ...formState.values.speakerAvailabilities,
       [date]: choice,
     });
   };
@@ -330,7 +336,7 @@ export const CfpForm = ({
 
       <AvailabilitySection
         onChangeAvailability={onChangeAvailability}
-        selectedAvailabilities={formState.values.selectedAvailabilities}
+        speakerAvailabilities={formState.values.speakerAvailabilities}
         selectedDuration={allowedDurations.find(
           (duration) => duration.id === formState.values.length,
         )}

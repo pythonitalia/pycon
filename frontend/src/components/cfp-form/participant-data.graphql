@@ -15,6 +15,7 @@ query ParticipantData($conference: String!) {
       linkedinUrl
       facebookUrl
       mastodonHandle
+      speakerAvailabilities
     }
   }
 }
