@@ -56,7 +56,6 @@ export type CfpFormFields = ParticipantFormFields & {
   previousTalkVideo: string;
   shortSocialSummary: string;
   acceptedPrivacyPolicy: boolean;
-  speakerAvailabilities: { [time: number]: null | boolean };
   speakerAvailabilities: { [time: number]: null | string };
 };
 
