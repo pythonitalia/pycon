@@ -17,7 +17,7 @@ RUN apt-get update -y && apt-get install -y \
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 
-RUN pip install pdm==2.21.0
+RUN pip install pdm==2.21.0 uv==0.5.5
 
 ARG TARGETPLATFORM
 
@@ -80,9 +80,8 @@ RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
 
 COPY pyproject.toml pdm.lock ${FUNCTION_DIR}
 
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 RUN pdm config use_uv true
-RUN pdm install --prod --group lambda
+RUN pdm install --prod
 
 # Create GraphQL schema
 
