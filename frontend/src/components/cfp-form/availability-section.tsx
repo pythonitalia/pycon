@@ -117,16 +117,7 @@ export const AvailabilitySection = ({
         <Spacer size="small" />
 
         <Text size={3}>
-          <FormattedMessage
-            id="cfp.availability.explanation"
-            values={{
-              duration: selectedDuration ? (
-                <Text size="inherit" weight="strong">
-                  ({selectedDuration.name})
-                </Text>
-              ) : null,
-            }}
-          />
+          <FormattedMessage id="cfp.availability.explanation" />
         </Text>
       </CardPart>
     </MultiplePartsCard>

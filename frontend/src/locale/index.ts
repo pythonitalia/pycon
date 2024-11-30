@@ -471,7 +471,7 @@ Failing to notify us may impact your eligibility for financial aid at future eve
     "cfp.availability.description":
       "Help our program committee by letting us know your availability during the conference. If your proposal gets accepted, we will try and use this information to schedule your proposal at a time that suits you. All times are in the conference timezone.",
     "cfp.availability.explanation": `✔️ Preferred ❌ Unavailable
-Click the box to change. If left empty, we will assume you are available. Please consider your presentation length when marking availability. {duration}`,
+Click the box to change. If left empty, we will assume you are available.`,
     "cfp.availability.table.morning": "Morning",
     "cfp.availability.table.morning.range": "(11.00am - 1.00pm)",
     "cfp.availability.table.afternoon": "Afternoon",
@@ -2156,7 +2156,7 @@ Mettiamoci in contatto per trovare la soluzione migliore per le esigenze della t
     "cfp.availability.description":
       "Aiuta il nostro comitato di programma facendoci sapere la tua disponibilità durante la conferenza. Se la tua proposta verrà accettata, useremo queste informazioni per programmare il tuo intervento in un momento che ti sia comodo. Tutti gli orari sono nel fuso orario della conferenza.",
     "cfp.availability.explanation": `✔️ Preferito ❌ Non disponibile
-Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia disponibile. Considera la durata della tua presentazione quando indichi la disponibilità. {duration}`,
+Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia disponibile.`,
     "cfp.availability.table.morning": "Mattina",
     "cfp.availability.table.morning.range": "(11:00 - 13:00)",
     "cfp.availability.table.afternoon": "Pomeriggio",
