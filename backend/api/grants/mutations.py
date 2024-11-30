@@ -257,7 +257,7 @@ class GrantMutation:
                 },
             )
 
-            send_grant_application_confirmation_email(instance)
+            send_grant_application_confirmation_email.delay(grant_id=instance.id)
 
         # hack because we return django models
         instance.__strawberry_definition__ = Grant.__strawberry_definition__

@@ -173,7 +173,9 @@ def _new_send_grant_email(
     grant.save()
 
 
-def send_grant_application_confirmation_email(grant: Grant):
+@app.task
+def send_grant_application_confirmation_email(*, grant_id):
+    grant = Grant.objects.get(id=grant_id)
     email_template = EmailTemplate.objects.for_conference(
         grant.conference
     ).get_by_identifier(EmailTemplateIdentifier.grant_application_confirmation)
