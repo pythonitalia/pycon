@@ -67,6 +67,7 @@ def _submit_proposal(client, conference, submission, **kwargs):
         "speakerFacebookUrl": "https://facebook.com/fake-link",
         "speakerMastodonHandle": "fake@mastodon.social",
         "tags": [tag.id],
+        "speakerAvailabilities": {},
     }
 
     override_conference = kwargs.pop("override_conference", None)
@@ -163,6 +164,11 @@ def test_submit_talk(graphql_client, user, django_capture_on_commit_callbacks, m
             shortSocialSummary="summary",
             speakerBio="my bio",
             speakerPhoto=speaker_photo,
+            speakerAvailabilities={
+                "2023-10-10@am": "preferred",
+                "2023-10-11@pm": "unavailable",
+                "2023-10-12@am": "available",
+            },
         )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
@@ -190,6 +196,11 @@ def test_submit_talk(graphql_client, user, django_capture_on_commit_callbacks, m
     participant = Participant.objects.get(conference=conference, user_id=user.id)
     assert participant.bio == "my bio"
     assert participant.photo_file_id == speaker_photo
+    assert participant.speaker_availabilities == {
+        "2023-10-10@am": "preferred",
+        "2023-10-11@pm": "unavailable",
+        "2023-10-12@am": "available",
+    }
 
     assert PrivacyPolicyAcceptanceRecord.objects.filter(
         user=user, conference=conference, privacy_policy="cfp"
