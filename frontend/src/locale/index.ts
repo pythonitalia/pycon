@@ -467,6 +467,15 @@ Failing to notify us may impact your eligibility for financial aid at future eve
     "cfp.grantsCta": "click here to open a separate page to request a grant",
     "header.coronaVirus":
       "🚨 Update regarding COVID-19 - Conference cancelled 😢",
+    "cfp.availability.title": "Availability",
+    "cfp.availability.description":
+      "Help our program committee by letting us know your availability during the conference. If your proposal gets accepted, we will try and use this information to schedule your proposal at a time that suits you. All times are in the conference timezone.",
+    "cfp.availability.explanation": `✔️ Preferred ❌ Unavailable
+Click the box to change. If left empty, we will assume you are available.`,
+    "cfp.availability.table.morning": "Morning",
+    "cfp.availability.table.morning.range": "(11.00am - 1.00pm)",
+    "cfp.availability.table.afternoon": "Afternoon",
+    "cfp.availability.table.afternoon.range": "(3.00pm - 6.00pm)",
     "header.dashboard": "Dashboard",
     "header.login": "Login",
     "header.tickets": "Tickets",
@@ -2142,6 +2151,16 @@ Mettiamoci in contatto per trovare la soluzione migliore per le esigenze della t
     "orderQuestions.attendeeFamilyName": "Cognome partecipante",
     "orderQuestions.attendeeFamilyName.placeholder":
       "Il tuo cognome, e.g. Lovelace",
+
+    "cfp.availability.title": "Disponibilità",
+    "cfp.availability.description":
+      "Aiuta il nostro comitato di programma facendoci sapere la tua disponibilità durante la conferenza. Se la tua proposta verrà accettata, useremo queste informazioni per programmare il tuo intervento in un momento che ti sia comodo. Tutti gli orari sono nel fuso orario della conferenza.",
+    "cfp.availability.explanation": `✔️ Preferito ❌ Non disponibile
+Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia disponibile.`,
+    "cfp.availability.table.morning": "Mattina",
+    "cfp.availability.table.morning.range": "(11:00 - 13:00)",
+    "cfp.availability.table.afternoon": "Pomeriggio",
+    "cfp.availability.table.afternoon.range": "(15:00 - 18:00)",
   },
 };
 

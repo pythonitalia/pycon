@@ -67,6 +67,7 @@ export const EditSubmissionPage = () => {
           speakerLinkedinUrl: input.participantLinkedinUrl,
           speakerFacebookUrl: input.participantFacebookUrl,
           speakerMastodonHandle: input.participantMastodonHandle,
+          speakerAvailabilities: input.speakerAvailabilities,
         },
         language,
       },
