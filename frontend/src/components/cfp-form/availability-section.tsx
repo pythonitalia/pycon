@@ -8,6 +8,7 @@ import {
 import { eachDayOfInterval, format, parseISO } from "date-fns";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
+import { useCurrentLanguage } from "~/locale/context";
 import type { CfpFormQuery } from "~/types";
 
 const CHOICES = ["available", "preferred", "unavailable"];
@@ -25,12 +26,17 @@ export const AvailabilitySection = ({
   speakerAvailabilities,
   onChangeAvailability,
 }: Props) => {
+  const language = useCurrentLanguage();
   const {
     conference: { start, end },
   } = conferenceData;
   const parsedStart = parseISO(start);
   const parsedEnd = parseISO(end);
   const daysBetween = eachDayOfInterval({ start: parsedStart, end: parsedEnd });
+  const dateFormatter = new Intl.DateTimeFormat(language, {
+    day: "2-digit",
+    month: "long",
+  });
 
   return (
     <MultiplePartsCard>
@@ -59,7 +65,7 @@ export const AvailabilitySection = ({
               size={"label3"}
               align="center"
             >
-              {format(day, "EEEE d MMM")}
+              {dateFormatter.format(day)}
             </Text>
           ))}
 
