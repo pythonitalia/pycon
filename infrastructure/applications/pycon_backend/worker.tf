@@ -162,7 +162,7 @@ locals {
     },
     {
       name = "CLAMAV_HOST",
-      value = module.secrets.value.clamav_host
+      value = var.server_ip
     },
     {
       name = "ECS_NETWORK_CONFIG",

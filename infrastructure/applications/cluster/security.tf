@@ -41,6 +41,25 @@ resource "aws_security_group_rule" "out_redis" {
   security_group_id = aws_security_group.server.id
 }
 
+resource "aws_security_group_rule" "in_clamav" {
+  type              = "egress"
+  from_port         = 3310
+  to_port           = 3310
+  protocol          = "tcp"
+  source_security_group_id = aws_security_group.server.id
+  security_group_id = aws_security_group.server.id
+}
+
+resource "aws_security_group_rule" "out_clamav" {
+  # needed by fargate to connect to the server with clamav
+  type              = "ingress"
+  from_port         = 3310
+  to_port           = 3310
+  protocol          = "tcp"
+  source_security_group_id = aws_security_group.server.id
+  security_group_id = aws_security_group.server.id
+}
+
 resource "aws_security_group_rule" "web_http" {
   type              = "ingress"
   from_port         = 80

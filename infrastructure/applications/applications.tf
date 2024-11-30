@@ -34,6 +34,17 @@ module "pycon_backend" {
   }
 }
 
+module "clamav" {
+  source       = "./clamav"
+  cluster_id = module.cluster.cluster_id
+  logs_group_name = module.cluster.logs_group_name
+
+  providers = {
+    aws    = aws
+    aws.us = aws.us
+  }
+}
+
 # Other resources
 
 module "database" {
