@@ -17,7 +17,7 @@ RUN apt-get update -y && apt-get install -y \
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 
-RUN pip install pdm==2.10.4
+RUN pip install pdm==2.21.0
 
 ARG TARGETPLATFORM
 

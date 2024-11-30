@@ -39,7 +39,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11.6"
-      - run: pip install pdm==2.10.4 codecov
+      - run: |
+          pip install pdm==2.21.0 codecov
+          pdm config use_uv true
 
       - name: Cache PDM
         uses: actions/cache@v4
