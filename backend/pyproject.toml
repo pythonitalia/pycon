@@ -44,25 +44,6 @@ known-first-party = [
     "billing"
 ]
 
-[tool.pdm]
-[tool.pdm.dev-dependencies]
-dev = [
-    "mypy<2.0.0,>=1.2.0",
-    "pytest==7.4.3",
-    "pytest-cov==4.1.0",
-    "pytest-django==4.6.0",
-    "factory-boy==3.3.0",
-    "pdbpp<1.0.0,>=0.10.3",
-    "requests-mock<2.0.0,>=1.11.0",
-    "pytest-mock<4.0.0,>=3.12.0",
-    "pytest-cache<2.0,>=1.0",
-    "time-machine<3.0.0,>=2.13.0",
-    "libcst<2.0.0,>=1.1.0",
-    "wagtail-factories<5.0.0,>=4.1.0",
-    "pytest-xdist>=3.5.0",
-    "websockets>=12.0",
-    "typer>=0.12.3",
-]
 
 [tool.pdm.build]
 includes = []
