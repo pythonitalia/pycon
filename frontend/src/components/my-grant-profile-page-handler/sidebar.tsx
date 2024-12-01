@@ -37,7 +37,6 @@ export const Sidebar = ({
         <VerticalStack gap="small">
           {grantType.map((type, index) => (
             <Text size="label2" weight="strong">
-              {" "}
               <FormattedMessage
                 key={index}
                 id={`grants.form.fields.grantType.values.${type}`}
