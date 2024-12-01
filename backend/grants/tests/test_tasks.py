@@ -11,6 +11,7 @@ from grants.tasks import (
     send_grant_reply_approved_email,
     send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
+    send_grant_application_confirmation_email,
 )
 from grants.models import Grant
 
@@ -309,5 +310,25 @@ def test_send_grant_reply_waiting_list_update_email(settings):
             "conference_name": conference_name,
             "grants_update_deadline": "1 March 2023",
             "reply_url": "https://pycon.it/grants/reply/",
+        },
+    )
+
+
+def test_send_grant_application_confirmation_email():
+    user = UserFactory(
+        full_name="Marco Acierno",
+        email="marco@placeholder.it",
+        name="Marco",
+        username="marco",
+    )
+    grant = GrantFactory(user=user)
+
+    with patch("grants.tasks.EmailTemplate") as mock_email_template:
+        send_grant_application_confirmation_email(grant_id=grant.id)
+
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": "Marco Acierno",
         },
     )

@@ -171,3 +171,19 @@ def _new_send_grant_email(
 
     grant.applicant_reply_sent_at = timezone.now()
     grant.save()
+
+
+@app.task
+def send_grant_application_confirmation_email(*, grant_id):
+    grant = Grant.objects.get(id=grant_id)
+    email_template = EmailTemplate.objects.for_conference(
+        grant.conference
+    ).get_by_identifier(EmailTemplateIdentifier.grant_application_confirmation)
+
+    email_template.send_email(
+        recipient=grant.user,
+        placeholders={
+            "user_name": get_name(grant.user, "there"),
+        },
+    )
+    logger.info("Grant application confirmation email sent for grant %s", grant.id)

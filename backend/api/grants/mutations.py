@@ -16,7 +16,10 @@ from api.grants.types import (
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType
 from conferences.models.conference import Conference
-from grants.tasks import notify_new_grant_reply_slack
+from grants.tasks import (
+    notify_new_grant_reply_slack,
+    send_grant_application_confirmation_email,
+)
 from grants.models import Grant as GrantModel
 from users.models import User
 
@@ -253,6 +256,8 @@ class GrantMutation:
                     "mastodon_handle": input.participant_mastodon_handle,
                 },
             )
+
+            send_grant_application_confirmation_email.delay(grant_id=instance.id)
 
         # hack because we return django models
         instance.__strawberry_definition__ = Grant.__strawberry_definition__

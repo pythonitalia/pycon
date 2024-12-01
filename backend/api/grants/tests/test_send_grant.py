@@ -3,7 +3,9 @@ from conferences.tests.factories import ConferenceFactory
 from grants.tests.factories import GrantFactory
 import pytest
 from participants.models import Participant
+from grants.models import Grant
 
+from unittest.mock import call
 
 pytestmark = pytest.mark.django_db
 
@@ -84,7 +86,10 @@ def _send_grant(client, conference, conference_code=None, **kwargs):
     return response
 
 
-def test_send_grant(graphql_client, user):
+def test_send_grant(graphql_client, user, mocker):
+    mock_confirmation_email = mocker.patch(
+        "api.grants.mutations.send_grant_application_confirmation_email"
+    )
     graphql_client.force_login(user)
     conference = ConferenceFactory(active_grants=True)
 
@@ -95,13 +100,18 @@ def test_send_grant(graphql_client, user):
 
     participant = Participant.objects.get(conference=conference, user_id=user.id)
     assert participant.bio == "my bio"
-
+    grant = Grant.objects.get(id=response["data"]["sendGrant"]["id"])
+    assert grant.conference == conference
     assert PrivacyPolicyAcceptanceRecord.objects.filter(
         user=user, conference=conference, privacy_policy="grant"
     ).exists()
+    mock_confirmation_email.delay.assert_called_once_with(grant_id=grant.id)
 
 
-def test_cannot_send_a_grant_if_grants_are_closed(graphql_client, user):
+def test_cannot_send_a_grant_if_grants_are_closed(graphql_client, user, mocker):
+    mock_confirmation_email = mocker.patch(
+        "api.grants.mutations.send_grant_application_confirmation_email"
+    )
     graphql_client.force_login(user)
     conference = ConferenceFactory(active_grants=False)
 
@@ -112,6 +122,7 @@ def test_cannot_send_a_grant_if_grants_are_closed(graphql_client, user):
     assert response["data"]["sendGrant"]["errors"]["nonFieldErrors"] == [
         "The grants form is not open!"
     ]
+    mock_confirmation_email.delay.assert_not_called()
 
 
 def test_cannot_send_a_grant_if_grants_deadline_do_not_exists(graphql_client, user):
@@ -136,7 +147,10 @@ def test_cannot_send_a_grant_as_unlogged_user(graphql_client):
     assert resp["errors"][0]["message"] == "User not logged in"
 
 
-def test_cannot_send_two_grants_to_the_same_conference(graphql_client, user):
+def test_cannot_send_two_grants_to_the_same_conference(graphql_client, user, mocker):
+    mock_confirmation_email = mocker.patch(
+        "api.grants.mutations.send_grant_application_confirmation_email"
+    )
     graphql_client.force_login(user)
     conference = ConferenceFactory(active_grants=True)
     _send_grant(graphql_client, conference)
@@ -148,18 +162,29 @@ def test_cannot_send_two_grants_to_the_same_conference(graphql_client, user):
     assert response["data"]["sendGrant"]["errors"]["nonFieldErrors"] == [
         "Grant already submitted!"
     ]
+    mock_confirmation_email.delay.assert_called_once()
 
 
-def test_can_send_two_grants_to_different_conferences(graphql_client, user):
+def test_can_send_two_grants_to_different_conferences(graphql_client, user, mocker):
+    mock_confirmation_email = mocker.patch(
+        "api.grants.mutations.send_grant_application_confirmation_email"
+    )
     graphql_client.force_login(user)
     conference = ConferenceFactory(active_grants=True)
     conference_2 = ConferenceFactory(active_grants=True)
-    _send_grant(graphql_client, conference)
+    first_response = _send_grant(graphql_client, conference)
 
-    response = _send_grant(graphql_client, conference_2)
+    second_response = _send_grant(graphql_client, conference_2)
 
-    assert not response.get("errors")
-    assert response["data"]["sendGrant"]["__typename"] == "Grant"
+    assert not second_response.get("errors")
+    assert second_response["data"]["sendGrant"]["__typename"] == "Grant"
+    mock_confirmation_email.delay.assert_has_calls(
+        [
+            call(grant_id=int(first_response["data"]["sendGrant"]["id"])),
+            call(grant_id=int(second_response["data"]["sendGrant"]["id"])),
+        ],
+        any_order=True,
+    )
 
 
 def test_invalid_conference(graphql_client, user):
