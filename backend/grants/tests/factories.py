@@ -8,6 +8,7 @@ from users.tests.factories import UserFactory
 from countries import countries
 from participants.tests.factories import ParticipantFactory
 from participants.models import Participant
+import random
 
 
 class GrantFactory(DjangoModelFactory):
@@ -22,7 +23,12 @@ class GrantFactory(DjangoModelFactory):
     age_group = factory.fuzzy.FuzzyChoice(Grant.AgeGroup)
     gender = factory.fuzzy.FuzzyChoice([gender[0] for gender in GENDERS])
     occupation = factory.fuzzy.FuzzyChoice(Grant.Occupation)
-    grant_type = factory.fuzzy.FuzzyChoice(Grant.GrantType)
+    grant_type = factory.LazyFunction(
+        lambda: random.sample(
+            [choice[0] for choice in Grant.GrantType.choices],
+            k=random.randint(1, len(Grant.GrantType.choices)),
+        )
+    )
 
     python_usage = factory.Faker("text")
     been_to_other_events = factory.Faker("text")

@@ -58,7 +58,7 @@ export type GrantFormFields = ParticipantFormFields & {
   ageGroup: AgeGroup;
   gender: string;
   occupation: Occupation;
-  grantType: GrantType;
+  grantType: GrantType[];
   pythonUsage: string;
   communityContribution: string;
   beenToOtherEvents: string;
@@ -458,21 +458,27 @@ export const GrantForm = ({
                 <FormattedMessage id="grants.form.fields.grantType.description" />
               }
             >
-              <Select
-                {...select("grantType")}
-                required={true}
-                errors={getErrors("grantType")}
-              >
+              <HorizontalStack gap="small">
                 {GRANT_TYPE_OPTIONS.map(({ value, disabled, messageId }) => (
-                  <FormattedMessage id={messageId} key={messageId}>
-                    {(msg) => (
-                      <option disabled={disabled} value={value}>
-                        {msg}
-                      </option>
-                    )}
-                  </FormattedMessage>
+                  <label key={value}>
+                    <HorizontalStack gap="small" alignItems="center">
+                      <Checkbox
+                        size="small"
+                        {...checkbox("grantType", value)}
+                        disabled={disabled}
+                      />
+
+                      <FormattedMessage id={messageId} key={messageId}>
+                        {(msg) => <Text size={2}>{msg}</Text>}
+                      </FormattedMessage>
+                    </HorizontalStack>
+                  </label>
                 ))}
-              </Select>
+              </HorizontalStack>
+              <Spacer size="xs" />
+              <Text as="p" size="label4" color="error" uppercase>
+                {getErrors("grantType").join(", ")}
+              </Text>
             </InputWrapper>
 
             <InputWrapper

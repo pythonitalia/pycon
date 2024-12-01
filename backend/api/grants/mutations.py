@@ -90,6 +90,7 @@ class BaseGrantInput:
             "python_usage",
             "been_to_other_events",
             "why",
+            "grant_type",
         )
 
         for field in non_empty_fields:
@@ -110,7 +111,7 @@ class SendGrantInput(BaseGrantInput):
     age_group: AgeGroup
     gender: str
     occupation: Occupation
-    grant_type: GrantType
+    grant_type: list[GrantType]
     python_usage: str
     been_to_other_events: str
     community_contribution: str
@@ -149,7 +150,7 @@ class UpdateGrantInput(BaseGrantInput):
     age_group: AgeGroup
     gender: str
     occupation: Occupation
-    grant_type: GrantType
+    grant_type: list[GrantType]
     python_usage: str
     been_to_other_events: str
     community_contribution: str

@@ -97,9 +97,7 @@ class Grant(TimeStampedModel):
     )
 
     # Your Grant Section
-    grant_type = models.CharField(
-        _("grant type"), choices=GrantType.choices, max_length=10
-    )
+    grant_type = models.JSONField(_("grant type"), default=list)
     departure_country = models.CharField(
         _("Departure Country"),
         max_length=100,
