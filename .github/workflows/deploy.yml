@@ -303,10 +303,10 @@ jobs:
         id: vars
         if: ${{ steps.image.outputs.image_exists == 0 }}
         run: |
-          cms_hostname="${aws ssm get-parameter --output text --query Parameter.Value --with-decryption --name /pythonit/${{ env.TF_WORKSPACE }}/pycon-frontend/cms-hostname}"
+          cms_hostname=${aws ssm get-parameter --output text --query Parameter.Value --with-decryption --name /pythonit/${{ env.TF_WORKSPACE }}/pycon-frontend/cms-hostname}
           echo "CMS_HOSTNAME=$cms_hostname" >> "$GITHUB_OUTPUT"
 
-          conference_code="${aws ssm get-parameter --output text --query Parameter.Value --with-decryption --name /pythonit/${{ env.TF_WORKSPACE }}/pycon-frontend/conference-code}"
+          conference_code=${aws ssm get-parameter --output text --query Parameter.Value --with-decryption --name /pythonit/${{ env.TF_WORKSPACE }}/pycon-frontend/conference-code}
           echo "CONFERENCE_CODE=$conference_code" >> "$GITHUB_OUTPUT"
       - name: Build and push
         if: ${{ steps.image.outputs.image_exists == 0 }}
