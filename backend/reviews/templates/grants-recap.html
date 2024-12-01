@@ -486,6 +486,10 @@
                   </a>
                   <ul>
                     <li>
+                      <strong>Nationality:</strong>
+                      <span>{{ item.get_nationality_display }}</span>
+                    </li>
+                    <li>
                       <strong>Gender:</strong>
                       <span>{{ item.get_gender_display }}</span>
                     </li>
@@ -496,10 +500,6 @@
                     <li>
                       <strong>Occupation:</strong>
                       <span>{{ item.get_occupation_display }}</span>
-                    </li>
-                    <li>
-                      <strong>Travelling From:</strong>
-                      <span>{{ item.get_travelling_from_display }}</span>
                     </li>
                     <li>
                       <strong>Country type:</strong>
@@ -522,6 +522,14 @@
                         <li>Ticket only</li>
                         {% endif %}
                       </ul>
+                    </li>
+                    <li>
+                      <strong>Departure country:</strong>
+                      <span>{{ item.get_departure_country_display }}</span>
+                    </li>
+                    <li>
+                      <strong>Departure city:</strong>
+                      <span>{{ item.get_departure_city_display }}</span>
                     </li>
                     <li>
                       <strong>Has sent a proposal?</strong>
