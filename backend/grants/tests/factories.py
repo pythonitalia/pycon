@@ -31,6 +31,8 @@ class GrantFactory(DjangoModelFactory):
     why = factory.Faker("text")
     notes = factory.Faker("text")
     travelling_from = factory.fuzzy.FuzzyChoice([country.code for country in countries])
+    nationality = factory.Faker("country")
+    departure_city = factory.Faker("city")
     website = factory.Faker("url")
     twitter_handle = "@handle"
     github_handle = factory.Faker("user_name")

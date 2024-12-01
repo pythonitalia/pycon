@@ -32,6 +32,8 @@ class Grant:
     why: str
     notes: str
     travelling_from: Optional[str]
+    nationality: Optional[str]
+    departure_city: Optional[str]
     applicant_reply_deadline: Optional[datetime]
 
     @classmethod
@@ -54,5 +56,7 @@ class Grant:
             why=grant.why,
             notes=grant.notes,
             travelling_from=grant.travelling_from,
+            nationality=grant.nationality,
+            departure_city=grant.departure_city,
             applicant_reply_deadline=grant.applicant_reply_deadline,
         )

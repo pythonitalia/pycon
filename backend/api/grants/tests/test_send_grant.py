@@ -39,6 +39,8 @@ def _send_grant(client, conference, conference_code=None, **kwargs):
                         validationWhy: why
                         validationNotes: notes
                         validationTravellingFrom: travellingFrom
+                        validationNationality: nationality
+                        validationDepartureCity: departureCity
                         validationParticipantBio: participantBio
                         validationParticipantWebsite: participantWebsite
                         validationParticipantTwitterHandle: participantTwitterHandle
@@ -70,6 +72,8 @@ def _send_grant(client, conference, conference_code=None, **kwargs):
         "why": grant.why,
         "notes": grant.notes,
         "travellingFrom": grant.travelling_from,
+        "nationality": grant.nationality,
+        "departureCity": grant.departure_city,
         "participantBio": "my bio",
         "participantWebsite": "http://website.it",
         "participantTwitterHandle": "handle",
@@ -215,6 +219,8 @@ def test_cannot_send_grant_outside_allowed_values(
         conference,
         name="Marcotte" * 50,
         travellingFrom="Very long location" * 50,
+        nationality="Freedonia" * 50,
+        departureCity="Emerald City " * 50,
     )
 
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
@@ -222,7 +228,13 @@ def test_cannot_send_grant_outside_allowed_values(
         "name: Cannot be more than 300 chars"
     ]
     assert response["data"]["sendGrant"]["errors"]["validationTravellingFrom"] == [
-        "travelling_from: Cannot be more than 200 chars"
+        "travelling_from: Cannot be more than 100 chars"
+    ]
+    assert response["data"]["sendGrant"]["errors"]["validationNationality"] == [
+        "nationality: Cannot be more than 100 chars"
+    ]
+    assert response["data"]["sendGrant"]["errors"]["validationDepartureCity"] == [
+        "departure_city: Cannot be more than 100 chars"
     ]
 
 
