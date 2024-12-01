@@ -39,6 +39,8 @@ module "pycon_frontend" {
   cluster_id = module.cluster.cluster_id
   logs_group_name = module.cluster.logs_group_name
   server_ip = module.cluster.server_ip
+  cf_domain_name = module.cluster.cf_domain_name
+  cf_hosted_zone_id = module.cluster.cf_hosted_zone_id
 
   providers = {
     aws    = aws
