@@ -79,7 +79,7 @@ class BaseGrantInput:
         for field, max_length in max_length_fields.items():
             value = getattr(self, field, "")
 
-            if len(value) > max_length:
+            if value and len(value) > max_length:
                 print(field)
                 errors.add_error(
                     field,
@@ -120,9 +120,9 @@ class SendGrantInput(BaseGrantInput):
     need_accommodation: bool
     why: str
     notes: str
-    travelling_from: str
+    travelling_from: str | None = None
     nationality: str
-    departure_city: str
+    departure_city: str | None = None
 
     participant_bio: str
     participant_website: str
@@ -159,9 +159,9 @@ class UpdateGrantInput(BaseGrantInput):
     need_accommodation: bool
     why: str
     notes: str
-    travelling_from: str
+    travelling_from: str | None = None
     nationality: str
-    departure_city: str
+    departure_city: str | None = None
 
     participant_bio: str
     participant_website: str

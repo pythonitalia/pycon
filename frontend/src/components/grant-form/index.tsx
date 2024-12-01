@@ -565,49 +565,56 @@ export const GrantForm = ({
               </FormattedMessage>
             </Select>
           </InputWrapper>
+          {formState.values.needsFundsForTravel === "true" && (
+            <>
+              <InputWrapper
+                required={false}
+                title={
+                  <FormattedMessage id="grants.form.fields.travellingFrom" />
+                }
+                description={
+                  <FormattedMessage id="grants.form.fields.travellingFrom.description" />
+                }
+              >
+                <Select
+                  {...select("travellingFrom")}
+                  required={true}
+                  errors={getErrors("travellingFrom")}
+                >
+                  <FormattedMessage id="input.selectCountryPlaceholder">
+                    {(msg) => (
+                      <option value="" disabled>
+                        {msg}
+                      </option>
+                    )}
+                  </FormattedMessage>
+                  {countries.map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.label}
+                    </option>
+                  ))}
+                </Select>
+              </InputWrapper>
 
-          <InputWrapper
-            required={true}
-            title={<FormattedMessage id="grants.form.fields.travellingFrom" />}
-            description={
-              <FormattedMessage id="grants.form.fields.travellingFrom.description" />
-            }
-          >
-            <Select
-              {...select("travellingFrom")}
-              required={true}
-              errors={getErrors("travellingFrom")}
-            >
-              <FormattedMessage id="input.selectCountryPlaceholder">
-                {(msg) => (
-                  <option value="" disabled>
-                    {msg}
-                  </option>
-                )}
-              </FormattedMessage>
-              {countries.map((c) => (
-                <option key={c.value} value={c.value}>
-                  {c.label}
-                </option>
-              ))}
-            </Select>
-          </InputWrapper>
-
-          <InputWrapper
-            required={true}
-            title={<FormattedMessage id="grants.form.fields.departureCity" />}
-            description={
-              <FormattedMessage id="grants.form.fields.departureCity.description" />
-            }
-          >
-            <Input
-              {...text("departureCity")}
-              required={true}
-              maxLength={100}
-              placeholder={inputPlaceholderText}
-              errors={getErrors("departureCity")}
-            />
-          </InputWrapper>
+              <InputWrapper
+                required={false}
+                title={
+                  <FormattedMessage id="grants.form.fields.departureCity" />
+                }
+                description={
+                  <FormattedMessage id="grants.form.fields.departureCity.description" />
+                }
+              >
+                <Input
+                  {...text("departureCity")}
+                  required={true}
+                  maxLength={100}
+                  placeholder={inputPlaceholderText}
+                  errors={getErrors("departureCity")}
+                />
+              </InputWrapper>
+            </>
+          )}
         </CardPart>
       </MultiplePartsCard>
 
