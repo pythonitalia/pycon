@@ -38,6 +38,7 @@ module "pycon_frontend" {
   source       = "./pycon_frontend"
   cluster_id = module.cluster.cluster_id
   logs_group_name = module.cluster.logs_group_name
+  server_ip = module.cluster.server_ip
 
   providers = {
     aws    = aws

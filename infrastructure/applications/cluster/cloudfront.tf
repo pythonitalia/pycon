@@ -23,10 +23,8 @@ resource "aws_cloudfront_distribution" "application" {
   is_ipv6_enabled     = true
   comment             = "${terraform.workspace} server"
   wait_for_deployment = false
-  aliases = [
-    local.pycon_admin_domain,
-    local.pretix_web_domain,
-    local.pycon_frontend_domain
+  aliases = local.is_prod ? ["*.pycon.it", "pycon.it"] : [
+    "*.pycon.it",
   ]
 
   origin {

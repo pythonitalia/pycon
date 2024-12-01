@@ -27,6 +27,11 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
           name  = "CONFERENCE_CODE"
           value = module.secrets.value.conference_code
         },
+        {
+          name = "API_URL_SERVER",
+          # value = "http://${var.server_ip}"
+          value = local.is_prod ? "https://admin.pycon.it" : "https://pastaporto-admin.pycon.it"
+        }
       ]
 
       portMappings = [
