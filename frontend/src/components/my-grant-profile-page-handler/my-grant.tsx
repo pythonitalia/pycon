@@ -2,7 +2,6 @@ import {
   Button,
   Grid,
   GridColumn,
-  Link,
   Spacer,
   Text,
   VerticalStack,
