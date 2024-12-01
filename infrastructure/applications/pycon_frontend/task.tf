@@ -16,7 +16,7 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
 
       dockerLabels = {
         "traefik.enable"                        = "true"
-        "traefik.http.routers.frontend.rule" = "Host(`${local.alias}`)"
+        "traefik.http.routers.frontend.rule" = "Host(`${local.alias}`) || Host(`2025.pycon.it`)"
       }
 
       environment = [

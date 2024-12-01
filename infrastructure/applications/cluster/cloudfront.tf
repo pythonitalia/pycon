@@ -66,3 +66,11 @@ resource "aws_cloudfront_distribution" "application" {
     }
   }
 }
+
+output "cf_domain_name" {
+  value = aws_cloudfront_distribution.application.domain_name
+}
+
+output "cf_hosted_zone_id" {
+  value = aws_cloudfront_distribution.application.hosted_zone_id
+}
