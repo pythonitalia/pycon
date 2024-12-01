@@ -755,6 +755,11 @@ def test_cannot_propose_a_talk_if_a_cfp_is_not_specified(graphql_client, user):
         audience_levels=("Beginner",),
     )
 
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
+    )
+
     resp, _ = _submit_talk(graphql_client, conference)
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
@@ -775,6 +780,11 @@ def test_same_user_can_propose_multiple_talks_to_the_same_conference(
         submission_types=("talk",),
         durations=("50",),
         audience_levels=("Beginner",),
+    )
+
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
     )
 
     resp, _ = _submit_talk(graphql_client, conference, title={"en": "My first talk"})
@@ -808,6 +818,11 @@ def test_submit_tutorial(graphql_client, user):
         audience_levels=("Beginner",),
     )
 
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
+    )
+
     resp, _ = _submit_tutorial(
         graphql_client, conference, title={"en": "My first tutorial"}
     )
@@ -831,6 +846,11 @@ def test_submit_tutorial_and_talk_to_the_same_conference(graphql_client, user):
         submission_types=("talk", "tutorial"),
         durations=("50",),
         audience_levels=("Beginner",),
+    )
+
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
     )
 
     resp, _ = _submit_tutorial(
@@ -866,6 +886,11 @@ def test_notes_are_not_required(graphql_client, user):
         audience_levels=("Beginner",),
     )
 
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
+    )
+
     resp, _ = _submit_tutorial(graphql_client, conference, notes="")
 
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
@@ -896,6 +921,16 @@ def test_same_user_can_submit_talks_to_different_conferences(graphql_client, use
         submission_types=("talk",),
         durations=("50",),
         audience_levels=("Beginner",),
+    )
+
+    EmailTemplateFactory(
+        conference=conference1,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
+    )
+
+    EmailTemplateFactory(
+        conference=conference2,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
     )
 
     resp, _ = _submit_talk(graphql_client, conference1, title={"en": "My first talk"})
@@ -935,6 +970,11 @@ def test_create_submission_tags(graphql_client, user):
         submission_types=("talk", "tutorial"),
         durations=("50",),
         audience_levels=("Beginner",),
+    )
+
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
     )
 
     python, _ = SubmissionTag.objects.get_or_create(name="python")
