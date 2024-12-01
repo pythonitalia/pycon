@@ -8,7 +8,6 @@ import type { Language } from "~/locale/languages";
 import { querySocialCard } from "~/types";
 
 export const config = {
-  runtime: "edge",
   unstable_allowDynamic: ["/node_modules/.pnpm/**"],
 };
 

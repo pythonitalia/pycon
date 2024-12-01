@@ -7,7 +7,6 @@ import { TitleSubtitleCard } from "~/components/social-card-images/title-subtitl
 import { queryNewsArticle } from "~/types";
 
 export const config = {
-  runtime: "edge",
   unstable_allowDynamic: ["/node_modules/.pnpm/**"],
 };
 
