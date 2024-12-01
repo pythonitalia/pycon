@@ -1,5 +1,6 @@
 locals {
-  pycon_web_domain  = local.is_prod ? "admin.pycon.it" : "${terraform.workspace}-admin.pycon.it"
+  pycon_admin_domain  = local.is_prod ? "admin.pycon.it" : "${terraform.workspace}-admin.pycon.it"
+  pycon_frontend_domain  = local.is_prod ? "frontend.pycon.it" : "${terraform.workspace}-frontend.pycon.it"
   pretix_web_domain = local.is_prod ? "tickets.pycon.it" : "${terraform.workspace}-tickets.pycon.it"
 }
 
@@ -22,9 +23,8 @@ resource "aws_cloudfront_distribution" "application" {
   is_ipv6_enabled     = true
   comment             = "${terraform.workspace} server"
   wait_for_deployment = false
-  aliases = [
-    local.pycon_web_domain,
-    local.pretix_web_domain
+  aliases = local.is_prod ? ["*.pycon.it", "pycon.it"] : [
+    "*.pycon.it",
   ]
 
   origin {

@@ -221,7 +221,7 @@ jobs:
         run: terraform validate -no-color
 
       - name: Terraform apply
-        run: terraform apply -no-color -auto-approve &> /dev/null
+        run: terraform apply -target module.pretix -target module.pycon_backend -target module.clamav -target module.database -target module.emails -target module.cluster -no-color -auto-approve &> /dev/null
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -247,11 +247,114 @@ jobs:
           done
         shell: bash
 
+  build-fe:
+    needs: [wait-aws-update]
+    runs-on: [self-hosted]
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.aws_access_key_id }}
+          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+          aws-region: eu-central-1
+      - name: Get service githash
+        id: git
+        run: |
+          hash=$(git rev-list -1 HEAD -- frontend)
+          echo "githash=$hash" >> $GITHUB_OUTPUT
+      - name: Check if commit is already on ECR
+        id: image
+        run: |
+          set +e
+          aws ecr describe-images --repository-name=pythonit/pycon-frontend --image-ids=imageTag=${{ steps.git.outputs.githash }}
+          if [[ $? == 0 ]]; then
+            echo "image_exists=1" >> $GITHUB_OUTPUT
+          else
+            echo "image_exists=0" >> $GITHUB_OUTPUT
+          fi
+      - name: Set up QEMU dependency
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        uses: docker/setup-qemu-action@v3
+      - name: Login to GitHub Packages
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to Amazon ECR
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Set up Docker Buildx
+        id: buildx
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        uses: docker/setup-buildx-action@v3
+      - name: Get vars
+        id: vars
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        run: |
+          cms_hostname=$(aws ssm get-parameter --output text --query Parameter.Value --with-decryption --name /pythonit/${{ env.TF_WORKSPACE }}/pycon-frontend/cms-hostname)
+          echo "CMS_HOSTNAME=$cms_hostname" >> "$GITHUB_OUTPUT"
+
+          conference_code=$(aws ssm get-parameter --output text --query Parameter.Value --with-decryption --name /pythonit/${{ env.TF_WORKSPACE }}/pycon-frontend/conference-code)
+          echo "CONFERENCE_CODE=$conference_code" >> "$GITHUB_OUTPUT"
+      - name: Build and push
+        if: ${{ steps.image.outputs.image_exists == 0 }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          provenance: false
+          push: true
+          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-frontend:${{ steps.git.outputs.githash }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/arm64
+          build-args: |
+            API_URL_SERVER=https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it
+            CMS_ADMIN_HOST=${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it
+            CMS_HOSTNAME=${{ steps.vars.outputs.cms_hostname }}
+            CONFERENCE_CODE=${{ steps.vars.outputs.conference_code }}
+
   deploy-fe:
     runs-on: ubuntu-latest
-    needs: [wait-aws-update]
+    needs: [build-fe]
+    environment:
+      name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
+    defaults:
+      run:
+        working-directory: ./infrastructure/applications
     steps:
-      - name: Trigger hook
-        if: github.ref == 'refs/heads/main'
-        run: |
-          curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }}
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.2.4
+      - name: Terraform Init
+        run: terraform init
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform apply
+        run: terraform apply -no-color -auto-approve &> /dev/null
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-central-1

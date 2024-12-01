@@ -15,6 +15,7 @@ const {
 } = process.env;
 
 module.exports = withSentryConfig({
+  output: "standalone",
   i18n: {
     locales: ["default", "en", "it"],
     defaultLocale: "default",
