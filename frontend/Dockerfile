@@ -1,8 +1,10 @@
 FROM node:23-alpine AS base
 
+RUN apk add --no-cache curl
+
 FROM base AS deps
 
-RUN apk add --no-cache libc6-compat curl
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml* .npmrc* ./
