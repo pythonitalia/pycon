@@ -14,7 +14,7 @@ def grants_set():
         status="approved",
         country_type="italy",
         gender="female",
-        travelling_from="IT",
+        departure_country="IT",
     )
     GrantFactory.create_batch(
         3,
@@ -22,7 +22,7 @@ def grants_set():
         status="rejected",
         country_type="europe",
         gender="male",
-        travelling_from="FR",
+        departure_country="FR",
     )
     GrantFactory.create_batch(
         7,
@@ -30,7 +30,7 @@ def grants_set():
         status="waiting_list",
         country_type="extra_eu",
         gender="other",
-        travelling_from="US",
+        departure_country="US",
     )
 
     return conference

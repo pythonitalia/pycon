@@ -19,7 +19,9 @@ query MyGrant($conference: String!) {
       needAccommodation
       why
       notes
-      travellingFrom
+      departureCountry
+      nationality
+      departureCity
     }
   }
 }

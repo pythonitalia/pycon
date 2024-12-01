@@ -42,7 +42,7 @@ EXPORT_GRANTS_FIELDS = (
     "needs_funds_for_travel",
     "why",
     "notes",
-    "travelling_from",
+    "departure_country",
     "conference__code",
     "created",
 )
@@ -375,7 +375,9 @@ class GrantAdminForm(forms.ModelForm):
             "needs_funds_for_travel",
             "why",
             "notes",
-            "travelling_from",
+            "nationality",
+            "departure_country",
+            "departure_city",
             "country_type",
             "applicant_reply_sent_at",
             "applicant_reply_deadline",
@@ -450,13 +452,13 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "need_accommodation",
         IsProposedSpeakerFilter,
         IsConfirmedSpeakerFilter,
-        ("travelling_from", CountryFilter),
+        ("departure_country", CountryFilter),
         "user__gender",
     )
     search_fields = (
         "email",
         "full_name",
-        "travelling_from",
+        "departure_country",
         "been_to_other_events",
         "why",
         "notes",
@@ -514,7 +516,9 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                     "needs_funds_for_travel",
                     "need_visa",
                     "need_accommodation",
-                    "travelling_from",
+                    "nationality",
+                    "departure_country",
+                    "departure_city",
                     "why",
                     "python_usage",
                     "been_to_other_events",
@@ -540,8 +544,8 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         description="C",
     )
     def country(self, obj):
-        if obj.travelling_from:
-            country = countries.get(code=obj.travelling_from)
+        if obj.departure_country:
+            country = countries.get(code=obj.departure_country)
             if country:
                 return country.emoji
 

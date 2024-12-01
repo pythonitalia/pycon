@@ -91,6 +91,11 @@
   </div>
 
   <div class="review-row">
+    <strong>Nationality</strong>
+    <div>{{grant.get_nationality_display}}</div>
+  </div>
+
+  <div class="review-row">
     <strong>Age Group</strong>
     <div>{{grant.get_age_group_display}}</div>
   </div>
@@ -111,19 +116,10 @@
   </div>
 
   <div class="review-row">
-    <strong>Travelling From</strong>
-    <div>{{grant.get_travelling_from_display}}</div>
-  </div>
-
-  <div class="review-row">
     <strong>Country type</strong>
     <div>{{grant.get_country_type_display}}</div>
   </div>
 
-  <div class="review-row">
-    <strong>Needs funds for travel</strong>
-    <div>{{grant.needs_funds_for_travel|yesno}}</div>
-  </div>
 
   <div class="review-row">
     <strong>Needs visa</strong>
@@ -133,6 +129,21 @@
   <div class="review-row">
     <strong>Needs accommodation</strong>
     <div>{{grant.need_accommodation|yesno}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Needs funds for travel</strong>
+    <div>{{grant.needs_funds_for_travel|yesno}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Departure country</strong>
+    <div>{{grant.get_departure_country_display}}</div>
+  </div>
+
+  <div class="review-row">
+    <strong>Departure city</strong>
+    <div>{{grant.get_departure_city_display}}</div>
   </div>
 
   <div class="review-row">

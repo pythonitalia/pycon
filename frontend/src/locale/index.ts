@@ -694,6 +694,7 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
     "grants.form.sent.linkMyGrant.text": "profile page",
     "grants.form.aboutYou": "About you",
     "grants.form.yourGrant": "Your grant",
+    "grants.form.travel": "Travel",
     "grants.form.youAndPython": "You and Python",
 
     "grants.form.optionalInformation": "Optional information",
@@ -705,9 +706,9 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
     "grants.form.fields.name": "Name",
     "grants.form.fields.name.description":
       "The name you use daily and how you prefer to be addressed in case we need to contact you.",
-    "grants.form.fields.email": "Email",
-    "grants.form.fields.email.description":
-      "Here you will receive a notification about your application.",
+    "grants.form.fields.nationality": "What is your nationality?",
+    "grants.form.fields.nationality.description":
+      "Please indicate your nationality.",
     "grants.form.fields.ageGroup": "Age group",
     "grants.form.fields.ageGroup.description":
       "Select your age group. This helps us understand the demographic distribution of our applicants.",
@@ -735,9 +736,14 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
     "grants.form.fields.grantType.values.diversity": "Diversity",
     "grants.form.fields.grantType.values.unemployed": "Unemployed",
     "grants.form.fields.grantType.values.speaker": "Speaker",
-    "grants.form.fields.travellingFrom": "Where are you travelling from?",
-    "grants.form.fields.travellingFrom.description":
-      "Please indicate the city and country you will be travelling from to attend the conference.",
+    "grants.form.fields.departureCountry":
+      "Which country will you be travelling from?",
+    "grants.form.fields.departureCountry.description":
+      "Please select the country you will be departing from to attend the conference.",
+    "grants.form.fields.departureCity":
+      "What city will you be travelling from?",
+    "grants.form.fields.departureCity.description":
+      "Specify the city you will depart from for the conference.",
     "grants.form.fields.needsFundsForTravel":
       "Do you need financial aid for travelling to PyCon Italia?",
     "grants.form.fields.needsFundsForTravel.description":
@@ -1417,6 +1423,7 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
       "Richiesta di grant inviata! Ti invieremo un'email appena ci saranno novità! Nel frattempo, puoi controllare lo stato e modificare il tuo grant nella tua {linkMyGrant} fino al {grantsDeadline}.",
     "grants.form.sent.linkMyGrant.text": "pagina del profilo",
     "grants.form.aboutYou": "Su di te",
+    "grants.form.travel": "Viaggio",
     "grants.form.optionalInformation": "Informazioni opzionali",
     "grants.form.optionalInformation.description":
       "Questo informazioni ci aiutano a rendere la conferenza più inclusiva e diversa.",
@@ -1427,9 +1434,8 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
     "grants.form.fields.name": "Nome",
     "grants.form.fields.name.description":
       "Il nome che usi quotidianamente o come preferisci essere chiamato/a nel caso in cui abbiamo bisogno di contattarti.",
-    "grants.form.fields.email": "Email",
-    "grants.form.fields.email.description":
-      "Qui riceverai una notifica sulla tua richiesta",
+    "grants.form.fields.nationality": "Qual è la tua nazionalità?",
+    "grants.form.fields.nationality.description": "Indica la tua nazionalità.",
     "grants.form.fields.ageGroup": "Fascia d'età",
     "grants.form.fields.ageGroup.description":
       "Seleziona la tua fascia d'età. Questo ci aiuta a comprendere la distribuzione demografica dei nostri candidati.",
@@ -1456,9 +1462,12 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
     "grants.form.fields.grantType.values.diversity": "Diversity",
     "grants.form.fields.grantType.values.unemployed": "Disoccupato",
     "grants.form.fields.grantType.values.speaker": "Speaker",
-    "grants.form.fields.travellingFrom": "Da dove partirai?",
-    "grants.form.fields.travellingFrom.description":
-      "Indica la città e il paese da cui partirai per partecipare alla conferenza.",
+    "grants.form.fields.departureCountry": "Da quale paese partirai?",
+    "grants.form.fields.departureCountry.description":
+      "Seleziona il paese da cui partirai per partecipare alla conferenza.",
+    "grants.form.fields.departureCity": "Da quale città partirai?",
+    "grants.form.fields.departureCity.description":
+      "Indica la città da cui inizierai il tuo viaggio.",
     "grants.form.fields.needsFundsForTravel":
       "Hai bisogno di aiuti finanziari per le spese di viaggio a Pycon Italia?",
     "grants.form.fields.needsFundsForTravel.description":

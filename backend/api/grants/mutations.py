@@ -44,7 +44,9 @@ class GrantErrors(BaseErrorType):
         need_accommodation: list[str] = strawberry.field(default_factory=list)
         why: list[str] = strawberry.field(default_factory=list)
         notes: list[str] = strawberry.field(default_factory=list)
-        travelling_from: list[str] = strawberry.field(default_factory=list)
+        departure_country: list[str] = strawberry.field(default_factory=list)
+        nationality: list[str] = strawberry.field(default_factory=list)
+        departure_city: list[str] = strawberry.field(default_factory=list)
         non_field_errors: list[str] = strawberry.field(default_factory=list)
         participant_bio: list[str] = strawberry.field(default_factory=list)
         participant_website: list[str] = strawberry.field(default_factory=list)
@@ -68,17 +70,16 @@ class BaseGrantInput:
             errors.add_error("non_field_errors", "The grants form is not open!")
 
         max_length_fields = {
-            "name": 300,
             "full_name": 300,
-            "travelling_from": 200,
-            "twitter_handle": 15,
-            "github_handle": 39,
+            "name": 300,
+            "departure_country": 100,
+            "nationality": 100,
+            "departure_city": 100,
         }
         for field, max_length in max_length_fields.items():
             value = getattr(self, field, "")
 
-            if len(value) > max_length:
-                print(field)
+            if value and len(value) > max_length:
                 errors.add_error(
                     field,
                     f"{field}: Cannot be more than {max_length} chars",
@@ -118,7 +119,9 @@ class SendGrantInput(BaseGrantInput):
     need_accommodation: bool
     why: str
     notes: str
-    travelling_from: str
+    departure_country: str | None = None
+    nationality: str
+    departure_city: str | None = None
 
     participant_bio: str
     participant_website: str
@@ -155,7 +158,9 @@ class UpdateGrantInput(BaseGrantInput):
     need_accommodation: bool
     why: str
     notes: str
-    travelling_from: str
+    departure_country: str | None = None
+    nationality: str
+    departure_city: str | None = None
 
     participant_bio: str
     participant_website: str
@@ -233,7 +238,9 @@ class GrantMutation:
                     "need_accommodation": input.need_accommodation,
                     "why": input.why,
                     "notes": input.notes,
-                    "travelling_from": input.travelling_from,
+                    "departure_country": input.departure_country,
+                    "nationality": input.nationality,
+                    "departure_city": input.departure_city,
                 }
             )
 

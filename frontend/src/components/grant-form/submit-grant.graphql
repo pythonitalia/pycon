@@ -23,7 +23,7 @@ mutation SendGrant($input: SendGrantInput!) {
         validationNeedAccommodation: needAccommodation
         validationWhy: why
         validationNotes: notes
-        validationTravellingFrom: travellingFrom
+        validationDepartureCountry: departureCountry
         validationParticipantBio: participantBio
         validationParticipantWebsite: participantWebsite
         validationParticipantTwitterHandle: participantTwitterHandle
