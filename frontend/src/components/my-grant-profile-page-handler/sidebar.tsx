@@ -14,7 +14,7 @@ import { FormattedMessage } from "react-intl";
 
 type Props = {
   status: GrantStatus;
-  grantType: GrantType;
+  grantType: GrantType[];
   needsFundsForTravel: boolean;
   needAccommodation: boolean;
 };
