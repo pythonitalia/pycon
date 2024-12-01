@@ -736,9 +736,9 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
     "grants.form.fields.grantType.values.diversity": "Diversity",
     "grants.form.fields.grantType.values.unemployed": "Unemployed",
     "grants.form.fields.grantType.values.speaker": "Speaker",
-    "grants.form.fields.travellingFrom":
+    "grants.form.fields.departureCountry":
       "Which country will you be travelling from?",
-    "grants.form.fields.travellingFrom.description":
+    "grants.form.fields.departureCountry.description":
       "Please select the country you will be departing from to attend the conference.",
     "grants.form.fields.departureCity":
       "What city will you be travelling from?",
@@ -1462,8 +1462,8 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
     "grants.form.fields.grantType.values.diversity": "Diversity",
     "grants.form.fields.grantType.values.unemployed": "Disoccupato",
     "grants.form.fields.grantType.values.speaker": "Speaker",
-    "grants.form.fields.travellingFrom": "Da quale paese partirai?",
-    "grants.form.fields.travellingFrom.description":
+    "grants.form.fields.departureCountry": "Da quale paese partirai?",
+    "grants.form.fields.departureCountry.description":
       "Seleziona il paese da cui partirai per partecipare alla conferenza.",
     "grants.form.fields.departureCity": "Da quale città partirai?",
     "grants.form.fields.departureCity.description":

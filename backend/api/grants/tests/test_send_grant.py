@@ -38,7 +38,7 @@ def _send_grant(client, conference, conference_code=None, **kwargs):
                         validationNeedAccommodation: needAccommodation
                         validationWhy: why
                         validationNotes: notes
-                        validationTravellingFrom: travellingFrom
+                        validationDepartureCountry: departureCountry
                         validationNationality: nationality
                         validationDepartureCity: departureCity
                         validationParticipantBio: participantBio
@@ -71,7 +71,7 @@ def _send_grant(client, conference, conference_code=None, **kwargs):
         "needAccommodation": grant.need_accommodation,
         "why": grant.why,
         "notes": grant.notes,
-        "travellingFrom": grant.travelling_from,
+        "departureCountry": grant.departure_country,
         "nationality": grant.nationality,
         "departureCity": grant.departure_city,
         "participantBio": "my bio",
@@ -218,7 +218,7 @@ def test_cannot_send_grant_outside_allowed_values(
         graphql_client,
         conference,
         name="Marcotte" * 50,
-        travellingFrom="Very long location" * 50,
+        departureCountry="Very long location" * 50,
         nationality="Freedonia" * 50,
         departureCity="Emerald City " * 50,
     )
@@ -227,8 +227,8 @@ def test_cannot_send_grant_outside_allowed_values(
     assert response["data"]["sendGrant"]["errors"]["validationName"] == [
         "name: Cannot be more than 300 chars"
     ]
-    assert response["data"]["sendGrant"]["errors"]["validationTravellingFrom"] == [
-        "travelling_from: Cannot be more than 100 chars"
+    assert response["data"]["sendGrant"]["errors"]["validationDepartureCountry"] == [
+        "departure_country: Cannot be more than 100 chars"
     ]
     assert response["data"]["sendGrant"]["errors"]["validationNationality"] == [
         "nationality: Cannot be more than 100 chars"

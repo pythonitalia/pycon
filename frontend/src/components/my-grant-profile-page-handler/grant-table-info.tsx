@@ -33,9 +33,9 @@ export const GrantTableInfo = ({ grant }: Props) => {
       </GrantInfo>
 
       <GrantInfo
-        label={<FormattedMessage id="grants.form.fields.travellingFrom" />}
+        label={<FormattedMessage id="grants.form.fields.departureCountry" />}
       >
-        {getCountryLabel(countries, grant.travellingFrom)}
+        {getCountryLabel(countries, grant.departureCountry)}
       </GrantInfo>
 
       <GrantInfo label={<FormattedMessage id="grants.form.fields.gender" />}>

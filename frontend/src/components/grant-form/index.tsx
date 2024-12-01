@@ -67,7 +67,7 @@ export type GrantFormFields = ParticipantFormFields & {
   needAccommodation: string;
   why: string;
   notes: string;
-  travellingFrom: string;
+  departureCountry: string;
   nationality: string;
   departureCity: string;
   acceptedPrivacyPolicy: boolean;
@@ -206,7 +206,7 @@ export const GrantForm = ({
       );
       formState.setField("why", grant.why);
       formState.setField("notes", grant.notes);
-      formState.setField("travellingFrom", grant.travellingFrom);
+      formState.setField("departureCountry", grant.departureCountry);
       formState.setField("nationality", grant.nationality);
       formState.setField("departureCity", grant.departureCity);
 
@@ -256,7 +256,7 @@ export const GrantForm = ({
         grantType: formState.values.grantType,
         needsFundsForTravel: formState.values.needsFundsForTravel === "true",
         why: formState.values.why,
-        travellingFrom: formState.values.travellingFrom,
+        departureCountry: formState.values.departureCountry,
         nationality: formState.values.nationality,
         departureCity: formState.values.departureCity,
         occupation: formState.values.occupation,
@@ -570,16 +570,16 @@ export const GrantForm = ({
               <InputWrapper
                 required={false}
                 title={
-                  <FormattedMessage id="grants.form.fields.travellingFrom" />
+                  <FormattedMessage id="grants.form.fields.departureCountry" />
                 }
                 description={
-                  <FormattedMessage id="grants.form.fields.travellingFrom.description" />
+                  <FormattedMessage id="grants.form.fields.departureCountry.description" />
                 }
               >
                 <Select
-                  {...select("travellingFrom")}
+                  {...select("departureCountry")}
                   required={true}
-                  errors={getErrors("travellingFrom")}
+                  errors={getErrors("departureCountry")}
                 >
                   <FormattedMessage id="input.selectCountryPlaceholder">
                     {(msg) => (

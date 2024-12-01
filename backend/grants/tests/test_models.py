@@ -11,35 +11,35 @@ pytestmark = pytest.mark.django_db
     [
         {
             "approved_type": Grant.ApprovedType.ticket_travel,
-            "travelling_from": "IT",
+            "departure_country": "IT",
             "expected_ticket_amount": 100,
             "expected_accommodation_amount": 0,
             "expected_travel_amount": 300,
         },
         {
             "approved_type": Grant.ApprovedType.ticket_only,
-            "travelling_from": "IT",
+            "departure_country": "IT",
             "expected_ticket_amount": 100,
             "expected_accommodation_amount": 0,
             "expected_travel_amount": 0,
         },
         {
             "approved_type": Grant.ApprovedType.ticket_accommodation,
-            "travelling_from": "FR",
+            "departure_country": "FR",
             "expected_ticket_amount": 100,
             "expected_accommodation_amount": 200,
             "expected_travel_amount": 0,
         },
         {
             "approved_type": Grant.ApprovedType.ticket_travel,
-            "travelling_from": "FR",
+            "departure_country": "FR",
             "expected_ticket_amount": 100,
             "expected_accommodation_amount": 0,
             "expected_travel_amount": 400,
         },
         {
             "approved_type": Grant.ApprovedType.ticket_travel_accommodation,
-            "travelling_from": "AU",
+            "departure_country": "AU",
             "expected_ticket_amount": 100,
             "expected_accommodation_amount": 200,
             "expected_travel_amount": 500,
@@ -48,7 +48,7 @@ pytestmark = pytest.mark.django_db
 )
 def test_calculate_grant_amounts(data):
     approved_type = data["approved_type"]
-    travelling_from = data["travelling_from"]
+    departure_country = data["departure_country"]
     expected_ticket_amount = data["expected_ticket_amount"]
     expected_accommodation_amount = data["expected_accommodation_amount"]
     expected_travel_amount = data["expected_travel_amount"]
@@ -56,7 +56,7 @@ def test_calculate_grant_amounts(data):
     grant = GrantFactory(
         status=Grant.Status.pending,
         approved_type=approved_type,
-        travelling_from=travelling_from,
+        departure_country=departure_country,
         conference__grants_default_ticket_amount=100,
         conference__grants_default_accommodation_amount=200,
         conference__grants_default_travel_from_italy_amount=300,
@@ -84,7 +84,7 @@ def test_resets_amounts_on_approved_type_change():
     grant = GrantFactory(
         status=Grant.Status.pending,
         approved_type=Grant.ApprovedType.ticket_only,
-        travelling_from="IT",
+        departure_country="IT",
         conference__grants_default_ticket_amount=100,
         conference__grants_default_accommodation_amount=200,
         conference__grants_default_travel_from_italy_amount=300,
@@ -113,7 +113,7 @@ def test_can_manually_change_amounts():
     grant = GrantFactory(
         status=Grant.Status.pending,
         approved_type=Grant.ApprovedType.ticket_only,
-        travelling_from="IT",
+        departure_country="IT",
         conference__grants_default_ticket_amount=100,
         conference__grants_default_accommodation_amount=200,
         conference__grants_default_travel_from_italy_amount=300,
@@ -142,7 +142,7 @@ def test_can_manually_change_amounts():
 
 
 @pytest.mark.parametrize(
-    "travelling_from,country_type",
+    "departure_country,country_type",
     [
         ("IT", Grant.CountryType.italy),
         ("FR", Grant.CountryType.europe),
@@ -150,13 +150,13 @@ def test_can_manually_change_amounts():
         ("US", Grant.CountryType.extra_eu),
     ],
 )
-def test_sets_country_type(travelling_from, country_type):
-    grant = GrantFactory(travelling_from=travelling_from)
+def test_sets_country_type(departure_country, country_type):
+    grant = GrantFactory(departure_country=departure_country)
 
     assert grant.country_type == country_type
 
 
 def test_sets_country_type_does_nothing_if_unset():
-    grant = GrantFactory(travelling_from=None)
+    grant = GrantFactory(departure_country=None)
 
     assert grant.country_type is None

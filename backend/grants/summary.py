@@ -23,7 +23,7 @@ class GrantSummary:
         filtered_grants = Grant.objects.for_conference(conference)
 
         grants_by_country = filtered_grants.values(
-            "travelling_from", "status"
+            "departure_country", "status"
         ).annotate(total=Count("id"))
 
         (
@@ -64,7 +64,7 @@ class GrantSummary:
         totals_per_continent = {}
 
         for data in grants_by_country:
-            country = countries.get(code=data["travelling_from"])
+            country = countries.get(code=data["departure_country"])
             continent = country.continent.name if country else "Unknown"
             country_name = f"{country.name} {country.emoji}" if country else "Unknown"
             country_code = country.code if country else "Unknown"

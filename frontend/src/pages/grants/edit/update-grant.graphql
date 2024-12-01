@@ -16,7 +16,7 @@ mutation UpdateGrant($input: UpdateGrantInput!) {
       needsFundsForTravel
       needVisa
       notes
-      travellingFrom
+      departureCountry
       nationality
       departureCity
     }
@@ -38,7 +38,7 @@ mutation UpdateGrant($input: UpdateGrantInput!) {
         validationNeedAccommodation: needAccommodation
         validationWhy: why
         validationNotes: notes
-        validationTravellingFrom: travellingFrom
+        validationDepartureCountry: departureCountry
         validationNationality: nationality
         validationDepartureCity: departureCity
         validationParticipantBio: participantBio

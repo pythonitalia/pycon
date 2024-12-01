@@ -34,7 +34,7 @@ def _update_grant(graphql_client, grant, **kwargs):
                     validationNeedAccommodation: needAccommodation
                     validationWhy: why
                     validationNotes: notes
-                    validationTravellingFrom: travellingFrom
+                    validationDepartureCountry: departureCountry
                     validationNationality: nationality
                     validationDepartureCity: departureCity
                     validationParticipantBio: participantBio
@@ -67,7 +67,7 @@ def _update_grant(graphql_client, grant, **kwargs):
         "needAccommodation": grant.need_accommodation,
         "why": grant.why,
         "notes": grant.notes,
-        "travellingFrom": grant.travelling_from,
+        "departureCountry": grant.departure_country,
         "nationality": grant.nationality,
         "departureCity": grant.departure_city,
         "participantBio": "bio",
@@ -113,7 +113,7 @@ def test_update_grant(graphql_client, user):
         needAccommodation=True,
         why="why not",
         notes="🧸",
-        travellingFrom="GB",
+        departureCountry="GB",
         nationality="Italian",
         departureCity="Rome",
         participantFacebookUrl="http://facebook.com/pythonpizza",
@@ -211,7 +211,7 @@ def test_cannot_update_submission_with_lang_outside_allowed_values(
         graphql_client,
         grant=grant,
         name="Marcotte" * 50,
-        travellingFrom="Very long location" * 50,
+        departureCountry="Very long location" * 50,
         nationality="Freedonia" * 50,
         departureCity="Emerald City " * 50,
     )
@@ -220,8 +220,8 @@ def test_cannot_update_submission_with_lang_outside_allowed_values(
     assert response["data"]["updateGrant"]["errors"]["validationName"] == [
         "name: Cannot be more than 300 chars"
     ]
-    assert response["data"]["updateGrant"]["errors"]["validationTravellingFrom"] == [
-        "travelling_from: Cannot be more than 100 chars"
+    assert response["data"]["updateGrant"]["errors"]["validationDepartureCountry"] == [
+        "departure_country: Cannot be more than 100 chars"
     ]
     assert response["data"]["updateGrant"]["errors"]["validationNationality"] == [
         "nationality: Cannot be more than 100 chars"
