@@ -34,6 +34,17 @@ module "pycon_backend" {
   }
 }
 
+module "pycon_frontend" {
+  source       = "./pycon_frontend"
+  cluster_id = module.cluster.cluster_id
+  logs_group_name = module.cluster.logs_group_name
+
+  providers = {
+    aws    = aws
+    aws.us = aws.us
+  }
+}
+
 module "clamav" {
   source       = "./clamav"
   cluster_id = module.cluster.cluster_id

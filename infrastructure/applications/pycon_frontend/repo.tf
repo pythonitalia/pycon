@@ -1,9 +1,9 @@
-resource "aws_ecr_repository" "repo" {
+data "aws_ecr_repository" "repo" {
   name = "pythonit/pycon-frontend"
 }
 
 data "aws_ecr_image" "image" {
-  repository_name = data.aws_ecr_repository.be_repo.name
+  repository_name = data.aws_ecr_repository.repo.name
   image_tag       = data.external.githash.result.githash
 }
 
