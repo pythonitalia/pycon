@@ -24,7 +24,9 @@ resource "aws_cloudfront_distribution" "application" {
   comment             = "${terraform.workspace} server"
   wait_for_deployment = false
   aliases = local.is_prod ? ["*.pycon.it", "pycon.it"] : [
-    "*.pycon.it",
+    local.pycon_admin_domain,
+    local.pycon_frontend_domain,
+    local.pretix_web_domain
   ]
 
   origin {
