@@ -68,6 +68,8 @@ export type GrantFormFields = ParticipantFormFields & {
   why: string;
   notes: string;
   travellingFrom: string;
+  nationality: string;
+  departureCity: string;
   acceptedPrivacyPolicy: boolean;
 };
 
@@ -205,6 +207,8 @@ export const GrantForm = ({
       formState.setField("why", grant.why);
       formState.setField("notes", grant.notes);
       formState.setField("travellingFrom", grant.travellingFrom);
+      formState.setField("nationality", grant.nationality);
+      formState.setField("departureCity", grant.departureCity);
 
       formState.setField("acceptedPrivacyPolicy", true);
     }
@@ -253,6 +257,8 @@ export const GrantForm = ({
         needsFundsForTravel: formState.values.needsFundsForTravel === "true",
         why: formState.values.why,
         travellingFrom: formState.values.travellingFrom,
+        nationality: formState.values.nationality,
+        departureCity: formState.values.departureCity,
         occupation: formState.values.occupation,
         pythonUsage: formState.values.pythonUsage,
         communityContribution: formState.values.communityContribution,
@@ -481,6 +487,37 @@ export const GrantForm = ({
               </Select>
             </InputWrapper>
 
+            <InputWrapper
+              required={true}
+              title={<FormattedMessage id="grants.form.fields.nationality" />}
+              description={
+                <FormattedMessage id="grants.form.fields.nationality.description" />
+              }
+            >
+              <Input
+                {...text("nationality")}
+                required={true}
+                maxLength={100}
+                placeholder={inputPlaceholderText}
+                errors={getErrors("nationality")}
+              />
+            </InputWrapper>
+
+            <InputWrapper
+              required={true}
+              title={<FormattedMessage id="grants.form.fields.departureCity" />}
+              description={
+                <FormattedMessage id="grants.form.fields.departureCity.description" />
+              }
+            >
+              <Input
+                {...text("departureCity")}
+                required={true}
+                maxLength={100}
+                placeholder={inputPlaceholderText}
+                errors={getErrors("departureCity")}
+              />
+            </InputWrapper>
             <InputWrapper
               title={
                 <FormattedMessage id="grants.form.fields.needsFundsForTravel" />

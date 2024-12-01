@@ -20,6 +20,8 @@ query MyGrant($conference: String!) {
       why
       notes
       travellingFrom
+      nationality
+      departureCity
     }
   }
 }
