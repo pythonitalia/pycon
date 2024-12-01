@@ -112,7 +112,11 @@
 
   <div class="review-row">
     <strong>Grant type</strong>
-    <div>{{grant.get_grant_type_display}}</div>
+    <div>
+      {% for type_ in grant.grant_type %}
+        {{type_}}
+      {% endfor %}
+    </div>
   </div>
 
   <div class="review-row">

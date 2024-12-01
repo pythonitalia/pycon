@@ -507,7 +507,11 @@
                     </li>
                     <li>
                       <strong>Grant type:</strong>
-                      <span>{{ item.get_grant_type_display }}</span>
+                      <span>
+                        {% for type_ in item.grant_type %}
+                          {{type_}}
+                        {% endfor %}
+                      </span>
                     </li>
                     <li>
                       <strong>Needs:</strong>
