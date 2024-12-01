@@ -2,7 +2,6 @@ import {
   Button,
   Container,
   Heading,
-  Link,
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
