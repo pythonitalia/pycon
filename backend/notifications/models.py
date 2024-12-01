@@ -23,6 +23,10 @@ class EmailTemplateIdentifier(models.TextChoices):
         "proposal_scheduled_time_changed",
         _("Proposal scheduled time changed"),
     )
+    proposal_received_confirmation = (
+        "proposal_received_confirmation",
+        _("Proposal received confirmation"),
+    )
     speaker_communication = "speaker_communication", _("Speaker communication")
 
     voucher_code = "voucher_code", _("Voucher code")
@@ -87,6 +91,12 @@ class EmailTemplate(TimeStampedModel):
         EmailTemplateIdentifier.grant_application_confirmation: [
             *BASE_PLACEHOLDERS,
             "user_name",
+        ],
+        EmailTemplateIdentifier.proposal_received_confirmation: [
+            *BASE_PLACEHOLDERS,
+            "user_name",
+            "proposal_title",
+            "proposal_url",
         ],
         EmailTemplateIdentifier.grant_approved: [
             *BASE_PLACEHOLDERS,

@@ -1,3 +1,7 @@
+from urllib.parse import urljoin
+from django.conf import settings
+from grants.tasks import get_name
+from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from strawberry.scalars import JSON
 
 from django.db import transaction
@@ -381,6 +385,24 @@ class SubmissionsMutations:
             info.context.request,
             conference,
             "cfp",
+        )
+
+        email_template = EmailTemplate.objects.for_conference(
+            conference
+        ).get_by_identifier(EmailTemplateIdentifier.proposal_received_confirmation)
+
+        proposal_url = urljoin(
+            settings.FRONTEND_URL,
+            f"/submission/{instance.hashid}",
+        )
+
+        email_template.send_email(
+            recipient=request.user,
+            placeholders={
+                "user_name": get_name(request.user, "there"),
+                "proposal_title": instance.title.localize("en"),
+                "proposal_url": proposal_url,
+            },
         )
 
         def _notify_new_submission():
