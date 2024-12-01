@@ -55,11 +55,11 @@ services:
     networks: [pycon_net]
     restart: unless-stopped
     command: sh -c "export DJANGO_SETTINGS_MODULE=pycon.settings.dev &&
-      pdm install &&
-      pdm run python manage.py migrate &&
-      pdm run python manage.py create_admin &&
+      uv sync &&
+      uv run python manage.py migrate &&
+      uv run python manage.py create_admin &&
       touch /.ready &&
-      pdm run python manage.py runserver 0.0.0.0:8000"
+      uv run python manage.py runserver 0.0.0.0:8000"
     depends_on:
       redis:
         condition: service_healthy

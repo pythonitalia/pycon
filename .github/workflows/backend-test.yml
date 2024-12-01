@@ -39,26 +39,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11.6"
-      - run: |
-          pip install pdm==2.21.0 uv==0.5.5 codecov
-          pdm config use_uv true
-
-      - name: Cache PDM
-        uses: actions/cache@v4
-        id: cache-deps
-        with:
-          path: backend/.venv
-          key: pdm-${{ hashFiles('**/pdm.lock') }}-1
+      - run: pip install uv==0.5.5 codecov
 
       - name: Install python dependencies
-        if: steps.cache-deps.outputs.cache-hit != 'true'
-        run: pdm install
+        run: uv sync
 
       - name: pytest
         run: |
           set +e
           CPUS=$(nproc --all)
-          OUTPUT=$(pdm run pytest --cov-report xml --cov=. --cov-fail-under 80 --durations 10 -n $CPUS)
+          OUTPUT=$(uv run pytest --cov-report xml --cov=. --cov-fail-under 80 --durations 10 -n $CPUS)
           STATUS=$?
           echo "$OUTPUT"
           cd ..
