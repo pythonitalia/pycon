@@ -694,6 +694,7 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
     "grants.form.sent.linkMyGrant.text": "profile page",
     "grants.form.aboutYou": "About you",
     "grants.form.yourGrant": "Your grant",
+    "grants.form.travel": "Travel",
     "grants.form.youAndPython": "You and Python",
 
     "grants.form.optionalInformation": "Optional information",
@@ -708,6 +709,9 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
     "grants.form.fields.email": "Email",
     "grants.form.fields.email.description":
       "Here you will receive a notification about your application.",
+    "grants.form.fields.nationality": "What is your nationality?",
+    "grants.form.fields.nationality.description":
+      "Please indicate your nationality.",
     "grants.form.fields.ageGroup": "Age group",
     "grants.form.fields.ageGroup.description":
       "Select your age group. This helps us understand the demographic distribution of our applicants.",
@@ -739,9 +743,6 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
       "Which country will you be travelling from?",
     "grants.form.fields.travellingFrom.description":
       "Please select the country you will be departing from to attend the conference.",
-    "grants.form.fields.nationality": "What is your nationality?",
-    "grants.form.fields.nationality.description":
-      "Please indicate your nationality.",
     "grants.form.fields.departureCity":
       "What city will you be travelling from?",
     "grants.form.fields.departureCity.description":
@@ -1425,6 +1426,7 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
       "Richiesta di grant inviata! Ti invieremo un'email appena ci saranno novità! Nel frattempo, puoi controllare lo stato e modificare il tuo grant nella tua {linkMyGrant} fino al {grantsDeadline}.",
     "grants.form.sent.linkMyGrant.text": "pagina del profilo",
     "grants.form.aboutYou": "Su di te",
+    "grants.form.travel": "Viaggio",
     "grants.form.optionalInformation": "Informazioni opzionali",
     "grants.form.optionalInformation.description":
       "Questo informazioni ci aiutano a rendere la conferenza più inclusiva e diversa.",

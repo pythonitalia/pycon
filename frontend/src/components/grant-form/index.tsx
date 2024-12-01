@@ -374,6 +374,23 @@ export const GrantForm = ({
                 required={false}
               />
             </InputWrapper>
+
+            <InputWrapper
+              required={true}
+              title={<FormattedMessage id="grants.form.fields.nationality" />}
+              description={
+                <FormattedMessage id="grants.form.fields.nationality.description" />
+              }
+            >
+              <Input
+                {...text("nationality")}
+                required={true}
+                maxLength={100}
+                placeholder={inputPlaceholderText}
+                errors={getErrors("nationality")}
+              />
+            </InputWrapper>
+
             <InputWrapper
               required={true}
               title={<FormattedMessage id="grants.form.fields.ageGroup" />}
@@ -459,88 +476,6 @@ export const GrantForm = ({
             </InputWrapper>
 
             <InputWrapper
-              required={true}
-              title={
-                <FormattedMessage id="grants.form.fields.travellingFrom" />
-              }
-              description={
-                <FormattedMessage id="grants.form.fields.travellingFrom.description" />
-              }
-            >
-              <Select
-                {...select("travellingFrom")}
-                required={true}
-                errors={getErrors("travellingFrom")}
-              >
-                <FormattedMessage id="input.selectCountryPlaceholder">
-                  {(msg) => (
-                    <option value="" disabled>
-                      {msg}
-                    </option>
-                  )}
-                </FormattedMessage>
-                {countries.map((c) => (
-                  <option key={c.value} value={c.value}>
-                    {c.label}
-                  </option>
-                ))}
-              </Select>
-            </InputWrapper>
-
-            <InputWrapper
-              required={true}
-              title={<FormattedMessage id="grants.form.fields.nationality" />}
-              description={
-                <FormattedMessage id="grants.form.fields.nationality.description" />
-              }
-            >
-              <Input
-                {...text("nationality")}
-                required={true}
-                maxLength={100}
-                placeholder={inputPlaceholderText}
-                errors={getErrors("nationality")}
-              />
-            </InputWrapper>
-
-            <InputWrapper
-              required={true}
-              title={<FormattedMessage id="grants.form.fields.departureCity" />}
-              description={
-                <FormattedMessage id="grants.form.fields.departureCity.description" />
-              }
-            >
-              <Input
-                {...text("departureCity")}
-                required={true}
-                maxLength={100}
-                placeholder={inputPlaceholderText}
-                errors={getErrors("departureCity")}
-              />
-            </InputWrapper>
-            <InputWrapper
-              title={
-                <FormattedMessage id="grants.form.fields.needsFundsForTravel" />
-              }
-              description={
-                <FormattedMessage id="grants.form.fields.needsFundsForTravel.description" />
-              }
-              required={true}
-            >
-              <Select {...select("needsFundsForTravel")} required={true}>
-                <FormattedMessage id="global.selectOption">
-                  {(msg) => <option value="">{msg}</option>}
-                </FormattedMessage>
-                <FormattedMessage id="global.no">
-                  {(msg) => <option value="false">{msg}</option>}
-                </FormattedMessage>
-                <FormattedMessage id="global.yes">
-                  {(msg) => <option value="true">{msg}</option>}
-                </FormattedMessage>
-              </Select>
-            </InputWrapper>
-
-            <InputWrapper
               title={<FormattedMessage id="grants.form.fields.needVisa" />}
               description={
                 <FormattedMessage id="grants.form.fields.needVisa.description" />
@@ -602,6 +537,81 @@ export const GrantForm = ({
       </MultiplePartsCard>
       <Spacer size="medium" />
 
+      <MultiplePartsCard>
+        <CardPart contentAlign="left">
+          <Heading size={3}>
+            <FormattedMessage id="grants.form.travel" />
+          </Heading>
+        </CardPart>
+        <CardPart contentAlign="left" background="milk">
+          <InputWrapper
+            title={
+              <FormattedMessage id="grants.form.fields.needsFundsForTravel" />
+            }
+            description={
+              <FormattedMessage id="grants.form.fields.needsFundsForTravel.description" />
+            }
+            required={true}
+          >
+            <Select {...select("needsFundsForTravel")} required={true}>
+              <FormattedMessage id="global.selectOption">
+                {(msg) => <option value="">{msg}</option>}
+              </FormattedMessage>
+              <FormattedMessage id="global.no">
+                {(msg) => <option value="false">{msg}</option>}
+              </FormattedMessage>
+              <FormattedMessage id="global.yes">
+                {(msg) => <option value="true">{msg}</option>}
+              </FormattedMessage>
+            </Select>
+          </InputWrapper>
+
+          <InputWrapper
+            required={true}
+            title={<FormattedMessage id="grants.form.fields.travellingFrom" />}
+            description={
+              <FormattedMessage id="grants.form.fields.travellingFrom.description" />
+            }
+          >
+            <Select
+              {...select("travellingFrom")}
+              required={true}
+              errors={getErrors("travellingFrom")}
+            >
+              <FormattedMessage id="input.selectCountryPlaceholder">
+                {(msg) => (
+                  <option value="" disabled>
+                    {msg}
+                  </option>
+                )}
+              </FormattedMessage>
+              {countries.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </Select>
+          </InputWrapper>
+
+          <InputWrapper
+            required={true}
+            title={<FormattedMessage id="grants.form.fields.departureCity" />}
+            description={
+              <FormattedMessage id="grants.form.fields.departureCity.description" />
+            }
+          >
+            <Input
+              {...text("departureCity")}
+              required={true}
+              maxLength={100}
+              placeholder={inputPlaceholderText}
+              errors={getErrors("departureCity")}
+            />
+          </InputWrapper>
+        </CardPart>
+      </MultiplePartsCard>
+
+      <Spacer size="medium" />
       <MultiplePartsCard>
         <CardPart contentAlign="left">
           <Heading size={3}>
