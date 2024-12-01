@@ -312,7 +312,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
-          build-args:
+          build-args: |
             API_URL_SERVER=https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it
             CMS_HOSTNAME=${{ vars.CMS_HOSTNAME }}
             CONFERENCE_CODE=${{ vars.CONFERENCE_CODE }}
