@@ -12,7 +12,7 @@ data "aws_cloudfront_cache_policy" "caching_disabled" {
 }
 
 data "aws_acm_certificate" "cert" {
-  domain   = "*.pycon.it"
+  domain   = "pycon.it"
   statuses = ["ISSUED"]
   provider = aws.us
 }

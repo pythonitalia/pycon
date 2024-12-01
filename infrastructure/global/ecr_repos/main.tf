@@ -1,6 +1,7 @@
 locals {
   services = [
     "pycon-backend",
+    "pycon-frontend",
     "pretix"
   ]
 }

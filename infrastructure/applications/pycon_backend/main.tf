@@ -37,7 +37,7 @@ data "aws_db_instance" "database" {
 }
 
 data "aws_acm_certificate" "cert" {
-  domain   = "*.pycon.it"
+  domain   = "pycon.it"
   statuses = ["ISSUED"]
   provider = aws.us
 }

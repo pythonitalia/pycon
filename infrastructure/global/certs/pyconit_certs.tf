@@ -3,8 +3,8 @@ data "aws_route53_zone" "pyconit_domain" {
 }
 
 resource "aws_acm_certificate" "pyconit_cert" {
-  domain_name               = "*.pycon.it"
-  subject_alternative_names = []
+  domain_name               = "pycon.it"
+  subject_alternative_names = ["*.pycon.it"]
   validation_method         = "DNS"
   provider                  = aws.us
 
@@ -19,7 +19,7 @@ resource "aws_route53_record" "pyconit_validation" {
       name   = dvo.resource_record_name
       record = dvo.resource_record_value
       type   = dvo.resource_record_type
-    }
+    } if length(regexall("\\*\\..+", dvo.domain_name)) > 0
   }
 
   name    = each.value.name
