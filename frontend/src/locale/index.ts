@@ -696,6 +696,7 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
     "grants.form.yourGrant": "Your grant",
     "grants.form.travel": "Travel",
     "grants.form.youAndPython": "You and Python",
+    "grants.form.validationErrors": "The submitted form is not correct",
 
     "grants.form.optionalInformation": "Optional information",
     "grants.form.optionalInformation.description":
@@ -730,9 +731,10 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
     "grants.form.fields.occupation.values.researcher": "Researcher",
     "grants.form.fields.occupation.values.unemployed": "Unemployed",
     "grants.form.fields.occupation.values.other": "Other",
-    "grants.form.fields.grantType": "What type of grant are you applying for?",
-    "grants.form.fields.grantType.description":
-      "Note: If you have submitted a talk/workshop proposal, you do not need to apply for a grant to receive a refund. If your proposal is accepted, we will contact you regarding the ticket refund.",
+    "grants.form.fields.grantType":
+      "Select all grant categories that apply to you",
+    "grants.form.fields.grantType.description": `You can choose more than one option if applicable.
+Note: If you have submitted a talk/workshop proposal, you do not need to apply for a grant to receive a refund. If your proposal is accepted, we will contact you regarding the ticket refund.`,
     "grants.form.fields.grantType.values.diversity": "Diversity",
     "grants.form.fields.grantType.values.unemployed": "Unemployed",
     "grants.form.fields.grantType.values.speaker": "Speaker",
@@ -1456,9 +1458,10 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 
     "grants.form.fields.occupation.values.researcher": "Ricerca",
     "grants.form.fields.occupation.values.unemployed": "Disoccupato/a",
     "grants.form.fields.occupation.values.other": "Altro",
-    "grants.form.fields.grantType": "Che tipo di grant stai richiedendo?",
-    "grants.form.fields.grantType.description":
-      "Nota: Se hai inviato una proposta di talk/workshop, non è necessario fare domanda per un grant per ricevere un rimborso. Se la tua proposta viene accettata, ti contatteremo riguardo al rimborso del biglietto.",
+    "grants.form.fields.grantType":
+      "Seleziona tutte le categorie di grant che si applicano a te",
+    "grants.form.fields.grantType.description": `Puoi scegliere più di un'opzione se necessario.
+Nota: Se hai inviato una proposta di talk/workshop, non è necessario fare domanda per un grant per ricevere un rimborso. Se la tua proposta viene accettata, ti contatteremo riguardo al rimborso del biglietto.`,
     "grants.form.fields.grantType.values.diversity": "Diversity",
     "grants.form.fields.grantType.values.unemployed": "Disoccupato",
     "grants.form.fields.grantType.values.speaker": "Speaker",

@@ -63,11 +63,6 @@ export const OCCUPATION_OPTIONS = [
 
 export const GRANT_TYPE_OPTIONS = [
   {
-    value: "",
-    disabled: true,
-    messageId: "global.selectOption",
-  },
-  {
     disabled: false,
     value: GrantType.Diversity,
     messageId: "grants.form.fields.grantType.values.diversity",

@@ -34,9 +34,17 @@ export const Sidebar = ({
       </GrantInfo>
 
       <GrantInfo label={<FormattedMessage id="profile.myGrant.grantType" />}>
-        <FormattedMessage
-          id={`grants.form.fields.grantType.values.${grantType}`}
-        />
+        <VerticalStack gap="small">
+          {grantType.map((type, index) => (
+            <Text size="label2" weight="strong">
+              {" "}
+              <FormattedMessage
+                key={index}
+                id={`grants.form.fields.grantType.values.${type}`}
+              />
+            </Text>
+          ))}
+        </VerticalStack>
       </GrantInfo>
 
       <GrantInfo label={<FormattedMessage id="profile.myGrant.appliedFor" />}>

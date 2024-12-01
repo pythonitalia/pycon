@@ -22,7 +22,7 @@ class Grant:
     age_group: Optional[AgeGroup]
     gender: str
     occupation: Occupation
-    grant_type: GrantType
+    grant_type: list[GrantType]
     python_usage: str
     community_contribution: str
     been_to_other_events: str
@@ -46,7 +46,7 @@ class Grant:
             age_group=AgeGroup(grant.age_group) if grant.age_group else None,
             gender=grant.gender,
             occupation=Occupation(grant.occupation),
-            grant_type=GrantType(grant.grant_type),
+            grant_type=[GrantType(g) for g in grant.grant_type],
             python_usage=grant.python_usage,
             community_contribution=grant.community_contribution,
             been_to_other_events=grant.been_to_other_events,
