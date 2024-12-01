@@ -10,6 +10,8 @@ import { FormattedMessage } from "react-intl";
 
 import type { GetServerSideProps, GetStaticProps } from "next";
 
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Introduction } from "~/components/cfp-introduction";
 import { CfpSendSubmission } from "~/components/cfp-send-submission";
@@ -52,6 +54,8 @@ const CfpSectionOrClosedMessage = ({ open }: { open: boolean }) => {
 
 export const CFPPage = () => {
   const code = process.env.conferenceCode;
+  const router = useRouter();
+
   const { data } = useIsCfpOpenQuery({
     variables: { conference: code },
   });
@@ -64,7 +68,13 @@ export const CFPPage = () => {
 
       <Section>
         <Introduction deadline={data.conference.cfpDeadline?.end} />
-        <CfpSectionOrClosedMessage open={data.conference.isCFPOpen || false} />
+        <CfpSectionOrClosedMessage
+          open={
+            (router.query?.force ?? "") === "yes" ||
+            data.conference.isCFPOpen ||
+            false
+          }
+        />
       </Section>
     </Page>
   );
