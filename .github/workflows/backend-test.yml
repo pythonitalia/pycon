@@ -39,9 +39,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11.6"
-      - run: pip install uv==0.5.5 codecov
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        id: setup-uv
+        with:
+          version: "0.5.5"
+          enable-cache: true
+      - run: pip install codecov
 
       - name: Install python dependencies
+        if: steps.setup-uv.outputs.cache-hit != 'true'
         run: uv sync
 
       - name: pytest
