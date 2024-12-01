@@ -30,7 +30,7 @@ locals {
     },
     {
       name  = "ALLOWED_HOSTS",
-      value = ".pycon.it"
+      value = ".pycon.it,${var.server_ip}"
     },
     {
       name  = "DJANGO_SETTINGS_MODULE",

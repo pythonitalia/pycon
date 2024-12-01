@@ -1,6 +1,7 @@
 locals {
   is_prod = terraform.workspace == "production"
   alias   = local.is_prod ? "frontend.pycon.it" : "${terraform.workspace}-frontend.pycon.it"
+  admin_host   = local.is_prod ? "admin.pycon.it" : "${terraform.workspace}-admin.pycon.it"
 }
 
 resource "aws_ecs_task_definition" "pycon_frontend" {
@@ -28,9 +29,16 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
           value = module.secrets.value.conference_code
         },
         {
+          name  = "REVALIDATE_SECRET"
+          value = module.secrets.value.revalidate_secret
+        },
+        {
+          name  = "CMS_ADMIN_HOST"
+          value = local.admin_host
+        },
+        {
           name = "API_URL_SERVER",
-          # value = "http://${var.server_ip}"
-          value = local.is_prod ? "https://admin.pycon.it" : "https://pastaporto-admin.pycon.it"
+          value = "http://${var.server_ip}"
         }
       ]
 
@@ -56,7 +64,7 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
         retries = 3
         command = [
           "CMD-SHELL",
-          "echo 1"
+          "wget http://localhost:3000/api/health || exit 1"
         ]
         timeout  = 3
         interval = 10
