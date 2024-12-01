@@ -1,3 +1,5 @@
+from notifications.models import EmailTemplateIdentifier
+from notifications.tests.factories import EmailTemplateFactory
 from privacy_policy.models import PrivacyPolicyAcceptanceRecord
 from files_upload.tests.factories import FileFactory
 from conferences.tests.factories import (
@@ -138,7 +140,11 @@ def _submit_proposal(client, conference, submission, **kwargs):
     )
 
 
-def test_submit_talk(graphql_client, user, django_capture_on_commit_callbacks, mocker):
+def test_submit_talk(
+    graphql_client, user, django_capture_on_commit_callbacks, mocker, settings
+):
+    settings.FRONTEND_URL = "http://testserver"
+    mock_email_template = mocker.patch("api.submissions.mutations.EmailTemplate")
     mock_notify = mocker.patch("api.submissions.mutations.notify_new_cfp_submission")
     graphql_client.force_login(user)
 
@@ -149,6 +155,11 @@ def test_submit_talk(graphql_client, user, django_capture_on_commit_callbacks, m
         active_cfp=True,
         durations=("50",),
         audience_levels=("Beginner",),
+    )
+
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
     )
 
     speaker_photo = FileFactory().id
@@ -208,6 +219,15 @@ def test_submit_talk(graphql_client, user, django_capture_on_commit_callbacks, m
 
     mock_notify.delay.assert_called_once()
 
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient=user,
+        placeholders={
+            "user_name": user.full_name,
+            "proposal_title": "English",
+            "proposal_url": f"http://testserver/submission/{talk.hashid}",
+        },
+    )
+
 
 def test_submit_talk_with_photo_to_upload(graphql_client, user, mocker):
     graphql_client.force_login(user)
@@ -220,7 +240,10 @@ def test_submit_talk_with_photo_to_upload(graphql_client, user, mocker):
         durations=("50",),
         audience_levels=("Beginner",),
     )
-
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
+    )
     speaker_photo = FileFactory().id
 
     resp, variables = _submit_talk(
@@ -253,6 +276,11 @@ def test_submit_talk_without_photo_fails(graphql_client, user, mocker):
         audience_levels=("Beginner",),
     )
 
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
+    )
+
     resp, variables = _submit_talk(
         graphql_client,
         conference,
@@ -280,6 +308,11 @@ def test_submit_talk_with_existing_participant(graphql_client, user):
         active_cfp=True,
         durations=("50",),
         audience_levels=("Beginner",),
+    )
+
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
     )
 
     participant = Participant.objects.create(
@@ -339,6 +372,11 @@ def test_submit_talk_with_missing_data_of_other_language_fails(graphql_client, u
         audience_levels=("Beginner",),
     )
 
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
+    )
+
     resp, _ = _submit_talk(
         graphql_client,
         conference,
@@ -368,6 +406,11 @@ def test_submit_talk_with_missing_data_fails(graphql_client, user):
         active_cfp=True,
         durations=("50",),
         audience_levels=("Beginner",),
+    )
+
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
     )
 
     resp, _ = _submit_talk(
@@ -411,6 +454,11 @@ def test_submit_talk_with_multiple_languages(graphql_client, user):
         active_cfp=True,
         durations=("50",),
         audience_levels=("Beginner",),
+    )
+
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
     )
 
     resp, variables = _submit_talk(

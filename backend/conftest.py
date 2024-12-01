@@ -18,7 +18,7 @@ from pretix.tests.fixtures import *  # noqa
 
 @pytest.fixture()
 def user(db):
-    return UserFactory(email="simulated@user.it", is_staff=False)
+    return UserFactory(email="simulated@user.it", is_staff=False, full_name="Jane Doe")
 
 
 @pytest.fixture()
