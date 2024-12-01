@@ -274,7 +274,7 @@ jobs:
         id: image
         run: |
           set +e
-          aws ecr describe-images --repository-name=pythonit/frontend --image-ids=imageTag=${{ steps.git.outputs.githash }}
+          aws ecr describe-images --repository-name=pythonit/pycon-frontend --image-ids=imageTag=${{ steps.git.outputs.githash }}
           if [[ $? == 0 ]]; then
             echo "image_exists=1" >> $GITHUB_OUTPUT
           else
