@@ -706,9 +706,6 @@ We look forward to reading about you and hope to see you at PyCon Italia 2024!
     "grants.form.fields.name": "Name",
     "grants.form.fields.name.description":
       "The name you use daily and how you prefer to be addressed in case we need to contact you.",
-    "grants.form.fields.email": "Email",
-    "grants.form.fields.email.description":
-      "Here you will receive a notification about your application.",
     "grants.form.fields.nationality": "What is your nationality?",
     "grants.form.fields.nationality.description":
       "Please indicate your nationality.",
