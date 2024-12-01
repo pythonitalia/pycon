@@ -253,6 +253,8 @@ jobs:
     permissions:
       packages: write
       contents: read
+    environment:
+      name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
 
     steps:
       - uses: actions/checkout@v4
