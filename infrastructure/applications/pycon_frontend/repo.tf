@@ -1,5 +1,5 @@
-data "aws_ecr_repository" "repo" {
-  name = "pythonit/pycon-frontend"
+resource "aws_ecr_repository" "repo" {
+  name = "pythonit/${terraform.workspace}-pycon-frontend"
 }
 
 data "aws_ecr_image" "image" {
