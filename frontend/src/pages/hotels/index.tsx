@@ -1,5 +1,6 @@
 import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
+import { getApolloClient } from "~/apollo/client";
 import { PageHandler } from "~/components/page-handler";
 import { getProps } from "~/components/page-handler/page-static-props";
 
@@ -16,13 +17,18 @@ export const HotelsPage = ({ blocksProps, isPreview, previewData }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  return getProps({
-    ...context,
-    params: {
-      slug: "hotels",
+  const { req } = context;
+  const client = getApolloClient(null, req.cookies);
+  return getProps(
+    {
+      ...context,
+      params: {
+        slug: "hotels",
+      },
     },
-    revalidate: null,
-  });
+    client,
+    null,
+  );
 };
 
 export default HotelsPage;

@@ -10,25 +10,27 @@ import {
   queryPagePreview,
 } from "~/types";
 
-export const getProps = async ({
-  preview,
-  previewData,
-  locale,
-  params,
-  revalidate,
-}: {
-  preview: boolean;
-  previewData: {
-    contentType: string;
-    token: string;
-  };
-  locale: string;
-  params: {
-    slug?: string;
-  };
-  revalidate: number | null;
-}) => {
-  const client = getApolloClient();
+export const getProps = async (
+  {
+    preview,
+    previewData,
+    locale,
+    params,
+  }: {
+    preview: boolean;
+    previewData: {
+      contentType: string;
+      token: string;
+    };
+    locale: string;
+    params: {
+      slug?: string;
+    };
+  },
+  clientParam = null,
+  revalidate = null,
+) => {
+  const client = clientParam || getApolloClient();
   const slug = params?.slug as string;
 
   const [_, pageDataQuery] = await Promise.all([
