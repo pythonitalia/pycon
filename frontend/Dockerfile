@@ -24,8 +24,6 @@ COPY . .
 
 RUN corepack enable pnpm && pnpm run build
 
-RUN cp .next/cache/fetch-cache/ .next/standalone/.next/cache/fetch-cache/
-
 FROM base AS runner
 WORKDIR /app
 

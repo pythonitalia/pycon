@@ -27,9 +27,6 @@ module.exports = withSentryConfig({
       ? require.resolve("./cache-handler.mjs")
       : undefined,
   cacheMaxMemorySize: 0,
-  experimental: {
-    instrumentationHook: true,
-  },
   async headers() {
     return [
       {
