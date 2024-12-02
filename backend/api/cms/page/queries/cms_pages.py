@@ -15,6 +15,6 @@ def cms_pages(hostname: str, language: str) -> list[GenericPage]:
     return [
         GenericPage.from_model(page)
         for page in GenericPageModel.objects.in_site(site).filter(
-            locale__language_code=language, live=True
+            locale__language_code=language, live=True, view_restrictions__isnull=True
         )
     ]
