@@ -18,10 +18,11 @@ from api.types import BaseErrorType
 from conferences.models.conference import Conference
 from grants.tasks import (
     notify_new_grant_reply_slack,
-    send_grant_application_confirmation_email,
 )
 from grants.models import Grant as GrantModel
 from users.models import User
+from grants.tasks import get_name
+from notifications.models import EmailTemplate, EmailTemplateIdentifier
 
 
 @strawberry.type
@@ -212,6 +213,7 @@ SendGrantReplyResult = Annotated[
 @strawberry.type
 class GrantMutation:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @transaction.atomic
     def send_grant(self, info: Info, input: SendGrantInput) -> SendGrantResult:
         request = info.context.request
 
@@ -220,52 +222,60 @@ class GrantMutation:
         if errors := input.validate(conference=conference, user=request.user):
             return errors
 
-        with transaction.atomic():
-            instance = GrantModel.objects.create(
-                **{
-                    "user_id": request.user.id,
-                    "conference": conference,
-                    "name": input.name,
-                    "full_name": input.full_name,
-                    "age_group": input.age_group,
-                    "gender": input.gender,
-                    "occupation": input.occupation,
-                    "grant_type": input.grant_type,
-                    "python_usage": input.python_usage,
-                    "been_to_other_events": input.been_to_other_events,
-                    "community_contribution": input.community_contribution,
-                    "needs_funds_for_travel": input.needs_funds_for_travel,
-                    "need_visa": input.need_visa,
-                    "need_accommodation": input.need_accommodation,
-                    "why": input.why,
-                    "notes": input.notes,
-                    "departure_country": input.departure_country,
-                    "nationality": input.nationality,
-                    "departure_city": input.departure_city,
-                }
-            )
+        instance = GrantModel.objects.create(
+            **{
+                "user_id": request.user.id,
+                "conference": conference,
+                "name": input.name,
+                "full_name": input.full_name,
+                "age_group": input.age_group,
+                "gender": input.gender,
+                "occupation": input.occupation,
+                "grant_type": input.grant_type,
+                "python_usage": input.python_usage,
+                "been_to_other_events": input.been_to_other_events,
+                "community_contribution": input.community_contribution,
+                "needs_funds_for_travel": input.needs_funds_for_travel,
+                "need_visa": input.need_visa,
+                "need_accommodation": input.need_accommodation,
+                "why": input.why,
+                "notes": input.notes,
+                "departure_country": input.departure_country,
+                "nationality": input.nationality,
+                "departure_city": input.departure_city,
+            }
+        )
 
-            record_privacy_policy_acceptance(
-                info.context.request,
-                conference,
-                "grant",
-            )
+        record_privacy_policy_acceptance(
+            info.context.request,
+            conference,
+            "grant",
+        )
 
-            Participant.objects.update_or_create(
-                user_id=request.user.id,
-                conference=instance.conference,
-                defaults={
-                    "bio": input.participant_bio,
-                    "website": input.participant_website,
-                    "twitter_handle": input.participant_twitter_handle,
-                    "instagram_handle": input.participant_instagram_handle,
-                    "linkedin_url": input.participant_linkedin_url,
-                    "facebook_url": input.participant_facebook_url,
-                    "mastodon_handle": input.participant_mastodon_handle,
-                },
-            )
+        Participant.objects.update_or_create(
+            user_id=request.user.id,
+            conference=instance.conference,
+            defaults={
+                "bio": input.participant_bio,
+                "website": input.participant_website,
+                "twitter_handle": input.participant_twitter_handle,
+                "instagram_handle": input.participant_instagram_handle,
+                "linkedin_url": input.participant_linkedin_url,
+                "facebook_url": input.participant_facebook_url,
+                "mastodon_handle": input.participant_mastodon_handle,
+            },
+        )
 
-            send_grant_application_confirmation_email.delay(grant_id=instance.id)
+        email_template = EmailTemplate.objects.for_conference(
+            conference
+        ).get_by_identifier(EmailTemplateIdentifier.grant_application_confirmation)
+
+        email_template.send_email(
+            recipient=request.user,
+            placeholders={
+                "user_name": get_name(request.user, "there"),
+            },
+        )
 
         # hack because we return django models
         instance.__strawberry_definition__ = Grant.__strawberry_definition__
