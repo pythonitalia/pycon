@@ -103,7 +103,7 @@ module.exports = withSentryConfig({
     conferenceCode: CONFERENCE_CODE || "pycon-demo",
     cmsHostname: CMS_HOSTNAME,
     NEXT_PUBLIC_SITE_URL: NEXT_PUBLIC_SITE_URL
-      ? NEXT_PUBLIC_SITE_URL
+      ? `https://${NEXT_PUBLIC_SITE_URL}/`
       : NEXT_PUBLIC_VERCEL_URL
         ? `https://${NEXT_PUBLIC_VERCEL_URL}/`
         : "http://localhost:3000/",
