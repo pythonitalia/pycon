@@ -124,6 +124,7 @@ export const CfpForm = ({
         it: "",
       },
       languages: [],
+      speakerAvailabilities: {},
     },
     {
       withIds: true,
