@@ -15,6 +15,7 @@ export const getProps = async ({
   previewData,
   locale,
   params,
+  revalidate,
 }: {
   preview: boolean;
   previewData: {
@@ -25,6 +26,7 @@ export const getProps = async ({
   params: {
     slug?: string;
   };
+  revalidate: number | null;
 }) => {
   const client = getApolloClient();
   const slug = params?.slug as string;
@@ -61,13 +63,17 @@ export const getProps = async ({
 
   await dataFetching;
 
-  return addApolloState(client, {
-    props: {
-      blocksProps: staticProps,
-      isPreview: preview || false,
-      previewData: previewData || null,
+  return addApolloState(
+    client,
+    {
+      props: {
+        blocksProps: staticProps,
+        isPreview: preview || false,
+        previewData: previewData || null,
+      },
     },
-  });
+    revalidate,
+  );
 };
 
 export const getStaticProps: GetStaticProps = async (context: any) => {

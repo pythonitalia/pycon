@@ -21,6 +21,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     params: {
       slug: "hotels",
     },
+    revalidate: null,
   });
 };
 
