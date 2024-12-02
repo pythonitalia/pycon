@@ -19,3 +19,5 @@ export const HotelsPage = ({ blocksProps, isPreview, previewData }) => {
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
   return getProps(context);
 };
+
+export default HotelsPage;
