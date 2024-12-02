@@ -640,6 +640,10 @@ def test_submit_talk_with_not_valid_submission_type_id(graphql_client, user):
         durations=("50",),
         audience_levels=("Beginner",),
     )
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
+    )
 
     resp, _ = _submit_talk(graphql_client, conference, type=5)
 
