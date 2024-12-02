@@ -86,21 +86,15 @@ export const AGE_GROUPS_OPTIONS = [
     messageId: "global.selectOption",
   },
   {
-    value: AgeGroup.RangeLessThan_10,
+    value: AgeGroup.RangeUnder_18,
     disabled: false,
-    messageId: "grants.form.fields.ageGroup.values.range_less_than_10",
-    isAgeInRange: (age: number) => age <= 10,
-  },
-  {
-    value: AgeGroup.Range_11_18,
-    disabled: false,
-    messageId: "grants.form.fields.ageGroup.values.range_11_18",
+    messageId: "grants.form.fields.ageGroup.values.range_under_18",
     isAgeInRange: (age: number) => 11 <= age && age <= 18,
   },
   {
-    value: AgeGroup.Range_19_24,
+    value: AgeGroup.Range_18_24,
     disabled: false,
-    messageId: "grants.form.fields.ageGroup.values.range_19_24",
+    messageId: "grants.form.fields.ageGroup.values.range_18_24",
     isAgeInRange: (age: number) => 19 <= age && age <= 24,
   },
   {

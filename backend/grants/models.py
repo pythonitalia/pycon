@@ -43,9 +43,8 @@ class Grant(TimeStampedModel):
         extra_eu = "extra_eu", _("Extra EU")
 
     class AgeGroup(models.TextChoices):
-        range_less_than_10 = "range_less_than_10", _("10 years old or under")
-        range_11_18 = "range_11_18", _("11 - 18 years old")
-        range_19_24 = "range_19_24", _("19 - 24 years old")
+        range_under_18 = "range_under_18", _("Under 18 years old")
+        range_18_24 = "range_18_24", _("18 - 24 years old")
         range_25_34 = "range_25_34", _("25 - 34 years old")
         range_35_44 = "range_35_44", _("35 - 44 years old")
         range_45_54 = "range_45_54", _("45 - 54 years old")
