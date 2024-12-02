@@ -22,8 +22,14 @@ module.exports = withSentryConfig({
     localeDetection: false,
   },
   trailingSlash: false,
-  cacheHandler: require.resolve("./cache-handler.js"),
-  cacheMaxMemorySize: 0, // disable default in-memory caching
+  cacheHandler:
+    process.env.NODE_ENV === "production"
+      ? require.resolve("./cache-handler.mjs")
+      : undefined,
+  cacheMaxMemorySize: 0,
+  experimental: {
+    instrumentationHook: true,
+  },
   async headers() {
     return [
       {
