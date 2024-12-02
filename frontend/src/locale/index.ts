@@ -355,7 +355,6 @@ Failing to notify us may impact your eligibility for financial aid at future eve
     "submission.loading": "Loading",
     "submission.notFound": "Not found",
     "submission.socialCard.prefix": "I submitted:",
-    "submission.socialCard.suffix": "to PyCon Italia 2023 🙌",
     "submission.comments": "Comments",
     "submission.noComments": "No comments yet",
     "submission.sendComment": "Send",
@@ -679,13 +678,13 @@ Click the box to change. If left empty, we will assume you are available.`,
     "grants.form.needToBeLoggedIn":
       "Login or create an account to send a grant",
     "grants.form.title": "Request a grant",
-    "grants.form.description": `Welcome to the PyCon Italia 2024 Grant Application Form!
+    "grants.form.description": `Welcome to the PyCon Italia Grant Application Form!
 
 As we’ve had many applications in the past and operate with a limited budget, we kindly ask you to take a moment to tell us about yourself and the reasons you're seeking a grant. Your insights are valuable to us. There’s no wrong answer, and a thoughtful response can truly make a difference.
 
 We are continually striving to increase our budget through the support of our diversity sponsors, including the Python Software Foundation and the EuroPython Society. If your company is interested in contributing, please visit our sponsor page for more information.
 
-We look forward to reading about you and hope to see you at PyCon Italia 2024!
+We look forward to reading about you and hope to see you at PyCon Italia!
     `,
 
     "grants.form.sendingRequest": "Sending grant request",
@@ -937,8 +936,6 @@ reflects what everyone wants to see!`,
     "jobboard.company": "Company",
     "jobboard.role": "Role",
     "jobboard.discoverMore": "Discover More",
-
-    "specialGuest.date": "Friday – 26 May 2023",
 
     "whatsnext.comingUp": "Coming up",
     "whatsnext.beings": "Begins",
@@ -1202,7 +1199,6 @@ The sooner you buy your ticket, the more you save!`,
     "submission.loading": "Caricamento in corso",
     "submission.notFound": "Non trovato",
     "submission.socialCard.prefix": "Ho proposto:",
-    "submission.socialCard.suffix": "a PyCon Italia 2022 🙌",
     "submission.comments": "Commenti",
     "submission.commentHead": "{author}, {when}:",
     "submission.noComments": "Nessun commento",
@@ -1412,13 +1408,13 @@ The sooner you buy your ticket, the more you save!`,
     "grants.form.needToBeLoggedIn":
       "Devi effettuare l'accesso per chiedere un grant",
     "grants.form.title": "Chiedi un grant",
-    "grants.form.description": `Benvenuto/a al modulo di domanda per il grant di PyCon Italia 2024!
+    "grants.form.description": `Benvenuto/a al modulo di domanda per il grant di PyCon Italia!
 
 Avendo ricevuto molte domande in passato e operando con un budget limitato, ti chiediamo di dedicare un momento per raccontarci di te e le ragioni per cui stai cercando un grant. Le tue riflessioni sono preziose per noi. Non esiste una risposta sbagliata, e una risposta ben ponderata può fare davvero la differenza.
 
 Stiamo continuamente lavorando per aumentare il nostro budget grazie al supporto dei nostri sponsor per la diversità, inclusi la Python Software Foundation e la EuroPython Society. Se la tua azienda è interessata a contribuire, visita la nostra pagina degli sponsor per maggiori informazioni.
 
-Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia 2024!
+Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia!
     `,
     "grants.form.sendingRequest": "Invio richiesta in corso",
     "grants.form.sent":
@@ -2070,7 +2066,6 @@ Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai
 
     "footer.stayTuned": "Resta aggiornato!",
     "footer.subscribeToNewsletter": "Iscriviti alla newsletter",
-    "specialGuest.date": "Venerdì – 26 Maggio 2023",
 
     "scheduleView.filter.search": "Ricerca",
     "scheduleView.filter.byAudience": "Per Audience",
