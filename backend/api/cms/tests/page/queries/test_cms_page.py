@@ -1,6 +1,8 @@
 from decimal import Decimal
+from conferences.tests.factories import ConferenceFactory
 import pytest
 from api.cms.tests.factories import GenericPageFactory, SiteFactory
+from wagtail.models import PageViewRestriction
 
 pytestmark = pytest.mark.django_db
 
@@ -63,6 +65,139 @@ def test_page(graphql_client, locale):
                 {
                     "city": None,
                 },
+            ],
+        }
+    }
+
+
+def test_page_with_ticket_restriction_and_ticket_returns_content(
+    graphql_client, locale, user, mock_has_ticket
+):
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(code="pycon2025")
+    mock_has_ticket(conference)
+
+    parent = GenericPageFactory()
+    page = GenericPageFactory(
+        slug="bubble-tea",
+        locale=locale("en"),
+        parent=parent,
+        title="Bubble",
+        body__0__text_section__title__value="I've Got a Lovely Bunch of Coconuts",
+        body__1__map__longitude=Decimal(3.14),
+        body__2__homepage_hero__city="florence",
+        body__3__homepage_hero__city=None,
+    )
+    page.save_revision().publish()
+    PageViewRestriction.objects.create(
+        page=page, restriction_type="password", password="ticket"
+    )
+    SiteFactory(hostname="pycon", port=80, root_page=parent)
+    page.copy_for_translation(locale=locale("it"))
+    query = """
+    query Page ($hostname: String!, $language: String!, $slug: String!) {
+        cmsPage(hostname: $hostname, language: $language, slug: $slug){
+            ...on GenericPage {
+                title
+                slug
+                body {
+                    ...on TextSection {
+                        title
+                    }
+                    ...on CMSMap {
+                        latitude
+                        longitude
+                    }
+                    ... on HomepageHero {
+                        city
+                    }
+                }
+            }
+        }
+    }
+    """
+
+    response = graphql_client.query(
+        query, variables={"hostname": "pycon", "slug": "bubble-tea", "language": "en"}
+    )
+
+    assert response["data"] == {
+        "cmsPage": {
+            "title": "Bubble",
+            "slug": "bubble-tea",
+            "body": [
+                {
+                    "latitude": "43.766199999999997771737980656325817108154296875",  # noqa: E501
+                    "longitude": "3.140000000000000124344978758017532527446746826171875",  # noqa: E501
+                },
+                {
+                    "city": "FLORENCE",
+                },
+                {
+                    "city": None,
+                },
+            ],
+        }
+    }
+
+
+def test_page_with_ticket_restriction_without_ticket_returns_first_block(
+    graphql_client, locale, user, mock_has_ticket
+):
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(code="pycon2025")
+    mock_has_ticket(conference, False)
+
+    parent = GenericPageFactory()
+    page = GenericPageFactory(
+        slug="bubble-tea",
+        locale=locale("en"),
+        parent=parent,
+        title="Bubble",
+        body__0__text_section__title__value="I've Got a Lovely Bunch of Coconuts",
+        body__1__map__longitude=Decimal(3.14),
+        body__2__homepage_hero__city="florence",
+        body__3__homepage_hero__city=None,
+    )
+    page.save_revision().publish()
+    PageViewRestriction.objects.create(
+        page=page, restriction_type="password", password="ticket"
+    )
+    SiteFactory(hostname="pycon", port=80, root_page=parent)
+    page.copy_for_translation(locale=locale("it"))
+    query = """
+    query Page ($hostname: String!, $language: String!, $slug: String!) {
+        cmsPage(hostname: $hostname, language: $language, slug: $slug){
+            ...on GenericPage {
+                title
+                slug
+                body {
+                    ...on TextSection {
+                        title
+                    }
+                    ...on CMSMap {
+                        latitude
+                        longitude
+                    }
+                    ... on HomepageHero {
+                        city
+                    }
+                }
+            }
+        }
+    }
+    """
+
+    response = graphql_client.query(
+        query, variables={"hostname": "pycon", "slug": "bubble-tea", "language": "en"}
+    )
+
+    assert response["data"] == {
+        "cmsPage": {
+            "title": "Bubble",
+            "slug": "bubble-tea",
+            "body": [
+                {"title": "I've Got a Lovely Bunch of " "Coconuts"},
             ],
         }
     }

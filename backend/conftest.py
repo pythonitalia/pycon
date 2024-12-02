@@ -91,10 +91,10 @@ def locale():
 
 @pytest.fixture
 def mock_has_ticket(requests_mock, settings):
-    def wrapper(conference):
+    def wrapper(conference, has_ticket=True):
         requests_mock.post(
             f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
-            json={"user_has_admission_ticket": True},
+            json={"user_has_admission_ticket": has_ticket},
         )
 
     return wrapper
