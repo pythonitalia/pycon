@@ -22,6 +22,8 @@ module.exports = withSentryConfig({
     localeDetection: false,
   },
   trailingSlash: false,
+  cacheHandler: require.resolve("./cache-handler.js"),
+  cacheMaxMemorySize: 0, // disable default in-memory caching
   async headers() {
     return [
       {
