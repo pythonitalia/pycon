@@ -5,19 +5,23 @@ import { getProps } from "~/components/page-handler/page-static-props";
 
 export const HotelsPage = ({ blocksProps, isPreview, previewData }) => {
   const router = useRouter();
-  const slug = router.query.slug as string;
   return (
     <PageHandler
       isPreview={isPreview}
       previewData={previewData}
-      slug={slug}
+      slug="hotels"
       blocksProps={blocksProps}
     />
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  return getProps(context);
+  return getProps({
+    ...context,
+    params: {
+      slug: "hotels",
+    },
+  });
 };
 
 export default HotelsPage;
