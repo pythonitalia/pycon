@@ -321,6 +321,7 @@ jobs:
           platforms: linux/arm64
           build-args: |
             API_URL_SERVER=https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it
+            NEXT_PUBLIC_SITE_URL=https://${{ fromJSON('["pastaporto-frontend.", ""]')[github.ref == 'refs/heads/main'] }}pycon.it
             CMS_ADMIN_HOST=${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it
             CMS_HOSTNAME=${{ steps.vars.outputs.cms_hostname }}
             CONFERENCE_CODE=${{ steps.vars.outputs.conference_code }}
