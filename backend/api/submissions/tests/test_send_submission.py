@@ -641,7 +641,7 @@ def test_submit_talk_with_not_valid_submission_type_id(graphql_client, user):
         audience_levels=("Beginner",),
     )
 
-    resp, _ = _submit_talk(graphql_client, conference, type=5)
+    resp, _ = _submit_talk(graphql_client, conference, type=999)
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["errors"]["validationType"] == [
