@@ -273,3 +273,36 @@ def test_cannot_send_grant_with_empty_values(
     assert response["data"]["sendGrant"]["errors"]["validationFullName"] == [
         "full_name: Cannot be empty"
     ]
+
+
+def test_submit_grant_with_existing_participant(graphql_client, user):
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(
+        active_grants=True,
+    )
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.grant_application_confirmation,
+    )
+    participant = Participant.objects.create(
+        conference=conference, user_id=user.id, bio="old bio"
+    )
+
+    response = _send_grant(
+        graphql_client,
+        conference,
+        participantBio="my bio",
+        participantWebsite="https://sushi.com",
+    )
+
+    assert response["data"]["sendGrant"]["__typename"] == "Grant"
+    assert response["data"]["sendGrant"]["id"]
+
+    grant = Grant.objects.get(id=response["data"]["sendGrant"]["id"])
+    assert grant.status == Grant.Status.pending
+    assert grant.conference == conference
+    assert grant.user_id == user.id
+
+    participant.refresh_from_db()
+    assert participant.bio == "my bio"
+    assert participant.website == "https://sushi.com"
