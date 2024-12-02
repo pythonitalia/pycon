@@ -490,7 +490,11 @@ export const GrantForm = ({
             >
               <Select {...select("needVisa")} required={true}>
                 <FormattedMessage id="global.selectOption">
-                  {(msg) => <option value="">{msg}</option>}
+                  {(msg) => (
+                    <option value="" disabled={true}>
+                      {msg}
+                    </option>
+                  )}
                 </FormattedMessage>
                 <FormattedMessage id="global.no">
                   {(msg) => <option value="false">{msg}</option>}
@@ -512,7 +516,11 @@ export const GrantForm = ({
             >
               <Select {...select("needAccommodation")} required={true}>
                 <FormattedMessage id="global.selectOption">
-                  {(msg) => <option value="">{msg}</option>}
+                  {(msg) => (
+                    <option value="" disabled={true}>
+                      {msg}
+                    </option>
+                  )}
                 </FormattedMessage>
                 <FormattedMessage id="global.no">
                   {(msg) => <option value="false">{msg}</option>}
@@ -561,7 +569,11 @@ export const GrantForm = ({
           >
             <Select {...select("needsFundsForTravel")} required={true}>
               <FormattedMessage id="global.selectOption">
-                {(msg) => <option value="">{msg}</option>}
+                {(msg) => (
+                  <option value="" disabled={true}>
+                    {msg}
+                  </option>
+                )}
               </FormattedMessage>
               <FormattedMessage id="global.no">
                 {(msg) => <option value="false">{msg}</option>}
