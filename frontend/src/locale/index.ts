@@ -4,6 +4,11 @@ export const messages = {
     titleTemplate: "%s | PyCon Italia",
     description:
       "Join PyCon Italia May 28th to May 31st 2025 in Bologna, Italy!",
+
+    "tickets.description":
+      "After you have purchased your tickets, you will be able to access the {page} with our discounted codes.",
+    "tickets.description.page": "hotels page",
+
     "input.placeholder": "Type here...",
     "global.accordion.close": "Close",
     "global.accordion.readMore": "Read more",
@@ -2168,6 +2173,10 @@ Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia dis
     "cfp.availability.table.morning.range": "(11:00 - 13:00)",
     "cfp.availability.table.afternoon": "Pomeriggio",
     "cfp.availability.table.afternoon.range": "(15:00 - 18:00)",
+
+    "tickets.description":
+      "Dopo aver acquistato i tuoi biglietti, potrai accedere alla {page} con i nostri codici sconto.",
+    "tickets.description.page": "pagina hotels",
   },
 };
 
