@@ -10,7 +10,7 @@ import {
   queryPagePreview,
 } from "~/types";
 
-export const getStaticProps: GetStaticProps = async ({
+export const getProps = async ({
   preview,
   previewData,
   locale,
@@ -68,4 +68,8 @@ export const getStaticProps: GetStaticProps = async ({
       previewData: previewData || null,
     },
   });
+};
+
+export const getStaticProps: GetStaticProps = async (context: any) => {
+  return getProps(context);
 };
