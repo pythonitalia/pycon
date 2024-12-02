@@ -324,6 +324,7 @@ jobs:
             CMS_ADMIN_HOST=${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it
             CMS_HOSTNAME=${{ steps.vars.outputs.cms_hostname }}
             CONFERENCE_CODE=${{ steps.vars.outputs.conference_code }}
+            GIT_HASH=${{ steps.git.outputs.githash }}
 
   deploy-fe:
     runs-on: ubuntu-latest
