@@ -164,7 +164,7 @@ export const TagsSelect = ({ tags, onChange }: TagsSelectProps) => {
       value={value}
       onChange={(tags) => onChange?.(tags || [])}
       isMulti={true}
-      isOptionDisabled={() => value.length >= 5}
+      isOptionDisabled={() => value.length >= 3}
       name="tags"
       options={proposalTags}
       placeholder="Add tags"

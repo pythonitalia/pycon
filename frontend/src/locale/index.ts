@@ -421,7 +421,7 @@ Failing to notify us may impact your eligibility for financial aid at future eve
     "cfp.viewSubmission": "Open submission",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
-      "Use up to 5 tags to describe what your proposal is about. Examples are 'Django, GraphQL'.",
+      "Use up to 3 tags to describe what your proposal is about. Examples are 'Web Frameworks, API'.",
     "cfp.submissionSent": "Proposal sent!",
     "cfp.selectDuration": "Select a duration",
     "cfp.selectTrack": "Select a track",
@@ -1254,7 +1254,7 @@ The sooner you buy your ticket, the more you save!`,
       "Puoi inviare la tua proposta in più lingue se lo desideri. I votatori vedranno la lingua che si adatta alle loro preferenze. Non duplicare le tue proposte per lingua o potrebbero essere annullate.",
     "cfp.tagsLabel": "Tags",
     "cfp.tagsDescription":
-      "Utilizza fino a 5 tag per descrivere l'argomento della tua proposta. Esempi sono 'Django, GraphQL'.",
+      "Utilizza fino a 3 tag per descrivere l'argomento della tua proposta. Esempi sono 'Web Frameworks, API'.",
     "cfp.submissionSent": "Proposal inviata!",
     "cfp.submit": "Invia",
     "cfp.minutes": "minuti",

@@ -1192,7 +1192,7 @@ def test_submit_talk_only_allows_5_tags(graphql_client, user):
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
 
     assert (
-        "You can only add up to 5 tags"
+        "You can only add up to 3 tags"
         in resp["data"]["sendSubmission"]["errors"]["validationTags"]
     )
 
