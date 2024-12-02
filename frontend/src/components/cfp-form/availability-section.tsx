@@ -5,7 +5,7 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import { eachDayOfInterval, format, parseISO } from "date-fns";
+import { addDays, eachDayOfInterval, format, parseISO } from "date-fns";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 import { useCurrentLanguage } from "~/locale/context";
@@ -16,13 +16,11 @@ const RANGES = ["am", "pm"];
 
 type Props = {
   conferenceData: CfpFormQuery;
-  selectedDuration: any;
   speakerAvailabilities: any;
   onChangeAvailability: any;
 };
 export const AvailabilitySection = ({
   conferenceData,
-  selectedDuration,
   speakerAvailabilities,
   onChangeAvailability,
 }: Props) => {
@@ -30,7 +28,7 @@ export const AvailabilitySection = ({
   const {
     conference: { start, end },
   } = conferenceData;
-  const parsedStart = parseISO(start);
+  const parsedStart = addDays(parseISO(start), 1);
   const parsedEnd = parseISO(end);
   const daysBetween = eachDayOfInterval({ start: parsedStart, end: parsedEnd });
   const dateFormatter = new Intl.DateTimeFormat(language, {

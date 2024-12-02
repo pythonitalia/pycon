@@ -336,9 +336,6 @@ export const CfpForm = ({
       <AvailabilitySection
         onChangeAvailability={onChangeAvailability}
         speakerAvailabilities={formState.values.speakerAvailabilities}
-        selectedDuration={allowedDurations.find(
-          (duration) => duration.id === formState.values.length,
-        )}
         conferenceData={conferenceData}
       />
 
