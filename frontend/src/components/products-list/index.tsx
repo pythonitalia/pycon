@@ -1,4 +1,10 @@
-import { Heading, Section, Spacer } from "@python-italia/pycon-styleguide";
+import {
+  Heading,
+  Link,
+  Section,
+  Spacer,
+  Text,
+} from "@python-italia/pycon-styleguide";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -50,19 +56,39 @@ export const ProductsList = ({
 
   return (
     <Section>
-      {visibleCategories.includes(CheckoutCategory.Tickets) &&
-        tickets.map((ticket) => (
-          <Fragment key={ticket.id}>
-            <TicketRow
-              openByDefault={true}
-              icon="tickets"
-              iconBackground="pink"
-              ticket={ticket}
-              ignoreSoldOut={ignoreSoldOut}
+      {visibleCategories.includes(CheckoutCategory.Tickets) && (
+        <>
+          <Text size={2}>
+            <FormattedMessage
+              id="tickets.description"
+              values={{
+                page: (
+                  <Text size="inherit" decoration="underline">
+                    <Link href="/hotels" target="_blank">
+                      <FormattedMessage id="tickets.description.page" />
+                    </Link>
+                  </Text>
+                ),
+              }}
             />
-            <Spacer size="small" />
-          </Fragment>
-        ))}
+          </Text>
+
+          <Spacer size="small" />
+
+          {tickets.map((ticket) => (
+            <Fragment key={ticket.id}>
+              <TicketRow
+                openByDefault={true}
+                icon="tickets"
+                iconBackground="pink"
+                ticket={ticket}
+                ignoreSoldOut={ignoreSoldOut}
+              />
+              <Spacer size="small" />
+            </Fragment>
+          ))}
+        </>
+      )}
 
       {visibleCategories.includes(CheckoutCategory.Gadgets) && tshirt && (
         <>
