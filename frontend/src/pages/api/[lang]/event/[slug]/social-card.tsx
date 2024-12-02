@@ -7,7 +7,7 @@ import { TitleSubtitleCard } from "~/components/social-card-images/title-subtitl
 import { queryTalk } from "~/types";
 
 export const config = {
-  runtime: "edge",
+  runtime: process.env.VERCEL_ENV === "preview" ? undefined : "edge",
   unstable_allowDynamic: ["/node_modules/.pnpm/**"],
 };
 
@@ -19,7 +19,7 @@ const regularFont = fetch(
 ).then((res) => res.arrayBuffer());
 const semiBoldFont = fetch(
   new URL(
-    "../../../../../social-card-font/GeneralSans-Bold.otf",
+    "../../../../../social-card-font/GeneralSans-Semibold.otf",
     import.meta.url,
   ),
 ).then((res) => res.arrayBuffer());
