@@ -23,15 +23,15 @@ module.exports = withSentryConfig({
   },
   trailingSlash: false,
   cacheHandler:
-    process.env.NODE_ENV === "production"
-      ? require.resolve("./cache-handler.mjs")
-      : undefined,
+    process.env.VERCEL_ENV === "preview"
+      ? undefined
+      : require.resolve("./cache-handler.mjs"),
   generateBuildId:
-    process.env.NODE_ENV === "production"
-      ? async () => {
+    process.env.VERCEL_ENV === "preview"
+      ? undefined
+      : async () => {
           return process.env.GIT_HASH;
-        }
-      : undefined,
+        },
   cacheMaxMemorySize: 0,
   async headers() {
     return [
