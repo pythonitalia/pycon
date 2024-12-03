@@ -26,9 +26,12 @@ module.exports = withSentryConfig({
     process.env.NODE_ENV === "production"
       ? require.resolve("./cache-handler.mjs")
       : undefined,
-  generateBuildId: async () => {
-    return process.env.GIT_HASH;
-  },
+  generateBuildId:
+    process.env.NODE_ENV === "production"
+      ? async () => {
+          return process.env.GIT_HASH;
+        }
+      : undefined,
   cacheMaxMemorySize: 0,
   async headers() {
     return [
