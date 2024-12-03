@@ -24,6 +24,14 @@ resource "aws_ecs_task_definition" "traefik" {
         {
           name  = "TRAEFIK_ENTRYPOINTS_WEB_ADDRESS",
           value = ":80"
+        },
+        {
+          name = "TRAEFIK_PROVIDERS_ECS_HEALTHYTASKSONLY",
+          value = "true"
+        },
+        {
+          name = "TRAEFIK_PROVIDERS_ECS_REFRESHSECONDS",
+          value = "5"
         }
       ]
 
