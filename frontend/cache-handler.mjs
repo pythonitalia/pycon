@@ -1,6 +1,6 @@
 import { CacheHandler } from "@neshca/cache-handler";
 import createLruHandler from "@neshca/cache-handler/local-lru";
-import createRedisHandler from "@neshca/cache-handler/redis-stack";
+import createRedisHandler from "@neshca/cache-handler/redis-strings";
 import { createClient } from "redis";
 
 CacheHandler.onCreation(async () => {
@@ -57,8 +57,11 @@ CacheHandler.onCreation(async () => {
     // Create the `redis-stack` Handler if the client is available and connected.
     handler = await createRedisHandler({
       client,
-      keyPrefix: "nextjs:",
+      keyPrefix: `${process.env.GIT_HASH}:`,
       timeoutMs: 1000,
+      keyExpirationStrategy: "EXAT",
+      sharedTagsKey: "__sharedTags__",
+      revalidateTagQuerySize: 100,
     });
   } else {
     // Fallback to LRU handler if Redis client is not available.

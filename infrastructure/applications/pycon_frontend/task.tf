@@ -42,7 +42,11 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
         },
         {
           name = "REDIS_URL",
-          value = "redis://${var.server_ip}/2"
+          value = "redis://${var.server_ip}/3"
+        },
+        {
+          name = "NEXT_PRIVATE_DEBUG_CACHE",
+          value = "true"
         }
       ]
 
