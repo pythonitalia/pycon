@@ -45,8 +45,8 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
           value = "redis://${var.server_ip}/3"
         },
         {
-          name = "NEXT_PRIVATE_DEBUG_CACHE",
-          value = "true"
+          name = "GIT_HASH",
+          value = data.external.githash.result.githash
         }
       ]
 
