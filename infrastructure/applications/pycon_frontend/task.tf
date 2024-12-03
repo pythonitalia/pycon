@@ -39,6 +39,14 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
         {
           name = "API_URL_SERVER",
           value = "http://${var.server_ip}"
+        },
+        {
+          name = "REDIS_URL",
+          value = "redis://${var.server_ip}/3"
+        },
+        {
+          name = "GIT_HASH",
+          value = data.external.githash.result.githash
         }
       ]
 
