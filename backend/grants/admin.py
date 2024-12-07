@@ -10,7 +10,6 @@ from import_export.resources import ModelResource
 from datetime import timedelta
 from typing import Dict, List, Optional
 from countries.filters import CountryFilter
-from django import forms
 from django.contrib import admin, messages
 from django.db.models.query import QuerySet
 from django.utils import timezone
@@ -30,6 +29,7 @@ from .models import Grant
 from django.db.models import Exists, OuterRef
 
 from django.contrib.admin import SimpleListFilter
+from participants.models import Participant
 
 EXPORT_GRANTS_FIELDS = (
     "name",
@@ -351,39 +351,6 @@ def mark_rejected_and_send_email(modeladmin, request, queryset):
         messages.info(request, f"Sent Rejected reply email to {grant.name}")
 
 
-class GrantAdminForm(forms.ModelForm):
-    class Meta:
-        model = Grant
-        fields = (
-            "id",
-            "name",
-            "status",
-            "approved_type",
-            "ticket_amount",
-            "travel_amount",
-            "accommodation_amount",
-            "total_amount",
-            "full_name",
-            "conference",
-            "user",
-            "age_group",
-            "gender",
-            "occupation",
-            "grant_type",
-            "python_usage",
-            "been_to_other_events",
-            "needs_funds_for_travel",
-            "why",
-            "notes",
-            "nationality",
-            "departure_country",
-            "departure_city",
-            "country_type",
-            "applicant_reply_sent_at",
-            "applicant_reply_deadline",
-        )
-
-
 class IsProposedSpeakerFilter(SimpleListFilter):
     title = "Is Proposed Speaker"
     parameter_name = "is_proposed_speaker"
@@ -420,7 +387,6 @@ class IsConfirmedSpeakerFilter(SimpleListFilter):
 class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     change_list_template = "admin/grants/grant/change_list.html"
     resource_class = GrantResource
-    form = GrantAdminForm
     list_display = (
         "user_display_name",
         "country",
@@ -524,15 +490,26 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                     "been_to_other_events",
                     "community_contribution",
                     "notes",
-                    "website",
-                    "twitter_handle",
-                    "github_handle",
-                    "linkedin_url",
-                    "mastodon_handle",
                 )
             },
         ),
     )
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        extra_context = extra_context or {}
+        grant = self.model.objects.get(id=object_id)
+        owner_id = grant.user_id
+        extra_context["participant"] = Participant.objects.filter(
+            user_id=owner_id,
+            conference_id=grant.conference_id,
+        ).first()
+
+        return super().change_view(
+            request,
+            object_id,
+            form_url,
+            extra_context=extra_context,
+        )
 
     @admin.display(description="User", ordering="user__full_name")
     def user_display_name(self, obj):
