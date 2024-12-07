@@ -239,32 +239,10 @@ window.addEventListener('load', function() {
       <a href="{% url 'admin:participants_participant_change' participant.id %}" target="_blank">Open Participant in admin</a>
     </div>
   </div>
-  <div class="review-row">
-    <strong>Socials</strong>
-    <div>
-      <ul>
-        {% if participant.website %}
-        <li><a target="_blank" rel="noopener noreferrer" href="{{participant.website}}">Website ({{participant.website|hostname}})</a></li>
-        {% endif %}
-        {% if participant.twitter_handle %}
-        <li><a target="_blank" rel="noopener noreferrer" href="https://twitter.com/@{{participant.twitter_handle}}">Twitter ({{participant.twitter_handle}})</a></li>
-        {% endif %}
-        {% if participant.instagram_handle %}
-        <li><a target="_blank" rel="noopener noreferrer" href="https://instagram.com/{{participant.instagram_handle}}">Instagram ({{participant.instagram_handle}})</a></li>
-        {% endif %}
-        {% if participant.linkedin_url %}
-        <li><a target="_blank" rel="noopener noreferrer" href="{{participant.linkedin_url}}">Linkedin</a></li>
-        {% endif %}
-        {% if participant.facebook_url %}
-        <li><a target="_blank" rel="noopener noreferrer" href="{{participant.facebook_url}}">Facebook</a></li>
-        {% endif %}
-        {% if participant.mastodon_handle %}
-        <li><a target="_blank" rel="noopener noreferrer" href="{{participant.mastodon_handle}}">Mastodon ({{participant.mastodon_handle}})</a></li>
-        {% endif %}
-      </ul>
-    </div>
-  </div>
 </fieldset>
+
+{% include "includes/participant/view_info.html" with title="Socials info" %}
+
 <fieldset class="module aligned">
   <h2>Your vote</h2>
   <form
