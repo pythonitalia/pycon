@@ -717,10 +717,8 @@ We look forward to reading about you and hope to see you at PyCon Italia!
     "grants.form.fields.ageGroup": "Age group",
     "grants.form.fields.ageGroup.description":
       "Select your age group. This helps us understand the demographic distribution of our applicants.",
-    "grants.form.fields.ageGroup.values.range_less_than_10":
-      "10 years old or under",
-    "grants.form.fields.ageGroup.values.range_11_18": "11 - 18 years old",
-    "grants.form.fields.ageGroup.values.range_19_24": "19 - 24 years old",
+    "grants.form.fields.ageGroup.values.range_under_18": "Under 18 years old",
+    "grants.form.fields.ageGroup.values.range_18_24": "18 - 24 years old",
     "grants.form.fields.ageGroup.values.range_25_34": "25 - 34 years old",
     "grants.form.fields.ageGroup.values.range_35_44": "35 - 44 years old",
     "grants.form.fields.ageGroup.values.range_45_54": "45 - 54 years old",
@@ -1443,9 +1441,8 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia!
     "grants.form.fields.ageGroup": "Fascia d'età",
     "grants.form.fields.ageGroup.description":
       "Seleziona la tua fascia d'età. Questo ci aiuta a comprendere la distribuzione demografica dei nostri candidati.",
-    "grants.form.fields.ageGroup.values.range_less_than_10": "meno di 10 anni",
-    "grants.form.fields.ageGroup.values.range_11_18": "11 - 18 anni",
-    "grants.form.fields.ageGroup.values.range_19_24": "19 - 24 anni",
+    "grants.form.fields.ageGroup.values.range_under_18": "meno di 18 anni",
+    "grants.form.fields.ageGroup.values.range_18_24": "18 - 24 anni",
     "grants.form.fields.ageGroup.values.range_25_34": "25 - 34 anni",
     "grants.form.fields.ageGroup.values.range_35_44": "35 - 44 anni",
     "grants.form.fields.ageGroup.values.range_45_54": "45 - 54 anni",

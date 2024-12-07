@@ -7,6 +7,7 @@ import {
   VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
+import { formatDeadlineDateTime } from "~/helpers/deadlines";
 
 import { useCurrentLanguage } from "~/locale/context";
 import { DeadlineStatus, Status as GrantStatus } from "~/types";
@@ -78,9 +79,10 @@ export const MyGrant = ({ grant, deadline }: Props) => {
                   id={`profile.myGrant.status.${grant.status}.nextSteps`}
                   values={{
                     replyDeadline: (
-                      <Text as="span" weight="strong">
-                        {dateFormatter.format(
-                          new Date(grant.applicantReplyDeadline),
+                      <Text size={2} as="span" weight="strong">
+                        {formatDeadlineDateTime(
+                          grant.applicantReplyDeadline,
+                          language,
                         )}
                       </Text>
                     ),

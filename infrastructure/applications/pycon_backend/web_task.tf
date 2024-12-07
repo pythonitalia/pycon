@@ -5,7 +5,7 @@ resource "aws_ecs_task_definition" "web" {
     {
       name              = "web"
       image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
-      memoryReservation = 400
+      memoryReservation = local.is_prod ? 400 : 10
       essential         = true
       entrypoint = [
         "/home/app/.venv/bin/gunicorn",

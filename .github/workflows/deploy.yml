@@ -13,7 +13,7 @@ env:
 
 jobs:
   create-db:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: ./infrastructure/applications
@@ -195,7 +195,7 @@ jobs:
           platforms: linux/arm64
 
   terraform:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build-and-push-arm-service, build-pretix, create-db]
     environment:
       name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
@@ -229,7 +229,7 @@ jobs:
           AWS_DEFAULT_REGION: eu-central-1
 
   wait-aws-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [terraform]
     steps:
       - name: Check health status
@@ -274,7 +274,7 @@ jobs:
         id: image
         run: |
           set +e
-          aws ecr describe-images --repository-name=pythonit/pycon-frontend --image-ids=imageTag=${{ steps.git.outputs.githash }}
+          aws ecr describe-images --repository-name=pythonit/${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}-pycon-frontend --image-ids=imageTag=${{ steps.git.outputs.githash }}
           if [[ $? == 0 ]]; then
             echo "image_exists=1" >> $GITHUB_OUTPUT
           else
@@ -315,7 +315,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           provenance: false
           push: true
-          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-frontend:${{ steps.git.outputs.githash }}
+          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}-pycon-frontend:${{ steps.git.outputs.githash }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
@@ -325,9 +325,10 @@ jobs:
             CMS_ADMIN_HOST=${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it
             CMS_HOSTNAME=${{ steps.vars.outputs.cms_hostname }}
             CONFERENCE_CODE=${{ steps.vars.outputs.conference_code }}
+            GIT_HASH=${{ steps.git.outputs.githash }}
 
   deploy-fe:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build-fe]
     environment:
       name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}

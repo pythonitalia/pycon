@@ -10,8 +10,8 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
   container_definitions = jsonencode([
     {
       name              = "frontend"
-      image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
-      memoryReservation = 400
+      image             = "${aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
+      memoryReservation = local.is_prod ? 400 : 10
       essential         = true
 
       dockerLabels = {
@@ -39,6 +39,14 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
         {
           name = "API_URL_SERVER",
           value = "http://${var.server_ip}"
+        },
+        {
+          name = "REDIS_URL",
+          value = "redis://${var.server_ip}/3"
+        },
+        {
+          name = "GIT_HASH",
+          value = data.external.githash.result.githash
         }
       ]
 
