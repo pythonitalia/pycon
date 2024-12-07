@@ -8,7 +8,7 @@ import type { Language } from "~/locale/languages";
 import { querySocialCard } from "~/types";
 
 export const config = {
-  runtime: process.env.VERCEL_ENV === "preview" ? undefined : "edge",
+  runtime: "edge",
   unstable_allowDynamic: ["/node_modules/.pnpm/**"],
 };
 
