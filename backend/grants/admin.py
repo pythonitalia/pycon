@@ -29,6 +29,7 @@ from .models import Grant
 from django.db.models import Exists, OuterRef
 
 from django.contrib.admin import SimpleListFilter
+from participants.models import Participant
 
 EXPORT_GRANTS_FIELDS = (
     "name",
@@ -493,6 +494,22 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
             },
         ),
     )
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        extra_context = extra_context or {}
+        grant = self.model.objects.get(id=object_id)
+        owner_id = grant.user_id
+        extra_context["participant"] = Participant.objects.filter(
+            user_id=owner_id,
+            conference_id=grant.conference_id,
+        ).first()
+
+        return super().change_view(
+            request,
+            object_id,
+            form_url,
+            extra_context=extra_context,
+        )
 
     @admin.display(description="User", ordering="user__full_name")
     def user_display_name(self, obj):
