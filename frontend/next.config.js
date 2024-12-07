@@ -7,11 +7,11 @@ const {
   CONFERENCE_CODE,
   API_URL,
   API_TOKEN,
-  NEXT_PUBLIC_SOCIAL_CARD_SERVICE,
   NEXT_PUBLIC_VERCEL_URL,
   API_URL_SERVER,
   CMS_HOSTNAME,
   CMS_ADMIN_HOST = "admin.pycon.it",
+  NEXT_PUBLIC_SITE_URL,
 } = process.env;
 
 module.exports = withSentryConfig({
@@ -113,12 +113,11 @@ module.exports = withSentryConfig({
     API_URL: API_URL,
     conferenceCode: CONFERENCE_CODE || "pycon-demo",
     cmsHostname: CMS_HOSTNAME,
-    NEXT_PUBLIC_SOCIAL_CARD_SERVICE:
-      NEXT_PUBLIC_SOCIAL_CARD_SERVICE ||
-      "https://socialcards.python.it/api/card",
-    NEXT_PUBLIC_SITE_URL: NEXT_PUBLIC_VERCEL_URL
-      ? `https://${NEXT_PUBLIC_VERCEL_URL}/`
-      : "http://localhost:3000/",
+    NEXT_PUBLIC_SITE_URL: NEXT_PUBLIC_SITE_URL
+      ? `https://${NEXT_PUBLIC_SITE_URL}/`
+      : NEXT_PUBLIC_VERCEL_URL
+        ? `https://${NEXT_PUBLIC_VERCEL_URL}/`
+        : "http://localhost:3000/",
   },
   images: {
     domains: [
