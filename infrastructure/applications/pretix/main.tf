@@ -13,7 +13,7 @@ resource "aws_ecs_task_definition" "pretix" {
     {
       name              = "pretix"
       image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
-      memoryReservation = 1840
+      memoryReservation = local.is_prod ? 1840 : 10
       essential         = true
 
       dockerLabels = {
