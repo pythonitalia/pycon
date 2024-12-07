@@ -489,11 +489,6 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                     "been_to_other_events",
                     "community_contribution",
                     "notes",
-                    "website",
-                    "twitter_handle",
-                    "github_handle",
-                    "linkedin_url",
-                    "mastodon_handle",
                 )
             },
         ),
