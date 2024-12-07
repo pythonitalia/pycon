@@ -11,7 +11,7 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
     {
       name              = "frontend"
       image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
-      memoryReservation = 400
+      memoryReservation = local.is_prod ? 400 : 10
       essential         = true
 
       dockerLabels = {

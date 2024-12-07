@@ -240,7 +240,7 @@ resource "aws_ecs_task_definition" "worker" {
     {
       name              = "worker"
       image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
-      memoryReservation = 200
+      memoryReservation = local.is_prod ? 200 : 10
       essential         = true
       entrypoint = [
         "/home/app/.venv/bin/celery",
@@ -284,7 +284,7 @@ resource "aws_ecs_task_definition" "worker" {
     {
       name              = "migrations"
       image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
-      memoryReservation = 200
+      memoryReservation = local.is_prod ? 200 : 10
       essential         = false
       entrypoint = [
         "/home/app/.venv/bin/python",
@@ -338,7 +338,7 @@ resource "aws_ecs_task_definition" "beat" {
     {
       name              = "beat"
       image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
-      memoryReservation = 200
+      memoryReservation = local.is_prod ? 200 : 10
       essential         = true
       entrypoint = [
         "/home/app/.venv/bin/celery",

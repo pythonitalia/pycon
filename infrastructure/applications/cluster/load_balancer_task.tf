@@ -5,7 +5,7 @@ resource "aws_ecs_task_definition" "traefik" {
     {
       name              = "traefik"
       image             = "traefik:v3.1.2"
-      memoryReservation = 200
+      memoryReservation = local.is_prod ? 200 : 10
       essential         = true
 
       environment = [

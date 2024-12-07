@@ -1,3 +1,7 @@
+locals {
+  is_prod = terraform.workspace == "production"
+}
+
 resource "aws_ecs_task_definition" "clamav" {
   family = "pythonit-${terraform.workspace}-clamav"
 
@@ -5,7 +9,7 @@ resource "aws_ecs_task_definition" "clamav" {
     {
       name              = "clamav"
       image             = "clamav/clamav-debian:1.4.1"
-      memoryReservation = 1000
+      memoryReservation = local.is_prod ? 1000 : 10
       essential         = true
 
       portMappings = [

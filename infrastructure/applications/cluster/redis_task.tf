@@ -5,7 +5,7 @@ resource "aws_ecs_task_definition" "redis" {
     {
       name              = "redis"
       image             = "redis:6.2.6"
-      memoryReservation = 400
+      memoryReservation = local.is_prod ? 400 : 10
       essential         = true
       portMappings = [
         {
