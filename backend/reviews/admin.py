@@ -651,6 +651,10 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             can_review_items=review_session.can_review_items,
             seen=request.GET.get("seen", "").split(","),
             title=f"Grant Review: {grant.user.display_name}",
+            participant=Participant.objects.filter(
+                user_id=grant.user_id,
+                conference=grant.conference,
+            ).first(),
         )
         return TemplateResponse(request, "grant-review.html", context)
 

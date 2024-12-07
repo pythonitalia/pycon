@@ -1,4 +1,8 @@
-{% load i18n %}
+{% load i18n  static %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" href="{% static "admin/css/forms.css" %}">
+{% endblock %}
 
 {% if participant %}
 <fieldset class="module aligned ">
