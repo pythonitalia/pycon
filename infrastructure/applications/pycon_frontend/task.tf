@@ -10,7 +10,7 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
   container_definitions = jsonencode([
     {
       name              = "frontend"
-      image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
+      image             = "${aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
       memoryReservation = local.is_prod ? 400 : 10
       essential         = true
 

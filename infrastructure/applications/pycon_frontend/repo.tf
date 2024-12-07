@@ -1,9 +1,9 @@
-data "aws_ecr_repository" "repo" {
-  name = "pythonit/pycon-frontend"
+resource "aws_ecr_repository" "repo" {
+  name = "pythonit/${terraform.workspace}-pycon-frontend"
 }
 
 data "aws_ecr_image" "image" {
-  repository_name = data.aws_ecr_repository.repo.name
+  repository_name = aws_ecr_repository.repo.name
   image_tag       = data.external.githash.result.githash
 }
 
