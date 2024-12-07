@@ -74,6 +74,10 @@ CacheHandler.onCreation(async () => {
 
   return {
     handlers: [handler],
+    ttl: {
+      defaultStaleAge: 60 * 3,
+      estimateExpireAge: (staleAge) => staleAge * 2,
+    },
   };
 });
 

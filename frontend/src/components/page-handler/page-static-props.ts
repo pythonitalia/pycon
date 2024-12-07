@@ -79,5 +79,5 @@ export const getProps = async (
 };
 
 export const getStaticProps: GetStaticProps = async (context: any) => {
-  return getProps(context);
+  return getProps(context, null, 60 * 3);
 };
