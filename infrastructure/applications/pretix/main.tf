@@ -170,7 +170,7 @@ resource "aws_ecs_task_definition" "pretix" {
         retries = 3
         command = [
           "CMD-SHELL",
-          "curl -f http://localhost/healthcheck/ || exit 1"
+          "curl -f http://127.0.0.1/healthcheck/ || exit 1"
         ]
         timeout  = 3
         interval = 10

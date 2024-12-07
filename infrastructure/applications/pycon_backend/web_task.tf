@@ -49,7 +49,7 @@ resource "aws_ecs_task_definition" "web" {
         retries = 3
         command = [
           "CMD-SHELL",
-          "curl -f http://localhost:8000/health/ || exit 1"
+          "curl -f http://127.0.0.1:8000/health/ || exit 1"
         ]
         timeout  = 3
         interval = 10
