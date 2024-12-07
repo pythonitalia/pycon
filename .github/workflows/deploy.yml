@@ -13,7 +13,7 @@ env:
 
 jobs:
   create-db:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: ./infrastructure/applications
@@ -195,7 +195,7 @@ jobs:
           platforms: linux/arm64
 
   terraform:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build-and-push-arm-service, build-pretix, create-db]
     environment:
       name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
@@ -229,7 +229,7 @@ jobs:
           AWS_DEFAULT_REGION: eu-central-1
 
   wait-aws-update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [terraform]
     steps:
       - name: Check health status
@@ -327,7 +327,7 @@ jobs:
             GIT_HASH=${{ steps.git.outputs.githash }}
 
   deploy-fe:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build-fe]
     environment:
       name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
