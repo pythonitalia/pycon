@@ -140,18 +140,22 @@ ARG FUNCTION_DIR
 
 WORKDIR ${FUNCTION_DIR}
 
-COPY --from=js-stage ${FUNCTION_DIR}/dist/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/
-COPY --from=js-stage ${FUNCTION_DIR}/dist/_astro ${FUNCTION_DIR}/custom_admin/static/_astro/
+RUN groupadd -r app && useradd -r -g app app && mkdir -p ${FUNCTION_DIR} && chown -R app:app ${FUNCTION_DIR}
 
-COPY --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
+COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/
+COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/_astro ${FUNCTION_DIR}/custom_admin/static/_astro/
+
+COPY --chown=app:app --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
 COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
 COPY --from=build-stage /libs.tar.gz /libs.tar.gz
 
 RUN tar -xvf /libs.tar.gz -C / && rm /libs.tar.gz && ldconfig
 
-RUN mkdir -p ${FUNCTION_DIR}/assets
+COPY --chown=app:app . ${FUNCTION_DIR}
 
-COPY . ${FUNCTION_DIR}
+USER app
+
+RUN mkdir -p ${FUNCTION_DIR}/assets
 
 ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod
 
