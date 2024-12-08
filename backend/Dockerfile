@@ -140,7 +140,7 @@ ARG FUNCTION_DIR
 
 WORKDIR ${FUNCTION_DIR}
 
-RUN groupadd -r app && useradd -r -g app app
+RUN groupadd -r app && useradd -r -g app app && mkdir -p ${FUNCTION_DIR} && chown -R app:app ${FUNCTION_DIR}
 
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/_astro ${FUNCTION_DIR}/custom_admin/static/_astro/
