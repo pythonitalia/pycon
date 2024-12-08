@@ -14,4 +14,5 @@ class ConferenceQuerySetMixin:
 
 
 class ConferenceVoucherQuerySet(ConferenceQuerySetMixin, models.QuerySet):
-    pass
+    def for_user(self, user):
+        return self.filter(user=user)

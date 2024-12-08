@@ -15,6 +15,7 @@ from api.schedule.types import (
 from api.submissions.permissions import IsSubmissionSpeakerOrStaff
 
 from schedule.tasks import (
+    create_and_send_voucher_to_speaker,
     notify_new_schedule_invitation_answer_slack,
     send_schedule_invitation_plain_message,
 )
@@ -59,11 +60,9 @@ def update_schedule_invitation(
 
     new_status = input.option.to_schedule_item_status()
     new_notes = input.notes
+    status_changed = schedule_item.status != new_status
 
-    if (
-        schedule_item.status == new_status
-        and schedule_item.speaker_invitation_notes == new_notes
-    ):
+    if not status_changed and schedule_item.speaker_invitation_notes == new_notes:
         # If nothing changed, do nothing
         return ScheduleInvitation.from_django_model(schedule_item)
 
@@ -71,6 +70,9 @@ def update_schedule_invitation(
         schedule_item.status = new_status
         schedule_item.speaker_invitation_notes = new_notes
         schedule_item.save()
+
+    if status_changed and new_status == ScheduleItem.STATUS.confirmed:
+        create_and_send_voucher_to_speaker.delay(schedule_item.id)
 
     request = info.context.request
     invitation_admin_url = request.build_absolute_uri(

@@ -309,12 +309,13 @@ class ScheduleItem(TimeStampedModel):
         if self.submission_id:
             speakers.append(self.submission.speaker)
 
-        speakers.extend([speaker.user for speaker in self.additional_speakers.all()])
-
         if self.keynote_id:
-            for speaker_keynote in self.keynote.speakers.all():
+            for speaker_keynote in self.keynote.speakers.order_by("id").all():
                 speakers.append(speaker_keynote.user)
 
+        speakers.extend(
+            [speaker.user for speaker in self.additional_speakers.order_by("id").all()]
+        )
         return speakers
 
     def clean(self):
