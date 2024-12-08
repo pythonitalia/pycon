@@ -183,7 +183,7 @@ locals {
     },
     {
       name = "SNS_WEBHOOK_SECRET",
-      value = "module.common_secrets.value.sns_webhook_secret"
+      value = module.common_secrets.value.sns_webhook_secret
     }
   ]
 }
