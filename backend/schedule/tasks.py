@@ -381,24 +381,45 @@ def process_schedule_items_videos_to_upload():
 @app.task
 def create_and_send_voucher_to_speaker(schedule_item_id: int):
     schedule_item = ScheduleItem.objects.get(id=schedule_item_id)
+    speakers = schedule_item.speakers
 
-    if not schedule_item.submission_id:
+    if not speakers:
         return
 
+    speaker = speakers[0]
+    co_speaker = speakers[1] if len(speakers) > 1 else None
+
+    _send_conference_voucher(
+        speaker,
+        schedule_item.conference,
+        ConferenceVoucher.VoucherType.SPEAKER,
+    )
+
+    if co_speaker:
+        _send_conference_voucher(
+            co_speaker,
+            schedule_item.conference,
+            ConferenceVoucher.VoucherType.CO_SPEAKER,
+        )
+
+
+def _send_conference_voucher(user, conference, voucher_type):
     conference_voucher = (
-        ConferenceVoucher.objects.for_conference(schedule_item.conference)
-        .for_user(schedule_item.submission.speaker)
-        .first()
+        ConferenceVoucher.objects.for_conference(conference).for_user(user).first()
     )
 
     if conference_voucher:
-        # Speaker already has a voucher
+        logger.info(
+            "User %s already has a voucher for conference %s, not creating a new one",
+            user.id,
+            conference.id,
+        )
         return
 
     conference_voucher = create_conference_voucher(
-        conference=schedule_item.conference,
-        user=schedule_item.submission.speaker,
-        voucher_type=ConferenceVoucher.VoucherType.SPEAKER,
+        conference=conference,
+        user=user,
+        voucher_type=voucher_type,
     )
 
     send_conference_voucher_email.delay(conference_voucher_id=conference_voucher.id)

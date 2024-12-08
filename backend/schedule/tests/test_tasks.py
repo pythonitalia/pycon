@@ -24,6 +24,7 @@ from schedule.tasks import (
     upload_schedule_item_video,
 )
 from schedule.tests.factories import (
+    ScheduleItemAdditionalSpeakerFactory,
     ScheduleItemFactory,
     ScheduleItemSentForVideoUploadFactory,
 )
@@ -762,6 +763,61 @@ def test_create_and_send_voucher_to_speaker(mocker):
     mock_send_email.delay.assert_called_once()
 
 
+def test_create_and_send_voucher_to_speaker_to_speaker_and_co_speakers(mocker):
+    mock_create = mocker.patch(
+        "conferences.vouchers.create_voucher", return_value={"id": 123}
+    )
+    mock_send_email = mocker.patch("schedule.tasks.send_conference_voucher_email")
+
+    schedule_item = ScheduleItemFactory(
+        type=ScheduleItem.TYPES.talk,
+    )
+    additional_speaker_1 = ScheduleItemAdditionalSpeakerFactory(
+        scheduleitem=schedule_item
+    ).user
+    additional_speaker_2 = ScheduleItemAdditionalSpeakerFactory(
+        scheduleitem=schedule_item
+    ).user
+
+    create_and_send_voucher_to_speaker(schedule_item.id)
+
+    speaker_voucher = (
+        ConferenceVoucher.objects.for_conference(schedule_item.conference)
+        .filter(
+            user=schedule_item.submission.speaker,
+            voucher_type=ConferenceVoucher.VoucherType.SPEAKER,
+        )
+        .get()
+    )
+
+    co_speaker_voucher = (
+        ConferenceVoucher.objects.for_conference(schedule_item.conference)
+        .filter(
+            user=additional_speaker_1,
+            voucher_type=ConferenceVoucher.VoucherType.CO_SPEAKER,
+        )
+        .get()
+    )
+
+    assert not (
+        ConferenceVoucher.objects.for_conference(schedule_item.conference)
+        .filter(
+            user=additional_speaker_2,
+            voucher_type=ConferenceVoucher.VoucherType.CO_SPEAKER,
+        )
+        .exists()
+    )
+
+    assert mock_create.call_count == 2
+    mock_send_email.delay.assert_has_calls(
+        [
+            mock.call(conference_voucher_id=speaker_voucher.id),
+            mock.call(conference_voucher_id=co_speaker_voucher.id),
+        ],
+        any_order=True,
+    )
+
+
 def test_create_and_send_voucher_to_speaker_works_if_existing_voucher_is_for_different_conf(
     mocker,
 ):
@@ -808,7 +864,7 @@ def test_create_and_send_voucher_to_speaker_does_nothing_if_voucher_exists(mocke
     mock_send_email.delay.assert_not_called()
 
 
-def test_create_and_send_voucher_to_speaker_does_nothing_if_schedule_item_does_not_have_submission(
+def test_create_and_send_voucher_to_speaker_does_nothing_if_schedule_item_does_not_hav_speakers(
     mocker,
 ):
     mock_create = mocker.patch("conferences.vouchers.create_voucher")
