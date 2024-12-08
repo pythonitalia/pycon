@@ -140,7 +140,7 @@ ARG FUNCTION_DIR
 
 WORKDIR ${FUNCTION_DIR}
 
-RUN apk add --no-cache curl
+RUN apt-get install -y curl
 
 RUN groupadd -r app && useradd -r -g app app && mkdir -p ${FUNCTION_DIR} && chown -R app:app ${FUNCTION_DIR}
 
