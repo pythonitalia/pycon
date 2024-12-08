@@ -29,6 +29,9 @@ def test_update_invitation_answer(
     mock_plain = mocker.patch(
         "api.schedule.mutations.update_schedule_invitation.send_schedule_invitation_plain_message"
     )
+    mock_send_voucher = mocker.patch(
+        "api.schedule.mutations.update_schedule_invitation.create_and_send_voucher_to_speaker"
+    )
 
     graphql_client.force_login(user)
     submission = SubmissionFactory(
@@ -80,6 +83,9 @@ def test_update_invitation_answer(
         message="notes",
     )
 
+    if expected_status == ScheduleItem.STATUS.confirmed:
+        mock_send_voucher.delay.assert_called_once_with(schedule_item.id)
+
 
 def test_saving_the_same_answer_does_not_trigger_event(
     graphql_client,
@@ -91,6 +97,9 @@ def test_saving_the_same_answer_does_not_trigger_event(
     )
     mock_plain = mocker.patch(
         "api.schedule.mutations.update_schedule_invitation.send_schedule_invitation_plain_message"
+    )
+    mock_send_voucher = mocker.patch(
+        "api.schedule.mutations.update_schedule_invitation.create_and_send_voucher_to_speaker"
     )
 
     graphql_client.force_login(user)
@@ -141,6 +150,7 @@ def test_saving_the_same_answer_does_not_trigger_event(
 
     mock_event.delay.assert_not_called()
     mock_plain.delay.assert_not_called()
+    mock_send_voucher.delay.assert_not_called()
 
 
 def test_changing_notes_triggers_a_new_event(
@@ -350,6 +360,9 @@ def test_staff_can_update_invitation_answer(
     mock_plain = mocker.patch(
         "api.schedule.mutations.update_schedule_invitation.send_schedule_invitation_plain_message"
     )
+    mock_send_voucher = mocker.patch(
+        "api.schedule.mutations.update_schedule_invitation.create_and_send_voucher_to_speaker"
+    )
 
     graphql_client.force_login(admin_user)
     submission = SubmissionFactory()
@@ -398,3 +411,4 @@ def test_staff_can_update_invitation_answer(
         schedule_item_id=schedule_item.id,
         message="notes",
     )
+    mock_send_voucher.delay.assert_called_once_with(schedule_item.id)

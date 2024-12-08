@@ -1,4 +1,7 @@
 from django.db.models import Q
+from conferences.tasks import send_conference_voucher_email
+from conferences.vouchers import create_conference_voucher
+from conferences.models.conference_voucher import ConferenceVoucher
 from pycon.celery_utils import OnlyOneAtTimeTask
 from google_api.exceptions import NoGoogleCloudQuotaLeftError
 from googleapiclient.errors import HttpError
@@ -373,3 +376,29 @@ def process_schedule_items_videos_to_upload():
             )
             sent_for_video_upload_state.failed_reason = str(e)
             sent_for_video_upload_state.save(update_fields=["status", "failed_reason"])
+
+
+@app.task
+def create_and_send_voucher_to_speaker(schedule_item_id: int):
+    schedule_item = ScheduleItem.objects.get(id=schedule_item_id)
+
+    if not schedule_item.submission_id:
+        return
+
+    conference_voucher = (
+        ConferenceVoucher.objects.for_conference(schedule_item.conference)
+        .for_user(schedule_item.submission.speaker)
+        .first()
+    )
+
+    if conference_voucher:
+        # Speaker already has a voucher
+        return
+
+    conference_voucher = create_conference_voucher(
+        conference=schedule_item.conference,
+        user=schedule_item.submission.speaker,
+        voucher_type=ConferenceVoucher.VoucherType.SPEAKER,
+    )
+
+    send_conference_voucher_email.delay(conference_voucher_id=conference_voucher.id)

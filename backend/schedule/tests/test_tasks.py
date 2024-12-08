@@ -1,3 +1,4 @@
+from conferences.models.conference_voucher import ConferenceVoucher
 from notifications.tests.factories import EmailTemplateFactory
 from google_api.exceptions import NoGoogleCloudQuotaLeftError
 from googleapiclient.errors import HttpError
@@ -6,13 +7,14 @@ from io import BytesIO
 from django.core.files.storage import storages
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from unittest import mock
-from conferences.tests.factories import ConferenceFactory
+from conferences.tests.factories import ConferenceFactory, ConferenceVoucherFactory
 from i18n.strings import LazyI18nString
 from datetime import datetime, timezone
 from unittest.mock import ANY, patch
 from django.test import override_settings
 
 from schedule.tasks import (
+    create_and_send_voucher_to_speaker,
     notify_new_schedule_invitation_answer_slack,
     process_schedule_items_videos_to_upload,
     send_schedule_invitation_email,
@@ -736,3 +738,56 @@ def test_upload_schedule_item_video_with_failing_thumbnail_upload_fails(mocker):
         upload_schedule_item_video(
             sent_for_video_upload_state_id=sent_for_upload.id,
         )
+
+
+def test_create_and_send_voucher_to_speaker(mocker):
+    mock_create = mocker.patch(
+        "conferences.vouchers.create_voucher", return_value={"id": 123}
+    )
+    mock_send_email = mocker.patch("schedule.tasks.send_conference_voucher_email")
+
+    schedule_item = ScheduleItemFactory(type=ScheduleItem.TYPES.talk)
+    create_and_send_voucher_to_speaker(schedule_item.id)
+
+    assert (
+        ConferenceVoucher.objects.for_conference(schedule_item.conference)
+        .filter(
+            user=schedule_item.submission.speaker,
+            voucher_type=ConferenceVoucher.VoucherType.SPEAKER,
+        )
+        .exists()
+    )
+
+    mock_create.assert_called_once()
+    mock_send_email.delay.assert_called_once()
+
+
+def test_create_and_send_voucher_to_speaker_does_nothing_if_voucher_exists(mocker):
+    mock_create = mocker.patch("conferences.vouchers.create_voucher")
+    mock_send_email = mocker.patch("schedule.tasks.send_conference_voucher_email")
+
+    schedule_item = ScheduleItemFactory(type=ScheduleItem.TYPES.talk)
+
+    ConferenceVoucherFactory(
+        conference=schedule_item.conference,
+        user=schedule_item.submission.speaker,
+    )
+
+    create_and_send_voucher_to_speaker(schedule_item.id)
+
+    mock_create.assert_not_called()
+    mock_send_email.delay.assert_not_called()
+
+
+def test_create_and_send_voucher_to_speaker_does_nothing_if_schedule_item_does_not_have_submission(
+    mocker,
+):
+    mock_create = mocker.patch("conferences.vouchers.create_voucher")
+    mock_send_email = mocker.patch("schedule.tasks.send_conference_voucher_email")
+
+    schedule_item = ScheduleItemFactory(type=ScheduleItem.TYPES.talk, submission=None)
+
+    create_and_send_voucher_to_speaker(schedule_item.id)
+
+    mock_create.assert_not_called()
+    mock_send_email.delay.assert_not_called()
