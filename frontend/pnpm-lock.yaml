@@ -39,8 +39,8 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0(next@14.2.10(@babel/core@7.24.6)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(redis@4.7.0)
       '@python-italia/pycon-styleguide':
-        specifier: 0.1.197
-        version: 0.1.197(@emotion/is-prop-valid@1.3.1)(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.3.1(react@18.3.1))(react-use@17.5.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(typescript@5.5.4)
+        specifier: 0.1.201
+        version: 0.1.201(@emotion/is-prop-valid@1.3.1)(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.3.1(react@18.3.1))(react-use@17.5.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(typescript@5.5.4)
       '@sentry/nextjs':
         specifier: ^8.24.0
         version: 8.24.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(next@14.2.10(@babel/core@7.24.6)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.95.0)
@@ -1385,8 +1385,8 @@ packages:
   '@python-italia/eslint-config@1.0.13':
     resolution: {integrity: sha512-5H+vykXms8OnVBs4nn6Yu5n1+/EfmJObIhVneMLbIwBPvzsGs6rtnSw3Fnu0e+rZip8BYj2l7QUBn82Ohvxo2Q==}
 
-  '@python-italia/pycon-styleguide@0.1.197':
-    resolution: {integrity: sha512-ZNf1Yef6G88U53TCwcETZ8O9dbTnmZZrqPKhimsxjHNmvikwV7xgpqFHZAvPN5BZd2OEMaVn9Y8WVPATQkJWqA==}
+  '@python-italia/pycon-styleguide@0.1.201':
+    resolution: {integrity: sha512-/+t/Ipv01DNtcyEjoYlLNIL1oglEEJ77fT5h2W9VQ9qvuIGuLx+/Q2BQyWS6WuoUXIu2xJMPHuDYk9boBj7pdA==}
     peerDependencies:
       clsx: ^1.1.1
       date-fns: ^2.28.0
@@ -7238,7 +7238,7 @@ snapshots:
       - next
       - supports-color
 
-  '@python-italia/pycon-styleguide@0.1.197(@emotion/is-prop-valid@1.3.1)(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.3.1(react@18.3.1))(react-use@17.5.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(typescript@5.5.4)':
+  '@python-italia/pycon-styleguide@0.1.201(@emotion/is-prop-valid@1.3.1)(clsx@1.2.1)(date-fns@2.30.0)(react-dom@18.3.1(react@18.3.1))(react-use@17.5.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(typescript@5.5.4)':
     dependencies:
       clsx: 1.2.1
       date-fns: 2.30.0
