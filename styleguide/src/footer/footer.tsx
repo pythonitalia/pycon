@@ -1,15 +1,15 @@
+import clsx from "clsx";
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import { Container } from "../container";
 import { SnakeHead } from "../illustrations/snake-head";
 import { SnakeTail } from "../illustrations/snake-tail";
-import { Separator } from "../separator";
-import { FormattedMessage } from "react-intl";
-import { SocialLinkProps } from "../social-links/social-link";
-import { Link as LinkType } from "../navbar/types";
 import { Link } from "../link";
-import { Text } from "../text";
-import clsx from "clsx";
+import type { Link as LinkType } from "../navbar/types";
+import { Separator } from "../separator";
+import type { SocialLinkProps } from "../social-links/social-link";
 import { SocialLinks } from "../social-links/social-links";
+import { Text } from "../text";
 
 type Props = {
   logo: React.ElementType;
@@ -101,18 +101,6 @@ export const Footer = ({
                   <FormattedMessage
                     id="footer.builtBy"
                     defaultMessage="Built by Python Italia"
-                  />
-                </Text>
-              </Link>
-              <Link
-                hoverColor="cream"
-                target="_blank"
-                href="https://vercel.com/?utm_source=python-italia&utm_campaign=oss"
-              >
-                <Text size="label4" uppercase weight="strong" color="none">
-                  <FormattedMessage
-                    id="footer.poweredBy"
-                    defaultMessage="Powered by Vercel"
                   />
                 </Text>
               </Link>

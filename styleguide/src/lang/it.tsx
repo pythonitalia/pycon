@@ -5,7 +5,6 @@ export const messages = {
 
   "footer.designedBy": "Design di ROLL Studio",
   "footer.builtBy": "Sviluppato da Python Italia",
-  "footer.poweredBy": "Hostato su Vercel",
 
   "multiple-parts-card.openLabel": "Apri",
   "multiple-parts-card.closeLabel": "Chiudi",
