@@ -18,6 +18,10 @@ resource "aws_ecs_task_definition" "web" {
       dockerLabels = {
         "traefik.enable"                        = "true"
         "traefik.http.routers.backend-web.rule" = "PathPrefix(`/`)"
+        "traefik.http.services.backend-web.loadbalancer.healthcheck.path" = "/health/"
+        "traefik.http.services.backend-web.loadbalancer.healthcheck.interval" = "5s"
+        "traefik.http.services.backend-web.loadbalancer.healthcheck.timeout" = "3s"
+        "traefik.http.services.backend-web.loadbalancer.server.drain.duration" = "15s"
       }
       environment = local.env_vars
 
@@ -49,13 +53,13 @@ resource "aws_ecs_task_definition" "web" {
         retries = 3
         command = [
           "CMD-SHELL",
-          "echo 1"
+          "curl -f http://127.0.0.1:8000/health/ || exit 1"
         ]
         timeout  = 3
         interval = 10
       }
 
-      stopTimeout = 300
+      stopTimeout = 35
     }
   ])
 
