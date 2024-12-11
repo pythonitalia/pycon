@@ -21,6 +21,16 @@ resource "aws_ecs_task_definition" "pretix" {
         "traefik.http.routers.pretix-web.rule" = "Host(`${local.alias}`)"
       }
 
+      healthCheck = {
+        retries = 3
+        command = [
+          "CMD-SHELL",
+          "curl --header 'Host: ${local.alias}' -f http://127.0.0.1/healthcheck/ || exit 1"
+        ]
+        timeout  = 3
+        interval = 10
+      }
+
       environment = [
         {
           name  = "PRETIX_SENTRY_DSN"
