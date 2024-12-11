@@ -52,7 +52,7 @@ resource "aws_ecs_task_definition" "traefik" {
 
       dockerLabels = {
         "traefik.enable"                        = "true"
-        "traefik.http.middlewares.retry.retry.attempts" = "2"
+        "traefik.http.middlewares.retry.retry.attempts" = "4"
         "traefik.http.middlewares.retry.retry.initialInterval" = "100ms"
       }
 
