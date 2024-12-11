@@ -19,8 +19,8 @@ resource "aws_ecs_task_definition" "web" {
         "traefik.enable"                        = "true"
         "traefik.http.routers.backend-web.rule" = "PathPrefix(`/`)"
         "traefik.http.services.backend-web.loadbalancer.healthcheck.path" = "/health/"
-        "traefik.http.services.backend-web.loadbalancer.healthcheck.interval" = "2s"
-        "traefik.http.services.backend-web.loadbalancer.healthcheck.timeout" = "1s"
+        "traefik.http.services.backend-web.loadbalancer.healthcheck.interval" = "10s"
+        "traefik.http.services.backend-web.loadbalancer.healthcheck.timeout" = "5s"
       }
       environment = local.env_vars
 

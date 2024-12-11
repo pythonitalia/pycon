@@ -18,8 +18,8 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
         "traefik.enable"                        = "true"
         "traefik.http.routers.frontend.rule" = "Host(`${local.alias}`) || Host(`2025.pycon.it`)"
         "traefik.http.services.frontend.loadbalancer.healthcheck.path" = "/api/health"
-        "traefik.http.services.frontend.loadbalancer.healthcheck.interval" = "2s"
-        "traefik.http.services.frontend.loadbalancer.healthcheck.timeout" = "1s"
+        "traefik.http.services.frontend.loadbalancer.healthcheck.interval" = "10s"
+        "traefik.http.services.frontend.loadbalancer.healthcheck.timeout" = "5s"
       }
 
       environment = [

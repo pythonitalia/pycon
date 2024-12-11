@@ -35,7 +35,7 @@ resource "aws_ecs_task_definition" "traefik" {
         },
         {
           name = "TRAEFIK_PROVIDERS_ECS_REFRESHSECONDS",
-          value = "5"
+          value = "10"
         },
         {
           name = "TRAEFIK_LOG_LEVEL"
