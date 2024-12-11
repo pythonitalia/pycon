@@ -138,4 +138,7 @@ module.exports = withSentryConfig({
 
     return config;
   },
+  experimental: {
+    instrumentationHook: true,
+  },
 });
