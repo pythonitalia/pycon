@@ -1,11 +1,12 @@
-import fs from "fs";
+export async function register() {
+  if (
+    process.env.NEXT_RUNTIME === "nodejs" &&
+    process.env.NEXT_MANUAL_SIG_HANDLE
+  ) {
+    const fs = await import("fs");
 
-export function register() {
-  if (process.env.NEXT_RUNTIME === "nodejs") {
-    if (process.env.NEXT_MANUAL_SIG_HANDLE) {
-      process.on("SIGTERM", () => {
-        fs.writeFileSync("/tmp/shutdown", "1");
-      });
-    }
+    process.on("SIGTERM", () => {
+      fs.writeFileSync("/tmp/shutdown", "1");
+    });
   }
 }
