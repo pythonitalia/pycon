@@ -75,9 +75,9 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
         retries = 3
         command = [
           "CMD-SHELL",
-          "curl -f http://localhost:3000/api/health || exit 1"
+          "curl -s -f http://localhost:3000/api/health || exit 1"
         ]
-        timeout  = 3
+        timeout  = 5
         interval = 10
       }
 

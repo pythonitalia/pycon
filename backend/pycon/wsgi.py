@@ -1,3 +1,4 @@
+import sys
 import signal
 import os
 
@@ -9,6 +10,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pycon.settings.prod")
 def handle_sigterm(signum, frame):
     with open("shutdown", "w") as f:
         f.write("shutdown")
+
+    sys.exit(0)
 
 
 try:
