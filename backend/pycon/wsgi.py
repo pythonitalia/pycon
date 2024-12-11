@@ -1,17 +1,19 @@
-import sys
+import logging
 import signal
 import os
 
 from django.core.wsgi import get_wsgi_application
 
+logger = logging.getLogger(__name__)
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pycon.settings.prod")
 
 
 def handle_sigterm(signum, frame):
-    with open("shutdown", "w") as f:
-        f.write("shutdown")
+    logger.info("Received SIGTERM, shutting down")
 
-    sys.exit(0)
+    with open("shutdown", "w") as f:
+        f.write("1")
 
 
 try:
