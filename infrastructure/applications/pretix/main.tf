@@ -33,6 +33,7 @@ resource "aws_ecs_task_definition" "pretix" {
         ]
         timeout  = 5
         interval = 10
+        startPeriod = 120
       }
 
       environment = [
