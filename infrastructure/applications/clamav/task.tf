@@ -8,9 +8,15 @@ resource "aws_ecs_task_definition" "clamav" {
   container_definitions = jsonencode([
     {
       name              = "clamav"
-      image             = "clamav/clamav-debian:1.4.1"
+      image             = "clamav/clamav-debian:1.4.1_base"
       memoryReservation = local.is_prod ? 1000 : 10
       essential         = true
+      environment = [
+        {
+          name  = "CLAMD_CONF_ConcurrentDatabaseReload"
+          value = "no"
+        }
+      ]
 
       portMappings = [
         {
@@ -19,7 +25,13 @@ resource "aws_ecs_task_definition" "clamav" {
         },
       ]
 
-      mountPoints = []
+      mountPoints = [
+        {
+          sourceVolume  = "clamav"
+          containerPath = "/var/lib/clamav"
+          readOnly      = false
+        }
+      ]
 
       logConfiguration = {
         logDriver = "awslogs"
@@ -43,6 +55,11 @@ resource "aws_ecs_task_definition" "clamav" {
       stopTimeout = 300
     }
   ])
+
+  volume {
+    name      = "clamav"
+    host_path = "/clamav"
+  }
 
   requires_compatibilities = []
   tags                     = {}
