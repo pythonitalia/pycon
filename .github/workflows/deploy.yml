@@ -306,6 +306,9 @@ jobs:
 
           conference_code=$(aws ssm get-parameter --output text --query Parameter.Value --with-decryption --name /pythonit/${{ env.TF_WORKSPACE }}/pycon-frontend/conference-code)
           echo "CONFERENCE_CODE=$conference_code" >> "$GITHUB_OUTPUT"
+
+          sentry_auth_token=$(aws ssm get-parameter --output text --query Parameter.Value --with-decryption --name /pythonit/${{ env.TF_WORKSPACE }}/common/sentry-auth-token)
+          echo "SENTRY_AUTH_TOKEN=$sentry_auth_token" >> "$GITHUB_OUTPUT"
       - name: Build and push
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/build-push-action@v6
@@ -325,6 +328,7 @@ jobs:
             CMS_ADMIN_HOST=${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it
             CMS_HOSTNAME=${{ steps.vars.outputs.cms_hostname }}
             CONFERENCE_CODE=${{ steps.vars.outputs.conference_code }}
+            SENTRY_AUTH_TOKEN=${{ steps.vars.outputs.sentry_auth_token }}
             GIT_HASH=${{ steps.git.outputs.githash }}
 
   deploy-fe:
