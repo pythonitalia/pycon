@@ -4,7 +4,7 @@ import { CoverPage } from "./cover-page";
 import { LocationPage } from "./location-page";
 import { OptionsPage } from "./options-page";
 import { OverviewPage } from "./overview-page";
-import { Benefit, Package, PricingPage } from "./pricing-page";
+import { PricingPage } from "./pricing-page";
 import { TestimonialsPage } from "./testimonial-page";
 import { WhySponsorPage } from "./why-sponsor-page";
 

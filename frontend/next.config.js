@@ -27,7 +27,7 @@ module.exports = withSentryConfig({
       ? undefined
       : require.resolve("./cache-handler.mjs"),
   generateBuildId:
-    process.env.VERCEL_ENV === "preview"
+    process.env.VERCEL_ENV === "preview" || !process.env.GIT_HASH
       ? undefined
       : async () => {
           return process.env.GIT_HASH;
@@ -137,8 +137,5 @@ module.exports = withSentryConfig({
     );
 
     return config;
-  },
-  experimental: {
-    instrumentationHook: true,
   },
 });

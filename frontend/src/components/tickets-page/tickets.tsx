@@ -9,8 +9,6 @@ import type {
   TicketsQueryResult,
 } from "~/types";
 
-import { Text } from "@python-italia/pycon-styleguide";
-import { FormattedMessage } from "react-intl";
 import { ProductsList } from "../products-list";
 import { useLoginState } from "../profile/hooks";
 import { CheckoutBar } from "./checkout-bar";
