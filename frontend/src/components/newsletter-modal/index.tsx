@@ -28,7 +28,7 @@ type NewsletterForm = {
 
 export const NewsletterModal = ({ onClose }) => {
   const conferenceCode = process.env.conferenceCode;
-  const formRef = useRef<HTMLFormElement>();
+  const formRef = useRef<HTMLFormElement>(undefined);
   const [formState, { text, checkbox }] = useFormState<NewsletterForm>({
     email: "",
     acceptedPrivacyPolicy: false,

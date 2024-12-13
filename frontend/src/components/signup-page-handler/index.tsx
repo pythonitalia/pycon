@@ -52,7 +52,7 @@ export const SignupPageHandler = () => {
   const passwordMismatchMessage = useTranslatedMessage(
     "signup.passwordMismatch",
   );
-  const formRef = useRef<HTMLFormElement>();
+  const formRef = useRef<HTMLFormElement>(undefined);
   const [loggedIn, setLoggedIn] = useLoginState();
   const router = useRouter();
 

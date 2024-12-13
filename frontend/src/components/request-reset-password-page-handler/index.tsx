@@ -28,7 +28,7 @@ type FormFields = {
 
 export const RequestResetPasswordPageHandler = () => {
   const language = useCurrentLanguage();
-  const formRef = useRef<HTMLFormElement>();
+  const formRef = useRef<HTMLFormElement>(undefined);
   const router = useRouter();
   const [formState, { email }] = useFormState<FormFields>(
     {},
