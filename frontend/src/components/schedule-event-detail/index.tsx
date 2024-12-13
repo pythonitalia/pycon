@@ -12,7 +12,7 @@ import {
 import { LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import { SnakeWithPopcorn } from "@python-italia/pycon-styleguide/illustrations";
 import { isAfter, isBefore, parseISO } from "date-fns";
-import { zonedTimeToUtc } from "date-fns-tz";
+import { fromZonedTime } from "date-fns-tz";
 import type React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -53,8 +53,8 @@ type Props = {
 
 const isEventLive = (startTime: string, endTime: string) => {
   const now = new Date();
-  const utcStart = zonedTimeToUtc(parseISO(startTime), "Europe/Rome");
-  const utcEnd = zonedTimeToUtc(parseISO(endTime), "Europe/Rome");
+  const utcStart = fromZonedTime(parseISO(startTime), "Europe/Rome");
+  const utcEnd = fromZonedTime(parseISO(endTime), "Europe/Rome");
   return isAfter(now, utcStart) && isBefore(now, utcEnd);
 };
 

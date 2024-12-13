@@ -8,7 +8,7 @@ import {
 } from "@python-italia/pycon-styleguide";
 import va from "@vercel/analytics";
 import { isAfter, isBefore, parseISO } from "date-fns";
-import { zonedTimeToUtc } from "date-fns-tz";
+import { fromZonedTime } from "date-fns-tz";
 import React, {
   Fragment,
   useCallback,
@@ -437,11 +437,11 @@ export const findLiveSlot = ({
 }): Slot | undefined => {
   const now = new Date();
   return slots.find((slot) => {
-    const startHour = zonedTimeToUtc(
+    const startHour = fromZonedTime(
       parseISO(`${currentDay}T${slot.hour}`),
       "Europe/Rome",
     );
-    const endHour = zonedTimeToUtc(
+    const endHour = fromZonedTime(
       parseISO(`${currentDay}T${slot.endHour}`),
       "Europe/Rome",
     );
