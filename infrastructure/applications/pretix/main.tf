@@ -13,12 +13,27 @@ resource "aws_ecs_task_definition" "pretix" {
     {
       name              = "pretix"
       image             = "${data.aws_ecr_repository.repo.repository_url}@${data.aws_ecr_image.image.image_digest}"
-      memoryReservation = local.is_prod ? 1840 : 10
+      memoryReservation = local.is_prod ? 1500 : 10
       essential         = true
 
       dockerLabels = {
         "traefik.enable"                        = "true"
         "traefik.http.routers.pretix-web.rule" = "Host(`${local.alias}`)"
+        "traefik.http.services.pretix-web.loadbalancer.healthcheck.path" = "/healthcheck/"
+        "traefik.http.services.pretix-web.loadbalancer.healthcheck.interval" = "10s"
+        "traefik.http.services.pretix-web.loadbalancer.healthcheck.timeout" = "5s"
+        "traefik.http.services.pretix-web.loadbalancer.healthcheck.hostname" = local.alias
+      }
+
+      healthCheck = {
+        retries = 3
+        command = [
+          "CMD-SHELL",
+          "curl -s --header 'Host: ${local.alias}' -f http://127.0.0.1/healthcheck/ || exit 1"
+        ]
+        timeout  = 5
+        interval = 10
+        startPeriod = 120
       }
 
       environment = [
@@ -177,6 +192,6 @@ resource "aws_ecs_service" "pretix" {
   cluster                            = var.cluster_id
   task_definition                    = aws_ecs_task_definition.pretix.arn
   desired_count                      = 1
-  deployment_minimum_healthy_percent = 0
-  deployment_maximum_percent         = 100
+  deployment_minimum_healthy_percent = 100
+  deployment_maximum_percent         = 200
 }

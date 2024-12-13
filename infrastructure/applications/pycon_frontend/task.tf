@@ -17,6 +17,9 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
       dockerLabels = {
         "traefik.enable"                        = "true"
         "traefik.http.routers.frontend.rule" = "Host(`${local.alias}`) || Host(`2025.pycon.it`)"
+        "traefik.http.services.frontend.loadbalancer.healthcheck.path" = "/api/health"
+        "traefik.http.services.frontend.loadbalancer.healthcheck.interval" = "10s"
+        "traefik.http.services.frontend.loadbalancer.healthcheck.timeout" = "5s"
       }
 
       environment = [
@@ -72,9 +75,9 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
         retries = 3
         command = [
           "CMD-SHELL",
-          "curl -f http://localhost:3000/api/health || exit 1"
+          "curl -s -f http://localhost:3000/api/health || exit 1"
         ]
-        timeout  = 3
+        timeout  = 5
         interval = 10
       }
 

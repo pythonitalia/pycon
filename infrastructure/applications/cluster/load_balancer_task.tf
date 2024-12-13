@@ -22,8 +22,20 @@ resource "aws_ecs_task_definition" "traefik" {
           value = "false",
         },
         {
+          name  = "TRAEFIK_PING",
+          value = "true"
+        },
+        {
           name  = "TRAEFIK_ENTRYPOINTS_WEB_ADDRESS",
           value = ":80"
+        },
+        {
+          name = "TRAEFIK_PROVIDERS_ECS_HEALTHYTASKSONLY",
+          value = "true"
+        },
+        {
+          name = "TRAEFIK_PROVIDERS_ECS_REFRESHSECONDS",
+          value = "15"
         }
       ]
 
@@ -33,6 +45,12 @@ resource "aws_ecs_task_definition" "traefik" {
           hostPort      = 80
         },
       ]
+
+      dockerLabels = {
+        "traefik.enable"                        = "true"
+        "traefik.http.middlewares.retry.retry.attempts" = "4"
+        "traefik.http.middlewares.retry.retry.initialInterval" = "100ms"
+      }
 
       mountPoints = []
       systemControls = [
@@ -55,7 +73,7 @@ resource "aws_ecs_task_definition" "traefik" {
         retries = 3
         command = [
           "CMD-SHELL",
-          "echo 4"
+          "traefik healthcheck"
         ]
         timeout  = 3
         interval = 10
