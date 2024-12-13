@@ -53,12 +53,12 @@ const nextConfig = {
     return [
       {
         source: "/admin/:match*",
-        destination: "https://admin.pycon.it/admin/:match",
+        destination: "https://admin.pycon.it/admin/:match*",
         permanent: false,
       },
       {
         source: "/cms-admin/:match*",
-        destination: "https://admin.pycon.it/cms-admin/:match",
+        destination: "https://admin.pycon.it/cms-admin/:match*",
         permanent: false,
       },
       {
