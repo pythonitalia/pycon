@@ -1,6 +1,4 @@
 require("dotenv").config();
-const webpack = require("webpack");
-const path = require("node:path");
 const { withSentryConfig } = require("@sentry/nextjs");
 
 const {
@@ -12,9 +10,10 @@ const {
   CMS_HOSTNAME,
   CMS_ADMIN_HOST = "admin.pycon.it",
   NEXT_PUBLIC_SITE_URL,
+  SENTRY_AUTH_TOKEN,
 } = process.env;
 
-module.exports = withSentryConfig({
+const nextConfig = {
   output: "standalone",
   i18n: {
     locales: ["default", "en", "it"],
@@ -127,4 +126,8 @@ module.exports = withSentryConfig({
       "pycon-backend",
     ],
   },
+};
+
+module.exports = withSentryConfig(nextConfig, {
+  authToken: SENTRY_AUTH_TOKEN,
 });

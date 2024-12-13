@@ -89,7 +89,7 @@ export const AGE_GROUPS_OPTIONS = [
     value: AgeGroup.RangeUnder_18,
     disabled: false,
     messageId: "grants.form.fields.ageGroup.values.range_under_18",
-    isAgeInRange: (age: number) => 11 <= age && age <= 18,
+    isAgeInRange: (age: number) => age < 18,
   },
   {
     value: AgeGroup.Range_18_24,
