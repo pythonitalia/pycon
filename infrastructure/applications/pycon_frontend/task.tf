@@ -53,7 +53,7 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
         },
         {
           name = "SENTRY_AUTH_TOKEN",
-          value = module.secrets.value.sentry_auth_token
+          value = module.common_secrets.value.sentry_auth_token
         },
         {
           name = "SENTRY_DSN",
