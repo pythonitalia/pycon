@@ -130,4 +130,6 @@ const nextConfig = {
 
 module.exports = withSentryConfig(nextConfig, {
   authToken: SENTRY_AUTH_TOKEN,
+  org: "python-italia",
+  project: "pycon-frontend",
 });
