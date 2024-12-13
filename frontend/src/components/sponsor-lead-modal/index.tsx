@@ -27,7 +27,7 @@ type SponsorLeadForm = {
   acceptPrivacyPolicy: boolean;
 };
 export const SponsorLeadModal = ({ onClose }) => {
-  const formRef = useRef<HTMLFormElement>();
+  const formRef = useRef<HTMLFormElement>(undefined);
   const language = useCurrentLanguage();
   const [sendSponsorLeadMutation, { loading, data, error }] =
     useSendSponsorLeadMutation();

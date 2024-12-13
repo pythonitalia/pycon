@@ -1,6 +1,4 @@
 require("dotenv").config();
-const webpack = require("webpack");
-const path = require("node:path");
 const { withSentryConfig } = require("@sentry/nextjs");
 
 const {
@@ -12,9 +10,10 @@ const {
   CMS_HOSTNAME,
   CMS_ADMIN_HOST = "admin.pycon.it",
   NEXT_PUBLIC_SITE_URL,
+  SENTRY_AUTH_TOKEN,
 } = process.env;
 
-module.exports = withSentryConfig({
+const nextConfig = {
   output: "standalone",
   i18n: {
     locales: ["default", "en", "it"],
@@ -27,7 +26,7 @@ module.exports = withSentryConfig({
       ? undefined
       : require.resolve("./cache-handler.mjs"),
   generateBuildId:
-    process.env.VERCEL_ENV === "preview"
+    process.env.VERCEL_ENV === "preview" || !process.env.GIT_HASH
       ? undefined
       : async () => {
           return process.env.GIT_HASH;
@@ -54,12 +53,12 @@ module.exports = withSentryConfig({
     return [
       {
         source: "/admin/:match*",
-        destination: "https://admin.pycon.it/admin/:match",
+        destination: "https://admin.pycon.it/admin/:match*",
         permanent: false,
       },
       {
         source: "/cms-admin/:match*",
-        destination: "https://admin.pycon.it/cms-admin/:match",
+        destination: "https://admin.pycon.it/cms-admin/:match*",
         permanent: false,
       },
       {
@@ -127,18 +126,8 @@ module.exports = withSentryConfig({
       "pycon-backend",
     ],
   },
-  webpack: (config, options) => {
-    config.resolve.alias["~"] = `${path.resolve(__dirname)}/src`;
+};
 
-    config.plugins.push(
-      new webpack.DefinePlugin({
-        __DEV__: process.env.NODE_ENV !== "production",
-      }),
-    );
-
-    return config;
-  },
-  experimental: {
-    instrumentationHook: true,
-  },
+module.exports = withSentryConfig(nextConfig, {
+  authToken: SENTRY_AUTH_TOKEN,
 });

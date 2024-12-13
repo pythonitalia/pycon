@@ -25,7 +25,7 @@ const Providers = ({ children }) => {
 };
 
 export const render = (
-  ui: ReactElement,
+  ui: ReactElement<any>,
   options?: Omit<RenderOptions, "queries">,
 ) => originalRender(ui, { wrapper: Providers, ...options });
 

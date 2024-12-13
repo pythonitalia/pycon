@@ -10,7 +10,7 @@ import {
   Text,
 } from "@python-italia/pycon-styleguide";
 import type React from "react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
@@ -28,7 +28,7 @@ type NewsletterForm = {
 
 export const NewsletterModal = ({ onClose }) => {
   const conferenceCode = process.env.conferenceCode;
-  const formRef = useRef<HTMLFormElement>();
+  const formRef = useRef<HTMLFormElement>(undefined);
   const [formState, { text, checkbox }] = useFormState<NewsletterForm>({
     email: "",
     acceptedPrivacyPolicy: false,

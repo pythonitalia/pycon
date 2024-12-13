@@ -5,7 +5,7 @@ import { EnglishIcon } from "../icons/english";
 import { ItalianIcon } from "../icons/italian";
 
 type Props = {
-  children: React.ReactElement;
+  children: React.ReactElement<any>;
   languages: string[];
   value: { [string: string]: string };
   onChange: (event: any) => void;

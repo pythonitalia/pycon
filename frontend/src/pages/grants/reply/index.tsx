@@ -2,6 +2,7 @@ import {
   Button,
   Checkbox,
   Heading,
+  HorizontalStack,
   Link,
   Page,
   Section,
@@ -188,24 +189,28 @@ const GrantReply = () => {
           <VerticalStack gap="small">
             {APPROVED_STATUSES.includes(grant?.status) && (
               <label>
-                <Checkbox
-                  size="small"
-                  {...radio("option", StatusOption.Confirmed)}
-                />
-                <Text as="span">
-                  <FormattedMessage id="grants.reply.confirmed" />
-                </Text>
+                <HorizontalStack gap="small">
+                  <Checkbox
+                    size="small"
+                    {...radio("option", StatusOption.Confirmed)}
+                  />
+                  <Text as="span">
+                    <FormattedMessage id="grants.reply.confirmed" />
+                  </Text>
+                </HorizontalStack>
               </label>
             )}
 
             <label>
-              <Checkbox
-                size="small"
-                {...radio("option", GrantStatus.Refused)}
-              />
-              <Text as="span">
-                <FormattedMessage id="grants.reply.refused" />
-              </Text>
+              <HorizontalStack gap="small">
+                <Checkbox
+                  size="small"
+                  {...radio("option", GrantStatus.Refused)}
+                />
+                <Text as="span">
+                  <FormattedMessage id="grants.reply.refused" />
+                </Text>
+              </HorizontalStack>
             </label>
             <Spacer size="medium" />
 

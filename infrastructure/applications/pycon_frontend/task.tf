@@ -50,6 +50,14 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
         {
           name = "GIT_HASH",
           value = data.external.githash.result.githash
+        },
+        {
+          name = "SENTRY_AUTH_TOKEN",
+          value = module.common_secrets.value.sentry_auth_token
+        },
+        {
+          name = "SENTRY_DSN",
+          value = module.secrets.value.sentry_dsn
         }
       ]
 

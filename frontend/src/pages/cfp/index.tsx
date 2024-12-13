@@ -8,10 +8,9 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
-import type { GetServerSideProps, GetStaticProps } from "next";
+import type { GetServerSideProps } from "next";
 
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Introduction } from "~/components/cfp-introduction";
 import { CfpSendSubmission } from "~/components/cfp-send-submission";

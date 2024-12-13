@@ -26,7 +26,7 @@ type Props = {
     tickets: TicketItem[];
     conference: TicketsQueryResult["data"]["conference"];
     me: CurrentUserQueryResult["data"]["me"];
-  }) => React.ReactElement;
+  }) => React.ReactElement<any>;
   cartCookie?: string;
 };
 

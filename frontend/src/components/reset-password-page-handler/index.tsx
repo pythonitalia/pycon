@@ -30,7 +30,7 @@ type FormFields = {
 
 export const ResetPasswordPageHandler = () => {
   const language = useCurrentLanguage();
-  const formRef = useRef<HTMLFormElement>();
+  const formRef = useRef<HTMLFormElement>(undefined);
   const passwordMismatchMessage = useTranslatedMessage(
     "signup.passwordMismatch",
   );

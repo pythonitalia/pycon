@@ -38,7 +38,7 @@ export const LoginPageHandler = () => {
   const router = useRouter();
   const language = useCurrentLanguage();
   const [loggedIn, setLoggedIn] = useLoginState();
-  const formRef = useRef<HTMLFormElement>();
+  const formRef = useRef<HTMLFormElement>(undefined);
 
   const nextUrl = cleanRedirectUrl((router.query.next as string) || "/profile");
 

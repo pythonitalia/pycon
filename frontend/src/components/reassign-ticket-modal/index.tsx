@@ -73,7 +73,7 @@ export const ReassignTicketModal = ({
     });
 
   const currentEmail = ticket.attendeeEmail;
-  const formRef = useRef<HTMLFormElement>();
+  const formRef = useRef<HTMLFormElement>(undefined);
   const saveChanges = (e) => {
     e.preventDefault();
 

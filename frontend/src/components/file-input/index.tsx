@@ -35,7 +35,7 @@ export const FileInput = ({
   accept: string;
 }) => {
   const conferenceCode = process.env.conferenceCode;
-  const canvas = useRef<HTMLCanvasElement>();
+  const canvas = useRef<HTMLCanvasElement>(undefined);
   const language = useCurrentLanguage();
 
   const [uploadFile] = useUploadFileMutation();

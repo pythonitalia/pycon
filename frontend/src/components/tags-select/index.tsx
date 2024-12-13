@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type ComponentType } from "react";
 import {
   type DropdownIndicatorProps,
   type MultiValue,
@@ -15,11 +15,15 @@ type TagsSelectProps = {
   onChange?: (tags: MultiValue<{ value: string }>) => void;
 };
 
+const BaseDropdownIndicator = components.DropdownIndicator as ComponentType<
+  DropdownIndicatorProps<any, true>
+>;
+
 const DropdownIndicator = (props: DropdownIndicatorProps<any, true>) => {
   return (
-    <components.DropdownIndicator {...props}>
+    <BaseDropdownIndicator {...props}>
       <ArrowDownIcon />
-    </components.DropdownIndicator>
+    </BaseDropdownIndicator>
   );
 };
 

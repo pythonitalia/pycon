@@ -1,23 +1,15 @@
 import type { ApolloError } from "@apollo/client";
 import {
   Button,
-  CardPart,
   Checkbox,
   Grid,
-  Heading,
   HorizontalStack,
-  Input,
-  InputWrapper,
   Link,
-  MultiplePartsCard,
-  Select,
   Spacer,
   Text,
-  Textarea,
-  VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import type React from "react";
-import { Fragment, useEffect } from "react";
+import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
@@ -30,14 +22,11 @@ import {
   useParticipantDataQuery,
 } from "~/types";
 
-import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { createHref } from "../link";
-import { MultiLingualInput } from "../multilingual-input";
 import {
   type ParticipantFormFields,
   PublicProfileCard,
 } from "../public-profile-card";
-import { TagsSelect } from "../tags-select";
 import { AboutYouSection } from "./about-you-section";
 import { AvailabilitySection } from "./availability-section";
 import { ProposalSection } from "./proposal-section";

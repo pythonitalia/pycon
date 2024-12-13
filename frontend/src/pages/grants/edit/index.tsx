@@ -16,6 +16,8 @@ import {
   useUpdateGrantMutation,
 } from "~/types";
 
+import type { JSX } from "react";
+
 const GrantPage = (): JSX.Element => {
   const code = process.env.conferenceCode;
 
