@@ -15,7 +15,6 @@ type TagsSelectProps = {
   onChange?: (tags: MultiValue<{ value: string }>) => void;
 };
 
-// const BaseDropdownIndicator = components.DropdownIndicator as unknown as ReactNode
 const BaseDropdownIndicator = components.DropdownIndicator as ComponentType<
   DropdownIndicatorProps<any, true>
 >;

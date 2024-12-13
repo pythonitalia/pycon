@@ -127,15 +127,4 @@ module.exports = withSentryConfig({
       "pycon-backend",
     ],
   },
-  webpack: (config, options) => {
-    config.resolve.alias["~"] = `${path.resolve(__dirname)}/src`;
-
-    config.plugins.push(
-      new webpack.DefinePlugin({
-        __DEV__: process.env.NODE_ENV !== "production",
-      }),
-    );
-
-    return config;
-  },
 });
