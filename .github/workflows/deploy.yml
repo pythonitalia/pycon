@@ -329,8 +329,9 @@ jobs:
             CMS_ADMIN_HOST=${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it
             CMS_HOSTNAME=${{ steps.vars.outputs.cms_hostname }}
             CONFERENCE_CODE=${{ steps.vars.outputs.conference_code }}
-            SENTRY_AUTH_TOKEN=${{ steps.vars.outputs.sentry_auth_token }}
             GIT_HASH=${{ steps.git.outputs.githash }}
+          secrets: |
+            "sentry_auth_token=${{ steps.vars.outputs.sentry_auth_token }}"
 
   deploy-fe:
     runs-on: ubuntu-24.04
