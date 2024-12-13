@@ -308,6 +308,7 @@ jobs:
           echo "CONFERENCE_CODE=$conference_code" >> "$GITHUB_OUTPUT"
 
           sentry_auth_token=$(aws ssm get-parameter --output text --query Parameter.Value --with-decryption --name /pythonit/${{ env.TF_WORKSPACE }}/common/sentry-auth-token)
+          echo "::add-mask::$sentry_auth_token"
           echo "SENTRY_AUTH_TOKEN=$sentry_auth_token" >> "$GITHUB_OUTPUT"
       - name: Build and push
         if: ${{ steps.image.outputs.image_exists == 0 }}
