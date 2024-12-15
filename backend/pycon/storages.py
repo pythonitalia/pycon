@@ -60,6 +60,15 @@ class CustomS3Boto3Storage(S3Boto3Storage):
         )
 
 
+class PrivateCustomS3Boto3Storage(CustomS3Boto3Storage):
+    default_acl = "private"
+
+    def get_object_parameters(self, name):
+        params = super().get_object_parameters(name)
+        params.pop("CacheControl", None)
+        return params
+
+
 class CustomInMemoryStorage(InMemoryStorage):
     is_remote = False
 
