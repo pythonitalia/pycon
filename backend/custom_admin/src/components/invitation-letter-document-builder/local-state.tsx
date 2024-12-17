@@ -35,7 +35,7 @@ enum ActionType {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case ActionType.LoadData:
+    case ActionType.LoadData: {
       return {
         ...action.payload,
         __typename: undefined,
@@ -44,7 +44,8 @@ const reducer = (state, action) => {
           __typename: undefined,
         })),
       };
-    case ActionType.AddPage:
+    }
+    case ActionType.AddPage: {
       return {
         ...state,
         pages: [
@@ -56,12 +57,14 @@ const reducer = (state, action) => {
           },
         ],
       };
-    case ActionType.RemovePage:
+    }
+    case ActionType.RemovePage: {
       return {
         ...state,
         pages: state.pages.filter((page) => page.id !== action.payload.pageId),
       };
-    case ActionType.SetContent:
+    }
+    case ActionType.SetContent: {
       const { pageId, content } = action.payload;
       if (pageId === "header" || pageId === "footer") {
         return {
@@ -76,7 +79,8 @@ const reducer = (state, action) => {
           page.id === pageId ? { ...page, content } : page,
         ),
       };
-    case ActionType.MovePageUp:
+    }
+    case ActionType.MovePageUp: {
       const pageIndex = state.pages.findIndex(
         (page) => page.id === action.payload.pageId,
       );
@@ -94,7 +98,8 @@ const reducer = (state, action) => {
         ...state,
         pages,
       };
-    case ActionType.MovePageDown:
+    }
+    case ActionType.MovePageDown: {
       const pageIndexDown = state.pages.findIndex(
         (page) => page.id === action.payload.pageId,
       );
@@ -113,6 +118,7 @@ const reducer = (state, action) => {
         ...state,
         pages: pagesDown,
       };
+    }
   }
   return state;
 };
