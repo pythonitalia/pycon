@@ -26,6 +26,8 @@ from .users.queries import UserQuery
 from .association_membership.mutation import AssociationMembershipMutation
 from .cms.schema import CMSQuery
 from .sponsors.schema import SponsorsMutation
+from .visa.queries import VisaQuery
+from .visa.mutations import VisaMutation
 
 
 @strawberry.type
@@ -44,6 +46,7 @@ class Query(
     BadgeScannerQuery,
     UserQuery,
     CMSQuery,
+    VisaQuery,
 ):
     pass
 
@@ -64,6 +67,7 @@ class Mutation(
     UsersMutations,
     AssociationMembershipMutation,
     SponsorsMutation,
+    VisaMutation,
 ):
     pass
 

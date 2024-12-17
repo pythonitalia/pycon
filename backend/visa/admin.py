@@ -6,7 +6,7 @@ from ordered_model.admin import (
 from django.contrib import admin
 
 from visa.models import (
-    InvitationLetterAttachedDocument,
+    InvitationLetterDocument,
     InvitationLetterOrganizerConfig,
     InvitationLetterRequest,
 )
@@ -41,13 +41,13 @@ class InvitationLetterRequestAdmin(admin.ModelAdmin):
     actions = [process_invitation_letter]
 
 
-class InvitationLetterAttachedDocumentInline(OrderedTabularInline):
-    fields = ("document", "order", "move_up_down_links")
+class InvitationLetterDocumentInline(OrderedTabularInline):
+    fields = ("document", "dynamic_document", "order", "move_up_down_links")
     readonly_fields = (
         "order",
         "move_up_down_links",
     )
-    model = InvitationLetterAttachedDocument
+    model = InvitationLetterDocument
     extra = 0
     verbose_name = "Attached document"
     verbose_name_plural = "Attached documents"
@@ -62,4 +62,4 @@ class InvitationLetterOrganizerConfigAdmin(
     search_fields = [
         "organizer__name",
     ]
-    inlines = [InvitationLetterAttachedDocumentInline]
+    inlines = [InvitationLetterDocumentInline]

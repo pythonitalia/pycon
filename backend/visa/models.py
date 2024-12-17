@@ -95,7 +95,7 @@ def invitation_letter_attached_document_upload_to(instance, filename):
     return f"invitation_letter_attached_documents/{instance.invitation_letter_organizer_config.organizer.slug}/{filename}"
 
 
-class InvitationLetterAttachedDocument(OrderedModel, TimeStampedModel):
+class InvitationLetterDocument(OrderedModel, TimeStampedModel):
     invitation_letter_organizer_config = models.ForeignKey(
         "InvitationLetterOrganizerConfig",
         on_delete=models.CASCADE,
@@ -106,5 +106,8 @@ class InvitationLetterAttachedDocument(OrderedModel, TimeStampedModel):
         _("document"),
         upload_to=invitation_letter_attached_document_upload_to,
         storage=private_storage_getter,
+        null=True,
+        blank=True,
     )
+    dynamic_document = models.JSONField(_("dynamic document"), null=True, blank=True)
     order_with_respect_to = "invitation_letter_organizer_config"
