@@ -5,7 +5,6 @@ x-defaults:
     ENV: "local"
     CONFERENCE_CODE: ${CONFERENCE_CODE:-pycon2023}
     PRETIX_API: https://tickets.pycon.it/api/v1/
-    PRETIX_API_TOKEN: None # ask for a token
     PLAIN_API: https://core-api.uk.plain.com/graphql/v1
     SECRET_KEY: secret-key
     API_URL: /graphql
@@ -15,37 +14,18 @@ x-defaults:
     # URLs
     ASSOCIATION_FRONTEND_URL: http://localhost:3020
     # stripe
-    STRIPE_SECRET_API_KEY: ${STRIPE_SECRET_API_KEY}
-    STRIPE_WEBHOOK_SIGNATURE_SECRET: ${STRIPE_WEBHOOK_SIGNATURE_SECRET}
     PRETIX_WEBHOOK_SECRET: "secret"
   pycon_backend_envs: &pycon_backend_envs
     <<: *enviroment_defaults
     CACHE_URL: redis://redis:6379/0
     DATABASE_URL: psql://pycon:pycon@backend-db/pycon
     ALLOWED_HOSTS: "*"
-    PRETIX_API_TOKEN: ${PRETIX_API_TOKEN}
-    MAILCHIMP_SECRET_KEY: ${MAILCHIMP_SECRET_KEY}
-    MAILCHIMP_DC: ${MAILCHIMP_DC}
-    MAILCHIMP_LIST_ID: ${MAILCHIMP_LIST_ID}
     MEDIA_FILES_STORAGE_BACKEND: ${MEDIA_FILES_STORAGE_BACKEND:-pycon.storages.CustomFileSystemStorage}
-    OAUTHLIB_INSECURE_TRANSPORT: ${OAUTHLIB_INSECURE_TRANSPORT}
-    OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-    FLODESK_API_KEY: ${FLODESK_API_KEY}
-    SENTRY_DSN: ${SENTRY_DSN:-}
-    FLODESK_SEGMENT_ID: ${FLODESK_SEGMENT_ID}
+    MEDIA_FILES_PRIVATE_STORAGE_BACKEND: ${MEDIA_FILES_PRIVATE_STORAGE_BACKEND:-pycon.storages.CustomFileSystemStorage}
     CELERY_BROKER_URL: redis://redis:6379/9
     CELERY_RESULT_BACKEND: redis://redis:6379/10
-    PLAIN_API_TOKEN: ${PLAIN_API_TOKEN}
-    PLAIN_INTEGRATION_TOKEN: ${PLAIN_INTEGRATION_TOKEN}
-    HASHID_DEFAULT_SECRET_SALT: ${HASHID_DEFAULT_SECRET_SALT:-}
-    AWS_MEDIA_BUCKET: ${AWS_MEDIA_BUCKET}
-    AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-    AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     CLAMAV_HOST: clamav
     CLAMAV_PORT: 3310
-    AWS_REGION_NAME: ${AWS_REGION_NAME}
-    ECS_NETWORK_CONFIG: ${ECS_NETWORK_CONFIG:-}
-    SNS_WEBHOOK_SECRET: ${SNS_WEBHOOK_SECRET:-}
 
 services:
   backend:
@@ -74,6 +54,8 @@ services:
       - /.venv/
     environment:
       <<: *pycon_backend_envs
+    env_file:
+      - .env
     healthcheck:
       test: ["CMD-SHELL", "test -f /.ready"]
       interval: 10s
@@ -95,6 +77,8 @@ services:
     environment:
       <<: *enviroment_defaults
       ADMIN_GRAPHQL_URL: http://backend:8000/admin/graphql
+    env_file:
+      - .env
     tty: true
     stdin_open: true
     ports:
@@ -145,6 +129,8 @@ services:
       <<: *enviroment_defaults
       CMS_HOSTNAME: localhost:3000
       CMS_ADMIN_HOST: localhost:8000
+    env_file:
+      - .env
     tty: true
     stdin_open: true
     ports:

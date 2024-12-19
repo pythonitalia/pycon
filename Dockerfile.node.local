@@ -16,6 +16,6 @@ RUN npm install -g pnpm; \
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 
-RUN pip3 install websockets --break-system-packages
+RUN pip3 install websockets==14.1 --break-system-packages
 
 COPY . .

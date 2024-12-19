@@ -19,20 +19,17 @@ def modify_message(message):
     return json.dumps(parsed_message)
 
 
-async def health_check(path, request_headers):
-    if request_headers.get("Accept") == "text/x-vite-ping":
+async def health_check(connection, request):
+    if request.headers.get("Accept") == "text/x-vite-ping":
         return http.HTTPStatus.OK, [], b"OK\n"
 
 
-async def handler(websocket, path):
+async def handler(websocket):
     print("Connected", websocket.remote_address)
 
     async with websockets.connect(
         "ws://custom-admin:3002", subprotocols=["vite-hmr"]
     ) as server_ws:
-        # Vite HMR starts by sending a type connected message
-        response = await server_ws.recv()
-        await websocket.send(response)
 
         async def forward_to_client():
             try:
@@ -52,9 +49,15 @@ async def handler(websocket, path):
         await asyncio.gather(forward_to_client(), forward_to_server())
 
 
-start_server = websockets.serve(
-    handler, "0.0.0.0", 3003, process_request=health_check, subprotocols=["vite-hmr"]
-)
+async def main():
+    async with websockets.serve(
+        handler,
+        "0.0.0.0",
+        3003,
+        process_request=health_check,
+        subprotocols=["vite-hmr"],
+    ):
+        await asyncio.get_running_loop().create_future()
 
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+
+asyncio.run(main())
