@@ -8,6 +8,7 @@ export const LocalStateContext = createContext<{
   localData: any;
   saveChanges: () => void;
   isSaving: boolean;
+  saveFailed: boolean;
   addPage: () => void;
   setContent: (pageId: string, content: string) => void;
   removePage: (pageId: string) => void;
@@ -17,6 +18,7 @@ export const LocalStateContext = createContext<{
   localData: null,
   saveChanges: () => {},
   isSaving: false,
+  saveFailed: false,
   addPage: () => {},
   setContent: () => {},
   removePage: () => {},
@@ -137,8 +139,8 @@ const useLoadRemoteData = () => {
   return remoteData?.invitationLetterDocument?.dynamicDocument;
 };
 
-const useSaveRemoteData = (): [(newData) => void, boolean] => {
-  const [updateInvitationLetter, { loading: savingChanges }] =
+const useSaveRemoteData = (): [(newData) => void, boolean, boolean] => {
+  const [updateInvitationLetter, { loading: savingChanges, error }] =
     useUpdateInvitationLetterDocumentMutation();
 
   return [
@@ -153,13 +155,14 @@ const useSaveRemoteData = (): [(newData) => void, boolean] => {
       });
     },
     savingChanges,
+    !!error,
   ];
 };
 
 export const LocalStateProvider = ({ children }) => {
   const [localData, dispatch] = useReducer(reducer, null);
   const remoteData = useLoadRemoteData();
-  const [saveChanges, isSaving] = useSaveRemoteData();
+  const [saveChanges, isSaving, saveFailed] = useSaveRemoteData();
 
   useEffect(() => {
     if (!remoteData) {
@@ -177,6 +180,7 @@ export const LocalStateProvider = ({ children }) => {
           saveChanges(localData);
         },
         isSaving,
+        saveFailed,
         addPage: () => {
           dispatch({ type: ActionType.AddPage });
         },

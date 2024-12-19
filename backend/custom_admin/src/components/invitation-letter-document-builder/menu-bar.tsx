@@ -6,6 +6,7 @@ import {
   AlignLeft,
   AlignRight,
   Bold,
+  Braces,
   Italic,
 } from "lucide-react";
 
@@ -69,6 +70,15 @@ export const MenuBar = ({ editor }) => {
       </Toolbar.Button>
 
       <Toolbar.Separator className="w-px bg-gray-300 mx-1" />
+
+      <Toolbar.Button
+        onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+        className={clsx("p-2 rounded hover:bg-gray-200", {
+          "bg-gray-200": editor.isActive({ textAlign: "justify" }),
+        })}
+      >
+        <Braces size={16} />
+      </Toolbar.Button>
     </Toolbar.Root>
   );
 };

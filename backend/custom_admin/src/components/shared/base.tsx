@@ -4,6 +4,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 import "../shared/styles.css";
+import * as Toast from "@radix-ui/react-toast";
 import { DjangoAdminEditorProvider } from "./django-admin-editor-modal";
 
 type Props = {

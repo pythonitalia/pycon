@@ -4,6 +4,8 @@ import requests
 
 from django.conf import settings
 
+from conferences.models.conference import Conference
+
 METHODS = Literal["get"]
 
 
@@ -13,6 +15,13 @@ class PretixAPI:
         self.event = event
         self.base_url = (
             f"{settings.PRETIX_API}organizers/{self.organizer}/events/{self.event}"
+        )
+
+    @classmethod
+    def for_conference(cls, conference: Conference):
+        return cls(
+            organizer=conference.pretix_organizer_id,
+            event=conference.pretix_event_id,
         )
 
     def _request(
@@ -39,4 +48,10 @@ class PretixAPI:
 
     def get_categories(self) -> dict:
         response = self._request("categories")
+        return response.json()
+
+    def get_all_attendee_tickets(self, attendee_email: str) -> list[dict]:
+        response = self._request(
+            "tickets/attendee-tickets", qs={"attendee_email": attendee_email}
+        )
         return response.json()

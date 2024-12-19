@@ -1,3 +1,7 @@
+from functools import cached_property
+from django.db import transaction
+
+from grants.models import Grant
 from ordered_model.models import OrderedModel
 from visa.managers import InvitationLetterRequestQuerySet
 from model_utils.models import TimeStampedModel
@@ -13,6 +17,7 @@ class InvitationLetterRequestStatus(models.TextChoices):
     PROCESSED = "PROCESSED", _("Processed")
     SENT = "SENT", _("Sent")
     REJECTED = "REJECTED", _("Rejected")
+    FAILED_TO_GENERATE = "FAILED_TO_GENERATE", _("Failed to generate")
 
 
 class InvitationLetterRequestOnBehalfOf(models.TextChoices):
@@ -67,10 +72,62 @@ class InvitationLetterRequest(TimeStampedModel):
         null=True,
     )
 
-    def process(self):
+    @property
+    def on_behalf_of_other(self):
+        return self.on_behalf_of == InvitationLetterRequestOnBehalfOf.OTHER
+
+    @property
+    def email(self):
+        if self.on_behalf_of_other:
+            return self.email_address
+
+        return self.requester.email
+
+    @property
+    def has_accommodation_via_grant(self):
+        if self.on_behalf_of_other:
+            return False
+
+        grant = self.requester_grant
+        return grant and grant.has_approved_accommodation
+
+    @property
+    def has_travel_via_grant(self):
+        if self.on_behalf_of_other:
+            return False
+
+        grant = self.requester_grant
+        return grant and grant.has_approved_travel
+
+    @property
+    def grant_approved_type(self):
+        if self.on_behalf_of_other:
+            return None
+
+        grant = self.requester_grant
+        return grant and grant.approved_type
+
+    @cached_property
+    def requester_grant(self):
+        return (
+            Grant.objects.for_conference(self.conference)
+            .of_user(self.requester)
+            .first()
+        )
+
+    def schedule(self):
         from visa.tasks import process_invitation_letter_request
 
-        process_invitation_letter_request.delay(invitation_letter_request_id=self.id)
+        transaction.on_commit(
+            lambda: process_invitation_letter_request.delay(
+                invitation_letter_request_id=self.id
+            )
+        )
+
+    def get_config(self):
+        return InvitationLetterOrganizerConfig.objects.get(
+            organizer=self.conference.organizer
+        )
 
     class Meta:
         constraints = [
@@ -111,3 +168,20 @@ class InvitationLetterDocument(OrderedModel, TimeStampedModel):
     )
     dynamic_document = models.JSONField(_("dynamic document"), null=True, blank=True)
     order_with_respect_to = "invitation_letter_organizer_config"
+
+
+class InvitationLetterAsset(TimeStampedModel):
+    invitation_letter_organizer_config = models.ForeignKey(
+        "InvitationLetterOrganizerConfig",
+        on_delete=models.CASCADE,
+        related_name="assets",
+        verbose_name=_("invitation letter organizer config"),
+    )
+    handle = models.CharField(_("handle"), max_length=100)
+    image = models.ImageField(
+        _("image"),
+        upload_to="invitation_letters_assets/",
+        storage=private_storage_getter,
+        null=True,
+        blank=True,
+    )

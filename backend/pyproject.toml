@@ -103,6 +103,7 @@ dependencies = [
     "tinycss2>=1.4.0",
     "pypdf>=5.1.0",
     "ipython>=8.30.0",
+    "weasyprint>=63.1",
 ]
 name = "backend"
 version = "0.1.0"

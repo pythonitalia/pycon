@@ -1,19 +1,15 @@
-import * as AlertDialog from "@radix-ui/react-alert-dialog";
-import { Button, Flex, Heading, Text, Theme } from "@radix-ui/themes";
+import * as Toast from "@radix-ui/react-toast";
+import { Button, Heading, Text } from "@radix-ui/themes";
 import { Box } from "@radix-ui/themes";
-import { MoveDown, MoveUp, Plus, Trash } from "lucide-react";
-import { Fragment, useEffect, useState } from "react";
-import type { InvitationLetterDocumentStructure } from "../../types";
-import { Base } from "../shared/base";
-import { DjangoAdminLayout } from "../shared/django-admin-layout";
-import { Editor } from "./editor";
+import { Plus } from "lucide-react";
+import { Fragment } from "react";
+
 import { EditorSection } from "./editor-section";
-import { useInvitationLetterDocumentQuery } from "./invitation-letter-document.generated";
 import { useLocalData } from "./local-state";
-import { useUpdateInvitationLetterDocumentMutation } from "./update-invitation-letter-document.generated";
 
 export const InvitationLetterBuilder = () => {
-  const { localData, saveChanges, isSaving, addPage } = useLocalData();
+  const { localData, saveChanges, isSaving, saveFailed, addPage } =
+    useLocalData();
 
   if (!localData) {
     return <Text>Loading...</Text>;

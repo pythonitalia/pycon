@@ -1,15 +1,9 @@
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { Button, Flex, Heading, Text, Theme } from "@radix-ui/themes";
 import { Box } from "@radix-ui/themes";
-import { MoveDown, MoveUp, Plus, Trash } from "lucide-react";
-import { Fragment, useEffect, useState } from "react";
-import type { InvitationLetterDocumentStructure } from "../../types";
-import { Base } from "../shared/base";
-import { DjangoAdminLayout } from "../shared/django-admin-layout";
+import { MoveDown, MoveUp, Trash } from "lucide-react";
 import { Editor } from "./editor";
-import { useInvitationLetterDocumentQuery } from "./invitation-letter-document.generated";
 import { useLocalData } from "./local-state";
-import { useUpdateInvitationLetterDocumentMutation } from "./update-invitation-letter-document.generated";
 
 export const EditorSection = ({
   title,
@@ -26,7 +20,7 @@ export const EditorSection = ({
   const onMoveUp = () => movePageUp(pageId);
   const onMoveDown = () => movePageDown(pageId);
   const onRemove = () => removePage(pageId);
-  const onUpdate = () => setContent(pageId, content);
+  const onUpdate = (content: string) => setContent(pageId, content);
 
   return (
     <AlertDialog.Root>
