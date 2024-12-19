@@ -24,19 +24,21 @@ class PretixAPI:
             event=conference.pretix_event_id,
         )
 
-    def _request(
-        self, endpoint: str, *, method: METHODS = "get", qs: dict[str, str] = None
+    def run_request(
+        self, url: str, *, method: METHODS = "get", qs: dict[str, str] = None
     ):
-        url = f"{self.base_url}/{endpoint}/"
         headers = {"Authorization": f"Token {str(settings.PRETIX_API_TOKEN)}"}
 
         if qs:
             url = f"{url}?" + "&".join([f"{key}={value}" for key, value in qs.items()])
 
         response = getattr(requests, method)(url, headers=headers)
-
         response.raise_for_status()
         return response
+
+    def _request(self, endpoint: str, **kwargs):
+        url = f"{self.base_url}/{endpoint}/"
+        return self.run_request(url, **kwargs)
 
     def get_order_data(self, order_code: str) -> dict:
         response = self._request(f"orders/{order_code}")

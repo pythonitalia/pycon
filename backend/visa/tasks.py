@@ -1,4 +1,4 @@
-import requests
+import time
 from django.template import Template, Context
 
 import io
@@ -48,8 +48,8 @@ def process_invitation_letter_request(*, invitation_letter_request_id: int):
     if not invitation_letter_request:
         return
 
-    # invitation_letter_request.status = InvitationLetterRequestStatus.PROCESSING
-    # invitation_letter_request.save(update_fields=['status'])
+    invitation_letter_request.status = InvitationLetterRequestStatus.PROCESSING
+    invitation_letter_request.save(update_fields=["status"])
 
     config = invitation_letter_request.get_config()
 
@@ -85,6 +85,9 @@ def process_invitation_letter_request(*, invitation_letter_request_id: int):
             ContentFile(invitation_letter_file.read()),
         )
         invitation_letter_request.save()
+
+    invitation_letter_request.status = InvitationLetterRequestStatus.PROCESSED
+    invitation_letter_request.save(update_fields=["status", "invitation_letter"])
 
 
 def render_dynamic_document(dynamic_document, invitation_letter_request, config):
@@ -144,6 +147,14 @@ def download_pretix_ticket(invitation_letter_request):
 
     ticket_url = attendee_ticket["downloads"][0]["url"]
 
-    response = requests.get(ticket_url)
-    response.raise_for_status()
-    return response.content
+    attempts = 0
+    while attempts < 3:
+        attempts += 1
+
+        response = pretix_api.run_request(ticket_url)
+        if response.status_code == 409:
+            time.sleep(2 * attempts)
+        else:
+            response.raise_for_status()
+
+    return io.BytesIO(response.content)
