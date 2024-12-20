@@ -1,6 +1,8 @@
 from functools import cached_property
 from django.db import transaction
 
+from submissions.models import Submission
+from users.models import User
 from grants.models import Grant
 from ordered_model.models import OrderedModel
 from visa.managers import InvitationLetterRequestQuerySet
@@ -85,35 +87,57 @@ class InvitationLetterRequest(TimeStampedModel):
 
     @property
     def has_accommodation_via_grant(self):
-        if self.on_behalf_of_other:
+        grant = self.user_grant
+
+        if not grant:
             return False
 
-        grant = self.requester_grant
-        return grant and grant.has_approved_accommodation
+        return grant.has_approved_accommodation
 
     @property
     def has_travel_via_grant(self):
-        if self.on_behalf_of_other:
+        grant = self.user_grant
+
+        if not grant:
             return False
 
-        grant = self.requester_grant
-        return grant and grant.has_approved_travel
+        return grant.has_approved_travel
 
     @property
     def grant_approved_type(self):
-        if self.on_behalf_of_other:
+        grant = self.user_grant
+
+        if not grant:
             return None
 
-        grant = self.requester_grant
-        return grant and grant.approved_type
+        return grant.approved_type
 
     @cached_property
-    def requester_grant(self):
-        return (
-            Grant.objects.for_conference(self.conference)
-            .of_user(self.requester)
-            .first()
-        )
+    def user_grant(self):
+        return Grant.objects.for_conference(self.conference).of_user(self.user).first()
+
+    def role(self):
+        user = self.user
+
+        if not user:
+            return "Attendee"
+
+        if (
+            Submission.objects.for_conference(self.conference)
+            .of_user(user)
+            .accepted()
+            .exists()
+        ):
+            return "Speaker"
+
+        return "Attendee"
+
+    @property
+    def user(self):
+        if self.on_behalf_of_other:
+            return User.objects.filter(email=self.email_address).first()
+
+        return self.requester
 
     def schedule(self):
         from visa.tasks import process_invitation_letter_request

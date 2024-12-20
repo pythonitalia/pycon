@@ -1,19 +1,30 @@
-import * as Toast from "@radix-ui/react-toast";
 import { Button, Heading, Text } from "@radix-ui/themes";
 import { Box } from "@radix-ui/themes";
 import { Plus } from "lucide-react";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 
 import { EditorSection } from "./editor-section";
 import { useLocalData } from "./local-state";
 
 export const InvitationLetterBuilder = () => {
-  const { localData, saveChanges, isSaving, saveFailed, addPage } =
-    useLocalData();
+  const { isDirty, localData, saveChanges, isSaving, addPage } = useLocalData();
 
-  if (!localData) {
-    return <Text>Loading...</Text>;
-  }
+  useEffect(() => {
+    const listener = (e) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+
+      return "";
+    };
+
+    window.addEventListener("beforeunload", listener);
+
+    return () => {
+      window.removeEventListener("beforeunload", listener);
+    };
+  }, [isDirty]);
 
   return (
     <>

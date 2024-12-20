@@ -19,4 +19,7 @@ export default defineConfig({
     format: "file",
     assetsPrefix: "/django-static/",
   },
+  devToolbar: {
+    enabled: false,
+  },
 });

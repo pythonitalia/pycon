@@ -132,10 +132,13 @@ class ConferenceAdmin(
                     "name",
                     "code",
                     "logo",
+                    "location",
                     "introduction",
                     "timezone",
-                    "latitude",
-                    "longitude",
+                    (
+                        "latitude",
+                        "longitude",
+                    ),
                     "map_link",
                 )
             },

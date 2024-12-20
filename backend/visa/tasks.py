@@ -3,7 +3,10 @@ from django.template import Template, Context
 
 import io
 import tempfile
+
+import requests
 from association_membership.handlers.pretix.api import PretixAPI
+from pycon.celery_utils import OnlyOneAtTimeTask
 from visa.models import (
     InvitationLetterRequest,
     InvitationLetterRequestStatus,
@@ -29,14 +32,21 @@ def process_invitation_letter_request_failed(self, exc, task_id, args, kwargs, e
     invitation_letter_request.status = InvitationLetterRequestStatus.FAILED_TO_GENERATE
     invitation_letter_request.save(update_fields=["status"])
 
-    logger.error(
+    logger.exception(
         "Failed to generate invitation letter for invitation_letter_request_id=%s",
         invitation_letter_request_id,
+        exc_info=exc,
     )
 
 
-# @app.task(base=OnlyOneAtTimeTask)
-@app.task(on_failure=process_invitation_letter_request_failed)
+@app.task(
+    base=OnlyOneAtTimeTask,
+    on_failure=process_invitation_letter_request_failed,
+    autoretry_for=(requests.exceptions.HTTPError,),
+    retry_backoff=True,
+    max_retries=3,
+    default_retry_delay=1,
+)
 def process_invitation_letter_request(*, invitation_letter_request_id: int):
     invitation_letter_request = (
         InvitationLetterRequest.objects.not_processed()
@@ -71,7 +81,8 @@ def process_invitation_letter_request(*, invitation_letter_request_id: int):
 
         merger.append(temp_file)
 
-    merger.append(download_pretix_ticket(invitation_letter_request))
+    pretix_ticket = download_pretix_ticket(invitation_letter_request)
+    merger.append(pretix_ticket)
 
     with tempfile.NamedTemporaryFile() as invitation_letter_file:
         merger.write(invitation_letter_file)
@@ -121,15 +132,19 @@ def _render_content(content, invitation_letter_request, config):
         Context(
             {
                 "config": config,
+                # request info
                 "full_name": invitation_letter_request.full_name,
                 "nationality": invitation_letter_request.nationality,
                 "address": invitation_letter_request.address,
                 "date_of_birth": invitation_letter_request.date_of_birth,
                 "passport_number": invitation_letter_request.passport_number,
                 "embassy_name": invitation_letter_request.embassy_name,
+                "role": invitation_letter_request.role,
                 "grant_approved_type": invitation_letter_request.grant_approved_type,
                 "has_accommodation_via_grant": invitation_letter_request.has_accommodation_via_grant,
                 "has_travel_via_grant": invitation_letter_request.has_travel_via_grant,
+                # conference
+                "conference": invitation_letter_request.conference,
             }
         )
     )

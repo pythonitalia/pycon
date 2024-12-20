@@ -1,11 +1,32 @@
-import { useContext, useEffect, useReducer } from "react";
-import { useInvitationLetterDocumentQuery } from "./invitation-letter-document.generated";
+import equal from "fast-deep-equal";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
+import {
+  useInvitationLetterDocumentQuery,
+  useInvitationLetterDocumentSuspenseQuery,
+} from "./invitation-letter-document.generated";
 import { useUpdateInvitationLetterDocumentMutation } from "./update-invitation-letter-document.generated";
 
 import { createContext } from "react";
 
+type State = {
+  header: string;
+  footer: string;
+  pages: {
+    id: string;
+    title: string;
+    content: string;
+  }[];
+};
+
 export const LocalStateContext = createContext<{
-  localData: any;
+  localData: State;
   saveChanges: () => void;
   isSaving: boolean;
   saveFailed: boolean;
@@ -14,6 +35,7 @@ export const LocalStateContext = createContext<{
   removePage: (pageId: string) => void;
   movePageUp: (pageId: string) => void;
   movePageDown: (pageId: string) => void;
+  isDirty: boolean;
 }>({
   localData: null,
   saveChanges: () => {},
@@ -24,6 +46,7 @@ export const LocalStateContext = createContext<{
   removePage: () => {},
   movePageUp: () => {},
   movePageDown: () => {},
+  isDirty: false,
 });
 
 enum ActionType {
@@ -35,15 +58,13 @@ enum ActionType {
   MovePageDown = "MOVE_PAGE_DOWN",
 }
 
-const reducer = (state, action) => {
+const reducer = (state: State, action) => {
   switch (action.type) {
     case ActionType.LoadData: {
       return {
         ...action.payload,
-        __typename: undefined,
         pages: action.payload.pages.map((page) => ({
           ...page,
-          __typename: undefined,
         })),
       };
     }
@@ -129,14 +150,47 @@ export const useLocalData = () => {
   return useContext(LocalStateContext);
 };
 
-const useLoadRemoteData = () => {
+const removeTypenames = (obj) => {
+  if (Array.isArray(obj)) {
+    return obj.map(removeTypenames);
+  }
+
+  if (obj !== null && typeof obj === "object") {
+    const newObj = {};
+    for (const key in obj) {
+      if (key !== "__typename") {
+        newObj[key] = removeTypenames(obj[key]);
+      }
+    }
+
+    return newObj;
+  }
+
+  return obj;
+};
+
+const useLoadRemoteData = (dispatch) => {
   const documentId = (window as any).documentId;
-  const { data: remoteData } = useInvitationLetterDocumentQuery({
+
+  const { data } = useInvitationLetterDocumentSuspenseQuery({
     variables: {
       id: documentId,
     },
   });
-  return remoteData?.invitationLetterDocument?.dynamicDocument;
+
+  useEffect(() => {
+    const dynamicDocument = data?.invitationLetterDocument.dynamicDocument;
+    dispatch({
+      type: ActionType.LoadData,
+      payload: removeTypenames(dynamicDocument),
+    });
+  }, [data]);
+
+  const remoteData = useMemo(() => {
+    return removeTypenames(data?.invitationLetterDocument.dynamicDocument);
+  }, [data]);
+
+  return remoteData;
 };
 
 const useSaveRemoteData = (): [(newData) => void, boolean, boolean] => {
@@ -160,30 +214,21 @@ const useSaveRemoteData = (): [(newData) => void, boolean, boolean] => {
 };
 
 export const LocalStateProvider = ({ children }) => {
-  const [localData, dispatch] = useReducer(reducer, null);
-  const remoteData = useLoadRemoteData();
+  const [localData, dispatch] = useReducer<State, any>(reducer, null);
+  const remoteData = useLoadRemoteData(dispatch);
   const [saveChanges, isSaving, saveFailed] = useSaveRemoteData();
 
-  useEffect(() => {
-    if (!remoteData) {
-      return;
-    }
-
-    dispatch({ type: ActionType.LoadData, payload: remoteData });
-  }, [remoteData]);
+  const isDirty = !equal(remoteData, localData);
 
   return (
     <LocalStateContext.Provider
       value={{
-        localData,
-        saveChanges: () => {
-          saveChanges(localData);
-        },
+        localData: localData || remoteData,
+        isDirty,
+        saveChanges: () => saveChanges(localData),
         isSaving,
         saveFailed,
-        addPage: () => {
-          dispatch({ type: ActionType.AddPage });
-        },
+        addPage: () => dispatch({ type: ActionType.AddPage }),
         setContent: (pageId, content) => {
           dispatch({
             type: ActionType.SetContent,
