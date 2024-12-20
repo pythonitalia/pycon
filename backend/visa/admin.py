@@ -1,3 +1,4 @@
+import json
 from django.utils.safestring import mark_safe
 
 from django.urls import path
@@ -116,7 +117,13 @@ class InvitationLetterAssetInline(admin.TabularInline):
 
 
 class InvitationLetterDocumentInline(OrderedTabularInline):
-    fields = ("document", "edit_dynamic_document", "order", "move_up_down_links")
+    fields = (
+        "name",
+        "document",
+        "edit_dynamic_document",
+        "order",
+        "move_up_down_links",
+    )
     readonly_fields = (
         "order",
         "move_up_down_links",
@@ -142,10 +149,17 @@ class InvitationLetterDocumentInline(OrderedTabularInline):
         return mark_safe(f'<a href="{url}">Edit</a>')
 
     def edit_dynamic_document_view(self, request, config_id, document_id):
+        document = InvitationLetterDocument.objects.get(id=document_id)
+        config = document.invitation_letter_organizer_config
+        assert config.id == config_id
+
         context = dict(
             self.admin_site.each_context(request),
             arguments={
                 "document_id": document_id,
+                "breadcrumbs": json.dumps(
+                    self._create_builder_breadcrumbs(config, document)
+                ),
             },
             title="Invitation Letter Document Builder",
         )
@@ -163,6 +177,29 @@ class InvitationLetterDocumentInline(OrderedTabularInline):
             ),
         ]
         return custom_urls + urls
+
+    def _create_builder_breadcrumbs(self, config, document):
+        return [
+            {
+                "title": "Visa",
+                "url": reverse("admin:app_list", kwargs={"app_label": "visa"}),
+            },
+            {
+                "title": str(config._meta.verbose_name_plural),
+                "url": reverse("admin:visa_invitationletterorganizerconfig_changelist"),
+            },
+            {
+                "title": str(config),
+                "url": reverse(
+                    "admin:visa_invitationletterorganizerconfig_change",
+                    args=[config.id],
+                ),
+            },
+            {
+                "title": f"{str(document)} - Builder",
+                "url": None,
+            },
+        ]
 
 
 @admin.register(InvitationLetterOrganizerConfig)

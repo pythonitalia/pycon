@@ -6,9 +6,7 @@ import { LocalStateProvider } from "./local-state";
 export const InvitationLetterDocumentBuilderRoot = () => {
   return (
     <Base>
-      <DjangoAdminLayout
-        breadcrumbs={[{ id: 0, label: "Invitation Letter Document Builder" }]}
-      >
+      <DjangoAdminLayout>
         <LocalStateProvider>
           <InvitationLetterBuilder />
         </LocalStateProvider>

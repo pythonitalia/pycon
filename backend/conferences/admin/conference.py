@@ -1,3 +1,4 @@
+import json
 from django.template.response import TemplateResponse
 from pathlib import Path
 from django.core.files.storage import storages
@@ -213,11 +214,32 @@ class ConferenceAdmin(
             arguments={
                 "conference_id": object_id,
                 "conference_code": conference.code,
-                "conference_repr": str(conference),
+                "breadcrumbs": json.dumps(
+                    self._build_schedule_builder_breadcrumbs(conference)
+                ),
             },
             title="Schedule Builder",
         )
         return TemplateResponse(request, "astro/schedule-builder.html", context)
+
+    def _build_schedule_builder_breadcrumbs(self, conference):
+        return [
+            {
+                "title": "Conferences",
+                "url": reverse("admin:app_list", kwargs={"app_label": "conferences"}),
+            },
+            {
+                "title": str(conference._meta.verbose_name_plural),
+                "url": reverse("admin:conferences_conference_changelist"),
+            },
+            {
+                "title": str(conference),
+                "url": reverse(
+                    "admin:conferences_conference_change", args=[conference.id]
+                ),
+            },
+            {"title": "Schedule Builder", "url": None},
+        ]
 
     def map_videos(self, request, object_id):
         if request.method == "POST":

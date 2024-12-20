@@ -147,12 +147,16 @@ class InvitationLetterOrganizerConfig(TimeStampedModel):
         verbose_name=_("organizer"),
     )
 
+    def __str__(self):
+        return f"{self.organizer.name} - Invitation Letter Config"
+
 
 def invitation_letter_attached_document_upload_to(instance, filename):
     return f"invitation_letter_attached_documents/{instance.invitation_letter_organizer_config.organizer.slug}/{filename}"
 
 
 class InvitationLetterDocument(OrderedModel, TimeStampedModel):
+    name = models.CharField(_("name"), max_length=300)
     invitation_letter_organizer_config = models.ForeignKey(
         "InvitationLetterOrganizerConfig",
         on_delete=models.CASCADE,
@@ -168,6 +172,9 @@ class InvitationLetterDocument(OrderedModel, TimeStampedModel):
     )
     dynamic_document = models.JSONField(_("dynamic document"), null=True, blank=True)
     order_with_respect_to = "invitation_letter_organizer_config"
+
+    def __str__(self):
+        return f"Document: {self.name}"
 
 
 class InvitationLetterAsset(TimeStampedModel):
@@ -185,3 +192,6 @@ class InvitationLetterAsset(TimeStampedModel):
         null=True,
         blank=True,
     )
+
+    def __str__(self):
+        return f"Asset: {self.handle}"
