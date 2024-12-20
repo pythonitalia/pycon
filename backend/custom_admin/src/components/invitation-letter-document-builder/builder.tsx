@@ -65,7 +65,7 @@ export const InvitationLetterBuilder = () => {
       </Box>
 
       <Box height="var(--space-3)" />
-      <Box position="sticky" bottom="0" p="3" className="bg-white border-t-2">
+      <Box position="sticky" bottom="0" p="3" className="bg-white">
         <Button onClick={saveChanges} loading={isSaving}>
           Save changes
         </Button>
