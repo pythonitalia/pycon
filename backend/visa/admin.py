@@ -154,8 +154,8 @@ class InvitationLetterDocumentInline(OrderedTabularInline):
             self.admin_site.each_context(request),
             arguments={
                 "document_id": document_id,
-                "breadcrumbs": json.dumps(
-                    self._create_builder_breadcrumbs(config, document)
+                "breadcrumbs": mark_safe(
+                    json.dumps(self._create_builder_breadcrumbs(config, document))
                 ),
             },
             title="Invitation Letter Document Builder",
