@@ -1,12 +1,11 @@
 from pathlib import Path
 from users.tests.factories import UserFactory
 from conferences.tests.factories import ConferenceFactory
-from organizers.tests.factories import OrganizerFactory
 from visa.models import (
     InvitationLetterAsset,
     InvitationLetterDocument,
     InvitationLetterRequest,
-    InvitationLetterOrganizerConfig,
+    InvitationLetterConferenceConfig,
 )
 import factory
 import factory.fuzzy
@@ -27,16 +26,16 @@ class InvitationLetterRequestFactory(DjangoModelFactory):
         model = InvitationLetterRequest
 
 
-class InvitationLetterOrganizerConfigFactory(DjangoModelFactory):
-    organizer = factory.SubFactory(OrganizerFactory)
+class InvitationLetterConferenceConfigFactory(DjangoModelFactory):
+    conference = factory.SubFactory(ConferenceFactory)
 
     class Meta:
-        model = InvitationLetterOrganizerConfig
+        model = InvitationLetterConferenceConfig
 
 
 class InvitationLetterDocumentFactory(DjangoModelFactory):
-    invitation_letter_organizer_config = factory.SubFactory(
-        InvitationLetterOrganizerConfigFactory
+    invitation_letter_conference_config = factory.SubFactory(
+        InvitationLetterConferenceConfigFactory
     )
     document = factory.django.FileField(
         from_path=Path(__file__).parent / "fixtures" / "sample-pdf.pdf"
@@ -47,8 +46,8 @@ class InvitationLetterDocumentFactory(DjangoModelFactory):
 
 
 class InvitationLetterAssetFactory(DjangoModelFactory):
-    invitation_letter_organizer_config = factory.SubFactory(
-        InvitationLetterOrganizerConfigFactory
+    invitation_letter_conference_config = factory.SubFactory(
+        InvitationLetterConferenceConfigFactory
     )
     identifier = factory.Faker("md5")
     image = factory.django.ImageField()

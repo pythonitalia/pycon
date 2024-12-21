@@ -16,7 +16,7 @@ from django.http import HttpResponseRedirect
 from visa.models import (
     InvitationLetterAsset,
     InvitationLetterDocument,
-    InvitationLetterOrganizerConfig,
+    InvitationLetterConferenceConfig,
     InvitationLetterRequest,
 )
 
@@ -45,12 +45,12 @@ class InvitationLetterRequestAdmin(admin.ModelAdmin):
     )
 
     list_display = (
-        "conference",
         "requester",
         "on_behalf_of",
         "full_name",
         "nationality",
         "status",
+        "conference",
     )
     list_filter = (
         "status",
@@ -140,14 +140,14 @@ class InvitationLetterDocumentInline(OrderedTabularInline):
         url = reverse(
             "admin:edit_dynamic_document",
             kwargs={
-                "config_id": obj.invitation_letter_organizer_config_id,
+                "config_id": obj.invitation_letter_conference_config_id,
                 "document_id": obj.id,
             },
         )
         return mark_safe(f'<a href="{url}">Edit</a>')
 
     def edit_dynamic_document_view(self, request, config_id, document_id):
-        config = InvitationLetterOrganizerConfig.objects.get(id=config_id)
+        config = InvitationLetterConferenceConfig.objects.get(id=config_id)
         document = get_object_or_404(config.attached_documents, id=document_id)
 
         context = dict(
@@ -183,12 +183,14 @@ class InvitationLetterDocumentInline(OrderedTabularInline):
             },
             {
                 "title": str(config._meta.verbose_name_plural),
-                "url": reverse("admin:visa_invitationletterorganizerconfig_changelist"),
+                "url": reverse(
+                    "admin:visa_invitationletterconferenceconfig_changelist"
+                ),
             },
             {
                 "title": str(config),
                 "url": reverse(
-                    "admin:visa_invitationletterorganizerconfig_change",
+                    "admin:visa_invitationletterconferenceconfig_change",
                     args=[config.id],
                 ),
             },
@@ -199,12 +201,15 @@ class InvitationLetterDocumentInline(OrderedTabularInline):
         ]
 
 
-@admin.register(InvitationLetterOrganizerConfig)
-class InvitationLetterOrganizerConfigAdmin(
+@admin.register(InvitationLetterConferenceConfig)
+class InvitationLetterConferenceConfigAdmin(
     OrderedInlineModelAdminMixin, OrderedModelAdmin
 ):
-    list_display = ("organizer",)
+    list_display = ("conference", "conference__organizer")
     search_fields = [
-        "organizer__name",
+        "conference__name",
+    ]
+    list_filter = [
+        "conference__organizer",
     ]
     inlines = [InvitationLetterAssetInline, InvitationLetterDocumentInline]

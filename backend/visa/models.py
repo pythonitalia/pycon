@@ -148,9 +148,7 @@ class InvitationLetterRequest(TimeStampedModel):
         )
 
     def get_config(self):
-        return InvitationLetterOrganizerConfig.objects.get(
-            organizer=self.conference.organizer
-        )
+        return self.conference.invitation_letter_config
 
     class Meta:
         constraints = [
@@ -162,29 +160,29 @@ class InvitationLetterRequest(TimeStampedModel):
         ]
 
 
-class InvitationLetterOrganizerConfig(TimeStampedModel):
-    organizer = models.ForeignKey(
-        "organizers.Organizer",
+class InvitationLetterConferenceConfig(TimeStampedModel):
+    conference = models.OneToOneField(
+        "conferences.Conference",
         on_delete=models.CASCADE,
-        related_name="+",
-        verbose_name=_("organizer"),
+        related_name="invitation_letter_config",
+        verbose_name=_("conference"),
     )
 
     def __str__(self):
-        return f"{self.organizer.name} - Invitation Letter Config"
+        return f"{self.conference.name} - Invitation Letter Config"
 
 
 def invitation_letter_attached_document_upload_to(instance, filename):
-    return f"invitation_letter_attached_documents/{instance.invitation_letter_organizer_config.organizer.slug}/{filename}"
+    return f"invitation_letter_attached_documents/{instance.invitation_letter_conference_config.conference.code}/{filename}"
 
 
 class InvitationLetterDocument(OrderedModel, TimeStampedModel):
     name = models.CharField(_("name"), max_length=300)
-    invitation_letter_organizer_config = models.ForeignKey(
-        "InvitationLetterOrganizerConfig",
+    invitation_letter_conference_config = models.ForeignKey(
+        "InvitationLetterConferenceConfig",
         on_delete=models.CASCADE,
         related_name="attached_documents",
-        verbose_name=_("invitation letter organizer config"),
+        verbose_name=_("Invitation letter conference config"),
     )
     document = models.FileField(
         _("document"),
@@ -194,18 +192,18 @@ class InvitationLetterDocument(OrderedModel, TimeStampedModel):
         blank=True,
     )
     dynamic_document = models.JSONField(_("dynamic document"), null=True, blank=True)
-    order_with_respect_to = "invitation_letter_organizer_config"
+    order_with_respect_to = "invitation_letter_conference_config"
 
     def __str__(self):
         return f"Document: {self.name}"
 
 
 class InvitationLetterAsset(TimeStampedModel):
-    invitation_letter_organizer_config = models.ForeignKey(
-        "InvitationLetterOrganizerConfig",
+    invitation_letter_conference_config = models.ForeignKey(
+        "InvitationLetterConferenceConfig",
         on_delete=models.CASCADE,
         related_name="assets",
-        verbose_name=_("invitation letter organizer config"),
+        verbose_name=_("Invitation letter conference config"),
     )
     identifier = models.CharField(_("identifier"), max_length=100)
     image = models.ImageField(

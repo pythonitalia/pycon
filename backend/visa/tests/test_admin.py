@@ -1,12 +1,12 @@
 from django.urls import reverse
 from django.contrib.admin.sites import AdminSite
-from visa.models import InvitationLetterOrganizerConfig, InvitationLetterRequest
+from visa.models import InvitationLetterConferenceConfig, InvitationLetterRequest
 from visa.admin import InvitationLetterDocumentInline, InvitationLetterRequestAdmin
 import pytest
 
 from visa.tests.factories import (
     InvitationLetterDocumentFactory,
-    InvitationLetterOrganizerConfigFactory,
+    InvitationLetterConferenceConfigFactory,
     InvitationLetterRequestFactory,
 )
 
@@ -15,12 +15,12 @@ pytestmark = pytest.mark.django_db
 
 def test_edit_dynamic_document_view(rf, admin_user):
     admin = InvitationLetterDocumentInline(
-        parent_model=InvitationLetterOrganizerConfig, admin_site=AdminSite()
+        parent_model=InvitationLetterConferenceConfig, admin_site=AdminSite()
     )
 
-    config = InvitationLetterOrganizerConfigFactory()
+    config = InvitationLetterConferenceConfigFactory()
     document = InvitationLetterDocumentFactory(
-        invitation_letter_organizer_config=config,
+        invitation_letter_conference_config=config,
         document=None,
     )
 
@@ -36,12 +36,12 @@ def test_edit_dynamic_document_view(rf, admin_user):
 
 def test_edit_dynamic_document_button():
     admin = InvitationLetterDocumentInline(
-        parent_model=InvitationLetterOrganizerConfig, admin_site=AdminSite()
+        parent_model=InvitationLetterConferenceConfig, admin_site=AdminSite()
     )
 
-    config = InvitationLetterOrganizerConfigFactory()
+    config = InvitationLetterConferenceConfigFactory()
     document = InvitationLetterDocumentFactory(
-        invitation_letter_organizer_config=config,
+        invitation_letter_conference_config=config,
         document=None,
     )
 
@@ -59,12 +59,12 @@ def test_edit_dynamic_document_button():
 
 def test_edit_dynamic_document_button_is_empty_for_static_docs():
     admin = InvitationLetterDocumentInline(
-        parent_model=InvitationLetterOrganizerConfig, admin_site=AdminSite()
+        parent_model=InvitationLetterConferenceConfig, admin_site=AdminSite()
     )
 
-    config = InvitationLetterOrganizerConfigFactory()
+    config = InvitationLetterConferenceConfigFactory()
     document = InvitationLetterDocumentFactory(
-        invitation_letter_organizer_config=config
+        invitation_letter_conference_config=config
     )
 
     html = admin.edit_dynamic_document(document)

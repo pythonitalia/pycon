@@ -29,7 +29,6 @@ class PermissionsBackend(ModelBackend):
             case Conference():
                 return obj.id
             case InvitationLetterDocument():
-                # This is a workaround for now. We need to change our permissions system
-                return obj.invitation_letter_organizer_config.organizer.conferences.first().id
+                return obj.invitation_letter_conference_config.conference_id
             case _:
                 return obj.conference_id

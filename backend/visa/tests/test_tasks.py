@@ -1,7 +1,6 @@
 from uuid import uuid4
 import requests
 from visa.models import InvitationLetterRequestStatus
-from conferences.tests.factories import ConferenceFactory
 import pytest
 from django.test import override_settings
 from visa.tasks import (
@@ -11,7 +10,7 @@ from visa.tasks import (
 from visa.tests.factories import (
     InvitationLetterAssetFactory,
     InvitationLetterDocumentFactory,
-    InvitationLetterOrganizerConfigFactory,
+    InvitationLetterConferenceConfigFactory,
     InvitationLetterRequestFactory,
 )
 from pypdf import PdfReader
@@ -21,16 +20,15 @@ pytestmark = pytest.mark.django_db
 
 @override_settings(PRETIX_API="https://pretix/api/")
 def test_process_invitation_letter_request(requests_mock):
-    conference = ConferenceFactory()
-    config = InvitationLetterOrganizerConfigFactory(organizer=conference.organizer)
+    config = InvitationLetterConferenceConfigFactory()
     InvitationLetterAssetFactory(
-        invitation_letter_organizer_config=config, identifier="test"
+        invitation_letter_conference_config=config, identifier="test"
     )
     InvitationLetterDocumentFactory(
-        invitation_letter_organizer_config=config,
+        invitation_letter_conference_config=config,
     )
     InvitationLetterDocumentFactory(
-        invitation_letter_organizer_config=config,
+        invitation_letter_conference_config=config,
         document=None,
         dynamic_document={
             "header": "header",
@@ -43,11 +41,11 @@ def test_process_invitation_letter_request(requests_mock):
     )
     # skipped as it is empty
     InvitationLetterDocumentFactory(
-        invitation_letter_organizer_config=config, document=None, dynamic_document=None
+        invitation_letter_conference_config=config, document=None, dynamic_document=None
     )
 
     request = InvitationLetterRequestFactory(
-        conference=conference, nationality="Italian"
+        conference=config.conference, nationality="Italian"
     )
 
     requests_mock.get(
@@ -91,10 +89,9 @@ def test_process_invitation_letter_request_handles_generating_ticket_pdfs(
     requests_mock, mocker
 ):
     mock_time = mocker.patch("visa.tasks.time")
-    conference = ConferenceFactory()
-    InvitationLetterOrganizerConfigFactory(organizer=conference.organizer)
+    config = InvitationLetterConferenceConfigFactory()
 
-    request = InvitationLetterRequestFactory(conference=conference)
+    request = InvitationLetterRequestFactory(conference=config.conference)
 
     requests_mock.get(
         f"https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/tickets/attendee-tickets/?attendee_email={request.requester.email}",
@@ -149,10 +146,9 @@ def test_process_invitation_letter_request_handles_failing_ticket_pdfs(
     requests_mock, mocker
 ):
     mock_time = mocker.patch("visa.tasks.time")
-    conference = ConferenceFactory()
-    InvitationLetterOrganizerConfigFactory(organizer=conference.organizer)
+    config = InvitationLetterConferenceConfigFactory()
 
-    request = InvitationLetterRequestFactory(conference=conference)
+    request = InvitationLetterRequestFactory(conference=config.conference)
 
     requests_mock.get(
         f"https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/tickets/attendee-tickets/?attendee_email={request.requester.email}",
@@ -206,11 +202,10 @@ def test_process_invitation_letter_request_handles_failing_ticket_pdfs(
 
 @override_settings(PRETIX_API="https://pretix/api/")
 def test_process_invitation_letter_request_does_nothing_for_processed_reqs():
-    conference = ConferenceFactory()
-    InvitationLetterOrganizerConfigFactory(organizer=conference.organizer)
+    config = InvitationLetterConferenceConfigFactory()
 
     request = InvitationLetterRequestFactory(
-        conference=conference,
+        conference=config.conference,
         status=InvitationLetterRequestStatus.PROCESSED,
     )
 
