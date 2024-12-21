@@ -35,9 +35,6 @@ def make_lock_id(func, *args, **kwargs):
         hash.update(arg.encode("utf-8"))
 
     for kwarg_key, kwarg_value in kwargs.items():
-        if not isinstance(kwarg_key, str):
-            kwarg_key = str(kwarg_key)
-
         if not isinstance(kwarg_value, str):
             kwarg_value = str(kwarg_value)
 
