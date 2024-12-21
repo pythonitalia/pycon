@@ -83,6 +83,7 @@ def process_invitation_letter_request(*, invitation_letter_request_id: int):
 
     pretix_ticket = download_pretix_ticket(invitation_letter_request)
     merger.append(pretix_ticket)
+    merger.compress_identical_objects(remove_identicals=True, remove_orphans=True)
 
     with tempfile.NamedTemporaryFile() as invitation_letter_file:
         merger.write(invitation_letter_file)
@@ -163,13 +164,16 @@ def download_pretix_ticket(invitation_letter_request):
     ticket_url = attendee_ticket["downloads"][0]["url"]
 
     attempts = 0
-    while attempts < 3:
+
+    while True:
         attempts += 1
 
         response = pretix_api.run_request(ticket_url)
-        if response.status_code == 409:
+        if response.status_code == 409 and attempts <= 3:
             time.sleep(2 * attempts)
-        else:
-            response.raise_for_status()
+            continue
+
+        response.raise_for_status()
+        break
 
     return io.BytesIO(response.content)

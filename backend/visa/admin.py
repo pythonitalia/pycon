@@ -110,7 +110,7 @@ class InvitationLetterRequestAdmin(admin.ModelAdmin):
 
 class InvitationLetterAssetInline(admin.TabularInline):
     fields = (
-        "handle",
+        "identifier",
         "image",
     )
     model = InvitationLetterAsset

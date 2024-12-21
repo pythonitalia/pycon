@@ -5,11 +5,11 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
-def invitation_letter_asset(context, asset_handle: str, **kwargs):
+def invitation_letter_asset(context, identifier: str, **kwargs):
     config = context["config"]
     assets = config.assets.all()
     matching_asset = next(
-        (asset for asset in assets if asset.handle == asset_handle), None
+        (asset for asset in assets if asset.identifier == identifier), None
     )
 
     width = kwargs.get("width", None)

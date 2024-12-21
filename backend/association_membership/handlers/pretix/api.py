@@ -32,13 +32,13 @@ class PretixAPI:
         if qs:
             url = f"{url}?" + "&".join([f"{key}={value}" for key, value in qs.items()])
 
-        response = getattr(requests, method)(url, headers=headers)
-        response.raise_for_status()
-        return response
+        return getattr(requests, method)(url, headers=headers)
 
     def _request(self, endpoint: str, **kwargs):
         url = f"{self.base_url}/{endpoint}/"
-        return self.run_request(url, **kwargs)
+        response = self.run_request(url, **kwargs)
+        response.raise_for_status()
+        return response
 
     def get_order_data(self, order_code: str) -> dict:
         response = self._request(f"orders/{order_code}")

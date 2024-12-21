@@ -208,7 +208,7 @@ class InvitationLetterAsset(TimeStampedModel):
         related_name="assets",
         verbose_name=_("invitation letter organizer config"),
     )
-    handle = models.CharField(_("handle"), max_length=100)
+    identifier = models.CharField(_("identifier"), max_length=100)
     image = models.ImageField(
         _("image"),
         upload_to="invitation_letters_assets/",
@@ -218,4 +218,4 @@ class InvitationLetterAsset(TimeStampedModel):
     )
 
     def __str__(self):
-        return f"Asset: {self.handle}"
+        return f"Asset: {self.identifier}"
