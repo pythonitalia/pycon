@@ -141,3 +141,8 @@ class Paginated(Generic[ItemType]):
             ),
             items=items,
         )
+
+
+@strawberry.type
+class NotFound:
+    message: str = "Not found"

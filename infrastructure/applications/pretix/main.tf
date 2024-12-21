@@ -191,7 +191,7 @@ resource "aws_ecs_service" "pretix" {
   name                               = "pretix"
   cluster                            = var.cluster_id
   task_definition                    = aws_ecs_task_definition.pretix.arn
-  desired_count                      = 1
+  desired_count                      = local.is_prod ? 1 : 0
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
 }

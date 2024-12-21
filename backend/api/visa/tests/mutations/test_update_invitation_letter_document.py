@@ -9,14 +9,17 @@ def _update_invitation_letter_document(client, **input):
     return client.query(
         """mutation UpdateInvitationLetterDocument($input: UpdateInvitationLetterDocumentInput!) {
         updateInvitationLetterDocument(input: $input) {
-            id
-            dynamicDocument {
-                header
-                footer
-                pages {
-                    id
-                    title
-                    content
+            __typename
+            ... on InvitationLetterDocument {
+                id
+                dynamicDocument {
+                    header
+                    footer
+                    pages {
+                        id
+                        title
+                        content
+                    }
                 }
             }
         }
@@ -114,8 +117,8 @@ def test_cannot_update_invitation_letter_document_with_static_doc(
     )
 
     assert (
-        response["errors"][0]["message"]
-        == "Invitation letter document has a file attached"
+        response["data"]["updateInvitationLetterDocument"]["__typename"]
+        == "InvitationLetterNotEditable"
     )
     document.refresh_from_db()
     assert document.dynamic_document is None
@@ -159,7 +162,9 @@ def test_update_non_existent_invitation_letter_document(
         },
     )
 
-    assert response["errors"][0]["message"] == "Invitation letter document not found"
+    assert (
+        response["data"]["updateInvitationLetterDocument"]["__typename"] == "NotFound"
+    )
     document.refresh_from_db()
     assert document.dynamic_document == {
         "header": "header",

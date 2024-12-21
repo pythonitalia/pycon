@@ -1,4 +1,6 @@
+from typing import Annotated
 from api.context import Context
+from api.types import NotFound
 from custom_admin.audit import create_change_admin_log_entry
 from visa.models import InvitationLetterDocument as InvitationLetterDocumentModel
 from api.visa.permissions import CanEditInvitationLetterDocument
@@ -27,19 +29,30 @@ class UpdateInvitationLetterDocumentInput:
     dynamic_document: UpdateInvitationLetterDocumentStructureInput
 
 
+@strawberry.type
+class InvitationLetterNotEditable:
+    message: str = "Invitation letter document is not editable"
+
+
+UpdateInvitationLetterDocumentResult = Annotated[
+    InvitationLetterDocument | InvitationLetterNotEditable | NotFound,
+    strawberry.union(name="UpdateInvitationLetterDocumentResult"),
+]
+
+
 @strawberry.field(permission_classes=[CanEditInvitationLetterDocument])
 def update_invitation_letter_document(
     info: strawberry.Info[Context], input: UpdateInvitationLetterDocumentInput
-) -> InvitationLetterDocument:
+) -> UpdateInvitationLetterDocumentResult:
     invitation_letter_document = InvitationLetterDocumentModel.objects.filter(
-        id=input.id
+        id=input.id,
     ).first()
 
     if not invitation_letter_document:
-        raise ValueError("Invitation letter document not found")
+        return NotFound()
 
     if invitation_letter_document.document:
-        raise ValueError("Invitation letter document has a file attached")
+        return InvitationLetterNotEditable()
 
     invitation_letter_document.dynamic_document = strawberry.asdict(
         input.dynamic_document

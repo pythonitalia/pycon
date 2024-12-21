@@ -2,14 +2,16 @@ mutation UpdateInvitationLetterDocument(
   $input: UpdateInvitationLetterDocumentInput!
 ) {
   updateInvitationLetterDocument(input: $input) {
-    id
-    dynamicDocument {
-      header
-      footer
-      pages {
-        id
-        title
-        content
+    ... on InvitationLetterDocument {
+      id
+      dynamicDocument {
+        header
+        footer
+        pages {
+          id
+          title
+          content
+        }
       }
     }
   }
