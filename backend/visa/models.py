@@ -85,23 +85,21 @@ class InvitationLetterRequest(TimeStampedModel):
 
         return self.requester.email
 
-    @property
     def has_accommodation_via_grant(self):
         grant = self.user_grant
 
         if not grant:
             return False
 
-        return grant.has_approved_accommodation
+        return grant.has_approved_accommodation()
 
-    @property
     def has_travel_via_grant(self):
         grant = self.user_grant
 
         if not grant:
             return False
 
-        return grant.has_approved_travel
+        return grant.has_approved_travel()
 
     @property
     def grant_approved_type(self):
@@ -116,7 +114,7 @@ class InvitationLetterRequest(TimeStampedModel):
     def user_grant(self):
         return Grant.objects.for_conference(self.conference).of_user(self.user).first()
 
-    def role(self):
+    def get_role(self):
         user = self.user
 
         if not user:

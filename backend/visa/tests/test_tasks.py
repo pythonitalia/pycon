@@ -204,6 +204,22 @@ def test_process_invitation_letter_request_handles_failing_ticket_pdfs(
     )
 
 
+@override_settings(PRETIX_API="https://pretix/api/")
+def test_process_invitation_letter_request_does_nothing_for_processed_reqs():
+    conference = ConferenceFactory()
+    InvitationLetterOrganizerConfigFactory(organizer=conference.organizer)
+
+    request = InvitationLetterRequestFactory(
+        conference=conference,
+        status=InvitationLetterRequestStatus.PROCESSED,
+    )
+
+    process_invitation_letter_request(invitation_letter_request_id=request.id)
+
+    request.refresh_from_db()
+    assert request.status == InvitationLetterRequestStatus.PROCESSED
+
+
 def test_process_invitation_letter_request_failed():
     request = InvitationLetterRequestFactory()
 

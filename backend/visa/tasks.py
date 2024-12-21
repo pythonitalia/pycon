@@ -140,10 +140,10 @@ def _render_content(content, invitation_letter_request, config):
                 "date_of_birth": invitation_letter_request.date_of_birth,
                 "passport_number": invitation_letter_request.passport_number,
                 "embassy_name": invitation_letter_request.embassy_name,
-                "role": invitation_letter_request.role,
+                "role": invitation_letter_request.get_role(),
                 "grant_approved_type": invitation_letter_request.grant_approved_type,
-                "has_accommodation_via_grant": invitation_letter_request.has_accommodation_via_grant,
-                "has_travel_via_grant": invitation_letter_request.has_travel_via_grant,
+                "has_accommodation_via_grant": invitation_letter_request.has_accommodation_via_grant(),
+                "has_travel_via_grant": invitation_letter_request.has_travel_via_grant(),
                 # conference
                 "conference": invitation_letter_request.conference,
             }
@@ -159,7 +159,7 @@ def download_pretix_ticket(invitation_letter_request):
     attendee_ticket = next(
         (ticket for ticket in attendee_tickets if ticket["item"]["admission"]), None
     )
-    assert attendee_ticket
+    assert attendee_ticket, "No attendee ticket found"
 
     ticket_url = attendee_ticket["downloads"][0]["url"]
 

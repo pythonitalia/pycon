@@ -20,11 +20,6 @@ from visa.models import (
 )
 
 
-def process_invitation_letters(modeladmin, request, queryset):
-    for invitation_letter_request in queryset:
-        invitation_letter_request.schedule()
-
-
 @admin.register(InvitationLetterRequest)
 class InvitationLetterRequestAdmin(admin.ModelAdmin):
     fields = (
@@ -76,7 +71,6 @@ class InvitationLetterRequestAdmin(admin.ModelAdmin):
         "has_accommodation_via_grant",
         "send_via_email",
     )
-    actions = [process_invitation_letters]
 
     def save_form(self, request, form, change):
         obj = super().save_form(request, form, change)
