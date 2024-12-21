@@ -7,8 +7,12 @@ from strawberry.tools import create_type
 
 @strawberry.field(permission_classes=[CanViewInvitationLetterDocument])
 def invitation_letter_document(id: strawberry.ID) -> InvitationLetterDocument | None:
-    invitation_letter_document = InvitationLetterDocumentModel.objects.get(id=id)
-    return InvitationLetterDocument.from_model(invitation_letter_document)
+    if invitation_letter_document := InvitationLetterDocumentModel.objects.filter(
+        id=id
+    ).first():
+        return InvitationLetterDocument.from_model(invitation_letter_document)
+
+    return None
 
 
 VisaQuery = create_type(

@@ -12,6 +12,8 @@ def invitation_letter_asset(context, identifier: str, **kwargs):
         (asset for asset in assets if asset.identifier == identifier), None
     )
 
+    assert matching_asset, f"No asset found with identifier {identifier}"
+
     width = kwargs.get("width", None)
     height = kwargs.get("height", None)
 
@@ -21,7 +23,7 @@ def invitation_letter_asset(context, identifier: str, **kwargs):
     if height:
         style_props["height"] = height
 
-    style_props_as_str = " ".join([f"{k}: {v}" for k, v in style_props.items()])
+    style_props_as_str = ";".join([f"{k}: {v}" for k, v in style_props.items()])
     return mark_safe(
         f'<img src="{matching_asset.image.url}" style="{style_props_as_str}" />'
     )

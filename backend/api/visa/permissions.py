@@ -25,7 +25,7 @@ class CanViewInvitationLetterDocument(IsStaffPermission):
 
 
 class CanEditInvitationLetterDocument(CanViewInvitationLetterDocument):
-    message = "Cannot view invitation letter document"
+    message = "Cannot edit invitation letter document"
 
     def has_permission(self, source, info, **kwargs):
         if not super().has_permission(source, info, **kwargs):

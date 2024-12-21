@@ -1,4 +1,3 @@
-import json
 from api.context import Context
 from custom_admin.audit import create_change_admin_log_entry
 from visa.models import InvitationLetterDocument as InvitationLetterDocumentModel
@@ -21,9 +20,6 @@ class UpdateInvitationLetterDocumentStructureInput:
     footer: str
     pages: list[UpdateInvitationLetterDocumentPageInput]
 
-    def to_json(self) -> str:
-        return json.dumps(self.to_dict())
-
 
 @strawberry.input
 class UpdateInvitationLetterDocumentInput:
@@ -35,7 +31,16 @@ class UpdateInvitationLetterDocumentInput:
 def update_invitation_letter_document(
     info: strawberry.Info[Context], input: UpdateInvitationLetterDocumentInput
 ) -> InvitationLetterDocument:
-    invitation_letter_document = InvitationLetterDocumentModel.objects.get(id=input.id)
+    invitation_letter_document = InvitationLetterDocumentModel.objects.filter(
+        id=input.id
+    ).first()
+
+    if not invitation_letter_document:
+        raise ValueError("Invitation letter document not found")
+
+    if invitation_letter_document.document:
+        raise ValueError("Invitation letter document has a file attached")
+
     invitation_letter_document.dynamic_document = strawberry.asdict(
         input.dynamic_document
     )
