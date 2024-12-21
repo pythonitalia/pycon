@@ -9,6 +9,7 @@ from ordered_model.admin import (
 )
 from django.contrib import admin
 from django.template.response import TemplateResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 
@@ -146,9 +147,8 @@ class InvitationLetterDocumentInline(OrderedTabularInline):
         return mark_safe(f'<a href="{url}">Edit</a>')
 
     def edit_dynamic_document_view(self, request, config_id, document_id):
-        document = InvitationLetterDocument.objects.get(id=document_id)
-        config = document.invitation_letter_organizer_config
-        assert config.id == config_id
+        config = InvitationLetterOrganizerConfig.objects.get(id=config_id)
+        document = get_object_or_404(config.attached_documents, id=document_id)
 
         context = dict(
             self.admin_site.each_context(request),
