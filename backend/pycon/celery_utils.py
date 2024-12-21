@@ -34,16 +34,14 @@ def make_lock_id(func, *args, **kwargs):
             arg = str(arg)
         hash.update(arg.encode("utf-8"))
 
-    for key, value in kwargs.items():
-        if not isinstance(key, str):
-            key = str(key)
+    for kwarg_key, kwarg_value in kwargs.items():
+        if not isinstance(kwarg_key, str):
+            kwarg_key = str(kwarg_key)
 
-        if not isinstance(value, str):
-            value = str(value)
+        if not isinstance(kwarg_value, str):
+            kwarg_value = str(kwarg_value)
 
-        key = key.encode("utf-8")
-        value = value.encode("utf-8")
-        hash.update(f"{key}={value}".encode("utf-8"))
+        hash.update(f"{kwarg_key}={kwarg_value}".encode("utf-8"))
 
     if args or kwargs:
         key = f"{key}_{hash.hexdigest()}"

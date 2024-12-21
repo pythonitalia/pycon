@@ -1,7 +1,11 @@
 from unittest import mock
 from files_upload.models import File
 from files_upload.tests.factories import FileFactory
-from pycon.storages import CustomFileSystemStorage, CustomS3Boto3Storage
+from pycon.storages import (
+    CustomFileSystemStorage,
+    CustomS3Boto3Storage,
+    PrivateCustomS3Boto3Storage,
+)
 
 
 def test_s3_storage_generate_public_upload_url(mocker):
@@ -41,3 +45,9 @@ def test_local_storage_generate_upload_url():
     assert f"local_files_upload/{file.id}" in return_value.url
     assert return_value.fields == {}
     assert return_value.fields_as_json == "{}"
+
+
+def test_private_storage_removes_cache_control_params():
+    storage = PrivateCustomS3Boto3Storage()
+    params = storage.get_object_parameters("test.pdf")
+    assert "CacheControl" not in params
