@@ -19,7 +19,7 @@ def test_request_on_behalf_of_other():
     assert request.on_behalf_of_other
     assert request.email == "example@example.org"
     assert request.user is None
-    assert request.get_role() == "Attendee"
+    assert request.role == "Attendee"
 
     # With matching user, it is found
     user = UserFactory(email="example@example.org")
@@ -74,7 +74,7 @@ def test_role_for_speakers():
         status=Submission.STATUS.accepted,
     )
 
-    assert request.get_role() == "Speaker"
+    assert request.role == "Speaker"
 
 
 def test_schedule_processing(django_capture_on_commit_callbacks, mocker):

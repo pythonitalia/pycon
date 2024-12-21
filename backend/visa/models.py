@@ -114,7 +114,8 @@ class InvitationLetterRequest(TimeStampedModel):
     def user_grant(self):
         return Grant.objects.for_conference(self.conference).of_user(self.user).first()
 
-    def get_role(self):
+    @cached_property
+    def role(self):
         user = self.user
 
         if not user:
