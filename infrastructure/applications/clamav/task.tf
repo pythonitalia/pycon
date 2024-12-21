@@ -69,7 +69,7 @@ resource "aws_ecs_service" "clamav" {
   name                               = "clamav"
   cluster                            = var.cluster_id
   task_definition                    = aws_ecs_task_definition.clamav.arn
-  desired_count                      = var.local.is_prod ? 1 : 0
+  desired_count                      = local.is_prod ? 1 : 0
   deployment_minimum_healthy_percent = 0
   deployment_maximum_percent         = 100
 }
