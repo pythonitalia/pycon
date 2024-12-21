@@ -2,17 +2,16 @@ import clsx from "clsx";
 import React, { Fragment } from "react";
 
 type Breadcrumb = {
-  id: number;
-  label: string;
+  title: string;
   url?: string;
 };
 
 type Props = {
   children: any;
-  breadcrumbs: Breadcrumb[];
 };
 
-export const DjangoAdminLayout = ({ children, breadcrumbs }: Props) => {
+export const DjangoAdminLayout = ({ children }: Props) => {
+  const breadcrumbs: Breadcrumb[] = JSON.parse((window as any).breadcrumbs);
   return (
     <div>
       <Header />
@@ -37,7 +36,10 @@ const Breadcrumbs = ({ breadcrumbs }: { breadcrumbs: Breadcrumb[] }) => {
     <nav aria-label="Breadcrumbs">
       <div className="py-3 px-10 text-white bg-[#79aec8]">
         <span>
-          <a className="hover:text-[#c4dce8] transition-colors" href="/admin">
+          <a
+            className="hover:text-[#c4dce8] transition-colors text-sm"
+            href="/admin"
+          >
             Home
           </a>
         </span>
@@ -45,14 +47,17 @@ const Breadcrumbs = ({ breadcrumbs }: { breadcrumbs: Breadcrumb[] }) => {
         {breadcrumbs.map((breadcrumb, index) => {
           const last = index === breadcrumbs.length - 1;
           return (
-            <span key={breadcrumb.id}>
+            <span key={index}>
               <a
                 href={breadcrumb.url}
-                className={clsx("hover:text-[#c4dce8] transition-colors", {
-                  "text-[#c4dce8]": last,
-                })}
+                className={clsx(
+                  "hover:text-[#c4dce8] transition-colors text-sm",
+                  {
+                    "text-[#c4dce8]": last,
+                  },
+                )}
               >
-                {breadcrumb.label}
+                {breadcrumb.title}
               </a>
               {!last && <span>{" \u203a "}</span>}
             </span>

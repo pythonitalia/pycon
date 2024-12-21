@@ -28,6 +28,7 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
     code = models.CharField(_("code"), max_length=100, unique=True)
     timezone = TimeZoneField()
     logo = models.ImageField(_("logo"), upload_to=get_upload_to, blank=True)
+    location = models.TextField(_("location"), max_length=1024, blank=True)
 
     topics = models.ManyToManyField(
         "conferences.Topic", verbose_name=_("topics"), blank=True

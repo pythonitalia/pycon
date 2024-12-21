@@ -17,8 +17,7 @@ export const ScheduleBuilderRoot = () => {
 };
 
 const ScheduleBuilder = () => {
-  const { conferenceCode, conferenceId, conferenceRepr } =
-    useCurrentConference();
+  const { conferenceCode } = useCurrentConference();
   const { error, loading, data } = useConferenceScheduleQuery({
     variables: {
       conferenceCode,
@@ -30,18 +29,7 @@ const ScheduleBuilder = () => {
   } = data ?? { conference: {} };
 
   return (
-    <DjangoAdminLayout
-      breadcrumbs={[
-        { id: 0, label: "Conferences", url: "/admin/conferences" },
-        { id: 1, label: "Conferences", url: "/admin/conferences/conference" },
-        {
-          id: 2,
-          label: conferenceRepr,
-          url: `/admin/conferences/conference/${conferenceId}`,
-        },
-        { id: 3, label: "Schedule Builder" },
-      ]}
-    >
+    <DjangoAdminLayout>
       {loading && <h2>Please wait</h2>}
       {!loading && error && (
         <h2>Something went wrong. Make sure you have the right permissions.</h2>

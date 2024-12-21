@@ -18,6 +18,9 @@ STORAGES = {
     "default": {
         "BACKEND": "pycon.storages.CustomInMemoryStorage",
     },
+    "private": {
+        "BACKEND": "pycon.storages.CustomInMemoryStorage",
+    },
     "localstorage": {
         "BACKEND": "pycon.storages.CustomInMemoryStorage",
     },

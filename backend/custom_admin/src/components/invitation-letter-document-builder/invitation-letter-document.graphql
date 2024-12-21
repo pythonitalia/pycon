@@ -1,0 +1,14 @@
+query InvitationLetterDocument($id: ID!) {
+  invitationLetterDocument(id: $id) {
+    id
+    dynamicDocument {
+      header
+      footer
+      pages {
+        id
+        title
+        content
+      }
+    }
+  }
+}

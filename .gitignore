@@ -135,3 +135,5 @@ badge-service/badges.zip
 backend/custom_admin/src/types.ts
 backend/schema.graphql
 backend/__pypackages__/
+backend/custom_admin/.astro/
+backend/custom_admin/core.*

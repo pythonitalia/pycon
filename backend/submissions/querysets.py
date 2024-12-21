@@ -12,3 +12,6 @@ class SubmissionQuerySet(ConferenceQuerySetMixin, models.QuerySet):
 
     def accepted(self):
         return self.filter(status=self.model.STATUS.accepted)
+
+    def of_user(self, user):
+        return self.filter(speaker=user)

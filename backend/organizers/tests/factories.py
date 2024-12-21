@@ -9,4 +9,4 @@ class OrganizerFactory(DjangoModelFactory):
         model = Organizer
 
     name = factory.Faker("word")
-    slug = factory.Faker("text")
+    slug = factory.Sequence(lambda n: "slug{}".format(n))

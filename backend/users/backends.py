@@ -1,3 +1,4 @@
+from visa.models import InvitationLetterDocument
 from conferences.models.conference import Conference
 from django.contrib.auth.backends import ModelBackend
 from django.db.models.base import Model
@@ -27,5 +28,7 @@ class PermissionsBackend(ModelBackend):
         match obj:
             case Conference():
                 return obj.id
+            case InvitationLetterDocument():
+                return obj.invitation_letter_conference_config.conference_id
             case _:
                 return obj.conference_id

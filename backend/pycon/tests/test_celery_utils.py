@@ -18,6 +18,10 @@ def test_make_lock_id(mocker):
     args_md5 = hashlib.md5("123".encode("utf-8")).hexdigest()
     assert key == f"celery_lock_pycon.tests.test_celery_utils_test_func_{args_md5}"
 
+    key = make_lock_id(test_func, 1, arg1="abc")
+    args_md5 = hashlib.md5("1arg1=abc".encode("utf-8")).hexdigest()
+    assert key == f"celery_lock_pycon.tests.test_celery_utils_test_func_{args_md5}"
+
     mocker.patch.dict(os.environ, {"PYTEST_XDIST_WORKER": "1"})
     key = make_lock_id(test_func)
     assert key == "celery_lock_pycon.tests.test_celery_utils_test_func_1"

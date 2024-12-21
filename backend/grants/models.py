@@ -67,7 +67,10 @@ class Grant(TimeStampedModel):
         ticket_only = "ticket_only", _("Ticket Only")
         ticket_travel = "ticket_travel", _("Ticket + Travel")
         ticket_accommodation = "ticket_accommodation", _("Ticket + Accommodation")
-        ticket_travel_accommodation = "Ticket", _("Ticket + Travel + Accommodation")
+        ticket_travel_accommodation = (
+            "ticket_travel_accommodation",
+            _("Ticket + Travel + Accommodation"),
+        )
 
     conference = models.ForeignKey(
         "conferences.Conference",

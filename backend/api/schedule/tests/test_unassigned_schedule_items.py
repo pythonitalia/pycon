@@ -14,7 +14,7 @@ def _unassigned_schedule_items(client, **input):
             id
         }
     }""",
-        variables={**input},
+        variables=input,
     )
 
 
