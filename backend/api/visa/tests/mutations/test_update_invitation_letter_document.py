@@ -1,5 +1,4 @@
 from django.contrib.auth.models import Permission
-from conferences.tests.factories import ConferenceFactory
 from visa.tests.factories import InvitationLetterDocumentFactory
 import pytest
 
@@ -243,7 +242,6 @@ def test_update_invitation_letter_document_as_staff_without_permission(
             ],
         },
     )
-    ConferenceFactory(organizer=document.invitation_letter_conference_config.organizer)
 
     response = _update_invitation_letter_document(
         admin_graphql_api_client,
@@ -297,7 +295,6 @@ def test_update_invitation_letter_document_as_staff_user_with_permission(
             ],
         },
     )
-    ConferenceFactory(organizer=document.invitation_letter_conference_config.organizer)
 
     admin_user.admin_all_conferences = True
     admin_user.save()
