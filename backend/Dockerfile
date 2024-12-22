@@ -1,6 +1,19 @@
-ARG FUNCTION_DIR="/home/app/"
+ARG FUNCTION_DIR="/home/app"
 
-FROM python:3.11-slim as build-stage
+FROM python:3.11-slim as base
+
+ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod \
+    AWS_MEDIA_BUCKET=example \
+    AWS_REGION_NAME=eu-central-1 \
+    SECRET_KEY=DEMO \
+    STRIPE_SECRET_API_KEY=demo \
+    STRIPE_SUBSCRIPTION_PRICE_ID=demo \
+    STRIPE_WEBHOOK_SIGNATURE_SECRET=demo \
+    CELERY_BROKER_URL=demo \
+    CELERY_RESULT_BACKEND=demo \
+    HASHID_DEFAULT_SECRET_SALT=demo
+
+FROM base as build-stage
 
 ARG FUNCTION_DIR
 
@@ -15,13 +28,9 @@ RUN apt-get update -y && apt-get install -y \
     libharfbuzz-dev libfribidi-dev libxcb1-dev libldap2-dev libldap-2.5-0 \
     ffmpeg libsm6 libxext6 libglib2.0-0 libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0
 
-ENV LIBRARY_PATH=/lib:/usr/lib
+ENV LIBRARY_PATH=/lib:/usr/lib LD_LIBRARY_PATH=/lib:/usr/lib
 
 RUN pip install uv==0.5.5
-
-ARG TARGETPLATFORM
-
-ARG TARGETPLATFORM
 
 RUN tar -czvf /libs.tar.gz \
         /usr/lib/aarch64-linux-gnu/libpq* \
@@ -50,45 +59,20 @@ RUN tar -czvf /libs.tar.gz \
         /usr/lib/aarch64-linux-gnu/libbsd* \
         /usr/lib/aarch64-linux-gnu/libpango* \
         /usr/lib/aarch64-linux-gnu/libharf* \
+        /usr/lib/aarch64-linux-gnu/libharfbuzz* \
         /usr/lib/aarch64-linux-gnu/libgobject*;
 
-
-COPY pyproject.toml uv.lock ${FUNCTION_DIR}
+COPY pyproject.toml uv.lock ./
 
 RUN uv sync --no-dev
 
-# Create GraphQL schema
+COPY . ./
 
-FROM python:3.11-slim as schema-stage
-
-ARG FUNCTION_DIR
-
-WORKDIR ${FUNCTION_DIR}
-
-COPY --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
-COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
-COPY --from=build-stage /libs.tar.gz /libs.tar.gz
-
-RUN tar -xvf /libs.tar.gz -C / && rm /libs.tar.gz && ldconfig
-
-COPY . ${FUNCTION_DIR}
-
-ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod
-
-RUN AWS_MEDIA_BUCKET=example \
-    AWS_REGION_NAME=eu-central-1 \
-    SECRET_KEY=DEMO \
-    STRIPE_SECRET_API_KEY=demo \
-    STRIPE_SUBSCRIPTION_PRICE_ID=demo \
-    STRIPE_WEBHOOK_SIGNATURE_SECRET=demo \
-    CELERY_BROKER_URL=demo \
-    CELERY_RESULT_BACKEND=demo \
-    HASHID_DEFAULT_SECRET_SALT=demo \
-    ${FUNCTION_DIR}/.venv/bin/python manage.py graphql_schema
+RUN .venv/bin/python manage.py graphql_schema
 
 # Build custom admin components
 
-FROM node:18.17.1 as js-stage
+FROM node:23 as js-stage
 
 ARG FUNCTION_DIR
 
@@ -100,20 +84,22 @@ COPY custom_admin/package.json custom_admin/pnpm-lock.yaml ./
 
 RUN pnpm install
 
-COPY custom_admin/ .
+COPY --from=build-stage ${FUNCTION_DIR}/schema.graphql schema.graphql
 
-COPY --from=schema-stage ${FUNCTION_DIR}/schema.graphql schema.graphql
+COPY custom_admin/ .
 
 RUN ADMIN_GRAPHQL_URL=schema.graphql pnpm codegen
 RUN pnpm build
 
-# Final stage
+# Runtime stage
 
-FROM python:3.11-slim
+FROM base
 
 ARG FUNCTION_DIR
 
 WORKDIR ${FUNCTION_DIR}
+
+ENV LIBRARY_PATH=/lib:/usr/lib LD_LIBRARY_PATH=/lib:/usr/lib
 
 RUN apt-get update -y && apt-get install -y curl
 
@@ -121,8 +107,8 @@ RUN groupadd -r app && useradd -r -g app app && mkdir -p ${FUNCTION_DIR} && chow
 
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/_astro ${FUNCTION_DIR}/custom_admin/static/_astro/
-
 COPY --chown=app:app --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
+
 COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
 COPY --from=build-stage /libs.tar.gz /libs.tar.gz
 
@@ -132,20 +118,11 @@ COPY --chown=app:app . ${FUNCTION_DIR}
 
 USER app
 
-RUN mkdir -p ${FUNCTION_DIR}/assets
+RUN mkdir -p assets
 
 ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod
 
-RUN AWS_MEDIA_BUCKET=example \
-    AWS_REGION_NAME=eu-central-1 \
-    SECRET_KEY=DEMO \
-    STRIPE_SECRET_API_KEY=demo \
-    STRIPE_SUBSCRIPTION_PRICE_ID=demo \
-    STRIPE_WEBHOOK_SIGNATURE_SECRET=demo \
-    CELERY_BROKER_URL=demo \
-    CELERY_RESULT_BACKEND=demo \
-    HASHID_DEFAULT_SECRET_SALT=demo \
-    ${FUNCTION_DIR}/.venv/bin/python manage.py collectstatic --noinput
+RUN .venv/bin/python manage.py collectstatic --noinput
 
-ENTRYPOINT ["/home/app/.venv/bin/python", "-m", "awslambdaric"]
-CMD [ "wsgi_handler.handler" ]
+ENTRYPOINT ["/home/app/.venv/bin/gunicorn"]
+CMD [ "pycon.wsgi" ]
