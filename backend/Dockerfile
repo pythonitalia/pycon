@@ -68,7 +68,6 @@ RUN tar -czvf /libs.tar.gz --strip-components=4 \
         /usr/lib/aarch64-linux-gnu/libthai* \
         /usr/lib/aarch64-linux-gnu/libfribidi* \
         /usr/lib/aarch64-linux-gnu/libdatrie* \
-        /usr/lib/aarch64-linux-gnu/fontconfig* \
         /usr/lib/aarch64-linux-gnu/libbsd*;
 
 COPY pyproject.toml uv.lock ./
