@@ -1,6 +1,7 @@
+# check=skip=SecretsUsedInArgOrEnv
 ARG FUNCTION_DIR="/home/app"
 
-FROM python:3.11-slim as base
+FROM python:3.11-slim AS base
 
 ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod \
     AWS_MEDIA_BUCKET=example \
@@ -13,7 +14,7 @@ ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod \
     CELERY_RESULT_BACKEND=demo \
     HASHID_DEFAULT_SECRET_SALT=demo
 
-FROM base as build-stage
+FROM base AS build-stage
 
 ARG FUNCTION_DIR
 
@@ -26,48 +27,41 @@ RUN apt-get update -y && apt-get install -y \
     libtiff5-dev libjpeg62 libopenjp2-7-dev zlib1g-dev \
     libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python3-tk \
     libharfbuzz-dev libfribidi-dev libxcb1-dev libldap2-dev libldap-2.5-0 \
-    ffmpeg libsm6 libxext6 libglib2.0-0 libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0
+    ffmpeg libsm6 libxext6 libglib2.0-0 libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 fontconfig
 
 ENV LIBRARY_PATH=/lib:/usr/lib LD_LIBRARY_PATH=/lib:/usr/lib
 
 RUN pip install uv==0.5.5
 
 RUN tar -czvf /libs.tar.gz --directory /usr/lib/aarch64-linux-gnu \
-        libpq* \
-        libldap_r* \
-        libldap* \
-        liblber* \
-        libsasl* \
-        libxml2* \
-        libgcrypt* \
-        libstdc++* \
-        libjpeg* \
-        libopenjp2* \
-        libdeflate* \
-        libjbig* \
-        liblcms2* \
-        libwebp* \
-        libtiff* \
-        libGL* \
-        libgthread* \
-        libglib-* \
-        libX11* \
-        libxcb* \
-        libXau* \
-        libXdmcp* \
-        libXext* \
-        libpango* \
-        libharf* \
-        libharfbuzz* \
-        libfontconfig* \
-        libexpat* \
-        libgobject* \
-        libbrotli* \
-        libpng* \
-        libthai* \
-        libfribidi* \
-        libdatrie* \
-        libbsd*;
+    libpq* \
+    libldap_r* \
+    libldap* \
+    liblber* \
+    libsasl* \
+    libxml2* \
+    libgcrypt* \
+    libstdc++* \
+    libjpeg* \
+    libopenjp2* \
+    libdeflate* \
+    libjbig* \
+    liblcms2* \
+    libwebp* \
+    libtiff* \
+    libGL* \
+    libgthread* \
+    libglib-* \
+    libX11* \
+    libxcb* \
+    libXau* \
+    libXdmcp* \
+    libXext* \
+    libpango* \
+    libharf* \
+    libharfbuzz* \
+    libfontconfig*;
+
 
 COPY pyproject.toml uv.lock ./
 
@@ -79,7 +73,7 @@ RUN .venv/bin/python manage.py graphql_schema
 
 # Build custom admin components
 
-FROM node:23 as js-stage
+FROM node:23 AS js-stage
 
 ARG FUNCTION_DIR
 
