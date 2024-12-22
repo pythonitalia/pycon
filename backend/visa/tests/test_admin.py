@@ -30,8 +30,8 @@ def test_edit_dynamic_document_view(rf, admin_user):
 
     assert response.status_code == 200
     assert response.template_name == "astro/invitation-letter-document-builder.html"
-    assert response.context_data["arguments"]["document_id"] == document.id
-    assert response.context_data["arguments"]["breadcrumbs"]
+    assert response.context_data["document_id"] == document.id
+    assert response.context_data["breadcrumbs"]
 
 
 def test_edit_dynamic_document_button():

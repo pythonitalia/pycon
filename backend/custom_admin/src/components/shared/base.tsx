@@ -11,7 +11,7 @@ type Props = {
 };
 
 const client = new ApolloClient({
-  uri: (window as any).apolloGraphQLUrl,
+  uri: "/admin/graphql",
   cache: new InMemoryCache(),
 });
 

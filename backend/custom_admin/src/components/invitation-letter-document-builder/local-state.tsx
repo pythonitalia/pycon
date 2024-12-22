@@ -4,6 +4,7 @@ import { useInvitationLetterDocumentSuspenseQuery } from "./invitation-letter-do
 import { useUpdateInvitationLetterDocumentMutation } from "./update-invitation-letter-document.generated";
 
 import { createContext } from "react";
+import { getArg } from "../shared/get-arg";
 
 type State = {
   header: string;
@@ -160,7 +161,7 @@ const removeTypenames = (obj) => {
 };
 
 const useLoadRemoteData = (dispatch) => {
-  const documentId = (window as any).documentId;
+  const documentId = getArg("document_id");
 
   const { data } = useInvitationLetterDocumentSuspenseQuery({
     variables: {
@@ -192,7 +193,7 @@ const useSaveRemoteData = (): [(newData) => void, boolean, boolean] => {
       updateInvitationLetter({
         variables: {
           input: {
-            id: (window as any).documentId,
+            id: getArg("document_id"),
             dynamicDocument: newData,
           },
         },

@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import React, { Fragment } from "react";
+import { getArg } from "./get-arg";
 
 type Breadcrumb = {
   title: string;
@@ -11,7 +12,7 @@ type Props = {
 };
 
 export const DjangoAdminLayout = ({ children }: Props) => {
-  const breadcrumbs: Breadcrumb[] = JSON.parse((window as any).breadcrumbs);
+  const breadcrumbs: Breadcrumb[] = getArg("breadcrumbs");
   return (
     <div>
       <Header />

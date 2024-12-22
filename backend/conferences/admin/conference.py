@@ -1,4 +1,3 @@
-import json
 from django.template.response import TemplateResponse
 from pathlib import Path
 from django.core.files.storage import storages
@@ -11,7 +10,6 @@ from django.forms.models import ModelForm
 from django.shortcuts import redirect, render
 from django.urls import path, reverse
 from django.utils.translation import gettext_lazy as _
-from django.utils.safestring import mark_safe
 from ordered_model.admin import (
     OrderedInlineModelAdminMixin,
     OrderedModelAdmin,
@@ -215,13 +213,9 @@ class ConferenceAdmin(
         conference = Conference.objects.get(pk=object_id)
         context = dict(
             self.admin_site.each_context(request),
-            arguments={
-                "conference_id": object_id,
-                "conference_code": conference.code,
-                "breadcrumbs": mark_safe(
-                    json.dumps(self._build_schedule_builder_breadcrumbs(conference))
-                ),
-            },
+            conference_id=object_id,
+            conference_code=conference.code,
+            breadcrumbs=self._build_schedule_builder_breadcrumbs(conference),
             title="Schedule Builder",
         )
         return TemplateResponse(request, "astro/schedule-builder.html", context)

@@ -1,4 +1,3 @@
-import json
 from django.utils.safestring import mark_safe
 
 from django.urls import path
@@ -152,12 +151,8 @@ class InvitationLetterDocumentInline(OrderedTabularInline):
 
         context = dict(
             self.admin_site.each_context(request),
-            arguments={
-                "document_id": document_id,
-                "breadcrumbs": mark_safe(
-                    json.dumps(self._create_builder_breadcrumbs(config, document))
-                ),
-            },
+            document_id=document_id,
+            breadcrumbs=self._create_builder_breadcrumbs(config, document),
             title="Invitation Letter Document Builder",
         )
         return TemplateResponse(
