@@ -71,6 +71,7 @@ class PrivateCustomS3Boto3Storage(CustomS3Boto3Storage):
     def get_default_settings(self):
         settings = super().get_default_settings()
         settings["custom_domain"] = None
+        settings["querystring_auth"] = True
         return settings
 
 

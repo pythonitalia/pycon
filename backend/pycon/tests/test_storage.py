@@ -51,3 +51,10 @@ def test_private_storage_removes_cache_control_params():
     storage = PrivateCustomS3Boto3Storage()
     params = storage.get_object_parameters("test.pdf")
     assert "CacheControl" not in params
+
+
+def test_private_storage_removes_public_settings():
+    storage = PrivateCustomS3Boto3Storage()
+    params = storage.get_default_settings()
+    assert params["custom_domain"] is None
+    assert params["querystring_auth"]
