@@ -62,6 +62,12 @@ RUN tar -czvf /libs.tar.gz \
         /usr/lib/aarch64-linux-gnu/libharfbuzz* \
         /usr/lib/aarch64-linux-gnu/libgobject*;
 
+RUN tar -czvf /libs-lib.tar.gz \
+        /lib/aarch64-linux-gnu/libpango* \
+        /lib/aarch64-linux-gnu/libharf* \
+        /lib/aarch64-linux-gnu/libharfbuzz* \
+        /lib/aarch64-linux-gnu/libgobject*;
+
 COPY pyproject.toml uv.lock ./
 
 RUN uv sync --no-dev
@@ -111,9 +117,14 @@ COPY --chown=app:app --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.v
 
 COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
 COPY --from=build-stage /lib/aarch64-linux-gnu/*.so* /lib/aarch64-linux-gnu/
+COPY --from=build-stage /libs-lib.tar.gz /libs-2.tar.gz
 COPY --from=build-stage /libs.tar.gz /libs.tar.gz
 
-RUN tar -xvf /libs.tar.gz -C / && rm /libs.tar.gz && ldconfig
+RUN tar -xvf /libs.tar.gz -C / && \
+    tar -xvf /libs-2.tar.gz -C / && \
+    rm /libs.tar.gz && \
+    rm /libs-2.tar.gz && \
+    ldconfig
 
 COPY --chown=app:app . ${FUNCTION_DIR}
 
