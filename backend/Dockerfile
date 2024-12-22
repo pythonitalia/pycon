@@ -48,6 +48,8 @@ RUN tar -czvf /libs.tar.gz \
         /usr/lib/aarch64-linux-gnu/libXdmcp* \
         /usr/lib/aarch64-linux-gnu/libXext* \
         /usr/lib/aarch64-linux-gnu/libbsd* \
+        /usr/lib/aarch64-linux-gnu/libpango* \
+        /usr/lib/aarch64-linux-gnu/libharf* \
         /usr/lib/aarch64-linux-gnu/libgobject*;
 
 
