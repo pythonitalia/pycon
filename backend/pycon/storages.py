@@ -68,6 +68,11 @@ class PrivateCustomS3Boto3Storage(CustomS3Boto3Storage):
         params.pop("CacheControl", None)
         return params
 
+    def get_default_settings(self):
+        settings = super().get_default_settings()
+        settings["custom_domain"] = None
+        return settings
+
 
 class CustomInMemoryStorage(InMemoryStorage):
     is_remote = False
