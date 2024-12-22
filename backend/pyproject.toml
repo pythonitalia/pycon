@@ -73,13 +73,11 @@ dependencies = [
     "django-import-export<4.0.0,>=3.2.0",
     "dal-admin-filters==1.1.0",
     "django-markdownify==0.9.5",
-    "psycopg2==2.9.9",
     "django-imagekit==5.0.0",
     "pillow==10.4.0",
     "redis[hiredis]==5.0.2",
     "google-api-python-client<3.0.0,>=2.94.0",
     "google-auth<3.0.0,>=2.22.0",
-    "opencv-python<5.0.0.0,>=4.8.0.74",
     "argon2-cffi<24.0.0,>=23.1.0",
     "stripe==10.5.0",
     "djangorestframework==3.15.2",
@@ -104,6 +102,8 @@ dependencies = [
     "pypdf>=5.1.0",
     "ipython>=8.30.0",
     "weasyprint>=63.1",
+    "opencv-python-headless>=4.10.0.84",
+    "psycopg[c]>=3.2.3",
 ]
 name = "backend"
 version = "0.1.0"
