@@ -32,41 +32,42 @@ ENV LIBRARY_PATH=/lib:/usr/lib LD_LIBRARY_PATH=/lib:/usr/lib
 
 RUN pip install uv==0.5.5
 
-RUN tar -czvf /libs.tar.gz \
-        /usr/lib/aarch64-linux-gnu/libpq* \
-        /usr/lib/aarch64-linux-gnu/libldap_r* \
-        /usr/lib/aarch64-linux-gnu/libldap* \
-        /usr/lib/aarch64-linux-gnu/liblber* \
-        /usr/lib/aarch64-linux-gnu/libsasl* \
-        /usr/lib/aarch64-linux-gnu/libxml2* \
-        /usr/lib/aarch64-linux-gnu/libgcrypt* \
-        /usr/lib/aarch64-linux-gnu/libstdc++* \
-        /usr/lib/aarch64-linux-gnu/libjpeg* \
-        /usr/lib/aarch64-linux-gnu/libopenjp2* \
-        /usr/lib/aarch64-linux-gnu/libdeflate* \
-        /usr/lib/aarch64-linux-gnu/libjbig* \
-        /usr/lib/aarch64-linux-gnu/liblcms2* \
-        /usr/lib/aarch64-linux-gnu/libwebp* \
-        /usr/lib/aarch64-linux-gnu/libtiff* \
-        /usr/lib/aarch64-linux-gnu/libGL* \
-        /usr/lib/aarch64-linux-gnu/libgthread* \
-        /usr/lib/aarch64-linux-gnu/libglib-* \
-        /usr/lib/aarch64-linux-gnu/libX11* \
-        /usr/lib/aarch64-linux-gnu/libxcb* \
-        /usr/lib/aarch64-linux-gnu/libXau* \
-        /usr/lib/aarch64-linux-gnu/libXdmcp* \
-        /usr/lib/aarch64-linux-gnu/libXext* \
-        /usr/lib/aarch64-linux-gnu/libbsd* \
-        /usr/lib/aarch64-linux-gnu/libpango* \
-        /usr/lib/aarch64-linux-gnu/libharf* \
-        /usr/lib/aarch64-linux-gnu/libharfbuzz* \
-        /usr/lib/aarch64-linux-gnu/libgobject*;
-
-RUN tar -czvf /libs-lib.tar.gz \
-        /lib/aarch64-linux-gnu/libpango* \
-        /lib/aarch64-linux-gnu/libharf* \
-        /lib/aarch64-linux-gnu/libharfbuzz* \
-        /lib/aarch64-linux-gnu/libgobject*;
+RUN tar -czvf /libs.tar.gz --directory /usr/lib/aarch64-linux-gnu \
+        libpq* \
+        libldap_r* \
+        libldap* \
+        liblber* \
+        libsasl* \
+        libxml2* \
+        libgcrypt* \
+        libstdc++* \
+        libjpeg* \
+        libopenjp2* \
+        libdeflate* \
+        libjbig* \
+        liblcms2* \
+        libwebp* \
+        libtiff* \
+        libGL* \
+        libgthread* \
+        libglib-* \
+        libX11* \
+        libxcb* \
+        libXau* \
+        libXdmcp* \
+        libXext* \
+        libpango* \
+        libharf* \
+        libharfbuzz* \
+        libfontconfig* \
+        libexpat* \
+        libgobject* \
+        libbrotli* \
+        libpng* \
+        libthai* \
+        libfribidi* \
+        libdatrie* \
+        libbsd*;
 
 COPY pyproject.toml uv.lock ./
 
@@ -116,14 +117,11 @@ COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/_astro ${FUNCTION_DIR}
 COPY --chown=app:app --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
 
 COPY --from=build-stage /usr/local/lib/*.so* /usr/local/lib/
-COPY --from=build-stage /lib/aarch64-linux-gnu/*.so* /lib/aarch64-linux-gnu/
-COPY --from=build-stage /libs-lib.tar.gz /libs-2.tar.gz
 COPY --from=build-stage /libs.tar.gz /libs.tar.gz
 
-RUN tar -xvf /libs.tar.gz -C / && \
-    tar -xvf /libs-2.tar.gz -C / && \
+RUN tar -xvf /libs.tar.gz -C /usr/lib/aarch64-linux-gnu && \
+    tar -xvf /libs.tar.gz -C /lib/aarch64-linux-gnu && \
     rm /libs.tar.gz && \
-    rm /libs-2.tar.gz && \
     ldconfig
 
 COPY --chown=app:app . ${FUNCTION_DIR}
