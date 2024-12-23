@@ -46,7 +46,7 @@ export const ProductsList = ({
   const membership = products.filter(
     (product) => product.type === TicketType.Association,
   )[0];
-  const tshirt = products.filter((product) => product.category === "Gadget")[0];
+  const tshirts = products.filter((product) => product.category === "Gadget");
   const socialEvents = products.filter(
     (product) => product.type === TicketType.SocialEvent,
   );
@@ -90,22 +90,27 @@ export const ProductsList = ({
         </>
       )}
 
-      {visibleCategories.includes(CheckoutCategory.Gadgets) && tshirt && (
-        <>
-          {showHeadings && (
-            <GroupHeading>
-              <FormattedMessage id="tickets.productsList.tshirtTitle" />
-            </GroupHeading>
-          )}
-          <TicketRow
-            key={tshirt.id}
-            icon="tshirt"
-            iconBackground="yellow"
-            ticket={tshirt}
-          />
-          <Spacer size="small" />
-        </>
-      )}
+      {visibleCategories.includes(CheckoutCategory.Gadgets) &&
+        tshirts.length > 0 && (
+          <>
+            {showHeadings && (
+              <GroupHeading>
+                <FormattedMessage id="tickets.productsList.tshirtTitle" />
+              </GroupHeading>
+            )}
+            {tshirts.map((tshirt) => (
+              <Fragment key={tshirt.id}>
+                <TicketRow
+                  key={tshirt.id}
+                  icon="tshirt"
+                  iconBackground="yellow"
+                  ticket={tshirt}
+                />
+                <Spacer size="small" />
+              </Fragment>
+            ))}
+          </>
+        )}
 
       {visibleCategories.includes(CheckoutCategory.SocialEvents) &&
         socialEvents.length > 0 && (
