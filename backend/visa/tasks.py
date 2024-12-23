@@ -4,7 +4,6 @@ from django.template import Template, Context
 import io
 import tempfile
 
-import requests
 from association_membership.handlers.pretix.api import PretixAPI
 from pycon.celery_utils import OnlyOneAtTimeTask
 from visa.models import (
@@ -42,10 +41,6 @@ def process_invitation_letter_request_failed(self, exc, task_id, args, kwargs, e
 @app.task(
     base=OnlyOneAtTimeTask,
     on_failure=process_invitation_letter_request_failed,
-    autoretry_for=(requests.exceptions.HTTPError,),
-    retry_backoff=True,
-    max_retries=3,
-    default_retry_delay=1,
 )
 def process_invitation_letter_request(*, invitation_letter_request_id: int):
     invitation_letter_request = (
