@@ -68,6 +68,45 @@ def test_send_sponsor_lead(graphql_client, consent_to_contact_via_email, mocker)
     )
 
 
+def test_send_sponsor_lead_works_if_email_was_sent_to_different_conf(
+    graphql_client, mocker
+):
+    mock_send_brochure = mocker.patch("api.sponsors.schema.send_sponsor_brochure")
+    mock_notify_new_sponsor_lead_via_slack = mocker.patch(
+        "api.sponsors.schema.notify_new_sponsor_lead_via_slack"
+    )
+
+    SponsorLeadFactory(
+        fullname="Tester",
+        email="example@example.org",
+        company="Example",
+        conference=ConferenceFactory(),
+        consent_to_contact_via_email=False,
+        brochure_viewed=False,
+    )
+
+    conference = ConferenceFactory()
+
+    resp = _send_sponsor_lead(
+        graphql_client,
+        input={
+            "fullname": "Tester",
+            "email": "example@example.org",
+            "company": "Example",
+            "conferenceCode": conference.code,
+            "consentToContactViaEmail": True,
+        },
+    )
+
+    assert not resp.get("errors")
+    assert resp["data"]["sendSponsorLead"]["__typename"] == "OperationResult"
+    assert resp["data"]["sendSponsorLead"]["ok"] is True
+
+    assert SponsorLead.objects.count() == 2
+    mock_send_brochure.delay.assert_called()
+    mock_notify_new_sponsor_lead_via_slack.delay.assert_called()
+
+
 def test_send_sponsor_lead_only_sends_the_brochure_once_to_email(
     graphql_client, mocker
 ):
