@@ -71,12 +71,15 @@ class SponsorsMutation:
         if errors := input.validate():
             return errors
 
-        is_new_email = not SponsorLead.objects.filter(email=input.email).exists()
         conference_id = (
             Conference.objects.filter(code=input.conference_code)
             .values_list("id", flat=True)
             .first()
         )
+
+        is_new_email = not SponsorLead.objects.filter(
+            conference_id=conference_id, email=input.email
+        ).exists()
 
         sponsor_lead, created = SponsorLead.objects.update_or_create(
             fullname=input.fullname,
