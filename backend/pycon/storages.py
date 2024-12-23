@@ -62,17 +62,13 @@ class CustomS3Boto3Storage(S3Boto3Storage):
 
 class PrivateCustomS3Boto3Storage(CustomS3Boto3Storage):
     default_acl = "private"
+    custom_domain = None
+    querystring_auth = True
 
     def get_object_parameters(self, name):
         params = super().get_object_parameters(name)
         params.pop("CacheControl", None)
         return params
-
-    def get_default_settings(self):
-        settings = super().get_default_settings()
-        settings["custom_domain"] = None
-        settings["querystring_auth"] = True
-        return settings
 
 
 class CustomInMemoryStorage(InMemoryStorage):
