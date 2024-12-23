@@ -36,6 +36,9 @@ def test_view_brochure_view(client):
     brochure = DocumentFactory()
     brochure.tags.add("sponsorship-brochure", sponsor_lead.conference.code)
 
+    other_brochure = DocumentFactory()
+    other_brochure.tags.add("sponsorship-brochure", "other-code")
+
     view_brochure_url_path = reverse("view-brochure", args=[sponsor_lead.id])
     signer = Signer()
     signature = signer.sign(view_brochure_url_path).split(signer.sep)[-1]
