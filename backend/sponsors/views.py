@@ -12,8 +12,10 @@ def view_brochure(request, sponsor_lead_id):
     sponsor_lead.save(update_fields=["brochure_viewed"])
 
     Document = get_document_model()
-    brochure = Document.objects.filter(
-        tags__name__in=["sponsorship-brochure", sponsor_lead.conference.code],
-    ).first()
+    brochure = (
+        Document.objects.filter(tags__name="sponsorship-brochure")
+        .filter(tags__name=sponsor_lead.conference.code)
+        .first()
+    )
 
     return redirect(brochure.url, permanent=False)

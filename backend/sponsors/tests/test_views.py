@@ -33,6 +33,10 @@ def test_view_brochure_view_with_wrong_signature_fails(client):
 
 def test_view_brochure_view(client):
     sponsor_lead = SponsorLeadFactory(brochure_viewed=False, conference__code="code")
+
+    other_brochure = DocumentFactory()
+    other_brochure.tags.add("sponsorship-brochure", "other-code")
+
     brochure = DocumentFactory()
     brochure.tags.add("sponsorship-brochure", sponsor_lead.conference.code)
 
