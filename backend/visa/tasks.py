@@ -43,12 +43,13 @@ def process_invitation_letter_request_failed(self, exc, task_id, args, kwargs, e
     on_failure=process_invitation_letter_request_failed,
 )
 def process_invitation_letter_request(*, invitation_letter_request_id: int):
-    invitation_letter_request = (
-        InvitationLetterRequest.objects.not_processed()
-        .not_processing()
-        .filter(id=invitation_letter_request_id)
-        .first()
-    )
+    invitation_letter_request = InvitationLetterRequest.objects.filter(
+        id=invitation_letter_request_id,
+        status__in=[
+            InvitationLetterRequestStatus.PENDING,
+            InvitationLetterRequestStatus.FAILED_TO_GENERATE,
+        ],
+    ).first()
 
     if not invitation_letter_request:
         return
