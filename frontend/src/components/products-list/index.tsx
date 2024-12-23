@@ -90,26 +90,27 @@ export const ProductsList = ({
         </>
       )}
 
-      {visibleCategories.includes(CheckoutCategory.Gadgets) && tshirts && (
-        <>
-          {showHeadings && (
-            <GroupHeading>
-              <FormattedMessage id="tickets.productsList.tshirtTitle" />
-            </GroupHeading>
-          )}
-          {tshirts.map((tshirt) => (
-            <Fragment key={tshirt.id}>
-              <TicketRow
-                key={tshirt.id}
-                icon="tshirt"
-                iconBackground="yellow"
-                ticket={tshirt}
-              />
-              <Spacer size="small" />
-            </Fragment>
-          ))}
-        </>
-      )}
+      {visibleCategories.includes(CheckoutCategory.Gadgets) &&
+        tshirts.length > 0 && (
+          <>
+            {showHeadings && (
+              <GroupHeading>
+                <FormattedMessage id="tickets.productsList.tshirtTitle" />
+              </GroupHeading>
+            )}
+            {tshirts.map((tshirt) => (
+              <Fragment key={tshirt.id}>
+                <TicketRow
+                  key={tshirt.id}
+                  icon="tshirt"
+                  iconBackground="yellow"
+                  ticket={tshirt}
+                />
+                <Spacer size="small" />
+              </Fragment>
+            ))}
+          </>
+        )}
 
       {visibleCategories.includes(CheckoutCategory.SocialEvents) &&
         socialEvents.length > 0 && (
