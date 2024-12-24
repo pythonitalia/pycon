@@ -1,3 +1,4 @@
+import { Card } from "@radix-ui/themes";
 import { Color } from "@tiptap/extension-color";
 import ListItem from "@tiptap/extension-list-item";
 import TextAlign from "@tiptap/extension-text-align";
@@ -45,9 +46,9 @@ export const Editor = ({
   });
 
   return (
-    <div className="border rounded-md">
+    <Card>
       <MenuBar editor={editor} />
       <EditorContent editor={editor} className="prose max-w-none p-4" />
-    </div>
+    </Card>
   );
 };

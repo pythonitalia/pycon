@@ -1,4 +1,4 @@
-import { Button, Heading, Text } from "@radix-ui/themes";
+import { Button, Card, Heading, Text } from "@radix-ui/themes";
 import { Box } from "@radix-ui/themes";
 import { Plus } from "lucide-react";
 import { Fragment, useEffect } from "react";
@@ -30,7 +30,7 @@ export const InvitationLetterBuilder = () => {
     <>
       <Box height="var(--space-3)" />
 
-      <Box className="border-gray-300 rounded border-2" p="3">
+      <Card>
         <Heading as="h1">Document</Heading>
         <Box height="var(--space-2)" />
         <Text>Header and footer are shared across all pages.</Text>
@@ -49,11 +49,11 @@ export const InvitationLetterBuilder = () => {
           content={localData.footer}
           pageId="footer"
         />
-      </Box>
+      </Card>
 
       <Box height="var(--space-5)" />
 
-      <Box className="border-gray-300 rounded border-2" p="3">
+      <Card>
         <Heading>Pages</Heading>
         <Box height="var(--space-5)" />
 
@@ -73,7 +73,7 @@ export const InvitationLetterBuilder = () => {
           <Plus size={16} />
           Add Page
         </Button>
-      </Box>
+      </Card>
 
       <Box height="var(--space-3)" />
       <Box position="sticky" bottom="0" p="3" className="bg-white">
