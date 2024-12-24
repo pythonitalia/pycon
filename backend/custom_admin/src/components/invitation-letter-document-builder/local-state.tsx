@@ -26,6 +26,7 @@ export const LocalStateContext = createContext<{
   removePage: (pageId: string) => void;
   movePageUp: (pageId: string) => void;
   movePageDown: (pageId: string) => void;
+  renamePage: (pageId: string, title: string) => void;
   isDirty: boolean;
 }>({
   localData: null,
@@ -37,6 +38,7 @@ export const LocalStateContext = createContext<{
   removePage: () => {},
   movePageUp: () => {},
   movePageDown: () => {},
+  renamePage: () => {},
   isDirty: false,
 });
 
@@ -47,6 +49,7 @@ enum ActionType {
   RemovePage = "REMOVE_PAGE",
   MovePageUp = "MOVE_PAGE_UP",
   MovePageDown = "MOVE_PAGE_DOWN",
+  RenamePage = "RENAME_PAGE",
 }
 
 const reducer = (state: State, action) => {
@@ -131,6 +134,15 @@ const reducer = (state: State, action) => {
       return {
         ...state,
         pages: pagesDown,
+      };
+    }
+    case ActionType.RenamePage: {
+      const { pageId, title } = action.payload;
+      return {
+        ...state,
+        pages: state.pages.map((page) =>
+          page.id === pageId ? { ...page, title } : page,
+        ),
       };
     }
   }
@@ -220,6 +232,12 @@ export const LocalStateProvider = ({ children }) => {
         isSaving,
         saveFailed,
         addPage: () => dispatch({ type: ActionType.AddPage }),
+        renamePage: (pageId, title) => {
+          dispatch({
+            type: ActionType.RenamePage,
+            payload: { pageId, title },
+          });
+        },
         setContent: (pageId, content) => {
           dispatch({
             type: ActionType.SetContent,

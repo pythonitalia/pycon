@@ -1,7 +1,15 @@
-import * as AlertDialog from "@radix-ui/react-alert-dialog";
-import { Button, Flex, Heading, Text, Theme } from "@radix-ui/themes";
+import {
+  AlertDialog,
+  Button,
+  Dialog,
+  Flex,
+  Heading,
+  Text,
+  TextField,
+  Theme,
+} from "@radix-ui/themes";
 import { Box } from "@radix-ui/themes";
-import { MoveDown, MoveUp, Trash } from "lucide-react";
+import { MoveDown, MoveUp, Pencil, Trash } from "lucide-react";
 import { Editor } from "./editor";
 import { useLocalData } from "./local-state";
 
@@ -14,74 +22,107 @@ export const EditorSection = ({
   content: string;
   pageId: string;
 }) => {
-  const { movePageUp, movePageDown, removePage, setContent } = useLocalData();
+  const { movePageUp, movePageDown, removePage, renamePage, setContent } =
+    useLocalData();
   const isPage = pageId !== "header" && pageId !== "footer";
 
   const onMoveUp = () => movePageUp(pageId);
   const onMoveDown = () => movePageDown(pageId);
   const onRemove = () => removePage(pageId);
+  const onRename = (value: string) => renamePage(pageId, value);
   const onUpdate = (content: string) => setContent(pageId, content);
 
   return (
-    <AlertDialog.Root>
-      <Box>
-        <Flex align="center" gap="3">
-          <Heading size="5" as="h2">
-            {title}
-          </Heading>
-          {isPage && (
-            <Button variant="ghost" onClick={onMoveUp}>
-              <MoveUp size={16} />
-            </Button>
-          )}
-          {isPage && (
-            <Button variant="ghost" onClick={onMoveDown}>
-              <MoveDown size={16} />
-            </Button>
-          )}
-          {isPage && (
-            <AlertDialog.Trigger asChild>
-              <Button color="crimson" variant="ghost">
-                <Trash size={16} />
-              </Button>
-            </AlertDialog.Trigger>
-          )}
-        </Flex>
-        <Box height="var(--space-3)" />
-        <Editor content={content} onUpdate={onUpdate} />
-      </Box>
+    <Box>
+      <Flex align="center" gap="3">
+        <EditableTitle value={title} onRename={onRename} />
+        {isPage && (
+          <Button variant="ghost" onClick={onMoveUp}>
+            <MoveUp size={16} />
+          </Button>
+        )}
+        {isPage && (
+          <Button variant="ghost" onClick={onMoveDown}>
+            <MoveDown size={16} />
+          </Button>
+        )}
+        {isPage && <RemovePage onRemove={onRemove} />}
+      </Flex>
+      <Box height="var(--space-3)" />
+      <Editor content={content} onUpdate={onUpdate} />
+    </Box>
+  );
+};
 
-      <AlertDialog.Portal>
-        <Theme>
-          <AlertDialog.Overlay className="fixed inset-0 bg-gray-500/75 transition-opacity" />
-          <AlertDialog.Content className="transform rounded-lg bg-white fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-xl">
-            <Box p="4">
-              <AlertDialog.Title>
-                <Text weight="bold">Remove page</Text>
-              </AlertDialog.Title>
-              <AlertDialog.Description>
-                <Text size="2">Are you sure you want to remove this page?</Text>
-              </AlertDialog.Description>
-            </Box>
-            <Flex
-              className="bg-gray-50 rounded-lg"
-              align="center"
-              justify="end"
-              gap="3"
-              p="4"
-            >
-              <AlertDialog.Cancel asChild>
-                <Button variant="ghost">Cancel</Button>
-              </AlertDialog.Cancel>
-              <AlertDialog.Action asChild>
-                <Button color="crimson" onClick={onRemove}>
-                  Remove
-                </Button>
-              </AlertDialog.Action>
-            </Flex>
-          </AlertDialog.Content>
-        </Theme>
-      </AlertDialog.Portal>
+const RemovePage = ({ onRemove }: { onRemove: () => void }) => {
+  return (
+    <AlertDialog.Root>
+      <AlertDialog.Trigger>
+        <Button color="crimson" variant="ghost">
+          <Trash size={16} />
+        </Button>
+      </AlertDialog.Trigger>
+
+      <AlertDialog.Content maxWidth="450px">
+        <AlertDialog.Title>Remove page</AlertDialog.Title>
+        <AlertDialog.Description size="2">
+          Are you sure you want to remove this page?
+        </AlertDialog.Description>
+        <Flex gap="3" mt="4" justify="end">
+          <AlertDialog.Cancel>
+            <Button variant="soft" color="gray">
+              Cancel
+            </Button>
+          </AlertDialog.Cancel>
+          <AlertDialog.Action>
+            <Button color="crimson" onClick={onRemove}>
+              Remove
+            </Button>
+          </AlertDialog.Action>
+        </Flex>
+      </AlertDialog.Content>
     </AlertDialog.Root>
+  );
+};
+
+const EditableTitle = ({
+  value,
+  onRename,
+}: { value: string; onRename: (value: string) => void }) => {
+  return (
+    <Dialog.Root>
+      <Dialog.Trigger>
+        <Button variant="soft" size="2">
+          {value}
+          <Pencil size={16} />
+        </Button>
+      </Dialog.Trigger>
+      <Dialog.Content maxWidth="450px">
+        <Dialog.Title>Rename page</Dialog.Title>
+        <Dialog.Description size="2" mb="4">
+          This name is only used internally and will not be visible in the
+          output PDF.
+        </Dialog.Description>
+        <Flex direction="column" gap="3">
+          <label>
+            <Text as="div" size="2" mb="1" weight="bold">
+              Name
+            </Text>
+            <TextField.Root
+              defaultValue={value}
+              placeholder="Name"
+              onChange={(e) => onRename(e.target.value)}
+            />
+          </label>
+        </Flex>
+        <Flex gap="3" mt="4" justify="end">
+          <Dialog.Close>
+            <Button variant="soft" color="gray">
+              Close
+            </Button>
+          </Dialog.Close>
+        </Flex>
+      </Dialog.Content>
+    </Dialog.Root>
   );
 };
