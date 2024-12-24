@@ -17,8 +17,8 @@ ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod \
 RUN apt-get update -y && apt-get install -y \
     # weasyprint
     libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 \
-    # postgres - psycopg & also psql cli
-    postgresql-client libpq-dev
+    # postgres
+    libpq-dev
 
 FROM base AS build-stage
 
