@@ -35,7 +35,8 @@ export const EditorSection = ({
   return (
     <Box>
       <Flex align="center" gap="3">
-        <EditableTitle value={title} onRename={onRename} />
+        {isPage && <EditableTitle value={title} onRename={onRename} />}
+        {!isPage && <Heading size="2">{title}</Heading>}
         {isPage && (
           <Button variant="ghost" onClick={onMoveUp}>
             <MoveUp size={16} />
