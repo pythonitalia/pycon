@@ -20,7 +20,9 @@ export const ScheduleBuilderRoot = ({
       }}
     >
       <AddItemModalProvider>
-        <ScheduleBuilder />
+        <DjangoAdminLayout>
+          <ScheduleBuilder />
+        </DjangoAdminLayout>
       </AddItemModalProvider>
     </Base>
   );
@@ -39,7 +41,7 @@ const ScheduleBuilder = () => {
   } = data ?? { conference: {} };
 
   return (
-    <DjangoAdminLayout>
+    <>
       {loading && <h2>Please wait</h2>}
       {!loading && error && (
         <h2>Something went wrong. Make sure you have the right permissions.</h2>
@@ -52,6 +54,6 @@ const ScheduleBuilder = () => {
           <PendingItemsBasket />
         </>
       )}
-    </DjangoAdminLayout>
+    </>
   );
 };
