@@ -6,6 +6,8 @@ import requests
 from urllib.parse import urlparse
 from django.http import QueryDict
 from django.conf import settings
+from urllib3.util import Retry
+from requests.adapters import HTTPAdapter
 
 LOCAL_ASTRO_HTTP = "http://custom-admin:3002"
 
@@ -41,7 +43,17 @@ def astro_proxy(request, path):
     requests_args["headers"] = headers
     requests_args["params"] = params
 
-    response = requests.request(request.method, url, **requests_args)
+    session = requests.Session()
+    retry = Retry(
+        total=5,
+        backoff_factor=0.1,
+        status_forcelist=(500, 502, 504),
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+
+    response = session.request(request.method, url, **requests_args)
     content = response.content.decode("utf-8")
 
     # Base path doesn't seem to be fully supported by Astro
