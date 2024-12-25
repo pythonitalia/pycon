@@ -27,8 +27,10 @@ def _can_be_proxied(template_name):
 
 class AstroContentLoader(Loader):
     def get_template_sources(self, template_name):
-        # We make admin/base.html to be proxied to astro/admin-base.html
-        # so that Astro can add styles and scripts to the page
+        # Replace admin/base.html with a custom built template
+        # that contains the Astro styles and scripts
+        # allowing us to implement astro "widgets" in the Django admin
+
         if template_name == "admin/base.html":
             yield Origin(
                 name=template_name,
@@ -62,9 +64,17 @@ class CustomAdminDjangoTemplate(GetTemplate, DjangoTemplates):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.engine.loaders = [
-            "custom_admin.template_backends.AstroContentLoader",
-        ] + self.engine.loaders
+        astro_loader_path = "custom_admin.template_backends.AstroContentLoader"
+
+        if settings.DEBUG:
+            self.engine.loaders = [astro_loader_path] + self.engine.loaders
+        else:
+            # When running in production, put the astro loader
+            # in the Cached loader
+            self.engine.loaders[0] = (
+                self.engine.loaders[0][0],
+                [astro_loader_path] + self.engine.loaders[0][1],
+            )
 
 
 class FormRenderer(GetTemplate, FormsDjangoTemplates):
