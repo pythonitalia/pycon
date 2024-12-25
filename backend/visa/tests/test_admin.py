@@ -72,17 +72,29 @@ def test_edit_dynamic_document_button_is_empty_for_static_docs():
     assert html == ""
 
 
-def test_invitation_letter_request_admin():
+def test_invitation_letter_request_admin(mock_has_ticket):
     admin = InvitationLetterRequestAdmin(
         model=InvitationLetterRequest, admin_site=AdminSite()
     )
 
     invitation_letter_request = InvitationLetterRequestFactory()
+    mock_has_ticket(invitation_letter_request.conference, True)
 
     assert 'name="_process_now"' in admin.process_now(invitation_letter_request)
     assert "Generate the invitation letter first" == admin.send_via_email(
         invitation_letter_request
     )
+
+
+def test_generate_button_doesnt_appear_with_no_ticket(mock_has_ticket):
+    admin = InvitationLetterRequestAdmin(
+        model=InvitationLetterRequest, admin_site=AdminSite()
+    )
+
+    invitation_letter_request = InvitationLetterRequestFactory()
+    mock_has_ticket(invitation_letter_request.conference, False)
+
+    assert "No attendee ticket found!" in admin.process_now(invitation_letter_request)
 
 
 def test_invitation_letter_request_admin_post_processing_redirects_to_changelist(

@@ -1,6 +1,7 @@
 from django.utils.safestring import mark_safe
 
 from django.urls import path
+from association_membership.handlers.pretix.api import PretixAPI
 from ordered_model.admin import (
     OrderedInlineModelAdminMixin,
     OrderedModelAdmin,
@@ -81,6 +82,10 @@ class InvitationLetterRequestAdmin(admin.ModelAdmin):
         return obj
 
     def process_now(self, obj):
+        pretix_api = PretixAPI.for_conference(obj.conference)
+        if not pretix_api.has_attendee_ticket(obj.email):
+            return "No attendee ticket found! Can't generate invitation letter."
+
         return mark_safe(
             '<input type="submit" name="_process_now" value="Process now" />'
         )

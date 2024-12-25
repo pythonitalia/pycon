@@ -150,6 +150,9 @@ class InvitationLetterRequest(TimeStampedModel):
     def get_config(self):
         return self.conference.invitation_letter_config
 
+    def __str__(self):
+        return f"{self.full_name} - {self.conference.name}"
+
     class Meta:
         constraints = [
             UniqueConstraint(

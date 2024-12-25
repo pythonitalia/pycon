@@ -1,3 +1,4 @@
+import urllib.parse
 from typing import Literal
 
 import requests
@@ -6,7 +7,7 @@ from django.conf import settings
 
 from conferences.models.conference import Conference
 
-METHODS = Literal["get"]
+METHODS = Literal["get", "post", "put", "patch", "delete"]
 
 
 class PretixAPI:
@@ -25,14 +26,19 @@ class PretixAPI:
         )
 
     def run_request(
-        self, url: str, *, method: METHODS = "get", qs: dict[str, str] = None
+        self,
+        url: str,
+        *,
+        method: METHODS = "get",
+        qs: dict[str, str] = None,
+        json: dict = None,
     ):
         headers = {"Authorization": f"Token {str(settings.PRETIX_API_TOKEN)}"}
 
         if qs:
             url = f"{url}?" + "&".join([f"{key}={value}" for key, value in qs.items()])
 
-        return getattr(requests, method)(url, headers=headers)
+        return getattr(requests, method)(url, headers=headers, json=json)
 
     def _request(self, endpoint: str, **kwargs):
         url = f"{self.base_url}/{endpoint}/"
@@ -54,6 +60,30 @@ class PretixAPI:
 
     def get_all_attendee_tickets(self, attendee_email: str) -> list[dict]:
         response = self._request(
-            "tickets/attendee-tickets", qs={"attendee_email": attendee_email}
+            "tickets/attendee-tickets",
+            qs={"attendee_email": urllib.parse.quote_plus(attendee_email)},
         )
         return response.json()
+
+    def has_attendee_ticket(
+        self, attendee_email: str, additional_events: list[dict] = None
+    ) -> bool:
+        additional_events = additional_events or []
+        events = [
+            {
+                "organizer_slug": self.organizer,
+                "event_slug": self.event,
+            }
+        ] + additional_events
+
+        response = self._request(
+            "tickets/attendee-has-ticket",
+            method="post",
+            json={
+                "attendee_email": attendee_email,
+                "events": events,
+            },
+        )
+
+        data = response.json()
+        return data["user_has_admission_ticket"]
