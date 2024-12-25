@@ -75,6 +75,7 @@ RUN apt-get update -y && apt-get install -y curl
 RUN groupadd -r app && useradd -r -g app app && mkdir -p ${FUNCTION_DIR} && chown -R app:app ${FUNCTION_DIR}
 
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/
+COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/widgets/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/widgets/
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/_astro ${FUNCTION_DIR}/custom_admin/static/_astro/
 COPY --chown=app:app --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
 
