@@ -8,13 +8,10 @@ import { ScheduleBuilderRoot } from "../components/schedule-builder/root";
     </head>
 
     <body class="text-sm">
-        <ScheduleBuilderRoot client:only />
-
-        <Fragment set:html={`
-    {{ conference_id|json_script:"arg-conference_id" }}
-    {{ conference_code|json_script:"arg-conference_code" }}
-    {{ breadcrumbs|json_script:"arg-breadcrumbs" }}
-`} />
-
+        <ScheduleBuilderRoot
+            conferenceId="{{ conference_id }}"
+            conferenceCode="{{ conference_code }}"
+            breadcrumbs="{{ breadcrumbs | to_json_for_prop }}"
+            client:only />
     </body>
 </html>

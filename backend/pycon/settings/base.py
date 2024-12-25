@@ -160,7 +160,8 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "custom_admin.context_processors.admin_settings",
                 "custom_admin.context_processors.astro_settings",
-            ]
+            ],
+            "builtins": ["custom_admin.templatetags.to_json_for_prop"],
         },
     }
 ]

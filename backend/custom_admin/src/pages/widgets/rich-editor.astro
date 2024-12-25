@@ -4,4 +4,5 @@ import "../../custom-styles.css";
 import { RichEditorWidget } from "../../components/widgets/rich-editor";
 ---
 
-<RichEditorWidget client:only />
+
+<RichEditorWidget name="{{widget.name|escapejs}}" value="{{widget.value|escapejs}}" client:only />

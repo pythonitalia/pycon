@@ -1,15 +1,18 @@
+import { useState } from "react";
 import { RichEditor } from "../../components/shared/rich-editor";
 import { Base } from "../shared/base";
 
-export const RichEditorWidget = () => {
+export const RichEditorWidget = ({ name, value }) => {
+  const [updatedValue, setUpdatedValue] = useState(value);
+
   return (
     <Base widget>
-      <div>
-        <RichEditor
-          content="<p>Initial content</p>"
-          onUpdate={(content) => console.log(content)}
-        />
-      </div>
+      <RichEditor
+        content={value}
+        onUpdate={(content) => setUpdatedValue(content)}
+      />
+
+      <input type="hidden" name={name} value={updatedValue} />
     </Base>
   );
 };

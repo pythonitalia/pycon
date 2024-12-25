@@ -1,11 +1,12 @@
-import { getArg } from "../shared/get-arg";
+import { useArgs } from "../shared/args";
 
 export const useCurrentConference = (): {
   conferenceCode: string;
   conferenceId: string;
 } => {
+  const { conferenceId, conferenceCode } = useArgs();
   return {
-    conferenceId: getArg("conference_id"),
-    conferenceCode: getArg("conference_code"),
+    conferenceId,
+    conferenceCode,
   };
 };

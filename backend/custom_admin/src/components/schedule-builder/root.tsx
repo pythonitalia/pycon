@@ -6,9 +6,19 @@ import { Calendar } from "./calendar";
 import { PendingItemsBasket } from "./pending-items-basket";
 import { useConferenceScheduleQuery } from "./schedule.generated";
 
-export const ScheduleBuilderRoot = () => {
+export const ScheduleBuilderRoot = ({
+  conferenceId,
+  conferenceCode,
+  breadcrumbs,
+}) => {
   return (
-    <Base>
+    <Base
+      args={{
+        conferenceId,
+        conferenceCode,
+        breadcrumbs,
+      }}
+    >
       <AddItemModalProvider>
         <ScheduleBuilder />
       </AddItemModalProvider>

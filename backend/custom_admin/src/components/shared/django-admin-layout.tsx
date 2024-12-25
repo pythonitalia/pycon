@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { getArg } from "./get-arg";
+import { useArgs } from "./args";
 
 type Breadcrumb = {
   title: string;
@@ -11,7 +11,8 @@ type Props = {
 };
 
 export const DjangoAdminLayout = ({ children }: Props) => {
-  const breadcrumbs: Breadcrumb[] = getArg("breadcrumbs");
+  const { breadcrumbs } = useArgs();
+  console.log("breadcrumbs", breadcrumbs);
   return (
     <div>
       <Header />
