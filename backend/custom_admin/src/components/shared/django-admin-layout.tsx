@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import React, { Fragment } from "react";
 import { getArg } from "./get-arg";
 
 type Breadcrumb = {

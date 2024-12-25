@@ -16,6 +16,10 @@ from notifications.models import EmailTemplate, SentEmail, SentEmailEvent
 from django.forms import Textarea
 
 
+class RichEditorWidget(Textarea):
+    template_name = "astro/widgets/rich-editor.html"
+
+
 class SentEmailEventInline(admin.TabularInline):
     model = SentEmailEvent
     extra = 0
@@ -49,10 +53,10 @@ class EmailTemplateAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == "body":
-            kwargs["widget"] = Textarea(attrs={"rows": 50, "cols": 200})
+            kwargs["widget"] = RichEditorWidget(attrs={"rows": 50, "cols": 200})
 
         if db_field.name in ("subject", "preview_text"):
-            kwargs["widget"] = Textarea(attrs={"rows": 2, "cols": 200})
+            kwargs["widget"] = RichEditorWidget(attrs={"rows": 2, "cols": 200})
 
         return super().formfield_for_dbfield(db_field, **kwargs)
 

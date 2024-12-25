@@ -1,0 +1,31 @@
+{% extends 'admin/django_base.html' %} {% block extrastyle %}{{ block.super }}
+<style>
+  #header {
+    margin-top: 40px;
+  }
+</style>
+{% endblock extrastyle %} {% block userlinks %}
+<div
+  style="
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    right: 0;
+    {% if CURRENT_ENV == "production" %}
+    background-color: #904141;
+    font-weight: bold;
+    {% else %}
+    background-color: #419042;
+    {% endif %}
+    text-align: center;
+    padding: 15px 30px;
+  "
+>
+  {% if CURRENT_ENV == "production" %}
+  ⚠️ You are in the {{CURRENT_ENV}} environment ⚠️
+  {% else %}
+  {{CURRENT_ENV}} environment [safe]
+  {% endif %}
+</div>
+{{ block.super }} {% endblock %}

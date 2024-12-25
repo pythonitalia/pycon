@@ -146,6 +146,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "pycon.urls"
 
+FORM_RENDERER = "custom_admin.template_backends.FormRenderer"
+
 TEMPLATES = [
     {
         "BACKEND": "custom_admin.template_backends.CustomAdminDjangoTemplate",

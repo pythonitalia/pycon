@@ -25,7 +25,7 @@ const extensions = [
   }),
 ];
 
-export const Editor = ({
+export const RichEditor = ({
   content,
   onUpdate,
 }: {
@@ -46,9 +46,9 @@ export const Editor = ({
   });
 
   return (
-    <Card>
+    <div className="border">
       <MenuBar editor={editor} />
       <EditorContent editor={editor} className="prose max-w-none p-4" />
-    </Card>
+    </div>
   );
 };
