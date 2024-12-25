@@ -119,7 +119,7 @@ const EditableTitle = ({
         <Flex gap="3" mt="4" justify="end">
           <Dialog.Close>
             <Button variant="soft" color="gray">
-              Close
+              Save
             </Button>
           </Dialog.Close>
         </Flex>
