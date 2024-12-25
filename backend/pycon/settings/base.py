@@ -159,9 +159,11 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "custom_admin.context_processors.admin_settings",
-                "custom_admin.context_processors.astro_settings",
             ],
-            "builtins": ["custom_admin.templatetags.to_json_for_prop"],
+            "builtins": [
+                "custom_admin.templatetags.to_json_for_prop",
+                "custom_admin.templatetags.empty_string_if_none",
+            ],
         },
     }
 ]

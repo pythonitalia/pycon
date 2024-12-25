@@ -53,10 +53,10 @@ class EmailTemplateAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == "body":
-            kwargs["widget"] = RichEditorWidget(attrs={"rows": 50, "cols": 200})
+            kwargs["widget"] = RichEditorWidget()
 
         if db_field.name in ("subject", "preview_text"):
-            kwargs["widget"] = RichEditorWidget(attrs={"rows": 2, "cols": 200})
+            kwargs["widget"] = Textarea(attrs={"rows": 2, "cols": 200})
 
         return super().formfield_for_dbfield(db_field, **kwargs)
 

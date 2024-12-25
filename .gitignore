@@ -137,3 +137,4 @@ backend/schema.graphql
 backend/__pypackages__/
 backend/custom_admin/.astro/
 backend/custom_admin/core.*
+core.*

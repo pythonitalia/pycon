@@ -1,3 +1,4 @@
+from functools import cached_property
 import requests
 from django.template.backends.django import (
     DjangoTemplates,
@@ -54,6 +55,7 @@ class GetTemplate:
 
         text = _proxy_to_astro(template_name)
 
+        # form renderer and django template renderer have some differences
         if hasattr(self, "from_string"):
             return self.from_string(text)
 
@@ -67,10 +69,13 @@ class CustomAdminDjangoTemplate(GetTemplate, DjangoTemplates):
         astro_loader_path = "custom_admin.template_backends.AstroContentLoader"
 
         if settings.DEBUG:
+            # in debugging we don't want to cache the content
+            # so we put the astro loader first
             self.engine.loaders = [astro_loader_path] + self.engine.loaders
         else:
             # When running in production, put the astro loader
-            # in the Cached loader
+            # in the Cached loader so we don't read the file every time
+            # structure is: (cached_loader, [astro_loader, ... other loaders])
             self.engine.loaders[0] = (
                 self.engine.loaders[0][0],
                 [astro_loader_path] + self.engine.loaders[0][1],
@@ -78,4 +83,16 @@ class CustomAdminDjangoTemplate(GetTemplate, DjangoTemplates):
 
 
 class FormRenderer(GetTemplate, FormsDjangoTemplates):
-    ...
+    @cached_property
+    def engine(self):
+        # Ugly hack because the form renderer is hardcoded here:
+        # https://github.com/django/django/blob/fcd9d08379a2aee3b2c49eab0d0b8db6fd66d091/django/forms/renderers.py#L43
+        # So we need to override the engine property to include the builtins
+        engine = super().engine
+        engine.engine.builtins = (
+            engine.engine.builtins + settings.TEMPLATES[0]["OPTIONS"]["builtins"]
+        )
+        engine.engine.template_builtins = engine.engine.get_template_builtins(
+            engine.engine.builtins
+        )
+        return engine

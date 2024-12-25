@@ -5,4 +5,4 @@ import { RichEditorWidget } from "../../components/widgets/rich-editor";
 ---
 
 
-<RichEditorWidget name="{{widget.name|escapejs}}" value="{{widget.value|escapejs}}" client:only />
+<RichEditorWidget name="{{widget.name|escapejs}}" value="{{widget.value|empty_string_if_none|escapejs}}" client:only />

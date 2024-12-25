@@ -1,10 +1,10 @@
-import { Card } from "@radix-ui/themes";
 import { Color } from "@tiptap/extension-color";
 import ListItem from "@tiptap/extension-list-item";
 import TextAlign from "@tiptap/extension-text-align";
 import TextStyle from "@tiptap/extension-text-style";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import clsx from "clsx";
 import { MenuBar } from "./menu-bar";
 
 const extensions = [
@@ -28,9 +28,11 @@ const extensions = [
 export const RichEditor = ({
   content,
   onUpdate,
+  className,
 }: {
   content: string;
   onUpdate: (content: string) => void;
+  className?: string;
 }) => {
   const editor = useEditor({
     extensions,
@@ -40,7 +42,7 @@ export const RichEditor = ({
     },
     editorProps: {
       attributes: {
-        class: "outline-none",
+        class: clsx("outline-none", className),
       },
     },
   });
