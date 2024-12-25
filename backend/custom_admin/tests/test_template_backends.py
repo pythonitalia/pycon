@@ -1,13 +1,15 @@
-from unittest.mock import Mock
 from custom_admin.template_backends import CustomAdminDjangoTemplate
 
 
-def test_get_template_in_dev_mode(settings):
+def test_get_template_in_dev_mode(settings, requests_mock):
+    mock_req = requests_mock.get(
+        "http://127.0.0.1:8000/astro/test.html", text="Hello, Astro!"
+    )
     settings.DEBUG = True
 
     backend = CustomAdminDjangoTemplate(
         {"NAME": "", "DIRS": [], "APP_DIRS": False, "OPTIONS": {}}
     )
-    backend.engine = Mock()
-    backend.get_template("astro/test.html")
-    backend.engine.get_template.assert_called_with("admin/iframe.html")
+    result = backend.get_template("astro/test.html")
+    assert result.render() == "Hello, Astro!"
+    assert mock_req.called

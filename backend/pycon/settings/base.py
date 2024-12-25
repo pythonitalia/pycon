@@ -128,6 +128,7 @@ INSTALLED_APPS = [
     "organizers.apps.OrganizersConfig",
     "billing.apps.BillingConfig",
     "privacy_policy.apps.PrivacyPolicyConfig",
+    "visa.apps.VisaConfig",
 ]
 
 MIDDLEWARE = [
@@ -226,6 +227,12 @@ STORAGES = {
     "default": {
         "BACKEND": env(
             "MEDIA_FILES_STORAGE_BACKEND",
+            default="pycon.storages.CustomFileSystemStorage",
+        )
+    },
+    "private": {
+        "BACKEND": env(
+            "MEDIA_FILES_PRIVATE_STORAGE_BACKEND",
             default="pycon.storages.CustomFileSystemStorage",
         )
     },

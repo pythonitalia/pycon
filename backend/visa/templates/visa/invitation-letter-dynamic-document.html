@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style type="text/css" media="all">
+    @page {
+      size: A4;
+
+      @top-left {
+        content: element(header);
+        margin-top: 1cm;
+      }
+
+      @bottom-left {
+        content: element(footer);
+        margin-bottom: 1cm;
+      }
+    }
+
+    * {
+      font-family: 'Helvetica', sans-serif;
+      font-size: 11pt;
+    }
+
+    header {
+      position: running(header);
+      padding: 0.5cm 0;
+    }
+
+    footer {
+      position: running(footer);
+      padding: 0.5cm 0;
+    }
+
+    div {
+      break-after: page;
+      margin-top: 1cm;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    {{header}}
+  </header>
+
+  <footer>
+    {{footer}}
+  </footer>
+
+  {% for page in pages %}
+    <div>
+      {{page}}
+    </div>
+  {% endfor %}
+</body>

@@ -1,0 +1,18 @@
+mutation UpdateInvitationLetterDocument(
+  $input: UpdateInvitationLetterDocumentInput!
+) {
+  updateInvitationLetterDocument(input: $input) {
+    ... on InvitationLetterDocument {
+      id
+      dynamicDocument {
+        header
+        footer
+        pages {
+          id
+          title
+          content
+        }
+      }
+    }
+  }
+}

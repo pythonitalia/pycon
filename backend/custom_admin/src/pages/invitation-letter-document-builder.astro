@@ -1,0 +1,20 @@
+---
+import "@radix-ui/themes/styles.css";
+import "../custom-styles.css";
+import { InvitationLetterDocumentBuilderRoot } from "../components/invitation-letter-document-builder/root";
+---
+<html>
+    <head>
+        <title>Invitation Letter Document Builder</title>
+    </head>
+
+    <body class="text-sm">
+        <InvitationLetterDocumentBuilderRoot client:only />
+
+        <Fragment set:html={`
+{{ document_id|json_script:"arg-document_id" }}
+{{ breadcrumbs|json_script:"arg-breadcrumbs" }}
+`} />
+
+    </body>
+</html>

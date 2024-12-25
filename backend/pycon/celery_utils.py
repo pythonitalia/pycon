@@ -25,7 +25,7 @@ def renew_lock(lock, interval, _stop_event, extend_time):
             break
 
 
-def make_lock_id(func, *args):
+def make_lock_id(func, *args, **kwargs):
     key = f"celery_lock_{func.__module__}_{func.__name__}"
 
     hash = hashlib.md5()
@@ -34,7 +34,13 @@ def make_lock_id(func, *args):
             arg = str(arg)
         hash.update(arg.encode("utf-8"))
 
-    if args:
+    for kwarg_key, kwarg_value in kwargs.items():
+        if not isinstance(kwarg_value, str):
+            kwarg_value = str(kwarg_value)
+
+        hash.update(f"{kwarg_key}={kwarg_value}".encode("utf-8"))
+
+    if args or kwargs:
         key = f"{key}_{hash.hexdigest()}"
 
     if xdist_worker := os.environ.get("PYTEST_XDIST_WORKER"):
@@ -50,7 +56,7 @@ class OnlyOneAtTimeTask(Task):
         self.client = redis.Redis.from_url(settings.REDIS_URL)
 
     def acquire_lock(self, *args, **kwargs):
-        lock_id = make_lock_id(self, *args)
+        lock_id = make_lock_id(self, *args, **kwargs)
         self.lock = self.client.lock(lock_id, timeout=self.timeout, thread_local=False)
         return self.lock.acquire(blocking=False)
 
@@ -64,7 +70,10 @@ class OnlyOneAtTimeTask(Task):
                 "Task %s.%s[%s] is already running, skipping",
                 self.__module__,
                 self.__name__,
-                ",".join([safe_repr(arg) for arg in args]),
+                ",".join(
+                    [safe_repr(arg) for arg in args]
+                    + [f"{key}={safe_repr(value)}" for key, value in kwargs.items()]
+                ),
             )
             return
 

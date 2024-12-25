@@ -161,6 +161,10 @@ locals {
       value = "pycon.storages.CustomS3Boto3Storage"
     },
     {
+      name = "MEDIA_FILES_PRIVATE_STORAGE_BACKEND",
+      value = "pycon.storages.PrivateCustomS3Boto3Storage"
+    },
+    {
       name = "CLAMAV_HOST",
       value = var.server_ip
     },
