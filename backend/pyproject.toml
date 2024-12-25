@@ -79,7 +79,7 @@ dependencies = [
     "google-api-python-client<3.0.0,>=2.94.0",
     "google-auth<3.0.0,>=2.22.0",
     "argon2-cffi<24.0.0,>=23.1.0",
-    "stripe==10.5.0",
+    "stripe==11.4.1",
     "djangorestframework==3.15.2",
     "l18n<2022.0,>=2021.3",
     "wagtail==6.2.2",
