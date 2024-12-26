@@ -10,7 +10,6 @@ export const RichEditorWidget = ({ name, value }) => {
       <RichEditor
         content={value}
         onUpdate={(content) => setUpdatedValue(content)}
-        className="[&>*]:!text-base"
       />
 
       <input type="hidden" name={name} value={updatedValue} />

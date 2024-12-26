@@ -11,6 +11,7 @@ import {
 import { Box } from "@radix-ui/themes";
 import { MoveDown, MoveUp, Pencil, Trash } from "lucide-react";
 import { RichEditor } from "../shared/rich-editor";
+import { HideNode } from "../shared/rich-editor/menu-bar";
 import { useLocalData } from "./local-state";
 
 export const EditorSection = ({
@@ -50,7 +51,11 @@ export const EditorSection = ({
         {isPage && <RemovePage onRemove={onRemove} />}
       </Flex>
       <Box height="var(--space-3)" />
-      <RichEditor content={content} onUpdate={onUpdate} />
+      <RichEditor
+        hide={[HideNode.buttonNode, HideNode.link]}
+        content={content}
+        onUpdate={onUpdate}
+      />
     </Box>
   );
 };
