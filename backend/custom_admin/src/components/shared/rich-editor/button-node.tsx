@@ -12,7 +12,7 @@ const Action = ({
   children,
   className,
   tooltip,
-  visibleOnHover = false,
+  visibleOnlyOnHover = false,
   ...props
 }) => (
   <Tooltip content={tooltip}>
@@ -23,7 +23,7 @@ const Action = ({
       className={clsx(
         "rounded-[var(--radius-6)] transition-all absolute text-black bg-white",
         {
-          "group-hover/button:opacity-100 opacity-0": visibleOnHover,
+          "group-hover/button:opacity-100 opacity-0": visibleOnlyOnHover,
         },
         className,
       )}
@@ -53,7 +53,7 @@ const ButtonComponent = (props) => {
       <Dialog.Root>
         <Dialog.Trigger>
           <Action
-            visibleOnHover={!!link}
+            visibleOnlyOnHover={!!link}
             data-drag-handle
             tooltip={link ? "Change link" : "No link set"}
             className={clsx(
@@ -83,7 +83,7 @@ const ButtonComponent = (props) => {
       </Dialog.Root>
 
       <Action
-        visibleOnHover
+        visibleOnlyOnHover
         onClick={(_) => props.deleteNode()}
         tooltip="Remove"
         className="top-0 -translate-x-[50%] -translate-y-[50%] left-0 bg-[var(--crimson-5)]"

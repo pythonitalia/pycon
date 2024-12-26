@@ -12,7 +12,6 @@ type Props = {
 
 export const DjangoAdminLayout = ({ children }: Props) => {
   const { breadcrumbs } = useArgs();
-  console.log("breadcrumbs", breadcrumbs);
   return (
     <div>
       <Header />

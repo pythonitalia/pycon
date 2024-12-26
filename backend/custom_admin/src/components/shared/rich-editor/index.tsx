@@ -5,7 +5,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
 import TextStyle from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
-import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react";
+import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import clsx from "clsx";
 import { ButtonNode } from "./button-node";
@@ -73,7 +73,6 @@ export const RichEditor = ({
   return (
     <div className="border">
       <MenuBar hide={hide} editor={editor} />
-      <BubbleMenu editor={editor}>abc</BubbleMenu>
       <EditorContent editor={editor} className="prose max-w-none p-4" />
     </div>
   );
