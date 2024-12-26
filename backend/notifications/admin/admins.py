@@ -4,6 +4,7 @@ from django.http.request import HttpRequest
 from django.urls import reverse
 from django.contrib import admin
 from django.urls.resolvers import URLPattern
+from custom_admin.widgets import RichEditorWidget
 from notifications.admin.views import (
     view_sent_email,
     view_email_template,
@@ -14,10 +15,6 @@ from django.utils.safestring import mark_safe
 
 from notifications.models import EmailTemplate, SentEmail, SentEmailEvent
 from django.forms import Textarea
-
-
-class RichEditorWidget(Textarea):
-    template_name = "astro/widgets/rich-editor.html"
 
 
 class SentEmailEventInline(admin.TabularInline):

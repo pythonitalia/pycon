@@ -1,5 +1,6 @@
 from django.urls import reverse
 
+from custom_admin.widgets import RichEditorWidget
 from notifications.tests.factories import EmailTemplateFactory
 import pytest
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
@@ -12,7 +13,6 @@ from django.contrib.admin.sites import AdminSite
     [
         ("subject", {"rows": 2, "cols": 200}),
         ("preview_text", {"rows": 2, "cols": 200}),
-        ("body", {"rows": 50, "cols": 200}),
     ],
 )
 def test_textarea_size_for_templates(rf, field_name, expected_attrs):
@@ -25,6 +25,18 @@ def test_textarea_size_for_templates(rf, field_name, expected_attrs):
 
     form_field = admin.formfield_for_dbfield(db_field, request=rf.get("/"))
     assert form_field.widget.attrs == expected_attrs
+
+
+def test_email_template_body_uses_rich_editor(rf):
+    db_field = EmailTemplate._meta.get_field("body")
+
+    admin = EmailTemplateAdmin(
+        model=EmailTemplate,
+        admin_site=AdminSite(),
+    )
+
+    form_field = admin.formfield_for_dbfield(db_field, request=rf.get("/"))
+    assert isinstance(form_field.widget, RichEditorWidget)
 
 
 def test_cannot_edit_essential_fields_on_existing_object(rf):
