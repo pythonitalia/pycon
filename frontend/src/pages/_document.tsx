@@ -11,7 +11,6 @@ export default class MyDocument extends Document<{
     return (
       <Html>
         <Head>
-          <link rel="stylesheet" href="https://use.typekit.net/mbr7dqb.css" />
           <link rel="shortcut icon" href="/favicon.png" />
         </Head>
         <body className="bg-milk">
