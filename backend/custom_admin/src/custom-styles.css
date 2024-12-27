@@ -1,3 +1,5 @@
+@import "@radix-ui/themes/styles.css";
+
 /* Fix radix dialog flickering when closing */
 .rt-BaseDialogOverlay {
   &:where([data-state="closed"]) {

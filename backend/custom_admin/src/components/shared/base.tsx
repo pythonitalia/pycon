@@ -3,7 +3,6 @@ import { Theme } from "@radix-ui/themes";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import "../../custom-styles.css";
 import clsx from "clsx";
 import { ArgsProvider } from "./args";
 import { DjangoAdminEditorProvider } from "./django-admin-editor-modal";
