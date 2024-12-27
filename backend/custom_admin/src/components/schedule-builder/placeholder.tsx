@@ -85,8 +85,7 @@ export const Placeholder = ({
       }}
     >
       {isMovingItemLoading && <span>Please wait</span>}
-      {!isMovingItemLoading && !canDrop && <span>Click to add</span>}
-      {!isMovingItemLoading && canDrop && <span>Drop here to move</span>}
+      {!isMovingItemLoading && <span>Drop / Add</span>}
       <PlusIcon />
     </div>
   );

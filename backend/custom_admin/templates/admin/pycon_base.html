@@ -1,0 +1,59 @@
+{% extends 'admin/django_base.html' %} {% block extrastyle %}{{ block.super }}
+<style>
+  #header {
+    margin-top: 40px;
+    align-items: flex-end;
+  }
+
+  div.submit-row a.deletelink {
+    height: auto;
+  }
+
+  .inline-group .tabular .module td.original p {
+    height: auto;
+  }
+
+  .field-move_up_down_links, .field-move_up_down_links p {
+    display: flex;
+    gap: 5px;
+  }
+  .field-move_up_down_links p a {
+    width: 9px;
+    height: 6px;
+  }
+
+  p {
+    line-height: var(--default-line-height);
+  }
+
+  #changelist-search div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+</style>
+{% endblock extrastyle %} {% block userlinks %}
+<div
+  style="
+    position: fixed;
+    z-index: 30;
+    top: 0;
+    left: 0;
+    right: 0;
+    {% if CURRENT_ENV == "production" %}
+    background-color: #904141;
+    font-weight: bold;
+    {% else %}
+    background-color: #419042;
+    {% endif %}
+    text-align: center;
+    padding: 15px 30px;
+  "
+>
+  {% if CURRENT_ENV == "production" %}
+  ⚠️ You are in the {{CURRENT_ENV}} environment ⚠️
+  {% else %}
+  {{CURRENT_ENV}} environment [safe]
+  {% endif %}
+</div>
+{{ block.super }} {% endblock %}

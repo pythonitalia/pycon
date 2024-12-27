@@ -4,6 +4,7 @@ from django.http.request import HttpRequest
 from django.urls import reverse
 from django.contrib import admin
 from django.urls.resolvers import URLPattern
+from custom_admin.widgets import RichEditorWidget
 from notifications.admin.views import (
     view_sent_email,
     view_email_template,
@@ -49,7 +50,7 @@ class EmailTemplateAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == "body":
-            kwargs["widget"] = Textarea(attrs={"rows": 50, "cols": 200})
+            kwargs["widget"] = RichEditorWidget()
 
         if db_field.name in ("subject", "preview_text"):
             kwargs["widget"] = Textarea(attrs={"rows": 2, "cols": 200})

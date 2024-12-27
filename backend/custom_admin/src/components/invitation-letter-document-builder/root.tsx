@@ -5,9 +5,17 @@ import { DjangoAdminLayout } from "../shared/django-admin-layout";
 import { InvitationLetterBuilder } from "./builder";
 import { LocalStateProvider } from "./local-state";
 
-export const InvitationLetterDocumentBuilderRoot = () => {
+export const InvitationLetterDocumentBuilderRoot = ({
+  documentId,
+  breadcrumbs,
+}) => {
   return (
-    <Base>
+    <Base
+      args={{
+        documentId,
+        breadcrumbs,
+      }}
+    >
       <DjangoAdminLayout>
         <Suspense
           fallback={

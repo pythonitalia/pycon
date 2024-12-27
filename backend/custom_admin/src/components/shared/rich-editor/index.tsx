@@ -1,11 +1,16 @@
-import { Card } from "@radix-ui/themes";
 import { Color } from "@tiptap/extension-color";
+import Focus from "@tiptap/extension-focus";
 import ListItem from "@tiptap/extension-list-item";
+import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
 import TextStyle from "@tiptap/extension-text-style";
+import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { MenuBar } from "./menu-bar";
+import clsx from "clsx";
+import { ButtonNode } from "./button-node";
+import { CustomLink } from "./custom-link";
+import { type HideNode, MenuBar } from "./menu-bar";
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -23,14 +28,34 @@ const extensions = [
   TextAlign.configure({
     types: ["heading", "paragraph"],
   }),
+  Underline,
+  ButtonNode,
+  CustomLink.configure({
+    openOnClick: false,
+    autolink: true,
+    defaultProtocol: "https",
+    protocols: ["http", "https"],
+    isAllowedUri: (url, ctx) => {
+      return true;
+    },
+  }),
+  Placeholder.configure({
+    showOnlyCurrent: false,
+    placeholder: "",
+  }),
+  Focus,
 ];
 
-export const Editor = ({
+export const RichEditor = ({
   content,
   onUpdate,
+  className,
+  hide,
 }: {
   content: string;
   onUpdate: (content: string) => void;
+  className?: string;
+  hide?: HideNode[];
 }) => {
   const editor = useEditor({
     extensions,
@@ -40,15 +65,15 @@ export const Editor = ({
     },
     editorProps: {
       attributes: {
-        class: "outline-none",
+        class: clsx("rich-editor outline-none", className),
       },
     },
   });
 
   return (
-    <Card>
-      <MenuBar editor={editor} />
+    <div className="border">
+      <MenuBar hide={hide} editor={editor} />
       <EditorContent editor={editor} className="prose max-w-none p-4" />
-    </Card>
+    </div>
   );
 };
