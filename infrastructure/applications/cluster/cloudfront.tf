@@ -12,6 +12,10 @@ data "aws_cloudfront_cache_policy" "caching_disabled" {
   name = "Managed-CachingDisabled"
 }
 
+data "aws_cloudfront_cache_policy" "origin_cache_control_headers" {
+  name = "UseOriginCacheControlHeaders"
+}
+
 data "aws_acm_certificate" "cert" {
   domain   = "pycon.it"
   statuses = ["ISSUED"]
@@ -58,6 +62,22 @@ resource "aws_cloudfront_distribution" "application" {
 
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
+  }
+
+  ordered_cache_behavior {
+    path_pattern     = "/_next/static/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = "default"
+
+    cache_policy_id          = data.aws_cloudfront_cache_policy.origin_cache_control_headers.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer.id
+
+    min_ttl                = 0
+    default_ttl            = 86400
+    max_ttl                = 31536000
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
   }
 
   restrictions {
