@@ -146,3 +146,8 @@ class Paginated(Generic[ItemType]):
 @strawberry.type
 class NotFound:
     message: str = "Not found"
+
+
+@strawberry.type
+class NoAdmissionTicket:
+    message: str = "User does not have admission ticket"

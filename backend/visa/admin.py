@@ -83,6 +83,10 @@ class InvitationLetterRequestAdmin(admin.ModelAdmin):
 
     def process_now(self, obj):
         pretix_api = PretixAPI.for_conference(obj.conference)
+
+        if not obj.email:
+            return "No email address provided! Can't generate invitation letter."
+
         if not pretix_api.has_attendee_ticket(obj.email):
             return "No attendee ticket found! Can't generate invitation letter."
 

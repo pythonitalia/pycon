@@ -26,8 +26,8 @@ from .users.queries import UserQuery
 from .association_membership.mutation import AssociationMembershipMutation
 from .cms.schema import CMSQuery
 from .sponsors.schema import SponsorsMutation
-from .visa.queries import VisaQuery
-from .visa.mutations import VisaMutation
+from .visa.query import VisaQuery
+from .visa.mutation import VisaMutation
 
 
 @strawberry.type

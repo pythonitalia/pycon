@@ -1,0 +1,22 @@
+mutation RequestInvitationLetter($input: RequestInvitationLetterInput!) {
+  requestInvitationLetter(input: $input) {
+    __typename
+    ... on InvitationLetterRequest {
+      id
+      status
+    }
+    ... on RequestInvitationLetterErrors {
+      errors {
+        address
+        conference
+        dateOfBirth
+        email
+        embassyName
+        fullName
+        nationality
+        onBehalfOf
+        passportNumber
+      }
+    }
+  }
+}
