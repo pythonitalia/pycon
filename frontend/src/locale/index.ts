@@ -1120,6 +1120,10 @@ The sooner you buy your ticket, the more you save!`,
     "invitationLetterForm.errors.generic":
       "Check the form is filled correctly and try again.",
     "invitationLetterForm.requestSubmitted": "Request submitted!",
+    "requestInvitationLetter.formOpeningSoon":
+      "The form will open on {date}. Please watch our socials for updates and any changes.",
+    "requestInvitationLetter.formClosed":
+      "The form is closed. If you have any questions, please contact us.",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -2266,6 +2270,10 @@ Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia dis
     "invitationLetterForm.errors.generic":
       "Verifica che il form sia compilato correttamente e riprova.",
     "invitationLetterForm.requestSubmitted": "Richiesta inviata!",
+    "requestInvitationLetter.formOpeningSoon":
+      "Il form aprirà il {date}. Segui i nostri socials per aggiornamenti e cambiamenti.",
+    "requestInvitationLetter.formClosed":
+      "Il form è chiuso. Se hai domande, contattaci.",
   },
 };
 

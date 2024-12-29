@@ -184,6 +184,13 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         except Deadline.DoesNotExist:
             return False
 
+    def is_deadline_active(self, deadline_type: str):
+        try:
+            deadline = self.deadlines.get(type=deadline_type)
+            return deadline.status == DeadlineStatus.HAPPENING_NOW
+        except Deadline.DoesNotExist:
+            return False
+
     def __str__(self):
         return f"{self.name} <{self.code}>"
 

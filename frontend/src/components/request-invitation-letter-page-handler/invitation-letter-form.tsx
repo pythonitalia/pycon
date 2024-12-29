@@ -21,8 +21,8 @@ import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import {
   InvitationLetterOnBehalfOf,
+  type InvitationLetterRequest,
   InvitationLetterRequestStatus,
-  useInvitationLetterFormQuery,
   useRequestInvitationLetterMutation,
 } from "~/types";
 import { Alert } from "../alert";
@@ -53,17 +53,13 @@ type InvitationLetterFormFields = {
   dateOfBirth: string;
 };
 
-export const InvitationLetterForm = () => {
-  const {
-    data: {
-      me: { hasAdmissionTicket, invitationLetterRequest },
-    },
-  } = useInvitationLetterFormQuery({
-    variables: {
-      conference: process.env.conferenceCode,
-    },
-  });
-
+export const InvitationLetterForm = ({
+  hasAdmissionTicket,
+  invitationLetterRequest,
+}: {
+  hasAdmissionTicket: boolean;
+  invitationLetterRequest?: InvitationLetterRequest;
+}) => {
   const language = useCurrentLanguage();
   const [formState, { checkbox, radio, text, textarea, email, date }] =
     useFormState<InvitationLetterFormFields>({
@@ -87,7 +83,7 @@ export const InvitationLetterForm = () => {
     },
   ] = useRequestInvitationLetterMutation({
     updateQueries: {
-      InvitationLetterForm: (prev, { mutationResult }) => {
+      RequestInvitationLetterPage: (prev, { mutationResult }) => {
         if (
           onBehalfOfOther ||
           mutationResult.data.requestInvitationLetter.__typename !==

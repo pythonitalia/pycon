@@ -151,3 +151,8 @@ class NotFound:
 @strawberry.type
 class NoAdmissionTicket:
     message: str = "User does not have admission ticket"
+
+
+@strawberry.type
+class FormNotAvailable:
+    message: str = "Form is not available"

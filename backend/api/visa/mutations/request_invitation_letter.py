@@ -1,10 +1,11 @@
 from django.db import transaction
 from datetime import date
 from typing import Annotated
-from api.types import BaseErrorType, NoAdmissionTicket
+from api.types import BaseErrorType, FormNotAvailable, NoAdmissionTicket
 from api.utils import validate_email
 from api.visa.types import InvitationLetterOnBehalfOf, InvitationLetterRequest
 from api.extensions import RateLimit
+from conferences.models.deadline import Deadline
 from privacy_policy.record import record_privacy_policy_acceptance
 from visa.models import (
     InvitationLetterRequest as InvitationLetterRequestModel,
@@ -104,7 +105,8 @@ RequestInvitationLetterResult = Annotated[
     InvitationLetterRequest
     | RequestInvitationLetterErrors
     | NoAdmissionTicket
-    | InvitationLetterAlreadyRequested,
+    | InvitationLetterAlreadyRequested
+    | FormNotAvailable,
     strawberry.union(name="RequestInvitationLetterResult"),
 ]
 
@@ -120,6 +122,9 @@ def request_invitation_letter(
 
     if errors := input.validate(conference):
         return errors
+
+    if not conference.is_deadline_active(Deadline.TYPES.invitation_letter_request):
+        return FormNotAvailable()
 
     user = info.context.request.user
 

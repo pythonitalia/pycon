@@ -1,3 +1,4 @@
+from conferences.models.deadline import Deadline
 from privacy_policy.models import PrivacyPolicyAcceptanceRecord
 
 from datetime import date
@@ -8,7 +9,12 @@ from visa.models import (
     InvitationLetterRequestOnBehalfOf,
     InvitationLetterRequestStatus,
 )
-from conferences.tests.factories import ConferenceFactory
+from conferences.tests.factories import (
+    PastDeadlineFactory,
+    ConferenceFactory,
+    FutureDeadlineFactory,
+    ActiveDeadlineFactory,
+)
 import pytest
 
 pytestmark = pytest.mark.django_db
@@ -46,6 +52,9 @@ def _request_invitation_letter(client, **input):
 
 def test_request_invitation_letter(graphql_client, user, mock_has_ticket):
     conference = ConferenceFactory()
+    ActiveDeadlineFactory(
+        conference=conference, type=Deadline.TYPES.invitation_letter_request
+    )
     mock_has_ticket(conference)
 
     graphql_client.force_login(user)
@@ -102,6 +111,9 @@ def test_can_request_invitation_letter_to_multiple_conferences(
 
     conference = ConferenceFactory()
     mock_has_ticket(conference)
+    ActiveDeadlineFactory(
+        conference=conference, type=Deadline.TYPES.invitation_letter_request
+    )
 
     InvitationLetterRequestFactory(
         requester=user,
@@ -111,6 +123,9 @@ def test_can_request_invitation_letter_to_multiple_conferences(
 
     other_conference = ConferenceFactory()
     mock_has_ticket(other_conference)
+    ActiveDeadlineFactory(
+        conference=other_conference, type=Deadline.TYPES.invitation_letter_request
+    )
 
     response = _request_invitation_letter(
         graphql_client,
@@ -165,6 +180,9 @@ def test_request_invitation_letter_email_is_ignored_for_self_requests(
 ):
     conference = ConferenceFactory()
     mock_has_ticket(conference)
+    ActiveDeadlineFactory(
+        conference=conference, type=Deadline.TYPES.invitation_letter_request
+    )
 
     graphql_client.force_login(user)
 
@@ -210,6 +228,9 @@ def test_request_invitation_letter_on_behalf_of_other(
 ):
     conference = ConferenceFactory()
     mock_has_ticket(conference, has_ticket=has_ticket, user=user)
+    ActiveDeadlineFactory(
+        conference=conference, type=Deadline.TYPES.invitation_letter_request
+    )
 
     graphql_client.force_login(user)
 
@@ -261,6 +282,9 @@ def test_duplicate_requests_for_others_are_ignored(
 ):
     conference = ConferenceFactory()
     mock_has_ticket(conference, has_ticket=True, user=user)
+    ActiveDeadlineFactory(
+        conference=conference, type=Deadline.TYPES.invitation_letter_request
+    )
 
     graphql_client.force_login(user)
 
@@ -319,6 +343,9 @@ def test_cannot_request_invitation_letter_if_already_done(
 ):
     conference = ConferenceFactory()
     mock_has_ticket(conference)
+    ActiveDeadlineFactory(
+        conference=conference, type=Deadline.TYPES.invitation_letter_request
+    )
 
     InvitationLetterRequestFactory(
         requester=user,
@@ -354,6 +381,9 @@ def test_cannot_request_invitation_letter_without_ticket(
 ):
     conference = ConferenceFactory()
     mock_has_ticket(conference, False)
+    ActiveDeadlineFactory(
+        conference=conference, type=Deadline.TYPES.invitation_letter_request
+    )
 
     graphql_client.force_login(user)
 
@@ -383,6 +413,9 @@ def test_cannot_request_invitation_letter_for_non_existing_conference(
 ):
     conference = ConferenceFactory()
     mock_has_ticket(conference)
+    ActiveDeadlineFactory(
+        conference=conference, type=Deadline.TYPES.invitation_letter_request
+    )
 
     graphql_client.force_login(user)
 
@@ -416,6 +449,9 @@ def test_email_is_required_when_requesting_on_behalf_of_other(
 ):
     conference = ConferenceFactory()
     mock_has_ticket(conference, has_ticket=True, user=user)
+    ActiveDeadlineFactory(
+        conference=conference, type=Deadline.TYPES.invitation_letter_request
+    )
 
     graphql_client.force_login(user)
 
@@ -447,6 +483,9 @@ def test_email_is_required_when_requesting_on_behalf_of_other(
 def test_required_fields_are_enforced(graphql_client, user, mock_has_ticket):
     conference = ConferenceFactory()
     mock_has_ticket(conference, has_ticket=True, user=user)
+    ActiveDeadlineFactory(
+        conference=conference, type=Deadline.TYPES.invitation_letter_request
+    )
 
     graphql_client.force_login(user)
 
@@ -486,6 +525,9 @@ def test_required_fields_are_enforced(graphql_client, user, mock_has_ticket):
 def test_max_lengths_are_enforced(graphql_client, user, mock_has_ticket):
     conference = ConferenceFactory()
     mock_has_ticket(conference, has_ticket=True, user=user)
+    ActiveDeadlineFactory(
+        conference=conference, type=Deadline.TYPES.invitation_letter_request
+    )
 
     graphql_client.force_login(user)
 
@@ -532,4 +574,45 @@ def test_max_lengths_are_enforced(graphql_client, user, mock_has_ticket):
             "Invalid email address",
         ],
     }
+    assert InvitationLetterRequest.objects.count() == 0
+
+
+@pytest.mark.parametrize("deadline_status", [None, "past", "future"])
+def test_cannot_request_invitation_letter_if_form_is_disabled(
+    graphql_client, user, mock_has_ticket, deadline_status
+):
+    conference = ConferenceFactory()
+
+    if deadline_status == "past":
+        PastDeadlineFactory(
+            conference=conference, type=Deadline.TYPES.invitation_letter_request
+        )
+    elif deadline_status == "future":
+        FutureDeadlineFactory(
+            conference=conference, type=Deadline.TYPES.invitation_letter_request
+        )
+
+    mock_has_ticket(conference)
+
+    graphql_client.force_login(user)
+
+    response = _request_invitation_letter(
+        graphql_client,
+        input={
+            "conference": conference.code,
+            "onBehalfOf": "SELF",
+            "fullName": "Mario Rossi",
+            "email": "",
+            "nationality": "Italian",
+            "address": "via Roma",
+            "passportNumber": "YA1234567",
+            "embassyName": "Italian Embassy in France",
+            "dateOfBirth": "1999-01-01",
+        },
+    )
+
+    assert (
+        response["data"]["requestInvitationLetter"]["__typename"] == "FormNotAvailable"
+    )
+
     assert InvitationLetterRequest.objects.count() == 0

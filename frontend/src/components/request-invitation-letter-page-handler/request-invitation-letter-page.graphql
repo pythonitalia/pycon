@@ -1,0 +1,18 @@
+query RequestInvitationLetterPage($conference: String!) {
+  conference(code: $conference) {
+    id
+    invitationLetterRequestDeadline: deadline(type: "invitation_letter_request") {
+      id
+      status
+      start
+    }
+  }
+  me {
+    id
+    hasAdmissionTicket(conference: $conference)
+    invitationLetterRequest(conference: $conference) {
+      id
+      status
+    }
+  }
+}

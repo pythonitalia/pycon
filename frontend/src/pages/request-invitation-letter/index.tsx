@@ -1,7 +1,7 @@
 import type { GetServerSideProps } from "next";
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { queryInvitationLetterForm } from "~/types";
+import { queryRequestInvitationLetterPage } from "~/types";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -21,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   try {
     await Promise.all([
       prefetchSharedQueries(client, locale),
-      queryInvitationLetterForm(client, {
+      queryRequestInvitationLetterPage(client, {
         conference: process.env.conferenceCode,
       }),
     ]);
