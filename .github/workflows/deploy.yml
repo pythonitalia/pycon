@@ -231,8 +231,8 @@ jobs:
       - name: Wait stable deployment
         run: |
           while true; do
-            response=$(curl -s "https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/health")
-            commit=$(echo $response | jq -r '.commit')
+            response=$(curl -s "https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/health/")
+            commit=$(echo $response | jq -r '.version')
             if [ "$commit" == "${{ needs.deploy-be.outputs.githash }}" ]; then
               echo "New version live"
               break
@@ -376,7 +376,7 @@ jobs:
         run: |
           while true; do
             response=$(curl -s "https://${{ fromJSON('["pastaporto-frontend", "frontend"]')[github.ref == 'refs/heads/main'] }}.pycon.it/api/health")
-            commit=$(echo $response | jq -r '.commit')
+            commit=$(echo $response | jq -r '.version')
             if [ "$commit" == "${{ needs.deploy-fe.outputs.githash }}" ]; then
               echo "New version live"
               break
