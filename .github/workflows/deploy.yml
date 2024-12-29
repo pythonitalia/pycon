@@ -228,7 +228,7 @@ jobs:
     steps:
       - name: Wait stable deployment
         run: |
-          aws ecs wait services-stable --cluster pythonit-${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }} --services "backend-web" "backend-worker"
+          aws ecs wait services-stable --cluster pythonit-${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }} --services "backend-web"
         shell: bash
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
