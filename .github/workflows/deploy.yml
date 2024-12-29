@@ -128,6 +128,8 @@ jobs:
     permissions:
       packages: write
       contents: read
+    outputs:
+      githash: ${{ steps.git.outputs.githash }}
 
     steps:
       - uses: actions/checkout@v4
@@ -226,17 +228,12 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [deploy-be]
     steps:
-      - name: Get service githash
-        id: git
-        run: |
-          hash=$(git rev-list -1 HEAD -- backend)
-          echo "githash=$hash" >> $GITHUB_OUTPUT
       - name: Wait stable deployment
         run: |
           while true; do
             response=$(curl -s "https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/health")
             commit=$(echo $response | jq -r '.commit')
-            if [ "$commit" == "${{ steps.git.outputs.githash }}" ]; then
+            if [ "$commit" == "${{ needs.deploy-be.outputs.githash }}" ]; then
               echo "New version live"
               break
             else
@@ -256,7 +253,8 @@ jobs:
     permissions:
       packages: write
       contents: read
-
+    outputs:
+      githash: ${{ steps.git.outputs.githash }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -374,17 +372,12 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [deploy-fe]
     steps:
-      - name: Get service githash
-        id: git
-        run: |
-          hash=$(git rev-list -1 HEAD -- frontend)
-          echo "githash=$hash" >> $GITHUB_OUTPUT
       - name: Wait stable deployment
         run: |
           while true; do
             response=$(curl -s "https://${{ fromJSON('["pastaporto-frontend", "frontend"]')[github.ref == 'refs/heads/main'] }}.pycon.it/api/health")
             commit=$(echo $response | jq -r '.commit')
-            if [ "$commit" == "${{ steps.git.outputs.githash }}" ]; then
+            if [ "$commit" == "${{ needs.deploy-fe.outputs.githash }}" ]; then
               echo "New version live"
               break
             else
