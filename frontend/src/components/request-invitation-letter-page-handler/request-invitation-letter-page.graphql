@@ -1,7 +1,9 @@
 query RequestInvitationLetterPage($conference: String!) {
   conference(code: $conference) {
     id
-    invitationLetterRequestDeadline: deadline(type: "invitation_letter_request") {
+    invitationLetterRequestDeadline: deadline(
+      type: "invitation_letter_request"
+    ) {
       id
       status
       start
