@@ -17,18 +17,13 @@ class InvitationLetterRequestStatus(Enum):
 
 
 def _convert_request_status_to_public(status):
-    if status in [
-        InvitationLetterRequestStatusDB.PENDING,
-        InvitationLetterRequestStatusDB.PROCESSING,
-        InvitationLetterRequestStatusDB.PROCESSED,
-        InvitationLetterRequestStatusDB.FAILED_TO_GENERATE,
-    ]:
-        return InvitationLetterRequestStatus.PENDING
+    if status == InvitationLetterRequestStatusDB.REJECTED:
+        return InvitationLetterRequestStatus.REJECTED
 
     if status == InvitationLetterRequestStatusDB.SENT:
         return InvitationLetterRequestStatus.SENT
 
-    return InvitationLetterRequestStatus.REJECTED
+    return InvitationLetterRequestStatus.PENDING
 
 
 @strawberry.type
