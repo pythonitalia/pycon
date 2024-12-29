@@ -54,7 +54,7 @@ def test_get_user_invitation_letter_request(graphql_client, user):
 
 
 @pytest.mark.parametrize(
-    "actual_status,expected_status",
+    "actual_status,exposed_status",
     [
         (
             InvitationLetterRequestStatusDB.PENDING,
@@ -80,7 +80,7 @@ def test_get_user_invitation_letter_request(graphql_client, user):
     ],
 )
 def test_user_invitation_letter_request_has_user_friendly_status(
-    graphql_client, user, actual_status, expected_status
+    graphql_client, user, actual_status, exposed_status
 ):
     graphql_client.force_login(user)
 
@@ -93,7 +93,7 @@ def test_user_invitation_letter_request_has_user_friendly_status(
 
     me = response["data"]["me"]
     assert me["invitationLetterRequest"]["id"] == str(invitation_letter_request.id)
-    assert me["invitationLetterRequest"]["status"] == expected_status.name
+    assert me["invitationLetterRequest"]["status"] == exposed_status.name
 
 
 def test_on_behalf_of_others_invitation_letter_request_are_excluded(
