@@ -85,9 +85,11 @@ const FormClosed = ({
     <Text size={2}>
       <FormattedMessage id="requestInvitationLetter.formClosed" />
     </Text>
-    <InvitationLetterRequestStatusCallout
-      invitationLetterRequest={invitationLetterRequest}
-    />
+    {invitationLetterRequest && (
+      <InvitationLetterRequestStatusCallout
+        invitationLetterRequest={invitationLetterRequest}
+      />
+    )}
   </>
 );
 
