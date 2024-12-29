@@ -195,5 +195,3 @@ export const SponsorLeadModal = ({ onClose }) => {
     </Modal>
   );
 };
-
-// test change
