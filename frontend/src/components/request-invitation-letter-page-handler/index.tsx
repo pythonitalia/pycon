@@ -9,9 +9,14 @@ import {
 import { FormattedMessage } from "react-intl";
 import { MetaTags } from "~/components/meta-tags";
 import { useCurrentLanguage } from "~/locale/context";
-import { DeadlineStatus, useRequestInvitationLetterPageQuery } from "~/types";
+import {
+  DeadlineStatus,
+  type InvitationLetterRequest,
+  useRequestInvitationLetterPageQuery,
+} from "~/types";
 import { createHref } from "../link";
 import { InvitationLetterForm } from "./invitation-letter-form";
+import { InvitationLetterRequestStatusCallout } from "./invitation-letter-request-status-callout";
 
 export const RequestInvitationLetterPageHandler = () => {
   const language = useCurrentLanguage();
@@ -55,10 +60,10 @@ export const RequestInvitationLetterPageHandler = () => {
         <Spacer size="xl" />
 
         {(!deadlineStatus || deadlineStatus === DeadlineStatus.InThePast) && (
-          <FormClosed />
+          <FormClosed invitationLetterRequest={invitationLetterRequest} />
         )}
         {deadlineStatus === DeadlineStatus.InTheFuture && (
-          <FormOpeningSoon date={invitationLetterRequestDeadline?.start} />
+          <FormOpeningSoon date={invitationLetterRequestDeadline.start} />
         )}
         {deadlineStatus === DeadlineStatus.HappeningNow && (
           <InvitationLetterForm
@@ -71,10 +76,19 @@ export const RequestInvitationLetterPageHandler = () => {
   );
 };
 
-const FormClosed = () => (
-  <Text size={2}>
-    <FormattedMessage id="requestInvitationLetter.formClosed" />
-  </Text>
+const FormClosed = ({
+  invitationLetterRequest,
+}: {
+  invitationLetterRequest: InvitationLetterRequest;
+}) => (
+  <>
+    <Text size={2}>
+      <FormattedMessage id="requestInvitationLetter.formClosed" />
+    </Text>
+    <InvitationLetterRequestStatusCallout
+      invitationLetterRequest={invitationLetterRequest}
+    />
+  </>
 );
 
 const FormOpeningSoon = ({ date }) => {

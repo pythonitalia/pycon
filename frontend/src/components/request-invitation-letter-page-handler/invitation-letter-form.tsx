@@ -27,6 +27,7 @@ import {
 } from "~/types";
 import { Alert } from "../alert";
 import { createHref } from "../link";
+import { InvitationLetterRequestStatusCallout } from "./invitation-letter-request-status-callout";
 
 const ON_BEHALF_OF_OPTIONS = [
   {
@@ -188,25 +189,9 @@ export const InvitationLetterForm = ({
                 <Text size={2}>
                   <FormattedMessage id="invitationLetterForm.requestAlreadySent" />
                 </Text>
-                <Spacer size="thin" />
-                {invitationLetterRequest.status ===
-                  InvitationLetterRequestStatus.Pending && (
-                  <Text size={2}>
-                    <FormattedMessage id="invitationLetterForm.requestStatus.pending" />
-                  </Text>
-                )}
-                {invitationLetterRequest.status ===
-                  InvitationLetterRequestStatus.Sent && (
-                  <Text size={2}>
-                    <FormattedMessage id="invitationLetterForm.requestStatus.sent" />
-                  </Text>
-                )}
-                {invitationLetterRequest.status ===
-                  InvitationLetterRequestStatus.Rejected && (
-                  <Text size={2}>
-                    <FormattedMessage id="invitationLetterForm.requestStatus.rejected" />
-                  </Text>
-                )}
+                <InvitationLetterRequestStatusCallout
+                  invitationLetterRequest={invitationLetterRequest}
+                />
               </div>
             )}
 
