@@ -28,8 +28,7 @@ def _convert_request_status_to_public(status):
     if status == InvitationLetterRequestStatusDB.SENT:
         return InvitationLetterRequestStatus.SENT
 
-    if status == InvitationLetterRequestStatusDB.REJECTED:
-        return InvitationLetterRequestStatus.REJECTED
+    return InvitationLetterRequestStatus.REJECTED
 
 
 @strawberry.type
