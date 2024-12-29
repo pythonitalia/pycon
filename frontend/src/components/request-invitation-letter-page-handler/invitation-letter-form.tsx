@@ -233,7 +233,7 @@ export const InvitationLetterForm = () => {
                 <Input
                   {...email("email")}
                   required={true}
-                  maxLength={100}
+                  maxLength={320}
                   placeholder={inputPlaceholder}
                   errors={getErrors("email")}
                 />

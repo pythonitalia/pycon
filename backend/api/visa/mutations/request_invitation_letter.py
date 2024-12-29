@@ -17,6 +17,15 @@ from conferences.models import Conference as ConferenceModel
 from pretix import user_has_admission_ticket
 import strawberry
 
+MAX_LENGTH_FIELDS = {
+    "email": 254,
+    "full_name": 300,
+    "nationality": 100,
+    "address": 300,
+    "passport_number": 20,
+    "embassy_name": 300,
+}
+
 
 @strawberry.type
 class InvitationLetterAlreadyRequested:
@@ -73,6 +82,15 @@ class RequestInvitationLetterInput:
             if not getattr(self, field_name):
                 errors.add_error(field_name, "This field is required")
 
+        for field_name, max_length in MAX_LENGTH_FIELDS.items():
+            value = getattr(self, field_name)
+
+            if value and len(value) > max_length:
+                errors.add_error(
+                    field_name,
+                    f"Ensure this field has no more than {max_length} characters",
+                )
+
         if self.email and not validate_email(self.email):
             errors.add_error("email", "Invalid email address")
 
@@ -126,7 +144,7 @@ def request_invitation_letter(
             return InvitationLetterAlreadyRequested()
 
     with transaction.atomic():
-        invitation_letter, _ = InvitationLetterRequestModel.objects.get_or_create(
+        invitation_letter, created = InvitationLetterRequestModel.objects.get_or_create(
             conference=conference,
             requester=user,
             on_behalf_of=InvitationLetterRequestOnBehalfOf(input.on_behalf_of.name),
@@ -139,10 +157,11 @@ def request_invitation_letter(
             embassy_name=input.embassy_name,
         )
 
-        record_privacy_policy_acceptance(
-            info.context.request,
-            conference,
-            "invitation_letter",
-        )
+        if created:
+            record_privacy_policy_acceptance(
+                info.context.request,
+                conference,
+                "invitation_letter",
+            )
 
     return InvitationLetterRequest.from_model(invitation_letter)

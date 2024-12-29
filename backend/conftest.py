@@ -1,3 +1,5 @@
+import json
+import requests
 from wagtail.models import Locale
 from django.core.files.images import ImageFile
 import os
@@ -91,10 +93,26 @@ def locale():
 
 @pytest.fixture
 def mock_has_ticket(requests_mock, settings):
-    def wrapper(conference, has_ticket=True):
-        requests_mock.post(
-            f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
-            json={"user_has_admission_ticket": has_ticket},
-        )
+    def wrapper(conference, has_ticket=True, user=None):
+        def matcher(req):
+            path = f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/"
+            if req.url != path:
+                return None
+
+            resp = requests.Response()
+            resp.status_code = 200
+            data = req.json()
+
+            ticket_result = (
+                has_ticket
+                if not user or data["attendee_email"] == user.email
+                else False
+            )
+            resp._content = json.dumps(
+                {"user_has_admission_ticket": ticket_result}
+            ).encode("utf-8")
+            return resp
+
+        requests_mock.add_matcher(matcher)
 
     return wrapper
