@@ -201,28 +201,28 @@ export const InvitationLetterForm = ({
               </Text>
             )}
 
-            {onBehalfOfOther && (
-              <InputWrapper
-                required={true}
-                title={
-                  <FormattedMessage id="invitationLetterForm.email.title" />
-                }
-                description={
-                  <FormattedMessage id="invitationLetterForm.email.description" />
-                }
-              >
-                <Input
-                  {...email("email")}
-                  required={true}
-                  maxLength={320}
-                  placeholder={inputPlaceholder}
-                  errors={getErrors("email")}
-                />
-              </InputWrapper>
-            )}
-
             {canSeeForm && (
               <>
+                {onBehalfOfOther && (
+                  <InputWrapper
+                    required={true}
+                    title={
+                      <FormattedMessage id="invitationLetterForm.email.title" />
+                    }
+                    description={
+                      <FormattedMessage id="invitationLetterForm.email.description" />
+                    }
+                  >
+                    <Input
+                      {...email("email")}
+                      required={true}
+                      maxLength={320}
+                      placeholder={inputPlaceholder}
+                      errors={getErrors("email")}
+                    />
+                  </InputWrapper>
+                )}
+
                 <InputWrapper
                   required={true}
                   title={
