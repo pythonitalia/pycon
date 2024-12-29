@@ -1,3 +1,4 @@
+import { Text } from "@python-italia/pycon-styleguide";
 import clsx from "clsx";
 import type React from "react";
 
@@ -23,7 +24,7 @@ export const Alert = ({
         )}
         {...props}
       >
-        {children}
+        <Text size="label3">{children}</Text>
       </div>
     </div>
   );

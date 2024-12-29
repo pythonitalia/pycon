@@ -4,6 +4,8 @@ export const messages = {
     titleTemplate: "%s | PyCon Italia",
     description:
       "Join PyCon Italia May 28th to May 31st 2025 in Bologna, Italy!",
+    "global.submit": "Submit",
+    "global.pleaseWait": "Please wait",
 
     "tickets.description":
       "After you have purchased your tickets, you will be able to access the {page} with our discounted codes.",
@@ -1075,11 +1077,61 @@ The sooner you buy your ticket, the more you save!`,
 
     "scheduleView.filter.starred": "Starred",
     "scheduleView.filter.notStarred": "Not Starred",
+
+    "requestInvitationLetter.pageTitle": "Request an invitation letter",
+    "requestInvitationLetter.heading": "Request an invitation letter",
+    "invitationLetterForm.noAdmissionTicket":
+      "You need to buy a ticket to request an invitation letter.",
+    "invitationLetterForm.title": "Invitation letter",
+    "invitationLetterForm.onBehalfOf.title": "On behalf of",
+    "invitationLetterForm.onBehalfOf.description":
+      "Please only request an invitation on someone's behalf if they are unable to create their own account. Additional verification will be required.",
+    "invitationLetterForm.onBehalfOf.value.self": "Myself",
+    "invitationLetterForm.onBehalfOf.value.other": "Someone else",
+    "invitationLetterForm.email.title": "Email",
+    "invitationLetterForm.email.description":
+      "The email address of the person who needs the invitation letter.",
+    "invitationLetterForm.fullName.title": "Full name",
+    "invitationLetterForm.fullName.description":
+      "The full name of the person who needs the invitation letter as it appears in official documents.",
+    "invitationLetterForm.dateOfBirth.title": "Date of birth",
+    "invitationLetterForm.dateOfBirth.description":
+      "The date of birth of the person who needs the invitation letter.",
+    "invitationLetterForm.nationality.title": "Nationality",
+    "invitationLetterForm.nationality.description":
+      "Nationality of the person who needs the invitation letter.",
+    "invitationLetterForm.address.title": "Address",
+    "invitationLetterForm.address.description":
+      "The residential address of the person who needs the invitation letter.",
+    "invitationLetterForm.passportNumber.title": "Passport number",
+    "invitationLetterForm.passportNumber.description":
+      "The passport number of the person who needs the invitation letter.",
+    "invitationLetterForm.embassyName.title": "Embassy name",
+    "invitationLetterForm.embassyName.description":
+      "The name of the embassy that will receive the invitation letter.",
+    "invitationLetterForm.requestAlreadySent":
+      "You have already requested an invitation letter!",
+    "invitationLetterForm.requestStatus.pending":
+      "We are processing your request. We will contact you if we need more information. If you think you entered incorrect information, contact us (without sharing sensitive details), and we’ll reopen the form.",
+    "invitationLetterForm.requestStatus.sent":
+      "The invitation letter has been sent to your email address. If you need to make any changes, please contact us (without sharing sensitive details).",
+    "invitationLetterForm.requestStatus.rejected":
+      "We are sorry, but we cannot issue an invitation letter. Please contact us for more info.",
+    "invitationLetterForm.errors.generic":
+      "Check the form is filled correctly and try again.",
+    "invitationLetterForm.requestSubmitted": "Request submitted!",
+    "requestInvitationLetter.formOpeningSoon":
+      "The form will open on {date}. Please watch our socials for updates and any changes.",
+    "requestInvitationLetter.formClosed":
+      "The form is closed. If you have any questions, please contact us.",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
     description:
       "Partecipa a PyCon Italia! Dal 28 al 31 Maggio 2025 a Bologna!",
+    "global.submit": "Invia",
+    "global.pleaseWait": "Attendi",
+
     "global.accordion.close": "Chiudi",
     "global.accordion.readMore": "Apri",
     "global.here": "qui",
@@ -2176,6 +2228,52 @@ Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia dis
     "tickets.description":
       "Dopo aver acquistato i tuoi biglietti, potrai accedere alla {page} con i nostri codici sconto.",
     "tickets.description.page": "pagina hotels",
+
+    "requestInvitationLetter.pageTitle": "Richiedi una lettera d'invito",
+    "requestInvitationLetter.heading": "Richiedi una lettera d'invito",
+    "invitationLetterForm.noAdmissionTicket":
+      "È necessario acquistare un biglietto per richiedere una lettera d'invito.",
+    "invitationLetterForm.title": "Lettera d'invito",
+    "invitationLetterForm.onBehalfOf.title": "Per conto di",
+    "invitationLetterForm.onBehalfOf.description":
+      "Si prega di richiedere un invito per conto di qualcun altro solo se non sono in grado di creare un proprio account. Sarà necessaria una verifica aggiuntiva.",
+    "invitationLetterForm.onBehalfOf.value.self": "Per me",
+    "invitationLetterForm.onBehalfOf.value.other": "Qualcun altro",
+    "invitationLetterForm.email.title": "Email",
+    "invitationLetterForm.email.description":
+      "L'indirizzo email della persona che necessita della lettera d'invito.",
+    "invitationLetterForm.fullName.title": "Nome completo",
+    "invitationLetterForm.fullName.description":
+      "Il nome completo come appare nei documenti ufficiali.",
+    "invitationLetterForm.nationality.title": "Nazionalità",
+    "invitationLetterForm.nationality.description":
+      "Nazionalità come specificata nel passaporto.",
+    "invitationLetterForm.dateOfBirth.title": "Data di nascita",
+    "invitationLetterForm.dateOfBirth.description":
+      "La data di nascita della persona che necessita della lettera d'invito.",
+    "invitationLetterForm.address.title": "Indirizzo",
+    "invitationLetterForm.address.description": "L'indirizzo di residenza.",
+    "invitationLetterForm.passportNumber.title": "Numero di passaporto",
+    "invitationLetterForm.passportNumber.description":
+      "Il numero di passaporto della persona che necessita della lettera d'invito.",
+    "invitationLetterForm.embassyName.title": "Nome dell'ambasciata",
+    "invitationLetterForm.embassyName.description":
+      "Il nome dell'ambasciata che riceverà la lettera d'invito.",
+    "invitationLetterForm.requestAlreadySent":
+      "Hai già richiesto una lettera di invito!",
+    "invitationLetterForm.requestStatus.pending":
+      "Stiamo elaborando la tua richiesta. Ti contatteremo se avremo bisogno di ulteriori informazioni. Se pensi di aver inserito informazioni errate, contattaci (senza condividere dettagli sensibili) e riapriremo il modulo.",
+    "invitationLetterForm.requestStatus.sent":
+      "La lettera di invito è stata inviata al tuo indirizzo email. Se hai bisogno di apportare modifiche, contattaci (senza condividere dettagli sensibili).",
+    "invitationLetterForm.requestStatus.rejected":
+      "Siamo spiacenti, ma non possiamo emettere una lettera di invito. Contattaci per maggiori informazioni.",
+    "invitationLetterForm.errors.generic":
+      "Verifica che il form sia compilato correttamente e riprova.",
+    "invitationLetterForm.requestSubmitted": "Richiesta inviata!",
+    "requestInvitationLetter.formOpeningSoon":
+      "Il form aprirà il {date}. Segui i nostri socials per aggiornamenti e cambiamenti.",
+    "requestInvitationLetter.formClosed":
+      "Il form è chiuso. Se hai domande, contattaci.",
   },
 };
 

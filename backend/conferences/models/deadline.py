@@ -22,6 +22,7 @@ class Deadline(TimeFramedModel):
         ("refund", _("Ticket refund")),
         ("grants", _("Grants")),
         ("badge_preview", _("Badge preview")),
+        ("invitation_letter_request", _("Invitation letter request")),
         ("custom", _("Custom deadline")),
     )
 

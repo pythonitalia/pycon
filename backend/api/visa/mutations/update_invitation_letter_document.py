@@ -4,7 +4,6 @@ from api.types import NotFound
 from custom_admin.audit import create_change_admin_log_entry
 from visa.models import InvitationLetterDocument as InvitationLetterDocumentModel
 from api.visa.permissions import CanEditInvitationLetterDocument
-from strawberry.tools import create_type
 from api.visa.types import InvitationLetterDocument
 import strawberry
 
@@ -65,9 +64,3 @@ def update_invitation_letter_document(
         change_message="Invitation letter document updated",
     )
     return InvitationLetterDocument.from_model(invitation_letter_document)
-
-
-VisaMutation = create_type(
-    "VisaMutation",
-    (update_invitation_letter_document,),
-)

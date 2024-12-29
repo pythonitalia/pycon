@@ -1,4 +1,42 @@
+from enum import Enum
+from visa.models import InvitationLetterRequestStatus as InvitationLetterRequestStatusDB
 import strawberry
+
+
+@strawberry.enum
+class InvitationLetterOnBehalfOf(Enum):
+    SELF = "self"
+    OTHER = "other"
+
+
+@strawberry.enum
+class InvitationLetterRequestStatus(Enum):
+    PENDING = "pending"
+    SENT = "sent"
+    REJECTED = "rejected"
+
+
+def _convert_request_status_to_public(status):
+    if status == InvitationLetterRequestStatusDB.REJECTED:
+        return InvitationLetterRequestStatus.REJECTED
+
+    if status == InvitationLetterRequestStatusDB.SENT:
+        return InvitationLetterRequestStatus.SENT
+
+    return InvitationLetterRequestStatus.PENDING
+
+
+@strawberry.type
+class InvitationLetterRequest:
+    id: strawberry.ID
+    status: InvitationLetterRequestStatus
+
+    @classmethod
+    def from_model(cls, instance):
+        return cls(
+            id=instance.id,
+            status=_convert_request_status_to_public(instance.status),
+        )
 
 
 @strawberry.type

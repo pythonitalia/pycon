@@ -5,6 +5,12 @@ from django.conf import settings
 
 from django.urls import reverse
 from api.billing.types import BillingAddress
+from api.visa.types import InvitationLetterRequest
+from visa.models import (
+    InvitationLetterRequest as InvitationLetterRequestModel,
+    InvitationLetterRequestOnBehalfOf,
+)
+from pretix import user_has_admission_ticket
 from pycon.signing import sign_path
 import strawberry
 from strawberry.types import Info
@@ -140,6 +146,19 @@ class User:
         return [ticket for ticket in attendee_tickets]
 
     @strawberry.field
+    def has_admission_ticket(self, conference: str) -> bool:
+        conference = Conference.objects.filter(code=conference).first()
+
+        if not conference:
+            return False
+
+        return user_has_admission_ticket(
+            email=self.email,
+            event_organizer=conference.pretix_organizer_id,
+            event_slug=conference.pretix_event_id,
+        )
+
+    @strawberry.field
     def submissions(self, info: Info, conference: str) -> list[Submission]:
         return SubmissionModel.objects.filter(
             speaker_id=self.id, conference__code=conference
@@ -161,6 +180,22 @@ class User:
             .for_conference_code(conference)
             .all()
         ]
+
+    @strawberry.field
+    def invitation_letter_request(
+        self, conference: str
+    ) -> InvitationLetterRequest | None:
+        invitation_letter_request = (
+            InvitationLetterRequestModel.objects.for_conference_code(conference)
+            .of_user(self.id)
+            .filter(on_behalf_of=InvitationLetterRequestOnBehalfOf.SELF)
+            .first()
+        )
+        return (
+            InvitationLetterRequest.from_model(invitation_letter_request)
+            if invitation_letter_request
+            else None
+        )
 
     @classmethod
     def from_django_model(cls, user):

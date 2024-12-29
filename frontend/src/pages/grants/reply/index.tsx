@@ -276,9 +276,7 @@ const GrantReply = () => {
         {(replyError ||
           replyData?.sendGrantReply.__typename === "SendGrantReplyError") && (
           <Alert variant="alert">
-            <Text>
-              {replyError.message || replyData?.sendGrantReply.__typename}
-            </Text>
+            {replyError.message || replyData?.sendGrantReply.__typename}
           </Alert>
         )}
       </Section>

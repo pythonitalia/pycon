@@ -177,6 +177,21 @@ class DeadlineFactory(DjangoModelFactory):
         model = Deadline
 
 
+class PastDeadlineFactory(DeadlineFactory):
+    start = factory.Faker("past_datetime", tzinfo=UTC)
+    end = factory.Faker("past_datetime", tzinfo=UTC)
+
+
+class FutureDeadlineFactory(DeadlineFactory):
+    start = factory.Faker("future_datetime", tzinfo=UTC)
+    end = factory.Faker("future_datetime", tzinfo=UTC)
+
+
+class ActiveDeadlineFactory(DeadlineFactory):
+    start = factory.Faker("past_datetime", tzinfo=UTC)
+    end = factory.Faker("future_datetime", tzinfo=UTC)
+
+
 class AudienceLevelFactory(DjangoModelFactory):
     name = factory.fuzzy.FuzzyChoice(("Beginner", "Intermidiate", "Advanced"))
 

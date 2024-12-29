@@ -95,3 +95,49 @@ def test_is_python_italia_member_with_expired_membership(graphql_client, user, s
 
     me = response["data"]["me"]
     assert me["isPythonItaliaMember"] is False
+
+
+@pytest.mark.parametrize("has_ticket", [True, False])
+def test_has_admission_ticket(mock_has_ticket, has_ticket, graphql_client, user):
+    graphql_client.force_login(user)
+
+    conference = ConferenceFactory()
+    mock_has_ticket(conference, has_ticket=has_ticket, user=user)
+
+    response = graphql_client.query(
+        """query($conference: String!) {
+        me {
+            hasAdmissionTicket(conference: $conference)
+        }
+    }""",
+        variables={
+            "conference": conference.code,
+        },
+    )
+
+    me = response["data"]["me"]
+    assert me["hasAdmissionTicket"] == has_ticket
+
+
+@pytest.mark.parametrize("has_ticket", [True, False])
+def test_has_admission_ticket_with_non_existent_conference(
+    mock_has_ticket, has_ticket, graphql_client, user
+):
+    graphql_client.force_login(user)
+
+    conference = ConferenceFactory()
+    mock_has_ticket(conference, has_ticket=has_ticket, user=user)
+
+    response = graphql_client.query(
+        """query($conference: String!) {
+        me {
+            hasAdmissionTicket(conference: $conference)
+        }
+    }""",
+        variables={
+            "conference": "invalid",
+        },
+    )
+
+    me = response["data"]["me"]
+    assert me["hasAdmissionTicket"] is False

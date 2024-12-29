@@ -1,6 +1,10 @@
 from django.urls import reverse
 from django.contrib.admin.sites import AdminSite
-from visa.models import InvitationLetterConferenceConfig, InvitationLetterRequest
+from visa.models import (
+    InvitationLetterConferenceConfig,
+    InvitationLetterRequest,
+    InvitationLetterRequestOnBehalfOf,
+)
 from visa.admin import InvitationLetterDocumentInline, InvitationLetterRequestAdmin
 import pytest
 
@@ -95,6 +99,21 @@ def test_generate_button_doesnt_appear_with_no_ticket(mock_has_ticket):
     mock_has_ticket(invitation_letter_request.conference, False)
 
     assert "No attendee ticket found!" in admin.process_now(invitation_letter_request)
+
+
+def test_generate_button_doesnt_appear_with_no_email(mock_has_ticket):
+    admin = InvitationLetterRequestAdmin(
+        model=InvitationLetterRequest, admin_site=AdminSite()
+    )
+
+    invitation_letter_request = InvitationLetterRequestFactory(
+        on_behalf_of=InvitationLetterRequestOnBehalfOf.OTHER, email_address=""
+    )
+
+    assert (
+        "No email address provided! Can't generate invitation letter."
+        in admin.process_now(invitation_letter_request)
+    )
 
 
 def test_invitation_letter_request_admin_post_processing_redirects_to_changelist(
