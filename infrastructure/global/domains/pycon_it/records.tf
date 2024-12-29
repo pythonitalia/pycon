@@ -245,3 +245,19 @@ resource "aws_route53_record" "flodesk_dmarc" {
   records = ["v=DMARC1; p=none"]
   ttl     = "900"
 }
+
+resource "aws_route53_record" "postmark_dkim" {
+  zone_id = aws_route53_zone.pyconit.id
+  name    = "20241118190136pm._domainkey"
+  type    = "TXT"
+  records = ["k=rsa;p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNrZ0k+aFz4r58EgEAhZhieJgjAxwXiGaAXbaGYeeFyTJqLH+/bqxJ0+mkqnI5PZhXAGBJ7t1ZWmbTtD2Ul//efTOAiQO1inK0yXLwsiYJkuQUYJRbOfcLZd2QYjLK9CE1Gz1cZOzHhJB/Hho5yK/Ul+FeqJVG5qAuLM06Ga4VUwIDAQAB"]
+  ttl     = "900"
+}
+
+resource "aws_route53_record" "postmark_bounces" {
+  zone_id = aws_route53_zone.pyconit.id
+  name    = "pm-bounces"
+  type    = "CNAME"
+  records = ["pm.mtasv.net"]
+  ttl     = "900"
+}
