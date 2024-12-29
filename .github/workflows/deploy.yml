@@ -226,6 +226,11 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [deploy-be]
     steps:
+      - name: Get service githash
+        id: git
+        run: |
+          hash=$(git rev-list -1 HEAD -- backend)
+          echo "githash=$hash" >> $GITHUB_OUTPUT
       - name: Wait stable deployment
         run: |
           while true; do
@@ -369,6 +374,11 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [deploy-fe]
     steps:
+      - name: Get service githash
+        id: git
+        run: |
+          hash=$(git rev-list -1 HEAD -- frontend)
+          echo "githash=$hash" >> $GITHUB_OUTPUT
       - name: Wait stable deployment
         run: |
           while true; do
