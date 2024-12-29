@@ -123,17 +123,11 @@ jobs:
           build-args: |
             PRETIX_IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pretix:pretix-base-${{ steps.git.outputs.githash }}
 
-  build-and-push-arm-service:
+  build-be:
     runs-on: [self-hosted]
     permissions:
       packages: write
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        service:
-          - name: pycon-backend
-            dir: backend
 
     steps:
       - uses: actions/checkout@v4
@@ -149,13 +143,13 @@ jobs:
       - name: Get service githash
         id: git
         run: |
-          hash=$(git rev-list -1 HEAD -- ${{ matrix.service.dir }})
+          hash=$(git rev-list -1 HEAD -- backend)
           echo "githash=$hash" >> $GITHUB_OUTPUT
       - name: Check if commit is already on ECR
         id: image
         run: |
           set +e
-          aws ecr describe-images --repository-name=pythonit/${{ matrix.service.name }} --image-ids=imageTag=arm-${{ steps.git.outputs.githash }}
+          aws ecr describe-images --repository-name=pythonit/pycon-backend --image-ids=imageTag=arm-${{ steps.git.outputs.githash }}
           if [[ $? == 0 ]]; then
             echo "image_exists=1" >> $GITHUB_OUTPUT
           else
@@ -182,21 +176,21 @@ jobs:
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/build-push-action@v6
         with:
-          context: ./${{ matrix.service.dir }}
-          file: ./${{ matrix.service.dir }}/Dockerfile
+          context: ./backend
+          file: ./backend/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           provenance: false
           push: true
           tags: |
-            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/${{ matrix.service.name }}:arm-${{ steps.git.outputs.githash }}
-            ghcr.io/pythonitalia/pycon/${{ matrix.service.name }}:arm-${{ steps.git.outputs.githash }}
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ steps.git.outputs.githash }}
+            ghcr.io/pythonitalia/pycon/pycon-backend:arm-${{ steps.git.outputs.githash }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
 
-  terraform:
+  deploy-be:
     runs-on: ubuntu-24.04
-    needs: [build-and-push-arm-service, build-pretix, create-db]
+    needs: [build-be, build-pretix, create-db]
     environment:
       name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
     defaults:
@@ -228,27 +222,21 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-central-1
 
-  wait-aws-update:
+  wait-be-update:
     runs-on: ubuntu-24.04
-    needs: [terraform]
+    needs: [deploy-be]
     steps:
-      - name: Check health status
+      - name: Wait stable deployment
         run: |
-          while true; do
-            response=$(curl -s "https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/health")
-            commit=$(echo $response | jq -r '.commit')
-            if [ "$commit" == "${{ steps.git.outputs.githash }}" ]; then
-              echo "New version live"
-              break
-            else
-              echo "Commit hash does not match. Retrying..."
-              sleep 3
-            fi
-          done
+          aws ecs wait services-stable --cluster pythonit-${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }} --services "backend-web" "backend-worker"
         shell: bash
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-central-1
 
   build-fe:
-    needs: [wait-aws-update]
+    needs: [wait-be-update]
     runs-on: [self-hosted]
     permissions:
       packages: write
@@ -363,6 +351,19 @@ jobs:
         run: terraform apply -no-color -auto-approve &> /dev/null
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-central-1
+
+  wait-fe-update:
+    runs-on: ubuntu-24.04
+    needs: [deploy-fe]
+    steps:
+      - name: Wait stable deployment
+        run: |
+          aws ecs wait services-stable --cluster pythonit-${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }} --services "frontend"
+        shell: bash
+        env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-central-1
