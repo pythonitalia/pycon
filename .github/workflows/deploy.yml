@@ -226,7 +226,7 @@ jobs:
 
   wait-be-update:
     runs-on: ubuntu-24.04
-    needs: [deploy-be]
+    needs: [deploy-be, build-be]
     steps:
       - name: Wait stable deployment
         run: |
@@ -237,7 +237,7 @@ jobs:
               echo "New version live"
               break
             else
-              echo "Commit hash does not match. Retrying..."
+              echo "Commit hash $commit does not match. Retrying..."
               sleep 3
             fi
           done
@@ -370,7 +370,7 @@ jobs:
 
   wait-fe-update:
     runs-on: ubuntu-24.04
-    needs: [deploy-fe]
+    needs: [deploy-fe, build-fe]
     steps:
       - name: Wait stable deployment
         run: |
