@@ -230,22 +230,29 @@ jobs:
     steps:
       - name: Wait stable deployment
         run: |
-          while true; do
-            response=$(curl -s "https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/health/")
-            commit=$(echo $response | jq -r '.version')
-            if [ "$commit" == "${{ needs.build-be.outputs.githash }}" ]; then
-              echo "New version live"
-              break
-            else
-              echo "Commit hash $commit does not match. Retrying..."
-              sleep 3
-            fi
-          done
-        shell: bash
+          import requests
+          import os
+          import time
+
+          while True:
+            response = requests.get(f"https://{os.getenv('URL')/health/")
+            try:
+              commit = response.json()['version']
+              if commit == os.getenv('GITHASH'):
+                print('New version live')
+                break
+              else:
+                print('Commit hash does not match. Retrying...')
+                time.sleep(2)
+            except e:
+              print('Failed to get version', e)
+        shell: python
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-central-1
+          URL: ${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it
+          GITHASH: ${{ needs.build-be.outputs.githash }}
 
   build-fe:
     needs: [wait-be-update]
