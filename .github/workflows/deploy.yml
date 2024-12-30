@@ -206,7 +206,7 @@ jobs:
                 break
               else:
                 print('Commit hash does not match. Retrying...')
-            except e:
+            except Exception as e:
               print('Failed to get version', e)
 
             attempts += 1
@@ -365,7 +365,7 @@ jobs:
                 break
               else:
                 print('Commit hash does not match. Retrying...')
-            except e:
+            except Exception as e:
               print('Failed to get version', e)
 
             attempts += 1
