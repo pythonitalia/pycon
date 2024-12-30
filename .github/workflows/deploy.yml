@@ -374,7 +374,7 @@ jobs:
               print('Failed to get new version')
               exit(1)
 
-            time.sleep(2)
+            time.sleep(attempts)
         shell: python
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
