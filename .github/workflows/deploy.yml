@@ -12,44 +12,6 @@ env:
   TF_WORKSPACE:  ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
 
 jobs:
-  create-db:
-    runs-on: ubuntu-24.04
-    defaults:
-      run:
-        working-directory: ./infrastructure/applications
-    steps:
-      - uses: actions/checkout@v4
-        if: github.ref != 'refs/heads/main'
-        with:
-          ref: ${{ github.ref }}
-          fetch-depth: 0
-      - name: Configure AWS credentials
-        if: github.ref != 'refs/heads/main'
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.aws_access_key_id }}
-          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
-          aws-region: eu-central-1
-      - uses: hashicorp/setup-terraform@v3
-        if: github.ref != 'refs/heads/main'
-        with:
-          terraform_version: 1.2.4
-      - name: Terraform Init
-        if: github.ref != 'refs/heads/main'
-        run: terraform init
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - name: Terraform apply
-        if: github.ref != 'refs/heads/main'
-        run: terraform apply -target module.database -no-color -auto-approve &> /dev/null
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: eu-central-1
-
   build-pretix:
     runs-on: [self-hosted]
     steps:
@@ -128,6 +90,8 @@ jobs:
     permissions:
       packages: write
       contents: read
+    outputs:
+      githash: ${{ steps.git.outputs.githash }}
 
     steps:
       - uses: actions/checkout@v4
@@ -190,7 +154,7 @@ jobs:
 
   deploy-be:
     runs-on: ubuntu-24.04
-    needs: [build-be, build-pretix, create-db]
+    needs: [build-be, build-pretix]
     environment:
       name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
     defaults:
@@ -224,26 +188,17 @@ jobs:
 
   wait-be-update:
     runs-on: ubuntu-24.04
-    needs: [deploy-be]
+    needs: [deploy-be, build-be]
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
       - name: Wait stable deployment
-        run: |
-          while true; do
-            response=$(curl -s "https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/health")
-            commit=$(echo $response | jq -r '.commit')
-            if [ "$commit" == "${{ steps.git.outputs.githash }}" ]; then
-              echo "New version live"
-              break
-            else
-              echo "Commit hash does not match. Retrying..."
-              sleep 3
-            fi
-          done
-        shell: bash
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: eu-central-1
+        uses: ./.github/actions/wait-for-deployment
+        with:
+          url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/health/
+          githash: ${{ needs.build-be.outputs.githash }}
 
   build-fe:
     needs: [wait-be-update]
@@ -251,7 +206,8 @@ jobs:
     permissions:
       packages: write
       contents: read
-
+    outputs:
+      githash: ${{ steps.git.outputs.githash }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -367,23 +323,14 @@ jobs:
 
   wait-fe-update:
     runs-on: ubuntu-24.04
-    needs: [deploy-fe]
+    needs: [deploy-fe, build-fe]
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
       - name: Wait stable deployment
-        run: |
-          while true; do
-            response=$(curl -s "https://${{ fromJSON('["pastaporto-frontend", "frontend"]')[github.ref == 'refs/heads/main'] }}.pycon.it/api/health")
-            commit=$(echo $response | jq -r '.commit')
-            if [ "$commit" == "${{ steps.git.outputs.githash }}" ]; then
-              echo "New version live"
-              break
-            else
-              echo "Commit hash does not match. Retrying..."
-              sleep 3
-            fi
-          done
-        shell: bash
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: eu-central-1
+        uses: ./.github/actions/wait-for-deployment
+        with:
+          url: https://${{ fromJSON('["pastaporto-frontend", "frontend"]')[github.ref == 'refs/heads/main'] }}.pycon.it/api/health
+          githash: ${{ needs.build-fe.outputs.githash }}

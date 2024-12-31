@@ -1,0 +1,45 @@
+name: 'Wait for deployment'
+description: 'Wait fr deployment'
+inputs:
+    url:
+      description: 'URL'
+      required: true
+    githash:
+      description: 'Githash'
+      required: true
+runs:
+    using: "composite"
+    steps:
+      - name: Wait for deployment
+        run: |
+          import requests
+          import os
+          import time
+
+          attempts = 0
+          new_version_live_counter = 0
+          while new_version_live_counter < 3:
+            response = requests.get(os.getenv('URL'))
+            try:
+              commit = response.json()['version']
+              if commit == os.getenv('GITHASH'):
+                print('New version live')
+                new_version_live_counter = new_version_live_counter + 1
+                time.sleep(1)
+                continue
+              else:
+                print('Commit hash does not match. Retrying...')
+            except Exception as e:
+              print('Failed to get version', e)
+
+            attempts += 1
+
+            if attempts > 30:
+              print('Failed to get new version')
+              exit(1)
+
+            time.sleep(attempts)
+        shell: python
+        env:
+          URL: ${{ inputs.url }}
+          GITHASH: ${{ inputs.githash }}
