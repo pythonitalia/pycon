@@ -196,9 +196,9 @@ jobs:
           fetch-depth: 0
       - name: Wait stable deployment
         uses: ./.github/actions/wait-for-deployment
-        env:
-          URL: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/health/
-          GITHASH: ${{ needs.build-be.outputs.githash }}
+        with:
+          url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/health/
+          githash: ${{ needs.build-be.outputs.githash }}
 
   build-fe:
     needs: [wait-be-update]
@@ -331,6 +331,6 @@ jobs:
           fetch-depth: 0
       - name: Wait stable deployment
         uses: ./.github/actions/wait-for-deployment
-        env:
-          URL: https://${{ fromJSON('["pastaporto-frontend", "frontend"]')[github.ref == 'refs/heads/main'] }}.pycon.it/api/health
-          GITHASH: ${{ needs.build-fe.outputs.githash }}
+        with:
+          url: https://${{ fromJSON('["pastaporto-frontend", "frontend"]')[github.ref == 'refs/heads/main'] }}.pycon.it/api/health
+          githash: ${{ needs.build-fe.outputs.githash }}
