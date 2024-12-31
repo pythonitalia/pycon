@@ -191,37 +191,9 @@ jobs:
     needs: [deploy-be, build-be]
     steps:
       - name: Wait stable deployment
-        run: |
-          import requests
-          import os
-          import time
-
-          attempts = 0
-          while True:
-            response = requests.get(f"https://{os.getenv('URL')}/health/")
-            try:
-              commit = response.json()['version']
-              if commit == os.getenv('GITHASH'):
-                print('New version live')
-                break
-              else:
-                print('Commit hash does not match. Retrying...')
-            except Exception as e:
-              print('Failed to get version', e)
-
-            attempts += 1
-
-            if attempts > 30:
-              print('Failed to get new version')
-              exit(1)
-
-            time.sleep(attempts)
-        shell: python
+        uses: ./.github/actions/wait-for-deployment
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: eu-central-1
-          URL: ${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it
+          URL: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/health/
           GITHASH: ${{ needs.build-be.outputs.githash }}
 
   build-fe:
@@ -350,35 +322,7 @@ jobs:
     needs: [deploy-fe, build-fe]
     steps:
       - name: Wait stable deployment
-        run: |
-          import requests
-          import os
-          import time
-
-          attempts = 0
-          while True:
-            response = requests.get(f"https://{os.getenv('URL')}/api/health")
-            try:
-              commit = response.json()['version']
-              if commit == os.getenv('GITHASH'):
-                print('New version live')
-                break
-              else:
-                print('Commit hash does not match. Retrying...')
-            except Exception as e:
-              print('Failed to get version', e)
-
-            attempts += 1
-
-            if attempts > 30:
-              print('Failed to get new version')
-              exit(1)
-
-            time.sleep(attempts)
-        shell: python
+        uses: ./.github/actions/wait-for-deployment
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: eu-central-1
-          URL: ${{ fromJSON('["pastaporto-frontend", "frontend"]')[github.ref == 'refs/heads/main'] }}.pycon.it
+          URL: https://${{ fromJSON('["pastaporto-frontend", "frontend"]')[github.ref == 'refs/heads/main'] }}.pycon.it/api/health
           GITHASH: ${{ needs.build-fe.outputs.githash }}
