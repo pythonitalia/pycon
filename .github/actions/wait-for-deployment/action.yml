@@ -25,6 +25,7 @@ runs:
               if commit == os.getenv('GITHASH'):
                 print('New version live')
                 new_version_live_counter = new_version_live_counter + 1
+                time.sleep(1)
                 continue
               else:
                 print('Commit hash does not match. Retrying...')
