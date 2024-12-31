@@ -190,6 +190,10 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [deploy-be, build-be]
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
       - name: Wait stable deployment
         uses: ./.github/actions/wait-for-deployment
         env:
@@ -321,6 +325,10 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [deploy-fe, build-fe]
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
       - name: Wait stable deployment
         uses: ./.github/actions/wait-for-deployment
         env:
