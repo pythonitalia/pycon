@@ -122,13 +122,6 @@ jobs:
       - name: Set up QEMU dependency
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/setup-qemu-action@v3
-      - name: Login to GitHub Packages
-        if: ${{ steps.image.outputs.image_exists == 0 }}
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Login to Amazon ECR
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: aws-actions/amazon-ecr-login@v2
@@ -147,7 +140,6 @@ jobs:
           push: true
           tags: |
             ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ steps.git.outputs.githash }}
-            ghcr.io/pythonitalia/pycon/pycon-backend:arm-${{ steps.git.outputs.githash }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
@@ -237,13 +229,6 @@ jobs:
       - name: Set up QEMU dependency
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/setup-qemu-action@v3
-      - name: Login to GitHub Packages
-        if: ${{ steps.image.outputs.image_exists == 0 }}
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Login to Amazon ECR
         if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: aws-actions/amazon-ecr-login@v2
