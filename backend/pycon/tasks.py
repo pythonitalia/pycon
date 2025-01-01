@@ -3,7 +3,7 @@ import logging
 import boto3
 from django.conf import settings
 from pycon.celery_utils import OnlyOneAtTimeTask
-
+from redis import Redis
 from collections import Counter
 from pycon.celery import app
 from django.core.cache import cache
@@ -153,3 +153,14 @@ def check_for_idle_heavy_processing_workers():
 
 def build_idle_worker_cache_key(worker_name: str) -> str:
     return f"celery-workers-idle:{worker_name}"
+
+
+@app.task(base=OnlyOneAtTimeTask)
+def check_pending_heavy_processing_work():
+    redis = Redis.from_url(settings.CELERY_BROKER_URL)
+    tasks_in_queue = redis.llen("heavy_processing")
+
+    if tasks_in_queue == 0:
+        return
+
+    launch_heavy_processing_worker.delay()

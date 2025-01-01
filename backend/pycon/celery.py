@@ -23,7 +23,10 @@ def setup_periodic_tasks(sender, **kwargs):
     )
     from schedule.tasks import process_schedule_items_videos_to_upload
     from files_upload.tasks import delete_unused_files
-    from pycon.tasks import check_for_idle_heavy_processing_workers
+    from pycon.tasks import (
+        check_for_idle_heavy_processing_workers,
+        check_pending_heavy_processing_work,
+    )
 
     add = sender.add_periodic_task
 
@@ -46,4 +49,9 @@ def setup_periodic_tasks(sender, **kwargs):
         timedelta(minutes=2),
         check_for_idle_heavy_processing_workers,
         name="Check for idle heavy processing workers",
+    )
+    add(
+        timedelta(minutes=1),
+        check_pending_heavy_processing_work,
+        name="Check pending heavy processing work",
     )

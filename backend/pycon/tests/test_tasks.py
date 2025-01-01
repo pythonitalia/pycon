@@ -3,6 +3,7 @@ from pycon.tasks import (
     build_idle_worker_cache_key,
     launch_heavy_processing_worker,
     check_for_idle_heavy_processing_workers,
+    check_pending_heavy_processing_work,
 )
 
 
@@ -383,3 +384,23 @@ def test_dont_shutdown_heavy_processing_worker_if_last_check_is_not_5_mins_old(m
 
     mock_cache.set.assert_not_called()
     mock_broadcast.assert_not_called()
+
+
+def test_check_pending_heavy_processing_work(mocker):
+    mock_launch = mocker.patch("pycon.tasks.launch_heavy_processing_worker")
+    redis_mock = mocker.patch("pycon.tasks.Redis", return_value=mocker.MagicMock())
+    redis_mock.from_url.return_value.llen.return_value = 10
+
+    check_pending_heavy_processing_work()
+
+    mock_launch.delay.assert_called()
+
+
+def test_check_pending_heavy_processing_work_with_no_work(mocker):
+    mock_launch = mocker.patch("pycon.tasks.launch_heavy_processing_worker")
+    redis_mock = mocker.patch("pycon.tasks.Redis", return_value=mocker.MagicMock())
+    redis_mock.from_url.return_value.llen.return_value = 0
+
+    check_pending_heavy_processing_work()
+
+    mock_launch.delay.assert_not_called()

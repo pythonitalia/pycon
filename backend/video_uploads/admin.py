@@ -1,8 +1,8 @@
-from pycon.tasks import launch_heavy_processing_worker
 from django.utils.safestring import mark_safe
 from django.contrib import admin
 from django.db import transaction
 
+from pycon.tasks import check_pending_heavy_processing_work
 from video_uploads.tasks import process_wetransfer_to_s3_transfer_request
 from video_uploads.models import WetransferToS3TransferRequest
 
@@ -16,7 +16,7 @@ def queue_wetransfer_to_s3_transfer_request(request_obj):
         process_wetransfer_to_s3_transfer_request.apply_async(
             args=[request_obj.id], queue="heavy_processing"
         )
-        launch_heavy_processing_worker.delay()
+        check_pending_heavy_processing_work.delay()
 
     transaction.on_commit(_on_commit)
 
