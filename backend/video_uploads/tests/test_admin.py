@@ -12,8 +12,8 @@ def test_queue_wetransfer_to_s3_transfer_request(
     mock_process_wetransfer_to_s3_transfer_request = mocker.patch(
         "video_uploads.admin.process_wetransfer_to_s3_transfer_request"
     )
-    mock_launch_heavy_processing_worker = mocker.patch(
-        "video_uploads.admin.launch_heavy_processing_worker"
+    mock_check_pending_heavy_processing_work = mocker.patch(
+        "video_uploads.admin.check_pending_heavy_processing_work"
     )
 
     request = WetransferToS3TransferRequestFactory()
@@ -29,7 +29,7 @@ def test_queue_wetransfer_to_s3_transfer_request(
     mock_process_wetransfer_to_s3_transfer_request.apply_async.assert_called_once_with(
         args=[request.id], queue="heavy_processing"
     )
-    mock_launch_heavy_processing_worker.delay.assert_called_once()
+    mock_check_pending_heavy_processing_work.delay.assert_called_once()
 
 
 def test_retry_transfer():
