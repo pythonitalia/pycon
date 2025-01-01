@@ -3,14 +3,6 @@ locals {
   is_prod              = terraform.workspace == "production"
 }
 
-data "aws_db_subnet_group" "rds" {
-  name = "pythonit-rds-subnet"
-}
-
-data "aws_security_group" "rds" {
-  name = "pythonit-rds-security-group"
-}
-
 resource "aws_db_instance" "database" {
   allocated_storage           = 20
   storage_type                = "gp3"
@@ -31,9 +23,19 @@ resource "aws_db_instance" "database" {
   deletion_protection         = local.is_prod
   storage_encrypted           = true
 
-  db_subnet_group_name   = data.aws_db_subnet_group.rds.name
-  vpc_security_group_ids = [data.aws_security_group.rds.id]
+  db_subnet_group_name   = aws_db_subnet_group.rds.name
+  vpc_security_group_ids = [aws_security_group.rds.id]
 
   performance_insights_enabled = true
   performance_insights_retention_period = 7
+}
+
+output "database_settings" {
+  value = {
+    address     = aws_db_instance.database.address
+    port        = aws_db_instance.database.port
+    username    = aws_db_instance.database.username
+    password    = module.common_secrets.value.database_password
+    db_name     = aws_db_instance.database.db_name
+  }
 }

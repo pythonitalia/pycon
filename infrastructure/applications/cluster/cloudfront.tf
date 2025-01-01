@@ -73,9 +73,6 @@ resource "aws_cloudfront_distribution" "application" {
     cache_policy_id          = data.aws_cloudfront_cache_policy.origin_cache_control_headers.id
     origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer.id
 
-    min_ttl                = 0
-    default_ttl            = 86400
-    max_ttl                = 31536000
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
   }

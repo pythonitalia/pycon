@@ -3,10 +3,6 @@ locals {
   alias   = local.is_prod ? "tickets.pycon.it" : "${terraform.workspace}-tickets.pycon.it"
 }
 
-data "aws_db_instance" "database" {
-  db_instance_identifier = "pythonit-${terraform.workspace}"
-}
-
 resource "aws_ecs_task_definition" "pretix" {
   family = "${terraform.workspace}-pretix"
   container_definitions = jsonencode([
@@ -87,19 +83,19 @@ resource "aws_ecs_task_definition" "pretix" {
         },
         {
           name  = "PRETIX_DATABASE_USER"
-          value = data.aws_db_instance.database.master_username
+          value = var.database_settings.username
         },
         {
           name  = "PRETIX_DATABASE_PASSWORD"
-          value = module.common_secrets.value.database_password
+          value = var.database_settings.password
         },
         {
           name  = "PRETIX_DATABASE_HOST"
-          value = data.aws_db_instance.database.address
+          value = var.database_settings.address
         },
         {
           name  = "PRETIX_DATABASE_PORT"
-          value = "5432"
+          value = tostring(var.database_settings.port)
         },
         {
           name  = "PRETIX_MAIL_USER"
