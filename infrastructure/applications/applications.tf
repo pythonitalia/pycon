@@ -22,9 +22,10 @@ module "pycon_backend" {
   iam_role_arn = module.cluster.iam_role_arn
   database_settings = module.database.database_settings
   vpc_id = module.vpc.vpc_id
+  public_1a_subnet_id = module.vpc.public_1a_subnet_id
+  configuration_set_name = module.emails.configuration_set_name
 
   providers = {
-    aws    = aws
     aws.us = aws.us
   }
 }
@@ -36,22 +37,12 @@ module "pycon_frontend" {
   server_ip = module.cluster.server_ip
   cf_domain_name = module.cluster.cf_domain_name
   cf_hosted_zone_id = module.cluster.cf_hosted_zone_id
-
-  providers = {
-    aws    = aws
-    aws.us = aws.us
-  }
 }
 
 module "clamav" {
   source       = "./clamav"
   cluster_id = module.cluster.cluster_id
   logs_group_name = module.cluster.logs_group_name
-
-  providers = {
-    aws    = aws
-    aws.us = aws.us
-  }
 }
 
 # Other resources
@@ -66,7 +57,6 @@ module "emails" {
   source = "./emails"
 
   providers = {
-    aws    = aws
     aws.us = aws.us
   }
 }
@@ -77,7 +67,6 @@ module "cluster" {
   public_1a_subnet_id = module.vpc.public_1a_subnet_id
 
   providers = {
-    aws    = aws
     aws.us = aws.us
   }
 }

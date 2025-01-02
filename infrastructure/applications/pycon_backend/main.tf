@@ -6,38 +6,8 @@ locals {
   cdn_url           = local.is_prod ? "cdn.pycon.it" : "${terraform.workspace}-cdn.pycon.it"
 }
 
-data "aws_vpc" "default" {
-  filter {
-    name   = "tag:Name"
-    values = ["pythonit-vpc"]
-  }
-}
-
-data "aws_subnets" "private" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
-  }
-
-  tags = {
-    Type = "private"
-  }
-}
-
-data "aws_security_group" "rds" {
-  name = "pythonit-rds-security-group"
-}
-
-data "aws_security_group" "lambda" {
-  name = "pythonit-lambda-security-group"
-}
-
 data "aws_acm_certificate" "cert" {
   domain   = "pycon.it"
   statuses = ["ISSUED"]
   provider = aws.us
-}
-
-data "aws_sesv2_configuration_set" "main" {
-  configuration_set_name = "pythonit-${terraform.workspace}"
 }

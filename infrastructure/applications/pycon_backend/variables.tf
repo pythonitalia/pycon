@@ -11,3 +11,5 @@ variable "logs_group_name" {}
 variable "iam_role_arn" {}
 variable "database_settings" {}
 variable "vpc_id" {}
+variable "public_1a_subnet_id" {}
+variable "configuration_set_name" {}

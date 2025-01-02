@@ -7,6 +7,7 @@ resource "aws_sesv2_configuration_set" "main" {
 
   tracking_options {
     custom_redirect_domain = local.email_tracking_domain
+    https_policy          = "OPTIONAL"
   }
 }
 
@@ -32,4 +33,8 @@ resource "aws_sesv2_configuration_set_event_destination" "backend" {
       "SUBSCRIPTION",
     ]
   }
+}
+
+output "configuration_set_name" {
+  value = aws_sesv2_configuration_set.main.configuration_set_name
 }
