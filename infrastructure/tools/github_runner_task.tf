@@ -65,7 +65,7 @@ resource "aws_ecs_task_definition" "github_runner" {
   container_definitions = jsonencode([
     {
       name      = "runner"
-      image     = "ghcr.io/actions/actions-runner:2.321.0"
+      image     = "ghcr.io/pythonitalia/pycon/kaniko:latest"
       essential = true
       entrypoint = ["bash", "-c"]
       portMappings = []
@@ -77,7 +77,7 @@ resource "aws_ecs_task_definition" "github_runner" {
           "awslogs-stream-prefix" = "runner"
         }
       }
-    },
+    }
   ])
 
   runtime_platform {
