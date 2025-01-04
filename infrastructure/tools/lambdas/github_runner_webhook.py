@@ -91,6 +91,7 @@ def handle_workflow_job(body, context):
         cluster=ECS_CLUSTER_NAME,
         taskDefinition=ECS_TASK_DEFINITION,
         networkConfiguration=json.loads(NETWORK_CONFIGURATION),
+        enableExecuteCommand=True,
         count=1,
         launchType="FARGATE",
         overrides={

@@ -30,3 +30,7 @@ jobs:
             --context=./ \
             --verbosity debug \
             --destination=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ inputs.githash }}
+      - name: Test
+        if: always()
+        run: |
+          sleep
