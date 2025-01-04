@@ -12,7 +12,7 @@ env:
   TF_WORKSPACE:  ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
 
 jobs:
-  check-new-pretix-version:
+  check-pretix-build:
     name: Check pretix needs building
     runs-on: ubuntu-24.04
     outputs:
@@ -48,8 +48,18 @@ jobs:
   build-pretix:
     name: Build pretix
     runs-on: [self-hosted]
-    needs: [check-new-pretix-version]
-    if: ${{ needs.check-new-pretix-version.outputs.image_exists == 0 }}
+    needs: [check-pretix-build]
+    if: ${{ needs.check-pretix-build.outputs.image_exists == 0 }}
+    uses: ./.github/actions/build-pretix.yml
+    with:
+      githash: ${{ needs.check-pretix-build.outputs.githash }}
+
+  check-backend-build:
+    name: Check backend needs building
+    runs-on: ubuntu-24.04
+    outputs:
+      image_exists: ${{ steps.image.outputs.image_exists }}
+      githash: ${{ steps.git.outputs.githash }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -61,57 +71,6 @@ jobs:
           aws-access-key-id: ${{ secrets.aws_access_key_id }}
           aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
           aws-region: eu-central-1
-      - uses: actions/checkout@v4
-        with:
-          repository: pretix/pretix
-          ref: v2024.10.0
-          path: ./pretix-clone
-      - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build pretix base
-        uses: docker/build-push-action@v6
-        id: build-pretix-base
-        with:
-          context: ./pretix-clone
-          file: ./pretix-clone/Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          provenance: false
-          push: true
-          tags: |
-            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pretix:pretix-base-${{ needs.check-new-pretix-version.outputs.githash }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          platforms: linux/arm64
-      - name: Build and push pretix
-        uses: docker/build-push-action@v6
-        with:
-          context: ./pretix
-          file: ./pretix/Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          provenance: false
-          push: true
-          tags: |
-            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pretix:arm-${{ needs.check-new-pretix-version.outputs.githash }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          platforms: linux/arm64
-          build-args: |
-            PRETIX_IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pretix:pretix-base-${{ needs.check-new-pretix-version.outputs.githash }}
-
-  check-new-backend-version:
-    name: Check backend needs building
-    runs-on: ubuntu-24.04
-    outputs:
-      image_exists: ${{ steps.image.outputs.image_exists }}
-      githash: ${{ steps.git.outputs.githash }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-          fetch-depth: 0
       - name: Get service githash
         id: git
         run: |
@@ -131,8 +90,8 @@ jobs:
   build-be:
     name: Build backend
     runs-on: [self-hosted]
-    needs: [check-new-backend-version]
-    if: ${{ needs.check-new-backend-version.outputs.image_exists == 0 }}
+    needs: [check-backend-build]
+    if: ${{ needs.check-backend-build.outputs.image_exists == 0 }}
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -156,7 +115,7 @@ jobs:
           provenance: false
           push: true
           tags: |
-            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ needs.check-new-backend-version.outputs.githash }}
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ needs.check-backend-build.outputs.githash }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
@@ -196,8 +155,9 @@ jobs:
           AWS_DEFAULT_REGION: eu-central-1
 
   wait-be-update:
+    name: Wait backend deployment
     runs-on: ubuntu-24.04
-    needs: [deploy-be, build-be, check-new-backend-version]
+    needs: [deploy-be, build-be, check-backend-build]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -207,16 +167,13 @@ jobs:
         uses: ./.github/actions/wait-for-deployment
         with:
           url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/health/
-          githash: ${{ needs.check-new-backend-version.outputs.githash }}
+          githash: ${{ needs.check-backend-build.outputs.githash }}
 
-  build-fe:
-    name: Build frontend
-    needs: [wait-be-update]
-    runs-on: [self-hosted]
-    permissions:
-      packages: write
-      contents: read
+  check-frontend-build:
+    name: Check frontend needs building
+    runs-on: ubuntu-24.04
     outputs:
+      image_exists: ${{ steps.image.outputs.image_exists }}
       githash: ${{ steps.git.outputs.githash }}
     steps:
       - uses: actions/checkout@v4
@@ -244,19 +201,47 @@ jobs:
           else
             echo "image_exists=0" >> $GITHUB_OUTPUT
           fi
+
+  build-fe:
+    name: Build frontend
+    needs: [wait-be-update, check-frontend-build]
+    runs-on: [self-hosted]
+    if: ${{ needs.check-frontend-build.outputs.image_exists == 0 }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.aws_access_key_id }}
+          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+          aws-region: eu-central-1
+      - name: Get service githash
+        id: git
+        run: |
+          hash=$(git rev-list -1 HEAD -- frontend)
+          echo "githash=$hash" >> $GITHUB_OUTPUT
+      - name: Check if commit is already on ECR
+        id: image
+        run: |
+          set +e
+          aws ecr describe-images --repository-name=pythonit/${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}-pycon-frontend --image-ids=imageTag=${{ steps.git.outputs.githash }}
+          if [[ $? == 0 ]]; then
+            echo "image_exists=1" >> $GITHUB_OUTPUT
+          else
+            echo "image_exists=0" >> $GITHUB_OUTPUT
+          fi
       - name: Set up QEMU dependency
-        if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/setup-qemu-action@v3
       - name: Login to Amazon ECR
-        if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: aws-actions/amazon-ecr-login@v2
       - name: Set up Docker Buildx
         id: buildx
-        if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/setup-buildx-action@v3
       - name: Get vars
         id: vars
-        if: ${{ steps.image.outputs.image_exists == 0 }}
         run: |
           cms_hostname=$(aws ssm get-parameter --output text --query Parameter.Value --with-decryption --name /pythonit/${{ env.TF_WORKSPACE }}/pycon-frontend/cms-hostname)
           echo "CMS_HOSTNAME=$cms_hostname" >> "$GITHUB_OUTPUT"
@@ -268,7 +253,6 @@ jobs:
           echo "::add-mask::$sentry_auth_token"
           echo "SENTRY_AUTH_TOKEN=$sentry_auth_token" >> "$GITHUB_OUTPUT"
       - name: Build and push
-        if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
@@ -326,8 +310,9 @@ jobs:
           AWS_DEFAULT_REGION: eu-central-1
 
   wait-fe-update:
+    name: Wait frontend deployment
     runs-on: ubuntu-24.04
-    needs: [deploy-fe, build-fe]
+    needs: [deploy-fe, check-frontend-build]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -337,4 +322,4 @@ jobs:
         uses: ./.github/actions/wait-for-deployment
         with:
           url: https://${{ fromJSON('["pastaporto-frontend", "frontend"]')[github.ref == 'refs/heads/main'] }}.pycon.it/api/health
-          githash: ${{ needs.build-fe.outputs.githash }}
+          githash: ${{ needs.check-frontend-build.outputs.githash }}
