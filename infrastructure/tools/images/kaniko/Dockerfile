@@ -10,3 +10,4 @@ ENV DOCKER_CONFIG /kaniko/.docker/
 
 ENV RUNNER_ALLOW_RUNASROOT 1
 USER root
+RUN groupadd messagebus || true
