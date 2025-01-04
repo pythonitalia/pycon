@@ -22,6 +22,10 @@ jobs:
           aws-region: eu-central-1
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
+      - name: Test
+        if: always()
+        run: |
+          sleep
       - name: Run kaniko
         working-directory: ./backend
         run: |
@@ -30,7 +34,3 @@ jobs:
             --context=./ \
             --verbosity debug \
             --destination=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ inputs.githash }}
-      - name: Test
-        if: always()
-        run: |
-          sleep
