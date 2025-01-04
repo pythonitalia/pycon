@@ -12,8 +12,12 @@ env:
   TF_WORKSPACE:  ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
 
 jobs:
-  build-pretix:
-    runs-on: [self-hosted]
+  check-new-pretix-version:
+    name: Check pretix needs building
+    runs-on: ubuntu-24.04
+    outputs:
+      image_exists: ${{ steps.image.outputs.image_exists }}
+      githash: ${{ steps.git.outputs.githash }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,59 +44,12 @@ jobs:
           else
             echo "image_exists=0" >> $GITHUB_OUTPUT
           fi
-      - uses: actions/checkout@v4
-        if: ${{ steps.image.outputs.image_exists == 0 }}
-        with:
-          repository: pretix/pretix
-          ref: v2024.10.0
-          path: ./pretix-clone
-      - name: Login to Amazon ECR
-        if: ${{ steps.image.outputs.image_exists == 0 }}
-        uses: aws-actions/amazon-ecr-login@v2
-      - name: Set up Docker Buildx
-        id: buildx
-        if: ${{ steps.image.outputs.image_exists == 0 }}
-        uses: docker/setup-buildx-action@v3
-      - name: Build pretix base
-        if: ${{ steps.image.outputs.image_exists == 0 }}
-        uses: docker/build-push-action@v6
-        id: build-pretix-base
-        with:
-          context: ./pretix-clone
-          file: ./pretix-clone/Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          provenance: false
-          push: true
-          tags: |
-            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pretix:pretix-base-${{ steps.git.outputs.githash }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          platforms: linux/arm64
-      - name: Build and push pretix
-        if: ${{ steps.image.outputs.image_exists == 0 }}
-        uses: docker/build-push-action@v6
-        with:
-          context: ./pretix
-          file: ./pretix/Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          provenance: false
-          push: true
-          tags: |
-            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pretix:arm-${{ steps.git.outputs.githash }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          platforms: linux/arm64
-          build-args: |
-            PRETIX_IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pretix:pretix-base-${{ steps.git.outputs.githash }}
 
-  build-be:
+  build-pretix:
+    name: Build pretix
     runs-on: [self-hosted]
-    permissions:
-      packages: write
-      contents: read
-    outputs:
-      githash: ${{ steps.git.outputs.githash }}
-
+    needs: [check-new-pretix-version]
+    if: ${{ needs.check-new-pretix-version.outputs.image_exists == 0 }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -104,6 +61,57 @@ jobs:
           aws-access-key-id: ${{ secrets.aws_access_key_id }}
           aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
           aws-region: eu-central-1
+      - uses: actions/checkout@v4
+        with:
+          repository: pretix/pretix
+          ref: v2024.10.0
+          path: ./pretix-clone
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build pretix base
+        uses: docker/build-push-action@v6
+        id: build-pretix-base
+        with:
+          context: ./pretix-clone
+          file: ./pretix-clone/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          provenance: false
+          push: true
+          tags: |
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pretix:pretix-base-${{ needs.check-new-pretix-version.outputs.githash }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/arm64
+      - name: Build and push pretix
+        uses: docker/build-push-action@v6
+        with:
+          context: ./pretix
+          file: ./pretix/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          provenance: false
+          push: true
+          tags: |
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pretix:arm-${{ needs.check-new-pretix-version.outputs.githash }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/arm64
+          build-args: |
+            PRETIX_IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pretix:pretix-base-${{ needs.check-new-pretix-version.outputs.githash }}
+
+  check-new-backend-version:
+    name: Check backend needs building
+    runs-on: ubuntu-24.04
+    outputs:
+      image_exists: ${{ steps.image.outputs.image_exists }}
+      githash: ${{ steps.git.outputs.githash }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
       - name: Get service githash
         id: git
         run: |
@@ -119,18 +127,27 @@ jobs:
           else
             echo "image_exists=0" >> $GITHUB_OUTPUT
           fi
+
+  build-be:
+    name: Build backend
+    runs-on: [self-hosted]
+    needs: [check-new-backend-version]
+    if: ${{ needs.check-new-backend-version.outputs.image_exists == 0 }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.aws_access_key_id }}
+          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+          aws-region: eu-central-1
       - name: Set up QEMU dependency
-        if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/setup-qemu-action@v3
       - name: Login to Amazon ECR
-        if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: aws-actions/amazon-ecr-login@v2
       - name: Set up Docker Buildx
         id: buildx
-        if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/setup-buildx-action@v3
       - name: Build and push
-        if: ${{ steps.image.outputs.image_exists == 0 }}
         uses: docker/build-push-action@v6
         with:
           context: ./backend
@@ -139,12 +156,13 @@ jobs:
           provenance: false
           push: true
           tags: |
-            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ steps.git.outputs.githash }}
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ needs.check-new-backend-version.outputs.githash }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
 
   deploy-be:
+    name: Deploy backend
     runs-on: ubuntu-24.04
     needs: [build-be, build-pretix]
     environment:
@@ -169,7 +187,6 @@ jobs:
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-
       - name: Terraform apply
         run: terraform apply -target module.pretix -target module.pycon_backend -target module.clamav -target module.database -target module.emails -target module.cluster -no-color -auto-approve &> /dev/null
         env:
@@ -180,7 +197,7 @@ jobs:
 
   wait-be-update:
     runs-on: ubuntu-24.04
-    needs: [deploy-be, build-be]
+    needs: [deploy-be, build-be, check-new-backend-version]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -190,9 +207,10 @@ jobs:
         uses: ./.github/actions/wait-for-deployment
         with:
           url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/health/
-          githash: ${{ needs.build-be.outputs.githash }}
+          githash: ${{ needs.check-new-backend-version.outputs.githash }}
 
   build-fe:
+    name: Build frontend
     needs: [wait-be-update]
     runs-on: [self-hosted]
     permissions:
@@ -273,6 +291,7 @@ jobs:
             "sentry_auth_token=${{ steps.vars.outputs.sentry_auth_token }}"
 
   deploy-fe:
+    name: Deploy frontend
     runs-on: ubuntu-24.04
     needs: [build-fe]
     environment:
