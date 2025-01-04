@@ -106,7 +106,6 @@ Let's get in touch to find the best solution for your business' needs!`,
     "profile.tickets.cancel": "Cancel",
     "profile.ticketsEdit.modalTitle": "Customize your ticket",
     "profile.myProposals.date": "{day} {start} - {end}",
-    "profile.myProposals.notScheduled": "Not added to the schedule",
     "profile.myProposals.viewInvitation": "Invitation",
     "profile.myProposals.edit": "Edit",
     "profile.myProposals.viewIn": "View in {language}",
@@ -2051,7 +2050,6 @@ Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai
     "404.message": "La pagina che stavi cercando non esiste",
 
     "profile.myProposals.date": "{day} {start} - {end}",
-    "profile.myProposals.notScheduled": "Non selezionata",
     "profile.myProposals.viewInvitation": "Invito",
     "profile.myProposals.edit": "Modifica",
 
