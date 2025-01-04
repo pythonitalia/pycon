@@ -45,13 +45,38 @@ jobs:
             echo "image_exists=0" >> $GITHUB_OUTPUT
           fi
 
-  build-pretix:
-    needs: [check-pretix-build]
-    uses: ./.github/workflows/build-pretix.yml
-    with:
-      githash: ${{ needs.check-pretix-build.outputs.githash }}
-    secrets: inherit
-    if: ${{ needs.check-pretix-build.outputs.image_exists == 0 }}
+  check-frontend-build:
+    name: Check frontend needs building
+    runs-on: ubuntu-24.04
+    outputs:
+      image_exists: ${{ steps.image.outputs.image_exists }}
+      githash: ${{ steps.git.outputs.githash }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.aws_access_key_id }}
+          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+          aws-region: eu-central-1
+      - name: Get service githash
+        id: git
+        run: |
+          hash=$(git rev-list -1 HEAD -- frontend)
+          echo "githash=$hash" >> $GITHUB_OUTPUT
+      - name: Check if commit is already on ECR
+        id: image
+        run: |
+          set +e
+          aws ecr describe-images --repository-name=pythonit/${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}-pycon-frontend --image-ids=imageTag=${{ steps.git.outputs.githash }}
+          if [[ $? == 0 ]]; then
+            echo "image_exists=1" >> $GITHUB_OUTPUT
+          else
+            echo "image_exists=0" >> $GITHUB_OUTPUT
+          fi
 
   check-backend-build:
     name: Check backend needs building
@@ -85,6 +110,14 @@ jobs:
           else
             echo "image_exists=0" >> $GITHUB_OUTPUT
           fi
+
+  build-pretix:
+    needs: [check-pretix-build]
+    uses: ./.github/workflows/build-pretix.yml
+    with:
+      githash: ${{ needs.check-pretix-build.outputs.githash }}
+    secrets: inherit
+    if: ${{ needs.check-pretix-build.outputs.image_exists == 0 }}
 
   build-be:
     needs: [check-backend-build]
@@ -122,7 +155,7 @@ jobs:
         id: validate
         run: terraform validate -no-color
       - name: Terraform apply
-        run: terraform apply -target module.pretix -target module.pycon_backend -target module.clamav -target module.database -target module.emails -target module.cluster -no-color -auto-approve &> /dev/null
+        run: terraform apply -target module.pretix -target module.pycon_backend -target module.clamav -target module.database -target module.emails -target module.cluster -target module.vpc -no-color -auto-approve &> /dev/null
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -132,7 +165,7 @@ jobs:
   wait-be-update:
     name: Wait backend deployment
     runs-on: ubuntu-24.04
-    needs: [deploy-be, build-be, check-backend-build]
+    needs: [deploy-be, check-backend-build]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -143,39 +176,6 @@ jobs:
         with:
           url: https://${{ fromJSON('["pastaporto-", ""]')[github.ref == 'refs/heads/main'] }}admin.pycon.it/health/
           githash: ${{ needs.check-backend-build.outputs.githash }}
-
-  check-frontend-build:
-    name: Check frontend needs building
-    runs-on: ubuntu-24.04
-    outputs:
-      image_exists: ${{ steps.image.outputs.image_exists }}
-      githash: ${{ steps.git.outputs.githash }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-          fetch-depth: 0
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.aws_access_key_id }}
-          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
-          aws-region: eu-central-1
-      - name: Get service githash
-        id: git
-        run: |
-          hash=$(git rev-list -1 HEAD -- frontend)
-          echo "githash=$hash" >> $GITHUB_OUTPUT
-      - name: Check if commit is already on ECR
-        id: image
-        run: |
-          set +e
-          aws ecr describe-images --repository-name=pythonit/${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}-pycon-frontend --image-ids=imageTag=${{ steps.git.outputs.githash }}
-          if [[ $? == 0 ]]; then
-            echo "image_exists=1" >> $GITHUB_OUTPUT
-          else
-            echo "image_exists=0" >> $GITHUB_OUTPUT
-          fi
 
   build-fe:
     needs: [wait-be-update, check-frontend-build]
