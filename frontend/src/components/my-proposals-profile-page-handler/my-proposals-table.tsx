@@ -63,11 +63,6 @@ export const MyProposalsTable = ({ submissions }: Props) => {
             <StatusTag status={row.status} />
           ),
           <div>
-            {!inSchedule && (
-              <Text size={2} weight="strong" as="p">
-                <FormattedMessage id="profile.myProposals.notScheduled" />
-              </Text>
-            )}
             {inSchedule &&
               row.scheduleItems.map((scheduleItem) => {
                 const parsedStartTime = parseISO(scheduleItem.start);
