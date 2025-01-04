@@ -50,7 +50,7 @@ jobs:
     runs-on: [self-hosted]
     needs: [check-pretix-build]
     if: ${{ needs.check-pretix-build.outputs.image_exists == 0 }}
-    uses: ./.github/actions/build-pretix.yml
+    uses: ./.github/workflows/build-pretix.yml
     with:
       githash: ${{ needs.check-pretix-build.outputs.githash }}
 
