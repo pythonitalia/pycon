@@ -133,7 +133,7 @@ jobs:
     name: Deploy backend
     runs-on: ubuntu-24.04
     needs: [build-be, build-pretix, check-frontend-build]
-    if: always() && !cancelled() && !failure()
+    if: always() && !cancelled() && !failure() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
     environment:
       name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
     defaults:
@@ -168,6 +168,7 @@ jobs:
     name: Wait backend deployment
     runs-on: ubuntu-24.04
     needs: [deploy-be, check-backend-build]
+    if: always() && !cancelled() && !failure() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
     steps:
       - name: Wait stable deployment
         uses: ./.github/actions/wait-for-deployment
