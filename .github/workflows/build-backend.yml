@@ -25,7 +25,7 @@ jobs:
       - name: Test
         if: always()
         run: |
-          sleep
+          tail -f /dev/null
       - name: Run kaniko
         working-directory: ./backend
         run: |
