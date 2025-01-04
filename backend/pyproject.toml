@@ -69,7 +69,7 @@ dependencies = [
     "lxml<5.0.0,>=4.5.0",
     "unidecode<2.0.0,>=1.1.1",
     "strawberry-graphql==0.243.1",
-    "Werkzeug<2.0.0,>=1.0.1",
+    "Werkzeug>=1.0.1,<4.0.0",
     "django-import-export<4.0.0,>=3.2.0",
     "dal-admin-filters==1.1.0",
     "django-markdownify==0.9.5",
