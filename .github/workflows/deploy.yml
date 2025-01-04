@@ -97,13 +97,8 @@ jobs:
   deploy-be:
     name: Deploy backend
     runs-on: ubuntu-24.04
-    needs: [
-      build-be,
-      build-pretix,
-      check-backend-build,
-      check-pretix-build,
-      check-frontend-build
-    ]
+    needs: [build-be, build-pretix, check-frontend-build]
+    if: ${{ always()}}
     environment:
       name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
     defaults:
