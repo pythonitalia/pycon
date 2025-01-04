@@ -9,6 +9,8 @@ jobs:
   build:
     name: Build
     runs-on: ${{ format('arm64-fargate-{0}{1}{2}', github.run_id, github.run_number, github.run_attempt) }}
+    container:
+      image: gcr.io/kaniko-project/executor:debug
     steps:
       - uses: actions/checkout@v4
         with:
