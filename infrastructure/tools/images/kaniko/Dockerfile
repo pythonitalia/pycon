@@ -9,3 +9,4 @@ ENV PATH $PATH:/usr/local/bin:/kaniko
 ENV DOCKER_CONFIG /kaniko/.docker/
 
 ENV RUNNER_ALLOW_RUNASROOT 1
+USER root
