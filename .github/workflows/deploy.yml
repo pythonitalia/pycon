@@ -181,12 +181,13 @@ jobs:
           githash: ${{ needs.check-backend-build.outputs.githash }}
 
   build-fe:
+    name: Build frontend
     needs: [wait-be-update, check-frontend-build]
     uses: ./.github/workflows/build-frontend.yml
     with:
       githash: ${{ needs.check-frontend-build.outputs.githash }}
     secrets: inherit
-    if: ${{ needs.check-frontend-build.outputs.image_exists == 0 }} && always() && !cancelled() && !failure() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
+    if: always() && ${{ needs.check-frontend-build.outputs.image_exists == 0 }} && !cancelled() && !failure() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
 
   deploy-fe:
     name: Deploy frontend
