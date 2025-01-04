@@ -60,7 +60,8 @@ resource "aws_iam_role_policy" "github_runner_webhook_lambda_policy" {
           "iam:PassRole"
         ]
         Resource = [
-          aws_iam_role.github_runner_execution_role.arn
+          aws_iam_role.github_runner_execution_role.arn,
+          aws_iam_role.github_runner_task_role.arn,
         ]
       }
     ]
