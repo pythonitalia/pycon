@@ -14,18 +14,16 @@ ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod \
     CELERY_RESULT_BACKEND=demo \
     HASHID_DEFAULT_SECRET_SALT=demo
 
-RUN apt-get update -y && apt-get install -y \
-    # weasyprint
-    libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 \
-    # postgres
-    libpq-dev
-
 FROM base AS build-stage
 
 ARG FUNCTION_DIR
 
 RUN apt-get update -y && apt-get install -y \
-    gcc git
+    gcc git \
+    # weasyprint
+    libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 \
+    # postgres
+    libpq-dev
 
 RUN mkdir -p ${FUNCTION_DIR}
 WORKDIR ${FUNCTION_DIR}
@@ -67,6 +65,12 @@ FROM base AS runtime-stage
 ARG FUNCTION_DIR
 
 WORKDIR ${FUNCTION_DIR}
+
+RUN apt-get update -y && apt-get install -y \
+    # weasyprint
+    libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 \
+    # postgres
+    libpq-dev
 
 ENV LIBRARY_PATH=/lib:/usr/lib LD_LIBRARY_PATH=/lib:/usr/lib
 

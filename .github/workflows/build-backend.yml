@@ -31,6 +31,6 @@ jobs:
         run: |
           /kaniko/executor \
             --dockerfile=./Dockerfile \
-            --context=./ \
+            --context=git://github.com/${{ github.repository }}#${{ github.ref }} \
             --verbosity debug \
             --destination=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ inputs.githash }}
