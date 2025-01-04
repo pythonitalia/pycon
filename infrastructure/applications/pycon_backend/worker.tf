@@ -171,7 +171,7 @@ locals {
     {
       name = "ECS_NETWORK_CONFIG",
       value = jsonencode({
-        subnets = [data.aws_subnet.public_1a.id],
+        subnets = [var.public_1a_subnet_id],
         security_groups = [
           var.security_group_id
         ],
@@ -183,7 +183,7 @@ locals {
     },
     {
       name = "AWS_SES_CONFIGURATION_SET"
-      value = data.aws_sesv2_configuration_set.main.configuration_set_name
+      value = var.configuration_set_name
     },
     {
       name = "SNS_WEBHOOK_SECRET",
@@ -207,34 +207,6 @@ resource "aws_iam_role" "ecs_service" {
       }
     ]
   })
-}
-
-data "aws_subnet" "private_1a" {
-  vpc_id = data.aws_vpc.default.id
-
-  filter {
-    name   = "tag:Type"
-    values = ["private"]
-  }
-
-  filter {
-    name   = "tag:AZ"
-    values = ["eu-central-1a"]
-  }
-}
-
-data "aws_subnet" "public_1a" {
-  vpc_id = data.aws_vpc.default.id
-
-  filter {
-    name   = "tag:Type"
-    values = ["public"]
-  }
-
-  filter {
-    name   = "tag:AZ"
-    values = ["eu-central-1a"]
-  }
 }
 
 resource "aws_ecs_task_definition" "worker" {

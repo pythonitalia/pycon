@@ -1,7 +1,11 @@
 resource "aws_security_group" "server" {
-  name        = "${terraform.workspace}-server"
-  description = "${terraform.workspace} server"
-  vpc_id      = data.aws_vpc.default.id
+  name        = "pythonit-${terraform.workspace}-server"
+  description = "pythonit-${terraform.workspace} server"
+  vpc_id      = var.vpc_id
+
+  tags = {
+    Name = "pythonit-${terraform.workspace}-server"
+  }
 }
 
 resource "aws_security_group_rule" "out_all" {
