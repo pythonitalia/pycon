@@ -22,12 +22,13 @@ jobs:
           aws-region: eu-central-1
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
-      - name: Run ls
-        run: ls
-      # - name: Run kaniko
-      #   uses: pythonitalia/kaniko-action@v1.0
-      #   with:
-      #     push: true
-      #     tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ inputs.githash }}
-      #     cache: true
-      #     cache-repository: ghcr.io/${{ github.repository }}/cache
+      - name: Run kaniko
+        working-directory: ./backend
+        run: |
+          /kaniko/executor \
+            --dockerfile=./Dockerfile \
+            --verbosity debug \
+            --insecure \
+            --skip-tls-verify \
+            --force \
+            --destination=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ inputs.githash }}
