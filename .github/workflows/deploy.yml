@@ -170,6 +170,10 @@ jobs:
     needs: [deploy-be, check-backend-build]
     if: always() && !cancelled() && !failure() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
       - name: Wait stable deployment
         uses: ./.github/actions/wait-for-deployment
         with:
@@ -223,6 +227,10 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [deploy-fe, check-frontend-build]
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
       - name: Wait stable deployment
         uses: ./.github/actions/wait-for-deployment
         with:
