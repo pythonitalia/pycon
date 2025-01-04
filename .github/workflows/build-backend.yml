@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build backend
+    name: Build
     runs-on: [self-hosted]
     steps:
       - uses: actions/checkout@v4
