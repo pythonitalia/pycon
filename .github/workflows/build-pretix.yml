@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build pretix
-    runs-on: [self-hosted]
+    runs-on: [self-hosted, arm64-fargate]
     steps:
       - uses: actions/checkout@v4
         with:

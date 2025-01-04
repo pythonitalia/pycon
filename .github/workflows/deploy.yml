@@ -186,6 +186,7 @@ jobs:
     uses: ./.github/workflows/build-frontend.yml
     with:
       githash: ${{ needs.check-frontend-build.outputs.githash }}
+      tf_environment: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
     secrets: inherit
     if: always() && needs.check-frontend-build.outputs.image_exists == 0 && !cancelled() && !failure() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
 
