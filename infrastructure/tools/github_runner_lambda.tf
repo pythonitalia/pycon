@@ -63,10 +63,18 @@ resource "aws_lambda_function" "github_runner_webhook" {
   filename         = data.archive_file.github_runner_webhook_artifact.output_path
   source_code_hash = data.archive_file.github_runner_webhook_artifact.output_base64sha256
   timeout = 60
+
   environment {
     variables = {
       WEBHOOK_SECRET = random_password.webhook_secret.result
       GITHUB_TOKEN_SSM_NAME = data.aws_ssm_parameter.github_token.name
+      NETWORK_CONFIGURATION = jsonencode({
+        "awsvpcConfiguration": {
+          "subnets": [aws_subnet.public["eu-central-1a"].id],
+          "securityGroups": [],
+          "assignPublicIp": "ENABLED"
+        }
+      })
     }
   }
 }

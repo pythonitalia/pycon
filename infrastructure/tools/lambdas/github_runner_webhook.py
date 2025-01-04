@@ -7,6 +7,7 @@ from urllib import request
 
 WEBHOOK_SECRET = os.environ["WEBHOOK_SECRET"]
 GITHUB_TOKEN_SSM_NAME = os.environ["GITHUB_TOKEN_SSM_NAME"]
+NETWORK_CONFIGURATION = os.environ["NETWORK_CONFIGURATION"]
 
 
 def handler(event, context):
@@ -42,8 +43,13 @@ def handle_workflow_job(body, context):
         return
 
     labels = workflow_job["labels"]
-    if labels != ["self-hosted", "arm64-fargate"]:
+    arm64_fargate_label = next(
+        (label for label in labels if "arm64-fargate-" in label), None
+    )
+    if not arm64_fargate_label:
         return
+
+    unique_run_id = arm64_fargate_label.replace("arm64-fargate-", "")
 
     ssm_client = boto3.client("ssm")
     github_token = ssm_client.get_parameter(Name=GITHUB_TOKEN_SSM_NAME)["Parameter"][
@@ -51,13 +57,9 @@ def handle_workflow_job(body, context):
     ]
 
     payload = {
-        "name": "Test from Lambda",
+        "name": f"Runner for run #{unique_run_id}",
         "runner_group_id": 3,
-        "labels": [
-            "lambda-test"
-            # 'self-hosted',
-            # 'arm64-fargate',
-        ],
+        "labels": [arm64_fargate_label],
     }
     payload_encoded = json.dumps(payload).encode("utf-8")
     print("sending payload:", payload_encoded)
@@ -81,6 +83,12 @@ def handle_workflow_job(body, context):
     print("Handling workflow job - start?", jit_config)
     print("Body:", body)
     print("Context:", context)
+
+    ecs_client = boto3.client("ecs")
+    ecs_client.start_task(
+        cluster="github-actions-runners",
+        networkConfiguration=json.loads(NETWORK_CONFIGURATION),
+    )
 
 
 def verify_signature(payload_body, secret_token, signature_header):
