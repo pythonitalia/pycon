@@ -8,6 +8,8 @@ from urllib import request
 WEBHOOK_SECRET = os.environ["WEBHOOK_SECRET"]
 GITHUB_TOKEN_SSM_NAME = os.environ["GITHUB_TOKEN_SSM_NAME"]
 NETWORK_CONFIGURATION = os.environ["NETWORK_CONFIGURATION"]
+ECS_CLUSTER_NAME = os.environ["ECS_CLUSTER_NAME"]
+ECS_TASK_DEFINITION = os.environ["ECS_TASK_DEFINITION"]
 
 
 def handler(event, context):
@@ -62,7 +64,7 @@ def handle_workflow_job(body, context):
         "labels": [arm64_fargate_label],
     }
     payload_encoded = json.dumps(payload).encode("utf-8")
-    print("sending payload:", payload_encoded)
+
     req = request.Request(
         "https://api.github.com/orgs/pythonitalia/actions/runners/generate-jitconfig",
         data=payload_encoded,
@@ -85,9 +87,17 @@ def handle_workflow_job(body, context):
     print("Context:", context)
 
     ecs_client = boto3.client("ecs")
-    ecs_client.start_task(
-        cluster="github-actions-runners",
+    ecs_client.run_task(
+        cluster=ECS_CLUSTER_NAME,
+        taskDefinition=ECS_TASK_DEFINITION,
         networkConfiguration=json.loads(NETWORK_CONFIGURATION),
+        count=1,
+        launchType="FARGATE",
+        overrides={
+            "containerOverrides": [
+                {"name": "runner", "command": [f"./run.sh --jitconfig {jit_config}"]}
+            ]
+        },
     )
 
 

@@ -67,6 +67,7 @@ resource "aws_ecs_task_definition" "github_runner" {
       name      = "runner"
       image     = "ghcr.io/actions/actions-runner:2.321.0"
       essential = true
+      entrypoint = ["bash", "-c"]
       portMappings = []
       logConfiguration = {
         logDriver = "awslogs"

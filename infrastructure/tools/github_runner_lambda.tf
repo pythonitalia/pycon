@@ -44,6 +44,24 @@ resource "aws_iam_role_policy" "github_runner_webhook_lambda_policy" {
         Resource = [
           data.aws_ssm_parameter.github_token.arn
         ]
+      },
+      {
+        Effect   = "Allow"
+        Action   = [
+          "ecs:RunTask"
+        ]
+        Resource = [
+          "${aws_ecs_task_definition.github_runner.arn}*",
+        ]
+      },
+      {
+        Effect   = "Allow"
+        Action   = [
+          "iam:PassRole"
+        ]
+        Resource = [
+          aws_iam_role.github_runner_execution_role.arn
+        ]
       }
     ]
   })
@@ -75,6 +93,8 @@ resource "aws_lambda_function" "github_runner_webhook" {
           "assignPublicIp": "ENABLED"
         }
       })
+      ECS_CLUSTER_NAME = aws_ecs_cluster.github_runners.name
+      ECS_TASK_DEFINITION = aws_ecs_task_definition.github_runner.arn
     }
   }
 }

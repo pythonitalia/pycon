@@ -20,23 +20,12 @@ jobs:
           aws-access-key-id: ${{ secrets.aws_access_key_id }}
           aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
           aws-region: eu-central-1
-      - name: Set up QEMU dependency
-        uses: docker/setup-qemu-action@v3
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build and push
-        uses: docker/build-push-action@v6
+      - name: Run kaniko
+        uses: pythonitalia/kaniko-action@main
         with:
-          context: ./backend
-          file: ./backend/Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          provenance: false
           push: true
-          tags: |
-            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ inputs.githash }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          platforms: linux/arm64
+          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ inputs.githash }}
+          cache: true
+          cache-repository: ghcr.io/${{ github.repository }}/cache
