@@ -186,12 +186,13 @@ jobs:
     with:
       githash: ${{ needs.check-frontend-build.outputs.githash }}
     secrets: inherit
-    if: ${{ needs.check-frontend-build.outputs.image_exists == 0 }}
+    if: ${{ needs.check-frontend-build.outputs.image_exists == 0 }} && always() && !cancelled() && !failure() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
 
   deploy-fe:
     name: Deploy frontend
     runs-on: ubuntu-24.04
     needs: [build-fe]
+    if: always() && !cancelled() && !failure() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
     environment:
       name: ${{ fromJSON('["pastaporto", "production"]')[github.ref == 'refs/heads/main'] }}
     defaults:
@@ -226,6 +227,7 @@ jobs:
     name: Wait frontend deployment
     runs-on: ubuntu-24.04
     needs: [deploy-fe, check-frontend-build]
+    if: always() && !cancelled() && !failure() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
     steps:
       - uses: actions/checkout@v4
         with:
