@@ -1,4 +1,4 @@
-data "aws_iam_policy_document" "github_runner_assume_role" {
+data "aws_iam_policy_document" "github_runner_webhook_assume_role" {
   statement {
     effect = "Allow"
 
@@ -11,14 +11,18 @@ data "aws_iam_policy_document" "github_runner_assume_role" {
   }
 }
 
-resource "aws_iam_role" "github_runner_iam" {
-  name               = "github_runner_iam"
-  assume_role_policy = data.aws_iam_policy_document.github_runner_assume_role.json
+resource "aws_iam_role" "github_runner_webhook_role" {
+  name               = "github_runner_webhook_role"
+  assume_role_policy = data.aws_iam_policy_document.github_runner_webhook_assume_role.json
 }
 
-resource "aws_iam_role_policy" "github_runner_lambda_policy" {
-  name = "github_runner_lambda_policy"
-  role = aws_iam_role.github_runner_iam.id
+data "aws_ssm_parameter" "github_token" {
+  name = "/github-runner/github-token"
+}
+
+resource "aws_iam_role_policy" "github_runner_webhook_lambda_policy" {
+  name = "github_runner_webhook_lambda_policy"
+  role = aws_iam_role.github_runner_webhook_role.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -31,6 +35,15 @@ resource "aws_iam_role_policy" "github_runner_lambda_policy" {
           "logs:PutLogEvents"
         ]
         Resource = "*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = [
+          "ssm:GetParameter"
+        ]
+        Resource = [
+          data.aws_ssm_parameter.github_token.arn
+        ]
       }
     ]
   })
@@ -44,14 +57,16 @@ data "archive_file" "github_runner_webhook_artifact" {
 
 resource "aws_lambda_function" "github_runner_webhook" {
   function_name = "github_runner_webhook"
-  role          = aws_iam_role.github_runner_iam.arn
+  role          = aws_iam_role.github_runner_webhook_role.arn
   handler       = "github_runner_webhook.handler"
   runtime = "python3.13"
   filename         = data.archive_file.github_runner_webhook_artifact.output_path
   source_code_hash = data.archive_file.github_runner_webhook_artifact.output_base64sha256
+  timeout = 60
   environment {
     variables = {
       WEBHOOK_SECRET = random_password.webhook_secret.result
+      GITHUB_TOKEN_SSM_NAME = data.aws_ssm_parameter.github_token.name
     }
   }
 }

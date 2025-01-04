@@ -1,9 +1,12 @@
+import boto3
 import json
 import os
 import hashlib
 import hmac
+from urllib import request
 
 WEBHOOK_SECRET = os.environ["WEBHOOK_SECRET"]
+GITHUB_TOKEN_SSM_NAME = os.environ["GITHUB_TOKEN_SSM_NAME"]
 
 
 def handler(event, context):
@@ -42,7 +45,40 @@ def handle_workflow_job(body, context):
     if labels != ["self-hosted", "arm64-fargate"]:
         return
 
-    print("Handling workflow job - start?")
+    ssm_client = boto3.client("ssm")
+    github_token = ssm_client.get_parameter(Name=GITHUB_TOKEN_SSM_NAME)["Parameter"][
+        "Value"
+    ]
+
+    payload = {
+        "name": "Test from Lambda",
+        "runner_group_id": 3,
+        "labels": [
+            "lambda-test"
+            # 'self-hosted',
+            # 'arm64-fargate',
+        ],
+    }
+    payload_encoded = json.dumps(payload).encode("utf-8")
+    print("sending payload:", payload_encoded)
+    req = request.Request(
+        "https://api.github.com/orgs/pythonitalia/actions/runners/generate-jitconfig",
+        data=payload_encoded,
+        method="POST",
+        headers={
+            "Authorization": f"Bearer {github_token}",
+            "Accept": "application/vnd.github.v3+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+        },
+    )
+
+    with request.urlopen(req) as response:
+        response_data = response.read().decode("utf-8")
+        print(response_data)
+
+    jit_config = json.loads(response_data)["encoded_jit_config"]
+
+    print("Handling workflow job - start?", jit_config)
     print("Body:", body)
     print("Context:", context)
 
