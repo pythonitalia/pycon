@@ -177,7 +177,7 @@ jobs:
           fi
 
   build-fe:
-    needs: [check-frontend-build]
+    needs: [wait-be-update, check-frontend-build]
     uses: ./.github/workflows/build-frontend.yml
     with:
       githash: ${{ needs.check-frontend-build.outputs.githash }}
