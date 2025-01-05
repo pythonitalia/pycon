@@ -10,7 +10,11 @@ jobs:
     name: Build
     runs-on: ${{ format('arm64-fargate-{0}{1}{2}', github.run_id, github.run_number, github.run_attempt) }}
     steps:
-      - run: aws sts get-caller-identity
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-central-1
+      # - run: tail -f /dev/null
       - name: Run kaniko
         run: |
           /kaniko/executor \
