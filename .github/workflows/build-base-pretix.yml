@@ -1,3 +1,7 @@
+name: Build base pretix image
+
+concurrency: ${{ inputs.version }}
+
 on:
   workflow_dispatch:
     inputs:
