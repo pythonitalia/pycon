@@ -93,7 +93,6 @@ def handle_workflow_job(body, context):
         networkConfiguration=json.loads(NETWORK_CONFIGURATION),
         enableExecuteCommand=True,
         count=1,
-        launchType="FARGATE",
         overrides={
             "containerOverrides": [
                 {"name": "runner", "command": [f"./run.sh --jitconfig {jit_config}"]}

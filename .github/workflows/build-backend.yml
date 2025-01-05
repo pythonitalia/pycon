@@ -14,7 +14,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-central-1
-      # - run: tail -f /dev/null
+      - run: tail -f /dev/null
       - name: Run kaniko
         run: |
           /kaniko/executor \
