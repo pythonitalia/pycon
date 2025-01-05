@@ -22,6 +22,7 @@ jobs:
           aws-region: eu-central-1
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
+      - run: tail -f /dev/null
       - name: Run kaniko
         run: |
           /kaniko/executor \
