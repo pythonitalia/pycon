@@ -33,27 +33,6 @@ resource "aws_iam_role_policy" "github_runner_execution_role_policy" {
           aws_cloudwatch_log_group.github_runner.arn,
           "${aws_cloudwatch_log_group.github_runner.arn}*"
         ]
-      },
-      {
-        Effect   = "Allow"
-        Action   = [
-          "ecr:GetAuthorizationToken",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage",
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:PutImage",
-          "ecr:InitiateLayerUpload",
-          "ecr:UploadLayerPart",
-          "ecr:CompleteLayerUpload",
-          "ecr:DescribeRepositories",
-          "ecr:GetRepositoryPolicy",
-          "ecr:ListImages",
-          "ecr:BatchDeleteImage",
-        ]
-        Resource = "*"
       }
     ]
   })
@@ -90,6 +69,27 @@ resource "aws_iam_role_policy" "github_runner_task_role_policy" {
         Action   = [
           "ecs:ExecuteCommand",
           "ssmmessages:*"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:PutImage",
+          "ecr:InitiateLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:CompleteLayerUpload",
+          "ecr:DescribeRepositories",
+          "ecr:GetRepositoryPolicy",
+          "ecr:ListImages",
+          "ecr:BatchDeleteImage",
         ]
         Resource = "*"
       }
