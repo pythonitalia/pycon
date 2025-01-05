@@ -11,3 +11,6 @@ ENV DOCKER_CONFIG /kaniko/.docker/
 ENV RUNNER_ALLOW_RUNASROOT 1
 USER root
 RUN sed -i '/messagebus/d' /var/lib/dpkg/statoverride
+
+RUN mv /home/runner/ /kaniko/actions-runner/
+WORKDIR /kaniko/actions-runner/

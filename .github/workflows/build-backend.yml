@@ -30,4 +30,5 @@ jobs:
             --context=git://github.com/${{ github.repository }}#${{ github.ref }} \
             --context-sub-path=./backend \
             --verbosity debug \
+            --cleanup \
             --destination=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ inputs.githash }}
