@@ -3,6 +3,7 @@ name: Build base pretix image
 concurrency: ${{ inputs.version }}
 
 on:
+  pull_request:
   workflow_dispatch:
     inputs:
       version:
