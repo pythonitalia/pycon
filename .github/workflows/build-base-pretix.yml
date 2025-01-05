@@ -4,6 +4,11 @@ concurrency: ${{ inputs.version }}
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version of pretix to build. Example: v2024.10.0'
+        required: true
+        type: string
 
 jobs:
   build:
