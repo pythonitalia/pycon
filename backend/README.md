@@ -63,4 +63,3 @@ And for the admin go to:
 http://localhost:8000/admin
 
 You should be able to login with the user we create a few moments ago.
-#testchange
