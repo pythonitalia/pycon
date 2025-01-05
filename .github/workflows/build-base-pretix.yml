@@ -31,7 +31,6 @@ jobs:
         uses: docker/build-push-action@v6
         id: build-pretix-base
         with:
-          file: ./Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           provenance: false
           push: true
