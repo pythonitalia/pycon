@@ -10,6 +10,7 @@ jobs:
     name: Build
     runs-on: ${{ format('arm64-fargate-{0}{1}{2}', github.run_id, github.run_number, github.run_attempt) }}
     steps:
+      - run: aws sts get-caller-identity
       - name: Run kaniko
         run: |
           /kaniko/executor \
