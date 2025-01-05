@@ -29,4 +29,5 @@ jobs:
             --dockerfile=./Dockerfile \
             --context=git://github.com/${{ github.repository }}#${{ github.ref }} \
             --context-sub-path=./backend \
+            --cache=true \
             --destination=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-test
