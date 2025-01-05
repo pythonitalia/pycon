@@ -1,0 +1,37 @@
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version of pretix to build. Example: v2024.10.0'
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build pretix
+    runs-on: [self-hosted]
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: pretix/pretix
+          ref: ${{ inputs.version }}
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build pretix base
+        uses: docker/build-push-action@v6
+        id: build-pretix-base
+        with:
+          file: ./Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          provenance: false
+          push: true
+          tags: ghcr.io/pythonitalia/pycon/arm-pretix:${{ inputs.version }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          platforms: linux/arm64
