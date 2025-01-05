@@ -1,8 +1,9 @@
 name: Build base pretix image
 
-concurrency: ${{ inputs.version }}
+concurrency: v2024.11.0
 
 on:
+  pull_request:
   workflow_dispatch:
     inputs:
       version:
@@ -21,7 +22,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: pretix/pretix
-          ref: ${{ inputs.version }}
+          ref: v2024.11.0
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v3
@@ -33,7 +34,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           provenance: false
           push: true
-          tags: ghcr.io/pythonitalia/pycon/arm-pretix:${{ inputs.version }}
+          tags: ghcr.io/pythonitalia/pycon/arm-pretix:v2024.11.0
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
