@@ -96,8 +96,8 @@ resource "aws_ecs_task_definition" "github_runner" {
   family = "github-runner"
   requires_compatibilities = ["FARGATE"]
   network_mode = "awsvpc"
-  cpu = 1024
-  memory = 2048
+  cpu = 8192
+  memory = 16384
   execution_role_arn = aws_iam_role.github_runner_execution_role.arn
   task_role_arn = aws_iam_role.github_runner_task_role.arn
 
