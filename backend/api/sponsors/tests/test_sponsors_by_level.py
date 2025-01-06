@@ -38,7 +38,7 @@ def test_query_sponsors(graphql_client):
     SponsorLevelFactory(name="gold", conference=conference, sponsors=[patrick, marco])
     SponsorLevelFactory(name="bronze", conference=conference, sponsors=[ester])
 
-    resp = _query_sponsors(graphql_client, conference_code="pycon12")
+    resp = _query_sponsors(graphql_client, conference_code=conference.code)
 
     assert not resp.get("errors")
     assert len(resp["data"]["conference"]["sponsorsByLevel"]) == 2

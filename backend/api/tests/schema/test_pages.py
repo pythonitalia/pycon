@@ -1,4 +1,4 @@
-from backend.conferences.tests.factories import ConferenceFactory
+from conferences.tests.factories import ConferenceFactory
 from pytest import mark
 
 from i18n.strings import LazyI18nString
