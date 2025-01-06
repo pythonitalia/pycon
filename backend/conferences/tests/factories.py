@@ -25,7 +25,7 @@ from submissions.models import SubmissionType
 class ConferenceFactory(DjangoModelFactory):
     organizer = factory.SubFactory(OrganizerFactory)
     name = LanguageFactory("name")
-    slug = factory.Sequence(lambda n: "code{}".format(n))
+    code = factory.Sequence(lambda n: "code{}".format(n))
     introduction = LanguageFactory("sentence")
 
     start = factory.Faker("past_datetime", tzinfo=UTC)
