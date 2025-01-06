@@ -1,4 +1,5 @@
 from unittest.mock import ANY
+from conferences.tests.factories import ConferenceFactory
 from sponsors.tests.factories import SponsorFactory, SponsorLevelFactory
 from pytest import mark
 
@@ -23,6 +24,7 @@ def _query_sponsors(client, conference_code):
 
 @mark.django_db
 def test_query_sponsors(graphql_client):
+    conference = ConferenceFactory()
     patrick = SponsorFactory(
         name="patrick",
         link="https://patrick.wtf",
@@ -33,10 +35,8 @@ def test_query_sponsors(graphql_client):
         name="marco", link="https://marco.pizza", image=None, order=1
     )
     ester = SponsorFactory(name="ester", link="https://ester.cool", order=0)
-    SponsorLevelFactory(
-        name="gold", conference__code="pycon12", sponsors=[patrick, marco]
-    )
-    SponsorLevelFactory(name="bronze", conference__code="pycon12", sponsors=[ester])
+    SponsorLevelFactory(name="gold", conference=conference, sponsors=[patrick, marco])
+    SponsorLevelFactory(name="bronze", conference=conference, sponsors=[ester])
 
     resp = _query_sponsors(graphql_client, conference_code="pycon12")
 
