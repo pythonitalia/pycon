@@ -6,14 +6,14 @@
     @page {
       size: A4;
 
-      @top-left {
+      @{{header_align}} {
         content: element(header);
-        margin-top: 1cm;
+        margin: {{header_margin}};
       }
 
-      @bottom-left {
+      @{{footer_align}} {
         content: element(footer);
-        margin-bottom: 1cm;
+        margin: {{footer_margin}};
       }
     }
 
@@ -34,7 +34,21 @@
 
     div {
       break-after: page;
-      margin-top: 1cm;
+      margin: {{page_layout_margin}};
+    }
+
+    p {
+      margin-bottom: 0.2cm;
+    }
+
+    table {
+      border-collapse: collapse;
+    }
+
+    table td {
+      border: 1px solid black;
+      min-width: 120px;
+      padding: 5px;
     }
   </style>
 </head>

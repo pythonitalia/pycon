@@ -118,7 +118,7 @@ def test_cannot_update_invitation_letter_document_with_static_doc(
 
     assert (
         response["data"]["updateInvitationLetterDocument"]["__typename"]
-        == "InvitationLetterNotEditable"
+        == "InvitationLetterDocumentNotEditable"
     )
     document.refresh_from_db()
     assert document.dynamic_document is None

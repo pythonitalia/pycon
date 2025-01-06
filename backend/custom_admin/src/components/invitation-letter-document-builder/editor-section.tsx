@@ -3,7 +3,9 @@ import {
   Button,
   Dialog,
   Flex,
+  Grid,
   Heading,
+  RadioGroup,
   Text,
   TextField,
   Theme,
@@ -13,18 +15,23 @@ import { MoveDown, MoveUp, Pencil, Trash } from "lucide-react";
 import { RichEditor } from "../shared/rich-editor";
 import { HideNode } from "../shared/rich-editor/menu-bar";
 import { useLocalData } from "./local-state";
+import { RunningElementsOptions } from "./running-elements-options";
 
 export const EditorSection = ({
   title,
-  content,
   pageId,
 }: {
   title: string;
-  content: string;
   pageId: string;
 }) => {
-  const { movePageUp, movePageDown, removePage, renamePage, setContent } =
-    useLocalData();
+  const {
+    movePageUp,
+    movePageDown,
+    removePage,
+    renamePage,
+    setContent,
+    getContent,
+  } = useLocalData();
   const isPage = pageId !== "header" && pageId !== "footer";
 
   const onMoveUp = () => movePageUp(pageId);
@@ -32,6 +39,8 @@ export const EditorSection = ({
   const onRemove = () => removePage(pageId);
   const onRename = (value: string) => renamePage(pageId, value);
   const onUpdate = (content: string) => setContent(pageId, content);
+
+  const content = getContent(pageId);
 
   return (
     <Box>
@@ -50,6 +59,7 @@ export const EditorSection = ({
         )}
         {isPage && <RemovePage onRemove={onRemove} />}
       </Flex>
+      {!isPage && <RunningElementsOptions pageId={pageId} />}
       <Box height="var(--space-3)" />
       <RichEditor
         hide={[HideNode.buttonNode, HideNode.link]}

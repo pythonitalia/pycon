@@ -6,14 +6,34 @@ import { useUpdateInvitationLetterDocumentMutation } from "./update-invitation-l
 import { createContext } from "react";
 import { useArgs } from "../shared/args";
 
+type Properties = {
+  align?: string;
+  title?: string;
+  margin?: string;
+  content: string;
+};
+
 type State = {
-  header: string;
-  footer: string;
+  pageLayout: PageLayout;
+  header: {
+    content: string;
+    align: string;
+    margin: string;
+  };
+  footer: {
+    content: string;
+    align: string;
+    margin: string;
+  };
   pages: {
     id: string;
     title: string;
     content: string;
   }[];
+};
+
+type PageLayout = {
+  margin: string;
 };
 
 export const LocalStateContext = createContext<{
@@ -22,6 +42,11 @@ export const LocalStateContext = createContext<{
   isSaving: boolean;
   saveFailed: boolean;
   addPage: () => void;
+  getPageLayout: () => PageLayout;
+  setPageLayoutProperty: (property: string, value: string) => void;
+  getProperties: (pageId: string) => Properties;
+  setProperty: (pageId: string, property: string, value: string) => void;
+  getContent: (pageId: string) => string;
   setContent: (pageId: string, content: string) => void;
   removePage: (pageId: string) => void;
   movePageUp: (pageId: string) => void;
@@ -34,6 +59,11 @@ export const LocalStateContext = createContext<{
   isSaving: false,
   saveFailed: false,
   addPage: () => {},
+  getProperties: () => null,
+  getPageLayout: () => null,
+  setPageLayoutProperty: () => {},
+  setProperty: () => {},
+  getContent: () => "",
   setContent: () => {},
   removePage: () => {},
   movePageUp: () => {},
@@ -50,6 +80,8 @@ enum ActionType {
   MovePageUp = "MOVE_PAGE_UP",
   MovePageDown = "MOVE_PAGE_DOWN",
   RenamePage = "RENAME_PAGE",
+  SetProperty = "SET_PROPERTY",
+  SetPageLayoutProperty = "SET_PAGE_LAYOUT_PROPERTY",
 }
 
 const reducer = (state: State, action) => {
@@ -86,7 +118,10 @@ const reducer = (state: State, action) => {
       if (pageId === "header" || pageId === "footer") {
         return {
           ...state,
-          [pageId]: content,
+          [pageId]: {
+            ...state[pageId],
+            content,
+          },
         };
       }
 
@@ -145,6 +180,36 @@ const reducer = (state: State, action) => {
         ),
       };
     }
+    case ActionType.SetProperty: {
+      const { pageId, property, value } = action.payload;
+
+      if (pageId === "header" || pageId === "footer") {
+        return {
+          ...state,
+          [pageId]: {
+            ...state[pageId],
+            [property]: value,
+          },
+        };
+      }
+
+      return {
+        ...state,
+        pages: state.pages.map((page) =>
+          page.id === pageId ? { ...page, [property]: value } : page,
+        ),
+      };
+    }
+    case ActionType.SetPageLayoutProperty: {
+      const { property, value } = action.payload;
+      return {
+        ...state,
+        pageLayout: {
+          ...state.pageLayout,
+          [property]: value,
+        },
+      };
+    }
   }
   return state;
 };
@@ -189,9 +254,10 @@ const useLoadRemoteData = (dispatch) => {
     });
   }, [data]);
 
-  const remoteData = useMemo(() => {
-    return removeTypenames(data?.invitationLetterDocument.dynamicDocument);
-  }, [data]);
+  const remoteData = useMemo(
+    () => removeTypenames(data?.invitationLetterDocument.dynamicDocument),
+    [data],
+  );
 
   return remoteData;
 };
@@ -223,13 +289,44 @@ export const LocalStateProvider = ({ children }) => {
   const [saveChanges, isSaving, saveFailed] = useSaveRemoteData();
 
   const isDirty = !equal(remoteData, localData);
+  const data = localData || remoteData;
 
   return (
     <LocalStateContext.Provider
       value={{
-        localData: localData || remoteData,
+        localData: data,
         isDirty,
+        getContent: (pageId) => {
+          if (pageId === "header" || pageId === "footer") {
+            return data[pageId].content;
+          }
+
+          return data.pages.find((page) => page.id === pageId).content;
+        },
+        getProperties: (pageId) => {
+          if (pageId === "header" || pageId === "footer") {
+            return data[pageId];
+          }
+
+          const page = data.pages.find((page) => page.id === pageId);
+          return page;
+        },
+        getPageLayout: () => {
+          return data.pageLayout;
+        },
+        setPageLayoutProperty: (property, value) => {
+          dispatch({
+            type: ActionType.SetPageLayoutProperty,
+            payload: { property, value },
+          });
+        },
         saveChanges: () => saveChanges(localData),
+        setProperty: (pageId, property, value) => {
+          dispatch({
+            type: ActionType.SetProperty,
+            payload: { pageId, property, value },
+          });
+        },
         isSaving,
         saveFailed,
         addPage: () => dispatch({ type: ActionType.AddPage }),

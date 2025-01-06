@@ -111,3 +111,9 @@ form .aligned .rich-editor {
 .rich-editor-button:hover {
   color: #fff;
 }
+
+.rich-editor {
+  table td {
+    @apply p-2 border border-slate-400;
+  }
+}

@@ -19,6 +19,7 @@ import {
   Heading6,
   Italic,
   Redo,
+  Table,
   Underline,
   Undo,
 } from "lucide-react";
@@ -28,6 +29,7 @@ import { ToolbarButton } from "./toolbar-button";
 export enum HideNode {
   buttonNode = 0,
   link = 1,
+  table = 2,
 }
 
 const HEADING_ICONS = {
@@ -163,6 +165,26 @@ export const MenuBar = ({
       })}
 
       <Separator />
+
+      {!hide.includes(HideNode.table) && (
+        <>
+          {" "}
+          <ToolbarButton
+            onClick={() =>
+              editor.commands.insertTable({
+                rows: 2,
+                cols: 3,
+                withHeaderRow: false,
+              })
+            }
+            isActive={editor.isActive("table")}
+            tooltip="Insert Table"
+          >
+            <Table size={16} />
+          </ToolbarButton>
+          <Separator />
+        </>
+      )}
 
       <ToolbarButton
         onClick={() => editor.chain().focus().undo().run()}

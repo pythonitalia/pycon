@@ -5,6 +5,7 @@ import { Fragment, useEffect } from "react";
 
 import { EditorSection } from "./editor-section";
 import { useLocalData } from "./local-state";
+import { PageLayoutOptions } from "./page-layout-option";
 
 export const InvitationLetterBuilder = () => {
   const { isDirty, localData, saveChanges, isSaving, addPage } = useLocalData();
@@ -37,33 +38,25 @@ export const InvitationLetterBuilder = () => {
 
         <Box height="var(--space-5)" />
 
-        <EditorSection
-          title="Header"
-          content={localData.header}
-          pageId="header"
-        />
+        <EditorSection title="Header" pageId="header" />
         <Box height="var(--space-5)" />
 
-        <EditorSection
-          title="Footer"
-          content={localData.footer}
-          pageId="footer"
-        />
+        <EditorSection title="Footer" pageId="footer" />
       </Card>
 
       <Box height="var(--space-5)" />
 
       <Card>
         <Heading>Pages</Heading>
+        <Box height="var(--space-1)" />
+
+        <PageLayoutOptions />
+
         <Box height="var(--space-5)" />
 
         {localData.pages.map((page) => (
           <Fragment key={page.id}>
-            <EditorSection
-              title={page.title}
-              content={page.content}
-              pageId={page.id}
-            />
+            <EditorSection title={page.title} pageId={page.id} />
             <Box height="var(--space-3)" />
           </Fragment>
         ))}

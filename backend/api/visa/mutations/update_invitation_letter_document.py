@@ -16,9 +16,22 @@ class UpdateInvitationLetterDocumentPageInput:
 
 
 @strawberry.input
+class UpdateInvitationLetterDocumentRunningPartInput:
+    content: str
+    align: str
+    margin: str
+
+
+@strawberry.input
+class UpdateInvitationLetterDocumentPageLayoutInput:
+    margin: str
+
+
+@strawberry.input
 class UpdateInvitationLetterDocumentStructureInput:
-    header: str
-    footer: str
+    header: UpdateInvitationLetterDocumentRunningPartInput
+    footer: UpdateInvitationLetterDocumentRunningPartInput
+    page_layout: UpdateInvitationLetterDocumentPageLayoutInput
     pages: list[UpdateInvitationLetterDocumentPageInput]
 
 
@@ -29,12 +42,12 @@ class UpdateInvitationLetterDocumentInput:
 
 
 @strawberry.type
-class InvitationLetterNotEditable:
+class InvitationLetterDocumentNotEditable:
     message: str = "Invitation letter document is not editable"
 
 
 UpdateInvitationLetterDocumentResult = Annotated[
-    InvitationLetterDocument | InvitationLetterNotEditable | NotFound,
+    InvitationLetterDocument | InvitationLetterDocumentNotEditable | NotFound,
     strawberry.union(name="UpdateInvitationLetterDocumentResult"),
 ]
 
@@ -51,7 +64,7 @@ def update_invitation_letter_document(
         return NotFound()
 
     if invitation_letter_document.document:
-        return InvitationLetterNotEditable()
+        return InvitationLetterDocumentNotEditable()
 
     invitation_letter_document.dynamic_document = strawberry.asdict(
         input.dynamic_document
