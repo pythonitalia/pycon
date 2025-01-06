@@ -13,8 +13,19 @@ def _update_invitation_letter_document(client, **input):
             ... on InvitationLetterDocument {
                 id
                 dynamicDocument {
-                    header
-                    footer
+                    header {
+                        content
+                        align
+                        margin
+                    }
+                    footer {
+                        content
+                        align
+                        margin
+                    }
+                    pageLayout {
+                        margin
+                    }
                     pages {
                         id
                         title
@@ -34,8 +45,13 @@ def test_update_invitation_letter_document(admin_superuser, admin_graphql_api_cl
     document = InvitationLetterDocumentFactory(
         document=None,
         dynamic_document={
-            "header": "header",
-            "footer": "footer",
+            "header": {"content": "header", "margin": "1cm 0 0 0", "align": "top-left"},
+            "footer": {
+                "content": "footer",
+                "margin": "1cm 0 0 0",
+                "align": "bottom-left",
+            },
+            "page_layout": {"margin": "0"},
             "pages": [
                 {
                     "id": "id",
@@ -51,8 +67,17 @@ def test_update_invitation_letter_document(admin_superuser, admin_graphql_api_cl
         input={
             "id": document.id,
             "dynamicDocument": {
-                "header": "new header",
-                "footer": "new footer",
+                "header": {
+                    "content": "new header",
+                    "margin": "0",
+                    "align": "top-left",
+                },
+                "footer": {
+                    "content": "new footer",
+                    "margin": "0",
+                    "align": "bottom-left",
+                },
+                "pageLayout": {"margin": "1cm 0 1cm 0"},
                 "pages": [
                     {
                         "id": "id",
@@ -66,8 +91,13 @@ def test_update_invitation_letter_document(admin_superuser, admin_graphql_api_cl
 
     assert response["data"]["updateInvitationLetterDocument"]["id"] == str(document.id)
     assert response["data"]["updateInvitationLetterDocument"]["dynamicDocument"] == {
-        "header": "new header",
-        "footer": "new footer",
+        "header": {"content": "new header", "margin": "0", "align": "top-left"},
+        "footer": {
+            "content": "new footer",
+            "margin": "0",
+            "align": "bottom-left",
+        },
+        "pageLayout": {"margin": "1cm 0 1cm 0"},
         "pages": [
             {
                 "id": "id",
@@ -79,8 +109,9 @@ def test_update_invitation_letter_document(admin_superuser, admin_graphql_api_cl
 
     document.refresh_from_db()
     assert document.dynamic_document == {
-        "header": "new header",
-        "footer": "new footer",
+        "header": {"content": "new header", "margin": "0", "align": "top-left"},
+        "footer": {"content": "new footer", "margin": "0", "align": "bottom-left"},
+        "page_layout": {"margin": "1cm 0 1cm 0"},
         "pages": [
             {
                 "id": "id",
@@ -103,8 +134,13 @@ def test_cannot_update_invitation_letter_document_with_static_doc(
         input={
             "id": document.id,
             "dynamicDocument": {
-                "header": "new header",
-                "footer": "new footer",
+                "header": {"content": "new header", "margin": "0", "align": "top-left"},
+                "footer": {
+                    "content": "new footer",
+                    "margin": "0",
+                    "align": "bottom-left",
+                },
+                "pageLayout": {"margin": "1cm 0 1cm 0"},
                 "pages": [
                     {
                         "id": "id",
@@ -128,20 +164,21 @@ def test_update_non_existent_invitation_letter_document(
     admin_superuser, admin_graphql_api_client
 ):
     admin_graphql_api_client.force_login(admin_superuser)
-
+    old_doc = {
+        "header": {"content": "new header", "align": "top-left"},
+        "footer": {"content": "new footer", "align": "bottom-left"},
+        "pageLayout": {"margin": "1cm 0 1cm 0"},
+        "pages": [
+            {
+                "id": "id",
+                "title": "title",
+                "content": "content",
+            }
+        ],
+    }
     document = InvitationLetterDocumentFactory(
         document=None,
-        dynamic_document={
-            "header": "header",
-            "footer": "footer",
-            "pages": [
-                {
-                    "id": "id",
-                    "title": "title",
-                    "content": "content",
-                }
-            ],
-        },
+        dynamic_document=old_doc,
     )
 
     response = _update_invitation_letter_document(
@@ -149,8 +186,13 @@ def test_update_non_existent_invitation_letter_document(
         input={
             "id": document.id + 1,
             "dynamicDocument": {
-                "header": "new header",
-                "footer": "new footer",
+                "header": {"content": "new header", "margin": "0", "align": "top-left"},
+                "footer": {
+                    "content": "new footer",
+                    "margin": "0",
+                    "align": "bottom-left",
+                },
+                "pageLayout": {"margin": "1cm 0 1cm 0"},
                 "pages": [
                     {
                         "id": "id",
@@ -165,10 +207,16 @@ def test_update_non_existent_invitation_letter_document(
     assert (
         response["data"]["updateInvitationLetterDocument"]["__typename"] == "NotFound"
     )
+
     document.refresh_from_db()
-    assert document.dynamic_document == {
-        "header": "header",
-        "footer": "footer",
+    assert document.dynamic_document == old_doc
+
+
+def test_update_invitation_letter_document_without_permission(admin_graphql_api_client):
+    old_doc = {
+        "header": {"content": "header", "align": "top-left"},
+        "footer": {"content": "footer", "align": "bottom-left"},
+        "pageLayout": {"margin": "1cm 0 1cm 0"},
         "pages": [
             {
                 "id": "id",
@@ -177,22 +225,9 @@ def test_update_non_existent_invitation_letter_document(
             }
         ],
     }
-
-
-def test_update_invitation_letter_document_without_permission(admin_graphql_api_client):
     document = InvitationLetterDocumentFactory(
         document=None,
-        dynamic_document={
-            "header": "header",
-            "footer": "footer",
-            "pages": [
-                {
-                    "id": "id",
-                    "title": "title",
-                    "content": "content",
-                }
-            ],
-        },
+        dynamic_document=old_doc,
     )
 
     response = _update_invitation_letter_document(
@@ -200,8 +235,17 @@ def test_update_invitation_letter_document_without_permission(admin_graphql_api_
         input={
             "id": document.id,
             "dynamicDocument": {
-                "header": "new header",
-                "footer": "new footer",
+                "header": {
+                    "content": "new header",
+                    "margin": "0 0 0 0",
+                    "align": "top-right",
+                },
+                "footer": {
+                    "content": "new footer",
+                    "margin": "0 0 0 0",
+                    "align": "bottom-center",
+                },
+                "pageLayout": {"margin": "1cm 0 1cm 0"},
                 "pages": [
                     {
                         "id": "id",
@@ -215,37 +259,29 @@ def test_update_invitation_letter_document_without_permission(admin_graphql_api_
 
     assert response["errors"][0]["message"] == "Cannot edit invitation letter document"
     document.refresh_from_db()
-    assert document.dynamic_document == {
-        "header": "header",
-        "footer": "footer",
-        "pages": [
-            {
-                "id": "id",
-                "title": "title",
-                "content": "content",
-            }
-        ],
-    }
+    assert document.dynamic_document == old_doc
 
 
 def test_update_invitation_letter_document_as_staff_without_permission(
     admin_user, admin_graphql_api_client
 ):
     admin_graphql_api_client.force_login(admin_user)
+    old_doc = {
+        "header": {"content": "header", "align": "top-left"},
+        "footer": {"content": "footer", "align": "bottom-left"},
+        "pageLayout": {"margin": "1cm 0 1cm 0"},
+        "pages": [
+            {
+                "id": "id",
+                "title": "title",
+                "content": "content",
+            }
+        ],
+    }
 
     document = InvitationLetterDocumentFactory(
         document=None,
-        dynamic_document={
-            "header": "header",
-            "footer": "footer",
-            "pages": [
-                {
-                    "id": "id",
-                    "title": "title",
-                    "content": "content",
-                }
-            ],
-        },
+        dynamic_document=old_doc,
     )
 
     response = _update_invitation_letter_document(
@@ -253,8 +289,17 @@ def test_update_invitation_letter_document_as_staff_without_permission(
         input={
             "id": document.id,
             "dynamicDocument": {
-                "header": "new header",
-                "footer": "new footer",
+                "header": {
+                    "content": "new header",
+                    "margin": "1cm 0 0 0",
+                    "align": "top-right",
+                },
+                "footer": {
+                    "content": "new footer",
+                    "margin": "1cm 0 0 0",
+                    "align": "top-right",
+                },
+                "pageLayout": {"margin": "1cm 0 1cm 0"},
                 "pages": [
                     {
                         "id": "id",
@@ -268,17 +313,7 @@ def test_update_invitation_letter_document_as_staff_without_permission(
 
     assert response["errors"][0]["message"] == "Cannot edit invitation letter document"
     document.refresh_from_db()
-    assert document.dynamic_document == {
-        "header": "header",
-        "footer": "footer",
-        "pages": [
-            {
-                "id": "id",
-                "title": "title",
-                "content": "content",
-            }
-        ],
-    }
+    assert document.dynamic_document == old_doc
 
 
 def test_update_invitation_letter_document_as_staff_user_with_permission(
@@ -289,8 +324,9 @@ def test_update_invitation_letter_document_as_staff_user_with_permission(
     document = InvitationLetterDocumentFactory(
         document=None,
         dynamic_document={
-            "header": "header",
-            "footer": "footer",
+            "header": {"content": "header", "margin": "0", "align": "top-left"},
+            "footer": {"content": "footer", "margin": "0", "align": "top-left"},
+            "pageLayout": {"margin": "1cm 0 1cm 0"},
             "pages": [
                 {
                     "id": "id",
@@ -315,8 +351,17 @@ def test_update_invitation_letter_document_as_staff_user_with_permission(
         input={
             "id": document.id,
             "dynamicDocument": {
-                "header": "new header",
-                "footer": "new footer",
+                "header": {
+                    "content": "new header",
+                    "margin": "0",
+                    "align": "bottom-left",
+                },
+                "footer": {
+                    "content": "new footer",
+                    "margin": "0",
+                    "align": "bottom-left",
+                },
+                "pageLayout": {"margin": "1cm 0 1cm 0"},
                 "pages": [
                     {
                         "id": "id",
@@ -330,8 +375,9 @@ def test_update_invitation_letter_document_as_staff_user_with_permission(
 
     assert response["data"]["updateInvitationLetterDocument"]["id"] == str(document.id)
     assert response["data"]["updateInvitationLetterDocument"]["dynamicDocument"] == {
-        "header": "new header",
-        "footer": "new footer",
+        "header": {"content": "new header", "margin": "0", "align": "bottom-left"},
+        "footer": {"content": "new footer", "margin": "0", "align": "bottom-left"},
+        "pageLayout": {"margin": "1cm 0 1cm 0"},
         "pages": [
             {
                 "id": "id",
@@ -343,8 +389,9 @@ def test_update_invitation_letter_document_as_staff_user_with_permission(
 
     document.refresh_from_db()
     assert document.dynamic_document == {
-        "header": "new header",
-        "footer": "new footer",
+        "header": {"content": "new header", "margin": "0", "align": "bottom-left"},
+        "footer": {"content": "new footer", "margin": "0", "align": "bottom-left"},
+        "page_layout": {"margin": "1cm 0 1cm 0"},
         "pages": [
             {
                 "id": "id",

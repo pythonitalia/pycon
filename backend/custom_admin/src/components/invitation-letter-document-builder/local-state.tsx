@@ -292,7 +292,7 @@ export const LocalStateProvider = ({ children }) => {
   const data = localData || remoteData;
 
   return (
-    <LocalStateContext.Provider
+    <LocalStateContext
       value={{
         localData: data,
         isDirty,
@@ -363,6 +363,6 @@ export const LocalStateProvider = ({ children }) => {
       }}
     >
       {children}
-    </LocalStateContext.Provider>
+    </LocalStateContext>
   );
 };

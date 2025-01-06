@@ -31,8 +31,8 @@ def test_process_invitation_letter_request(requests_mock):
         invitation_letter_conference_config=config,
         document=None,
         dynamic_document={
-            "header": "header",
-            "footer": "footer",
+            "header": {"content": "header"},
+            "footer": {"content": "footer"},
             "pages": [
                 {"content": "page: {{nationality}}"},
                 {"content": 'page2: {% invitation_letter_asset "test" width="60px" %}'},

@@ -151,16 +151,15 @@ class InvitationLetterRequest(TimeStampedModel):
         return self.conference.invitation_letter_config
 
     def can_include_document(self, document):
-        if document.inclusion_policy == InvitationLetterDocumentInclusionPolicy.ALWAYS:
-            return True
-
         if (
             document.inclusion_policy
             == InvitationLetterDocumentInclusionPolicy.GRANT_ACCOMMODATION
         ):
             return self.has_accommodation_via_grant()
 
-        return False
+        return (
+            document.inclusion_policy == InvitationLetterDocumentInclusionPolicy.ALWAYS
+        )
 
     def __str__(self):
         return f"{self.full_name} - {self.conference.name}"

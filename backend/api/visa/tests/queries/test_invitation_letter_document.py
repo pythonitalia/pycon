@@ -11,8 +11,12 @@ def _invitation_letter_document(client, **input):
         invitationLetterDocument(id: $id) {
             id
             dynamicDocument {
-                header
-                footer
+                header {
+                    content
+                }
+                footer {
+                    content
+                }
                 pages {
                     id
                     title
@@ -31,8 +35,8 @@ def test_query_invitation_letter_document(admin_superuser, admin_graphql_api_cli
     document = InvitationLetterDocumentFactory(
         document=None,
         dynamic_document={
-            "header": "header",
-            "footer": "footer",
+            "header": {"content": "header"},
+            "footer": {"content": "footer"},
             "pages": [
                 {
                     "id": "id",
@@ -46,8 +50,8 @@ def test_query_invitation_letter_document(admin_superuser, admin_graphql_api_cli
 
     assert response["data"]["invitationLetterDocument"]["id"] == str(document.id)
     assert response["data"]["invitationLetterDocument"]["dynamicDocument"] == {
-        "header": "header",
-        "footer": "footer",
+        "header": {"content": "header"},
+        "footer": {"content": "footer"},
         "pages": [
             {
                 "id": "id",
@@ -66,8 +70,8 @@ def test_query_non_existent_invitation_letter_document(
     InvitationLetterDocumentFactory(
         document=None,
         dynamic_document={
-            "header": "header",
-            "footer": "footer",
+            "header": {"content": "header"},
+            "footer": {"content": "footer"},
             "pages": [
                 {
                     "id": "id",
@@ -90,8 +94,8 @@ def test_query_non_existent_invitation_letter_document_as_user(
     InvitationLetterDocumentFactory(
         document=None,
         dynamic_document={
-            "header": "header",
-            "footer": "footer",
+            "header": {"content": "header"},
+            "footer": {"content": "footer"},
             "pages": [
                 {
                     "id": "id",
@@ -114,8 +118,8 @@ def test_cannot_query_invitation_letter_document_as_user(
     document = InvitationLetterDocumentFactory(
         document=None,
         dynamic_document={
-            "header": "header",
-            "footer": "footer",
+            "header": {"content": "header"},
+            "footer": {"content": "footer"},
             "pages": [
                 {
                     "id": "id",
@@ -139,8 +143,8 @@ def test_cannot_query_invitation_letter_document_as_staff_without_permission(
     document = InvitationLetterDocumentFactory(
         document=None,
         dynamic_document={
-            "header": "header",
-            "footer": "footer",
+            "header": {"content": "header"},
+            "footer": {"content": "footer"},
             "pages": [
                 {
                     "id": "id",
@@ -165,8 +169,8 @@ def test_query_invitation_letter_document_as_staff(
     document = InvitationLetterDocumentFactory(
         document=None,
         dynamic_document={
-            "header": "header",
-            "footer": "footer",
+            "header": {"content": "header"},
+            "footer": {"content": "footer"},
             "pages": [
                 {
                     "id": "id",

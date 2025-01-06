@@ -168,7 +168,6 @@ export const MenuBar = ({
 
       {!hide.includes(HideNode.table) && (
         <>
-          {" "}
           <ToolbarButton
             onClick={() =>
               editor.commands.insertTable({
