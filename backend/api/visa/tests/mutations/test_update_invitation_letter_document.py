@@ -1,3 +1,4 @@
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Permission
 from visa.tests.factories import (
     BASE_EXAMPLE_DYNAMIC_DOCUMENT_JSON,
@@ -26,6 +27,11 @@ NEW_DOC_GRAPHQL_INPUT = {
 }
 NEW_DOC_JSON_DATA = {**NEW_DOC_GRAPHQL_INPUT}
 NEW_DOC_JSON_DATA["page_layout"] = NEW_DOC_JSON_DATA.pop("pageLayout")
+
+BASE_EXAMPLE_DYNAMIC_DOCUMENT_GRAPHQL_INPUT = {**BASE_EXAMPLE_DYNAMIC_DOCUMENT_JSON}
+BASE_EXAMPLE_DYNAMIC_DOCUMENT_GRAPHQL_INPUT[
+    "pageLayout"
+] = BASE_EXAMPLE_DYNAMIC_DOCUMENT_GRAPHQL_INPUT.pop("page_layout")
 
 
 def _update_invitation_letter_document(client, **input):
@@ -80,6 +86,38 @@ def test_update_invitation_letter_document(admin_superuser, admin_graphql_api_cl
 
     document.refresh_from_db()
     assert document.dynamic_document == NEW_DOC_JSON_DATA
+
+    log_entry = LogEntry.objects.get()
+    assert log_entry.object_id == str(document.invitation_letter_conference_config.id)
+
+
+def test_update_invitation_letter_document_doesnt_record_in_log_empty_changes(
+    admin_superuser, admin_graphql_api_client
+):
+    admin_graphql_api_client.force_login(admin_superuser)
+
+    document = InvitationLetterDynamicDocumentFactory(
+        dynamic_document=BASE_EXAMPLE_DYNAMIC_DOCUMENT_JSON
+    )
+
+    response = _update_invitation_letter_document(
+        admin_graphql_api_client,
+        input={
+            "id": document.id,
+            "dynamicDocument": BASE_EXAMPLE_DYNAMIC_DOCUMENT_GRAPHQL_INPUT,
+        },
+    )
+
+    assert response["data"]["updateInvitationLetterDocument"]["id"] == str(document.id)
+    assert (
+        response["data"]["updateInvitationLetterDocument"]["dynamicDocument"]
+        == BASE_EXAMPLE_DYNAMIC_DOCUMENT_GRAPHQL_INPUT
+    )
+
+    assert not LogEntry.objects.exists()
+
+    document.refresh_from_db()
+    assert document.dynamic_document == BASE_EXAMPLE_DYNAMIC_DOCUMENT_JSON
 
 
 def test_cannot_update_invitation_letter_document_with_static_doc(
