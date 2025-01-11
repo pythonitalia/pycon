@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Permission
 from visa.tests.factories import (
+    BASE_EXAMPLE_DYNAMIC_DOCUMENT_JSON,
     InvitationLetterDocumentFactory,
     InvitationLetterDynamicDocumentFactory,
 )
@@ -7,7 +8,7 @@ import pytest
 
 pytestmark = pytest.mark.django_db
 
-NEW_DOC_PAYLOAD_EXAMPLE = {
+NEW_DOC_GRAPHQL_INPUT = {
     "header": {"content": "new header", "margin": "0", "align": "top-left"},
     "footer": {
         "content": "new footer",
@@ -23,11 +24,8 @@ NEW_DOC_PAYLOAD_EXAMPLE = {
         }
     ],
 }
-NEW_DOC_JSON_PAYLOAD_EXAMPLE = {
-    **NEW_DOC_PAYLOAD_EXAMPLE,
-    "page_layout": NEW_DOC_PAYLOAD_EXAMPLE.get("pageLayout"),
-}
-NEW_DOC_JSON_PAYLOAD_EXAMPLE.pop("pageLayout")
+NEW_DOC_JSON_DATA = {**NEW_DOC_GRAPHQL_INPUT}
+NEW_DOC_JSON_DATA["page_layout"] = NEW_DOC_JSON_DATA.pop("pageLayout")
 
 
 def _update_invitation_letter_document(client, **input):
@@ -71,40 +69,17 @@ def test_update_invitation_letter_document(admin_superuser, admin_graphql_api_cl
 
     response = _update_invitation_letter_document(
         admin_graphql_api_client,
-        input={"id": document.id, "dynamicDocument": NEW_DOC_PAYLOAD_EXAMPLE},
+        input={"id": document.id, "dynamicDocument": NEW_DOC_GRAPHQL_INPUT},
     )
 
     assert response["data"]["updateInvitationLetterDocument"]["id"] == str(document.id)
-    assert response["data"]["updateInvitationLetterDocument"]["dynamicDocument"] == {
-        "header": {"content": "new header", "margin": "0", "align": "top-left"},
-        "footer": {
-            "content": "new footer",
-            "margin": "0",
-            "align": "bottom-left",
-        },
-        "pageLayout": {"margin": "1cm 0 1cm 0"},
-        "pages": [
-            {
-                "id": "id",
-                "title": "new title",
-                "content": "new content",
-            }
-        ],
-    }
+    assert (
+        response["data"]["updateInvitationLetterDocument"]["dynamicDocument"]
+        == NEW_DOC_GRAPHQL_INPUT
+    )
 
     document.refresh_from_db()
-    assert document.dynamic_document == {
-        "header": {"content": "new header", "margin": "0", "align": "top-left"},
-        "footer": {"content": "new footer", "margin": "0", "align": "bottom-left"},
-        "page_layout": {"margin": "1cm 0 1cm 0"},
-        "pages": [
-            {
-                "id": "id",
-                "title": "new title",
-                "content": "new content",
-            }
-        ],
-    }
+    assert document.dynamic_document == NEW_DOC_JSON_DATA
 
 
 def test_cannot_update_invitation_letter_document_with_static_doc(
@@ -116,7 +91,7 @@ def test_cannot_update_invitation_letter_document_with_static_doc(
 
     response = _update_invitation_letter_document(
         admin_graphql_api_client,
-        input={"id": document.id, "dynamicDocument": NEW_DOC_PAYLOAD_EXAMPLE},
+        input={"id": document.id, "dynamicDocument": NEW_DOC_GRAPHQL_INPUT},
     )
 
     assert (
@@ -131,26 +106,15 @@ def test_update_non_existent_invitation_letter_document(
     admin_superuser, admin_graphql_api_client
 ):
     admin_graphql_api_client.force_login(admin_superuser)
-    old_doc = {
-        "header": {"content": "new header", "align": "top-left"},
-        "footer": {"content": "new footer", "align": "bottom-left"},
-        "pageLayout": {"margin": "1cm 0 1cm 0"},
-        "pages": [
-            {
-                "id": "id",
-                "title": "title",
-                "content": "content",
-            }
-        ],
-    }
+
     document = InvitationLetterDocumentFactory(
         document=None,
-        dynamic_document=old_doc,
+        dynamic_document=BASE_EXAMPLE_DYNAMIC_DOCUMENT_JSON,
     )
 
     response = _update_invitation_letter_document(
         admin_graphql_api_client,
-        input={"id": document.id + 1, "dynamicDocument": NEW_DOC_PAYLOAD_EXAMPLE},
+        input={"id": document.id + 1, "dynamicDocument": NEW_DOC_GRAPHQL_INPUT},
     )
 
     assert (
@@ -158,67 +122,43 @@ def test_update_non_existent_invitation_letter_document(
     )
 
     document.refresh_from_db()
-    assert document.dynamic_document == old_doc
+    assert document.dynamic_document == BASE_EXAMPLE_DYNAMIC_DOCUMENT_JSON
 
 
 def test_update_invitation_letter_document_without_permission(admin_graphql_api_client):
-    old_doc = {
-        "header": {"content": "header", "align": "top-left"},
-        "footer": {"content": "footer", "align": "bottom-left"},
-        "pageLayout": {"margin": "1cm 0 1cm 0"},
-        "pages": [
-            {
-                "id": "id",
-                "title": "title",
-                "content": "content",
-            }
-        ],
-    }
     document = InvitationLetterDocumentFactory(
         document=None,
-        dynamic_document=old_doc,
+        dynamic_document=BASE_EXAMPLE_DYNAMIC_DOCUMENT_JSON,
     )
 
     response = _update_invitation_letter_document(
         admin_graphql_api_client,
-        input={"id": document.id, "dynamicDocument": NEW_DOC_PAYLOAD_EXAMPLE},
+        input={"id": document.id, "dynamicDocument": NEW_DOC_GRAPHQL_INPUT},
     )
 
     assert response["errors"][0]["message"] == "Cannot edit invitation letter document"
     document.refresh_from_db()
-    assert document.dynamic_document == old_doc
+    assert document.dynamic_document == BASE_EXAMPLE_DYNAMIC_DOCUMENT_JSON
 
 
 def test_update_invitation_letter_document_as_staff_without_permission(
     admin_user, admin_graphql_api_client
 ):
     admin_graphql_api_client.force_login(admin_user)
-    old_doc = {
-        "header": {"content": "header", "align": "top-left"},
-        "footer": {"content": "footer", "align": "bottom-left"},
-        "pageLayout": {"margin": "1cm 0 1cm 0"},
-        "pages": [
-            {
-                "id": "id",
-                "title": "title",
-                "content": "content",
-            }
-        ],
-    }
 
     document = InvitationLetterDocumentFactory(
         document=None,
-        dynamic_document=old_doc,
+        dynamic_document=BASE_EXAMPLE_DYNAMIC_DOCUMENT_JSON,
     )
 
     response = _update_invitation_letter_document(
         admin_graphql_api_client,
-        input={"id": document.id, "dynamicDocument": NEW_DOC_PAYLOAD_EXAMPLE},
+        input={"id": document.id, "dynamicDocument": NEW_DOC_GRAPHQL_INPUT},
     )
 
     assert response["errors"][0]["message"] == "Cannot edit invitation letter document"
     document.refresh_from_db()
-    assert document.dynamic_document == old_doc
+    assert document.dynamic_document == BASE_EXAMPLE_DYNAMIC_DOCUMENT_JSON
 
 
 def test_update_invitation_letter_document_as_staff_user_with_permission(
@@ -239,14 +179,14 @@ def test_update_invitation_letter_document_as_staff_user_with_permission(
 
     response = _update_invitation_letter_document(
         admin_graphql_api_client,
-        input={"id": document.id, "dynamicDocument": NEW_DOC_PAYLOAD_EXAMPLE},
+        input={"id": document.id, "dynamicDocument": NEW_DOC_GRAPHQL_INPUT},
     )
 
     assert response["data"]["updateInvitationLetterDocument"]["id"] == str(document.id)
     assert (
         response["data"]["updateInvitationLetterDocument"]["dynamicDocument"]
-        == NEW_DOC_PAYLOAD_EXAMPLE
+        == NEW_DOC_GRAPHQL_INPUT
     )
 
     document.refresh_from_db()
-    assert document.dynamic_document == NEW_DOC_JSON_PAYLOAD_EXAMPLE
+    assert document.dynamic_document == NEW_DOC_JSON_DATA

@@ -11,6 +11,19 @@ import factory
 import factory.fuzzy
 from factory.django import DjangoModelFactory
 
+BASE_EXAMPLE_DYNAMIC_DOCUMENT_JSON = {
+    "header": {"content": "header", "margin": "0", "align": "top-left"},
+    "footer": {"content": "footer", "margin": "0", "align": "top-left"},
+    "page_layout": {"margin": "1cm 0 1cm 0"},
+    "pages": [
+        {
+            "id": "id",
+            "title": "title",
+            "content": "content",
+        }
+    ],
+}
+
 
 class InvitationLetterRequestFactory(DjangoModelFactory):
     conference = factory.SubFactory(ConferenceFactory)
@@ -47,18 +60,7 @@ class InvitationLetterDocumentFactory(DjangoModelFactory):
 
 class InvitationLetterDynamicDocumentFactory(InvitationLetterDocumentFactory):
     document = None
-    dynamic_document = {
-        "header": {"content": "header", "margin": "0", "align": "top-left"},
-        "footer": {"content": "footer", "margin": "0", "align": "top-left"},
-        "page_layout": {"margin": "1cm 0 1cm 0"},
-        "pages": [
-            {
-                "id": "id",
-                "title": "title",
-                "content": "content",
-            }
-        ],
-    }
+    dynamic_document = BASE_EXAMPLE_DYNAMIC_DOCUMENT_JSON
 
     class Meta:
         model = InvitationLetterDocument

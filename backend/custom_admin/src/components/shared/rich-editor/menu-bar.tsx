@@ -18,6 +18,8 @@ import {
   Heading5,
   Heading6,
   Italic,
+  List,
+  ListOrdered,
   Redo,
   Table,
   Underline,
@@ -184,6 +186,24 @@ export const MenuBar = ({
           <Separator />
         </>
       )}
+
+      <ToolbarButton
+        tooltip="Toggle bullet list"
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        isActive={editor.isActive("bulletList")}
+      >
+        <List size={16} />
+      </ToolbarButton>
+
+      <ToolbarButton
+        tooltip="Toggle ordered list"
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        isActive={editor.isActive("orderedList")}
+      >
+        <ListOrdered size={16} />
+      </ToolbarButton>
+
+      <Separator />
 
       <ToolbarButton
         onClick={() => editor.chain().focus().undo().run()}
