@@ -291,6 +291,8 @@ export const LocalStateProvider = ({ children }) => {
   const isDirty = !equal(remoteData, localData);
   const data = localData || remoteData;
 
+  const findPage = (pageId) => data.pages.find((page) => page.id === pageId);
+
   return (
     <LocalStateContext
       value={{
@@ -301,65 +303,55 @@ export const LocalStateProvider = ({ children }) => {
             return data[pageId].content;
           }
 
-          return data.pages.find((page) => page.id === pageId).content;
+          return findPage(pageId).content;
         },
         getProperties: (pageId) => {
           if (pageId === "header" || pageId === "footer") {
             return data[pageId];
           }
 
-          const page = data.pages.find((page) => page.id === pageId);
-          return page;
+          return findPage(pageId);
         },
-        getPageLayout: () => {
-          return data.pageLayout;
-        },
-        setPageLayoutProperty: (property, value) => {
+        getPageLayout: () => data.pageLayout,
+        setPageLayoutProperty: (property, value) =>
           dispatch({
             type: ActionType.SetPageLayoutProperty,
             payload: { property, value },
-          });
-        },
+          }),
         saveChanges: () => saveChanges(localData),
-        setProperty: (pageId, property, value) => {
+        setProperty: (pageId, property, value) =>
           dispatch({
             type: ActionType.SetProperty,
             payload: { pageId, property, value },
-          });
-        },
+          }),
         isSaving,
         saveFailed,
         addPage: () => dispatch({ type: ActionType.AddPage }),
-        renamePage: (pageId, title) => {
+        renamePage: (pageId, title) =>
           dispatch({
             type: ActionType.RenamePage,
             payload: { pageId, title },
-          });
-        },
-        setContent: (pageId, content) => {
+          }),
+        setContent: (pageId, content) =>
           dispatch({
             type: ActionType.SetContent,
             payload: { pageId, content },
-          });
-        },
-        removePage: (pageId) => {
+          }),
+        removePage: (pageId) =>
           dispatch({
             type: ActionType.RemovePage,
             payload: { pageId },
-          });
-        },
-        movePageUp: (pageId) => {
+          }),
+        movePageUp: (pageId) =>
           dispatch({
             type: ActionType.MovePageUp,
             payload: { pageId },
-          });
-        },
-        movePageDown: (pageId) => {
+          }),
+        movePageDown: (pageId) =>
           dispatch({
             type: ActionType.MovePageDown,
             payload: { pageId },
-          });
-        },
+          }),
       }}
     >
       {children}
