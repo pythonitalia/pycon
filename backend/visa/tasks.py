@@ -109,18 +109,16 @@ def render_dynamic_document(dynamic_document, invitation_letter_request, config)
             "header": _render_content(
                 dynamic_document["header"]["content"], invitation_letter_request, config
             ),
-            "header_align": dynamic_document["header"]["align"],
-            "header_margin": dynamic_document["header"]["margin"],
+            "header_properties": dynamic_document["header"],
             "footer": _render_content(
                 dynamic_document["footer"]["content"], invitation_letter_request, config
             ),
-            "footer_align": dynamic_document["footer"]["align"],
-            "footer_margin": dynamic_document["footer"]["margin"],
+            "footer_properties": dynamic_document["footer"],
             "pages": [
                 _render_content(page["content"], invitation_letter_request, config)
                 for page in dynamic_document["pages"]
             ],
-            "page_layout_margin": dynamic_document["page_layout"]["margin"],
+            "page_layout": dynamic_document["page_layout"],
         },
     ).strip()
     return io.BytesIO(HTML(string=html_string).write_pdf())

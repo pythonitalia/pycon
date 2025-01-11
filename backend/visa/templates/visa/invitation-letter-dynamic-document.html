@@ -6,14 +6,14 @@
     @page {
       size: A4;
 
-      @{{header_align}} {
+      @{{header_properties.align}} {
         content: element(header);
-        margin: {{header_margin}};
+        margin: {{header_properties.margin}};
       }
 
-      @{{footer_align}} {
+      @{{footer_properties.align}} {
         content: element(footer);
-        margin: {{footer_margin}};
+        margin: {{footer_properties.margin}};
       }
     }
 
@@ -34,7 +34,7 @@
 
     div {
       break-after: page;
-      margin: {{page_layout_margin}};
+      margin: {{page_layout.margin}};
     }
 
     p {
