@@ -150,6 +150,17 @@ class InvitationLetterRequest(TimeStampedModel):
     def get_config(self):
         return self.conference.invitation_letter_config
 
+    def can_include_document(self, document):
+        if (
+            document.inclusion_policy
+            == InvitationLetterDocumentInclusionPolicy.GRANT_ACCOMMODATION
+        ):
+            return self.has_accommodation_via_grant()
+
+        return (
+            document.inclusion_policy == InvitationLetterDocumentInclusionPolicy.ALWAYS
+        )
+
     def __str__(self):
         return f"{self.full_name} - {self.conference.name}"
 
@@ -179,6 +190,11 @@ def invitation_letter_attached_document_upload_to(instance, filename):
     return f"invitation_letter_attached_documents/{instance.invitation_letter_conference_config.conference.code}/{filename}"
 
 
+class InvitationLetterDocumentInclusionPolicy(models.TextChoices):
+    ALWAYS = "ALWAYS", _("Always")
+    GRANT_ACCOMMODATION = "GRANT_ACCOMMODATION", _("Has Accommodation via grant")
+
+
 class InvitationLetterDocument(OrderedModel, TimeStampedModel):
     name = models.CharField(_("name"), max_length=300)
     invitation_letter_conference_config = models.ForeignKey(
@@ -193,6 +209,12 @@ class InvitationLetterDocument(OrderedModel, TimeStampedModel):
         storage=private_storage_getter,
         null=True,
         blank=True,
+    )
+    inclusion_policy = models.CharField(
+        _("Inclusion policy"),
+        max_length=20,
+        choices=InvitationLetterDocumentInclusionPolicy.choices,
+        default=InvitationLetterDocumentInclusionPolicy.ALWAYS,
     )
     dynamic_document = models.JSONField(_("dynamic document"), null=True, blank=True)
     order_with_respect_to = "invitation_letter_conference_config"

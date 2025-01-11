@@ -62,6 +62,9 @@ def process_invitation_letter_request(*, invitation_letter_request_id: int):
     merger = PdfWriter()
 
     for attached_document in config.attached_documents.order_by("order").all():
+        if not invitation_letter_request.can_include_document(attached_document):
+            continue
+
         if attached_document.document:
             temp_file = attached_document.document.open()
         elif attached_document.dynamic_document:
@@ -104,15 +107,18 @@ def render_dynamic_document(dynamic_document, invitation_letter_request, config)
         "visa/invitation-letter-dynamic-document.html",
         {
             "header": _render_content(
-                dynamic_document["header"], invitation_letter_request, config
+                dynamic_document["header"]["content"], invitation_letter_request, config
             ),
+            "header_properties": dynamic_document["header"],
             "footer": _render_content(
-                dynamic_document["footer"], invitation_letter_request, config
+                dynamic_document["footer"]["content"], invitation_letter_request, config
             ),
+            "footer_properties": dynamic_document["footer"],
             "pages": [
                 _render_content(page["content"], invitation_letter_request, config)
                 for page in dynamic_document["pages"]
             ],
+            "page_layout": dynamic_document["page_layout"],
         },
     ).strip()
     return io.BytesIO(HTML(string=html_string).write_pdf())
