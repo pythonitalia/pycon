@@ -15,7 +15,7 @@ export const Pages = () => {
     <Card>
       <Heading>Pages</Heading>
 
-      <Spacer size={1} />
+      <Spacer />
 
       <PageLayoutOptions />
 
@@ -28,7 +28,7 @@ export const Pages = () => {
         </Fragment>
       ))}
 
-      <Spacer size={2} />
+      <Spacer />
 
       <Button variant="soft" onClick={addPage}>
         <Plus size={16} />

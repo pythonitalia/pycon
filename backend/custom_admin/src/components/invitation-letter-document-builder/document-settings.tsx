@@ -10,7 +10,7 @@ export const DocumentSettings = () => {
 
       <Text>Header and footer are shared across all pages.</Text>
 
-      <Spacer size={5} />
+      <Spacer />
 
       <EditorSection title="Header" pageId="header" />
       <Spacer size={5} />
