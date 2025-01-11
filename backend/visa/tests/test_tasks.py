@@ -123,7 +123,7 @@ def test_process_invitation_letter_request(requests_mock, mock_ticket_present):
     [None, Grant.ApprovedType.ticket_only, Grant.ApprovedType.ticket_travel],
 )
 @override_settings(PRETIX_API="https://pretix/api/")
-def test_process_invitation_letter_request_skips_docs_with_no_accommodation(
+def test_process_invitation_letter_request_accomodation_doc_with_no_accommodation(
     mock_ticket_present, grant_approved_type
 ):
     config = InvitationLetterConferenceConfigFactory()
