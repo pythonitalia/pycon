@@ -1,3 +1,4 @@
+from conferences.tests.factories import ConferenceFactory
 from pytest import mark
 
 from i18n.strings import LazyI18nString
@@ -31,13 +32,15 @@ def test_query_pages(
     rf,
     graphql_client,
 ):
-    PageFactory(published=False, conference__code="pycon11")
-    PageFactory(published=True, conference__code="pycon10")
-    page = PageFactory(published=True, conference__code="pycon11")
+    conference_1 = ConferenceFactory(code="pycon11")
+    conference_2 = ConferenceFactory(code="pycon10")
+    PageFactory(published=False, conference=conference_1)
+    PageFactory(published=True, conference=conference_2)
+    page = PageFactory(published=True, conference=conference_1)
 
     request = rf.get("/")
 
-    resp = _query_pages(graphql_client, conference_code="pycon11")
+    resp = _query_pages(graphql_client, conference_code=conference_1.code)
 
     assert not resp.get("errors")
 

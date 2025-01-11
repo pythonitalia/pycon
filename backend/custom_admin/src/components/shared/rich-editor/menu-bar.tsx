@@ -18,7 +18,10 @@ import {
   Heading5,
   Heading6,
   Italic,
+  List,
+  ListOrdered,
   Redo,
+  Table,
   Underline,
   Undo,
 } from "lucide-react";
@@ -28,6 +31,7 @@ import { ToolbarButton } from "./toolbar-button";
 export enum HideNode {
   buttonNode = 0,
   link = 1,
+  table = 2,
 }
 
 const HEADING_ICONS = {
@@ -161,6 +165,43 @@ export const MenuBar = ({
           </ToolbarButton>
         );
       })}
+
+      <Separator />
+
+      {!hide.includes(HideNode.table) && (
+        <>
+          <ToolbarButton
+            onClick={() =>
+              editor.commands.insertTable({
+                rows: 2,
+                cols: 3,
+                withHeaderRow: false,
+              })
+            }
+            isActive={editor.isActive("table")}
+            tooltip="Insert Table"
+          >
+            <Table size={16} />
+          </ToolbarButton>
+          <Separator />
+        </>
+      )}
+
+      <ToolbarButton
+        tooltip="Toggle bullet list"
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        isActive={editor.isActive("bulletList")}
+      >
+        <List size={16} />
+      </ToolbarButton>
+
+      <ToolbarButton
+        tooltip="Toggle ordered list"
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        isActive={editor.isActive("orderedList")}
+      >
+        <ListOrdered size={16} />
+      </ToolbarButton>
 
       <Separator />
 

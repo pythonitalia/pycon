@@ -18,6 +18,7 @@ from visa.models import (
     InvitationLetterDocument,
     InvitationLetterConferenceConfig,
     InvitationLetterRequest,
+    InvitationLetterRequestStatus,
 )
 
 
@@ -90,9 +91,10 @@ class InvitationLetterRequestAdmin(admin.ModelAdmin):
         if not pretix_api.has_attendee_ticket(obj.email):
             return "No attendee ticket found! Can't generate invitation letter."
 
-        return mark_safe(
-            '<input type="submit" name="_process_now" value="Process now" />'
-        )
+        process_again = obj.status != InvitationLetterRequestStatus.PENDING
+        copy = "Process now" if not process_again else "Process again"
+
+        return mark_safe(f'<input type="submit" name="_process_now" value="{copy}" />')
 
     def send_via_email(self, obj):
         if not obj.invitation_letter:
@@ -104,6 +106,8 @@ class InvitationLetterRequestAdmin(admin.ModelAdmin):
 
     def response_post_save_change(self, request, obj):
         if "_process_now" in request.POST:
+            obj.status = InvitationLetterRequestStatus.PENDING
+            obj.save(update_fields=["status"])
             return HttpResponseRedirect(
                 reverse("admin:visa_invitationletterrequest_change", args=[obj.id])
             )
@@ -127,6 +131,7 @@ class InvitationLetterDocumentInline(OrderedTabularInline):
         "name",
         "document",
         "edit_dynamic_document",
+        "inclusion_policy",
         "order",
         "move_up_down_links",
     )

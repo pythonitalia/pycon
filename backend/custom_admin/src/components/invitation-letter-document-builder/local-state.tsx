@@ -6,34 +6,64 @@ import { useUpdateInvitationLetterDocumentMutation } from "./update-invitation-l
 import { createContext } from "react";
 import { useArgs } from "../shared/args";
 
+type Properties = {
+  align?: string;
+  title?: string;
+  margin?: string;
+  content: string;
+};
+
+type RunningElement = {
+  content: string;
+  align: string;
+  margin: string;
+};
+
+type Page = {
+  id: string;
+  title: string;
+  content: string;
+};
+
 type State = {
-  header: string;
-  footer: string;
-  pages: {
-    id: string;
-    title: string;
-    content: string;
-  }[];
+  pageLayout: PageLayout;
+  header: RunningElement;
+  footer: RunningElement;
+  pages: Page[];
+};
+
+type PageLayout = {
+  margin: string;
 };
 
 export const LocalStateContext = createContext<{
-  localData: State;
   saveChanges: () => void;
   isSaving: boolean;
   saveFailed: boolean;
   addPage: () => void;
+  getPageLayout: () => PageLayout;
+  setPageLayoutProperty: (property: string, value: string) => void;
+  getProperties: (pageId: string) => Properties;
+  setProperty: (pageId: string, property: string, value: string) => void;
+  getContent: (pageId: string) => string;
   setContent: (pageId: string, content: string) => void;
   removePage: (pageId: string) => void;
   movePageUp: (pageId: string) => void;
   movePageDown: (pageId: string) => void;
   renamePage: (pageId: string, title: string) => void;
+  getPages: () => Page[];
   isDirty: boolean;
 }>({
-  localData: null,
   saveChanges: () => {},
   isSaving: false,
   saveFailed: false,
+  getPages: () => [],
   addPage: () => {},
+  getProperties: () => null,
+  getPageLayout: () => null,
+  setPageLayoutProperty: () => {},
+  setProperty: () => {},
+  getContent: () => "",
   setContent: () => {},
   removePage: () => {},
   movePageUp: () => {},
@@ -50,6 +80,8 @@ enum ActionType {
   MovePageUp = "MOVE_PAGE_UP",
   MovePageDown = "MOVE_PAGE_DOWN",
   RenamePage = "RENAME_PAGE",
+  SetProperty = "SET_PROPERTY",
+  SetPageLayoutProperty = "SET_PAGE_LAYOUT_PROPERTY",
 }
 
 const reducer = (state: State, action) => {
@@ -86,7 +118,10 @@ const reducer = (state: State, action) => {
       if (pageId === "header" || pageId === "footer") {
         return {
           ...state,
-          [pageId]: content,
+          [pageId]: {
+            ...state[pageId],
+            content,
+          },
         };
       }
 
@@ -145,6 +180,36 @@ const reducer = (state: State, action) => {
         ),
       };
     }
+    case ActionType.SetProperty: {
+      const { pageId, property, value } = action.payload;
+
+      if (pageId === "header" || pageId === "footer") {
+        return {
+          ...state,
+          [pageId]: {
+            ...state[pageId],
+            [property]: value,
+          },
+        };
+      }
+
+      return {
+        ...state,
+        pages: state.pages.map((page) =>
+          page.id === pageId ? { ...page, [property]: value } : page,
+        ),
+      };
+    }
+    case ActionType.SetPageLayoutProperty: {
+      const { property, value } = action.payload;
+      return {
+        ...state,
+        pageLayout: {
+          ...state.pageLayout,
+          [property]: value,
+        },
+      };
+    }
   }
   return state;
 };
@@ -189,9 +254,10 @@ const useLoadRemoteData = (dispatch) => {
     });
   }, [data]);
 
-  const remoteData = useMemo(() => {
-    return removeTypenames(data?.invitationLetterDocument.dynamicDocument);
-  }, [data]);
+  const remoteData = useMemo(
+    () => removeTypenames(data?.invitationLetterDocument.dynamicDocument),
+    [data],
+  );
 
   return remoteData;
 };
@@ -223,49 +289,72 @@ export const LocalStateProvider = ({ children }) => {
   const [saveChanges, isSaving, saveFailed] = useSaveRemoteData();
 
   const isDirty = !equal(remoteData, localData);
+  const data = localData || remoteData;
+
+  const findPage = (pageId) => data.pages.find((page) => page.id === pageId);
 
   return (
-    <LocalStateContext.Provider
+    <LocalStateContext
       value={{
-        localData: localData || remoteData,
         isDirty,
+        getPages: () => data.pages,
+        getContent: (pageId) => {
+          if (pageId === "header" || pageId === "footer") {
+            return data[pageId].content;
+          }
+
+          return findPage(pageId).content;
+        },
+        getProperties: (pageId) => {
+          if (pageId === "header" || pageId === "footer") {
+            return data[pageId];
+          }
+
+          return findPage(pageId);
+        },
+        getPageLayout: () => data.pageLayout,
+        setPageLayoutProperty: (property, value) =>
+          dispatch({
+            type: ActionType.SetPageLayoutProperty,
+            payload: { property, value },
+          }),
         saveChanges: () => saveChanges(localData),
+        setProperty: (pageId, property, value) =>
+          dispatch({
+            type: ActionType.SetProperty,
+            payload: { pageId, property, value },
+          }),
         isSaving,
         saveFailed,
         addPage: () => dispatch({ type: ActionType.AddPage }),
-        renamePage: (pageId, title) => {
+        renamePage: (pageId, title) =>
           dispatch({
             type: ActionType.RenamePage,
             payload: { pageId, title },
-          });
-        },
-        setContent: (pageId, content) => {
+          }),
+        setContent: (pageId, content) =>
           dispatch({
             type: ActionType.SetContent,
             payload: { pageId, content },
-          });
-        },
-        removePage: (pageId) => {
+          }),
+        removePage: (pageId) =>
           dispatch({
             type: ActionType.RemovePage,
             payload: { pageId },
-          });
-        },
-        movePageUp: (pageId) => {
+          }),
+        movePageUp: (pageId) =>
           dispatch({
             type: ActionType.MovePageUp,
             payload: { pageId },
-          });
-        },
-        movePageDown: (pageId) => {
+          }),
+        movePageDown: (pageId) =>
           dispatch({
             type: ActionType.MovePageDown,
             payload: { pageId },
-          });
-        },
+          }),
       }}
     >
       {children}
-    </LocalStateContext.Provider>
+    </LocalStateContext>
   );
 };

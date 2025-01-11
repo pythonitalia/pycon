@@ -5,8 +5,19 @@ mutation UpdateInvitationLetterDocument(
     ... on InvitationLetterDocument {
       id
       dynamicDocument {
-        header
-        footer
+        header {
+          content
+          align
+          margin
+        }
+        footer {
+          content
+          align
+          margin
+        }
+        pageLayout {
+          margin
+        }
         pages {
           id
           title

@@ -55,16 +55,50 @@ class InvitationLetterDocumentPage:
 
 
 @strawberry.type
+class InvitationLetterDocumentRunningPart:
+    content: str
+    align: str
+    margin: str
+
+    @classmethod
+    def from_object(cls, obj: dict):
+        return cls(
+            content=obj.get("content", ""),
+            align=obj.get("align", ""),
+            margin=obj.get("margin", ""),
+        )
+
+
+@strawberry.type
+class InvitationLetterDocumentPageLayout:
+    margin: str
+
+    @classmethod
+    def from_object(cls, obj: dict):
+        return cls(
+            margin=obj.get("margin", ""),
+        )
+
+
+@strawberry.type
 class InvitationLetterDocumentStructure:
-    header: str
-    footer: str
+    header: InvitationLetterDocumentRunningPart
+    footer: InvitationLetterDocumentRunningPart
+    page_layout: InvitationLetterDocumentPageLayout
     pages: list[InvitationLetterDocumentPage]
 
     @classmethod
     def from_object(cls, obj: dict):
         return cls(
-            header=obj.get("header", ""),
-            footer=obj.get("footer", ""),
+            header=InvitationLetterDocumentRunningPart.from_object(
+                obj.get("header", {})
+            ),
+            footer=InvitationLetterDocumentRunningPart.from_object(
+                obj.get("footer", {})
+            ),
+            page_layout=InvitationLetterDocumentPageLayout.from_object(
+                obj.get("page_layout", {})
+            ),
             pages=[
                 InvitationLetterDocumentPage.from_object(page)
                 for page in obj.get("pages", [])

@@ -16,9 +16,22 @@ class UpdateInvitationLetterDocumentPageInput:
 
 
 @strawberry.input
+class UpdateInvitationLetterDocumentRunningPartInput:
+    content: str
+    align: str
+    margin: str
+
+
+@strawberry.input
+class UpdateInvitationLetterDocumentPageLayoutInput:
+    margin: str
+
+
+@strawberry.input
 class UpdateInvitationLetterDocumentStructureInput:
-    header: str
-    footer: str
+    header: UpdateInvitationLetterDocumentRunningPartInput
+    footer: UpdateInvitationLetterDocumentRunningPartInput
+    page_layout: UpdateInvitationLetterDocumentPageLayoutInput
     pages: list[UpdateInvitationLetterDocumentPageInput]
 
 
@@ -29,12 +42,12 @@ class UpdateInvitationLetterDocumentInput:
 
 
 @strawberry.type
-class InvitationLetterNotEditable:
+class InvitationLetterDocumentNotEditable:
     message: str = "Invitation letter document is not editable"
 
 
 UpdateInvitationLetterDocumentResult = Annotated[
-    InvitationLetterDocument | InvitationLetterNotEditable | NotFound,
+    InvitationLetterDocument | InvitationLetterDocumentNotEditable | NotFound,
     strawberry.union(name="UpdateInvitationLetterDocumentResult"),
 ]
 
@@ -51,16 +64,19 @@ def update_invitation_letter_document(
         return NotFound()
 
     if invitation_letter_document.document:
-        return InvitationLetterNotEditable()
+        return InvitationLetterDocumentNotEditable()
 
-    invitation_letter_document.dynamic_document = strawberry.asdict(
-        input.dynamic_document
-    )
-    invitation_letter_document.save(update_fields=["dynamic_document"])
+    new_document_data = strawberry.asdict(input.dynamic_document)
+    if invitation_letter_document.dynamic_document != new_document_data:
+        invitation_letter_document.dynamic_document = new_document_data
+        invitation_letter_document.save(update_fields=["dynamic_document"])
 
-    create_change_admin_log_entry(
-        info.context.request.user,
-        invitation_letter_document,
-        change_message="Invitation letter document updated",
-    )
+        config = invitation_letter_document.invitation_letter_conference_config
+
+        create_change_admin_log_entry(
+            info.context.request.user,
+            config,
+            change_message=f"Updated the content of dynamic document {invitation_letter_document.name}",
+        )
+
     return InvitationLetterDocument.from_model(invitation_letter_document)
