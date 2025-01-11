@@ -45,6 +45,25 @@ class InvitationLetterDocumentFactory(DjangoModelFactory):
         model = InvitationLetterDocument
 
 
+class InvitationLetterDynamicDocumentFactory(InvitationLetterDocumentFactory):
+    document = None
+    dynamic_document = {
+        "header": {"content": "header", "margin": "0", "align": "top-left"},
+        "footer": {"content": "footer", "margin": "0", "align": "top-left"},
+        "page_layout": {"margin": "1cm 0 1cm 0"},
+        "pages": [
+            {
+                "id": "id",
+                "title": "title",
+                "content": "content",
+            }
+        ],
+    }
+
+    class Meta:
+        model = InvitationLetterDocument
+
+
 class InvitationLetterAssetFactory(DjangoModelFactory):
     invitation_letter_conference_config = factory.SubFactory(
         InvitationLetterConferenceConfigFactory
