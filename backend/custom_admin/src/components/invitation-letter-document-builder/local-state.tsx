@@ -13,23 +13,23 @@ type Properties = {
   content: string;
 };
 
+type RunningElement = {
+  content: string;
+  align: string;
+  margin: string;
+};
+
+type Page = {
+  id: string;
+  title: string;
+  content: string;
+};
+
 type State = {
   pageLayout: PageLayout;
-  header: {
-    content: string;
-    align: string;
-    margin: string;
-  };
-  footer: {
-    content: string;
-    align: string;
-    margin: string;
-  };
-  pages: {
-    id: string;
-    title: string;
-    content: string;
-  }[];
+  header: RunningElement;
+  footer: RunningElement;
+  pages: Page[];
 };
 
 type PageLayout = {
@@ -37,7 +37,6 @@ type PageLayout = {
 };
 
 export const LocalStateContext = createContext<{
-  localData: State;
   saveChanges: () => void;
   isSaving: boolean;
   saveFailed: boolean;
@@ -52,12 +51,13 @@ export const LocalStateContext = createContext<{
   movePageUp: (pageId: string) => void;
   movePageDown: (pageId: string) => void;
   renamePage: (pageId: string, title: string) => void;
+  getPages: () => Page[];
   isDirty: boolean;
 }>({
-  localData: null,
   saveChanges: () => {},
   isSaving: false,
   saveFailed: false,
+  getPages: () => [],
   addPage: () => {},
   getProperties: () => null,
   getPageLayout: () => null,
@@ -294,8 +294,8 @@ export const LocalStateProvider = ({ children }) => {
   return (
     <LocalStateContext
       value={{
-        localData: data,
         isDirty,
+        getPages: () => data.pages,
         getContent: (pageId) => {
           if (pageId === "header" || pageId === "footer") {
             return data[pageId].content;

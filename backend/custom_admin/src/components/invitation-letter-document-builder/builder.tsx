@@ -1,14 +1,13 @@
-import { Button, Card, Heading, Text } from "@radix-ui/themes";
+import { Button } from "@radix-ui/themes";
 import { Box } from "@radix-ui/themes";
-import { Plus } from "lucide-react";
-import { Fragment, useEffect } from "react";
+import { useEffect } from "react";
 
-import { EditorSection } from "./editor-section";
+import { DocumentSettings } from "./document-settings";
 import { useLocalData } from "./local-state";
-import { PageLayoutOptions } from "./page-layout-option";
+import { Pages } from "./pages";
 
 export const InvitationLetterBuilder = () => {
-  const { isDirty, localData, saveChanges, isSaving, addPage } = useLocalData();
+  const { isDirty, saveChanges, isSaving } = useLocalData();
 
   useEffect(() => {
     const listener = (e) => {
@@ -31,42 +30,11 @@ export const InvitationLetterBuilder = () => {
     <>
       <Box height="var(--space-3)" />
 
-      <Card>
-        <Heading as="h1">Document</Heading>
-        <Box height="var(--space-2)" />
-        <Text>Header and footer are shared across all pages.</Text>
-
-        <Box height="var(--space-5)" />
-
-        <EditorSection title="Header" pageId="header" />
-        <Box height="var(--space-5)" />
-
-        <EditorSection title="Footer" pageId="footer" />
-      </Card>
+      <DocumentSettings />
 
       <Box height="var(--space-5)" />
 
-      <Card>
-        <Heading>Pages</Heading>
-        <Box height="var(--space-1)" />
-
-        <PageLayoutOptions />
-
-        <Box height="var(--space-5)" />
-
-        {localData.pages.map((page) => (
-          <Fragment key={page.id}>
-            <EditorSection title={page.title} pageId={page.id} />
-            <Box height="var(--space-3)" />
-          </Fragment>
-        ))}
-
-        <Box height="var(--space-2)" />
-        <Button variant="soft" onClick={addPage}>
-          <Plus size={16} />
-          Add Page
-        </Button>
-      </Card>
+      <Pages />
 
       <Box height="var(--space-3)" />
       <Box position="sticky" bottom="0" p="3" className="bg-white">
