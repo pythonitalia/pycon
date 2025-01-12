@@ -1,6 +1,4 @@
-# v2024.10.0
-ARG PRETIX_IMAGE
-FROM ${PRETIX_IMAGE}
+FROM ghcr.io/pythonitalia/pycon/base-pretix:v2024.10.0
 
 COPY ./settings.py /pretix/src/production_settings.py
 
