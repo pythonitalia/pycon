@@ -144,20 +144,20 @@ jobs:
         with:
           ref: ${{ github.ref }}
           fetch-depth: 0
-      - uses: hashicorp/setup-terraform@v3
+      - uses: opentofu/setup-opentofu@v1
         with:
-          terraform_version: 1.2.4
-      - name: Terraform Init
-        run: terraform init
+          tofu_version: 1.9.0
+      - name: OpenTofu Init
+        run: tofu init
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - name: Terraform Validate
+      - name: OpenTofu Validate
         id: validate
-        run: terraform validate -no-color
-      - name: Terraform apply
-        run: terraform apply -target module.pretix -target module.pycon_backend -target module.clamav -target module.database -target module.emails -target module.cluster -target module.vpc -no-color -auto-approve &> /dev/null
+        run: tofu validate -no-color
+      - name: OpenTofu apply
+        run: tofu apply -exclude module.pycon_frontend -no-color -auto-approve &> /dev/null
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -205,20 +205,20 @@ jobs:
         with:
           ref: ${{ github.ref }}
           fetch-depth: 0
-      - uses: hashicorp/setup-terraform@v3
+      - uses: opentofu/setup-opentofu@v1
         with:
-          terraform_version: 1.2.4
-      - name: Terraform Init
-        run: terraform init
+          tofu_version: 1.9.0
+      - name: OpenTofu Init
+        run: tofu init
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - name: Terraform Validate
+      - name: OpenTofu Validate
         id: validate
-        run: terraform validate -no-color
-      - name: Terraform apply
-        run: terraform apply -no-color -auto-approve &> /dev/null
+        run: tofu validate -no-color
+      - name: OpenTofu apply
+        run: tofu apply -no-color -auto-approve &> /dev/null
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
