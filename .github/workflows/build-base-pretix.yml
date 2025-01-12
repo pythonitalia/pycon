@@ -39,7 +39,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           provenance: false
           push: true
-          tags: ghcr.io/pythonitalia/pycon/arm-pretix:${{ inputs.version }}
+          tags: ghcr.io/pythonitalia/pycon/base-pretix:${{ inputs.version }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           platforms: linux/arm64
