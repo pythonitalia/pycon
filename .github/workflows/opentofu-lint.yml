@@ -4,7 +4,7 @@ on:
       - "infrastructure/applications/**/*"
       - "infrastructure/applications/*"
 
-name: Terraform Lint
+name: OpenTofu Lint
 
 env:
   TF_WORKSPACE: "production"
@@ -31,11 +31,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v3
+      - uses: opentofu/setup-opentofu@v1
         with:
-          terraform_version: 1.2.4
-      - name: Terraform Format
+          tofu_version: 1.9.0
+      - name: OpenTofu Format
         id: fmt
-        run: terraform fmt -check
+        run: tofu fmt -check
         env:
           TF_IN_AUTOMATION: 1
