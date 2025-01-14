@@ -1,7 +1,7 @@
-import random
 from api.context import Info
 from api.submissions.permissions import CanSeeSubmissionRestrictedFields
 
+from pycon.db_utils import set_seed
 import strawberry
 
 from api.permissions import CanSeeSubmissions, IsAuthenticated
@@ -96,14 +96,11 @@ class SubmissionsQuery:
         if audience_levels:
             qs = qs.filter(audience_level__id__in=audience_levels)
 
-        qs = qs.distinct()
-        total_items = qs.count()
+        with set_seed(info.context.request.user):
+            qs = qs.order_by("?").distinct()
 
-        # Randomize the order of the submissions
-        user = info.context.request.user
-
-        submissions = list(qs[(page - 1) * page_size : page * page_size])
-        random.Random(user.id).shuffle(submissions)
+            total_items = qs.count()
+            submissions = list(qs[(page - 1) * page_size : page * page_size])
 
         info.context._my_votes = {
             vote.submission_id: vote
