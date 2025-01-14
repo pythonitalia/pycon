@@ -96,7 +96,7 @@ class SubmissionsQuery:
         if audience_levels:
             qs = qs.filter(audience_level__id__in=audience_levels)
 
-        with set_seed(info.context.request.user):
+        with set_seed(info.context.request.user.id):
             qs = qs.order_by("?").distinct()
 
             total_items = qs.count()
