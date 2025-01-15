@@ -87,14 +87,14 @@ def test_returns_submissions_paginated(graphql_client, user):
     )
 
     assert not resp.get("errors")
-    assert resp["data"]["submissions"]["items"] == [{"id": submission.hashid}]
+    assert resp["data"]["submissions"]["items"] == [{"id": submission_2.hashid}]
     assert resp["data"]["submissions"]["pageInfo"] == {"totalPages": 2, "totalItems": 2}
 
     resp_2 = graphql_client.query(
         query,
         variables={"code": submission.conference.code, "page": 2},
     )
-    assert resp_2["data"]["submissions"]["items"] == [{"id": submission_2.hashid}]
+    assert resp_2["data"]["submissions"]["items"] == [{"id": submission.hashid}]
 
 
 def test_canceled_submissions_are_excluded(graphql_client, user, mock_has_ticket):
