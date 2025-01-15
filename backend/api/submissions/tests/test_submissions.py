@@ -1,9 +1,67 @@
+from submissions.models import Submission
+from users.tests.factories import UserFactory
 from voting.tests.factories.vote import VoteFactory
 from conferences.tests.factories import ConferenceFactory
 from submissions.tests.factories import SubmissionFactory
 import pytest
 
 pytestmark = pytest.mark.django_db
+
+
+def test_submissions_are_random_by_user(graphql_client, mock_has_ticket):
+    user_1 = UserFactory(id=100)
+    user_2 = UserFactory(id=103)
+    user_3 = UserFactory(id=104)
+
+    graphql_client.force_login(user_1)
+
+    submission = SubmissionFactory(id=1)
+    submission_2 = SubmissionFactory(id=2, conference=submission.conference)
+    submission_3 = SubmissionFactory(id=3, conference=submission.conference)
+
+    mock_has_ticket(submission.conference)
+
+    query = """query Submissions($code: String!, $page: Int) {
+        submissions(code: $code, page: $page, pageSize: 1) {
+            pageInfo {
+                totalPages
+                totalItems
+            }
+            items {
+                id
+            }
+        }
+    }"""
+
+    data_proposals = {
+        user_1: [
+            {"id": submission_3.hashid},
+            {"id": submission_2.hashid},
+            {"id": submission.hashid},
+        ],
+        user_2: [
+            {"id": submission.hashid},
+            {"id": submission_2.hashid},
+            {"id": submission_3.hashid},
+        ],
+        user_3: [
+            {"id": submission_2.hashid},
+            {"id": submission_3.hashid},
+            {"id": submission.hashid},
+        ],
+    }
+
+    for user in [user_1, user_2, user_3]:
+        graphql_client.force_login(user)
+
+        for page in range(3):
+            resp = graphql_client.query(
+                query,
+                variables={"code": submission.conference.code, "page": page + 1},
+            )
+
+            assert not resp.get("errors")
+            assert resp["data"]["submissions"]["items"] == [data_proposals[user][page]]
 
 
 def test_returns_submissions_paginated(graphql_client, user):
@@ -29,14 +87,44 @@ def test_returns_submissions_paginated(graphql_client, user):
     )
 
     assert not resp.get("errors")
-    assert resp["data"]["submissions"]["items"] == [{"id": submission.hashid}]
+    assert resp["data"]["submissions"]["items"] == [{"id": submission_2.hashid}]
     assert resp["data"]["submissions"]["pageInfo"] == {"totalPages": 2, "totalItems": 2}
 
     resp_2 = graphql_client.query(
         query,
         variables={"code": submission.conference.code, "page": 2},
     )
-    assert resp_2["data"]["submissions"]["items"] == [{"id": submission_2.hashid}]
+    assert resp_2["data"]["submissions"]["items"] == [{"id": submission.hashid}]
+
+
+def test_canceled_submissions_are_excluded(graphql_client, user, mock_has_ticket):
+    graphql_client.force_login(user)
+
+    submission = SubmissionFactory()
+    SubmissionFactory(
+        status=Submission.STATUS.cancelled, conference=submission.conference
+    )
+    mock_has_ticket(submission.conference)
+
+    query = """query Submissions($code: String!, $page: Int) {
+        submissions(code: $code, page: $page, pageSize: 10) {
+            pageInfo {
+                totalPages
+                totalItems
+            }
+            items {
+                id
+            }
+        }
+    }"""
+    resp = graphql_client.query(
+        query,
+        variables={"code": submission.conference.code},
+    )
+
+    assert not resp.get("errors")
+    assert resp["data"]["submissions"]["items"] == [{"id": submission.hashid}]
+    assert resp["data"]["submissions"]["pageInfo"] == {"totalPages": 1, "totalItems": 1}
 
 
 def test_page_size_cannot_be_less_than_1(graphql_client, user):

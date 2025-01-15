@@ -57,6 +57,7 @@ class SubmissionsQuery:
             raise ValueError("Page must be greater than 0")
 
         request = info.context.request
+        user = request.user
         conference = ConferenceModel.objects.filter(code=code).first()
 
         if not conference or not CanSeeSubmissions().has_permission(conference, info):
@@ -64,18 +65,14 @@ class SubmissionsQuery:
 
         info.context._user_can_vote = True
 
-        qs = (
-            conference.submissions.prefetch_related(
-                "type",
-                "duration",
-                "schedule_items",
-                "languages",
-                "audience_level",
-                "tags",
-            )
-            .order_by("id")
-            .filter(status=SubmissionModel.STATUS.proposed)
-        )
+        qs = conference.submissions.prefetch_related(
+            "type",
+            "duration",
+            "schedule_items",
+            "languages",
+            "audience_level",
+            "tags",
+        ).filter(status=SubmissionModel.STATUS.proposed)
 
         if languages:
             qs = qs.filter(languages__code__in=languages)
@@ -84,11 +81,9 @@ class SubmissionsQuery:
             qs = qs.filter(tags__id__in=tags)
 
         if voted:
-            qs = qs.filter(votes__user_id=request.user.id)
+            qs = qs.filter(votes__user_id=user.id)
         elif voted is not None:
-            qs = qs.exclude(
-                id__in=[s.id for s in qs.filter(votes__user_id=request.user.id)]
-            )
+            qs = qs.exclude(id__in=[s.id for s in qs.filter(votes__user_id=user.id)])
 
         if types:
             qs = qs.filter(type__id__in=types)
@@ -96,20 +91,17 @@ class SubmissionsQuery:
         if audience_levels:
             qs = qs.filter(audience_level__id__in=audience_levels)
 
-        qs = qs.distinct()
-        total_items = qs.count()
+        qs = qs.order_by("id").distinct()
 
-        # Randomize the order of the submissions
-        user = info.context.request.user
+        all_submissions = list(qs)
+        random.Random(user.id).shuffle(all_submissions)
 
-        submissions = list(qs[(page - 1) * page_size : page * page_size])
-        random.Random(user.id).shuffle(submissions)
+        total_items = len(all_submissions)
+        submissions = list(all_submissions[(page - 1) * page_size : page * page_size])
 
         info.context._my_votes = {
             vote.submission_id: vote
-            for vote in Vote.objects.filter(
-                user_id=request.user.id, submission__in=submissions
-            )
+            for vote in Vote.objects.filter(user_id=user.id, submission__in=submissions)
         }
 
         return Paginated.paginate_list(
