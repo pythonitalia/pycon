@@ -22,7 +22,7 @@ def test_submissions_are_random_by_user(graphql_client, mock_has_ticket):
     mock_has_ticket(submission.conference)
 
     query = """query Submissions($code: String!, $page: Int) {
-        submissions(code: $code, page: $page, pageSize: 10) {
+        submissions(code: $code, page: $page, pageSize: 1) {
             pageInfo {
                 totalPages
                 totalItems
@@ -33,44 +33,35 @@ def test_submissions_are_random_by_user(graphql_client, mock_has_ticket):
         }
     }"""
 
-    resp = graphql_client.query(
-        query,
-        variables={"code": submission.conference.code},
-    )
+    data_proposals = {
+        user_1: [
+            {"id": submission_3.hashid},
+            {"id": submission_2.hashid},
+            {"id": submission.hashid},
+        ],
+        user_2: [
+            {"id": submission.hashid},
+            {"id": submission_2.hashid},
+            {"id": submission_3.hashid},
+        ],
+        user_3: [
+            {"id": submission_2.hashid},
+            {"id": submission_3.hashid},
+            {"id": submission.hashid},
+        ],
+    }
 
-    assert not resp.get("errors")
+    for user in [user_1, user_2, user_3]:
+        graphql_client.force_login(user)
 
-    assert resp["data"]["submissions"]["items"] == [
-        {"id": submission_3.hashid},
-        {"id": submission_2.hashid},
-        {"id": submission.hashid},
-    ]
+        for page in range(3):
+            resp = graphql_client.query(
+                query,
+                variables={"code": submission.conference.code, "page": page + 1},
+            )
 
-    graphql_client.force_login(user_2)
-
-    resp = graphql_client.query(
-        query,
-        variables={"code": submission.conference.code},
-    )
-
-    assert resp["data"]["submissions"]["items"] == [
-        {"id": submission.hashid},
-        {"id": submission_2.hashid},
-        {"id": submission_3.hashid},
-    ]
-
-    graphql_client.force_login(user_3)
-
-    resp = graphql_client.query(
-        query,
-        variables={"code": submission.conference.code},
-    )
-
-    assert resp["data"]["submissions"]["items"] == [
-        {"id": submission_2.hashid},
-        {"id": submission_3.hashid},
-        {"id": submission.hashid},
-    ]
+            assert not resp.get("errors")
+            assert resp["data"]["submissions"]["items"] == [data_proposals[user][page]]
 
 
 def test_returns_submissions_paginated(graphql_client, user):
