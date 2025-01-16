@@ -2,10 +2,20 @@
 
 {% block extrastyle %}
     <link rel="stylesheet" href="{% static "admin/css/forms.css" %}">
+    <style>
+      .participant-info .form-row {
+        display: grid;
+        grid-template-columns: auto 1fr;
+      }
+      .participant-info .form-row a {
+        display: flex;
+        gap: 5px;
+      }
+    </style>
 {% endblock %}
 
 {% if participant %}
-<fieldset class="module aligned ">
+<fieldset class="module aligned participant-info">
   <h2>{{ title }}</h2>
 
   <div class="form-row">

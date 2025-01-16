@@ -192,24 +192,6 @@ window.addEventListener('load', function() {
     <div>{{speaker.fullname}}</div>
   </div>
   <div class="review-row">
-    <strong>Country</strong>
-    <div>{{speaker.country | countryname}}</div>
-  </div>
-  <div class="review-row">
-    <strong>Speaker Experience</strong>
-    <div>{{participant.get_speaker_level_display}}</div>
-  </div>
-  <div class="review-row">
-    <strong>Previous Talk Video</strong>
-    <div>
-      {% if participant.previous_talk_video %}
-        <a target="_blank" rel="noreferrer noopener" href="{{participant.previous_talk_video}}">
-          {{participant.previous_talk_video}}
-        </a>
-      {% endif %}
-    </div>
-  </div>
-  <div class="review-row">
     <strong>Requested a grant?</strong>
     {% if grant %}
     <div>
@@ -230,13 +212,21 @@ window.addEventListener('load', function() {
   </div>
   {% endif %}
   <div class="review-row">
-    <strong>Bio</strong>
-    <div>{{participant.bio|linebreaksbr}}</div>
+    <strong>Country</strong>
+    <div>{{speaker.country | countryname}}</div>
   </div>
   <div class="review-row">
-    <strong>Participant Info</strong>
+    <strong>Speaker Experience</strong>
+    <div>{{participant.get_speaker_level_display}}</div>
+  </div>
+  <div class="review-row">
+    <strong>Previous Talk Video</strong>
     <div>
-      <a href="{% url 'admin:participants_participant_change' participant.id %}" target="_blank">Open Participant in admin</a>
+      {% if participant.previous_talk_video %}
+        <a target="_blank" rel="noreferrer noopener" href="{{participant.previous_talk_video}}">
+          {{participant.previous_talk_video}}
+        </a>
+      {% endif %}
     </div>
   </div>
 </fieldset>
