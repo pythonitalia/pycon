@@ -16,10 +16,12 @@
     </a>
   </div>
 
+  {% if participant.photo_file_id %}
   <div class="form-row">
     <label>Avatar</label>
-    <img src="{{participant.photo}}" style="object-fit: contain;" width="200" height="200" />
+    <img src="{{participant.photo_file.url}}" style="object-fit: contain;" width="200" height="200" />
   </div>
+  {% endif %}
 
   <div class="form-row">
     <label>Bio</label>
