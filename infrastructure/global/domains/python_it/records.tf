@@ -309,7 +309,7 @@ resource "aws_route53_record" "catania_python_it_cname" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "catania.python.it"
   type    = "CNAME"
-  records = ["pythonitalia.github.io."]
+  records = ["pythoncatania.github.io."]
   ttl     = "3600"
 }
 
