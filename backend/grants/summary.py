@@ -44,10 +44,16 @@ class GrantSummary:
         speaker_status_summary = self._aggregate_data_by_speaker_status(
             filtered_grants, statuses
         )
-
+        approved_type_summary = self._aggregate_data_by_approved_type(
+            filtered_grants, statuses
+        )
         sorted_country_stats = dict(
             sorted(country_stats.items(), key=lambda x: (x[0][0], x[0][2]))
         )
+        approved_types = {
+            approved_type.value: approved_type.label
+            for approved_type in Grant.ApprovedType
+        }
 
         return dict(
             conference_id=conference_id,
@@ -64,6 +70,8 @@ class GrantSummary:
             preselected_statuses=["approved", "confirmed"],
             grant_type_summary=grant_type_summary,
             speaker_status_summary=speaker_status_summary,
+            approved_type_summary=approved_type_summary,
+            approved_types=approved_types,
         )
 
     def _aggregate_data_by_country(self, grants_by_country, statuses):
@@ -205,3 +213,27 @@ class GrantSummary:
             speaker_status_summary["confirmed_speaker"][status] += total
 
         return speaker_status_summary
+
+    def _aggregate_data_by_approved_type(self, filtered_grants, statuses):
+        """
+        Aggregates grant data by approved type and status.
+        """
+        approved_type_data = filtered_grants.values("approved_type", "status").annotate(
+            total=Count("id")
+        )
+        approved_type_summary = {
+            approved_type: {status[0]: 0 for status in statuses}
+            for approved_type in Grant.ApprovedType.values
+        }
+        approved_type_summary[None] = {
+            status[0]: 0 for status in statuses
+        }  # For unspecified genders
+
+        for data in approved_type_data:
+            approved_type = data["approved_type"]
+            status = data["status"]
+            total = data["total"]
+            approved_type_summary[approved_type][status] += total
+
+        return approved_type_summary
+
