@@ -260,6 +260,44 @@
             {% endfor %}
         </tbody>
     </table>
+    <h2>by Speaker Status</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Speaker Status</th>
+                <th></th>
+                {% for status in statuses %}
+                    <th class="status-column-{{ forloop.counter }}"
+                        {% if status.0 not in preselected_statuses %}style="display:none"{% endif %}>
+                        {{ status.1|title }}
+                    </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Proposed Speaker</td>
+                <td></td>
+                {% for status in statuses %}
+                    <td class="status-column-{{ forloop.counter }}"
+                        {% if status.0 not in preselected_statuses %}style="display:none"{% endif %}>
+                        {{ speaker_status_summary.proposed_speaker|get_item:status.0|default:"0" }}
+                    </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td>Confirmed Speaker</td>
+                <td></td>
+
+                {% for status in statuses %}
+                    <td class="status-column-{{ forloop.counter }}"
+                        {% if status.0 not in preselected_statuses %}style="display:none"{% endif %}>
+                        {{ speaker_status_summary.confirmed_speaker|get_item:status.0|default:"0" }}
+                    </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {

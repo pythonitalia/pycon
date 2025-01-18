@@ -3,6 +3,9 @@ from conferences.models.conference import Conference
 from helpers.constants import GENDERS
 from countries import countries
 from .models import Grant
+from django.db.models import Exists, OuterRef
+from submissions.models import Submission
+from schedule.models import ScheduleItem
 
 
 class GrantSummary:
@@ -38,6 +41,9 @@ class GrantSummary:
         grant_type_summary = self._aggregate_data_by_grant_type(
             filtered_grants, statuses
         )
+        speaker_status_summary = self._aggregate_data_by_speaker_status(
+            filtered_grants, statuses
+        )
 
         sorted_country_stats = dict(
             sorted(country_stats.items(), key=lambda x: (x[0][0], x[0][2]))
@@ -57,6 +63,7 @@ class GrantSummary:
             gender_stats=gender_stats,
             preselected_statuses=["approved", "confirmed"],
             grant_type_summary=grant_type_summary,
+            speaker_status_summary=speaker_status_summary,
         )
 
     def _aggregate_data_by_country(self, grants_by_country, statuses):
@@ -151,3 +158,50 @@ class GrantSummary:
 
         return grant_type_summary
 
+    def _aggregate_data_by_speaker_status(self, filtered_grants, statuses):
+        """
+        Aggregates grant data by speaker status (proposed and confirmed) and grant status.
+        """
+        filtered_grants = filtered_grants.annotate(
+            is_proposed_speaker=Exists(
+                Submission.objects.non_cancelled().filter(
+                    conference_id=OuterRef("conference_id"),
+                    speaker_id=OuterRef("user_id"),
+                )
+            ),
+            is_confirmed_speaker=Exists(
+                ScheduleItem.objects.filter(
+                    conference_id=OuterRef("conference_id"),
+                    submission__speaker_id=OuterRef("user_id"),
+                )
+            ),
+        )
+
+        proposed_speaker_data = (
+            filtered_grants.filter(is_proposed_speaker=True)
+            .values("status")
+            .annotate(total=Count("id"))
+        )
+
+        confirmed_speaker_data = (
+            filtered_grants.filter(is_confirmed_speaker=True)
+            .values("status")
+            .annotate(total=Count("id"))
+        )
+
+        speaker_status_summary = {
+            "proposed_speaker": {status[0]: 0 for status in statuses},
+            "confirmed_speaker": {status[0]: 0 for status in statuses},
+        }
+
+        for data in proposed_speaker_data:
+            status = data["status"]
+            total = data["total"]
+            speaker_status_summary["proposed_speaker"][status] += total
+
+        for data in confirmed_speaker_data:
+            status = data["status"]
+            total = data["total"]
+            speaker_status_summary["confirmed_speaker"][status] += total
+
+        return speaker_status_summary
