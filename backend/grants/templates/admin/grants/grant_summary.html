@@ -327,6 +327,36 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <h2>by Requested Needs</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Requested Need</th>
+                <th></th>
+                {% for status in statuses %}
+                    <th class="status-column-{{ forloop.counter }}"
+                        {% if status.0 not in preselected_statuses %}style="display:none"{% endif %}>
+                        {{ status.1|title }}
+                    </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for field, field_data in requested_needs_summary.items %}
+                <tr>
+                    <td>{{ field|title }}</td>
+                    <td></td>
+                    {% for status in statuses %}
+                        <td class="status-column-{{ forloop.counter }}"
+                            {% if status.0 not in preselected_statuses %}style="display:none"{% endif %}>
+                            {{ field_data|get_item:status.0|default:"0" }}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {

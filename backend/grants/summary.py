@@ -47,6 +47,9 @@ class GrantSummary:
         approved_type_summary = self._aggregate_data_by_approved_type(
             filtered_grants, statuses
         )
+        requested_needs_summary = self._aggregate_data_by_requested_needs_summary(
+            filtered_grants, statuses
+        )
         sorted_country_stats = dict(
             sorted(country_stats.items(), key=lambda x: (x[0][0], x[0][2]))
         )
@@ -72,6 +75,7 @@ class GrantSummary:
             speaker_status_summary=speaker_status_summary,
             approved_type_summary=approved_type_summary,
             approved_types=approved_types,
+            requested_needs_summary=requested_needs_summary,
         )
 
     def _aggregate_data_by_country(self, grants_by_country, statuses):
@@ -237,3 +241,25 @@ class GrantSummary:
 
         return approved_type_summary
 
+    def _aggregate_data_by_requested_needs_summary(self, filtered_grants, statuses):
+        """
+        Aggregates grant data by boolean fields (needs_funds_for_travel, need_visa, need_accommodation) and status.
+        """
+        requested_needs_summary = {
+            "needs_funds_for_travel": {status[0]: 0 for status in statuses},
+            "need_visa": {status[0]: 0 for status in statuses},
+            "need_accommodation": {status[0]: 0 for status in statuses},
+        }
+
+        for field in requested_needs_summary.keys():
+            field_data = (
+                filtered_grants.filter(**{field: True})
+                .values("status")
+                .annotate(total=Count("id"))
+            )
+            for data in field_data:
+                status = data["status"]
+                total = data["total"]
+                requested_needs_summary[field][status] += total
+
+        return requested_needs_summary
