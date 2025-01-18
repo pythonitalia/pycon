@@ -32,8 +32,8 @@
         .status-filter {
             margin-bottom: 20px;
             padding: 15px;
-            border: 1px solid #ddd;
-            background-color: #f9f9f9;
+            border: 1px solid var(--hairline-color);
+            background-color:  var(--body-bg);
         }
 
         .status-filter h3 {
@@ -56,9 +56,8 @@
         }
 
         .continent-total {
-            border-top: 2px solid #E8E8E8;
-            border-bottom: 2px solid #000;
-
+            border-top: 2px solid var(--border-color);
+            border-bottom: 2px solid var(--hairline-color);
         }
 
         #grants-container table {
@@ -70,7 +69,7 @@
         #grants-container th,
         #grants-container td {
             padding: 8px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--hairline-color);
             text-align: center;
         }
 
@@ -80,7 +79,7 @@
         }
 
         #grants-container th {
-            background-color: #f4f4f4;
+            background-color:  var(--body-bg);
         }
     </style>
 {% endblock %}
