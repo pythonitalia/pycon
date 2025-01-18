@@ -101,7 +101,7 @@
                     <input type="checkbox"
                            class="toggle-column"
                            data-column="status-column-{{ forloop.counter }}"
-                           checked>
+                           {% if status.0 in preselected_statuses %}checked{% endif %}>
                     {{ status.1|title }}
                 </label>
             {% endfor %}
@@ -121,7 +121,8 @@
                     <th>Total Amount</th>
                     <th></th>
                     {% for status in statuses %}
-                        <th class="status-column-{{ forloop.counter }} {{ status.0 }}">
+                        <th class="status-column-{{ forloop.counter }} {{ status.0 }}"
+                            {% if status.0 not in preselected_statuses %}style="display:none"{% endif %}>
                             {{ status.1|title }}
                         </th>
                     {% endfor %}
@@ -132,7 +133,8 @@
                     <td>{{ total_amount|floatformat:"0" }}€</td>
                     <td></td>
                     {% for status in statuses %}
-                        <td class="status-column-{{ forloop.counter }} {{ status.0 }}">
+                        <td class="status-column-{{ forloop.counter }} {{ status.0 }}"
+                            {% if status.0 not in preselected_statuses %}style="display:none"{% endif %}>
                             {{ financial_summary|get_item:status.0|default:"0"|floatformat:"0" }}€
                         </td>
                     {% endfor %}
@@ -148,7 +150,10 @@
                 <th>Continent</th>
                 <th>Country</th>
                 {% for status in statuses %}
-                    <th class="status-column-{{ forloop.counter }}">{{ status.1|title }}</th>
+                    <th class="status-column-{{ forloop.counter }}"
+                        {% if status.0 not in preselected_statuses %}style="display:none"{% endif %}>
+                        {{ status.1|title }}
+                    </th>
                 {% endfor %}
             </tr>
         </thead>
@@ -162,7 +167,8 @@
                             </td>
                             <td></td>
                             {% for status in statuses %}
-                                <td class="status-column-{{ forloop.counter }}">
+                                <td class="status-column-{{ forloop.counter }}"
+                                    {% if status.0 not in preselected_statuses %}style="display:none"{% endif %}>
                                     <strong>{{ totals_per_continent|get_item:continent|get_item:status.0|default:"0" }}</strong>
                                 </td>
                             {% endfor %}
@@ -172,7 +178,8 @@
                         <td>{{ continent }}</td>
                         <td>{{ country }}</td>
                         {% for status in statuses %}
-                            <td class="status-column-{{ forloop.counter }}">
+                            <td class="status-column-{{ forloop.counter }}"
+                                {% if status.0 not in preselected_statuses %}style="display:none"{% endif %}>
                                 {{ counts|get_item:status.0|default:"0" }}
                             </td>
                         {% endfor %}
@@ -184,7 +191,10 @@
             <tr>
                 <td colspan="2">Total Grants: {{ total_grants }}</td>
                 {% for count in status_totals.values %}
-                    <td class="status-column-{{ forloop.counter }}">{{ count }}</td>
+                    <td class="status-column-{{ forloop.counter }}"
+                        {% if status.0 not in preselected_statuses %}style="display:none"{% endif %}>
+                        {{ count }}
+                    </td>
                 {% endfor %}
             </tr>
         </tfoot>
@@ -196,7 +206,10 @@
                 <th>Gender</th>
                 <th></th>
                 {% for status in statuses %}
-                    <th class="status-column-{{ forloop.counter }}">{{ status.1|title }}</th>
+                    <th class="status-column-{{ forloop.counter }}"
+                        {% if status.0 not in preselected_statuses %}style="display:none"{% endif %}>
+                        {{ status.1|title }}
+                    </th>
                 {% endfor %}
             </tr>
         </thead>
@@ -206,7 +219,8 @@
                     <td>{{ genders|get_item:gender|default:"Not Specified" }}</td>
                     <td></td>
                     {% for status in statuses %}
-                        <td class="status-column-{{ forloop.counter }}">
+                        <td class="status-column-{{ forloop.counter }}"
+                            {% if status.0 not in preselected_statuses %}style="display:none"{% endif %}>
                             {{ gender_data|get_item:status.0|default:"0" }}
                         </td>
                     {% endfor %}

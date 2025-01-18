@@ -52,6 +52,7 @@ class GrantSummary:
             status_totals=status_totals,
             totals_per_continent=totals_per_continent,
             gender_stats=gender_stats,
+            preselected_statuses=["approved", "confirmed"],
         )
 
     def _aggregate_data_by_country(self, grants_by_country, statuses):
