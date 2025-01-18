@@ -87,4 +87,3 @@ RUN mkdir -p assets && .venv/bin/python manage.py collectstatic --noinput
 
 ENTRYPOINT ["/home/app/.venv/bin/gunicorn"]
 CMD [ "pycon.wsgi" ]
-#test
