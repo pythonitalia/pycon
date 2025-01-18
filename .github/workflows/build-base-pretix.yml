@@ -40,6 +40,6 @@ jobs:
           provenance: false
           push: true
           tags: ghcr.io/pythonitalia/pycon/base-pretix:${{ inputs.version }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           platforms: linux/arm64
