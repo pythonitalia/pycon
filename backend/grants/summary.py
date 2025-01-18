@@ -34,6 +34,12 @@ class GrantSummary:
             status_totals,
             totals_per_continent,
         ) = self._aggregate_data_by_country(grants_by_country, statuses)
+        sorted_country_stats = dict(
+            sorted(country_stats.items(), key=lambda x: (x[0][0], x[0][2]))
+        )
+        country_type_summary = self._aggregate_data_by_country_type(
+            filtered_grants, statuses
+        )
         gender_stats = self._aggregate_data_by_gender(filtered_grants, statuses)
         financial_summary, total_amount = self._aggregate_financial_data_by_status(
             filtered_grants, statuses
@@ -50,12 +56,12 @@ class GrantSummary:
         requested_needs_summary = self._aggregate_data_by_requested_needs_summary(
             filtered_grants, statuses
         )
-        sorted_country_stats = dict(
-            sorted(country_stats.items(), key=lambda x: (x[0][0], x[0][2]))
-        )
         approved_types = {
             approved_type.value: approved_type.label
             for approved_type in Grant.ApprovedType
+        }
+        country_types = {
+            country_type.value: country_type.label for country_type in Grant.CountryType
         }
 
         return dict(
@@ -76,6 +82,8 @@ class GrantSummary:
             approved_type_summary=approved_type_summary,
             approved_types=approved_types,
             requested_needs_summary=requested_needs_summary,
+            country_type_summary=country_type_summary,
+            country_types=country_types,
         )
 
     def _aggregate_data_by_country(self, grants_by_country, statuses):
@@ -106,6 +114,26 @@ class GrantSummary:
             totals_per_continent[continent][data["status"]] += data["total"]
 
         return summary, status_totals, totals_per_continent
+
+    def _aggregate_data_by_country_type(self, filtered_grants, statuses):
+        """
+        Aggregates grant data by country type and status.
+        """
+        country_type_data = filtered_grants.values("country_type", "status").annotate(
+            total=Count("id")
+        )
+        country_type_summary = {
+            country_type: {status[0]: 0 for status in statuses}
+            for country_type in Grant.CountryType.values
+        }
+
+        for data in country_type_data:
+            country_type = data["country_type"]
+            status = data["status"]
+            total = data["total"]
+            country_type_summary[country_type][status] += total
+
+        return country_type_summary
 
     def _aggregate_data_by_gender(self, filtered_grants, statuses):
         """
