@@ -1,8 +1,6 @@
 {% extends "admin/base_site.html" %}
 
-{% block title %}
-    Grant Summary | {{ site_title }}
-{% endblock %}
+{% block title %}Grant Summary | {{ site_title }}{% endblock %}
 
 {% load markdownify %}
 {% load localize countryname get_item %}
@@ -19,7 +17,9 @@
             padding: 6px 12px;
         }
 
-        .approved, .waiting_for_confirmation, .confirmed {
+        .approved,
+        .waiting_for_confirmation,
+        .confirmed {
             font-weight: 600;
             color: var(--body-loud-color)
         }
@@ -33,7 +33,7 @@
             margin-bottom: 20px;
             padding: 15px;
             border: 1px solid var(--hairline-color);
-            background-color:  var(--body-bg);
+            background-color: var(--body-bg);
         }
 
         .status-filter h3 {
@@ -79,17 +79,20 @@
         }
 
         #grants-container th {
-            background-color:  var(--body-bg);
+            background-color: var(--body-bg);
         }
     </style>
 {% endblock %}
 {% block content %}
     <div class="submit-row back-button">
-      <a href="{% url 'admin:conferences_conference_change' object_id=conference_id %}" class="button">
-        Back to <strong>{{ conference_repr }}</strong>
-      </a>
+        <a href="{% url 'admin:conferences_conference_change' object_id=conference_id %}"
+           class="button">
+            Back to <strong>{{ conference_repr }}</strong>
+        </a>
     </div>
-    <h1>Grant Summary for <strong>{{ conference_repr }}</strong></h1>
+    <h1>
+        Grant Summary for <strong>{{ conference_repr }}</strong>
+    </h1>
     <div class="status-filter">
         <h3>Toggle Status Columns</h3>
         <div class="checkbox-list">
@@ -107,113 +110,129 @@
 
 
     <div id="grants-container">
-    {% localize on %}
-    <h2>Budget</h2>
-     <p>The total budget is calculated based on grants that are in the 'Approved', 'Waiting for Confirmation', or 'Confirmed' statuses </p>
-    <table >
+        {% localize on %}
+        <h2>Budget</h2>
+        <p>
+            The total budget is calculated based on grants that are in the 'Approved', 'Waiting for Confirmation', or 'Confirmed' statuses
+        </p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Total Amount</th>
+                    <th></th>
+                    {% for status in statuses %}
+                        <th class="status-column-{{ forloop.counter }} {{ status.0 }}">
+                            {{ status.1|title }}
+                        </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ total_amount|floatformat:"0" }}€</td>
+                    <td></td>
+                    {% for status in statuses %}
+                        <td class="status-column-{{ forloop.counter }} {{ status.0 }}">
+                            {{ financial_summary|get_item:status.0|default:"0"|floatformat:"0" }}€
+                        </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    {% endlocalize %}
+
+    <h2>by Country</h2>
+    <table>
         <thead>
             <tr>
-                <th >Total Amount</th>
-                <th></th>
-                {% for status in statuses %}<th class="status-column-{{ forloop.counter }} {{status.0}}">{{ status.1|title }}</th>{% endfor %}
+                <th>Continent</th>
+                <th>Country</th>
+                {% for status in statuses %}
+                    <th class="status-column-{{ forloop.counter }}">{{ status.1|title }}</th>
+                {% endfor %}
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td >{{ total_amount|floatformat:"0" }}€</td>
-                <td></td>
-                {% for status in statuses %}
-                    <td class="status-column-{{ forloop.counter }} {{status.0}}">
-                        {{ financial_summary|get_item:status.0|default:"0"|floatformat:"0" }}€
-                    </td>
-                {% endfor %}
-            </tr>
-        </tbody>
-    </table>
-    {% endlocalize %}
-
-<h2>by Country</h2>
-<table >
-    <thead>
-        <tr>
-            <th>Continent</th>
-            <th>Country</th>
-            {% for status in statuses %}<th class="status-column-{{ forloop.counter }}">{{ status.1|title }}</th>{% endfor %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for key, counts in country_stats.items %}
-            {% with continent=key.0 country=key.1 %}
-                {% ifchanged continent %}
-                    <tr class="continent-total">
-                        <td >
-                            <strong>Total for {{ continent }}: ⬇️</strong>
-                        </td>
-                        <td></td>
+            {% for key, counts in country_stats.items %}
+                {% with continent=key.0 country=key.1 %}
+                    {% ifchanged continent %}
+                        <tr class="continent-total">
+                            <td>
+                                <strong>Total for {{ continent }}: ⬇️</strong>
+                            </td>
+                            <td></td>
+                            {% for status in statuses %}
+                                <td class="status-column-{{ forloop.counter }}">
+                                    <strong>{{ totals_per_continent|get_item:continent|get_item:status.0|default:"0" }}</strong>
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endifchanged %}
+                    <tr>
+                        <td>{{ continent }}</td>
+                        <td>{{ country }}</td>
                         {% for status in statuses %}
                             <td class="status-column-{{ forloop.counter }}">
-                                <strong>{{ totals_per_continent|get_item:continent|get_item:status.0|default:"0" }}</strong>
+                                {{ counts|get_item:status.0|default:"0" }}
                             </td>
                         {% endfor %}
                     </tr>
-                {% endifchanged %}
-                <tr>
-                    <td>{{ continent }}</td>
-                    <td>{{ country }}</td>
-                    {% for status in statuses %}
-                        <td class="status-column-{{ forloop.counter }}">{{ counts|get_item:status.0|default:"0" }}</td>
-                    {% endfor %}
-                </tr>
-            {% endwith %}
-        {% endfor %}
-    </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="2">Total Grants: {{ total_grants }}</td>
-            {% for count in status_totals.values %}<td class="status-column-{{ forloop.counter }}">{{ count }}</td>{% endfor %}
-        </tr>
-    </tfoot>
-</table>
-<h2>by Gender</h2>
-<table >
-    <thead>
-        <tr>
-            <th>Gender</th>
-            <th></th>
-            {% for status in statuses %}<th class="status-column-{{ forloop.counter }}">{{ status.1|title }}</th>{% endfor %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for gender, gender_data in gender_stats.items %}
+                {% endwith %}
+            {% endfor %}
+        </tbody>
+        <tfoot>
             <tr>
-                <td>{{ genders|get_item:gender|default:"Not Specified" }}</td>
-                <td></td>
-                {% for status in statuses %}
-                    <td class="status-column-{{ forloop.counter }}">{{ gender_data|get_item:status.0|default:"0" }}</td>
+                <td colspan="2">Total Grants: {{ total_grants }}</td>
+                {% for count in status_totals.values %}
+                    <td class="status-column-{{ forloop.counter }}">{{ count }}</td>
                 {% endfor %}
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </tfoot>
+    </table>
+    <h2>by Gender</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Gender</th>
+                <th></th>
+                {% for status in statuses %}
+                    <th class="status-column-{{ forloop.counter }}">{{ status.1|title }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for gender, gender_data in gender_stats.items %}
+                <tr>
+                    <td>{{ genders|get_item:gender|default:"Not Specified" }}</td>
+                    <td></td>
+                    {% for status in statuses %}
+                        <td class="status-column-{{ forloop.counter }}">
+                            {{ gender_data|get_item:status.0|default:"0" }}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-      // This script allows users to toggle the visibility of columns in the table
-      // based on the status they choose to show or hide.
-      const checkboxes = document.querySelectorAll('.toggle-column');
-      checkboxes.forEach(function(checkbox) {
-          checkbox.addEventListener('change', function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        // This script allows users to toggle the visibility of columns in the table
+        // based on the status they choose to show or hide.
+        const checkboxes = document.querySelectorAll('.toggle-column');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
 
-              // Use data attributes to target columns.
-              // Each checkbox has a data attribute 'data-column' that corresponds to the column's class to show/hide.
-              const columnClass = checkbox.dataset.column;
-              const columnsToToggle = document.querySelectorAll(`.${columnClass}`);
+                // Use data attributes to target columns.
+                // Each checkbox has a data attribute 'data-column' that corresponds to the column's class to show/hide.
+                const columnClass = checkbox.dataset.column;
+                const columnsToToggle = document.querySelectorAll(`.${columnClass}`);
 
-              columnsToToggle.forEach(function(cell) {
-                  cell.style.display = checkbox.checked ? '' : 'none';
-              });
-          });
-      });
-  });
+                columnsToToggle.forEach(function(cell) {
+                    cell.style.display = checkbox.checked ? '' : 'none';
+                });
+            });
+        });
+    });
 </script>
 {% endblock %}
