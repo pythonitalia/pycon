@@ -86,6 +86,12 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         blank=True,
         default="",
     )
+    slack_new_invitation_letter_request_channel_id = models.CharField(
+        _("New invitation letter request Slack channel ID for notification"),
+        max_length=255,
+        blank=True,
+        default="",
+    )
 
     grants_default_ticket_amount = models.DecimalField(
         verbose_name=_("grants default ticket amount"),

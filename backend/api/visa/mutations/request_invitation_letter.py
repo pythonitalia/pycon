@@ -5,6 +5,7 @@ from api.types import BaseErrorType, FormNotAvailable, NoAdmissionTicket
 from api.utils import validate_email
 from api.visa.types import InvitationLetterOnBehalfOf, InvitationLetterRequest
 from api.extensions import RateLimit
+from visa.tasks import notify_new_invitation_letter_request_on_slack
 from conferences.models.deadline import Deadline
 from privacy_policy.record import record_privacy_policy_acceptance
 from visa.models import (
@@ -167,6 +168,10 @@ def request_invitation_letter(
                 info.context.request,
                 conference,
                 "invitation_letter",
+            )
+            notify_new_invitation_letter_request_on_slack.delay(
+                invitation_letter_request_id=invitation_letter.id,
+                admin_absolute_uri=info.context.request.build_absolute_uri("/"),
             )
 
     return InvitationLetterRequest.from_model(invitation_letter)

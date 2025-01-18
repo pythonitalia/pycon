@@ -1,3 +1,5 @@
+from django.urls import reverse
+from integrations import slack
 import time
 from django.template import Template, Context
 
@@ -179,3 +181,53 @@ def download_pretix_ticket(invitation_letter_request):
         break
 
     return io.BytesIO(response.content)
+
+
+@app.task
+def notify_new_invitation_letter_request_on_slack(
+    *, invitation_letter_request_id: int, admin_absolute_uri: str
+):
+    invitation_letter_request = InvitationLetterRequest.objects.get(
+        id=invitation_letter_request_id
+    )
+    conference = invitation_letter_request.conference
+    name = invitation_letter_request.full_name
+
+    admin_path = reverse(
+        "admin:visa_invitationletterrequest_change", args=[invitation_letter_request.id]
+    )
+
+    slack.send_message(
+        [
+            {
+                "type": "section",
+                "text": {
+                    "text": f"New invitation letter request from {name}",
+                    "type": "plain_text",
+                },
+            }
+        ],
+        [
+            {
+                "blocks": [
+                    {
+                        "type": "actions",
+                        "elements": [
+                            {
+                                "type": "button",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "Open in Admin",
+                                    "emoji": True,
+                                },
+                                "action_id": "ignore-action",
+                                "url": f"{admin_absolute_uri}{admin_path[1:]}",
+                            }
+                        ],
+                    }
+                ]
+            }
+        ],
+        oauth_token=conference.get_slack_oauth_token(),
+        channel_id=conference.slack_new_proposal_channel_id,
+    )
