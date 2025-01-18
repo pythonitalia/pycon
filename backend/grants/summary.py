@@ -35,6 +35,9 @@ class GrantSummary:
         financial_summary, total_amount = self._aggregate_financial_data_by_status(
             filtered_grants, statuses
         )
+        grant_type_summary = self._aggregate_data_by_grant_type(
+            filtered_grants, statuses
+        )
 
         sorted_country_stats = dict(
             sorted(country_stats.items(), key=lambda x: (x[0][0], x[0][2]))
@@ -53,6 +56,7 @@ class GrantSummary:
             totals_per_continent=totals_per_continent,
             gender_stats=gender_stats,
             preselected_statuses=["approved", "confirmed"],
+            grant_type_summary=grant_type_summary,
         )
 
     def _aggregate_data_by_country(self, grants_by_country, statuses):
@@ -125,3 +129,25 @@ class GrantSummary:
                 overall_total += total_amount
 
         return financial_summary, overall_total
+
+    def _aggregate_data_by_grant_type(self, filtered_grants, statuses):
+        """
+        Aggregates grant data by grant_type and status.
+        """
+        grant_type_data = filtered_grants.values("grant_type", "status").annotate(
+            total=Count("id")
+        )
+        grant_type_summary = {
+            grant_type: {status[0]: 0 for status in statuses}
+            for grant_type in Grant.GrantType.values
+        }
+
+        for data in grant_type_data:
+            grant_types = data["grant_type"]
+            status = data["status"]
+            total = data["total"]
+            for grant_type in grant_types:
+                grant_type_summary[grant_type][status] += total
+
+        return grant_type_summary
+
