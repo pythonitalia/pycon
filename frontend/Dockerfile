@@ -51,4 +51,3 @@ ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 ENV NEXT_MANUAL_SIG_HANDLE=1
 CMD ["node", "server.js"]
-#test
