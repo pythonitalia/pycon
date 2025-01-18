@@ -13,3 +13,4 @@ RUN cd /pretix/src && DATABASE_HOST=demo make compress
 
 ENTRYPOINT ["pretix"]
 CMD [ "all" ]
+#test
