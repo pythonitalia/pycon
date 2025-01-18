@@ -3,6 +3,9 @@ from conferences.models.conference import Conference
 from helpers.constants import GENDERS
 from countries import countries
 from .models import Grant
+from django.db.models import Exists, OuterRef
+from submissions.models import Submission
+from schedule.models import ScheduleItem
 
 
 class GrantSummary:
@@ -31,13 +34,37 @@ class GrantSummary:
             status_totals,
             totals_per_continent,
         ) = self._aggregate_data_by_country(grants_by_country, statuses)
+        sorted_country_stats = dict(
+            sorted(country_stats.items(), key=lambda x: (x[0][0], x[0][2]))
+        )
+        country_type_summary = self._aggregate_data_by_country_type(
+            filtered_grants, statuses
+        )
         gender_stats = self._aggregate_data_by_gender(filtered_grants, statuses)
         financial_summary, total_amount = self._aggregate_financial_data_by_status(
             filtered_grants, statuses
         )
-
-        sorted_country_stats = dict(
-            sorted(country_stats.items(), key=lambda x: (x[0][0], x[0][2]))
+        grant_type_summary = self._aggregate_data_by_grant_type(
+            filtered_grants, statuses
+        )
+        speaker_status_summary = self._aggregate_data_by_speaker_status(
+            filtered_grants, statuses
+        )
+        approved_type_summary = self._aggregate_data_by_approved_type(
+            filtered_grants, statuses
+        )
+        requested_needs_summary = self._aggregate_data_by_requested_needs_summary(
+            filtered_grants, statuses
+        )
+        approved_types = {
+            approved_type.value: approved_type.label
+            for approved_type in Grant.ApprovedType
+        }
+        country_types = {
+            country_type.value: country_type.label for country_type in Grant.CountryType
+        }
+        occupation_summary = self._aggregate_data_by_occupation(
+            filtered_grants, statuses
         )
 
         return dict(
@@ -52,6 +79,15 @@ class GrantSummary:
             status_totals=status_totals,
             totals_per_continent=totals_per_continent,
             gender_stats=gender_stats,
+            preselected_statuses=["approved", "confirmed"],
+            grant_type_summary=grant_type_summary,
+            speaker_status_summary=speaker_status_summary,
+            approved_type_summary=approved_type_summary,
+            approved_types=approved_types,
+            requested_needs_summary=requested_needs_summary,
+            country_type_summary=country_type_summary,
+            country_types=country_types,
+            occupation_summary=occupation_summary,
         )
 
     def _aggregate_data_by_country(self, grants_by_country, statuses):
@@ -82,6 +118,26 @@ class GrantSummary:
             totals_per_continent[continent][data["status"]] += data["total"]
 
         return summary, status_totals, totals_per_continent
+
+    def _aggregate_data_by_country_type(self, filtered_grants, statuses):
+        """
+        Aggregates grant data by country type and status.
+        """
+        country_type_data = filtered_grants.values("country_type", "status").annotate(
+            total=Count("id")
+        )
+        country_type_summary = {
+            country_type: {status[0]: 0 for status in statuses}
+            for country_type in Grant.CountryType.values
+        }
+
+        for data in country_type_data:
+            country_type = data["country_type"]
+            status = data["status"]
+            total = data["total"]
+            country_type_summary[country_type][status] += total
+
+        return country_type_summary
 
     def _aggregate_data_by_gender(self, filtered_grants, statuses):
         """
@@ -124,3 +180,138 @@ class GrantSummary:
                 overall_total += total_amount
 
         return financial_summary, overall_total
+
+    def _aggregate_data_by_grant_type(self, filtered_grants, statuses):
+        """
+        Aggregates grant data by grant_type and status.
+        """
+        grant_type_data = filtered_grants.values("grant_type", "status").annotate(
+            total=Count("id")
+        )
+        grant_type_summary = {
+            grant_type: {status[0]: 0 for status in statuses}
+            for grant_type in Grant.GrantType.values
+        }
+
+        for data in grant_type_data:
+            grant_types = data["grant_type"]
+            status = data["status"]
+            total = data["total"]
+            for grant_type in grant_types:
+                grant_type_summary[grant_type][status] += total
+
+        return grant_type_summary
+
+    def _aggregate_data_by_speaker_status(self, filtered_grants, statuses):
+        """
+        Aggregates grant data by speaker status (proposed and confirmed) and grant status.
+        """
+        filtered_grants = filtered_grants.annotate(
+            is_proposed_speaker=Exists(
+                Submission.objects.non_cancelled().filter(
+                    conference_id=OuterRef("conference_id"),
+                    speaker_id=OuterRef("user_id"),
+                )
+            ),
+            is_confirmed_speaker=Exists(
+                ScheduleItem.objects.filter(
+                    conference_id=OuterRef("conference_id"),
+                    submission__speaker_id=OuterRef("user_id"),
+                )
+            ),
+        )
+
+        proposed_speaker_data = (
+            filtered_grants.filter(is_proposed_speaker=True)
+            .values("status")
+            .annotate(total=Count("id"))
+        )
+
+        confirmed_speaker_data = (
+            filtered_grants.filter(is_confirmed_speaker=True)
+            .values("status")
+            .annotate(total=Count("id"))
+        )
+
+        speaker_status_summary = {
+            "proposed_speaker": {status[0]: 0 for status in statuses},
+            "confirmed_speaker": {status[0]: 0 for status in statuses},
+        }
+
+        for data in proposed_speaker_data:
+            status = data["status"]
+            total = data["total"]
+            speaker_status_summary["proposed_speaker"][status] += total
+
+        for data in confirmed_speaker_data:
+            status = data["status"]
+            total = data["total"]
+            speaker_status_summary["confirmed_speaker"][status] += total
+
+        return speaker_status_summary
+
+    def _aggregate_data_by_approved_type(self, filtered_grants, statuses):
+        """
+        Aggregates grant data by approved type and status.
+        """
+        approved_type_data = filtered_grants.values("approved_type", "status").annotate(
+            total=Count("id")
+        )
+        approved_type_summary = {
+            approved_type: {status[0]: 0 for status in statuses}
+            for approved_type in Grant.ApprovedType.values
+        }
+        approved_type_summary[None] = {
+            status[0]: 0 for status in statuses
+        }  # For unspecified genders
+
+        for data in approved_type_data:
+            approved_type = data["approved_type"]
+            status = data["status"]
+            total = data["total"]
+            approved_type_summary[approved_type][status] += total
+
+        return approved_type_summary
+
+    def _aggregate_data_by_requested_needs_summary(self, filtered_grants, statuses):
+        """
+        Aggregates grant data by boolean fields (needs_funds_for_travel, need_visa, need_accommodation) and status.
+        """
+        requested_needs_summary = {
+            "needs_funds_for_travel": {status[0]: 0 for status in statuses},
+            "need_visa": {status[0]: 0 for status in statuses},
+            "need_accommodation": {status[0]: 0 for status in statuses},
+        }
+
+        for field in requested_needs_summary.keys():
+            field_data = (
+                filtered_grants.filter(**{field: True})
+                .values("status")
+                .annotate(total=Count("id"))
+            )
+            for data in field_data:
+                status = data["status"]
+                total = data["total"]
+                requested_needs_summary[field][status] += total
+
+        return requested_needs_summary
+
+    def _aggregate_data_by_occupation(self, filtered_grants, statuses):
+        """
+        Aggregates grant data by occupation and status.
+        """
+        occupation_data = filtered_grants.values("occupation", "status").annotate(
+            total=Count("id")
+        )
+        occupation_summary = {
+            occupation: {status[0]: 0 for status in statuses}
+            for occupation in Grant.Occupation.values
+        }
+
+        for data in occupation_data:
+            occupation = data["occupation"]
+            status = data["status"]
+            total = data["total"]
+            occupation_summary[occupation][status] += total
+
+        return occupation_summary
