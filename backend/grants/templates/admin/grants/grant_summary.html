@@ -387,6 +387,35 @@
             {% endfor %}
         </tbody>
     </table>
+    <h2>by Occupation</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Occupation</th>
+                <th></th>
+                {% for status in statuses %}
+                    <th class="status-column-{{ forloop.counter }}"
+                        {% if status.0 not in preselected_statuses %}style="display:none"{% endif %}>
+                        {{ status.1|title }}
+                    </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for occupation, occupation_data in occupation_summary.items %}
+                <tr>
+                    <td>{{ occupation|title }}</td>
+                    <td></td>
+                    {% for status in statuses %}
+                        <td class="status-column-{{ forloop.counter }}"
+                            {% if status.0 not in preselected_statuses %}style="display:none"{% endif %}>
+                            {{ occupation_data|get_item:status.0|default:"0" }}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {

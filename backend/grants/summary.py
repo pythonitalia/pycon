@@ -63,6 +63,9 @@ class GrantSummary:
         country_types = {
             country_type.value: country_type.label for country_type in Grant.CountryType
         }
+        occupation_summary = self._aggregate_data_by_occupation(
+            filtered_grants, statuses
+        )
 
         return dict(
             conference_id=conference_id,
@@ -84,6 +87,7 @@ class GrantSummary:
             requested_needs_summary=requested_needs_summary,
             country_type_summary=country_type_summary,
             country_types=country_types,
+            occupation_summary=occupation_summary,
         )
 
     def _aggregate_data_by_country(self, grants_by_country, statuses):
@@ -291,3 +295,23 @@ class GrantSummary:
                 requested_needs_summary[field][status] += total
 
         return requested_needs_summary
+
+    def _aggregate_data_by_occupation(self, filtered_grants, statuses):
+        """
+        Aggregates grant data by occupation and status.
+        """
+        occupation_data = filtered_grants.values("occupation", "status").annotate(
+            total=Count("id")
+        )
+        occupation_summary = {
+            occupation: {status[0]: 0 for status in statuses}
+            for occupation in Grant.Occupation.values
+        }
+
+        for data in occupation_data:
+            occupation = data["occupation"]
+            status = data["status"]
+            total = data["total"]
+            occupation_summary[occupation][status] += total
+
+        return occupation_summary
