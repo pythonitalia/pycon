@@ -359,7 +359,7 @@ def test_notify_new_invitation_letter_request_on_slack(mocker):
     mock_slack = mocker.patch("visa.tasks.slack.send_message")
     invitation_letter_request = InvitationLetterRequestFactory(
         conference__slack_new_invitation_letter_request_channel_id="S123",
-        organizer__slack_oauth_bot_token="token123",
+        conference__organizer__slack_oauth_bot_token="token123",
     )
     admin_absolute_uri = (
         "http://example.com/admin/visa/invitationletterrequest/1/change/"

@@ -229,5 +229,5 @@ def notify_new_invitation_letter_request_on_slack(
             }
         ],
         oauth_token=conference.get_slack_oauth_token(),
-        channel_id=conference.slack_new_proposal_channel_id,
+        channel_id=conference.slack_new_invitation_letter_request_channel_id,
     )
