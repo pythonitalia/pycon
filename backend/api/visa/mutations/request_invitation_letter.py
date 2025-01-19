@@ -169,9 +169,11 @@ def request_invitation_letter(
                 conference,
                 "invitation_letter",
             )
-            notify_new_invitation_letter_request_on_slack.delay(
-                invitation_letter_request_id=invitation_letter.id,
-                admin_absolute_uri=info.context.request.build_absolute_uri("/"),
+            transaction.on_commit(
+                lambda: notify_new_invitation_letter_request_on_slack.delay(
+                    invitation_letter_request_id=invitation_letter.id,
+                    admin_absolute_uri=info.context.request.build_absolute_uri("/"),
+                )
             )
 
     return InvitationLetterRequest.from_model(invitation_letter)

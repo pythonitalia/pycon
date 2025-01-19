@@ -50,7 +50,9 @@ def _request_invitation_letter(client, **input):
     )
 
 
-def test_request_invitation_letter(graphql_client, user, mock_has_ticket, mocker):
+def test_request_invitation_letter(
+    graphql_client, user, mock_has_ticket, mocker, django_capture_on_commit_callbacks
+):
     mock_notify = mocker.patch(
         "api.visa.mutations.request_invitation_letter.notify_new_invitation_letter_request_on_slack"
     )
@@ -62,20 +64,21 @@ def test_request_invitation_letter(graphql_client, user, mock_has_ticket, mocker
 
     graphql_client.force_login(user)
 
-    response = _request_invitation_letter(
-        graphql_client,
-        input={
-            "conference": conference.code,
-            "onBehalfOf": "SELF",
-            "fullName": "Mario Rossi",
-            "email": "",
-            "nationality": "Italian",
-            "address": "via Roma",
-            "passportNumber": "YA1234567",
-            "embassyName": "Italian Embassy in France",
-            "dateOfBirth": "1999-01-01",
-        },
-    )
+    with django_capture_on_commit_callbacks(execute=True):
+        response = _request_invitation_letter(
+            graphql_client,
+            input={
+                "conference": conference.code,
+                "onBehalfOf": "SELF",
+                "fullName": "Mario Rossi",
+                "email": "",
+                "nationality": "Italian",
+                "address": "via Roma",
+                "passportNumber": "YA1234567",
+                "embassyName": "Italian Embassy in France",
+                "dateOfBirth": "1999-01-01",
+            },
+        )
 
     assert (
         response["data"]["requestInvitationLetter"]["__typename"]
