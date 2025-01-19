@@ -50,7 +50,12 @@ def _request_invitation_letter(client, **input):
     )
 
 
-def test_request_invitation_letter(graphql_client, user, mock_has_ticket):
+def test_request_invitation_letter(
+    graphql_client, user, mock_has_ticket, mocker, django_capture_on_commit_callbacks
+):
+    mock_notify = mocker.patch(
+        "api.visa.mutations.request_invitation_letter.notify_new_invitation_letter_request_on_slack"
+    )
     conference = ConferenceFactory()
     ActiveDeadlineFactory(
         conference=conference, type=Deadline.TYPES.invitation_letter_request
@@ -59,20 +64,21 @@ def test_request_invitation_letter(graphql_client, user, mock_has_ticket):
 
     graphql_client.force_login(user)
 
-    response = _request_invitation_letter(
-        graphql_client,
-        input={
-            "conference": conference.code,
-            "onBehalfOf": "SELF",
-            "fullName": "Mario Rossi",
-            "email": "",
-            "nationality": "Italian",
-            "address": "via Roma",
-            "passportNumber": "YA1234567",
-            "embassyName": "Italian Embassy in France",
-            "dateOfBirth": "1999-01-01",
-        },
-    )
+    with django_capture_on_commit_callbacks(execute=True):
+        response = _request_invitation_letter(
+            graphql_client,
+            input={
+                "conference": conference.code,
+                "onBehalfOf": "SELF",
+                "fullName": "Mario Rossi",
+                "email": "",
+                "nationality": "Italian",
+                "address": "via Roma",
+                "passportNumber": "YA1234567",
+                "embassyName": "Italian Embassy in France",
+                "dateOfBirth": "1999-01-01",
+            },
+        )
 
     assert (
         response["data"]["requestInvitationLetter"]["__typename"]
@@ -103,10 +109,19 @@ def test_request_invitation_letter(graphql_client, user, mock_has_ticket):
         user=user, conference=conference, privacy_policy="invitation_letter"
     ).exists()
 
+    mock_notify.delay.assert_called_once_with(
+        invitation_letter_request_id=invitation_letter_request.id,
+        admin_absolute_uri=mocker.ANY,
+    )
+
 
 def test_can_request_invitation_letter_to_multiple_conferences(
-    graphql_client, user, mock_has_ticket
+    graphql_client, user, mock_has_ticket, mocker
 ):
+    mocker.patch(
+        "api.visa.mutations.request_invitation_letter.notify_new_invitation_letter_request_on_slack"
+    )
+
     graphql_client.force_login(user)
 
     conference = ConferenceFactory()
@@ -176,8 +191,12 @@ def test_can_request_invitation_letter_to_multiple_conferences(
 
 
 def test_request_invitation_letter_email_is_ignored_for_self_requests(
-    graphql_client, user, mock_has_ticket
+    graphql_client, user, mock_has_ticket, mocker
 ):
+    mocker.patch(
+        "api.visa.mutations.request_invitation_letter.notify_new_invitation_letter_request_on_slack"
+    )
+
     conference = ConferenceFactory()
     mock_has_ticket(conference)
     ActiveDeadlineFactory(
@@ -224,8 +243,12 @@ def test_request_invitation_letter_email_is_ignored_for_self_requests(
 
 @pytest.mark.parametrize("has_ticket", [True, False])
 def test_request_invitation_letter_on_behalf_of_other(
-    graphql_client, user, mock_has_ticket, has_ticket
+    graphql_client, user, mock_has_ticket, has_ticket, mocker
 ):
+    mocker.patch(
+        "api.visa.mutations.request_invitation_letter.notify_new_invitation_letter_request_on_slack"
+    )
+
     conference = ConferenceFactory()
     mock_has_ticket(conference, has_ticket=has_ticket, user=user)
     ActiveDeadlineFactory(
@@ -278,8 +301,12 @@ def test_request_invitation_letter_on_behalf_of_other(
 
 
 def test_duplicate_requests_for_others_are_ignored(
-    graphql_client, user, mock_has_ticket
+    graphql_client, user, mock_has_ticket, mocker
 ):
+    mocker.patch(
+        "api.visa.mutations.request_invitation_letter.notify_new_invitation_letter_request_on_slack"
+    )
+
     conference = ConferenceFactory()
     mock_has_ticket(conference, has_ticket=True, user=user)
     ActiveDeadlineFactory(

@@ -158,6 +158,7 @@ class ConferenceAdmin(
                     "slack_new_grant_reply_channel_id",
                     "slack_speaker_invitation_answer_channel_id",
                     "slack_new_sponsor_lead_channel_id",
+                    "slack_new_invitation_letter_request_channel_id",
                 )
             },
         ),

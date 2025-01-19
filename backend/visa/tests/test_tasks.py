@@ -9,6 +9,7 @@ from visa.models import (
 import pytest
 from django.test import override_settings
 from visa.tasks import (
+    notify_new_invitation_letter_request_on_slack,
     process_invitation_letter_request,
     process_invitation_letter_request_failed,
 )
@@ -352,3 +353,25 @@ def test_process_invitation_letter_request_failed():
     request.refresh_from_db()
 
     assert request.status == InvitationLetterRequestStatus.FAILED_TO_GENERATE
+
+
+def test_notify_new_invitation_letter_request_on_slack(mocker):
+    mock_slack = mocker.patch("visa.tasks.slack.send_message")
+    invitation_letter_request = InvitationLetterRequestFactory(
+        conference__slack_new_invitation_letter_request_channel_id="S123",
+        conference__organizer__slack_oauth_bot_token="token123",
+    )
+    admin_absolute_uri = (
+        "http://example.com/admin/visa/invitationletterrequest/1/change/"
+    )
+
+    notify_new_invitation_letter_request_on_slack(
+        invitation_letter_request_id=invitation_letter_request.id,
+        admin_absolute_uri=admin_absolute_uri,
+    )
+
+    mock_slack.assert_called_once()
+
+    kwargs = mock_slack.mock_calls[0][2]
+    assert kwargs["oauth_token"] == "token123"
+    assert kwargs["channel_id"] == "S123"
