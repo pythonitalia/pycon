@@ -138,6 +138,29 @@
         <div>{{has_sent_proposal|yesno}}</div>
       </div>
 
+      <div class="review-row">
+        {% if previous_grants %}
+        <h2>Previous Grants</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Conference</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for previous_grant in previous_grants %}
+                    <tr>
+                        <td>{{ previous_grant.conference.name }}</td>
+                        <td>{{ previous_grant.get_status_display }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>The user has not submitted a grant in other conferences organized by the same organizer.</p>
+    {% endif %}
+      </div>
     </div>
 
     <div>

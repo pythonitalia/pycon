@@ -631,6 +631,11 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         comment = request.GET.get("comment", user_review.comment if user_review else "")
 
         grant = Grant.objects.get(id=review_item_id)
+        previous_grants = Grant.objects.filter(
+            user_id=grant.user_id,
+            conference__organizer_id=grant.conference.organizer_id,
+        ).exclude(conference_id=grant.conference_id)
+
         context = dict(
             self.admin_site.each_context(request),
             grant=grant,
@@ -640,6 +645,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 conference_id=grant.conference_id,
             )
             .exists(),
+            previous_grants=previous_grants,
             available_scores=AvailableScoreOption.objects.filter(
                 review_session_id=review_session.id
             ).order_by("-numeric_value"),
