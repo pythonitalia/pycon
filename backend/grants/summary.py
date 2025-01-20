@@ -1,3 +1,4 @@
+from collections import defaultdict
 from django.db.models import Count, Sum
 from conferences.models.conference import Conference
 from helpers.constants import GENDERS
@@ -126,10 +127,9 @@ class GrantSummary:
         country_type_data = filtered_grants.values("country_type", "status").annotate(
             total=Count("id")
         )
-        country_type_summary = {
-            country_type: {status[0]: 0 for status in statuses}
-            for country_type in Grant.CountryType.values
-        }
+        country_type_summary = defaultdict(
+            lambda: {status[0]: 0 for status in statuses}
+        )
 
         for data in country_type_data:
             country_type = data["country_type"]
@@ -137,7 +137,7 @@ class GrantSummary:
             total = data["total"]
             country_type_summary[country_type][status] += total
 
-        return country_type_summary
+        return dict(country_type_summary)
 
     def _aggregate_data_by_gender(self, filtered_grants, statuses):
         """
@@ -146,20 +146,14 @@ class GrantSummary:
         gender_data = filtered_grants.values("gender", "status").annotate(
             total=Count("id")
         )
-        gender_summary = {
-            gender: {status[0]: 0 for status in statuses} for gender, _ in GENDERS
-        }
-        gender_summary[""] = {
-            status[0]: 0 for status in statuses
-        }  # For unspecified genders
-
+        gender_summary = defaultdict(lambda: {status[0]: 0 for status in statuses})
         for data in gender_data:
             gender = data["gender"] if data["gender"] else ""
             status = data["status"]
             total = data["total"]
             gender_summary[gender][status] += total
 
-        return gender_summary
+        return dict(gender_summary)
 
     def _aggregate_financial_data_by_status(self, filtered_grants, statuses):
         """
@@ -168,7 +162,6 @@ class GrantSummary:
         financial_data = filtered_grants.values("status").annotate(
             total_amount_sum=Sum("total_amount")
         )
-        print(financial_data)
         financial_summary = {status[0]: 0 for status in statuses}
         overall_total = 0
 
@@ -188,10 +181,7 @@ class GrantSummary:
         grant_type_data = filtered_grants.values("grant_type", "status").annotate(
             total=Count("id")
         )
-        grant_type_summary = {
-            grant_type: {status[0]: 0 for status in statuses}
-            for grant_type in Grant.GrantType.values
-        }
+        grant_type_summary = defaultdict(lambda: {status[0]: 0 for status in statuses})
 
         for data in grant_type_data:
             grant_types = data["grant_type"]
@@ -200,7 +190,7 @@ class GrantSummary:
             for grant_type in grant_types:
                 grant_type_summary[grant_type][status] += total
 
-        return grant_type_summary
+        return dict(grant_type_summary)
 
     def _aggregate_data_by_speaker_status(self, filtered_grants, statuses):
         """
@@ -233,10 +223,9 @@ class GrantSummary:
             .annotate(total=Count("id"))
         )
 
-        speaker_status_summary = {
-            "proposed_speaker": {status[0]: 0 for status in statuses},
-            "confirmed_speaker": {status[0]: 0 for status in statuses},
-        }
+        speaker_status_summary = defaultdict(
+            lambda: {status[0]: 0 for status in statuses}
+        )
 
         for data in proposed_speaker_data:
             status = data["status"]
@@ -248,7 +237,7 @@ class GrantSummary:
             total = data["total"]
             speaker_status_summary["confirmed_speaker"][status] += total
 
-        return speaker_status_summary
+        return dict(speaker_status_summary)
 
     def _aggregate_data_by_approved_type(self, filtered_grants, statuses):
         """
@@ -257,13 +246,9 @@ class GrantSummary:
         approved_type_data = filtered_grants.values("approved_type", "status").annotate(
             total=Count("id")
         )
-        approved_type_summary = {
-            approved_type: {status[0]: 0 for status in statuses}
-            for approved_type in Grant.ApprovedType.values
-        }
-        approved_type_summary[None] = {
-            status[0]: 0 for status in statuses
-        }  # For unspecified genders
+        approved_type_summary = defaultdict(
+            lambda: {status[0]: 0 for status in statuses}
+        )
 
         for data in approved_type_data:
             approved_type = data["approved_type"]
@@ -271,7 +256,7 @@ class GrantSummary:
             total = data["total"]
             approved_type_summary[approved_type][status] += total
 
-        return approved_type_summary
+        return dict(approved_type_summary)
 
     def _aggregate_data_by_requested_needs_summary(self, filtered_grants, statuses):
         """
@@ -303,10 +288,7 @@ class GrantSummary:
         occupation_data = filtered_grants.values("occupation", "status").annotate(
             total=Count("id")
         )
-        occupation_summary = {
-            occupation: {status[0]: 0 for status in statuses}
-            for occupation in Grant.Occupation.values
-        }
+        occupation_summary = defaultdict(lambda: {status[0]: 0 for status in statuses})
 
         for data in occupation_data:
             occupation = data["occupation"]
@@ -314,4 +296,4 @@ class GrantSummary:
             total = data["total"]
             occupation_summary[occupation][status] += total
 
-        return occupation_summary
+        return dict(occupation_summary)
