@@ -145,6 +145,13 @@ class Grant(TimeStampedModel):
     status = models.CharField(
         _("status"), choices=Status.choices, max_length=30, default=Status.pending
     )
+    pending_status = models.CharField(
+        _("pending status"),
+        choices=Status.choices,
+        max_length=30,
+        default=Status.pending,
+        blank=True,
+    )
     approved_type = models.CharField(
         verbose_name=_("approved type"),
         choices=ApprovedType.choices,

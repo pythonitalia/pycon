@@ -446,6 +446,12 @@
                 </th>
                 <th scope="col">
                   <div class="text">
+                    <span>Pending Status</span>
+                  </div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
+                  <div class="text">
                     <span>Decision</span>
                   </div>
                   <div class="clear"></div>
@@ -463,13 +469,13 @@
               <script>
                 grantsById[{{item.id}}] = {
                     id: {{item.id}},
-                    status: "{{ item.status }}",
-                    originalStatus: "{{ item.status }}",
+                    status: "{{ item.pending_status }}",
+                    originalStatus: "{{ item.pending_status }}",
                     numOfVotes: {{item.userreview_set.count}},
                 };
               </script>
               <tr
-                data-original-status="{{ item.status }}"
+                data-original-status="{{ item.pending_status }}"
                 data-original-approved-type="{{ item.approved_type }}"
                 class="grant-item"
                 id="grant-{{ item.id }}"
@@ -593,7 +599,12 @@
                 <td>
                   {{ item.get_status_display }}
                   <br />
-                  {% if item.approved_type %}({{ item.get_approved_type_display }}){% endif %}
+                  {% if item.status == "approved" and item.approved_type %}({{ item.get_approved_type_display }}){% endif %}
+                </td>
+                <td>
+                  {{ item.get_pending_status_display }}
+                  <br />
+                  {% if item.pending_status == "approved" and item.approved_type %}({{ item.get_approved_type_display }}){% endif %}
                 </td>
                 <td>
                   {% if perms.reviews.decision_reviewsession %}
@@ -601,7 +612,7 @@
                     {% for status in all_review_statuses %}
                     <li>
                       <label>
-                        <input {% if item.status == status.0 %}checked{% endif %}
+                        <input {% if item.pending_status == status.0 %}checked{% endif %}
                           type="radio"
                           class="status-decision-radio"
                           name="decision-{{item.id}}"
@@ -630,7 +641,7 @@
                   {% if perms.reviews.decision_reviewsession %}
                   <ul
                     data-item-id="{{ item.id }}"
-                    class="approved-type-choices {% if item.status != 'approved' %}hidden{% endif %}"
+                    class="approved-type-choices {% if item.pending_status != 'approved' %}hidden{% endif %}"
                   >
                     {% for approved_type in all_approved_types %}
                     <li>
@@ -673,7 +684,7 @@
         <table>
           <tbody>
             <tr>
-              <td><h2>Pending status ➡</h2></td>
+              <td><h2>Changes ➡</h2></td>
               {% for status in all_statuses %}
               <td>
                 {% if status in all_review_statuses %}
