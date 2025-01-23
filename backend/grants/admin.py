@@ -416,6 +416,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     list_filter = (
         "conference",
         "status",
+        "pending_status",
         "country_type",
         "occupation",
         "approved_type",
@@ -451,6 +452,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
             {
                 "fields": (
                     "status",
+                    "pending_status",
                     "approved_type",
                     "country_type",
                     "ticket_amount",
