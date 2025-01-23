@@ -1,3 +1,4 @@
+from django.db.models import F
 from django.contrib import messages
 from functools import wraps
 
@@ -52,3 +53,19 @@ def validate_single_conference_selection(func):
         return func(modeladmin, request, queryset)
 
     return wrapper
+
+
+@admin.action(description="Confirm pending status change")
+@validate_single_conference_selection
+def confirm_pending_status(modeladmin, request, queryset):
+    queryset.update(
+        status=F("pending_status"),
+    )
+
+
+@admin.action(description="Reset pending status to status")
+@validate_single_conference_selection
+def reset_pending_status_back_to_status(modeladmin, request, queryset):
+    queryset.update(
+        pending_status=F("status"),
+    )

@@ -5,7 +5,11 @@ from custom_admin.audit import (
 )
 from conferences.models.conference_voucher import ConferenceVoucher
 from pycon.constants import UTC
-from custom_admin.admin import validate_single_conference_selection
+from custom_admin.admin import (
+    confirm_pending_status,
+    reset_pending_status_back_to_status,
+    validate_single_conference_selection,
+)
 from import_export.resources import ModelResource
 from datetime import timedelta
 from typing import Dict, List, Optional
@@ -577,22 +581,6 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
 
     class Media:
         js = ["admin/js/jquery.init.js"]
-
-
-@admin.action(description="Confirm pending status change")
-@validate_single_conference_selection
-def confirm_pending_status(modeladmin, request, queryset):
-    Grant.objects.filter(id__in=queryset.values_list("id", flat=True)).update(
-        status=F("pending_status"),
-    )
-
-
-@admin.action(description="Reset pending status")
-@validate_single_conference_selection
-def reset_pending_status_back_to_status(modeladmin, request, queryset):
-    Grant.objects.filter(id__in=queryset.values_list("id", flat=True)).update(
-        pending_status=F("status"),
-    )
 
 
 @admin.register(GrantConfirmPendingStatusProxy)

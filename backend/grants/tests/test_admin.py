@@ -466,16 +466,27 @@ def test_confirm_pending_status_action(rf):
         conference=grant_1.conference,
     )
 
+    grant_4 = GrantFactory(
+        status=Grant.Status.waiting_list_maybe,
+        pending_status=Grant.Status.confirmed,
+        conference=grant_1.conference,
+    )
+
     request = rf.get("/")
-    confirm_pending_status(None, request, Grant.objects.all())
+    confirm_pending_status(
+        None, request, Grant.objects.filter(id__in=[grant_1.id, grant_2.id, grant_3.id])
+    )
 
     grant_1.refresh_from_db()
     grant_2.refresh_from_db()
     grant_3.refresh_from_db()
+    grant_4.refresh_from_db()
 
     assert grant_1.status == Grant.Status.confirmed
     assert grant_2.status == Grant.Status.waiting_list
     assert grant_3.status == Grant.Status.waiting_list_maybe
+    # Left out from the action
+    assert grant_4.status == Grant.Status.waiting_list_maybe
 
 
 def test_reset_pending_status_back_to_status_action(rf):
@@ -496,13 +507,31 @@ def test_reset_pending_status_back_to_status_action(rf):
         conference=grant_1.conference,
     )
 
+    grant_4 = GrantFactory(
+        status=Grant.Status.waiting_list_maybe,
+        pending_status=Grant.Status.confirmed,
+        conference=grant_1.conference,
+    )
+
     request = rf.get("/")
-    reset_pending_status_back_to_status(None, request, Grant.objects.all())
+    reset_pending_status_back_to_status(
+        None, request, Grant.objects.filter(id__in=[grant_1.id, grant_2.id, grant_3.id])
+    )
 
     grant_1.refresh_from_db()
     grant_2.refresh_from_db()
     grant_3.refresh_from_db()
+    grant_4.refresh_from_db()
 
     assert grant_1.status == Grant.Status.pending
+    assert grant_1.pending_status == Grant.Status.pending
+
     assert grant_2.status == Grant.Status.rejected
+    assert grant_2.pending_status == Grant.Status.rejected
+
     assert grant_3.status == Grant.Status.waiting_list
+    assert grant_3.pending_status == Grant.Status.waiting_list
+
+    # Left out from the action
+    assert grant_4.status == Grant.Status.waiting_list_maybe
+    assert grant_4.pending_status == Grant.Status.confirmed

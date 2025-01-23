@@ -401,7 +401,7 @@
                   numOfVotes: {{item.userreview_set.count}},
                 };
               </script>
-              <tr class="proposal-item" id="submission-{{item.id}}" data-original-status="{{ item.status }}">
+              <tr class="proposal-item" id="submission-{{item.id}}" data-original-status="{{ item.pending_status }}">
                 <td>{{forloop.counter}}</td>
                 <td class="results-title">
                   <a
@@ -496,7 +496,7 @@
                 <td class="decision-input-wrapper">
                   <label>
                     <input
-                      {% if item.status == 'accepted' %}checked{% endif %}
+                      {% if item.pending_status == 'accepted' %}checked{% endif %}
                       type="radio"
                       name="decision-{{item.id}}"
                       value="accepted"
@@ -505,7 +505,7 @@
                   </label>
                   <label>
                     <input
-                      {% if item.status == 'rejected' %}checked{% endif %}
+                      {% if item.pending_status == 'rejected' %}checked{% endif %}
                       type="radio"
                       name="decision-{{item.id}}"
                       value="rejected"
@@ -514,7 +514,7 @@
                   </label>
                   <label>
                     <input
-                      {% if item.status == 'waiting_list' %}checked{% endif %}
+                      {% if item.pending_status == 'waiting_list' %}checked{% endif %}
                       type="radio"
                       name="decision-{{item.id}}"
                       value="waiting_list"
