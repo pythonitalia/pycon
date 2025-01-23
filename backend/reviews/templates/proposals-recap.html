@@ -342,7 +342,7 @@
         </select>
       </div>
       <div class="opt-filter">
-        <h3>Show proposals with status:</h3>
+        <h3>Show proposals with pending status:</h3>
         <div>
           {% for status in all_statuses %}
           <label>
@@ -380,6 +380,10 @@
                   <div class="clear"></div>
                 </th>
                 <th scope="col">
+                  <div class="text"><span>Pending Status</span></div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
                   <div class="text"><span>Decision</span></div>
                   <div class="clear"></div>
                 </th>
@@ -390,14 +394,14 @@
               <script>
                 submissionsById[{{ item.id }}] = {
                   id: {{ item.id }},
-                  status: "{{ item.status }}",
-                  originalStatus: "{{ item.status }}",
+                  status: "{{ item.pending_status }}",
+                  originalStatus: "{{ item.pending_status }}",
                   audienceLevel: {{ item.audience_level.id }},
                   languages: [{% for language in item.languages.all %}"{{language.code}}",{% endfor %}],
                   numOfVotes: {{item.userreview_set.count}},
                 };
               </script>
-              <tr class="proposal-item" id="submission-{{item.id}}" data-original-status="{{ item.status }}">
+              <tr class="proposal-item" id="submission-{{item.id}}" data-original-status="{{ item.pending_status }}">
                 <td>{{forloop.counter}}</td>
                 <td class="results-title">
                   <a
@@ -485,10 +489,14 @@
                   {{item.status}}
                 </td>
 
+                <td>
+                  {{item.pending_status}}
+                </td>
+
                 <td class="decision-input-wrapper">
                   <label>
                     <input
-                      {% if item.status == 'accepted' %}checked{% endif %}
+                      {% if item.pending_status == 'accepted' %}checked{% endif %}
                       type="radio"
                       name="decision-{{item.id}}"
                       value="accepted"
@@ -497,7 +505,7 @@
                   </label>
                   <label>
                     <input
-                      {% if item.status == 'rejected' %}checked{% endif %}
+                      {% if item.pending_status == 'rejected' %}checked{% endif %}
                       type="radio"
                       name="decision-{{item.id}}"
                       value="rejected"
@@ -506,7 +514,7 @@
                   </label>
                   <label>
                     <input
-                      {% if item.status == 'waiting_list' %}checked{% endif %}
+                      {% if item.pending_status == 'waiting_list' %}checked{% endif %}
                       type="radio"
                       name="decision-{{item.id}}"
                       value="waiting_list"

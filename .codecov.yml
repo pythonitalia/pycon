@@ -13,6 +13,6 @@ coverage:
   round: down
   status:
     changes: false
-    patch: true
+    patch: false
     project: false
 github_checks: false

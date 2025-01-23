@@ -282,7 +282,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
                 approved_type = approved_type_decisions.get(grant.id, "")
 
-                grant.status = decision
+                grant.pending_status = decision
                 grant.approved_type = (
                     approved_type if decision == Grant.Status.approved else None
                 )
@@ -290,7 +290,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             for grant in grants:
                 # save each to make sure we re-calculate the grants amounts
                 # TODO: move the amount calculation in a separate function maybe?
-                grant.save(update_fields=["status", "approved_type"])
+                grant.save(update_fields=["pending_status", "approved_type"])
 
             messages.success(
                 request, "Decisions saved. Check the Grants Summary for more info."
@@ -406,11 +406,11 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
             for proposal in proposals:
                 decision = decisions[proposal.id]
-                proposal.status = decision
+                proposal.pending_status = decision
 
             Submission.objects.bulk_update(
                 proposals,
-                fields=["status"],
+                fields=["pending_status"],
             )
 
             return redirect(

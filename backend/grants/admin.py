@@ -5,7 +5,11 @@ from custom_admin.audit import (
 )
 from conferences.models.conference_voucher import ConferenceVoucher
 from pycon.constants import UTC
-from custom_admin.admin import validate_single_conference_selection
+from custom_admin.admin import (
+    confirm_pending_status,
+    reset_pending_status_back_to_status,
+    validate_single_conference_selection,
+)
 from import_export.resources import ModelResource
 from datetime import timedelta
 from typing import Dict, List, Optional
@@ -25,11 +29,13 @@ from grants.tasks import (
 )
 from schedule.models import ScheduleItem
 from submissions.models import Submission
-from .models import Grant
-from django.db.models import Exists, OuterRef
+from .models import Grant, GrantConfirmPendingStatusProxy
+from django.db.models import Exists, OuterRef, F
 
 from django.contrib.admin import SimpleListFilter
 from participants.models import Participant
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 EXPORT_GRANTS_FIELDS = (
     "name",
@@ -410,6 +416,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     list_filter = (
         "conference",
         "status",
+        "pending_status",
         "country_type",
         "occupation",
         "approved_type",
@@ -445,6 +452,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
             {
                 "fields": (
                     "status",
+                    "pending_status",
                     "approved_type",
                     "country_type",
                     "ticket_amount",
@@ -575,3 +583,48 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
 
     class Media:
         js = ["admin/js/jquery.init.js"]
+
+
+@admin.register(GrantConfirmPendingStatusProxy)
+class GrantConfirmPendingStatusProxyAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "full_name",
+        "status",
+        "to",
+        "pending_status",
+        "open_grant",
+        "conference",
+    )
+    list_filter = ("status", "pending_status", "conference")
+    search_fields = ("full_name", "user__email")
+    list_display_links = None
+    actions = [
+        confirm_pending_status,
+        reset_pending_status_back_to_status,
+    ]
+
+    def to(self, obj):
+        return "➡️"
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .exclude(
+                pending_status=F("status"),
+            )
+        )
+
+    def open_grant(self, obj):
+        url = reverse("admin:grants_grant_change", args=[obj.id])
+        return mark_safe(f'<a href="{url}">Open Grant</a>')

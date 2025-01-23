@@ -1,7 +1,13 @@
-from custom_admin.admin import validate_single_conference_selection
+from django.urls import reverse
+from custom_admin.admin import (
+    confirm_pending_status,
+    reset_pending_status_back_to_status,
+    validate_single_conference_selection,
+)
 from import_export.resources import ModelResource
 
 from django import forms
+from django.db.models import F
 from django.contrib import admin, messages
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -20,6 +26,7 @@ from .models import (
     ProposalMaterial,
     Submission,
     SubmissionComment,
+    SubmissionConfirmPendingStatusProxy,
     SubmissionTag,
     SubmissionType,
 )
@@ -121,6 +128,7 @@ class SubmissionAdminForm(forms.ModelForm):
             "slug",
             "speaker",
             "status",
+            "pending_status",
             "type",
             "duration",
             "topic",
@@ -216,6 +224,7 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                     "slug",
                     "speaker",
                     "status",
+                    "pending_status",
                     "created",
                     "modified",
                     "type",
@@ -311,3 +320,52 @@ class SubmissionTagAdmin(admin.ModelAdmin):
 @admin.register(SubmissionComment)
 class SubmissionCommentAdmin(admin.ModelAdmin):
     list_display = ("submission", "author", "text")
+
+
+@admin.register(SubmissionConfirmPendingStatusProxy)
+class SubmissionConfirmPendingStatusProxyAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "title",
+        "speaker_name",
+        "status",
+        "to",
+        "pending_status",
+        "open_submission",
+        "conference",
+    )
+    list_filter = ("status", "pending_status", "conference")
+    search_fields = ("speaker__full_name", "speaker__email", "title")
+    list_display_links = None
+    actions = [
+        confirm_pending_status,
+        reset_pending_status_back_to_status,
+    ]
+
+    def speaker_name(self, obj):
+        return obj.speaker.display_name
+
+    def to(self, obj):
+        return "➡️"
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .exclude(
+                pending_status=F("status"),
+            )
+        )
+
+    def open_submission(self, obj):
+        url = reverse("admin:submissions_submission_change", args=[obj.id])
+        return mark_safe(f'<a href="{url}">Open Submission</a>')
