@@ -25,11 +25,13 @@ from grants.tasks import (
 )
 from schedule.models import ScheduleItem
 from submissions.models import Submission
-from .models import Grant
-from django.db.models import Exists, OuterRef
+from .models import Grant, GrantConfirmPendingStatusProxy
+from django.db.models import Exists, OuterRef, F
 
 from django.contrib.admin import SimpleListFilter
 from participants.models import Participant
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 EXPORT_GRANTS_FIELDS = (
     "name",
@@ -575,3 +577,64 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
 
     class Media:
         js = ["admin/js/jquery.init.js"]
+
+
+@admin.action(description="Confirm pending status change")
+@validate_single_conference_selection
+def confirm_pending_status(modeladmin, request, queryset):
+    Grant.objects.filter(id__in=queryset.values_list("id", flat=True)).update(
+        status=F("pending_status"),
+    )
+
+
+@admin.action(description="Reset pending status")
+@validate_single_conference_selection
+def reset_pending_status_back_to_status(modeladmin, request, queryset):
+    Grant.objects.filter(id__in=queryset.values_list("id", flat=True)).update(
+        pending_status=F("status"),
+    )
+
+
+@admin.register(GrantConfirmPendingStatusProxy)
+class GrantConfirmPendingStatusProxyAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "full_name",
+        "status",
+        "to",
+        "pending_status",
+        "open_grant",
+        "conference",
+    )
+    list_filter = ("status", "pending_status", "conference")
+    search_fields = ("full_name", "user__email")
+    list_display_links = None
+    actions = [
+        confirm_pending_status,
+        reset_pending_status_back_to_status,
+    ]
+
+    def to(self, obj):
+        return "➡️"
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .exclude(
+                pending_status=F("status"),
+            )
+        )
+
+    def open_grant(self, obj):
+        url = reverse("admin:grants_grant_change", args=[obj.id])
+        return mark_safe(f'<a href="{url}">Open Grant</a>')

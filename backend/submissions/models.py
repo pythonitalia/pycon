@@ -257,3 +257,10 @@ class SubmissionComment(TimeStampedModel):
     class Meta:
         verbose_name = _("comment")
         verbose_name_plural = _("comments")
+
+
+class SubmissionConfirmPendingStatusProxy(Submission):
+    class Meta:
+        proxy = True
+        verbose_name = _("Submission Confirm Pending Status")
+        verbose_name_plural = _("Submissions Confirm Pending Status")

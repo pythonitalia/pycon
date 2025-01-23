@@ -338,3 +338,10 @@ class Grant(TimeStampedModel):
             self.approved_type == Grant.ApprovedType.ticket_accommodation
             or self.approved_type == Grant.ApprovedType.ticket_travel_accommodation
         )
+
+
+class GrantConfirmPendingStatusProxy(Grant):
+    class Meta:
+        proxy = True
+        verbose_name = _("Grant Confirm Pending Status")
+        verbose_name_plural = _("Grants Confirm Pending Status")

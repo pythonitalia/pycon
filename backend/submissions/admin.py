@@ -20,6 +20,7 @@ from .models import (
     ProposalMaterial,
     Submission,
     SubmissionComment,
+    SubmissionConfirmPendingStatusProxy,
     SubmissionTag,
     SubmissionType,
 )
@@ -311,3 +312,8 @@ class SubmissionTagAdmin(admin.ModelAdmin):
 @admin.register(SubmissionComment)
 class SubmissionCommentAdmin(admin.ModelAdmin):
     list_display = ("submission", "author", "text")
+
+
+@admin.register(SubmissionConfirmPendingStatusProxy)
+class SubmissionConfirmPendingStatusProxyAdmin(admin.ModelAdmin):
+    ...
