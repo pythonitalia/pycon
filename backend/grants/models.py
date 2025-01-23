@@ -230,7 +230,7 @@ class Grant(TimeStampedModel):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._original_status = self.status
+        self._original_pending_status = self.pending_status
         self._original_approved_type = self.approved_type
         self._original_country_type = self.country_type
 
@@ -253,14 +253,14 @@ class Grant(TimeStampedModel):
 
         self._original_approved_type = self.approved_type
         self._original_country_type = self.country_type
-        self._original_status = self.status
+        self._original_pending_status = self.pending_status
 
     def _calculate_grant_amounts(self):
-        if self.status != Grant.Status.approved:
+        if self.pending_status != Grant.Status.approved:
             return
 
         if (
-            self._original_status == self.status
+            self._original_pending_status == self.pending_status
             and self._original_approved_type == self.approved_type
             and self._original_country_type == self.country_type
         ):

@@ -54,7 +54,7 @@ def test_calculate_grant_amounts(data):
     expected_travel_amount = data["expected_travel_amount"]
 
     grant = GrantFactory(
-        status=Grant.Status.pending,
+        pending_status=Grant.Status.pending,
         approved_type=approved_type,
         departure_country=departure_country,
         conference__grants_default_ticket_amount=100,
@@ -64,7 +64,7 @@ def test_calculate_grant_amounts(data):
         conference__grants_default_travel_from_extra_eu_amount=500,
     )
 
-    grant.status = Grant.Status.approved
+    grant.pending_status = Grant.Status.approved
     grant.save()
 
     grant.refresh_from_db()
@@ -82,7 +82,7 @@ def test_calculate_grant_amounts(data):
 
 def test_resets_amounts_on_approved_type_change():
     grant = GrantFactory(
-        status=Grant.Status.pending,
+        pending_status=Grant.Status.pending,
         approved_type=Grant.ApprovedType.ticket_only,
         departure_country="IT",
         conference__grants_default_ticket_amount=100,
@@ -92,7 +92,7 @@ def test_resets_amounts_on_approved_type_change():
         conference__grants_default_travel_from_extra_eu_amount=500,
     )
 
-    grant.status = Grant.Status.approved
+    grant.pending_status = Grant.Status.approved
     grant.save()
 
     assert grant.ticket_amount == 100
@@ -111,7 +111,7 @@ def test_resets_amounts_on_approved_type_change():
 
 def test_can_manually_change_amounts():
     grant = GrantFactory(
-        status=Grant.Status.pending,
+        pending_status=Grant.Status.pending,
         approved_type=Grant.ApprovedType.ticket_only,
         departure_country="IT",
         conference__grants_default_ticket_amount=100,
@@ -121,8 +121,8 @@ def test_can_manually_change_amounts():
         conference__grants_default_travel_from_extra_eu_amount=500,
     )
 
-    grant.status = Grant.Status.approved
-    grant.save(update_fields=["status"])
+    grant.pending_status = Grant.Status.approved
+    grant.save(update_fields=["pending_status"])
 
     assert grant.ticket_amount == 100
     assert grant.accommodation_amount == 0
