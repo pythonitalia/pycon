@@ -8,7 +8,7 @@ export const messages = {
     "global.pleaseWait": "Please wait",
 
     "tickets.description":
-      "We have groups discounts for groups between 6 and 10+ people, contact us to know more. After you have purchased your tickets, you will be able to access the {page} with our discounted codes.",
+      "We have groups discounts for groups with 6+ people, contact us to know more. After you have purchased your tickets, you will be able to access the {page} with our discounted codes.",
     "tickets.description.page": "hotels page",
 
     "input.placeholder": "Type here...",
@@ -2224,7 +2224,7 @@ Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia dis
     "cfp.availability.table.afternoon.range": "(15:00 - 18:00)",
 
     "tickets.description":
-      "Offriamo sconti per gruppi da 6 a 10+ persone, contattateci per saperne di più. Dopo aver acquistato i tuoi biglietti, potrai accedere alla {page} con i nostri codici sconto.",
+      "Offriamo sconti per gruppi da 6 persone in su, contattateci per saperne di più. Dopo aver acquistato i tuoi biglietti, potrai accedere alla {page} con i nostri codici sconto.",
     "tickets.description.page": "pagina hotels",
 
     "requestInvitationLetter.pageTitle": "Richiedi una lettera d'invito",
