@@ -2224,7 +2224,7 @@ Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia dis
     "cfp.availability.table.afternoon.range": "(15:00 - 18:00)",
 
     "tickets.description":
-      "Offriamo sconti per gruppi da 6 persone in su, contattateci per saperne di più. Dopo aver acquistato i tuoi biglietti, potrai accedere alla {page} con i nostri codici sconto.",
+      "Offriamo sconti per gruppi da 6 persone in su, contattaci per saperne di più. Dopo aver acquistato i tuoi biglietti, potrai accedere alla {page} con i nostri codici sconto.",
     "tickets.description.page": "pagina hotels",
 
     "requestInvitationLetter.pageTitle": "Richiedi una lettera d'invito",
