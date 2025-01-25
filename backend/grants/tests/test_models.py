@@ -160,3 +160,35 @@ def test_sets_country_type_does_nothing_if_unset():
     grant = GrantFactory(departure_country=None)
 
     assert grant.country_type is None
+
+
+def test_syncs_pending_status_on_change():
+    grant = GrantFactory(
+        pending_status=Grant.Status.pending,
+        status=Grant.Status.pending,
+    )
+
+    grant.status = Grant.Status.approved
+    grant.save(update_fields=["status"])
+
+    # Pending status should be updated to match the status
+    grant.refresh_from_db()
+
+    assert grant.pending_status == Grant.Status.approved
+    assert grant.status == Grant.Status.approved
+
+
+def test_doesnt_sync_pending_status_if_different_values():
+    grant = GrantFactory(
+        pending_status=Grant.Status.refused,
+        status=Grant.Status.pending,
+    )
+
+    grant.status = Grant.Status.waiting_for_confirmation
+    grant.save()
+
+    # Status should not be updated
+    grant.refresh_from_db()
+
+    assert grant.pending_status == Grant.Status.refused
+    assert grant.status == Grant.Status.waiting_for_confirmation
