@@ -12,6 +12,13 @@ def test_slug_is_not_regenerated_when_changing_title():
     assert submission.slug == "hello"
 
     submission.title = LazyI18nString({"en": "ciao", "it": "cia"})
+    submission.save(update_fields=["title"])
+
+    submission.refresh_from_db()
+
+    assert submission.slug == "hello"
+
+    submission.slug = ""
     submission.save()
 
     submission.refresh_from_db()
@@ -26,7 +33,7 @@ def test_syncs_pending_status_when_changing_status():
     )
 
     submission.status = Submission.STATUS.rejected
-    submission.save()
+    submission.save(update_fields=["status"])
 
     submission.refresh_from_db()
 
