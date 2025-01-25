@@ -23,7 +23,7 @@ def test_slug_is_not_regenerated_when_changing_title():
 
     submission.refresh_from_db()
 
-    assert submission.slug == "hello"
+    assert submission.slug == "ciao"
 
 
 def test_syncs_pending_status_when_changing_status():
