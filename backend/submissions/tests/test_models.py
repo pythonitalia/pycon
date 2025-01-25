@@ -12,14 +12,14 @@ def test_slug_is_not_regenerated_when_changing_title():
     assert submission.slug == "hello"
 
     submission.title = LazyI18nString({"en": "ciao", "it": "cia"})
-    submission.save(update_fields=["title"])
+    submission.save()
 
     submission.refresh_from_db()
 
     assert submission.slug == "hello"
 
     submission.slug = ""
-    submission.save()
+    submission.save(update_fields=["title"])
 
     submission.refresh_from_db()
 
