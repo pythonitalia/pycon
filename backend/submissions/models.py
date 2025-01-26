@@ -109,6 +109,10 @@ class Submission(TimeStampedModel):
 
     objects = SubmissionQuerySet().as_manager()
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._original_status = self.status
+
     @property
     def hashid(self):
         return encode_hashid(self.pk)
@@ -185,8 +189,19 @@ class Submission(TimeStampedModel):
         )
 
     def save(self, *args, **kwargs):
+        update_fields = kwargs.get("update_fields", None)
+
         if not self.slug:
             self.slug = slugify(self.title.localize("en"))
+
+            if update_fields:
+                update_fields.append("slug")
+
+        if self.pending_status == self._original_status:
+            self.pending_status = self.status
+
+            if update_fields:
+                update_fields.append("pending_status")
 
         return super().save(*args, **kwargs)
 
