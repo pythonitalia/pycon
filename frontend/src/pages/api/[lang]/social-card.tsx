@@ -8,22 +8,9 @@ import type { Language } from "~/locale/languages";
 import { querySocialCard } from "~/types";
 
 export const config = {
-  runtime: "edge", // ??
+  runtime: "edge",
   unstable_allowDynamic: ["/node_modules/.pnpm/**"],
 };
-
-const regularFont = fetch(
-  new URL("../../../social-card-font/GeneralSans-Regular.otf", import.meta.url),
-).then((res) => res.arrayBuffer());
-const semiBoldFont = fetch(
-  new URL(
-    "../../../social-card-font/GeneralSans-Semibold.otf",
-    import.meta.url,
-  ),
-).then((res) => res.arrayBuffer());
-const mainIllustration = fetch(
-  new URL("../../../../public/images/main-illustration.png", import.meta.url),
-).then((res) => res.arrayBuffer());
 
 const getDays = ({ start, end }: { start: string; end: string }) => {
   // assuming the same month
@@ -50,6 +37,22 @@ const getYear = ({ end }: { end: string }) => {
 };
 
 const handler = async (req: NextRequest) => {
+  const regularFont = fetch(
+    new URL(
+      "../../../social-card-font/GeneralSans-Regular.otf",
+      import.meta.url,
+    ),
+  ).then((res) => res.arrayBuffer());
+  const semiBoldFont = fetch(
+    new URL(
+      "../../../social-card-font/GeneralSans-Semibold.otf",
+      import.meta.url,
+    ),
+  ).then((res) => res.arrayBuffer());
+  const mainIllustration = fetch(
+    new URL("../../../../public/images/main-illustration.png", import.meta.url),
+  ).then((res) => res.arrayBuffer());
+
   const [regularFontData, semiBoldFontData, mainIllustrationData] =
     await Promise.all([regularFont, semiBoldFont, mainIllustration]);
   const client = createClient();
