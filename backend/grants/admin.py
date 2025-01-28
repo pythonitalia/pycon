@@ -409,8 +409,6 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "country_type",
         "applicant_reply_sent_at",
         "applicant_reply_deadline",
-        "voucher_code",
-        "voucher_email_sent_at",
         "created",
     )
     list_filter = (
@@ -461,9 +459,6 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                     "total_amount",
                     "applicant_reply_sent_at",
                     "applicant_reply_deadline",
-                    "pretix_voucher_id",
-                    "voucher_code",
-                    "voucher_email_sent_at",
                     "internal_notes",
                 )
             },
