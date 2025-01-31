@@ -43,6 +43,14 @@ STRIPE_SECRET_API_KEY=
 
 Adding the secret keys after the `=` symbol.
 
+## Enabling Django Debug Toolbar
+
+To enable the Django Debug Toolbar, set the `ENABLE_DJANGO_DEBUG_TOOLBAR` variable to `true` in your `.env` file:
+
+```text
+ENABLE_DJANGO_DEBUG_TOOLBAR=true
+```
+
 ## External repos
 
 Repos used by this project are in separate repositories.
