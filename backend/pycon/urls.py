@@ -34,6 +34,13 @@ urlpatterns = [
     path("", include("notifications.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+
+if settings.DEBUG and settings.ENABLE_DJANGO_DEBUG_TOOLBAR:
+    from debug_toolbar.toolbar import debug_toolbar_urls
+
+    urlpatterns += debug_toolbar_urls()
+
+
 urlpatterns = urlpatterns + [
     path("", include(wagtail_urls)),
 ]
