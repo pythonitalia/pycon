@@ -144,6 +144,27 @@ MIDDLEWARE = [
     # "qinspect.middleware.QueryInspectMiddleware",
 ]
 
+# Django Debug Toolbar
+
+ENABLE_DJANGO_DEBUG_TOOLBAR: bool = env.bool(
+    "ENABLE_DJANGO_DEBUG_TOOLBAR", default=False
+)
+
+
+if ENABLE_DJANGO_DEBUG_TOOLBAR:
+    INSTALLED_APPS.append("debug_toolbar")
+
+    MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
+
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK": lambda _: DEBUG,
+        "SHOW_COLLAPSED": True,
+    }
+
+    INTERNAL_IPS = [
+        "127.0.0.1",
+    ]
+
 ROOT_URLCONF = "pycon.urls"
 
 FORM_RENDERER = "custom_admin.template_backends.FormRenderer"
