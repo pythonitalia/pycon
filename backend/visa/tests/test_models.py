@@ -84,6 +84,6 @@ def test_schedule_processing(django_capture_on_commit_callbacks, mocker):
     )
 
     with django_capture_on_commit_callbacks(execute=True):
-        request.schedule()
+        request.process()
 
     mock_task.delay.assert_called_once_with(invitation_letter_request_id=request.id)

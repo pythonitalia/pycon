@@ -32,6 +32,7 @@ urlpatterns = [
     path("", include("healthchecks.urls")),
     path("", include("files_upload.urls")),
     path("", include("notifications.urls")),
+    path("visa/", include("visa.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

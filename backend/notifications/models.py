@@ -48,6 +48,11 @@ class EmailTemplateIdentifier(models.TextChoices):
 
     sponsorship_brochure = "sponsorship_brochure", _("Sponsorship brochure")
 
+    visa_invitation_letter_download = (
+        "visa_invitation_letter_download",
+        _("Visa invitation letter download"),
+    )
+
     custom = "custom", _("Custom")
 
 
@@ -152,6 +157,11 @@ class EmailTemplate(TimeStampedModel):
         EmailTemplateIdentifier.sponsorship_brochure: [
             *BASE_PLACEHOLDERS,
             "brochure_url",
+            "conference_name",
+        ],
+        EmailTemplateIdentifier.visa_invitation_letter_download: [
+            *BASE_PLACEHOLDERS,
+            "invitation_letter_download_url",
             "conference_name",
         ],
     }

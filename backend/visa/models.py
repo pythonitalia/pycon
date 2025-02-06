@@ -138,11 +138,20 @@ class InvitationLetterRequest(TimeStampedModel):
 
         return self.requester
 
-    def schedule(self):
+    def process(self):
         from visa.tasks import process_invitation_letter_request
 
         transaction.on_commit(
             lambda: process_invitation_letter_request.delay(
+                invitation_letter_request_id=self.id
+            )
+        )
+
+    def send_via_email(self):
+        from visa.tasks import send_invitation_letter_via_email
+
+        transaction.on_commit(
+            lambda: send_invitation_letter_via_email.delay(
                 invitation_letter_request_id=self.id
             )
         )

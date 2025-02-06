@@ -78,7 +78,10 @@ class InvitationLetterRequestAdmin(admin.ModelAdmin):
         obj = super().save_form(request, form, change)
 
         if "_process_now" in form.data:
-            obj.schedule()
+            obj.process()
+
+        if "_send_via_email" in form.data:
+            obj.send_via_email()
 
         return obj
 
@@ -108,6 +111,11 @@ class InvitationLetterRequestAdmin(admin.ModelAdmin):
         if "_process_now" in request.POST:
             obj.status = InvitationLetterRequestStatus.PENDING
             obj.save(update_fields=["status"])
+            return HttpResponseRedirect(
+                reverse("admin:visa_invitationletterrequest_change", args=[obj.id])
+            )
+
+        if "_send_via_email" in request.POST:
             return HttpResponseRedirect(
                 reverse("admin:visa_invitationletterrequest_change", args=[obj.id])
             )
