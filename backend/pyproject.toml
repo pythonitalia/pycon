@@ -54,7 +54,7 @@ dependencies = [
     "requests==2.32.3",
     "urllib3==2.2.2",
     "aniso8601==9.0.1",
-    "whitenoise==6.7.0",
+    "whitenoise==6.9.0",
     "django-ordered-model==3.5",
     "uWSGI==2.0.26",
     "django-storages==1.14.4",
