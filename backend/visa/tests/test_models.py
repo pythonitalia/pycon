@@ -87,3 +87,15 @@ def test_schedule_processing(django_capture_on_commit_callbacks, mocker):
         request.process()
 
     mock_task.delay.assert_called_once_with(invitation_letter_request_id=request.id)
+
+
+def test_send_via_email(django_capture_on_commit_callbacks, mocker):
+    mock_task = mocker.patch("visa.tasks.send_invitation_letter_via_email")
+    request = InvitationLetterRequestFactory(
+        on_behalf_of=InvitationLetterRequestOnBehalfOf.SELF,
+    )
+
+    with django_capture_on_commit_callbacks(execute=True):
+        request.send_via_email()
+
+    mock_task.delay.assert_called_once_with(invitation_letter_request_id=request.id)
