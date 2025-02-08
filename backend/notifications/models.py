@@ -163,6 +163,7 @@ class EmailTemplate(TimeStampedModel):
             *BASE_PLACEHOLDERS,
             "invitation_letter_download_url",
             "has_grant",
+            "user_name",
         ],
     }
 

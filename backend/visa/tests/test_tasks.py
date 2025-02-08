@@ -384,7 +384,9 @@ def test_notify_new_invitation_letter_request_on_slack(mocker):
 
 
 def test_send_invitation_letter_via_email():
-    invitation_letter_request = InvitationLetterRequestFactory()
+    invitation_letter_request = InvitationLetterRequestFactory(
+        requester__full_name="Marco",
+    )
 
     with patch("visa.tasks.EmailTemplate") as mock_email_template:
         send_invitation_letter_via_email(
@@ -410,6 +412,7 @@ def test_send_invitation_letter_via_email():
         placeholders={
             "invitation_letter_download_url": f"https://admin.pycon.it{url_path}?sig={signature}",
             "has_grant": False,
+            "user_name": "Marco",
         },
     )
 

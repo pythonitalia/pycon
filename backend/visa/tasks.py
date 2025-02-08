@@ -1,4 +1,5 @@
 from django.urls import reverse
+from grants.tasks import get_name
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from pycon.signing import sign_path
 from integrations import slack
@@ -256,6 +257,7 @@ def send_invitation_letter_via_email(*, invitation_letter_request_id: int):
     email_template.send_email(
         recipient_email=invitation_letter_request.email,
         placeholders={
+            "user_name": get_name(invitation_letter_request.user, "there"),
             "invitation_letter_download_url": invitation_letter_download_url,
             "has_grant": invitation_letter_request.has_grant,
         },
