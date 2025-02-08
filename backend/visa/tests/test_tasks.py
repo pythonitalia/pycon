@@ -409,6 +409,7 @@ def test_send_invitation_letter_via_email():
         recipient_email=invitation_letter_request.email,
         placeholders={
             "invitation_letter_download_url": f"https://admin.pycon.it{url_path}?sig={signature}",
+            "has_grant": False,
         },
     )
 
