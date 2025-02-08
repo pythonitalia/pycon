@@ -1,4 +1,6 @@
 from django.urls import reverse
+from grants.tasks import get_name
+from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from custom_admin.admin import (
     confirm_pending_status,
     reset_pending_status_back_to_status,
@@ -322,6 +324,57 @@ class SubmissionCommentAdmin(admin.ModelAdmin):
     list_display = ("submission", "author", "text")
 
 
+@admin.action(description="Apply and notify status change")
+@validate_single_conference_selection
+def apply_and_notify_status_change(modeladmin, request, queryset):
+    conference = queryset.first().conference
+    count = queryset.count()
+
+    for submission in queryset.select_related("speaker").prefetch_related("type"):
+        submission.status = submission.pending_status
+        submission.save(update_fields=["status"])
+
+        match submission.status:
+            case Submission.STATUS.accepted:
+                template = EmailTemplateIdentifier.proposal_accepted
+                placeholders = {
+                    "conference_name": conference.name.localize("en"),
+                    "proposal_title": submission.title.localize("en"),
+                    "proposal_type": submission.type.name,
+                    "speaker_name": get_name(submission.speaker, "there"),
+                }
+            case Submission.STATUS.rejected:
+                template = EmailTemplateIdentifier.proposal_rejected
+                placeholders = {
+                    "conference_name": conference.name.localize("en"),
+                    "speaker_name": get_name(submission.speaker, "there"),
+                    "proposal_title": submission.title.localize("en"),
+                    "proposal_type": submission.type.name,
+                }
+            case Submission.STATUS.waiting_list:
+                template = EmailTemplateIdentifier.proposal_in_waiting_list
+                placeholders = {
+                    "conference_name": conference.name.localize("en"),
+                    "speaker_name": get_name(submission.speaker, "there"),
+                    "proposal_title": submission.title.localize("en"),
+                    "proposal_type": submission.type.name,
+                }
+
+        email_template = EmailTemplate.objects.for_conference(
+            conference
+        ).get_by_identifier(template)
+        email_template.send_email(
+            recipient=submission.speaker,
+            placeholders=placeholders,
+        )
+
+    messages.add_message(
+        request,
+        messages.SUCCESS,
+        f"Confirmed and notified {count} proposals",
+    )
+
+
 @admin.register(SubmissionConfirmPendingStatusProxy)
 class SubmissionConfirmPendingStatusProxyAdmin(admin.ModelAdmin):
     list_display = (
@@ -338,6 +391,7 @@ class SubmissionConfirmPendingStatusProxyAdmin(admin.ModelAdmin):
     search_fields = ("speaker__full_name", "speaker__email", "title")
     list_display_links = None
     actions = [
+        apply_and_notify_status_change,
         confirm_pending_status,
         reset_pending_status_back_to_status,
     ]
