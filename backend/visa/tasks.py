@@ -1,4 +1,6 @@
 from django.urls import reverse
+from notifications.models import EmailTemplate, EmailTemplateIdentifier
+from pycon.signing import sign_path
 from integrations import slack
 import time
 from django.template import Template, Context
@@ -231,3 +233,33 @@ def notify_new_invitation_letter_request_on_slack(
         oauth_token=conference.get_slack_oauth_token(),
         channel_id=conference.slack_new_invitation_letter_request_channel_id,
     )
+
+
+@app.task
+def send_invitation_letter_via_email(*, invitation_letter_request_id: int):
+    invitation_letter_request = InvitationLetterRequest.objects.get(
+        id=invitation_letter_request_id
+    )
+
+    conference = invitation_letter_request.conference
+
+    download_invitation_letter_path = reverse(
+        "download-invitation-letter", args=[invitation_letter_request.id]
+    )
+    signed_path = sign_path(download_invitation_letter_path)
+
+    invitation_letter_download_url = f"https://admin.pycon.it{signed_path}"
+
+    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
+        EmailTemplateIdentifier.visa_invitation_letter_download
+    )
+    email_template.send_email(
+        recipient_email=invitation_letter_request.email,
+        placeholders={
+            "invitation_letter_download_url": invitation_letter_download_url,
+            "has_grant": invitation_letter_request.has_grant,
+        },
+    )
+
+    invitation_letter_request.status = InvitationLetterRequestStatus.SENT
+    invitation_letter_request.save(update_fields=["status"])

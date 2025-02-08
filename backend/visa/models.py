@@ -114,6 +114,10 @@ class InvitationLetterRequest(TimeStampedModel):
     def user_grant(self):
         return Grant.objects.for_conference(self.conference).of_user(self.user).first()
 
+    @property
+    def has_grant(self):
+        return self.user_grant is not None
+
     @cached_property
     def role(self):
         user = self.user
@@ -138,11 +142,20 @@ class InvitationLetterRequest(TimeStampedModel):
 
         return self.requester
 
-    def schedule(self):
+    def process(self):
         from visa.tasks import process_invitation_letter_request
 
         transaction.on_commit(
             lambda: process_invitation_letter_request.delay(
+                invitation_letter_request_id=self.id
+            )
+        )
+
+    def send_via_email(self):
+        from visa.tasks import send_invitation_letter_via_email
+
+        transaction.on_commit(
+            lambda: send_invitation_letter_via_email.delay(
                 invitation_letter_request_id=self.id
             )
         )

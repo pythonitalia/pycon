@@ -1,5 +1,10 @@
+from django.urls import reverse
+from django.core.signing import Signer
+
+from unittest.mock import patch
 from uuid import uuid4
 import requests
+from notifications.models import EmailTemplateIdentifier
 from grants.tests.factories import GrantFactory
 from grants.models import Grant
 from visa.models import (
@@ -12,6 +17,7 @@ from visa.tasks import (
     notify_new_invitation_letter_request_on_slack,
     process_invitation_letter_request,
     process_invitation_letter_request_failed,
+    send_invitation_letter_via_email,
 )
 from visa.tests.factories import (
     InvitationLetterAssetFactory,
@@ -375,3 +381,38 @@ def test_notify_new_invitation_letter_request_on_slack(mocker):
     kwargs = mock_slack.mock_calls[0][2]
     assert kwargs["oauth_token"] == "token123"
     assert kwargs["channel_id"] == "S123"
+
+
+def test_send_invitation_letter_via_email():
+    invitation_letter_request = InvitationLetterRequestFactory()
+
+    with patch("visa.tasks.EmailTemplate") as mock_email_template:
+        send_invitation_letter_via_email(
+            invitation_letter_request_id=invitation_letter_request.id
+        )
+
+    mock_email_template.objects.for_conference.assert_called_once_with(
+        invitation_letter_request.conference
+    )
+    mock_email_template.objects.for_conference().get_by_identifier.assert_called_once_with(
+        EmailTemplateIdentifier.visa_invitation_letter_download
+    )
+
+    signer = Signer()
+    url_path = reverse(
+        "download-invitation-letter", args=[invitation_letter_request.id]
+    )
+    signed_url = signer.sign(url_path)
+    signature = signed_url.split(signer.sep)[-1]
+
+    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
+        recipient_email=invitation_letter_request.email,
+        placeholders={
+            "invitation_letter_download_url": f"https://admin.pycon.it{url_path}?sig={signature}",
+            "has_grant": False,
+        },
+    )
+
+    invitation_letter_request.refresh_from_db()
+
+    assert invitation_letter_request.status == InvitationLetterRequestStatus.SENT

@@ -20,6 +20,7 @@ def test_request_on_behalf_of_other():
     assert request.email == "example@example.org"
     assert request.user is None
     assert request.role == "Attendee"
+    assert request.has_grant is False
 
     # With matching user, it is found
     user = UserFactory(email="example@example.org")
@@ -47,6 +48,7 @@ def test_request_grant_info(approved_type):
     )
 
     assert request.user_grant == grant
+    assert request.has_grant is True
     assert request.has_accommodation_via_grant() == (
         approved_type
         in [
@@ -84,6 +86,18 @@ def test_schedule_processing(django_capture_on_commit_callbacks, mocker):
     )
 
     with django_capture_on_commit_callbacks(execute=True):
-        request.schedule()
+        request.process()
+
+    mock_task.delay.assert_called_once_with(invitation_letter_request_id=request.id)
+
+
+def test_send_via_email(django_capture_on_commit_callbacks, mocker):
+    mock_task = mocker.patch("visa.tasks.send_invitation_letter_via_email")
+    request = InvitationLetterRequestFactory(
+        on_behalf_of=InvitationLetterRequestOnBehalfOf.SELF,
+    )
+
+    with django_capture_on_commit_callbacks(execute=True):
+        request.send_via_email()
 
     mock_task.delay.assert_called_once_with(invitation_letter_request_id=request.id)

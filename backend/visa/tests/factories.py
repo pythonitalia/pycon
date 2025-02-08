@@ -6,6 +6,7 @@ from visa.models import (
     InvitationLetterDocument,
     InvitationLetterRequest,
     InvitationLetterConferenceConfig,
+    InvitationLetterRequestStatus,
 )
 import factory
 import factory.fuzzy
@@ -37,6 +38,11 @@ class InvitationLetterRequestFactory(DjangoModelFactory):
 
     class Meta:
         model = InvitationLetterRequest
+
+
+class SentInvitationLetterRequestFactory(InvitationLetterRequestFactory):
+    status = InvitationLetterRequestStatus.SENT
+    invitation_letter = factory.django.FileField()
 
 
 class InvitationLetterConferenceConfigFactory(DjangoModelFactory):
