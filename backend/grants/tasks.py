@@ -16,7 +16,10 @@ from pycon.celery import app
 logger = logging.getLogger(__name__)
 
 
-def get_name(user: User, fallback: str = "<no name specified>"):
+def get_name(user: User | None, fallback: str = "<no name specified>"):
+    if not user:
+        return fallback
+
     return user.full_name or user.name or user.username or fallback
 
 
