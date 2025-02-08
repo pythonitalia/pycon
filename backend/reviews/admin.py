@@ -9,7 +9,7 @@ import urllib.parse
 
 from django import forms
 from django.contrib import admin, messages
-from django.db.models import Count, F, OuterRef, Prefetch, Subquery, Sum
+from django.db.models import Count, F, OuterRef, Prefetch, Subquery, Sum, Avg
 from django.http.request import HttpRequest
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -433,7 +433,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                         proposal_id=OuterRef("id"),
                     )
                     .values("proposal_id")
-                    .annotate(score=Sum("score__numeric_value"))
+                    .annotate(score=Avg("score__numeric_value"))
                     .values("score")
                 )
             )
