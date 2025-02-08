@@ -14,6 +14,7 @@ BASE_PLACEHOLDERS = ["conference"]
 
 class EmailTemplateIdentifier(models.TextChoices):
     proposal_accepted = "proposal_accepted", _("Proposal accepted")
+    proposal_scheduled = "proposal_scheduled", _("Proposal scheduled")
     proposal_rejected = "proposal_rejected", _("Proposal rejected")
     proposal_in_waiting_list = (
         "proposal_in_waiting_list",
@@ -59,6 +60,14 @@ class EmailTemplateIdentifier(models.TextChoices):
 class EmailTemplate(TimeStampedModel):
     AVAILABLE_PLACEHOLDERS = {
         EmailTemplateIdentifier.proposal_accepted: [
+            *BASE_PLACEHOLDERS,
+            "conference_name",
+            "proposal_title",
+            "invitation_url",
+            "speaker_name",
+            "is_reminder",
+        ],
+        EmailTemplateIdentifier.proposal_scheduled: [
             *BASE_PLACEHOLDERS,
             "conference_name",
             "proposal_title",

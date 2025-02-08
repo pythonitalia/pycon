@@ -47,7 +47,7 @@ def send_schedule_invitation_email(*, schedule_item_id, is_reminder):
     conference_name = conference.name.localize("en")
 
     email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
-        EmailTemplateIdentifier.proposal_accepted
+        EmailTemplateIdentifier.proposal_scheduled
     )
 
     email_template.send_email(

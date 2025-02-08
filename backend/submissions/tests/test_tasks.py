@@ -55,7 +55,7 @@ def test_send_proposal_rejected_email():
 
     EmailTemplateFactory(
         conference=submission.conference,
-        identifier=EmailTemplateIdentifier.proposal_accepted,
+        identifier=EmailTemplateIdentifier.proposal_scheduled,
     )
 
     with patch("submissions.tasks.EmailTemplate") as mock_email_template:

@@ -57,9 +57,9 @@ def test_send_schedule_invitation_email():
 
     EmailTemplateFactory(
         conference=schedule_item.conference,
-        identifier=EmailTemplateIdentifier.proposal_accepted,
+        identifier=EmailTemplateIdentifier.proposal_scheduled,
     )
-    EmailTemplateFactory(identifier=EmailTemplateIdentifier.proposal_accepted)
+    EmailTemplateFactory(identifier=EmailTemplateIdentifier.proposal_scheduled)
 
     with patch("schedule.tasks.EmailTemplate") as mock_email_template:
         send_schedule_invitation_email(
@@ -71,7 +71,7 @@ def test_send_schedule_invitation_email():
         schedule_item.conference
     )
     mock_email_template.objects.for_conference().get_by_identifier.assert_called_once_with(
-        EmailTemplateIdentifier.proposal_accepted
+        EmailTemplateIdentifier.proposal_scheduled
     )
 
     mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
@@ -107,9 +107,9 @@ def test_send_schedule_invitation_email_reminder():
 
     EmailTemplateFactory(
         conference=schedule_item.conference,
-        identifier=EmailTemplateIdentifier.proposal_accepted,
+        identifier=EmailTemplateIdentifier.proposal_scheduled,
     )
-    EmailTemplateFactory(identifier=EmailTemplateIdentifier.proposal_accepted)
+    EmailTemplateFactory(identifier=EmailTemplateIdentifier.proposal_scheduled)
 
     with patch("schedule.tasks.EmailTemplate.send_email") as email_mock:
         send_schedule_invitation_email(
