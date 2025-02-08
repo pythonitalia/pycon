@@ -162,6 +162,7 @@ class EmailTemplate(TimeStampedModel):
         EmailTemplateIdentifier.visa_invitation_letter_download: [
             *BASE_PLACEHOLDERS,
             "invitation_letter_download_url",
+            "has_grant",
         ],
     }
 

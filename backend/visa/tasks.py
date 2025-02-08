@@ -257,6 +257,7 @@ def send_invitation_letter_via_email(*, invitation_letter_request_id: int):
         recipient_email=invitation_letter_request.email,
         placeholders={
             "invitation_letter_download_url": invitation_letter_download_url,
+            "has_grant": invitation_letter_request.has_grant,
         },
     )
 

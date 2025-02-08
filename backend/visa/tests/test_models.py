@@ -20,6 +20,7 @@ def test_request_on_behalf_of_other():
     assert request.email == "example@example.org"
     assert request.user is None
     assert request.role == "Attendee"
+    assert request.has_grant is False
 
     # With matching user, it is found
     user = UserFactory(email="example@example.org")
@@ -47,6 +48,7 @@ def test_request_grant_info(approved_type):
     )
 
     assert request.user_grant == grant
+    assert request.has_grant is True
     assert request.has_accommodation_via_grant() == (
         approved_type
         in [
