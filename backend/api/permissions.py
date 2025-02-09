@@ -47,6 +47,9 @@ class CanSeeSubmissions(BasePermission):
         if not user.is_authenticated:
             return False
 
+        if info.context._user_can_vote is not None:
+            return info.context._user_can_vote
+
         return check_if_user_can_vote(user, conference)
 
 

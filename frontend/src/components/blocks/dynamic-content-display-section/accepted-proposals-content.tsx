@@ -15,7 +15,7 @@ export const AcceptedProposalsContent = () => {
   const language = useCurrentLanguage();
   const {
     data: {
-      conference: { submissions },
+      submissions: { items: submissions },
     },
   } = useAcceptedProposalsQuery({
     variables: {

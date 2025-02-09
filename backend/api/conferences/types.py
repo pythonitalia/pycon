@@ -221,21 +221,13 @@ class Conference:
         return self.proposal_tags.all()
 
     @strawberry.field(permission_classes=[CanSeeSubmissions])
-    def submissions(
-        self, info: Info, only_accepted: bool = False
-    ) -> list[Submission] | None:
-        qs = self.submissions
-        if only_accepted:
-            qs = qs.filter(status=SubmissionModel.STATUS.accepted)
-        else:
-            qs = qs.filter(
-                status__in=(
-                    SubmissionModel.STATUS.proposed,
-                    SubmissionModel.STATUS.accepted,
-                )
+    def submissions(self, info: Info) -> list[Submission] | None:
+        return self.submissions.filter(
+            status__in=(
+                SubmissionModel.STATUS.proposed,
+                SubmissionModel.STATUS.accepted,
             )
-
-        return qs.select_related("audience_level", "duration", "type", "topic")
+        ).select_related("audience_level", "duration", "type", "topic")
 
     @strawberry.field
     def events(self, info: Info) -> list[Event]:
