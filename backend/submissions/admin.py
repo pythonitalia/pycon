@@ -10,6 +10,7 @@ from import_export.resources import ModelResource
 
 from django import forms
 from django.db.models import F
+from django.db import transaction
 from django.contrib import admin, messages
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -324,42 +325,31 @@ class SubmissionCommentAdmin(admin.ModelAdmin):
     list_display = ("submission", "author", "text")
 
 
+NEW_STATUS_TO_EMAIL_TEMPLATE = {
+    Submission.STATUS.accepted: EmailTemplateIdentifier.proposal_accepted,
+    Submission.STATUS.rejected: EmailTemplateIdentifier.proposal_rejected,
+    Submission.STATUS.waiting_list: EmailTemplateIdentifier.proposal_in_waiting_list,
+}
+
+
 @admin.action(description="Apply and notify status change")
 @validate_single_conference_selection
+@transaction.atomic
 def apply_and_notify_status_change(modeladmin, request, queryset):
     conference = queryset.first().conference
-    count = queryset.count()
+    objs = list(queryset.select_related("speaker").prefetch_related("type"))
+    count = len(objs)
 
-    for submission in queryset.select_related("speaker").prefetch_related("type"):
+    for submission in objs:
         submission.status = submission.pending_status
-        submission.save(update_fields=["status"])
+        placeholders = {
+            "conference_name": conference.name.localize("en"),
+            "proposal_title": submission.title.localize("en"),
+            "proposal_type": submission.type.name,
+            "speaker_name": get_name(submission.speaker, "there"),
+        }
 
-        match submission.status:
-            case Submission.STATUS.accepted:
-                template = EmailTemplateIdentifier.proposal_accepted
-                placeholders = {
-                    "conference_name": conference.name.localize("en"),
-                    "proposal_title": submission.title.localize("en"),
-                    "proposal_type": submission.type.name,
-                    "speaker_name": get_name(submission.speaker, "there"),
-                }
-            case Submission.STATUS.rejected:
-                template = EmailTemplateIdentifier.proposal_rejected
-                placeholders = {
-                    "conference_name": conference.name.localize("en"),
-                    "speaker_name": get_name(submission.speaker, "there"),
-                    "proposal_title": submission.title.localize("en"),
-                    "proposal_type": submission.type.name,
-                }
-            case Submission.STATUS.waiting_list:
-                template = EmailTemplateIdentifier.proposal_in_waiting_list
-                placeholders = {
-                    "conference_name": conference.name.localize("en"),
-                    "speaker_name": get_name(submission.speaker, "there"),
-                    "proposal_title": submission.title.localize("en"),
-                    "proposal_type": submission.type.name,
-                }
-
+        template = NEW_STATUS_TO_EMAIL_TEMPLATE[submission.status]
         email_template = EmailTemplate.objects.for_conference(
             conference
         ).get_by_identifier(template)
@@ -367,6 +357,11 @@ def apply_and_notify_status_change(modeladmin, request, queryset):
             recipient=submission.speaker,
             placeholders=placeholders,
         )
+
+    Submission.objects.bulk_update(
+        objs,
+        ["status"],
+    )
 
     messages.add_message(
         request,
