@@ -1,7 +1,10 @@
+#import "../../fragments/submission-accordion.graphql"
+
 query AcceptedProposals($code: String!, $language: String!) {
   conference(code: $code) {
     id
     submissions(onlyAccepted: true) {
+      ...submissionAccordion
       id
       title(language: $language)
       speaker {
