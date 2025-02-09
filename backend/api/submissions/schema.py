@@ -63,7 +63,7 @@ class SubmissionsQuery:
         conference = ConferenceModel.objects.filter(code=code).first()
 
         if not only_accepted and not IsAuthenticated().has_permission(conference, info):
-            raise PermissionError("You need to be authenticated to see submissions")
+            raise PermissionError("User not logged in")
 
         info.context._user_can_vote = (
             check_if_user_can_vote(user, conference) if user.is_authenticated else False
