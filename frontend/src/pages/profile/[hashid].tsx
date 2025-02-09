@@ -16,7 +16,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       prefetchSharedQueries(client, locale),
       queryParticipantPublicProfile(client, {
         conference: process.env.conferenceCode,
-        userId: params.hashid as string,
+        id: params.hashid as string,
       }),
     ]);
 

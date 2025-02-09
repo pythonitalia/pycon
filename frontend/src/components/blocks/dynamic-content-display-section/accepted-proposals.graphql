@@ -1,0 +1,14 @@
+query AcceptedProposals($code: String!, $language: String!) {
+  conference(code: $code) {
+    id
+    submissions(onlyAccepted: true) {
+      id
+      title(language: $language)
+      speaker {
+        id
+        fullname
+        photo
+      }
+    }
+  }
+}

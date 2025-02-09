@@ -1,3 +1,5 @@
+from participants.models import Participant as ParticipantModel
+from api.participants.types import Participant
 import strawberry
 from strawberry.types.field import StrawberryField
 from strawberry.types import Info
@@ -126,17 +128,16 @@ class Submission:
         return self.abstract.localize(language)
 
     @strawberry.field
-    def speaker(self, info: Info) -> SubmissionSpeaker | None:
+    def speaker(self, info: Info) -> Participant | None:
         if not CanSeeSubmissionRestrictedFields().has_permission(
             self, info, is_speaker_data=True
         ):
             return None
 
-        return SubmissionSpeaker(
-            id=self.speaker_id,
-            full_name=self.speaker.full_name,
-            gender=self.speaker.gender,
-        )
+        participant = ParticipantModel.objects.filter(
+            user_id=self.speaker_id, conference_id=self.conference_id
+        ).first()
+        return Participant.from_model(participant) if participant else None
 
     @strawberry.field
     def id(self, info) -> strawberry.ID:

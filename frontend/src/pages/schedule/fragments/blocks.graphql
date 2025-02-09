@@ -130,6 +130,11 @@ fragment Blocks on Block {
     id
     city
   }
+
+  ... on DynamicContentDisplaySection {
+    id
+    source
+  }
 }
 
 fragment CTAInfo on CTA {

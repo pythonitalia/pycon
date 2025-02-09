@@ -1,5 +1,5 @@
-query ParticipantPublicProfile($userId: ID!, $conference: String!) {
-  participant(userId: $userId, conference: $conference) {
+query ParticipantPublicProfile($id: ID!, $conference: String!) {
+  participant(id: $id, conference: $conference) {
     id
     fullname
     publicProfile

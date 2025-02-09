@@ -38,8 +38,11 @@ class IsStaffPermission(BasePermission):
 class CanSeeSubmissions(BasePermission):
     message = "You need to have a ticket to see submissions"
 
-    def has_permission(self, conference, info):
+    def has_permission(self, conference, info, *args, **kwargs):
         user = info.context.request.user
+
+        if kwargs.get("only_accepted", False):
+            return True
 
         if not user.is_authenticated:
             return False

@@ -10,7 +10,6 @@ from api.submissions.permissions import CanSeeSubmissionPrivateFields
 @strawberry.type
 class Participant:
     id: ID
-    user_id: ID
     bio: str
     website: str
     photo: str | None
@@ -21,7 +20,6 @@ class Participant:
     linkedin_url: str
     facebook_url: str
     mastodon_handle: str
-    speaker_id: strawberry.Private[int]
     fullname: str
     speaker_availabilities: JSON
 
@@ -46,8 +44,6 @@ class Participant:
     def from_model(cls, instance):
         return cls(
             id=instance.hashid,
-            user_id=instance.user_id,
-            speaker_id=instance.user_id,
             fullname=instance.user.fullname,
             photo=instance.photo_url,
             photo_id=instance.photo_file_id,

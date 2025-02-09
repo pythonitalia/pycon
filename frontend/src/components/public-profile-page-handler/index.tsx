@@ -12,7 +12,7 @@ export const PublicProfilePageHandler = () => {
     data: { participant },
   } = useParticipantPublicProfileQuery({
     variables: {
-      userId: router.query.hashid as string,
+      id: router.query.hashid as string,
       conference: process.env.conferenceCode,
     },
   });

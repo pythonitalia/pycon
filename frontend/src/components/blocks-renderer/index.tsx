@@ -5,6 +5,7 @@ import { TextSection } from "~/components/blocks/text-section";
 import type { Block } from "~/types";
 
 import { CheckoutSection } from "../blocks/checkout-section";
+import { DynamicContentDisplaySection } from "../blocks/dynamic-content-display-section";
 import { HomeIntroSection } from "../blocks/home-intro-section";
 import { HomepageHero } from "../blocks/homepage-hero";
 import { InformationSection } from "../blocks/information-section";
@@ -36,6 +37,7 @@ const REGISTRY: Registry = {
   CheckoutSection,
   LiveStreamingSection,
   HomepageHero,
+  DynamicContentDisplaySection,
 };
 
 type Props = {
@@ -74,7 +76,7 @@ export const blocksDataFetching = (client, blocks, language) => {
 
     const dataFetching = component.dataFetching;
     if (dataFetching) {
-      promises.push(...dataFetching(client, language));
+      promises.push(...dataFetching(client, language, block));
     }
 
     const getStaticProps = component.getStaticProps;

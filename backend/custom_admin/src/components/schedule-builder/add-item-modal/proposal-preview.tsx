@@ -20,7 +20,7 @@ export const ProposalPreview = ({ proposal }: Props) => {
         info={[
           { label: "Type", value: proposal.type.name },
           { label: "Duration", value: `${proposal.duration.duration} mins` },
-          { label: "Speaker", value: proposal.speaker.fullName },
+          { label: "Speaker", value: proposal.speaker.fullname },
         ]}
       />
       <AddActions proposal={proposal} />

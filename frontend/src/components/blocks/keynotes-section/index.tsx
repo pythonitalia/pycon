@@ -19,6 +19,7 @@ import {
   useKeynotesSectionQuery,
 } from "~/types";
 
+import { KeynotesSpeakersCards } from "~/components/keynotes-speakers-cards";
 import { createHref } from "../../link";
 
 type Props = {
@@ -32,11 +33,6 @@ export const KeynotersSection = ({ title, cta }: Props) => {
       code: process.env.conferenceCode,
       language,
     },
-  });
-  const englishText = useTranslatedMessage("global.english");
-  const dateFormatter = new Intl.DateTimeFormat(language, {
-    day: "numeric",
-    month: "long",
   });
 
   if (!data) {
@@ -59,30 +55,8 @@ export const KeynotersSection = ({ title, cta }: Props) => {
         </Heading>
         <Spacer size="2xl" />
       </Container>
-      <SliderGrid mdCols={2} cols={3} justifyContent="center" wrap="wrap">
-        {keynotes.map((keynote) => (
-          <Link
-            key={keynote.id}
-            noHover
-            href={createHref({
-              path: `/keynotes/${keynote.slug}`,
-              locale: language,
-            })}
-          >
-            <SpeakerCard
-              talkTitle={keynote.title}
-              talkInfoLeft={
-                keynote.start
-                  ? dateFormatter.format(new Date(keynote.start))
-                  : null
-              }
-              talkInfoRight={englishText}
-              portraitUrl={keynote.speakers[0].participant.photo}
-              speakerName={keynote.speakers[0].fullName}
-            />
-          </Link>
-        ))}
-      </SliderGrid>
+
+      <KeynotesSpeakersCards keynotes={keynotes} />
 
       {cta && (
         <Container>

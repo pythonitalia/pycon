@@ -14,7 +14,7 @@ fragment SubmissionFragment on Submission {
 
   speaker {
     id
-    fullName
+    fullname
   }
 
   type {

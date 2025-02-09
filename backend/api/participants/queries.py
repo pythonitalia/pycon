@@ -16,19 +16,14 @@ from conferences.models import Conference
 
 @strawberry.field
 def participant(
-    info: Info, user_id: strawberry.ID, conference: str
+    info: Info, id: strawberry.ID, conference: str
 ) -> Optional[Participant]:
-    user = info.context.request.user
-    decoded_id = decode_hashid(user_id, salt=settings.USER_ID_HASH_SALT, min_length=6)
+    decoded_id = decode_hashid(id, salt=settings.USER_ID_HASH_SALT, min_length=6)
     participant = ParticipantModel.objects.filter(
-        conference__code=conference, user_id=decoded_id
+        conference__code=conference, id=decoded_id
     ).first()
 
-    if not participant or (
-        not participant.public_profile and (not user or participant.user_id != user.id)
-    ):
-        # Profile doesn't exist, or
-        # Profile is not public, and the person requesting it is not the owner
+    if not participant:
         return None
 
     return Participant.from_model(participant)
