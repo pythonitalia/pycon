@@ -20,25 +20,34 @@ export const SpeakersContent = () => {
       language,
     },
   });
+
+  const submissionsBySpeaker = Object.groupBy(
+    submissions.toSorted((a, b) =>
+      a.speaker.fullname.localeCompare(b.speaker.fullname),
+    ),
+    (submission) => submission.speaker.id,
+  );
+
   return (
     <Section>
       <Grid cols={3}>
-        {submissions
-          .filter((submission) => submission.speaker)
-          .sort((a, b) => a.speaker.fullname.localeCompare(b.speaker.fullname))
-          .map((submission) => (
-            <Link
-              noHover
-              href={`/profile/${submission.speaker.id}`}
-              key={submission.id}
-            >
-              <SpeakerCard
-                talkTitle={submission.title}
-                speakerName={submission.speaker.fullname}
-                portraitUrl={submission.speaker.photo}
-              />
-            </Link>
-          ))}
+        {Object.entries(submissionsBySpeaker).map(
+          ([speakerId, submissions]) => {
+            let title = submissions[0].title;
+            if (submissions.length > 1) {
+              title = `${title} (+${submissions.length - 1})`;
+            }
+            return (
+              <Link noHover href={`/profile/${speakerId}`} key={speakerId}>
+                <SpeakerCard
+                  talkTitle={title}
+                  speakerName={submissions[0].speaker.fullname}
+                  portraitUrl={submissions[0].speaker.photo}
+                />
+              </Link>
+            );
+          },
+        )}
       </Grid>
     </Section>
   );

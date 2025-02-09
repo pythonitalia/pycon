@@ -1,3 +1,4 @@
+from submissions.models import Submission
 from strawberry.permission import BasePermission
 
 from api.permissions import HasTokenPermission
@@ -11,6 +12,9 @@ class CanSeeSubmissionRestrictedFields(BasePermission):
     def has_permission(self, source, info, **kwargs):
         is_speaker_data = kwargs.pop("is_speaker_data", False)
         if HasTokenPermission().has_permission(source, info):
+            return True
+
+        if source.status == Submission.STATUS.accepted:
             return True
 
         if source.schedule_items.exists():  # pragma: no cover
