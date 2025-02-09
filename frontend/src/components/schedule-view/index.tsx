@@ -498,7 +498,7 @@ export const isItemVisible = (
     const query = currentFilters.search[0].toLowerCase().split(" ");
     const title = item.title.toLowerCase();
     const speakersNames = item.speakers
-      .reduce((acc, speaker) => `${acc} ${speaker.fullName}`, "")
+      .reduce((acc, speaker) => `${acc} ${speaker.fullname}`, "")
       .toLowerCase();
 
     if (

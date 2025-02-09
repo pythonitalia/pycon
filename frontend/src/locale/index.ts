@@ -11,6 +11,8 @@ export const messages = {
       "We have groups discounts for groups with 6+ people, contact us to know more. After you have purchased your tickets, you will be able to access the {page} with our discounted codes.",
     "tickets.description.page": "hotels page",
 
+    "global.sessions": "Sessions",
+
     "input.placeholder": "Type here...",
     "global.accordion.close": "Close",
     "global.accordion.readMore": "Read more",
@@ -1934,6 +1936,8 @@ Affrettati a comprare il biglietto!`,
     "scheduleEventDetail.materials": "Materiali",
     "scheduleEventDetail.materials.open": "Apri ({hostname})",
     "scheduleEventDetail.materials.download": "Scarica ({mimeType})",
+
+    "global.sessions": "Sessioni",
 
     "scheduleEventDetail.eventTime": "{start} - {end}",
     "voting.minutes": "{type} ({duration} minuti)",

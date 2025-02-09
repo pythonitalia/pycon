@@ -17,6 +17,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       queryParticipantPublicProfile(client, {
         conference: process.env.conferenceCode,
         id: params.hashid as string,
+        language: locale,
       }),
     ]);
 

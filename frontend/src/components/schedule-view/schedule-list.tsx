@@ -57,7 +57,7 @@ export const ScheduleList = ({
             }
 
             return (
-              <ScheduleItem
+              <ScheduleItemList
                 key={item.id}
                 item={item}
                 currentDay={currentDay}
@@ -76,7 +76,7 @@ export const ScheduleList = ({
   );
 };
 
-const ScheduleItem = ({
+export const ScheduleItemList = ({
   item,
   slot,
   isLive,
@@ -193,7 +193,7 @@ const ScheduleItem = ({
                   {item.speakers.length > 0 && (
                     <Heading size={6}>
                       {item.speakers
-                        .map((speaker) => speaker.fullName)
+                        .map((speaker) => speaker.fullname)
                         .join(", ")}
                     </Heading>
                   )}
