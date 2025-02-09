@@ -63,9 +63,8 @@ class EmailTemplate(TimeStampedModel):
             *BASE_PLACEHOLDERS,
             "conference_name",
             "proposal_title",
-            "invitation_url",
+            "proposal_type",
             "speaker_name",
-            "is_reminder",
         ],
         EmailTemplateIdentifier.proposal_scheduled: [
             *BASE_PLACEHOLDERS,

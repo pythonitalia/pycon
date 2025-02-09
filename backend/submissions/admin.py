@@ -1,4 +1,6 @@
 from django.urls import reverse
+from grants.tasks import get_name
+from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from custom_admin.admin import (
     confirm_pending_status,
     reset_pending_status_back_to_status,
@@ -8,6 +10,7 @@ from import_export.resources import ModelResource
 
 from django import forms
 from django.db.models import F
+from django.db import transaction
 from django.contrib import admin, messages
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -322,6 +325,51 @@ class SubmissionCommentAdmin(admin.ModelAdmin):
     list_display = ("submission", "author", "text")
 
 
+NEW_STATUS_TO_EMAIL_TEMPLATE = {
+    Submission.STATUS.accepted: EmailTemplateIdentifier.proposal_accepted,
+    Submission.STATUS.rejected: EmailTemplateIdentifier.proposal_rejected,
+    Submission.STATUS.waiting_list: EmailTemplateIdentifier.proposal_in_waiting_list,
+}
+
+
+@admin.action(description="Apply and notify status change")
+@validate_single_conference_selection
+@transaction.atomic
+def apply_and_notify_status_change(modeladmin, request, queryset):
+    conference = queryset.first().conference
+    objs = list(queryset.select_related("speaker").prefetch_related("type"))
+    count = len(objs)
+
+    for submission in objs:
+        submission.status = submission.pending_status
+        placeholders = {
+            "conference_name": conference.name.localize("en"),
+            "proposal_title": submission.title.localize("en"),
+            "proposal_type": submission.type.name,
+            "speaker_name": get_name(submission.speaker, "there"),
+        }
+
+        template = NEW_STATUS_TO_EMAIL_TEMPLATE[submission.status]
+        email_template = EmailTemplate.objects.for_conference(
+            conference
+        ).get_by_identifier(template)
+        email_template.send_email(
+            recipient=submission.speaker,
+            placeholders=placeholders,
+        )
+
+    Submission.objects.bulk_update(
+        objs,
+        ["status"],
+    )
+
+    messages.add_message(
+        request,
+        messages.SUCCESS,
+        f"Confirmed and notified {count} proposals",
+    )
+
+
 @admin.register(SubmissionConfirmPendingStatusProxy)
 class SubmissionConfirmPendingStatusProxyAdmin(admin.ModelAdmin):
     list_display = (
@@ -338,6 +386,7 @@ class SubmissionConfirmPendingStatusProxyAdmin(admin.ModelAdmin):
     search_fields = ("speaker__full_name", "speaker__email", "title")
     list_display_links = None
     actions = [
+        apply_and_notify_status_change,
         confirm_pending_status,
         reset_pending_status_back_to_status,
     ]
