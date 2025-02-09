@@ -1,6 +1,5 @@
 import {
   CardPart,
-  FilterBar,
   Heading,
   HorizontalStack,
   MultiplePartsCard,
