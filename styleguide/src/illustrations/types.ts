@@ -25,4 +25,5 @@ export type Illustration =
   | "snakesWithOutlines"
   | "tripleSnakes"
   | "snakeTailUp"
-  | "snakeWithPopcorn";
+  | "snakeWithPopcorn"
+  | "snakesFacingLeft";

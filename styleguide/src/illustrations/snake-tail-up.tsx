@@ -34,4 +34,4 @@ export const SnakeTailUp = (props: React.SVGProps<SVGSVGElement>) => {
       </defs>
     </svg>
   );
-}
+};

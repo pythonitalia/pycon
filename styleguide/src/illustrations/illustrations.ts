@@ -25,6 +25,7 @@ import { SnakesWithCocktail } from "./snakes-with-cocktail";
 import { SnakesWithDirections } from "./snakes-with-directions";
 import { SnakesWithOutlines } from "./snakes-with-outlines";
 import { TripleSnakes } from "./triple-snakes";
+import { SnakesFacingLeft } from "./snakes-facing-left";
 import { Illustration } from "./types";
 
 export const getIllustration = (name: Illustration | undefined) => {
@@ -83,6 +84,8 @@ export const getIllustration = (name: Illustration | undefined) => {
       return SnakeTailUp;
     case "snakeWithPopcorn":
       return SnakeWithPopcorn;
+    case "snakesFacingLeft":
+      return SnakesFacingLeft;
   }
   return null;
 };

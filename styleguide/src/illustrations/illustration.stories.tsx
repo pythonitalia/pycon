@@ -25,6 +25,7 @@ import { SnakesWithDirections } from "./snakes-with-directions";
 import { SnakesWithOutlines } from "./snakes-with-outlines";
 import { TripleSnakes } from "./triple-snakes";
 import { SnakeWithPopcorn } from "./snake-with-popcorn";
+import { SnakesFacingLeft } from "./snakes-facing-left";
 
 export default {
   title: "Illustrations",
@@ -115,3 +116,6 @@ TripleSnakesStory.args = { component: TripleSnakes };
 
 export const SnakeWithPopcornStory = Template.bind({});
 SnakeWithPopcornStory.args = { component: SnakeWithPopcorn };
+
+export const SnakesFacingLeftStory = Template.bind({});
+SnakesFacingLeftStory.args = { component: SnakesFacingLeft };

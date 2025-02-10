@@ -25,4 +25,5 @@ export { SnakesWithOutlines } from "./snakes-with-outlines";
 export { TripleSnakes } from "./triple-snakes";
 export { SnakeTailUp } from "./snake-tail-up";
 export { SnakeWithPopcorn } from "./snake-with-popcorn";
+export { SnakesFacingLeft } from "./snakes-facing-left";
 export { getIllustration } from "./illustrations";

@@ -10,7 +10,7 @@ type Props = {
   cols: number;
   mdCols?: number;
   background?: "snake" | "none";
-  justifyContent?: "center";
+  justifyContent?: "left" | "center" | "right";
   wrap?: "wrap" | "nowrap";
 };
 
@@ -73,7 +73,9 @@ export const SliderGrid = ({
           className={clsx(
             `snap-x snap-mandatory overflow-x-auto flex md:-mt-2 lg:-mt-4 md:px-2 lg:px-0`,
             {
+              "md:justify-start": justifyContent === "left",
               "md:justify-center": justifyContent === "center",
+              "md:justify-end": justifyContent === "right",
 
               "md:flex-wrap": wrap === "wrap",
               "md:flex-nowrap": wrap === "nowrap",
