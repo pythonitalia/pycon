@@ -181,7 +181,7 @@ def test_max_allowed_page_size(graphql_client, user):
         variables={"code": submission.conference.code},
     )
 
-    assert resp["errors"][0]["message"] == "Page size cannot be greater than 150"
+    assert resp["errors"][0]["message"] == "Page size cannot be greater than 300"
     assert resp["data"]["submissions"] is None
 
 

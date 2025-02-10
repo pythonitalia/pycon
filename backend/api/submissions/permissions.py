@@ -52,12 +52,21 @@ class CanSeeSubmissionPrivateFields(BasePermission):
     message = "You can't see the private fields for this submission"
 
     def has_permission(self, source, info):
+        from api.participants.types import Participant
+
         user = info.context.request.user
 
         if not user.is_authenticated:
             return False
 
-        return user.is_staff or source.speaker_id == user.id
+        if isinstance(source, Submission):
+            source_user_id = source.speaker_id
+        elif isinstance(source, Participant):
+            source_user_id = source._user_id
+        else:
+            raise ValueError("Invalid source type")
+
+        return user.is_staff or source_user_id == user.id
 
 
 class IsSubmissionSpeakerOrStaff(BasePermission):
