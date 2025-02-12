@@ -66,6 +66,7 @@ class SubmissionResource(ModelResource):
     elevator_pitch_it = Field()
     abstract_en = Field()
     abstract_it = Field()
+    duration = Field()
     speaker_name = Field()
     speaker_email = Field()
     speaker_country = Field()
