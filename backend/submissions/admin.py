@@ -39,6 +39,7 @@ EXPORT_SUBMISSION_FIELDS = (
     "status",
     "pending_status",
     "languages",
+    "duration",
     "title_en",
     "title_it",
     "elevator_pitch_it",
@@ -53,6 +54,7 @@ EXPORT_SUBMISSION_FIELDS = (
     "speaker_email",
     "speaker_country",
     "speaker_gender",
+    "speaker_availabilities",
 )
 
 
@@ -102,6 +104,9 @@ class SubmissionResource(ModelResource):
     def dehydrate_type(self, obj: Submission):
         return obj.type.name
 
+    def dehydrate_duration(self, obj: Submission):
+        return obj.duration.duration
+
     def dehydrate_languages(self, obj: Submission):
         return ", ".join([lang.name for lang in obj.languages.all()])
 
@@ -116,6 +121,13 @@ class SubmissionResource(ModelResource):
 
     def dehydrate_speaker_gender(self, obj: Submission):
         return obj.speaker.gender
+
+    def dehydrate_speaker_availabilities(self, obj: Submission):
+        return (
+            Participant.objects.for_conference(obj.conference_id)
+            .get(user_id=obj.speaker_id)
+            .speaker_availabilities
+        )
 
     class Meta:
         model = Submission
