@@ -70,6 +70,7 @@ class SubmissionResource(ModelResource):
     speaker_email = Field()
     speaker_country = Field()
     speaker_gender = Field()
+    speaker_availabilities = Field()
 
     def dehydrate_title_en(self, obj: Submission):
         en = obj.title.data.get("en")
