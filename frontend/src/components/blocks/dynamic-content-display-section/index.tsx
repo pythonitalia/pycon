@@ -9,10 +9,8 @@ import { KeynotersContent } from "./keynoters-content";
 import { SpeakersContent } from "./speakers-content";
 
 export const DynamicContentDisplaySection = ({
-  id,
   source,
 }: {
-  id: string;
   source: string;
 }) => {
   return (
