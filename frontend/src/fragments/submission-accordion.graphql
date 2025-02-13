@@ -33,4 +33,9 @@ fragment submissionAccordion on Submission {
     id
     value
   }
+
+  speaker {
+    id
+    fullName
+  }
 }

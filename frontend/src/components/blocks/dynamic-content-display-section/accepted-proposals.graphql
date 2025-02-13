@@ -9,6 +9,7 @@ query AcceptedProposals($code: String!, $language: String!) {
         id
         fullName
         participant {
+          id
           photo
           bio
         }

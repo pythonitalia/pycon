@@ -28,7 +28,7 @@ export const SpeakersContent = () => {
     submissions.toSorted((a, b) =>
       a.speaker.fullName.localeCompare(b.speaker.fullName),
     ),
-    (submission) => submission.speaker.id,
+    (submission) => submission.speaker.participant.id,
   );
 
   return (

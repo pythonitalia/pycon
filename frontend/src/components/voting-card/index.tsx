@@ -225,7 +225,7 @@ export const VotingCard = ({
                 <Spacer size="small" />
 
                 <Text weight="strong" as="p" size={2}>
-                  {speaker.fullname}
+                  {speaker.fullName}
                 </Text>
               </CardPart>
             </GridColumn>
