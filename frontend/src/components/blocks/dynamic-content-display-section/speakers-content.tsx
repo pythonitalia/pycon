@@ -1,8 +1,11 @@
 import {
+  CardPart,
   Grid,
+  Heading,
   Link,
+  MultiplePartsCard,
   Section,
-  SpeakerCard,
+  Text,
 } from "@python-italia/pycon-styleguide";
 
 import { useCurrentLanguage } from "~/locale/context";
@@ -40,9 +43,9 @@ export const SpeakersContent = () => {
             return (
               <Link noHover href={`/profile/${speakerId}`} key={speakerId}>
                 <SpeakerCard
-                  talkTitle={title}
                   speakerName={submissions[0].speaker.fullname}
                   portraitUrl={submissions[0].speaker.photo}
+                  sessions={title}
                 />
               </Link>
             );
@@ -52,3 +55,24 @@ export const SpeakersContent = () => {
     </Section>
   );
 };
+
+const SpeakerCard = ({ portraitUrl, speakerName, sessions }) => (
+  <MultiplePartsCard>
+    <CardPart shrink={false} size="none">
+      <img
+        style={{
+          objectFit: "cover",
+        }}
+        className="w-full aspect-[1/0.74]"
+        src={portraitUrl}
+        alt="speaker portrait"
+      />
+    </CardPart>
+    <CardPart fullHeight contentAlign="left">
+      <Heading size={4}>{speakerName}</Heading>
+    </CardPart>
+    <CardPart shrink={false} background="milk" contentAlign="left">
+      <Text size={3}>{sessions}</Text>
+    </CardPart>
+  </MultiplePartsCard>
+);

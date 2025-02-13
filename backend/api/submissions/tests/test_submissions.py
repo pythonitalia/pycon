@@ -105,6 +105,34 @@ def test_returns_submissions_paginated(graphql_client, user):
     )
 
 
+def test_accepted_submissions_are_public(graphql_client):
+    submission = SubmissionFactory(id=1, status=Submission.STATUS.accepted)
+    SubmissionFactory(
+        id=2, conference=submission.conference, status=Submission.STATUS.proposed
+    )
+
+    query = """query Submissions($code: String!, $page: Int) {
+        submissions(code: $code, page: $page, pageSize: 5, onlyAccepted: true) {
+            pageInfo {
+                totalPages
+                totalItems
+            }
+            items {
+                id
+            }
+        }
+    }"""
+    resp = graphql_client.query(
+        query,
+        variables={"code": submission.conference.code},
+    )
+
+    assert not resp.get("errors")
+    assert len(resp["data"]["submissions"]["items"]) == 1
+    assert resp["data"]["submissions"]["items"][0]["id"] == submission.hashid
+    assert resp["data"]["submissions"]["pageInfo"] == {"totalPages": 1, "totalItems": 1}
+
+
 def test_canceled_submissions_are_excluded(graphql_client, user, mock_has_ticket):
     graphql_client.force_login(user)
 

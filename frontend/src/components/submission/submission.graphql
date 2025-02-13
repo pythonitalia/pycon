@@ -28,5 +28,17 @@ query Submission($id: ID!, $language: String!) {
       id
       name
     }
+    speaker {
+      id
+      fullname
+      photo
+      bio
+      twitterHandle
+      instagramHandle
+      linkedinUrl
+      facebookUrl
+      mastodonHandle
+      website
+    }
   }
 }

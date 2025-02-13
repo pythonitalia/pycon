@@ -31,6 +31,7 @@ export const VotingCard = ({
     audienceLevel,
     duration,
     languages,
+    speaker,
   },
 }: Props) => {
   const [sendVote, { loading, error, data: submissionData }] =
@@ -215,7 +216,21 @@ export const VotingCard = ({
               </Text>
             </CardPart>
           </GridColumn>
-          <GridColumn colSpan={6}>
+          {speaker && (
+            <GridColumn colSpan={2}>
+              <CardPart contentAlign="left" background="white">
+                <Text uppercase weight="strong" size="label3">
+                  <FormattedMessage id="voting.speaker" />
+                </Text>
+                <Spacer size="small" />
+
+                <Text weight="strong" as="p" size={2}>
+                  {speaker.fullname}
+                </Text>
+              </CardPart>
+            </GridColumn>
+          )}
+          <GridColumn colSpan={speaker ? 4 : 6}>
             <div className="h-full flex items-center justify-end ">
               <Link href={`/submission/${id}`}>
                 <CardPart contentAlign="left" background="white">

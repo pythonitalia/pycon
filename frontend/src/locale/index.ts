@@ -896,6 +896,7 @@ reflects what everyone wants to see!`,
     "voting.audienceLevel": "Audience level",
     "talk.audienceLevel": "Audience level",
     "voting.length": "Length",
+    "voting.speaker": "Speaker",
     "voting.languages": "Languages",
     "voting.minutes": "{type} ({duration} minutes)",
     "voting.submissionType": "Category",
@@ -1936,6 +1937,8 @@ Affrettati a comprare il biglietto!`,
     "scheduleEventDetail.materials": "Materiali",
     "scheduleEventDetail.materials.open": "Apri ({hostname})",
     "scheduleEventDetail.materials.download": "Scarica ({mimeType})",
+
+    "voting.speaker": "Speaker",
 
     "global.sessions": "Sessioni",
 
