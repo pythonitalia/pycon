@@ -65,7 +65,7 @@ export const BlocksRenderer = ({ blocks, blocksProps }: Props) => {
 
 export const blocksDataFetching = (client, blocks, language) => {
   const promises = [];
-  let staticProps = {};
+  const staticProps = {};
 
   for (const block of blocks) {
     const component = REGISTRY[block.__typename];
@@ -80,11 +80,10 @@ export const blocksDataFetching = (client, blocks, language) => {
     }
 
     const getStaticProps = component.getStaticProps;
+
+    staticProps[block.id] = {};
     if (getStaticProps) {
-      staticProps = {
-        ...staticProps,
-        [block.id]: getStaticProps(block),
-      };
+      staticProps[block.id] = getStaticProps(block);
     }
   }
 
