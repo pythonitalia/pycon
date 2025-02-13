@@ -35,21 +35,17 @@ export const SpeakersContent = () => {
     <Section>
       <Grid cols={3}>
         {Object.entries(submissionsBySpeaker).map(
-          ([speakerId, submissions]) => {
-            let title = submissions[0].title;
-            if (submissions.length > 1) {
-              title = `${title} (+${submissions.length - 1})`;
-            }
-            return (
-              <Link noHover href={`/profile/${speakerId}`} key={speakerId}>
-                <SpeakerCard
-                  speakerName={submissions[0].speaker.fullname}
-                  portraitUrl={submissions[0].speaker.photo}
-                  sessions={title}
-                />
-              </Link>
-            );
-          },
+          ([speakerId, submissions]) => (
+            <Link noHover href={`/profile/${speakerId}`} key={speakerId}>
+              <SpeakerCard
+                speakerName={submissions[0].speaker.fullname}
+                portraitUrl={submissions[0].speaker.photo}
+                sessions={submissions
+                  .map((submission) => submission.title)
+                  .join(",")}
+              />
+            </Link>
+          ),
         )}
       </Grid>
     </Section>

@@ -26,6 +26,11 @@ export const messages = {
     "checkout.billing.businessInvoice.description":
       "Turn this option on if your company, university or similar is paying for you or if you need an invoice.",
 
+    "voting.talks": "Talks",
+    "voting.workshops": "Workshops",
+    "voting.filterBy": "Filter by",
+    "voting.all": "All",
+
     "sponsorLeadModal.title": "Download our brochure",
     "sponsorLeadModal.submit": "Submit",
     "sponsorLeadModal.body": `Our packages gives you an idea of what we offer and how you can optimize your presence at PyCon Italia, but are not set in stone!
@@ -1939,6 +1944,8 @@ Affrettati a comprare il biglietto!`,
     "scheduleEventDetail.materials.download": "Scarica ({mimeType})",
 
     "voting.speaker": "Speaker",
+    "voting.talks": "Talks",
+    "voting.workshops": "Workshops",
 
     "global.sessions": "Sessioni",
 
@@ -2279,6 +2286,9 @@ Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia dis
       "Il form aprirà il {date}. Segui i nostri socials per aggiornamenti e cambiamenti.",
     "requestInvitationLetter.formClosed":
       "Il form è chiuso. Se hai domande, contattaci.",
+
+    "voting.filterBy": "Filtra per",
+    "voting.all": "Tutti",
   },
 };
 
