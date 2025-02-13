@@ -40,7 +40,7 @@ export type Item = {
   submission?: Submission | null;
   keynote?: Keynote | null;
   audienceLevel?: { name: string; id: string } | null;
-  speakers: { fullname: string; participant?: Participant }[];
+  speakers: { fullName: string; participant?: Participant }[];
   hasLimitedCapacity: boolean;
   userHasSpot: boolean;
   hasSpacesLeft: boolean;
