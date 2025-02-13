@@ -7,20 +7,11 @@ query AcceptedProposals($code: String!, $language: String!) {
       id
       speaker {
         id
-        fullname
-        photo
-        bio
-        twitterHandle
-        instagramHandle
-        linkedinUrl
-        facebookUrl
-        mastodonHandle
-        website
-      }
-      speaker {
-        id
-        fullname
-        photo
+        fullName
+        participant {
+          photo
+          bio
+        }
       }
     }
   }

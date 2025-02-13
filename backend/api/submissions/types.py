@@ -46,6 +46,16 @@ class SubmissionSpeaker:
     id: strawberry.ID
     full_name: str
     gender: str
+    _conference_id: strawberry.Private[str]
+
+    @strawberry.field
+    def participant(self, info: Info) -> Participant | None:
+        participant = (
+            ParticipantModel.objects.for_conference(self._conference_id)
+            .filter(user_id=self.id)
+            .first()
+        )
+        return Participant.from_model(participant) if participant else None
 
 
 @strawberry.type
@@ -128,16 +138,18 @@ class Submission:
         return self.abstract.localize(language)
 
     @strawberry.field
-    def speaker(self, info: Info) -> Participant | None:
+    def speaker(self, info: Info) -> SubmissionSpeaker | None:
         if not CanSeeSubmissionRestrictedFields().has_permission(
             self, info, is_speaker_data=True
         ):
             return None
 
-        participant = ParticipantModel.objects.filter(
-            user_id=self.speaker_id, conference_id=self.conference_id
-        ).first()
-        return Participant.from_model(participant) if participant else None
+        return SubmissionSpeaker(
+            id=self.speaker_id,
+            full_name=self.speaker.full_name,
+            gender=self.speaker.gender,
+            _conference_id=self.conference_id,
+        )
 
     @strawberry.field
     def id(self, info) -> strawberry.ID:

@@ -26,7 +26,7 @@ export const SpeakersContent = () => {
 
   const submissionsBySpeaker = Object.groupBy(
     submissions.toSorted((a, b) =>
-      a.speaker.fullname.localeCompare(b.speaker.fullname),
+      a.speaker.fullName.localeCompare(b.speaker.fullName),
     ),
     (submission) => submission.speaker.id,
   );
@@ -38,8 +38,8 @@ export const SpeakersContent = () => {
           ([speakerId, submissions]) => (
             <Link noHover href={`/profile/${speakerId}`} key={speakerId}>
               <SpeakerCard
-                speakerName={submissions[0].speaker.fullname}
-                portraitUrl={submissions[0].speaker.photo}
+                speakerName={submissions[0].speaker.fullName}
+                portraitUrl={submissions[0].speaker.participant.photo}
                 sessions={submissions
                   .map((submission) => submission.title)
                   .join(",")}

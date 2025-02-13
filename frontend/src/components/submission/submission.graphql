@@ -30,15 +30,17 @@ query Submission($id: ID!, $language: String!) {
     }
     speaker {
       id
-      fullname
-      photo
-      bio
-      twitterHandle
-      instagramHandle
-      linkedinUrl
-      facebookUrl
-      mastodonHandle
-      website
+      fullName
+      participant {
+        photo
+        bio
+        twitterHandle
+        instagramHandle
+        linkedinUrl
+        facebookUrl
+        mastodonHandle
+        website
+      }
     }
   }
 }
