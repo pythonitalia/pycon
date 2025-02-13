@@ -107,7 +107,7 @@ export const ScheduleEntry = ({
     item.language.code === "en" ? "talk.language.en" : "talk.language.it",
   );
   const isCustomItem = item.type === "custom" || item.type === "break";
-  const speakersNames = item.speakers.map((s) => s.fullname).join(", ");
+  const speakersNames = item.speakers.map((s) => s.fullName).join(", ");
   const allRoomsText = useTranslatedMessage("scheduleView.allRooms");
 
   const roomText =
