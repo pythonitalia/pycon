@@ -22,13 +22,7 @@ import { useCurrentLanguage } from "~/locale/context";
 
 import { createHref } from "../link";
 import { EventTag } from "../schedule-event-detail/event-tag";
-import {
-  type Item,
-  ItemTypes,
-  type Room,
-  type Slot,
-  Submission as SubmissionType,
-} from "./types";
+import type { Item, Room, Slot } from "./types";
 
 export const getItemUrl = (item: Item) => {
   if (item.linkTo) {
