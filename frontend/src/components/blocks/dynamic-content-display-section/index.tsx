@@ -48,6 +48,14 @@ DynamicContentDisplaySection.dataFetching = (client, language, block) => {
         }),
       ];
     }
+    case DynamicContentDisplaySectionSource.AcceptedProposals: {
+      return [
+        queryAcceptedProposals(client, {
+          code: process.env.conferenceCode,
+          language,
+        }),
+      ];
+    }
   }
 
   return [];
