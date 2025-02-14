@@ -42,7 +42,7 @@ export const SpeakersContent = () => {
                 portraitUrl={submissions[0].speaker.participant.photo}
                 sessions={submissions
                   .map((submission) => submission.title)
-                  .join(",")}
+                  .join(", ")}
               />
             </Link>
           ),
