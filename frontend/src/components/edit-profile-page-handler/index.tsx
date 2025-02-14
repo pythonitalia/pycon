@@ -69,8 +69,8 @@ const onMyProfileFetched = (data: MyEditProfileQuery, formState) => {
     me.participant?.previousTalkVideo ?? "",
   );
   formState.setField(
-    "participantTwitterHandle",
-    me.participant?.twitterHandle ?? "",
+    "participantMastodonHandle",
+    me.participant?.mastodonHandle ?? "",
   );
   formState.setField(
     "participantInstagramHandle",
@@ -85,8 +85,8 @@ const onMyProfileFetched = (data: MyEditProfileQuery, formState) => {
     me.participant?.facebookUrl ?? "",
   );
   formState.setField(
-    "participantMastodonHandle",
-    me.participant?.mastodonHandle ?? "",
+    "participantTwitterHandle",
+    me.participant?.twitterHandle ?? "",
   );
 };
 
