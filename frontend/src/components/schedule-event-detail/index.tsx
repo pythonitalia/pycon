@@ -21,10 +21,15 @@ import { useCurrentLanguage } from "~/locale/context";
 
 import { Fragment } from "react";
 import { TableItemHeader } from "~/components/table-item-header";
-import type { ProposalMaterial, TalkQueryResult } from "~/types";
+import type { ProposalMaterial, TalkQuery } from "~/types";
 import { ParticipantInfoSection } from "../participant-info-section";
 import { EventTag } from "./event-tag";
 import { Sidebar } from "./sidebar";
+
+type Speaker = Omit<
+  TalkQuery["conference"]["talk"]["speakers"][0],
+  "__typename"
+>;
 
 type Props = {
   id?: string;
@@ -33,10 +38,7 @@ type Props = {
   eventTitle: string;
   elevatorPitch?: string;
   abstract?: string;
-  speakers: {
-    fullName: string;
-    participant?: TalkQueryResult["data"]["conference"]["talk"]["speakers"][0]["participant"];
-  }[];
+  speakers?: Speaker[];
   tags?: string[];
   language: string;
   audienceLevel?: string;

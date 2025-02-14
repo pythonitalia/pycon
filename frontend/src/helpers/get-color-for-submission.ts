@@ -1,11 +1,4 @@
-import type { Keynote, Submission } from "~/components/schedule-view/types";
-
-type Item = {
-  id: string;
-  submission?: Submission | null;
-  keynote?: Keynote | null;
-  audienceLevel?: { name: string } | null;
-};
+import type { Item } from "~/components/schedule-view/types";
 
 const COLOR_MAP = {
   beginner: "blue",

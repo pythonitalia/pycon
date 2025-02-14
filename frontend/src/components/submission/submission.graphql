@@ -32,6 +32,7 @@ query Submission($id: ID!, $language: String!) {
       id
       fullName
       participant {
+        id
         photo
         bio
         twitterHandle
