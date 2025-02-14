@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Annotated, Optional
+from typing import TYPE_CHECKING, Annotated
 
 from submissions.models import Submission as SubmissionModel
 from strawberry.scalars import JSON
@@ -25,12 +25,12 @@ class Participant:
     facebook_url: str
     mastodon_handle: str
     fullname: str
-    speaker_availabilities: JSON
 
     _speaker_level: strawberry.Private[str]
     _previous_talk_video: strawberry.Private[str]
     _conference_id: strawberry.Private[int]
     _user_id: strawberry.Private[int]
+    _speaker_availabilities: strawberry.Private[int]
 
     @strawberry.field
     def proposals(
@@ -42,14 +42,21 @@ class Participant:
         )
 
     @strawberry.field
-    def speaker_level(self, info) -> Optional[str]:
+    def speaker_availabilities(self, info) -> JSON | None:
+        if not CanSeeSubmissionPrivateFields().has_permission(self, info):
+            return None
+
+        return self._speaker_availabilities
+
+    @strawberry.field
+    def speaker_level(self, info) -> str | None:
         if not CanSeeSubmissionPrivateFields().has_permission(self, info):
             return None
 
         return self._speaker_level
 
     @strawberry.field
-    def previous_talk_video(self, info) -> Optional[str]:
+    def previous_talk_video(self, info) -> str | None:
         if not CanSeeSubmissionPrivateFields().has_permission(self, info):
             return None
 
@@ -70,7 +77,7 @@ class Participant:
             linkedin_url=instance.linkedin_url,
             facebook_url=instance.facebook_url,
             mastodon_handle=instance.mastodon_handle,
-            speaker_availabilities=instance.speaker_availabilities or {},
+            _speaker_availabilities=instance.speaker_availabilities or {},
             _conference_id=instance.conference_id,
             _user_id=instance.user_id,
             _speaker_level=instance.speaker_level,
