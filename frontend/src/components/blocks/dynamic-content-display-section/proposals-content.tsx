@@ -13,16 +13,16 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 import { VotingCard } from "~/components/voting-card";
 import { useCurrentLanguage } from "~/locale/context";
-import { useAcceptedProposalsQuery } from "~/types";
+import { useDynamicContentDisplaySectionProposalsQuery } from "~/types";
 
-export const AcceptedProposalsContent = () => {
+export const ProposalsContent = () => {
   const [filterBy, setFilterBy] = React.useState(null);
   const language = useCurrentLanguage();
   let {
     data: {
       submissions: { items: submissions },
     },
-  } = useAcceptedProposalsQuery({
+  } = useDynamicContentDisplaySectionProposalsQuery({
     variables: {
       code: process.env.conferenceCode,
       language,

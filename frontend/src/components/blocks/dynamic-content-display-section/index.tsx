@@ -1,11 +1,11 @@
 import React, { Fragment } from "react";
 import {
   DynamicContentDisplaySectionSource,
-  queryAcceptedProposals,
+  queryDynamicContentDisplaySectionProposals,
   queryKeynotesSection,
 } from "~/types";
-import { AcceptedProposalsContent } from "./accepted-proposals-content";
 import { KeynotersContent } from "./keynoters-content";
+import { ProposalsContent } from "./proposals-content";
 import { SpeakersContent } from "./speakers-content";
 
 export const DynamicContentDisplaySection = ({
@@ -21,8 +21,8 @@ export const DynamicContentDisplaySection = ({
       {source === DynamicContentDisplaySectionSource.Speakers && (
         <SpeakersContent />
       )}
-      {source === DynamicContentDisplaySectionSource.AcceptedProposals && (
-        <AcceptedProposalsContent />
+      {source === DynamicContentDisplaySectionSource.Proposals && (
+        <ProposalsContent />
       )}
     </Fragment>
   );
@@ -42,15 +42,15 @@ DynamicContentDisplaySection.dataFetching = (client, language, block) => {
     }
     case DynamicContentDisplaySectionSource.Speakers: {
       return [
-        queryAcceptedProposals(client, {
+        queryDynamicContentDisplaySectionProposals(client, {
           code: process.env.conferenceCode,
           language,
         }),
       ];
     }
-    case DynamicContentDisplaySectionSource.AcceptedProposals: {
+    case DynamicContentDisplaySectionSource.Proposals: {
       return [
-        queryAcceptedProposals(client, {
+        queryDynamicContentDisplaySectionProposals(client, {
           code: process.env.conferenceCode,
           language,
         }),

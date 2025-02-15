@@ -8,7 +8,7 @@ import enum
 class DynamicContentDisplaySectionSource(enum.Enum):
     speakers = "speakers"
     keynoters = "keynoters"
-    accepted_proposals = "accepted_proposals"
+    proposals = "proposals"
 
 
 @register_page_block()

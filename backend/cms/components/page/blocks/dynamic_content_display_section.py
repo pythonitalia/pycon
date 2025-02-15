@@ -6,6 +6,6 @@ class DynamicContentDisplaySection(blocks.StructBlock):
         choices=[
             ("speakers", "Speakers"),
             ("keynoters", "Keynoters"),
-            ("accepted_proposals", "Accepted Proposals"),
+            ("proposals", "Proposals"),
         ],
     )
