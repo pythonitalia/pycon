@@ -1,6 +1,5 @@
 import {
   CardPart,
-  Grid,
   Heading,
   HorizontalStack,
   MultiplePartsCard,
