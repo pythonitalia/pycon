@@ -141,12 +141,11 @@ def test_accepted_submissions_are_public(graphql_client):
     assert not resp.get("errors")
     assert len(resp["data"]["submissions"]["items"]) == 1
     assert resp["data"]["submissions"]["items"][0]["id"] == submission.hashid
-    assert (
-        resp["data"]["submissions"]["items"][0]["speaker"]["id"]
-        == submission.speaker_id
+    assert resp["data"]["submissions"]["items"][0]["speaker"]["id"] == str(
+        submission.speaker_id
     )
     assert (
-        resp["data"]["submissions"]["items"][0]["speaker"]["participant"]
+        resp["data"]["submissions"]["items"][0]["speaker"]["participant"]["id"]
         == participant.hashid
     )
     assert resp["data"]["submissions"]["pageInfo"] == {"totalPages": 1, "totalItems": 1}
