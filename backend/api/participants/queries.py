@@ -1,5 +1,4 @@
 import json
-from typing import Optional
 from django.conf import settings
 import strawberry
 from strawberry.tools import create_type
@@ -15,9 +14,7 @@ from conferences.models import Conference
 
 
 @strawberry.field
-def participant(
-    info: Info, id: strawberry.ID, conference: str
-) -> Optional[Participant]:
+def participant(info: Info, id: strawberry.ID, conference: str) -> Participant | None:
     decoded_id = decode_hashid(id, salt=settings.USER_ID_HASH_SALT, min_length=6)
     participant = ParticipantModel.objects.filter(
         conference__code=conference, id=decoded_id
@@ -32,7 +29,7 @@ def participant(
 @strawberry.field
 def ticket_id_to_user_hashid(
     ticket_id: strawberry.ID, conference_code: str
-) -> Optional[str]:
+) -> str | None:
     conference = Conference.objects.filter(code=conference_code).first()
     decoded_ticket_id = decode_hashid(ticket_id)
     order_position = pretix.get_order_position(conference, decoded_ticket_id)
