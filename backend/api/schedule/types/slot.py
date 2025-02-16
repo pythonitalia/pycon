@@ -1,14 +1,10 @@
 from enum import Enum
-from typing import TYPE_CHECKING, Annotated
 from django.utils import timezone
 from datetime import datetime, time, timedelta
 from api.schedule.types.schedule_item import ScheduleItem
 
 
 import strawberry
-
-if TYPE_CHECKING:
-    from api.schedule.types.day import Day
 
 
 @strawberry.enum
@@ -24,7 +20,6 @@ class ScheduleSlot:
     hour: time
     duration: int
     type: ScheduleSlotType
-    day: Annotated["Day", strawberry.lazy("api.schedule.types.day")]
 
     @strawberry.field
     def is_live(self) -> bool:
