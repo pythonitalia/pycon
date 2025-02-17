@@ -1,5 +1,7 @@
 from conferences.tests.factories import ConferenceFactory
 from participants.tests.factories import ParticipantFactory
+from submissions.tests.factories import SubmissionFactory
+from submissions.models import Submission
 import pytest
 
 
@@ -47,6 +49,56 @@ def test_user_participant(user, graphql_client):
     assert participant_type["twitterHandle"] == "marco"
     assert participant_type["speakerLevel"] == "intermediate"
     assert participant_type["previousTalkVideo"] == ""
+
+
+def test_user_participant_proposals(user, graphql_client):
+    graphql_client.force_login(user)
+    participant = ParticipantFactory(
+        user_id=user.id,
+        bio="biiiiio",
+        photo="https://marcopycontest.blob.core.windows.net/participants-avatars/blob.jpg",
+        website="https://google.it",
+        twitter_handle="marco",
+        speaker_level="intermediate",
+        previous_talk_video="",
+    )
+    proposal_1 = SubmissionFactory(
+        speaker_id=participant.user_id,
+        conference=participant.conference,
+        status=Submission.STATUS.accepted,
+    )
+    SubmissionFactory(
+        speaker_id=participant.user_id,
+        conference=participant.conference,
+        status=Submission.STATUS.rejected,
+    )
+    SubmissionFactory(speaker_id=participant.user_id, status=Submission.STATUS.accepted)
+
+    response = graphql_client.query(
+        """query($conference: String!) {
+            me {
+                participant(conference: $conference) {
+                    id
+                    bio
+                    photo
+                    website
+                    twitterHandle
+                    speakerLevel
+                    previousTalkVideo
+                    proposals {
+                        id
+                    }
+                }
+            }
+        }""",
+        variables={"conference": participant.conference.code},
+    )
+
+    participant_type = response["data"]["me"]["participant"]
+
+    assert participant_type["id"] == participant.hashid
+    assert len(participant_type["proposals"]) == 1
+    assert participant_type["proposals"][0]["id"] == proposal_1.hashid
 
 
 def test_user_participant_when_it_doesnt_exist(user, graphql_client):

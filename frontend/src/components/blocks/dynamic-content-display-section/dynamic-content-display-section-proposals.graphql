@@ -1,0 +1,22 @@
+#import "../../fragments/submission-accordion.graphql"
+
+query DynamicContentDisplaySectionProposals(
+  $code: String!
+  $language: String!
+) {
+  submissions(code: $code, onlyAccepted: true, pageSize: 300) {
+    items {
+      ...submissionAccordion
+      id
+      speaker {
+        id
+        fullName
+        participant {
+          id
+          photo
+          bio
+        }
+      }
+    }
+  }
+}

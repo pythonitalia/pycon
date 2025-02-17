@@ -1,3 +1,4 @@
+import { Button } from "@radix-ui/themes";
 import { useCurrentConference } from "../utils/conference";
 import { useCreateScheduleSlotMutation } from "./create-schedule-slot.generated";
 
@@ -47,9 +48,5 @@ const AddSlotButton = ({ children, duration, type, dayId }) => {
     });
   };
 
-  return (
-    <button type="button" className="btn" onClick={onCreateSlot}>
-      {children}
-    </button>
-  );
+  return <Button onClick={onCreateSlot}>{children}</Button>;
 };

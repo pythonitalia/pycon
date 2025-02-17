@@ -1,5 +1,6 @@
 #import "./submission.graphql"
 #import "./keynote.graphql"
+#import "./schedule-item.graphql"
 
 fragment ScheduleSlotFragment on ScheduleSlot {
   id
@@ -9,51 +10,6 @@ fragment ScheduleSlotFragment on ScheduleSlot {
   type
 
   items {
-    id
-    title
-    slug
-    type
-
-    duration
-
-    hasLimitedCapacity
-    userHasSpot
-    hasSpacesLeft
-    spacesLeft
-    linkTo
-
-    audienceLevel {
-      id
-      name
-    }
-
-    language {
-      id
-      name
-      code
-    }
-
-    submission {
-      ...SubmissionFragment
-    }
-
-    keynote {
-      ...KeynoteFragment
-    }
-
-    speakers {
-      id
-      fullName
-      participant {
-        id
-        photo
-      }
-    }
-
-    rooms {
-      id
-      name
-      type
-    }
+    ...ScheduleItemFragment
   }
 }

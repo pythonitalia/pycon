@@ -22,13 +22,7 @@ import { useCurrentLanguage } from "~/locale/context";
 
 import { createHref } from "../link";
 import { EventTag } from "../schedule-event-detail/event-tag";
-import {
-  type Item,
-  ItemTypes,
-  type Room,
-  type Slot,
-  Submission as SubmissionType,
-} from "./types";
+import type { Item, Room, Slot } from "./types";
 
 export const getItemUrl = (item: Item) => {
   if (item.linkTo) {
@@ -107,7 +101,7 @@ export const ScheduleEntry = ({
     item.language.code === "en" ? "talk.language.en" : "talk.language.it",
   );
   const isCustomItem = item.type === "custom" || item.type === "break";
-  const speakersNames = item.speakers.map((s) => s.fullName).join(", ");
+  const speakersNames = item.speakers.map((s) => s.fullname).join(", ");
   const allRoomsText = useTranslatedMessage("scheduleView.allRooms");
 
   const roomText =
@@ -259,9 +253,9 @@ export const ScheduleEntry = ({
                     <AvatarGroup>
                       {item.speakers.map((speaker) => (
                         <Avatar
-                          key={speaker.fullName}
+                          key={speaker.fullname}
                           image={speaker.participant?.photo}
-                          letter={speaker.fullName}
+                          letter={speaker.fullname}
                           letterBackgroundColor={getAvatarBackgroundColor(
                             Number.parseInt(item.id, 10),
                           )}

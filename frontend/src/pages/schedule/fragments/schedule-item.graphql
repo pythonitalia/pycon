@@ -1,0 +1,48 @@
+fragment ScheduleItemFragment on ScheduleItem {
+  id
+  title
+  slug
+  type
+
+  duration
+
+  hasLimitedCapacity
+  userHasSpot
+  hasSpacesLeft
+  spacesLeft
+  linkTo
+
+  audienceLevel {
+    id
+    name
+  }
+
+  language {
+    id
+    name
+    code
+  }
+
+  submission {
+    ...SubmissionFragment
+  }
+
+  keynote {
+    ...KeynoteFragment
+  }
+
+  speakers {
+    id
+    fullname
+    participant {
+      id
+      photo
+    }
+  }
+
+  rooms {
+    id
+    name
+    type
+  }
+}

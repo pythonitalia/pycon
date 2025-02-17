@@ -17,10 +17,12 @@ import { type SubmissionAccordionFragment, useSendVoteMutation } from "~/types";
 
 type Props = {
   submission: SubmissionAccordionFragment;
+  showVotingUI?: boolean;
 };
 
 export const VotingCard = ({
   submission,
+  showVotingUI = true,
   submission: {
     id,
     title,
@@ -29,6 +31,7 @@ export const VotingCard = ({
     audienceLevel,
     duration,
     languages,
+    speaker,
   },
 }: Props) => {
   const [sendVote, { loading, error, data: submissionData }] =
@@ -99,42 +102,44 @@ export const VotingCard = ({
       >
         <Heading size={4}>{title}</Heading>
       </CardPart>
-      <CardPart id="content" contentAlign="left" background="blue">
-        <InputNumber
-          values={[
-            {
-              value: 1,
-              label: <FormattedMessage id="voteSelector.notInterested" />,
-            },
-            {
-              value: 2,
-              label: <FormattedMessage id="voteSelector.maybe" />,
-            },
-            {
-              value: 3,
-              label: <FormattedMessage id="voteSelector.wantToSee" />,
-            },
-            {
-              value: 4,
-              label: <FormattedMessage id="voteSelector.mustSee" />,
-            },
-          ]}
-          value={submission?.myVote?.value}
-          onClick={onSubmitVote}
-        />
+      {showVotingUI && (
+        <CardPart id="content" contentAlign="left" background="blue">
+          <InputNumber
+            values={[
+              {
+                value: 1,
+                label: <FormattedMessage id="voteSelector.notInterested" />,
+              },
+              {
+                value: 2,
+                label: <FormattedMessage id="voteSelector.maybe" />,
+              },
+              {
+                value: 3,
+                label: <FormattedMessage id="voteSelector.wantToSee" />,
+              },
+              {
+                value: 4,
+                label: <FormattedMessage id="voteSelector.mustSee" />,
+              },
+            ]}
+            value={submission?.myVote?.value}
+            onClick={onSubmitVote}
+          />
 
-        <Text size={3} color="error">
-          {error?.message}
-          {submissionData &&
-            submissionData.sendVote.__typename === "SendVoteErrors" && (
-              <>
-                {submissionData.sendVote.errors.nonFieldErrors}{" "}
-                {submissionData.sendVote.errors.validationSubmission}{" "}
-                {submissionData.sendVote.errors.validationValue}
-              </>
-            )}
-        </Text>
-      </CardPart>
+          <Text size={3} color="error">
+            {error?.message}
+            {submissionData &&
+              submissionData.sendVote.__typename === "SendVoteErrors" && (
+                <>
+                  {submissionData.sendVote.errors.nonFieldErrors}{" "}
+                  {submissionData.sendVote.errors.validationSubmission}{" "}
+                  {submissionData.sendVote.errors.validationValue}
+                </>
+              )}
+          </Text>
+        </CardPart>
+      )}
       <CardPart id="content" contentAlign="left" background="white" size="none">
         <Grid cols={12} gap="none" divide={true}>
           <GridColumn colSpan={8}>
@@ -211,7 +216,21 @@ export const VotingCard = ({
               </Text>
             </CardPart>
           </GridColumn>
-          <GridColumn colSpan={6}>
+          {speaker && (
+            <GridColumn colSpan={2}>
+              <CardPart contentAlign="left" background="white">
+                <Text uppercase weight="strong" size="label3">
+                  <FormattedMessage id="voting.speaker" />
+                </Text>
+                <Spacer size="small" />
+
+                <Text weight="strong" as="p" size={2}>
+                  {speaker.fullName}
+                </Text>
+              </CardPart>
+            </GridColumn>
+          )}
+          <GridColumn colSpan={speaker ? 4 : 6}>
             <div className="h-full flex items-center justify-end ">
               <Link href={`/submission/${id}`}>
                 <CardPart contentAlign="left" background="white">

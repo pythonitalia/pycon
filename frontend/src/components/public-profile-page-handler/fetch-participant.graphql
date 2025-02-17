@@ -1,5 +1,11 @@
-query ParticipantPublicProfile($userId: ID!, $conference: String!) {
-  participant(userId: $userId, conference: $conference) {
+#import "../../fragments/schedule-item.graphql"
+
+query ParticipantPublicProfile(
+  $id: ID!
+  $conference: String!
+  $language: String!
+) {
+  participant(id: $id, conference: $conference) {
     id
     fullname
     publicProfile
@@ -11,5 +17,24 @@ query ParticipantPublicProfile($userId: ID!, $conference: String!) {
     linkedinUrl
     facebookUrl
     mastodonHandle
+    proposals {
+      id
+      title(language: $language)
+      type {
+        id
+        name
+      }
+      audienceLevel {
+        id
+        name
+      }
+      duration {
+        id
+        duration
+      }
+      scheduleItems {
+        ...ScheduleItemFragment
+      }
+    }
   }
 }

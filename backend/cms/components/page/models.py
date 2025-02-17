@@ -1,3 +1,6 @@
+from cms.components.page.blocks.dynamic_content_display_section import (
+    DynamicContentDisplaySection,
+)
 from cms.components.page.blocks.homepage_hero import HomepageHero
 from cms.components.page.blocks.sponsors_section import SponsorsSection
 from cms.components.home.blocks.home_intro_section import HomeIntroSection
@@ -37,6 +40,7 @@ class BodyBlock(blocks.StreamBlock):
     checkout_section = CheckoutSection()
     live_streaming_section = LiveStreamingSection()
     homepage_hero = HomepageHero()
+    dynamic_content_display_section = DynamicContentDisplaySection()
 
 
 class GenericPage(CustomHeadlessMixin, Page):

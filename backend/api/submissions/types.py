@@ -1,3 +1,5 @@
+from typing import Annotated
+from participants.models import Participant as ParticipantModel
 import strawberry
 from strawberry.types.field import StrawberryField
 from strawberry.types import Info
@@ -9,11 +11,12 @@ from i18n.strings import LazyI18nString
 from voting.models import Vote
 
 from .permissions import CanSeeSubmissionPrivateFields, CanSeeSubmissionRestrictedFields
-from typing import TYPE_CHECKING, Annotated
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from api.conferences.types import Conference, Topic, Duration, AudienceLevel
     from api.schedule.types import ScheduleItem
+    from api.participants.types import Participant
 
 
 def private_field() -> StrawberryField:
@@ -44,6 +47,20 @@ class SubmissionSpeaker:
     id: strawberry.ID
     full_name: str
     gender: str
+    _conference_id: strawberry.Private[str]
+
+    @strawberry.field
+    def participant(
+        self, info: Info
+    ) -> Annotated["Participant", strawberry.lazy("api.participants.types")] | None:
+        from api.participants.types import Participant
+
+        participant = (
+            ParticipantModel.objects.for_conference(self._conference_id)
+            .filter(user_id=self.id)
+            .first()
+        )
+        return Participant.from_model(participant) if participant else None
 
 
 @strawberry.type
@@ -136,6 +153,7 @@ class Submission:
             id=self.speaker_id,
             full_name=self.speaker.full_name,
             gender=self.speaker.gender,
+            _conference_id=self.conference_id,
         )
 
     @strawberry.field

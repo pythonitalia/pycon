@@ -11,6 +11,8 @@ export const messages = {
       "We have groups discounts for groups with 6+ people, contact us to know more. After you have purchased your tickets, you will be able to access the {page} with our discounted codes.",
     "tickets.description.page": "hotels page",
 
+    "global.sessions": "Sessions",
+
     "input.placeholder": "Type here...",
     "global.accordion.close": "Close",
     "global.accordion.readMore": "Read more",
@@ -23,6 +25,11 @@ export const messages = {
     "checkout.billing.businessInvoice": "Do you need an invoice?",
     "checkout.billing.businessInvoice.description":
       "Turn this option on if your company, university or similar is paying for you or if you need an invoice.",
+
+    "voting.talks": "Talks",
+    "voting.workshops": "Workshops",
+    "voting.filterBy": "Filter by",
+    "voting.all": "All",
 
     "sponsorLeadModal.title": "Download our brochure",
     "sponsorLeadModal.submit": "Submit",
@@ -894,6 +901,7 @@ reflects what everyone wants to see!`,
     "voting.audienceLevel": "Audience level",
     "talk.audienceLevel": "Audience level",
     "voting.length": "Length",
+    "voting.speaker": "Speaker",
     "voting.languages": "Languages",
     "voting.minutes": "{type} ({duration} minutes)",
     "voting.submissionType": "Category",
@@ -1935,6 +1943,12 @@ Affrettati a comprare il biglietto!`,
     "scheduleEventDetail.materials.open": "Apri ({hostname})",
     "scheduleEventDetail.materials.download": "Scarica ({mimeType})",
 
+    "voting.speaker": "Speaker",
+    "voting.talks": "Talks",
+    "voting.workshops": "Workshops",
+
+    "global.sessions": "Sessioni",
+
     "scheduleEventDetail.eventTime": "{start} - {end}",
     "voting.minutes": "{type} ({duration} minuti)",
     "voting.pagination":
@@ -2272,6 +2286,9 @@ Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia dis
       "Il form aprirà il {date}. Segui i nostri socials per aggiornamenti e cambiamenti.",
     "requestInvitationLetter.formClosed":
       "Il form è chiuso. Se hai domande, contattaci.",
+
+    "voting.filterBy": "Filtra per",
+    "voting.all": "Tutti",
   },
 };
 

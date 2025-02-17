@@ -16,10 +16,10 @@ class ScheduleSlotType(Enum):
 
 @strawberry.type
 class ScheduleSlot:
+    id: strawberry.ID
     hour: time
     duration: int
     type: ScheduleSlotType
-    id: strawberry.ID
 
     @strawberry.field
     def is_live(self) -> bool:

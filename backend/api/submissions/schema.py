@@ -2,6 +2,7 @@ import random
 from api.context import Info
 from api.submissions.permissions import CanSeeSubmissionRestrictedFields
 
+from voting.helpers import check_if_user_can_vote
 import strawberry
 
 from api.permissions import CanSeeSubmissions, IsAuthenticated
@@ -34,7 +35,7 @@ class SubmissionsQuery:
 
         return submission
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry.field()
     def submissions(
         self,
         info: Info,
@@ -46,9 +47,10 @@ class SubmissionsQuery:
         audience_levels: list[str] | None = None,
         page: int | None = 1,
         page_size: int | None = 50,
+        only_accepted: bool = False,
     ) -> Paginated[Submission] | None:
-        if page_size > 150:
-            raise ValueError("Page size cannot be greater than 150")
+        if page_size > 300:
+            raise ValueError("Page size cannot be greater than 300")
 
         if page_size < 1:
             raise ValueError("Page size must be greater than 0")
@@ -60,10 +62,17 @@ class SubmissionsQuery:
         user = request.user
         conference = ConferenceModel.objects.filter(code=code).first()
 
-        if not conference or not CanSeeSubmissions().has_permission(conference, info):
-            raise PermissionError("You need to have a ticket to see submissions")
+        if not only_accepted and not IsAuthenticated().has_permission(conference, info):
+            raise PermissionError("User not logged in")
 
-        info.context._user_can_vote = True
+        info.context._user_can_vote = (
+            check_if_user_can_vote(user, conference) if user.is_authenticated else False
+        )
+
+        if not conference or not CanSeeSubmissions().has_permission(
+            conference, info, only_accepted=only_accepted
+        ):
+            raise PermissionError("You need to have a ticket to see submissions")
 
         qs = conference.submissions.prefetch_related(
             "type",
@@ -72,7 +81,12 @@ class SubmissionsQuery:
             "languages",
             "audience_level",
             "tags",
-        ).filter(status=SubmissionModel.STATUS.proposed)
+        )
+
+        if only_accepted:
+            qs = qs.filter(status=SubmissionModel.STATUS.accepted)
+        else:
+            qs = qs.filter(status=SubmissionModel.STATUS.proposed)
 
         if languages:
             qs = qs.filter(languages__code__in=languages)

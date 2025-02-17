@@ -76,7 +76,7 @@ export const SubmissionPage = () => {
         audienceLevel={submission?.audienceLevel.name}
         startTime={null}
         endTime={null}
-        speakers={[]}
+        speakers={submission?.speaker ? [submission.speaker] : null}
         bookable={false}
         spacesLeft={0}
         sidebarExtras={

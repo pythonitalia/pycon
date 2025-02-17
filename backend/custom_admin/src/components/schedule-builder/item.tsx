@@ -1,5 +1,6 @@
 import { useDrag } from "react-dnd";
 
+import { Button } from "@radix-ui/themes";
 import { useDjangoAdminEditor } from "../shared/django-admin-editor-modal/context";
 import { convertHoursToMinutes } from "../utils/time";
 
@@ -82,9 +83,7 @@ export const ScheduleItemCard = ({ item, duration }) => {
         </li>
       )}
       <li className="pt-2">
-        <button type="button" className="underline" onClick={openEditLink}>
-          Edit schedule item
-        </button>
+        <Button onClick={openEditLink}>Edit</Button>
       </li>
     </ul>
   );
