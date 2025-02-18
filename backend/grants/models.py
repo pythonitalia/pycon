@@ -207,19 +207,6 @@ class Grant(TimeStampedModel):
     )
 
     # Voucher Management
-    voucher_code = models.TextField(
-        help_text=_("Voucher code generated for this grant."),
-        blank=True,
-        null=True,
-    )
-    pretix_voucher_id = models.IntegerField(
-        help_text=_("ID of the voucher in the Pretix database"),
-        blank=True,
-        null=True,
-    )
-    voucher_email_sent_at = models.DateTimeField(
-        help_text=_("When the email was last sent"), blank=True, null=True
-    )
     internal_notes = models.TextField(
         _("Internal Notes"),
         help_text=_("Internal notes only available to the Financial Aid Commettie"),
