@@ -1,3 +1,4 @@
+import logging
 from django.db import transaction
 from custom_admin.audit import (
     create_addition_admin_log_entry,
@@ -31,11 +32,14 @@ from schedule.models import ScheduleItem
 from submissions.models import Submission
 from .models import Grant, GrantConfirmPendingStatusProxy
 from django.db.models import Exists, OuterRef, F
+from pretix import user_has_admission_ticket
 
 from django.contrib.admin import SimpleListFilter
 from participants.models import Participant
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+
+logger = logging.getLogger(__name__)
 
 EXPORT_GRANTS_FIELDS = (
     "name",
@@ -407,10 +411,10 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "accommodation_amount",
         "total_amount",
         "country_type",
+        "user_has_ticket",
+        "has_voucher",
         "applicant_reply_sent_at",
         "applicant_reply_deadline",
-        "voucher_code",
-        "voucher_email_sent_at",
         "created",
     )
     list_filter = (
@@ -461,9 +465,6 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                     "total_amount",
                     "applicant_reply_sent_at",
                     "applicant_reply_deadline",
-                    "pretix_voucher_id",
-                    "voucher_code",
-                    "voucher_email_sent_at",
                     "internal_notes",
                 )
             },
@@ -560,6 +561,29 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         }
         return emoji[gender]
 
+    @admin.display(
+        boolean=True,
+    )
+    def user_has_ticket(self, obj: Grant) -> bool:
+        if not obj.user_id:
+            return None
+
+        try:
+            return user_has_admission_ticket(
+                email=obj.user.email,
+                event_organizer=obj.conference.pretix_organizer_id,
+                event_slug=obj.conference.pretix_event_id,
+            )
+        except Exception as e:
+            logger.error(e)
+            return None
+
+    @admin.display(
+        boolean=True,
+    )
+    def has_voucher(self, obj: Grant) -> bool:
+        return obj.has_voucher
+
     def get_queryset(self, request):
         qs = (
             super()
@@ -577,8 +601,16 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                         submission__speaker_id=OuterRef("user_id"),
                     )
                 ),
+                has_voucher=Exists(
+                    ConferenceVoucher.objects.for_conference(
+                        OuterRef("conference_id"),
+                    ).filter(
+                        user_id=OuterRef("user_id"),
+                    )
+                ),
             )
         )
+
         return qs
 
     class Media:
