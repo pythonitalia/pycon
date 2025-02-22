@@ -27,9 +27,7 @@ def participant(info: Info, id: strawberry.ID, conference: str) -> Participant |
 
 
 @strawberry.field
-def ticket_id_to_user_hashid(
-    ticket_id: strawberry.ID, conference_code: str
-) -> str | None:
+def ticket_id_to_hashid(ticket_id: strawberry.ID, conference_code: str) -> str | None:
     conference = Conference.objects.filter(code=conference_code).first()
     decoded_ticket_id = decode_hashid(ticket_id)
     order_position = pretix.get_order_position(conference, decoded_ticket_id)
@@ -43,8 +41,10 @@ def ticket_id_to_user_hashid(
     if not attendee_user:
         return None
 
-    user_id = attendee_user.id
-    return encode_hashid(int(user_id), salt=settings.USER_ID_HASH_SALT, min_length=6)
+    participant = ParticipantModel.objects.filter(
+        conference=conference, user=attendee_user
+    ).first()
+    return participant.hashid
 
 
 # TODO: move this to a badge app :)
@@ -81,5 +81,5 @@ def conference_role_for_ticket_data(
 
 ParticipantQueries = create_type(
     "ParticipantQueries",
-    (participant, ticket_id_to_user_hashid, conference_role_for_ticket_data),
+    (participant, ticket_id_to_hashid, conference_role_for_ticket_data),
 )
