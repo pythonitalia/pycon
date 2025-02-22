@@ -61,7 +61,7 @@ def user_schedule_item_favourites_calendar(request, conference_id, hash_user_id)
         event_description += f"\nRoom(s)/Stanza(e): {rooms}"
 
         event_description += (
-            f"\nInfo: https://2024.pycon.it/event/{schedule_item.slug}/"
+            f"\nInfo: https://2025.pycon.it/event/{schedule_item.slug}/"
         )
 
         event = Event()
@@ -77,7 +77,7 @@ def user_schedule_item_favourites_calendar(request, conference_id, hash_user_id)
                 " ", ""
             ),
         )
-        event.add("url", f"https://2024.pycon.it/event/{schedule_item.slug}/")
+        event.add("url", f"https://2025.pycon.it/event/{schedule_item.slug}/")
         event.add(
             "dtstart",
             schedule_item.start.replace(tzinfo=conference_timezone).astimezone(utc),

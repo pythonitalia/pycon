@@ -159,7 +159,7 @@ Session format/Formato: Talk
 Language/Lingua: English
 Speaker(s)/Relatore(i): Jane Doe, John
 Room(s)/Stanza(e): Room Name
-Info: https://2024.pycon.it/event/{schedule_item_1.slug}/
+Info: https://2025.pycon.it/event/{schedule_item_1.slug}/
 """.strip()
     )
     assert event_schedule_item_1.get("dtstart").dt == datetime(
@@ -182,7 +182,7 @@ Info: https://2024.pycon.it/event/{schedule_item_1.slug}/
 Session format/Formato: Panel
 Language/Lingua: Italian
 Room(s)/Stanza(e): Another Room
-Info: https://2024.pycon.it/event/{schedule_no_speaker.slug}/
+Info: https://2025.pycon.it/event/{schedule_no_speaker.slug}/
 """.strip()
     )
 
