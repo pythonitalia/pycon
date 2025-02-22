@@ -76,7 +76,8 @@ CacheHandler.onCreation(async () => {
     handlers: [handler],
     ttl: {
       defaultStaleAge: 60 * 3,
-      estimateExpireAge: (staleAge) => staleAge * 2,
+      // Store the cache for 6 months.
+      estimateExpireAge: (staleAge) => staleAge + 15768000,
     },
   };
 });
