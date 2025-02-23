@@ -29,6 +29,7 @@ import {
 } from "../public-profile-card";
 import { AboutYouSection } from "./about-you-section";
 import { AvailabilitySection } from "./availability-section";
+import { CoSpeakersSection } from "./co-speakers-section";
 import { ProposalSection } from "./proposal-section";
 
 export type CfpFormFields = ParticipantFormFields & {
@@ -328,6 +329,10 @@ export const CfpForm = ({
         speakerAvailabilities={formState.values.speakerAvailabilities}
         conferenceData={conferenceData}
       />
+
+      <Spacer size="medium" />
+
+      <CoSpeakersSection />
 
       <Spacer size="medium" />
 

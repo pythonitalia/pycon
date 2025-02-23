@@ -13,6 +13,12 @@ export const messages = {
 
     "global.sessions": "Sessions",
 
+    "cfp.cospeakers.title": "Co-speakers",
+    "cfp.cospeakers.description": "If you have co-speakers, add them here!",
+    "cfp.cospeakers.email.title": "Email",
+    "cfp.cospeakers.email.description":
+      "Once added they will receive an email to confirm their participation.",
+
     "input.placeholder": "Type here...",
     "global.accordion.close": "Close",
     "global.accordion.readMore": "Read more",
