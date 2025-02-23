@@ -266,8 +266,16 @@ export const Schedule = ({
 
           return (
             <Fragment key={slot.id}>
-              {index > 0 && <Spacer showOnlyOn="mobile" size="xl" />}
-              <div className="contents divide-y md:divide-none" key={slot.id}>
+              {index > 0 && slot.items.length > 0 && (
+                <Spacer showOnlyOn="mobile" size="xl" />
+              )}
+              <div
+                className={clsx("divide-y md:divide-none", {
+                  contents: slot.items.length > 0,
+                  "hidden md:contents": slot.items.length === 0,
+                })}
+                key={slot.id}
+              >
                 <div
                   className={clsx(
                     "md:border-r md:-mr-[3px] md:text-center md:px-4 left-0 sticky bg-milk z-40 pb-2",
