@@ -101,7 +101,7 @@ export const ScheduleEntry = ({
     item.language.code === "en" ? "talk.language.en" : "talk.language.it",
   );
   const isCustomItem = item.type === "custom" || item.type === "break";
-  const speakersNames = item.speakers.map((s) => s.fullname).join(", ");
+  const speakersNames = item.speakers.map((s) => s.fullname);
   const allRoomsText = useTranslatedMessage("scheduleView.allRooms");
 
   const roomText =
@@ -149,7 +149,7 @@ export const ScheduleEntry = ({
                 justifyContent="spaceBetween"
               >
                 {speakersNames.length > 0 && (
-                  <Heading size={6}>{speakersNames}</Heading>
+                  <Heading size={6}>{speakersNames.join(", ")}</Heading>
                 )}
                 <Text size="label4">
                   {[roomText, audienceLevel, languageText]
@@ -249,9 +249,13 @@ export const ScheduleEntry = ({
                     justifyContent="spaceBetween"
                     gap="small"
                   >
-                    <Heading size={5}>{speakersNames}</Heading>
+                    <Heading size={5}>
+                      {speakersNames.slice(0, 2).join(", ")}
+                      {speakersNames.length > 2 &&
+                        `, +${speakersNames.length - 2}`}
+                    </Heading>
                     <AvatarGroup>
-                      {item.speakers.map((speaker) => (
+                      {item.speakers.slice(0, 2).map((speaker) => (
                         <Avatar
                           key={speaker.fullname}
                           image={speaker.participant?.photo}
@@ -261,6 +265,13 @@ export const ScheduleEntry = ({
                           )}
                         />
                       ))}
+                      {item.speakers.length > 2 && (
+                        <Avatar
+                          key="more"
+                          letter={String(item.speakers.length - 2)}
+                          letterBackgroundColor={getAvatarBackgroundColor(2)}
+                        />
+                      )}
                     </AvatarGroup>
                   </HorizontalStack>
                 </>
