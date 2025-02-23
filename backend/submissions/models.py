@@ -1,3 +1,4 @@
+from ordered_model.models import OrderedModel
 from django.core import exceptions
 from django.db import models
 from django.urls import reverse
@@ -9,7 +10,7 @@ from model_utils.models import TimeStampedModel
 from api.helpers.ids import encode_hashid
 from i18n.fields import I18nCharField, I18nTextField
 
-from .querysets import SubmissionQuerySet
+from .querysets import ProposalCoSpeakerQuerySet, SubmissionQuerySet
 
 
 class SubmissionTag(models.Model):
@@ -210,6 +211,44 @@ class Submission(TimeStampedModel):
             f"{self.title} at Conference {self.conference.name} "
             f"<{self.conference.code}>"
         )
+
+
+class ProposalCoSpeakerStatus(models.TextChoices):
+    pending = "pending", _("Pending")
+    accepted = "accepted", _("Accepted")
+    rejected = "rejected", _("Rejected")
+
+
+class ProposalCoSpeaker(TimeStampedModel, OrderedModel):
+    conference_reference = "proposal__conference"
+
+    status = models.CharField(
+        _("status"),
+        choices=ProposalCoSpeakerStatus.choices,
+        max_length=30,
+        default=ProposalCoSpeakerStatus.pending,
+    )
+    proposal = models.ForeignKey(
+        "submissions.Submission",
+        on_delete=models.CASCADE,
+        verbose_name=_("proposal"),
+        related_name="co_speakers",
+    )
+
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name=_("user"),
+        related_name="+",
+    )
+
+    order_with_respect_to = "proposal"
+    objects = ProposalCoSpeakerQuerySet().as_manager()
+
+    def __str__(self):
+        return f"{self.user_id} {self.proposal.title}"
 
 
 class ProposalMaterial(TimeStampedModel):
