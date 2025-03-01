@@ -11,22 +11,24 @@ export const config = {
   unstable_allowDynamic: ["/node_modules/.pnpm/**"],
 };
 
-const regularFont = fetch(
-  new URL(
-    "../../../../../social-card-font/GeneralSans-Regular.otf",
-    import.meta.url,
-  ),
-).then((res) => res.arrayBuffer());
-const semiBoldFont = fetch(
-  new URL(
-    "../../../../../social-card-font/GeneralSans-Semibold.otf",
-    import.meta.url,
-  ),
-).then((res) => res.arrayBuffer());
-
 export const handler = async (req: NextRequest) => {
-  const regularFontData = await regularFont;
-  const semiBoldFontData = await semiBoldFont;
+  const regularFont = fetch(
+    new URL(
+      "./social-card-font/GeneralSans-Regular.otf",
+      req.url.substring(0, req.url.lastIndexOf("/api")),
+    ),
+  ).then((res) => res.arrayBuffer());
+  const semiBoldFont = fetch(
+    new URL(
+      "./social-card-font/GeneralSans-Semibold.otf",
+      req.url.substring(0, req.url.lastIndexOf("/api")),
+    ),
+  ).then((res) => res.arrayBuffer());
+
+  const [regularFontData, semiBoldFontData] = await Promise.all([
+    regularFont,
+    semiBoldFont,
+  ]);
   const client = createClient();
   const { searchParams } = new URL(req.url);
 
