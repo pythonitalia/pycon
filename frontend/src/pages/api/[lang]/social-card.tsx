@@ -12,19 +12,6 @@ export const config = {
   unstable_allowDynamic: ["/node_modules/.pnpm/**"],
 };
 
-const regularFont = fetch(
-  new URL("../../../social-card-font/GeneralSans-Regular.otf", import.meta.url),
-).then((res) => res.arrayBuffer());
-const semiBoldFont = fetch(
-  new URL(
-    "../../../social-card-font/GeneralSans-Semibold.otf",
-    import.meta.url,
-  ),
-).then((res) => res.arrayBuffer());
-const mainIllustration = fetch(
-  new URL("../../../../public/images/main-illustration.png", import.meta.url),
-).then((res) => res.arrayBuffer());
-
 const getDays = ({ start, end }: { start: string; end: string }) => {
   // assuming the same month
   const startDate = new Date(start);
@@ -50,6 +37,25 @@ const getYear = ({ end }: { end: string }) => {
 };
 
 const handler = async (req: NextRequest) => {
+  const regularFont = fetch(
+    new URL(
+      "./social-card-font/GeneralSans-Regular.otf",
+      req.url.substring(0, req.url.lastIndexOf("/api")),
+    ),
+  ).then((res) => res.arrayBuffer());
+  const semiBoldFont = fetch(
+    new URL(
+      "./social-card-font/GeneralSans-Semibold.otf",
+      req.url.substring(0, req.url.lastIndexOf("/api")),
+    ),
+  ).then((res) => res.arrayBuffer());
+  const mainIllustration = fetch(
+    new URL(
+      "./images/main-illustration.png",
+      req.url.substring(0, req.url.lastIndexOf("/api")),
+    ),
+  ).then((res) => res.arrayBuffer());
+
   const [regularFontData, semiBoldFontData, mainIllustrationData] =
     await Promise.all([regularFont, semiBoldFont, mainIllustration]);
   const client = createClient();
@@ -70,9 +76,12 @@ const handler = async (req: NextRequest) => {
         fontFamily: '"GeneralSans"',
       }}
     >
-      {/* eslint-disable @typescript-eslint/ban-ts-comment */}
-      {/* @ts-ignore */}
-      <img width={600} height={"100%"} src={mainIllustrationData} alt="" />
+      <img
+        width={600}
+        height={"100%"}
+        src={mainIllustrationData as unknown as string}
+        alt=""
+      />
       <div
         style={{
           display: "flex",
