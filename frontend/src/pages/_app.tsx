@@ -3,7 +3,6 @@ import { getMessagesForLocale } from "@python-italia/pycon-styleguide";
 import "@python-italia/pycon-styleguide/custom-style";
 import { Router } from "next/router";
 import posthog from "posthog-js";
-import { sampleByEvent } from "posthog-js/lib/src/customizations";
 import { PostHogProvider } from "posthog-js/react";
 import { useEffect, useMemo, useState } from "react";
 import { RawIntlProvider, createIntl, createIntlCache } from "react-intl";
@@ -44,7 +43,6 @@ const MyApp = (props) => {
         api_transport: "fetch",
         persistence: "localStorage",
         debug: process.env.NODE_ENV === "development",
-        before_send: sampleByEvent(["$web_vitals"], 0.2),
       });
     } catch (error) {
       console.log("error", error);
