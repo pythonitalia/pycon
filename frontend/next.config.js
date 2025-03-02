@@ -89,6 +89,14 @@ const nextConfig = {
         source: "/graphql",
         destination: `${API_URL_SERVER}/graphql`,
       },
+      {
+        source: "/ingest/static/:path*",
+        destination: "https://eu-assets.i.posthog.com/static/:path*",
+      },
+      {
+        source: "/ingest/:path*",
+        destination: "https://eu.i.posthog.com/:path*",
+      },
     ];
 
     if (API_URL_SERVER.includes("http://backend")) {
