@@ -34,9 +34,8 @@ const MyApp = (props) => {
   const locale = useCurrentLanguage();
 
   useEffect(() => {
-    console.log("process.env", process.env.NEXT_PUBLIC_POSTHOG_KEY);
     try {
-      posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
+      posthog.init(process.env.POSTHOG_KEY, {
         api_host: `${window.location.origin}/ingest`,
         ui_host: "https://eu.posthog.com",
         person_profiles: "identified_only",

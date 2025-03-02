@@ -60,7 +60,7 @@ resource "aws_ecs_task_definition" "pycon_frontend" {
           value = module.secrets.value.sentry_dsn
         },
         {
-          name = "NEXT_PUBLIC_POSTHOG_KEY",
+          name = "POSTHOG_KEY",
           value = module.secrets.value.posthog_key
         }
       ]
