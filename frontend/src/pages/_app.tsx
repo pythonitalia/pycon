@@ -36,7 +36,7 @@ const MyApp = (props) => {
   useEffect(() => {
     try {
       posthog.init(process.env.POSTHOG_KEY, {
-        api_host: `${window.location.origin}/ingest`,
+        api_host: "/ingest",
         ui_host: "https://eu.posthog.com",
         person_profiles: "identified_only",
         api_transport: "fetch",

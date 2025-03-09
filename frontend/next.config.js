@@ -22,6 +22,7 @@ const nextConfig = {
     localeDetection: false,
   },
   trailingSlash: false,
+  skipTrailingSlashRedirect: true,
   cacheHandler:
     process.env.VERCEL_ENV === "preview"
       ? undefined
