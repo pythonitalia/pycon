@@ -5,7 +5,7 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import va from "@vercel/analytics";
+import posthog from "posthog-js";
 import { FormattedMessage } from "react-intl";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
@@ -38,7 +38,7 @@ export const AddScheduleToCalendarModal = ({ onClose }: Props) => {
   const autoSelectInput = (e: React.MouseEvent<HTMLInputElement>) => {
     (e.target as HTMLInputElement).select();
     document.execCommand("copy");
-    va.track("copy-calendar-url");
+    posthog.capture("copy-calendar-url");
   };
 
   const pleaseWaitMessage = useTranslatedMessage("login.loading");
