@@ -74,7 +74,7 @@ def test_send_email_template_to_recipient_email(
     assert sent_email.recipient_email == "example@example.com"
 
     assert sent_email.subject == "Subject abc"
-    assert "Body abc" in sent_email.body
+    assert "Body abc" in sent_email.body_file.read().decode("utf-8")
     assert sent_email.preview_text == "Preview abc"
     assert sent_email.reply_to == "replyto@example.com"
 
@@ -102,7 +102,8 @@ def test_send_email_template_to_recipient_user():
     assert sent_email.recipient_email == user.email
 
     assert sent_email.subject == "Subject abc"
-    assert "Body abc" in sent_email.body
+    assert "Body abc" in sent_email.body_file.read().decode("utf-8")
+    assert "Body abc" in sent_email.text_body_file.read().decode("utf-8")
     assert sent_email.preview_text == "Preview abc"
     assert sent_email.reply_to == "replyto@example.com"
 
@@ -137,7 +138,7 @@ def test_send_system_template_email(settings):
     assert sent_email.from_email == "example@example.com"
 
     assert sent_email.subject == "Subject abc"
-    assert "Body abc" in sent_email.body
+    assert "Body abc" in sent_email.body_file.read().decode("utf-8")
     assert sent_email.preview_text == "Preview abc"
     assert sent_email.reply_to == "replyto@example.com"
 
