@@ -42,6 +42,10 @@ jobs:
           sentry_auth_token=$(aws ssm get-parameter --output text --query Parameter.Value --with-decryption --name /pythonit/${{ inputs.tf_environment }}/common/sentry-auth-token)
           echo "::add-mask::$sentry_auth_token"
           echo "SENTRY_AUTH_TOKEN=$sentry_auth_token" >> "$GITHUB_OUTPUT"
+
+          posthog_key=$(aws ssm get-parameter --output text --query Parameter.Value --with-decryption --name /pythonit/${{ inputs.tf_environment }}/pycon-frontend/posthog-key)
+          echo "::add-mask::$posthog_key"
+          echo "POSTHOG_KEY=$posthog_key" >> "$GITHUB_OUTPUT"
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -62,4 +66,5 @@ jobs:
             CONFERENCE_CODE=${{ steps.vars.outputs.conference_code }}
             GIT_HASH=${{ inputs.githash }}
           secrets: |
-            "sentry_auth_token=${{ steps.vars.outputs.sentry_auth_token }}"
+            sentry_auth_token=${{ steps.vars.outputs.sentry_auth_token }}
+            posthog_key=${{ steps.vars.outputs.posthog_key }}

@@ -26,6 +26,7 @@ COPY . .
 
 RUN corepack enable pnpm
 RUN --mount=type=secret,id=sentry_auth_token,env=SENTRY_AUTH_TOKEN \
+    --mount=type=secret,id=posthog_key,env=POSTHOG_KEY \
     pnpm run build
 
 FROM base AS runner
