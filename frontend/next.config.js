@@ -11,7 +11,6 @@ const {
   CMS_ADMIN_HOST = "admin.pycon.it",
   NEXT_PUBLIC_SITE_URL,
   SENTRY_AUTH_TOKEN,
-  POSTHOG_KEY,
 } = process.env;
 
 const nextConfig = {
@@ -22,7 +21,6 @@ const nextConfig = {
     localeDetection: false,
   },
   trailingSlash: false,
-  skipTrailingSlashRedirect: true,
   cacheHandler:
     process.env.VERCEL_ENV === "preview"
       ? undefined
@@ -91,14 +89,6 @@ const nextConfig = {
         source: "/graphql",
         destination: `${API_URL_SERVER}/graphql`,
       },
-      {
-        source: "/ingest/static/:path*",
-        destination: "https://eu-assets.i.posthog.com/static/:path*",
-      },
-      {
-        source: "/ingest/:path*",
-        destination: "https://eu.i.posthog.com/:path*",
-      },
     ];
 
     if (API_URL_SERVER.includes("http://backend")) {
@@ -121,7 +111,6 @@ const nextConfig = {
   env: {
     API_URL: API_URL,
     conferenceCode: CONFERENCE_CODE || "pycon-demo",
-    POSTHOG_KEY: POSTHOG_KEY,
     cmsHostname: CMS_HOSTNAME,
     NEXT_PUBLIC_SITE_URL: NEXT_PUBLIC_SITE_URL
       ? `https://${NEXT_PUBLIC_SITE_URL}/`

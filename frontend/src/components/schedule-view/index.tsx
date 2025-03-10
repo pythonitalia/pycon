@@ -6,8 +6,7 @@ import {
   Spacer,
   Text,
 } from "@python-italia/pycon-styleguide";
-import posthog from "posthog-js";
-
+import va from "@vercel/analytics";
 import { isAfter, isBefore, parseISO } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
 import React, {
@@ -145,7 +144,7 @@ export const ScheduleView = ({
     setViewMode((current) => {
       const nextValue = current === "grid" ? "list" : "grid";
       prevViewMode.current = nextValue;
-      posthog.capture("schedule-view", { view: nextValue });
+      va.track("schedule-view", { view: nextValue });
       return nextValue;
     });
   }, []);

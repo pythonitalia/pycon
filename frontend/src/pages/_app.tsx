@@ -1,10 +1,10 @@
 import { ApolloProvider } from "@apollo/client";
 import { getMessagesForLocale } from "@python-italia/pycon-styleguide";
 import "@python-italia/pycon-styleguide/custom-style";
-import { Router } from "next/router";
-import posthog from "posthog-js";
-import { PostHogProvider } from "posthog-js/react";
-import { useEffect, useMemo, useState } from "react";
+import va from "@vercel/analytics";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { useMemo, useState } from "react";
 import { RawIntlProvider, createIntl, createIntlCache } from "react-intl";
 
 import { APOLLO_STATE_PROP_NAME, getApolloClient } from "~/apollo/client";
@@ -33,34 +33,12 @@ const MyApp = (props) => {
   const apolloClient = getApolloClient(props.pageProps[APOLLO_STATE_PROP_NAME]);
   const locale = useCurrentLanguage();
 
-  useEffect(() => {
-    try {
-      posthog.init(process.env.POSTHOG_KEY, {
-        api_host: "/ingest",
-        ui_host: "https://eu.posthog.com",
-        person_profiles: "identified_only",
-        api_transport: "fetch",
-        persistence: "localStorage",
-        debug: process.env.NODE_ENV === "development",
-      });
-    } catch (error) {
-      console.log("error", error);
-    }
-
-    const handleRouteChange = () => posthog?.capture("$pageview");
-
-    Router.events.on("routeChangeComplete", handleRouteChange);
-    return () => {
-      Router.events.off("routeChangeComplete", handleRouteChange);
-    };
-  }, []);
-
   const setCurrentModal = <T extends ModalID>(
     modalId: T,
     props?: ModalProps[T],
   ) => {
     if (modalId !== null) {
-      posthog.capture("open-modal", {
+      va.track("open-modal", {
         modalId,
       });
     }
@@ -100,26 +78,26 @@ const MyApp = (props) => {
   }
   return (
     <ApolloProvider client={apolloClient}>
-      <PostHogProvider client={posthog}>
-        <RawIntlProvider value={intl}>
-          <LocaleProvider lang={locale}>
-            <div className="flex flex-col min-h-screen">
-              <ErrorBoundary>
-                <ModalStateContext.Provider value={modalContext}>
-                  <Header />
+      <RawIntlProvider value={intl}>
+        <LocaleProvider lang={locale}>
+          <SpeedInsights />
+          <div className="flex flex-col min-h-screen">
+            <ErrorBoundary>
+              <ModalStateContext.Provider value={modalContext}>
+                <Header />
 
-                  <div>
-                    <Component {...pageProps} err={err} />
-                    <ModalRenderer />
-                  </div>
+                <div>
+                  <Component {...pageProps} err={err} />
+                  <ModalRenderer />
+                  <Analytics />
+                </div>
 
-                  <Footer />
-                </ModalStateContext.Provider>
-              </ErrorBoundary>
-            </div>
-          </LocaleProvider>
-        </RawIntlProvider>
-      </PostHogProvider>
+                <Footer />
+              </ModalStateContext.Provider>
+            </ErrorBoundary>
+          </div>
+        </LocaleProvider>
+      </RawIntlProvider>
     </ApolloProvider>
   );
 };
