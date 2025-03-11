@@ -24,7 +24,7 @@ class BillingAddress(TimeStampedModel):
     is_business = models.BooleanField(_("is business"))
     company_name = models.TextField(_("company name"), blank=True)
     # TODO: delete this in future
-    user_name = models.TextField(_("user name"))
+    user_name = models.TextField(_("user name"), default="", blank=True)
     user_first_name = models.TextField(_("user first name"))
     user_last_name = models.TextField(_("user last name"))
     zip_code = models.TextField(_("zip code"))
