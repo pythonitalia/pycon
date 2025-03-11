@@ -129,21 +129,21 @@ export const BillingCard = ({
             )}
             <InputWrapper
               required={true}
-              title={<FormattedMessage id="orderInformation.firstName" />}
+              title={<FormattedMessage id="orderInformation.givenName" />}
             >
               <Input
-                {...text("firstName")}
+                {...text("givenName")}
                 required={true}
                 placeholder={inputPlaceholder}
-                errors={invoiceInformationErrors?.firstName}
+                errors={invoiceInformationErrors?.givenName}
               />
             </InputWrapper>
             <InputWrapper
               required={true}
-              title={<FormattedMessage id="orderInformation.lastName" />}
+              title={<FormattedMessage id="orderInformation.familyName" />}
             >
               <Input
-                {...text("lastName")}
+                {...text("familyName")}
                 required={true}
                 placeholder={inputPlaceholder}
               />

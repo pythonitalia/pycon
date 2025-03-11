@@ -1,8 +1,8 @@
 export type InvoiceInformationState = {
   isBusiness: boolean;
   companyName: string;
-  firstName: string;
-  lastName: string;
+  givenName: string;
+  familyName: string;
   fiscalCode: string;
   pec: string;
   sdi: string;

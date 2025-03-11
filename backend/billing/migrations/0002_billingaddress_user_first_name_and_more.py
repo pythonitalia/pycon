@@ -12,14 +12,14 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='billingaddress',
-            name='user_first_name',
-            field=models.TextField(default='', verbose_name='user first name'),
+            name='user_given_name',
+            field=models.TextField(default='', verbose_name='user given name'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='billingaddress',
-            name='user_last_name',
-            field=models.TextField(default='', verbose_name='user last name'),
+            name='user_family_name',
+            field=models.TextField(default='', verbose_name='user family name'),
             preserve_default=False,
         ),
         migrations.AlterField(
