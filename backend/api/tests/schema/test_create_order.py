@@ -157,7 +157,8 @@ def test_calls_create_order(graphql_client, user, mocker, requests_mock, pretix_
 
     billing_address = BillingAddress.objects.get(user=user)
 
-    assert billing_address.user_name == "Patrick"
+    assert billing_address.user_first_name == "Patrick"
+    assert billing_address.user_last_name == "Arminio"
     assert billing_address.company_name == ""
     assert not billing_address.is_business
     assert billing_address.address == "street"
@@ -234,7 +235,8 @@ def test_calls_create_order_doesnt_require_attendee_data_for_non_admission_produ
 
     billing_address = BillingAddress.objects.get(user=user)
 
-    assert billing_address.user_name == "Patrick"
+    assert billing_address.user_first_name == "Patrick"
+    assert billing_address.user_last_name == "Arminio"
     assert billing_address.company_name == ""
     assert not billing_address.is_business
     assert billing_address.address == "street"
@@ -437,7 +439,8 @@ def test_invoice_validation_fails_without_required_field_in_country_italy(
 
 @override_settings(FRONTEND_URL="http://test.it")
 @pytest.mark.parametrize(
-    "field_to_delete", ["name", "street", "zipcode", "city", "country"]
+    "field_to_delete",
+    ["firstName", "lastName", "street", "zipcode", "city", "country"],
 )
 def test_invoice_validation_fails_with_missing_required_fields(
     graphql_client, user, mocker, field_to_delete, requests_mock, pretix_items
@@ -1300,7 +1303,8 @@ def test_invoice_validation_works_when_not_italian_and_no_sdi(
 
     billing_address = BillingAddress.objects.get(user=user)
 
-    assert billing_address.user_name == "Patrick"
+    assert billing_address.user_first_name == "Patrick"
+    assert billing_address.user_last_name == "Arminio"
     assert billing_address.company_name == "LTD"
     assert billing_address.is_business
 
@@ -1379,7 +1383,8 @@ def test_create_order_billing_address_stores_both_non_and_business(
 
     billing_address = billing_addresses.get(is_business=True)
 
-    assert billing_address.user_name == "Patrick"
+    assert billing_address.user_first_name == "Patrick"
+    assert billing_address.user_last_name == "Arminio"
     assert billing_address.company_name == "LTD"
     assert billing_address.is_business
 
@@ -1453,6 +1458,7 @@ def test_create_order_updates_billing_address(
     billing_address = BillingAddress.objects.get(user=user)
 
     assert billing_address.id == existing_billing_address.id
-    assert billing_address.user_name == "Patrick"
+    assert billing_address.user_first_name == "Patrick"
+    assert billing_address.user_last_name == "Arminio"
     assert billing_address.company_name == "LTD"
     assert billing_address.is_business
