@@ -22,7 +22,8 @@ def _create_order(graphql_client, code, input):
                     errors {
                         nonFieldErrors
                         invoiceInformation {
-                            name
+                            firstName
+                            lastName
                             street
                             zipcode
                             fiscalCode
@@ -79,7 +80,8 @@ def test_cannot_create_order_unlogged(graphql_client):
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -133,7 +135,8 @@ def test_calls_create_order(graphql_client, user, mocker, requests_mock, pretix_
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -209,7 +212,8 @@ def test_calls_create_order_doesnt_require_attendee_data_for_non_admission_produ
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -287,7 +291,8 @@ def test_handles_payment_url_set_to_none(
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -343,7 +348,8 @@ def test_handles_errors(graphql_client, user, mocker, requests_mock, pretix_item
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -383,7 +389,8 @@ def test_invoice_validation_fails_without_required_field_in_country_italy(
     data = {
         "isBusiness": False,
         "company": "",
-        "name": "Patrick",
+        "firstName": "Patrick",
+        "lastName": "Arminio",
         "street": "street",
         "zipcode": "92100",
         "city": "Avellino",
@@ -449,7 +456,8 @@ def test_invoice_validation_fails_with_missing_required_fields(
     data = {
         "isBusiness": False,
         "company": "",
-        "name": "Patrick",
+        "firstName": "Patrick",
+        "lastName": "Arminio",
         "street": "street",
         "zipcode": "92100",
         "city": "Avellino",
@@ -533,7 +541,8 @@ def test_fiscal_code_not_required_for_non_it_orders(
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -590,7 +599,8 @@ def test_invoice_validation_fails_with_invalid_fiscal_code_in_country_italy(
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -650,7 +660,8 @@ def test_invoice_validation_checks_pec_email_if_provided(
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -711,7 +722,8 @@ def test_invoice_validation_fails_with_empty_vat_for_businesses(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "business",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -771,7 +783,8 @@ def test_invoice_validation_fails_with_empty_business_name_for_businesses(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -831,7 +844,8 @@ def test_invoice_validation_fails_with_invalid_country_code(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "name",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -891,7 +905,8 @@ def test_invoice_validation_fails_when_italian_business_and_no_sdi(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "LTD",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -952,7 +967,8 @@ def test_invoice_validation_fails_when_italian_business_with_invalid_sdi(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "LTD",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -1013,7 +1029,8 @@ def test_invoice_validation_fails_when_italian_zipcode_is_invalid(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "LTD",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "921",
                 "city": "Avellino",
@@ -1074,7 +1091,8 @@ def test_order_creation_fails_if_attendee_name_is_empty(
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "LTD",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "921",
                 "city": "Avellino",
@@ -1135,7 +1153,8 @@ def test_order_creation_fails_if_attendee_email_is_empty(
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "LTD",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "921",
                 "city": "Avellino",
@@ -1196,7 +1215,8 @@ def test_order_creation_fails_if_attendee_email_is_invalid(
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "LTD",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "921",
                 "city": "Avellino",
@@ -1257,7 +1277,8 @@ def test_invoice_validation_works_when_not_italian_and_no_sdi(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "LTD",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -1329,7 +1350,8 @@ def test_create_order_billing_address_stores_both_non_and_business(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "LTD",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -1407,7 +1429,8 @@ def test_create_order_updates_billing_address(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "LTD",
-                "name": "Patrick",
+                "firstName": "Patrick",
+                "lastName": "Arminio",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",

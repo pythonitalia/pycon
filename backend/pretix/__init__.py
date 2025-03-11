@@ -248,7 +248,8 @@ def get_quotas(conference: Conference) -> Dict[str, Quota]:
 @strawberry.type
 class InvoiceInformationErrors:
     company: list[str] = strawberry.field(default_factory=list)
-    name: list[str] = strawberry.field(default_factory=list)
+    first_name: list[str] = strawberry.field(default_factory=list)
+    last_name: list[str] = strawberry.field(default_factory=list)
     street: list[str] = strawberry.field(default_factory=list)
     zipcode: list[str] = strawberry.field(default_factory=list)
     city: list[str] = strawberry.field(default_factory=list)
@@ -316,7 +317,8 @@ class CreateOrderTicket:
 class InvoiceInformation:
     is_business: bool
     company: Optional[str]
-    name: str
+    first_name: str
+    last_name: str
     street: str
     zipcode: str
     city: str
@@ -328,7 +330,8 @@ class InvoiceInformation:
 
     def validate(self, errors: CreateOrderErrors) -> CreateOrderErrors:
         required_fields = [
-            "name",
+            "first_name",
+            "last_name",
             "street",
             "zipcode",
             "city",

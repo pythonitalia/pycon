@@ -129,13 +129,23 @@ export const BillingCard = ({
             )}
             <InputWrapper
               required={true}
-              title={<FormattedMessage id="orderInformation.name" />}
+              title={<FormattedMessage id="orderInformation.firstName" />}
             >
               <Input
-                {...text("name")}
+                {...text("firstName")}
                 required={true}
                 placeholder={inputPlaceholder}
-                errors={invoiceInformationErrors?.name}
+                errors={invoiceInformationErrors?.firstName}
+              />
+            </InputWrapper>
+            <InputWrapper
+              required={true}
+              title={<FormattedMessage id="orderInformation.lastName" />}
+            >
+              <Input
+                {...text("lastName")}
+                required={true}
+                placeholder={inputPlaceholder}
               />
             </InputWrapper>
             {isBusiness && (
@@ -154,13 +164,15 @@ export const BillingCard = ({
             )}
             <InputWrapper
               required={true}
-              title={<FormattedMessage id="orderInformation.zipCode" />}
+              title={<FormattedMessage id="orderInformation.address" />}
             >
-              <Input
-                {...text("zipCode")}
+              <Textarea
+                rows={3}
+                {...textarea("address")}
+                autoComplete="street-address"
                 required={true}
                 placeholder={inputPlaceholder}
-                errors={invoiceInformationErrors?.zipcode}
+                errors={invoiceInformationErrors?.street}
               />
             </InputWrapper>
 
@@ -177,15 +189,13 @@ export const BillingCard = ({
             </InputWrapper>
             <InputWrapper
               required={true}
-              title={<FormattedMessage id="orderInformation.address" />}
+              title={<FormattedMessage id="orderInformation.zipCode" />}
             >
-              <Textarea
-                rows={3}
-                {...textarea("address")}
-                autoComplete="street-address"
+              <Input
+                {...text("zipCode")}
                 required={true}
                 placeholder={inputPlaceholder}
-                errors={invoiceInformationErrors?.street}
+                errors={invoiceInformationErrors?.zipcode}
               />
             </InputWrapper>
             <InputWrapper
