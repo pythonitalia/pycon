@@ -1445,7 +1445,7 @@ The sooner you buy your ticket, the more you save!`,
     "orderInformation.italianInvoice": "Dettagli fattura elettronica",
     "orderInformation.fiscalCode": "Codice fiscale",
     "orderInformation.invalidFiscalCode": "Codice fiscale non valido",
-    "orderInformation.PEC": "PEC",
+    "orderInformation.pec": "PEC",
     "orderInformation.sdi": "SDI",
     "orderInformation.invalidSDI": "Il codice SDI deve essere di 7 caratteri",
 
