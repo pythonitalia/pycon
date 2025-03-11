@@ -21,7 +21,8 @@ def invoice_information():
     return InvoiceInformation(
         is_business=False,
         company="ABC",
-        name="ABC",
+        first_name="Patrick",
+        last_name="Arminio",
         street="ABC",
         zipcode="ABC",
         city="ABC",

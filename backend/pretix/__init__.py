@@ -527,7 +527,10 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
         "invoice_address": {
             "is_business": order_data.invoice_information.is_business,
             "company": order_data.invoice_information.company,
-            "name_parts": {"full_name": order_data.invoice_information.name},
+            "name_parts": {
+                "first_name": order_data.invoice_information.first_name,
+                "last_name": order_data.invoice_information.last_name,
+            },
             "street": order_data.invoice_information.street,
             "zipcode": order_data.invoice_information.zipcode,
             "city": order_data.invoice_information.city,
