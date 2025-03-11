@@ -5,7 +5,8 @@ mutation CreateOrder($conference: String!, $input: CreateOrderInput!) {
         nonFieldErrors
         invoiceInformation {
           company
-          name
+          firstName
+          lastName
           street
           zipcode
           city
