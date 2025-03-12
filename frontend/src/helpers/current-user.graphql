@@ -15,7 +15,8 @@ query CurrentUser($conference: String!) {
     billingAddresses(conference: $conference) {
       isBusiness
       companyName
-      userName
+      userGivenName
+      userFamilyName
       zipCode
       city
       address
