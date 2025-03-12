@@ -56,8 +56,8 @@ export const BillingCard = ({
 
     if (emptyInvoiceInformation && savedBillingInformation) {
       formState.setField("companyName", savedBillingInformation.companyName);
-      formState.setField("givenName", savedBillingInformation.givenName);
-      formState.setField("familyName", savedBillingInformation.familyName);
+      formState.setField("givenName", savedBillingInformation.userGivenName);
+      formState.setField("familyName", savedBillingInformation.userFamilyName);
       formState.setField("fiscalCode", savedBillingInformation.fiscalCode);
       formState.setField("pec", savedBillingInformation.pec);
       formState.setField("sdi", savedBillingInformation.sdi);
