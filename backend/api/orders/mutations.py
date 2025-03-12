@@ -43,8 +43,7 @@ class OrdersMutations:
             is_business=input.invoice_information.is_business,
             defaults={
                 "company_name": input.invoice_information.company,
-                "user_given_name": input.invoice_information.given_name,
-                "user_family_name": input.invoice_information.family_name,
+                "user_name": input.invoice_information.name,
                 "zip_code": input.invoice_information.zipcode,
                 "city": input.invoice_information.city,
                 "address": input.invoice_information.street,

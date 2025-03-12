@@ -248,8 +248,7 @@ def get_quotas(conference: Conference) -> Dict[str, Quota]:
 @strawberry.type
 class InvoiceInformationErrors:
     company: list[str] = strawberry.field(default_factory=list)
-    given_name: list[str] = strawberry.field(default_factory=list)
-    family_name: list[str] = strawberry.field(default_factory=list)
+    name: list[str] = strawberry.field(default_factory=list)
     street: list[str] = strawberry.field(default_factory=list)
     zipcode: list[str] = strawberry.field(default_factory=list)
     city: list[str] = strawberry.field(default_factory=list)
@@ -317,8 +316,7 @@ class CreateOrderTicket:
 class InvoiceInformation:
     is_business: bool
     company: Optional[str]
-    given_name: str
-    family_name: str
+    name: str
     street: str
     zipcode: str
     city: str
@@ -330,8 +328,7 @@ class InvoiceInformation:
 
     def validate(self, errors: CreateOrderErrors) -> CreateOrderErrors:
         required_fields = [
-            "given_name",
-            "family_name",
+            "name",
             "street",
             "zipcode",
             "city",
@@ -527,10 +524,7 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
         "invoice_address": {
             "is_business": order_data.invoice_information.is_business,
             "company": order_data.invoice_information.company,
-            "name_parts": {
-                "given_name": order_data.invoice_information.given_name,
-                "family_name": order_data.invoice_information.family_name,
-            },
+            "name_parts": {"full_name": order_data.invoice_information.name},
             "street": order_data.invoice_information.street,
             "zipcode": order_data.invoice_information.zipcode,
             "city": order_data.invoice_information.city,

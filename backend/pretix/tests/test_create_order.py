@@ -21,8 +21,7 @@ def invoice_information():
     return InvoiceInformation(
         is_business=False,
         company="ABC",
-        given_name="Patrick",
-        family_name="Arminio",
+        name="ABC",
         street="ABC",
         zipcode="ABC",
         city="ABC",
@@ -347,8 +346,7 @@ def test_creates_order_with_additional_info_for_e_invoice(requests_mock):
         invoice_information=InvoiceInformation(
             is_business=False,
             company="ABC",
-            given_name="Patrick",
-            family_name="Arminio",
+            name="ABC",
             street="ABC",
             zipcode="ABC",
             city="ABC",
@@ -418,8 +416,7 @@ def test_creates_order_with_additional_info_for_e_invoice_does_not_break_on_erro
         invoice_information=InvoiceInformation(
             is_business=False,
             company="ABC",
-            given_name="Patrick",
-            family_name="Arminio",
+            name="ABC",
             street="ABC",
             zipcode="ABC",
             city="ABC",

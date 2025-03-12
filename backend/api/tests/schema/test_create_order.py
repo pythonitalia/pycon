@@ -22,8 +22,7 @@ def _create_order(graphql_client, code, input):
                     errors {
                         nonFieldErrors
                         invoiceInformation {
-                            givenName
-                            familyName
+                            name
                             street
                             zipcode
                             fiscalCode
@@ -80,8 +79,7 @@ def test_cannot_create_order_unlogged(graphql_client):
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -135,8 +133,7 @@ def test_calls_create_order(graphql_client, user, mocker, requests_mock, pretix_
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -157,8 +154,7 @@ def test_calls_create_order(graphql_client, user, mocker, requests_mock, pretix_
 
     billing_address = BillingAddress.objects.get(user=user)
 
-    assert billing_address.user_given_name == "Patrick"
-    assert billing_address.user_family_name == "Arminio"
+    assert billing_address.user_name == "Patrick"
     assert billing_address.company_name == ""
     assert not billing_address.is_business
     assert billing_address.address == "street"
@@ -213,8 +209,7 @@ def test_calls_create_order_doesnt_require_attendee_data_for_non_admission_produ
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -235,8 +230,7 @@ def test_calls_create_order_doesnt_require_attendee_data_for_non_admission_produ
 
     billing_address = BillingAddress.objects.get(user=user)
 
-    assert billing_address.user_given_name == "Patrick"
-    assert billing_address.user_family_name == "Arminio"
+    assert billing_address.user_name == "Patrick"
     assert billing_address.company_name == ""
     assert not billing_address.is_business
     assert billing_address.address == "street"
@@ -293,8 +287,7 @@ def test_handles_payment_url_set_to_none(
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -350,8 +343,7 @@ def test_handles_errors(graphql_client, user, mocker, requests_mock, pretix_item
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -391,8 +383,7 @@ def test_invoice_validation_fails_without_required_field_in_country_italy(
     data = {
         "isBusiness": False,
         "company": "",
-        "givenName": "Patrick",
-        "familyName": "Arminio",
+        "name": "Patrick",
         "street": "street",
         "zipcode": "92100",
         "city": "Avellino",
@@ -439,8 +430,7 @@ def test_invoice_validation_fails_without_required_field_in_country_italy(
 
 @override_settings(FRONTEND_URL="http://test.it")
 @pytest.mark.parametrize(
-    "field_to_delete",
-    ["givenName", "familyName", "street", "zipcode", "city", "country"],
+    "field_to_delete", ["name", "street", "zipcode", "city", "country"]
 )
 def test_invoice_validation_fails_with_missing_required_fields(
     graphql_client, user, mocker, field_to_delete, requests_mock, pretix_items
@@ -459,8 +449,7 @@ def test_invoice_validation_fails_with_missing_required_fields(
     data = {
         "isBusiness": False,
         "company": "",
-        "givenName": "Patrick",
-        "familyName": "Arminio",
+        "name": "Patrick",
         "street": "street",
         "zipcode": "92100",
         "city": "Avellino",
@@ -544,8 +533,7 @@ def test_fiscal_code_not_required_for_non_it_orders(
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -602,8 +590,7 @@ def test_invoice_validation_fails_with_invalid_fiscal_code_in_country_italy(
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -663,8 +650,7 @@ def test_invoice_validation_checks_pec_email_if_provided(
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -725,8 +711,7 @@ def test_invoice_validation_fails_with_empty_vat_for_businesses(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "business",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -786,8 +771,7 @@ def test_invoice_validation_fails_with_empty_business_name_for_businesses(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -847,8 +831,7 @@ def test_invoice_validation_fails_with_invalid_country_code(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "name",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -908,8 +891,7 @@ def test_invoice_validation_fails_when_italian_business_and_no_sdi(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "LTD",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -970,8 +952,7 @@ def test_invoice_validation_fails_when_italian_business_with_invalid_sdi(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "LTD",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -1032,8 +1013,7 @@ def test_invoice_validation_fails_when_italian_zipcode_is_invalid(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "LTD",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "921",
                 "city": "Avellino",
@@ -1094,8 +1074,7 @@ def test_order_creation_fails_if_attendee_name_is_empty(
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "LTD",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "921",
                 "city": "Avellino",
@@ -1156,8 +1135,7 @@ def test_order_creation_fails_if_attendee_email_is_empty(
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "LTD",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "921",
                 "city": "Avellino",
@@ -1218,8 +1196,7 @@ def test_order_creation_fails_if_attendee_email_is_invalid(
             "invoiceInformation": {
                 "isBusiness": False,
                 "company": "LTD",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "921",
                 "city": "Avellino",
@@ -1280,8 +1257,7 @@ def test_invoice_validation_works_when_not_italian_and_no_sdi(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "LTD",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -1303,8 +1279,7 @@ def test_invoice_validation_works_when_not_italian_and_no_sdi(
 
     billing_address = BillingAddress.objects.get(user=user)
 
-    assert billing_address.user_given_name == "Patrick"
-    assert billing_address.user_family_name == "Arminio"
+    assert billing_address.user_name == "Patrick"
     assert billing_address.company_name == "LTD"
     assert billing_address.is_business
 
@@ -1354,8 +1329,7 @@ def test_create_order_billing_address_stores_both_non_and_business(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "LTD",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -1383,8 +1357,7 @@ def test_create_order_billing_address_stores_both_non_and_business(
 
     billing_address = billing_addresses.get(is_business=True)
 
-    assert billing_address.user_given_name == "Patrick"
-    assert billing_address.user_family_name == "Arminio"
+    assert billing_address.user_name == "Patrick"
     assert billing_address.company_name == "LTD"
     assert billing_address.is_business
 
@@ -1434,8 +1407,7 @@ def test_create_order_updates_billing_address(
             "invoiceInformation": {
                 "isBusiness": True,
                 "company": "LTD",
-                "givenName": "Patrick",
-                "familyName": "Arminio",
+                "name": "Patrick",
                 "street": "street",
                 "zipcode": "92100",
                 "city": "Avellino",
@@ -1458,7 +1430,6 @@ def test_create_order_updates_billing_address(
     billing_address = BillingAddress.objects.get(user=user)
 
     assert billing_address.id == existing_billing_address.id
-    assert billing_address.user_given_name == "Patrick"
-    assert billing_address.user_family_name == "Arminio"
+    assert billing_address.user_name == "Patrick"
     assert billing_address.company_name == "LTD"
     assert billing_address.is_business
