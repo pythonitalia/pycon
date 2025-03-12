@@ -9,7 +9,8 @@ type InvoiceInformationKeys = (keyof InvoiceInformationState)[];
 
 export const hasOrderInformation = (state: OrderState): boolean => {
   const requiredKeys: InvoiceInformationKeys = [
-    "name",
+    "givenName",
+    "familyName",
     "address",
     "zipCode",
     "city",
