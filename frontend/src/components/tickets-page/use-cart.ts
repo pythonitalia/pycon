@@ -67,7 +67,8 @@ export const EMPTY_INITIAL_CART_REDUCER = {
   invoiceInformation: {
     isBusiness: false,
     companyName: "",
-    name: "",
+    givenName: "",
+    familyName: "",
     vatId: "",
     address: "",
     zipCode: "",

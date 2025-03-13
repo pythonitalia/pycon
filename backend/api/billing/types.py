@@ -6,7 +6,8 @@ class BillingAddress:
     id: strawberry.ID
     is_business: bool
     company_name: str
-    user_name: str
+    user_given_name: str
+    user_family_name: str
     zip_code: str
     city: str
     address: str
@@ -22,7 +23,8 @@ class BillingAddress:
             id=instance.id,
             is_business=instance.is_business,
             company_name=instance.company_name,
-            user_name=instance.user_name,
+            user_given_name=instance.user_given_name,
+            user_family_name=instance.user_family_name,
             zip_code=instance.zip_code,
             city=instance.city,
             address=instance.address,
