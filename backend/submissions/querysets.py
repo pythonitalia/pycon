@@ -1,6 +1,7 @@
 from api.helpers.ids import decode_hashid
 from conferences.querysets import ConferenceQuerySetMixin
 from django.db import models
+from ordered_model.models import OrderedModelQuerySet
 
 
 class SubmissionQuerySet(ConferenceQuerySetMixin, models.QuerySet):
@@ -15,3 +16,12 @@ class SubmissionQuerySet(ConferenceQuerySetMixin, models.QuerySet):
 
     def of_user(self, user):
         return self.filter(speaker=user)
+
+
+class ProposalCoSpeakerQuerySet(
+    ConferenceQuerySetMixin, OrderedModelQuerySet, models.QuerySet
+):
+    def accepted(self):
+        from submissions.models import ProposalCoSpeakerStatus
+
+        return self.filter(status=ProposalCoSpeakerStatus.accepted)
