@@ -335,6 +335,8 @@ class Conference:
                             "submission__speaker",
                             "submission__languages",
                             "submission__schedule_items",
+                            "submission__co_speakers",
+                            "submission__co_speakers__user",
                             "keynote",
                             "keynote__schedule_items",
                             "keynote__schedule_items__rooms",
