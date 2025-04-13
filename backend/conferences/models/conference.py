@@ -148,6 +148,16 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         blank=True,
     )
 
+    frontend_revalidate_url = models.URLField(
+        default="",
+        blank=True,
+    )
+    frontend_revalidate_secret = models.CharField(
+        default="",
+        blank=True,
+        max_length=32224,
+    )
+
     def get_slack_oauth_token(self):
         return self.organizer.slack_oauth_bot_token
 

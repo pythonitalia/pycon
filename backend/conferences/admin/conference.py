@@ -163,6 +163,15 @@ class ConferenceAdmin(
             },
         ),
         (
+            "Frontend Settings",
+            {
+                "fields": (
+                    "frontend_revalidate_url",
+                    "frontend_revalidate_secret",
+                )
+            },
+        ),
+        (
             "Conference",
             {
                 "fields": (
