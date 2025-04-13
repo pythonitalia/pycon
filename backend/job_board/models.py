@@ -8,8 +8,6 @@ from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
 from ordered_model.models import OrderedModel, OrderedModelManager
 
-from i18n.fields import I18nCharField, I18nTextField
-
 
 class JobListingManager(OrderedModelManager):
     def by_slug(self, slug):
@@ -22,14 +20,14 @@ class JobListingManager(OrderedModelManager):
 
 
 class JobListing(TimeStampedModel, OrderedModel):
-    title = I18nCharField(_("title"), max_length=200)
-    slug = I18nCharField(_("slug"), max_length=200, blank=True)
+    title = models.TextField(_("title"), max_length=200)
+    slug = models.SlugField(_("slug"), max_length=200, blank=True)
     company = models.CharField(_("company"), max_length=100)
     company_logo = models.ImageField(
         _("company logo"), null=True, blank=True, upload_to="job-listings"
     )
-    description = I18nTextField(_("description"), blank=True)
-    apply_url = models.TextField(_("URL where you can apply"), blank=True)
+    description = models.TextField(_("description"), blank=True)
+    apply_url = models.TextField(_("Where you can apply"), blank=True)
     conference = models.ForeignKey(
         "conferences.Conference",
         on_delete=models.CASCADE,

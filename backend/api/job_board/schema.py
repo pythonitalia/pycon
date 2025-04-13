@@ -11,7 +11,9 @@ class JobBoardQuery:
     def job_listings(self, conference: str) -> list[JobListingType]:
         return [
             JobListingType.from_django_model(listing)
-            for listing in JobListing.objects.filter(conference__code=conference).all()
+            for listing in JobListing.objects.filter(conference__code=conference)
+            .order_by("order")
+            .all()
         ]
 
     @strawberry.field

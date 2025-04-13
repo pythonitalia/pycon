@@ -7,13 +7,13 @@ import {
   Page,
   Section,
   Spacer,
+  StyledHTMLText,
   Text,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { JobListingAccordion } from "~/components/job-listing-accordion";
-import { compile } from "~/helpers/markdown";
 import type { AllJobListingsQueryResult } from "~/types";
 
 import { Article } from "../article";
@@ -63,7 +63,6 @@ export const JobBoardLayout = ({
                 onMobileShowOnly === "jobListings" ? "desktop" : "mobile"
               }
               fullScreenHeight
-              overflow="scroll"
             >
               <Heading size={2}>{jobListing.title}</Heading>
               <Spacer size="small" />
@@ -71,7 +70,12 @@ export const JobBoardLayout = ({
                 {jobListing.company}
               </Text>
               <Spacer size="large" />
-              <Article>{compile(jobListing.description).tree}</Article>
+              <Article>
+                <StyledHTMLText
+                  baseTextSize={2}
+                  text={jobListing.description}
+                />
+              </Article>
               <Spacer size="xl" />
               {jobListing.applyUrl && (
                 <Button href={jobListing.applyUrl} variant="secondary">
@@ -79,6 +83,7 @@ export const JobBoardLayout = ({
                 </Button>
               )}
             </LayoutContent>
+            <Spacer size="medium" />
           </GridColumn>
         </Grid>
       </Section>

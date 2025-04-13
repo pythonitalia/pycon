@@ -1,9 +1,9 @@
-query AllJobListings($language: String!, $conference: String!) {
+query AllJobListings($conference: String!) {
   jobListings(conference: $conference) {
     id
-    slug(language: $language)
-    title(language: $language)
-    description(language: $language)
+    slug
+    title
+    description
     applyUrl
     company
     companyLogo
