@@ -97,7 +97,7 @@ def test_passing_language(graphql_client):
 
     resp = graphql_client.query(
         """query {
-            jobListing(slug: "slug") {
+            jobListing(slug: "lumaca") {
                 title
                 slug
             }
