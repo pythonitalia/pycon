@@ -1,8 +1,6 @@
 from copy import copy
 
-from django.conf import settings
 from django.db import models
-from django.db.models import Q
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
@@ -11,12 +9,7 @@ from ordered_model.models import OrderedModel, OrderedModelManager
 
 class JobListingManager(OrderedModelManager):
     def by_slug(self, slug):
-        filters = Q()
-
-        for lang, __ in settings.LANGUAGES:
-            filters |= Q(**{f"slug__{lang}": slug})
-
-        return self.get_queryset().filter(filters)
+        return self.get_queryset().filter(slug=slug)
 
 
 class JobListing(TimeStampedModel, OrderedModel):
