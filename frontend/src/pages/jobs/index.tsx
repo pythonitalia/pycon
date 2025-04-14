@@ -10,7 +10,6 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
   await Promise.all([
     prefetchSharedQueries(client, locale),
     queryAllJobListings(client, {
-      language: locale,
       conference: process.env.conferenceCode,
     }),
   ]);

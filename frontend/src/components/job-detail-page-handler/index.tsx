@@ -11,12 +11,10 @@ export const JobDetailPageHandler = () => {
   const {
     query: { id },
   } = useRouter();
-  const language = useCurrentLanguage();
   const {
     data: { jobListings },
   } = useAllJobListingsQuery({
     variables: {
-      language,
       conference: process.env.conferenceCode,
     },
   });

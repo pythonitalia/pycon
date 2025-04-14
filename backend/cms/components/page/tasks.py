@@ -14,7 +14,6 @@ def revalidate_vercel_frontend_task(page_id):
 
     settings = VercelFrontendSettings.for_site(site)
 
-    site_name = site.site_name
     hostname = site.hostname
 
     url = settings.revalidate_url
@@ -48,6 +47,15 @@ def revalidate_vercel_frontend_task(page_id):
     else:
         path = f"/{language_code}{page_path}"
 
+    execute_frontend_revalidate(
+        url=url,
+        path=path,
+        secret=secret,
+    )
+
+
+@app.task
+def execute_frontend_revalidate(url: str, path: str, secret: str):
     try:
         response = requests.post(
             url,
@@ -59,7 +67,7 @@ def revalidate_vercel_frontend_task(page_id):
         )
         response.raise_for_status()
     except Exception as e:
-        logger.error(f"Error while revalidating {path} on {site_name}: {e}")
+        logger.error(f"Error while revalidating {path}: {e}")
         return
 
-    logger.info(f"Revalidated {path} on {site_name}")
+    logger.info(f"Revalidated {path}")

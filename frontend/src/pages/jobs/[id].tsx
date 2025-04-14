@@ -10,7 +10,6 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
   await Promise.all([
     prefetchSharedQueries(client, locale),
     queryAllJobListings(client, {
-      language: locale,
       conference: process.env.conferenceCode,
     }),
   ]);
@@ -24,26 +23,19 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const client = getApolloClient();
 
   const {
-    data: { jobListings: italianJobListings },
+    data: { jobListings },
   } = await queryAllJobListings(client, {
-    language: "it",
-    conference: process.env.conferenceCode,
-  });
-  const {
-    data: { jobListings: englishJobListings },
-  } = await queryAllJobListings(client, {
-    language: "en",
     conference: process.env.conferenceCode,
   });
 
   const paths = [
-    ...italianJobListings.map((page) => ({
+    ...jobListings.map((page) => ({
       params: {
         id: page.id,
       },
       locale: "it",
     })),
-    ...englishJobListings.map((page) => ({
+    ...jobListings.map((page) => ({
       params: {
         id: page.id,
       },
