@@ -49,8 +49,12 @@ export const JobBoardLayout = ({
                 onMobileShowOnly === "jobListing" ? "desktop" : "mobile"
               }
               as="ul"
-              fullScreenHeight
+              position="sticky"
+              style={{
+                top: 0,
+              }}
               overflow="scroll"
+              fullScreenHeight
             >
               {jobListings.map((job) => (
                 <JobListingAccordion key={job.id} job={job} />
@@ -62,7 +66,6 @@ export const JobBoardLayout = ({
               showFrom={
                 onMobileShowOnly === "jobListings" ? "desktop" : "mobile"
               }
-              fullScreenHeight
             >
               <Heading size={2}>{jobListing.title}</Heading>
               <Spacer size="small" />
