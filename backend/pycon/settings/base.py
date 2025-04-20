@@ -129,6 +129,7 @@ INSTALLED_APPS = [
     "billing.apps.BillingConfig",
     "privacy_policy.apps.PrivacyPolicyConfig",
     "visa.apps.VisaConfig",
+    "community.apps.CommunityConfig",
 ]
 
 MIDDLEWARE = [
