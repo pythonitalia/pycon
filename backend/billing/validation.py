@@ -20,7 +20,7 @@ from billing.constants import (
 def validate_sdi_code(sdi_code: str) -> bool:
     sdi_code = sdi_code.upper()
 
-    if len(sdi_code) != 7:
+    if len(sdi_code) not in [6, 7]:
         raise SdiCodeIncorrectLengthError()
 
     if not sdi_code.isalnum():
