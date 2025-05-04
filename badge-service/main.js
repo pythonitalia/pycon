@@ -16,7 +16,7 @@ const EMPTY_BADGES_COUNT = {
 
 const getAllQuestions = async () => {
   const request = await fetch(
-    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2024/questions/",
+    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2025/questions/",
     {
       headers: {
         Authorization: `Token ${process.env.PRETIX_API_TOKEN}`,
@@ -46,7 +46,7 @@ const getConferenceRoleForTicketData = async (orderPosition) => {
         }`,
       variables: {
         ticketData: JSON.stringify(orderPosition),
-        conferenceCode: "pycon2024",
+        conferenceCode: "pycon2025",
       },
     }),
   });
@@ -56,7 +56,7 @@ const getConferenceRoleForTicketData = async (orderPosition) => {
 
 const getAllOrderPositions = async () => {
   let next =
-    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2024/checkinlists/44/positions/";
+    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2025/checkinlists/59/positions/";
   const positions = [];
   while (next) {
     const request = await fetch(next, {
@@ -210,7 +210,7 @@ const createEmptyBadgeOrderPositions = () => {
         width: "23cm",
         height: "33cm",
       });
-      archive.append(buffer, { name: filename });
+      archive.append(Buffer.from(buffer), { name: filename });
     }
 
     counter = counter + 1;
