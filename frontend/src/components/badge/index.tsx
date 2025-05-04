@@ -77,8 +77,8 @@ export const Badge = ({
           display: "flex",
           flexDirection: "column",
           textAlign: "left",
-          paddingLeft: "16px",
-          paddingRight: "16px",
+          paddingLeft: "25px",
+          paddingRight: "25px",
           paddingBottom: "16px",
           position: "relative",
           zIndex: 200,
@@ -150,7 +150,7 @@ export const Badge = ({
           </div>
           <div
             style={{
-              width: "90%",
+              width: "100%",
               fontWeight: 400,
               color: "#ffffff",
             }}
@@ -164,7 +164,7 @@ export const Badge = ({
                 }}
                 className="badge-tagline-quote"
               >
-                “{" "}
+                “
               </span>
               {tagline.substring(0, 250)}
               <span
@@ -174,7 +174,6 @@ export const Badge = ({
                 }}
                 className="badge-tagline-quote"
               >
-                {" "}
                 ”
               </span>
             </Balancer>
