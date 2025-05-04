@@ -49,8 +49,8 @@ type Props = {
 
 export const Badge = ({
   cutLines = true,
-  name = "Maurice Alfonso Da Silva Esposito",
-  pronouns = "they/them",
+  name = "Kayleigh Eleanor Howe Barnett",
+  pronouns = "she/her",
   tagline = "Appassionato di Python, amante delle parentesi giuste e delle battute sbagliate. Sopravvive a bug misteriosi con caffè e forza di volontà. Se non risponde subito, è perché sta cercando di capire perché il codice funzionava ieri e oggi no. Parla fluentemente Markdown, Git e sarcasmo. Ama i talk brevi, le pull request chiare e i badge lunghi.",
   role = ConferenceRole.Attendee,
   hashedTicketId = "",
@@ -157,9 +157,26 @@ export const Badge = ({
             className="!text-[13px] [&>span]:text-[13px] badge-tagline"
           >
             <Balancer>
-              <span className="badge-tagline-quote">“ </span>
+              <span
+                style={{
+                  color: BADGE_TYPE_TO_COLOR[role],
+                  opacity: tagline ? 1 : 0,
+                }}
+                className="badge-tagline-quote"
+              >
+                “{" "}
+              </span>
               {tagline.substring(0, 250)}
-              <span className="badge-tagline-quote"> ”</span>
+              <span
+                style={{
+                  color: BADGE_TYPE_TO_COLOR[role],
+                  opacity: tagline ? 1 : 0,
+                }}
+                className="badge-tagline-quote"
+              >
+                {" "}
+                ”
+              </span>
             </Balancer>
           </div>
         </div>

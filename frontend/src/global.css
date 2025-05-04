@@ -61,6 +61,5 @@ body:has(.brochure-page) {
   transform: translate(5%, 60px);
 }
 .badge-tagline-quote {
-  color: #f8b03d;
   font-weight: 400;
 }
