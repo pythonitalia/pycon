@@ -104,7 +104,7 @@ export const Badge = ({
             marginTop: "40px",
             marginBottom: "10px",
             opacity: pronouns ? 1 : 0,
-            padding: "2px",
+            padding: "2px 4px",
             width: "fit-content",
             border: "1.5px solid #000",
           }}
