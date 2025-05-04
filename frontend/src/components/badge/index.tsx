@@ -51,7 +51,7 @@ export const Badge = ({
   cutLines = true,
   name = "Kayleigh Eleanor Howe Barnett",
   pronouns = "she/her",
-  tagline = "Appassionato di Python, amante delle parentesi giuste e delle battute sbagliate. Sopravvive a bug misteriosi con caffè e forza di volontà. Se non risponde subito, è perché sta cercando di capire perché il codice funzionava ieri e oggi no. Parla fluentemente Markdown, Git e sarcasmo. Ama i talk brevi, le pull request chiare e i badge lunghi.",
+  tagline = "",
   role = ConferenceRole.Attendee,
   hashedTicketId = "",
   side = "front",
@@ -104,7 +104,7 @@ export const Badge = ({
             marginTop: "40px",
             marginBottom: "10px",
             opacity: pronouns ? 1 : 0,
-            padding: "2px",
+            padding: "2px 4px",
             width: "fit-content",
             border: "1.5px solid #000",
           }}
