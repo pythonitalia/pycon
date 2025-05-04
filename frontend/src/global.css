@@ -47,3 +47,20 @@ body:has(.brochure-page) {
 .pricing-page-table div {
   margin-top: -1px;
 }
+
+/* badge */
+.badge-snake {
+  transform: translate(5%, 60px);
+}
+
+.badge-tower-left {
+  transform: translate(5%, 60px);
+}
+
+.badge-tower-right {
+  transform: translate(5%, 60px);
+}
+.badge-tagline-quote {
+  color: #f8b03d;
+  font-weight: 400;
+}
