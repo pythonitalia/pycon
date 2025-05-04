@@ -158,6 +158,7 @@ const createEmptyBadgeOrderPositions = () => {
   };
 
   await page.goto("https://pycon.it/en/badge");
+  // await page.goto("http://localhost:3000/en/badge");
   await page.waitForNetworkIdle();
   await page.setViewport({ width: 1080, height: 2000 });
 
