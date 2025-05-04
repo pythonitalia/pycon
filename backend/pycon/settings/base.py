@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     "modelcluster",
     "taggit",
     "wagtail_headless_preview",
+    "colorfield",
     # --
     "schedule.apps.ScheduleConfig",
     "custom_admin",
