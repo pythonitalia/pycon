@@ -16,7 +16,8 @@ class Participant:
     id: ID
     bio: str
     website: str
-    photo: str | None
+    _photo: strawberry.Private[str]
+    _photo_small: strawberry.Private[str]
     photo_id: str | None
     public_profile: bool
     twitter_handle: str
@@ -62,12 +63,20 @@ class Participant:
 
         return self._previous_talk_video
 
+    @strawberry.field
+    def photo(self, size: str = "default") -> str | None:
+        if size == "small":
+            return self._photo_small
+
+        return self._photo
+
     @classmethod
     def from_model(cls, instance):
         return cls(
             id=instance.hashid,
             fullname=instance.user.fullname,
-            photo=instance.photo_url,
+            _photo=instance.photo_url,
+            _photo_small=instance.photo_small_url,
             photo_id=instance.photo_file_id,
             bio=instance.bio,
             website=instance.website,
