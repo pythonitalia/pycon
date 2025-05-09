@@ -62,6 +62,13 @@ class ScheduleItem:
         return self.attendees.filter(user_id=user_id).exists()
 
     @strawberry.field
+    def user_is_talk_manager(self, info: Info) -> bool:
+        if not (user_id := info.context.request.user.id):
+            return False
+
+        return self.talk_manager_id == user_id
+
+    @strawberry.field
     def speakers(self, info: Info) -> list[ScheduleItemUser]:
         speakers = []
 
