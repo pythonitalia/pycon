@@ -232,6 +232,14 @@ class ScheduleItem(TimeStampedModel):
     )
     link_to = models.CharField(_("link to"), blank=True, default="", max_length=1024)
 
+    talk_manager = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("talk manager"),
+    )
+
     image = models.ImageField(
         _("image"), null=True, blank=True, upload_to="schedule_items"
     )
