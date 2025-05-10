@@ -385,8 +385,8 @@ export const Badge = ({
         fill="none"
         style={{
           position: "absolute",
-          bottom: 0,
-          left: 0,
+          bottom: -1,
+          left: -1,
           zIndex: 0,
         }}
       >
