@@ -20,4 +20,8 @@ fragment ScheduleItemFragment on ScheduleItem {
   keynote {
     ...KeynoteFragment
   }
+  talkManager {
+    id
+    fullname
+  }
 }
