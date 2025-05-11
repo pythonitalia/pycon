@@ -82,10 +82,8 @@ export const ScheduleItemCard = ({ item, duration }) => {
           </span>
         </li>
       )}
-      <li class="pt-2">
-        <span>
-          [TM: {item.talk_manager.fullname || item.talk_manager.email}]
-        </span>
+      <li className="pt-2">
+        <span>[TM: {item.talkManager?.fullname}]</span>
       </li>
       <li className="pt-2">
         <Button onClick={openEditLink}>Edit</Button>

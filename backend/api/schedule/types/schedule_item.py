@@ -3,6 +3,7 @@ from api.participants.types import Participant
 from participants.models import Participant as ParticipantModel
 from typing import TYPE_CHECKING
 from api.languages.types import Language
+from api.permissions import IsStaffPermission
 from datetime import datetime
 from typing import Annotated
 from api.schedule.types.schedule_item_user import ScheduleItemUser
@@ -37,6 +38,9 @@ class ScheduleItem:
 
     abstract: str
     elevator_pitch: str
+    talk_manager: ScheduleItemUser | None = strawberry.field(
+        permission_classes=[IsStaffPermission]
+    )
 
     @strawberry.field
     def has_limited_capacity(self) -> bool:
