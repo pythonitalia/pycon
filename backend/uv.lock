@@ -146,6 +146,7 @@ dependencies = [
     { name = "dal-admin-filters" },
     { name = "django" },
     { name = "django-autocomplete-light" },
+    { name = "django-colorfield" },
     { name = "django-environ" },
     { name = "django-imagekit" },
     { name = "django-import-export" },
@@ -230,6 +231,7 @@ requires-dist = [
     { name = "dal-admin-filters", specifier = "==1.1.0" },
     { name = "django", specifier = "==5.1.4" },
     { name = "django-autocomplete-light", specifier = "==3.9.4" },
+    { name = "django-colorfield", specifier = ">=0.13.0" },
     { name = "django-environ", specifier = "==0.10.0" },
     { name = "django-imagekit", specifier = "==5.0.0" },
     { name = "django-import-export", specifier = ">=3.2.0,<4.0.0" },
@@ -784,6 +786,18 @@ dependencies = [
     { name = "six" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ae/72/6a6c2d4b05296c9248a1e95430fa4f4605c210c2fac1d7d80d9e7bdf90f0/django-autocomplete-light-3.9.4.tar.gz", hash = "sha256:0f6da75c1c7186698b867a467a8cdb359f0513fdd8e09288a0c2fb018ae3d94e", size = 168936 }
+
+[[package]]
+name = "django-colorfield"
+version = "0.13.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pillow" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/36/98/07a6a9b951a0609c03d43df6e4650a4dff5dc35c5863db9b9a279dd1b955/django_colorfield-0.13.0.tar.gz", hash = "sha256:6b91ffbf55a4d6c1eb3f7b46e8b2d757cf124668b1370bd93b2ae34b807cfafc", size = 56517 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/73/43/84a363c51b513e990cce84a5de54cc36955bdee03ced686767001f364115/django_colorfield-0.13.0-py3-none-any.whl", hash = "sha256:3fa0a33dd8530c346cc1d228950b979c0935f28ddb6dbe200b8accfde636e236", size = 53903 },
+]
 
 [[package]]
 name = "django-debug-toolbar"
@@ -1576,6 +1590,9 @@ name = "markuppy"
 version = "1.14"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/4e/ca/f43541b41bd17fc945cfae7ea44f1661dc21ea65ecc944a6fa138eead94c/MarkupPy-1.14.tar.gz", hash = "sha256:1adee2c0a542af378fe84548ff6f6b0168f3cb7f426b46961038a2bcfaad0d5f", size = 6815 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/56/cc/e5403fe82ad2720dd8f821270c5cfe14007b97f9d0c906a834eb613608b2/markuppy-1.14-py3-none-any.whl", hash = "sha256:dc893880c5551d8388b688eef1d425dd48bb0b7d5bc74414fae86764ff4660ee", size = 8449 },
+]
 
 [[package]]
 name = "markupsafe"
