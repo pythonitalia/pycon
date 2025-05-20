@@ -7,7 +7,7 @@ const cmToPx = (cm: number) => cm * (96 / 2.54);
 const CUT_SPACE_CM = 0.7;
 // 13 - 3
 const CUT_LINE_SIZE_CM = 0.3;
-const CUT_LINE_SIZE_2_CM = 0.07;
+const CUT_LINE_SIZE_2_CM = 0.02;
 
 export const CUT_LINE_SIZE_PX = cmToPx(CUT_LINE_SIZE_CM);
 export const CUT_LINE_SIZE_2_PX = cmToPx(CUT_LINE_SIZE_2_CM);
