@@ -426,13 +426,13 @@ const CutLines = ({
         height: CUT_LINE_SIZE_2_PX,
         top: 0,
         left: 0,
-        transform: "translateX(-100%)",
+        transform: "translateX(-150%)",
       };
       line2 = {
         width: CUT_LINE_SIZE_2_PX,
         height: CUT_LINE_SIZE_PX,
 
-        transform: "translateY(-100%)",
+        transform: "translateY(-150%)",
         top: 0,
         left: 0,
       };
@@ -447,13 +447,13 @@ const CutLines = ({
         height: CUT_LINE_SIZE_2_PX,
         bottom: 0,
         left: 0,
-        transform: "translateX(-100%)",
+        transform: "translateX(-150%)",
       };
       line2 = {
         width: CUT_LINE_SIZE_2_PX,
         height: CUT_LINE_SIZE_PX,
 
-        transform: "translateY(100%)",
+        transform: "translateY(150%)",
         bottom: 0,
         left: 0,
       };
@@ -468,13 +468,13 @@ const CutLines = ({
         height: CUT_LINE_SIZE_PX,
         top: 0,
         left: 0,
-        transform: "translateY(-100%) translateX(-100%)",
+        transform: "translateY(-150%) translateX(-150%)",
       };
       line2 = {
         width: CUT_LINE_SIZE_PX,
         height: CUT_LINE_SIZE_2_PX,
 
-        transform: "translateX(100%)",
+        transform: "translateX(150%)",
         top: 0,
         right: 0,
       };
@@ -489,13 +489,13 @@ const CutLines = ({
         height: CUT_LINE_SIZE_PX,
         bottom: 0,
         left: 0,
-        transform: "translateY(100%) translateX(-100%)",
+        transform: "translateY(150%) translateX(-150%)",
       };
       line2 = {
         width: CUT_LINE_SIZE_PX,
         height: CUT_LINE_SIZE_2_PX,
 
-        transform: "translateX(100%)",
+        transform: "translateX(150%)",
         bottom: 0,
         right: 0,
       };
