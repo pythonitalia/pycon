@@ -142,7 +142,7 @@ def _calculate_roles(
         if "sponsor" in tags:
             roles.append(Role.SPONSOR)
 
-        if "speakers" in tags:
+        if "speakers" in tags or "speaker" in tags:
             roles.append(Role.SPEAKER)
 
     # We do not know if they are a speaker via voucher code
