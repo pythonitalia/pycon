@@ -261,3 +261,11 @@ resource "aws_route53_record" "postmark_bounces" {
   records = ["pm.mtasv.net"]
   ttl     = "900"
 }
+
+resource "aws_route53_record" "google_dkim" {
+  zone_id = aws_route53_zone.pyconit.id
+  name    = "google._domainkey"
+  type    = "TXT"
+  records = ["v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqkfWzq+QJ9CiAWCd4zUEez0c7gfhdgCE+RUs2rIegjv+ad4jDcZdQKAguQDtRrJrWcS87bQkX5mnIBisjs/k63XDSwNWw2c5RsEqDA3C2djUy3LjiY4hWCS9SuGvDn/PiLAJ6zse2O0L4FfvjlU9tQvRtUd/qgSurlxiq+Vx/7mdduHqy45W9QglOU/MqFPdxJoyWWXrX1QmW83EVHMa+duundDfEOUMQu7Kcuw994+eu3GRAOrTW5BMglGMzg4yKRqa+uLAI5Ogy64w9cLWZ80VtOwaFmBhxmTwvtbYdVVhlEQ2VHI3X85a0eq+N8NgnazLQqZGpks1ZtZv9iCR5QIDAQAB"]
+  ttl     = "900"
+}
