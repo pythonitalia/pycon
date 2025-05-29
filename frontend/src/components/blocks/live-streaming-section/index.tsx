@@ -41,7 +41,7 @@ export const LiveStreamingSection = () => {
   };
 
   const runningEvent = currentDay?.runningEvents?.filter((event) =>
-    event.rooms.map((room) => room.id).includes(currentRoom.id),
+    (event.livestreamingRoom ? [event.livestreamingRoom] : event.rooms).map((room) => room.id).includes(currentRoom.id),
   )?.[0];
 
   const hasLiveVideos = currentDay?.rooms?.some((room) => room.streamingUrl);
@@ -162,7 +162,7 @@ const isRoomStreaming = (
 ) => {
   return runningEvents.some(
     (event) =>
-      event.rooms.map((room) => room.id).includes(room.id) &&
+      (event.livestreamingRoom ? [event.livestreamingRoom] : event.rooms).map((room) => room.id).includes(room.id) &&
       event.type !== "custom",
   );
 };
