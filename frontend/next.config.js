@@ -77,6 +77,11 @@ const nextConfig = {
         permanent: false,
       },
       {
+        source: "/slido",
+        destination: "https://app.sli.do/event/x8n8psMWm7xZwtmzJ49KKh",
+        permanent: false,
+      },
+      {
         source: "/blog",
         destination: "/news",
         permanent: true,
