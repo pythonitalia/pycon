@@ -341,6 +341,7 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                     "link_to",
                     "slido_url",
                     "talk_manager",
+                    'livestreaming_room',
                 )
             },
         ),

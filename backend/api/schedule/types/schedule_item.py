@@ -41,6 +41,7 @@ class ScheduleItem:
     talk_manager: ScheduleItemUser | None = strawberry.field(
         permission_classes=[IsStaffPermission]
     )
+    livestreaming_room: Room | None
 
     @strawberry.field
     def has_limited_capacity(self) -> bool:

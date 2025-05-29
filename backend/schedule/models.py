@@ -213,6 +213,14 @@ class ScheduleItem(TimeStampedModel):
     rooms = models.ManyToManyField(
         Room, related_name="talks", verbose_name=_("rooms"), blank=True
     )
+    livestreaming_room = models.ForeignKey(
+        Room,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        verbose_name=_("livestreaming room"),
+        related_name="livestreaming_talks",
+    )
 
     submission = models.ForeignKey(
         Submission,
