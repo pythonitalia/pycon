@@ -32,7 +32,7 @@ export const LiveStreamingSection = () => {
     variables: {
       code: process.env.conferenceCode,
     },
-    pollInterval: 1000 * 60 * 3,
+    pollInterval: 1000 * 60,
   });
   const [currentRoom, setCurrentRoom] = useState(currentDay?.rooms?.[0]);
 
