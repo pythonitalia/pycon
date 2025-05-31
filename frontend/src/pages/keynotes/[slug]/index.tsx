@@ -20,6 +20,9 @@ const KeynotePage = () => {
   const {
     data: {
       conference: {
+        talk: {
+          slidoUrl,
+        },
         keynote: {
           title,
           description,
@@ -69,6 +72,7 @@ const KeynotePage = () => {
         speakers={speakers}
         rooms={rooms.map((room) => room.name)}
         youtubeVideoId={youtubeVideoId}
+        slidoUrl={slidoUrl}
       />
     </Page>
   );

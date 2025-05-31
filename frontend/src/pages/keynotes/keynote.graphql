@@ -1,6 +1,10 @@
 query Keynote($conference: String!, $slug: String!, $language: String!) {
   conference(code: $conference) {
     id
+    talk(slug: $slug) {
+      id
+      slidoUrl
+    }
     keynote(slug: $slug) {
       id
       title(language: $language)
