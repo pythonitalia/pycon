@@ -124,8 +124,8 @@ class ScheduleItem:
 
         return info.context.request.build_absolute_uri(self.image.url)
 
-    @strawberry.field
-    def slido_url(self, info) -> str:
+    @strawberry.field(name='slidoUrl')
+    def _slido_url(self, info) -> str:
         if self.slido_url:
             return self.slido_url
 
