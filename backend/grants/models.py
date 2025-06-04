@@ -14,6 +14,43 @@ class GrantQuerySet(ConferenceQuerySetMixin, models.QuerySet):
         return self.filter(user=user)
 
 
+class GrantReimbursementCategory(models.Model):
+    """
+    Define types of reimbursements available for a grant (e.g., Travel, Ticket, Accommodation).
+    """
+
+    class Category(models.TextChoices):
+        TRAVEL = "travel", _("Travel")
+        TICKET = "ticket", _("Ticket")
+        ACCOMMODATION = "accommodation", _("Accommodation")
+        OTHER = "other", _("Other")
+
+    conference = models.ForeignKey(
+        "conferences.Conference",
+        on_delete=models.CASCADE,
+        related_name="reimbursement_categories",
+    )
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    max_amount = models.DecimalField(
+        max_digits=6, decimal_places=0, help_text=_("Maximum amount for this category")
+    )
+    category = models.CharField(max_length=20, choices=Category.choices)
+    included_by_default = models.BooleanField(
+        default=False,
+        help_text="Automatically include this category in grants by default",
+    )
+
+    def __str__(self):
+        return f"{self.name} ({self.conference.name})"
+
+    class Meta:
+        verbose_name = _("Grant Reimbursement Category")
+        verbose_name_plural = _("Grant Reimbursement Categories")
+        unique_together = [("conference", "category")]
+        ordering = ["conference", "category"]
+
+
 class Grant(TimeStampedModel):
     # TextChoices
     class Status(models.TextChoices):
