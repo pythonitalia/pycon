@@ -30,7 +30,12 @@ from grants.tasks import (
 )
 from schedule.models import ScheduleItem
 from submissions.models import Submission
-from .models import Grant, GrantConfirmPendingStatusProxy, GrantReimbursementCategory
+from .models import (
+    Grant,
+    GrantConfirmPendingStatusProxy,
+    GrantReimbursementCategory,
+    GrantReimbursement,
+)
 from django.db.models import Exists, OuterRef, F
 from pretix import user_has_admission_ticket
 
@@ -397,6 +402,18 @@ class IsConfirmedSpeakerFilter(SimpleListFilter):
 class GrantReimbursementCategoryAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     list_display = ("__str__", "max_amount", "category", "included_by_default")
     list_filter = ("conference", "category", "included_by_default")
+
+
+@admin.register(GrantReimbursement)
+class GrantReimbursementAdmin(ConferencePermissionMixin, admin.ModelAdmin):
+    list_display = (
+        "grant",
+        "category",
+        "granted_amount",
+    )
+    list_filter = ("grant__conference", "category")
+    search_fields = ("grant__full_name", "grant__email")
+    autocomplete_fields = ("grant",)
 
 
 @admin.register(Grant)

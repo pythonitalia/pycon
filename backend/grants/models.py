@@ -250,6 +250,10 @@ class Grant(TimeStampedModel):
         blank=True,
     )
 
+    reimbursement_categories = models.ManyToManyField(
+        GrantReimbursementCategory, through="GrantReimbursement", related_name="grants"
+    )
+
     objects = GrantQuerySet().as_manager()
 
     def __init__(self, *args, **kwargs):
@@ -368,6 +372,37 @@ class Grant(TimeStampedModel):
             self.approved_type == Grant.ApprovedType.ticket_accommodation
             or self.approved_type == Grant.ApprovedType.ticket_travel_accommodation
         )
+
+
+class GrantReimbursement(models.Model):
+    """Links a Grant to its reimbursement categories and stores the actual amount granted."""
+
+    grant = models.ForeignKey(
+        Grant,
+        on_delete=models.CASCADE,
+        related_name="reimbursements",
+        verbose_name=_("grant"),
+    )
+    category = models.ForeignKey(
+        GrantReimbursementCategory,
+        on_delete=models.CASCADE,
+        verbose_name=_("reimbursement category"),
+    )
+    granted_amount = models.DecimalField(
+        _("granted amount"),
+        max_digits=6,
+        decimal_places=0,
+        help_text=_("Actual amount granted for this category"),
+    )
+
+    def __str__(self):
+        return f"{self.grant.full_name} - {self.category.name} - {self.granted_amount}"
+
+    class Meta:
+        verbose_name = _("Grant Reimbursement")
+        verbose_name_plural = _("Grant Reimbursements")
+        unique_together = [("grant", "category")]
+        ordering = ["grant", "category"]
 
 
 class GrantConfirmPendingStatusProxy(Grant):

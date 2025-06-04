@@ -2,7 +2,7 @@ import factory.fuzzy
 from factory.django import DjangoModelFactory
 
 from conferences.tests.factories import ConferenceFactory
-from grants.models import Grant, GrantReimbursementCategory
+from grants.models import Grant, GrantReimbursementCategory, GrantReimbursement
 from helpers.constants import GENDERS
 from users.tests.factories import UserFactory
 from countries import countries
@@ -75,3 +75,12 @@ class GrantFactory(DjangoModelFactory):
             ParticipantFactory(user_id=grant.user.id, conference=grant.conference)
 
         return grant
+
+
+class GrantReimbursementFactory(DjangoModelFactory):
+    class Meta:
+        model = GrantReimbursement
+
+    grant = factory.SubFactory(GrantFactory)
+    category = factory.SubFactory(GrantReimbursementCategoryFactory)
+    granted_amount = factory.LazyAttribute(lambda obj: obj.category.max_amount)
