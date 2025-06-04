@@ -24,7 +24,7 @@ class GrantReimbursementCategoryFactory(DjangoModelFactory):
     description = factory.Faker("sentence")
     max_amount = factory.fuzzy.FuzzyDecimal(50, 500, precision=2)
     category = factory.fuzzy.FuzzyChoice(
-        GrantReimbursementCategory.CategoryType.choices, getter=lambda x: x[0]
+        GrantReimbursementCategory.Category.choices, getter=lambda x: x[0]
     )
     included_by_default = factory.Faker("boolean")
 
