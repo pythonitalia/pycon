@@ -373,6 +373,13 @@ class Grant(TimeStampedModel):
             or self.approved_type == Grant.ApprovedType.ticket_travel_accommodation
         )
 
+    @property
+    def total_allocated_amount(self):
+        return sum(r.allocated_amount for r in self.reimbursements.all())
+
+    def has_approved(self, type_):
+        return self.reimbursements.filter(category__category=type_).exists()
+
 
 class GrantReimbursement(models.Model):
     """Links a Grant to its reimbursement categories and stores the actual amount granted."""
