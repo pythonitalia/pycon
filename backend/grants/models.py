@@ -14,6 +14,43 @@ class GrantQuerySet(ConferenceQuerySetMixin, models.QuerySet):
         return self.filter(user=user)
 
 
+class GrantReimbursementCategory(models.Model):
+    """
+    Define types of reimbursements available for a grant (e.g., Travel, Ticket, Accommodation).
+    """
+
+    class Category(models.TextChoices):
+        TRAVEL = "travel", _("Travel")
+        TICKET = "ticket", _("Ticket")
+        ACCOMMODATION = "accommodation", _("Accommodation")
+        OTHER = "other", _("Other")
+
+    conference = models.ForeignKey(
+        "conferences.Conference",
+        on_delete=models.CASCADE,
+        related_name="reimbursement_categories",
+    )
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    max_amount = models.DecimalField(
+        max_digits=6, decimal_places=0, help_text=_("Maximum amount for this category")
+    )
+    category = models.CharField(max_length=20, choices=Category.choices)
+    included_by_default = models.BooleanField(
+        default=False,
+        help_text="Automatically include this category in grants by default",
+    )
+
+    def __str__(self):
+        return f"{self.name} ({self.conference.name})"
+
+    class Meta:
+        verbose_name = _("Grant Reimbursement Category")
+        verbose_name_plural = _("Grant Reimbursement Categories")
+        unique_together = [("conference", "category")]
+        ordering = ["conference", "category"]
+
+
 class Grant(TimeStampedModel):
     # TextChoices
     class Status(models.TextChoices):
@@ -213,6 +250,10 @@ class Grant(TimeStampedModel):
         blank=True,
     )
 
+    reimbursement_categories = models.ManyToManyField(
+        GrantReimbursementCategory, through="GrantReimbursement", related_name="grants"
+    )
+
     objects = GrantQuerySet().as_manager()
 
     def __init__(self, *args, **kwargs):
@@ -331,6 +372,44 @@ class Grant(TimeStampedModel):
             self.approved_type == Grant.ApprovedType.ticket_accommodation
             or self.approved_type == Grant.ApprovedType.ticket_travel_accommodation
         )
+
+    @property
+    def total_allocated_amount(self):
+        return sum(r.allocated_amount for r in self.reimbursements.all())
+
+    def has_approved(self, type_):
+        return self.reimbursements.filter(category__category=type_).exists()
+
+
+class GrantReimbursement(models.Model):
+    """Links a Grant to its reimbursement categories and stores the actual amount granted."""
+
+    grant = models.ForeignKey(
+        Grant,
+        on_delete=models.CASCADE,
+        related_name="reimbursements",
+        verbose_name=_("grant"),
+    )
+    category = models.ForeignKey(
+        GrantReimbursementCategory,
+        on_delete=models.CASCADE,
+        verbose_name=_("reimbursement category"),
+    )
+    granted_amount = models.DecimalField(
+        _("granted amount"),
+        max_digits=6,
+        decimal_places=0,
+        help_text=_("Actual amount granted for this category"),
+    )
+
+    def __str__(self):
+        return f"{self.grant.full_name} - {self.category.name} - {self.granted_amount}"
+
+    class Meta:
+        verbose_name = _("Grant Reimbursement")
+        verbose_name_plural = _("Grant Reimbursements")
+        unique_together = [("grant", "category")]
+        ordering = ["grant", "category"]
 
 
 class GrantConfirmPendingStatusProxy(Grant):
