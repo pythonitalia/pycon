@@ -198,6 +198,14 @@ resource "aws_route53_record" "roma_python_it_cname" {
   ttl     = "3600"
 }
 
+resource "aws_route53_record" "pydataroma_python_it_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "pydataroma.python.it"
+  type    = "CNAME"
+  records = ["pydataromacapitale.github.io"]
+  ttl     = "3600"
+}
+
 resource "aws_route53_record" "testcommunity_cname" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "testcommunity.python.it"
