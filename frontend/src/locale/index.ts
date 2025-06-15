@@ -663,7 +663,8 @@ Click the box to change. If left empty, we will assume you are available.`,
     "orderInformation.invalidFiscalCode": "Fiscal code not valid",
     "orderInformation.pec": "PEC",
     "orderInformation.sdi": "SDI",
-    "orderInformation.invalidSDI": "SDI must be 7 characters long (6 for Italian PA)",
+    "orderInformation.invalidSDI":
+      "SDI must be 7 characters long (6 for Italian PA)",
 
     "orderQuestions.heading": "Order questions",
     "orderQuestions.attendeeGivenName": "Attendee Given name",
@@ -1001,6 +1002,10 @@ reflects what everyone wants to see!`,
 If this new timing doesn't work for you, please don't hesitate to let us know below. We'll do our very best to accommodate your needs, though please keep in mind that due to scheduling limitations, we might not be able to fulfil all requests. In the rare event we can't find an alternative, we may need to cancel your submission.`,
 
     "streaming.qa": "Ask Questions",
+
+    "cfp.materials.title": "Materials",
+    "cfp.materials.description":
+      "Upload here the slides or other materials you want to share.",
 
     "talk.bookToAttend":
       "This event has limited capacity, you need to book a seat to attend.",
@@ -1447,7 +1452,8 @@ The sooner you buy your ticket, the more you save!`,
     "orderInformation.invalidFiscalCode": "Codice fiscale non valido",
     "orderInformation.pec": "PEC",
     "orderInformation.sdi": "SDI",
-    "orderInformation.invalidSDI": "Il codice SDI deve essere di 7 caratteri (6 per una PA)",
+    "orderInformation.invalidSDI":
+      "Il codice SDI deve essere di 7 caratteri (6 per una PA)",
 
     "orderQuestions.heading": "Domande aggiuntive",
     "orderQuestions.attendeeName": "Nome partecipante",

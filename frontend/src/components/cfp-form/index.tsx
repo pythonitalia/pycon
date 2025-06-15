@@ -29,6 +29,7 @@ import {
 } from "../public-profile-card";
 import { AboutYouSection } from "./about-you-section";
 import { AvailabilitySection } from "./availability-section";
+import { MaterialsSection } from "./materials-section";
 import { ProposalSection } from "./proposal-section";
 
 export type CfpFormFields = ParticipantFormFields & {
@@ -46,6 +47,7 @@ export type CfpFormFields = ParticipantFormFields & {
   shortSocialSummary: string;
   acceptedPrivacyPolicy: boolean;
   speakerAvailabilities: { [time: number]: null | string };
+  materials: any[];
 };
 
 export type SubmissionStructure = {
@@ -326,6 +328,15 @@ export const CfpForm = ({
       <AvailabilitySection
         onChangeAvailability={onChangeAvailability}
         speakerAvailabilities={formState.values.speakerAvailabilities}
+        conferenceData={conferenceData}
+      />
+
+      <Spacer size="medium" />
+
+      <MaterialsSection
+        formState={formState}
+        getErrors={getErrors}
+        formOptions={formOptions}
         conferenceData={conferenceData}
       />
 
