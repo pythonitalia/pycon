@@ -72,7 +72,11 @@ export const Footer = () => {
           </div>
         }
         socials={[
-          { icon: "twitter", link: "https://twitter.com/pyconit", rel: "me" },
+          {
+            icon: "mastodon",
+            link: "https://social.python.it/@pycon",
+            rel: "me",
+          },
           {
             icon: "facebook",
             link: "https://www.facebook.com/pythonitalia",
@@ -88,11 +92,7 @@ export const Footer = () => {
             link: "https://www.linkedin.com/company/pycon-italia",
             rel: "me",
           },
-          {
-            icon: "mastodon",
-            link: "https://social.python.it/@pycon",
-            rel: "me",
-          },
+          { icon: "twitter", link: "https://twitter.com/pyconit", rel: "me" },
         ]}
       />
     </>
