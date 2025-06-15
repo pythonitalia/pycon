@@ -23,4 +23,5 @@ STORAGES = {
 }
 
 AWS_STORAGE_BUCKET_NAME = config.get("pycon", "media_bucket_name", fallback="")
-S3_USE_SIGV4 = True
+AWS_S3_SIGNATURE_VERSION = "s3v4"
+AWS_S3_ADDRESSING_STYLE = "path"
