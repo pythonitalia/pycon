@@ -154,6 +154,14 @@ resource "aws_ecs_task_definition" "pretix" {
         {
           name = "AWS_S3_REGION_NAME",
           value = "eu-central-1"
+        },
+        {
+          name = "AWS_REQUEST_CHECKSUM_CALCULATION",
+          value = "WHEN_REQUIRED"
+        },
+        {
+          name = "AWS_RESPONSE_CHECKSUM_VALIDATION",
+          value = "WHEN_REQUIRED"
         }
       ]
       portMappings = [
