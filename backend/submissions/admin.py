@@ -1,3 +1,7 @@
+from ordered_model.admin import (
+    OrderedInlineModelAdminMixin,
+    OrderedTabularInline,
+)
 from django.urls import reverse
 from grants.tasks import get_name
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
@@ -26,6 +30,7 @@ from users.admin_mixins import ConferencePermissionMixin
 
 
 from .models import (
+    ProposalCoSpeaker,
     ProposalMaterial,
     Submission,
     SubmissionComment,
@@ -214,8 +219,21 @@ class ProposalMaterialInline(admin.TabularInline):
     autocomplete_fields = ("file",)
 
 
+class ProposalCoSpeakerInline(OrderedTabularInline):
+    model = ProposalCoSpeaker
+    extra = 0
+    autocomplete_fields = ("user",)
+    fields = ("user", "status", "order", "move_up_down_links")
+    readonly_fields = ("order", "move_up_down_links")
+
+
 @admin.register(Submission)
-class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
+class SubmissionAdmin(
+    ExportMixin,
+    ConferencePermissionMixin,
+    OrderedInlineModelAdminMixin,
+    admin.ModelAdmin,
+):
     resource_class = SubmissionResource
     form = SubmissionAdminForm
     list_display = (
@@ -276,7 +294,7 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         send_proposal_in_waiting_list_email_action,
     ]
     autocomplete_fields = ("speaker",)
-    inlines = [ProposalMaterialInline]
+    inlines = [ProposalMaterialInline, ProposalCoSpeakerInline]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         extra_context = extra_context or {}

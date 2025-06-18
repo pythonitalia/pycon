@@ -332,6 +332,16 @@ class ScheduleItem(TimeStampedModel):
         speakers.extend(
             [speaker.user for speaker in self.additional_speakers.order_by("id").all()]
         )
+
+        if self.submission_id:
+            speakers.extend(
+                [
+                    co_speaker.user
+                    for co_speaker in self.submission.co_speakers.accepted()
+                    .order_by("id")
+                    .all()
+                ]
+            )
         return speakers
 
     def clean(self):
