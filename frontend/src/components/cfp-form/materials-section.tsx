@@ -8,7 +8,6 @@ import {
   MultiplePartsCard,
   Spacer,
   Text,
-  VerticalStack,
 } from "@python-italia/pycon-styleguide";
 import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
@@ -26,18 +25,19 @@ type Props = {
   submission: SubmissionStructure;
 };
 
+const MAX_MATERIALS = 3;
+
 export const MaterialsSection = ({
   formState,
   getErrors,
-  formOptions,
   submission,
 }: Props) => {
   const materials = formState.values.materials ?? [];
 
   const onAddFile = useCallback(
-    (e) => {
+    (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      if (materials.length >= 3) {
+      if (materials.length >= MAX_MATERIALS) {
         return;
       }
 
@@ -53,9 +53,9 @@ export const MaterialsSection = ({
   );
 
   const onAddURL = useCallback(
-    (e) => {
+    (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      if (materials.length >= 3) {
+      if (materials.length >= MAX_MATERIALS) {
         return;
       }
 
@@ -152,14 +152,14 @@ export const MaterialsSection = ({
             <Button
               size="small"
               onClick={onAddFile}
-              disabled={materials.length >= 3}
+              disabled={materials.length >= MAX_MATERIALS}
             >
               <FormattedMessage id="cfp.materials.addFile" />
             </Button>
             <Button
               size="small"
               onClick={onAddURL}
-              disabled={materials.length >= 3}
+              disabled={materials.length >= MAX_MATERIALS}
             >
               <FormattedMessage id="cfp.materials.addURL" />
             </Button>
