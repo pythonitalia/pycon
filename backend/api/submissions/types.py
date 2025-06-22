@@ -81,6 +81,7 @@ class ProposalMaterial:
     id: strawberry.ID
     name: str
     url: str | None
+    file_id: str | None
     file_url: str | None
     file_mime_type: str | None
 
@@ -90,6 +91,7 @@ class ProposalMaterial:
             id=material.id,
             name=material.name,
             url=material.url,
+            file_id=material.file_id,
             file_url=material.file.url if material.file_id else None,
             file_mime_type=material.file.mime_type if material.file_id else None,
         )
@@ -199,3 +201,11 @@ class Submission:
 class SubmissionsPagination:
     submissions: list[Submission]
     total_pages: int
+
+
+@strawberry.input
+class SubmissionMaterialInput:
+    name: str
+    id: strawberry.ID | None = None
+    url: str | None = None
+    file_id: str | None = None

@@ -1,6 +1,6 @@
 import pytest
 from files_upload.models import File
-from submissions.tests.factories import SubmissionFactory
+from submissions.tests.factories import AcceptedSubmissionFactory, SubmissionFactory
 from conferences.tests.factories import ConferenceFactory
 from django.test import override_settings
 
@@ -64,7 +64,7 @@ def test_upload_participant_avatar_to_invalid_conf_fails(graphql_client, user):
 
 
 def test_upload_proposal_material_file(graphql_client, user):
-    proposal = SubmissionFactory(speaker=user)
+    proposal = AcceptedSubmissionFactory(speaker=user)
     graphql_client.force_login(user)
 
     response = _upload_file(
@@ -88,7 +88,26 @@ def test_upload_proposal_material_file(graphql_client, user):
 
 
 def test_cannot_upload_proposal_material_file_if_not_speaker(graphql_client, user):
-    proposal = SubmissionFactory()
+    proposal = AcceptedSubmissionFactory()
+    graphql_client.force_login(user)
+
+    response = _upload_file(
+        graphql_client,
+        {
+            "proposalMaterial": {
+                "filename": "test.txt",
+                "proposalId": proposal.hashid,
+                "conferenceCode": proposal.conference.code,
+            }
+        },
+    )
+
+    assert not response["data"]
+    assert response["errors"][0]["message"] == "You cannot upload files of this type"
+
+
+def test_cannot_upload_proposal_material_file_if_not_accepted(graphql_client, user):
+    proposal = SubmissionFactory(status="proposed")
     graphql_client.force_login(user)
 
     response = _upload_file(
@@ -129,7 +148,7 @@ def test_cannot_upload_proposal_material_file_with_invalid_proposal_id(
 def test_cannot_upload_proposal_material_file_with_invalid_proposal_id_for_conference(
     graphql_client, user
 ):
-    proposal = SubmissionFactory()
+    proposal = AcceptedSubmissionFactory()
     graphql_client.force_login(user)
 
     response = _upload_file(
@@ -151,7 +170,7 @@ def test_cannot_upload_proposal_material_file_with_invalid_proposal_id_for_confe
     "file_type", [File.Type.PARTICIPANT_AVATAR, File.Type.PROPOSAL_MATERIAL]
 )
 def test_superusers_can_upload_anything(graphql_client, admin_superuser, file_type):
-    proposal = SubmissionFactory()
+    proposal = AcceptedSubmissionFactory()
     graphql_client.force_login(admin_superuser)
 
     req_input = {}

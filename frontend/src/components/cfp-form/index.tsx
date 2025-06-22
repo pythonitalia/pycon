@@ -32,6 +32,30 @@ import { AvailabilitySection } from "./availability-section";
 import { MaterialsSection } from "./materials-section";
 import { ProposalSection } from "./proposal-section";
 
+export type GetErrorsKey =
+  | "validationTitle"
+  | "validationAbstract"
+  | "validationLanguages"
+  | "validationType"
+  | "validationDuration"
+  | "validationElevatorPitch"
+  | "validationNotes"
+  | "validationAudienceLevel"
+  | "validationTags"
+  | "validationSpeakerLevel"
+  | "validationPreviousTalkVideo"
+  | "validationShortSocialSummary"
+  | "validationSpeakerBio"
+  | "validationSpeakerWebsite"
+  | "validationSpeakerPhoto"
+  | "validationSpeakerTwitterHandle"
+  | "validationSpeakerInstagramHandle"
+  | "validationSpeakerLinkedinUrl"
+  | "validationSpeakerFacebookUrl"
+  | "validationSpeakerMastodonHandle"
+  | "validationMaterials"
+  | "nonFieldErrors";
+
 export type CfpFormFields = ParticipantFormFields & {
   type: string;
   title: { it?: string; en?: string };
@@ -51,7 +75,9 @@ export type CfpFormFields = ParticipantFormFields & {
 };
 
 export type SubmissionStructure = {
+  id: string;
   type: { id: string };
+  status: string;
   title: string;
   elevatorPitch: string;
   abstract: string;
@@ -66,6 +92,14 @@ export type SubmissionStructure = {
   speakerLevel: string;
   tags: { id: string }[];
   shortSocialSummary: string;
+  materials: {
+    id: string;
+    name: string;
+    url: string;
+    fileId: string;
+    fileUrl: string;
+    fileMimeType: string;
+  }[];
 };
 
 type Props = {
@@ -173,6 +207,7 @@ export const CfpForm = ({
         participantData.me.participant?.photoId,
       acceptedPrivacyPolicy: formState.values.acceptedPrivacyPolicy,
       speakerAvailabilities: formState.values.speakerAvailabilities,
+      materials: formState.values.materials,
     });
   };
 
@@ -223,6 +258,16 @@ export const CfpForm = ({
       );
       formState.setField("shortSocialSummary", submission!.shortSocialSummary);
       formState.setField("acceptedPrivacyPolicy", true);
+      formState.setField(
+        "materials",
+        submission!.materials.map((material) => ({
+          type: material.fileId ? "file" : "link",
+          id: material.id,
+          fileId: material.fileId,
+          url: material.url,
+          name: material.name,
+        })),
+      );
     }
 
     if (participantData.me.participant) {
@@ -274,30 +319,7 @@ export const CfpForm = ({
     submissionData?.mutationOp.__typename === "SendSubmissionErrors";
 
   /* todo refactor to avoid multiple __typename? */
-  const getErrors = (
-    key:
-      | "validationTitle"
-      | "validationAbstract"
-      | "validationLanguages"
-      | "validationType"
-      | "validationDuration"
-      | "validationElevatorPitch"
-      | "validationNotes"
-      | "validationAudienceLevel"
-      | "validationTags"
-      | "validationSpeakerLevel"
-      | "validationPreviousTalkVideo"
-      | "validationShortSocialSummary"
-      | "validationSpeakerBio"
-      | "validationSpeakerWebsite"
-      | "validationSpeakerPhoto"
-      | "validationSpeakerTwitterHandle"
-      | "validationSpeakerInstagramHandle"
-      | "validationSpeakerLinkedinUrl"
-      | "validationSpeakerFacebookUrl"
-      | "validationSpeakerMastodonHandle"
-      | "nonFieldErrors",
-  ): string[] =>
+  const getErrors = (key: GetErrorsKey): string[] =>
     (submissionData?.mutationOp.__typename === "SendSubmissionErrors" &&
       submissionData!.mutationOp.errors[key]) ||
     [];
@@ -331,14 +353,19 @@ export const CfpForm = ({
         conferenceData={conferenceData}
       />
 
-      <Spacer size="medium" />
+      {submission?.status === "accepted" && (
+        <>
+          <Spacer size="medium" />
 
-      <MaterialsSection
-        formState={formState}
-        getErrors={getErrors}
-        formOptions={formOptions}
-        conferenceData={conferenceData}
-      />
+          <MaterialsSection
+            formState={formState}
+            getErrors={getErrors}
+            formOptions={formOptions}
+            conferenceData={conferenceData}
+            submission={submission}
+          />
+        </>
+      )}
 
       <Spacer size="medium" />
 

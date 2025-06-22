@@ -20,10 +20,10 @@ from conferences.models.conference import Conference
 from i18n.strings import LazyI18nString
 from languages.models import Language
 from participants.models import Participant
-from submissions.models import Submission as SubmissionModel
+from submissions.models import ProposalMaterial, Submission as SubmissionModel
 from submissions.tasks import notify_new_cfp_submission
 
-from .types import Submission
+from .types import Submission, SubmissionMaterialInput
 
 FACEBOOK_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?facebook\.com\/")
 LINKEDIN_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?linkedin\.com\/")
@@ -247,6 +247,7 @@ class UpdateSubmissionInput(BaseSubmissionInput):
 
     topic: Optional[ID] = strawberry.field(default=None)
     tags: list[ID] = strawberry.field(default_factory=list)
+    materials: list[SubmissionMaterialInput] = strawberry.field(default_factory=list)
 
 
 SendSubmissionOutput = Annotated[
@@ -300,6 +301,42 @@ class SubmissionsMutations:
         instance.tags.set(input.tags)
 
         instance.save()
+
+        materials_to_create = []
+        materials_to_update = []
+        materials_to_delete = []
+
+        existing_materials = list(instance.materials.all())
+        for material in input.materials:
+            existing_material = next(
+                (m for m in existing_materials if m.id == material.id), None
+            )
+            if existing_material:
+                existing_material.name = material.name
+                existing_material.url = material.url
+                existing_material.file_id = material.file_id
+                materials_to_update.append(existing_material)
+            else:
+                materials_to_create.append(
+                    ProposalMaterial(
+                        proposal=instance,
+                        name=material.name,
+                        url=material.url,
+                        file_id=material.file_id,
+                    )
+                )
+
+        for material in existing_materials:
+            if material not in materials_to_update:
+                materials_to_delete.append(material)
+
+        ProposalMaterial.objects.filter(
+            id__in=[m.id for m in materials_to_delete]
+        ).delete()
+        ProposalMaterial.objects.bulk_create(materials_to_create)
+        ProposalMaterial.objects.bulk_update(
+            materials_to_update, fields=["name", "url", "file_id"]
+        )
 
         Participant.objects.update_or_create(
             user_id=request.user.id,

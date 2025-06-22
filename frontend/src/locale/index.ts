@@ -12,6 +12,8 @@ export const messages = {
     "tickets.description.page": "hotels page",
 
     "global.sessions": "Sessions",
+    "cfp.materials.remove": "X",
+    "fileInput.currentFile": "Current file: {name}",
 
     "input.placeholder": "Type here...",
     "global.accordion.close": "Close",
@@ -1003,9 +1005,12 @@ If this new timing doesn't work for you, please don't hesitate to let us know be
 
     "streaming.qa": "Ask Questions",
 
+    "cfp.materials.addFile": "File",
+    "cfp.materials.addURL": "URL",
+    "cfp.materials.add": "Add",
     "cfp.materials.title": "Materials",
     "cfp.materials.description":
-      "Upload here the slides or other materials you want to share.",
+      "Use this section to upload the slides or other materials you want to share with other attendees. Up to 3 files/urls are allowed.",
 
     "talk.bookToAttend":
       "This event has limited capacity, you need to book a seat to attend.",
@@ -2297,6 +2302,15 @@ Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia dis
 
     "voting.filterBy": "Filtra per",
     "voting.all": "Tutti",
+
+    "cfp.materials.title": "Materiali",
+    "cfp.materials.description":
+      "Usa questa sezione per caricare i materiali che vuoi condividere con altri partecipanti. Sono consentiti fino a 3 file/URL.",
+    "cfp.materials.addFile": "File",
+    "cfp.materials.addURL": "URL",
+    "cfp.materials.add": "Aggiungi",
+    "cfp.materials.remove": "X",
+    "fileInput.currentFile": "File attuale: {name}",
   },
 };
 

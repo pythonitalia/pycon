@@ -127,6 +127,10 @@ class SubmissionFactory(DjangoModelFactory):
             obj.save()
 
 
+class AcceptedSubmissionFactory(SubmissionFactory):
+    status = "accepted"
+
+
 class SubmissionCommentFactory(DjangoModelFactory):
     class Meta:
         model = SubmissionComment
