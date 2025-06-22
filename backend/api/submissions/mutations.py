@@ -353,18 +353,20 @@ class SubmissionsMutations:
                     )
                 )
 
-        ProposalMaterial.objects.filter(
-            proposal=instance,
-            id__in=[
-                m.id
-                for m in existing_materials.values()
-                if m not in materials_to_update
-            ],
-        ).delete()
-        ProposalMaterial.objects.bulk_create(materials_to_create)
-        ProposalMaterial.objects.bulk_update(
-            materials_to_update, fields=["name", "url", "file_id"]
-        )
+        if to_delete := [
+            m.id for m in existing_materials.values() if m not in materials_to_update
+        ]:
+            ProposalMaterial.objects.filter(
+                proposal=instance,
+                id__in=to_delete,
+            ).delete()
+
+        if materials_to_create:
+            ProposalMaterial.objects.bulk_create(materials_to_create)
+        if materials_to_update:
+            ProposalMaterial.objects.bulk_update(
+                materials_to_update, fields=["name", "url", "file_id"]
+            )
 
         Participant.objects.update_or_create(
             user_id=request.user.id,
