@@ -34,5 +34,7 @@ jobs:
         run: pnpm install
       - name: Codegen
         run: pnpm run codegen
+        env:
+          API_URL_SERVER: https://pastaporto-admin.pycon.it/graphql
       - name: Run Biome
         run: biome ci .
