@@ -115,6 +115,7 @@ export const MaterialsSection = ({
                     name={`materials.${index}.url`}
                     type="url"
                     placeholder={inputPlaceholder}
+                    maxLength={2048}
                     errors={
                       getErrors("validationMaterials")?.[index]?.url ?? []
                     }
