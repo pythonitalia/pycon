@@ -354,11 +354,12 @@ class SubmissionsMutations:
                 )
 
         ProposalMaterial.objects.filter(
+            proposal=instance,
             id__in=[
                 m.id
                 for m in existing_materials.values()
                 if m not in materials_to_update
-            ]
+            ],
         ).delete()
         ProposalMaterial.objects.bulk_create(materials_to_create)
         ProposalMaterial.objects.bulk_update(
