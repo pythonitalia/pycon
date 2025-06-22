@@ -20,9 +20,7 @@ const KeynotePage = () => {
   const {
     data: {
       conference: {
-        talk: {
-          slidoUrl,
-        },
+        talk,
         keynote: {
           title,
           description,
@@ -41,6 +39,8 @@ const KeynotePage = () => {
       language,
     },
   });
+
+  const { slidoUrl } = talk || {};
 
   const speakersName = speakers.map((speaker) => speaker.fullName).join(" & ");
 
