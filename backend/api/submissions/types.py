@@ -234,7 +234,9 @@ class SubmissionMaterialInput:
                 errors.add_error("file_id", "File not found")
 
         if self.url:
-            if not validate_url(self.url):
+            if len(self.url) > 2048:
+                errors.add_error("url", "URL is too long")
+            elif not validate_url(self.url):
                 errors.add_error("url", "Invalid URL")
 
         return errors

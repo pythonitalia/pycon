@@ -1,5 +1,5 @@
+from urllib.parse import urlparse
 from django.core.validators import (
-    URLValidator,
     validate_email as original_validate_email,
 )
 from django.core.exceptions import ValidationError
@@ -22,10 +22,12 @@ def validate_email(email: str) -> bool:
 
 
 def validate_url(url: str) -> bool:
-    validate = URLValidator()
+    parsed_url = urlparse(url)
 
-    try:
-        validate(url)
-        return True
-    except ValidationError:
+    if parsed_url.scheme not in ["http", "https"]:
         return False
+
+    if not parsed_url.netloc:
+        return False
+
+    return True

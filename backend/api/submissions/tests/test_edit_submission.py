@@ -1,3 +1,4 @@
+import pytest
 from uuid import uuid4
 from users.tests.factories import UserFactory
 from conferences.tests.factories import ConferenceFactory
@@ -613,6 +614,101 @@ def test_update_submission_with_wrong_file_type(graphql_client, user):
     assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][0][
         "fileId"
     ] == ["File not found"]
+
+
+def test_update_submission_with_too_long_url(graphql_client, user):
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("it", "en"),
+        durations=("10", "20"),
+        active_cfp=True,
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["it"],
+        tags=["python", "ml"],
+        conference=conference,
+        speaker_level=Submission.SPEAKER_LEVELS.intermediate,
+        previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
+    )
+
+    graphql_client.force_login(user)
+
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_materials=[
+            {
+                "fileId": None,
+                "url": f"https://www.googl{'e' * 2049}.com",
+                "name": "name",
+            },
+        ],
+    )
+
+    assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][0][
+        "url"
+    ] == ["URL is too long"]
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "ftp://www.google.com",
+        "//www.google.com",
+        "google.com/test",
+        "no/url",
+    ],
+)
+def test_update_submission_with_invalid_urls(graphql_client, user, url):
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("it", "en"),
+        durations=("10", "20"),
+        active_cfp=True,
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["it"],
+        tags=["python", "ml"],
+        conference=conference,
+        speaker_level=Submission.SPEAKER_LEVELS.intermediate,
+        previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
+    )
+
+    graphql_client.force_login(user)
+
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_materials=[
+            {
+                "fileId": None,
+                "url": url,
+                "name": "name",
+            },
+        ],
+    )
+
+    assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][0][
+        "url"
+    ] == ["Invalid URL"]
 
 
 def test_update_submission_with_too_many_materials(graphql_client, user):
