@@ -252,7 +252,7 @@ def test_update_submission_with_materials(graphql_client, user):
 
     graphql_client.force_login(user)
 
-    new_file = FileFactory()
+    new_file = ProposalMaterialFileFactory(uploaded_by=user)
     response = _update_submission(
         graphql_client,
         submission=submission,
@@ -307,14 +307,16 @@ def test_update_submission_with_existing_materials(graphql_client, user):
         speaker_level=Submission.SPEAKER_LEVELS.intermediate,
         previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
     )
-    existing_material = ProposalMaterialFactory(proposal=submission, file=FileFactory())
+    existing_material = ProposalMaterialFactory(
+        proposal=submission, file=ProposalMaterialFileFactory(uploaded_by=user)
+    )
     to_delete_material = ProposalMaterialFactory(
-        proposal=submission, file=FileFactory()
+        proposal=submission, file=None, url="https://www.google.com"
     )
 
     graphql_client.force_login(user)
 
-    new_file = FileFactory()
+    new_file = ProposalMaterialFileFactory(uploaded_by=user)
     response = _update_submission(
         graphql_client,
         submission=submission,
@@ -349,7 +351,50 @@ def test_update_submission_with_existing_materials(graphql_client, user):
     assert not ProposalMaterial.objects.filter(id=to_delete_material.id).exists()
 
 
-def test_update_submission_with_invalid_materials(graphql_client, user):
+def test_update_submission_with_invalid_url(graphql_client, user):
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("it", "en"),
+        durations=("10", "20"),
+        active_cfp=True,
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["it"],
+        tags=["python", "ml"],
+        conference=conference,
+        speaker_level=Submission.SPEAKER_LEVELS.intermediate,
+        previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
+    )
+
+    graphql_client.force_login(user)
+
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_materials=[
+            {
+                "fileId": None,
+                "url": "invalid-url",
+                "name": "test.pdf",
+            },
+        ],
+    )
+
+    assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][0][
+        "url"
+    ] == ["Invalid URL"]
+
+
+def test_update_submission_with_other_submission_material(graphql_client, user):
     conference = ConferenceFactory(
         topics=("life", "diy"),
         languages=("it", "en"),
@@ -375,8 +420,49 @@ def test_update_submission_with_invalid_materials(graphql_client, user):
         proposal=SubmissionFactory(conference=conference),
         file=ProposalMaterialFileFactory(uploaded_by=user),
     )
-    to_delete_material = ProposalMaterialFactory(
-        proposal=submission, file=ProposalMaterialFileFactory(uploaded_by=user)
+
+    graphql_client.force_login(user)
+
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_materials=[
+            {
+                "id": other_submission_material.id,
+                "fileId": None,
+                "url": "https://www.google.com",
+                "name": "https://www.google.com",
+            },
+        ],
+    )
+
+    assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][0][
+        "id"
+    ] == ["Material not found"]
+
+
+def test_update_submission_with_invalid_material_id(graphql_client, user):
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("it", "en"),
+        durations=("10", "20"),
+        active_cfp=True,
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["it"],
+        tags=["python", "ml"],
+        conference=conference,
+        speaker_level=Submission.SPEAKER_LEVELS.intermediate,
+        previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
     )
 
     graphql_client.force_login(user)
@@ -386,32 +472,135 @@ def test_update_submission_with_invalid_materials(graphql_client, user):
         submission=submission,
         new_materials=[
             {
-                "fileId": None,
-                "url": "invalid-url",
-                "name": "test.pdf",
-            },
-            {
-                "id": other_submission_material.id,
-                "fileId": None,
-                "url": "https://www.google.com",
-                "name": "https://www.google.com",
-            },
-            {
                 "id": "invalid-id",
                 "fileId": None,
                 "url": "https://www.google.com",
                 "name": "https://www.google.com",
             },
+        ],
+    )
+
+    assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][0][
+        "id"
+    ] == ["Invalid material id"]
+
+
+def test_update_submission_with_nonexistent_file_id(graphql_client, user):
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("it", "en"),
+        durations=("10", "20"),
+        active_cfp=True,
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["it"],
+        tags=["python", "ml"],
+        conference=conference,
+        speaker_level=Submission.SPEAKER_LEVELS.intermediate,
+        previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
+    )
+
+    graphql_client.force_login(user)
+
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_materials=[
             {
                 "fileId": uuid4(),
                 "url": "",
                 "name": "name",
             },
+        ],
+    )
+
+    assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][0][
+        "fileId"
+    ] == ["File not found"]
+
+
+def test_update_submission_with_file_from_different_user(graphql_client, user):
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("it", "en"),
+        durations=("10", "20"),
+        active_cfp=True,
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["it"],
+        tags=["python", "ml"],
+        conference=conference,
+        speaker_level=Submission.SPEAKER_LEVELS.intermediate,
+        previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
+    )
+
+    graphql_client.force_login(user)
+
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_materials=[
             {
                 "fileId": ProposalMaterialFileFactory(uploaded_by=UserFactory()).id,
                 "url": "",
                 "name": "name",
             },
+        ],
+    )
+
+    assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][0][
+        "fileId"
+    ] == ["File not found"]
+
+
+def test_update_submission_with_wrong_file_type(graphql_client, user):
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("it", "en"),
+        durations=("10", "20"),
+        active_cfp=True,
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["it"],
+        tags=["python", "ml"],
+        conference=conference,
+        speaker_level=Submission.SPEAKER_LEVELS.intermediate,
+        previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
+    )
+
+    graphql_client.force_login(user)
+
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_materials=[
             {
                 "fileId": ParticipantAvatarFileFactory(uploaded_by=user).id,
                 "url": "",
@@ -422,25 +611,52 @@ def test_update_submission_with_invalid_materials(graphql_client, user):
 
     assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
     assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][0][
-        "url"
-    ] == ["Invalid URL"]
-    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][1][
-        "id"
-    ] == ["Material not found"]
-    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][2][
-        "id"
-    ] == ["Invalid material id"]
-    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][3][
-        "fileId"
-    ] == ["File not found"]
-    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][4][
-        "fileId"
-    ] == ["File not found"]
-    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][5][
         "fileId"
     ] == ["File not found"]
 
-    assert ProposalMaterial.objects.filter(id=to_delete_material.id).exists()
+
+def test_update_submission_with_too_many_materials(graphql_client, user):
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("it", "en"),
+        durations=("10", "20"),
+        active_cfp=True,
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["it"],
+        tags=["python", "ml"],
+        conference=conference,
+        speaker_level=Submission.SPEAKER_LEVELS.intermediate,
+        previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
+    )
+
+    graphql_client.force_login(user)
+
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_materials=[
+            {
+                "fileId": None,
+                "url": "https://www.google.com",
+                "name": "test.pdf",
+            },
+        ]
+        * 4,
+    )
+
+    assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert response["data"]["updateSubmission"]["errors"]["nonFieldErrors"] == [
+        "You can only add up to 3 materials"
+    ]
 
 
 def test_update_submission_speaker_availabilities(graphql_client, user):

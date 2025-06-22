@@ -261,9 +261,14 @@ class UpdateSubmissionInput(BaseSubmissionInput):
         errors = super().validate(conference)
 
         if self.materials:
-            for index, material in enumerate(self.materials):
-                with errors.with_prefix("materials", index):
-                    material.validate(errors, submission)
+            if len(self.materials) > 3:
+                errors.add_error(
+                    "non_field_errors", "You can only add up to 3 materials"
+                )
+            else:
+                for index, material in enumerate(self.materials):
+                    with errors.with_prefix("materials", index):
+                        material.validate(errors, submission)
 
         return errors
 
