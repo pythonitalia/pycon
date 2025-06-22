@@ -30,6 +30,13 @@ LINKEDIN_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?linkedin\.com\/")
 
 
 @strawberry.type
+class ProposalMaterialErrors:
+    file_id: list[str] = strawberry.field(default_factory=list)
+    url: list[str] = strawberry.field(default_factory=list)
+    id: list[str] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
 class SendSubmissionErrors(BaseErrorType):
     @strawberry.type
     class _SendSubmissionErrors:
@@ -46,6 +53,7 @@ class SendSubmissionErrors(BaseErrorType):
         audience_level: list[str] = strawberry.field(default_factory=list)
         tags: list[str] = strawberry.field(default_factory=list)
         short_social_summary: list[str] = strawberry.field(default_factory=list)
+        materials: list[ProposalMaterialErrors] = strawberry.field(default_factory=list)
 
         speaker_bio: list[str] = strawberry.field(default_factory=list)
         speaker_photo: list[str] = strawberry.field(default_factory=list)
@@ -249,6 +257,16 @@ class UpdateSubmissionInput(BaseSubmissionInput):
     tags: list[ID] = strawberry.field(default_factory=list)
     materials: list[SubmissionMaterialInput] = strawberry.field(default_factory=list)
 
+    def validate(self, conference: Conference, submission: SubmissionModel):
+        errors = super().validate(conference)
+
+        if self.materials:
+            for index, material in enumerate(self.materials):
+                with errors.with_prefix("materials", index):
+                    material.validate(errors, submission)
+
+        return errors
+
 
 SendSubmissionOutput = Annotated[
     Union[Submission, SendSubmissionErrors],
@@ -277,7 +295,7 @@ class SubmissionsMutations:
 
         conference = instance.conference
 
-        errors = input.validate(conference=conference)
+        errors = input.validate(conference=conference, submission=instance)
 
         if errors.has_errors:
             return errors
@@ -295,6 +313,7 @@ class SubmissionsMutations:
         instance.speaker_level = input.speaker_level
         instance.previous_talk_video = input.previous_talk_video
         instance.short_social_summary = input.short_social_summary
+
         languages = Language.objects.filter(code__in=input.languages).all()
         instance.languages.set(languages)
 
@@ -304,13 +323,16 @@ class SubmissionsMutations:
 
         materials_to_create = []
         materials_to_update = []
-        materials_to_delete = []
 
-        existing_materials = list(instance.materials.all())
+        existing_materials = {
+            existing_material.id: existing_material
+            for existing_material in instance.materials.all()
+        }
         for material in input.materials:
-            existing_material = next(
-                (m for m in existing_materials if m.id == material.id), None
+            existing_material = (
+                existing_materials.get(int(material.id)) if material.id else None
             )
+
             if existing_material:
                 existing_material.name = material.name
                 existing_material.url = material.url
@@ -326,12 +348,12 @@ class SubmissionsMutations:
                     )
                 )
 
-        for material in existing_materials:
-            if material not in materials_to_update:
-                materials_to_delete.append(material)
-
         ProposalMaterial.objects.filter(
-            id__in=[m.id for m in materials_to_delete]
+            id__in=[
+                m.id
+                for m in existing_materials.values()
+                if m not in materials_to_update
+            ]
         ).delete()
         ProposalMaterial.objects.bulk_create(materials_to_create)
         ProposalMaterial.objects.bulk_update(

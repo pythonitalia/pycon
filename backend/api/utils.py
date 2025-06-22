@@ -1,5 +1,8 @@
+from django.core.validators import (
+    URLValidator,
+    validate_email as original_validate_email,
+)
 from django.core.exceptions import ValidationError
-from django.core.validators import validate_email as original_validate_email
 
 
 def get_ip(request):
@@ -16,3 +19,13 @@ def validate_email(email: str) -> bool:
         return False
 
     return True
+
+
+def validate_url(url: str) -> bool:
+    validate = URLValidator()
+
+    try:
+        validate(url)
+        return True
+    except ValidationError:
+        return False

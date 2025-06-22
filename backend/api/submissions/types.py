@@ -1,4 +1,8 @@
 from typing import Annotated
+from submissions.models import Submission as SubmissionModel
+
+from files_upload.models import File
+from api.utils import validate_url
 from participants.models import Participant as ParticipantModel
 import strawberry
 from strawberry.types.field import StrawberryField
@@ -17,6 +21,7 @@ if TYPE_CHECKING:
     from api.conferences.types import Conference, Topic, Duration, AudienceLevel
     from api.schedule.types import ScheduleItem
     from api.participants.types import Participant
+    from api.submissions.mutations import SendSubmissionErrors
 
 
 def private_field() -> StrawberryField:
@@ -209,3 +214,27 @@ class SubmissionMaterialInput:
     id: strawberry.ID | None = None
     url: str | None = None
     file_id: str | None = None
+
+    def validate(
+        self, errors: "SendSubmissionErrors", submission: SubmissionModel
+    ) -> "SendSubmissionErrors":
+        if self.id:
+            try:
+                if not submission.materials.filter(id=int(self.id)).exists():
+                    errors.add_error("id", "Material not found")
+            except ValueError:
+                errors.add_error("id", "Invalid material id")
+
+        if self.file_id:
+            if not File.objects.filter(
+                id=self.file_id,
+                uploaded_by_id=submission.speaker_id,
+                type=File.Type.PROPOSAL_MATERIAL,
+            ).exists():
+                errors.add_error("file_id", "File not found")
+
+        if self.url:
+            if not validate_url(self.url):
+                errors.add_error("url", "Invalid URL")
+
+        return errors

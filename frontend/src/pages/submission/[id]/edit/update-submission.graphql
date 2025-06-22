@@ -76,6 +76,10 @@ mutation UpdateSubmission($input: UpdateSubmissionInput!, $language: String!) {
         validationSpeakerLinkedinUrl: speakerLinkedinUrl
         validationSpeakerFacebookUrl: speakerFacebookUrl
         validationSpeakerMastodonHandle: speakerMastodonHandle
+        validationMaterials: materials {
+          fileId
+          url
+        }
         nonFieldErrors
       }
     }

@@ -318,8 +318,7 @@ export const CfpForm = ({
   const hasValidationErrors =
     submissionData?.mutationOp.__typename === "SendSubmissionErrors";
 
-  /* todo refactor to avoid multiple __typename? */
-  const getErrors = (key: GetErrorsKey): string[] =>
+  const getErrors = (key: GetErrorsKey): any =>
     (submissionData?.mutationOp.__typename === "SendSubmissionErrors" &&
       submissionData!.mutationOp.errors[key]) ||
     [];

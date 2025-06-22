@@ -1,10 +1,20 @@
+from uuid import uuid4
+from users.tests.factories import UserFactory
 from conferences.tests.factories import ConferenceFactory
-from submissions.tests.factories import SubmissionFactory, SubmissionTagFactory
-from files_upload.tests.factories import FileFactory
+from submissions.tests.factories import (
+    ProposalMaterialFactory,
+    SubmissionFactory,
+    SubmissionTagFactory,
+)
+from files_upload.tests.factories import (
+    FileFactory,
+    ParticipantAvatarFileFactory,
+    ProposalMaterialFileFactory,
+)
 from pytest import mark
 
 from participants.models import Participant
-from submissions.models import Submission
+from submissions.models import ProposalMaterial, Submission
 
 pytestmark = mark.django_db
 
@@ -13,11 +23,11 @@ def _update_submission(
     graphql_client,
     *,
     submission,
-    new_topic,
-    new_audience,
-    new_type,
-    new_tag,
-    new_duration,
+    new_topic=None,
+    new_audience=None,
+    new_type=None,
+    new_tag=None,
+    new_duration=None,
     new_title=None,
     new_elevator_pitch=None,
     new_abstract=None,
@@ -34,13 +44,20 @@ def _update_submission(
     new_speaker_facebook_url="",
     new_speaker_mastodon_handle="",
     new_speaker_availabilities=None,
+    new_materials=None,
 ):
+    new_topic = new_topic or submission.topic
+    new_audience = new_audience or submission.audience_level
+    new_type = new_type or submission.type
+    new_tag = new_tag or submission.tags.first()
+    new_duration = new_duration or submission.duration
     new_title = new_title or {"en": "new title to use"}
     new_elevator_pitch = new_elevator_pitch or {"en": "This is an elevator pitch"}
     new_abstract = new_abstract or {"en": "abstract here"}
     short_social_summary = new_short_social_summary or ""
     new_speaker_photo = new_speaker_photo or FileFactory().id
     new_speaker_availabilities = new_speaker_availabilities or {}
+    new_materials = new_materials or []
 
     return graphql_client.query(
         """
@@ -114,6 +131,11 @@ def _update_submission(
                     validationSpeakerInstagramHandle: speakerInstagramHandle
                     validationSpeakerLinkedinUrl: speakerLinkedinUrl
                     validationSpeakerFacebookUrl: speakerFacebookUrl
+                    validationMaterials: materials {
+                        fileId
+                        url
+                        id
+                    }
                 }
             }
         }
@@ -144,6 +166,7 @@ def _update_submission(
                 "speakerFacebookUrl": new_speaker_facebook_url,
                 "speakerMastodonHandle": new_speaker_mastodon_handle,
                 "speakerAvailabilities": new_speaker_availabilities,
+                "materials": new_materials,
             }
         },
     )
@@ -202,6 +225,222 @@ def test_update_submission(graphql_client, user):
     participant = Participant.objects.first()
     assert participant.facebook_url == "http://facebook.com/pythonpizza"
     assert participant.linkedin_url == "http://linkedin.com/company/pythonpizza"
+
+
+def test_update_submission_with_materials(graphql_client, user):
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("it", "en"),
+        durations=("10", "20"),
+        active_cfp=True,
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["it"],
+        tags=["python", "ml"],
+        conference=conference,
+        speaker_level=Submission.SPEAKER_LEVELS.intermediate,
+        previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
+    )
+
+    graphql_client.force_login(user)
+
+    new_file = FileFactory()
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_materials=[
+            {
+                "fileId": new_file.id,
+                "url": "",
+                "name": "test.pdf",
+            },
+            {
+                "fileId": None,
+                "url": "https://www.google.com",
+                "name": "https://www.google.com",
+            },
+        ],
+    )
+
+    submission.refresh_from_db()
+    materials = submission.materials.order_by("id").all()
+
+    assert len(materials) == 2
+    assert materials[0].file_id == new_file.id
+    assert materials[0].url == ""
+    assert materials[0].name == "test.pdf"
+
+    assert materials[1].file_id is None
+    assert materials[1].url == "https://www.google.com"
+    assert materials[1].name == "https://www.google.com"
+
+    assert response["data"]["updateSubmission"]["__typename"] == "Submission"
+
+
+def test_update_submission_with_existing_materials(graphql_client, user):
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("it", "en"),
+        durations=("10", "20"),
+        active_cfp=True,
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["it"],
+        tags=["python", "ml"],
+        conference=conference,
+        speaker_level=Submission.SPEAKER_LEVELS.intermediate,
+        previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
+    )
+    existing_material = ProposalMaterialFactory(proposal=submission, file=FileFactory())
+    to_delete_material = ProposalMaterialFactory(
+        proposal=submission, file=FileFactory()
+    )
+
+    graphql_client.force_login(user)
+
+    new_file = FileFactory()
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_materials=[
+            {
+                "fileId": new_file.id,
+                "url": "",
+                "name": "test.pdf",
+            },
+            {
+                "id": existing_material.id,
+                "fileId": None,
+                "url": "https://www.google.com",
+                "name": "https://www.google.com",
+            },
+        ],
+    )
+
+    submission.refresh_from_db()
+    materials = submission.materials.order_by("id").all()
+
+    assert len(materials) == 2
+
+    existing_material.refresh_from_db()
+
+    assert existing_material.file_id is None
+    assert existing_material.url == "https://www.google.com"
+    assert existing_material.name == "https://www.google.com"
+
+    assert response["data"]["updateSubmission"]["__typename"] == "Submission"
+
+    assert not ProposalMaterial.objects.filter(id=to_delete_material.id).exists()
+
+
+def test_update_submission_with_invalid_materials(graphql_client, user):
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("it", "en"),
+        durations=("10", "20"),
+        active_cfp=True,
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["it"],
+        tags=["python", "ml"],
+        conference=conference,
+        speaker_level=Submission.SPEAKER_LEVELS.intermediate,
+        previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
+    )
+    other_submission_material = ProposalMaterialFactory(
+        proposal=SubmissionFactory(conference=conference),
+        file=ProposalMaterialFileFactory(uploaded_by=user),
+    )
+    to_delete_material = ProposalMaterialFactory(
+        proposal=submission, file=ProposalMaterialFileFactory(uploaded_by=user)
+    )
+
+    graphql_client.force_login(user)
+
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_materials=[
+            {
+                "fileId": None,
+                "url": "invalid-url",
+                "name": "test.pdf",
+            },
+            {
+                "id": other_submission_material.id,
+                "fileId": None,
+                "url": "https://www.google.com",
+                "name": "https://www.google.com",
+            },
+            {
+                "id": "invalid-id",
+                "fileId": None,
+                "url": "https://www.google.com",
+                "name": "https://www.google.com",
+            },
+            {
+                "fileId": uuid4(),
+                "url": "",
+                "name": "name",
+            },
+            {
+                "fileId": ProposalMaterialFileFactory(uploaded_by=UserFactory()).id,
+                "url": "",
+                "name": "name",
+            },
+            {
+                "fileId": ParticipantAvatarFileFactory(uploaded_by=user).id,
+                "url": "",
+                "name": "name",
+            },
+        ],
+    )
+
+    assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][0][
+        "url"
+    ] == ["Invalid URL"]
+    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][1][
+        "id"
+    ] == ["Material not found"]
+    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][2][
+        "id"
+    ] == ["Invalid material id"]
+    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][3][
+        "fileId"
+    ] == ["File not found"]
+    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][4][
+        "fileId"
+    ] == ["File not found"]
+    assert response["data"]["updateSubmission"]["errors"]["validationMaterials"][5][
+        "fileId"
+    ] == ["File not found"]
+
+    assert ProposalMaterial.objects.filter(id=to_delete_material.id).exists()
 
 
 def test_update_submission_speaker_availabilities(graphql_client, user):

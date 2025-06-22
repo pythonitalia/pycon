@@ -22,7 +22,7 @@ type Props = {
   conferenceData: CfpFormQuery;
   formState: FormState<CfpFormFields, StateErrors<CfpFormFields>>;
   formOptions: Inputs<CfpFormFields>;
-  getErrors: (field: GetErrorsKey) => string[] | null;
+  getErrors: (field: GetErrorsKey) => any;
   submission: SubmissionStructure;
 };
 
@@ -93,7 +93,9 @@ export const MaterialsSection = ({
                   <FileInput
                     name={`materials.${index}.file`}
                     type="proposal_material"
-                    errors={getErrors("validationMaterials")}
+                    errors={
+                      getErrors("validationMaterials")?.[index]?.fileId ?? []
+                    }
                     accept="*/*"
                     value={material.fileId}
                     onChange={(fileId, info) => {
@@ -113,7 +115,9 @@ export const MaterialsSection = ({
                     name={`materials.${index}.url`}
                     type="url"
                     placeholder={inputPlaceholder}
-                    errors={getErrors("validationMaterials")}
+                    errors={
+                      getErrors("validationMaterials")?.[index]?.url ?? []
+                    }
                     value={material.url ?? ""}
                     onChange={(e) => {
                       const newMaterials = [...materials];
