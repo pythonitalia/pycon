@@ -1,5 +1,5 @@
 from django.contrib import admin
-from cms.components.page.tasks import execute_frontend_revalidate
+from conferences.frontend import trigger_frontend_revalidate
 from ordered_model.admin import OrderedModelAdmin
 from custom_admin.widgets import RichEditorWidget
 
@@ -25,14 +25,4 @@ class JobListingAdmin(OrderedModelAdmin):
         if not conference.frontend_revalidate_url:
             return
 
-        for locale in ["en", "it"]:
-            execute_frontend_revalidate.delay(
-                url=conference.frontend_revalidate_url,
-                path=f"/{locale}/jobs/",
-                secret=conference.frontend_revalidate_secret,
-            )
-            execute_frontend_revalidate.delay(
-                url=conference.frontend_revalidate_url,
-                path=f"/{locale}/jobs/{obj.id}",
-                secret=conference.frontend_revalidate_secret,
-            )
+        trigger_frontend_revalidate(conference, obj)

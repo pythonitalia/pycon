@@ -1,5 +1,6 @@
 from urllib.parse import urljoin
 from django.conf import settings
+from conferences.frontend import trigger_frontend_revalidate
 from grants.tasks import get_name
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from strawberry.scalars import JSON
@@ -385,6 +386,8 @@ class SubmissionsMutations:
                 "speaker_availabilities": input.speaker_availabilities,
             },
         )
+
+        trigger_frontend_revalidate(conference, instance)
 
         instance.__strawberry_definition__ = Submission.__strawberry_definition__
         return instance
