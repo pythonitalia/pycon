@@ -79,6 +79,7 @@ export const SubmissionPage = () => {
         speakers={submission?.speaker ? [submission.speaker] : null}
         bookable={false}
         spacesLeft={0}
+        materials={submission?.materials}
         sidebarExtras={
           <VerticalStack alignItems="start" gap="small">
             {submission.canEdit ? (
