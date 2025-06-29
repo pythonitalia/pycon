@@ -51,6 +51,14 @@ mutation UpdateSubmission($input: UpdateSubmissionInput!, $language: String!) {
         id
         name
       }
+      materials {
+        id
+        name
+        url
+        fileId
+        fileUrl
+        fileMimeType
+      }
     }
 
     ... on SendSubmissionErrors {
