@@ -118,15 +118,6 @@ export const PublicProfileCard = <T extends ParticipantFormFields>({
               errors={getParticipantValidationError("website")}
             />
           </InputWrapper>
-          <InputWrapper title="Twitter">
-            <Input
-              {...text("participantTwitterHandle")}
-              required={false}
-              maxLength={15}
-              placeholder={inputPlaceholder}
-              errors={getParticipantValidationError("twitterHandle")}
-            />
-          </InputWrapper>
           <InputWrapper title="Mastodon">
             <Input
               {...text("participantMastodonHandle")}
@@ -161,6 +152,15 @@ export const PublicProfileCard = <T extends ParticipantFormFields>({
               maxLength={2048}
               placeholder={inputPlaceholder}
               errors={getParticipantValidationError("facebookUrl")}
+            />
+          </InputWrapper>
+          <InputWrapper title="Twitter">
+            <Input
+              {...text("participantTwitterHandle")}
+              required={false}
+              maxLength={15}
+              placeholder={inputPlaceholder}
+              errors={getParticipantValidationError("twitterHandle")}
             />
           </InputWrapper>
         </Grid>
