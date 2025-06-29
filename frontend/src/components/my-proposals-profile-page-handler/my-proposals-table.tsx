@@ -53,15 +53,7 @@ export const MyProposalsTable = ({ submissions }: Props) => {
               </Heading>
             </Link>
           </div>,
-          row.status === "accepted" ? (
-            inSchedule ? (
-              <StatusTag status={row.status} />
-            ) : (
-              <StatusTag status={"proposed"} />
-            )
-          ) : (
-            <StatusTag status={row.status} />
-          ),
+          <StatusTag status={row.status} />,
           <div>
             {inSchedule &&
               row.scheduleItems.map((scheduleItem) => {

@@ -1,5 +1,6 @@
 from urllib.parse import urljoin
 from django.conf import settings
+from conferences.frontend import trigger_frontend_revalidate
 from grants.tasks import get_name
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from strawberry.scalars import JSON
@@ -20,13 +21,20 @@ from conferences.models.conference import Conference
 from i18n.strings import LazyI18nString
 from languages.models import Language
 from participants.models import Participant
-from submissions.models import Submission as SubmissionModel
+from submissions.models import ProposalMaterial, Submission as SubmissionModel
 from submissions.tasks import notify_new_cfp_submission
 
-from .types import Submission
+from .types import Submission, SubmissionMaterialInput
 
 FACEBOOK_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?facebook\.com\/")
 LINKEDIN_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?linkedin\.com\/")
+
+
+@strawberry.type
+class ProposalMaterialErrors:
+    file_id: list[str] = strawberry.field(default_factory=list)
+    url: list[str] = strawberry.field(default_factory=list)
+    id: list[str] = strawberry.field(default_factory=list)
 
 
 @strawberry.type
@@ -46,6 +54,7 @@ class SendSubmissionErrors(BaseErrorType):
         audience_level: list[str] = strawberry.field(default_factory=list)
         tags: list[str] = strawberry.field(default_factory=list)
         short_social_summary: list[str] = strawberry.field(default_factory=list)
+        materials: list[ProposalMaterialErrors] = strawberry.field(default_factory=list)
 
         speaker_bio: list[str] = strawberry.field(default_factory=list)
         speaker_photo: list[str] = strawberry.field(default_factory=list)
@@ -247,6 +256,22 @@ class UpdateSubmissionInput(BaseSubmissionInput):
 
     topic: Optional[ID] = strawberry.field(default=None)
     tags: list[ID] = strawberry.field(default_factory=list)
+    materials: list[SubmissionMaterialInput] = strawberry.field(default_factory=list)
+
+    def validate(self, conference: Conference, submission: SubmissionModel):
+        errors = super().validate(conference)
+
+        if self.materials:
+            if len(self.materials) > 3:
+                errors.add_error(
+                    "non_field_errors", "You can only add up to 3 materials"
+                )
+            else:
+                for index, material in enumerate(self.materials):
+                    with errors.with_prefix("materials", index):
+                        material.validate(errors, submission)
+
+        return errors
 
 
 SendSubmissionOutput = Annotated[
@@ -276,7 +301,7 @@ class SubmissionsMutations:
 
         conference = instance.conference
 
-        errors = input.validate(conference=conference)
+        errors = input.validate(conference=conference, submission=instance)
 
         if errors.has_errors:
             return errors
@@ -294,12 +319,55 @@ class SubmissionsMutations:
         instance.speaker_level = input.speaker_level
         instance.previous_talk_video = input.previous_talk_video
         instance.short_social_summary = input.short_social_summary
+
         languages = Language.objects.filter(code__in=input.languages).all()
         instance.languages.set(languages)
 
         instance.tags.set(input.tags)
 
         instance.save()
+
+        materials_to_create = []
+        materials_to_update = []
+
+        existing_materials = {
+            existing_material.id: existing_material
+            for existing_material in instance.materials.all()
+        }
+        for material in input.materials:
+            existing_material = (
+                existing_materials.get(int(material.id)) if material.id else None
+            )
+
+            if existing_material:
+                existing_material.name = material.name
+                existing_material.url = material.url
+                existing_material.file_id = material.file_id
+                materials_to_update.append(existing_material)
+            else:
+                materials_to_create.append(
+                    ProposalMaterial(
+                        proposal=instance,
+                        name=material.name,
+                        url=material.url,
+                        file_id=material.file_id,
+                    )
+                )
+
+        if to_delete := [
+            m.id for m in existing_materials.values() if m not in materials_to_update
+        ]:
+            ProposalMaterial.objects.filter(
+                proposal=instance,
+                id__in=to_delete,
+            ).delete()
+
+        if materials_to_create:
+            ProposalMaterial.objects.bulk_create(materials_to_create)
+        if materials_to_update:
+            ProposalMaterial.objects.bulk_update(
+                materials_to_update, fields=["name", "url", "file_id"]
+            )
 
         Participant.objects.update_or_create(
             user_id=request.user.id,
@@ -318,6 +386,8 @@ class SubmissionsMutations:
                 "speaker_availabilities": input.speaker_availabilities,
             },
         )
+
+        trigger_frontend_revalidate(conference, instance)
 
         instance.__strawberry_definition__ = Submission.__strawberry_definition__
         return instance

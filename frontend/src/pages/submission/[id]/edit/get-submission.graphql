@@ -1,6 +1,7 @@
 query GetSubmission($id: ID!, $language: String!) {
   submission(id: $id) {
     id
+    status
     title(language: $language)
     abstract(language: $language)
     elevatorPitch(language: $language)
@@ -45,6 +46,14 @@ query GetSubmission($id: ID!, $language: String!) {
     tags {
       id
       name
+    }
+    materials {
+      id
+      name
+      url
+      fileId
+      fileUrl
+      fileMimeType
     }
   }
 }

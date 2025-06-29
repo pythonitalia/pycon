@@ -12,6 +12,8 @@ export const messages = {
     "tickets.description.page": "hotels page",
 
     "global.sessions": "Sessions",
+    "cfp.materials.remove": "X",
+    "fileInput.currentFile": "Current file: {name}",
 
     "input.placeholder": "Type here...",
     "global.accordion.close": "Close",
@@ -663,7 +665,8 @@ Click the box to change. If left empty, we will assume you are available.`,
     "orderInformation.invalidFiscalCode": "Fiscal code not valid",
     "orderInformation.pec": "PEC",
     "orderInformation.sdi": "SDI",
-    "orderInformation.invalidSDI": "SDI must be 7 characters long (6 for Italian PA)",
+    "orderInformation.invalidSDI":
+      "SDI must be 7 characters long (6 for Italian PA)",
 
     "orderQuestions.heading": "Order questions",
     "orderQuestions.attendeeGivenName": "Attendee Given name",
@@ -1001,6 +1004,13 @@ reflects what everyone wants to see!`,
 If this new timing doesn't work for you, please don't hesitate to let us know below. We'll do our very best to accommodate your needs, though please keep in mind that due to scheduling limitations, we might not be able to fulfil all requests. In the rare event we can't find an alternative, we may need to cancel your submission.`,
 
     "streaming.qa": "Ask Questions",
+
+    "cfp.materials.addFile": "File",
+    "cfp.materials.addURL": "URL",
+    "cfp.materials.add": "Add",
+    "cfp.materials.title": "Materials",
+    "cfp.materials.description":
+      "Use this section to upload the slides or other materials you want to share with other attendees. Up to 3 files/urls are allowed.",
 
     "talk.bookToAttend":
       "This event has limited capacity, you need to book a seat to attend.",
@@ -1447,7 +1457,8 @@ The sooner you buy your ticket, the more you save!`,
     "orderInformation.invalidFiscalCode": "Codice fiscale non valido",
     "orderInformation.pec": "PEC",
     "orderInformation.sdi": "SDI",
-    "orderInformation.invalidSDI": "Il codice SDI deve essere di 7 caratteri (6 per una PA)",
+    "orderInformation.invalidSDI":
+      "Il codice SDI deve essere di 7 caratteri (6 per una PA)",
 
     "orderQuestions.heading": "Domande aggiuntive",
     "orderQuestions.attendeeName": "Nome partecipante",
@@ -2291,6 +2302,15 @@ Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia dis
 
     "voting.filterBy": "Filtra per",
     "voting.all": "Tutti",
+
+    "cfp.materials.title": "Materiali",
+    "cfp.materials.description":
+      "Usa questa sezione per caricare i materiali che vuoi condividere con altri partecipanti. Sono consentiti fino a 3 file/URL.",
+    "cfp.materials.addFile": "File",
+    "cfp.materials.addURL": "URL",
+    "cfp.materials.add": "Aggiungi",
+    "cfp.materials.remove": "X",
+    "fileInput.currentFile": "File attuale: {name}",
   },
 };
 

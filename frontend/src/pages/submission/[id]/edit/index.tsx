@@ -68,6 +68,14 @@ export const EditSubmissionPage = () => {
           speakerFacebookUrl: input.participantFacebookUrl,
           speakerMastodonHandle: input.participantMastodonHandle,
           speakerAvailabilities: input.speakerAvailabilities,
+          materials: input.materials
+            .filter((material) => material.fileId || material.url)
+            .map((material) => ({
+              name: material.name,
+              id: material.id,
+              url: material.url,
+              fileId: material.fileId,
+            })),
         },
         language,
       },
