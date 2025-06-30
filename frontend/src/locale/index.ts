@@ -472,7 +472,7 @@ Failing to notify us may impact your eligibility for financial aid at future eve
     "cfp.speakerFacebookUrlDescription": "Facebook Profile URL",
     "cfp.speakerMastodonHandleDescription": "Mastodon Handle",
     "fileInput.placeholder": "Select a file",
-    "fileInput.fileSize": "Maximum allowed size is 1MB",
+    "fileInput.fileSize": "Maximum allowed size is 10MB",
     "fileInput.uploadFailed": "Something went wrong while trying to upload",
     "fileInput.uploading": "Uploading...",
     "cfp.grantsLabel": "Do you need a grant?",
@@ -1843,7 +1843,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "cfp.speakerTwitterHandleDescription":
       "Lascia qui i tuoi contatti e li useremo per taggarti sui social quando annunceremo la tua proposal!{br}{br}Twitter Handle",
     "fileInput.placeholder": "Carica un file",
-    "fileInput.fileSize": "Dimensione massima 1MB",
+    "fileInput.fileSize": "Dimensione massima 10MB",
     "fileInput.uploadFailed": "Qualcosa è andato storto!",
     "cfp.grantsLabel": "Hai bisogno di un grant?",
     "cfp.speakerInstagramHandleDescription": "Instagram Handle",

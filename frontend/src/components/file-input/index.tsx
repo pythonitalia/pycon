@@ -17,7 +17,7 @@ import {
 import { useCurrentLanguage } from "~/locale/context";
 import { useFinalizeUploadMutation, useUploadFileMutation } from "~/types";
 
-const MAX_UPLOAD_SIZE_IN_MB = 1 * 1024 * 1024;
+const MAX_UPLOAD_SIZE_IN_MB = 10 * 1024 * 1024;
 
 export const FileInput = ({
   onChange: baseOnChange,
