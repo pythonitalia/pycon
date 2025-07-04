@@ -4,6 +4,10 @@ from custom_admin.audit import (
     create_addition_admin_log_entry,
     create_change_admin_log_entry,
 )
+from django.db.models import Value, IntegerField
+
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
 from conferences.models.conference_voucher import ConferenceVoucher
 from pycon.constants import UTC
 from custom_admin.admin import (
@@ -30,7 +34,12 @@ from grants.tasks import (
 )
 from schedule.models import ScheduleItem
 from submissions.models import Submission
-from .models import Grant, GrantConfirmPendingStatusProxy
+from .models import (
+    Grant,
+    GrantConfirmPendingStatusProxy,
+    GrantReimbursementCategory,
+    GrantReimbursement,
+)
 from django.db.models import Exists, OuterRef, F
 from pretix import user_has_admission_ticket
 
@@ -393,12 +402,38 @@ class IsConfirmedSpeakerFilter(SimpleListFilter):
         return queryset
 
 
+@admin.register(GrantReimbursementCategory)
+class GrantReimbursementCategoryAdmin(ConferencePermissionMixin, admin.ModelAdmin):
+    list_display = ("__str__", "max_amount", "category", "included_by_default")
+    list_filter = ("conference", "category", "included_by_default")
+    search_fields = ("category", "name")
+
+
+@admin.register(GrantReimbursement)
+class GrantReimbursementAdmin(ConferencePermissionMixin, admin.ModelAdmin):
+    list_display = (
+        "grant",
+        "category",
+        "granted_amount",
+    )
+    list_filter = ("grant__conference", "category")
+    search_fields = ("grant__full_name", "grant__email")
+    autocomplete_fields = ("grant",)
+
+
+class GrantReimbursementInline(admin.TabularInline):
+    model = GrantReimbursement
+    extra = 0
+    autocomplete_fields = ["category"]
+    fields = ["category", "granted_amount"]
+
+
 @admin.register(Grant)
 class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     change_list_template = "admin/grants/grant/change_list.html"
     resource_class = GrantResource
     list_display = (
-        "user_display_name",
+        "user",
         "country",
         "is_proposed_speaker",
         "is_confirmed_speaker",
@@ -406,10 +441,12 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "conference",
         "status",
         "approved_type",
+        "approved_amounts_display",
         "ticket_amount",
         "travel_amount",
         "accommodation_amount",
         "total_amount",
+        "total_amount_display",
         "country_type",
         "user_has_ticket",
         "has_voucher",
@@ -449,6 +486,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "delete_selected",
     ]
     autocomplete_fields = ("user",)
+    inlines = [GrantReimbursementInline]
 
     fieldsets = (
         (
@@ -584,10 +622,22 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     def has_voucher(self, obj: Grant) -> bool:
         return obj.has_voucher
 
+    @admin.display(description="Total")
+    def total_amount_display(self, obj):
+        return f"{obj.total_allocated:.2f}"
+
+    @admin.display(description="Approved Reimbursements")
+    def approved_amounts_display(self, obj):
+        return ", ".join(
+            f"{r.category.name}: {r.granted_amount}" for r in obj.reimbursements.all()
+        )
+
     def get_queryset(self, request):
         qs = (
             super()
             .get_queryset(request)
+            .select_related("user")
+            .prefetch_related("reimbursements__category")
             .annotate(
                 is_proposed_speaker=Exists(
                     Submission.objects.non_cancelled().filter(
@@ -607,6 +657,11 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                     ).filter(
                         user_id=OuterRef("user_id"),
                     )
+                ),
+                total_allocated=Coalesce(
+                    Sum("reimbursements__granted_amount"),
+                    Value(0),
+                    output_field=IntegerField(),
                 ),
             )
         )

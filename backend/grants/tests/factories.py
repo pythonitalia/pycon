@@ -2,13 +2,31 @@ import factory.fuzzy
 from factory.django import DjangoModelFactory
 
 from conferences.tests.factories import ConferenceFactory
-from grants.models import Grant
+from grants.models import Grant, GrantReimbursementCategory, GrantReimbursement
 from helpers.constants import GENDERS
 from users.tests.factories import UserFactory
 from countries import countries
 from participants.tests.factories import ParticipantFactory
 from participants.models import Participant
 import random
+
+
+class GrantReimbursementCategoryFactory(DjangoModelFactory):
+    """
+    Factory for creating GrantReimbursementCategory instances for testing.
+    """
+
+    class Meta:
+        model = GrantReimbursementCategory
+
+    conference = factory.SubFactory(ConferenceFactory)
+    name = factory.Faker("word")
+    description = factory.Faker("sentence")
+    max_amount = factory.fuzzy.FuzzyDecimal(50, 500, precision=2)
+    category = factory.fuzzy.FuzzyChoice(
+        GrantReimbursementCategory.Category.choices, getter=lambda x: x[0]
+    )
+    included_by_default = factory.Faker("boolean")
 
 
 class GrantFactory(DjangoModelFactory):
@@ -57,3 +75,12 @@ class GrantFactory(DjangoModelFactory):
             ParticipantFactory(user_id=grant.user.id, conference=grant.conference)
 
         return grant
+
+
+class GrantReimbursementFactory(DjangoModelFactory):
+    class Meta:
+        model = GrantReimbursement
+
+    grant = factory.SubFactory(GrantFactory)
+    category = factory.SubFactory(GrantReimbursementCategoryFactory)
+    granted_amount = factory.LazyAttribute(lambda obj: obj.category.max_amount)
