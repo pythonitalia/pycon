@@ -8,6 +8,7 @@ from notifications.querysets import EmailTemplateQuerySet, SentEmailQuerySet
 from model_utils.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+from django.core.files.base import ContentFile
 
 BASE_PLACEHOLDERS = ["conference"]
 
@@ -253,11 +254,19 @@ class EmailTemplate(TimeStampedModel):
             placeholders=placeholders,
             subject=processed_email_template.subject,
             preview_text=processed_email_template.preview_text,
-            body=processed_email_template.html_body,
-            text_body=processed_email_template.text_body,
+            body="",
+            text_body="",
             reply_to=self.reply_to,
             cc_addresses=self.cc_addresses,
             bcc_addresses=self.bcc_addresses,
+        )
+        sent_email.body_file.save(
+            "body.html",
+            ContentFile(processed_email_template.html_body.encode("utf-8")),
+        )
+        sent_email.text_body_file.save(
+            "text_body.txt",
+            ContentFile(processed_email_template.text_body.encode("utf-8")),
         )
 
         transaction.on_commit(lambda: send_pending_email.delay(sent_email.id))
@@ -288,6 +297,10 @@ class EmailTemplate(TimeStampedModel):
                 name="unique_non_custom_identifier_conference",
             )
         ]
+
+
+def sent_email_body_upload_to(instance, filename):
+    return f"sent_emails/{instance.id}/{filename}"
 
 
 class SentEmail(TimeStampedModel):
@@ -333,7 +346,13 @@ class SentEmail(TimeStampedModel):
 
     subject = models.TextField(_("subject"))
     body = models.TextField(_("body"))
+    body_file = models.FileField(
+        _("body file"), upload_to=sent_email_body_upload_to, blank=True, null=True
+    )
     text_body = models.TextField(_("text body"))
+    text_body_file = models.FileField(
+        _("text body file"), upload_to=sent_email_body_upload_to, blank=True, null=True
+    )
     preview_text = models.TextField(_("preview text"), blank=True)
 
     from_email = models.EmailField(_("from email"))
