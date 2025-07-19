@@ -214,13 +214,13 @@ resource "aws_route53_record" "pycon_2024" {
   ttl     = "3600"
 }
 
-# resource "aws_route53_record" "pycon_2025" {
-#   zone_id = aws_route53_zone.pyconit.id
-#   name    = "2025.pycon.it"
-#   type    = "CNAME"
-#   records = ["cname.vercel-dns.com"]
-#   ttl     = "3600"
-# }
+resource "aws_route53_record" "pycon_2025" {
+  zone_id = aws_route53_zone.pyconit.id
+  name    = "2025.pycon.it"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com"]
+  ttl     = "3600"
+}
 
 resource "aws_route53_record" "email_flodesk" {
   zone_id = aws_route53_zone.pyconit.id

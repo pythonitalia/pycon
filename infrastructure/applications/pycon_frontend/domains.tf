@@ -2,10 +2,10 @@ data "aws_route53_zone" "zone" {
   name = "pycon.it"
 }
 
-resource "aws_route53_record" "pycon_2025" {
+resource "aws_route53_record" "pycon_2026" {
   count = local.is_prod ? 1 : 0
   zone_id = data.aws_route53_zone.zone.zone_id
-  name    = "2025.pycon.it"
+  name    = "2026.pycon.it"
   type    = "A"
 
   alias {
