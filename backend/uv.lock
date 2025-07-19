@@ -192,6 +192,7 @@ dependencies = [
     { name = "wagtail-factories" },
     { name = "wagtail-headless-preview" },
     { name = "wagtail-localize" },
+    { name = "wagtailmenus" },
     { name = "weasyprint" },
     { name = "werkzeug" },
     { name = "whitenoise" },
@@ -272,10 +273,11 @@ requires-dist = [
     { name = "unidecode", specifier = ">=1.1.1,<2.0.0" },
     { name = "urllib3", specifier = "==2.2.2" },
     { name = "uwsgi", specifier = "==2.0.26" },
-    { name = "wagtail", specifier = "==6.2.2" },
+    { name = "wagtail", specifier = "==7.0.1" },
     { name = "wagtail-factories", specifier = "==4.2.1" },
     { name = "wagtail-headless-preview", specifier = "==0.8.0" },
     { name = "wagtail-localize", specifier = "==1.10" },
+    { name = "wagtailmenus", specifier = ">=4.0.2" },
     { name = "weasyprint", specifier = ">=63.1" },
     { name = "werkzeug", specifier = ">=1.0.1,<2.0.0" },
     { name = "whitenoise", specifier = "==6.7.0" },
@@ -786,6 +788,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ae/72/6a6c2d4b05296c9248a1e95430fa4f4605c210c2fac1d7d80d9e7bdf90f0/django-autocomplete-light-3.9.4.tar.gz", hash = "sha256:0f6da75c1c7186698b867a467a8cdb359f0513fdd8e09288a0c2fb018ae3d94e", size = 168936 }
 
 [[package]]
+name = "django-cogwheels"
+version = "0.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b6/a5/d3bf15adaaf3de18f5f588b29f0e0feb251e5bf052271d18af51ec117f86/django-cogwheels-0.3.tar.gz", hash = "sha256:848a4d9f2c96c582a4a4f2e7c276dfd95ab3905748cae13bb7c4b365a6717e94", size = 31198 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9a/3b/2db92c666d39da78cc872da012582dab7bf4f3ff25e8246bd6ebc547e301/django_cogwheels-0.3-py3-none-any.whl", hash = "sha256:197bd05e7114403d7301214b3f8a371c4fb6039cf21c811f099438b167b5ed21", size = 35154 },
+]
+
+[[package]]
 name = "django-debug-toolbar"
 version = "5.0.1"
 source = { registry = "https://pypi.org/simple" }
@@ -941,6 +952,19 @@ wheels = [
 ]
 
 [[package]]
+name = "django-stubs-ext"
+version = "5.2.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fc/06/5e94715d103e6cc72380cb0d0b6682a7d5ad2c366cee478c94d77aad777d/django_stubs_ext-5.2.2.tar.gz", hash = "sha256:d9d151b919fe2438760f5bd938f03e1cb08c84d0651f9e5917f1313907e42683", size = 6244 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4e/38/2903676f97f7902ee31984a06756b0e8836e897f4b617e1a03be4a43eb4f/django_stubs_ext-5.2.2-py3-none-any.whl", hash = "sha256:8833bbe32405a2a0ce168d3f75a87168f61bd16939caf0e8bf173bccbd8a44c5", size = 8816 },
+]
+
+[[package]]
 name = "django-taggit"
 version = "5.0.1"
 source = { registry = "https://pypi.org/simple" }
@@ -950,6 +974,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/10/eb/269501702e231b552f68d813d0a07ac1ea81fd25a3c92fb0f249818f0f39/django-taggit-5.0.1.tar.gz", hash = "sha256:edcd7db1e0f35c304e082a2f631ddac2e16ef5296029524eb792af7430cab4cc", size = 60372 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/07/18/94a45c8c50592d5cf7d73a9111053917c3684fda031c988041396bb3e588/django_taggit-5.0.1-py3-none-any.whl", hash = "sha256:a0ca8a28b03c4b26c2630fd762cb76ec39b5e41abf727a7b66f897a625c5e647", size = 61141 },
+]
+
+[[package]]
+name = "django-tasks"
+version = "0.7.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "django-stubs-ext" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/86/d2/09aa8cac81e5eb1719bed0fdfa865501e739a384830772a01954dc59e192/django_tasks-0.7.0.tar.gz", hash = "sha256:499f80d1a051566443cfa88a300d8b03435af7fc5708cad4d8da6d285614f739", size = 29581 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/11/e2/1079d177654bd3d4200040d031e9e42831fab532ac4ea8354db15b3280b5/django_tasks-0.7.0-py3-none-any.whl", hash = "sha256:8a8d64f2dc6e29ac2f45092d90e2dd82dc1dca100dfe3a4f2ce1209db99f3527", size = 39970 },
 ]
 
 [[package]]
@@ -1576,6 +1614,9 @@ name = "markuppy"
 version = "1.14"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/4e/ca/f43541b41bd17fc945cfae7ea44f1661dc21ea65ecc944a6fa138eead94c/MarkupPy-1.14.tar.gz", hash = "sha256:1adee2c0a542af378fe84548ff6f6b0168f3cb7f426b46961038a2bcfaad0d5f", size = 6815 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/56/cc/e5403fe82ad2720dd8f821270c5cfe14007b97f9d0c906a834eb613608b2/markuppy-1.14-py3-none-any.whl", hash = "sha256:dc893880c5551d8388b688eef1d425dd48bb0b7d5bc74414fae86764ff4660ee", size = 8449 },
+]
 
 [[package]]
 name = "markupsafe"
@@ -2726,7 +2767,7 @@ wheels = [
 
 [[package]]
 name = "wagtail"
-version = "6.2.2"
+version = "7.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyascii" },
@@ -2736,10 +2777,10 @@ dependencies = [
     { name = "django-modelcluster" },
     { name = "django-permissionedforms" },
     { name = "django-taggit" },
+    { name = "django-tasks" },
     { name = "django-treebeard" },
     { name = "djangorestframework" },
     { name = "draftjs-exporter" },
-    { name = "l18n" },
     { name = "laces" },
     { name = "openpyxl" },
     { name = "pillow" },
@@ -2747,9 +2788,9 @@ dependencies = [
     { name = "telepath" },
     { name = "willow", extra = ["heif"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/75/cb/7fca6daf7b11b15e0457fa58d1c5ef705bad6048403624a5079f386bb4a6/wagtail-6.2.2.tar.gz", hash = "sha256:506ac2b59dae85069ae754b45bc13b91cbd86e92d4f5d663658773b0ed7a16b9", size = 6568116 }
+sdist = { url = "https://files.pythonhosted.org/packages/30/56/f8ed6827d4b60fa57e65c872a654bc17d9aebad64a17532c64dfa29dc6f2/wagtail-7.0.1.tar.gz", hash = "sha256:cfc5c37738f98cae380a15252f5676604f6c61554bef1a3791e34de1e703beec", size = 6671934 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ee/98/9f528bd41b8a3ba21fd3eeb0f869758bd807cc5e54dd5b8eec8cbe465c44/wagtail-6.2.2-py3-none-any.whl", hash = "sha256:d0382603aef5d7e4a46529aa125857774a317c2870c9b6836767932969829429", size = 9072327 },
+    { url = "https://files.pythonhosted.org/packages/a2/bd/431c4a8cec7d9bbcf2c4f373f5a1a0ba24eba343d83c23f71b89f804cd2f/wagtail-7.0.1-py3-none-any.whl", hash = "sha256:92439c50a919826a4ce8c85bdaf3ed0e436d29598bb2954b4fca5f312b969666", size = 9148787 },
 ]
 
 [[package]]
@@ -2790,6 +2831,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/d6/6b/73dc66df08d92e2b4a94dbf0a23f83e269a852cfdf7d239a0485fe92b0fc/wagtail_localize-1.10.tar.gz", hash = "sha256:ecde7efd366485ea325904efbbae5e50297f094f4b91ca8ac94aec04dd3b0ded", size = 281846 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b5/aa/0d8910bdd189acb9ffaca325bb675459141a8c1ce761d537ec7a0b86930a/wagtail_localize-1.10-py3-none-any.whl", hash = "sha256:11746223d5f20d898efff36042f730a3d499135b4a92945db01fc9769c47cb28", size = 500143 },
+]
+
+[[package]]
+name = "wagtailmenus"
+version = "4.0.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django-cogwheels" },
+    { name = "wagtail" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f6/0e/3846b680e6bdbeb6f93bbcb496aec6968fc763acc36254cf76b16864a3b1/wagtailmenus-4.0.2.tar.gz", hash = "sha256:b82d136aa1bb02004b6d466f750c20368b8d213d88c13229448b2ab2e41bb143", size = 117941 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b0/45/a1624a5a2e68ee29a05d847c5fff8814952caa08a3335a3c996f243fb809/wagtailmenus-4.0.2-py3-none-any.whl", hash = "sha256:8f200d380bbf109ad902b4b3e85d1e2b006c47eb0625a154402700ca618afe8c", size = 204260 },
 ]
 
 [[package]]
@@ -2880,15 +2934,15 @@ wheels = [
 
 [[package]]
 name = "willow"
-version = "1.9.0"
+version = "1.11.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "defusedxml" },
     { name = "filetype" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/2b/07/7937bb91ba3373133d903ec6c8a7a3fe0bec6ac964c7f2e532188e230c9b/willow-1.9.0.tar.gz", hash = "sha256:ffac1406275ae30b60e7c6cbd1245f0bc359d1b5731002b18a712aaf424a5102", size = 113373 }
+sdist = { url = "https://files.pythonhosted.org/packages/a3/bd/2a383be24c3e47423aa9b0aa5b4ca818ef193506b58800dd51e1b89d7bb3/willow-1.11.0.tar.gz", hash = "sha256:70292b2d0cd2d5bb4076f0b3d61308aeaa0b225f3970d00752f08a8fd386c3d1", size = 113827 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/dd/c0/10a11f2dc0dc485a397bd3f66098805b6e39e7317f5acb72b415d1d7a559/willow-1.9.0-py3-none-any.whl", hash = "sha256:11a13097cffe501898cd434bb5761fb6cdbdb774a7853094cb56a4ba57cbbff7", size = 119156 },
+    { url = "https://files.pythonhosted.org/packages/c1/05/b3f1b443c31ad871c48e19ea2be189681c2df4ccf594b1dd83d6775c032b/willow-1.11.0-py3-none-any.whl", hash = "sha256:0a4388dbf18726eef8f27449659047689c39b7023045ca5a8a75410d3864ee6f", size = 119459 },
 ]
 
 [package.optional-dependencies]

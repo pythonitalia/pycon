@@ -82,7 +82,7 @@ dependencies = [
     "stripe==10.5.0",
     "djangorestframework==3.15.2",
     "l18n<2022.0,>=2021.3",
-    "wagtail==6.2.2",
+    "wagtail==7.0.1",
     "wagtail-localize==1.10",
     "celery==5.4.0",
     "wagtail-headless-preview==0.8.0",
@@ -104,6 +104,7 @@ dependencies = [
     "weasyprint>=63.1",
     "opencv-python-headless>=4.10.0.84",
     "psycopg[c]>=3.2.3",
+    "wagtailmenus>=4.0.2",
 ]
 name = "backend"
 version = "0.1.0"
