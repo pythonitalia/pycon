@@ -3,7 +3,7 @@ export const messages = {
   en: {
     titleTemplate: "%s | PyCon Italia",
     description:
-      "Join PyCon Italia May 28th to May 31st 2025 in Bologna, Italy!",
+      "Join PyCon Italia May 27th to May 30th 2026 in Bologna, Italy!",
     "global.submit": "Submit",
     "global.pleaseWait": "Please wait",
 
@@ -1146,7 +1146,7 @@ The sooner you buy your ticket, the more you save!`,
   it: {
     titleTemplate: "%s | PyCon Italia",
     description:
-      "Partecipa a PyCon Italia! Dal 28 al 31 Maggio 2025 a Bologna!",
+      "Partecipa a PyCon Italia! Dal 27 al 30 Maggio 2026 a Bologna!",
     "global.submit": "Invia",
     "global.pleaseWait": "Attendi",
 
