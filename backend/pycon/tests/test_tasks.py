@@ -68,7 +68,7 @@ def test_launch_heavy_processing_worker_starts_task(settings, mocker):
                 "name": "storage",
                 "managedEBSVolume": {
                     "encrypted": False,
-                    "sizeInGiB": 800,
+                    "sizeInGiB": 1_500,
                     "volumeType": "gp3",
                     "terminationPolicy": {"deleteOnTermination": True},
                     "filesystemType": "xfs",
