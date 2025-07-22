@@ -34,7 +34,7 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
 
       mountPoints = [
         {
-          "containerPath" = "/tmp"
+          "containerPath" = "/var/tmp"
           "sourceVolume"  = "storage"
           "readOnly"      = false
         }
