@@ -186,7 +186,7 @@ class WetransferProcessing:
 
         self.merged_file = tempfile.NamedTemporaryFile(
             "wb",
-            prefix=f"wetransfer_{self.wetransfer_to_s3_transfer_request.id}",
+            prefix=f"/tmp/pycon/wetransfer_{self.wetransfer_to_s3_transfer_request.id}",
             suffix=self.extension,
             delete=False,
         )
@@ -207,7 +207,7 @@ class WetransferProcessing:
 
             part_file = tempfile.NamedTemporaryFile(
                 "wb",
-                prefix=f"wetransfer_{self.wetransfer_to_s3_transfer_request.id}.part{part_info.part_number}",
+                prefix=f"/tmp/pycon/wetransfer_{self.wetransfer_to_s3_transfer_request.id}.part{part_info.part_number}",
                 suffix=self.extension,
                 delete=False,
             )
