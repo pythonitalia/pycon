@@ -55,6 +55,8 @@ class WetransferProcessing:
         self.merged_file = None
 
     def run(self) -> list[str]:
+        os.makedirs("/mnt/pycon/", exist_ok=True)
+
         self.storage = storages["default"]
         self.s3_client = self._get_s3_client()
         self.download_link = self.get_download_link()
@@ -186,7 +188,7 @@ class WetransferProcessing:
 
         self.merged_file = tempfile.NamedTemporaryFile(
             "wb",
-            prefix=f"/tmp/pycon/wetransfer_{self.wetransfer_to_s3_transfer_request.id}",
+            prefix=f"/mnt/pycon/wetransfer_{self.wetransfer_to_s3_transfer_request.id}",
             suffix=self.extension,
             delete=False,
         )
@@ -207,7 +209,7 @@ class WetransferProcessing:
 
             part_file = tempfile.NamedTemporaryFile(
                 "wb",
-                prefix=f"/tmp/pycon/wetransfer_{self.wetransfer_to_s3_transfer_request.id}.part{part_info.part_number}",
+                prefix=f"/mnt/pycon/wetransfer_{self.wetransfer_to_s3_transfer_request.id}.part{part_info.part_number}",
                 suffix=self.extension,
                 delete=False,
             )
