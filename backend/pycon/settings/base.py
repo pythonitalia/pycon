@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     "modelcluster",
     "taggit",
     "wagtail_headless_preview",
+    "wagtailmenus",
     # --
     "schedule.apps.ScheduleConfig",
     "custom_admin",
@@ -180,6 +181,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "custom_admin.context_processors.admin_settings",
+                "wagtailmenus.context_processors.wagtailmenus",
             ],
             "builtins": [
                 "custom_admin.templatetags.to_json_for_prop",
