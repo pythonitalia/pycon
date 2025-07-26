@@ -83,6 +83,8 @@ COPY --chown=app:app . ${FUNCTION_DIR}
 
 USER app
 
+VOLUME ["/tmp/pycon"]
+
 RUN mkdir -p assets && .venv/bin/python manage.py collectstatic --noinput
 
 ENTRYPOINT ["/home/app/.venv/bin/gunicorn"]
