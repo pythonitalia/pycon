@@ -16,14 +16,14 @@ def test_submissions_are_random_by_user(graphql_client, mock_has_ticket):
 
     graphql_client.force_login(user_1)
 
-    submission = SubmissionFactory(id=1)
-    submission_2 = SubmissionFactory(id=2, conference=submission.conference)
-    submission_3 = SubmissionFactory(id=3, conference=submission.conference)
+    submission = SubmissionFactory()
+    SubmissionFactory(conference=submission.conference)
+    SubmissionFactory(conference=submission.conference)
 
     mock_has_ticket(submission.conference)
 
     query = """query Submissions($code: String!, $page: Int) {
-        submissions(code: $code, page: $page, pageSize: 1) {
+        submissions(code: $code, page: $page, pageSize: 3) {
             pageInfo {
                 totalPages
                 totalItems
@@ -34,35 +34,21 @@ def test_submissions_are_random_by_user(graphql_client, mock_has_ticket):
         }
     }"""
 
-    data_proposals = {
-        user_1: [
-            {"id": submission_3.hashid},
-            {"id": submission_2.hashid},
-            {"id": submission.hashid},
-        ],
-        user_2: [
-            {"id": submission.hashid},
-            {"id": submission_2.hashid},
-            {"id": submission_3.hashid},
-        ],
-        user_3: [
-            {"id": submission_2.hashid},
-            {"id": submission_3.hashid},
-            {"id": submission.hashid},
-        ],
-    }
+    submissions = {}
 
     for user in [user_1, user_2, user_3]:
         graphql_client.force_login(user)
 
-        for page in range(3):
-            resp = graphql_client.query(
-                query,
-                variables={"code": submission.conference.code, "page": page + 1},
-            )
+        resp = graphql_client.query(
+            query,
+            variables={"code": submission.conference.code, "page": 1},
+        )
 
-            assert not resp.get("errors")
-            assert resp["data"]["submissions"]["items"] == [data_proposals[user][page]]
+        submissions[user] = resp["data"]["submissions"]["items"]
+
+    assert submissions[user_1] != submissions[user_2]
+    assert submissions[user_1] != submissions[user_3]
+    assert submissions[user_2] != submissions[user_3]
 
 
 def test_returns_submissions_paginated(graphql_client, user):

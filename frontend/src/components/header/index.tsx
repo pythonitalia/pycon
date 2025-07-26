@@ -37,24 +37,11 @@ export const Header = () => {
       currentDay,
     },
   } = data || { conference: {} };
-  const hasSomethingLive = currentDay?.rooms?.some(
-    (room) => !!room.streamingUrl,
-  );
+  // const hasSomethingLive = currentDay?.rooms?.some(
+  //   (room) => !!room.streamingUrl,
+  // );
 
   const actions: Action[] = [
-    isRunning && hasSomethingLive
-      ? {
-          text: getTranslatedMessage("header.streaming", language),
-          icon: "live-circle",
-          link: "/streaming",
-          background: "red",
-          hoverBackground: "red",
-        }
-      : {
-          text: getTranslatedMessage("header.tickets", language),
-          icon: "tickets",
-          link: "/tickets",
-        },
     {
       text:
         isReady && loggedIn

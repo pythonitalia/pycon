@@ -7,13 +7,13 @@ import {
   Page,
   Section,
   Spacer,
+  StyledHTMLText,
   Text,
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { JobListingAccordion } from "~/components/job-listing-accordion";
-import { compile } from "~/helpers/markdown";
 import type { AllJobListingsQueryResult } from "~/types";
 
 import { Article } from "../article";
@@ -49,8 +49,12 @@ export const JobBoardLayout = ({
                 onMobileShowOnly === "jobListing" ? "desktop" : "mobile"
               }
               as="ul"
-              fullScreenHeight
+              position="sticky"
+              style={{
+                top: 0,
+              }}
               overflow="scroll"
+              fullScreenHeight
             >
               {jobListings.map((job) => (
                 <JobListingAccordion key={job.id} job={job} />
@@ -62,8 +66,6 @@ export const JobBoardLayout = ({
               showFrom={
                 onMobileShowOnly === "jobListings" ? "desktop" : "mobile"
               }
-              fullScreenHeight
-              overflow="scroll"
             >
               <Heading size={2}>{jobListing.title}</Heading>
               <Spacer size="small" />
@@ -71,14 +73,24 @@ export const JobBoardLayout = ({
                 {jobListing.company}
               </Text>
               <Spacer size="large" />
-              <Article>{compile(jobListing.description).tree}</Article>
+              <Article>
+                <StyledHTMLText
+                  baseTextSize={2}
+                  text={jobListing.description}
+                />
+              </Article>
               <Spacer size="xl" />
               {jobListing.applyUrl && (
-                <Button href={jobListing.applyUrl} variant="secondary">
+                <Button
+                  target="_blank"
+                  href={jobListing.applyUrl}
+                  variant="secondary"
+                >
                   <FormattedMessage id="jobboard.applyNow" />
                 </Button>
               )}
             </LayoutContent>
+            <Spacer size="medium" />
           </GridColumn>
         </Grid>
       </Section>

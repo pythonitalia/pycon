@@ -3,7 +3,6 @@ from job_board.tests.factories import JobListingFactory
 from pytest import mark
 
 from helpers.tests import get_image_url_from_request
-from i18n.strings import LazyI18nString
 
 
 def _query_job_board(client, conference):
@@ -50,7 +49,7 @@ def test_query_job_board(rf, graphql_client):
 @mark.django_db
 def test_query_single_job_listing(rf, graphql_client):
     listing = JobListingFactory(
-        slug=LazyI18nString({"en": "demo", "it": "esempio"}),
+        slug="demo",
         company_logo=None,
     )
 
@@ -92,15 +91,15 @@ def test_query_single_job_listing(rf, graphql_client):
 @mark.django_db
 def test_passing_language(graphql_client):
     JobListingFactory(
-        title=LazyI18nString({"en": "this is a test", "it": "diventa una lumaca"}),
-        slug=LazyI18nString({"en": "slug", "it": "lumaca"}),
+        title="diventa una lumaca",
+        slug="lumaca",
     )
 
     resp = graphql_client.query(
         """query {
-            jobListing(slug: "slug") {
-                title(language: "it")
-                slug(language: "it")
+            jobListing(slug: "lumaca") {
+                title
+                slug
             }
         } """
     )

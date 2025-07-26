@@ -32,7 +32,7 @@ export const LiveStreamingSection = () => {
     variables: {
       code: process.env.conferenceCode,
     },
-    pollInterval: 1000 * 60 * 3,
+    pollInterval: 1000 * 60,
   });
   const [currentRoom, setCurrentRoom] = useState(currentDay?.rooms?.[0]);
 
@@ -41,7 +41,9 @@ export const LiveStreamingSection = () => {
   };
 
   const runningEvent = currentDay?.runningEvents?.filter((event) =>
-    event.rooms.map((room) => room.id).includes(currentRoom.id),
+    (event.livestreamingRoom ? [event.livestreamingRoom] : event.rooms)
+      .map((room) => room.id)
+      .includes(currentRoom.id),
   )?.[0];
 
   const hasLiveVideos = currentDay?.rooms?.some((room) => room.streamingUrl);
@@ -162,7 +164,8 @@ const isRoomStreaming = (
 ) => {
   return runningEvents.some(
     (event) =>
-      event.rooms.map((room) => room.id).includes(room.id) &&
-      event.type !== "custom",
+      (event.livestreamingRoom ? [event.livestreamingRoom] : event.rooms)
+        .map((room) => room.id)
+        .includes(room.id) && event.type !== "custom",
   );
 };

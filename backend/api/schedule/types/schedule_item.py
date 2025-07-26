@@ -3,6 +3,7 @@ from api.participants.types import Participant
 from participants.models import Participant as ParticipantModel
 from typing import TYPE_CHECKING
 from api.languages.types import Language
+from api.permissions import IsStaffPermission
 from datetime import datetime
 from typing import Annotated
 from api.schedule.types.schedule_item_user import ScheduleItemUser
@@ -37,6 +38,10 @@ class ScheduleItem:
 
     abstract: str
     elevator_pitch: str
+    talk_manager: ScheduleItemUser | None = strawberry.field(
+        permission_classes=[IsStaffPermission]
+    )
+    livestreaming_room: Room | None
 
     @strawberry.field
     def has_limited_capacity(self) -> bool:
@@ -60,6 +65,13 @@ class ScheduleItem:
     def user_has_spot(self, info) -> bool:
         user_id = info.context.request.user.id
         return self.attendees.filter(user_id=user_id).exists()
+
+    @strawberry.field
+    def user_is_talk_manager(self, info: Info) -> bool:
+        if not (user_id := info.context.request.user.id):
+            return False
+
+        return self.talk_manager_id == user_id
 
     @strawberry.field
     def speakers(self, info: Info) -> list[ScheduleItemUser]:
@@ -112,8 +124,8 @@ class ScheduleItem:
 
         return info.context.request.build_absolute_uri(self.image.url)
 
-    @strawberry.field
-    def slido_url(self, info) -> str:
+    @strawberry.field(name='slidoUrl')
+    def _slido_url(self, info) -> str:
         if self.slido_url:
             return self.slido_url
 

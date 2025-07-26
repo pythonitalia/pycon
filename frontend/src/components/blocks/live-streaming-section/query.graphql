@@ -11,6 +11,10 @@ query LiveStreamingSection($code: String!) {
         duration
         title
         type
+        livestreamingRoom {
+          id
+          name
+        }
         rooms {
           id
           name

@@ -37,9 +37,11 @@ class IsFileTypeUploadAllowed(BasePermission):
         conference_code = input.data.conference_code
 
         try:
-            proposal = Submission.objects.for_conference_code(
-                conference_code
-            ).get_by_hashid(proposal_id)
+            proposal = (
+                Submission.objects.for_conference_code(conference_code)
+                .filter(status=Submission.STATUS.accepted)
+                .get_by_hashid(proposal_id)
+            )
         except (Submission.DoesNotExist, IndexError):
             return False
 

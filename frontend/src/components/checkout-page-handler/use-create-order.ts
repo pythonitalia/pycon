@@ -56,7 +56,8 @@ export const useCreateOrder = ({ userEmail }) => {
           invoiceInformation: {
             isBusiness: state.invoiceInformation.isBusiness,
             company: state.invoiceInformation.companyName,
-            name: state.invoiceInformation.name,
+            givenName: state.invoiceInformation.givenName,
+            familyName: state.invoiceInformation.familyName,
             street: state.invoiceInformation.address,
             zipcode: state.invoiceInformation.zipCode,
             city: state.invoiceInformation.city,

@@ -3,7 +3,7 @@ export const messages = {
   en: {
     titleTemplate: "%s | PyCon Italia",
     description:
-      "Join PyCon Italia May 28th to May 31st 2025 in Bologna, Italy!",
+      "Join PyCon Italia May 27th to May 30th 2026 in Bologna, Italy!",
     "global.submit": "Submit",
     "global.pleaseWait": "Please wait",
 
@@ -12,6 +12,8 @@ export const messages = {
     "tickets.description.page": "hotels page",
 
     "global.sessions": "Sessions",
+    "cfp.materials.remove": "X",
+    "fileInput.currentFile": "Current file: {name}",
 
     "input.placeholder": "Type here...",
     "global.accordion.close": "Close",
@@ -470,7 +472,7 @@ Failing to notify us may impact your eligibility for financial aid at future eve
     "cfp.speakerFacebookUrlDescription": "Facebook Profile URL",
     "cfp.speakerMastodonHandleDescription": "Mastodon Handle",
     "fileInput.placeholder": "Select a file",
-    "fileInput.fileSize": "Maximum allowed size is 1MB",
+    "fileInput.fileSize": "Maximum allowed size is 10MB",
     "fileInput.uploadFailed": "Something went wrong while trying to upload",
     "fileInput.uploading": "Uploading...",
     "cfp.grantsLabel": "Do you need a grant?",
@@ -651,7 +653,8 @@ Click the box to change. If left empty, we will assume you are available.`,
     "orderInformation.individualConsumer": "Individual Customer",
     "orderInformation.businessConsumer": "Business Customer",
     "orderInformation.companyName": "Company name",
-    "orderInformation.name": "Name",
+    "orderInformation.givenName": "Given name",
+    "orderInformation.familyName": "Family name",
     "orderInformation.vatId": "VAT ID",
     "orderInformation.address": "Address",
     "orderInformation.zipCode": "Zip Code",
@@ -662,7 +665,8 @@ Click the box to change. If left empty, we will assume you are available.`,
     "orderInformation.invalidFiscalCode": "Fiscal code not valid",
     "orderInformation.pec": "PEC",
     "orderInformation.sdi": "SDI",
-    "orderInformation.invalidSDI": "SDI must be 7 characters long",
+    "orderInformation.invalidSDI":
+      "SDI must be 7 characters long (6 for Italian PA)",
 
     "orderQuestions.heading": "Order questions",
     "orderQuestions.attendeeGivenName": "Attendee Given name",
@@ -1001,6 +1005,13 @@ If this new timing doesn't work for you, please don't hesitate to let us know be
 
     "streaming.qa": "Ask Questions",
 
+    "cfp.materials.addFile": "File",
+    "cfp.materials.addURL": "URL",
+    "cfp.materials.add": "Add",
+    "cfp.materials.title": "Materials",
+    "cfp.materials.description":
+      "Use this section to upload the slides or other materials you want to share with other attendees. Up to 3 files/urls are allowed.",
+
     "talk.bookToAttend":
       "This event has limited capacity, you need to book a seat to attend.",
     "talk.bookCta": "Book now",
@@ -1135,7 +1146,7 @@ The sooner you buy your ticket, the more you save!`,
   it: {
     titleTemplate: "%s | PyCon Italia",
     description:
-      "Partecipa a PyCon Italia! Dal 28 al 31 Maggio 2025 a Bologna!",
+      "Partecipa a PyCon Italia! Dal 27 al 30 Maggio 2026 a Bologna!",
     "global.submit": "Invia",
     "global.pleaseWait": "Attendi",
 
@@ -1434,7 +1445,8 @@ The sooner you buy your ticket, the more you save!`,
     "orderInformation.individualConsumer": "Persona individuale",
     "orderInformation.businessConsumer": "Azienda",
     "orderInformation.companyName": "Nome azienda",
-    "orderInformation.name": "Nome completo",
+    "orderInformation.givenName": "Nome",
+    "orderInformation.familyName": "Cognome",
     "orderInformation.vatId": "Partita IVA",
     "orderInformation.address": "Indirizzo",
     "orderInformation.zipCode": "CAP",
@@ -1443,9 +1455,10 @@ The sooner you buy your ticket, the more you save!`,
     "orderInformation.italianInvoice": "Dettagli fattura elettronica",
     "orderInformation.fiscalCode": "Codice fiscale",
     "orderInformation.invalidFiscalCode": "Codice fiscale non valido",
-    "orderInformation.PEC": "PEC",
+    "orderInformation.pec": "PEC",
     "orderInformation.sdi": "SDI",
-    "orderInformation.invalidSDI": "Il codice SDI deve essere di 7 caratteri",
+    "orderInformation.invalidSDI":
+      "Il codice SDI deve essere di 7 caratteri (6 per una PA)",
 
     "orderQuestions.heading": "Domande aggiuntive",
     "orderQuestions.attendeeName": "Nome partecipante",
@@ -1830,7 +1843,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "cfp.speakerTwitterHandleDescription":
       "Lascia qui i tuoi contatti e li useremo per taggarti sui social quando annunceremo la tua proposal!{br}{br}Twitter Handle",
     "fileInput.placeholder": "Carica un file",
-    "fileInput.fileSize": "Dimensione massima 1MB",
+    "fileInput.fileSize": "Dimensione massima 10MB",
     "fileInput.uploadFailed": "Qualcosa è andato storto!",
     "cfp.grantsLabel": "Hai bisogno di un grant?",
     "cfp.speakerInstagramHandleDescription": "Instagram Handle",
@@ -2289,6 +2302,15 @@ Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia dis
 
     "voting.filterBy": "Filtra per",
     "voting.all": "Tutti",
+
+    "cfp.materials.title": "Materiali",
+    "cfp.materials.description":
+      "Usa questa sezione per caricare i materiali che vuoi condividere con altri partecipanti. Sono consentiti fino a 3 file/URL.",
+    "cfp.materials.addFile": "File",
+    "cfp.materials.addURL": "URL",
+    "cfp.materials.add": "Aggiungi",
+    "cfp.materials.remove": "X",
+    "fileInput.currentFile": "File attuale: {name}",
   },
 };
 

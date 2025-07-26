@@ -31,7 +31,6 @@ export async function middleware(req: NextRequest) {
     !PUBLIC_FILE.test(req.nextUrl.pathname) &&
     !req.nextUrl.pathname.includes("/api/") &&
     !req.nextUrl.pathname.includes("/admin") &&
-    !req.nextUrl.pathname.includes("/ingest") &&
     !req.nextUrl.pathname.includes("/local_files_upload") &&
     !req.nextUrl.pathname.includes("/media") &&
     !req.nextUrl.pathname.includes("/graphql") &&

@@ -13,3 +13,14 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "media" {
     }
   }
 }
+
+resource "aws_s3_bucket_cors_configuration" "cors" {
+  bucket = aws_s3_bucket.media.id
+
+  cors_rule {
+    allowed_methods = ["GET"]
+    allowed_origins = [
+      "https://${local.alias}"
+    ]
+  }
+}

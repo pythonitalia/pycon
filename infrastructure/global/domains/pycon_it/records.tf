@@ -214,13 +214,13 @@ resource "aws_route53_record" "pycon_2024" {
   ttl     = "3600"
 }
 
-# resource "aws_route53_record" "pycon_2025" {
-#   zone_id = aws_route53_zone.pyconit.id
-#   name    = "2025.pycon.it"
-#   type    = "CNAME"
-#   records = ["cname.vercel-dns.com"]
-#   ttl     = "3600"
-# }
+resource "aws_route53_record" "pycon_2025" {
+  zone_id = aws_route53_zone.pyconit.id
+  name    = "2025.pycon.it"
+  type    = "CNAME"
+  records = ["cname.vercel-dns.com"]
+  ttl     = "3600"
+}
 
 resource "aws_route53_record" "email_flodesk" {
   zone_id = aws_route53_zone.pyconit.id
@@ -259,5 +259,13 @@ resource "aws_route53_record" "postmark_bounces" {
   name    = "pm-bounces"
   type    = "CNAME"
   records = ["pm.mtasv.net"]
+  ttl     = "900"
+}
+
+resource "aws_route53_record" "google_dkim" {
+  zone_id = aws_route53_zone.pyconit.id
+  name    = "google._domainkey"
+  type    = "TXT"
+  records = ["v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCItu6XrQBz+OzJ/5S3ToRx94ZHJTTX6VTRuAmlAeGbzcJjh7Y1eBnhCjaSpdzY1asKYrWH2h2iteB778Za/OGTMbgIalEEPywSWbLxKXum59x5uZ8nR77HL658gamU/yx4cQZzv+pr0Cnr+9lgvqckFnJ3X4lllR56Xcqmo4rWAQIDAQAB"]
   ttl     = "900"
 }

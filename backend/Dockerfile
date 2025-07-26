@@ -72,7 +72,7 @@ ENV LIBRARY_PATH=/lib:/usr/lib LD_LIBRARY_PATH=/lib:/usr/lib
 
 RUN apt-get update -y && apt-get install -y curl
 
-RUN groupadd -r app && useradd -r -g app app && mkdir -p ${FUNCTION_DIR} && chown -R app:app ${FUNCTION_DIR}
+RUN groupadd -r app && useradd -r -g app app && mkdir -p ${FUNCTION_DIR} && chown -R app:app ${FUNCTION_DIR} && mkdir -p /tmp/pycon && chown -R app:app /tmp/pycon
 
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/widgets/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/widgets/
@@ -82,6 +82,8 @@ COPY --chown=app:app --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.v
 COPY --chown=app:app . ${FUNCTION_DIR}
 
 USER app
+
+VOLUME ["/tmp/pycon"]
 
 RUN mkdir -p assets && .venv/bin/python manage.py collectstatic --noinput
 

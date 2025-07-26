@@ -1,7 +1,8 @@
-from organizers.tests.factories import OrganizerFactory
+import pytest
+
 from billing.tests.factories import BillingAddressFactory
 from conferences.tests.factories import ConferenceFactory
-import pytest
+from organizers.tests.factories import OrganizerFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -14,7 +15,8 @@ def _query_billing_addresses(graphql_client, code):
                 id
                 isBusiness
                 companyName
-                userName
+                userGivenName
+                userFamilyName
                 zipCode
                 city
                 address

@@ -213,6 +213,14 @@ class ScheduleItem(TimeStampedModel):
     rooms = models.ManyToManyField(
         Room, related_name="talks", verbose_name=_("rooms"), blank=True
     )
+    livestreaming_room = models.ForeignKey(
+        Room,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        verbose_name=_("livestreaming room"),
+        related_name="livestreaming_talks",
+    )
 
     submission = models.ForeignKey(
         Submission,
@@ -231,6 +239,14 @@ class ScheduleItem(TimeStampedModel):
         related_name="schedule_items",
     )
     link_to = models.CharField(_("link to"), blank=True, default="", max_length=1024)
+
+    talk_manager = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("talk manager"),
+    )
 
     image = models.ImageField(
         _("image"), null=True, blank=True, upload_to="schedule_items"

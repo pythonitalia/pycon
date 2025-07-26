@@ -314,6 +314,7 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         "language",
         "slot",
         "speakers_names",
+        "talk_manager",
         "type",
         "submission",
     )
@@ -339,6 +340,8 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                     "keynote",
                     "link_to",
                     "slido_url",
+                    "talk_manager",
+                    'livestreaming_room',
                 )
             },
         ),
@@ -377,6 +380,7 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         "submission__speaker__full_name",
         "submission__speaker__email",
     )
+    autocomplete_fields = ("talk_manager",)
     inlines = [
         ScheduleItemAdditionalSpeakerInline,
         ScheduleItemAttendeeInline,

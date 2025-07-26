@@ -1,7 +1,11 @@
 import {
   FileInput as FileInputUI,
+  HorizontalStack,
+  Spacer,
   Text,
+  VerticalStack,
 } from "@python-italia/pycon-styleguide";
+import clsx from "clsx";
 
 import React, { type ChangeEvent, useRef, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -13,9 +17,7 @@ import {
 import { useCurrentLanguage } from "~/locale/context";
 import { useFinalizeUploadMutation, useUploadFileMutation } from "~/types";
 
-import { ErrorsList } from "../errors-list";
-
-const MAX_UPLOAD_SIZE_IN_MB = 1 * 1024 * 1024;
+const MAX_UPLOAD_SIZE_IN_MB = 10 * 1024 * 1024;
 
 export const FileInput = ({
   onChange: baseOnChange,
@@ -25,14 +27,20 @@ export const FileInput = ({
   type,
   previewUrl,
   accept,
+  fileAttributes,
+  showPreview = true,
+  currentFileName,
 }: {
-  onChange: (value: string) => void;
+  onChange: (value: string, info?: { name?: string }) => void;
   name: string;
   value: string;
   errors?: string[];
   type: "participant_avatar" | "proposal_material";
   previewUrl?: string;
   accept: string;
+  fileAttributes?: Record<string, string>;
+  showPreview?: boolean;
+  currentFileName?: string;
 }) => {
   const conferenceCode = process.env.conferenceCode;
   const canvas = useRef<HTMLCanvasElement>(undefined);
@@ -46,21 +54,20 @@ export const FileInput = ({
   const [error, setError] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const resetInput = () => {
+  const resetInput = (triggerOnChange = true) => {
     setError("");
 
     if (filePreview) {
       URL.revokeObjectURL(filePreview);
-      baseOnChange(null);
+      if (triggerOnChange) {
+        baseOnChange(null);
+      }
     }
 
     setFilePreview(null);
   };
 
   const onChange = (file: File) => {
-    setSelectedFile(file);
-    console.log("file", file);
-
     if (!file) {
       resetInput();
       return;
@@ -74,13 +81,19 @@ export const FileInput = ({
       return;
     }
 
-    resetInput();
-    const fakeImg = document.createElement("img");
-    fakeImg.onload = () => onImageLoaded(fakeImg);
-    fakeImg.src = URL.createObjectURL(file);
+    resetInput(false);
+    setSelectedFile(file);
+
+    if (file.type.startsWith("image/")) {
+      const fakeImg = document.createElement("img");
+      fakeImg.onload = () => onImageLoaded(fakeImg, file);
+      fakeImg.src = URL.createObjectURL(file);
+    } else {
+      startUploadFlow(file);
+    }
   };
 
-  const onImageLoaded = (image: HTMLImageElement) => {
+  const onImageLoaded = (image: HTMLImageElement, fileInfo: File) => {
     // convert the image to jpeg
     // in the future this could do more (resize etc)
     const context = canvas.current.getContext("2d");
@@ -89,7 +102,7 @@ export const FileInput = ({
     context.drawImage(image, 0, 0);
     canvas.current.toBlob(
       (blob) => {
-        const file = new File([blob], "converted.jpg", {
+        const file = new File([blob], `${fileInfo.name.split(".")[0]}.jpg`, {
           type: "application/octet-stream",
         });
         setFilePreview(URL.createObjectURL(file));
@@ -109,26 +122,35 @@ export const FileInput = ({
         participantAvatar: {
           conferenceCode,
           filename: file.name,
+          ...fileAttributes,
+        },
+      };
+    } else if (type === "proposal_material") {
+      input = {
+        proposalMaterial: {
+          conferenceCode,
+          filename: file.name,
+          ...fileAttributes,
         },
       };
     }
 
-    const { data, errors } = await uploadFile({
-      variables: {
-        input,
-      },
-    });
-
-    const response = data.uploadFile;
-
-    if (errors || response.__typename !== "FileUploadRequest") {
-      setError(getTranslatedMessage("fileInput.uploadFailed", language));
-      return;
-    }
-
-    const uploadUrl = response.uploadUrl;
-    const uploadFields = JSON.parse(response.fields);
     try {
+      const { data, errors } = await uploadFile({
+        variables: {
+          input,
+        },
+      });
+
+      const response = data.uploadFile;
+
+      if (errors || response.__typename !== "FileUploadRequest") {
+        setError(getTranslatedMessage("fileInput.uploadFailed", language));
+        return;
+      }
+
+      const uploadUrl = response.uploadUrl;
+      const uploadFields = JSON.parse(response.fields);
       const formData = new FormData();
       Object.keys(uploadFields).forEach((key) => {
         formData.append(key, uploadFields[key]);
@@ -154,9 +176,15 @@ export const FileInput = ({
         },
       });
 
-      baseOnChange(fileId);
+      baseOnChange(fileId, {
+        name: file.name,
+      });
     } catch (e) {
-      setError(getTranslatedMessage("fileInput.uploadFailed", language));
+      const baseMessage = getTranslatedMessage(
+        "fileInput.uploadFailed",
+        language,
+      );
+      setError(`${baseMessage}: ${e.message}`);
     } finally {
       setIsUploading(false);
     }
@@ -177,21 +205,27 @@ export const FileInput = ({
         errors={allErrors}
       />
 
-      <canvas ref={canvas} className="hidden" />
+      <Text size="label3">
+        {isUploading && <FormattedMessage id="fileInput.uploading" />}
+        {!isUploading && !showPreview && currentFileName && (
+          <FormattedMessage
+            id="fileInput.currentFile"
+            values={{
+              name: currentFileName,
+            }}
+          />
+        )}
+      </Text>
 
-      {isUploading && (
-        <Text color="blue" size="label3">
-          <FormattedMessage id="fileInput.uploading" />
-        </Text>
-      )}
-
-      {previewAvailable && (
+      {previewAvailable && showPreview && (
         <img
           className="h-52 mt-3"
           alt="Selection preview"
           src={previewAvailable}
         />
       )}
+
+      <canvas ref={canvas} className="hidden" />
     </div>
   );
 };

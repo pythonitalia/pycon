@@ -44,7 +44,7 @@ def ticket_id_to_hashid(ticket_id: strawberry.ID, conference_code: str) -> str |
     participant = ParticipantModel.objects.filter(
         conference=conference, user=attendee_user
     ).first()
-    return participant.hashid
+    return participant.hashid if participant else None
 
 
 # TODO: move this to a badge app :)

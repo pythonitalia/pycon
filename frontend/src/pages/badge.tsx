@@ -7,11 +7,13 @@ const cmToPx = (cm: number) => cm * (96 / 2.54);
 const CUT_SPACE_CM = 0.7;
 // 13 - 3
 const CUT_LINE_SIZE_CM = 0.3;
-const CUT_LINE_SIZE_2_CM = 0.07;
+const CUT_LINE_SIZE_2_CM = 0.02;
 
 export const CUT_LINE_SIZE_PX = cmToPx(CUT_LINE_SIZE_CM);
 export const CUT_LINE_SIZE_2_PX = cmToPx(CUT_LINE_SIZE_2_CM);
 
+// const BADGE_WIDTH_CM = 8;
+// const BADGE_HEIGHT_CM = 12;
 const BADGE_WIDTH_CM = 8;
 const BADGE_HEIGHT_CM = 12;
 
@@ -28,15 +30,19 @@ const BadgePage = () => {
   const [badgesData, setBadgesData] = useState([
     {
       side: "front",
+      role: "ATTENDEE",
     },
     {
       side: "back",
+      role: "ATTENDEE",
     },
     {
       side: "front",
+      role: "SPEAKER",
     },
     {
       side: "back",
+      role: "SPEAKER",
     },
   ]);
   useEffect(() => {

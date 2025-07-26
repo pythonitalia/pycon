@@ -5,6 +5,16 @@ from django.utils.translation import gettext_lazy as _
 from api.helpers.ids import encode_hashid
 from django.conf import settings
 
+from imagekit import ImageSpec
+from imagekit.processors import ResizeToFill
+from imagekit.cachefiles import ImageCacheFile
+
+
+class ParticipantThumbnail(ImageSpec):
+    processors = [ResizeToFill(200, 200)]
+    format = "JPEG"
+    options = {"quality": 60}
+
 
 class ParticipantQuerySet(ConferenceQuerySetMixin, models.QuerySet):
     pass
@@ -40,6 +50,7 @@ class Participant(models.Model):
         blank=True,
         related_name="participants",
     )
+
     bio = models.TextField(max_length=2048)
     website = models.URLField(max_length=2048, blank=True)
     twitter_handle = models.CharField(max_length=15, blank=True)
@@ -67,6 +78,18 @@ class Participant(models.Model):
     @property
     def photo_url(self):
         return self.photo_file.url if self.photo_file else self.photo
+
+    @property
+    def photo_small_url(self):
+        if not self.photo_file:
+            return None
+
+        image_generator = ImageCacheFile(
+            ParticipantThumbnail(source=self.photo_file.file)
+        )
+        image_generator.generate()
+
+        return image_generator.url
 
     def __str__(self) -> str:
         return f"Participant {self.user_id} for {self.conference}"
