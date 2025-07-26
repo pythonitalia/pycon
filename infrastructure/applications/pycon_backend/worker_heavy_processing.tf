@@ -34,7 +34,7 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
 
       mountPoints = [
         {
-          "containerPath" = "/mnt/pycon/"
+          "containerPath" = "/tmp/pycon/"
           "sourceVolume"  = "storage"
           "readOnly"      = false
         }
