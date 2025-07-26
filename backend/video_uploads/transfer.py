@@ -55,8 +55,6 @@ class WetransferProcessing:
         self.merged_file = None
 
     def run(self) -> list[str]:
-        os.makedirs("/tmp/pycon/", exist_ok=True)
-
         self.storage = storages["default"]
         self.s3_client = self._get_s3_client()
         self.download_link = self.get_download_link()
