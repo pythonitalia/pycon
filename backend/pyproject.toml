@@ -104,6 +104,7 @@ dependencies = [
     "weasyprint>=63.1",
     "opencv-python-headless>=4.10.0.84",
     "psycopg[c]>=3.2.3",
+    "django-colorfield>=0.13.0",
 ]
 name = "backend"
 version = "0.1.0"

@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     "modelcluster",
     "taggit",
     "wagtail_headless_preview",
+    "colorfield",
     # --
     "schedule.apps.ScheduleConfig",
     "custom_admin",
@@ -129,6 +130,7 @@ INSTALLED_APPS = [
     "billing.apps.BillingConfig",
     "privacy_policy.apps.PrivacyPolicyConfig",
     "visa.apps.VisaConfig",
+    "community.apps.CommunityConfig",
 ]
 
 MIDDLEWARE = [
