@@ -5,7 +5,9 @@ from api.cms.page.queries.cms_page import cms_page
 from api.cms.page.queries.cms_pages import cms_pages
 from api.cms.news.queries.news_articles import news_articles
 from api.cms.news.queries.news_article import news_article
+from api.cms.menu.queries.cms_menu import cms_menu
 
 CMSQuery = create_type(
-    "CMSQuery", fields=[cms_page, cms_pages, news_articles, news_article, page_preview]
+    "CMSQuery",
+    fields=[cms_page, cms_pages, news_articles, news_article, page_preview, cms_menu],
 )
