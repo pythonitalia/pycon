@@ -149,7 +149,7 @@ class Grant(TimeStampedModel):
         _("pending status"),
         choices=Status.choices,
         max_length=30,
-        default=Status.pending,
+        null=True,
         blank=True,
     )
     approved_type = models.CharField(
@@ -229,9 +229,6 @@ class Grant(TimeStampedModel):
         self._update_country_type()
         self._calculate_grant_amounts()
 
-        if self.pending_status == self._original_status:
-            self.pending_status = self.status
-
         update_fields = kwargs.get("update_fields", None)
         if update_fields:
             update_fields.append("total_amount")
@@ -249,7 +246,9 @@ class Grant(TimeStampedModel):
         self._original_status = self.status
 
     def _calculate_grant_amounts(self):
-        if self.pending_status != Grant.Status.approved:
+        # Use pending_status if set, otherwise use current status
+        effective_status = self.pending_status if self.pending_status is not None else self.status
+        if effective_status != Grant.Status.approved:
             return
 
         if (

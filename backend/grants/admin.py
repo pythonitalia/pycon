@@ -652,8 +652,8 @@ class GrantConfirmPendingStatusProxyAdmin(admin.ModelAdmin):
         return (
             super()
             .get_queryset(request)
-            .exclude(
-                pending_status=F("status"),
+            .filter(
+                pending_status__isnull=False,
             )
         )
 
