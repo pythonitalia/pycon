@@ -1,7 +1,7 @@
 # check=skip=SecretsUsedInArgOrEnv
 ARG FUNCTION_DIR="/home/app"
 
-FROM python:3.11-slim AS base
+FROM python:3.13.5-slim AS base
 
 ENV DJANGO_SETTINGS_MODULE=pycon.settings.prod \
     AWS_MEDIA_BUCKET=example \
