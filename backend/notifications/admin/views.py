@@ -15,8 +15,4 @@ def view_email_template(request, object_id):
 
 def view_sent_email(request, object_id):
     sent_email = cast(SentEmail, SentEmail.objects.get(id=object_id))
-    return HttpResponse(
-        sent_email.body_file.read().decode("utf-8")
-        if sent_email.body_file
-        else sent_email.body
-    )
+    return HttpResponse(sent_email.html_body_content)

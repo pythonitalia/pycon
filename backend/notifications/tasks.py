@@ -63,15 +63,8 @@ def send_pending_email(self, sent_email_id: int):
 def send_email(sent_email, email_backend_connection):
     logger.info(f"Sending sent_email_id={sent_email.id}")
 
-    if sent_email.body_file:
-        html_body = sent_email.body_file.read().decode("utf-8")
-    else:
-        html_body = sent_email.body
-
-    if sent_email.text_body_file:
-        text_body = sent_email.text_body_file.read().decode("utf-8")
-    else:
-        text_body = sent_email.text_body
+    html_body = sent_email.html_body_content
+    text_body = sent_email.text_body_content
 
     email_message = EmailMultiAlternatives(
         subject=sent_email.subject,

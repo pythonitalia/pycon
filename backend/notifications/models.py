@@ -384,6 +384,18 @@ class SentEmail(TimeStampedModel):
     def is_opened(self):
         return self.events.filter(event=SentEmailEvent.Event.opened).exists()
 
+    @property
+    def html_body_content(self):
+        if self.body_file:
+            return self.body_file.read().decode("utf-8")
+        return self.body
+
+    @property
+    def text_body_content(self):
+        if self.text_body_file:
+            return self.text_body_file.read().decode("utf-8")
+        return self.text_body
+
     def mark_as_sent(self, message_id: str):
         self.status = self.Status.sent
         self.sent_at = timezone.now()
