@@ -1606,7 +1606,7 @@ Per le richieste di lettera d'invito per il visto, si prega gentilmente di visit
     "schedule.invitation.replySentWithSuccess":
       "Grazie! La tua risposta è stata salvata",
     "schedule.invitation.currentReply": "Risposta attuale: {answer}",
-    "schedule.invitation.durationChanged": `⚠️ Purtroppo, a causa di vincoli di tempo, abbiamo dovuto ridurre la durata della tua presentazione da {originalDuration} minuti a {duration} minuti. Ci scusiamo per l'inconveniente.
+    "schedule.invitation.durationChanged": `⚠️ Purtroppo, a causa di vincoli di tempo, abbiamo dovuto modificare la durata della tua presentazione da {originalDuration} minuti a {duration} minuti. Ci scusiamo per l'inconveniente.
 Se questo nuovo orario non dovesse andare bene per te, per favore non esitare a farcelo sapere qui sotto. Faremo del nostro meglio per soddisfare le tue esigenze, ma tieni presente che a causa dei limiti di programmazione, potremmo non essere in grado di soddisfare tutte le richieste. Nel raro evento in cui non riusciamo a trovare un'alternativa, potremmo dover annullare la tua presentazione.`,
 
     "schedule.addToCalendar": "Aggiungi i tuoi preferiti al tuo calendario",
