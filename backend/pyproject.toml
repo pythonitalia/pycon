@@ -53,7 +53,7 @@ dependencies = [
     "idna==3.7",
     "requests==2.32.4",
     "urllib3==2.5.0",
-    "aniso8601==9.0.1",
+    "aniso8601==10.0.1",
     "whitenoise==6.7.0",
     "django-ordered-model==3.5",
     "uwsgi==2.0.30",
