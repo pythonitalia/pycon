@@ -83,7 +83,7 @@ dependencies = [
     "djangorestframework==3.15.2",
     "l18n<2022.0,>=2021.3",
     "wagtail==6.2.2",
-    "wagtail-localize==1.10",
+    "wagtail-localize==1.12.2",
     "celery==5.4.0",
     "wagtail-headless-preview==0.8.0",
     "Jinja2>=3.1.3",
