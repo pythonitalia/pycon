@@ -23,11 +23,11 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
       memoryReservation = 16384
       essential         = true
       entrypoint = [
-        "/home/app/.venv/bin/celery",
+        "/entrypoint.sh"
       ]
 
       command = [
-        "-A", "pycon", "worker", "-l", "info", "-Q", "heavy_processing", "--hostname", "heavyprocessing@%h", "-E"
+        "/home/app/.venv/bin/celery", "-A", "pycon", "worker", "-l", "info", "-Q", "heavy_processing", "--hostname", "heavyprocessing@%h", "-E"
       ]
 
       environment = local.env_vars
@@ -73,11 +73,6 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
   volume {
     name = "storage"
     configure_at_launch = true
-    docker_volume_configuration {
-      driver_opts = {
-        o = "uid=999,gid=999"
-      }
-    }
   }
 
   tags                     = {}
