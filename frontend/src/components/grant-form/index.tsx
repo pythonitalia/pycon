@@ -220,8 +220,8 @@ export const GrantForm = ({
         participantData.me.participant.website,
       );
       formState.setField(
-        "participantTwitterHandle",
-        participantData.me.participant.twitterHandle,
+        "participantMastodonHandle",
+        participantData.me.participant.mastodonHandle,
       );
       formState.setField(
         "participantInstagramHandle",
@@ -236,8 +236,8 @@ export const GrantForm = ({
         participantData.me.participant.facebookUrl,
       );
       formState.setField(
-        "participantMastodonHandle",
-        participantData.me.participant.mastodonHandle,
+        "participantTwitterHandle",
+        participantData.me.participant.twitterHandle,
       );
     }
   }, []);

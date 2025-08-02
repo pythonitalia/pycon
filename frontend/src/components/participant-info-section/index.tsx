@@ -58,12 +58,12 @@ export const ParticipantInfoSection = ({
               justifyContent="end"
               gap="medium"
             >
-              {participant?.twitterHandle && (
+              {participant?.mastodonHandle && (
                 <Link
                   target="_blank"
-                  href={`https://twitter.com/${participant.twitterHandle}`}
+                  href={convertMastodonHandle(participant.mastodonHandle)}
                 >
-                  <TwitterIcon className="w-6 h-6" />
+                  <MastodonIcon className="w-6 h-6" />
                 </Link>
               )}
 
@@ -73,15 +73,6 @@ export const ParticipantInfoSection = ({
                   href={`https://instagram.com/${participant.instagramHandle}`}
                 >
                   <InstagramIcon className="w-6 h-6" />
-                </Link>
-              )}
-
-              {participant?.mastodonHandle && (
-                <Link
-                  target="_blank"
-                  href={convertMastodonHandle(participant.mastodonHandle)}
-                >
-                  <MastodonIcon className="w-6 h-6" />
                 </Link>
               )}
 
@@ -100,6 +91,15 @@ export const ParticipantInfoSection = ({
               {participant?.website && (
                 <Link target="_blank" href={participant.website}>
                   <WebIcon className="w-6 h-6" />
+                </Link>
+              )}
+
+              {participant?.twitterHandle && (
+                <Link
+                  target="_blank"
+                  href={`https://twitter.com/${participant.twitterHandle}`}
+                >
+                  <TwitterIcon className="w-6 h-6" />
                 </Link>
               )}
             </HorizontalStack>

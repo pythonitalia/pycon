@@ -7,12 +7,9 @@ resource "aws_ecs_task_definition" "web" {
       image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
       memoryReservation = local.is_prod ? 400 : 10
       essential         = true
-      entrypoint = [
-        "/home/app/.venv/bin/gunicorn",
-      ]
 
       command = [
-        "-w", "5", "-b", "0.0.0.0:8000", "pycon.wsgi"
+        "/home/app/.venv/bin/gunicorn", "-w", "5", "-b", "0.0.0.0:8000", "pycon.wsgi"
       ]
 
       dockerLabels = {

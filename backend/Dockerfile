@@ -80,10 +80,8 @@ COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/_astro ${FUNCTION_DIR}
 COPY --chown=app:app --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
 
 COPY --chown=app:app . ${FUNCTION_DIR}
-
-USER app
+COPY ./entrypoint.sh /entrypoint.sh
 
 RUN mkdir -p assets && .venv/bin/python manage.py collectstatic --noinput
 
-ENTRYPOINT ["/home/app/.venv/bin/gunicorn"]
-CMD [ "pycon.wsgi" ]
+ENTRYPOINT ["/entrypoint.sh"]

@@ -218,12 +218,9 @@ resource "aws_ecs_task_definition" "worker" {
       image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
       memoryReservation = local.is_prod ? 200 : 10
       essential         = true
-      entrypoint = [
-        "/home/app/.venv/bin/celery",
-      ]
 
       command = [
-        "-A", "pycon", "worker", "-l", "info", "-E"
+        "/home/app/.venv/bin/celery", "-A", "pycon", "worker", "-l", "info", "-E"
       ]
 
       environment = local.env_vars
@@ -262,12 +259,9 @@ resource "aws_ecs_task_definition" "worker" {
       image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
       memoryReservation = local.is_prod ? 200 : 10
       essential         = false
-      entrypoint = [
-        "/home/app/.venv/bin/python",
-      ]
 
       command = [
-        "manage.py", "migrate"
+        "/home/app/.venv/bin/python", "manage.py", "migrate"
       ]
 
       environment = local.env_vars
@@ -316,12 +310,9 @@ resource "aws_ecs_task_definition" "beat" {
       image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
       memoryReservation = local.is_prod ? 200 : 10
       essential         = true
-      entrypoint = [
-        "/home/app/.venv/bin/celery",
-      ]
 
       command = [
-        "-A", "pycon", "beat", "-l", "info"
+        "/home/app/.venv/bin/celery", "-A", "pycon", "beat", "-l", "info"
       ]
 
       environment = local.env_vars
