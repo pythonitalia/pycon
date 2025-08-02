@@ -80,6 +80,7 @@ COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/_astro ${FUNCTION_DIR}
 COPY --chown=app:app --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
 
 COPY --chown=app:app . ${FUNCTION_DIR}
+COPY ./entrypoint.sh /entrypoint.sh
 
 RUN mkdir -p assets && .venv/bin/python manage.py collectstatic --noinput
 
