@@ -246,9 +246,7 @@ class Grant(TimeStampedModel):
         self._original_status = self.status
 
     def _calculate_grant_amounts(self):
-        # Use pending_status if set, otherwise use current status
-        effective_status = self.pending_status if self.pending_status is not None else self.status
-        if effective_status != Grant.Status.approved:
+        if self.effective_status != Grant.Status.approved:
             return
 
         if (
@@ -330,6 +328,11 @@ class Grant(TimeStampedModel):
             self.approved_type == Grant.ApprovedType.ticket_accommodation
             or self.approved_type == Grant.ApprovedType.ticket_travel_accommodation
         )
+
+    @property
+    def effective_status(self):
+        # If the grant is pending, use the pending status
+        return self.pending_status if self.pending_status is not None else self.status
 
 
 class GrantConfirmPendingStatusProxy(Grant):

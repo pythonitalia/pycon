@@ -485,6 +485,11 @@ def test_confirm_pending_status_action(rf):
     assert grant_1.status == Grant.Status.confirmed
     assert grant_2.status == Grant.Status.waiting_list
     assert grant_3.status == Grant.Status.waiting_list_maybe
+
+    assert grant_1.pending_status is None
+    assert grant_2.pending_status is None
+    assert grant_3.pending_status is None
+
     # Left out from the action
     assert grant_4.status == Grant.Status.waiting_list_maybe
 

@@ -254,7 +254,7 @@
               updateBottomBarUI();
           });
 
-          waitinglistInput.addEventListener("change", () => {
+          waitinglistmaybeInput.addEventListener("change", () => {
               grantData.status = "waiting_list_maybe";
               updateBottomBarUI();
           });
@@ -469,13 +469,13 @@
               <script>
                 grantsById[{{item.id}}] = {
                     id: {{item.id}},
-                    status: "{{ item.pending_status }}",
-                    originalStatus: "{{ item.pending_status }}",
+                    status: "{{ item.effective_status }}",
+                    originalStatus: "{{ item.effective_status }}",
                     numOfVotes: {{item.userreview_set.count}},
                 };
               </script>
               <tr
-                data-original-status="{{ item.pending_status }}"
+                data-original-status="{{ item.effective_status }}"
                 data-original-approved-type="{{ item.approved_type }}"
                 class="grant-item"
                 id="grant-{{ item.id }}"
@@ -612,7 +612,7 @@
                     {% for status in all_review_statuses %}
                     <li>
                       <label>
-                        <input {% if item.pending_status == status.0 %}checked{% endif %}
+                        <input {% if item.effective_status == status.0 %}checked{% endif %}
                           type="radio"
                           class="status-decision-radio"
                           name="decision-{{item.id}}"
@@ -641,7 +641,7 @@
                   {% if perms.reviews.decision_reviewsession %}
                   <ul
                     data-item-id="{{ item.id }}"
-                    class="approved-type-choices {% if item.pending_status != 'approved' %}hidden{% endif %}"
+                    class="approved-type-choices {% if item.effective_status != 'approved' %}hidden{% endif %}"
                   >
                     {% for approved_type in all_approved_types %}
                     <li>

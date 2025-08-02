@@ -60,6 +60,7 @@ def validate_single_conference_selection(func):
 def confirm_pending_status(modeladmin, request, queryset):
     queryset.update(
         status=F("pending_status"),
+        pending_status=None,
     )
 
 
