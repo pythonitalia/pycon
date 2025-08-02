@@ -22,12 +22,9 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
       image             = "${data.aws_ecr_repository.be_repo.repository_url}@${data.aws_ecr_image.be_arm_image.image_digest}"
       memoryReservation = 16384
       essential         = true
-      entrypoint = [
-        "/home/app/.venv/bin/celery",
-      ]
 
       command = [
-        "-A", "pycon", "worker", "-l", "info", "-Q", "heavy_processing", "--hostname", "heavyprocessing@%h", "-E"
+        "/home/app/.venv/bin/celery", "-A", "pycon", "worker", "-l", "info", "-Q", "heavy_processing", "--hostname", "heavyprocessing@%h", "-E"
       ]
 
       environment = local.env_vars
