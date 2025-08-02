@@ -67,5 +67,5 @@ def confirm_pending_status(modeladmin, request, queryset):
 @validate_single_conference_selection
 def reset_pending_status_back_to_status(modeladmin, request, queryset):
     queryset.update(
-        pending_status=F("status"),
+        pending_status=None,
     )
