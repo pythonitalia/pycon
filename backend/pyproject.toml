@@ -47,7 +47,7 @@ dependencies = [
     "django==5.1.4",
     "django-environ==0.10.0",
     "django-model-utils==5.0.0",
-    "django-timezone-field==7.0",
+    "django-timezone-field==7.1",
     "certifi==2024.7.4",
     "chardet==5.2.0",
     "idna==3.7",
