@@ -3,4 +3,4 @@
 echo "Fixing permissions"
 chown -R app:app /tmp
 
-su - app -c "$@"
+exec su - app -c "exec $*"
