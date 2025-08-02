@@ -1,3 +1,5 @@
+#!/bin/sh
+
 source /home/app/.venv/bin/activate
 
 echo "Fixing permissions"
