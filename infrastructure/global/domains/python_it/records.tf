@@ -206,6 +206,14 @@ resource "aws_route53_record" "pydataroma_python_it_cname" {
   ttl     = "3600"
 }
 
+resource "aws_route53_record" "venice_python_it_cname" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "venice.python.it"
+  type    = "CNAME"
+  records = ["pyvenice.github.io"]
+  ttl     = "3600"
+}
+
 resource "aws_route53_record" "testcommunity_cname" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "testcommunity.python.it"
