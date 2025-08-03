@@ -160,7 +160,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
         return mark_safe(
             f"""
-    <a href="{reverse('admin:reviews-start', kwargs={'review_session_id': obj.id})}">
+    <a href="{reverse("admin:reviews-start", kwargs={"review_session_id": obj.id})}">
         Go to review screen
     </a>
 """
@@ -176,7 +176,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
         return mark_safe(
             f"""
-    <a href="{reverse('admin:reviews-recap', kwargs={'review_session_id': obj.id})}">
+    <a href="{reverse("admin:reviews-recap", kwargs={"review_session_id": obj.id})}">
         Go to recap screen
     </a>
 """
@@ -282,7 +282,11 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
                 approved_type = approved_type_decisions.get(grant.id, "")
 
-                grant.pending_status = decision
+                if decision != grant.status:
+                    grant.pending_status = decision
+                elif decision == grant.status:
+                    grant.pending_status = None
+
                 grant.approved_type = (
                     approved_type if decision == Grant.Status.approved else None
                 )
@@ -736,7 +740,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             seen=request.GET.get("seen", "").split(","),
             existing_comment=existing_comment,
             review_session_repr=str(review_session),
-            title=f'Proposal Review: {proposal.title.localize("en")}',
+            title=f"Proposal Review: {proposal.title.localize('en')}",
         )
         return TemplateResponse(request, "proposal-review.html", context)
 
