@@ -469,13 +469,13 @@
               <script>
                 grantsById[{{item.id}}] = {
                     id: {{item.id}},
-                    status: "{{ item.effective_status }}",
-                    originalStatus: "{{ item.effective_status }}",
+                    status: "{{ item.current_or_pending_status }}",
+                    originalStatus: "{{ item.current_or_pending_status }}",
                     numOfVotes: {{item.userreview_set.count}},
                 };
               </script>
               <tr
-                data-original-status="{{ item.effective_status }}"
+                data-original-status="{{ item.current_or_pending_status }}"
                 data-original-approved-type="{{ item.approved_type }}"
                 class="grant-item"
                 id="grant-{{ item.id }}"
@@ -612,7 +612,7 @@
                     {% for status in all_review_statuses %}
                     <li>
                       <label>
-                        <input {% if item.effective_status == status.0 %}checked{% endif %}
+                        <input {% if item.current_or_pending_status == status.0 %}checked{% endif %}
                           type="radio"
                           class="status-decision-radio"
                           name="decision-{{item.id}}"
@@ -641,7 +641,7 @@
                   {% if perms.reviews.decision_reviewsession %}
                   <ul
                     data-item-id="{{ item.id }}"
-                    class="approved-type-choices {% if item.effective_status != 'approved' %}hidden{% endif %}"
+                    class="approved-type-choices {% if item.current_or_pending_status != 'approved' %}hidden{% endif %}"
                   >
                     {% for approved_type in all_approved_types %}
                     <li>

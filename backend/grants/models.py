@@ -246,7 +246,7 @@ class Grant(TimeStampedModel):
         self._original_status = self.status
 
     def _calculate_grant_amounts(self):
-        if self.effective_status != Grant.Status.approved:
+        if self.current_or_pending_status != Grant.Status.approved:
             return
 
         if (
@@ -330,7 +330,7 @@ class Grant(TimeStampedModel):
         )
 
     @property
-    def effective_status(self):
+    def current_or_pending_status(self):
         # If the grant is pending, use the pending status
         return self.pending_status if self.pending_status is not None else self.status
 
