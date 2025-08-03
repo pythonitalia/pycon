@@ -331,8 +331,7 @@ class Grant(TimeStampedModel):
 
     @property
     def current_or_pending_status(self):
-        # If the grant is pending, use the pending status
-        return self.pending_status if self.pending_status is not None else self.status
+        return self.pending_status or self.status
 
 
 class GrantConfirmPendingStatusProxy(Grant):
