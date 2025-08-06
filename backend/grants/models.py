@@ -333,6 +333,17 @@ class Grant(TimeStampedModel):
     def current_or_pending_status(self):
         return self.pending_status or self.status
 
+    def has_invitation_letter_request(self):
+        """Check if user has submitted an invitation letter request for this conference"""
+        if not self.user_id:
+            return False
+        
+        from visa.models import InvitationLetterRequest
+        return InvitationLetterRequest.objects.filter(
+            conference=self.conference,
+            requester=self.user
+        ).exists()
+
 
 class GrantConfirmPendingStatusProxy(Grant):
     class Meta:
