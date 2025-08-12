@@ -588,9 +588,11 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     @admin.display(description="📧", boolean=True)
     def has_invitation_letter_request_flag(self, obj: Grant) -> bool:
         """Display flag indicating if user has submitted an invitation letter request"""
-        return obj.has_invitation_letter_request()
+        return getattr(obj, 'has_invitation_letter_request', False)
 
     def get_queryset(self, request):
+        from visa.models import InvitationLetterRequest
+        
         qs = (
             super()
             .get_queryset(request)
@@ -612,6 +614,12 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                         OuterRef("conference_id"),
                     ).filter(
                         user_id=OuterRef("user_id"),
+                    )
+                ),
+                has_invitation_letter_request=Exists(
+                    InvitationLetterRequest.objects.filter(
+                        conference_id=OuterRef("conference_id"),
+                        requester_id=OuterRef("user_id"),
                     )
                 ),
             )
