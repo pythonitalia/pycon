@@ -33,7 +33,7 @@ def test_send_grant_reply_rejected_email():
         recipient=user,
         placeholders={
             "user_name": "Marco Acierno",
-            "conference_name": grant.conference.name.localize("en"),
+            "conference_name": grant.conference.name,
         },
     )
 
@@ -67,7 +67,7 @@ def test_send_grant_reply_waiting_list_email(settings):
         recipient=user,
         placeholders={
             "user_name": "Marco Acierno",
-            "conference_name": grant.conference.name.localize("en"),
+            "conference_name": grant.conference.name,
             "grants_update_deadline": "1 March 2023",
             "reply_url": "https://pycon.it/grants/reply/",
         },
@@ -101,7 +101,7 @@ def test_handle_grant_reply_sent_reminder(settings):
         recipient=user,
         placeholders={
             "user_name": "Marco Acierno",
-            "conference_name": grant.conference.name.localize("en"),
+            "conference_name": grant.conference.name,
             "start_date": "2 May",
             "end_date": "6 May",
             "deadline_date_time": "1 February 2023 23:59 UTC",
@@ -144,7 +144,7 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(settings):
         recipient=user,
         placeholders={
             "user_name": "Marco Acierno",
-            "conference_name": grant.conference.name.localize("en"),
+            "conference_name": grant.conference.name,
             "start_date": "2 May",
             "end_date": "6 May",
             "travel_amount": "680",
@@ -218,7 +218,7 @@ def test_handle_grant_approved_ticket_only_reply_sent(settings):
         recipient=user,
         placeholders={
             "user_name": "Marco Acierno",
-            "conference_name": grant.conference.name.localize("en"),
+            "conference_name": grant.conference.name,
             "start_date": "2 May",
             "end_date": "6 May",
             "deadline_date_time": "1 February 2023 23:59 UTC",
@@ -262,7 +262,7 @@ def test_handle_grant_approved_travel_reply_sent(settings):
         recipient=user,
         placeholders={
             "user_name": "Marco Acierno",
-            "conference_name": grant.conference.name.localize("en"),
+            "conference_name": grant.conference.name,
             "start_date": "2 May",
             "end_date": "6 May",
             "deadline_date_time": "1 February 2023 23:59 UTC",
@@ -295,7 +295,7 @@ def test_send_grant_reply_waiting_list_update_email(settings):
             "it": "Update Grants in Waiting List",
         },
     )
-    conference_name = grant.conference.name.localize("en")
+    conference_name = grant.conference.name
 
     with patch("grants.tasks.EmailTemplate") as mock_email_template:
         send_grant_reply_waiting_list_update_email(

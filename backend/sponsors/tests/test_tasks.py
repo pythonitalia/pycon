@@ -23,7 +23,7 @@ def test_send_sponsor_brochure_task():
         recipient_email=sponsor_lead.email,
         placeholders={
             "brochure_url": f"https://admin.pycon.it{view_brochure_path}?sig={signature}",
-            "conference_name": sponsor_lead.conference.name.localize("en"),
+            "conference_name": sponsor_lead.conference.name,
         },
     )
 

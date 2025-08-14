@@ -157,7 +157,7 @@ def _new_send_grant_email(
 ):
     conference = grant.conference
     user = grant.user
-    conference_name = grant.conference.name.localize("en")
+    conference_name = grant.conference.name
 
     email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
         template_identifier

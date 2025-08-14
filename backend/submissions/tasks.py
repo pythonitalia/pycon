@@ -69,7 +69,7 @@ def send_proposal_rejected_email(proposal_id):
 
     conference = proposal.conference
     language_code = proposal.languages.first().code
-    conference_name = proposal.conference.name.localize(language_code)
+    conference_name = proposal.conference.name
 
     email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
         EmailTemplateIdentifier.proposal_rejected
@@ -96,7 +96,7 @@ def send_proposal_in_waiting_list_email(proposal_id):
 
     conference = proposal.conference
     language_code = proposal.languages.first().code
-    conference_name = proposal.conference.name.localize(language_code)
+    conference_name = proposal.conference.name
 
     email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
         EmailTemplateIdentifier.proposal_in_waiting_list

@@ -149,7 +149,7 @@ class Keynote:
 class Conference:
     id: strawberry.ID
 
-    name: str = strawberry.field(resolver=make_localized_resolver("name"))
+    name: str
     introduction: str = strawberry.field(
         resolver=make_localized_resolver("introduction")
     )
