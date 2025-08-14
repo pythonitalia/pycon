@@ -75,7 +75,7 @@ dependencies = [
     "django-markdownify==0.9.5",
     "django-imagekit==5.0.0",
     "pillow==10.4.0",
-    "redis[hiredis]==5.0.2",
+    "redis[hiredis]==6.4.0",
     "google-api-python-client<3.0.0,>=2.94.0",
     "google-auth<3.0.0,>=2.22.0",
     "argon2-cffi<24.0.0,>=23.1.0",
