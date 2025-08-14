@@ -394,14 +394,14 @@
               <script>
                 submissionsById[{{ item.id }}] = {
                   id: {{ item.id }},
-                  status: "{{ item.pending_status }}",
-                  originalStatus: "{{ item.pending_status }}",
+                  status: "{{ item.current_or_pending_status }}",
+                  originalStatus: "{{ item.current_or_pending_status }}",
                   audienceLevel: {{ item.audience_level.id }},
                   languages: [{% for language in item.languages.all %}"{{language.code}}",{% endfor %}],
                   numOfVotes: {{item.userreview_set.count}},
                 };
               </script>
-              <tr class="proposal-item" id="submission-{{item.id}}" data-original-status="{{ item.pending_status }}">
+              <tr class="proposal-item" id="submission-{{item.id}}" data-original-status="{{ item.current_or_pending_status }}">
                 <td>{{forloop.counter}}</td>
                 <td class="results-title">
                   <a
