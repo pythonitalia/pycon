@@ -31,13 +31,14 @@ from grants.tasks import (
 from schedule.models import ScheduleItem
 from submissions.models import Submission
 from .models import Grant, GrantConfirmPendingStatusProxy
-from django.db.models import Exists, OuterRef, F
+from django.db.models import Exists, OuterRef
 from pretix import user_has_admission_ticket
 
 from django.contrib.admin import SimpleListFilter
 from participants.models import Participant
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from visa.models import InvitationLetterRequest
 
 logger = logging.getLogger(__name__)
 
@@ -402,6 +403,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "country",
         "is_proposed_speaker",
         "is_confirmed_speaker",
+        "has_invitation_letter_request_flag",
         "emoji_gender",
         "conference",
         "status",
@@ -584,6 +586,11 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     def has_voucher(self, obj: Grant) -> bool:
         return obj.has_voucher
 
+    @admin.display(description="📧", boolean=True)
+    def has_invitation_letter_request_flag(self, obj: Grant) -> bool:
+        """Display flag indicating if user has submitted an invitation letter request"""
+        return obj.has_invitation_letter_request
+
     def get_queryset(self, request):
         qs = (
             super()
@@ -606,6 +613,12 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                         OuterRef("conference_id"),
                     ).filter(
                         user_id=OuterRef("user_id"),
+                    )
+                ),
+                has_invitation_letter_request=Exists(
+                    InvitationLetterRequest.objects.filter(
+                        conference_id=OuterRef("conference_id"),
+                        requester_id=OuterRef("user_id"),
                     )
                 ),
             )
