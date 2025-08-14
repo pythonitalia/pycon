@@ -38,6 +38,7 @@ from django.contrib.admin import SimpleListFilter
 from participants.models import Participant
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from visa.models import InvitationLetterRequest
 
 logger = logging.getLogger(__name__)
 
@@ -591,8 +592,6 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         return obj.has_invitation_letter_request
 
     def get_queryset(self, request):
-        from visa.models import InvitationLetterRequest
-
         qs = (
             super()
             .get_queryset(request)
