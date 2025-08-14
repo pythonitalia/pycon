@@ -334,7 +334,6 @@ class Grant(TimeStampedModel):
         return self.pending_status or self.status
 
 
-
 class GrantConfirmPendingStatusProxy(Grant):
     class Meta:
         proxy = True

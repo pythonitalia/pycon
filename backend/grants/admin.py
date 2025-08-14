@@ -31,7 +31,7 @@ from grants.tasks import (
 from schedule.models import ScheduleItem
 from submissions.models import Submission
 from .models import Grant, GrantConfirmPendingStatusProxy
-from django.db.models import Exists, OuterRef, F
+from django.db.models import Exists, OuterRef
 from pretix import user_has_admission_ticket
 
 from django.contrib.admin import SimpleListFilter
@@ -588,11 +588,11 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     @admin.display(description="📧", boolean=True)
     def has_invitation_letter_request_flag(self, obj: Grant) -> bool:
         """Display flag indicating if user has submitted an invitation letter request"""
-        return getattr(obj, 'has_invitation_letter_request', False)
+        return obj.has_invitation_letter_request
 
     def get_queryset(self, request):
         from visa.models import InvitationLetterRequest
-        
+
         qs = (
             super()
             .get_queryset(request)
