@@ -425,7 +425,7 @@ class SubmissionConfirmPendingStatusProxyAdmin(admin.ModelAdmin):
             super()
             .get_queryset(request)
             .exclude(
-                pending_status=F("status"),
+                pending_status__isnull=True,
             )
         )
 
