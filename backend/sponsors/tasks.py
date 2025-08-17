@@ -24,7 +24,7 @@ def send_sponsor_brochure(sponsor_lead_id):
         recipient_email=sponsor_lead.email,
         placeholders={
             "brochure_url": brochure_url,
-            "conference_name": conference.name.localize("en"),
+            "conference_name": conference.name,
         },
     )
 

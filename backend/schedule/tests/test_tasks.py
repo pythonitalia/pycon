@@ -224,7 +224,7 @@ def test_send_speaker_communication_email_to_speakers_without_ticket(
             recipient=user,
             placeholders={
                 "user_name": "Marco Acierno",
-                "conference_name": conference.name.localize("en"),
+                "conference_name": conference.name,
                 "body": "test body",
                 "subject": "test subject",
             },
@@ -265,7 +265,7 @@ def test_send_speaker_communication_email_to_everyone(
         placeholders={
             "user_name": "Marco Acierno",
             "body": "test body",
-            "conference_name": conference.name.localize("en"),
+            "conference_name": conference.name,
             "subject": "test subject",
         },
     )

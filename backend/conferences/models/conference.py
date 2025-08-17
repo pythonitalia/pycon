@@ -6,7 +6,7 @@ from model_utils.models import TimeFramedModel, TimeStampedModel
 from timezone_field import TimeZoneField
 
 from helpers.models import GeoLocalizedModel
-from i18n.fields import I18nCharField, I18nTextField
+from i18n.fields import I18nTextField
 
 from .deadline import Deadline, DeadlineStatus
 
@@ -24,7 +24,7 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         null=True,
     )
 
-    name = I18nCharField(_("name"), max_length=100)
+    name = models.CharField(_("name"), max_length=100)
     code = models.CharField(_("code"), max_length=100, unique=True)
     timezone = TimeZoneField()
     logo = models.ImageField(_("logo"), upload_to=get_upload_to, blank=True)

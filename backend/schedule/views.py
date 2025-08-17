@@ -29,7 +29,7 @@ def user_schedule_item_favourites_calendar(request, conference_id, hash_user_id)
         .values_list("schedule_item_id", flat=True)
     )
 
-    conference_name = conference.name.localize("en")
+    conference_name = conference.name
     conference_code = conference.code
     conference_timezone = conference.timezone
 

@@ -130,7 +130,7 @@ def test_user_schedule_item_favourites_calendar(client):
     calendar = icalendar.Calendar.from_ical(response.content)
     assert (
         calendar.get("x-wr-calname")
-        == f"Your {conference.name.localize('en')}'s Schedule"
+        == f"Your {conference.name}'s Schedule"
     )
 
     assert len(calendar.subcomponents) == 2
@@ -148,7 +148,7 @@ def test_user_schedule_item_favourites_calendar(client):
 
     assert (
         event_schedule_item_1.get("summary")
-        == f"[{conference.name.localize('en')}] {schedule_item_1.title}"
+        == f"[{conference.name}] {schedule_item_1.title}"
     )
     assert event_schedule_item_1.get("location") == "Room Name"
     assert (
