@@ -403,7 +403,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "country",
         "is_proposed_speaker",
         "is_confirmed_speaker",
-        "has_invitation_letter_request_flag",
+        "has_sent_invitation_letter_request",
         "emoji_gender",
         "conference",
         "status",
@@ -586,10 +586,11 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     def has_voucher(self, obj: Grant) -> bool:
         return obj.has_voucher
 
-    @admin.display(description="📧", boolean=True)
-    def has_invitation_letter_request_flag(self, obj: Grant) -> bool:
-        """Display flag indicating if user has submitted an invitation letter request"""
-        return obj.has_invitation_letter_request
+    @admin.display(description="📧")
+    def has_sent_invitation_letter_request(self, obj: Grant) -> bool:
+        if obj.has_invitation_letter_request:
+            return "📧"
+        return ""
 
     def get_queryset(self, request):
         qs = (
