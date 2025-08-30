@@ -354,6 +354,7 @@ class Conference:
             for slot in day.slots.all()
             for item in slot.items.all()
             for speaker in item.speakers
+            if speaker
         ]
         info.context._participants_data = {
             participant.user_id: participant

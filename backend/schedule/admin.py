@@ -501,7 +501,7 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         return return_value
 
     def speakers_names(self, obj):
-        return ", ".join([speaker.display_name for speaker in obj.speakers])
+        return ", ".join([speaker.display_name for speaker in obj.speakers if speaker])
 
     def invitation_link(self, obj):
         return f"https://pycon.it/schedule/invitation/{obj.submission.hashid}"
