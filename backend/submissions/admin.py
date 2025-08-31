@@ -357,7 +357,7 @@ def apply_and_notify_status_change(modeladmin, request, queryset):
     for submission in objs:
         submission.status = submission.pending_status
         placeholders = {
-            "conference_name": conference.name.localize("en"),
+            "conference_name": conference.name,
             "proposal_title": submission.title.localize("en"),
             "proposal_type": submission.type.name,
             "speaker_name": get_name(submission.speaker, "there"),

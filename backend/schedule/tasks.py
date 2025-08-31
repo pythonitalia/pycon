@@ -44,7 +44,7 @@ def send_schedule_invitation_email(*, schedule_item_id, is_reminder):
     submission_title = submission.title.localize(language_code)
 
     speaker = User.objects.get(id=speaker_id)
-    conference_name = conference.name.localize("en")
+    conference_name = conference.name
 
     email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
         EmailTemplateIdentifier.proposal_scheduled
@@ -81,7 +81,7 @@ def send_submission_time_slot_changed_email(*, schedule_item_id):
 
     proposal_speaker = User.objects.get(id=speaker_id)
     conference = schedule_item.conference
-    conference_name = schedule_item.conference.name.localize("en")
+    conference_name = schedule_item.conference.name
 
     email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
         EmailTemplateIdentifier.proposal_scheduled_time_changed
@@ -188,7 +188,7 @@ def send_speaker_communication_email(
     email_template.send_email(
         recipient=user,
         placeholders={
-            "conference_name": conference.name.localize("en"),
+            "conference_name": conference.name,
             "user_name": get_name(user, "there"),
             "body": body.replace("\n", "<br />"),
             "subject": subject,

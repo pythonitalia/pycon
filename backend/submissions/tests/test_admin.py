@@ -114,7 +114,7 @@ def test_apply_and_notify_status_change(rf, mocker):
         email_template=proposal_accepted_template,
         conference=conference,
         placeholders={
-            "conference_name": conference.name.localize("en"),
+            "conference_name": conference.name,
             "proposal_title": accepted_submission.title.localize("en"),
             "proposal_type": accepted_submission.type.name,
             "speaker_name": "Marco",
@@ -126,7 +126,7 @@ def test_apply_and_notify_status_change(rf, mocker):
         email_template=proposal_rejected_template,
         conference=conference,
         placeholders={
-            "conference_name": conference.name.localize("en"),
+            "conference_name": conference.name,
             "proposal_title": rejected_submission.title.localize("en"),
             "proposal_type": rejected_submission.type.name,
             "speaker_name": "Jane",
@@ -138,7 +138,7 @@ def test_apply_and_notify_status_change(rf, mocker):
         email_template=proposal_in_waiting_list_template,
         conference=conference,
         placeholders={
-            "conference_name": conference.name.localize("en"),
+            "conference_name": conference.name,
             "proposal_title": waiting_list_proposal.title.localize("en"),
             "proposal_type": waiting_list_proposal.type.name,
             "speaker_name": "John",
