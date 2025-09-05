@@ -17,7 +17,10 @@ from grants.models import Grant
 pytestmark = pytest.mark.django_db
 
 
-def test_send_grant_reply_rejected_email():
+def test_send_grant_reply_rejected_email(sent_emails):
+    from notifications.tests.factories import EmailTemplateFactory
+    from notifications.models import EmailTemplateIdentifier
+    
     user = UserFactory(
         full_name="Marco Acierno",
         email="marco@placeholder.it",
@@ -25,20 +28,32 @@ def test_send_grant_reply_rejected_email():
         username="marco",
     )
     grant = GrantFactory(user=user)
-
-    with patch("grants.tasks.EmailTemplate") as mock_email_template:
-        send_grant_reply_rejected_email(grant_id=grant.id)
-
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient=user,
-        placeholders={
-            "user_name": "Marco Acierno",
-            "conference_name": grant.conference.name.localize("en"),
-        },
+    
+    EmailTemplateFactory(
+        conference=grant.conference,
+        identifier=EmailTemplateIdentifier.grant_reply_rejected,
     )
 
+    send_grant_reply_rejected_email(grant_id=grant.id)
 
-def test_send_grant_reply_waiting_list_email(settings):
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_reply_rejected
+    assert sent_email.email_template.conference == grant.conference
+    assert sent_email.recipient == user
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["user_name"] == "Marco Acierno"
+    assert sent_email.placeholders["conference_name"] == grant.conference.name.localize("en")
+
+
+def test_send_grant_reply_waiting_list_email(settings, sent_emails):
+    from notifications.tests.factories import EmailTemplateFactory
+    from notifications.models import EmailTemplateIdentifier
+    
     conference = ConferenceFactory()
 
     settings.FRONTEND_URL = "https://pycon.it"
@@ -59,22 +74,34 @@ def test_send_grant_reply_waiting_list_email(settings):
         },
     )
     grant = GrantFactory(conference=conference, user=user)
-
-    with patch("grants.tasks.EmailTemplate") as mock_email_template:
-        send_grant_reply_waiting_list_email(grant_id=grant.id)
-
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient=user,
-        placeholders={
-            "user_name": "Marco Acierno",
-            "conference_name": grant.conference.name.localize("en"),
-            "grants_update_deadline": "1 March 2023",
-            "reply_url": "https://pycon.it/grants/reply/",
-        },
+    
+    EmailTemplateFactory(
+        conference=grant.conference,
+        identifier=EmailTemplateIdentifier.grant_reply_waiting_list,
     )
 
+    send_grant_reply_waiting_list_email(grant_id=grant.id)
 
-def test_handle_grant_reply_sent_reminder(settings):
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_reply_waiting_list
+    assert sent_email.email_template.conference == grant.conference
+    assert sent_email.recipient == user
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["user_name"] == "Marco Acierno"
+    assert sent_email.placeholders["conference_name"] == grant.conference.name.localize("en")
+    assert sent_email.placeholders["grants_update_deadline"] == "1 March 2023"
+    assert sent_email.placeholders["reply_url"] == "https://pycon.it/grants/reply/"
+
+
+def test_handle_grant_reply_sent_reminder(settings, sent_emails):
+    from notifications.tests.factories import EmailTemplateFactory
+    from notifications.models import EmailTemplateIdentifier
+    
     settings.FRONTEND_URL = "https://pycon.it"
     conference = ConferenceFactory(
         start=datetime(2023, 5, 2, tzinfo=timezone.utc),
@@ -93,29 +120,41 @@ def test_handle_grant_reply_sent_reminder(settings):
         total_amount=680,
         user=user,
     )
-
-    with patch("grants.tasks.EmailTemplate") as mock_email_template:
-        send_grant_reply_approved_email(grant_id=grant.id, is_reminder=True)
-
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient=user,
-        placeholders={
-            "user_name": "Marco Acierno",
-            "conference_name": grant.conference.name.localize("en"),
-            "start_date": "2 May",
-            "end_date": "6 May",
-            "deadline_date_time": "1 February 2023 23:59 UTC",
-            "deadline_date": "1 February 2023",
-            "reply_url": "https://pycon.it/grants/reply/",
-            "visa_page_link": "https://pycon.it/visa",
-            "has_approved_travel": False,
-            "has_approved_accommodation": False,
-            "is_reminder": True,
-        },
+    
+    EmailTemplateFactory(
+        conference=grant.conference,
+        identifier=EmailTemplateIdentifier.grant_reply_approved,
     )
 
+    send_grant_reply_approved_email(grant_id=grant.id, is_reminder=True)
 
-def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(settings):
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_reply_approved
+    assert sent_email.email_template.conference == grant.conference
+    assert sent_email.recipient == user
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["user_name"] == "Marco Acierno"
+    assert sent_email.placeholders["conference_name"] == grant.conference.name.localize("en")
+    assert sent_email.placeholders["start_date"] == "2 May"
+    assert sent_email.placeholders["end_date"] == "6 May"
+    assert sent_email.placeholders["deadline_date_time"] == "1 February 2023 23:59 UTC"
+    assert sent_email.placeholders["deadline_date"] == "1 February 2023"
+    assert sent_email.placeholders["reply_url"] == "https://pycon.it/grants/reply/"
+    assert sent_email.placeholders["visa_page_link"] == "https://pycon.it/visa"
+    assert sent_email.placeholders["has_approved_travel"] == False
+    assert sent_email.placeholders["has_approved_accommodation"] == False
+    assert sent_email.placeholders["is_reminder"] == True
+
+
+def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(settings, sent_emails):
+    from notifications.tests.factories import EmailTemplateFactory
+    from notifications.models import EmailTemplateIdentifier
+    
     settings.FRONTEND_URL = "https://pycon.it"
 
     conference = ConferenceFactory(
@@ -136,27 +175,36 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(settings):
         travel_amount=680,
         user=user,
     )
-
-    with patch("grants.tasks.EmailTemplate") as mock_email_template:
-        send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
-
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient=user,
-        placeholders={
-            "user_name": "Marco Acierno",
-            "conference_name": grant.conference.name.localize("en"),
-            "start_date": "2 May",
-            "end_date": "6 May",
-            "travel_amount": "680",
-            "deadline_date_time": "1 February 2023 23:59 UTC",
-            "deadline_date": "1 February 2023",
-            "reply_url": "https://pycon.it/grants/reply/",
-            "visa_page_link": "https://pycon.it/visa",
-            "has_approved_travel": True,
-            "has_approved_accommodation": True,
-            "is_reminder": False,
-        },
+    
+    EmailTemplateFactory(
+        conference=grant.conference,
+        identifier=EmailTemplateIdentifier.grant_reply_approved,
     )
+
+    send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
+
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_reply_approved
+    assert sent_email.email_template.conference == grant.conference
+    assert sent_email.recipient == user
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["user_name"] == "Marco Acierno"
+    assert sent_email.placeholders["conference_name"] == grant.conference.name.localize("en")
+    assert sent_email.placeholders["start_date"] == "2 May"
+    assert sent_email.placeholders["end_date"] == "6 May"
+    assert sent_email.placeholders["travel_amount"] == "680"
+    assert sent_email.placeholders["deadline_date_time"] == "1 February 2023 23:59 UTC"
+    assert sent_email.placeholders["deadline_date"] == "1 February 2023"
+    assert sent_email.placeholders["reply_url"] == "https://pycon.it/grants/reply/"
+    assert sent_email.placeholders["visa_page_link"] == "https://pycon.it/visa"
+    assert sent_email.placeholders["has_approved_travel"] == True
+    assert sent_email.placeholders["has_approved_accommodation"] == True
+    assert sent_email.placeholders["is_reminder"] == False
 
 
 def test_handle_grant_approved_ticket_travel_accommodation_fails_with_no_amount(
@@ -189,7 +237,10 @@ def test_handle_grant_approved_ticket_travel_accommodation_fails_with_no_amount(
         send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
 
 
-def test_handle_grant_approved_ticket_only_reply_sent(settings):
+def test_handle_grant_approved_ticket_only_reply_sent(settings, sent_emails):
+    from notifications.tests.factories import EmailTemplateFactory
+    from notifications.models import EmailTemplateIdentifier
+    
     settings.FRONTEND_URL = "https://pycon.it"
 
     conference = ConferenceFactory(
@@ -210,29 +261,41 @@ def test_handle_grant_approved_ticket_only_reply_sent(settings):
         total_amount=680,
         user=user,
     )
-
-    with patch("grants.tasks.EmailTemplate") as mock_email_template:
-        send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
-
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient=user,
-        placeholders={
-            "user_name": "Marco Acierno",
-            "conference_name": grant.conference.name.localize("en"),
-            "start_date": "2 May",
-            "end_date": "6 May",
-            "deadline_date_time": "1 February 2023 23:59 UTC",
-            "deadline_date": "1 February 2023",
-            "reply_url": "https://pycon.it/grants/reply/",
-            "visa_page_link": "https://pycon.it/visa",
-            "has_approved_travel": False,
-            "has_approved_accommodation": False,
-            "is_reminder": False,
-        },
+    
+    EmailTemplateFactory(
+        conference=grant.conference,
+        identifier=EmailTemplateIdentifier.grant_reply_approved,
     )
 
+    send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
 
-def test_handle_grant_approved_travel_reply_sent(settings):
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_reply_approved
+    assert sent_email.email_template.conference == grant.conference
+    assert sent_email.recipient == user
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["user_name"] == "Marco Acierno"
+    assert sent_email.placeholders["conference_name"] == grant.conference.name.localize("en")
+    assert sent_email.placeholders["start_date"] == "2 May"
+    assert sent_email.placeholders["end_date"] == "6 May"
+    assert sent_email.placeholders["deadline_date_time"] == "1 February 2023 23:59 UTC"
+    assert sent_email.placeholders["deadline_date"] == "1 February 2023"
+    assert sent_email.placeholders["reply_url"] == "https://pycon.it/grants/reply/"
+    assert sent_email.placeholders["visa_page_link"] == "https://pycon.it/visa"
+    assert sent_email.placeholders["has_approved_travel"] == False
+    assert sent_email.placeholders["has_approved_accommodation"] == False
+    assert sent_email.placeholders["is_reminder"] == False
+
+
+def test_handle_grant_approved_travel_reply_sent(settings, sent_emails):
+    from notifications.tests.factories import EmailTemplateFactory
+    from notifications.models import EmailTemplateIdentifier
+    
     settings.FRONTEND_URL = "https://pycon.it"
 
     conference = ConferenceFactory(
@@ -254,30 +317,42 @@ def test_handle_grant_approved_travel_reply_sent(settings):
         travel_amount=400,
         user=user,
     )
-
-    with patch("grants.tasks.EmailTemplate") as mock_email_template:
-        send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
-
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient=user,
-        placeholders={
-            "user_name": "Marco Acierno",
-            "conference_name": grant.conference.name.localize("en"),
-            "start_date": "2 May",
-            "end_date": "6 May",
-            "deadline_date_time": "1 February 2023 23:59 UTC",
-            "deadline_date": "1 February 2023",
-            "reply_url": "https://pycon.it/grants/reply/",
-            "visa_page_link": "https://pycon.it/visa",
-            "has_approved_travel": True,
-            "has_approved_accommodation": False,
-            "travel_amount": "400",
-            "is_reminder": False,
-        },
+    
+    EmailTemplateFactory(
+        conference=grant.conference,
+        identifier=EmailTemplateIdentifier.grant_reply_approved,
     )
 
+    send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
 
-def test_send_grant_reply_waiting_list_update_email(settings):
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_reply_approved
+    assert sent_email.email_template.conference == grant.conference
+    assert sent_email.recipient == user
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["user_name"] == "Marco Acierno"
+    assert sent_email.placeholders["conference_name"] == grant.conference.name.localize("en")
+    assert sent_email.placeholders["start_date"] == "2 May"
+    assert sent_email.placeholders["end_date"] == "6 May"
+    assert sent_email.placeholders["deadline_date_time"] == "1 February 2023 23:59 UTC"
+    assert sent_email.placeholders["deadline_date"] == "1 February 2023"
+    assert sent_email.placeholders["reply_url"] == "https://pycon.it/grants/reply/"
+    assert sent_email.placeholders["visa_page_link"] == "https://pycon.it/visa"
+    assert sent_email.placeholders["has_approved_travel"] == True
+    assert sent_email.placeholders["has_approved_accommodation"] == False
+    assert sent_email.placeholders["travel_amount"] == "400"
+    assert sent_email.placeholders["is_reminder"] == False
+
+
+def test_send_grant_reply_waiting_list_update_email(settings, sent_emails):
+    from notifications.tests.factories import EmailTemplateFactory
+    from notifications.models import EmailTemplateIdentifier
+    
     settings.FRONTEND_URL = "https://pycon.it"
     user = UserFactory(
         full_name="Marco Acierno",
@@ -296,18 +371,27 @@ def test_send_grant_reply_waiting_list_update_email(settings):
         },
     )
     conference_name = grant.conference.name.localize("en")
-
-    with patch("grants.tasks.EmailTemplate") as mock_email_template:
-        send_grant_reply_waiting_list_update_email(
-            grant_id=grant.id,
-        )
-
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient=user,
-        placeholders={
-            "user_name": "Marco Acierno",
-            "conference_name": conference_name,
-            "grants_update_deadline": "1 March 2023",
-            "reply_url": "https://pycon.it/grants/reply/",
-        },
+    
+    EmailTemplateFactory(
+        conference=grant.conference,
+        identifier=EmailTemplateIdentifier.grant_reply_waiting_list_update,
     )
+
+    send_grant_reply_waiting_list_update_email(
+        grant_id=grant.id,
+    )
+
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_reply_waiting_list_update
+    assert sent_email.email_template.conference == grant.conference
+    assert sent_email.recipient == user
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["user_name"] == "Marco Acierno"
+    assert sent_email.placeholders["conference_name"] == conference_name
+    assert sent_email.placeholders["grants_update_deadline"] == "1 March 2023"
+    assert sent_email.placeholders["reply_url"] == "https://pycon.it/grants/reply/"
