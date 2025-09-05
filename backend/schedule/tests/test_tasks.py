@@ -147,7 +147,7 @@ def test_send_submission_time_slot_changed_email(sent_emails):
     
     EmailTemplateFactory(
         conference=schedule_item.conference,
-        identifier=EmailTemplateIdentifier.proposal_time_slot_changed,
+        identifier=EmailTemplateIdentifier.proposal_scheduled_time_changed,
     )
 
     send_submission_time_slot_changed_email(schedule_item_id=schedule_item.id)
@@ -157,7 +157,7 @@ def test_send_submission_time_slot_changed_email(sent_emails):
     assert emails_sent.count() == 1
     
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.proposal_time_slot_changed
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.proposal_scheduled_time_changed
     assert sent_email.email_template.conference == schedule_item.conference
     assert sent_email.recipient == schedule_item.submission.speaker
     

@@ -31,7 +31,7 @@ def test_send_grant_reply_rejected_email(sent_emails):
     
     EmailTemplateFactory(
         conference=grant.conference,
-        identifier=EmailTemplateIdentifier.grant_reply_rejected,
+        identifier=EmailTemplateIdentifier.grant_rejected,
     )
 
     send_grant_reply_rejected_email(grant_id=grant.id)
@@ -41,7 +41,7 @@ def test_send_grant_reply_rejected_email(sent_emails):
     assert emails_sent.count() == 1
     
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_reply_rejected
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_rejected
     assert sent_email.email_template.conference == grant.conference
     assert sent_email.recipient == user
     
@@ -77,7 +77,7 @@ def test_send_grant_reply_waiting_list_email(settings, sent_emails):
     
     EmailTemplateFactory(
         conference=grant.conference,
-        identifier=EmailTemplateIdentifier.grant_reply_waiting_list,
+        identifier=EmailTemplateIdentifier.grant_waiting_list,
     )
 
     send_grant_reply_waiting_list_email(grant_id=grant.id)
@@ -87,7 +87,7 @@ def test_send_grant_reply_waiting_list_email(settings, sent_emails):
     assert emails_sent.count() == 1
     
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_reply_waiting_list
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_waiting_list
     assert sent_email.email_template.conference == grant.conference
     assert sent_email.recipient == user
     
@@ -123,7 +123,7 @@ def test_handle_grant_reply_sent_reminder(settings, sent_emails):
     
     EmailTemplateFactory(
         conference=grant.conference,
-        identifier=EmailTemplateIdentifier.grant_reply_approved,
+        identifier=EmailTemplateIdentifier.grant_approved,
     )
 
     send_grant_reply_approved_email(grant_id=grant.id, is_reminder=True)
@@ -133,7 +133,7 @@ def test_handle_grant_reply_sent_reminder(settings, sent_emails):
     assert emails_sent.count() == 1
     
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_reply_approved
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_approved
     assert sent_email.email_template.conference == grant.conference
     assert sent_email.recipient == user
     
@@ -178,7 +178,7 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(settings, 
     
     EmailTemplateFactory(
         conference=grant.conference,
-        identifier=EmailTemplateIdentifier.grant_reply_approved,
+        identifier=EmailTemplateIdentifier.grant_approved,
     )
 
     send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
@@ -188,7 +188,7 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(settings, 
     assert emails_sent.count() == 1
     
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_reply_approved
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_approved
     assert sent_email.email_template.conference == grant.conference
     assert sent_email.recipient == user
     
@@ -264,7 +264,7 @@ def test_handle_grant_approved_ticket_only_reply_sent(settings, sent_emails):
     
     EmailTemplateFactory(
         conference=grant.conference,
-        identifier=EmailTemplateIdentifier.grant_reply_approved,
+        identifier=EmailTemplateIdentifier.grant_approved,
     )
 
     send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
@@ -274,7 +274,7 @@ def test_handle_grant_approved_ticket_only_reply_sent(settings, sent_emails):
     assert emails_sent.count() == 1
     
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_reply_approved
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_approved
     assert sent_email.email_template.conference == grant.conference
     assert sent_email.recipient == user
     
@@ -320,7 +320,7 @@ def test_handle_grant_approved_travel_reply_sent(settings, sent_emails):
     
     EmailTemplateFactory(
         conference=grant.conference,
-        identifier=EmailTemplateIdentifier.grant_reply_approved,
+        identifier=EmailTemplateIdentifier.grant_approved,
     )
 
     send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
@@ -330,7 +330,7 @@ def test_handle_grant_approved_travel_reply_sent(settings, sent_emails):
     assert emails_sent.count() == 1
     
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_reply_approved
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_approved
     assert sent_email.email_template.conference == grant.conference
     assert sent_email.recipient == user
     
@@ -374,7 +374,7 @@ def test_send_grant_reply_waiting_list_update_email(settings, sent_emails):
     
     EmailTemplateFactory(
         conference=grant.conference,
-        identifier=EmailTemplateIdentifier.grant_reply_waiting_list_update,
+        identifier=EmailTemplateIdentifier.grant_waiting_list_update,
     )
 
     send_grant_reply_waiting_list_update_email(
@@ -386,7 +386,7 @@ def test_send_grant_reply_waiting_list_update_email(settings, sent_emails):
     assert emails_sent.count() == 1
     
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_reply_waiting_list_update
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_waiting_list_update
     assert sent_email.email_template.conference == grant.conference
     assert sent_email.recipient == user
     

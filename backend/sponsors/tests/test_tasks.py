@@ -16,7 +16,7 @@ def test_send_sponsor_brochure_task(sent_emails):
     
     EmailTemplateFactory(
         conference=sponsor_lead.conference,
-        identifier=EmailTemplateIdentifier.sponsor_brochure,
+        identifier=EmailTemplateIdentifier.sponsorship_brochure,
     )
 
     signer = Signer()
@@ -31,7 +31,7 @@ def test_send_sponsor_brochure_task(sent_emails):
     assert emails_sent.count() == 1
     
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.sponsor_brochure
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.sponsorship_brochure
     assert sent_email.email_template.conference == sponsor_lead.conference
     assert sent_email.recipient_email == sponsor_lead.email
     
