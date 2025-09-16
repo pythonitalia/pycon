@@ -83,7 +83,7 @@
     "postcss": "^8.4.35",
     "tailwindcss": "^3.3.5",
     "tailwindcss-blend-mode": "^1.0.0",
-    "ts-jest": "^27.0.4",
+    "ts-jest": "^29.4.2",
     "typescript": "^5.5.4"
   },
   "pnpm": {
