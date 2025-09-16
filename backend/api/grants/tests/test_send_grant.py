@@ -91,8 +91,7 @@ def _send_grant(client, conference, conference_code=None, **kwargs):
     return response
 
 
-def test_send_grant(graphql_client, user, mocker, django_capture_on_commit_callbacks):
-    mock_email_template = mocker.patch("api.grants.mutations.EmailTemplate")
+def test_send_grant(graphql_client, user, mocker, django_capture_on_commit_callbacks, sent_emails):
     graphql_client.force_login(user)
     conference = ConferenceFactory(active_grants=True)
     EmailTemplateFactory(
@@ -118,13 +117,18 @@ def test_send_grant(graphql_client, user, mocker, django_capture_on_commit_callb
         user=user, conference=conference, privacy_policy="grant"
     ).exists()
 
-    # An email is sent to the user
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient=user,
-        placeholders={
-            "user_name": user.full_name,
-        },
-    )
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_application_confirmation
+    assert sent_email.email_template.conference == conference
+    assert sent_email.recipient == user
+    assert sent_email.recipient_email == user.email
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["user_name"] == user.full_name
 
 
 def test_cannot_send_a_grant_if_grants_are_closed(graphql_client, user, mocker):

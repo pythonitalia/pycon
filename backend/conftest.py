@@ -116,3 +116,21 @@ def mock_has_ticket(requests_mock, settings):
         requests_mock.add_matcher(matcher)
 
     return wrapper
+
+
+@pytest.fixture
+def sent_emails(db):
+    """
+    Fixture to capture and provide access to SentEmail objects created during tests.
+    This fixture allows tests to verify email template usage and email creation
+    without mocking the EmailTemplate class.
+    
+    Returns:
+        A callable that returns a QuerySet of SentEmail objects created during the test.
+    """
+    from notifications.models import SentEmail
+    
+    def get_sent_emails():
+        return SentEmail.objects.all()
+    
+    return get_sent_emails

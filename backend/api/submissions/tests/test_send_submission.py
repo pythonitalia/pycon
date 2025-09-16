@@ -141,10 +141,9 @@ def _submit_proposal(client, conference, submission, **kwargs):
 
 
 def test_submit_talk(
-    graphql_client, user, django_capture_on_commit_callbacks, mocker, settings
+    graphql_client, user, django_capture_on_commit_callbacks, mocker, settings, sent_emails
 ):
     settings.FRONTEND_URL = "http://testserver"
-    mock_email_template = mocker.patch("api.submissions.mutations.EmailTemplate")
     mock_notify = mocker.patch("api.submissions.mutations.notify_new_cfp_submission")
     graphql_client.force_login(user)
 
@@ -219,14 +218,20 @@ def test_submit_talk(
 
     mock_notify.delay.assert_called_once()
 
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient=user,
-        placeholders={
-            "user_name": user.full_name,
-            "proposal_title": "English",
-            "proposal_url": f"http://testserver/submission/{talk.hashid}",
-        },
-    )
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.proposal_received_confirmation
+    assert sent_email.email_template.conference == conference
+    assert sent_email.recipient == user
+    assert sent_email.recipient_email == user.email
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["user_name"] == user.full_name
+    assert sent_email.placeholders["proposal_title"] == "English"
+    assert sent_email.placeholders["proposal_url"] == f"http://testserver/submission/{talk.hashid}"
 
 
 def test_submit_talk_with_photo_to_upload(graphql_client, user, mocker):

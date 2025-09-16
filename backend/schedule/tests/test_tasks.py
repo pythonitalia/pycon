@@ -41,7 +41,7 @@ pytestmark = pytest.mark.django_db
 
 
 @override_settings(FRONTEND_URL="https://frontend/")
-def test_send_schedule_invitation_email():
+def test_send_schedule_invitation_email(sent_emails):
     user = UserFactory(
         full_name="Marco Acierno",
         email="marco@placeholder.it",
@@ -61,29 +61,26 @@ def test_send_schedule_invitation_email():
     )
     EmailTemplateFactory(identifier=EmailTemplateIdentifier.proposal_scheduled)
 
-    with patch("schedule.tasks.EmailTemplate") as mock_email_template:
-        send_schedule_invitation_email(
-            schedule_item_id=schedule_item.id,
-            is_reminder=False,
-        )
-
-    mock_email_template.objects.for_conference.assert_called_once_with(
-        schedule_item.conference
-    )
-    mock_email_template.objects.for_conference().get_by_identifier.assert_called_once_with(
-        EmailTemplateIdentifier.proposal_scheduled
+    send_schedule_invitation_email(
+        schedule_item_id=schedule_item.id,
+        is_reminder=False,
     )
 
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient=user,
-        placeholders={
-            "proposal_title": "Title Submission",
-            "conference_name": "Conf",
-            "invitation_url": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
-            "speaker_name": "Marco Acierno",
-            "is_reminder": False,
-        },
-    )
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.proposal_scheduled
+    assert sent_email.email_template.conference == schedule_item.conference
+    assert sent_email.recipient == user
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["proposal_title"] == "Title Submission"
+    assert sent_email.placeholders["conference_name"] == "Conf"
+    assert sent_email.placeholders["invitation_url"] == f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}"
+    assert sent_email.placeholders["speaker_name"] == "Marco Acierno"
+    assert sent_email.placeholders["is_reminder"] == False
 
     schedule_item.refresh_from_db()
 
@@ -91,7 +88,7 @@ def test_send_schedule_invitation_email():
 
 
 @override_settings(FRONTEND_URL="https://frontend/")
-def test_send_schedule_invitation_email_reminder():
+def test_send_schedule_invitation_email_reminder(sent_emails):
     user = UserFactory(
         full_name="Marco Acierno",
         email="marco@placeholder.it",
@@ -111,26 +108,30 @@ def test_send_schedule_invitation_email_reminder():
     )
     EmailTemplateFactory(identifier=EmailTemplateIdentifier.proposal_scheduled)
 
-    with patch("schedule.tasks.EmailTemplate.send_email") as email_mock:
-        send_schedule_invitation_email(
-            schedule_item_id=schedule_item.id,
-            is_reminder=True,
-        )
-
-    email_mock.assert_called_once_with(
-        recipient=user,
-        placeholders={
-            "proposal_title": "Title Submission",
-            "conference_name": "Conf",
-            "invitation_url": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
-            "speaker_name": "Marco Acierno",
-            "is_reminder": True,
-        },
+    send_schedule_invitation_email(
+        schedule_item_id=schedule_item.id,
+        is_reminder=True,
     )
+
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.proposal_scheduled
+    assert sent_email.email_template.conference == schedule_item.conference
+    assert sent_email.recipient == user
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["proposal_title"] == "Title Submission"
+    assert sent_email.placeholders["conference_name"] == "Conf"
+    assert sent_email.placeholders["invitation_url"] == f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}"
+    assert sent_email.placeholders["speaker_name"] == "Marco Acierno"
+    assert sent_email.placeholders["is_reminder"] == True
 
 
 @override_settings(FRONTEND_URL="https://frontend/")
-def test_send_submission_time_slot_changed_email():
+def test_send_submission_time_slot_changed_email(sent_emails):
     user = UserFactory(
         full_name="Marco Acierno",
         email="marco@placeholder.it",
@@ -143,19 +144,28 @@ def test_send_submission_time_slot_changed_email():
         conference__name=LazyI18nString({"en": "Conf"}),
         type=ScheduleItem.TYPES.talk,
     )
-
-    with patch("schedule.tasks.EmailTemplate") as mock_email_template:
-        send_submission_time_slot_changed_email(schedule_item_id=schedule_item.id)
-
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient=schedule_item.submission.speaker,
-        placeholders={
-            "proposal_title": "Title Submission",
-            "speaker_name": "Marco Acierno",
-            "invitation_url": f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}",
-            "conference_name": "Conf",
-        },
+    
+    EmailTemplateFactory(
+        conference=schedule_item.conference,
+        identifier=EmailTemplateIdentifier.proposal_scheduled_time_changed,
     )
+
+    send_submission_time_slot_changed_email(schedule_item_id=schedule_item.id)
+
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.proposal_scheduled_time_changed
+    assert sent_email.email_template.conference == schedule_item.conference
+    assert sent_email.recipient == schedule_item.submission.speaker
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["proposal_title"] == "Title Submission"
+    assert sent_email.placeholders["speaker_name"] == "Marco Acierno"
+    assert sent_email.placeholders["invitation_url"] == f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}"
+    assert sent_email.placeholders["conference_name"] == "Conf"
 
 
 @pytest.mark.parametrize(
@@ -194,7 +204,7 @@ def test_notify_new_schedule_invitation_answer_slack(status):
 @override_settings(SPEAKERS_EMAIL_ADDRESS="reply")
 @pytest.mark.parametrize("has_ticket", [True, False])
 def test_send_speaker_communication_email_to_speakers_without_ticket(
-    requests_mock, has_ticket, settings
+    requests_mock, has_ticket, settings, sent_emails
 ):
     conference = ConferenceFactory()
 
@@ -204,39 +214,49 @@ def test_send_speaker_communication_email_to_speakers_without_ticket(
         name="Marco",
         username="marco",
     )
+    
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.speaker_communication,
+    )
 
     requests_mock.post(
         f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": has_ticket},
     )
 
-    with patch("schedule.tasks.EmailTemplate") as mock_email_template:
-        send_speaker_communication_email(
-            subject="test subject",
-            body="test body",
-            user_id=user.id,
-            conference_id=conference.id,
-            only_speakers_without_ticket=True,
-        )
+    send_speaker_communication_email(
+        subject="test subject",
+        body="test body",
+        user_id=user.id,
+        conference_id=conference.id,
+        only_speakers_without_ticket=True,
+    )
 
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    
     if not has_ticket:
-        mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-            recipient=user,
-            placeholders={
-                "user_name": "Marco Acierno",
-                "conference_name": conference.name.localize("en"),
-                "body": "test body",
-                "subject": "test subject",
-            },
-        )
+        assert emails_sent.count() == 1
+        
+        sent_email = emails_sent.first()
+        assert sent_email.email_template.identifier == EmailTemplateIdentifier.speaker_communication
+        assert sent_email.email_template.conference == conference
+        assert sent_email.recipient == user
+        
+        # Verify placeholders were processed correctly
+        assert sent_email.placeholders["user_name"] == "Marco Acierno"
+        assert sent_email.placeholders["conference_name"] == conference.name.localize("en")
+        assert sent_email.placeholders["body"] == "test body"
+        assert sent_email.placeholders["subject"] == "test subject"
     else:
-        mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_not_called()
+        assert emails_sent.count() == 0
 
 
 @override_settings(SPEAKERS_EMAIL_ADDRESS="reply")
 @pytest.mark.parametrize("has_ticket", [True, False])
 def test_send_speaker_communication_email_to_everyone(
-    settings, requests_mock, has_ticket
+    settings, requests_mock, has_ticket, sent_emails
 ):
     user = UserFactory(
         full_name="Marco Acierno",
@@ -245,30 +265,39 @@ def test_send_speaker_communication_email_to_everyone(
         username="marco",
     )
     conference = ConferenceFactory()
+    
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.speaker_communication,
+    )
 
     requests_mock.post(
         f"{settings.PRETIX_API}organizers/{conference.pretix_organizer_id}/events/{conference.pretix_event_id}/tickets/attendee-has-ticket/",
         json={"user_has_admission_ticket": has_ticket},
     )
 
-    with patch("schedule.tasks.EmailTemplate") as mock_email_template:
-        send_speaker_communication_email(
-            subject="test subject",
-            body="test body",
-            user_id=user.id,
-            conference_id=conference.id,
-            only_speakers_without_ticket=False,
-        )
-
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient=user,
-        placeholders={
-            "user_name": "Marco Acierno",
-            "body": "test body",
-            "conference_name": conference.name.localize("en"),
-            "subject": "test subject",
-        },
+    send_speaker_communication_email(
+        subject="test subject",
+        body="test body",
+        user_id=user.id,
+        conference_id=conference.id,
+        only_speakers_without_ticket=False,
     )
+
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.speaker_communication
+    assert sent_email.email_template.conference == conference
+    assert sent_email.recipient == user
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["user_name"] == "Marco Acierno"
+    assert sent_email.placeholders["body"] == "test body"
+    assert sent_email.placeholders["conference_name"] == conference.name.localize("en")
+    assert sent_email.placeholders["subject"] == "test subject"
 
 
 @override_settings(PLAIN_API="https://example.org/plain")

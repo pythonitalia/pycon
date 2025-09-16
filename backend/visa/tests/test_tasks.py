@@ -383,38 +383,42 @@ def test_notify_new_invitation_letter_request_on_slack(mocker):
     assert kwargs["channel_id"] == "S123"
 
 
-def test_send_invitation_letter_via_email():
+def test_send_invitation_letter_via_email(sent_emails):
+    from notifications.tests.factories import EmailTemplateFactory
+    
     invitation_letter_request = InvitationLetterRequestFactory(
         requester__full_name="Marco",
     )
-
-    with patch("visa.tasks.EmailTemplate") as mock_email_template:
-        send_invitation_letter_via_email(
-            invitation_letter_request_id=invitation_letter_request.id
-        )
-
-    mock_email_template.objects.for_conference.assert_called_once_with(
-        invitation_letter_request.conference
-    )
-    mock_email_template.objects.for_conference().get_by_identifier.assert_called_once_with(
-        EmailTemplateIdentifier.visa_invitation_letter_download
+    
+    EmailTemplateFactory(
+        conference=invitation_letter_request.conference,
+        identifier=EmailTemplateIdentifier.visa_invitation_letter_download,
     )
 
+    send_invitation_letter_via_email(
+        invitation_letter_request_id=invitation_letter_request.id
+    )
+
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.visa_invitation_letter_download
+    assert sent_email.email_template.conference == invitation_letter_request.conference
+    assert sent_email.recipient_email == invitation_letter_request.email
+    
     signer = Signer()
     url_path = reverse(
         "download-invitation-letter", args=[invitation_letter_request.id]
     )
     signed_url = signer.sign(url_path)
     signature = signed_url.split(signer.sep)[-1]
-
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient_email=invitation_letter_request.email,
-        placeholders={
-            "invitation_letter_download_url": f"https://admin.pycon.it{url_path}?sig={signature}",
-            "has_grant": False,
-            "user_name": "Marco",
-        },
-    )
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["invitation_letter_download_url"] == f"https://admin.pycon.it{url_path}?sig={signature}"
+    assert sent_email.placeholders["has_grant"] == False
+    assert sent_email.placeholders["user_name"] == "Marco"
 
     invitation_letter_request.refresh_from_db()
 
