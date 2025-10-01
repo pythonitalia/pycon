@@ -1,0 +1,20 @@
+{% comment %}
+Score selector component for reviews
+Usage: {% include 'reviews/components/score_selector.html' with available_scores=available_scores current_score=user_review.score %}
+{% endcomment %}
+
+<div class="form-group">
+    <label for="id_score"><strong>Score:</strong></label>
+    <div class="review-score-options">
+        {% for score in available_scores %}
+        <div class="review-score-option {% if current_score and current_score.id == score.id %}selected{% endif %}"
+             data-score-id="{{ score.id }}"
+             title="{{ score.label }}">
+            <strong>{{ score.numeric_value }}</strong><br>
+            <small>{{ score.label }}</small>
+        </div>
+        {% endfor %}
+    </div>
+    <input type="hidden" name="score" id="id_score"
+           {% if current_score %}value="{{ current_score.id }}"{% endif %} required>
+</div>
