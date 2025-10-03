@@ -132,6 +132,7 @@ def _update_submission(
                     validationSpeakerInstagramHandle: speakerInstagramHandle
                     validationSpeakerLinkedinUrl: speakerLinkedinUrl
                     validationSpeakerFacebookUrl: speakerFacebookUrl
+                    validationSpeakerMastodonHandle: speakerMastodonHandle
                     validationMaterials: materials {
                         fileId
                         url
@@ -920,6 +921,61 @@ def test_update_submission_with_invalid_linkedin_social_url(graphql_client, user
     assert response["data"]["updateSubmission"]["errors"][
         "validationSpeakerLinkedinUrl"
     ] == ["Linkedin URL should be a linkedin.com link"]
+
+
+def test_update_submission_with_invalid_mastodon_handle(graphql_client, user):
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("it", "en"),
+        durations=("10", "20"),
+        active_cfp=True,
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["it"],
+        tags=["python", "ml"],
+        conference=conference,
+        speaker_level=Submission.SPEAKER_LEVELS.intermediate,
+        previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
+    )
+
+    graphql_client.force_login(user)
+
+    new_topic = conference.topics.filter(name="diy").first()
+    new_audience = conference.audience_levels.filter(name="senior").first()
+    new_tag = SubmissionTagFactory(name="yello")
+    new_duration = conference.durations.filter(name="20m").first()
+    new_type = conference.submission_types.filter(name="workshop").first()
+
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_topic=new_topic,
+        new_audience=new_audience,
+        new_tag=new_tag,
+        new_duration=new_duration,
+        new_type=new_type,
+        new_speaker_level=Submission.SPEAKER_LEVELS.experienced,
+        new_previous_talk_video="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        new_short_social_summary="test",
+        new_speaker_mastodon_handle="justusername",
+    )
+
+    submission.refresh_from_db()
+
+    assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert response["data"]["updateSubmission"]["errors"][
+        "validationSpeakerMastodonHandle"
+    ] == [
+        "Mastodon handle should be in format: username@instance.social or @username@instance.social or https://instance.social/@username"
+    ]
 
 
 def test_update_submission_with_photo_to_upload(
