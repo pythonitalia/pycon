@@ -109,6 +109,17 @@ def test_apply_and_notify_status_change(rf, mocker):
         queryset=Submission.objects.filter(status=Submission.STATUS.proposed),
     )
 
+    accepted_submission.refresh_from_db()
+    rejected_submission.refresh_from_db()
+    waiting_list_proposal.refresh_from_db()
+
+    assert accepted_submission.status == Submission.STATUS.accepted
+    assert accepted_submission.pending_status is None
+    assert rejected_submission.status == Submission.STATUS.rejected
+    assert rejected_submission.pending_status is None
+    assert waiting_list_proposal.status == Submission.STATUS.waiting_list
+    assert waiting_list_proposal.pending_status is None
+
     assert SentEmail.objects.filter(
         recipient=accepted_submission.speaker,
         email_template=proposal_accepted_template,
