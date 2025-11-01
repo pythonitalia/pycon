@@ -101,9 +101,11 @@ def create_languages(db):
     from languages.languages import LANGUAGES
 
     for language in LANGUAGES:
-        Language.objects.create(name=language["English"], code=language["alpha2"])
+        Language.objects.get_or_create(
+            name=language["English"], code=language["alpha2"]
+        )
 
-    Locale.objects.create(
+    Locale.objects.get_or_create(
         language_code=get_supported_content_language_variant(settings.LANGUAGE_CODE),
     )
 
