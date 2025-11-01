@@ -84,6 +84,9 @@ export function PricingPage({
   }[];
   benefits: { name: string; category: string }[];
 }) {
+  const filteredLevels = levels.filter(
+    (level) => Number.parseFloat(level.price) > 0,
+  );
   console.log(benefits);
   const benefitsByCategory = benefits.reduce(
     (acc, benefit) => {
@@ -149,11 +152,11 @@ export function PricingPage({
           <div
             className="border-[4px] grid gap-0 border-black w-full text-[12px]"
             style={{
-              gridTemplateColumns: `auto repeat(${levels.length}, 2.1cm)`,
+              gridTemplateColumns: `auto repeat(${filteredLevels.length}, 2.1cm)`,
             }}
           >
             <div className="border-b-[4px] bg-cream" />
-            {levels.map((p, i) => (
+            {filteredLevels.map((p, i) => (
               <th
                 className={clsx(
                   "py-[0.5cm] w-[2.1cm] text-center border-l uppercase border-b-[4px]",
@@ -166,10 +169,13 @@ export function PricingPage({
             ))}
             {i === 0 && (
               <>
-                <TableSection title="Pricing" totalPackages={levels.length} />
+                <TableSection
+                  title="Pricing"
+                  totalPackages={filteredLevels.length}
+                />
                 <TableBenefit
                   title="Package price (VAT not included)"
-                  values={levels.map(
+                  values={filteredLevels.map(
                     (p) =>
                       `${moneyFormatter.format(Number.parseFloat(p.price))}`,
                   )}
@@ -177,11 +183,11 @@ export function PricingPage({
 
                 <TableSection
                   title="Availability"
-                  totalPackages={levels.length}
+                  totalPackages={filteredLevels.length}
                 />
                 <TableBenefit
                   title="Number of slots available"
-                  values={levels.map(
+                  values={filteredLevels.map(
                     (p) => `${p.slots === 0 ? "Unlimited" : p.slots}`,
                   )}
                 />
@@ -193,13 +199,13 @@ export function PricingPage({
                 <>
                   <TableSection
                     title={category}
-                    totalPackages={levels.length}
+                    totalPackages={filteredLevels.length}
                     key={category}
                   />
                   {benefits.map((benefit) => (
                     <TableBenefit
                       title={benefit.name}
-                      values={levels.map((p) => {
+                      values={filteredLevels.map((p) => {
                         const levelBenefit = getBenefitForLevel(benefit, p);
                         return levelBenefit ? levelBenefit.value : "-";
                       })}
