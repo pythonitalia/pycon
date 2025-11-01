@@ -103,7 +103,7 @@ dependencies = [
     "ipython>=8.30.0",
     "weasyprint>=63.1",
     "opencv-python-headless>=4.10.0.84",
-    "psycopg[c]>=3.2.3",
+    "psycopg[c]==3.2.12",
 ]
 name = "backend"
 version = "0.1.0"

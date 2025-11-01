@@ -8,24 +8,36 @@ from sponsors.tests.factories import SponsorLeadFactory
 pytestmark = pytest.mark.django_db
 
 
-def test_send_sponsor_brochure_task():
+def test_send_sponsor_brochure_task(sent_emails):
+    from notifications.tests.factories import EmailTemplateFactory
+    from notifications.models import EmailTemplateIdentifier
+    
     sponsor_lead = SponsorLeadFactory()
+    
+    EmailTemplateFactory(
+        conference=sponsor_lead.conference,
+        identifier=EmailTemplateIdentifier.sponsorship_brochure,
+    )
 
     signer = Signer()
     view_brochure_path = reverse("view-brochure", args=[sponsor_lead.id])
     signed_url = signer.sign(view_brochure_path)
     signature = signed_url.split(signer.sep)[-1]
 
-    with patch("sponsors.tasks.EmailTemplate") as mock_email_template:
-        send_sponsor_brochure(sponsor_lead.id)
+    send_sponsor_brochure(sponsor_lead.id)
 
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient_email=sponsor_lead.email,
-        placeholders={
-            "brochure_url": f"https://admin.pycon.it{view_brochure_path}?sig={signature}",
-            "conference_name": sponsor_lead.conference.name.localize("en"),
-        },
-    )
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.sponsorship_brochure
+    assert sent_email.email_template.conference == sponsor_lead.conference
+    assert sent_email.recipient_email == sponsor_lead.email
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["brochure_url"] == f"https://admin.pycon.it{view_brochure_path}?sig={signature}"
+    assert sent_email.placeholders["conference_name"] == sponsor_lead.conference.name.localize("en")
 
 
 def test_notify_new_sponsor_lead_via_slack(mocker):
