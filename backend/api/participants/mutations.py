@@ -13,6 +13,9 @@ from typing import Annotated, Union
 
 FACEBOOK_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?facebook\.com\/")
 LINKEDIN_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?linkedin\.com\/")
+MASTODON_HANDLE_MATCH = re.compile(
+    r"^(https?:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}\/@[a-zA-Z0-9_]+|@?[a-zA-Z0-9_]+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,})$"
+)
 
 
 @strawberry.type
@@ -75,6 +78,14 @@ class UpdateParticipantInput:
         if self.facebook_url and not FACEBOOK_LINK_MATCH.match(self.facebook_url):
             errors.add_error(
                 "facebook_url", "Facebook URL should be a facebook.com link"
+            )
+
+        if self.mastodon_handle and not MASTODON_HANDLE_MATCH.match(
+            self.mastodon_handle
+        ):
+            errors.add_error(
+                "mastodon_handle",
+                "Mastodon handle should be in format: username@instance.social or @username@instance.social or https://instance.social/@username",
             )
 
         return errors.if_has_errors

@@ -2,6 +2,7 @@ from dataclasses import asdict
 from enum import Enum
 from typing import Annotated, Union, Optional
 from participants.models import Participant
+import re
 
 from privacy_policy.record import record_privacy_policy_acceptance
 import strawberry
@@ -23,6 +24,12 @@ from grants.models import Grant as GrantModel
 from users.models import User
 from grants.tasks import get_name
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
+
+FACEBOOK_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?facebook\.com\/")
+LINKEDIN_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?linkedin\.com\/")
+MASTODON_HANDLE_MATCH = re.compile(
+    r"^(https?:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}\/@[a-zA-Z0-9_]+|@?[a-zA-Z0-9_]+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,})$"
+)
 
 
 @strawberry.type
@@ -100,6 +107,29 @@ class BaseGrantInput:
             if not value:
                 errors.add_error(field, f"{field}: Cannot be empty")
                 continue
+
+        # Validate social media fields
+        if self.participant_linkedin_url and not LINKEDIN_LINK_MATCH.match(
+            self.participant_linkedin_url
+        ):
+            errors.add_error(
+                "participant_linkedin_url", "Linkedin URL should be a linkedin.com link"
+            )
+
+        if self.participant_facebook_url and not FACEBOOK_LINK_MATCH.match(
+            self.participant_facebook_url
+        ):
+            errors.add_error(
+                "participant_facebook_url", "Facebook URL should be a facebook.com link"
+            )
+
+        if self.participant_mastodon_handle and not MASTODON_HANDLE_MATCH.match(
+            self.participant_mastodon_handle
+        ):
+            errors.add_error(
+                "participant_mastodon_handle",
+                "Mastodon handle should be in format: username@instance.social or @username@instance.social or https://instance.social/@username",
+            )
 
         return errors
 
