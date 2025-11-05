@@ -44,7 +44,7 @@ known-first-party = [
 [project]
 requires-python = ">=3.13.5"
 dependencies = [
-    "django==5.2.7",
+    "django==5.2.8",
     "django-environ==0.10.0",
     "django-model-utils==5.0.0",
     "django-timezone-field==7.0",
