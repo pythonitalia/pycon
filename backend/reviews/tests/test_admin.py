@@ -1,7 +1,13 @@
-from conferences.tests.factories import ConferenceFactory
-from django.contrib.admin import AdminSite
-from grants.tests.factories import GrantFactory
+from decimal import Decimal
+
 import pytest
+from django.contrib.admin import AdminSite
+
+from conferences.tests.factories import ConferenceFactory
+from grants.models import Grant, GrantReimbursement, GrantReimbursementCategory
+from grants.tests.factories import GrantFactory
+from reviews.admin import ReviewSessionAdmin, get_next_to_review_item_id
+from reviews.models import ReviewSession
 from reviews.tests.factories import (
     AvailableScoreOptionFactory,
     ReviewSessionFactory,
@@ -9,9 +15,6 @@ from reviews.tests.factories import (
 )
 from submissions.tests.factories import SubmissionFactory, SubmissionTagFactory
 from users.tests.factories import UserFactory
-
-from reviews.admin import ReviewSessionAdmin, get_next_to_review_item_id
-from reviews.models import ReviewSession
 
 pytestmark = pytest.mark.django_db
 
@@ -269,3 +272,241 @@ def test_review_start_view(rf, mocker):
         response.url
         == f"/admin/reviews/reviewsession/{review_session.id}/review/{submission_1.id}/"
     )
+
+
+def test_save_review_grants_updates_grant_and_creates_reimbursements(rf, mocker):
+    mock_messages = mocker.patch("reviews.admin.messages")
+
+    user = UserFactory(is_staff=True, is_superuser=True)
+    conference = ConferenceFactory()
+
+    # Create reimbursement categories
+    travel_category = GrantReimbursementCategory.objects.create(
+        conference=conference,
+        category=GrantReimbursementCategory.Category.TRAVEL,
+        name="Travel",
+        max_amount=Decimal("500"),
+        included_by_default=False,
+    )
+    ticket_category = GrantReimbursementCategory.objects.create(
+        conference=conference,
+        category=GrantReimbursementCategory.Category.TICKET,
+        name="Ticket",
+        max_amount=Decimal("100"),
+        included_by_default=True,
+    )
+    accommodation_category = GrantReimbursementCategory.objects.create(
+        conference=conference,
+        category=GrantReimbursementCategory.Category.ACCOMMODATION,
+        name="Accommodation",
+        max_amount=Decimal("200"),
+        included_by_default=False,
+    )
+
+    # Create review session for grants
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.GRANTS,
+        status=ReviewSession.Status.COMPLETED,
+    )
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=0)
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+
+    # Create grants with initial status
+    grant_1 = GrantFactory(conference=conference, status=Grant.Status.pending)
+    grant_2 = GrantFactory(conference=conference, status=Grant.Status.pending)
+
+    # Build POST data
+    # Note: The current admin code uses data.items() which only keeps the last value
+    # when multiple checkboxes have the same name. For multiple categories, the code
+    # would need to use request.POST.getlist(). Testing with one category per grant.
+    post_data = {
+        f"decision-{grant_1.id}": Grant.Status.approved,
+        f"reimbursementcategory-{grant_1.id}": [str(ticket_category.id), str(travel_category.id)],
+        f"decision-{grant_2.id}": Grant.Status.approved,
+        f"reimbursementcategory-{grant_2.id}": [str(ticket_category.id), str(travel_category.id),str(accommodation_category.id),]
+    }
+
+    request = rf.post("/", data=post_data)
+    request.user = user
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    response = admin._review_grants_recap_view(request, review_session)
+
+    # Should redirect after successful save
+    assert response.status_code == 302
+    assert (
+        response.url
+        == f"/admin/reviews/reviewsession/{review_session.id}/review/recap/"
+    )
+
+    # Refresh grants from database
+    grant_1.refresh_from_db()
+    grant_2.refresh_from_db()
+
+    # Verify grants were updated with pending_status
+    assert grant_1.pending_status == Grant.Status.approved
+    assert grant_2.pending_status == Grant.Status.approved
+
+    # Verify GrantReimbursement objects were created
+    assert grant_1.reimbursements.count() == 2
+    assert { reimbursement.category for reimbursement in grant_1.reimbursements.all() } == { ticket_category, travel_category }
+
+    assert grant_2.reimbursements.count() == 3
+    assert { reimbursement.category for reimbursement in grant_2.reimbursements.all() } == { ticket_category, travel_category, accommodation_category }
+
+    mock_messages.success.assert_called_once()
+
+
+def test_save_review_grants_update_grants_status_to_rejected_removes_reimbursements(rf, mocker):
+    mock_messages = mocker.patch("reviews.admin.messages")
+
+    user = UserFactory(is_staff=True, is_superuser=True)
+    conference = ConferenceFactory()
+
+    # Create reimbursement categories
+    travel_category = GrantReimbursementCategory.objects.create(
+        conference=conference,
+        category=GrantReimbursementCategory.Category.TRAVEL,
+        name="Travel",
+        max_amount=Decimal("500"),
+        included_by_default=False,
+    )
+    ticket_category = GrantReimbursementCategory.objects.create(
+        conference=conference,
+        category=GrantReimbursementCategory.Category.TICKET,
+        name="Ticket",
+        max_amount=Decimal("100"),
+        included_by_default=True,
+    )
+    accommodation_category = GrantReimbursementCategory.objects.create(
+        conference=conference,
+        category=GrantReimbursementCategory.Category.ACCOMMODATION,
+        name="Accommodation",
+        max_amount=Decimal("200"),
+        included_by_default=False,
+    )
+
+    # Create review session for grants
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.GRANTS,
+        status=ReviewSession.Status.COMPLETED,
+    )
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=0)
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+
+    # Create grants with initial status
+    grant_1 = GrantFactory(conference=conference, status=Grant.Status.approved)
+    GrantReimbursement.objects.create(
+        grant=grant_1,
+        category=travel_category,
+        granted_amount=Decimal("500"),
+    )
+    GrantReimbursement.objects.create(
+        grant=grant_1,
+        category=ticket_category,
+        granted_amount=Decimal("100"),
+    )
+    GrantReimbursement.objects.create(
+        grant=grant_1,
+        category=accommodation_category,
+        granted_amount=Decimal("200"),
+    )
+
+    # Build POST data
+    post_data = {
+        f"decision-{grant_1.id}": Grant.Status.rejected,
+        f"reimbursementcategory-{grant_1.id}": [],
+    }
+
+    request = rf.post("/", data=post_data)
+    request.user = user
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    response = admin._review_grants_recap_view(request, review_session)
+
+    # Should redirect after successful save
+    assert response.status_code == 302
+    assert (
+        response.url
+        == f"/admin/reviews/reviewsession/{review_session.id}/review/recap/"
+    )
+    grant_1.refresh_from_db()
+
+    assert grant_1.pending_status == Grant.Status.rejected
+
+    assert grant_1.reimbursements.count() == 0
+
+def test_save_review_grants_modify_reimbursements(rf, mocker):
+    mock_messages = mocker.patch("reviews.admin.messages")
+
+    user = UserFactory(is_staff=True, is_superuser=True)
+    conference = ConferenceFactory()
+
+    # Create reimbursement categories
+    travel_category = GrantReimbursementCategory.objects.create(
+        conference=conference,
+        category=GrantReimbursementCategory.Category.TRAVEL,
+        name="Travel",
+        max_amount=Decimal("500"),
+        included_by_default=False,
+    )
+    ticket_category = GrantReimbursementCategory.objects.create(
+        conference=conference,
+        category=GrantReimbursementCategory.Category.TICKET,
+        name="Ticket",
+        max_amount=Decimal("100"),
+        included_by_default=True,
+    )
+    accommodation_category = GrantReimbursementCategory.objects.create(
+        conference=conference,
+        category=GrantReimbursementCategory.Category.ACCOMMODATION,
+        name="Accommodation",
+        max_amount=Decimal("200"),
+        included_by_default=False,
+    )
+
+    # Create review session for grants
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.GRANTS,
+        status=ReviewSession.Status.COMPLETED,
+    )
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=0)
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+
+    # Create grants with initial status
+    grant_1 = GrantFactory(conference=conference, status=Grant.Status.approved)
+    GrantReimbursement.objects.create(
+        grant=grant_1,
+        category=travel_category,
+        granted_amount=Decimal("500"),
+    )
+    GrantReimbursement.objects.create(
+        grant=grant_1,
+        category=ticket_category,
+        granted_amount=Decimal("100"),
+    )
+    GrantReimbursement.objects.create(
+        grant=grant_1,
+        category=accommodation_category,
+        granted_amount=Decimal("200"),
+    )
+
+    # Removing the travel and accommodation reimbursements
+    post_data = {
+        f"decision-{grant_1.id}": Grant.Status.approved,
+        f"reimbursementcategory-{grant_1.id}": [str(ticket_category.id)],
+    }
+
+    request = rf.post("/", data=post_data)
+    request.user = user
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    response = admin._review_grants_recap_view(request, review_session)
+
+    grant_1.refresh_from_db()
+
+    assert grant_1.reimbursements.count() == 1
+    assert { reimbursement.category for reimbursement in grant_1.reimbursements.all() } == { ticket_category }

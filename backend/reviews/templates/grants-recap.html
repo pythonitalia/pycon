@@ -643,21 +643,19 @@
                     data-item-id="{{ item.id }}"
                     class="approved-type-choices {% if item.current_or_pending_status != 'approved' %}hidden{% endif %}"
                   >
-                    {% for approved_type in all_approved_types %}
+                    {% for reimbursement_category in all_reimbursement_categories %}
                     <li>
                       <label>
-                        <input {% if item.approved_type == approved_type.0 %}checked{% endif %}
-                          type="radio" name="approvedtype-{{item.id}}" value="{{approved_type.0}}" />
-                        {{approved_type.1}}
+                        <input {% if reimbursement_category.id in item.approved_reimbursement_category_ids %}
+                            checked
+                          {% elif item.approved_reimbursement_category_ids|length == 0 and reimbursement_category.included_by_default %}
+                            checked
+                          {% endif %}
+                          type="checkbox" name="reimbursementcategory-{{item.id}}" value="{{reimbursement_category.id}}" />
+                        {{reimbursement_category.name}}
                       </label>
                     </li>
                     {% endfor %}
-                    <li>
-                      <label>
-                        <input class="unset-radio" type="radio" name="approvedtype-{{item.id}}" value="unset" />
-                          Unset
-                      </label>
-                    </li>
                   </ul>
                   {% else %} No permission to change. {% endif %}
                 </td>
