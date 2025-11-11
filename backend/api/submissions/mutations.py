@@ -28,6 +28,9 @@ from .types import Submission, SubmissionMaterialInput
 
 FACEBOOK_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?facebook\.com\/")
 LINKEDIN_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?linkedin\.com\/")
+MASTODON_HANDLE_MATCH = re.compile(
+    r"^(https?:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}\/@[a-zA-Z0-9_]+|@?[a-zA-Z0-9_]+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,})$"
+)
 
 
 @strawberry.type
@@ -195,6 +198,14 @@ class BaseSubmissionInput:
         ):
             errors.add_error(
                 "speaker_facebook_url", "Facebook URL should be a facebook.com link"
+            )
+
+        if self.speaker_mastodon_handle and not MASTODON_HANDLE_MATCH.match(
+            self.speaker_mastodon_handle
+        ):
+            errors.add_error(
+                "speaker_mastodon_handle",
+                "Mastodon handle should be in format: username@instance.social or @username@instance.social or https://instance.social/@username",
             )
 
         return errors
