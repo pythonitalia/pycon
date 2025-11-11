@@ -28,8 +28,8 @@ export const SocialsSection = ({ hashtag, label }: Props) => {
             hoverColor="green"
             socials={[
               {
-                icon: "twitter",
-                link: "https://twitter.com/pyconit",
+                icon: "mastodon",
+                link: "https://social.python.it/@pycon",
                 rel: "me",
               },
               {
@@ -48,8 +48,8 @@ export const SocialsSection = ({ hashtag, label }: Props) => {
                 rel: "me",
               },
               {
-                icon: "mastodon",
-                link: "https://social.python.it/@pycon",
+                icon: "twitter",
+                link: "https://twitter.com/pyconit",
                 rel: "me",
               },
             ]}

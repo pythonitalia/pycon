@@ -26,9 +26,27 @@ def test_slug_is_not_regenerated_when_changing_title():
     assert submission.slug == "ciao"
 
 
-def test_syncs_pending_status_when_changing_status():
+def test_current_or_pending_status_returns_pending_if_set():
     submission = SubmissionFactory(
-        status=Submission.STATUS.accepted,
+        status=Submission.STATUS.proposed,
+        pending_status=Submission.STATUS.accepted,
+    )
+
+    assert submission.current_or_pending_status == Submission.STATUS.accepted
+
+
+def test_current_or_pending_status_returns_current_if_pending_none():
+    submission = SubmissionFactory(
+        status=Submission.STATUS.rejected,
+        pending_status=None,
+    )
+
+    assert submission.current_or_pending_status == Submission.STATUS.rejected
+
+
+def test_pending_status_not_automatically_synced():
+    submission = SubmissionFactory(
+        status=Submission.STATUS.proposed,
         pending_status=Submission.STATUS.accepted,
     )
 
@@ -38,19 +56,4 @@ def test_syncs_pending_status_when_changing_status():
     submission.refresh_from_db()
 
     assert submission.status == Submission.STATUS.rejected
-    assert submission.pending_status == Submission.STATUS.rejected
-
-
-def test_leaves_pending_status_unchanged_if_different():
-    submission = SubmissionFactory(
-        status=Submission.STATUS.proposed,
-        pending_status=Submission.STATUS.rejected,
-    )
-
-    submission.status = Submission.STATUS.waiting_list
-    submission.save()
-
-    submission.refresh_from_db()
-
-    assert submission.status == Submission.STATUS.waiting_list
-    assert submission.pending_status == Submission.STATUS.rejected
+    assert submission.pending_status == Submission.STATUS.accepted  # Should remain unchanged

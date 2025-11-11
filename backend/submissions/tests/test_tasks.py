@@ -45,7 +45,7 @@ def test_handle_new_cfp_submission():
     assert "Marco Acierno" in str(slack_mock.send_message.mock_calls[0])
 
 
-def test_send_proposal_rejected_email():
+def test_send_proposal_rejected_email(sent_emails):
     submission = SubmissionFactory(
         conference__name=LazyI18nString({"en": "Conf"}),
         title=LazyI18nString({"en": "Title"}),
@@ -55,26 +55,31 @@ def test_send_proposal_rejected_email():
 
     EmailTemplateFactory(
         conference=submission.conference,
-        identifier=EmailTemplateIdentifier.proposal_scheduled,
+        identifier=EmailTemplateIdentifier.proposal_rejected,
     )
 
-    with patch("submissions.tasks.EmailTemplate") as mock_email_template:
-        send_proposal_rejected_email(
-            proposal_id=submission.id,
-        )
-
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient=submission.speaker,
-        placeholders={
-            "proposal_title": "Title",
-            "proposal_type": submission.type.name,
-            "conference_name": "Conf",
-            "speaker_name": "Marco",
-        },
+    send_proposal_rejected_email(
+        proposal_id=submission.id,
     )
 
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.proposal_rejected
+    assert sent_email.email_template.conference == submission.conference
+    assert sent_email.recipient == submission.speaker
+    assert sent_email.recipient_email == submission.speaker.email
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["proposal_title"] == "Title"
+    assert sent_email.placeholders["proposal_type"] == submission.type.name
+    assert sent_email.placeholders["conference_name"] == "Conf"
+    assert sent_email.placeholders["speaker_name"] == "Marco"
 
-def test_send_proposal_in_waiting_list_email():
+
+def test_send_proposal_in_waiting_list_email(sent_emails):
     submission = SubmissionFactory(
         conference__name=LazyI18nString({"en": "Conf"}),
         title=LazyI18nString({"en": "Title"}),
@@ -87,17 +92,22 @@ def test_send_proposal_in_waiting_list_email():
         identifier=EmailTemplateIdentifier.proposal_in_waiting_list,
     )
 
-    with patch("submissions.tasks.EmailTemplate") as mock_email_template:
-        send_proposal_in_waiting_list_email(
-            proposal_id=submission.id,
-        )
-
-    mock_email_template.objects.for_conference().get_by_identifier().send_email.assert_called_once_with(
-        recipient=submission.speaker,
-        placeholders={
-            "proposal_title": "Title",
-            "proposal_type": submission.type.name,
-            "conference_name": "Conf",
-            "speaker_name": "Marco",
-        },
+    send_proposal_in_waiting_list_email(
+        proposal_id=submission.id,
     )
+
+    # Verify that the correct email template was used and email was sent
+    emails_sent = sent_emails()
+    assert emails_sent.count() == 1
+    
+    sent_email = emails_sent.first()
+    assert sent_email.email_template.identifier == EmailTemplateIdentifier.proposal_in_waiting_list
+    assert sent_email.email_template.conference == submission.conference
+    assert sent_email.recipient == submission.speaker
+    assert sent_email.recipient_email == submission.speaker.email
+    
+    # Verify placeholders were processed correctly
+    assert sent_email.placeholders["proposal_title"] == "Title"
+    assert sent_email.placeholders["proposal_type"] == submission.type.name
+    assert sent_email.placeholders["conference_name"] == "Conf"
+    assert sent_email.placeholders["speaker_name"] == "Marco"

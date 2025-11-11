@@ -9,7 +9,6 @@ from custom_admin.admin import (
 from import_export.resources import ModelResource
 
 from django import forms
-from django.db.models import F
 from django.db import transaction
 from django.contrib import admin, messages
 from django.utils.html import mark_safe
@@ -356,6 +355,7 @@ def apply_and_notify_status_change(modeladmin, request, queryset):
 
     for submission in objs:
         submission.status = submission.pending_status
+        submission.pending_status = None
         placeholders = {
             "conference_name": conference.name.localize("en"),
             "proposal_title": submission.title.localize("en"),
@@ -374,7 +374,7 @@ def apply_and_notify_status_change(modeladmin, request, queryset):
 
     Submission.objects.bulk_update(
         objs,
-        ["status"],
+        ["status", "pending_status"],
     )
 
     messages.add_message(
@@ -425,7 +425,7 @@ class SubmissionConfirmPendingStatusProxyAdmin(admin.ModelAdmin):
             super()
             .get_queryset(request)
             .exclude(
-                pending_status=F("status"),
+                pending_status__isnull=True,
             )
         )
 

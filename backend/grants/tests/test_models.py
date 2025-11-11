@@ -162,7 +162,7 @@ def test_sets_country_type_does_nothing_if_unset():
     assert grant.country_type is None
 
 
-def test_syncs_pending_status_on_change():
+def test_pending_status_no_longer_syncs_with_status():
     grant = GrantFactory(
         pending_status=Grant.Status.pending,
         status=Grant.Status.pending,
@@ -171,10 +171,10 @@ def test_syncs_pending_status_on_change():
     grant.status = Grant.Status.approved
     grant.save(update_fields=["status"])
 
-    # Pending status should be updated to match the status
+    # Pending status should remain unchanged when status changes
     grant.refresh_from_db()
 
-    assert grant.pending_status == Grant.Status.approved
+    assert grant.pending_status == Grant.Status.pending  # Should remain unchanged
     assert grant.status == Grant.Status.approved
 
 
@@ -192,3 +192,34 @@ def test_doesnt_sync_pending_status_if_different_values():
 
     assert grant.pending_status == Grant.Status.refused
     assert grant.status == Grant.Status.waiting_for_confirmation
+
+
+def test_pending_status_none_means_no_pending_change():
+    grant = GrantFactory(
+        pending_status=None,
+        status=Grant.Status.approved,
+    )
+
+    # When pending_status is None, the effective status should be the current status
+    # This affects the _calculate_grant_amounts method
+    grant.approved_type = Grant.ApprovedType.ticket_only
+    grant.departure_country = "IT"
+    grant.save()
+
+    # Since effective status is approved (from status field), amounts should be calculated
+    assert grant.ticket_amount is not None
+
+
+def test_pending_status_set_overrides_current_status():
+    grant = GrantFactory(
+        pending_status=Grant.Status.approved,
+        status=Grant.Status.pending,
+    )
+
+    # When pending_status is set, it should be used as the effective status
+    grant.approved_type = Grant.ApprovedType.ticket_only
+    grant.departure_country = "IT"
+    grant.save()
+
+    # Since effective status is approved (from pending_status), amounts should be calculated
+    assert grant.ticket_amount is not None

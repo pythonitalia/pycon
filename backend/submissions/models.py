@@ -104,14 +104,10 @@ class Submission(TimeStampedModel):
         _("status"), choices=STATUS, max_length=20, default=STATUS.proposed
     )
     pending_status = models.CharField(
-        _("pending status"), choices=STATUS, max_length=20, default="", blank=True
+        _("pending status"), choices=STATUS, max_length=20, null=True, blank=True
     )
 
     objects = SubmissionQuerySet().as_manager()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._original_status = self.status
 
     @property
     def hashid(self):
@@ -197,13 +193,11 @@ class Submission(TimeStampedModel):
             if update_fields:
                 update_fields.append("slug")
 
-        if self.pending_status == self._original_status:
-            self.pending_status = self.status
+        super().save(*args, **kwargs)
 
-            if update_fields:
-                update_fields.append("pending_status")
-
-        return super().save(*args, **kwargs)
+    @property
+    def current_or_pending_status(self):
+        return self.pending_status or self.status
 
     def __str__(self):
         return (
