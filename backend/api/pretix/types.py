@@ -1,4 +1,5 @@
 from api.types import BaseErrorType
+from api.utils import validate_email
 from strawberry.scalars import JSON
 
 from datetime import datetime
@@ -25,6 +26,19 @@ from api.context import Info
 from conferences.models.conference import Conference
 from badges.roles import ConferenceRole, get_conference_roles_for_ticket_data
 from api.helpers.ids import encode_hashid
+from countries import countries
+from billing.validation import (
+    validate_italian_zip_code,
+    validate_fiscal_code,
+    validate_italian_vat_number,
+    validate_sdi_code,
+)
+from billing.exceptions import (
+    ItalianZipCodeValidationError,
+    FiscalCodeValidationError,
+    ItalianVatNumberValidationError,
+    SdiValidationError,
+)
 
 
 @strawberry.type
@@ -475,3 +489,214 @@ class UpdateAttendeeTicketInput:
             data["answers"] = [answer.to_json() for answer in self.answers]
 
         return data
+
+
+@strawberry.type
+class InvoiceInformationErrors:
+    company: list[str] = strawberry.field(default_factory=list)
+    given_name: list[str] = strawberry.field(default_factory=list)
+    family_name: list[str] = strawberry.field(default_factory=list)
+    street: list[str] = strawberry.field(default_factory=list)
+    zipcode: list[str] = strawberry.field(default_factory=list)
+    city: list[str] = strawberry.field(default_factory=list)
+    country: list[str] = strawberry.field(default_factory=list)
+    vat_id: list[str] = strawberry.field(default_factory=list)
+    fiscal_code: list[str] = strawberry.field(default_factory=list)
+    pec: list[str] = strawberry.field(default_factory=list)
+    sdi: list[str] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
+class CreateOrderTicketErrors:
+    attendee_name: AttendeeNameInputError = strawberry.field(
+        default_factory=AttendeeNameInputError
+    )
+    attendee_email: list[str] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
+class CreateOrderErrors(BaseErrorType):
+    @strawberry.type
+    class _CreateOrderErrors:
+        invoice_information: InvoiceInformationErrors = strawberry.field(
+            default_factory=InvoiceInformationErrors
+        )
+        tickets: list[CreateOrderTicketErrors] = strawberry.field(default_factory=list)
+        non_field_errors: list[str] = strawberry.field(default_factory=list)
+
+    errors: _CreateOrderErrors = None
+
+
+@strawberry.input
+class CreateOrderTicketAnswer:
+    question_id: str
+    value: str
+
+
+@strawberry.input
+class CreateOrderTicket:
+    ticket_id: str
+    attendee_name: AttendeeNameInput
+    attendee_email: str
+    variation: Optional[str] = None
+    answers: Optional[List[CreateOrderTicketAnswer]] = None
+    voucher: Optional[str] = None
+
+    def validate(
+        self, errors: CreateOrderErrors, is_admission: bool
+    ) -> CreateOrderErrors:
+        if not is_admission:
+            return errors
+
+        with errors.with_prefix("attendee_name"):
+            self.attendee_name.validate(errors)
+
+        if not self.attendee_email.strip():
+            errors.add_error("attendee_email", "This field is required")
+        elif not validate_email(self.attendee_email):
+            errors.add_error("attendee_email", "Invalid email address")
+
+        return errors
+
+
+@strawberry.input
+class InvoiceInformation:
+    is_business: bool
+    company: Optional[str]
+    given_name: str
+    family_name: str
+    street: str
+    zipcode: str
+    city: str
+    country: str
+    vat_id: str
+    fiscal_code: str
+    pec: str | None = None
+    sdi: str | None = None
+
+    def validate(self, errors: CreateOrderErrors) -> CreateOrderErrors:
+        required_fields = [
+            "given_name",
+            "family_name",
+            "street",
+            "zipcode",
+            "city",
+            "country",
+        ]
+
+        if self.is_business:
+            required_fields += ["vat_id", "company"]
+
+        if self.country == "IT":
+            if self.is_business:
+                required_fields += ["sdi"]
+            else:
+                required_fields += ["fiscal_code"]
+
+        for required_field in required_fields:
+            value = getattr(self, required_field)
+
+            if not value:
+                errors.add_error(
+                    required_field,
+                    "This field is required",
+                )
+
+        self.validate_country(errors)
+
+        if self.country == "IT":
+            self.validate_italian_zip_code(errors)
+            self.validate_pec(errors)
+
+            if self.is_business:
+                self.validate_sdi(errors)
+                self.validate_partita_iva(errors)
+            else:
+                self.validate_fiscal_code(errors)
+
+        return errors
+
+    def validate_country(self, errors: CreateOrderErrors):
+        if not self.country:
+            return
+
+        if not countries.is_valid(self.country):
+            errors.add_error(
+                "country",
+                "Invalid country",
+            )
+
+    def validate_pec(self, errors: CreateOrderErrors):
+        if not self.pec:
+            return
+
+        if not validate_email(self.pec):
+            errors.add_error("pec", "Invalid PEC address")
+
+    def validate_fiscal_code(self, errors: CreateOrderErrors):
+        if not self.fiscal_code:
+            return
+
+        try:
+            validate_fiscal_code(self.fiscal_code)
+        except FiscalCodeValidationError as exc:
+            errors.add_error("fiscal_code", str(exc))
+
+    def validate_partita_iva(self, errors: CreateOrderErrors):
+        if not self.vat_id:
+            return
+        try:
+            validate_italian_vat_number(self.vat_id)
+        except ItalianVatNumberValidationError as exc:
+            errors.add_error("vat_id", str(exc))
+
+    def validate_italian_zip_code(self, errors: CreateOrderErrors):
+        if not self.zipcode:
+            return
+
+        try:
+            validate_italian_zip_code(self.zipcode)
+        except ItalianZipCodeValidationError as exc:
+            errors.add_error("zipcode", str(exc))
+
+    def validate_sdi(self, errors: CreateOrderErrors):
+        if not self.sdi:
+            return
+
+        try:
+            validate_sdi_code(self.sdi)
+        except SdiValidationError as exc:
+            errors.add_error("sdi", str(exc))
+
+
+@strawberry.input
+class CreateOrderInput:
+    email: str
+    locale: str
+    payment_provider: str
+    invoice_information: InvoiceInformation
+    tickets: list[CreateOrderTicket]
+
+    def validate(self, conference) -> CreateOrderErrors:
+        # Import here to avoid circular dependency
+        from pretix import get_items
+
+        pretix_items = get_items(conference)
+
+        errors = CreateOrderErrors()
+
+        with errors.with_prefix("invoice_information"):
+            self.invoice_information.validate(errors)
+
+        for index, ticket in enumerate(self.tickets):
+            with errors.with_prefix("tickets", index):
+                is_admission = pretix_items[ticket.ticket_id]["admission"]
+                ticket.validate(errors, is_admission)
+
+        return errors.if_has_errors
+
+
+@strawberry.type
+class Order:
+    code: str
+    payment_url: str
