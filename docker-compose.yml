@@ -119,7 +119,7 @@ services:
     restart: unless-stopped
     entrypoint: ""
     working_dir: /home/node/app
-    command: sh -c "pnpm install && pnpm codegen && pnpm run dev"
+    command: sh -c "pnpm install && (pnpm codegen || true) && pnpm run dev"
     volumes:
       - ./frontend/:/home/node/app
       - /home/node/app/.pnpm-store/
