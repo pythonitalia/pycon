@@ -1,25 +1,34 @@
-from django.contrib.postgres.expressions import ArraySubquery
-from django.db.models.expressions import ExpressionWrapper
-from django.db.models import FloatField
-from django.db.models.functions import Cast
-from users.admin_mixins import ConferencePermissionMixin
-from django.core.exceptions import PermissionDenied
-from django.db.models import Q, Exists
 import urllib.parse
 
 from django import forms
 from django.contrib import admin, messages
-from django.db.models import Count, F, OuterRef, Prefetch, Subquery, Sum, Avg
+from django.contrib.postgres.expressions import ArraySubquery
+from django.core.exceptions import PermissionDenied
+from django.db.models import (
+    Avg,
+    Count,
+    Exists,
+    F,
+    FloatField,
+    OuterRef,
+    Prefetch,
+    Q,
+    Subquery,
+    Sum,
+)
+from django.db.models.expressions import ExpressionWrapper
+from django.db.models.functions import Cast
 from django.http.request import HttpRequest
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
 
-from grants.models import Grant
+from grants.models import Grant, GrantReimbursement, GrantReimbursementCategory
 from participants.models import Participant
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
 from submissions.models import Submission, SubmissionTag
+from users.admin_mixins import ConferencePermissionMixin
 from users.models import User
 
 
@@ -259,16 +268,20 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 raise PermissionDenied()
             data = request.POST
 
+            reimbursement_categories = {category.id: category for category in GrantReimbursementCategory.objects.for_conference(
+                conference=review_session.conference
+            )}
+
             decisions = {
                 int(key.split("-")[1]): value
                 for [key, value] in data.items()
                 if key.startswith("decision-")
             }
 
-            approved_type_decisions = {
-                int(key.split("-")[1]): value
-                for [key, value] in data.items()
-                if key.startswith("approvedtype-")
+            approved_reimbursement_categories_decisions = {
+                int(key.split("-")[1]): [int(id_) for id_ in data.getlist(key)]
+                for key in data.keys()
+                if key.startswith("reimbursementcategory-")
             }
 
             grants = list(
@@ -280,21 +293,34 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 if decision not in Grant.REVIEW_SESSION_STATUSES_OPTIONS:
                     continue
 
-                approved_type = approved_type_decisions.get(grant.id, "")
-
                 if decision != grant.status:
                     grant.pending_status = decision
                 elif decision == grant.status:
                     grant.pending_status = None
 
-                grant.approved_type = (
-                    approved_type if decision == Grant.Status.approved else None
-                )
+                # if there are grant reimbursements and the decision is not approved, delete them all
+                if grant.reimbursements.exists():
+                    approved_reimbursement_categories = approved_reimbursement_categories_decisions.get(grant.id, [])
+                    # If decision is not approved, delete all; else, filter and delete missing reimbursements
+                    if decision != Grant.Status.approved:
+                        grant.reimbursements.all().delete()
+                    else:
+                        # Only keep those in current approved_reimbursement_categories
+                        grant.reimbursements.exclude(
+                            category_id__in=approved_reimbursement_categories
+                        ).delete()
 
             for grant in grants:
                 # save each to make sure we re-calculate the grants amounts
                 # TODO: move the amount calculation in a separate function maybe?
-                grant.save(update_fields=["pending_status", "approved_type"])
+                grant.save(update_fields=["pending_status",])
+                approved_reimbursement_categories = approved_reimbursement_categories_decisions.get(grant.id, "")
+                for reimbursement_category_id in approved_reimbursement_categories:
+                    GrantReimbursement.objects.update_or_create(
+                        grant=grant,
+                        category_id=reimbursement_category_id,
+                        defaults={"granted_amount": reimbursement_categories[reimbursement_category_id].max_amount},
+                    )
 
             messages.success(
                 request, "Decisions saved. Check the Grants Summary for more info."
@@ -343,6 +369,11 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                     )
                     .values("id")
                 ),
+                approved_reimbursement_category_ids=ArraySubquery(
+                    GrantReimbursement.objects.filter(
+                        grant_id=OuterRef("pk")
+                    ).values_list("category_id", flat=True)
+                ),
             )
             .order_by(F("score").desc(nulls_last=True))
             .prefetch_related(
@@ -380,7 +411,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 if choice[0] in Grant.REVIEW_SESSION_STATUSES_OPTIONS
             ],
             all_statuses=Grant.Status.choices,
-            all_approved_types=[choice for choice in Grant.ApprovedType.choices],
+            all_reimbursement_categories=GrantReimbursementCategory.objects.for_conference(conference=review_session.conference),
             review_session=review_session,
             title="Recap",
         )
