@@ -1,4 +1,4 @@
-FROM ghcr.io/pythonitalia/pycon/base-pretix:v2025.9.0
+FROM ghcr.io/pythonitalia/pycon/base-pretix:v2025.9.2
 
 COPY ./settings.py /pretix/src/production_settings.py
 
