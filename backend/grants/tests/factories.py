@@ -1,14 +1,16 @@
+import random
+from decimal import Decimal
+
 import factory.fuzzy
 from factory.django import DjangoModelFactory
 
 from conferences.tests.factories import ConferenceFactory
-from grants.models import Grant
-from helpers.constants import GENDERS
-from users.tests.factories import UserFactory
 from countries import countries
-from participants.tests.factories import ParticipantFactory
+from grants.models import Grant, GrantReimbursement, GrantReimbursementCategory
+from helpers.constants import GENDERS
 from participants.models import Participant
-import random
+from participants.tests.factories import ParticipantFactory
+from users.tests.factories import UserFactory
 
 
 class GrantFactory(DjangoModelFactory):
@@ -57,3 +59,54 @@ class GrantFactory(DjangoModelFactory):
             ParticipantFactory(user_id=grant.user.id, conference=grant.conference)
 
         return grant
+
+
+class GrantReimbursementCategoryFactory(DjangoModelFactory):
+    class Meta:
+        model = GrantReimbursementCategory
+
+    conference = factory.SubFactory(ConferenceFactory)
+    name = factory.LazyAttribute(
+        lambda obj: GrantReimbursementCategory.Category(obj.category).label
+    )
+    description = factory.Faker("sentence", nb_words=6)
+    max_amount = factory.fuzzy.FuzzyInteger(0, 1000)
+    category = factory.fuzzy.FuzzyChoice(
+        [choice[0] for choice in GrantReimbursementCategory.Category.choices]
+    )
+    included_by_default = False
+
+    class Params:
+        ticket = factory.Trait(
+            category=GrantReimbursementCategory.Category.TICKET,
+            name="Ticket",
+            max_amount=Decimal("100"),
+            included_by_default=True,
+        )
+        travel = factory.Trait(
+            category=GrantReimbursementCategory.Category.TRAVEL,
+            name="Travel",
+            max_amount=Decimal("500"),
+            included_by_default=False,
+        )
+        accommodation = factory.Trait(
+            category=GrantReimbursementCategory.Category.ACCOMMODATION,
+            name="Accommodation",
+            max_amount=Decimal("300"),
+            included_by_default=False,
+        )
+        other = factory.Trait(
+            category=GrantReimbursementCategory.Category.OTHER,
+            name="Other",
+            max_amount=Decimal("200"),
+            included_by_default=False,
+        )
+
+
+class GrantReimbursementFactory(DjangoModelFactory):
+    class Meta:
+        model = GrantReimbursement
+
+    grant = factory.SubFactory(GrantFactory)
+    category = factory.SubFactory(GrantReimbursementCategoryFactory)
+    granted_amount = factory.fuzzy.FuzzyInteger(0, 1000)

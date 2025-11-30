@@ -44,7 +44,7 @@ class GrantSummary:
             filtered_grants, statuses
         )
         gender_stats = self._aggregate_data_by_gender(filtered_grants, statuses)
-        financial_summary, total_amount = self._aggregate_financial_data_by_status_new(
+        financial_summary, total_amount = self._aggregate_financial_data_by_status(
             filtered_grants, statuses
         )
         grant_type_summary = self._aggregate_data_by_grant_type(

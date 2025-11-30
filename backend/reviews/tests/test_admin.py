@@ -4,8 +4,12 @@ import pytest
 from django.contrib.admin import AdminSite
 
 from conferences.tests.factories import ConferenceFactory
-from grants.models import Grant, GrantReimbursement, GrantReimbursementCategory
-from grants.tests.factories import GrantFactory
+from grants.models import Grant
+from grants.tests.factories import (
+    GrantFactory,
+    GrantReimbursementCategoryFactory,
+    GrantReimbursementFactory,
+)
 from reviews.admin import ReviewSessionAdmin, get_next_to_review_item_id
 from reviews.models import ReviewSession
 from reviews.tests.factories import (
@@ -281,26 +285,20 @@ def test_save_review_grants_updates_grant_and_creates_reimbursements(rf, mocker)
     conference = ConferenceFactory()
 
     # Create reimbursement categories
-    travel_category = GrantReimbursementCategory.objects.create(
+    travel_category = GrantReimbursementCategoryFactory(
         conference=conference,
-        category=GrantReimbursementCategory.Category.TRAVEL,
-        name="Travel",
+        travel=True,
         max_amount=Decimal("500"),
-        included_by_default=False,
     )
-    ticket_category = GrantReimbursementCategory.objects.create(
+    ticket_category = GrantReimbursementCategoryFactory(
         conference=conference,
-        category=GrantReimbursementCategory.Category.TICKET,
-        name="Ticket",
+        ticket=True,
         max_amount=Decimal("100"),
-        included_by_default=True,
     )
-    accommodation_category = GrantReimbursementCategory.objects.create(
+    accommodation_category = GrantReimbursementCategoryFactory(
         conference=conference,
-        category=GrantReimbursementCategory.Category.ACCOMMODATION,
-        name="Accommodation",
+        accommodation=True,
         max_amount=Decimal("200"),
-        included_by_default=False,
     )
 
     # Create review session for grants
@@ -322,9 +320,16 @@ def test_save_review_grants_updates_grant_and_creates_reimbursements(rf, mocker)
     # would need to use request.POST.getlist(). Testing with one category per grant.
     post_data = {
         f"decision-{grant_1.id}": Grant.Status.approved,
-        f"reimbursementcategory-{grant_1.id}": [str(ticket_category.id), str(travel_category.id)],
+        f"reimbursementcategory-{grant_1.id}": [
+            str(ticket_category.id),
+            str(travel_category.id),
+        ],
         f"decision-{grant_2.id}": Grant.Status.approved,
-        f"reimbursementcategory-{grant_2.id}": [str(ticket_category.id), str(travel_category.id),str(accommodation_category.id),]
+        f"reimbursementcategory-{grant_2.id}": [
+            str(ticket_category.id),
+            str(travel_category.id),
+            str(accommodation_category.id),
+        ],
     }
 
     request = rf.post("/", data=post_data)
@@ -350,41 +355,41 @@ def test_save_review_grants_updates_grant_and_creates_reimbursements(rf, mocker)
 
     # Verify GrantReimbursement objects were created
     assert grant_1.reimbursements.count() == 2
-    assert { reimbursement.category for reimbursement in grant_1.reimbursements.all() } == { ticket_category, travel_category }
+    assert {
+        reimbursement.category for reimbursement in grant_1.reimbursements.all()
+    } == {ticket_category, travel_category}
 
     assert grant_2.reimbursements.count() == 3
-    assert { reimbursement.category for reimbursement in grant_2.reimbursements.all() } == { ticket_category, travel_category, accommodation_category }
+    assert {
+        reimbursement.category for reimbursement in grant_2.reimbursements.all()
+    } == {ticket_category, travel_category, accommodation_category}
 
     mock_messages.success.assert_called_once()
 
 
-def test_save_review_grants_update_grants_status_to_rejected_removes_reimbursements(rf, mocker):
+def test_save_review_grants_update_grants_status_to_rejected_removes_reimbursements(
+    rf, mocker
+):
     mock_messages = mocker.patch("reviews.admin.messages")
 
     user = UserFactory(is_staff=True, is_superuser=True)
     conference = ConferenceFactory()
 
     # Create reimbursement categories
-    travel_category = GrantReimbursementCategory.objects.create(
+    travel_category = GrantReimbursementCategoryFactory(
         conference=conference,
-        category=GrantReimbursementCategory.Category.TRAVEL,
-        name="Travel",
+        travel=True,
         max_amount=Decimal("500"),
-        included_by_default=False,
     )
-    ticket_category = GrantReimbursementCategory.objects.create(
+    ticket_category = GrantReimbursementCategoryFactory(
         conference=conference,
-        category=GrantReimbursementCategory.Category.TICKET,
-        name="Ticket",
+        ticket=True,
         max_amount=Decimal("100"),
-        included_by_default=True,
     )
-    accommodation_category = GrantReimbursementCategory.objects.create(
+    accommodation_category = GrantReimbursementCategoryFactory(
         conference=conference,
-        category=GrantReimbursementCategory.Category.ACCOMMODATION,
-        name="Accommodation",
+        accommodation=True,
         max_amount=Decimal("200"),
-        included_by_default=False,
     )
 
     # Create review session for grants
@@ -398,17 +403,17 @@ def test_save_review_grants_update_grants_status_to_rejected_removes_reimburseme
 
     # Create grants with initial status
     grant_1 = GrantFactory(conference=conference, status=Grant.Status.approved)
-    GrantReimbursement.objects.create(
+    GrantReimbursementFactory(
         grant=grant_1,
         category=travel_category,
         granted_amount=Decimal("500"),
     )
-    GrantReimbursement.objects.create(
+    GrantReimbursementFactory(
         grant=grant_1,
         category=ticket_category,
         granted_amount=Decimal("100"),
     )
-    GrantReimbursement.objects.create(
+    GrantReimbursementFactory(
         grant=grant_1,
         category=accommodation_category,
         granted_amount=Decimal("200"),
@@ -438,6 +443,7 @@ def test_save_review_grants_update_grants_status_to_rejected_removes_reimburseme
 
     assert grant_1.reimbursements.count() == 0
 
+
 def test_save_review_grants_modify_reimbursements(rf, mocker):
     mock_messages = mocker.patch("reviews.admin.messages")
 
@@ -445,26 +451,20 @@ def test_save_review_grants_modify_reimbursements(rf, mocker):
     conference = ConferenceFactory()
 
     # Create reimbursement categories
-    travel_category = GrantReimbursementCategory.objects.create(
+    travel_category = GrantReimbursementCategoryFactory(
         conference=conference,
-        category=GrantReimbursementCategory.Category.TRAVEL,
-        name="Travel",
+        travel=True,
         max_amount=Decimal("500"),
-        included_by_default=False,
     )
-    ticket_category = GrantReimbursementCategory.objects.create(
+    ticket_category = GrantReimbursementCategoryFactory(
         conference=conference,
-        category=GrantReimbursementCategory.Category.TICKET,
-        name="Ticket",
+        ticket=True,
         max_amount=Decimal("100"),
-        included_by_default=True,
     )
-    accommodation_category = GrantReimbursementCategory.objects.create(
+    accommodation_category = GrantReimbursementCategoryFactory(
         conference=conference,
-        category=GrantReimbursementCategory.Category.ACCOMMODATION,
-        name="Accommodation",
+        accommodation=True,
         max_amount=Decimal("200"),
-        included_by_default=False,
     )
 
     # Create review session for grants
@@ -478,17 +478,17 @@ def test_save_review_grants_modify_reimbursements(rf, mocker):
 
     # Create grants with initial status
     grant_1 = GrantFactory(conference=conference, status=Grant.Status.approved)
-    GrantReimbursement.objects.create(
+    GrantReimbursementFactory(
         grant=grant_1,
         category=travel_category,
         granted_amount=Decimal("500"),
     )
-    GrantReimbursement.objects.create(
+    GrantReimbursementFactory(
         grant=grant_1,
         category=ticket_category,
         granted_amount=Decimal("100"),
     )
-    GrantReimbursement.objects.create(
+    GrantReimbursementFactory(
         grant=grant_1,
         category=accommodation_category,
         granted_amount=Decimal("200"),
@@ -509,4 +509,6 @@ def test_save_review_grants_modify_reimbursements(rf, mocker):
     grant_1.refresh_from_db()
 
     assert grant_1.reimbursements.count() == 1
-    assert { reimbursement.category for reimbursement in grant_1.reimbursements.all() } == { ticket_category }
+    assert {
+        reimbursement.category for reimbursement in grant_1.reimbursements.all()
+    } == {ticket_category}

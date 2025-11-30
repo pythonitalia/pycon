@@ -2,8 +2,12 @@ from decimal import Decimal
 
 import pytest
 
-from grants.models import Grant, GrantReimbursement, GrantReimbursementCategory
-from grants.tests.factories import GrantFactory
+from grants.models import Grant, GrantReimbursement
+from grants.tests.factories import (
+    GrantFactory,
+    GrantReimbursementCategoryFactory,
+    GrantReimbursementFactory,
+)
 
 pytestmark = pytest.mark.django_db
 
@@ -59,48 +63,44 @@ def test_calculate_grant_amounts(data):
         pending_status=Grant.Status.approved,
         departure_country=departure_country,
     )
-    conference = grant.conference
 
-    ticket_category = GrantReimbursementCategory.objects.create(
-        conference=conference,
-        category=GrantReimbursementCategory.Category.TICKET,
-        name="Ticket",
-        max_amount=Decimal("100"),
-        included_by_default=True,
-    )
-    travel_category = GrantReimbursementCategory.objects.create(
-        conference=conference,
-        category=GrantReimbursementCategory.Category.TRAVEL,
-        name="Travel",
-        max_amount=Decimal("500"),
-        included_by_default=False,
-    )
-    accommodation_category = GrantReimbursementCategory.objects.create(
-        conference=conference,
-        category=GrantReimbursementCategory.Category.ACCOMMODATION,
-        name="Accommodation",
-        max_amount=Decimal("200"),
-        included_by_default=False,
-    )
+    # Create categories and reimbursements based on test data
+    ticket_category = None
+    travel_category = None
+    accommodation_category = None
 
-    # Create reimbursements based on categories
     if "ticket" in categories:
-        GrantReimbursement.objects.update_or_create(
+        ticket_category = GrantReimbursementCategoryFactory(
+            conference=grant.conference,
+            ticket=True,
+            max_amount=Decimal("100"),
+        )
+        GrantReimbursementFactory(
             grant=grant,
             category=ticket_category,
-            defaults={"granted_amount": Decimal(expected_ticket_amount)},
+            granted_amount=Decimal(expected_ticket_amount),
         )
     if "travel" in categories:
-        GrantReimbursement.objects.update_or_create(
+        travel_category = GrantReimbursementCategoryFactory(
+            conference=grant.conference,
+            travel=True,
+            max_amount=Decimal("500"),
+        )
+        GrantReimbursementFactory(
             grant=grant,
             category=travel_category,
-            defaults={"granted_amount": Decimal(expected_travel_amount)},
+            granted_amount=Decimal(expected_travel_amount),
         )
     if "accommodation" in categories:
-        GrantReimbursement.objects.update_or_create(
+        accommodation_category = GrantReimbursementCategoryFactory(
+            conference=grant.conference,
+            accommodation=True,
+            max_amount=Decimal("200"),
+        )
+        GrantReimbursementFactory(
             grant=grant,
             category=accommodation_category,
-            defaults={"granted_amount": Decimal(expected_accommodation_amount)},
+            granted_amount=Decimal(expected_accommodation_amount),
         )
 
     grant.refresh_from_db()
@@ -113,7 +113,7 @@ def test_calculate_grant_amounts(data):
         assert ticket_reimbursement.granted_amount == Decimal(expected_ticket_amount)
     else:
         assert not GrantReimbursement.objects.filter(
-            grant=grant, category=ticket_category
+            grant=grant, category__category="ticket"
         ).exists()
 
     if "travel" in categories:
@@ -123,7 +123,7 @@ def test_calculate_grant_amounts(data):
         assert travel_reimbursement.granted_amount == Decimal(expected_travel_amount)
     else:
         assert not GrantReimbursement.objects.filter(
-            grant=grant, category=travel_category
+            grant=grant, category__category="travel"
         ).exists()
 
     if "accommodation" in categories:
@@ -135,7 +135,7 @@ def test_calculate_grant_amounts(data):
         )
     else:
         assert not GrantReimbursement.objects.filter(
-            grant=grant, category=accommodation_category
+            grant=grant, category__category="accommodation"
         ).exists()
 
     # Verify total_allocated_amount sums correctly
@@ -147,16 +147,10 @@ def test_calculate_grant_amounts(data):
 
 def test_has_approved_travel():
     grant = GrantFactory()
-    travel_category = GrantReimbursementCategory.objects.create(
-        conference=grant.conference,
-        category=GrantReimbursementCategory.Category.TRAVEL,
-        name="Travel",
-        max_amount=Decimal("500"),
-        included_by_default=False,
-    )
-    GrantReimbursement.objects.create(
+    GrantReimbursementFactory(
         grant=grant,
-        category=travel_category,
+        category__conference=grant.conference,
+        category__travel=True,
         granted_amount=Decimal("500"),
     )
 
@@ -165,16 +159,10 @@ def test_has_approved_travel():
 
 def test_has_approved_accommodation():
     grant = GrantFactory()
-    accommodation_category = GrantReimbursementCategory.objects.create(
-        conference=grant.conference,
-        category=GrantReimbursementCategory.Category.ACCOMMODATION,
-        name="Accommodation",
-        max_amount=Decimal("200"),
-        included_by_default=False,
-    )
-    GrantReimbursement.objects.create(
+    GrantReimbursementFactory(
         grant=grant,
-        category=accommodation_category,
+        category__conference=grant.conference,
+        category__accommodation=True,
         granted_amount=Decimal("200"),
     )
 
@@ -232,6 +220,7 @@ def test_doesnt_sync_pending_status_if_different_values():
 
     assert grant.pending_status == Grant.Status.refused
     assert grant.status == Grant.Status.waiting_for_confirmation
+
 
 @pytest.mark.skip(reason="We don't automatically create on save anymore")
 def test_pending_status_none_means_no_pending_change():
