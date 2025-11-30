@@ -243,6 +243,11 @@ def test_cannot_send_grant_outside_allowed_values(
         departureCountry="Very long location" * 50,
         nationality="Freedonia" * 50,
         departureCity="Emerald City " * 50,
+        why="Very long why" * 100,
+        pythonUsage="Very long python usage" * 100,
+        beenToOtherEvents="Very long been to other events" * 100,
+        communityContribution="Very long community contribution" * 100,
+        notes="Very long notes" * 100,
     )
 
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
@@ -257,6 +262,21 @@ def test_cannot_send_grant_outside_allowed_values(
     ]
     assert response["data"]["sendGrant"]["errors"]["validationDepartureCity"] == [
         "departure_city: Cannot be more than 100 chars"
+    ]
+    assert response["data"]["sendGrant"]["errors"]["validationWhy"] == [
+        "why: Cannot be more than 1000 chars"
+    ]
+    assert response["data"]["sendGrant"]["errors"]["validationPythonUsage"] == [
+        "python_usage: Cannot be more than 700 chars"
+    ]
+    assert response["data"]["sendGrant"]["errors"]["validationBeenToOtherEvents"] == [
+        "been_to_other_events: Cannot be more than 500 chars"
+    ]
+    assert response["data"]["sendGrant"]["errors"][
+        "validationCommunityContribution"
+    ] == ["community_contribution: Cannot be more than 900 chars"]
+    assert response["data"]["sendGrant"]["errors"]["validationNotes"] == [
+        "notes: Cannot be more than 350 chars"
     ]
 
 

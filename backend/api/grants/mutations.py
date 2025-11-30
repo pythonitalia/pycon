@@ -69,6 +69,11 @@ class BaseGrantInput:
             "departure_country": 100,
             "nationality": 100,
             "departure_city": 100,
+            "why": 1000,
+            "python_usage": 700,
+            "been_to_other_events": 500,
+            "community_contribution": 900,
+            "notes": 350,
         }
         for field, max_length in max_length_fields.items():
             value = getattr(self, field, "")
