@@ -587,7 +587,7 @@ export const GrantForm = ({
           {formState.values.needsFundsForTravel === "true" && (
             <>
               <InputWrapper
-                required={false}
+                required={true}
                 title={
                   <FormattedMessage id="grants.form.fields.departureCountry" />
                 }
@@ -616,7 +616,7 @@ export const GrantForm = ({
               </InputWrapper>
 
               <InputWrapper
-                required={false}
+                required={true}
                 title={
                   <FormattedMessage id="grants.form.fields.departureCity" />
                 }
