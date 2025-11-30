@@ -190,6 +190,8 @@ Failing to notify us may impact your eligibility for financial aid at future eve
       "The grant application form is currently closed. Unfortunately we can't accept new applications after our deadline.",
     "profile.myGrant.noGrant.body.openingSoon":
       "Our grant application form will open soon! Check our information page for more details.",
+    "profile.myGrant.infoLink.text":
+      "If you have any questions or doubts about the Financial Aid program, please check our info page:",
     "profile.logout": "Sign Out",
     "profile.logout.title": "Sign Out",
     "profile.logout.body": "{name}, are you sure you want to sign out?",
@@ -2039,6 +2041,8 @@ Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai
       "Il form per la richiesta di grant è al momento chiuso. Purtroppo non possiamo accettare nuove richieste dopo la scadenza.",
     "profile.myGrant.noGrant.body.openingSoon":
       "Il form per la richiesta del grant aprirà presto! Visita la nostra pagina informativa per ulteriori dettagli.",
+    "profile.myGrant.infoLink.text":
+      "Se hai domande o dubbi sul programma di supporto, consulta la nostra pagina informativa:",
     "profile.editProfile.generalInformation": "Informazioni generali",
     "profile.editProfile.emailPreferences": "Preferenze Email",
     "profile.tickets.attendeeName": "Nome partecipante",

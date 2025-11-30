@@ -2,6 +2,7 @@ import {
   Button,
   Grid,
   GridColumn,
+  Link,
   Spacer,
   Text,
   VerticalStack,
@@ -128,6 +129,13 @@ export const MyGrant = ({ grant, deadline }: Props) => {
                 <FormattedMessage id="profile.myGrant.manage.warning" />
               </Text>
             )}
+
+            <Text>
+              <FormattedMessage id="profile.myGrant.infoLink.text" />{" "}
+              <Link href="https://pycon.it/grants-info" target="_blank">
+                pycon.it/grants-info
+              </Link>
+            </Text>
           </VerticalStack>
         </GridColumn>
       </Grid>
