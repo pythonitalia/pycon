@@ -7,6 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('conferences', '0054_conference_frontend_revalidate_secret_and_more'),
+        ('grants', '0030_remove_grant_accommodation_amount_and_more'),
     ]
 
     operations = [

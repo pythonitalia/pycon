@@ -56,8 +56,11 @@ def create_grant_card(request, user, conference):
                                     "componentText": {
                                         "textColor": "NORMAL",
                                         "text": (
-                                            grant.get_approved_type_display()
-                                            if grant.approved_type
+                                            ", ".join(
+                                                r.category.name
+                                                for r in grant.reimbursements.all()
+                                            )
+                                            if grant.reimbursements.exists()
                                             else "Empty"
                                         ),
                                     }
@@ -81,7 +84,7 @@ def create_grant_card(request, user, conference):
                                     {
                                         "componentText": {
                                             "textColor": "NORMAL",
-                                            "text": f"€{grant.travel_amount}",
+                                            "text": f"€{sum(r.granted_amount for r in grant.reimbursements.filter(category__category='travel'))}",
                                         }
                                     }
                                 ],

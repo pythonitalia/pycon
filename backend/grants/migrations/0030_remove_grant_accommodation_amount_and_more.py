@@ -132,7 +132,7 @@ def reverse_migration(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('conferences', '0055_remove_conference_grants_default_accommodation_amount_and_more'),
+        ('conferences', '0054_conference_frontend_revalidate_secret_and_more'),
         ('grants', '0029_alter_grant_pending_status'),
     ]
 

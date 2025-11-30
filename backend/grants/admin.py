@@ -5,8 +5,7 @@ from typing import Dict, List, Optional
 from django.contrib import admin, messages
 from django.contrib.admin import SimpleListFilter
 from django.db import transaction
-from django.db.models import Exists, IntegerField, OuterRef, Sum, Value
-from django.db.models.functions import Coalesce
+from django.db.models import Exists, OuterRef
 from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.utils import timezone
@@ -172,24 +171,10 @@ class GrantResource(ModelResource):
 
 
 def _check_amounts_are_not_empty(grant: Grant, request):
-    if grant.total_amount is None:
+    if grant.total_allocated_amount == 0:
         messages.error(
             request,
             f"Grant for {grant.name} is missing 'Total Amount'!",
-        )
-        return False
-
-    if grant.has_approved_accommodation() and grant.accommodation_amount is None:
-        messages.error(
-            request,
-            f"Grant for {grant.name} is missing 'Accommodation Amount'!",
-        )
-        return False
-
-    if grant.has_approved_travel() and grant.travel_amount is None:
-        messages.error(
-            request,
-            f"Grant for {grant.name} is missing 'Travel Amount'!",
         )
         return False
 
@@ -216,10 +201,10 @@ def send_reply_emails(modeladmin, request, queryset):
 
     for grant in queryset:
         if grant.status in (Grant.Status.approved,):
-            if grant.approved_type is None:
+            if not grant.reimbursements.exists():
                 messages.error(
                     request,
-                    f"Grant for {grant.name} is missing 'Grant Approved Type'!",
+                    f"Grant for {grant.name} is missing reimbursement categories!",
                 )
                 return
 
@@ -662,11 +647,6 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                         conference_id=OuterRef("conference_id"),
                         requester_id=OuterRef("user_id"),
                     )
-                ),
-                total_allocated_amount=Coalesce(
-                    Sum("reimbursements__granted_amount"),
-                    Value(0),
-                    output_field=IntegerField(),
                 ),
             )
         )
