@@ -193,7 +193,7 @@ def test_cannot_update_a_grant_as_unlogged_user(graphql_client):
     assert resp["errors"][0]["message"] == "User not logged in"
 
 
-def test_cannot_update_submission_with_lang_outside_allowed_values(
+def test_cannot_update_grant_outside_allowed_values(
     graphql_client,
     user,
 ):
@@ -211,14 +211,23 @@ def test_cannot_update_submission_with_lang_outside_allowed_values(
         graphql_client,
         grant=grant,
         name="Marcotte" * 50,
+        fullName="Marcotte" * 50,
         departureCountry="Very long location" * 50,
         nationality="Freedonia" * 50,
         departureCity="Emerald City " * 50,
+        why="Very long why" * 100,
+        pythonUsage="Very long python usage" * 100,
+        beenToOtherEvents="Very long been to other events" * 100,
+        communityContribution="Very long community contribution" * 100,
+        notes="Very long notes" * 100,
     )
 
     assert response["data"]["updateGrant"]["__typename"] == "GrantErrors"
     assert response["data"]["updateGrant"]["errors"]["validationName"] == [
         "name: Cannot be more than 300 chars"
+    ]
+    assert response["data"]["updateGrant"]["errors"]["validationFullName"] == [
+        "full_name: Cannot be more than 300 chars"
     ]
     assert response["data"]["updateGrant"]["errors"]["validationDepartureCountry"] == [
         "departure_country: Cannot be more than 100 chars"
@@ -228,4 +237,54 @@ def test_cannot_update_submission_with_lang_outside_allowed_values(
     ]
     assert response["data"]["updateGrant"]["errors"]["validationDepartureCity"] == [
         "departure_city: Cannot be more than 100 chars"
+    ]
+    assert response["data"]["updateGrant"]["errors"]["validationWhy"] == [
+        "why: Cannot be more than 1000 chars"
+    ]
+    assert response["data"]["updateGrant"]["errors"]["validationPythonUsage"] == [
+        "python_usage: Cannot be more than 700 chars"
+    ]
+    assert response["data"]["updateGrant"]["errors"]["validationBeenToOtherEvents"] == [
+        "been_to_other_events: Cannot be more than 500 chars"
+    ]
+    assert response["data"]["updateGrant"]["errors"][
+        "validationCommunityContribution"
+    ] == ["community_contribution: Cannot be more than 900 chars"]
+    assert response["data"]["updateGrant"]["errors"]["validationNotes"] == [
+        "notes: Cannot be more than 350 chars"
+    ]
+
+
+def test_cannot_update_grant_with_empty_values_if_needs_funds_for_travel(
+    graphql_client,
+    user,
+):
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(
+        active_grants=True,
+    )
+
+    grant = GrantFactory(
+        user_id=user.id,
+        conference=conference,
+    )
+
+    response = _update_grant(
+        graphql_client,
+        grant=grant,
+        needsFundsForTravel=True,
+        departureCountry="",
+        departureCity="",
+        nationality="",
+    )
+
+    assert response["data"]["updateGrant"]["__typename"] == "GrantErrors"
+    assert response["data"]["updateGrant"]["errors"]["validationDepartureCountry"] == [
+        "departure_country: Cannot be empty"
+    ]
+    assert response["data"]["updateGrant"]["errors"]["validationDepartureCity"] == [
+        "departure_city: Cannot be empty"
+    ]
+    assert response["data"]["updateGrant"]["errors"]["validationNationality"] == [
+        "nationality: Cannot be empty"
     ]
