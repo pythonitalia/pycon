@@ -479,7 +479,7 @@ Failing to notify us may impact your eligibility for financial aid at future eve
     "fileInput.uploading": "Uploading...",
     "cfp.grantsLabel": "Do you need a grant?",
     "cfp.grantsCheckbox":
-      "If financial support is needed for attending the conference, {grantsCta}! We won't accept grant requests after the grants deadline. Make sure you submit your proposal as well.",
+      "If financial support is needed for attending the conference, {grantsCta}! Submit your grant request immediately, don't wait for your proposal outcome. We won't accept grant requests after the grants deadline.",
     "cfp.grantsCta": "click here to open a separate page to request a grant",
     "header.coronaVirus":
       "🚨 Update regarding COVID-19 - Conference cancelled 😢",
@@ -1301,7 +1301,7 @@ The sooner you buy your ticket, the more you save!`,
     "cfp.titleDescription": "Il titolo della tua proposta",
     "cfp.introductionHeading": "Invia una proposta",
     "cfp.introductionCopy":
-      "PyCon Italia è alla ricerca di speakers con ogni background per contribuire al nostro progamma. Se usi Python professionalmente, come hobbista o se semplicemente sei un appassionato di Python o programmazione, proponi un talk! Vogliamo sentire ciò che hai da condividere!",
+      "PyCon Italia è alla ricerca di speakers con ogni background per contribuire al nostro progamma. Se usi Python professionalmente, come hobbista o se semplicemente ti appassiona Python o la programmazione, proponi un talk! Vogliamo sentire ciò che hai da condividere!",
     "cfp.introductionDeadline":
       "Hai tempo fino al {deadline} per inviare una proposta!",
     "cfp.yourProposals": "Le tue proposte",
@@ -1477,7 +1477,7 @@ The sooner you buy your ticket, the more you save!`,
       "Hai fino al {deadline} per inviare la tua richiesta!",
     "grants.comingSoon": "Il form per i grant apre il {start}!",
     "grants.closed":
-      "Il form per richiede grant è chiuso! Se hai inviato una richiesta sarai contattato nelle prossime settimane con l'esito.",
+      "Il form per richiedere grant è chiuso! Se hai inviato una richiesta ti contatteremo nelle prossime settimane con l'esito.",
 
     "grants.alreadySubmitted":
       "Hai gia' richiesto un grant! Clicca {linkGrant} per editarlo.",
@@ -1486,7 +1486,7 @@ The sooner you buy your ticket, the more you save!`,
     "grants.form.needToBeLoggedIn":
       "Devi effettuare l'accesso per chiedere un grant",
     "grants.form.title": "Chiedi un grant",
-    "grants.form.description": `Benvenuto/a al modulo di domanda per il grant di PyCon Italia!
+    "grants.form.description": `Questo è il modulo di domanda per il grant di PyCon Italia!
 
 Avendo ricevuto molte domande in passato e operando con un budget limitato, ti chiediamo di dedicare un momento per raccontarci di te e le ragioni per cui stai cercando un grant. Le tue riflessioni sono preziose per noi. Non esiste una risposta sbagliata, e una risposta ben ponderata può fare davvero la differenza.
 
@@ -1509,12 +1509,12 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia!
       "Il nome come appare sul passaporto, sulla carta d'identità e su altri documenti legali. Questa informazione è essenziale per l'elaborazione dell'eventuale grant assegnato.",
     "grants.form.fields.name": "Nome",
     "grants.form.fields.name.description":
-      "Il nome che usi quotidianamente o come preferisci essere chiamato/a nel caso in cui abbiamo bisogno di contattarti.",
+      "Il nome che usi quotidianamente o come preferisci che ci rivolgiamo a te nel caso in cui abbiamo bisogno di contattarti.",
     "grants.form.fields.nationality": "Qual è la tua nazionalità?",
     "grants.form.fields.nationality.description": "Indica la tua nazionalità.",
     "grants.form.fields.ageGroup": "Fascia d'età",
     "grants.form.fields.ageGroup.description":
-      "Seleziona la tua fascia d'età. Questo ci aiuta a comprendere la distribuzione demografica dei nostri candidati.",
+      "Seleziona la tua fascia d'età. Questo ci aiuta a comprendere la distribuzione demografica delle persone che fanno richiesta.",
     "grants.form.fields.ageGroup.values.range_under_18": "meno di 18 anni",
     "grants.form.fields.ageGroup.values.range_18_24": "18 - 24 anni",
     "grants.form.fields.ageGroup.values.range_25_34": "25 - 34 anni",
@@ -1525,11 +1525,10 @@ Non vediamo l'ora di leggere la tua storia e speriamo di vederti a PyCon Italia!
     "grants.form.fields.occupation": "Occupazione",
     "grants.form.fields.occupation.description":
       "Seleziona la propria attuale occupazione.",
-    "grants.form.fields.occupation.values.developer":
-      "Sviluppatore/Sviluppatrice",
-    "grants.form.fields.occupation.values.student": "Studente/Studentessa",
+    "grants.form.fields.occupation.values.developer": "Sviluppo software",
+    "grants.form.fields.occupation.values.student": "In formazione",
     "grants.form.fields.occupation.values.researcher": "Ricerca",
-    "grants.form.fields.occupation.values.unemployed": "Disoccupato/a",
+    "grants.form.fields.occupation.values.unemployed": "In cerca di lavoro",
     "grants.form.fields.occupation.values.other": "Altro",
     "grants.form.fields.grantType":
       "Seleziona tutte le categorie di grant che si applicano a te",
@@ -1548,7 +1547,7 @@ Nota: Se hai inviato una proposta di talk/workshop, non è necessario richiedere
     "grants.form.fields.needsFundsForTravel":
       "Hai bisogno di aiuti finanziari per le spese di viaggio a Pycon Italia?",
     "grants.form.fields.needsFundsForTravel.description":
-      "I fondi a nostra disposizione sono limitati, ma faremo il possibile per aiutare tutti i richiedenti. Richiedi questo aiuto solo se ti è strettamente necessario!",
+      "I fondi a nostra disposizione sono limitati, ma faremo il possibile per aiutare tutte le persone che ne fanno richiesta. Richiedi questo aiuto solo se ti è strettamente necessario!",
     "grants.form.fields.needVisa":
       "Hai bisogno di una lettera d'invito per la domanda di visto?",
     "grants.form.fields.needVisa.description":
@@ -1560,24 +1559,24 @@ Nota: Se hai inviato una proposta di talk/workshop, non è necessario richiedere
     "grants.form.fields.why":
       "Perché stai richiedendo un grant per PyCon Italia?",
     "grants.form.fields.why.description":
-      "Descrivere brevemente perché si sta richiedendo un grant. Per favore, limita la risposta a 200 parole circa.",
+      "Descrivere brevemente perché si sta richiedendo un grant.",
     "grants.form.fields.pythonUsage": "Per cosa usi Python?",
     "grants.form.fields.pythonUsage.description":
-      "Come usi Python? Lo stai studiando, lo usi per lavoro o come hobby? Per favore, limita la risposta a circa 200 parole.",
+      "Come usi Python? Lo stai studiando, lo usi per lavoro o come hobby?",
     "grants.form.fields.beenToOtherEvents":
       "Hai partecipato a PyCon Italia o ad altri eventi legati a Python? Se sì, quali?",
     "grants.form.fields.beenToOtherEvents.description":
       "Per favore, limita la risposta a circa 200 parole.",
     "grants.form.fields.communityContribution":
-      "Sei stato coinvolto/a nel contribuire alla comunità Python o nell'organizzare eventi, conferenze o meetup legati a Python?",
+      "Hai contribuito alla comunità Python o organizzato eventi, conferenze o meetup legati a Python?",
     "grants.form.fields.communityContribution.description":
-      "Che si tratti di programmazione, insegnamento, scrittura, parlare a eventi, o semplicemente essere un appassionato/a apprendista, ci piacerebbe sentire del tuo impegno con Python. Queste informazioni ci aiutano a comprendere la tua connessione con la comunità, ma è completamente normale se sei nuovo/a a Python o non hai avuto queste opportunità. Si prega di limitare la risposta a circa 200 parole.",
+      "Che si tratti di programmazione, insegnamento, scrittura, parlare a eventi, o semplicemente essere appassionati di Python e in fase di apprendimento, ci piacerebbe sentire del tuo impegno con Python. Queste informazioni ci aiutano a comprendere la tua connessione con la comunità, ma è completamente normale se stai iniziando con Python o non hai avuto queste opportunità.",
     "grants.form.fields.gender": "Sesso",
     "grants.form.fields.gender.description":
       "Rispettiamo la tua privacy. Se sei a tuo agio nel condividerlo, indica il tuo genere. Questo è facoltativo e ci aiuta a garantire diversità e inclusività.",
     "grants.form.fields.notes": "Qualcos'altro da aggiungere?",
     "grants.form.fields.notes.description":
-      "Sentiti libero/a di condividere qualsiasi informazione aggiuntiva o commento che ritieni possa essere rilevante per la tua candidatura. Per favore, limita la risposta a circa 200 parole.",
+      "Puoi condividere qualsiasi informazione aggiuntiva o commento che ritieni possa essere rilevante per la tua candidatura.",
     "grants.form.fields.website": "URL del sito web",
     "grants.form.fields.twitterHandle": "Handle Twitter",
     "grants.form.fields.githubHandle": "Profilo GitHub",
@@ -1853,7 +1852,7 @@ Il tuo voto ci aiuterà a creare un programma che più rispecchia ciò che la co
     "cfp.speakerFacebookUrlDescription": "Profilo Facebook URL",
     "cfp.speakerMastodonHandleDescription": "Mastodon Handle",
     "cfp.grantsCheckbox":
-      "Se supporto finanziario da parte di PyCon Italia è necessario per partecipare, {grantsCta}! Non accetteremo richieste di grant dopo la scadenza della deadline per i grant. Assicurati di inviare la tua proposal.",
+      "Se hai bisogno di supporto finanziario da parte di PyCon Italia per partecipare, {grantsCta}! Invia subito la richiesta di grant, non aspettare l'esito della tua proposta. Non accetteremo richieste di grant dopo la deadline.",
 
     "cfp.grantsCta":
       "clicca qui per aprire una pagina separata per inviarci una richiesta di grant",
@@ -2001,7 +2000,7 @@ Affrettati a comprare il biglietto!`,
     "profile.myGrant.manage": "Gestisci",
     "profile.myGrant.manage.warning": `Se per qualsiasi motivo non puoi più partecipare alla conferenza, ti preghiamo di comunicarcelo al più presto cliccando sul pulsante 'Gestisci' per rifiutare il grant.
 
-Il mancato avviso potrebbe influire sulla tua idoneità a ricevere assistenza finanziaria per eventi futuri.`,
+Il mancato avviso potrebbe influire sulla tua idoneità a ricevere supporto finanziario per eventi futuri.`,
     "profile.myGrant.status": "Stato",
     "profile.myGrant.status.pending": "In attesa",
     "profile.myGrant.status.pending.nextSteps":
@@ -2236,7 +2235,7 @@ Mettiamoci in contatto per trovare la soluzione migliore per le esigenze della t
 
     "sponsorLeadModal.consentToContactViaEmail.heading": "Contattami via email",
     "sponsorLeadModal.consentToContactViaEmail.body":
-      "Do il mio permesso per essere contattato/a via email per discutere opportunità di sponsorizzazione.",
+      "Do il mio permesso per ricevere comunicazioni via email per discutere opportunità di sponsorizzazione.",
 
     "orderQuestions.attendeeGivenName": "Nome partecipante",
     "orderQuestions.attendeeGivenName.placeholder": "Il tuo nome, e.g. Ada",
