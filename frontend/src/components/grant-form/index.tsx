@@ -544,6 +544,7 @@ export const GrantForm = ({
                 required={true}
                 placeholder={inputPlaceholderText}
                 errors={getErrors("why")}
+                maxLength={1000}
               />
             </InputWrapper>
           </Grid>
@@ -586,7 +587,7 @@ export const GrantForm = ({
           {formState.values.needsFundsForTravel === "true" && (
             <>
               <InputWrapper
-                required={false}
+                required={true}
                 title={
                   <FormattedMessage id="grants.form.fields.departureCountry" />
                 }
@@ -615,7 +616,7 @@ export const GrantForm = ({
               </InputWrapper>
 
               <InputWrapper
-                required={false}
+                required={true}
                 title={
                   <FormattedMessage id="grants.form.fields.departureCity" />
                 }
@@ -658,6 +659,7 @@ export const GrantForm = ({
                 required={true}
                 placeholder={inputPlaceholderText}
                 errors={getErrors("pythonUsage")}
+                maxLength={700}
               />
             </InputWrapper>
 
@@ -676,6 +678,7 @@ export const GrantForm = ({
                 required={true}
                 errors={getErrors("beenToOtherEvents")}
                 placeholder={inputPlaceholderText}
+                maxLength={500}
               />
             </InputWrapper>
 
@@ -694,6 +697,7 @@ export const GrantForm = ({
                 required={false}
                 errors={getErrors("communityContribution")}
                 placeholder={inputPlaceholderText}
+                maxLength={900}
               />
             </InputWrapper>
           </Grid>
@@ -739,6 +743,7 @@ export const GrantForm = ({
                 {...textarea("notes")}
                 errors={getErrors("notes")}
                 placeholder={inputPlaceholderText}
+                maxLength={350}
               />
             </InputWrapper>
           </Grid>
@@ -753,7 +758,9 @@ export const GrantForm = ({
         photoRequired={false}
         getParticipantValidationError={(field) =>
           getErrors(
-            `validationSpeaker${field[0].toUpperCase()}${field.substring(1)}` as any,
+            `validationSpeaker${field[0].toUpperCase()}${field.substring(
+              1,
+            )}` as any,
           )
         }
         showPhotoField={false}

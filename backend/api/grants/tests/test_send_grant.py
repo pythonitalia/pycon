@@ -1,12 +1,12 @@
-from privacy_policy.models import PrivacyPolicyAcceptanceRecord
-from conferences.tests.factories import ConferenceFactory
-from grants.tests.factories import GrantFactory
 import pytest
-from participants.models import Participant
+
+from conferences.tests.factories import ConferenceFactory
 from grants.models import Grant
+from grants.tests.factories import GrantFactory
 from notifications.models import EmailTemplateIdentifier
 from notifications.tests.factories import EmailTemplateFactory
-
+from participants.models import Participant
+from privacy_policy.models import PrivacyPolicyAcceptanceRecord
 
 pytestmark = pytest.mark.django_db
 
@@ -91,7 +91,9 @@ def _send_grant(client, conference, conference_code=None, **kwargs):
     return response
 
 
-def test_send_grant(graphql_client, user, mocker, django_capture_on_commit_callbacks, sent_emails):
+def test_send_grant(
+    graphql_client, user, mocker, django_capture_on_commit_callbacks, sent_emails
+):
     graphql_client.force_login(user)
     conference = ConferenceFactory(active_grants=True)
     EmailTemplateFactory(
@@ -120,13 +122,16 @@ def test_send_grant(graphql_client, user, mocker, django_capture_on_commit_callb
     # Verify that the correct email template was used and email was sent
     emails_sent = sent_emails()
     assert emails_sent.count() == 1
-    
+
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.grant_application_confirmation
+    assert (
+        sent_email.email_template.identifier
+        == EmailTemplateIdentifier.grant_application_confirmation
+    )
     assert sent_email.email_template.conference == conference
     assert sent_email.recipient == user
     assert sent_email.recipient_email == user.email
-    
+
     # Verify placeholders were processed correctly
     assert sent_email.placeholders["user_name"] == user.full_name
 
@@ -238,6 +243,11 @@ def test_cannot_send_grant_outside_allowed_values(
         departureCountry="Very long location" * 50,
         nationality="Freedonia" * 50,
         departureCity="Emerald City " * 50,
+        why="Very long why" * 100,
+        pythonUsage="Very long python usage" * 100,
+        beenToOtherEvents="Very long been to other events" * 100,
+        communityContribution="Very long community contribution" * 100,
+        notes="Very long notes" * 100,
     )
 
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
@@ -252,6 +262,21 @@ def test_cannot_send_grant_outside_allowed_values(
     ]
     assert response["data"]["sendGrant"]["errors"]["validationDepartureCity"] == [
         "departure_city: Cannot be more than 100 chars"
+    ]
+    assert response["data"]["sendGrant"]["errors"]["validationWhy"] == [
+        "why: Cannot be more than 1000 chars"
+    ]
+    assert response["data"]["sendGrant"]["errors"]["validationPythonUsage"] == [
+        "python_usage: Cannot be more than 700 chars"
+    ]
+    assert response["data"]["sendGrant"]["errors"]["validationBeenToOtherEvents"] == [
+        "been_to_other_events: Cannot be more than 500 chars"
+    ]
+    assert response["data"]["sendGrant"]["errors"][
+        "validationCommunityContribution"
+    ] == ["community_contribution: Cannot be more than 900 chars"]
+    assert response["data"]["sendGrant"]["errors"]["validationNotes"] == [
+        "notes: Cannot be more than 350 chars"
     ]
 
 
@@ -276,6 +301,36 @@ def test_cannot_send_grant_with_empty_values(
     assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
     assert response["data"]["sendGrant"]["errors"]["validationFullName"] == [
         "full_name: Cannot be empty"
+    ]
+
+
+def test_cannot_send_grant_with_empty_values_if_needs_funds_for_travel(
+    graphql_client,
+    user,
+):
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(
+        active_grants=True,
+    )
+
+    response = _send_grant(
+        graphql_client,
+        conference,
+        needsFundsForTravel=True,
+        departureCountry="",
+        departureCity="",
+        nationality="",
+    )
+
+    assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
+    assert response["data"]["sendGrant"]["errors"]["validationDepartureCountry"] == [
+        "departure_country: Cannot be empty"
+    ]
+    assert response["data"]["sendGrant"]["errors"]["validationDepartureCity"] == [
+        "departure_city: Cannot be empty"
+    ]
+    assert response["data"]["sendGrant"]["errors"]["validationNationality"] == [
+        "nationality: Cannot be empty"
     ]
 
 

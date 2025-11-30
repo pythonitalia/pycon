@@ -1,28 +1,21 @@
 from dataclasses import asdict
 from enum import Enum
-from typing import Annotated, Union, Optional
-from participants.models import Participant
+from typing import Annotated, Optional, Union
 
-from privacy_policy.record import record_privacy_policy_acceptance
 import strawberry
-from strawberry.types import Info
 from django.db import transaction
-from api.grants.types import (
-    AgeGroup,
-    Grant,
-    GrantType,
-    Occupation,
-)
+from strawberry.types import Info
+
+from api.grants.types import AgeGroup, Grant, GrantType, Occupation
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType
 from conferences.models.conference import Conference
-from grants.tasks import (
-    notify_new_grant_reply_slack,
-)
 from grants.models import Grant as GrantModel
-from users.models import User
-from grants.tasks import get_name
+from grants.tasks import get_name, notify_new_grant_reply_slack
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
+from participants.models import Participant
+from privacy_policy.record import record_privacy_policy_acceptance
+from users.models import User
 
 
 @strawberry.type
@@ -76,6 +69,11 @@ class BaseGrantInput:
             "departure_country": 100,
             "nationality": 100,
             "departure_city": 100,
+            "why": 1000,
+            "python_usage": 700,
+            "been_to_other_events": 500,
+            "community_contribution": 900,
+            "notes": 350,
         }
         for field, max_length in max_length_fields.items():
             value = getattr(self, field, "")
@@ -86,13 +84,17 @@ class BaseGrantInput:
                     f"{field}: Cannot be more than {max_length} chars",
                 )
 
-        non_empty_fields = (
+        non_empty_fields = [
             "full_name",
             "python_usage",
             "been_to_other_events",
             "why",
             "grant_type",
-        )
+        ]
+        if self.needs_funds_for_travel:
+            non_empty_fields.extend(
+                ["departure_country", "departure_city", "nationality"]
+            )
 
         for field in non_empty_fields:
             value = getattr(self, field, "")
