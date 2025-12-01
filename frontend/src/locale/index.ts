@@ -1301,7 +1301,7 @@ The sooner you buy your ticket, the more you save!`,
     "cfp.titleDescription": "Il titolo della tua proposta",
     "cfp.introductionHeading": "Invia una proposta",
     "cfp.introductionCopy":
-      "PyCon Italia è alla ricerca di speakers con ogni background per contribuire al nostro progamma. Se usi Python professionalmente, come hobbista o se semplicemente ti appassiona Python o la programmazione, proponi un talk! Vogliamo sentire ciò che hai da condividere!",
+      "PyCon Italia è alla ricerca di speakers con ogni background per contribuire al nostro programma. Se usi Python professionalmente, come hobbista o semplicemente ti appassiona Python o la programmazione, proponi un talk! Vogliamo sentire ciò che hai da condividere!",
     "cfp.introductionDeadline":
       "Hai tempo fino al {deadline} per inviare una proposta!",
     "cfp.yourProposals": "Le tue proposte",
@@ -1314,7 +1314,7 @@ The sooner you buy your ticket, the more you save!`,
     "cfp.audienceLevelDescription": "Che genere di audience ti aspetti?",
     "cfp.abstractLabel": "Descrizione",
     "cfp.abstractDescription":
-      "Questa descrizione verrà mostrata sia ad organizzatori e partecipanti. Dovesti rendere la descrizione il più completa ed interessante possibile - ricordati, stai vendendo la tua idea sia agli organizzatori che ai partecipanti",
+      "Questa descrizione verrà mostrata sia ad organizzatori e partecipanti. Dovresti rendere la descrizione il più completa ed interessante possibile - ricordati, stai vendendo la tua idea sia agli organizzatori che ai partecipanti",
     "cfp.notesLabel": "Note",
     "cfp.notesDescription":
       "Le note sono visibili solo agli organizzatori. È qui che dovresti indicare cose come i requisiti tecnici necessari per l'intervento.",
@@ -1337,7 +1337,7 @@ The sooner you buy your ticket, the more you save!`,
     "cfp.cannotEdit": "Non puoi modificare questa submission",
     "cfp.validationErrors": "Alcuni campi non sono corretti",
     "cfp.speakerLevel": "Esperienza",
-    "cfp.speakerLevel.new": "Appena iniziato",
+    "cfp.speakerLevel.new": "Nuovo speaker",
     "cfp.speakerLevel.intermediate": "Ho fatto qualche talk (più di 5 talks)",
     "cfp.speakerLevel.experienced": "Ho fatto molti talk (più di 15 talks)",
     "cfp.speakerLevelDescription":
@@ -1646,8 +1646,8 @@ Se questo nuovo orario non dovesse andare bene per te, per favore non esitare a 
       Grazie a tutti coloro che hanno trovato il tempo per condividere le proprie preferenze
       votando i talk. Il vostro impegno e i vostri contributi ci aiuteranno moltissimo nella
       definizione del programma per la prossima edizione di PyCon Italia! 🙏 {br}
-      In totale quest'anno abbiamo ricevuto {proposalNumber} proposte, da {speakersNumber}
-      fantastici potenziali speakers!
+      In totale quest'anno abbiamo ricevuto {proposalNumber} proposte da {speakersNumber}
+      persone che si sono proposte come speaker!
       {br}{br}
       La seguente classifica di talk è stata generata in maniera automatica, considerando
       esclusivamente le preferenze espresse in fase di votazione comunitaria. Il punteggio
