@@ -34,7 +34,7 @@ def cms_page(
         from conferences.models import Conference
 
         # hack so we can go live with this feature for now :)
-        conference = Conference.objects.get(code="pycon2025")
+        conference = Conference.objects.get(code="pycon2026")
 
         user = info.context.request.user
         can_see_page = user.is_authenticated and user_has_admission_ticket(
