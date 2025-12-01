@@ -184,18 +184,6 @@ class ConferenceAdmin(
                 )
             },
         ),
-        (
-            "Grants",
-            {
-                "fields": (
-                    "grants_default_ticket_amount",
-                    "grants_default_accommodation_amount",
-                    "grants_default_travel_from_italy_amount",
-                    "grants_default_travel_from_europe_amount",
-                    "grants_default_travel_from_extra_eu_amount",
-                )
-            },
-        ),
         ("YouTube", {"fields": ("video_title_template", "video_description_template")}),
     )
     inlines = [DeadlineInline, DurationInline, SponsorLevelInline, IncludedEventInline]
