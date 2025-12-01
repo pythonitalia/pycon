@@ -1301,7 +1301,7 @@ The sooner you buy your ticket, the more you save!`,
     "cfp.titleDescription": "Il titolo della tua proposta",
     "cfp.introductionHeading": "Invia una proposta",
     "cfp.introductionCopy":
-      "PyCon Italia è alla ricerca di speakers con ogni background per contribuire al nostro progamma. Se usi Python professionalmente, come hobbista o se semplicemente ti appassiona Python o la programmazione, proponi un talk! Vogliamo sentire ciò che hai da condividere!",
+      "PyCon Italia è alla ricerca di speakers con ogni background per contribuire al nostro programma. Se usi Python professionalmente, come hobbista o semplicemente ti appassiona Python o la programmazione, proponi un talk! Vogliamo sentire ciò che hai da condividere!",
     "cfp.introductionDeadline":
       "Hai tempo fino al {deadline} per inviare una proposta!",
     "cfp.yourProposals": "Le tue proposte",
