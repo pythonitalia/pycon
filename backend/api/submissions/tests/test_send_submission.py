@@ -141,7 +141,12 @@ def _submit_proposal(client, conference, submission, **kwargs):
 
 
 def test_submit_talk(
-    graphql_client, user, django_capture_on_commit_callbacks, mocker, settings, sent_emails
+    graphql_client,
+    user,
+    django_capture_on_commit_callbacks,
+    mocker,
+    settings,
+    sent_emails,
 ):
     settings.FRONTEND_URL = "http://testserver"
     mock_notify = mocker.patch("api.submissions.mutations.notify_new_cfp_submission")
@@ -221,17 +226,23 @@ def test_submit_talk(
     # Verify that the correct email template was used and email was sent
     emails_sent = sent_emails()
     assert emails_sent.count() == 1
-    
+
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.proposal_received_confirmation
+    assert (
+        sent_email.email_template.identifier
+        == EmailTemplateIdentifier.proposal_received_confirmation
+    )
     assert sent_email.email_template.conference == conference
     assert sent_email.recipient == user
     assert sent_email.recipient_email == user.email
-    
+
     # Verify placeholders were processed correctly
     assert sent_email.placeholders["user_name"] == user.full_name
     assert sent_email.placeholders["proposal_title"] == "English"
-    assert sent_email.placeholders["proposal_url"] == f"http://testserver/submission/{talk.hashid}"
+    assert (
+        sent_email.placeholders["proposal_url"]
+        == f"http://testserver/submission/{talk.hashid}"
+    )
 
 
 def test_submit_talk_with_photo_to_upload(graphql_client, user, mocker):
@@ -1224,3 +1235,39 @@ def test_submit_talk_with_no_tags_fails(graphql_client, user):
         "You need to add at least one tag"
         in resp["data"]["sendSubmission"]["errors"]["validationTags"]
     )
+
+
+def test_cannot_submit_more_than_3_proposals(graphql_client, user):
+    graphql_client.force_login(user)
+
+    conference = ConferenceFactory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    SubmissionFactory(
+        speaker_id=user.id,
+        conference=conference,
+        status=Submission.STATUS.proposed,
+    )
+    SubmissionFactory(
+        speaker_id=user.id,
+        conference=conference,
+        status=Submission.STATUS.proposed,
+    )
+    SubmissionFactory(
+        speaker_id=user.id,
+        conference=conference,
+        status=Submission.STATUS.proposed,
+    )
+
+    resp, _ = _submit_talk(graphql_client, conference, title={"en": "My first talk"})
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert resp["data"]["sendSubmission"]["errors"]["nonFieldErrors"] == [
+        "You can only submit up to 3 proposals"
+    ]
