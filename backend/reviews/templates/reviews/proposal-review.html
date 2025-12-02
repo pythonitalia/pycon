@@ -1,0 +1,178 @@
+{% extends 'reviews/base/review_base.html' %}
+
+{% block additional_summary %}
+<p><strong>Speaker:</strong> {{ speaker.display_name }}</p>
+<p><strong>Languages:</strong>
+    {% for language in languages %}
+        {{ language.name }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+</p>
+{% endblock %}
+
+{% block main_content %}
+<div class="proposal-details">
+    <h3>{{ proposal.title.localize:'en' }}</h3>
+
+    {% if proposal.elevator_pitch %}
+    <div class="section">
+        <h4>Elevator Pitch</h4>
+        <p>{{ proposal.elevator_pitch.localize:'en'|linebreaks }}</p>
+    </div>
+    {% endif %}
+
+    {% if proposal.abstract %}
+    <div class="section">
+        <h4>Abstract</h4>
+        <div>{{ proposal.abstract.localize:'en'|linebreaks }}</div>
+    </div>
+    {% endif %}
+
+    {% if proposal.notes %}
+    <div class="section">
+        <h4>Notes</h4>
+        <div>{{ proposal.notes.localize:'en'|linebreaks }}</div>
+    </div>
+    {% endif %}
+
+    {% if proposal.tags.all %}
+    <div class="section">
+        <h4>Tags</h4>
+        <div class="tags">
+            {% for tag in proposal.tags.all %}
+                <span class="tag">{{ tag.name }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="section">
+        <h4>Details</h4>
+        <ul>
+            <li><strong>Type:</strong> {{ proposal.type.name }}</li>
+            <li><strong>Duration:</strong> {{ proposal.duration.name }}</li>
+            <li><strong>Audience Level:</strong> {{ proposal.audience_level.name }}</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block sidebar_content %}
+<div class="speaker-info">
+    <h4>Speaker Information</h4>
+    <p><strong>Name:</strong> {{ speaker.display_name }}</p>
+    <p><strong>Email:</strong> {{ speaker.email }}</p>
+
+    {% if speaker.bio %}
+    <div class="bio">
+        <h5>Bio</h5>
+        <p>{{ speaker.bio.localize:'en'|linebreaks }}</p>
+    </div>
+    {% endif %}
+
+    {% if participant %}
+    <div class="participant-info">
+        <h5>Participant Status</h5>
+        <p>Registered: {{ participant.created|date:"M d, Y" }}</p>
+    </div>
+    {% endif %}
+
+    {% if grant %}
+    <div class="grant-info">
+        <h5>Grant Application</h5>
+        <p><a href="{{ grant_link }}" target="_blank">View Grant Application</a></p>
+    </div>
+    {% endif %}
+</div>
+
+<div class="review-filters">
+    <h4>Filter Options</h4>
+    {% if tags_to_filter %}
+    <div class="filter-group">
+        <label>Exclude tags from future reviews:</label>
+        {% for tag in tags_to_filter %}
+        <label class="checkbox-label">
+            <input type="checkbox" name="exclude" value="{{ tag.id }}"
+                   {% if tag.id|stringformat:"s" in tags_already_excluded %}checked{% endif %}>
+            {{ tag.name }}
+        </label>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block review_form %}
+{% include 'reviews/components/score_selector.html' with available_scores=available_scores current_score=user_review.score %}
+
+<div class="form-group">
+    <label for="id_comment"><strong>Public Comment:</strong></label>
+    <textarea name="comment" id="id_comment" rows="4" cols="50" placeholder="Optional comment visible to other reviewers">{{ existing_comment }}</textarea>
+</div>
+
+<div class="form-group">
+    <label for="id_private_comment"><strong>Private Comment:</strong></label>
+    <textarea name="private_comment" id="id_private_comment" rows="3" cols="50" placeholder="Private notes (not visible to other reviewers)">{{ user_review.private_comment|default:private_comment }}</textarea>
+</div>
+
+<!-- Hidden fields for tracking -->
+<input type="hidden" name="seen" value="{{ seen|join:',' }}">
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+.proposal-details .section {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.proposal-details .section:last-child {
+    border-bottom: none;
+}
+
+.tags .tag {
+    display: inline-block;
+    background: #007cba;
+    color: white;
+    padding: 4px 8px;
+    margin: 2px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.speaker-info, .review-filters {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.checkbox-label {
+    display: block;
+    margin: 5px 0;
+    font-weight: normal;
+}
+
+.checkbox-label input {
+    margin-right: 8px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+}
+</style>
+{% endblock %}
