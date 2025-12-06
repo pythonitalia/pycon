@@ -54,7 +54,7 @@ def test_page(graphql_client, locale):
             "title": "Bubble",
             "slug": "bubble-tea",
             "body": [
-                {"title": "I've Got a Lovely Bunch of " "Coconuts"},
+                {"title": "I've Got a Lovely Bunch of Coconuts"},
                 {
                     "latitude": "43.766199999999997771737980656325817108154296875",  # noqa: E501
                     "longitude": "3.140000000000000124344978758017532527446746826171875",  # noqa: E501
@@ -90,7 +90,7 @@ def test_page_with_ticket_restriction_and_ticket_returns_content(
     )
     page.save_revision().publish()
     PageViewRestriction.objects.create(
-        page=page, restriction_type="password", password="ticket"
+        page=page, restriction_type="password", password="ticket-pycon2025"
     )
     SiteFactory(hostname="pycon", port=80, root_page=parent)
     page.copy_for_translation(locale=locale("it"))
@@ -161,7 +161,7 @@ def test_page_with_ticket_restriction_without_ticket_returns_first_block(
     )
     page.save_revision().publish()
     PageViewRestriction.objects.create(
-        page=page, restriction_type="password", password="ticket"
+        page=page, restriction_type="password", password="ticket-pycon2025"
     )
     SiteFactory(hostname="pycon", port=80, root_page=parent)
     page.copy_for_translation(locale=locale("it"))
@@ -197,7 +197,7 @@ def test_page_with_ticket_restriction_without_ticket_returns_first_block(
             "title": "Bubble",
             "slug": "bubble-tea",
             "body": [
-                {"title": "I've Got a Lovely Bunch of " "Coconuts"},
+                {"title": "I've Got a Lovely Bunch of Coconuts"},
             ],
         }
     }
