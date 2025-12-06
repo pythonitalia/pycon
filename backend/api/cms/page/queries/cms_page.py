@@ -30,11 +30,15 @@ def cms_page(
     )
     can_see_page = None
 
-    if password_restriction and password_restriction.password == "ticket":
+    if (
+        password_restriction
+        and password_restriction.password
+        and password_restriction.password.startswith("ticket-")
+    ):
         from conferences.models import Conference
 
-        # hack so we can go live with this feature for now :)
-        conference = Conference.objects.get(code="pycon2026")
+        conference_code = password_restriction.password.split("-")[1]
+        conference = Conference.objects.get(code=conference_code)
 
         user = info.context.request.user
         can_see_page = user.is_authenticated and user_has_admission_ticket(
