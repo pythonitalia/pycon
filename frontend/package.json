@@ -42,7 +42,7 @@
     "graphql-tag": "^2.12.6",
     "marksy": "^8.0.0",
     "moment": "^2.29.1",
-    "next": "15.4.7",
+    "next": "16.0.7",
     "next-cookies": "^2.0.3",
     "pdfkit": "^0.15.1",
     "react": "19.0.0",
