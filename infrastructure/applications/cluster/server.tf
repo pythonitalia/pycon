@@ -11,8 +11,8 @@ resource "aws_eip" "server" {
 }
 
 resource "aws_instance" "server" {
-  ami               = "ami-04a7c50b003634aa1"
-  instance_type     = local.is_prod ? "t4g.large" : "t4g.small"
+  ami               = "ami-04cca2169b789978b"
+  instance_type     = local.is_prod ? "r6g.medium" : "t4g.small"
   subnet_id         = var.public_1a_subnet_id
   availability_zone = "eu-central-1a"
   vpc_security_group_ids = [
