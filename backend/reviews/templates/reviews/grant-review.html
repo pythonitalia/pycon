@@ -1,0 +1,181 @@
+{% extends 'reviews/base/review_base.html' %}
+
+{% block additional_summary %}
+<p><strong>Applicant:</strong> {{ grant.user.display_name }}</p>
+<p><strong>Requested Amount:</strong> €{{ grant.amount_requested }}</p>
+{% endblock %}
+
+{% block main_content %}
+<div class="grant-details">
+    <h3>Grant Application: {{ grant.user.display_name }}</h3>
+
+    {% if grant.reason %}
+    <div class="section">
+        <h4>Reason for Grant</h4>
+        <p>{{ grant.reason|linebreaks }}</p>
+    </div>
+    {% endif %}
+
+    {% if grant.travel_from %}
+    <div class="section">
+        <h4>Travel Information</h4>
+        <ul>
+            <li><strong>Travelling from:</strong> {{ grant.travel_from }}</li>
+            {% if grant.accommodation_required %}
+            <li><strong>Accommodation required:</strong> {{ grant.accommodation_required|yesno:"Yes,No" }}</li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if grant.financial_need_details %}
+    <div class="section">
+        <h4>Financial Need Details</h4>
+        <p>{{ grant.financial_need_details|linebreaks }}</p>
+    </div>
+    {% endif %}
+
+    <div class="section">
+        <h4>Grant Details</h4>
+        <ul>
+            <li><strong>Amount Requested:</strong> €{{ grant.amount_requested }}</li>
+            <li><strong>Current Status:</strong> {{ grant.get_status_display }}</li>
+            {% if grant.approved_amount %}
+            <li><strong>Approved Amount:</strong> €{{ grant.approved_amount }}</li>
+            {% endif %}
+            {% if grant.approved_type %}
+            <li><strong>Approved Type:</strong> {{ grant.get_approved_type_display }}</li>
+            {% endif %}
+        </ul>
+    </div>
+
+    {% if has_sent_proposal %}
+    <div class="section proposal-status">
+        <h4>Proposal Status</h4>
+        <p>✓ This applicant has submitted a proposal for this conference</p>
+    </div>
+    {% else %}
+    <div class="section proposal-status no-proposal">
+        <h4>Proposal Status</h4>
+        <p>✗ This applicant has not submitted a proposal for this conference</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block sidebar_content %}
+<div class="applicant-info">
+    <h4>Applicant Information</h4>
+    <p><strong>Name:</strong> {{ grant.user.display_name }}</p>
+    <p><strong>Email:</strong> {{ grant.user.email }}</p>
+
+    {% if participant %}
+    <div class="participant-info">
+        <h5>Participant Status</h5>
+        <p>Registered: {{ participant.created|date:"M d, Y" }}</p>
+    </div>
+    {% endif %}
+</div>
+
+{% if previous_grants %}
+<div class="previous-grants">
+    <h4>Previous Grants</h4>
+    {% for prev_grant in previous_grants %}
+    <div class="previous-grant">
+        <p><strong>{{ prev_grant.conference.name }}</strong></p>
+        <p>Amount: €{{ prev_grant.amount_requested }}</p>
+        <p>Status: {{ prev_grant.get_status_display }}</p>
+        {% if prev_grant.approved_amount %}
+        <p>Approved: €{{ prev_grant.approved_amount }}</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="review-summary">
+    <h4>Review Summary</h4>
+    <p><strong>Application Date:</strong> {{ grant.created|date:"M d, Y" }}</p>
+    <p><strong>Last Updated:</strong> {{ grant.modified|date:"M d, Y" }}</p>
+</div>
+{% endblock %}
+
+{% block review_form %}
+{% include 'reviews/components/score_selector.html' with available_scores=available_scores current_score=user_review.score %}
+
+<div class="form-group">
+    <label for="id_comment"><strong>Public Comment:</strong></label>
+    <textarea name="comment" id="id_comment" rows="4" cols="50" placeholder="Optional comment visible to other reviewers">{{ comment }}</textarea>
+</div>
+
+<div class="form-group">
+    <label for="id_private_comment"><strong>Private Comment:</strong></label>
+    <textarea name="private_comment" id="id_private_comment" rows="3" cols="50" placeholder="Private notes (not visible to other reviewers)">{{ private_comment }}</textarea>
+</div>
+
+<!-- Hidden fields for tracking -->
+<input type="hidden" name="seen" value="{{ seen|join:',' }}">
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+.grant-details .section {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.grant-details .section:last-child {
+    border-bottom: none;
+}
+
+.proposal-status {
+    padding: 15px;
+    border-radius: 4px;
+    margin: 15px 0;
+}
+
+.proposal-status.no-proposal {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+}
+
+.proposal-status:not(.no-proposal) {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+.applicant-info, .previous-grants, .review-summary {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.previous-grant {
+    background: #f8f9fa;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border-left: 3px solid #007cba;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+}
+</style>
+{% endblock %}
