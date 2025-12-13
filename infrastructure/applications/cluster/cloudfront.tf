@@ -82,6 +82,10 @@ resource "aws_cloudfront_distribution" "application" {
       restriction_type = "none"
     }
   }
+
+  lifecycle {
+    ignore_changes = [web_acl_id]
+  }
 }
 
 output "cf_domain_name" {
