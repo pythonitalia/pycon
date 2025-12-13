@@ -3,7 +3,7 @@ from django.db import transaction
 
 from submissions.models import Submission
 from users.models import User
-from grants.models import Grant
+from grants.models import Grant, GrantReimbursementCategory
 from ordered_model.models import OrderedModel
 from visa.managers import InvitationLetterRequestQuerySet
 from model_utils.models import TimeStampedModel
@@ -108,7 +108,23 @@ class InvitationLetterRequest(TimeStampedModel):
         if not grant:
             return None
 
-        return grant.approved_type
+        # Return a string representation of approved reimbursement categories
+        # for backward compatibility with invitation letter templates
+        categories = []
+        if grant.has_approved_travel():
+            categories.append("travel")
+        if grant.has_approved_accommodation():
+            categories.append("accommodation")
+        if grant.reimbursements.filter(
+            category__category=GrantReimbursementCategory.Category.TICKET
+        ).exists():
+            categories.append("ticket")
+
+        if not categories:
+            return None
+
+        # Return a string like "ticket_travel_accommodation" for compatibility
+        return "_".join(sorted(categories)) if len(categories) > 1 else categories[0]
 
     @cached_property
     def user_grant(self):

@@ -1,11 +1,16 @@
+from decimal import Decimal
+
+import pytest
+
+from grants.tests.factories import (
+    GrantFactory,
+    GrantReimbursementFactory,
+)
 from submissions.models import Submission
 from submissions.tests.factories import SubmissionFactory
-from grants.models import Grant
-from grants.tests.factories import GrantFactory
 from users.tests.factories import UserFactory
 from visa.models import InvitationLetterRequestOnBehalfOf
 from visa.tests.factories import InvitationLetterRequestFactory
-import pytest
 
 pytestmark = pytest.mark.django_db
 
@@ -28,15 +33,22 @@ def test_request_on_behalf_of_other():
 
 
 @pytest.mark.parametrize(
-    "approved_type",
+    "categories,expected_has_accommodation,expected_has_travel,expected_type",
     [
-        Grant.ApprovedType.ticket_accommodation,
-        Grant.ApprovedType.ticket_only,
-        Grant.ApprovedType.ticket_travel,
-        Grant.ApprovedType.ticket_travel_accommodation,
+        (["ticket", "accommodation"], True, False, "accommodation_ticket"),
+        (["ticket"], False, False, "ticket"),
+        (["ticket", "travel"], False, True, "ticket_travel"),
+        (
+            ["ticket", "travel", "accommodation"],
+            True,
+            True,
+            "accommodation_ticket_travel",
+        ),
     ],
 )
-def test_request_grant_info(approved_type):
+def test_request_grant_info(
+    categories, expected_has_accommodation, expected_has_travel, expected_type
+):
     request = InvitationLetterRequestFactory(
         on_behalf_of=InvitationLetterRequestOnBehalfOf.SELF,
         email_address="example@example.org",
@@ -44,26 +56,37 @@ def test_request_grant_info(approved_type):
     grant = GrantFactory(
         conference=request.conference,
         user=request.requester,
-        approved_type=approved_type,
     )
+
+    # Create reimbursements based on categories
+    if "ticket" in categories:
+        GrantReimbursementFactory(
+            grant=grant,
+            category__conference=request.conference,
+            category__ticket=True,
+            granted_amount=Decimal("100"),
+        )
+    if "travel" in categories:
+        GrantReimbursementFactory(
+            grant=grant,
+            category__conference=request.conference,
+            category__travel=True,
+            granted_amount=Decimal("500"),
+        )
+    if "accommodation" in categories:
+        GrantReimbursementFactory(
+            grant=grant,
+            category__conference=request.conference,
+            category__accommodation=True,
+            granted_amount=Decimal("200"),
+        )
 
     assert request.user_grant == grant
     assert request.has_grant is True
-    assert request.has_accommodation_via_grant() == (
-        approved_type
-        in [
-            Grant.ApprovedType.ticket_accommodation,
-            Grant.ApprovedType.ticket_travel_accommodation,
-        ]
-    )
-    assert request.has_travel_via_grant() == (
-        approved_type
-        in [
-            Grant.ApprovedType.ticket_travel,
-            Grant.ApprovedType.ticket_travel_accommodation,
-        ]
-    )
-    assert request.grant_approved_type == approved_type
+    assert request.has_accommodation_via_grant() == expected_has_accommodation
+    assert request.has_travel_via_grant() == expected_has_travel
+    # grant_approved_type returns sorted categories joined by underscore
+    assert request.grant_approved_type == expected_type
 
 
 def test_role_for_speakers():
