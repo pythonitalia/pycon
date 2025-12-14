@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Debug
         run: |
-          echo "github.event: ${{ github.event }}"
+          echo "github.event: ${{ fromJSON(github.event) }}"
   claude:
     if: |
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
