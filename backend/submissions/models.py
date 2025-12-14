@@ -107,6 +107,12 @@ class Submission(TimeStampedModel):
         _("pending status"), choices=STATUS, max_length=20, null=True, blank=True
     )
 
+    do_not_record = models.BooleanField(
+        _("do not record"),
+        default=False,
+        help_text=_("If true, the submission will not be recorded."),
+    )
+
     objects = SubmissionQuerySet().as_manager()
 
     @property

@@ -46,6 +46,7 @@ def _update_submission(
     new_speaker_mastodon_handle="",
     new_speaker_availabilities=None,
     new_materials=None,
+    new_do_not_record=None,
 ):
     new_topic = new_topic or submission.topic
     new_audience = new_audience or submission.audience_level
@@ -59,6 +60,7 @@ def _update_submission(
     new_speaker_photo = new_speaker_photo or FileFactory().id
     new_speaker_availabilities = new_speaker_availabilities or {}
     new_materials = new_materials or []
+    new_do_not_record = new_do_not_record or submission.do_not_record
 
     return graphql_client.query(
         """
@@ -110,6 +112,7 @@ def _update_submission(
 
                 speakerLevel
                 previousTalkVideo
+                doNotRecord
             }
 
             ... on SendSubmissionErrors {
@@ -168,6 +171,7 @@ def _update_submission(
                 "speakerMastodonHandle": new_speaker_mastodon_handle,
                 "speakerAvailabilities": new_speaker_availabilities,
                 "materials": new_materials,
+                "doNotRecord": new_do_not_record,
             }
         },
     )
@@ -1256,3 +1260,39 @@ def test_edit_submission_multi_lingual_fields_required(graphql_client, user):
     ]
 
     assert submission.languages.count() == 1
+
+
+def test_update_submission_with_do_not_record_true(graphql_client, user):
+    graphql_client.force_login(user)
+
+    conference = ConferenceFactory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        conference=conference,
+        do_not_record=False,
+        tags=[
+            "python",
+        ],
+    )
+
+    graphql_client.force_login(user)
+
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_do_not_record=True,
+    )
+
+    assert response["data"]["updateSubmission"]["__typename"] == "Submission"
+    assert response["data"]["updateSubmission"]["doNotRecord"] is True
+
+    submission.refresh_from_db()
+    assert submission.do_not_record is True
