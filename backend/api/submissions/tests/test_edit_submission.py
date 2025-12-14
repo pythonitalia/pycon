@@ -1266,21 +1266,26 @@ def test_update_submission_with_do_not_record_true(graphql_client, user):
     graphql_client.force_login(user)
 
     conference = ConferenceFactory(
-        topics=("my-topic",),
-        languages=("en", "it"),
-        submission_types=("talk",),
+        topics=("life", "diy"),
+        languages=("it", "en"),
+        durations=("10", "20"),
         active_cfp=True,
-        durations=("50",),
-        audience_levels=("Beginner",),
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
     )
 
     submission = SubmissionFactory(
         speaker_id=user.id,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["it"],
+        tags=["python", "ml"],
         conference=conference,
+        speaker_level=Submission.SPEAKER_LEVELS.intermediate,
+        previous_talk_video="https://www.youtube.com/watch?v=SlPhMPnQ58k",
         do_not_record=False,
-        tags=[
-            "python",
-        ],
     )
 
     graphql_client.force_login(user)

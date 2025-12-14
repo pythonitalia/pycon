@@ -10,9 +10,9 @@ pytestmark = pytest.mark.django_db
 
 
 def test_submissions_are_random_by_user(graphql_client, mock_has_ticket):
-    user_1 = UserFactory(id=100)
-    user_2 = UserFactory(id=103)
-    user_3 = UserFactory(id=104)
+    user_1 = UserFactory()
+    user_2 = UserFactory()
+    user_3 = UserFactory()
 
     graphql_client.force_login(user_1)
 
