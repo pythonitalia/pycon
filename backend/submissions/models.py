@@ -236,6 +236,11 @@ class ProposalMaterial(TimeStampedModel):
 
 class SubmissionType(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    is_recordable = models.BooleanField(
+        _("is recordable"),
+        default=True,
+        help_text=_("If true, the proposals of this type can be recorded."),
+    )
 
     def __str__(self):
         return self.name
