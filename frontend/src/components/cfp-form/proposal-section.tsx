@@ -232,6 +232,25 @@ export const ProposalSection = ({
               placeholder={inputPlaceholder}
             />
           </InputWrapper>
+
+          <InputWrapper
+            required={false}
+            title={<FormattedMessage id="cfp.doNotRecordLabel" />}
+            description={<FormattedMessage id="cfp.doNotRecordDescription" />}
+          >
+            <label>
+              <HorizontalStack gap="small" alignItems="center">
+                <Checkbox
+                  {...checkbox("doNotRecord")}
+                  required={false}
+                  errors={getErrors("validationDoNotRecord")}
+                />
+                <Text size={2} weight="strong">
+                  <FormattedMessage id="cfp.doNotRecordCheckboxLabel" />
+                </Text>
+              </HorizontalStack>
+            </label>
+          </InputWrapper>
         </Grid>
       </CardPart>
     </MultiplePartsCard>
