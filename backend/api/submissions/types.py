@@ -39,6 +39,7 @@ def private_field() -> StrawberryField:
 class SubmissionType:
     id: strawberry.ID
     name: str
+    is_recordable: bool
 
 
 @strawberry.type
