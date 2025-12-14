@@ -579,7 +579,7 @@ Click the box to change. If left empty, we will assume you are available.`,
 
     "cfp.doNotRecordLabel": "Do not record",
     "cfp.doNotRecordDescription":
-      "By default we record all talks and later upload them to our YouTube channel. If you don't want your proposal to be recorded, please check this box. Note: Your talk will still be live streamed.",
+      "By default we record all talks and later upload them to our YouTube channel. If you don't want your talk to be recorded, please check this box. Note: Your talk will still be live streamed.",
     "cfp.doNotRecordCheckboxLabel":
       "I confirm I don't want my talk recorded and that it will not be uploaded to Python Italia's YouTube channel.",
 
