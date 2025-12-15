@@ -774,7 +774,7 @@ Note:  If you have submitted a talk/workshop proposal, you don't need to apply f
     "grants.form.fields.needAccommodation":
       "Do you need an accommodation for the duration of the conference?",
     "grants.form.fields.needAccommodation.description":
-      "We aim to assist as many attendees as possible with accommodation, within our budget constraints. Upon approval of your grant application, we will take care of arranging your accommodation.",
+      "While we are not able to book accommodation for you directly, if your grant includes support for accommodation, you will need to arrange your own lodging and we will reimburse you according to the grant terms.",
     "grants.form.fields.why":
       "Why are you asking for a grant for PyCon Italia?",
     "grants.form.fields.why.description":
@@ -1555,7 +1555,7 @@ Nota: Se hai inviato una proposta di talk/workshop, non è necessario richiedere
     "grants.form.fields.needAccommodation":
       "Hai bisogno di un alloggio per la durata della conferenza?",
     "grants.form.fields.needAccommodation.description":
-      "Il nostro obiettivo è assistere il maggior numero possibile di partecipanti con l'alloggio, tenendo conto delle nostre limitazioni di budget. In caso di approvazione della tua domanda di grant, ci occuperemo di organizzare il tuo alloggio.",
+      "Mentre non siamo in grado di prenotare l'alloggio direttamente per te, se il tuo grant include il supporto per l'alloggio, dovrai organizzare la sistemazione in autonomia e ti rimborseremo secondo i termini del grant.",
     "grants.form.fields.why":
       "Perché stai richiedendo un grant per PyCon Italia?",
     "grants.form.fields.why.description":
