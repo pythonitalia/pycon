@@ -104,6 +104,7 @@ def _submit_proposal(client, conference, submission, **kwargs):
                         tags {
                             name
                         }
+                        doNotRecord
                     }
 
                     ... on SendSubmissionErrors {
@@ -207,6 +208,7 @@ def test_submit_talk(
     assert talk.speaker_id == user.id
     assert talk.audience_level.name == "Beginner"
     assert talk.short_social_summary == "summary"
+    assert talk.do_not_record is False
 
     participant = Participant.objects.get(conference=conference, user_id=user.id)
     assert participant.bio == "my bio"
@@ -1271,3 +1273,29 @@ def test_cannot_submit_more_than_3_proposals(graphql_client, user):
     assert resp["data"]["sendSubmission"]["errors"]["nonFieldErrors"] == [
         "You can only submit up to 3 proposals"
     ]
+
+
+def test_submit_talk_with_do_not_record_true(graphql_client, user):
+    graphql_client.force_login(user)
+
+    conference = ConferenceFactory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
+    )
+
+    resp, _ = _submit_talk(graphql_client, conference, doNotRecord=True)
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
+    assert resp["data"]["sendSubmission"]["doNotRecord"] is True
+
+    talk = Submission.objects.get_by_hashid(resp["data"]["sendSubmission"]["id"])
+    assert talk.do_not_record is True

@@ -249,6 +249,7 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                     "conference",
                     "audience_level",
                     "languages",
+                    "do_not_record",
                 )
             },
         ),
@@ -325,7 +326,7 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
 
 @admin.register(SubmissionType)
 class SubmissionTypeAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+    list_display = ("name", "is_recordable")
 
 
 @admin.register(SubmissionTag)

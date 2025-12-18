@@ -227,6 +227,7 @@ class SendSubmissionInput(BaseSubmissionInput):
 
     topic: Optional[ID] = strawberry.field(default=None)
     tags: list[ID] = strawberry.field(default_factory=list)
+    do_not_record: bool = strawberry.field(default=False)
 
 
 @strawberry.input
@@ -257,6 +258,7 @@ class UpdateSubmissionInput(BaseSubmissionInput):
     topic: Optional[ID] = strawberry.field(default=None)
     tags: list[ID] = strawberry.field(default_factory=list)
     materials: list[SubmissionMaterialInput] = strawberry.field(default_factory=list)
+    do_not_record: bool = strawberry.field(default=False)
 
     def validate(self, conference: Conference, submission: SubmissionModel):
         errors = super().validate(conference)
@@ -319,6 +321,7 @@ class SubmissionsMutations:
         instance.speaker_level = input.speaker_level
         instance.previous_talk_video = input.previous_talk_video
         instance.short_social_summary = input.short_social_summary
+        instance.do_not_record = input.do_not_record
 
         languages = Language.objects.filter(code__in=input.languages).all()
         instance.languages.set(languages)
@@ -437,6 +440,7 @@ class SubmissionsMutations:
             notes=input.notes,
             audience_level_id=input.audience_level,
             short_social_summary=input.short_social_summary,
+            do_not_record=input.do_not_record,
         )
 
         languages = Language.objects.filter(code__in=input.languages).all()

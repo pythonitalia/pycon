@@ -39,6 +39,7 @@ def private_field() -> StrawberryField:
 class SubmissionType:
     id: strawberry.ID
     name: str
+    is_recordable: bool
 
 
 @strawberry.type
@@ -114,10 +115,11 @@ class Submission:
     topic: Annotated["Topic", strawberry.lazy("api.conferences.types")] | None
     type: SubmissionType | None
     duration: Annotated["Duration", strawberry.lazy("api.conferences.types")] | None
-    audience_level: Annotated[
-        "AudienceLevel", strawberry.lazy("api.conferences.types")
-    ] | None
+    audience_level: (
+        Annotated["AudienceLevel", strawberry.lazy("api.conferences.types")] | None
+    )
     notes: str | None = private_field()
+    do_not_record: bool | None = private_field()
 
     @strawberry.field
     def schedule_items(
