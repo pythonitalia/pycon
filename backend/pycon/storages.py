@@ -6,6 +6,11 @@ from storages.backends.s3boto3 import S3Boto3Storage
 from django.core.files.storage.memory import InMemoryStorage
 from django.core.files.storage import FileSystemStorage
 from django.urls import reverse
+from django.core.files.storage import storages
+
+
+def private_storage_getter():
+    return storages["private"]
 
 
 @dataclass

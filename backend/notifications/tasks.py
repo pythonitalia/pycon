@@ -63,9 +63,12 @@ def send_pending_email(self, sent_email_id: int):
 def send_email(sent_email, email_backend_connection):
     logger.info(f"Sending sent_email_id={sent_email.id}")
 
+    html_body = sent_email.html_body_content
+    text_body = sent_email.text_body_content
+
     email_message = EmailMultiAlternatives(
         subject=sent_email.subject,
-        body=sent_email.text_body,
+        body=text_body,
         from_email=sent_email.from_email,
         to=[sent_email.recipient_email],
         cc=sent_email.cc_addresses,
@@ -73,6 +76,6 @@ def send_email(sent_email, email_backend_connection):
         reply_to=[sent_email.reply_to],
         connection=email_backend_connection,
     )
-    email_message.attach_alternative(sent_email.body, "text/html")
+    email_message.attach_alternative(html_body, "text/html")
     email_message.send()
     return email_message.extra_headers.get("message_id", f"local-{uuid4()}")

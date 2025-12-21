@@ -1,6 +1,7 @@
 from functools import cached_property
 from django.db import transaction
 
+from pycon.storages import private_storage_getter
 from submissions.models import Submission
 from users.models import User
 from grants.models import Grant
@@ -10,7 +11,6 @@ from model_utils.models import TimeStampedModel
 from django.db import models
 from django.db.models import UniqueConstraint, Q
 from django.utils.translation import gettext_lazy as _
-from django.core.files.storage import storages
 
 
 class InvitationLetterRequestStatus(models.TextChoices):
@@ -29,10 +29,6 @@ class InvitationLetterRequestOnBehalfOf(models.TextChoices):
 
 def invitation_letter_upload_to(instance, filename):
     return f"invitation_letters/{instance.conference.code}/{instance.id}/{filename}"
-
-
-def private_storage_getter():
-    return storages["private"]
 
 
 class InvitationLetterRequest(TimeStampedModel):
