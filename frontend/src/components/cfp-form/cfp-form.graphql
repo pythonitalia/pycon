@@ -22,6 +22,7 @@ query CfpForm($conference: String!) {
     submissionTypes {
       id
       name
+      isRecordable
     }
 
     languages {

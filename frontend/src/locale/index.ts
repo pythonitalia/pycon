@@ -577,6 +577,12 @@ Click the box to change. If left empty, we will assume you are available.`,
 
     "tickets.productsList.tshirtTitle": "T-shirt",
 
+    "cfp.doNotRecordLabel": "Do not record",
+    "cfp.doNotRecordDescription":
+      "By default we record all talks and later upload them to our YouTube channel. If you don't want your talk to be recorded, please check this box. Note: Your talk will still be live streamed.",
+    "cfp.doNotRecordCheckboxLabel":
+      "I confirm that I do not want my talk to be recorded. I understand that it will not be uploaded to Python Italia’s YouTube channel and that it will not be possible to recover it in the future.",
+
     "tickets.checkout.answerCardAdmissionTitle": "{attendeeName}'s ticket",
     "tickets.checkout.openAnswerCard": "Attendee Info",
     "tickets.checkout.billing": "Billing",
@@ -2314,6 +2320,12 @@ Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia dis
     "cfp.materials.add": "Aggiungi",
     "cfp.materials.remove": "X",
     "fileInput.currentFile": "File attuale: {name}",
+
+    "cfp.doNotRecordLabel": "Non registrare",
+    "cfp.doNotRecordDescription":
+      "Di norma registriamo tutti i talk e li pubblichiamo successivamente sul nostro canale YouTube. Se non desideri che il tuo intervento venga registrato, seleziona questa opzione. Nota: il talk sarà comunque trasmesso in streaming.",
+    "cfp.doNotRecordCheckboxLabel":
+      "Confermo di non voler che il mio talk venga registrato. Comprendo che non verrà caricato sul canale YouTube di Python Italia e che non sarà possibile recuperarlo in futuro.",
   },
 };
 

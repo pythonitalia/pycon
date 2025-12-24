@@ -72,6 +72,7 @@ export type CfpFormFields = ParticipantFormFields & {
   acceptedPrivacyPolicy: boolean;
   speakerAvailabilities: { [time: number]: null | string };
   materials: any[];
+  doNotRecord: boolean;
 };
 
 export type SubmissionStructure = {
@@ -100,6 +101,7 @@ export type SubmissionStructure = {
     fileUrl: string;
     fileMimeType: string;
   }[];
+  doNotRecord: boolean;
 };
 
 type Props = {
@@ -208,6 +210,7 @@ export const CfpForm = ({
       acceptedPrivacyPolicy: formState.values.acceptedPrivacyPolicy,
       speakerAvailabilities: formState.values.speakerAvailabilities,
       materials: formState.values.materials,
+      doNotRecord: formState.values.doNotRecord,
     });
   };
 
@@ -268,6 +271,7 @@ export const CfpForm = ({
           name: material.name,
         })),
       );
+      formState.setField("doNotRecord", submission!.doNotRecord);
     }
 
     if (participantData.me.participant) {
