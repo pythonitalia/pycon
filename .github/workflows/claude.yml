@@ -34,12 +34,12 @@ jobs:
       - name: Run Claude
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_OAUTH_TOKEN }}
           # Optional: Customize the trigger phrase (default: @claude)
           # trigger_phrase: "/claude"
 
           # Optional: Trigger when specific user is assigned to an issue
-          assignee_trigger: "claude-bot"
+          assignee_trigger: "pythonitaliabot2"
 
           # Optional: Configure Claude's behavior with CLI arguments
           # claude_args: |
