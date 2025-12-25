@@ -1,12 +1,14 @@
 from collections import defaultdict
-from django.db.models import Count, Sum
+
+from django.db.models import Count, Exists, OuterRef, Sum
+
 from conferences.models.conference import Conference
-from helpers.constants import GENDERS
 from countries import countries
-from .models import Grant
-from django.db.models import Exists, OuterRef
-from submissions.models import Submission
+from helpers.constants import GENDERS
 from schedule.models import ScheduleItem
+from submissions.models import Submission
+
+from .models import Grant, GrantReimbursement
 
 
 class GrantSummary:
@@ -51,20 +53,17 @@ class GrantSummary:
         speaker_status_summary = self._aggregate_data_by_speaker_status(
             filtered_grants, statuses
         )
-        approved_type_summary = self._aggregate_data_by_approved_type(
-            filtered_grants, statuses
-        )
         requested_needs_summary = self._aggregate_data_by_requested_needs_summary(
             filtered_grants, statuses
         )
-        approved_types = {
-            approved_type.value: approved_type.label
-            for approved_type in Grant.ApprovedType
-        }
         country_types = {
             country_type.value: country_type.label for country_type in Grant.CountryType
         }
         occupation_summary = self._aggregate_data_by_occupation(
+            filtered_grants, statuses
+        )
+
+        reimbursement_category_summary = self._aggregate_data_by_reimbursement_category(
             filtered_grants, statuses
         )
 
@@ -83,8 +82,7 @@ class GrantSummary:
             preselected_statuses=["approved", "confirmed"],
             grant_type_summary=grant_type_summary,
             speaker_status_summary=speaker_status_summary,
-            approved_type_summary=approved_type_summary,
-            approved_types=approved_types,
+            reimbursement_category_summary=reimbursement_category_summary,
             requested_needs_summary=requested_needs_summary,
             country_type_summary=country_type_summary,
             country_types=country_types,
@@ -160,20 +158,32 @@ class GrantSummary:
         """
         Aggregates financial data (total amounts) by grant status.
         """
-        financial_data = filtered_grants.values("pending_status").annotate(
-            total_amount_sum=Sum("total_amount")
-        )
         financial_summary = {status[0]: 0 for status in statuses}
         overall_total = 0
 
-        for data in financial_data:
-            pending_status = data["pending_status"]
-            total_amount = data["total_amount_sum"] or 0
-            financial_summary[pending_status] += total_amount
-            if pending_status in self.BUDGET_STATUSES:
-                overall_total += total_amount
+        for status in statuses:
+            grants_for_status = filtered_grants.filter(pending_status=status[0])
+            reimbursements = GrantReimbursement.objects.filter(
+                grant__in=grants_for_status
+            )
+            total = reimbursements.aggregate(total=Sum("granted_amount"))["total"] or 0
+            financial_summary[status[0]] = total
+            if status[0] in self.BUDGET_STATUSES:
+                overall_total += total
 
         return financial_summary, overall_total
+
+    def _aggregate_data_by_reimbursement_category(self, filtered_grants, statuses):
+        """
+        Aggregates grant data by reimbursement category and status.
+        """
+        category_summary = defaultdict(lambda: {status[0]: 0 for status in statuses})
+        reimbursements = GrantReimbursement.objects.filter(grant__in=filtered_grants)
+        for r in reimbursements:
+            category = r.category.category
+            status = r.grant.pending_status
+            category_summary[category][status] += 1
+        return dict(category_summary)
 
     def _aggregate_data_by_grant_type(self, filtered_grants, statuses):
         """
@@ -239,25 +249,6 @@ class GrantSummary:
             speaker_status_summary["confirmed_speaker"][pending_status] += total
 
         return dict(speaker_status_summary)
-
-    def _aggregate_data_by_approved_type(self, filtered_grants, statuses):
-        """
-        Aggregates grant data by approved type and status.
-        """
-        approved_type_data = filtered_grants.values(
-            "approved_type", "pending_status"
-        ).annotate(total=Count("id"))
-        approved_type_summary = defaultdict(
-            lambda: {status[0]: 0 for status in statuses}
-        )
-
-        for data in approved_type_data:
-            approved_type = data["approved_type"]
-            pending_status = data["pending_status"]
-            total = data["total"]
-            approved_type_summary[approved_type][pending_status] += total
-
-        return dict(approved_type_summary)
 
     def _aggregate_data_by_requested_needs_summary(self, filtered_grants, statuses):
         """

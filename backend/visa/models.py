@@ -1,16 +1,16 @@
 from functools import cached_property
-from django.db import transaction
 
+from django.core.files.storage import storages
+from django.db import models, transaction
+from django.db.models import Q, UniqueConstraint
+from django.utils.translation import gettext_lazy as _
+from model_utils.models import TimeStampedModel
+from ordered_model.models import OrderedModel
+
+from grants.models import Grant, GrantReimbursementCategory
 from submissions.models import Submission
 from users.models import User
-from grants.models import Grant
-from ordered_model.models import OrderedModel
 from visa.managers import InvitationLetterRequestQuerySet
-from model_utils.models import TimeStampedModel
-from django.db import models
-from django.db.models import UniqueConstraint, Q
-from django.utils.translation import gettext_lazy as _
-from django.core.files.storage import storages
 
 
 class InvitationLetterRequestStatus(models.TextChoices):
@@ -102,13 +102,25 @@ class InvitationLetterRequest(TimeStampedModel):
         return grant.has_approved_travel()
 
     @property
-    def grant_approved_type(self):
+    def grant_approved_type(self) -> str | None:
         grant = self.user_grant
 
         if not grant:
             return None
 
-        return grant.approved_type
+        # Return a string representation of approved reimbursement categories
+        categories = []
+        if grant.has_approved_travel():
+            categories.append("travel")
+        if grant.has_approved_accommodation():
+            categories.append("accommodation")
+        if grant.has_approved(GrantReimbursementCategory.Category.TICKET):
+            categories.append("ticket")
+
+        if not categories:
+            return None
+
+        return "_".join(sorted(categories)) if len(categories) > 1 else categories[0]
 
     @cached_property
     def user_grant(self):
