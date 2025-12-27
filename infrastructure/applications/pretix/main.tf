@@ -98,6 +98,10 @@ resource "aws_ecs_task_definition" "pretix" {
           value = tostring(var.database_settings.port)
         },
         {
+          name  = "PRETIX_DATABASE_SSLMODE"
+          value = "require"
+        },
+        {
           name  = "PRETIX_MAIL_USER"
           value = module.secrets.value.mail_user
         },
