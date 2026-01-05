@@ -102,7 +102,7 @@ Let's get in touch to find the best solution for your business' needs!`,
     "profile.publicProfile.facebook.description":
       "Your Facebook profile URL (e.g., https://www.facebook.com/yourprofile)",
     "profile.publicProfile.twitter.description":
-      "Your Twitter handle without @ (e.g., pythonita)",
+      "Your Twitter handle without @ (e.g., pyconit)",
     "profile.ticketsEdit.qrCodeDescription":
       "The QR Code links to your public profile and can be used to quickly share contact details with fellow attendees and sponsors!",
     "profile.ticketsEdit.editProfile":
