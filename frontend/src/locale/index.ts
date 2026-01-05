@@ -91,6 +91,18 @@ Let's get in touch to find the best solution for your business' needs!`,
     "profile.publicProfile.yourBio.description":
       "Write something about yourself: your interests, your current occupation and more!",
     "profile.publicProfile.yourSocials": "Your socials",
+    "profile.publicProfile.website.description":
+      "Your website URL (e.g., https://example.com)",
+    "profile.publicProfile.mastodon.description":
+      "Your Mastodon handle (e.g., user@mastodon.social)",
+    "profile.publicProfile.instagram.description":
+      "Your Instagram handle without @ (e.g., pycon.it)",
+    "profile.publicProfile.linkedin.description":
+      "Your LinkedIn profile URL (e.g., https://www.linkedin.com/in/your-profile-here)",
+    "profile.publicProfile.facebook.description":
+      "Your Facebook profile URL (e.g., https://www.facebook.com/pythonitalia)",
+    "profile.publicProfile.twitter.description":
+      "Your Twitter handle without @ (e.g., pyconit)",
     "profile.ticketsEdit.qrCodeDescription":
       "The QR Code links to your public profile and can be used to quickly share contact details with fellow attendees and sponsors!",
     "profile.ticketsEdit.editProfile":
@@ -2200,6 +2212,18 @@ Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai
     "profile.publicProfile.yourBio.description":
       "Scrivi qualcosa su di te: i tuoi interessi, il tuo lavoro attuale e cosi via!",
     "profile.publicProfile.yourSocials": "I tuoi social",
+    "profile.publicProfile.website.description":
+      "L'URL del tuo sito web (es., https://example.com)",
+    "profile.publicProfile.mastodon.description":
+      "Il tuo handle Mastodon (es., utente@mastodon.social)",
+    "profile.publicProfile.instagram.description":
+      "Il tuo handle Instagram senza @ (es., pycon.it)",
+    "profile.publicProfile.linkedin.description":
+      "L'URL del tuo profilo LinkedIn (es., https://www.linkedin.com/in/il-tuo-profilo)",
+    "profile.publicProfile.facebook.description":
+      "L'URL del tuo profilo Facebook (es., https://www.facebook.com/pythonitalia)",
+    "profile.publicProfile.twitter.description":
+      "Il tuo handle Twitter senza @ (es., pyconit)",
     "profile.ticketsEdit.qrCodeDescription":
       "Il QR Code porta al tuo profilo e può essere utilizzato per condividere rapidamente i tuoi contatti con altri partecipanti o sponsors!",
     "profile.ticketsEdit.editProfile":
