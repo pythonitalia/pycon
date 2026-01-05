@@ -21,7 +21,7 @@ from conferences.models.conference import Conference
 from i18n.strings import LazyI18nString
 from languages.models import Language
 from participants.models import Participant
-from submissions.models import ProposalMaterial, Submission as SubmissionModel, CoSpeaker
+from submissions.models import ProposalMaterial, Submission as SubmissionModel, SubmissionCoSpeaker
 from submissions.tasks import notify_new_cfp_submission
 from users.models import User
 
@@ -59,7 +59,7 @@ def handle_co_speakers(submission, co_speaker_emails, submitter, conference):
 
     # Remove co-speakers that are no longer in the list
     if emails_to_remove:
-        CoSpeaker.objects.filter(
+        SubmissionCoSpeaker.objects.filter(
             submission=submission, user__email__in=emails_to_remove
         ).delete()
 
@@ -74,7 +74,7 @@ def handle_co_speakers(submission, co_speaker_emails, submitter, conference):
             user = User.objects.create_user(email=email, password=None)
 
         # Create co-speaker relationship
-        CoSpeaker.objects.create(submission=submission, user=user)
+        SubmissionCoSpeaker.objects.create(submission=submission, user=user)
 
         # Send invitation email
         try:

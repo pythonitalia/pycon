@@ -25,7 +25,7 @@ from users.admin_mixins import ConferencePermissionMixin
 
 
 from .models import (
-    CoSpeaker,
+    SubmissionCoSpeaker,
     ProposalMaterial,
     Submission,
     SubmissionComment,
@@ -215,7 +215,7 @@ class ProposalMaterialInline(admin.TabularInline):
 
 
 class CoSpeakerInline(admin.TabularInline):
-    model = CoSpeaker
+    model = SubmissionCoSpeaker
     extra = 0
     autocomplete_fields = ("user",)
 

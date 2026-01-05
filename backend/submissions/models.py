@@ -286,7 +286,7 @@ class SubmissionConfirmPendingStatusProxy(Submission):
         verbose_name_plural = _("Submissions Confirm Pending Status")
 
 
-class CoSpeaker(TimeStampedModel):
+class SubmissionCoSpeaker(TimeStampedModel):
     submission = models.ForeignKey(
         "submissions.Submission",
         on_delete=models.CASCADE,
