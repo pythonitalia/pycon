@@ -109,7 +109,12 @@ export const PublicProfileCard = <T extends ParticipantFormFields>({
               {null}
             </InputWrapper>
           </GridColumn>
-          <InputWrapper title="Website">
+          <InputWrapper
+            title="Website"
+            description={
+              <FormattedMessage id="profile.publicProfile.website.description" />
+            }
+          >
             <Input
               {...url("participantWebsite")}
               required={false}
@@ -118,7 +123,12 @@ export const PublicProfileCard = <T extends ParticipantFormFields>({
               errors={getParticipantValidationError("website")}
             />
           </InputWrapper>
-          <InputWrapper title="Mastodon">
+          <InputWrapper
+            title="Mastodon"
+            description={
+              <FormattedMessage id="profile.publicProfile.mastodon.description" />
+            }
+          >
             <Input
               {...text("participantMastodonHandle")}
               required={false}
@@ -127,7 +137,12 @@ export const PublicProfileCard = <T extends ParticipantFormFields>({
               errors={getParticipantValidationError("mastodonHandle")}
             />
           </InputWrapper>
-          <InputWrapper title="Instagram">
+          <InputWrapper
+            title="Instagram"
+            description={
+              <FormattedMessage id="profile.publicProfile.instagram.description" />
+            }
+          >
             <Input
               {...text("participantInstagramHandle")}
               required={false}
@@ -136,7 +151,12 @@ export const PublicProfileCard = <T extends ParticipantFormFields>({
               errors={getParticipantValidationError("instagramHandle")}
             />
           </InputWrapper>
-          <InputWrapper title="LinkedIn URL">
+          <InputWrapper
+            title="LinkedIn URL"
+            description={
+              <FormattedMessage id="profile.publicProfile.linkedin.description" />
+            }
+          >
             <Input
               {...url("participantLinkedinUrl")}
               required={false}
@@ -145,7 +165,12 @@ export const PublicProfileCard = <T extends ParticipantFormFields>({
               errors={getParticipantValidationError("linkedinUrl")}
             />
           </InputWrapper>
-          <InputWrapper title="Facebook URL">
+          <InputWrapper
+            title="Facebook URL"
+            description={
+              <FormattedMessage id="profile.publicProfile.facebook.description" />
+            }
+          >
             <Input
               {...url("participantFacebookUrl")}
               required={false}
@@ -154,7 +179,12 @@ export const PublicProfileCard = <T extends ParticipantFormFields>({
               errors={getParticipantValidationError("facebookUrl")}
             />
           </InputWrapper>
-          <InputWrapper title="Twitter">
+          <InputWrapper
+            title="Twitter"
+            description={
+              <FormattedMessage id="profile.publicProfile.twitter.description" />
+            }
+          >
             <Input
               {...text("participantTwitterHandle")}
               required={false}
