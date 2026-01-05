@@ -94,7 +94,7 @@ Let's get in touch to find the best solution for your business' needs!`,
     "profile.publicProfile.website.description":
       "Your website URL (e.g., https://example.com)",
     "profile.publicProfile.mastodon.description":
-      "Your Mastodon handle in the format username@server.tld (e.g., user@mastodon.social)",
+      "Your Mastodon handle (e.g., user@mastodon.social)",
     "profile.publicProfile.instagram.description":
       "Your Instagram handle without @ (e.g., pycon.it)",
     "profile.publicProfile.linkedin.description":
@@ -2215,7 +2215,7 @@ Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai
     "profile.publicProfile.website.description":
       "L'URL del tuo sito web (es., https://example.com)",
     "profile.publicProfile.mastodon.description":
-      "Il tuo handle Mastodon nel formato nomeutente@server.tld (es., utente@mastodon.social)",
+      "Il tuo handle Mastodon (es., utente@mastodon.social)",
     "profile.publicProfile.instagram.description":
       "Il tuo handle Instagram senza @ (es., pycon.it)",
     "profile.publicProfile.linkedin.description":
