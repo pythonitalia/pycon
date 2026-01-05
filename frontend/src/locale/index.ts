@@ -96,11 +96,11 @@ Let's get in touch to find the best solution for your business' needs!`,
     "profile.publicProfile.mastodon.description":
       "Your Mastodon handle in the format username@server.tld (e.g., user@mastodon.social)",
     "profile.publicProfile.instagram.description":
-      "Your Instagram handle without @ (e.g., pythonita)",
+      "Your Instagram handle without @ (e.g., pycon.it)",
     "profile.publicProfile.linkedin.description":
-      "Your LinkedIn profile URL (e.g., https://www.linkedin.com/in/yourprofile)",
+      "Your LinkedIn profile URL (e.g., https://www.linkedin.com/in/your-profile-here)",
     "profile.publicProfile.facebook.description":
-      "Your Facebook profile URL (e.g., https://www.facebook.com/yourprofile)",
+      "Your Facebook profile URL (e.g., https://www.facebook.com/pythonitalia)",
     "profile.publicProfile.twitter.description":
       "Your Twitter handle without @ (e.g., pyconit)",
     "profile.ticketsEdit.qrCodeDescription":
@@ -2217,13 +2217,13 @@ Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai
     "profile.publicProfile.mastodon.description":
       "Il tuo handle Mastodon nel formato nomeutente@server.tld (es., utente@mastodon.social)",
     "profile.publicProfile.instagram.description":
-      "Il tuo handle Instagram senza @ (es., pythonita)",
+      "Il tuo handle Instagram senza @ (es., pycon.it)",
     "profile.publicProfile.linkedin.description":
-      "L'URL del tuo profilo LinkedIn (es., https://www.linkedin.com/in/tuoprofilo)",
+      "L'URL del tuo profilo LinkedIn (es., https://www.linkedin.com/in/il-tuo-profilo)",
     "profile.publicProfile.facebook.description":
-      "L'URL del tuo profilo Facebook (es., https://www.facebook.com/tuoprofilo)",
+      "L'URL del tuo profilo Facebook (es., https://www.facebook.com/pythonitalia)",
     "profile.publicProfile.twitter.description":
-      "Il tuo handle Twitter senza @ (es., pythonita)",
+      "Il tuo handle Twitter senza @ (es., pyconit)",
     "profile.ticketsEdit.qrCodeDescription":
       "Il QR Code porta al tuo profilo e può essere utilizzato per condividere rapidamente i tuoi contatti con altri partecipanti o sponsors!",
     "profile.ticketsEdit.editProfile":
