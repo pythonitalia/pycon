@@ -52,36 +52,12 @@ class Participant(models.Model):
     )
 
     bio = models.TextField(max_length=2048)
-    website = models.URLField(
-        max_length=2048,
-        blank=True,
-        help_text=_("Your website URL (e.g., https://example.com)"),
-    )
-    twitter_handle = models.CharField(
-        max_length=15,
-        blank=True,
-        help_text=_("Your Twitter handle without @ (e.g., pythonita)"),
-    )
-    instagram_handle = models.CharField(
-        max_length=30,
-        blank=True,
-        help_text=_("Your Instagram handle without @ (e.g., pythonita)"),
-    )
-    linkedin_url = models.CharField(
-        max_length=2048,
-        blank=True,
-        help_text=_("Your LinkedIn profile URL (e.g., https://www.linkedin.com/in/yourprofile)"),
-    )
-    facebook_url = models.CharField(
-        max_length=2048,
-        blank=True,
-        help_text=_("Your Facebook profile URL (e.g., https://www.facebook.com/yourprofile)"),
-    )
-    mastodon_handle = models.CharField(
-        max_length=2048,
-        blank=True,
-        help_text=_("Your Mastodon handle in the format username@server.tld (e.g., user@mastodon.social)"),
-    )
+    website = models.URLField(max_length=2048, blank=True)
+    twitter_handle = models.CharField(max_length=15, blank=True)
+    instagram_handle = models.CharField(max_length=30, blank=True)
+    linkedin_url = models.CharField(max_length=2048, blank=True)
+    facebook_url = models.CharField(max_length=2048, blank=True)
+    mastodon_handle = models.CharField(max_length=2048, blank=True)
 
     speaker_level = models.CharField(
         _("speaker level"), choices=SpeakerLevels.choices, max_length=20
