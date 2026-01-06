@@ -1,5 +1,7 @@
 from urllib.parse import urljoin
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from conferences.frontend import trigger_frontend_revalidate
 from grants.tasks import get_name
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
@@ -217,8 +219,10 @@ class BaseSubmissionInput:
                     errors.add_error("co_speaker_emails", f"Duplicate email: {email}")
                 seen_emails.add(email_lower)
 
-                # Validate email format (basic check)
-                if "@" not in email or "." not in email:
+                # Validate email format using Django's validate_email
+                try:
+                    validate_email(email)
+                except ValidationError:
                     errors.add_error("co_speaker_emails", f"Invalid email format: {email}")
 
                 # Check if user is trying to add themselves as co-speaker
