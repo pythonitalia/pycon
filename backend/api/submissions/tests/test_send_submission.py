@@ -1249,7 +1249,7 @@ def test_cannot_submit_more_than_3_proposals(graphql_client, user):
         active_cfp=True,
         durations=("50",),
         audience_levels=("Beginner",),
-        max_proposals=3,
+        max_proposals_per_user=3,
     )
 
     SubmissionFactory(
@@ -1286,7 +1286,7 @@ def test_can_submit_unlimited_proposals_when_max_proposals_is_none(graphql_clien
         active_cfp=True,
         durations=("50",),
         audience_levels=("Beginner",),
-        max_proposals=None,  # No limit
+        max_proposals_per_user=None,  # No limit
     )
 
     EmailTemplateFactory(

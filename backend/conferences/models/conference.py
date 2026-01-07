@@ -117,7 +117,7 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         max_length=32224,
     )
 
-    max_proposals = models.PositiveIntegerField(
+    max_proposals_per_user = models.PositiveIntegerField(
         _("max proposals per user"),
         null=True,
         blank=True,

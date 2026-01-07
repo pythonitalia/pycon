@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='conference',
-            name='max_proposals',
+            name='max_proposals_per_user',
             field=models.PositiveIntegerField(blank=True, help_text='Maximum number of proposals a user can submit. Leave empty for no limit.', null=True, verbose_name='max proposals per user'),
         ),
     ]

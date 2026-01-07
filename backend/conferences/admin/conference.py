@@ -181,6 +181,7 @@ class ConferenceAdmin(
                     "audience_levels",
                     "languages",
                     "proposal_tags",
+                    "max_proposals_per_user",
                 )
             },
         ),
