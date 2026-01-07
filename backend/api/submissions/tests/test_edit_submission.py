@@ -122,6 +122,7 @@ def _update_submission(
                     validationNotes: notes
                     validationTopic: topic
                     validationAbstract: abstract
+                    validationElevatorPitch: elevatorPitch
                     validationDuration: duration
                     validationAudienceLevel: audienceLevel
                     validationType: type
@@ -1070,6 +1071,9 @@ def test_can_edit_submission_outside_cfp(graphql_client, user):
         new_duration=new_duration,
         new_type=new_type,
         new_languages=["en"],
+        new_title=submission.title.data,  # Keep title unchanged
+        new_abstract=submission.abstract.data,  # Keep abstract unchanged
+        new_elevator_pitch=submission.elevator_pitch.data,  # Keep elevator pitch unchanged
     )
 
     assert response["data"]["updateSubmission"]["__typename"] == "Submission"
@@ -1301,3 +1305,120 @@ def test_update_submission_with_do_not_record_true(graphql_client, user):
 
     submission.refresh_from_db()
     assert submission.do_not_record is True
+
+
+def test_accepted_submission_can_edit_restricted_fields_after_cfp_deadline(
+    graphql_client, user
+):
+    """Accepted submissions can edit title, abstract, and elevator_pitch when CFP is closed."""
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("en",),
+        durations=("10", "20"),
+        active_cfp=False,  # CFP deadline is in the past
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        status=Submission.STATUS.accepted,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["en"],
+        tags=["python", "ml"],
+        conference=conference,
+    )
+
+    graphql_client.force_login(user)
+
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_title={"en": "Updated Title After Deadline - Accepted"},
+        new_abstract={"en": "Updated abstract after deadline - Accepted"},
+        new_elevator_pitch={"en": "Updated elevator pitch after deadline - Accepted"},
+    )
+
+    assert response["data"]["updateSubmission"]["__typename"] == "Submission"
+    assert (
+        response["data"]["updateSubmission"]["title"]
+        == "Updated Title After Deadline - Accepted"
+    )
+    assert (
+        response["data"]["updateSubmission"]["abstract"]
+        == "Updated abstract after deadline - Accepted"
+    )
+    assert (
+        response["data"]["updateSubmission"]["elevatorPitch"]
+        == "Updated elevator pitch after deadline - Accepted"
+    )
+    submission.refresh_from_db()
+    assert submission.title.localize("en") == "Updated Title After Deadline - Accepted"
+    assert (
+        submission.abstract.localize("en")
+        == "Updated abstract after deadline - Accepted"
+    )
+    assert (
+        submission.elevator_pitch.localize("en")
+        == "Updated elevator pitch after deadline - Accepted"
+    )
+
+
+def test_non_accepted_submission_cannot_edit_restricted_fields_after_cfp_deadline(
+    graphql_client, user
+):
+    """Non-accepted submissions cannot edit title, abstract, or elevator_pitch when CFP is closed."""
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("en",),
+        durations=("10", "20"),
+        active_cfp=False,  # CFP deadline is in the past
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        status=Submission.STATUS.proposed,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["en"],
+        tags=["python", "ml"],
+        conference=conference,
+    )
+
+    original_title = submission.title.localize("en")
+    original_abstract = submission.abstract.localize("en")
+    original_elevator_pitch = submission.elevator_pitch.localize("en")
+
+    graphql_client.force_login(user)
+
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_title={"en": "Updated Title After Deadline"},
+        new_abstract={"en": "Updated abstract after deadline"},
+        new_elevator_pitch={"en": "Updated elevator pitch after deadline"},
+    )
+
+    assert response["data"]["updateSubmission"]["__typename"] == "SendSubmissionErrors"
+    assert response["data"]["updateSubmission"]["errors"]["validationTitle"] == [
+        "You cannot edit the title after the call for proposals deadline has passed."
+    ]
+    assert response["data"]["updateSubmission"]["errors"]["validationAbstract"] == [
+        "You cannot edit the abstract after the call for proposals deadline has passed."
+    ]
+    assert response["data"]["updateSubmission"]["errors"][
+        "validationElevatorPitch"
+    ] == [
+        "You cannot edit the elevator pitch after the call for proposals deadline has passed."
+    ]
+    submission.refresh_from_db()
+    assert submission.title.localize("en") == original_title
+    assert submission.abstract.localize("en") == original_abstract
+    assert submission.elevator_pitch.localize("en") == original_elevator_pitch

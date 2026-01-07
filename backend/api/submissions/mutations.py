@@ -263,6 +263,28 @@ class UpdateSubmissionInput(BaseSubmissionInput):
     def validate(self, conference: Conference, submission: SubmissionModel):
         errors = super().validate(conference)
 
+        # Check if CFP is closed and prevent editing of restricted fields
+        # Exception: accepted submissions can still be edited
+        if (
+            not conference.is_cfp_open
+            and submission.status != SubmissionModel.STATUS.accepted
+        ):
+            restricted_fields = (
+                "title",
+                "abstract",
+                "elevator_pitch",
+            )
+
+            for field_name in restricted_fields:
+                input_value = getattr(self, field_name)
+                submission_value = getattr(submission, field_name)
+                if LazyI18nString(input_value.to_dict()) != submission_value:
+                    field_label = field_name.replace("_", " ")
+                    errors.add_error(
+                        field_name,
+                        f"You cannot edit the {field_label} after the call for proposals deadline has passed.",
+                    )
+
         if self.materials:
             if len(self.materials) > 3:
                 errors.add_error(
