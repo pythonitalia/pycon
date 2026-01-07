@@ -412,16 +412,18 @@ class SubmissionsMutations:
         if not conference.is_cfp_open:
             errors.add_error("non_field_errors", "The call for paper is not open!")
 
-        if (
-            SubmissionModel.objects.of_user(request.user)
-            .for_conference(conference)
-            .non_cancelled()
-            .count()
-            >= 3
-        ):
-            errors.add_error(
-                "non_field_errors", "You can only submit up to 3 proposals"
+        if conference.max_proposals is not None:
+            user_submissions_count = (
+                SubmissionModel.objects.of_user(request.user)
+                .for_conference(conference)
+                .non_cancelled()
+                .count()
             )
+            if user_submissions_count >= conference.max_proposals:
+                errors.add_error(
+                    "non_field_errors",
+                    f"You can only submit up to {conference.max_proposals} proposals",
+                )
 
         if errors.has_errors:
             return errors
