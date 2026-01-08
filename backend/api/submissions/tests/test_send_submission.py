@@ -1286,7 +1286,7 @@ def test_can_submit_unlimited_proposals_when_max_proposals_is_none(graphql_clien
         active_cfp=True,
         durations=("50",),
         audience_levels=("Beginner",),
-        max_proposals_per_user=None,  # No limit
+        # max_proposals_per_user defaults to None (no limit)
     )
 
     EmailTemplateFactory(
@@ -1306,7 +1306,7 @@ def test_can_submit_unlimited_proposals_when_max_proposals_is_none(graphql_clien
     resp, _ = _submit_talk(graphql_client, conference, title={"en": "My fourth talk"})
 
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
-    assert resp["data"]["sendSubmission"]["title"]["en"] == "My fourth talk"
+    assert resp["data"]["sendSubmission"]["title"] == "My fourth talk"
 
 
 def test_submit_talk_with_do_not_record_true(graphql_client, user):
