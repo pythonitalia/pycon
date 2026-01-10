@@ -1268,7 +1268,9 @@ def test_cannot_submit_more_than_3_proposals(graphql_client, user):
         status=Submission.STATUS.proposed,
     )
 
-    resp, _ = _submit_talk(graphql_client, conference, title={"en": "My first talk"})
+    resp, _ = _submit_talk(
+        graphql_client, conference, title={"en": "My first talk"}, languages=["en"]
+    )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["errors"]["nonFieldErrors"] == [
@@ -1276,7 +1278,9 @@ def test_cannot_submit_more_than_3_proposals(graphql_client, user):
     ]
 
 
-def test_can_submit_unlimited_proposals_when_max_proposals_is_none(graphql_client, user):
+def test_can_submit_unlimited_proposals_when_max_proposals_is_none(
+    graphql_client, user
+):
     graphql_client.force_login(user)
 
     conference = ConferenceFactory(
@@ -1303,7 +1307,9 @@ def test_can_submit_unlimited_proposals_when_max_proposals_is_none(graphql_clien
         )
 
     # Should be able to submit a 4th proposal
-    resp, _ = _submit_talk(graphql_client, conference, title={"en": "My fourth talk"})
+    resp, _ = _submit_talk(
+        graphql_client, conference, title={"en": "My fourth talk"}, languages=["en"]
+    )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
     assert resp["data"]["sendSubmission"]["title"] == "My fourth talk"
