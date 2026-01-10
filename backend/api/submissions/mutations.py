@@ -263,6 +263,22 @@ class UpdateSubmissionInput(BaseSubmissionInput):
     def validate(self, conference: Conference, submission: SubmissionModel):
         errors = super().validate(conference)
 
+        # Check if CFP is closed and prevent editing of title and abstract
+        if not conference.is_cfp_open:
+            if LazyI18nString(self.title.to_dict()) != submission.title:
+                errors.add_error(
+                    "title",
+                    "You cannot edit the title after the call for proposals deadline has passed.",
+                )
+
+            if LazyI18nString(self.abstract.to_dict()) != submission.abstract:
+                print(LazyI18nString(self.abstract.to_dict()).data)
+                print(submission.abstract.data)
+                errors.add_error(
+                    "abstract",
+                    "You cannot edit the abstract after the call for proposals deadline has passed.",
+                )
+
         if self.materials:
             if len(self.materials) > 3:
                 errors.add_error(
