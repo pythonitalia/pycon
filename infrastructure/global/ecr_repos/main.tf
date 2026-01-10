@@ -5,7 +5,6 @@ locals {
   ]
 }
 
-
 resource "aws_ecr_repository" "service_repo" {
   for_each             = toset(local.services)
   name                 = "pythonit/${each.key}"
