@@ -9,14 +9,23 @@ on:
     types: [opened, assigned]
   pull_request_review:
     types: [submitted]
+  pull_request:
+    types: [review_requested]
 
 jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug
+        run: |
+          echo "github.event: ${{ fromJSON(github.event) }}"
   claude:
     if: |
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude'))) ||
+      (github.event_name == 'pull_request' && github.event.requested_user.name == 'pythonitaliabot2')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -33,6 +42,7 @@ jobs:
 
       - name: Run Claude
         uses: anthropics/claude-code-action@v1
+        if: ${{ github.event_name != 'pull_request' && github.event.requested_user.name != 'pythonitaliabot2' }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_OAUTH_TOKEN }}
           # Optional: Customize the trigger phrase (default: @claude)
@@ -55,3 +65,10 @@ jobs:
           #       "NODE_ENV": "test"
           #     }
           #   }
+
+      - name: Run code-review
+        uses: anthropics/claude-code-action@v1
+        if: ${{ github.event_name == 'pull_request' && github.event.requested_user.name == 'pythonitaliabot2' }}
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: "Review this PR"
