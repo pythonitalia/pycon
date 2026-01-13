@@ -1422,3 +1422,65 @@ def test_non_accepted_submission_cannot_edit_restricted_fields_after_cfp_deadlin
     assert submission.title.localize("en") == original_title
     assert submission.abstract.localize("en") == original_abstract
     assert submission.elevator_pitch.localize("en") == original_elevator_pitch
+
+
+def test_non_accepted_submission_can_edit_non_restricted_fields_after_cfp_deadline(
+    graphql_client, user
+):
+    """Non-accepted submissions can edit non-restricted fields when CFP is closed."""
+    conference = ConferenceFactory(
+        topics=("life", "diy"),
+        languages=("en",),
+        durations=("10", "20"),
+        active_cfp=False,  # CFP deadline is in the past
+        audience_levels=("adult", "senior"),
+        submission_types=("talk", "workshop"),
+    )
+
+    submission = SubmissionFactory(
+        speaker_id=user.id,
+        status=Submission.STATUS.proposed,
+        custom_topic="life",
+        custom_duration="10m",
+        custom_audience_level="adult",
+        custom_submission_type="talk",
+        languages=["en"],
+        tags=["python", "ml"],
+        conference=conference,
+    )
+
+    original_title = submission.title.localize("en")
+    original_abstract = submission.abstract.localize("en")
+    original_elevator_pitch = submission.elevator_pitch.localize("en")
+
+    graphql_client.force_login(user)
+
+    # Update non-restricted fields (tags, short_social_summary, do_not_record)
+    # while keeping restricted fields unchanged
+    response = _update_submission(
+        graphql_client,
+        submission=submission,
+        new_title={"en": original_title},  # Keep original title
+        new_abstract={"en": original_abstract},  # Keep original abstract
+        new_elevator_pitch={"en": original_elevator_pitch},  # Keep original elevator pitch
+        new_tag=submission.tags.last(),  # Change tag
+        new_short_social_summary="Updated social summary",  # Change social summary
+        new_do_not_record=True,  # Change do_not_record flag
+    )
+
+    # Should succeed since we're only updating non-restricted fields
+    assert response["data"]["updateSubmission"]["__typename"] == "Submission"
+    assert response["data"]["updateSubmission"]["shortSocialSummary"] == "Updated social summary"
+    assert response["data"]["updateSubmission"]["doNotRecord"] is True
+
+    # Verify restricted fields remain unchanged
+    assert response["data"]["updateSubmission"]["title"] == original_title
+    assert response["data"]["updateSubmission"]["abstract"] == original_abstract
+    assert response["data"]["updateSubmission"]["elevatorPitch"] == original_elevator_pitch
+
+    submission.refresh_from_db()
+    assert submission.short_social_summary == "Updated social summary"
+    assert submission.do_not_record is True
+    assert submission.title.localize("en") == original_title
+    assert submission.abstract.localize("en") == original_abstract
+    assert submission.elevator_pitch.localize("en") == original_elevator_pitch
