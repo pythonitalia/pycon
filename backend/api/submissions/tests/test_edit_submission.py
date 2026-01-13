@@ -1,3 +1,4 @@
+from i18n.strings import LazyI18nString
 import pytest
 from uuid import uuid4
 from users.tests.factories import UserFactory
@@ -1444,6 +1445,9 @@ def test_non_accepted_submission_can_edit_non_restricted_fields_after_cfp_deadli
         custom_duration="10m",
         custom_audience_level="adult",
         custom_submission_type="talk",
+        title=LazyI18nString({"en": "Original Title"}),
+        abstract=LazyI18nString({"en": "Original Abstract"}),
+        elevator_pitch=LazyI18nString({"en": "Original Elevator Pitch"}),
         languages=["en"],
         tags=["python", "ml"],
         conference=conference,
@@ -1462,7 +1466,9 @@ def test_non_accepted_submission_can_edit_non_restricted_fields_after_cfp_deadli
         submission=submission,
         new_title={"en": original_title},  # Keep original title
         new_abstract={"en": original_abstract},  # Keep original abstract
-        new_elevator_pitch={"en": original_elevator_pitch},  # Keep original elevator pitch
+        new_elevator_pitch={
+            "en": original_elevator_pitch
+        },  # Keep original elevator pitch
         new_tag=submission.tags.last(),  # Change tag
         new_short_social_summary="Updated social summary",  # Change social summary
         new_do_not_record=True,  # Change do_not_record flag
@@ -1470,13 +1476,18 @@ def test_non_accepted_submission_can_edit_non_restricted_fields_after_cfp_deadli
 
     # Should succeed since we're only updating non-restricted fields
     assert response["data"]["updateSubmission"]["__typename"] == "Submission"
-    assert response["data"]["updateSubmission"]["shortSocialSummary"] == "Updated social summary"
+    assert (
+        response["data"]["updateSubmission"]["shortSocialSummary"]
+        == "Updated social summary"
+    )
     assert response["data"]["updateSubmission"]["doNotRecord"] is True
 
     # Verify restricted fields remain unchanged
     assert response["data"]["updateSubmission"]["title"] == original_title
     assert response["data"]["updateSubmission"]["abstract"] == original_abstract
-    assert response["data"]["updateSubmission"]["elevatorPitch"] == original_elevator_pitch
+    assert (
+        response["data"]["updateSubmission"]["elevatorPitch"] == original_elevator_pitch
+    )
 
     submission.refresh_from_db()
     assert submission.short_social_summary == "Updated social summary"
