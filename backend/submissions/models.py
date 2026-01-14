@@ -284,3 +284,32 @@ class SubmissionConfirmPendingStatusProxy(Submission):
         proxy = True
         verbose_name = _("Submission Confirm Pending Status")
         verbose_name_plural = _("Submissions Confirm Pending Status")
+
+
+class ProposalCoSpeaker(TimeStampedModel):
+    submission = models.ForeignKey(
+        "submissions.Submission",
+        on_delete=models.CASCADE,
+        verbose_name=_("submission"),
+        related_name="co_speakers",
+    )
+
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        verbose_name=_("user"),
+        related_name="co_speaker_submissions",
+    )
+
+    def __str__(self):
+        return f"{self.user.email} co-speaker for {self.submission.title}"
+
+    class Meta:
+        verbose_name = _("proposal co-speaker")
+        verbose_name_plural = _("proposal co-speakers")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["submission", "user"],
+                name="unique_submission_co_speaker",
+            )
+        ]

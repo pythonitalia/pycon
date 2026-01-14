@@ -25,6 +25,7 @@ from users.admin_mixins import ConferencePermissionMixin
 
 
 from .models import (
+    ProposalCoSpeaker,
     ProposalMaterial,
     Submission,
     SubmissionComment,
@@ -213,6 +214,12 @@ class ProposalMaterialInline(admin.TabularInline):
     autocomplete_fields = ("file",)
 
 
+class ProposalCoSpeakerInline(admin.TabularInline):
+    model = ProposalCoSpeaker
+    extra = 0
+    autocomplete_fields = ("user",)
+
+
 @admin.register(Submission)
 class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     resource_class = SubmissionResource
@@ -276,7 +283,7 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         send_proposal_in_waiting_list_email_action,
     ]
     autocomplete_fields = ("speaker",)
-    inlines = [ProposalMaterialInline]
+    inlines = [ProposalMaterialInline, ProposalCoSpeakerInline]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         extra_context = extra_context or {}
@@ -337,6 +344,14 @@ class SubmissionTagAdmin(admin.ModelAdmin):
 @admin.register(SubmissionComment)
 class SubmissionCommentAdmin(admin.ModelAdmin):
     list_display = ("submission", "author", "text")
+
+
+@admin.register(ProposalCoSpeaker)
+class ProposalCoSpeakerAdmin(admin.ModelAdmin):
+    list_display = ("submission", "user", "created")
+    list_filter = ("submission__conference",)
+    search_fields = ("submission__title", "user__email", "user__full_name")
+    autocomplete_fields = ("submission", "user")
 
 
 NEW_STATUS_TO_EMAIL_TEMPLATE = {

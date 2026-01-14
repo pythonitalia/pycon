@@ -21,8 +21,9 @@ from conferences.models.conference import Conference
 from i18n.strings import LazyI18nString
 from languages.models import Language
 from participants.models import Participant
-from submissions.models import ProposalMaterial, Submission as SubmissionModel
+from submissions.models import ProposalCoSpeaker, ProposalMaterial, Submission as SubmissionModel
 from submissions.tasks import notify_new_cfp_submission
+from users.models import User
 
 from .types import Submission, SubmissionMaterialInput
 
@@ -66,6 +67,8 @@ class SendSubmissionErrors(BaseErrorType):
         speaker_linkedin_url: list[str] = strawberry.field(default_factory=list)
         speaker_facebook_url: list[str] = strawberry.field(default_factory=list)
         speaker_mastodon_handle: list[str] = strawberry.field(default_factory=list)
+
+        co_speaker_emails: list[str] = strawberry.field(default_factory=list)
 
         non_field_errors: list[str] = strawberry.field(default_factory=list)
 
@@ -199,6 +202,31 @@ class BaseSubmissionInput:
 
         return errors
 
+    def validate_co_speakers(
+        self, errors: SendSubmissionErrors, speaker_email: str
+    ) -> None:
+        if not hasattr(self, "co_speaker_emails") or not self.co_speaker_emails:
+            return
+
+        if len(self.co_speaker_emails) > 2:
+            errors.add_error(
+                "co_speaker_emails", "You can add up to 2 co-speakers"
+            )
+
+        seen_emails = set()
+        for email in self.co_speaker_emails:
+            email_lower = email.lower().strip()
+            if email_lower in seen_emails:
+                errors.add_error(
+                    "co_speaker_emails", f"Duplicate email: {email}"
+                )
+            seen_emails.add(email_lower)
+
+            if email_lower == speaker_email.lower():
+                errors.add_error(
+                    "co_speaker_emails", "You cannot add yourself as a co-speaker"
+                )
+
 
 @strawberry.input
 class SendSubmissionInput(BaseSubmissionInput):
@@ -228,6 +256,7 @@ class SendSubmissionInput(BaseSubmissionInput):
     topic: Optional[ID] = strawberry.field(default=None)
     tags: list[ID] = strawberry.field(default_factory=list)
     do_not_record: bool = strawberry.field(default=False)
+    co_speaker_emails: list[str] = strawberry.field(default_factory=list)
 
 
 @strawberry.input
@@ -259,6 +288,7 @@ class UpdateSubmissionInput(BaseSubmissionInput):
     tags: list[ID] = strawberry.field(default_factory=list)
     materials: list[SubmissionMaterialInput] = strawberry.field(default_factory=list)
     do_not_record: bool = strawberry.field(default=False)
+    co_speaker_emails: list[str] = strawberry.field(default_factory=list)
 
     def validate(self, conference: Conference, submission: SubmissionModel):
         errors = super().validate(conference)
@@ -309,6 +339,93 @@ UpdateSubmissionOutput = Annotated[
 ]
 
 
+def handle_co_speakers(
+    submission: SubmissionModel,
+    co_speaker_emails: list[str],
+    submitter: User,
+    conference,
+) -> None:
+    """
+    Handle co-speakers for a submission.
+    - Creates User accounts for new co-speaker emails (without password)
+    - Creates ProposalCoSpeaker records
+    - Sends invitation emails to new co-speakers only
+    """
+    if not co_speaker_emails:
+        # Remove all existing co-speakers if none specified
+        ProposalCoSpeaker.objects.filter(submission=submission).delete()
+        return
+
+    # Get existing co-speaker user IDs for this submission
+    existing_co_speaker_user_ids = set(
+        ProposalCoSpeaker.objects.filter(submission=submission).values_list(
+            "user_id", flat=True
+        )
+    )
+
+    new_co_speaker_user_ids = set()
+    new_co_speakers_to_notify = []
+
+    for email in co_speaker_emails:
+        email_lower = email.lower().strip()
+
+        # Find or create user
+        user = User.objects.filter(email__iexact=email_lower).first()
+        user_already_had_account = user is not None
+
+        if not user:
+            # Create user without password
+            user = User.objects.create(
+                email=email_lower,
+                is_active=True,
+            )
+
+        new_co_speaker_user_ids.add(user.id)
+
+        # If this is a new co-speaker (not existing), queue for notification
+        if user.id not in existing_co_speaker_user_ids:
+            new_co_speakers_to_notify.append(
+                {
+                    "user": user,
+                    "user_already_had_account": user_already_had_account,
+                }
+            )
+
+    # Delete co-speakers that are no longer in the list
+    ProposalCoSpeaker.objects.filter(submission=submission).exclude(
+        user_id__in=new_co_speaker_user_ids
+    ).delete()
+
+    # Create new co-speaker records
+    for user_id in new_co_speaker_user_ids:
+        ProposalCoSpeaker.objects.get_or_create(
+            submission=submission,
+            user_id=user_id,
+        )
+
+    # Send emails to new co-speakers
+    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
+        EmailTemplateIdentifier.co_speaker_invitation
+    )
+
+    if email_template:
+        for co_speaker_info in new_co_speakers_to_notify:
+            co_speaker_user = co_speaker_info["user"]
+            email_template.send_email(
+                recipient=co_speaker_user,
+                placeholders={
+                    "user_name": get_name(co_speaker_user, "there"),
+                    "proposal_title": submission.title.localize("en"),
+                    "proposal_type": submission.type.name,
+                    "submitter_name": get_name(submitter, "Someone"),
+                    "submitter_email": submitter.email,
+                    "user_already_had_account": (
+                        "true" if co_speaker_info["user_already_had_account"] else "false"
+                    ),
+                },
+            )
+
+
 @strawberry.type
 class SubmissionsMutations:
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -326,6 +443,7 @@ class SubmissionsMutations:
         conference = instance.conference
 
         errors = input.validate(conference=conference, submission=instance)
+        input.validate_co_speakers(errors, request.user.email)
 
         if errors.has_errors:
             return errors
@@ -412,6 +530,14 @@ class SubmissionsMutations:
             },
         )
 
+        # Handle co-speakers
+        handle_co_speakers(
+            submission=instance,
+            co_speaker_emails=input.co_speaker_emails,
+            submitter=request.user,
+            conference=conference,
+        )
+
         trigger_frontend_revalidate(conference, instance)
 
         instance.__strawberry_definition__ = Submission.__strawberry_definition__
@@ -430,6 +556,7 @@ class SubmissionsMutations:
             return SendSubmissionErrors.with_error("conference", "Invalid conference")
 
         errors = input.validate(conference=conference)
+        input.validate_co_speakers(errors, request.user.email)
 
         if not conference.is_cfp_open:
             errors.add_error("non_field_errors", "The call for paper is not open!")
@@ -494,6 +621,14 @@ class SubmissionsMutations:
             info.context.request,
             conference,
             "cfp",
+        )
+
+        # Handle co-speakers
+        handle_co_speakers(
+            submission=instance,
+            co_speaker_emails=input.co_speaker_emails,
+            submitter=request.user,
+            conference=conference,
         )
 
         email_template = EmailTemplate.objects.for_conference(
