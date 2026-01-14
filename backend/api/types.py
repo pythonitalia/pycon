@@ -111,7 +111,12 @@ class MultiLingualInput:
         return new_input
 
     def to_dict(self) -> dict:
-        return {"en": self.en, "it": self.it}
+        as_dict = {}
+        if self.en:
+            as_dict["en"] = self.en
+        if self.it:
+            as_dict["it"] = self.it
+        return as_dict
 
 
 ItemType = TypeVar("ItemType")
