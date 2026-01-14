@@ -40,6 +40,8 @@ jobs:
 
           # Optional: Trigger when specific user is assigned to an issue
           assignee_trigger: "pythonitaliabot2"
+          claude_args: |
+            --model claude-opus-4-5-20251101
 
           # Optional: Configure Claude's behavior with CLI arguments
           # claude_args: |
