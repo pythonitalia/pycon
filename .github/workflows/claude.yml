@@ -13,19 +13,13 @@ on:
     types: [review_requested]
 
 jobs:
-  debug:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug
-        run: |
-          echo "github.event: ${{ fromJSON(github.event) }}"
   claude:
     if: |
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
       (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude'))) ||
-      (github.event_name == 'pull_request' && github.event.requested_user.name == 'pythonitaliabot2')
+      (github.event_name == 'pull_request' && github.event.action == 'review_requested')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -42,33 +36,14 @@ jobs:
 
       - name: Run Claude
         uses: anthropics/claude-code-action@v1
-        if: ${{ github.event_name != 'pull_request' && github.event.requested_user.name != 'pythonitaliabot2' }}
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          # Optional: Customize the trigger phrase (default: @claude)
-          # trigger_phrase: "/claude"
+          claude_code_oauth_token: ${{ secrets.CLAUDE_OAUTH_TOKEN }}
 
-          # Optional: Trigger when specific user is assigned to an issue
+          # Trigger when specific user is assigned to an issue
           assignee_trigger: "pythonitaliabot2"
 
-          # Optional: Configure Claude's behavior with CLI arguments
-          # claude_args: |
-          #   --model claude-opus-4-1-20250805
-          #   --max-turns 10
-          #   --allowedTools "Bash(npm install),Bash(npm run build),Bash(npm run test:*),Bash(npm run lint:*)"
-          #   --system-prompt "Follow our coding standards. Ensure all new code has tests. Use TypeScript for new files."
+          # Trigger when specific user is requested as a reviewer on a PR
+          reviewer_trigger: "pythonitbot2"
 
-          # Optional: Advanced settings configuration
-          # settings: |
-          #   {
-          #     "env": {
-          #       "NODE_ENV": "test"
-          #     }
-          #   }
-
-      - name: Run code-review
-        uses: anthropics/claude-code-action@v1
-        if: ${{ github.event_name == 'pull_request' && github.event.requested_user.name == 'pythonitaliabot2' }}
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          prompt: "Review this PR"
+          claude_args: |
+            --model claude-opus-4-5-20251101
