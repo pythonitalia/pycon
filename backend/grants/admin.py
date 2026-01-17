@@ -267,6 +267,11 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
 
         send_grant_reply_approved_email.delay(grant_id=grant.id, is_reminder=True)
 
+        create_change_admin_log_entry(
+            request.user,
+            grant,
+            change_message="Sent Approved reminder email to applicant",
+        )
         messages.info(request, f"Grant reminder sent to {grant.name}")
 
 

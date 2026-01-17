@@ -13,6 +13,7 @@ from grants.admin import (
     create_grant_vouchers,
     mark_rejected_and_send_email,
     reset_pending_status_back_to_status,
+    send_grant_reminder_to_waiting_for_confirmation,
     send_reply_emails,
 )
 from grants.models import Grant
@@ -233,6 +234,38 @@ def test_send_reply_emails_rejected(rf, mocker, admin_user):
         user=admin_user,
         object_id=grant.id,
         change_message="Sent Rejected reply email to applicant",
+    ).exists()
+
+
+def test_send_grant_reminder_to_waiting_for_confirmation(rf, mocker, admin_user):
+    mock_messages = mocker.patch("grants.admin.messages")
+    grant = GrantFactory(status=Grant.Status.waiting_for_confirmation)
+    request = rf.get("/")
+    request.user = admin_user
+    mock_send_approved_reminder_email = mocker.patch(
+        "grants.admin.send_grant_reply_approved_email.delay"
+    )
+
+    send_grant_reminder_to_waiting_for_confirmation(
+        None, request=request, queryset=Grant.objects.all()
+    )
+
+    # Verify admin action was called correctly
+    mock_messages.info.assert_called_once_with(
+        request,
+        f"Grant reminder sent to {grant.name}",
+    )
+
+    # Verify task was queued correctly
+    mock_send_approved_reminder_email.assert_called_once_with(
+        grant_id=grant.id, is_reminder=True
+    )
+
+    # Verify audit log entry was created correctly
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Sent Approved reminder email to applicant",
     ).exists()
 
 
