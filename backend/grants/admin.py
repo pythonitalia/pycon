@@ -437,12 +437,28 @@ class GrantReimbursementAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     search_fields = ("grant__full_name", "grant__email")
     autocomplete_fields = ("grant",)
 
+    def delete_model(self, request, obj):
+        create_change_admin_log_entry(
+            request.user,
+            obj.grant,
+            change_message=f"Reimbursement removed: {obj.category.name}",
+        )
+        super().delete_model(request, obj)
+
 
 class GrantReimbursementInline(admin.TabularInline):
     model = GrantReimbursement
     extra = 0
     autocomplete_fields = ["category"]
     fields = ["category", "granted_amount"]
+
+    def delete_model(self, request, obj):
+        create_change_admin_log_entry(
+            request.user,
+            obj.grant,
+            change_message=f"Reimbursement removed: {obj.category.name}",
+        )
+        super().delete_model(request, obj)
 
 
 @admin.register(Grant)

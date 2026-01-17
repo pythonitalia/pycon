@@ -4,12 +4,14 @@ from unittest.mock import call
 
 import pytest
 from django.contrib.admin.models import LogEntry
+from django.contrib.admin.sites import AdminSite
 from django.utils import timezone
 
 from conferences.models.conference_voucher import ConferenceVoucher
 from conferences.tests.factories import ConferenceFactory, ConferenceVoucherFactory
 from grants.admin import (
     confirm_pending_status,
+    GrantReimbursementAdmin,
     create_grant_vouchers,
     mark_rejected_and_send_email,
     reset_pending_status_back_to_status,
@@ -17,11 +19,11 @@ from grants.admin import (
     send_reply_email_waiting_list_update,
     send_reply_emails,
 )
-from grants.models import Grant
 from grants.tests.factories import (
     GrantFactory,
     GrantReimbursementFactory,
 )
+from grants.models import Grant, GrantReimbursement
 
 pytestmark = pytest.mark.django_db
 
@@ -675,3 +677,29 @@ def test_reset_pending_status_back_to_status_action(rf):
     # Left out from the action
     assert grant_4.status == Grant.Status.waiting_list_maybe
     assert grant_4.pending_status == Grant.Status.confirmed
+
+
+def test_delete_reimbursement_from_admin_logs_audit_log_entry(rf, admin_user):
+    grant = GrantFactory()
+    reimbursement = GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__ticket=True,
+        granted_amount=Decimal("100"),
+    )
+
+    request = rf.get("/")
+    request.user = admin_user
+
+    admin = GrantReimbursementAdmin(GrantReimbursement, AdminSite())
+    admin.delete_model(request, reimbursement)
+
+    # Verify reimbursement was deleted
+    assert not GrantReimbursement.objects.filter(id=reimbursement.id).exists()
+
+    # Verify audit log entry was created correctly
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message=f"Reimbursement removed: {reimbursement.category.name}",
+    ).exists()

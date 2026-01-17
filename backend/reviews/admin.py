@@ -318,7 +318,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                             create_deletion_admin_log_entry(
                                 request.user,
                                 grant,
-                                change_message=f"Reimbursement {reimbursement.category.name} removed.",
+                                change_message=f"Reimbursement removed: {reimbursement.category.name}",
                             )
                             reimbursement.delete()
                     else:
@@ -331,7 +331,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                             create_deletion_admin_log_entry(
                                 request.user,
                                 grant,
-                                change_message=f"Reimbursement {reimbursement.category.name} removed.",
+                                change_message=f"Reimbursement removed: {reimbursement.category.name}",
                             )
                         to_delete.delete()
 

@@ -477,7 +477,7 @@ def test_save_review_grants_update_grants_status_to_rejected_removes_reimburseme
         assert LogEntry.objects.filter(
             user=user,
             object_id=str(reimbursement.id),
-            change_message=f"Reimbursement {reimbursement.category.name} removed.",
+            change_message=f"Reimbursement removed: {reimbursement.category.name}",
         ).exists()
 
 
@@ -561,7 +561,7 @@ def test_save_review_grants_modify_reimbursements(rf, mocker):
     assert LogEntry.objects.filter(
         user=user,
         object_id=str(travel_category.id),
-        change_message=f"Reimbursement {travel_category.name} removed.",
+        change_message=f"Reimbursement removed: {travel_category.name}",
     ).exists()
     assert LogEntry.objects.filter(
         user=user,
