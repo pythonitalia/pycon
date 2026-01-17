@@ -564,6 +564,31 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         ),
     )
 
+    def save_model(self, request, obj, form, change):
+        """
+        Override to log admin actions when status is changed.
+        """
+        if change:
+            if obj.status != obj._original_status:
+                create_change_admin_log_entry(
+                    request.user,
+                    obj,
+                    change_message=f"Status changed from '{obj._original_status}' to '{obj.status}'",
+                )
+            if obj.pending_status != obj._original_pending_status:
+                create_change_admin_log_entry(
+                    request.user,
+                    obj,
+                    change_message=f"Pending status changed from '{obj._original_pending_status}' to '{obj.pending_status}'",
+                )
+        else:
+            create_addition_admin_log_entry(
+                request.user,
+                obj,
+                change_message="Grant created",
+            )
+        super().save_model(request, obj, form, change)
+
     def change_view(self, request, object_id, form_url="", extra_context=None):
         extra_context = extra_context or {}
         grant = self.model.objects.get(id=object_id)

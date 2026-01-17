@@ -11,6 +11,7 @@ from conferences.models.conference_voucher import ConferenceVoucher
 from conferences.tests.factories import ConferenceFactory, ConferenceVoucherFactory
 from grants.admin import (
     confirm_pending_status,
+    GrantAdmin,
     GrantReimbursementAdmin,
     create_grant_vouchers,
     mark_rejected_and_send_email,
@@ -702,4 +703,53 @@ def test_delete_reimbursement_from_admin_logs_audit_log_entry(rf, admin_user):
         user=admin_user,
         object_id=grant.id,
         change_message=f"Reimbursement removed: {reimbursement.category.name}",
+    ).exists()
+
+
+def test_save_grant_in_admin_logs_audit_log_entry(rf, admin_user):
+    grant = GrantFactory()
+    request = rf.get("/")
+    request.user = admin_user
+
+    admin = GrantAdmin(Grant, AdminSite())
+    admin.save_model(request, grant, None, False)
+
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Grant created",
+    ).exists()
+
+
+def test_save_grant_in_admin_logs_audit_log_entry_for_status_change(rf, admin_user):
+    grant = GrantFactory(status=Grant.Status.pending)
+    request = rf.get("/")
+    request.user = admin_user
+
+    admin = GrantAdmin(Grant, AdminSite())
+    grant.status = Grant.Status.confirmed
+    admin.save_model(request, grant, None, True)
+
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Status changed from 'pending' to 'confirmed'",
+    ).exists()
+
+
+def test_save_grant_in_admin_logs_audit_log_entry_for_pending_status_change(
+    rf, admin_user
+):
+    grant = GrantFactory(pending_status=Grant.Status.pending)
+    request = rf.get("/")
+    request.user = admin_user
+
+    admin = GrantAdmin(Grant, AdminSite())
+    grant.pending_status = Grant.Status.confirmed
+    admin.save_model(request, grant, None, True)
+
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Pending status changed from 'pending' to 'confirmed'",
     ).exists()
