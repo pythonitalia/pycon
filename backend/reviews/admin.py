@@ -318,7 +318,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                             create_deletion_admin_log_entry(
                                 request.user,
                                 grant,
-                                change_message=f"Reimbursement removed: {reimbursement.category.name}",
+                                change_message=f"[Review Session] Reimbursement removed: {reimbursement.category.name}",
                             )
                             reimbursement.delete()
                     else:
@@ -331,7 +331,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                             create_deletion_admin_log_entry(
                                 request.user,
                                 grant,
-                                change_message=f"Reimbursement removed: {reimbursement.category.name}",
+                                change_message=f"[Review Session] Reimbursement removed: {reimbursement.category.name}",
                             )
                         to_delete.delete()
 
@@ -346,7 +346,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 create_change_admin_log_entry(
                     request.user,
                     grant,
-                    change_message=f"Grant pending_status changed from '{grant.status}' to '{grant.pending_status}'.",
+                    change_message=f"[Review Session] Grant status updated: pending_status changed from '{grant.status}' to '{grant.pending_status}'.",
                 )
 
                 approved_reimbursement_categories = (
@@ -373,13 +373,13 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                         create_addition_admin_log_entry(
                             request.user,
                             grant,
-                            change_message=f"Reimbursement {reimbursement.category.name} added.",
+                            change_message=f"[Review Session] Reimbursement {reimbursement.category.name} added.",
                         )
                     else:
                         create_change_admin_log_entry(
                             request.user,
                             grant,
-                            change_message=f"Reimbursement {reimbursement.category.name} updated.",
+                            change_message=f"[Review Session] Reimbursement {reimbursement.category.name} updated.",
                         )
 
             messages.success(

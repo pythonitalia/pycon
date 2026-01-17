@@ -375,22 +375,22 @@ def test_save_review_grants_updates_grant_and_creates_reimbursements(rf, mocker)
     assert LogEntry.objects.filter(
         user=user,
         object_id__in=[str(grant_1.id), str(grant_2.id)],
-        change_message=f"Grant pending_status changed from '{Grant.Status.pending}' to '{Grant.Status.approved}'.",
+        change_message=f"[Review Session] Grant status updated: pending_status changed from '{Grant.Status.pending}' to '{Grant.Status.approved}'.",
     ).exists()
     assert LogEntry.objects.filter(
         user=user,
         object_id__in=[str(grant_1.id), str(grant_2.id)],
-        change_message=f"Reimbursement {ticket_category.name} added.",
+        change_message=f"[Review Session] Reimbursement {ticket_category.name} added.",
     ).exists()
     assert LogEntry.objects.filter(
         user=user,
         object_id__in=[str(grant_1.id), str(grant_2.id)],
-        change_message=f"Reimbursement {travel_category.name} added.",
+        change_message=f"[Review Session] Reimbursement {travel_category.name} added.",
     ).exists()
     assert LogEntry.objects.filter(
         user=user,
         object_id=str(grant_2.id),
-        change_message=f"Reimbursement {accommodation_category.name} added.",
+        change_message=f"[Review Session] Reimbursement {accommodation_category.name} added.",
     ).exists()
 
     mock_messages.success.assert_called_once()
@@ -477,7 +477,7 @@ def test_save_review_grants_update_grants_status_to_rejected_removes_reimburseme
         assert LogEntry.objects.filter(
             user=user,
             object_id=str(reimbursement.id),
-            change_message=f"Reimbursement removed: {reimbursement.category.name}",
+            change_message=f"[Review Session] Reimbursement removed: {reimbursement.category.name}",
         ).exists()
 
 
@@ -557,14 +557,19 @@ def test_save_review_grants_modify_reimbursements(rf, mocker):
         reimbursement.category for reimbursement in grant_1.reimbursements.all()
     } == {ticket_category}
 
-    assert LogEntry.objects.count() == 2
+    assert LogEntry.objects.count() == 4
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id__in=[str(grant_1.id)],
+        change_message=f"[Review Session] Grant status updated: pending_status changed from '{Grant.Status.pending}' to '{Grant.Status.approved}'.",
+    ).exists()
     assert LogEntry.objects.filter(
         user=user,
         object_id=str(travel_category.id),
-        change_message=f"Reimbursement removed: {travel_category.name}",
+        change_message=f"[Review Session] Reimbursement removed: {travel_category.name}",
     ).exists()
     assert LogEntry.objects.filter(
         user=user,
         object_id=str(accommodation_category.id),
-        change_message=f"Reimbursement {accommodation_category.name} removed.",
+        change_message=f"[Review Session] Reimbursement removed: {accommodation_category.name}",
     ).exists()
