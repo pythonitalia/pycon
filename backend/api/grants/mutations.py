@@ -302,6 +302,9 @@ class GrantMutation:
 
         for attr, value in asdict(input).items():
             setattr(instance, attr, value)
+
+        create_change_admin_log_entry(request.user, instance, "Grant updated")
+
         instance.save()
 
         Participant.objects.update_or_create(
