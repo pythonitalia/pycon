@@ -1,18 +1,22 @@
-from django.urls import reverse
-from django.core.signing import Signer
-
-from unittest.mock import patch
+from decimal import Decimal
 from uuid import uuid4
+
+import pytest
 import requests
+from django.core.signing import Signer
+from django.test import override_settings
+from django.urls import reverse
+from pypdf import PdfReader
+
+from grants.tests.factories import (
+    GrantFactory,
+    GrantReimbursementFactory,
+)
 from notifications.models import EmailTemplateIdentifier
-from grants.tests.factories import GrantFactory
-from grants.models import Grant
 from visa.models import (
     InvitationLetterDocumentInclusionPolicy,
     InvitationLetterRequestStatus,
 )
-import pytest
-from django.test import override_settings
 from visa.tasks import (
     notify_new_invitation_letter_request_on_slack,
     process_invitation_letter_request,
@@ -21,11 +25,10 @@ from visa.tasks import (
 )
 from visa.tests.factories import (
     InvitationLetterAssetFactory,
-    InvitationLetterDocumentFactory,
     InvitationLetterConferenceConfigFactory,
+    InvitationLetterDocumentFactory,
     InvitationLetterRequestFactory,
 )
-from pypdf import PdfReader
 
 pytestmark = pytest.mark.django_db
 
@@ -126,12 +129,12 @@ def test_process_invitation_letter_request(requests_mock, mock_ticket_present):
 
 
 @pytest.mark.parametrize(
-    "grant_approved_type",
-    [None, Grant.ApprovedType.ticket_only, Grant.ApprovedType.ticket_travel],
+    "has_ticket,has_travel",
+    [(False, False), (True, False), (True, True)],
 )
 @override_settings(PRETIX_API="https://pretix/api/")
 def test_process_invitation_letter_request_accomodation_doc_with_no_accommodation(
-    mock_ticket_present, grant_approved_type
+    mock_ticket_present, has_ticket, has_travel
 ):
     config = InvitationLetterConferenceConfigFactory()
     InvitationLetterDocumentFactory(
@@ -153,12 +156,25 @@ def test_process_invitation_letter_request_accomodation_doc_with_no_accommodatio
     )
     mock_ticket_present(request)
 
-    if grant_approved_type:
-        GrantFactory(
+    if has_ticket or has_travel:
+        grant = GrantFactory(
             conference=config.conference,
             user=request.requester,
-            approved_type=grant_approved_type,
         )
+        if has_ticket:
+            GrantReimbursementFactory(
+                grant=grant,
+                category__conference=config.conference,
+                category__ticket=True,
+                granted_amount=Decimal("100"),
+            )
+        if has_travel:
+            GrantReimbursementFactory(
+                grant=grant,
+                category__conference=config.conference,
+                category__travel=True,
+                granted_amount=Decimal("500"),
+            )
 
     process_invitation_letter_request(invitation_letter_request_id=request.id)
 
@@ -195,10 +211,27 @@ def test_process_invitation_letter_request_with_doc_only_for_accommodation(
     )
     mock_ticket_present(request)
 
-    GrantFactory(
+    grant = GrantFactory(
         conference=config.conference,
         user=request.requester,
-        approved_type=Grant.ApprovedType.ticket_travel_accommodation,
+    )
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=config.conference,
+        category__ticket=True,
+        granted_amount=Decimal("100"),
+    )
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=config.conference,
+        category__travel=True,
+        granted_amount=Decimal("500"),
+    )
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=config.conference,
+        category__accommodation=True,
+        granted_amount=Decimal("200"),
     )
 
     process_invitation_letter_request(invitation_letter_request_id=request.id)
@@ -385,11 +418,11 @@ def test_notify_new_invitation_letter_request_on_slack(mocker):
 
 def test_send_invitation_letter_via_email(sent_emails):
     from notifications.tests.factories import EmailTemplateFactory
-    
+
     invitation_letter_request = InvitationLetterRequestFactory(
         requester__full_name="Marco",
     )
-    
+
     EmailTemplateFactory(
         conference=invitation_letter_request.conference,
         identifier=EmailTemplateIdentifier.visa_invitation_letter_download,
@@ -402,22 +435,28 @@ def test_send_invitation_letter_via_email(sent_emails):
     # Verify that the correct email template was used and email was sent
     emails_sent = sent_emails()
     assert emails_sent.count() == 1
-    
+
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.visa_invitation_letter_download
+    assert (
+        sent_email.email_template.identifier
+        == EmailTemplateIdentifier.visa_invitation_letter_download
+    )
     assert sent_email.email_template.conference == invitation_letter_request.conference
     assert sent_email.recipient_email == invitation_letter_request.email
-    
+
     signer = Signer()
     url_path = reverse(
         "download-invitation-letter", args=[invitation_letter_request.id]
     )
     signed_url = signer.sign(url_path)
     signature = signed_url.split(signer.sep)[-1]
-    
+
     # Verify placeholders were processed correctly
-    assert sent_email.placeholders["invitation_letter_download_url"] == f"https://admin.pycon.it{url_path}?sig={signature}"
-    assert sent_email.placeholders["has_grant"] == False
+    assert (
+        sent_email.placeholders["invitation_letter_download_url"]
+        == f"https://admin.pycon.it{url_path}?sig={signature}"
+    )
+    assert not sent_email.placeholders["has_grant"]
     assert sent_email.placeholders["user_name"] == "Marco"
 
     invitation_letter_request.refresh_from_db()

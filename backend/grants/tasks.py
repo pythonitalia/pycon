@@ -1,17 +1,15 @@
+import logging
 from datetime import timedelta
 from urllib.parse import urljoin
 
 from django.conf import settings
 from django.utils import timezone
-from notifications.models import EmailTemplate, EmailTemplateIdentifier
 
-from users.models import User
 from grants.models import Grant
 from integrations import slack
-
-import logging
-
+from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from pycon.celery import app
+from users.models import User
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +30,7 @@ def send_grant_reply_approved_email(*, grant_id, is_reminder):
     variables = {
         "reply_url": reply_url,
         "start_date": f"{grant.conference.start:%-d %B}",
-        "end_date": f"{grant.conference.end+timedelta(days=1):%-d %B}",
+        "end_date": f"{grant.conference.end + timedelta(days=1):%-d %B}",
         "deadline_date_time": f"{grant.applicant_reply_deadline:%-d %B %Y %H:%M %Z}",
         "deadline_date": f"{grant.applicant_reply_deadline:%-d %B %Y}",
         "visa_page_link": urljoin(settings.FRONTEND_URL, "/visa"),
@@ -42,12 +40,19 @@ def send_grant_reply_approved_email(*, grant_id, is_reminder):
     }
 
     if grant.has_approved_travel():
-        if not grant.travel_amount:
+        from grants.models import GrantReimbursementCategory
+
+        travel_reimbursements = grant.reimbursements.filter(
+            category__category=GrantReimbursementCategory.Category.TRAVEL
+        )
+        travel_amount = sum(r.granted_amount for r in travel_reimbursements)
+
+        if not travel_amount or travel_amount == 0:
             raise ValueError(
                 "Grant travel amount is set to Zero, can't send the email!"
             )
 
-        variables["travel_amount"] = f"{grant.travel_amount:.0f}"
+        variables["travel_amount"] = f"{travel_amount:.0f}"
 
     _new_send_grant_email(
         template_identifier=EmailTemplateIdentifier.grant_approved,

@@ -227,6 +227,7 @@ class SendSubmissionInput(BaseSubmissionInput):
 
     topic: Optional[ID] = strawberry.field(default=None)
     tags: list[ID] = strawberry.field(default_factory=list)
+    do_not_record: bool = strawberry.field(default=False)
 
 
 @strawberry.input
@@ -257,9 +258,32 @@ class UpdateSubmissionInput(BaseSubmissionInput):
     topic: Optional[ID] = strawberry.field(default=None)
     tags: list[ID] = strawberry.field(default_factory=list)
     materials: list[SubmissionMaterialInput] = strawberry.field(default_factory=list)
+    do_not_record: bool = strawberry.field(default=False)
 
     def validate(self, conference: Conference, submission: SubmissionModel):
         errors = super().validate(conference)
+
+        # Check if CFP is closed and prevent editing of restricted fields
+        # Exception: accepted submissions can still be edited
+        if (
+            not conference.is_cfp_open
+            and submission.status != SubmissionModel.STATUS.accepted
+        ):
+            restricted_fields = (
+                "title",
+                "abstract",
+                "elevator_pitch",
+            )
+
+            for field_name in restricted_fields:
+                input_value = getattr(self, field_name)
+                submission_value = getattr(submission, field_name)
+                if LazyI18nString(input_value.to_dict()) != submission_value:
+                    field_label = field_name.replace("_", " ")
+                    errors.add_error(
+                        field_name,
+                        f"You cannot edit the {field_label} after the call for proposals deadline has passed.",
+                    )
 
         if self.materials:
             if len(self.materials) > 3:
@@ -319,6 +343,7 @@ class SubmissionsMutations:
         instance.speaker_level = input.speaker_level
         instance.previous_talk_video = input.previous_talk_video
         instance.short_social_summary = input.short_social_summary
+        instance.do_not_record = input.do_not_record
 
         languages = Language.objects.filter(code__in=input.languages).all()
         instance.languages.set(languages)
@@ -409,16 +434,18 @@ class SubmissionsMutations:
         if not conference.is_cfp_open:
             errors.add_error("non_field_errors", "The call for paper is not open!")
 
-        if (
-            SubmissionModel.objects.of_user(request.user)
-            .for_conference(conference)
-            .non_cancelled()
-            .count()
-            >= 3
-        ):
-            errors.add_error(
-                "non_field_errors", "You can only submit up to 3 proposals"
+        if conference.max_proposals_per_user is not None:
+            user_submissions_count = (
+                SubmissionModel.objects.of_user(request.user)
+                .for_conference(conference)
+                .non_cancelled()
+                .count()
             )
+            if user_submissions_count >= conference.max_proposals_per_user:
+                errors.add_error(
+                    "non_field_errors",
+                    f"You can only submit up to {conference.max_proposals_per_user} proposals",
+                )
 
         if errors.has_errors:
             return errors
@@ -437,6 +464,7 @@ class SubmissionsMutations:
             notes=input.notes,
             audience_level_id=input.audience_level,
             short_social_summary=input.short_social_summary,
+            do_not_record=input.do_not_record,
         )
 
         languages = Language.objects.filter(code__in=input.languages).all()

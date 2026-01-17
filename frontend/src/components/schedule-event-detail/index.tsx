@@ -211,7 +211,7 @@ export const ScheduleEventDetail = ({
         </Grid>
       </Section>
       {youtubeVideoId && <YouTubeSection youtubeVideoId={youtubeVideoId} />}
-      {speakers.length > 0 && (
+      {speakers && speakers.length > 0 && (
         <Section>
           {speakers.map((speaker, index) => (
             <Fragment key={speaker.fullName}>

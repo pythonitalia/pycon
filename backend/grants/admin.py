@@ -1,44 +1,51 @@
 import logging
+from datetime import timedelta
+from typing import Dict, List, Optional
+
+from django.contrib import admin, messages
+from django.contrib.admin import SimpleListFilter
 from django.db import transaction
-from custom_admin.audit import (
-    create_addition_admin_log_entry,
-    create_change_admin_log_entry,
-)
+from django.db.models import Exists, OuterRef
+from django.db.models.query import QuerySet
+from django.urls import reverse
+from django.utils import timezone
+from django.utils.safestring import mark_safe
+from import_export.admin import ExportMixin
+from import_export.fields import Field
+from import_export.resources import ModelResource
+
 from conferences.models.conference_voucher import ConferenceVoucher
-from pycon.constants import UTC
+from countries import countries
+from countries.filters import CountryFilter
 from custom_admin.admin import (
     confirm_pending_status,
     reset_pending_status_back_to_status,
     validate_single_conference_selection,
 )
-from import_export.resources import ModelResource
-from datetime import timedelta
-from typing import Dict, List, Optional
-from countries.filters import CountryFilter
-from django.contrib import admin, messages
-from django.db.models.query import QuerySet
-from django.utils import timezone
-from import_export.admin import ExportMixin
-from import_export.fields import Field
-from users.admin_mixins import ConferencePermissionMixin
-from countries import countries
+from custom_admin.audit import (
+    create_addition_admin_log_entry,
+    create_change_admin_log_entry,
+)
 from grants.tasks import (
     send_grant_reply_approved_email,
+    send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
     send_grant_reply_waiting_list_update_email,
-    send_grant_reply_rejected_email,
 )
+from participants.models import Participant
+from pretix import user_has_admission_ticket
+from pycon.constants import UTC
 from schedule.models import ScheduleItem
 from submissions.models import Submission
-from .models import Grant, GrantConfirmPendingStatusProxy
-from django.db.models import Exists, OuterRef
-from pretix import user_has_admission_ticket
-
-from django.contrib.admin import SimpleListFilter
-from participants.models import Participant
-from django.urls import reverse
-from django.utils.safestring import mark_safe
+from users.admin_mixins import ConferencePermissionMixin
 from visa.models import InvitationLetterRequest
+
+from .models import (
+    Grant,
+    GrantConfirmPendingStatusProxy,
+    GrantReimbursement,
+    GrantReimbursementCategory,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -164,24 +171,10 @@ class GrantResource(ModelResource):
 
 
 def _check_amounts_are_not_empty(grant: Grant, request):
-    if grant.total_amount is None:
+    if grant.total_allocated_amount == 0:
         messages.error(
             request,
             f"Grant for {grant.name} is missing 'Total Amount'!",
-        )
-        return False
-
-    if grant.has_approved_accommodation() and grant.accommodation_amount is None:
-        messages.error(
-            request,
-            f"Grant for {grant.name} is missing 'Accommodation Amount'!",
-        )
-        return False
-
-    if grant.has_approved_travel() and grant.travel_amount is None:
-        messages.error(
-            request,
-            f"Grant for {grant.name} is missing 'Travel Amount'!",
         )
         return False
 
@@ -208,10 +201,10 @@ def send_reply_emails(modeladmin, request, queryset):
 
     for grant in queryset:
         if grant.status in (Grant.Status.approved,):
-            if grant.approved_type is None:
+            if not grant.reimbursements.exists():
                 messages.error(
                     request,
-                    f"Grant for {grant.name} is missing 'Grant Approved Type'!",
+                    f"Grant for {grant.name} is missing reimbursement categories!",
                 )
                 return
 
@@ -394,6 +387,32 @@ class IsConfirmedSpeakerFilter(SimpleListFilter):
         return queryset
 
 
+@admin.register(GrantReimbursementCategory)
+class GrantReimbursementCategoryAdmin(ConferencePermissionMixin, admin.ModelAdmin):
+    list_display = ("__str__", "max_amount", "category", "included_by_default")
+    list_filter = ("conference", "category", "included_by_default")
+    search_fields = ("category", "name")
+
+
+@admin.register(GrantReimbursement)
+class GrantReimbursementAdmin(ConferencePermissionMixin, admin.ModelAdmin):
+    list_display = (
+        "grant",
+        "category",
+        "granted_amount",
+    )
+    list_filter = ("grant__conference", "category")
+    search_fields = ("grant__full_name", "grant__email")
+    autocomplete_fields = ("grant",)
+
+
+class GrantReimbursementInline(admin.TabularInline):
+    model = GrantReimbursement
+    extra = 0
+    autocomplete_fields = ["category"]
+    fields = ["category", "granted_amount"]
+
+
 @admin.register(Grant)
 class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     change_list_template = "admin/grants/grant/change_list.html"
@@ -406,12 +425,8 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "has_sent_invitation_letter_request",
         "emoji_gender",
         "conference",
-        "status",
-        "approved_type",
-        "ticket_amount",
-        "travel_amount",
-        "accommodation_amount",
-        "total_amount",
+        "current_or_pending_status",
+        "total_amount_display",
         "country_type",
         "user_has_ticket",
         "has_voucher",
@@ -425,7 +440,6 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "pending_status",
         "country_type",
         "occupation",
-        "approved_type",
         "needs_funds_for_travel",
         "need_visa",
         "need_accommodation",
@@ -451,6 +465,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "delete_selected",
     ]
     autocomplete_fields = ("user",)
+    inlines = [GrantReimbursementInline]
 
     fieldsets = (
         (
@@ -459,12 +474,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                 "fields": (
                     "status",
                     "pending_status",
-                    "approved_type",
                     "country_type",
-                    "ticket_amount",
-                    "travel_amount",
-                    "accommodation_amount",
-                    "total_amount",
                     "applicant_reply_sent_at",
                     "applicant_reply_deadline",
                     "internal_notes",
@@ -527,6 +537,10 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         if obj.user_id:
             return obj.user.display_name
         return obj.email
+
+    @admin.display(description="Status")
+    def current_or_pending_status(self, obj):
+        return obj.current_or_pending_status
 
     @admin.display(
         description="C",
@@ -592,10 +606,22 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
             return "📧"
         return ""
 
+    @admin.display(description="Total")
+    def total_amount_display(self, obj):
+        return f"{obj.total_allocated_amount:.2f}"
+
+    @admin.display(description="Approved Reimbursements")
+    def approved_amounts_display(self, obj):
+        return ", ".join(
+            f"{r.category.name}: {r.granted_amount}" for r in obj.reimbursements.all()
+        )
+
     def get_queryset(self, request):
         qs = (
             super()
             .get_queryset(request)
+            .select_related("user")
+            .prefetch_related("reimbursements__category")
             .annotate(
                 is_proposed_speaker=Exists(
                     Submission.objects.non_cancelled().filter(

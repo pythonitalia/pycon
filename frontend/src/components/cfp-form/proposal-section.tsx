@@ -26,6 +26,10 @@ export const ProposalSection = ({
 }) => {
   const inputPlaceholder = useTranslatedMessage("input.placeholder");
   const { radio, raw, select, textarea, checkbox } = formOptions;
+  const selectedType = conferenceData!.conference.submissionTypes.find(
+    (type) => type.id === formState.values.type,
+  );
+  const isRecordable = selectedType?.isRecordable;
 
   return (
     <MultiplePartsCard>
@@ -232,6 +236,27 @@ export const ProposalSection = ({
               placeholder={inputPlaceholder}
             />
           </InputWrapper>
+
+          {isRecordable && (
+            <InputWrapper
+              required={false}
+              title={<FormattedMessage id="cfp.doNotRecordLabel" />}
+              description={<FormattedMessage id="cfp.doNotRecordDescription" />}
+            >
+              <label>
+                <HorizontalStack gap="small" alignItems="center">
+                  <Checkbox
+                    {...checkbox("doNotRecord")}
+                    required={false}
+                    errors={getErrors("validationDoNotRecord")}
+                  />
+                  <Text size={2} weight="strong">
+                    <FormattedMessage id="cfp.doNotRecordCheckboxLabel" />
+                  </Text>
+                </HorizontalStack>
+              </label>
+            </InputWrapper>
+          )}
         </Grid>
       </CardPart>
     </MultiplePartsCard>

@@ -104,6 +104,7 @@ def _submit_proposal(client, conference, submission, **kwargs):
                         tags {
                             name
                         }
+                        doNotRecord
                     }
 
                     ... on SendSubmissionErrors {
@@ -207,6 +208,7 @@ def test_submit_talk(
     assert talk.speaker_id == user.id
     assert talk.audience_level.name == "Beginner"
     assert talk.short_social_summary == "summary"
+    assert talk.do_not_record is False
 
     participant = Participant.objects.get(conference=conference, user_id=user.id)
     assert participant.bio == "my bio"
@@ -1247,6 +1249,7 @@ def test_cannot_submit_more_than_3_proposals(graphql_client, user):
         active_cfp=True,
         durations=("50",),
         audience_levels=("Beginner",),
+        max_proposals_per_user=3,
     )
 
     SubmissionFactory(
@@ -1265,9 +1268,74 @@ def test_cannot_submit_more_than_3_proposals(graphql_client, user):
         status=Submission.STATUS.proposed,
     )
 
-    resp, _ = _submit_talk(graphql_client, conference, title={"en": "My first talk"})
+    resp, _ = _submit_talk(
+        graphql_client, conference, title={"en": "My first talk"}, languages=["en"]
+    )
 
     assert resp["data"]["sendSubmission"]["__typename"] == "SendSubmissionErrors"
     assert resp["data"]["sendSubmission"]["errors"]["nonFieldErrors"] == [
         "You can only submit up to 3 proposals"
     ]
+
+
+def test_can_submit_unlimited_proposals_when_max_proposals_is_none(
+    graphql_client, user
+):
+    graphql_client.force_login(user)
+
+    conference = ConferenceFactory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+        # max_proposals_per_user defaults to None (no limit)
+    )
+
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
+    )
+
+    # Create 3 existing submissions
+    for _ in range(3):
+        SubmissionFactory(
+            speaker_id=user.id,
+            conference=conference,
+            status=Submission.STATUS.proposed,
+        )
+
+    # Should be able to submit a 4th proposal
+    resp, _ = _submit_talk(
+        graphql_client, conference, title={"en": "My fourth talk"}, languages=["en"]
+    )
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
+    assert resp["data"]["sendSubmission"]["title"] == "My fourth talk"
+
+
+def test_submit_talk_with_do_not_record_true(graphql_client, user):
+    graphql_client.force_login(user)
+
+    conference = ConferenceFactory(
+        topics=("my-topic",),
+        languages=("en", "it"),
+        submission_types=("talk",),
+        active_cfp=True,
+        durations=("50",),
+        audience_levels=("Beginner",),
+    )
+
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.proposal_received_confirmation,
+    )
+
+    resp, _ = _submit_talk(graphql_client, conference, doNotRecord=True)
+
+    assert resp["data"]["sendSubmission"]["__typename"] == "Submission"
+    assert resp["data"]["sendSubmission"]["doNotRecord"] is True
+
+    talk = Submission.objects.get_by_hashid(resp["data"]["sendSubmission"]["id"])
+    assert talk.do_not_record is True

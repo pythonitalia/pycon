@@ -76,6 +76,7 @@ export const EditSubmissionPage = () => {
               url: material.url,
               fileId: material.fileId,
             })),
+          doNotRecord: input.doNotRecord,
         },
         language,
       },

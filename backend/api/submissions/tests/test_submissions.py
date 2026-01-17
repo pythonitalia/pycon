@@ -10,20 +10,29 @@ pytestmark = pytest.mark.django_db
 
 
 def test_submissions_are_random_by_user(graphql_client, mock_has_ticket):
-    user_1 = UserFactory(id=100)
-    user_2 = UserFactory(id=103)
-    user_3 = UserFactory(id=104)
+    """Test that submissions are randomized differently per user.
+
+    The randomization is seeded by user.id, so each user gets a consistent
+    but different ordering. We test this by:
+    1. Creating enough submissions to reduce collision probability
+    2. Verifying the same user gets the same ordering on repeated queries
+    3. Verifying different users get different orderings
+    """
+    user_1 = UserFactory()
+    user_2 = UserFactory()
 
     graphql_client.force_login(user_1)
 
+    # Create 10 submissions to reduce collision probability
+    # With 10 items, there are 10! possible orderings, making collisions extremely unlikely
     submission = SubmissionFactory()
-    SubmissionFactory(conference=submission.conference)
-    SubmissionFactory(conference=submission.conference)
+    for _ in range(9):
+        SubmissionFactory(conference=submission.conference)
 
     mock_has_ticket(submission.conference)
 
     query = """query Submissions($code: String!, $page: Int) {
-        submissions(code: $code, page: $page, pageSize: 3) {
+        submissions(code: $code, page: $page, pageSize: 10) {
             pageInfo {
                 totalPages
                 totalItems
@@ -34,21 +43,32 @@ def test_submissions_are_random_by_user(graphql_client, mock_has_ticket):
         }
     }"""
 
-    submissions = {}
+    # Test that user_1 gets consistent ordering
+    graphql_client.force_login(user_1)
+    resp_1a = graphql_client.query(
+        query,
+        variables={"code": submission.conference.code, "page": 1},
+    )
+    resp_1b = graphql_client.query(
+        query,
+        variables={"code": submission.conference.code, "page": 1},
+    )
+    user_1_submissions = resp_1a["data"]["submissions"]["items"]
 
-    for user in [user_1, user_2, user_3]:
-        graphql_client.force_login(user)
+    # Same user should get same ordering
+    assert user_1_submissions == resp_1b["data"]["submissions"]["items"]
 
-        resp = graphql_client.query(
-            query,
-            variables={"code": submission.conference.code, "page": 1},
-        )
+    # Test that user_2 gets a different ordering
+    graphql_client.force_login(user_2)
+    resp_2 = graphql_client.query(
+        query,
+        variables={"code": submission.conference.code, "page": 1},
+    )
+    user_2_submissions = resp_2["data"]["submissions"]["items"]
 
-        submissions[user] = resp["data"]["submissions"]["items"]
-
-    assert submissions[user_1] != submissions[user_2]
-    assert submissions[user_1] != submissions[user_3]
-    assert submissions[user_2] != submissions[user_3]
+    # Different users should get different orderings
+    # With 10 submissions, the probability of collision is 1/10! which is negligible
+    assert user_1_submissions != user_2_submissions
 
 
 def test_returns_submissions_paginated(graphql_client, user):

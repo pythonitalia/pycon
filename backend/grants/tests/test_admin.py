@@ -1,21 +1,24 @@
 from datetime import timedelta
+from decimal import Decimal
 from unittest.mock import call
 
-from conferences.models.conference_voucher import ConferenceVoucher
-from conferences.tests.factories import ConferenceFactory, ConferenceVoucherFactory
-from grants.tests.factories import GrantFactory
 import pytest
 from django.utils import timezone
 
+from conferences.models.conference_voucher import ConferenceVoucher
+from conferences.tests.factories import ConferenceFactory, ConferenceVoucherFactory
 from grants.admin import (
     confirm_pending_status,
     create_grant_vouchers,
+    mark_rejected_and_send_email,
     reset_pending_status_back_to_status,
     send_reply_emails,
-    mark_rejected_and_send_email,
 )
 from grants.models import Grant
-
+from grants.tests.factories import (
+    GrantFactory,
+    GrantReimbursementFactory,
+)
 
 pytestmark = pytest.mark.django_db
 
@@ -60,9 +63,11 @@ def test_send_reply_emails_with_grants_from_multiple_conferences_fails(
     mock_send_rejected_email.assert_not_called()
 
 
-def test_send_reply_emails_approved_grant_missing_approved_type(rf, mocker, admin_user):
+def test_send_reply_emails_approved_grant_missing_reimbursements(
+    rf, mocker, admin_user
+):
     mock_messages = mocker.patch("grants.admin.messages")
-    grant = GrantFactory(status=Grant.Status.approved, approved_type=None)
+    grant = GrantFactory(status=Grant.Status.approved)
     request = rf.get("/")
     request.user = admin_user
     mock_send_approved_email = mocker.patch(
@@ -73,20 +78,21 @@ def test_send_reply_emails_approved_grant_missing_approved_type(rf, mocker, admi
 
     mock_messages.error.assert_called_once_with(
         request,
-        f"Grant for {grant.name} is missing 'Grant Approved Type'!",
+        f"Grant for {grant.name} is missing reimbursement categories!",
     )
     mock_send_approved_email.assert_not_called()
 
 
 def test_send_reply_emails_approved_missing_amount(rf, mocker, admin_user):
     mock_messages = mocker.patch("grants.admin.messages")
-    grant = GrantFactory(
-        status=Grant.Status.approved,
-        approved_type=Grant.ApprovedType.ticket_accommodation,
-        total_amount=None,
+    grant = GrantFactory(status=Grant.Status.approved)
+    # Create reimbursement with 0 amount so total_allocated_amount is 0
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__ticket=True,
+        granted_amount=Decimal("0"),
     )
-    grant.total_amount = None
-    grant.save()
     request = rf.get("/")
     request.user = admin_user
     mock_send_approved_email = mocker.patch(
@@ -106,10 +112,19 @@ def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
     rf, mocker, admin_user
 ):
     mock_messages = mocker.patch("grants.admin.messages")
-    grant = GrantFactory(
-        status=Grant.Status.approved,
-        approved_type=Grant.ApprovedType.ticket_accommodation,
-        total_amount=800,
+    grant = GrantFactory(status=Grant.Status.approved)
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__ticket=True,
+        granted_amount=Decimal("100"),
+    )
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__accommodation=True,
+        category__max_amount=Decimal("700"),
+        granted_amount=Decimal("700"),
     )
     request = rf.get("/")
     request.user = admin_user

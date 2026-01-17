@@ -181,18 +181,7 @@ class ConferenceAdmin(
                     "audience_levels",
                     "languages",
                     "proposal_tags",
-                )
-            },
-        ),
-        (
-            "Grants",
-            {
-                "fields": (
-                    "grants_default_ticket_amount",
-                    "grants_default_accommodation_amount",
-                    "grants_default_travel_from_italy_amount",
-                    "grants_default_travel_from_europe_amount",
-                    "grants_default_travel_from_extra_eu_amount",
+                    "max_proposals_per_user",
                 )
             },
         ),

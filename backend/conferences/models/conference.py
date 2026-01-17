@@ -93,47 +93,6 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         default="",
     )
 
-    grants_default_ticket_amount = models.DecimalField(
-        verbose_name=_("grants default ticket amount"),
-        null=True,
-        blank=True,
-        max_digits=6,
-        decimal_places=2,
-        default=None,
-    )
-    grants_default_accommodation_amount = models.DecimalField(
-        verbose_name=_("grants default accommodation amount"),
-        null=True,
-        blank=True,
-        max_digits=6,
-        decimal_places=2,
-        default=None,
-    )
-    grants_default_travel_from_italy_amount = models.DecimalField(
-        verbose_name=_("grants default travel from Italy amount"),
-        null=True,
-        blank=True,
-        max_digits=6,
-        decimal_places=2,
-        default=None,
-    )
-    grants_default_travel_from_europe_amount = models.DecimalField(
-        verbose_name=_("grants default travel from Europe amount"),
-        null=True,
-        blank=True,
-        max_digits=6,
-        decimal_places=2,
-        default=None,
-    )
-    grants_default_travel_from_extra_eu_amount = models.DecimalField(
-        verbose_name=_("grants default travel from Extra EU amount"),
-        null=True,
-        blank=True,
-        max_digits=6,
-        decimal_places=2,
-        default=None,
-    )
-
     video_title_template = models.TextField(
         default="",
         blank=True,
@@ -156,6 +115,13 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         default="",
         blank=True,
         max_length=32224,
+    )
+
+    max_proposals_per_user = models.PositiveIntegerField(
+        _("max proposals per user"),
+        null=True,
+        blank=True,
+        help_text=_("Maximum number of proposals a user can submit. Leave empty for no limit."),
     )
 
     def get_slack_oauth_token(self):

@@ -1,11 +1,14 @@
-from conferences.tests.factories import ConferenceFactory
-from django.urls import reverse
-from grants.models import Grant
-from grants.tests.factories import GrantFactory
-from integrations.plain_cards import _grant_status_to_color
+from decimal import Decimal
+
 import pytest
-from users.tests.factories import UserFactory
 from django.test import override_settings
+from django.urls import reverse
+
+from conferences.tests.factories import ConferenceFactory
+from grants.models import Grant
+from grants.tests.factories import GrantFactory, GrantReimbursementFactory
+from integrations.plain_cards import _grant_status_to_color
+from users.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -143,10 +146,24 @@ def test_get_plain_customer_with_no_cards(rest_api_client):
 @override_settings(PLAIN_INTEGRATION_TOKEN="secret")
 def test_get_plain_customer_cards_grant_card(rest_api_client):
     user = UserFactory()
-    grant = GrantFactory(
-        user=user,
-        approved_type=Grant.ApprovedType.ticket_travel_accommodation,
-        travel_amount=100,
+    grant = GrantFactory(user=user)
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__ticket=True,
+        granted_amount=Decimal("100"),
+    )
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__travel=True,
+        granted_amount=Decimal("100"),
+    )
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__accommodation=True,
+        granted_amount=Decimal("200"),
     )
     conference_id = grant.conference_id
     rest_api_client.token_auth("secret")
@@ -180,28 +197,31 @@ def test_get_plain_customer_cards_grant_card(rest_api_client):
         == grant.get_status_display()
     )
 
-    assert (
-        grant_card["components"][2]["componentRow"]["rowAsideContent"][0][
-            "componentText"
-        ]["text"]
-        == grant.get_approved_type_display()
-    )
+    # Check that reimbursement category names are displayed
+    approval_text = grant_card["components"][2]["componentRow"]["rowAsideContent"][0][
+        "componentText"
+    ]["text"]
+    assert "Ticket" in approval_text
+    assert "Travel" in approval_text
+    assert "Accommodation" in approval_text
 
     assert (
         grant_card["components"][4]["componentRow"]["rowAsideContent"][0][
             "componentText"
         ]["text"]
-        == "€100.00"
+        == "€100"
     )
 
 
 @override_settings(PLAIN_INTEGRATION_TOKEN="secret")
 def test_get_plain_customer_cards_grant_card_with_no_travel(rest_api_client):
     user = UserFactory()
-    grant = GrantFactory(
-        user=user,
-        approved_type=Grant.ApprovedType.ticket_only,
-        travel_amount=100,
+    grant = GrantFactory(user=user)
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__ticket=True,
+        granted_amount=Decimal("100"),
     )
     conference_id = grant.conference_id
     rest_api_client.token_auth("secret")
@@ -235,12 +255,11 @@ def test_get_plain_customer_cards_grant_card_with_no_travel(rest_api_client):
         == grant.get_status_display()
     )
 
-    assert (
-        grant_card["components"][2]["componentRow"]["rowAsideContent"][0][
-            "componentText"
-        ]["text"]
-        == grant.get_approved_type_display()
-    )
+    # Check that only Ticket is displayed (no travel)
+    approval_text = grant_card["components"][2]["componentRow"]["rowAsideContent"][0][
+        "componentText"
+    ]["text"]
+    assert approval_text == "Ticket"
 
     assert "Travel amount" not in str(grant_card)
 

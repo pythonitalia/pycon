@@ -84,4 +84,6 @@ COPY ./entrypoint.sh /entrypoint.sh
 
 RUN mkdir -p assets && .venv/bin/python manage.py collectstatic --noinput
 
+ENV PGSSLCERT /tmp/postgresql.crt
+
 ENTRYPOINT ["/entrypoint.sh"]

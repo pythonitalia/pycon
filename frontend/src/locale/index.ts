@@ -91,6 +91,18 @@ Let's get in touch to find the best solution for your business' needs!`,
     "profile.publicProfile.yourBio.description":
       "Write something about yourself: your interests, your current occupation and more!",
     "profile.publicProfile.yourSocials": "Your socials",
+    "profile.publicProfile.website.description":
+      "Your website URL (e.g., https://example.com)",
+    "profile.publicProfile.mastodon.description":
+      "Your Mastodon handle (e.g., user@mastodon.social)",
+    "profile.publicProfile.instagram.description":
+      "Your Instagram handle without @ (e.g., pycon.it)",
+    "profile.publicProfile.linkedin.description":
+      "Your LinkedIn profile URL (e.g., https://www.linkedin.com/in/your-profile-here)",
+    "profile.publicProfile.facebook.description":
+      "Your Facebook profile URL (e.g., https://www.facebook.com/pythonitalia)",
+    "profile.publicProfile.twitter.description":
+      "Your Twitter handle without @ (e.g., pyconit)",
     "profile.ticketsEdit.qrCodeDescription":
       "The QR Code links to your public profile and can be used to quickly share contact details with fellow attendees and sponsors!",
     "profile.ticketsEdit.editProfile":
@@ -577,6 +589,12 @@ Click the box to change. If left empty, we will assume you are available.`,
 
     "tickets.productsList.tshirtTitle": "T-shirt",
 
+    "cfp.doNotRecordLabel": "Do not record",
+    "cfp.doNotRecordDescription":
+      "By default we record all talks and later upload them to our YouTube channel. If you don't want your talk to be recorded, please check this box. Note: Your talk will still be live streamed.",
+    "cfp.doNotRecordCheckboxLabel":
+      "I confirm that I do not want my talk to be recorded. I understand that it will not be uploaded to Python Italia’s YouTube channel and that it will not be possible to recover it in the future.",
+
     "tickets.checkout.answerCardAdmissionTitle": "{attendeeName}'s ticket",
     "tickets.checkout.openAnswerCard": "Attendee Info",
     "tickets.checkout.billing": "Billing",
@@ -774,7 +792,7 @@ Note:  If you have submitted a talk/workshop proposal, you don't need to apply f
     "grants.form.fields.needAccommodation":
       "Do you need an accommodation for the duration of the conference?",
     "grants.form.fields.needAccommodation.description":
-      "We aim to assist as many attendees as possible with accommodation, within our budget constraints. Upon approval of your grant application, we will take care of arranging your accommodation.",
+      "While we are not able to book accommodation for you directly, if your grant includes support for accommodation, you will need to arrange your own lodging and we will reimburse you according to the grant terms.",
     "grants.form.fields.why":
       "Why are you asking for a grant for PyCon Italia?",
     "grants.form.fields.why.description":
@@ -1555,7 +1573,7 @@ Nota: Se hai inviato una proposta di talk/workshop, non è necessario richiedere
     "grants.form.fields.needAccommodation":
       "Hai bisogno di un alloggio per la durata della conferenza?",
     "grants.form.fields.needAccommodation.description":
-      "Il nostro obiettivo è assistere il maggior numero possibile di partecipanti con l'alloggio, tenendo conto delle nostre limitazioni di budget. In caso di approvazione della tua domanda di grant, ci occuperemo di organizzare il tuo alloggio.",
+      "Mentre non siamo in grado di prenotare l'alloggio direttamente per te, se il tuo grant include il supporto per l'alloggio, dovrai organizzare la sistemazione in autonomia e ti rimborseremo secondo i termini del grant.",
     "grants.form.fields.why":
       "Perché stai richiedendo un grant per PyCon Italia?",
     "grants.form.fields.why.description":
@@ -2194,6 +2212,18 @@ Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai
     "profile.publicProfile.yourBio.description":
       "Scrivi qualcosa su di te: i tuoi interessi, il tuo lavoro attuale e cosi via!",
     "profile.publicProfile.yourSocials": "I tuoi social",
+    "profile.publicProfile.website.description":
+      "L'URL del tuo sito web (es., https://example.com)",
+    "profile.publicProfile.mastodon.description":
+      "Il tuo handle Mastodon (es., utente@mastodon.social)",
+    "profile.publicProfile.instagram.description":
+      "Il tuo handle Instagram senza @ (es., pycon.it)",
+    "profile.publicProfile.linkedin.description":
+      "L'URL del tuo profilo LinkedIn (es., https://www.linkedin.com/in/il-tuo-profilo)",
+    "profile.publicProfile.facebook.description":
+      "L'URL del tuo profilo Facebook (es., https://www.facebook.com/pythonitalia)",
+    "profile.publicProfile.twitter.description":
+      "Il tuo handle Twitter senza @ (es., pyconit)",
     "profile.ticketsEdit.qrCodeDescription":
       "Il QR Code porta al tuo profilo e può essere utilizzato per condividere rapidamente i tuoi contatti con altri partecipanti o sponsors!",
     "profile.ticketsEdit.editProfile":
@@ -2314,6 +2344,12 @@ Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia dis
     "cfp.materials.add": "Aggiungi",
     "cfp.materials.remove": "X",
     "fileInput.currentFile": "File attuale: {name}",
+
+    "cfp.doNotRecordLabel": "Non registrare",
+    "cfp.doNotRecordDescription":
+      "Di norma registriamo tutti i talk e li pubblichiamo successivamente sul nostro canale YouTube. Se non desideri che il tuo intervento venga registrato, seleziona questa opzione. Nota: il talk sarà comunque trasmesso in streaming.",
+    "cfp.doNotRecordCheckboxLabel":
+      "Confermo di non voler che il mio talk venga registrato. Comprendo che non verrà caricato sul canale YouTube di Python Italia e che non sarà possibile recuperarlo in futuro.",
   },
 };
 

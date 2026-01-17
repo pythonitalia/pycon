@@ -76,6 +76,7 @@ export const CfpSendSubmission = () => {
           speakerFacebookUrl: input.participantFacebookUrl,
           speakerMastodonHandle: input.participantMastodonHandle,
           speakerAvailabilities: input.speakerAvailabilities,
+          doNotRecord: input.doNotRecord,
         },
         language,
       },
