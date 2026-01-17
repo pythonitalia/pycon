@@ -555,6 +555,8 @@ def test_mark_rejected_and_send_email(rf, mocker, admin_user):
     grant2.refresh_from_db()
     assert grant1.status == Grant.Status.rejected
     assert grant2.status == Grant.Status.rejected
+
+    # Verify admin action was called correctly
     mock_messages.info.assert_has_calls(
         [
             call(request, f"Sent Rejected reply email to {grant1.name}"),
@@ -562,9 +564,23 @@ def test_mark_rejected_and_send_email(rf, mocker, admin_user):
         ],
         any_order=True,
     )
+
+    # Verify task was queued correctly
     mock_send_rejected_email.assert_has_calls(
         [call(grant_id=grant1.id), call(grant_id=grant2.id)], any_order=True
     )
+
+    # Verify audit log entries were created correctly
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant1.id,
+        change_message="Status changed from 'waiting_list' to 'rejected' and rejection email sent",
+    ).exists()
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant2.id,
+        change_message="Status changed from 'waiting_list_maybe' to 'rejected' and rejection email sent",
+    ).exists()
 
 
 def test_confirm_pending_status_action(rf):

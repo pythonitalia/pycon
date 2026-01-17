@@ -373,8 +373,15 @@ def mark_rejected_and_send_email(modeladmin, request, queryset):
     )
 
     for grant in queryset:
+        old_status = grant.status
         grant.status = Grant.Status.rejected
         grant.save()
+
+        create_change_admin_log_entry(
+            request.user,
+            grant,
+            change_message=f"Status changed from '{old_status}' to 'rejected' and rejection email sent",
+        )
 
         send_grant_reply_rejected_email.delay(grant_id=grant.id)
         messages.info(request, f"Sent Rejected reply email to {grant.name}")
