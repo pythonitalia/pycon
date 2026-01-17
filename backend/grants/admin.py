@@ -218,6 +218,11 @@ def send_reply_emails(modeladmin, request, queryset):
             grant.save()
             send_grant_reply_approved_email.delay(grant_id=grant.id, is_reminder=False)
 
+            create_change_admin_log_entry(
+                request.user,
+                grant,
+                change_message="Sent Approved reply email to applicant",
+            )
             messages.info(request, f"Sent Approved reply email to {grant.name}")
 
         if (

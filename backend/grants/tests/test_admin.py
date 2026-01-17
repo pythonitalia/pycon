@@ -138,19 +138,30 @@ def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
 
     send_reply_emails(None, request=request, queryset=Grant.objects.all())
 
+    # Verify admin action was called correctly
     mock_messages.info.assert_called_once_with(
         request,
         f"Sent Approved reply email to {grant.name}",
     )
-    mock_send_approved_email.assert_called_once_with(
-        grant_id=grant.id, is_reminder=False
-    )
 
+    # Verify deadline was set correctly
     grant.refresh_from_db()
     assert (
         f"{grant.applicant_reply_deadline:%Y-%m-%d}"
         == f"{(timezone.now().date() + timedelta(days=14)):%Y-%m-%d}"
     )
+
+    # Verify task was queued correctly
+    mock_send_approved_email.assert_called_once_with(
+        grant_id=grant.id, is_reminder=False
+    )
+
+    # Verify audit log entry was created correctly
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Sent Approved reply email to applicant",
+    ).exists()
 
 
 def test_send_reply_emails_waiting_list(rf, mocker, admin_user):
