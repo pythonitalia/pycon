@@ -365,6 +365,34 @@ def test_save_review_grants_updates_grant_and_creates_reimbursements(rf, mocker)
         reimbursement.category for reimbursement in grant_2.reimbursements.all()
     } == {ticket_category, travel_category, accommodation_category}
 
+    # Verify log entries were created
+    assert (
+        LogEntry.objects.filter(object_id=grant_1.id).count() == 3
+    )  # 1 pending_status change, 2 reimbursement additions
+    assert (
+        LogEntry.objects.filter(object_id=grant_2.id).count() == 4
+    )  # 1 pending_status change, 3 reimbursement additions
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id__in=[str(grant_1.id), str(grant_2.id)],
+        change_message=f"Grant pending_status changed from '{Grant.Status.pending}' to '{Grant.Status.approved}'.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id__in=[str(grant_1.id), str(grant_2.id)],
+        change_message=f"Reimbursement {ticket_category.name} added.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id__in=[str(grant_1.id), str(grant_2.id)],
+        change_message=f"Reimbursement {travel_category.name} added.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id=str(grant_2.id),
+        change_message=f"Reimbursement {accommodation_category.name} added.",
+    ).exists()
+
     mock_messages.success.assert_called_once()
 
 

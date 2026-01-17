@@ -24,7 +24,11 @@ from django.template.response import TemplateResponse
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
 
-from custom_admin.audit import create_deletion_admin_log_entry
+from custom_admin.audit import (
+    create_addition_admin_log_entry,
+    create_change_admin_log_entry,
+    create_deletion_admin_log_entry,
+)
 from grants.models import Grant, GrantReimbursement, GrantReimbursementCategory
 from participants.models import Participant
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
@@ -339,22 +343,44 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                         "pending_status",
                     ]
                 )
+                create_change_admin_log_entry(
+                    request.user,
+                    grant,
+                    change_message=f"Grant pending_status changed from '{grant.status}' to '{grant.pending_status}'.",
+                )
+
                 approved_reimbursement_categories = (
                     approved_reimbursement_categories_decisions.get(grant.id, [])
                 )
+
                 for reimbursement_category_id in approved_reimbursement_categories:
                     # Check if category exists to avoid KeyError
                     if reimbursement_category_id not in reimbursement_categories:
                         continue
-                    GrantReimbursement.objects.update_or_create(
-                        grant=grant,
-                        category_id=reimbursement_category_id,
-                        defaults={
-                            "granted_amount": reimbursement_categories[
-                                reimbursement_category_id
-                            ].max_amount
-                        },
+                    reimbursement, created = (
+                        GrantReimbursement.objects.update_or_create(
+                            grant=grant,
+                            category_id=reimbursement_category_id,
+                            defaults={
+                                "granted_amount": reimbursement_categories[
+                                    reimbursement_category_id
+                                ].max_amount
+                            },
+                        )
                     )
+
+                    if created:
+                        create_addition_admin_log_entry(
+                            request.user,
+                            grant,
+                            change_message=f"Reimbursement {reimbursement.category.name} added.",
+                        )
+                    else:
+                        create_change_admin_log_entry(
+                            request.user,
+                            grant,
+                            change_message=f"Reimbursement {reimbursement.category.name} updated.",
+                        )
 
             messages.success(
                 request, "Decisions saved. Check the Grants Summary for more info."
