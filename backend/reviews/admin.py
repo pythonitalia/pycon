@@ -319,9 +319,17 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                             reimbursement.delete()
                     else:
                         # Only keep those in current approved_reimbursement_categories
-                        grant.reimbursements.exclude(
+                        # Log deletions before deleting
+                        to_delete = grant.reimbursements.exclude(
                             category_id__in=approved_reimbursement_categories
-                        ).delete()
+                        )
+                        for reimbursement in to_delete:
+                            create_deletion_admin_log_entry(
+                                request.user,
+                                grant,
+                                change_message=f"Reimbursement {reimbursement.category.name} removed.",
+                            )
+                        to_delete.delete()
 
             for grant in grants:
                 # save each to make sure we re-calculate the grants amounts

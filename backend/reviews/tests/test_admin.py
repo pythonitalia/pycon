@@ -454,7 +454,7 @@ def test_save_review_grants_update_grants_status_to_rejected_removes_reimburseme
 
 
 def test_save_review_grants_modify_reimbursements(rf, mocker):
-    mock_messages = mocker.patch("reviews.admin.messages")
+    mocker.patch("reviews.admin.messages")
 
     user = UserFactory(is_staff=True, is_superuser=True)
     conference = ConferenceFactory()
@@ -515,9 +515,28 @@ def test_save_review_grants_modify_reimbursements(rf, mocker):
     admin = ReviewSessionAdmin(ReviewSession, AdminSite())
     response = admin._review_grants_recap_view(request, review_session)
 
+    # Should redirect after successful save
+    assert response.status_code == 302
+    assert (
+        response.url
+        == f"/admin/reviews/reviewsession/{review_session.id}/review/recap/"
+    )
+
     grant_1.refresh_from_db()
 
     assert grant_1.reimbursements.count() == 1
     assert {
         reimbursement.category for reimbursement in grant_1.reimbursements.all()
     } == {ticket_category}
+
+    assert LogEntry.objects.count() == 2
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id=str(travel_category.id),
+        change_message=f"Reimbursement {travel_category.name} removed.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id=str(accommodation_category.id),
+        change_message=f"Reimbursement {accommodation_category.name} removed.",
+    ).exists()
