@@ -335,6 +335,16 @@ def test_create_grant_vouchers(rf, mocker, admin_user):
         request,
         "Vouchers created!",
     )
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant_1.id,
+        change_message="Created voucher for this grant",
+    ).exists()
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant_2.id,
+        change_message="Created voucher for this grant",
+    ).exists()
 
 
 @pytest.mark.parametrize(
