@@ -43,7 +43,7 @@ jobs:
           assignee_trigger: "pythonitaliabot2"
 
           # Trigger when specific user is requested as a reviewer on a PR
-          reviewer_trigger: "pythonitbot2"
+          reviewer_trigger: "pythonitaliabot2"
 
           claude_args: |
             --model claude-opus-4-5-20251101
