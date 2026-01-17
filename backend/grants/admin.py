@@ -234,6 +234,11 @@ def send_reply_emails(modeladmin, request, queryset):
 
         if grant.status == Grant.Status.rejected:
             send_grant_reply_rejected_email.delay(grant_id=grant.id)
+            create_change_admin_log_entry(
+                request.user,
+                grant,
+                change_message="Sent Rejected reply email to applicant",
+            )
             messages.info(request, f"Sent Rejected reply email to {grant.name}")
 
 

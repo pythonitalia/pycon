@@ -218,6 +218,11 @@ def test_send_reply_emails_rejected(rf, mocker, admin_user):
         request, f"Sent Rejected reply email to {grant.name}"
     )
     mock_send_rejected_email.assert_called_once_with(grant_id=grant.id)
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Sent Rejected reply email to applicant",
+    ).exists()
 
 
 def test_create_grant_vouchers(rf, mocker, admin_user):
