@@ -3,6 +3,7 @@ from decimal import Decimal
 from unittest.mock import call
 
 import pytest
+from django.contrib.admin.models import LogEntry
 from django.utils import timezone
 
 from conferences.models.conference_voucher import ConferenceVoucher
@@ -61,6 +62,7 @@ def test_send_reply_emails_with_grants_from_multiple_conferences_fails(
     mock_send_approved_email.assert_not_called()
     mock_send_waiting_list_email.assert_not_called()
     mock_send_rejected_email.assert_not_called()
+    assert not LogEntry.objects.exists()
 
 
 def test_send_reply_emails_approved_grant_missing_reimbursements(
@@ -81,6 +83,7 @@ def test_send_reply_emails_approved_grant_missing_reimbursements(
         f"Grant for {grant.name} is missing reimbursement categories!",
     )
     mock_send_approved_email.assert_not_called()
+    assert not LogEntry.objects.exists()
 
 
 def test_send_reply_emails_approved_missing_amount(rf, mocker, admin_user):
@@ -106,6 +109,7 @@ def test_send_reply_emails_approved_missing_amount(rf, mocker, admin_user):
         f"Grant for {grant.name} is missing 'Total Amount'!",
     )
     mock_send_approved_email.assert_not_called()
+    assert not LogEntry.objects.exists()
 
 
 def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
@@ -166,6 +170,11 @@ def test_send_reply_emails_waiting_list(rf, mocker, admin_user):
         request, f"Sent Waiting List reply email to {grant.name}"
     )
     mock_send_waiting_list_email.assert_called_once_with(grant_id=grant.id)
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Sent Waiting List reply email to applicant",
+    ).exists()
 
 
 def test_send_reply_emails_waiting_list_maybe(rf, mocker, admin_user):
@@ -185,6 +194,11 @@ def test_send_reply_emails_waiting_list_maybe(rf, mocker, admin_user):
         request, f"Sent Waiting List reply email to {grant.name}"
     )
     mock_send_waiting_list_email.assert_called_once_with(grant_id=grant.id)
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Sent Waiting List reply email to applicant",
+    ).exists()
 
 
 def test_send_reply_emails_rejected(rf, mocker, admin_user):

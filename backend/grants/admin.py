@@ -225,6 +225,11 @@ def send_reply_emails(modeladmin, request, queryset):
             or grant.status == Grant.Status.waiting_list_maybe
         ):
             send_grant_reply_waiting_list_email.delay(grant_id=grant.id)
+            create_change_admin_log_entry(
+                request.user,
+                grant,
+                change_message="Sent Waiting List reply email to applicant",
+            )
             messages.info(request, f"Sent Waiting List reply email to {grant.name}")
 
         if grant.status == Grant.Status.rejected:
