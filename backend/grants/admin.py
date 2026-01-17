@@ -287,6 +287,11 @@ def send_reply_email_waiting_list_update(modeladmin, request, queryset):
 
     for grant in queryset:
         send_grant_reply_waiting_list_update_email.delay(grant_id=grant.id)
+        create_change_admin_log_entry(
+            request.user,
+            grant,
+            change_message="Sent Waiting List update reply email to applicant",
+        )
         messages.info(request, f"Sent Waiting List update reply email to {grant.name}")
 
 

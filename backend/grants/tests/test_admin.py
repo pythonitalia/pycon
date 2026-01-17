@@ -14,6 +14,7 @@ from grants.admin import (
     mark_rejected_and_send_email,
     reset_pending_status_back_to_status,
     send_grant_reminder_to_waiting_for_confirmation,
+    send_reply_email_waiting_list_update,
     send_reply_emails,
 )
 from grants.models import Grant
@@ -266,6 +267,36 @@ def test_send_grant_reminder_to_waiting_for_confirmation(rf, mocker, admin_user)
         user=admin_user,
         object_id=grant.id,
         change_message="Sent Approved reminder email to applicant",
+    ).exists()
+
+
+def test_send_reply_email_waiting_list_update(rf, mocker, admin_user):
+    mock_messages = mocker.patch("grants.admin.messages")
+    grant = GrantFactory(status=Grant.Status.waiting_list)
+    request = rf.get("/")
+    request.user = admin_user
+    mock_send_waiting_list_update_email = mocker.patch(
+        "grants.admin.send_grant_reply_waiting_list_update_email.delay"
+    )
+
+    send_reply_email_waiting_list_update(
+        None, request=request, queryset=Grant.objects.all()
+    )
+
+    # Verify admin action was called correctly
+    mock_messages.info.assert_called_once_with(
+        request,
+        f"Sent Waiting List update reply email to {grant.name}",
+    )
+
+    # Verify task was queued correctly
+    mock_send_waiting_list_update_email.assert_called_once_with(grant_id=grant.id)
+
+    # Verify audit log entry was created correctly
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Sent Waiting List update reply email to applicant",
     ).exists()
 
 
