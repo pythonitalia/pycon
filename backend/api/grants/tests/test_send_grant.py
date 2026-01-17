@@ -1,4 +1,5 @@
 import pytest
+from django.contrib.admin.models import LogEntry
 
 from conferences.tests.factories import ConferenceFactory
 from grants.models import Grant
@@ -118,6 +119,14 @@ def test_send_grant(
     assert PrivacyPolicyAcceptanceRecord.objects.filter(
         user=user, conference=conference, privacy_policy="grant"
     ).exists()
+
+    # Verify a log entry is created for the grant creation
+    assert LogEntry.objects.count() == 1
+    log_entry = LogEntry.objects.first()
+    assert log_entry.user_id == user.id
+    assert log_entry.user == user
+    assert log_entry.object_id == str(grant.id)
+    assert log_entry.change_message == "Grant created"
 
     # Verify that the correct email template was used and email was sent
     emails_sent = sent_emails()

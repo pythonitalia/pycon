@@ -10,6 +10,7 @@ from api.grants.types import AgeGroup, Grant, GrantType, Occupation
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType
 from conferences.models.conference import Conference
+from custom_admin.audit import create_addition_admin_log_entry
 from grants.models import Grant as GrantModel
 from grants.tasks import get_name, notify_new_grant_reply_slack
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
@@ -278,6 +279,8 @@ class GrantMutation:
                 "user_name": get_name(request.user, "there"),
             },
         )
+
+        create_addition_admin_log_entry(request.user, instance, "Grant created")
 
         # hack because we return django models
         instance.__strawberry_definition__ = Grant.__strawberry_definition__
