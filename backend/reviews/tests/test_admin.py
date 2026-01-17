@@ -2,6 +2,7 @@ from decimal import Decimal
 
 import pytest
 from django.contrib.admin import AdminSite
+from django.contrib.admin.models import LogEntry
 
 from conferences.tests.factories import ConferenceFactory
 from grants.models import Grant
@@ -370,7 +371,7 @@ def test_save_review_grants_updates_grant_and_creates_reimbursements(rf, mocker)
 def test_save_review_grants_update_grants_status_to_rejected_removes_reimbursements(
     rf, mocker
 ):
-    mock_messages = mocker.patch("reviews.admin.messages")
+    mocker.patch("reviews.admin.messages")
 
     user = UserFactory(is_staff=True, is_superuser=True)
     conference = ConferenceFactory()
@@ -442,6 +443,14 @@ def test_save_review_grants_update_grants_status_to_rejected_removes_reimburseme
     assert grant_1.pending_status == Grant.Status.rejected
 
     assert grant_1.reimbursements.count() == 0
+
+    assert LogEntry.objects.count() == 3
+    for reimbursement in grant_1.reimbursements.all():
+        assert LogEntry.objects.filter(
+            user=user,
+            object_id=str(reimbursement.id),
+            change_message=f"Reimbursement {reimbursement.category.name} removed.",
+        ).exists()
 
 
 def test_save_review_grants_modify_reimbursements(rf, mocker):

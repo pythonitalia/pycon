@@ -24,6 +24,7 @@ from django.template.response import TemplateResponse
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
 
+from custom_admin.audit import create_deletion_admin_log_entry
 from grants.models import Grant, GrantReimbursement, GrantReimbursementCategory
 from participants.models import Participant
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
@@ -308,7 +309,14 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                     )
                     # If decision is not approved, delete all; else, filter and delete missing reimbursements
                     if decision != Grant.Status.approved:
-                        grant.reimbursements.all().delete()
+                        # Log deletions before deleting
+                        for reimbursement in grant.reimbursements.all():
+                            create_deletion_admin_log_entry(
+                                request.user,
+                                grant,
+                                change_message=f"Reimbursement {reimbursement.category.name} removed.",
+                            )
+                            reimbursement.delete()
                     else:
                         # Only keep those in current approved_reimbursement_categories
                         grant.reimbursements.exclude(
