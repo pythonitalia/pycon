@@ -349,6 +349,12 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                     change_message=f"[Review Session] Grant status updated: pending_status changed from '{grant.status}' to '{grant.pending_status}'.",
                 )
 
+                # The frontend may send reimbursement categories as checked by default,
+                # so they're always passed to the backend. However, if the grant is not approved,
+                # we don't need to consider reimbursements at all and can skip all reimbursement logic.
+                if grant.pending_status != Grant.Status.approved:
+                    continue
+
                 approved_reimbursement_categories = (
                     approved_reimbursement_categories_decisions.get(grant.id, [])
                 )
