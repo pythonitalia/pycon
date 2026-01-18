@@ -181,6 +181,49 @@
   tr:nth-of-type(odd) {
     background-color: var(--body-bg);
   }
+
+  /* Tooltip */
+  .tooltip {
+    position: relative;
+    display: inline-block;
+  }
+
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    opacity: 0;
+    width: 220px;
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+    text-transform: none;
+    padding: 8px 10px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    top: 125%;
+    left: 50%;
+    margin-left: -110px;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.4;
+    transition: opacity 0.2s ease-in-out 0.5s, visibility 0.2s ease-in-out 0.5s;
+  }
+
+  .tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #333 transparent;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
 </style>
 <script type="application/javascript">
   const grantsById = {};
@@ -434,7 +477,9 @@
                 </th>
                 <th scope="col">
                   <div class="text">
-                    <span>Std Dev</span>
+                    <span class="tooltip">Std Dev
+                      <span class="tooltiptext">Standard Deviation: measures reviewer disagreement. High value = controversial (needs discussion), Low value = consensus.</span>
+                    </span>
                   </div>
                   <div class="clear"></div>
                 </th>
