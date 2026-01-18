@@ -224,6 +224,16 @@
     visibility: visible;
     opacity: 1;
   }
+
+  /* Sortable columns */
+  .sortable {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .sortable:hover {
+    text-decoration: underline;
+  }
 </style>
 <script type="application/javascript">
   const grantsById = {};
@@ -415,6 +425,84 @@
       {% endfor %}
 
   };
+
+  // Sorting functionality
+  const sortTable = (sortBy, direction) => {
+      const tbody = document.querySelector('#result_list tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr.grant-item'));
+
+      rows.sort((a, b) => {
+          let aVal, bVal;
+
+          if (sortBy === 'score') {
+              aVal = parseFloat(a.dataset.score);
+              bVal = parseFloat(b.dataset.score);
+          } else if (sortBy === 'std_dev') {
+              aVal = parseFloat(a.dataset.stdDev);
+              bVal = parseFloat(b.dataset.stdDev);
+          }
+
+          // Handle null/NaN values - push them to the end
+          if (isNaN(aVal)) aVal = direction === 'desc' ? -Infinity : Infinity;
+          if (isNaN(bVal)) bVal = direction === 'desc' ? -Infinity : Infinity;
+
+          if (direction === 'desc') {
+              return bVal - aVal;
+          } else {
+              return aVal - bVal;
+          }
+      });
+
+      // Re-append rows in sorted order and update row numbers
+      rows.forEach((row, index) => {
+          row.querySelector('td:first-child').textContent = index + 1;
+          tbody.appendChild(row);
+      });
+  };
+
+  const initSorting = () => {
+      document.querySelectorAll('.sortable').forEach(header => {
+          header.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const sortBy = header.dataset.sort;
+              let currentDir = header.dataset.sortDir;
+
+              // Toggle direction
+              let newDir;
+              if (currentDir === 'desc') {
+                  newDir = 'asc';
+              } else {
+                  newDir = 'desc';
+              }
+
+              // Update all sortable headers
+              document.querySelectorAll('.sortable').forEach(h => {
+                  h.dataset.sortDir = '';
+                  // Remove arrow from text, keeping tooltip if present
+                  const tooltipSpan = h.querySelector('.tooltiptext');
+                  if (tooltipSpan) {
+                      h.childNodes[0].textContent = h.childNodes[0].textContent.replace(/ [▲▼]/, '');
+                  } else {
+                      h.textContent = h.textContent.replace(/ [▲▼]/, '');
+                  }
+              });
+
+              // Set new direction and arrow
+              header.dataset.sortDir = newDir;
+              const arrow = newDir === 'desc' ? ' ▼' : ' ▲';
+              const tooltipSpan = header.querySelector('.tooltiptext');
+              if (tooltipSpan) {
+                  header.childNodes[0].textContent = header.childNodes[0].textContent.trim() + arrow;
+              } else {
+                  header.textContent = header.textContent.trim() + arrow;
+              }
+
+              sortTable(sortBy, newDir);
+          });
+      });
+  };
+
+  window.addEventListener('load', initSorting);
 </script>
 <ul class="object-tools">
   <li>
@@ -471,13 +559,13 @@
                 </th>
                 <th scope="col">
                   <div class="text">
-                    <a>Score</a>
+                    <span class="sortable" data-sort="score" data-sort-dir="desc">Score ▼</span>
                   </div>
                   <div class="clear"></div>
                 </th>
                 <th scope="col">
                   <div class="text">
-                    <span class="tooltip">Std Dev
+                    <span class="tooltip sortable" data-sort="std_dev" data-sort-dir="">Std Dev
                       <span class="tooltiptext">Standard Deviation: measures reviewer disagreement. High value = controversial (needs discussion), Low value = consensus.</span>
                     </span>
                   </div>
@@ -532,6 +620,8 @@
                 id="grant-{{ item.id }}"
                 data-type="{{ item.type }}"
                 data-num-of-votes="{{ item.userreview_set.count }}"
+                data-score="{{ item.score|default_if_none:'-999' }}"
+                data-std-dev="{{ item.std_dev|default_if_none:'-1' }}"
               >
                 <td>{{ forloop.counter }}</td>
                 <td class="results-item">
