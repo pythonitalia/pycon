@@ -13,6 +13,7 @@ from django.db.models import (
     OuterRef,
     Prefetch,
     Q,
+    StdDev,
     Subquery,
     Sum,
 )
@@ -425,6 +426,10 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 score=ExpressionWrapper(
                     F("total_score") / F("vote_count"),
                     output_field=FloatField(),
+                ),
+                std_dev=StdDev(
+                    "userreview__score__numeric_value",
+                    filter=Q(userreview__review_session_id=review_session_id),
                 ),
                 has_sent_a_proposal=Exists(
                     Submission.objects.non_cancelled().filter(

@@ -191,6 +191,124 @@ def test_grants_review_scores(rf, scores, avg):
     assert grant_to_check.score == avg
 
 
+@pytest.mark.parametrize(
+    "scores, expected_std_dev",
+    [
+        # Multiple different scores: mean=0.6, std_dev ≈ 1.744
+        (
+            [
+                {"user": 0, "score": 2},
+                {"user": 1, "score": 2},
+                {"user": 2, "score": 2},
+                {"user": 3, "score": -1},
+                {"user": 4, "score": -2},
+            ],
+            1.744,
+        ),
+        # All same scores: std_dev = 0
+        (
+            [
+                {"user": 0, "score": -2},
+                {"user": 1, "score": -2},
+                {"user": 2, "score": -2},
+                {"user": 3, "score": -2},
+                {"user": 4, "score": -2},
+            ],
+            0.0,
+        ),
+        # Single score: std_dev = 0
+        (
+            [
+                {"user": 0, "score": 1},
+            ],
+            0.0,
+        ),
+        # No scores: std_dev = None
+        ([], None),
+        # Two different scores (1 and -1): mean=0, std_dev = sqrt(((1-0)^2 + (-1-0)^2) / 2) = 1.0
+        (
+            [
+                {"user": 0, "score": 1},
+                {"user": 1, "score": -1},
+            ],
+            1.0,
+        ),
+        # Three scores with same value: std_dev = 0
+        (
+            [
+                {"user": 0, "score": 1},
+                {"user": 1, "score": 1},
+                {"user": 2, "score": 1},
+            ],
+            0.0,
+        ),
+        # Mixed scores showing consensus with outlier: 3x score=1, 1x score=-2
+        # mean = (1+1+1-2)/4 = 0.25
+        # std_dev = sqrt(((1-0.25)^2 + (1-0.25)^2 + (1-0.25)^2 + (-2-0.25)^2) / 4)
+        #         = sqrt((0.5625 + 0.5625 + 0.5625 + 5.0625) / 4) = sqrt(1.6875) ≈ 1.299
+        (
+            [
+                {"user": 0, "score": 1},
+                {"user": 1, "score": 1},
+                {"user": 2, "score": 1},
+                {"user": 3, "score": -2},
+            ],
+            1.299,
+        ),
+    ],
+)
+def test_grants_review_std_dev(rf, scores, expected_std_dev):
+    conference = ConferenceFactory()
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.GRANTS,
+        status=ReviewSession.Status.COMPLETED,
+    )
+
+    users = UserFactory.create_batch(10, is_staff=True, is_superuser=True)
+    all_scores = {
+        -2: AvailableScoreOptionFactory(
+            review_session=review_session, numeric_value=-2, label="Rejected"
+        ),
+        -1: AvailableScoreOptionFactory(
+            review_session=review_session, numeric_value=-1, label="Not convinced"
+        ),
+        0: AvailableScoreOptionFactory(
+            review_session=review_session, numeric_value=0, label="Maybe"
+        ),
+        1: AvailableScoreOptionFactory(
+            review_session=review_session, numeric_value=1, label="Yes"
+        ),
+        2: AvailableScoreOptionFactory(
+            review_session=review_session, numeric_value=2, label="Absolutely"
+        ),
+    }
+
+    grant = GrantFactory(conference=conference)
+    for score in scores:
+        UserReviewFactory(
+            review_session=review_session,
+            grant=grant,
+            user=users[score["user"]],
+            score=all_scores[score["score"]],
+        )
+
+    request = rf.get("/")
+    request.user = users[5]
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    response = admin._review_grants_recap_view(request, review_session)
+    context_data = response.context_data
+    items = context_data["items"]
+    grant_to_check = next(item for item in items if item.id == grant.id)
+
+    assert grant_to_check.id == grant.id
+    if expected_std_dev is None:
+        assert grant_to_check.std_dev is None
+    else:
+        assert grant_to_check.std_dev == pytest.approx(expected_std_dev, abs=0.01)
+
+
 def test_review_start_view_when_no_items_are_left(rf, mocker):
     mock_messages = mocker.patch("reviews.admin.messages")
 

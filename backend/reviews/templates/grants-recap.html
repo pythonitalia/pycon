@@ -181,6 +181,74 @@
   tr:nth-of-type(odd) {
     background-color: var(--body-bg);
   }
+
+  /* Tooltip */
+  .tooltip {
+    position: relative;
+    display: inline-block;
+  }
+
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    opacity: 0;
+    width: 220px;
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+    text-transform: none;
+    padding: 8px 10px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    top: 125%;
+    left: 50%;
+    margin-left: -110px;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.4;
+    transition: opacity 0.2s ease-in-out 0.5s, visibility 0.2s ease-in-out 0.5s;
+  }
+
+  .tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #333 transparent;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  /* Sortable columns */
+  .sortable {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .sortable:hover {
+    text-decoration: underline;
+  }
+
+  /* Center-align columns */
+  .results-table th:nth-child(1), /* number column */
+  .results-table th:nth-child(3), /* score column */
+  .results-table th:nth-child(4), /* std dev column */
+  .results-table th:nth-child(6), /* current status column */
+  .results-table th:nth-child(7), /* pending status column */
+  .results-table td:nth-child(1), /* number column */
+  .results-table td:nth-child(3), /* score column */
+  .results-table td:nth-child(4), /* std dev column */
+  .results-table td:nth-child(6), /* current status column */
+  .results-table td:nth-child(7) /* pending status column */
+  {
+    text-align: center;
+  }
 </style>
 <script type="application/javascript">
   const grantsById = {};
@@ -372,6 +440,84 @@
       {% endfor %}
 
   };
+
+  // Sorting functionality
+  const sortTable = (sortBy, direction) => {
+      const tbody = document.querySelector('#result_list tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr.grant-item'));
+
+      rows.sort((a, b) => {
+          let aVal, bVal;
+
+          if (sortBy === 'score') {
+              aVal = parseFloat(a.dataset.score);
+              bVal = parseFloat(b.dataset.score);
+          } else if (sortBy === 'std_dev') {
+              aVal = parseFloat(a.dataset.stdDev);
+              bVal = parseFloat(b.dataset.stdDev);
+          }
+
+          // Handle null/NaN values - push them to the end
+          if (isNaN(aVal)) aVal = direction === 'desc' ? -Infinity : Infinity;
+          if (isNaN(bVal)) bVal = direction === 'desc' ? -Infinity : Infinity;
+
+          if (direction === 'desc') {
+              return bVal - aVal;
+          } else {
+              return aVal - bVal;
+          }
+      });
+
+      // Re-append rows in sorted order and update row numbers
+      rows.forEach((row, index) => {
+          row.querySelector('td:first-child').textContent = index + 1;
+          tbody.appendChild(row);
+      });
+  };
+
+  const initSorting = () => {
+      document.querySelectorAll('.sortable').forEach(header => {
+          header.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const sortBy = header.dataset.sort;
+              let currentDir = header.dataset.sortDir;
+
+              // Toggle direction
+              let newDir;
+              if (currentDir === 'desc') {
+                  newDir = 'asc';
+              } else {
+                  newDir = 'desc';
+              }
+
+              // Update all sortable headers
+              document.querySelectorAll('.sortable').forEach(h => {
+                  h.dataset.sortDir = '';
+                  // Remove arrow from text, keeping tooltip if present
+                  const tooltipSpan = h.querySelector('.tooltiptext');
+                  if (tooltipSpan) {
+                      h.childNodes[0].textContent = h.childNodes[0].textContent.replace(/ [▲▼]/, '');
+                  } else {
+                      h.textContent = h.textContent.replace(/ [▲▼]/, '');
+                  }
+              });
+
+              // Set new direction and arrow
+              header.dataset.sortDir = newDir;
+              const arrow = newDir === 'desc' ? ' ▼' : ' ▲';
+              const tooltipSpan = header.querySelector('.tooltiptext');
+              if (tooltipSpan) {
+                  header.childNodes[0].textContent = header.childNodes[0].textContent.trim() + arrow;
+              } else {
+                  header.textContent = header.textContent.trim() + arrow;
+              }
+
+              sortTable(sortBy, newDir);
+          });
+      });
+  };
+
+  window.addEventListener('load', initSorting);
 </script>
 <ul class="object-tools">
   <li>
@@ -428,7 +574,15 @@
                 </th>
                 <th scope="col">
                   <div class="text">
-                    <a>Score</a>
+                    <span class="sortable" data-sort="score" data-sort-dir="desc">Score ▼</span>
+                  </div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
+                  <div class="text">
+                    <span class="tooltip sortable" data-sort="std_dev" data-sort-dir="">Std Dev
+                      <span class="tooltiptext">Standard Deviation: measures reviewer disagreement. High value = controversial (needs discussion), Low value = consensus.</span>
+                    </span>
                   </div>
                   <div class="clear"></div>
                 </th>
@@ -481,6 +635,8 @@
                 id="grant-{{ item.id }}"
                 data-type="{{ item.type }}"
                 data-num-of-votes="{{ item.userreview_set.count }}"
+                data-score="{{ item.score|default_if_none:'-999' }}"
+                data-std-dev="{{ item.std_dev|default_if_none:'-1' }}"
               >
                 <td>{{ forloop.counter }}</td>
                 <td class="results-item">
@@ -573,6 +729,7 @@
                   </ul>
                 </td>
                 <td>{{ item.score }}</td>
+                <td>{{ item.std_dev|floatformat:2 }}</td>
                 <td class="votes-list">
                   <ul>
                     {% for reviewer in item.userreview_set.all %}
