@@ -717,8 +717,6 @@ def test_save_review_grants_two_times_does_not_create_duplicate_log_entries(rf, 
         reimbursement.category for reimbursement in grant_1.reimbursements.all()
     } == {ticket_category, travel_category, accommodation_category}
 
-    for e in LogEntry.objects.all():
-        print(e.change_message)
     assert LogEntry.objects.count() == 4
     assert LogEntry.objects.filter(
         user=user,

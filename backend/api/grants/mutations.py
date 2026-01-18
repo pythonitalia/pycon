@@ -290,6 +290,7 @@ class GrantMutation:
         return instance
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @transaction.atomic
     def update_grant(self, info: Info, input: UpdateGrantInput) -> UpdateGrantResult:
         request = info.context.request
 
@@ -306,9 +307,9 @@ class GrantMutation:
         for attr, value in asdict(input).items():
             setattr(instance, attr, value)
 
-        create_change_admin_log_entry(request.user, instance, "Grant updated")
-
         instance.save()
+
+        create_change_admin_log_entry(request.user, instance, "Grant updated")
 
         Participant.objects.update_or_create(
             user_id=request.user.id,
