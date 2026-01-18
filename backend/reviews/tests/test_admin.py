@@ -375,7 +375,7 @@ def test_save_review_grants_updates_grant_and_creates_reimbursements(rf, mocker)
     assert LogEntry.objects.filter(
         user=user,
         object_id__in=[str(grant_1.id), str(grant_2.id)],
-        change_message=f"[Review Session] Grant status updated: pending_status changed from '{Grant.Status.pending}' to '{Grant.Status.approved}'.",
+        change_message="[Review Session] Grant status updated: pending_status changed from 'None' to 'approved'.",
     ).exists()
     assert LogEntry.objects.filter(
         user=user,
@@ -557,12 +557,8 @@ def test_save_review_grants_modify_reimbursements(rf, mocker):
         reimbursement.category for reimbursement in grant_1.reimbursements.all()
     } == {ticket_category}
 
-    assert LogEntry.objects.count() == 3
-    assert LogEntry.objects.filter(
-        user=user,
-        object_id=grant_1.id,
-        change_message="[Review Session] Grant status updated: pending_status changed from 'approved' to 'None'.",
-    ).exists()
+    # Verify log entries were created
+    assert LogEntry.objects.count() == 2
     assert LogEntry.objects.filter(
         user=user,
         object_id=grant_1.id,
@@ -572,6 +568,13 @@ def test_save_review_grants_modify_reimbursements(rf, mocker):
         user=user,
         object_id=grant_1.id,
         change_message=f"[Review Session] Reimbursement removed: {accommodation_category.name}",
+    ).exists()
+
+    # pending_status change should not be logged because the grant status is not changed
+    assert not LogEntry.objects.filter(
+        user=user,
+        object_id=grant_1.id,
+        change_message="[Review Session] Grant status updated: pending_status changed from 'approved' to 'None'.",
     ).exists()
 
 
@@ -657,3 +660,68 @@ def test_save_review_grants_waiting_list_does_not_create_reimbursments(rf, mocke
         LogEntry.objects.filter(object_id=grant_2.id).count() == 1
     )  # 1 pending_status change, 3 reimbursement additions
     mock_messages.success.assert_called_once()
+
+
+def test_save_review_grants_two_times_does_not_create_duplicate_log_entries(rf, mocker):
+    mocker.patch("reviews.admin.messages")
+
+    user = UserFactory(is_staff=True, is_superuser=True)
+    conference = ConferenceFactory()
+
+    # Create reimbursement categories
+    travel_category = GrantReimbursementCategoryFactory(
+        conference=conference,
+        travel=True,
+        max_amount=Decimal("500"),
+    )
+    ticket_category = GrantReimbursementCategoryFactory(
+        conference=conference,
+        ticket=True,
+        max_amount=Decimal("100"),
+    )
+    accommodation_category = GrantReimbursementCategoryFactory(
+        conference=conference,
+        accommodation=True,
+        max_amount=Decimal("200"),
+    )
+
+    # Create review session for grants
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.GRANTS,
+        status=ReviewSession.Status.COMPLETED,
+    )
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=0)
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+
+    grant_1 = GrantFactory(conference=conference, status=Grant.Status.pending)
+    post_data = {
+        f"decision-{grant_1.id}": Grant.Status.approved,
+        f"reimbursementcategory-{grant_1.id}": [
+            str(ticket_category.id),
+            str(travel_category.id),
+            str(accommodation_category.id),
+        ],
+    }
+    request = rf.post("/", data=post_data)
+    request.user = user
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    admin._review_grants_recap_view(request, review_session)  # First save
+    admin._review_grants_recap_view(request, review_session)  # Second save
+
+    grant_1.refresh_from_db()
+
+    assert grant_1.reimbursements.count() == 3
+    assert {
+        reimbursement.category for reimbursement in grant_1.reimbursements.all()
+    } == {ticket_category, travel_category, accommodation_category}
+
+    for e in LogEntry.objects.all():
+        print(e.change_message)
+    assert LogEntry.objects.count() == 4
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id=grant_1.id,
+        change_message="[Review Session] Grant status updated: pending_status changed from 'None' to 'approved'.",
+    ).exists()

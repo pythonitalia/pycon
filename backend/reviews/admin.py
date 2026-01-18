@@ -296,15 +296,22 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 review_session.conference.grants.filter(id__in=decisions.keys()).all()
             )
 
+            grants_with_pending_status_changes = {}
             for grant in grants:
                 decision = decisions[grant.id]
                 if decision not in Grant.REVIEW_SESSION_STATUSES_OPTIONS:
                     continue
 
+                original_pending_status = grant.pending_status
                 if decision != grant.status:
                     grant.pending_status = decision
                 elif decision == grant.status:
                     grant.pending_status = None
+
+                if grant.pending_status != original_pending_status:
+                    grants_with_pending_status_changes[grant.id] = (
+                        original_pending_status
+                    )
 
                 # if there are grant reimbursements and the decision is not approved, delete them all
                 if grant.reimbursements.exists():
@@ -343,11 +350,15 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                         "pending_status",
                     ]
                 )
-                create_change_admin_log_entry(
-                    request.user,
-                    grant,
-                    change_message=f"[Review Session] Grant status updated: pending_status changed from '{grant.status}' to '{grant.pending_status}'.",
-                )
+                if grant.id in grants_with_pending_status_changes:
+                    original_pending_status = grants_with_pending_status_changes[
+                        grant.id
+                    ]
+                    create_change_admin_log_entry(
+                        request.user,
+                        grant,
+                        change_message=f"[Review Session] Grant status updated: pending_status changed from '{original_pending_status}' to '{grant.pending_status}'.",
+                    )
 
                 # The frontend may send reimbursement categories as checked by default,
                 # so they're always passed to the backend. However, if the grant is not approved,
@@ -380,12 +391,6 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                             request.user,
                             grant,
                             change_message=f"[Review Session] Reimbursement {reimbursement.category.name} added.",
-                        )
-                    else:
-                        create_change_admin_log_entry(
-                            request.user,
-                            grant,
-                            change_message=f"[Review Session] Reimbursement {reimbursement.category.name} updated.",
                         )
 
             messages.success(
