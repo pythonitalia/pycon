@@ -586,7 +586,7 @@ def test_mark_rejected_and_send_email(rf, mocker, admin_user):
     ).exists()
 
 
-def test_confirm_pending_status_action(rf):
+def test_confirm_pending_status_action(rf, admin_user):
     grant_1 = GrantFactory(
         status=Grant.Status.pending,
         pending_status=Grant.Status.confirmed,
@@ -611,6 +611,7 @@ def test_confirm_pending_status_action(rf):
     )
 
     request = rf.get("/")
+    request.user = admin_user
     confirm_pending_status(
         None, request, Grant.objects.filter(id__in=[grant_1.id, grant_2.id, grant_3.id])
     )
@@ -628,11 +629,28 @@ def test_confirm_pending_status_action(rf):
     assert grant_2.pending_status is None
     assert grant_3.pending_status is None
 
+    # Verify audit log entries were created correctly
+    assert LogEntry.objects.filter(
+        object_id=grant_1.id,
+        change_message="[Bulk Admin Action] Status changed from 'pending' to 'confirmed'.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        object_id=grant_2.id,
+        change_message="[Bulk Admin Action] Status changed from 'rejected' to 'waiting_list'.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        object_id=grant_3.id,
+        change_message="[Bulk Admin Action] Status changed from 'waiting_list' to 'waiting_list_maybe'.",
+    ).exists()
+
     # Left out from the action
     assert grant_4.status == Grant.Status.waiting_list_maybe
+    assert not LogEntry.objects.filter(
+        object_id=grant_4.id,
+    ).exists()
 
 
-def test_reset_pending_status_back_to_status_action(rf):
+def test_reset_pending_status_back_to_status_action(rf, admin_user):
     grant_1 = GrantFactory(
         status=Grant.Status.pending,
         pending_status=Grant.Status.confirmed,
@@ -657,6 +675,7 @@ def test_reset_pending_status_back_to_status_action(rf):
     )
 
     request = rf.get("/")
+    request.user = admin_user
     reset_pending_status_back_to_status(
         None, request, Grant.objects.filter(id__in=[grant_1.id, grant_2.id, grant_3.id])
     )
@@ -675,9 +694,26 @@ def test_reset_pending_status_back_to_status_action(rf):
     assert grant_3.status == Grant.Status.waiting_list
     assert grant_3.pending_status is None
 
+    # Verify audit log entries were created correctly
+    assert LogEntry.objects.filter(
+        object_id=grant_1.id,
+        change_message="[Bulk Admin Action] pending_status reset from 'confirmed' to None.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        object_id=grant_2.id,
+        change_message="[Bulk Admin Action] pending_status reset from 'waiting_list' to None.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        object_id=grant_3.id,
+        change_message="[Bulk Admin Action] pending_status reset from 'waiting_list_maybe' to None.",
+    ).exists()
+
     # Left out from the action
     assert grant_4.status == Grant.Status.waiting_list_maybe
     assert grant_4.pending_status == Grant.Status.confirmed
+    assert not LogEntry.objects.filter(
+        object_id=grant_4.id,
+    ).exists()
 
 
 def test_delete_reimbursement_from_admin_logs_audit_log_entry(rf, admin_user):
