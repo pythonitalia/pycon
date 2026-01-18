@@ -135,7 +135,7 @@ def test_update_grant(graphql_client, user):
     assert log_entry.user_id == user.id
     assert log_entry.user == user
     assert log_entry.object_id == str(grant.id)
-    assert log_entry.change_message == "Grant updated"
+    assert log_entry.change_message == "Grant updated."
 
 
 def test_cannot_update_a_grant_if_user_is_not_owner(

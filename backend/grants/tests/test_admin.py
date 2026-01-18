@@ -165,7 +165,7 @@ def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
     assert LogEntry.objects.filter(
         user=admin_user,
         object_id=grant.id,
-        change_message="Sent Approved reply email to applicant",
+        change_message="Sent Approved reply email to applicant.",
     ).exists()
 
 
@@ -189,7 +189,7 @@ def test_send_reply_emails_waiting_list(rf, mocker, admin_user):
     assert LogEntry.objects.filter(
         user=admin_user,
         object_id=grant.id,
-        change_message="Sent Waiting List reply email to applicant",
+        change_message="Sent Waiting List reply email to applicant.",
     ).exists()
 
 
@@ -213,7 +213,7 @@ def test_send_reply_emails_waiting_list_maybe(rf, mocker, admin_user):
     assert LogEntry.objects.filter(
         user=admin_user,
         object_id=grant.id,
-        change_message="Sent Waiting List reply email to applicant",
+        change_message="Sent Waiting List reply email to applicant.",
     ).exists()
 
 
@@ -237,7 +237,7 @@ def test_send_reply_emails_rejected(rf, mocker, admin_user):
     assert LogEntry.objects.filter(
         user=admin_user,
         object_id=grant.id,
-        change_message="Sent Rejected reply email to applicant",
+        change_message="Sent Rejected reply email to applicant.",
     ).exists()
 
 
@@ -269,7 +269,7 @@ def test_send_grant_reminder_to_waiting_for_confirmation(rf, mocker, admin_user)
     assert LogEntry.objects.filter(
         user=admin_user,
         object_id=grant.id,
-        change_message="Sent Approved reminder email to applicant",
+        change_message="Sent Approved reminder email to applicant.",
     ).exists()
 
 
@@ -299,7 +299,7 @@ def test_send_reply_email_waiting_list_update(rf, mocker, admin_user):
     assert LogEntry.objects.filter(
         user=admin_user,
         object_id=grant.id,
-        change_message="Sent Waiting List update reply email to applicant",
+        change_message="Sent Waiting List update reply email to applicant.",
     ).exists()
 
 
@@ -341,12 +341,12 @@ def test_create_grant_vouchers(rf, mocker, admin_user):
     assert LogEntry.objects.filter(
         user=admin_user,
         object_id=grant_1.id,
-        change_message="Created voucher for this grant",
+        change_message="Created voucher for this grant.",
     ).exists()
     assert LogEntry.objects.filter(
         user=admin_user,
         object_id=grant_2.id,
-        change_message="Created voucher for this grant",
+        change_message="Created voucher for this grant.",
     ).exists()
 
 
@@ -577,12 +577,12 @@ def test_mark_rejected_and_send_email(rf, mocker, admin_user):
     assert LogEntry.objects.filter(
         user=admin_user,
         object_id=grant1.id,
-        change_message="Status changed from 'waiting_list' to 'rejected' and rejection email sent",
+        change_message="Status changed from 'waiting_list' to 'rejected' and rejection email sent.",
     ).exists()
     assert LogEntry.objects.filter(
         user=admin_user,
         object_id=grant2.id,
-        change_message="Status changed from 'waiting_list_maybe' to 'rejected' and rejection email sent",
+        change_message="Status changed from 'waiting_list_maybe' to 'rejected' and rejection email sent.",
     ).exists()
 
 
@@ -738,7 +738,7 @@ def test_delete_reimbursement_from_admin_logs_audit_log_entry(rf, admin_user):
     assert LogEntry.objects.filter(
         user=admin_user,
         object_id=grant.id,
-        change_message=f"Reimbursement removed: {reimbursement.category.name}",
+        change_message=f"Reimbursement removed: {reimbursement.category.name}.",
     ).exists()
 
 
@@ -753,7 +753,7 @@ def test_save_grant_in_admin_logs_audit_log_entry(rf, admin_user):
     assert LogEntry.objects.filter(
         user=admin_user,
         object_id=grant.id,
-        change_message="Grant created",
+        change_message="Grant created.",
     ).exists()
 
 
@@ -769,7 +769,7 @@ def test_save_grant_in_admin_logs_audit_log_entry_for_status_change(rf, admin_us
     assert LogEntry.objects.filter(
         user=admin_user,
         object_id=grant.id,
-        change_message="Status changed from 'pending' to 'confirmed'",
+        change_message="Status changed from 'pending' to 'confirmed'.",
     ).exists()
 
 
@@ -787,5 +787,5 @@ def test_save_grant_in_admin_logs_audit_log_entry_for_pending_status_change(
     assert LogEntry.objects.filter(
         user=admin_user,
         object_id=grant.id,
-        change_message="Pending status changed from 'pending' to 'confirmed'",
+        change_message="Pending status changed from 'pending' to 'confirmed'.",
     ).exists()

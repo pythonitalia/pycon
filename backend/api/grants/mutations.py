@@ -283,7 +283,7 @@ class GrantMutation:
             },
         )
 
-        create_addition_admin_log_entry(request.user, instance, "Grant created")
+        create_addition_admin_log_entry(request.user, instance, "Grant created.")
 
         # hack because we return django models
         instance.__strawberry_definition__ = Grant.__strawberry_definition__
@@ -309,7 +309,7 @@ class GrantMutation:
 
         instance.save()
 
-        create_change_admin_log_entry(request.user, instance, "Grant updated")
+        create_change_admin_log_entry(request.user, instance, "Grant updated.")
 
         Participant.objects.update_or_create(
             user_id=request.user.id,
@@ -346,7 +346,7 @@ class GrantMutation:
         grant.save()
 
         create_change_admin_log_entry(
-            request.user, grant, f"Grantee has replied with status {grant.status}"
+            request.user, grant, f"Grantee has replied with status {grant.status}."
         )
 
         admin_url = request.build_absolute_uri(grant.get_admin_url())

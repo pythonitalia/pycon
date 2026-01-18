@@ -375,7 +375,7 @@ def test_save_review_grants_updates_grant_and_creates_reimbursements(rf, mocker)
     assert LogEntry.objects.filter(
         user=user,
         object_id__in=[str(grant_1.id), str(grant_2.id)],
-        change_message="[Review Session] Grant status updated: pending_status changed from 'None' to 'approved'.",
+        change_message="[Review Session] Pending status changed from 'None' to 'approved'.",
     ).exists()
     assert LogEntry.objects.filter(
         user=user,
@@ -477,7 +477,7 @@ def test_save_review_grants_update_grants_status_to_rejected_removes_reimburseme
         assert LogEntry.objects.filter(
             user=user,
             object_id=str(reimbursement.id),
-            change_message=f"[Review Session] Reimbursement removed: {reimbursement.category.name}",
+            change_message=f"[Review Session] Reimbursement removed: {reimbursement.category.name}.",
         ).exists()
 
 
@@ -562,19 +562,19 @@ def test_save_review_grants_modify_reimbursements(rf, mocker):
     assert LogEntry.objects.filter(
         user=user,
         object_id=grant_1.id,
-        change_message=f"[Review Session] Reimbursement removed: {travel_category.name}",
+        change_message=f"[Review Session] Reimbursement removed: {travel_category.name}.",
     ).exists()
     assert LogEntry.objects.filter(
         user=user,
         object_id=grant_1.id,
-        change_message=f"[Review Session] Reimbursement removed: {accommodation_category.name}",
+        change_message=f"[Review Session] Reimbursement removed: {accommodation_category.name}.",
     ).exists()
 
     # pending_status change should not be logged because the grant status is not changed
     assert not LogEntry.objects.filter(
         user=user,
         object_id=grant_1.id,
-        change_message="[Review Session] Grant status updated: pending_status changed from 'approved' to 'None'.",
+        change_message="[Review Session] Pending status changed from 'approved' to 'None'.",
     ).exists()
 
 
@@ -721,5 +721,5 @@ def test_save_review_grants_two_times_does_not_create_duplicate_log_entries(rf, 
     assert LogEntry.objects.filter(
         user=user,
         object_id=grant_1.id,
-        change_message="[Review Session] Grant status updated: pending_status changed from 'None' to 'approved'.",
+        change_message="[Review Session] Pending status changed from 'None' to 'approved'.",
     ).exists()

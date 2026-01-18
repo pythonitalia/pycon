@@ -90,7 +90,7 @@ def test_status_is_updated_when_reply_is_confirmed(graphql_client, user):
     assert LogEntry.objects.filter(
         user=user,
         object_id=grant.id,
-        change_message="Grantee has replied with status confirmed",
+        change_message="Grantee has replied with status confirmed.",
     ).exists()
 
 
@@ -109,7 +109,7 @@ def test_status_is_updated_when_reply_is_refused(graphql_client, user):
     assert LogEntry.objects.filter(
         user=user,
         object_id=grant.id,
-        change_message="Grantee has replied with status refused",
+        change_message="Grantee has replied with status refused.",
     ).exists()
 
 

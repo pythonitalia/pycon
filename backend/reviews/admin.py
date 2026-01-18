@@ -325,7 +325,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                             create_deletion_admin_log_entry(
                                 request.user,
                                 grant,
-                                change_message=f"[Review Session] Reimbursement removed: {reimbursement.category.name}",
+                                change_message=f"[Review Session] Reimbursement removed: {reimbursement.category.name}.",
                             )
                             reimbursement.delete()
                     else:
@@ -338,7 +338,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                             create_deletion_admin_log_entry(
                                 request.user,
                                 grant,
-                                change_message=f"[Review Session] Reimbursement removed: {reimbursement.category.name}",
+                                change_message=f"[Review Session] Reimbursement removed: {reimbursement.category.name}.",
                             )
                         to_delete.delete()
 
@@ -357,7 +357,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                     create_change_admin_log_entry(
                         request.user,
                         grant,
-                        change_message=f"[Review Session] Grant status updated: pending_status changed from '{original_pending_status}' to '{grant.pending_status}'.",
+                        change_message=f"[Review Session] Pending status changed from '{original_pending_status}' to '{grant.pending_status}'.",
                     )
 
                 # The frontend may send reimbursement categories as checked by default,

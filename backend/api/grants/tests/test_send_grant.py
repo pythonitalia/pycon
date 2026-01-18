@@ -126,7 +126,7 @@ def test_send_grant(
     assert log_entry.user_id == user.id
     assert log_entry.user == user
     assert log_entry.object_id == str(grant.id)
-    assert log_entry.change_message == "Grant created"
+    assert log_entry.change_message == "Grant created."
 
     # Verify that the correct email template was used and email was sent
     emails_sent = sent_emails()

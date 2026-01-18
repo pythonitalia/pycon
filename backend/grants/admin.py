@@ -221,7 +221,7 @@ def send_reply_emails(modeladmin, request, queryset):
             create_change_admin_log_entry(
                 request.user,
                 grant,
-                change_message="Sent Approved reply email to applicant",
+                change_message="Sent Approved reply email to applicant.",
             )
             messages.info(request, f"Sent Approved reply email to {grant.name}")
 
@@ -233,7 +233,7 @@ def send_reply_emails(modeladmin, request, queryset):
             create_change_admin_log_entry(
                 request.user,
                 grant,
-                change_message="Sent Waiting List reply email to applicant",
+                change_message="Sent Waiting List reply email to applicant.",
             )
             messages.info(request, f"Sent Waiting List reply email to {grant.name}")
 
@@ -242,7 +242,7 @@ def send_reply_emails(modeladmin, request, queryset):
             create_change_admin_log_entry(
                 request.user,
                 grant,
-                change_message="Sent Rejected reply email to applicant",
+                change_message="Sent Rejected reply email to applicant.",
             )
             messages.info(request, f"Sent Rejected reply email to {grant.name}")
 
@@ -270,7 +270,7 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
         create_change_admin_log_entry(
             request.user,
             grant,
-            change_message="Sent Approved reminder email to applicant",
+            change_message="Sent Approved reminder email to applicant.",
         )
         messages.info(request, f"Grant reminder sent to {grant.name}")
 
@@ -290,7 +290,7 @@ def send_reply_email_waiting_list_update(modeladmin, request, queryset):
         create_change_admin_log_entry(
             request.user,
             grant,
-            change_message="Sent Waiting List update reply email to applicant",
+            change_message="Sent Waiting List update reply email to applicant.",
         )
         messages.info(request, f"Sent Waiting List update reply email to {grant.name}")
 
@@ -325,7 +325,7 @@ def create_grant_vouchers(modeladmin, request, queryset):
             create_addition_admin_log_entry(
                 request.user,
                 grant,
-                change_message="Created voucher for this grant",
+                change_message="Created voucher for this grant.",
             )
 
             vouchers_to_create.append(
@@ -346,12 +346,12 @@ def create_grant_vouchers(modeladmin, request, queryset):
             create_change_admin_log_entry(
                 request.user,
                 existing_voucher,
-                change_message="Upgraded Co-Speaker voucher to Grant voucher",
+                change_message="Upgraded Co-Speaker voucher to Grant voucher.",
             )
             create_change_admin_log_entry(
                 request.user,
                 grant,
-                change_message="Updated existing Co-Speaker voucher to grant",
+                change_message="Updated existing Co-Speaker voucher to grant.",
             )
             existing_voucher.voucher_type = ConferenceVoucher.VoucherType.GRANT
             vouchers_to_update.append(existing_voucher)
@@ -380,7 +380,7 @@ def mark_rejected_and_send_email(modeladmin, request, queryset):
         create_change_admin_log_entry(
             request.user,
             grant,
-            change_message=f"Status changed from '{old_status}' to 'rejected' and rejection email sent",
+            change_message=f"Status changed from '{old_status}' to 'rejected' and rejection email sent.",
         )
 
         send_grant_reply_rejected_email.delay(grant_id=grant.id)
@@ -441,7 +441,7 @@ class GrantReimbursementAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         create_change_admin_log_entry(
             request.user,
             obj.grant,
-            change_message=f"Reimbursement removed: {obj.category.name}",
+            change_message=f"Reimbursement removed: {obj.category.name}.",
         )
         super().delete_model(request, obj)
 
@@ -456,7 +456,7 @@ class GrantReimbursementInline(admin.TabularInline):
         create_change_admin_log_entry(
             request.user,
             obj.grant,
-            change_message=f"Reimbursement removed: {obj.category.name}",
+            change_message=f"Reimbursement removed: {obj.category.name}.",
         )
         super().delete_model(request, obj)
 
@@ -573,19 +573,19 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                 create_change_admin_log_entry(
                     request.user,
                     obj,
-                    change_message=f"Status changed from '{obj._original_status}' to '{obj.status}'",
+                    change_message=f"Status changed from '{obj._original_status}' to '{obj.status}'.",
                 )
             if obj.pending_status != obj._original_pending_status:
                 create_change_admin_log_entry(
                     request.user,
                     obj,
-                    change_message=f"Pending status changed from '{obj._original_pending_status}' to '{obj.pending_status}'",
+                    change_message=f"Pending status changed from '{obj._original_pending_status}' to '{obj.pending_status}'.",
                 )
         else:
             create_addition_admin_log_entry(
                 request.user,
                 obj,
-                change_message="Grant created",
+                change_message="Grant created.",
             )
         super().save_model(request, obj, form, change)
 
