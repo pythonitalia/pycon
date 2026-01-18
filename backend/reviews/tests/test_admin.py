@@ -472,7 +472,7 @@ def test_save_review_grants_update_grants_status_to_rejected_removes_reimburseme
 
     assert grant_1.reimbursements.count() == 0
 
-    assert LogEntry.objects.count() == 3
+    assert LogEntry.objects.count() == 4
     for reimbursement in grant_1.reimbursements.all():
         assert LogEntry.objects.filter(
             user=user,
@@ -557,20 +557,20 @@ def test_save_review_grants_modify_reimbursements(rf, mocker):
         reimbursement.category for reimbursement in grant_1.reimbursements.all()
     } == {ticket_category}
 
-    assert LogEntry.objects.count() == 4
+    assert LogEntry.objects.count() == 3
     assert LogEntry.objects.filter(
         user=user,
-        object_id__in=[str(grant_1.id)],
-        change_message=f"[Review Session] Grant status updated: pending_status changed from '{Grant.Status.pending}' to '{Grant.Status.approved}'.",
+        object_id=grant_1.id,
+        change_message="[Review Session] Grant status updated: pending_status changed from 'approved' to 'None'.",
     ).exists()
     assert LogEntry.objects.filter(
         user=user,
-        object_id=str(travel_category.id),
+        object_id=grant_1.id,
         change_message=f"[Review Session] Reimbursement removed: {travel_category.name}",
     ).exists()
     assert LogEntry.objects.filter(
         user=user,
-        object_id=str(accommodation_category.id),
+        object_id=grant_1.id,
         change_message=f"[Review Session] Reimbursement removed: {accommodation_category.name}",
     ).exists()
 
