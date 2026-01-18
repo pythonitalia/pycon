@@ -218,6 +218,11 @@ def send_reply_emails(modeladmin, request, queryset):
             grant.save()
             send_grant_reply_approved_email.delay(grant_id=grant.id, is_reminder=False)
 
+            create_change_admin_log_entry(
+                request.user,
+                grant,
+                change_message="Sent Approved reply email to applicant.",
+            )
             messages.info(request, f"Sent Approved reply email to {grant.name}")
 
         if (
@@ -225,10 +230,20 @@ def send_reply_emails(modeladmin, request, queryset):
             or grant.status == Grant.Status.waiting_list_maybe
         ):
             send_grant_reply_waiting_list_email.delay(grant_id=grant.id)
+            create_change_admin_log_entry(
+                request.user,
+                grant,
+                change_message="Sent Waiting List reply email to applicant.",
+            )
             messages.info(request, f"Sent Waiting List reply email to {grant.name}")
 
         if grant.status == Grant.Status.rejected:
             send_grant_reply_rejected_email.delay(grant_id=grant.id)
+            create_change_admin_log_entry(
+                request.user,
+                grant,
+                change_message="Sent Rejected reply email to applicant.",
+            )
             messages.info(request, f"Sent Rejected reply email to {grant.name}")
 
 
@@ -252,6 +267,11 @@ def send_grant_reminder_to_waiting_for_confirmation(modeladmin, request, queryse
 
         send_grant_reply_approved_email.delay(grant_id=grant.id, is_reminder=True)
 
+        create_change_admin_log_entry(
+            request.user,
+            grant,
+            change_message="Sent Approved reminder email to applicant.",
+        )
         messages.info(request, f"Grant reminder sent to {grant.name}")
 
 
@@ -267,6 +287,11 @@ def send_reply_email_waiting_list_update(modeladmin, request, queryset):
 
     for grant in queryset:
         send_grant_reply_waiting_list_update_email.delay(grant_id=grant.id)
+        create_change_admin_log_entry(
+            request.user,
+            grant,
+            change_message="Sent Waiting List update reply email to applicant.",
+        )
         messages.info(request, f"Sent Waiting List update reply email to {grant.name}")
 
 
@@ -300,7 +325,7 @@ def create_grant_vouchers(modeladmin, request, queryset):
             create_addition_admin_log_entry(
                 request.user,
                 grant,
-                change_message="Created voucher for this grant",
+                change_message="Created voucher for this grant.",
             )
 
             vouchers_to_create.append(
@@ -321,12 +346,12 @@ def create_grant_vouchers(modeladmin, request, queryset):
             create_change_admin_log_entry(
                 request.user,
                 existing_voucher,
-                change_message="Upgraded Co-Speaker voucher to Grant voucher",
+                change_message="Upgraded Co-Speaker voucher to Grant voucher.",
             )
             create_change_admin_log_entry(
                 request.user,
                 grant,
-                change_message="Updated existing Co-Speaker voucher to grant",
+                change_message="Updated existing Co-Speaker voucher to grant.",
             )
             existing_voucher.voucher_type = ConferenceVoucher.VoucherType.GRANT
             vouchers_to_update.append(existing_voucher)
@@ -348,8 +373,15 @@ def mark_rejected_and_send_email(modeladmin, request, queryset):
     )
 
     for grant in queryset:
+        old_status = grant.status
         grant.status = Grant.Status.rejected
         grant.save()
+
+        create_change_admin_log_entry(
+            request.user,
+            grant,
+            change_message=f"Status changed from '{old_status}' to 'rejected' and rejection email sent.",
+        )
 
         send_grant_reply_rejected_email.delay(grant_id=grant.id)
         messages.info(request, f"Sent Rejected reply email to {grant.name}")
@@ -405,12 +437,28 @@ class GrantReimbursementAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     search_fields = ("grant__full_name", "grant__email")
     autocomplete_fields = ("grant",)
 
+    def delete_model(self, request, obj):
+        create_change_admin_log_entry(
+            request.user,
+            obj.grant,
+            change_message=f"Reimbursement removed: {obj.category.name}.",
+        )
+        super().delete_model(request, obj)
+
 
 class GrantReimbursementInline(admin.TabularInline):
     model = GrantReimbursement
     extra = 0
     autocomplete_fields = ["category"]
     fields = ["category", "granted_amount"]
+
+    def delete_model(self, request, obj):
+        create_change_admin_log_entry(
+            request.user,
+            obj.grant,
+            change_message=f"Reimbursement removed: {obj.category.name}.",
+        )
+        super().delete_model(request, obj)
 
 
 @admin.register(Grant)
@@ -515,6 +563,31 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
             },
         ),
     )
+
+    def save_model(self, request, obj, form, change):
+        """
+        Override to log admin actions when status is changed.
+        """
+        if change:
+            if obj.status != obj._original_status:
+                create_change_admin_log_entry(
+                    request.user,
+                    obj,
+                    change_message=f"Status changed from '{obj._original_status}' to '{obj.status}'.",
+                )
+            if obj.pending_status != obj._original_pending_status:
+                create_change_admin_log_entry(
+                    request.user,
+                    obj,
+                    change_message=f"Pending status changed from '{obj._original_pending_status}' to '{obj.pending_status}'.",
+                )
+        else:
+            create_addition_admin_log_entry(
+                request.user,
+                obj,
+                change_message="Grant created.",
+            )
+        super().save_model(request, obj, form, change)
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         extra_context = extra_context or {}

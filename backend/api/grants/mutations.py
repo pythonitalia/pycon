@@ -10,6 +10,10 @@ from api.grants.types import AgeGroup, Grant, GrantType, Occupation
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType
 from conferences.models.conference import Conference
+from custom_admin.audit import (
+    create_addition_admin_log_entry,
+    create_change_admin_log_entry,
+)
 from grants.models import Grant as GrantModel
 from grants.tasks import get_name, notify_new_grant_reply_slack
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
@@ -279,11 +283,14 @@ class GrantMutation:
             },
         )
 
+        create_addition_admin_log_entry(request.user, instance, "Grant created.")
+
         # hack because we return django models
         instance.__strawberry_definition__ = Grant.__strawberry_definition__
         return instance
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
+    @transaction.atomic
     def update_grant(self, info: Info, input: UpdateGrantInput) -> UpdateGrantResult:
         request = info.context.request
 
@@ -299,7 +306,10 @@ class GrantMutation:
 
         for attr, value in asdict(input).items():
             setattr(instance, attr, value)
+
         instance.save()
+
+        create_change_admin_log_entry(request.user, instance, "Grant updated.")
 
         Participant.objects.update_or_create(
             user_id=request.user.id,
@@ -334,6 +344,10 @@ class GrantMutation:
 
         grant.status = input.status.to_grant_status()
         grant.save()
+
+        create_change_admin_log_entry(
+            request.user, grant, f"Grantee has replied with status {grant.status}."
+        )
 
         admin_url = request.build_absolute_uri(grant.get_admin_url())
         notify_new_grant_reply_slack.delay(grant_id=grant.id, admin_url=admin_url)

@@ -1,4 +1,5 @@
 from users.tests.factories import UserFactory
+from django.contrib.admin.models import LogEntry
 from conferences.tests.factories import ConferenceFactory
 from grants.tests.factories import GrantFactory
 import pytest
@@ -128,6 +129,13 @@ def test_update_grant(graphql_client, user):
     participant = Participant.objects.first()
     assert participant.facebook_url == "http://facebook.com/pythonpizza"
     assert participant.linkedin_url == "http://linkedin.com/company/pythonpizza"
+
+    assert LogEntry.objects.count() == 1
+    log_entry = LogEntry.objects.first()
+    assert log_entry.user_id == user.id
+    assert log_entry.user == user
+    assert log_entry.object_id == str(grant.id)
+    assert log_entry.change_message == "Grant updated."
 
 
 def test_cannot_update_a_grant_if_user_is_not_owner(

@@ -2,6 +2,7 @@ from decimal import Decimal
 
 import pytest
 from django.contrib.admin import AdminSite
+from django.contrib.admin.models import LogEntry
 
 from conferences.tests.factories import ConferenceFactory
 from grants.models import Grant
@@ -364,13 +365,41 @@ def test_save_review_grants_updates_grant_and_creates_reimbursements(rf, mocker)
         reimbursement.category for reimbursement in grant_2.reimbursements.all()
     } == {ticket_category, travel_category, accommodation_category}
 
+    # Verify log entries were created
+    assert (
+        LogEntry.objects.filter(object_id=grant_1.id).count() == 3
+    )  # 1 pending_status change, 2 reimbursement additions
+    assert (
+        LogEntry.objects.filter(object_id=grant_2.id).count() == 4
+    )  # 1 pending_status change, 3 reimbursement additions
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id__in=[str(grant_1.id), str(grant_2.id)],
+        change_message="[Review Session] Pending status changed from 'None' to 'approved'.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id__in=[str(grant_1.id), str(grant_2.id)],
+        change_message=f"[Review Session] Reimbursement {ticket_category.name} added.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id__in=[str(grant_1.id), str(grant_2.id)],
+        change_message=f"[Review Session] Reimbursement {travel_category.name} added.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id=str(grant_2.id),
+        change_message=f"[Review Session] Reimbursement {accommodation_category.name} added.",
+    ).exists()
+
     mock_messages.success.assert_called_once()
 
 
 def test_save_review_grants_update_grants_status_to_rejected_removes_reimbursements(
     rf, mocker
 ):
-    mock_messages = mocker.patch("reviews.admin.messages")
+    mocker.patch("reviews.admin.messages")
 
     user = UserFactory(is_staff=True, is_superuser=True)
     conference = ConferenceFactory()
@@ -443,9 +472,17 @@ def test_save_review_grants_update_grants_status_to_rejected_removes_reimburseme
 
     assert grant_1.reimbursements.count() == 0
 
+    assert LogEntry.objects.count() == 4
+    for reimbursement in grant_1.reimbursements.all():
+        assert LogEntry.objects.filter(
+            user=user,
+            object_id=str(reimbursement.id),
+            change_message=f"[Review Session] Reimbursement removed: {reimbursement.category.name}.",
+        ).exists()
+
 
 def test_save_review_grants_modify_reimbursements(rf, mocker):
-    mock_messages = mocker.patch("reviews.admin.messages")
+    mocker.patch("reviews.admin.messages")
 
     user = UserFactory(is_staff=True, is_superuser=True)
     conference = ConferenceFactory()
@@ -506,9 +543,183 @@ def test_save_review_grants_modify_reimbursements(rf, mocker):
     admin = ReviewSessionAdmin(ReviewSession, AdminSite())
     response = admin._review_grants_recap_view(request, review_session)
 
+    # Should redirect after successful save
+    assert response.status_code == 302
+    assert (
+        response.url
+        == f"/admin/reviews/reviewsession/{review_session.id}/review/recap/"
+    )
+
     grant_1.refresh_from_db()
 
     assert grant_1.reimbursements.count() == 1
     assert {
         reimbursement.category for reimbursement in grant_1.reimbursements.all()
     } == {ticket_category}
+
+    # Verify log entries were created
+    assert LogEntry.objects.count() == 2
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id=grant_1.id,
+        change_message=f"[Review Session] Reimbursement removed: {travel_category.name}.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id=grant_1.id,
+        change_message=f"[Review Session] Reimbursement removed: {accommodation_category.name}.",
+    ).exists()
+
+    # pending_status change should not be logged because the grant status is not changed
+    assert not LogEntry.objects.filter(
+        user=user,
+        object_id=grant_1.id,
+        change_message="[Review Session] Pending status changed from 'approved' to 'None'.",
+    ).exists()
+
+
+def test_save_review_grants_waiting_list_does_not_create_reimbursments(rf, mocker):
+    mock_messages = mocker.patch("reviews.admin.messages")
+
+    user = UserFactory(is_staff=True, is_superuser=True)
+    conference = ConferenceFactory()
+
+    # Create reimbursement categories
+    travel_category = GrantReimbursementCategoryFactory(
+        conference=conference,
+        travel=True,
+        max_amount=Decimal("500"),
+    )
+    ticket_category = GrantReimbursementCategoryFactory(
+        conference=conference,
+        ticket=True,
+        max_amount=Decimal("100"),
+    )
+    accommodation_category = GrantReimbursementCategoryFactory(
+        conference=conference,
+        accommodation=True,
+        max_amount=Decimal("200"),
+    )
+
+    # Create review session for grants
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.GRANTS,
+        status=ReviewSession.Status.COMPLETED,
+    )
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=0)
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+
+    grant_1 = GrantFactory(conference=conference, status=Grant.Status.pending)
+    grant_2 = GrantFactory(conference=conference, status=Grant.Status.pending)
+
+    post_data = {
+        f"decision-{grant_1.id}": Grant.Status.waiting_list,
+        f"reimbursementcategory-{grant_1.id}": [
+            str(ticket_category.id),
+            str(travel_category.id),
+        ],
+        f"decision-{grant_2.id}": Grant.Status.waiting_list_maybe,
+        f"reimbursementcategory-{grant_2.id}": [
+            str(ticket_category.id),
+            str(travel_category.id),
+            str(accommodation_category.id),
+        ],
+    }
+
+    request = rf.post("/", data=post_data)
+    request.user = user
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    response = admin._review_grants_recap_view(request, review_session)
+
+    # Should redirect after successful save
+    assert response.status_code == 302
+    assert (
+        response.url
+        == f"/admin/reviews/reviewsession/{review_session.id}/review/recap/"
+    )
+
+    # Refresh grants from database
+    grant_1.refresh_from_db()
+    grant_2.refresh_from_db()
+
+    # Verify grants were updated with pending_status
+    assert grant_1.pending_status == Grant.Status.waiting_list
+    assert grant_2.pending_status == Grant.Status.waiting_list_maybe
+
+    # Verify GrantReimbursement objects were created
+    assert grant_1.reimbursements.count() == 0
+    assert grant_2.reimbursements.count() == 0
+
+    # Verify log entries were created
+    assert (
+        LogEntry.objects.filter(object_id=grant_1.id).count() == 1
+    )  # 1 pending_status change, 2 reimbursement additions
+    assert (
+        LogEntry.objects.filter(object_id=grant_2.id).count() == 1
+    )  # 1 pending_status change, 3 reimbursement additions
+    mock_messages.success.assert_called_once()
+
+
+def test_save_review_grants_two_times_does_not_create_duplicate_log_entries(rf, mocker):
+    mocker.patch("reviews.admin.messages")
+
+    user = UserFactory(is_staff=True, is_superuser=True)
+    conference = ConferenceFactory()
+
+    # Create reimbursement categories
+    travel_category = GrantReimbursementCategoryFactory(
+        conference=conference,
+        travel=True,
+        max_amount=Decimal("500"),
+    )
+    ticket_category = GrantReimbursementCategoryFactory(
+        conference=conference,
+        ticket=True,
+        max_amount=Decimal("100"),
+    )
+    accommodation_category = GrantReimbursementCategoryFactory(
+        conference=conference,
+        accommodation=True,
+        max_amount=Decimal("200"),
+    )
+
+    # Create review session for grants
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.GRANTS,
+        status=ReviewSession.Status.COMPLETED,
+    )
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=0)
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+
+    grant_1 = GrantFactory(conference=conference, status=Grant.Status.pending)
+    post_data = {
+        f"decision-{grant_1.id}": Grant.Status.approved,
+        f"reimbursementcategory-{grant_1.id}": [
+            str(ticket_category.id),
+            str(travel_category.id),
+            str(accommodation_category.id),
+        ],
+    }
+    request = rf.post("/", data=post_data)
+    request.user = user
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    admin._review_grants_recap_view(request, review_session)  # First save
+    admin._review_grants_recap_view(request, review_session)  # Second save
+
+    grant_1.refresh_from_db()
+
+    assert grant_1.reimbursements.count() == 3
+    assert {
+        reimbursement.category for reimbursement in grant_1.reimbursements.all()
+    } == {ticket_category, travel_category, accommodation_category}
+
+    assert LogEntry.objects.count() == 4
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id=grant_1.id,
+        change_message="[Review Session] Pending status changed from 'None' to 'approved'.",
+    ).exists()

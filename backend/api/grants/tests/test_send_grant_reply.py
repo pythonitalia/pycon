@@ -1,9 +1,10 @@
 from unittest.mock import ANY
 
-from grants.tests.factories import GrantFactory
 import pytest
+from django.contrib.admin.models import LogEntry
 
 from grants.models import Grant
+from grants.tests.factories import GrantFactory
 from users.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
@@ -85,6 +86,13 @@ def test_status_is_updated_when_reply_is_confirmed(graphql_client, user):
     grant.refresh_from_db()
     assert grant.status == Grant.Status.confirmed
 
+    # Verify audit log entry was created correctly
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id=grant.id,
+        change_message="Grantee has replied with status confirmed.",
+    ).exists()
+
 
 def test_status_is_updated_when_reply_is_refused(graphql_client, user):
     graphql_client.force_login(user)
@@ -96,6 +104,13 @@ def test_status_is_updated_when_reply_is_refused(graphql_client, user):
 
     grant.refresh_from_db()
     assert grant.status == Grant.Status.refused
+
+    # Verify audit log entry was created correctly
+    assert LogEntry.objects.filter(
+        user=user,
+        object_id=grant.id,
+        change_message="Grantee has replied with status refused.",
+    ).exists()
 
 
 def test_call_notify_new_grant_reply(graphql_client, user, mocker):

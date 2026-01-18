@@ -24,6 +24,11 @@ from django.template.response import TemplateResponse
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
 
+from custom_admin.audit import (
+    create_addition_admin_log_entry,
+    create_change_admin_log_entry,
+    create_deletion_admin_log_entry,
+)
 from grants.models import Grant, GrantReimbursement, GrantReimbursementCategory
 from participants.models import Participant
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
@@ -291,15 +296,22 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 review_session.conference.grants.filter(id__in=decisions.keys()).all()
             )
 
+            grants_with_pending_status_changes = {}
             for grant in grants:
                 decision = decisions[grant.id]
                 if decision not in Grant.REVIEW_SESSION_STATUSES_OPTIONS:
                     continue
 
+                original_pending_status = grant.pending_status
                 if decision != grant.status:
                     grant.pending_status = decision
                 elif decision == grant.status:
                     grant.pending_status = None
+
+                if grant.pending_status != original_pending_status:
+                    grants_with_pending_status_changes[grant.id] = (
+                        original_pending_status
+                    )
 
                 # if there are grant reimbursements and the decision is not approved, delete them all
                 if grant.reimbursements.exists():
@@ -308,12 +320,27 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                     )
                     # If decision is not approved, delete all; else, filter and delete missing reimbursements
                     if decision != Grant.Status.approved:
-                        grant.reimbursements.all().delete()
+                        # Log deletions before deleting
+                        for reimbursement in grant.reimbursements.all():
+                            create_deletion_admin_log_entry(
+                                request.user,
+                                grant,
+                                change_message=f"[Review Session] Reimbursement removed: {reimbursement.category.name}.",
+                            )
+                            reimbursement.delete()
                     else:
                         # Only keep those in current approved_reimbursement_categories
-                        grant.reimbursements.exclude(
+                        # Log deletions before deleting
+                        to_delete = grant.reimbursements.exclude(
                             category_id__in=approved_reimbursement_categories
-                        ).delete()
+                        )
+                        for reimbursement in to_delete:
+                            create_deletion_admin_log_entry(
+                                request.user,
+                                grant,
+                                change_message=f"[Review Session] Reimbursement removed: {reimbursement.category.name}.",
+                            )
+                        to_delete.delete()
 
             for grant in grants:
                 # save each to make sure we re-calculate the grants amounts
@@ -323,22 +350,48 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                         "pending_status",
                     ]
                 )
+                if grant.id in grants_with_pending_status_changes:
+                    original_pending_status = grants_with_pending_status_changes[
+                        grant.id
+                    ]
+                    create_change_admin_log_entry(
+                        request.user,
+                        grant,
+                        change_message=f"[Review Session] Pending status changed from '{original_pending_status}' to '{grant.pending_status}'.",
+                    )
+
+                # The frontend may send reimbursement categories as checked by default,
+                # so they're always passed to the backend. However, if the grant is not approved,
+                # we don't need to consider reimbursements at all and can skip all reimbursement logic.
+                if grant.pending_status != Grant.Status.approved:
+                    continue
+
                 approved_reimbursement_categories = (
                     approved_reimbursement_categories_decisions.get(grant.id, [])
                 )
+
                 for reimbursement_category_id in approved_reimbursement_categories:
                     # Check if category exists to avoid KeyError
                     if reimbursement_category_id not in reimbursement_categories:
                         continue
-                    GrantReimbursement.objects.update_or_create(
-                        grant=grant,
-                        category_id=reimbursement_category_id,
-                        defaults={
-                            "granted_amount": reimbursement_categories[
-                                reimbursement_category_id
-                            ].max_amount
-                        },
+                    reimbursement, created = (
+                        GrantReimbursement.objects.update_or_create(
+                            grant=grant,
+                            category_id=reimbursement_category_id,
+                            defaults={
+                                "granted_amount": reimbursement_categories[
+                                    reimbursement_category_id
+                                ].max_amount
+                            },
+                        )
                     )
+
+                    if created:
+                        create_addition_admin_log_entry(
+                            request.user,
+                            grant,
+                            change_message=f"[Review Session] Reimbursement {reimbursement.category.name} added.",
+                        )
 
             messages.success(
                 request, "Decisions saved. Check the Grants Summary for more info."

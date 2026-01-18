@@ -3,22 +3,28 @@ from decimal import Decimal
 from unittest.mock import call
 
 import pytest
+from django.contrib.admin.models import LogEntry
+from django.contrib.admin.sites import AdminSite
 from django.utils import timezone
 
 from conferences.models.conference_voucher import ConferenceVoucher
 from conferences.tests.factories import ConferenceFactory, ConferenceVoucherFactory
 from grants.admin import (
     confirm_pending_status,
+    GrantAdmin,
+    GrantReimbursementAdmin,
     create_grant_vouchers,
     mark_rejected_and_send_email,
     reset_pending_status_back_to_status,
+    send_grant_reminder_to_waiting_for_confirmation,
+    send_reply_email_waiting_list_update,
     send_reply_emails,
 )
-from grants.models import Grant
 from grants.tests.factories import (
     GrantFactory,
     GrantReimbursementFactory,
 )
+from grants.models import Grant, GrantReimbursement
 
 pytestmark = pytest.mark.django_db
 
@@ -61,6 +67,7 @@ def test_send_reply_emails_with_grants_from_multiple_conferences_fails(
     mock_send_approved_email.assert_not_called()
     mock_send_waiting_list_email.assert_not_called()
     mock_send_rejected_email.assert_not_called()
+    assert not LogEntry.objects.exists()
 
 
 def test_send_reply_emails_approved_grant_missing_reimbursements(
@@ -81,6 +88,7 @@ def test_send_reply_emails_approved_grant_missing_reimbursements(
         f"Grant for {grant.name} is missing reimbursement categories!",
     )
     mock_send_approved_email.assert_not_called()
+    assert not LogEntry.objects.exists()
 
 
 def test_send_reply_emails_approved_missing_amount(rf, mocker, admin_user):
@@ -106,6 +114,7 @@ def test_send_reply_emails_approved_missing_amount(rf, mocker, admin_user):
         f"Grant for {grant.name} is missing 'Total Amount'!",
     )
     mock_send_approved_email.assert_not_called()
+    assert not LogEntry.objects.exists()
 
 
 def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
@@ -134,19 +143,30 @@ def test_send_reply_emails_approved_set_deadline_in_fourteen_days(
 
     send_reply_emails(None, request=request, queryset=Grant.objects.all())
 
+    # Verify admin action was called correctly
     mock_messages.info.assert_called_once_with(
         request,
         f"Sent Approved reply email to {grant.name}",
     )
-    mock_send_approved_email.assert_called_once_with(
-        grant_id=grant.id, is_reminder=False
-    )
 
+    # Verify deadline was set correctly
     grant.refresh_from_db()
     assert (
         f"{grant.applicant_reply_deadline:%Y-%m-%d}"
         == f"{(timezone.now().date() + timedelta(days=14)):%Y-%m-%d}"
     )
+
+    # Verify task was queued correctly
+    mock_send_approved_email.assert_called_once_with(
+        grant_id=grant.id, is_reminder=False
+    )
+
+    # Verify audit log entry was created correctly
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Sent Approved reply email to applicant.",
+    ).exists()
 
 
 def test_send_reply_emails_waiting_list(rf, mocker, admin_user):
@@ -166,6 +186,11 @@ def test_send_reply_emails_waiting_list(rf, mocker, admin_user):
         request, f"Sent Waiting List reply email to {grant.name}"
     )
     mock_send_waiting_list_email.assert_called_once_with(grant_id=grant.id)
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Sent Waiting List reply email to applicant.",
+    ).exists()
 
 
 def test_send_reply_emails_waiting_list_maybe(rf, mocker, admin_user):
@@ -185,6 +210,11 @@ def test_send_reply_emails_waiting_list_maybe(rf, mocker, admin_user):
         request, f"Sent Waiting List reply email to {grant.name}"
     )
     mock_send_waiting_list_email.assert_called_once_with(grant_id=grant.id)
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Sent Waiting List reply email to applicant.",
+    ).exists()
 
 
 def test_send_reply_emails_rejected(rf, mocker, admin_user):
@@ -204,6 +234,73 @@ def test_send_reply_emails_rejected(rf, mocker, admin_user):
         request, f"Sent Rejected reply email to {grant.name}"
     )
     mock_send_rejected_email.assert_called_once_with(grant_id=grant.id)
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Sent Rejected reply email to applicant.",
+    ).exists()
+
+
+def test_send_grant_reminder_to_waiting_for_confirmation(rf, mocker, admin_user):
+    mock_messages = mocker.patch("grants.admin.messages")
+    grant = GrantFactory(status=Grant.Status.waiting_for_confirmation)
+    request = rf.get("/")
+    request.user = admin_user
+    mock_send_approved_reminder_email = mocker.patch(
+        "grants.admin.send_grant_reply_approved_email.delay"
+    )
+
+    send_grant_reminder_to_waiting_for_confirmation(
+        None, request=request, queryset=Grant.objects.all()
+    )
+
+    # Verify admin action was called correctly
+    mock_messages.info.assert_called_once_with(
+        request,
+        f"Grant reminder sent to {grant.name}",
+    )
+
+    # Verify task was queued correctly
+    mock_send_approved_reminder_email.assert_called_once_with(
+        grant_id=grant.id, is_reminder=True
+    )
+
+    # Verify audit log entry was created correctly
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Sent Approved reminder email to applicant.",
+    ).exists()
+
+
+def test_send_reply_email_waiting_list_update(rf, mocker, admin_user):
+    mock_messages = mocker.patch("grants.admin.messages")
+    grant = GrantFactory(status=Grant.Status.waiting_list)
+    request = rf.get("/")
+    request.user = admin_user
+    mock_send_waiting_list_update_email = mocker.patch(
+        "grants.admin.send_grant_reply_waiting_list_update_email.delay"
+    )
+
+    send_reply_email_waiting_list_update(
+        None, request=request, queryset=Grant.objects.all()
+    )
+
+    # Verify admin action was called correctly
+    mock_messages.info.assert_called_once_with(
+        request,
+        f"Sent Waiting List update reply email to {grant.name}",
+    )
+
+    # Verify task was queued correctly
+    mock_send_waiting_list_update_email.assert_called_once_with(grant_id=grant.id)
+
+    # Verify audit log entry was created correctly
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Sent Waiting List update reply email to applicant.",
+    ).exists()
 
 
 def test_create_grant_vouchers(rf, mocker, admin_user):
@@ -241,6 +338,16 @@ def test_create_grant_vouchers(rf, mocker, admin_user):
         request,
         "Vouchers created!",
     )
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant_1.id,
+        change_message="Created voucher for this grant.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant_2.id,
+        change_message="Created voucher for this grant.",
+    ).exists()
 
 
 @pytest.mark.parametrize(
@@ -451,6 +558,8 @@ def test_mark_rejected_and_send_email(rf, mocker, admin_user):
     grant2.refresh_from_db()
     assert grant1.status == Grant.Status.rejected
     assert grant2.status == Grant.Status.rejected
+
+    # Verify admin action was called correctly
     mock_messages.info.assert_has_calls(
         [
             call(request, f"Sent Rejected reply email to {grant1.name}"),
@@ -458,12 +567,26 @@ def test_mark_rejected_and_send_email(rf, mocker, admin_user):
         ],
         any_order=True,
     )
+
+    # Verify task was queued correctly
     mock_send_rejected_email.assert_has_calls(
         [call(grant_id=grant1.id), call(grant_id=grant2.id)], any_order=True
     )
 
+    # Verify audit log entries were created correctly
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant1.id,
+        change_message="Status changed from 'waiting_list' to 'rejected' and rejection email sent.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant2.id,
+        change_message="Status changed from 'waiting_list_maybe' to 'rejected' and rejection email sent.",
+    ).exists()
 
-def test_confirm_pending_status_action(rf):
+
+def test_confirm_pending_status_action(rf, admin_user):
     grant_1 = GrantFactory(
         status=Grant.Status.pending,
         pending_status=Grant.Status.confirmed,
@@ -488,6 +611,7 @@ def test_confirm_pending_status_action(rf):
     )
 
     request = rf.get("/")
+    request.user = admin_user
     confirm_pending_status(
         None, request, Grant.objects.filter(id__in=[grant_1.id, grant_2.id, grant_3.id])
     )
@@ -505,11 +629,28 @@ def test_confirm_pending_status_action(rf):
     assert grant_2.pending_status is None
     assert grant_3.pending_status is None
 
+    # Verify audit log entries were created correctly
+    assert LogEntry.objects.filter(
+        object_id=grant_1.id,
+        change_message="[Bulk Admin Action] Status changed from 'pending' to 'confirmed'.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        object_id=grant_2.id,
+        change_message="[Bulk Admin Action] Status changed from 'rejected' to 'waiting_list'.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        object_id=grant_3.id,
+        change_message="[Bulk Admin Action] Status changed from 'waiting_list' to 'waiting_list_maybe'.",
+    ).exists()
+
     # Left out from the action
     assert grant_4.status == Grant.Status.waiting_list_maybe
+    assert not LogEntry.objects.filter(
+        object_id=grant_4.id,
+    ).exists()
 
 
-def test_reset_pending_status_back_to_status_action(rf):
+def test_reset_pending_status_back_to_status_action(rf, admin_user):
     grant_1 = GrantFactory(
         status=Grant.Status.pending,
         pending_status=Grant.Status.confirmed,
@@ -534,6 +675,7 @@ def test_reset_pending_status_back_to_status_action(rf):
     )
 
     request = rf.get("/")
+    request.user = admin_user
     reset_pending_status_back_to_status(
         None, request, Grant.objects.filter(id__in=[grant_1.id, grant_2.id, grant_3.id])
     )
@@ -552,6 +694,98 @@ def test_reset_pending_status_back_to_status_action(rf):
     assert grant_3.status == Grant.Status.waiting_list
     assert grant_3.pending_status is None
 
+    # Verify audit log entries were created correctly
+    assert LogEntry.objects.filter(
+        object_id=grant_1.id,
+        change_message="[Bulk Admin Action] pending_status reset from 'confirmed' to None.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        object_id=grant_2.id,
+        change_message="[Bulk Admin Action] pending_status reset from 'waiting_list' to None.",
+    ).exists()
+    assert LogEntry.objects.filter(
+        object_id=grant_3.id,
+        change_message="[Bulk Admin Action] pending_status reset from 'waiting_list_maybe' to None.",
+    ).exists()
+
     # Left out from the action
     assert grant_4.status == Grant.Status.waiting_list_maybe
     assert grant_4.pending_status == Grant.Status.confirmed
+    assert not LogEntry.objects.filter(
+        object_id=grant_4.id,
+    ).exists()
+
+
+def test_delete_reimbursement_from_admin_logs_audit_log_entry(rf, admin_user):
+    grant = GrantFactory()
+    reimbursement = GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__ticket=True,
+        granted_amount=Decimal("100"),
+    )
+
+    request = rf.get("/")
+    request.user = admin_user
+
+    admin = GrantReimbursementAdmin(GrantReimbursement, AdminSite())
+    admin.delete_model(request, reimbursement)
+
+    # Verify reimbursement was deleted
+    assert not GrantReimbursement.objects.filter(id=reimbursement.id).exists()
+
+    # Verify audit log entry was created correctly
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message=f"Reimbursement removed: {reimbursement.category.name}.",
+    ).exists()
+
+
+def test_save_grant_in_admin_logs_audit_log_entry(rf, admin_user):
+    grant = GrantFactory()
+    request = rf.get("/")
+    request.user = admin_user
+
+    admin = GrantAdmin(Grant, AdminSite())
+    admin.save_model(request, grant, None, False)
+
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Grant created.",
+    ).exists()
+
+
+def test_save_grant_in_admin_logs_audit_log_entry_for_status_change(rf, admin_user):
+    grant = GrantFactory(status=Grant.Status.pending)
+    request = rf.get("/")
+    request.user = admin_user
+
+    admin = GrantAdmin(Grant, AdminSite())
+    grant.status = Grant.Status.confirmed
+    admin.save_model(request, grant, None, True)
+
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Status changed from 'pending' to 'confirmed'.",
+    ).exists()
+
+
+def test_save_grant_in_admin_logs_audit_log_entry_for_pending_status_change(
+    rf, admin_user
+):
+    grant = GrantFactory(pending_status=Grant.Status.pending)
+    request = rf.get("/")
+    request.user = admin_user
+
+    admin = GrantAdmin(Grant, AdminSite())
+    grant.pending_status = Grant.Status.confirmed
+    admin.save_model(request, grant, None, True)
+
+    assert LogEntry.objects.filter(
+        user=admin_user,
+        object_id=grant.id,
+        change_message="Pending status changed from 'pending' to 'confirmed'.",
+    ).exists()
