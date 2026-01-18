@@ -434,6 +434,12 @@
                 </th>
                 <th scope="col">
                   <div class="text">
+                    <span>Std Dev</span>
+                  </div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col">
+                  <div class="text">
                     <span>Votes</span>
                   </div>
                   <div class="clear"></div>
@@ -573,6 +579,7 @@
                   </ul>
                 </td>
                 <td>{{ item.score }}</td>
+                <td>{{ item.std_dev|floatformat:2 }}</td>
                 <td class="votes-list">
                   <ul>
                     {% for reviewer in item.userreview_set.all %}
