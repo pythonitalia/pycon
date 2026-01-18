@@ -234,6 +234,21 @@
   .sortable:hover {
     text-decoration: underline;
   }
+
+  /* Center-align columns */
+  .results-table th:nth-child(1), /* number column */
+  .results-table th:nth-child(3), /* score column */
+  .results-table th:nth-child(4), /* std dev column */
+  .results-table th:nth-child(6), /* current status column */
+  .results-table th:nth-child(7), /* pending status column */
+  .results-table td:nth-child(1), /* number column */
+  .results-table td:nth-child(3), /* score column */
+  .results-table td:nth-child(4), /* std dev column */
+  .results-table td:nth-child(6), /* current status column */
+  .results-table td:nth-child(7) /* pending status column */
+  {
+    text-align: center;
+  }
 </style>
 <script type="application/javascript">
   const grantsById = {};
