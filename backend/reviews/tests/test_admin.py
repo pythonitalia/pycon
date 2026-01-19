@@ -11,7 +11,8 @@ from grants.tests.factories import (
     GrantReimbursementCategoryFactory,
     GrantReimbursementFactory,
 )
-from reviews.admin import ReviewSessionAdmin, get_next_to_review_item_id
+from reviews.adapters import get_review_adapter
+from reviews.admin import ReviewSessionAdmin
 from reviews.models import ReviewSession
 from reviews.tests.factories import (
     AvailableScoreOptionFactory,
@@ -53,7 +54,9 @@ def test_next_item_to_review_prefers_items_with_fewer_votes():
         score=score_0,
     )
 
-    next_to_review = get_next_to_review_item_id(review_session, user_2)
+    adapter = get_review_adapter(review_session)
+    next_to_review = adapter.get_next_to_review_item_id(review_session, user_2)
+
     assert next_to_review == submission_2.id
 
 
@@ -88,9 +91,12 @@ def test_next_item_to_review_for_submissions_ignores_excluded_tags(iteration):
     submission_2.tags.add(tag_2)
     submission_2.tags.add(tag_3)
 
-    next_to_review = get_next_to_review_item_id(
+    adapter = get_review_adapter(review_session)
+
+    next_to_review = adapter.get_next_to_review_item_id(
         review_session, user_1, exclude=[tag_2.id]
     )
+
     assert next_to_review == submission_1.id
 
 
@@ -296,9 +302,11 @@ def test_grants_review_std_dev(rf, scores, expected_std_dev):
     request = rf.get("/")
     request.user = users[5]
 
-    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
-    response = admin._review_grants_recap_view(request, review_session)
-    context_data = response.context_data
+    adapter = get_review_adapter(review_session)
+    items = adapter.get_recap_items_queryset(review_session).all()
+    context_data = adapter.get_recap_context(
+        request, review_session, items, AdminSite()
+    )
     items = context_data["items"]
     grant_to_check = next(item for item in items if item.id == grant.id)
 
