@@ -235,6 +235,25 @@
     text-decoration: underline;
   }
 
+  .notes-cell {
+    position: relative;
+    min-width: 220px;
+  }
+
+  .notes-textarea {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    width: calc(100% - 16px);
+    min-height: 80px;
+    resize: none;
+    font-size: 12px;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+
   /* Center-align columns */
   .results-table th:nth-child(1), /* number column */
   .results-table th:nth-child(3), /* score column */
@@ -616,6 +635,12 @@
                   </div>
                   <div class="clear"></div>
                 </th>
+                <th scope="col">
+                  <div class="text">
+                    <span>Notes</span>
+                  </div>
+                  <div class="clear"></div>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -815,6 +840,17 @@
                     {% endfor %}
                   </ul>
                   {% else %} No permission to change. {% endif %}
+                </td>
+                <td class="notes-cell">
+                  {% if perms.reviews.decision_reviewsession %}
+                  <textarea
+                    name="notes-{{ item.id }}"
+                    class="notes-textarea"
+                    placeholder="Internal notes..."
+                  >{{ item.internal_notes }}</textarea>
+                  {% else %}
+                  {{ item.internal_notes|default:"-" }}
+                  {% endif %}
                 </td>
               </tr>
               {% endfor %}
