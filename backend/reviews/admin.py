@@ -293,6 +293,12 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 if key.startswith("reimbursementcategory-")
             }
 
+            notes_updates = {
+                int(key.split("-")[1]): value
+                for [key, value] in data.items()
+                if key.startswith("notes-")
+            }
+
             grants = list(
                 review_session.conference.grants.filter(id__in=decisions.keys()).all()
             )
@@ -393,6 +399,17 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                             grant,
                             change_message=f"[Review Session] Reimbursement {reimbursement.category.name} added.",
                         )
+
+            # Update internal notes for all grants that have notes changes
+            if notes_updates:
+                grants_to_update_notes = review_session.conference.grants.filter(
+                    id__in=notes_updates.keys()
+                ).all()
+                for grant in grants_to_update_notes:
+                    new_notes = notes_updates.get(grant.id, "")
+                    if grant.internal_notes != new_notes:
+                        grant.internal_notes = new_notes
+                        grant.save(update_fields=["internal_notes"])
 
             messages.success(
                 request, "Decisions saved. Check the Grants Summary for more info."
