@@ -468,7 +468,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                     ).values_list("category_id", flat=True)
                 ),
             )
-            .order_by(F("score").desc(nulls_last=True))
+            .order_by(F("score").desc(nulls_last=True), "id")
             .prefetch_related(
                 Prefetch(
                     "userreview_set",
@@ -567,7 +567,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                     .values("score")
                 )
             )
-            .order_by(F("score").desc(nulls_last=True))
+            .order_by(F("score").desc(nulls_last=True), "id")
             .prefetch_related(
                 Prefetch(
                     "userreview_set",
