@@ -265,7 +265,7 @@ class ProposalsReviewAdapter:
         return dict(
             admin_site.each_context(request),
             proposal=proposal,
-            languages=proposal.languages.all(),
+            languages=languages,
             available_scores=AvailableScoreOption.objects.filter(
                 review_session_id=review_session.id
             ).order_by("-numeric_value"),
@@ -579,7 +579,11 @@ class GrantsReviewAdapter:
                         change_message=f"[Review Session] Reimbursement {reimbursement.category.name} added.",
                     )
 
-        # Update internal notes
+        # Update internal notes in a separate pass.
+        # This is intentionally separate from the main grant loop above because:
+        # 1. Notes updates are independent of status/reimbursement changes
+        # 2. A grant may have notes updated without any decision change
+        # 3. Keeps the audit logging concerns (status changes) separate from notes
         if notes_updates:
             grants_to_update_notes = review_session.conference.grants.filter(
                 id__in=notes_updates.keys()
@@ -687,9 +691,9 @@ _GRANTS_ADAPTER = GrantsReviewAdapter()
 def get_review_adapter(review_session: ReviewSession) -> ReviewAdapter:
     """Return the appropriate adapter for the given review session type."""
     if review_session.is_proposals_review:
-        return ProposalsReviewAdapter()
+        return _PROPOSALS_ADAPTER
 
     if review_session.is_grants_review:
-        return GrantsReviewAdapter()
+        return _GRANTS_ADAPTER
 
     raise ValueError(f"Unknown review session type: {review_session.session_type}")

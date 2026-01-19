@@ -184,13 +184,8 @@ def test_grants_review_scores(rf, scores, avg):
         score=all_scores[-1],
     )
 
-    request = rf.get("/")
-    request.user = users[5]
-
-    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
-    response = admin._review_grants_recap_view(request, review_session)
-    context_data = response.context_data
-    items = context_data["items"]
+    adapter = get_review_adapter(review_session)
+    items = adapter.get_recap_items_queryset(review_session).all()
     grant_to_check = next(item for item in items if item.id == grant_1.id)
 
     assert grant_to_check.id == grant_1.id
@@ -405,9 +400,7 @@ def test_review_start_view(rf, mocker):
     )
 
 
-def test_save_review_grants_updates_grant_and_creates_reimbursements(rf, mocker):
-    mock_messages = mocker.patch("reviews.admin.messages")
-
+def test_save_review_grants_updates_grant_and_creates_reimbursements(rf):
     user = UserFactory(is_staff=True, is_superuser=True)
     conference = ConferenceFactory()
 
@@ -462,15 +455,8 @@ def test_save_review_grants_updates_grant_and_creates_reimbursements(rf, mocker)
     request = rf.post("/", data=post_data)
     request.user = user
 
-    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
-    response = admin._review_grants_recap_view(request, review_session)
-
-    # Should redirect after successful save
-    assert response.status_code == 302
-    assert (
-        response.url
-        == f"/admin/reviews/reviewsession/{review_session.id}/review/recap/"
-    )
+    adapter = get_review_adapter(review_session)
+    adapter.process_recap_post(request, review_session)
 
     # Refresh grants from database
     grant_1.refresh_from_db()
@@ -519,14 +505,8 @@ def test_save_review_grants_updates_grant_and_creates_reimbursements(rf, mocker)
         change_message=f"[Review Session] Reimbursement {accommodation_category.name} added.",
     ).exists()
 
-    mock_messages.success.assert_called_once()
 
-
-def test_save_review_grants_update_grants_status_to_rejected_removes_reimbursements(
-    rf, mocker
-):
-    mocker.patch("reviews.admin.messages")
-
+def test_save_review_grants_update_grants_status_to_rejected_removes_reimbursements(rf):
     user = UserFactory(is_staff=True, is_superuser=True)
     conference = ConferenceFactory()
 
@@ -583,15 +563,9 @@ def test_save_review_grants_update_grants_status_to_rejected_removes_reimburseme
     request = rf.post("/", data=post_data)
     request.user = user
 
-    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
-    response = admin._review_grants_recap_view(request, review_session)
+    adapter = get_review_adapter(review_session)
+    adapter.process_recap_post(request, review_session)
 
-    # Should redirect after successful save
-    assert response.status_code == 302
-    assert (
-        response.url
-        == f"/admin/reviews/reviewsession/{review_session.id}/review/recap/"
-    )
     grant_1.refresh_from_db()
 
     assert grant_1.pending_status == Grant.Status.rejected
@@ -607,9 +581,7 @@ def test_save_review_grants_update_grants_status_to_rejected_removes_reimburseme
         ).exists()
 
 
-def test_save_review_grants_modify_reimbursements(rf, mocker):
-    mocker.patch("reviews.admin.messages")
-
+def test_save_review_grants_modify_reimbursements(rf):
     user = UserFactory(is_staff=True, is_superuser=True)
     conference = ConferenceFactory()
 
@@ -666,15 +638,8 @@ def test_save_review_grants_modify_reimbursements(rf, mocker):
     request = rf.post("/", data=post_data)
     request.user = user
 
-    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
-    response = admin._review_grants_recap_view(request, review_session)
-
-    # Should redirect after successful save
-    assert response.status_code == 302
-    assert (
-        response.url
-        == f"/admin/reviews/reviewsession/{review_session.id}/review/recap/"
-    )
+    adapter = get_review_adapter(review_session)
+    adapter.process_recap_post(request, review_session)
 
     grant_1.refresh_from_db()
 
@@ -704,12 +669,9 @@ def test_save_review_grants_modify_reimbursements(rf, mocker):
     ).exists()
 
 
-def test_save_review_grants_waiting_list_does_not_create_reimbursments(rf, mocker):
-    mock_messages = mocker.patch("reviews.admin.messages")
-
+def test_save_review_grants_waiting_list_does_not_create_reimbursements(rf):
     user = UserFactory(is_staff=True, is_superuser=True)
     conference = ConferenceFactory()
-
     # Create reimbursement categories
     travel_category = GrantReimbursementCategoryFactory(
         conference=conference,
@@ -756,15 +718,8 @@ def test_save_review_grants_waiting_list_does_not_create_reimbursments(rf, mocke
     request = rf.post("/", data=post_data)
     request.user = user
 
-    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
-    response = admin._review_grants_recap_view(request, review_session)
-
-    # Should redirect after successful save
-    assert response.status_code == 302
-    assert (
-        response.url
-        == f"/admin/reviews/reviewsession/{review_session.id}/review/recap/"
-    )
+    adapter = get_review_adapter(review_session)
+    adapter.process_recap_post(request, review_session)
 
     # Refresh grants from database
     grant_1.refresh_from_db()
@@ -781,16 +736,13 @@ def test_save_review_grants_waiting_list_does_not_create_reimbursments(rf, mocke
     # Verify log entries were created
     assert (
         LogEntry.objects.filter(object_id=grant_1.id).count() == 1
-    )  # 1 pending_status change, 2 reimbursement additions
+    )  # 1 pending_status change
     assert (
         LogEntry.objects.filter(object_id=grant_2.id).count() == 1
-    )  # 1 pending_status change, 3 reimbursement additions
-    mock_messages.success.assert_called_once()
+    )  # 1 pending_status change
 
 
-def test_save_review_grants_two_times_does_not_create_duplicate_log_entries(rf, mocker):
-    mocker.patch("reviews.admin.messages")
-
+def test_save_review_grants_two_times_does_not_create_duplicate_log_entries(rf):
     user = UserFactory(is_staff=True, is_superuser=True)
     conference = ConferenceFactory()
 
@@ -832,9 +784,9 @@ def test_save_review_grants_two_times_does_not_create_duplicate_log_entries(rf, 
     request = rf.post("/", data=post_data)
     request.user = user
 
-    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
-    admin._review_grants_recap_view(request, review_session)  # First save
-    admin._review_grants_recap_view(request, review_session)  # Second save
+    adapter = get_review_adapter(review_session)
+    adapter.process_recap_post(request, review_session)  # First save
+    adapter.process_recap_post(request, review_session)  # Second save
 
     grant_1.refresh_from_db()
 
@@ -849,3 +801,117 @@ def test_save_review_grants_two_times_does_not_create_duplicate_log_entries(rf, 
         object_id=grant_1.id,
         change_message="[Review Session] Pending status changed from 'None' to 'approved'.",
     ).exists()
+
+
+# --- ProposalsReviewAdapter Tests ---
+
+
+def test_proposals_review_get_recap_context(rf):
+    user = UserFactory(is_staff=True, is_superuser=True)
+    conference = ConferenceFactory()
+
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.PROPOSALS,
+        status=ReviewSession.Status.COMPLETED,
+    )
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=0)
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+
+    submission = SubmissionFactory(conference=conference)
+    GrantFactory(conference=conference, user=submission.speaker)
+
+    request = rf.get("/")
+    request.user = user
+
+    adapter = get_review_adapter(review_session)
+    items = adapter.get_recap_items_queryset(review_session).all()
+    context = adapter.get_recap_context(request, review_session, items, AdminSite())
+
+    assert "items" in context
+    assert "grants" in context
+    assert "review_session_id" in context
+    assert "audience_levels" in context
+    assert "all_statuses" in context
+    assert context["review_session_id"] == review_session.id
+    assert str(submission.speaker_id) in context["grants"]
+
+
+def test_proposals_review_process_recap_post(rf):
+    user = UserFactory(is_staff=True, is_superuser=True)
+    conference = ConferenceFactory()
+
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.PROPOSALS,
+        status=ReviewSession.Status.COMPLETED,
+    )
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=0)
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+
+    submission_1 = SubmissionFactory(conference=conference)
+    submission_2 = SubmissionFactory(conference=conference)
+
+    post_data = {
+        f"decision-{submission_1.id}": "accepted",
+        f"decision-{submission_2.id}": "rejected",
+    }
+
+    request = rf.post("/", data=post_data)
+    request.user = user
+
+    adapter = get_review_adapter(review_session)
+    adapter.process_recap_post(request, review_session)
+
+    submission_1.refresh_from_db()
+    submission_2.refresh_from_db()
+
+    assert submission_1.pending_status == "accepted"
+    assert submission_2.pending_status == "rejected"
+
+
+def test_proposals_review_get_review_context(rf):
+    user = UserFactory(is_staff=True, is_superuser=True)
+    conference = ConferenceFactory()
+
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.PROPOSALS,
+        status=ReviewSession.Status.REVIEWING,
+    )
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=0)
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+
+    tag = SubmissionTagFactory()
+    submission = SubmissionFactory(conference=conference)
+    submission.tags.add(tag)
+
+    request = rf.get("/")
+    request.user = user
+
+    adapter = get_review_adapter(review_session)
+    context = adapter.get_review_context(
+        request, review_session, submission.id, None, AdminSite()
+    )
+
+    assert "proposal" in context
+    assert "languages" in context
+    assert "available_scores" in context
+    assert "speaker" in context
+    assert "tags_to_filter" in context
+    assert context["proposal"].id == submission.id
+    assert context["proposal_id"] == submission.id
+    assert context["review_session_id"] == review_session.id
+
+
+def test_get_review_adapter_with_invalid_session_type():
+    conference = ConferenceFactory()
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.PROPOSALS,
+    )
+    # Manually set an invalid session type to test error handling
+    review_session.session_type = "invalid_type"
+
+    with pytest.raises(ValueError, match="Unknown review session type"):
+        get_review_adapter(review_session)
