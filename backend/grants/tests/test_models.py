@@ -145,8 +145,24 @@ def test_calculate_grant_amounts(data):
     assert grant.total_allocated_amount == Decimal(expected_total)
 
 
+def test_has_approved_ticket():
+    grant = GrantFactory()
+    assert not grant.has_approved_ticket()
+
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__ticket=True,
+        granted_amount=Decimal("100"),
+    )
+
+    assert grant.has_approved_ticket()
+
+
 def test_has_approved_travel():
     grant = GrantFactory()
+    assert not grant.has_approved_travel()
+
     GrantReimbursementFactory(
         grant=grant,
         category__conference=grant.conference,
@@ -159,6 +175,8 @@ def test_has_approved_travel():
 
 def test_has_approved_accommodation():
     grant = GrantFactory()
+    assert not grant.has_approved_accommodation()
+
     GrantReimbursementFactory(
         grant=grant,
         category__conference=grant.conference,
@@ -167,6 +185,85 @@ def test_has_approved_accommodation():
     )
 
     assert grant.has_approved_accommodation()
+
+
+def test_has_ticket_only_with_only_ticket():
+    grant = GrantFactory()
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__ticket=True,
+        granted_amount=Decimal("100"),
+    )
+
+    assert grant.has_ticket_only()
+
+
+def test_has_ticket_only_with_ticket_and_travel():
+    grant = GrantFactory()
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__ticket=True,
+        granted_amount=Decimal("100"),
+    )
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__travel=True,
+        granted_amount=Decimal("500"),
+    )
+
+    assert not grant.has_ticket_only()
+
+
+def test_has_ticket_only_without_ticket():
+    grant = GrantFactory()
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__travel=True,
+        granted_amount=Decimal("500"),
+    )
+
+    assert not grant.has_ticket_only()
+
+
+def test_total_grantee_reimbursement_amount_excludes_ticket():
+    grant = GrantFactory()
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__ticket=True,
+        granted_amount=Decimal("100"),
+    )
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__travel=True,
+        granted_amount=Decimal("500"),
+    )
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__accommodation=True,
+        granted_amount=Decimal("200"),
+    )
+
+    # Should be 500 + 200 = 700, excluding ticket
+    assert grant.total_grantee_reimbursement_amount == Decimal("700")
+
+
+def test_total_grantee_reimbursement_amount_with_only_ticket():
+    grant = GrantFactory()
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__ticket=True,
+        granted_amount=Decimal("100"),
+    )
+
+    assert grant.total_grantee_reimbursement_amount == Decimal("0")
 
 
 @pytest.mark.parametrize(

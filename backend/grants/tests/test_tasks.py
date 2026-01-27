@@ -10,10 +10,7 @@ from grants.tasks import (
     send_grant_reply_waiting_list_email,
     send_grant_reply_waiting_list_update_email,
 )
-from grants.tests.factories import (
-    GrantFactory,
-    GrantReimbursementFactory,
-)
+from grants.tests.factories import GrantFactory, GrantReimbursementFactory
 from users.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
@@ -166,8 +163,8 @@ def test_handle_grant_reply_sent_reminder(settings, sent_emails):
     assert sent_email.placeholders["deadline_date"] == "1 February 2023"
     assert sent_email.placeholders["reply_url"] == "https://pycon.it/grants/reply/"
     assert sent_email.placeholders["visa_page_link"] == "https://pycon.it/visa"
-    assert not sent_email.placeholders["has_approved_travel"]
-    assert not sent_email.placeholders["has_approved_accommodation"]
+    assert sent_email.placeholders["ticket_only"]
+    assert sent_email.placeholders["total_amount"] is None
     assert sent_email.placeholders["is_reminder"]
 
 
@@ -240,49 +237,14 @@ def test_handle_grant_approved_ticket_travel_accommodation_reply_sent(
     )
     assert sent_email.placeholders["start_date"] == "2 May"
     assert sent_email.placeholders["end_date"] == "6 May"
-    assert sent_email.placeholders["travel_amount"] == "680"
+    # Total amount is 680 (travel) + 200 (accommodation) = 880, excluding ticket
+    assert sent_email.placeholders["total_amount"] == "880"
     assert sent_email.placeholders["deadline_date_time"] == "1 February 2023 23:59 UTC"
     assert sent_email.placeholders["deadline_date"] == "1 February 2023"
     assert sent_email.placeholders["reply_url"] == "https://pycon.it/grants/reply/"
     assert sent_email.placeholders["visa_page_link"] == "https://pycon.it/visa"
-    assert sent_email.placeholders["has_approved_travel"]
-    assert sent_email.placeholders["has_approved_accommodation"]
+    assert not sent_email.placeholders["ticket_only"]
     assert not sent_email.placeholders["is_reminder"]
-
-
-def test_handle_grant_approved_ticket_travel_accommodation_fails_with_no_amount(
-    settings,
-):
-    settings.FRONTEND_URL = "https://pycon.it"
-
-    conference = ConferenceFactory(
-        start=datetime(2023, 5, 2, tzinfo=timezone.utc),
-        end=datetime(2023, 5, 5, tzinfo=timezone.utc),
-    )
-    user = UserFactory(
-        full_name="Marco Acierno",
-        email="marco@placeholder.it",
-        name="Marco",
-        username="marco",
-    )
-
-    grant = GrantFactory(
-        conference=conference,
-        applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
-        user=user,
-    )
-    GrantReimbursementFactory(
-        grant=grant,
-        category__conference=conference,
-        category__travel=True,
-        category__max_amount=Decimal("680"),
-        granted_amount=Decimal("0"),
-    )
-
-    with pytest.raises(
-        ValueError, match="Grant travel amount is set to Zero, can't send the email!"
-    ):
-        send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
 
 
 def test_handle_grant_approved_ticket_only_reply_sent(settings, sent_emails):
@@ -344,8 +306,8 @@ def test_handle_grant_approved_ticket_only_reply_sent(settings, sent_emails):
     assert sent_email.placeholders["deadline_date"] == "1 February 2023"
     assert sent_email.placeholders["reply_url"] == "https://pycon.it/grants/reply/"
     assert sent_email.placeholders["visa_page_link"] == "https://pycon.it/visa"
-    assert not sent_email.placeholders["has_approved_travel"]
-    assert not sent_email.placeholders["has_approved_accommodation"]
+    assert sent_email.placeholders["ticket_only"]
+    assert sent_email.placeholders["total_amount"] is None
     assert not sent_email.placeholders["is_reminder"]
 
 
@@ -415,10 +377,44 @@ def test_handle_grant_approved_travel_reply_sent(settings, sent_emails):
     assert sent_email.placeholders["deadline_date"] == "1 February 2023"
     assert sent_email.placeholders["reply_url"] == "https://pycon.it/grants/reply/"
     assert sent_email.placeholders["visa_page_link"] == "https://pycon.it/visa"
-    assert sent_email.placeholders["has_approved_travel"]
-    assert not sent_email.placeholders["has_approved_accommodation"]
-    assert sent_email.placeholders["travel_amount"] == "400"
+    # Total amount is 400 (travel only), excluding ticket
+    assert sent_email.placeholders["total_amount"] == "400"
+    assert not sent_email.placeholders["ticket_only"]
     assert not sent_email.placeholders["is_reminder"]
+
+
+def test_send_grant_approved_email_raises_for_no_reimbursements(settings) -> None:
+    """Verify error is raised when grant has no valid reimbursements."""
+    from notifications.models import EmailTemplateIdentifier
+    from notifications.tests.factories import EmailTemplateFactory
+
+    settings.FRONTEND_URL = "https://pycon.it"
+
+    conference = ConferenceFactory(
+        start=datetime(2023, 5, 2, tzinfo=timezone.utc),
+        end=datetime(2023, 5, 5, tzinfo=timezone.utc),
+    )
+    user = UserFactory(
+        full_name="Marco Acierno",
+        email="marco@placeholder.it",
+    )
+
+    grant = GrantFactory(
+        conference=conference,
+        applicant_reply_deadline=datetime(2023, 2, 1, 23, 59, tzinfo=timezone.utc),
+        user=user,
+    )
+    # No reimbursements - this is an invalid state
+
+    EmailTemplateFactory(
+        conference=grant.conference,
+        identifier=EmailTemplateIdentifier.grant_approved,
+    )
+
+    with pytest.raises(
+        ValueError, match="has no reimbursement amount and is not ticket-only"
+    ):
+        send_grant_reply_approved_email(grant_id=grant.id, is_reminder=False)
 
 
 def test_send_grant_reply_waiting_list_update_email(settings, sent_emails):
