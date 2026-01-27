@@ -1,0 +1,97 @@
+name: Claude Code Review
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  code-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Dismiss old Claude bot comments
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get PR comments from claude[bot] and hide them as outdated
+          REPO="${{ github.repository }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+
+          # Get review comments (PR review comments)
+          gh api "repos/$REPO/issues/$PR_NUMBER/comments" --jq '.[] | select(.user.login == "claude[bot]") | .node_id' | while read -r comment_node_id; do
+            if [ -n "$comment_node_id" ]; then
+              echo "Hiding review comment: $comment_node_id"
+              gh api graphql -f query='
+                mutation($id: ID!) {
+                  minimizeComment(input: {subjectId: $id, classifier: OUTDATED}) {
+                    minimizedComment {
+                      isMinimized
+                    }
+                  }
+                }' -f id="$comment_node_id"
+            fi
+          done
+      - name: Review code
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_OAUTH_TOKEN }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Review this pull request and provide feedback.
+            Post your feedback as a PR comment using `gh pr comment`.
+
+            When reviewing code, leave a general summary of the changes at the top of your comment and then evaluate the following areas:
+
+            ### Architecture & Design
+
+            - Separation of concerns: Does the code properly separate layers (views, services, models, serializers)? Watch for business logic leaking into views or serializers.
+            - Single responsibility: Do classes and functions have one clear purpose, or are they doing too much?
+            - Code patterns: Are there opportunities to use established patterns (e.g., service objects, query objects, mixins) that would improve readability?
+            - Dependencies: Does the code introduce tight coupling between modules that should be independent?
+            - Abstraction level: Is code at the right level of abstraction? Avoid both over-engineering and under-abstraction.
+
+            ### Testing & Coverage
+
+            - Critical path coverage: Are the main success and failure paths tested?
+            - Edge cases: Are boundary conditions and error scenarios covered?
+            - Multi-tenant security: Every query involving user data MUST be scoped to the current tenant/business. Look for:
+              - Missing `.filter(business=...)` or similar tenant scoping
+              - Direct object lookups without ownership verification (e.g., `Model.objects.get(id=id)` without checking the user has access)
+              - Bulk operations that could affect other tenants' data
+            - Test isolation: Are they independent of execution order?
+            - Mocking boundaries: Are external services and I/O properly mocked?
+
+            ### Error Handling
+
+            - Explicit error handling: Are exceptions caught and handled appropriately, or do they bubble up unexpectedly?
+            - User-facing errors: Do error messages make sense to users without leaking internal details?
+            - Transactional integrity: Are database operations wrapped in transactions where needed to prevent partial updates?
+            - Graceful degradation: Does the code fail gracefully when external services are unavailable?
+
+            ### Performance
+
+            - N+1 queries: Look for loops that trigger database queries. Use `select_related()` and `prefetch_related()`.
+            - Missing indexes: Will new query patterns require database indexes?
+            - Pagination: Are list endpoints paginated to prevent loading unbounded data?
+            - Caching opportunities: Could frequently-accessed, rarely-changed data benefit from caching?
+            - Bulk operations: Are there loops doing individual saves that could use `bulk_create()` or `bulk_update()`?
+
+            Use the repository's CLAUDE.md for guidance on style and conventions. 
+            Be constructive, helpful, concise and to the point in your feedback.
+          claude_args: '--allowed-tools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"'
