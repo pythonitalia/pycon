@@ -205,11 +205,12 @@ def test_get_plain_customer_cards_grant_card(rest_api_client):
     assert "Travel" in approval_text
     assert "Accommodation" in approval_text
 
+    # Total reimbursement is 100 (travel) + 200 (accommodation) = 300, excluding ticket
     assert (
         grant_card["components"][4]["componentRow"]["rowAsideContent"][0][
             "componentText"
         ]["text"]
-        == "€100"
+        == "€300"
     )
 
 

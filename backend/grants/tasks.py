@@ -14,7 +14,7 @@ from users.models import User
 logger = logging.getLogger(__name__)
 
 
-def get_name(user: User | None, fallback: str = "<no name specified>"):
+def get_name(user: User | None, fallback: str = "<no name specified>") -> str:
     if not user:
         return fallback
 
@@ -22,9 +22,19 @@ def get_name(user: User | None, fallback: str = "<no name specified>"):
 
 
 @app.task
-def send_grant_reply_approved_email(*, grant_id, is_reminder):
+def send_grant_reply_approved_email(*, grant_id: int, is_reminder: bool) -> None:
     logger.info("Sending Reply APPROVED email for Grant %s", grant_id)
     grant = Grant.objects.get(id=grant_id)
+
+    total_amount = grant.total_grantee_reimbursement_amount
+    ticket_only = grant.has_ticket_only()
+
+    if total_amount == 0 and not ticket_only:
+        raise ValueError(
+            f"Grant {grant_id} has no reimbursement amount and is not ticket-only. "
+            "This indicates missing or zero-amount reimbursements."
+        )
+
     reply_url = urljoin(settings.FRONTEND_URL, "/grants/reply/")
 
     variables = {
@@ -34,25 +44,10 @@ def send_grant_reply_approved_email(*, grant_id, is_reminder):
         "deadline_date_time": f"{grant.applicant_reply_deadline:%-d %B %Y %H:%M %Z}",
         "deadline_date": f"{grant.applicant_reply_deadline:%-d %B %Y}",
         "visa_page_link": urljoin(settings.FRONTEND_URL, "/visa"),
-        "has_approved_travel": grant.has_approved_travel(),
-        "has_approved_accommodation": grant.has_approved_accommodation(),
+        "total_amount": f"{total_amount:.0f}" if total_amount > 0 else None,
+        "ticket_only": ticket_only,
         "is_reminder": is_reminder,
     }
-
-    if grant.has_approved_travel():
-        from grants.models import GrantReimbursementCategory
-
-        travel_reimbursements = grant.reimbursements.filter(
-            category__category=GrantReimbursementCategory.Category.TRAVEL
-        )
-        travel_amount = sum(r.granted_amount for r in travel_reimbursements)
-
-        if not travel_amount or travel_amount == 0:
-            raise ValueError(
-                "Grant travel amount is set to Zero, can't send the email!"
-            )
-
-        variables["travel_amount"] = f"{travel_amount:.0f}"
 
     _new_send_grant_email(
         template_identifier=EmailTemplateIdentifier.grant_approved,

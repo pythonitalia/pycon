@@ -76,7 +76,7 @@ def create_grant_card(request, user, conference):
                                     {
                                         "componentText": {
                                             "textColor": "MUTED",
-                                            "text": "Travel amount",
+                                            "text": "Total reimbursement",
                                         }
                                     }
                                 ],
@@ -84,18 +84,18 @@ def create_grant_card(request, user, conference):
                                     {
                                         "componentText": {
                                             "textColor": "NORMAL",
-                                            "text": f"€{sum(r.granted_amount for r in grant.reimbursements.filter(category__category='travel'))}",
+                                            "text": f"€{grant.total_grantee_reimbursement_amount}",
                                         }
                                     }
                                 ],
                             }
                         }
-                        if grant.has_approved_travel()
+                        if grant.total_grantee_reimbursement_amount > 0
                         else None
                     ),
                     (
                         {"componentSpacer": {"spacerSize": "M"}}
-                        if grant.has_approved_travel()
+                        if grant.total_grantee_reimbursement_amount > 0
                         else None
                     ),
                     {

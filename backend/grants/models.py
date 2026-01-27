@@ -262,22 +262,46 @@ class Grant(TimeStampedModel):
             args=(self.pk,),
         )
 
-    def has_approved_travel(self):
-        return self.reimbursements.filter(
-            category__category=GrantReimbursementCategory.Category.TRAVEL
-        ).exists()
+    def has_approved(self, category: GrantReimbursementCategory.Category) -> bool:
+        """Return True if grant has approved reimbursement for category."""
+        return self.reimbursements.filter(category__category=category).exists()
 
-    def has_approved_accommodation(self):
-        return self.reimbursements.filter(
-            category__category=GrantReimbursementCategory.Category.ACCOMMODATION
-        ).exists()
+    def has_approved_ticket(self) -> bool:
+        return self.has_approved(GrantReimbursementCategory.Category.TICKET)
+
+    def has_approved_travel(self) -> bool:
+        return self.has_approved(GrantReimbursementCategory.Category.TRAVEL)
+
+    def has_approved_accommodation(self) -> bool:
+        return self.has_approved(GrantReimbursementCategory.Category.ACCOMMODATION)
+
+    def has_ticket_only(self) -> bool:
+        """Return True if grant has only ticket, no travel or accommodation."""
+        return (
+            self.has_approved_ticket()
+            and not self.has_approved_travel()
+            and not self.has_approved_accommodation()
+        )
 
     @property
-    def total_allocated_amount(self):
-        return sum(r.granted_amount for r in self.reimbursements.all())
+    def total_allocated_amount(self) -> Decimal:
+        """Return total of all reimbursements including ticket."""
+        return sum(
+            (r.granted_amount for r in self.reimbursements.all()),
+            start=Decimal(0),
+        )
 
-    def has_approved(self, type_):
-        return self.reimbursements.filter(category__category=type_).exists()
+    @property
+    def total_grantee_reimbursement_amount(self) -> Decimal:
+        """Return total reimbursement excluding ticket."""
+        return sum(
+            (
+                r.granted_amount
+                for r in self.reimbursements.all()
+                if r.category.category != GrantReimbursementCategory.Category.TICKET
+            ),
+            start=Decimal(0),
+        )
 
     @property
     def current_or_pending_status(self):

@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
 from ordered_model.models import OrderedModel
 
-from grants.models import Grant, GrantReimbursementCategory
+from grants.models import Grant
 from submissions.models import Submission
 from users.models import User
 from visa.managers import InvitationLetterRequestQuerySet
@@ -114,7 +114,7 @@ class InvitationLetterRequest(TimeStampedModel):
             categories.append("travel")
         if grant.has_approved_accommodation():
             categories.append("accommodation")
-        if grant.has_approved(GrantReimbursementCategory.Category.TICKET):
+        if grant.has_approved_ticket():
             categories.append("ticket")
 
         if not categories:
