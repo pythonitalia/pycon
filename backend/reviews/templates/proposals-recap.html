@@ -205,56 +205,61 @@
     });
 
     const filterWithReviewsSelect = document.querySelector('#filter-with-n-reviews');
-    filterWithReviewsSelect.addEventListener('change', e => {
-      e.preventDefault();
+    const filterByStatusInputs = [...document.querySelectorAll('input[name="filter-by-status"]')];
+    const filterByTypeInputs = [...document.querySelectorAll('input[name="filter-by-type"]')];
 
-      const filterValue = parseInt(e.target.value, 10);
+    const applyFilters = () => {
+      const reviewsFilterValue = filterWithReviewsSelect.value;
+
+      const visibleStatuses = filterByStatusInputs.filter(
+        input => input.checked
+      ).map(
+        input => input.value
+      );
+
+      const visibleTypes = filterByTypeInputs.filter(
+        input => input.checked
+      ).map(
+        input => parseInt(input.value, 10)
+      );
 
       document.querySelectorAll('.proposal-item').forEach(
         proposalRow => {
-          if (e.target.value === 'all') {
-            proposalRow.classList.remove('hidden')
-            return;
-          }
-
           const proposalId = parseInt(proposalRow.id.split('-')[1], 10);
           const proposalData = submissionsById[proposalId];
 
-          const numOfVotes = proposalData.numOfVotes;
-          if (numOfVotes === filterValue) {
+          const reviewsMatch = reviewsFilterValue === 'all' || proposalData.numOfVotes === parseInt(reviewsFilterValue, 10);
+          const statusMatch = visibleStatuses.includes(proposalData.originalStatus);
+          const typeMatch = visibleTypes.includes(proposalData.typeId);
+
+          if (reviewsMatch && statusMatch && typeMatch) {
             proposalRow.classList.remove('hidden')
           } else {
             proposalRow.classList.add('hidden')
           }
         }
-      )
+      );
+    };
+
+    filterWithReviewsSelect.addEventListener('change', e => {
+      e.preventDefault();
+      applyFilters();
     });
 
-    const filterByStatusInputs = [...document.querySelectorAll('input[name="filter-by-status"]')];
     filterByStatusInputs.forEach(
       filterByStatusInput => {
         filterByStatusInput.addEventListener('change', e => {
           e.preventDefault();
+          applyFilters();
+        });
+      }
+    );
 
-          const filterValue = e.target.value;
-          const visibleStatuses = filterByStatusInputs.filter(
-            input => input.checked
-          ).map(
-            input => input.value
-          );
-
-          document.querySelectorAll('.proposal-item').forEach(
-            proposalRow => {
-              const proposalId = parseInt(proposalRow.id.split('-')[1], 10);
-              const proposalData = submissionsById[proposalId];
-
-              if (visibleStatuses.includes(proposalData.originalStatus)) {
-                proposalRow.classList.remove('hidden')
-              } else {
-                proposalRow.classList.add('hidden')
-              }
-            }
-          );
+    filterByTypeInputs.forEach(
+      filterByTypeInput => {
+        filterByTypeInput.addEventListener('change', e => {
+          e.preventDefault();
+          applyFilters();
         });
       }
     );
@@ -352,6 +357,17 @@
           {% endfor %}
         </div>
       </div>
+      <div class="opt-filter">
+        <h3>Show proposals with type:</h3>
+        <div>
+          {% for submission_type in submission_types %}
+          <label>
+            <input checked type="checkbox" name="filter-by-type" value="{{ submission_type.id }}">
+            <span>{{ submission_type.name }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
     </div>
     <div class="module filtered" id="changelist">
       <div class="changelist-form-container">
@@ -399,6 +415,7 @@
                   audienceLevel: {{ item.audience_level.id }},
                   languages: [{% for language in item.languages.all %}"{{language.code}}",{% endfor %}],
                   numOfVotes: {{item.userreview_set.count}},
+                  typeId: {{ item.type.id }},
                 };
               </script>
               <tr class="proposal-item" id="submission-{{item.id}}" data-original-status="{{ item.current_or_pending_status }}">

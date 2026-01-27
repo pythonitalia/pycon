@@ -33,7 +33,7 @@ from custom_admin.audit import (
 from grants.models import Grant, GrantReimbursement, GrantReimbursementCategory
 from participants.models import Participant
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
-from submissions.models import Submission, SubmissionTag
+from submissions.models import Submission, SubmissionTag, SubmissionType
 from users.admin_mixins import ConferencePermissionMixin
 from users.models import User
 
@@ -602,6 +602,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             grants=grants,
             review_session_id=review_session_id,
             audience_levels=conference.audience_levels.all(),
+            submission_types=SubmissionType.objects.all(),
             review_session_repr=str(review_session),
             all_statuses=[choice for choice in Submission.STATUS],
             title="Recap",
