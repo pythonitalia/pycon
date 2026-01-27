@@ -247,11 +247,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 raise PermissionDenied()
 
             adapter.process_recap_post(request, review_session)
-
-            if review_session.is_grants_review:
-                messages.success(
-                    request, "Decisions saved. Check the Grants Summary for more info."
-                )
+            messages.success(request, "Decisions saved.")
 
             return redirect(
                 reverse(
