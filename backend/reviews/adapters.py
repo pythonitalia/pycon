@@ -140,7 +140,7 @@ class ProposalsReviewAdapter:
                     .values("score")
                 )
             )
-            .order_by(F("score").desc(nulls_last=True))
+            .order_by(F("score").desc(nulls_last=True), "id")
             .prefetch_related(
                 Prefetch(
                     "userreview_set",
