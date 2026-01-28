@@ -23,6 +23,7 @@ class Deadline(TimeFramedModel):
         ("grants", _("Grants")),
         ("badge_preview", _("Badge preview")),
         ("invitation_letter_request", _("Invitation letter request")),
+        ("grants_waiting_list_update", _("Grants waiting list update")),
         ("custom", _("Custom deadline")),
     )
 

@@ -70,11 +70,7 @@ def test_send_grant_reply_waiting_list_email(settings, sent_emails):
     DeadlineFactory(
         start=datetime(2023, 3, 1, 23, 59, tzinfo=timezone.utc),
         conference=conference,
-        type="custom",
-        name={
-            "en": "Update Grants in Waiting List",
-            "it": "Update Grants in Waiting List",
-        },
+        type="grants_waiting_list_update",
     )
     grant = GrantFactory(conference=conference, user=user)
 
@@ -432,11 +428,7 @@ def test_send_grant_reply_waiting_list_update_email(settings, sent_emails):
     DeadlineFactory(
         conference=grant.conference,
         start=datetime(2023, 3, 1, 23, 59, tzinfo=timezone.utc),
-        type="custom",
-        name={
-            "en": "Update Grants in Waiting List",
-            "it": "Update Grants in Waiting List",
-        },
+        type="grants_waiting_list_update",
     )
     conference_name = grant.conference.name.localize("en")
 
@@ -466,3 +458,11 @@ def test_send_grant_reply_waiting_list_update_email(settings, sent_emails):
     assert sent_email.placeholders["conference_name"] == conference_name
     assert sent_email.placeholders["grants_update_deadline"] == "1 March 2023"
     assert sent_email.placeholders["reply_url"] == "https://pycon.it/grants/reply/"
+
+
+def test_send_grant_waiting_list_email_missing_deadline():
+    grant = GrantFactory()
+    # No deadline created
+
+    with pytest.raises(ValueError, match="missing grants_waiting_list_update deadline"):
+        send_grant_reply_waiting_list_email(grant_id=grant.id)
