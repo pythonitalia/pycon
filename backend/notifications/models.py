@@ -28,6 +28,7 @@ class EmailTemplateIdentifier(models.TextChoices):
         "proposal_received_confirmation",
         _("Proposal received confirmation"),
     )
+    co_speaker_invitation = "co_speaker_invitation", _("Co-speaker invitation")
     speaker_communication = "speaker_communication", _("Speaker communication")
 
     voucher_code = "voucher_code", _("Voucher code")
@@ -110,6 +111,15 @@ class EmailTemplate(TimeStampedModel):
             "user_name",
             "proposal_title",
             "proposal_url",
+        ],
+        EmailTemplateIdentifier.co_speaker_invitation: [
+            *BASE_PLACEHOLDERS,
+            "user_name",
+            "proposal_title",
+            "proposal_type",
+            "submitter_name",
+            "submitter_email",
+            "user_already_had_account",
         ],
         EmailTemplateIdentifier.grant_approved: [
             *BASE_PLACEHOLDERS,
