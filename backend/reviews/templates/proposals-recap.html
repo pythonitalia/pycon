@@ -198,15 +198,17 @@
     const toggleIcon = document.getElementById('toggle-icon');
     const toggleButton = document.getElementById('bottom-bar-toggle');
     
-    if (bottomBarHidden) {
-      bottomBar.classList.add('hidden');
-      toggleIcon.textContent = '▲';
-      toggleButton.setAttribute('aria-expanded', 'false');
-    } else {
-      toggleButton.setAttribute('aria-expanded', 'true');
+    if (bottomBar && toggleIcon && toggleButton) {
+      if (bottomBarHidden) {
+        bottomBar.classList.add('hidden');
+        toggleIcon.textContent = '▲';
+        toggleButton.setAttribute('aria-expanded', 'false');
+      } else {
+        toggleButton.setAttribute('aria-expanded', 'true');
+      }
+      
+      toggleButton.addEventListener('click', toggleBottomBar);
     }
-    
-    toggleButton.addEventListener('click', toggleBottomBar);
 
     submissions.forEach((submissionData) => {
       const submissionId = submissionData.id;
@@ -382,6 +384,11 @@
     const bottomBar = document.querySelector('.reviews-bottom-bar');
     const toggleIcon = document.getElementById('toggle-icon');
     const toggleButton = document.getElementById('bottom-bar-toggle');
+    
+    if (!bottomBar || !toggleIcon || !toggleButton) {
+      console.warn('Required elements for bottom bar toggle not found');
+      return;
+    }
     
     bottomBar.classList.toggle('hidden');
     
