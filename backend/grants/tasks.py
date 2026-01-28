@@ -137,8 +137,16 @@ def _send_grant_waiting_list_email(grant_id, template_identifier):
     reply_url = urljoin(settings.FRONTEND_URL, "/grants/reply/")
 
     deadline = grant.conference.deadlines.filter(
-        type="custom", name__contains={"en": "Update Grants in Waiting List"}
+        type="grants_waiting_list_update"
     ).first()
+
+    if not deadline:
+        logger.error(
+            f"No grants_waiting_list_update deadline found for conference {grant.conference}"
+        )
+        raise ValueError(
+            f"Conference {grant.conference.code} missing grants_waiting_list_update deadline"
+        )
 
     _new_send_grant_email(
         template_identifier=template_identifier,

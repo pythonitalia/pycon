@@ -79,3 +79,21 @@ The project uses Docker Compose for local development with services:
 - Test configuration uses separate settings (`pycon.settings.test`)
 - Ruff handles both linting and formatting for Python code
 - Biome handles linting and formatting for JavaScript/TypeScript
+
+## Local Development
+
+**IMPORTANT**: When running locally, all Python/Django commands must run inside Docker. The local virtual environment will not work.
+
+Use `docker exec pycon-backend-1` (without `-t` flag for non-interactive/script usage, with `-it` for interactive terminal).
+
+- **Start services**: `docker-compose up` (starts all services)
+- **Run tests**: `docker exec pycon-backend-1 uv run pytest -l -s -vvv`
+- **Single test**: `docker exec pycon-backend-1 uv run pytest path/to/test_file.py::test_function -l -s -vvv`
+- **Lint/format**: `docker exec pycon-backend-1 uv run ruff check` and `docker exec pycon-backend-1 uv run ruff format`
+- **Type checking**: `docker exec pycon-backend-1 uv run mypy .`
+- **Django management**: `docker exec pycon-backend-1 uv run python manage.py <command>`
+- **Migrations**: `docker exec pycon-backend-1 uv run python manage.py makemigrations` and `docker exec pycon-backend-1 uv run python manage.py migrate`
+
+**Troubleshooting**: If the backend container is not working:
+1. Restart container: `docker restart pycon-backend-1`
+2. If dependencies changed: Remove `backend/.venv` and rebuild with `docker-compose build --no-cache && docker-compose up`
