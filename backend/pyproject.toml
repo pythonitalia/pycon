@@ -55,7 +55,7 @@ dependencies = [
     "urllib3==2.5.0",
     "aniso8601==9.0.1",
     "whitenoise==6.7.0",
-    "django-ordered-model==3.5",
+    "django-ordered-model==3.7.4",
     "uwsgi==2.0.30",
     "django-storages==1.14.4",
     "sentry-sdk>=2.14.0",
