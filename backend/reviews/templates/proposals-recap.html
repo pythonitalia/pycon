@@ -192,6 +192,22 @@
     getRefs();
     updateBottomBarUI();
 
+    // Initialize bottom bar toggle functionality
+    const bottomBarHidden = localStorage.getItem('proposalsBottomBarHidden') === 'true';
+    const bottomBar = document.querySelector('.reviews-bottom-bar');
+    const toggleIcon = document.getElementById('toggle-icon');
+    const toggleButton = document.getElementById('bottom-bar-toggle');
+    
+    if (bottomBarHidden) {
+      bottomBar.classList.add('hidden');
+      toggleIcon.textContent = '▲';
+      toggleButton.setAttribute('aria-expanded', 'false');
+    } else {
+      toggleButton.setAttribute('aria-expanded', 'true');
+    }
+    
+    toggleButton.addEventListener('click', toggleBottomBar);
+
     submissions.forEach((submissionData) => {
       const submissionId = submissionData.id;
       const acceptInput = document.getElementById(
@@ -365,33 +381,21 @@
   const toggleBottomBar = () => {
     const bottomBar = document.querySelector('.reviews-bottom-bar');
     const toggleIcon = document.getElementById('toggle-icon');
+    const toggleButton = document.getElementById('bottom-bar-toggle');
     
     bottomBar.classList.toggle('hidden');
     
     if (bottomBar.classList.contains('hidden')) {
       toggleIcon.textContent = '▲';
+      toggleButton.setAttribute('aria-expanded', 'false');
     } else {
       toggleIcon.textContent = '▼';
+      toggleButton.setAttribute('aria-expanded', 'true');
     }
     
     // Save preference in localStorage
-    localStorage.setItem('bottomBarHidden', bottomBar.classList.contains('hidden'));
+    localStorage.setItem('proposalsBottomBarHidden', bottomBar.classList.contains('hidden'));
   };
-
-  // Restore bottom bar state from localStorage
-  window.addEventListener('load', () => {
-    const bottomBarHidden = localStorage.getItem('bottomBarHidden') === 'true';
-    const bottomBar = document.querySelector('.reviews-bottom-bar');
-    const toggleIcon = document.getElementById('toggle-icon');
-    const toggleButton = document.getElementById('bottom-bar-toggle');
-    
-    if (bottomBarHidden) {
-      bottomBar.classList.add('hidden');
-      toggleIcon.textContent = '▲';
-    }
-    
-    toggleButton.addEventListener('click', toggleBottomBar);
-  });
 </script>
 
 <form id="changelist-form" method="post" novalidate="">
@@ -659,8 +663,8 @@
       </div>
     </div>
   </div>
-  <button type="button" class="reviews-bottom-bar-toggle" id="bottom-bar-toggle" title="Toggle bottom bar visibility">
-    <span id="toggle-icon">▼</span>
+  <button type="button" class="reviews-bottom-bar-toggle" id="bottom-bar-toggle" aria-label="Toggle bottom bar visibility" aria-expanded="true">
+    <span id="toggle-icon" aria-hidden="true">▼</span>
   </button>
 </form>
 {% endblock %}
