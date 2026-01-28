@@ -70,6 +70,11 @@
     z-index: 500;
     background-color: #417690;
     color: #fff;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .reviews-bottom-bar.hidden {
+    transform: translateY(100%);
   }
 
   .reviews-bottom-bar-content {
@@ -91,6 +96,37 @@
 
   .reviews-bottom-bar-confirm-bar {
     max-width: 800px;
+  }
+
+  .reviews-bottom-bar-toggle {
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    z-index: 501;
+    background-color: #417690;
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: bottom 0.3s ease-in-out, background-color 0.2s;
+  }
+
+  .reviews-bottom-bar-toggle:hover {
+    background-color: #2a5d75;
+  }
+
+  .reviews-bottom-bar.hidden ~ .reviews-bottom-bar-toggle {
+    bottom: 10px;
+  }
+
+  .reviews-bottom-bar:not(.hidden) ~ .reviews-bottom-bar-toggle {
+    bottom: 100px;
   }
 
   ul.proposal-ranking {
@@ -324,6 +360,38 @@
       }
     );
   };
+
+  // Toggle bottom bar visibility
+  const toggleBottomBar = () => {
+    const bottomBar = document.querySelector('.reviews-bottom-bar');
+    const toggleIcon = document.getElementById('toggle-icon');
+    
+    bottomBar.classList.toggle('hidden');
+    
+    if (bottomBar.classList.contains('hidden')) {
+      toggleIcon.textContent = '▲';
+    } else {
+      toggleIcon.textContent = '▼';
+    }
+    
+    // Save preference in localStorage
+    localStorage.setItem('bottomBarHidden', bottomBar.classList.contains('hidden'));
+  };
+
+  // Restore bottom bar state from localStorage
+  window.addEventListener('load', () => {
+    const bottomBarHidden = localStorage.getItem('bottomBarHidden') === 'true';
+    const bottomBar = document.querySelector('.reviews-bottom-bar');
+    const toggleIcon = document.getElementById('toggle-icon');
+    const toggleButton = document.getElementById('bottom-bar-toggle');
+    
+    if (bottomBarHidden) {
+      bottomBar.classList.add('hidden');
+      toggleIcon.textContent = '▲';
+    }
+    
+    toggleButton.addEventListener('click', toggleBottomBar);
+  });
 </script>
 
 <form id="changelist-form" method="post" novalidate="">
@@ -591,5 +659,8 @@
       </div>
     </div>
   </div>
+  <button type="button" class="reviews-bottom-bar-toggle" id="bottom-bar-toggle" title="Toggle bottom bar visibility">
+    <span id="toggle-icon">▼</span>
+  </button>
 </form>
 {% endblock %}
