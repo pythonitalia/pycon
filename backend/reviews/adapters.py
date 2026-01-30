@@ -183,6 +183,7 @@ class ProposalsReviewAdapter:
             grants=grants,
             review_session_id=review_session.id,
             audience_levels=conference.audience_levels.all(),
+            submission_types=conference.submission_types.all(),
             review_session_repr=str(review_session),
             all_statuses=[choice for choice in Submission.STATUS],
             title="Recap",

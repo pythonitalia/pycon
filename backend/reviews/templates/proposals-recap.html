@@ -197,7 +197,7 @@
     const bottomBar = document.querySelector('.reviews-bottom-bar');
     const toggleIcon = document.getElementById('toggle-icon');
     const toggleButton = document.getElementById('bottom-bar-toggle');
-    
+
     if (bottomBar && toggleIcon && toggleButton) {
       if (bottomBarHidden) {
         bottomBar.classList.add('hidden');
@@ -206,7 +206,7 @@
       } else {
         toggleButton.setAttribute('aria-expanded', 'true');
       }
-      
+
       toggleButton.addEventListener('click', toggleBottomBar);
     }
 
@@ -259,59 +259,33 @@
     });
 
     const filterWithReviewsSelect = document.querySelector('#filter-with-n-reviews');
-    filterWithReviewsSelect.addEventListener('change', e => {
-      e.preventDefault();
-
-      const filterValue = parseInt(e.target.value, 10);
-
-      document.querySelectorAll('.proposal-item').forEach(
-        proposalRow => {
-          if (e.target.value === 'all') {
-            proposalRow.classList.remove('hidden')
-            return;
-          }
-
-          const proposalId = parseInt(proposalRow.id.split('-')[1], 10);
-          const proposalData = submissionsById[proposalId];
-
-          const numOfVotes = proposalData.numOfVotes;
-          if (numOfVotes === filterValue) {
-            proposalRow.classList.remove('hidden')
-          } else {
-            proposalRow.classList.add('hidden')
-          }
-        }
-      )
-    });
-
     const filterByStatusInputs = [...document.querySelectorAll('input[name="filter-by-status"]')];
-    filterByStatusInputs.forEach(
-      filterByStatusInput => {
-        filterByStatusInput.addEventListener('change', e => {
-          e.preventDefault();
+    const filterByTypeInputs = [...document.querySelectorAll('input[name="filter-by-type"]')];
 
-          const filterValue = e.target.value;
-          const visibleStatuses = filterByStatusInputs.filter(
-            input => input.checked
-          ).map(
-            input => input.value
-          );
+    const applyFilters = () => {
+      const reviewFilterValue = filterWithReviewsSelect.value;
+      const visibleStatuses = filterByStatusInputs.filter(input => input.checked).map(input => input.value);
+      const visibleTypes = filterByTypeInputs.filter(input => input.checked).map(input => input.value);
 
-          document.querySelectorAll('.proposal-item').forEach(
-            proposalRow => {
-              const proposalId = parseInt(proposalRow.id.split('-')[1], 10);
-              const proposalData = submissionsById[proposalId];
+      document.querySelectorAll('.proposal-item').forEach(proposalRow => {
+        const proposalId = parseInt(proposalRow.id.split('-')[1], 10);
+        const proposalData = submissionsById[proposalId];
 
-              if (visibleStatuses.includes(proposalData.originalStatus)) {
-                proposalRow.classList.remove('hidden')
-              } else {
-                proposalRow.classList.add('hidden')
-              }
-            }
-          );
-        });
-      }
-    );
+        const matchesReviews = reviewFilterValue === 'all' || proposalData.numOfVotes === parseInt(reviewFilterValue, 10);
+        const matchesStatus = visibleStatuses.includes(proposalData.originalStatus);
+        const matchesType = visibleTypes.includes(proposalData.submissionType);
+
+        if (matchesReviews && matchesStatus && matchesType) {
+          proposalRow.classList.remove('hidden');
+        } else {
+          proposalRow.classList.add('hidden');
+        }
+      });
+    };
+
+    filterWithReviewsSelect.addEventListener('change', applyFilters);
+    filterByStatusInputs.forEach(input => input.addEventListener('change', applyFilters));
+    filterByTypeInputs.forEach(input => input.addEventListener('change', applyFilters));
   });
 
   const updateBottomBarUI = () => {
@@ -384,14 +358,14 @@
     const bottomBar = document.querySelector('.reviews-bottom-bar');
     const toggleIcon = document.getElementById('toggle-icon');
     const toggleButton = document.getElementById('bottom-bar-toggle');
-    
+
     if (!bottomBar || !toggleIcon || !toggleButton) {
       console.warn('Required elements for bottom bar toggle not found');
       return;
     }
-    
+
     bottomBar.classList.toggle('hidden');
-    
+
     if (bottomBar.classList.contains('hidden')) {
       toggleIcon.textContent = '▲';
       toggleButton.setAttribute('aria-expanded', 'false');
@@ -399,7 +373,7 @@
       toggleIcon.textContent = '▼';
       toggleButton.setAttribute('aria-expanded', 'true');
     }
-    
+
     // Save preference in localStorage
     localStorage.setItem('proposalsBottomBarHidden', bottomBar.classList.contains('hidden'));
   };
@@ -427,6 +401,17 @@
           <label>
             <input checked type="checkbox" name="filter-by-status" value="{{ status.0 }}">
             <span>{{ status.1 }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="opt-filter">
+        <h3>Show proposals of type:</h3>
+        <div>
+          {% for submission_type in submission_types %}
+          <label>
+            <input checked type="checkbox" name="filter-by-type" value="{{ submission_type.name }}">
+            <span>{{ submission_type.name }}</span>
           </label>
           {% endfor %}
         </div>
@@ -478,6 +463,7 @@
                   audienceLevel: {{ item.audience_level.id }},
                   languages: [{% for language in item.languages.all %}"{{language.code}}",{% endfor %}],
                   numOfVotes: {{item.userreview_set.count}},
+                  submissionType: "{{ item.type.name }}",
                 };
               </script>
               <tr class="proposal-item" id="submission-{{item.id}}" data-original-status="{{ item.current_or_pending_status }}">
