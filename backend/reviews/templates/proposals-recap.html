@@ -172,6 +172,24 @@
     color: var(--link-hover-color, #036);
   }
 
+  .clear-filter-btn {
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 2px 8px;
+    font-size: 12px;
+    color: #666;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .clear-filter-btn:hover {
+    background-color: #eee;
+    border-color: #999;
+    color: #333;
+  }
+
   tr:nth-of-type(odd) {
     background-color: var(--body-bg);
   }
@@ -299,7 +317,14 @@
     filterWithReviewsSelect.addEventListener('change', applyFilters);
     filterByStatusInputs.forEach(input => input.addEventListener('change', applyFilters));
     filterByTypeInputs.forEach(input => input.addEventListener('change', applyFilters));
-    filterBySpeakerInput.addEventListener('input', applyFilters);
+    filterBySpeakerInput.addEventListener('input', () => {
+      applyFilters();
+      const hasFilter = filterBySpeakerInput.value.trim() !== '';
+      document.getElementById('clear-speaker-filter').style.display = hasFilter ? 'inline' : 'none';
+      document.querySelectorAll('.speaker-row-clear-btn').forEach(btn => {
+        btn.style.display = hasFilter ? 'inline' : 'none';
+      });
+    });
   });
 
   const updateBottomBarUI = () => {
@@ -375,6 +400,13 @@
     input.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
+  // Clear speaker name filter
+  const clearSpeakerFilter = () => {
+    const input = document.querySelector('#filter-by-speaker');
+    input.value = '';
+    input.dispatchEvent(new Event('input'));
+  };
+
   // Toggle bottom bar visibility
   const toggleBottomBar = () => {
     const bottomBar = document.querySelector('.reviews-bottom-bar');
@@ -429,7 +461,10 @@
       </div>
       <div class="opt-filter">
         <h3>Filter by speaker name:</h3>
-        <input type="text" id="filter-by-speaker" placeholder="Type speaker name..." />
+        <div>
+          <input type="text" id="filter-by-speaker" placeholder="Type speaker name..." />
+          <button type="button" class="clear-filter-btn" id="clear-speaker-filter" onclick="clearSpeakerFilter()" style="display: none;">Clear</button>
+        </div>
       </div>
       <div class="opt-filter">
         <h3>Show proposals of type:</h3>
@@ -522,6 +557,7 @@
                       <li>
                         <strong>Speaker Name</strong>
                         <span class="speaker-name-link" onclick="filterBySpeakerName('{{ item.speaker.fullname|escapejs }}')">{{ item.speaker.fullname }}</span>
+                        <button type="button" class="clear-filter-btn speaker-row-clear-btn" onclick="event.stopPropagation(); clearSpeakerFilter();" style="display: none;">Clear filter</button>
                       </li>
                       <li>
                         <strong>Speaker Country</strong>
