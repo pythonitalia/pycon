@@ -261,11 +261,13 @@
     const filterWithReviewsSelect = document.querySelector('#filter-with-n-reviews');
     const filterByStatusInputs = [...document.querySelectorAll('input[name="filter-by-status"]')];
     const filterByTypeInputs = [...document.querySelectorAll('input[name="filter-by-type"]')];
+    const filterBySpeakerInput = document.querySelector('#filter-by-speaker');
 
     const applyFilters = () => {
       const reviewFilterValue = filterWithReviewsSelect.value;
       const visibleStatuses = filterByStatusInputs.filter(input => input.checked).map(input => input.value);
       const visibleTypes = filterByTypeInputs.filter(input => input.checked).map(input => input.value);
+      const speakerFilter = filterBySpeakerInput.value.toLowerCase().trim();
 
       document.querySelectorAll('.proposal-item').forEach(proposalRow => {
         const proposalId = parseInt(proposalRow.id.split('-')[1], 10);
@@ -274,8 +276,9 @@
         const matchesReviews = reviewFilterValue === 'all' || proposalData.numOfVotes === parseInt(reviewFilterValue, 10);
         const matchesStatus = visibleStatuses.includes(proposalData.originalStatus);
         const matchesType = visibleTypes.includes(proposalData.submissionType);
+        const matchesSpeaker = !speakerFilter || proposalData.speakerName.toLowerCase().includes(speakerFilter);
 
-        if (matchesReviews && matchesStatus && matchesType) {
+        if (matchesReviews && matchesStatus && matchesType && matchesSpeaker) {
           proposalRow.classList.remove('hidden');
         } else {
           proposalRow.classList.add('hidden');
@@ -286,6 +289,7 @@
     filterWithReviewsSelect.addEventListener('change', applyFilters);
     filterByStatusInputs.forEach(input => input.addEventListener('change', applyFilters));
     filterByTypeInputs.forEach(input => input.addEventListener('change', applyFilters));
+    filterBySpeakerInput.addEventListener('input', applyFilters);
   });
 
   const updateBottomBarUI = () => {
@@ -406,6 +410,10 @@
         </div>
       </div>
       <div class="opt-filter">
+        <h3>Filter by speaker name:</h3>
+        <input type="text" id="filter-by-speaker" placeholder="Type speaker name..." />
+      </div>
+      <div class="opt-filter">
         <h3>Show proposals of type:</h3>
         <div>
           {% for submission_type in submission_types %}
@@ -464,6 +472,7 @@
                   languages: [{% for language in item.languages.all %}"{{language.code}}",{% endfor %}],
                   numOfVotes: {{item.userreview_set.count}},
                   submissionType: "{{ item.type.name }}",
+                  speakerName: "{{ item.speaker.fullname|escapejs }}",
                 };
               </script>
               <tr class="proposal-item" id="submission-{{item.id}}" data-original-status="{{ item.current_or_pending_status }}">
