@@ -162,6 +162,16 @@
     margin-left: 10px;
   }
 
+  .speaker-name-link {
+    cursor: pointer;
+    text-decoration: underline;
+    color: var(--link-fg, #417690);
+  }
+
+  .speaker-name-link:hover {
+    color: var(--link-hover-color, #036);
+  }
+
   tr:nth-of-type(odd) {
     background-color: var(--body-bg);
   }
@@ -357,6 +367,14 @@
     );
   };
 
+  // Filter by speaker name (called when clicking a speaker name link)
+  const filterBySpeakerName = (name) => {
+    const input = document.querySelector('#filter-by-speaker');
+    input.value = name;
+    input.dispatchEvent(new Event('input'));
+    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
   // Toggle bottom bar visibility
   const toggleBottomBar = () => {
     const bottomBar = document.querySelector('.reviews-bottom-bar');
@@ -503,7 +521,7 @@
                     {% with speaker_id=item.speaker_id|stringformat:"i" %}
                       <li>
                         <strong>Speaker Name</strong>
-                        <span>{{ item.speaker.fullname }}</span>
+                        <span class="speaker-name-link" onclick="filterBySpeakerName('{{ item.speaker.fullname|escapejs }}')">{{ item.speaker.fullname }}</span>
                       </li>
                       <li>
                         <strong>Speaker Country</strong>
