@@ -162,6 +162,34 @@
     margin-left: 10px;
   }
 
+  .speaker-name-link {
+    cursor: pointer;
+    text-decoration: underline;
+    color: var(--link-fg, #417690);
+  }
+
+  .speaker-name-link:hover {
+    color: var(--link-hover-color, #036);
+  }
+
+  .clear-filter-btn {
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 2px 8px;
+    font-size: 12px;
+    color: #666;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .clear-filter-btn:hover {
+    background-color: #eee;
+    border-color: #999;
+    color: #333;
+  }
+
   tr:nth-of-type(odd) {
     background-color: var(--body-bg);
   }
@@ -261,11 +289,13 @@
     const filterWithReviewsSelect = document.querySelector('#filter-with-n-reviews');
     const filterByStatusInputs = [...document.querySelectorAll('input[name="filter-by-status"]')];
     const filterByTypeInputs = [...document.querySelectorAll('input[name="filter-by-type"]')];
+    const filterBySpeakerInput = document.querySelector('#filter-by-speaker');
 
     const applyFilters = () => {
       const reviewFilterValue = filterWithReviewsSelect.value;
       const visibleStatuses = filterByStatusInputs.filter(input => input.checked).map(input => input.value);
       const visibleTypes = filterByTypeInputs.filter(input => input.checked).map(input => input.value);
+      const speakerFilter = filterBySpeakerInput.value.toLowerCase().trim();
 
       document.querySelectorAll('.proposal-item').forEach(proposalRow => {
         const proposalId = parseInt(proposalRow.id.split('-')[1], 10);
@@ -274,8 +304,9 @@
         const matchesReviews = reviewFilterValue === 'all' || proposalData.numOfVotes === parseInt(reviewFilterValue, 10);
         const matchesStatus = visibleStatuses.includes(proposalData.originalStatus);
         const matchesType = visibleTypes.includes(proposalData.submissionType);
+        const matchesSpeaker = !speakerFilter || proposalData.speakerName.toLowerCase().includes(speakerFilter);
 
-        if (matchesReviews && matchesStatus && matchesType) {
+        if (matchesReviews && matchesStatus && matchesType && matchesSpeaker) {
           proposalRow.classList.remove('hidden');
         } else {
           proposalRow.classList.add('hidden');
@@ -286,6 +317,14 @@
     filterWithReviewsSelect.addEventListener('change', applyFilters);
     filterByStatusInputs.forEach(input => input.addEventListener('change', applyFilters));
     filterByTypeInputs.forEach(input => input.addEventListener('change', applyFilters));
+    filterBySpeakerInput.addEventListener('input', () => {
+      applyFilters();
+      const hasFilter = filterBySpeakerInput.value.trim() !== '';
+      document.getElementById('clear-speaker-filter').style.display = hasFilter ? 'inline' : 'none';
+      document.querySelectorAll('.speaker-row-clear-btn').forEach(btn => {
+        btn.style.display = hasFilter ? 'inline' : 'none';
+      });
+    });
   });
 
   const updateBottomBarUI = () => {
@@ -353,6 +392,21 @@
     );
   };
 
+  // Filter by speaker name (called when clicking a speaker name link)
+  const filterBySpeakerName = (name) => {
+    const input = document.querySelector('#filter-by-speaker');
+    input.value = name;
+    input.dispatchEvent(new Event('input'));
+    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  // Clear speaker name filter
+  const clearSpeakerFilter = () => {
+    const input = document.querySelector('#filter-by-speaker');
+    input.value = '';
+    input.dispatchEvent(new Event('input'));
+  };
+
   // Toggle bottom bar visibility
   const toggleBottomBar = () => {
     const bottomBar = document.querySelector('.reviews-bottom-bar');
@@ -403,6 +457,13 @@
             <span>{{ status.1 }}</span>
           </label>
           {% endfor %}
+        </div>
+      </div>
+      <div class="opt-filter">
+        <h3>Filter by speaker name:</h3>
+        <div style="display: flex;">
+          <input type="text" id="filter-by-speaker" placeholder="Type speaker name..." style="flex: 1;" />
+          <button type="button" class="clear-filter-btn" id="clear-speaker-filter" onclick="clearSpeakerFilter()" style="display: none;">Clear</button>
         </div>
       </div>
       <div class="opt-filter">
@@ -464,6 +525,7 @@
                   languages: [{% for language in item.languages.all %}"{{language.code}}",{% endfor %}],
                   numOfVotes: {{item.userreview_set.count}},
                   submissionType: "{{ item.type.name }}",
+                  speakerName: "{{ item.speaker.fullname|escapejs }}",
                 };
               </script>
               <tr class="proposal-item" id="submission-{{item.id}}" data-original-status="{{ item.current_or_pending_status }}">
@@ -494,7 +556,8 @@
                     {% with speaker_id=item.speaker_id|stringformat:"i" %}
                       <li>
                         <strong>Speaker Name</strong>
-                        <span>{{ item.speaker.fullname }}</span>
+                        <span class="speaker-name-link" onclick="filterBySpeakerName('{{ item.speaker.fullname|escapejs }}')">{{ item.speaker.fullname }}</span>
+                        <button type="button" class="clear-filter-btn speaker-row-clear-btn" onclick="event.stopPropagation(); clearSpeakerFilter();" style="display: none;">Clear filter</button>
                       </li>
                       <li>
                         <strong>Speaker Country</strong>
