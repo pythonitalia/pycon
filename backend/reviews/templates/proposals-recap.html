@@ -197,7 +197,7 @@
     const bottomBar = document.querySelector('.reviews-bottom-bar');
     const toggleIcon = document.getElementById('toggle-icon');
     const toggleButton = document.getElementById('bottom-bar-toggle');
-    
+
     if (bottomBar && toggleIcon && toggleButton) {
       if (bottomBarHidden) {
         bottomBar.classList.add('hidden');
@@ -206,7 +206,7 @@
       } else {
         toggleButton.setAttribute('aria-expanded', 'true');
       }
-      
+
       toggleButton.addEventListener('click', toggleBottomBar);
     }
 
@@ -358,14 +358,14 @@
     const bottomBar = document.querySelector('.reviews-bottom-bar');
     const toggleIcon = document.getElementById('toggle-icon');
     const toggleButton = document.getElementById('bottom-bar-toggle');
-    
+
     if (!bottomBar || !toggleIcon || !toggleButton) {
       console.warn('Required elements for bottom bar toggle not found');
       return;
     }
-    
+
     bottomBar.classList.toggle('hidden');
-    
+
     if (bottomBar.classList.contains('hidden')) {
       toggleIcon.textContent = '▲';
       toggleButton.setAttribute('aria-expanded', 'false');
@@ -373,7 +373,7 @@
       toggleIcon.textContent = '▼';
       toggleButton.setAttribute('aria-expanded', 'true');
     }
-    
+
     // Save preference in localStorage
     localStorage.setItem('proposalsBottomBarHidden', bottomBar.classList.contains('hidden'));
   };
@@ -406,7 +406,7 @@
         </div>
       </div>
       <div class="opt-filter">
-        <h3>Show proposals with type:</h3>
+        <h3>Show proposals of type:</h3>
         <div>
           {% for submission_type in submission_types %}
           <label>
