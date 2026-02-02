@@ -37,7 +37,7 @@
   }
 
   .results-table thead th .text span {
-    padding: 0;
+    padding-inline: 0;
   }
 
   .results-table ul {
@@ -614,6 +614,14 @@
                   <div class="clear"></div>
                 </th>
                 <th scope="col" class="narrow-col">
+                  <div class="text"><span>Lang</span></div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col" class="narrow-col">
+                  <div class="text"><span>Gender</span></div>
+                  <div class="clear"></div>
+                </th>
+                <th scope="col" class="narrow-col">
                   <div class="text"><span>Score</span></div>
                   <div class="clear"></div>
                 </th>
@@ -623,10 +631,6 @@
                 </th>
                 <th scope="col">
                   <div class="text"><span>Status</span></div>
-                  <div class="clear"></div>
-                </th>
-                <th scope="col">
-                  <div class="text"><span>Pending Status</span></div>
                   <div class="clear"></div>
                 </th>
                 <th scope="col">
@@ -658,26 +662,16 @@
                     href="{% url 'admin:submissions_submission_change' item.id %}">
                     <strong>{{item.title}}</strong>
                   </a>
-                  <details>
-                    <summary>Additional info</summary>
-                    <ul>
-                      <li>
-                        <strong>Languages:</strong>
-                        <span>{{ item.languages.all|join:", " }}</span>
-                      </li>
+                  <ul>
                       {% with speaker_id=item.speaker_id|stringformat:"i" %}
                         <li>
-                          <strong>Speaker Name</strong>
+                          <strong>Speaker</strong>
                           <span class="speaker-name-link" onclick="filterBySpeakerName('{{ item.speaker.fullname|escapejs }}')">{{ item.speaker.fullname }}</span>
                           <button type="button" class="clear-filter-btn speaker-row-clear-btn" onclick="event.stopPropagation(); clearSpeakerFilter();" style="display: none;">Clear filter</button>
                         </li>
                         <li>
-                          <strong>Speaker Country</strong>
+                          <strong>Country</strong>
                           <span>{{ item.speaker.country|countryname }}</span>
-                        </li>
-                        <li>
-                          <strong>Speaker Gender</strong>
-                          <span>{{ item.speaker.gender }}</span>
                         </li>
                         <li>
                           <strong>Requested a grant?</strong>
@@ -700,14 +694,15 @@
                           {% endfor %}
                         </ul>
                       </li>
-                    </ul>
-                  </details>
+                  </ul>
                 </td>
 
                 <td>{{ item.duration.duration }}'</td>
                 <td>{{ item.type.name }}</td>
                 <td>{{ item.audience_level.name }}</td>
-                <td class="narrow-col">{{ item.score }}</td>
+                <td>{% for lang in item.languages.all %}{% if lang.code == "en" %}&#127468;&#127463;{% elif lang.code == "it" %}&#127470;&#127481;{% else %}{{ lang.code }}{% endif %}{% endfor %}</td>
+                <td>{% if item.speaker.gender == "male" %}M{% elif item.speaker.gender == "female" %}F{% elif item.speaker.gender == "other" %}Other{% elif item.speaker.gender == "not_say" %}&mdash;{% else %}&mdash;{% endif %}</td>
+                <td class="narrow-col">{{ item.score|floatformat:2 }}</td>
 
                 <td class="votes-list">
                   <ul>
@@ -730,11 +725,12 @@
                 </td>
 
                 <td>
-                  {{item.status}}
-                </td>
-
-                <td>
-                  {{item.pending_status}}
+                  {% if item.pending_status and item.pending_status != item.status %}
+                    {{item.status}} &rarr; {{item.pending_status}}
+                    <span title="Current status is '{{item.status}}'. Once confirmed, it will be marked as '{{item.pending_status}}'." style="cursor: help;">&#9432;</span>
+                  {% else %}
+                    {{item.status}}
+                  {% endif %}
                 </td>
 
                 <td class="decision-input-wrapper">
