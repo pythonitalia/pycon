@@ -66,67 +66,148 @@
     position: fixed;
     bottom: 0;
     left: 0;
-    width: 100%;
+    right: 0;
     z-index: 500;
     background-color: #417690;
     color: #fff;
-    transition: transform 0.3s ease-in-out;
-  }
-
-  .reviews-bottom-bar.hidden {
-    transform: translateY(100%);
   }
 
   .reviews-bottom-bar-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-  }
-
-  .reviews-bottom-bar-stats {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 50px;
-  }
-
-  .reviews-bottom-bar-stats ul {
-    padding: 0 !important;
+    padding: 8px 20px;
+    gap: 20px;
   }
 
   .reviews-bottom-bar-confirm-bar {
-    max-width: 800px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
   }
 
-  .reviews-bottom-bar-toggle {
-    position: fixed;
-    bottom: 10px;
-    right: 20px;
-    z-index: 501;
-    background-color: #417690;
-    color: #fff;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
+  .reviews-bottom-bar-confirm-bar p {
+    margin: 0;
+    font-size: 13px;
+  }
+
+  .reviews-bottom-bar-confirm-bar input[type="submit"] {
+    background: #fff;
+    color: #417690;
+    border: none;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
     cursor: pointer;
+  }
+
+  .reviews-bottom-bar-confirm-bar input[type="submit"]:hover {
+    background: #e0e0e0;
+  }
+
+  .reviews-bottom-bar-counts {
+    display: flex;
+    gap: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .reviews-bottom-bar-counts span {
+    color: #48ff5a;
+  }
+
+  .reviews-stats-sidebar {
+    position: sticky;
+    top: 0;
+    flex: 0 0 240px;
+    align-self: flex-start;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--body-bg, #fff);
+    border-left: 1px solid var(--hairline-color, #ddd);
+    padding: 12px;
+    padding-bottom: 60px;
+    z-index: 15;
+    transition: flex-basis 0.2s, padding 0.2s, border-width 0.2s;
+  }
+
+  .reviews-stats-sidebar.collapsed {
+    flex-basis: 0;
+    padding: 0;
+    border-left-width: 0;
+    overflow: hidden;
+  }
+
+  .reviews-stats-sidebar h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: var(--body-quiet-color, #666);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .reviews-stats-sidebar h4 {
+    margin: 12px 0 4px;
+    font-size: 13px;
+    color: var(--body-fg, #333);
+    white-space: nowrap;
+  }
+
+  .reviews-stats-sidebar ul {
+    padding: 0 !important;
+    margin: 0 0 8px;
+    list-style: none;
+  }
+
+  .reviews-stats-sidebar ul li {
+    font-size: 12px;
+    padding: 2px 0;
+    list-style: none;
+    color: var(--body-quiet-color, #666);
+    white-space: nowrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .reviews-stats-sidebar .stat-values {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .reviews-stats-sidebar .stats-note {
+    font-size: 11px;
+    color: var(--body-quiet-color, #999);
+    margin: 0 0 12px;
+  }
+
+
+  .stats-sidebar-toggle {
+    position: sticky;
+    top: 0;
+    flex: 0 0 23px;
+    align-self: flex-start;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    transition: bottom 0.3s ease-in-out, background-color 0.2s;
+    cursor: pointer;
+    background: var(--body-bg, #fff);
+    border: none;
+    border-left: 1px solid var(--hairline-color, #ddd);
+    padding: 0;
+    z-index: 15;
+    color: var(--body-quiet-color, #666);
+    font-size: 14px;
   }
 
-  .reviews-bottom-bar-toggle:hover {
-    background-color: #2a5d75;
-  }
-
-  .reviews-bottom-bar.hidden ~ .reviews-bottom-bar-toggle {
-    bottom: 10px;
-  }
-
-  .reviews-bottom-bar:not(.hidden) ~ .reviews-bottom-bar-toggle {
-    bottom: 100px;
+  .stats-sidebar-toggle:hover {
+    background: var(--darkened-bg, #e8e8e8);
   }
 
   ul.proposal-ranking {
@@ -138,17 +219,6 @@
     display: none;
   }
 
-  #accepted-proposals-num {
-    color: #48ff5a;
-  }
-
-  #rejected-proposals-num {
-    color: #48ff5a;
-  }
-
-  #waitinglist-proposals-num {
-    color: #48ff5a;
-  }
 
   .opt-filter {
     display: grid;
@@ -207,11 +277,17 @@
   let acceptedProposalsNumRef;
   let rejectedProposalsNumRef;
   let waitinglistProposalsNumRef;
+  let sidebarAcceptedNumRef;
+  let sidebarRejectedNumRef;
+  let sidebarWaitinglistNumRef;
 
   const getRefs = () => {
     acceptedProposalsNumRef = document.querySelector("#accepted-proposals-num");
     rejectedProposalsNumRef = document.querySelector("#rejected-proposals-num");
     waitinglistProposalsNumRef = document.querySelector("#waitinglist-proposals-num");
+    sidebarAcceptedNumRef = document.querySelector("#sidebar-accepted-num");
+    sidebarRejectedNumRef = document.querySelector("#sidebar-rejected-num");
+    sidebarWaitinglistNumRef = document.querySelector("#sidebar-waitinglist-num");
   };
 
   window.addEventListener("load", () => {
@@ -220,22 +296,28 @@
     getRefs();
     updateBottomBarUI();
 
-    // Initialize bottom bar toggle functionality
-    const bottomBarHidden = localStorage.getItem('proposalsBottomBarHidden') === 'true';
-    const bottomBar = document.querySelector('.reviews-bottom-bar');
-    const toggleIcon = document.getElementById('toggle-icon');
-    const toggleButton = document.getElementById('bottom-bar-toggle');
+    // Move sidebar and toggle into #main as flex siblings (mirroring Django's left nav)
+    const mainEl = document.getElementById('main');
+    const sidebarToggle = document.getElementById('stats-sidebar-toggle');
+    const sidebar = document.getElementById('stats-sidebar');
+    const sidebarToggleIcon = document.getElementById('sidebar-toggle-icon');
 
-    if (bottomBar && toggleIcon && toggleButton) {
-      if (bottomBarHidden) {
-        bottomBar.classList.add('hidden');
-        toggleIcon.textContent = '▲';
-        toggleButton.setAttribute('aria-expanded', 'false');
-      } else {
-        toggleButton.setAttribute('aria-expanded', 'true');
+    if (mainEl && sidebar && sidebarToggle) {
+      mainEl.appendChild(sidebarToggle);
+      mainEl.appendChild(sidebar);
+
+      const sidebarCollapsed = localStorage.getItem('proposalsSidebarCollapsed') === 'true';
+      if (sidebarCollapsed) {
+        sidebar.classList.add('collapsed');
+        sidebarToggleIcon.innerHTML = '&laquo;';
       }
 
-      toggleButton.addEventListener('click', toggleBottomBar);
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        const isCollapsed = sidebar.classList.contains('collapsed');
+        sidebarToggleIcon.innerHTML = isCollapsed ? '&laquo;' : '&raquo;';
+        localStorage.setItem('proposalsSidebarCollapsed', isCollapsed);
+      });
     }
 
     submissions.forEach((submissionData) => {
@@ -327,31 +409,47 @@
     });
   });
 
+  const genderKeys = ["male", "female", "other", "not_say", "unknown"];
+
   const updateBottomBarUI = () => {
     const acceptedAudienceLevels = {};
     const rejectedAudienceLevels = {};
     const waitinglistAudienceLevels = {};
+    const genderCounts = { accepted: {}, rejected: {}, waiting_list: {} };
+    const typeCounts = { accepted: {}, rejected: {}, waiting_list: {} };
 
     const results = submissions.reduce(
       (acc, submission) => {
         const language = submission.languages.length > 1 ? "en" : submission.languages[0];
+        const gender = submission.speakerGender || "unknown";
+        const subType = submission.submissionType;
         if (submission.status === "accepted") {
           acc[0]++;
           const audienceLevelObject = acceptedAudienceLevels[submission.audienceLevel] || {};
           audienceLevelObject[language] = (audienceLevelObject[language] || 0) + 1;
           acceptedAudienceLevels[submission.audienceLevel] = audienceLevelObject;
+          genderCounts.accepted[gender] = (genderCounts.accepted[gender] || 0) + 1;
+          const typeObj = typeCounts.accepted[subType] || {};
+          typeObj[language] = (typeObj[language] || 0) + 1;
+          typeCounts.accepted[subType] = typeObj;
         } else if (submission.status === "rejected") {
           acc[1]++;
-
           const audienceLevelObject = rejectedAudienceLevels[submission.audienceLevel] || {};
           audienceLevelObject[language] = (audienceLevelObject[language] || 0) + 1;
           rejectedAudienceLevels[submission.audienceLevel] = audienceLevelObject;
+          genderCounts.rejected[gender] = (genderCounts.rejected[gender] || 0) + 1;
+          const typeObj = typeCounts.rejected[subType] || {};
+          typeObj[language] = (typeObj[language] || 0) + 1;
+          typeCounts.rejected[subType] = typeObj;
         } else if (submission.status === "waiting_list") {
           acc[2]++;
-
           const audienceLevelObject = waitinglistAudienceLevels[submission.audienceLevel] || {};
           audienceLevelObject[language] = (audienceLevelObject[language] || 0) + 1;
           waitinglistAudienceLevels[submission.audienceLevel] = audienceLevelObject;
+          genderCounts.waiting_list[gender] = (genderCounts.waiting_list[gender] || 0) + 1;
+          const typeObj = typeCounts.waiting_list[subType] || {};
+          typeObj[language] = (typeObj[language] || 0) + 1;
+          typeCounts.waiting_list[subType] = typeObj;
         }
         return acc;
       },
@@ -361,6 +459,9 @@
     acceptedProposalsNumRef.innerText = results[0];
     rejectedProposalsNumRef.innerText = results[1];
     waitinglistProposalsNumRef.innerText = results[2];
+    sidebarAcceptedNumRef.innerText = results[0];
+    sidebarRejectedNumRef.innerText = results[1];
+    sidebarWaitinglistNumRef.innerText = results[2];
 
     audienceLevels.forEach(
       audienceLevel => {
@@ -390,6 +491,25 @@
         waitinglistRef.innerText = Object.values(waitinglistAudienceLevels[audienceLevel] || {}).reduce((acc, value) => acc + value, 0);
       }
     );
+
+    // Update gender stats
+    ["accepted", "rejected", "waiting_list"].forEach(status => {
+      genderKeys.forEach(gender => {
+        const ref = document.querySelector(`#gender-${status}-${gender}`);
+        if (ref) ref.innerText = genderCounts[status][gender] || 0;
+      });
+    });
+
+    // Update submission type stats
+    ["accepted", "rejected", "waiting_list"].forEach(status => {
+      document.querySelectorAll(`.type-stat-${status}`).forEach(el => {
+        const typeName = el.dataset.typeName;
+        const total = Object.values(typeCounts[status][typeName] || {}).reduce((a, v) => a + v, 0);
+        const en = typeCounts[status][typeName]?.en || 0;
+        const it = typeCounts[status][typeName]?.it || 0;
+        el.innerText = `${total} (\uD83C\uDDEC\uD83C\uDDE7 ${en}, \uD83C\uDDEE\uD83C\uDDF9 ${it})`;
+      });
+    });
   };
 
   // Filter by speaker name (called when clicking a speaker name link)
@@ -407,30 +527,6 @@
     input.dispatchEvent(new Event('input'));
   };
 
-  // Toggle bottom bar visibility
-  const toggleBottomBar = () => {
-    const bottomBar = document.querySelector('.reviews-bottom-bar');
-    const toggleIcon = document.getElementById('toggle-icon');
-    const toggleButton = document.getElementById('bottom-bar-toggle');
-
-    if (!bottomBar || !toggleIcon || !toggleButton) {
-      console.warn('Required elements for bottom bar toggle not found');
-      return;
-    }
-
-    bottomBar.classList.toggle('hidden');
-
-    if (bottomBar.classList.contains('hidden')) {
-      toggleIcon.textContent = '▲';
-      toggleButton.setAttribute('aria-expanded', 'false');
-    } else {
-      toggleIcon.textContent = '▼';
-      toggleButton.setAttribute('aria-expanded', 'true');
-    }
-
-    // Save preference in localStorage
-    localStorage.setItem('proposalsBottomBarHidden', bottomBar.classList.contains('hidden'));
-  };
 </script>
 
 <form id="changelist-form" method="post" novalidate="">
@@ -526,6 +622,7 @@
                   numOfVotes: {{item.userreview_set.count}},
                   submissionType: "{{ item.type.name }}",
                   speakerName: "{{ item.speaker.fullname|escapejs }}",
+                  speakerGender: "{{ item.speaker.gender|default:'unknown' }}",
                 };
               </script>
               <tr class="proposal-item" id="submission-{{item.id}}" data-original-status="{{ item.current_or_pending_status }}">
@@ -536,59 +633,62 @@
                     href="{% url 'admin:submissions_submission_change' item.id %}">
                     <strong>{{item.title}}</strong>
                   </a>
-                  <ul>
-                    <li>
-                      <strong>Duration:</strong>
-                      <span>{{ item.duration.duration }} mins</span>
-                    </li>
-                    <li>
-                      <strong>Type:</strong>
-                      <span>{{ item.type.name }}</span>
-                    </li>
-                    <li>
-                      <strong>Audience level:</strong>
-                      <span>{{ item.audience_level.name }}</span>
-                    </li>
-                    <li>
-                      <strong>Languages:</strong>
-                      <span>{{ item.languages.all|join:", " }}</span>
-                    </li>
-                    {% with speaker_id=item.speaker_id|stringformat:"i" %}
+                  <details>
+                    <summary>Additional info</summary>
+                    <ul>
                       <li>
-                        <strong>Speaker Name</strong>
-                        <span class="speaker-name-link" onclick="filterBySpeakerName('{{ item.speaker.fullname|escapejs }}')">{{ item.speaker.fullname }}</span>
-                        <button type="button" class="clear-filter-btn speaker-row-clear-btn" onclick="event.stopPropagation(); clearSpeakerFilter();" style="display: none;">Clear filter</button>
+                        <strong>Duration:</strong>
+                        <span>{{ item.duration.duration }} mins</span>
                       </li>
                       <li>
-                        <strong>Speaker Country</strong>
-                        <span>{{ item.speaker.country|countryname }}</span>
+                        <strong>Type:</strong>
+                        <span>{{ item.type.name }}</span>
                       </li>
                       <li>
-                        <strong>Speaker Gender</strong>
-                        <span>{{ item.speaker.gender }}</span>
+                        <strong>Audience level:</strong>
+                        <span>{{ item.audience_level.name }}</span>
                       </li>
                       <li>
-                        <strong>Requested a grant?</strong>
-                        {% if speaker_id in grants %}
-                          {% with grant=grants|get_item:speaker_id %}
-                            <span>Yes ({{ grant.get_status_display }})</span>
-                          {% endwith %}
-                        {% else %}
-                          <span>No</span>
-                        {% endif %}
+                        <strong>Languages:</strong>
+                        <span>{{ item.languages.all|join:", " }}</span>
                       </li>
-                    {% endwith %}
-                    <li>
-                      <strong>Ranking:</strong>
-                      <ul class="proposal-ranking">
-                        {% for ranking in item.rankings.all %}
+                      {% with speaker_id=item.speaker_id|stringformat:"i" %}
                         <li>
-                          <strong>{{ ranking.tag.name }}</strong>: {{ ranking.rank }}/{{ ranking.total_submissions_per_tag }}
+                          <strong>Speaker Name</strong>
+                          <span class="speaker-name-link" onclick="filterBySpeakerName('{{ item.speaker.fullname|escapejs }}')">{{ item.speaker.fullname }}</span>
+                          <button type="button" class="clear-filter-btn speaker-row-clear-btn" onclick="event.stopPropagation(); clearSpeakerFilter();" style="display: none;">Clear filter</button>
                         </li>
-                        {% endfor %}
-                      </ul>
-                    </li>
-                  </ul>
+                        <li>
+                          <strong>Speaker Country</strong>
+                          <span>{{ item.speaker.country|countryname }}</span>
+                        </li>
+                        <li>
+                          <strong>Speaker Gender</strong>
+                          <span>{{ item.speaker.gender }}</span>
+                        </li>
+                        <li>
+                          <strong>Requested a grant?</strong>
+                          {% if speaker_id in grants %}
+                            {% with grant=grants|get_item:speaker_id %}
+                              <span>Yes ({{ grant.get_status_display }})</span>
+                            {% endwith %}
+                          {% else %}
+                            <span>No</span>
+                          {% endif %}
+                        </li>
+                      {% endwith %}
+                      <li>
+                        <strong>Ranking:</strong>
+                        <ul class="proposal-ranking">
+                          {% for ranking in item.rankings.all %}
+                          <li>
+                            <strong>{{ ranking.tag.name }}</strong>: {{ ranking.rank }}/{{ ranking.total_submissions_per_tag }}
+                          </li>
+                          {% endfor %}
+                        </ul>
+                      </li>
+                    </ul>
+                  </details>
                 </td>
 
                 <td>{{ item.score }}</td>
@@ -665,62 +765,109 @@
         </div>
       </div>
     </div>
-    <div style="height: 150px"></div>
+    <div style="height: 60px"></div>
   </div>
 
-  <div id="content" class="reviews-bottom-bar colM">
+  <div class="reviews-bottom-bar">
     <div class="reviews-bottom-bar-content">
       <div class="submit-row reviews-bottom-bar-confirm-bar">
-        <p>
-          Once done, click the button to save your choices.
-          You can change as many times as you need, no emails will be sent.
-        </p>
-        <input value="Submit choices" type="submit" />
+        <p>Save your choices (no emails will be sent).</p>
+        <input value="Submit choices" type="submit" class="default" />
       </div>
-      <div>
-        <div>
-          <p>For multiple languages proposals, we count it as English.</p>
-        </div>
-        <div class="reviews-bottom-bar-stats">
-          <div>
-            <h2>Accepted: <span id="accepted-proposals-num">0</span></h2>
-            <ul>
-              {% for audience_level in audience_levels %}
-              <li>
-                {{audience_level.name}}: <span id="accepted-audience-level-{{audience_level.id}}">0</span>
-                (English: <span id="accepted-audience-level-{{audience_level.id}}-english">0</span>, Italian: <span id="accepted-audience-level-{{audience_level.id}}-italian">0</span>)
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-          <div>
-            <h2>Rejected: <span id="rejected-proposals-num">0</span></h2>
-            <ul>
-              {% for audience_level in audience_levels %}
-              <li>
-                {{audience_level.name}}: <span id="rejected-audience-level-{{audience_level.id}}">0</span>
-                (English: <span id="rejected-audience-level-{{audience_level.id}}-english">0</span>, Italian: <span id="rejected-audience-level-{{audience_level.id}}-italian">0</span>)
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-          <div>
-            <h2>Waiting List: <span id="waitinglist-proposals-num">0</span></h2>
-            <ul>
-              {% for audience_level in audience_levels %}
-              <li>
-                {{audience_level.name}}: <span id="waitinglist-audience-level-{{audience_level.id}}">0</span>
-                (English: <span id="waitinglist-audience-level-{{audience_level.id}}-english">0</span>, Italian: <span id="waitinglist-audience-level-{{audience_level.id}}-italian">0</span>)
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
+      <div class="reviews-bottom-bar-counts">
+        <div>Accepted: <span id="accepted-proposals-num">0</span></div>
+        <div>Rejected: <span id="rejected-proposals-num">0</span></div>
+        <div>Waiting List: <span id="waitinglist-proposals-num">0</span></div>
       </div>
     </div>
   </div>
-  <button type="button" class="reviews-bottom-bar-toggle" id="bottom-bar-toggle" aria-label="Toggle bottom bar visibility" aria-expanded="true">
-    <span id="toggle-icon" aria-hidden="true">▼</span>
+
+  <button type="button" class="stats-sidebar-toggle" id="stats-sidebar-toggle" aria-label="Toggle stats sidebar">
+    <span id="sidebar-toggle-icon">&raquo;</span>
   </button>
+
+  <aside class="reviews-stats-sidebar" id="stats-sidebar">
+    <h3>Stats</h3>
+    <p class="stats-note">Multi-language proposals counted as English.</p>
+
+    <h4>Accepted: <span id="sidebar-accepted-num">0</span></h4>
+    <ul>
+      {% for audience_level in audience_levels %}
+      <li>
+        <span>{{audience_level.name}}</span>
+        <span class="stat-values"><span id="accepted-audience-level-{{audience_level.id}}">0</span> (&#127468;&#127463; <span id="accepted-audience-level-{{audience_level.id}}-english">0</span>, &#127470;&#127481; <span id="accepted-audience-level-{{audience_level.id}}-italian">0</span>)</span>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <h4>Rejected: <span id="sidebar-rejected-num">0</span></h4>
+    <ul>
+      {% for audience_level in audience_levels %}
+      <li>
+        <span>{{audience_level.name}}</span>
+        <span class="stat-values"><span id="rejected-audience-level-{{audience_level.id}}">0</span> (&#127468;&#127463; <span id="rejected-audience-level-{{audience_level.id}}-english">0</span>, &#127470;&#127481; <span id="rejected-audience-level-{{audience_level.id}}-italian">0</span>)</span>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <h4>Waiting List: <span id="sidebar-waitinglist-num">0</span></h4>
+    <ul>
+      {% for audience_level in audience_levels %}
+      <li>
+        <span>{{audience_level.name}}</span>
+        <span class="stat-values"><span id="waitinglist-audience-level-{{audience_level.id}}">0</span> (&#127468;&#127463; <span id="waitinglist-audience-level-{{audience_level.id}}-english">0</span>, &#127470;&#127481; <span id="waitinglist-audience-level-{{audience_level.id}}-italian">0</span>)</span>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <h3 style="margin-top: 20px;">Gender</h3>
+
+    <h4>Accepted</h4>
+    <ul>
+      <li><span>Male</span> <span class="stat-values" id="gender-accepted-male">0</span></li>
+      <li><span>Female</span> <span class="stat-values" id="gender-accepted-female">0</span></li>
+      <li><span>Other</span> <span class="stat-values" id="gender-accepted-other">0</span></li>
+      <li><span>Not specified</span> <span class="stat-values" id="gender-accepted-not_say">0</span></li>
+    </ul>
+
+    <h4>Rejected</h4>
+    <ul>
+      <li><span>Male</span> <span class="stat-values" id="gender-rejected-male">0</span></li>
+      <li><span>Female</span> <span class="stat-values" id="gender-rejected-female">0</span></li>
+      <li><span>Other</span> <span class="stat-values" id="gender-rejected-other">0</span></li>
+      <li><span>Not specified</span> <span class="stat-values" id="gender-rejected-not_say">0</span></li>
+    </ul>
+
+    <h4>Waiting List</h4>
+    <ul>
+      <li><span>Male</span> <span class="stat-values" id="gender-waiting_list-male">0</span></li>
+      <li><span>Female</span> <span class="stat-values" id="gender-waiting_list-female">0</span></li>
+      <li><span>Other</span> <span class="stat-values" id="gender-waiting_list-other">0</span></li>
+      <li><span>Not specified</span> <span class="stat-values" id="gender-waiting_list-not_say">0</span></li>
+    </ul>
+
+    <h3 style="margin-top: 20px;">Submission Type</h3>
+
+    <h4>Accepted</h4>
+    <ul>
+      {% for submission_type in submission_types %}
+      <li><span>{{ submission_type.name }}</span> <span class="stat-values type-stat-accepted" data-type-name="{{ submission_type.name }}">0</span></li>
+      {% endfor %}
+    </ul>
+
+    <h4>Rejected</h4>
+    <ul>
+      {% for submission_type in submission_types %}
+      <li><span>{{ submission_type.name }}</span> <span class="stat-values type-stat-rejected" data-type-name="{{ submission_type.name }}">0</span></li>
+      {% endfor %}
+    </ul>
+
+    <h4>Waiting List</h4>
+    <ul>
+      {% for submission_type in submission_types %}
+      <li><span>{{ submission_type.name }}</span> <span class="stat-values type-stat-waiting_list" data-type-name="{{ submission_type.name }}">0</span></li>
+      {% endfor %}
+    </ul>
+  </aside>
 </form>
 {% endblock %}
