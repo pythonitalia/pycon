@@ -26,6 +26,7 @@ def test_request_on_behalf_of_other():
     assert request.user is None
     assert request.role == "Attendee"
     assert request.has_grant is False
+    assert request.total_grantee_reimbursement_amount is None
 
     # With matching user, it is found
     user = UserFactory(email="example@example.org")
@@ -87,6 +88,13 @@ def test_request_grant_info(
     assert request.has_travel_via_grant() == expected_has_travel
     # grant_approved_type returns sorted categories joined by underscore
     assert request.grant_approved_type == expected_type
+    # total_grantee_reimbursement_amount excludes ticket
+    expected_amount = Decimal(0)
+    if "travel" in categories:
+        expected_amount += Decimal("500")
+    if "accommodation" in categories:
+        expected_amount += Decimal("200")
+    assert request.total_grantee_reimbursement_amount == expected_amount
 
 
 def test_role_for_speakers():

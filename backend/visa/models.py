@@ -122,6 +122,15 @@ class InvitationLetterRequest(TimeStampedModel):
 
         return "_".join(sorted(categories)) if len(categories) > 1 else categories[0]
 
+    @property
+    def total_grantee_reimbursement_amount(self):
+        grant = self.user_grant
+
+        if not grant:
+            return None
+
+        return grant.total_grantee_reimbursement_amount
+
     @cached_property
     def user_grant(self):
         return Grant.objects.for_conference(self.conference).of_user(self.user).first()

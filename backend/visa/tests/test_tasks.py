@@ -188,6 +188,66 @@ def test_process_invitation_letter_request_accomodation_doc_with_no_accommodatio
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
+def test_process_invitation_letter_request_renders_total_grantee_reimbursement_amount(
+    mock_ticket_present,
+):
+    config = InvitationLetterConferenceConfigFactory()
+    InvitationLetterDocumentFactory(
+        invitation_letter_conference_config=config,
+        document=None,
+        dynamic_document={
+            "header": {"content": "header", "margin": "0", "align": "top-left"},
+            "footer": {"content": "footer", "margin": "0", "align": "bottom-left"},
+            "page_layout": {"margin": "0"},
+            "pages": [
+                {
+                    "content": "Reimbursement: {{total_grantee_reimbursement_amount}}"
+                },
+            ],
+        },
+    )
+
+    request = InvitationLetterRequestFactory(
+        conference=config.conference, nationality="Italian"
+    )
+    mock_ticket_present(request)
+
+    grant = GrantFactory(
+        conference=config.conference,
+        user=request.requester,
+    )
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=config.conference,
+        category__ticket=True,
+        granted_amount=Decimal("100"),
+    )
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=config.conference,
+        category__travel=True,
+        granted_amount=Decimal("500"),
+    )
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=config.conference,
+        category__accommodation=True,
+        granted_amount=Decimal("200"),
+    )
+
+    process_invitation_letter_request(invitation_letter_request_id=request.id)
+
+    request.refresh_from_db()
+
+    assert request.status == InvitationLetterRequestStatus.PROCESSED
+
+    output = PdfReader(request.invitation_letter.open())
+    assert output.get_num_pages() == 2
+    assert output.pages[0].extract_text() == "Reimbursement: 700 \nheader\nfooter"
+    assert output.pages[1].extract_text() == "Thisisasampleticket pdf"
+
+
+@override_settings(PRETIX_API="https://pretix/api/")
 def test_process_invitation_letter_request_with_doc_only_for_accommodation(
     mock_ticket_present,
 ):
