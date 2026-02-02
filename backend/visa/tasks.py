@@ -151,6 +151,7 @@ def _render_content(content, invitation_letter_request, config):
                 "grant_approved_type": invitation_letter_request.grant_approved_type,
                 "has_accommodation_via_grant": invitation_letter_request.has_accommodation_via_grant(),
                 "has_travel_via_grant": invitation_letter_request.has_travel_via_grant(),
+                "total_grantee_reimbursement_amount": invitation_letter_request.total_grantee_reimbursement_amount,
                 # conference
                 "conference": invitation_letter_request.conference,
             }
