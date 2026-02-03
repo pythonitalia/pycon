@@ -70,7 +70,7 @@ def test_cannot_get_plain_customer_cards_when_user_doesnt_exist(rest_api_client)
     )
 
     assert response.status_code == 200
-    assert response.data == {"cards": []}
+    assert response.data == {"cards": [{"key": "grant", "components": []}]}
 
 
 @override_settings(PLAIN_INTEGRATION_TOKEN="secret")
