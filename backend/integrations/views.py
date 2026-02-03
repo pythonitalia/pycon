@@ -32,9 +32,6 @@ def plain_customer_cards(request):
 
     cards = []
     if "grant" in card_keys:
-        if user:
-            cards.append(create_grant_card(request, user, conference))
-        else:
-            cards.append({"key": "grant", "components": []})
+        cards.append(create_grant_card(request, user, conference))
 
     return Response({"cards": cards})
