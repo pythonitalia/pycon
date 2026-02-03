@@ -233,16 +233,60 @@
   }
 
 
-  .opt-filter {
-    display: grid;
-    gap: 10px;
-    grid-template-columns: max-content auto;
-    align-items: center;
+  .filters-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
     margin-top: 10px;
   }
 
-  .opt-filter label + label {
-    margin-left: 10px;
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 180px;
+  }
+
+  .filter-group-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--body-quiet-color, #666);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .filter-group-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    align-items: center;
+  }
+
+  .filter-group-options label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .filter-group-options select {
+    padding: 4px 8px;
+    font-size: 13px;
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 4px;
+    background: var(--body-bg, #fff);
+  }
+
+  .filter-group-options input[type="text"] {
+    padding: 4px 8px;
+    font-size: 13px;
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 4px;
+    min-width: 200px;
   }
 
   .speaker-name-link {
@@ -548,42 +592,46 @@
   <div id="content-main">
     <div class="module filtered">
       <h2>Filters</h2>
-      <div class="opt-filter">
-        <h3>Show proposals with N reviews:</h3>
-        <select name="filter-with-n-reviews" id="filter-with-n-reviews">
-          <option value="all">All</option>
-          {% for i in '0123456789'|make_list %}
-            <option value="{{ i }}">{{ i }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="opt-filter">
-        <h3>Show proposals with pending status:</h3>
-        <div>
-          {% for status in all_statuses %}
-          <label>
-            <input checked type="checkbox" name="filter-by-status" value="{{ status.0 }}">
-            <span>{{ status.1 }}</span>
-          </label>
-          {% endfor %}
+      <div class="filters-grid">
+        <div class="filter-group">
+          <span class="filter-group-label">Reviews count</span>
+          <div class="filter-group-options">
+            <select name="filter-with-n-reviews" id="filter-with-n-reviews">
+              <option value="all">All</option>
+              {% for i in '0123456789'|make_list %}
+                <option value="{{ i }}">{{ i }}</option>
+              {% endfor %}
+            </select>
+          </div>
         </div>
-      </div>
-      <div class="opt-filter">
-        <h3>Filter by speaker name:</h3>
-        <div style="display: flex;">
-          <input type="text" id="filter-by-speaker" placeholder="Type speaker name..." style="flex: 1;" />
-          <button type="button" class="clear-filter-btn" id="clear-speaker-filter" onclick="clearSpeakerFilter()" style="display: none;">Clear</button>
+        <div class="filter-group">
+          <span class="filter-group-label">Status</span>
+          <div class="filter-group-options">
+            {% for status in all_statuses %}
+            <label>
+              <input checked type="checkbox" name="filter-by-status" value="{{ status.0 }}">
+              <span>{{ status.1 }}</span>
+            </label>
+            {% endfor %}
+          </div>
         </div>
-      </div>
-      <div class="opt-filter">
-        <h3>Show proposals of type:</h3>
-        <div>
-          {% for submission_type in submission_types %}
-          <label>
-            <input checked type="checkbox" name="filter-by-type" value="{{ submission_type.name }}">
-            <span>{{ submission_type.name }}</span>
-          </label>
-          {% endfor %}
+        <div class="filter-group">
+          <span class="filter-group-label">Type</span>
+          <div class="filter-group-options">
+            {% for submission_type in submission_types %}
+            <label>
+              <input checked type="checkbox" name="filter-by-type" value="{{ submission_type.name }}">
+              <span>{{ submission_type.name }}</span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-label">Speaker</span>
+          <div class="filter-group-options">
+            <input type="text" id="filter-by-speaker" placeholder="Type speaker name..." />
+            <button type="button" class="clear-filter-btn" id="clear-speaker-filter" onclick="clearSpeakerFilter()" style="display: none;">Clear</button>
+          </div>
         </div>
       </div>
     </div>
