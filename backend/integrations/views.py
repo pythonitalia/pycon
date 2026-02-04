@@ -30,9 +30,6 @@ def plain_customer_cards(request):
 
     user = User.objects.filter(email=customer_email).first()
 
-    if not user:
-        return Response({"cards": []})
-
     cards = []
     if "grant" in card_keys:
         cards.append(create_grant_card(request, user, conference))
