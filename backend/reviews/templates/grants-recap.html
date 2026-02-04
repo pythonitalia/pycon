@@ -1,5 +1,15 @@
 {% extends "admin/base_site.html" %} {% load i18n %} {% load markdownify %}
-{% load localize countryname get_item %} {% block breadcrumbs %}
+{% load localize countryname get_item %}
+{% block extrahead %}
+{{ block.super }}
+<script>
+  // Collapse Django admin sidebar by default on this page
+  if (localStorage.getItem('django.admin.navSidebarIsOpen') !== 'false') {
+    localStorage.setItem('django.admin.navSidebarIsOpen', 'false');
+  }
+</script>
+{% endblock %}
+{% block breadcrumbs %}
 <div class="breadcrumbs">
   <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
   &rsaquo; <a href="{% url 'admin:app_list' 'reviews' %}">Reviews</a> &rsaquo;
