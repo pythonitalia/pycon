@@ -285,6 +285,18 @@
   tr:nth-of-type(odd) {
     background-color: var(--body-bg);
   }
+
+  .speaker-multi-submission-badge {
+    display: inline-block;
+    background-color: #f0ad4e;
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
 </style>
 
 <script type="application/javascript">
@@ -650,6 +662,7 @@
             </thead>
             <tbody>
               {% for item in items %}
+              {% with speaker_id=item.speaker_id|stringformat:"i" %}
               <script>
                 submissionsById[{{ item.id }}] = {
                   id: {{ item.id }},
@@ -661,8 +674,10 @@
                   submissionType: "{{ item.type.name }}",
                   speakerName: "{{ item.speaker.fullname|escapejs }}",
                   speakerGender: "{{ item.speaker.gender|default:'unknown' }}",
+                  speakerSubmissionCount: {{ speaker_submission_counts|get_item:speaker_id|default:1 }},
                 };
               </script>
+              {% endwith %}
               <tr class="proposal-item" id="submission-{{item.id}}" data-original-status="{{ item.current_or_pending_status }}">
                 <td>{{forloop.counter}}</td>
                 <td class="results-title">
@@ -676,6 +691,11 @@
                         <li>
                           <strong>Speaker</strong>
                           <span class="speaker-name-link" onclick="filterBySpeakerName('{{ item.speaker.fullname|escapejs }}')">{{ item.speaker.fullname }}</span>
+                          {% with submission_count=speaker_submission_counts|get_item:speaker_id %}
+                            {% if submission_count and submission_count > 1 %}
+                              <span class="speaker-multi-submission-badge" title="This speaker has {{ submission_count }} submissions">{{ submission_count }} talks</span>
+                            {% endif %}
+                          {% endwith %}
                           <button type="button" class="clear-filter-btn speaker-row-clear-btn" onclick="event.stopPropagation(); clearSpeakerFilter();" style="display: none;">Clear filter</button>
                         </li>
                         <li>
