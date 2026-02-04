@@ -177,10 +177,21 @@ class ProposalsReviewAdapter:
             )
         }
 
+        # Count submissions per speaker for the current conference
+        speaker_submission_counts = {
+            str(speaker_id): count
+            for speaker_id, count in Submission.objects.for_conference(conference.id)
+            .non_cancelled()
+            .values("speaker_id")
+            .annotate(count=Count("id"))
+            .values_list("speaker_id", "count")
+        }
+
         return dict(
             admin_site.each_context(request),
             items=items,
             grants=grants,
+            speaker_submission_counts=speaker_submission_counts,
             review_session_id=review_session.id,
             audience_levels=conference.audience_levels.all(),
             submission_types=conference.submission_types.all(),

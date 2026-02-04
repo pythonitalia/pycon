@@ -833,8 +833,48 @@ def test_proposals_review_get_recap_context(rf):
     assert "review_session_id" in context
     assert "audience_levels" in context
     assert "all_statuses" in context
+    assert "speaker_submission_counts" in context
     assert context["review_session_id"] == review_session.id
     assert str(submission.speaker_id) in context["grants"]
+    # Verify speaker submission count is tracked
+    assert str(submission.speaker_id) in context["speaker_submission_counts"]
+    assert context["speaker_submission_counts"][str(submission.speaker_id)] == 1
+
+
+def test_proposals_review_get_recap_context_with_multiple_submissions_per_speaker(rf):
+    user = UserFactory(is_staff=True, is_superuser=True)
+    conference = ConferenceFactory()
+
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.PROPOSALS,
+        status=ReviewSession.Status.COMPLETED,
+    )
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=0)
+    AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+
+    # Create a speaker with multiple submissions
+    speaker = UserFactory()
+    submission_1 = SubmissionFactory(conference=conference, speaker=speaker)
+    submission_2 = SubmissionFactory(conference=conference, speaker=speaker)
+    submission_3 = SubmissionFactory(conference=conference, speaker=speaker)
+
+    # Create another speaker with only one submission
+    single_speaker = UserFactory()
+    single_submission = SubmissionFactory(conference=conference, speaker=single_speaker)
+
+    request = rf.get("/")
+    request.user = user
+
+    adapter = get_review_adapter(review_session)
+    items = adapter.get_recap_items_queryset(review_session).all()
+    context = adapter.get_recap_context(request, review_session, items, AdminSite())
+
+    assert "speaker_submission_counts" in context
+    # Speaker with 3 submissions should have count of 3
+    assert context["speaker_submission_counts"][str(speaker.id)] == 3
+    # Speaker with 1 submission should have count of 1
+    assert context["speaker_submission_counts"][str(single_speaker.id)] == 1
 
 
 def test_proposals_review_process_recap_post(rf):
