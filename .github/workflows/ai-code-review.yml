@@ -23,28 +23,24 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - name: Dismiss old Claude bot comments
+      - name: Find existing Claude bot comment
+        id: find-comment
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Get PR comments from claude[bot] and hide them as outdated
+          # Get the ID of the first claude[bot] comment on this PR (if any)
           REPO="${{ github.repository }}"
           PR_NUMBER="${{ github.event.pull_request.number }}"
 
-          # Get review comments (PR review comments)
-          gh api "repos/$REPO/issues/$PR_NUMBER/comments" --jq '.[] | select(.user.login == "claude[bot]") | .node_id' | while read -r comment_node_id; do
-            if [ -n "$comment_node_id" ]; then
-              echo "Hiding review comment: $comment_node_id"
-              gh api graphql -f query='
-                mutation($id: ID!) {
-                  minimizeComment(input: {subjectId: $id, classifier: OUTDATED}) {
-                    minimizedComment {
-                      isMinimized
-                    }
-                  }
-                }' -f id="$comment_node_id"
-            fi
-          done
+          COMMENT_ID=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --jq '[.[] | select(.user.login == "claude[bot]")] | first | .id // empty')
+
+          if [ -n "$COMMENT_ID" ]; then
+            echo "Found existing comment: $COMMENT_ID"
+            echo "comment_id=$COMMENT_ID" >> $GITHUB_OUTPUT
+          else
+            echo "No existing comment found"
+            echo "comment_id=" >> $GITHUB_OUTPUT
+          fi
       - name: Review code
         uses: anthropics/claude-code-action@v1
         with:
@@ -52,11 +48,23 @@ jobs:
           prompt: |
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ github.event.pull_request.number }}
+            EXISTING_COMMENT_ID: ${{ steps.find-comment.outputs.comment_id }}
 
             Review this pull request and provide feedback.
-            Post your feedback as a PR comment using `gh pr comment`.
 
-            When reviewing code, leave a general summary of the changes at the top of your comment and then evaluate the following areas:
+            If EXISTING_COMMENT_ID is set, update that comment using:
+              gh api repos/${{ github.repository }}/issues/comments/${{ steps.find-comment.outputs.comment_id }} -X PATCH -f body="<your review>"
+            Otherwise, create a new comment using:
+              gh pr comment ${{ github.event.pull_request.number }} --body "<your review>"
+
+            IMPORTANT GUIDELINES:
+            - Be direct and concise. Only mention issues that need attention.
+            - Start with a brief 1-2 sentence summary of the changes for other reviewers.
+            - Do NOT compliment the author or praise the code.
+            - If there are no significant issues, just say "No issues found." and nothing else.
+            - Focus only on actionable feedback.
+
+            Evaluate the following areas (only mention if there are issues):
 
             ### Architecture & Design
 
@@ -92,6 +100,5 @@ jobs:
             - Caching opportunities: Could frequently-accessed, rarely-changed data benefit from caching?
             - Bulk operations: Are there loops doing individual saves that could use `bulk_create()` or `bulk_update()`?
 
-            Use the repository's CLAUDE.md for guidance on style and conventions. 
-            Be constructive, helpful, concise and to the point in your feedback.
-          claude_args: '--allowed-tools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"'
+            Use the repository's CLAUDE.md for guidance on style and conventions.
+          claude_args: '--allowed-tools "Bash(gh api:*),Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"'
