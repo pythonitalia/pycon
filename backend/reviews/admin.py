@@ -96,6 +96,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 "fields": (
                     "go_to_review_screen",
                     "go_to_shortlist_screen",
+                    "go_to_recap_screen",
                 )
             },
         )
@@ -121,6 +122,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         fields = [
             "go_to_review_screen",
             "go_to_shortlist_screen",
+            "go_to_recap_screen",
         ]
 
         if obj:
@@ -174,12 +176,33 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 """
         )
 
+    @admin.display(description="Recap Screen")
+    def go_to_recap_screen(self, obj):
+        if not obj.id:
+            return ""
+
+        if not obj.can_see_shortlist_screen:
+            return "You cannot see the recap of this session yet."
+
+        return mark_safe(
+            f"""
+    <a href="{reverse("admin:reviews-recap", kwargs={"review_session_id": obj.id})}">
+        Go to recap screen
+    </a>
+"""
+        )
+
     def get_urls(self):
         return [
             path(
                 "<int:review_session_id>/review/shortlist/",
                 self.admin_site.admin_view(self.review_shortlist_view),
                 name="reviews-shortlist",
+            ),
+            path(
+                "<int:review_session_id>/review/recap/",
+                self.admin_site.admin_view(self.review_recap_view),
+                name="reviews-recap",
             ),
             path(
                 "<int:review_session_id>/review/start/",
@@ -264,6 +287,140 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         )
 
         return TemplateResponse(request, adapter.shortlist_template, context)
+
+    def review_recap_view(self, request, review_session_id):
+        from django.db.models import Count, Q
+        from submissions.models import Submission
+
+        review_session = ReviewSession.objects.get(id=review_session_id)
+
+        if not review_session.user_can_review(request.user):
+            raise PermissionDenied()
+
+        if not review_session.can_see_shortlist_screen:
+            messages.error(request, "You cannot see the recap of this session yet.")
+            return redirect(
+                reverse(
+                    "admin:reviews_reviewsession_change",
+                    kwargs={
+                        "object_id": review_session_id,
+                    },
+                )
+            )
+
+        conference = review_session.conference
+
+        # Get accepted submissions (using pending_status if set, otherwise status)
+        # This matches the shortlist sidebar logic: pending_status or status
+        accepted_submissions = (
+            Submission.objects.filter(conference=conference)
+            .filter(
+                Q(pending_status=Submission.STATUS.accepted)
+                | Q(pending_status__isnull=True, status=Submission.STATUS.accepted)
+                | Q(pending_status="", status=Submission.STATUS.accepted)
+            )
+            .select_related("speaker", "type", "audience_level")
+            .prefetch_related("languages")
+        )
+
+        # Get submission types for this conference
+        submission_types = list(
+            conference.submission_types.values_list("name", flat=True)
+        )
+
+        def get_stats_for_submissions(qs):
+            """Helper to get all stats for a queryset of submissions."""
+            total = qs.count()
+
+            def calc_pct(count):
+                return round(count / total * 100, 1) if total > 0 else 0
+
+            def with_pct(counts_dict):
+                return {k: (v, calc_pct(v)) for k, v in counts_dict.items()}
+
+            # Gender stats
+            gender_stats = (
+                qs.values("speaker__gender")
+                .annotate(count=Count("id"))
+                .order_by("speaker__gender")
+            )
+            gender_counts = with_pct(
+                {
+                    item["speaker__gender"] or "unknown": item["count"]
+                    for item in gender_stats
+                }
+            )
+
+            # Audience level stats
+            level_stats = (
+                qs.values("audience_level__name")
+                .annotate(count=Count("id"))
+                .order_by("audience_level__name")
+            )
+            level_counts = with_pct(
+                {item["audience_level__name"]: item["count"] for item in level_stats}
+            )
+
+            # Language stats
+            language_stats = (
+                qs.values("languages__code")
+                .annotate(count=Count("id"))
+                .order_by("languages__code")
+            )
+            language_counts = with_pct(
+                {item["languages__code"]: item["count"] for item in language_stats}
+            )
+
+            # Speaker level stats
+            speaker_level_stats = (
+                qs.values("speaker_level")
+                .annotate(count=Count("id"))
+                .order_by("speaker_level")
+            )
+            speaker_level_counts = with_pct(
+                {item["speaker_level"]: item["count"] for item in speaker_level_stats}
+            )
+
+            # Tag stats
+            tag_stats = (
+                qs.values("tags__name")
+                .annotate(count=Count("id"))
+                .exclude(tags__name__isnull=True)
+                .order_by("-count", "tags__name")
+            )
+            tag_counts = [
+                (item["tags__name"], item["count"], calc_pct(item["count"]))
+                for item in tag_stats
+            ]
+
+            return {
+                "total": total,
+                "gender_counts": gender_counts,
+                "level_counts": level_counts,
+                "language_counts": language_counts,
+                "speaker_level_counts": speaker_level_counts,
+                "tag_counts": tag_counts,
+            }
+
+        # Get stats per submission type
+        stats_by_type = {}
+        for type_name in submission_types:
+            type_qs = accepted_submissions.filter(type__name=type_name)
+            stats_by_type[type_name] = get_stats_for_submissions(type_qs)
+
+        total_accepted = accepted_submissions.count()
+
+        context = dict(
+            self.admin_site.each_context(request),
+            title="Recap",
+            review_session_id=review_session_id,
+            review_session_repr=str(review_session),
+            total_accepted=total_accepted,
+            submission_types=submission_types,
+            stats_by_type=stats_by_type,
+        )
+
+        return TemplateResponse(request, "reviews-recap.html", context)
 
     def review_view(self, request, review_session_id, review_item_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
