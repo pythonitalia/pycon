@@ -148,6 +148,7 @@ services:
 
   clamav:
     image: clamav/clamav:1.2.3-47
+    platform: linux/amd64
     networks: [pycon_net]
     restart: unless-stopped
 
