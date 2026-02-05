@@ -104,6 +104,8 @@ dependencies = [
     "weasyprint>=63.1",
     "opencv-python-headless>=4.10.0.84",
     "psycopg[c]==3.2.12",
+    "sentence-transformers>=3.0.0",
+    "scikit-learn>=1.5.0",
 ]
 name = "backend"
 version = "0.1.0"

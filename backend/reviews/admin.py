@@ -292,6 +292,8 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         from django.db.models import Count, Q
         from submissions.models import Submission
 
+        from reviews.similar_talks import compute_similar_talks
+
         review_session = ReviewSession.objects.get(id=review_session_id)
 
         if not review_session.user_can_review(request.user):
@@ -410,6 +412,21 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
         total_accepted = accepted_submissions.count()
 
+        similar_talks = compute_similar_talks(
+            accepted_submissions, top_n=5, conference_id=conference.id
+        )
+
+        submissions_list = [
+            {
+                "id": s.id,
+                "title": str(s.title),
+                "type": s.type.name,
+                "speaker": s.speaker.display_name if s.speaker else "Unknown",
+                "similar": similar_talks.get(s.id, []),
+            }
+            for s in accepted_submissions
+        ]
+
         context = dict(
             self.admin_site.each_context(request),
             title="Recap",
@@ -418,6 +435,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             total_accepted=total_accepted,
             submission_types=submission_types,
             stats_by_type=stats_by_type,
+            submissions_list=submissions_list,
         )
 
         return TemplateResponse(request, "reviews-recap.html", context)

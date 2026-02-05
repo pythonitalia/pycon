@@ -128,6 +128,88 @@
     font-weight: bold;
     line-height: 1;
   }
+
+  .similar-talks-section {
+    margin-top: 40px;
+  }
+
+  .similar-talks-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--body-bg, #fff);
+    border: 1px solid var(--hairline-color, #ddd);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .similar-talks-table th,
+  .similar-talks-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--hairline-color, #eee);
+  }
+
+  .similar-talks-table th {
+    background: var(--primary, #417690);
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .similar-talks-table tr:hover {
+    background: var(--darkened-bg, #f5f5f5);
+  }
+
+  .similar-talks-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .similar-talk-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 13px;
+  }
+
+  .similar-talk-item:not(:last-child) {
+    border-bottom: 1px dashed var(--hairline-color, #ddd);
+    margin-bottom: 4px;
+    padding-bottom: 8px;
+  }
+
+  .similar-talk-title {
+    flex: 1;
+    color: var(--body-fg, #333);
+  }
+
+  .similarity-score {
+    background: var(--primary, #417690);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    margin-left: 10px;
+    white-space: nowrap;
+  }
+
+  .submission-type-badge {
+    display: inline-block;
+    background: var(--darkened-bg, #f0f0f0);
+    color: var(--body-quiet-color, #666);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+
+  .no-similar {
+    color: var(--body-quiet-color, #999);
+    font-style: italic;
+  }
 </style>
 {% endblock %}
 
@@ -256,5 +338,43 @@
     </div>
   </div>
   {% endfor %}
+
+  <!-- Similar Talks Section -->
+  {% if submissions_list %}
+  <div class="similar-talks-section recap-section">
+    <h2 class="recap-section-title">🔗 Similar Talks</h2>
+    <table class="similar-talks-table">
+      <thead>
+        <tr>
+          <th style="width: 35%;">Talk</th>
+          <th style="width: 15%;">Type</th>
+          <th style="width: 15%;">Speaker</th>
+          <th style="width: 35%;">Similar Talks</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for submission in submissions_list %}
+        <tr>
+          <td><strong>{{ submission.title }}</strong></td>
+          <td><span class="submission-type-badge">{{ submission.type }}</span></td>
+          <td>{{ submission.speaker }}</td>
+          <td>
+            {% if submission.similar %}
+              {% for similar in submission.similar %}
+              <div class="similar-talk-item">
+                <span class="similar-talk-title">{{ similar.title }}</span>
+                <span class="similarity-score">{{ similar.similarity }}%</span>
+              </div>
+              {% endfor %}
+            {% else %}
+              <span class="no-similar">No similar talks found</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}
