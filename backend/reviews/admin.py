@@ -95,7 +95,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             {
                 "fields": (
                     "go_to_review_screen",
-                    "go_to_recap_screen",
+                    "go_to_shortlist_screen",
                 )
             },
         )
@@ -120,7 +120,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     def get_readonly_fields(self, request: HttpRequest, obj):
         fields = [
             "go_to_review_screen",
-            "go_to_recap_screen",
+            "go_to_shortlist_screen",
         ]
 
         if obj:
@@ -158,18 +158,18 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 """
         )
 
-    @admin.display(description="Recap Screen")
-    def go_to_recap_screen(self, obj):
+    @admin.display(description="Shortlist Screen")
+    def go_to_shortlist_screen(self, obj):
         if not obj.id:
             return ""
 
-        if not obj.can_see_recap_screen:
-            return "You cannot see the recap of this session yet."
+        if not obj.can_see_shortlist_screen:
+            return "You cannot see the shortlist of this session yet."
 
         return mark_safe(
             f"""
-    <a href="{reverse("admin:reviews-recap", kwargs={"review_session_id": obj.id})}">
-        Go to recap screen
+    <a href="{reverse("admin:reviews-shortlist", kwargs={"review_session_id": obj.id})}">
+        Go to shortlist screen
     </a>
 """
         )
@@ -177,9 +177,9 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     def get_urls(self):
         return [
             path(
-                "<int:review_session_id>/review/recap/",
-                self.admin_site.admin_view(self.review_recap_view),
-                name="reviews-recap",
+                "<int:review_session_id>/review/shortlist/",
+                self.admin_site.admin_view(self.review_shortlist_view),
+                name="reviews-shortlist",
             ),
             path(
                 "<int:review_session_id>/review/start/",
@@ -204,7 +204,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             messages.warning(request, "No new proposal to review.")
             return redirect(
                 reverse(
-                    "admin:reviews-recap",
+                    "admin:reviews-shortlist",
                     kwargs={
                         "review_session_id": review_session_id,
                     },
@@ -221,14 +221,14 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             )
         )
 
-    def review_recap_view(self, request, review_session_id):
+    def review_shortlist_view(self, request, review_session_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
 
         if not review_session.user_can_review(request.user):
             raise PermissionDenied()
 
-        if not review_session.can_see_recap_screen:
-            messages.error(request, "You cannot see the recap of this session yet.")
+        if not review_session.can_see_shortlist_screen:
+            messages.error(request, "You cannot see the shortlist of this session yet.")
             return redirect(
                 reverse(
                     "admin:reviews_reviewsession_change",
@@ -246,24 +246,24 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             ):
                 raise PermissionDenied()
 
-            adapter.process_recap_post(request, review_session)
+            adapter.process_shortlist_post(request, review_session)
             messages.success(request, "Decisions saved.")
 
             return redirect(
                 reverse(
-                    "admin:reviews-recap",
+                    "admin:reviews-shortlist",
                     kwargs={
                         "review_session_id": review_session_id,
                     },
                 )
             )
 
-        items = adapter.get_recap_items_queryset(review_session).all()
-        context = adapter.get_recap_context(
+        items = adapter.get_shortlist_items_queryset(review_session).all()
+        context = adapter.get_shortlist_context(
             request, review_session, items, self.admin_site
         )
 
-        return TemplateResponse(request, adapter.recap_template, context)
+        return TemplateResponse(request, adapter.shortlist_template, context)
 
     def review_view(self, request, review_session_id, review_item_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
@@ -365,7 +365,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 messages.warning(request, "No new proposal to review.")
                 return redirect(
                     reverse(
-                        "admin:reviews-recap",
+                        "admin:reviews-shortlist",
                         kwargs={
                             "review_session_id": review_session_id,
                         },

@@ -42,8 +42,8 @@ class ReviewAdapter(Protocol):
     """Protocol defining the interface for review type adapters."""
 
     @property
-    def recap_template(self) -> str:
-        """Template name for the recap view."""
+    def shortlist_template(self) -> str:
+        """Template name for the shortlist view."""
         ...
 
     @property
@@ -51,29 +51,29 @@ class ReviewAdapter(Protocol):
         """Template name for the individual review view."""
         ...
 
-    def get_recap_items_queryset(
+    def get_shortlist_items_queryset(
         self,
         review_session: ReviewSession,
     ) -> QuerySet:
-        """Return annotated queryset of items for the recap view."""
+        """Return annotated queryset of items for the shortlist view."""
         ...
 
-    def get_recap_context(
+    def get_shortlist_context(
         self,
         request: HttpRequest,
         review_session: ReviewSession,
         items: QuerySet,
         admin_site: AdminSite,
     ) -> dict[str, Any]:
-        """Return template context for the recap view."""
+        """Return template context for the shortlist view."""
         ...
 
-    def process_recap_post(
+    def process_shortlist_post(
         self,
         request: HttpRequest,
         review_session: ReviewSession,
     ) -> None:
-        """Process and save decisions from the recap form."""
+        """Process and save decisions from the shortlist form."""
         ...
 
     def get_review_context(
@@ -111,18 +111,18 @@ class ProposalsReviewAdapter:
     """Adapter for handling Proposals (Submissions) reviews."""
 
     @property
-    def recap_template(self) -> str:
-        return "proposals-recap.html"
+    def shortlist_template(self) -> str:
+        return "proposals-shortlist.html"
 
     @property
     def review_template(self) -> str:
         return "proposal-review.html"
 
-    def get_recap_items_queryset(
+    def get_shortlist_items_queryset(
         self,
         review_session: ReviewSession,
     ) -> QuerySet[Submission]:
-        """Return submissions annotated with scores for the recap view."""
+        """Return submissions annotated with scores for the shortlist view."""
         review_session_id = review_session.id
 
         return (
@@ -159,14 +159,14 @@ class ProposalsReviewAdapter:
             )
         )
 
-    def get_recap_context(
+    def get_shortlist_context(
         self,
         request: HttpRequest,
         review_session: ReviewSession,
         items: QuerySet,
         admin_site: AdminSite,
     ) -> dict[str, Any]:
-        """Return template context for the proposals recap view."""
+        """Return template context for the proposals shortlist view."""
         conference = review_session.conference
         speakers_ids = items.values_list("speaker_id", flat=True)
 
@@ -197,10 +197,10 @@ class ProposalsReviewAdapter:
             submission_types=conference.submission_types.all(),
             review_session_repr=str(review_session),
             all_statuses=[choice for choice in Submission.STATUS],
-            title="Recap",
+            title="Shortlist",
         )
 
-    def process_recap_post(
+    def process_shortlist_post(
         self,
         request: HttpRequest,
         review_session: ReviewSession,
@@ -359,18 +359,18 @@ class GrantsReviewAdapter:
     """Adapter for handling Grants (Financial Aid) reviews."""
 
     @property
-    def recap_template(self) -> str:
-        return "grants-recap.html"
+    def shortlist_template(self) -> str:
+        return "grants-shortlist.html"
 
     @property
     def review_template(self) -> str:
         return "grant-review.html"
 
-    def get_recap_items_queryset(
+    def get_shortlist_items_queryset(
         self,
         review_session: ReviewSession,
     ) -> QuerySet[Grant]:
-        """Return grants annotated with scores and std_dev for the recap view."""
+        """Return grants annotated with scores and std_dev for the shortlist view."""
         review_session_id = review_session.id
 
         return (
@@ -433,14 +433,14 @@ class GrantsReviewAdapter:
             )
         )
 
-    def get_recap_context(
+    def get_shortlist_context(
         self,
         request: HttpRequest,
         review_session: ReviewSession,
         items: QuerySet,
         admin_site: AdminSite,
     ) -> dict[str, Any]:
-        """Return template context for the grants recap view."""
+        """Return template context for the grants shortlist view."""
         proposals = {
             submission.id: submission
             for submission in Submission.objects.non_cancelled()
@@ -468,10 +468,10 @@ class GrantsReviewAdapter:
                 conference=review_session.conference
             ),
             review_session=review_session,
-            title="Recap",
+            title="Shortlist",
         )
 
-    def process_recap_post(
+    def process_shortlist_post(
         self,
         request: HttpRequest,
         review_session: ReviewSession,
