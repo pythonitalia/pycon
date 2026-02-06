@@ -10,6 +10,10 @@ module "pycon_it" {
   source = "./domains/pycon_it"
 }
 
+module "pydata_it" {
+  source = "./domains/pydata_it"
+}
+
 module "vpc" {
   source = "./vpc"
 }
