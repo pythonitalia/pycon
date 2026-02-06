@@ -14,10 +14,6 @@ module "pydata_it" {
   source = "./domains/pydata_it"
 }
 
-module "vpc" {
-  source = "./vpc"
-}
-
 module "certs_beta" {
   source = "./certs/beta"
 
