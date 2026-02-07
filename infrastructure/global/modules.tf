@@ -14,6 +14,10 @@ module "pydata_it" {
   source = "./domains/pydata_it"
 }
 
+module "pyconit_dev" {
+  source = "./domains/pyconit_dev"
+}
+
 module "certs_beta" {
   source = "./certs/beta"
 
