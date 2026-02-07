@@ -7,5 +7,6 @@ class DynamicContentDisplaySection(blocks.StructBlock):
             ("speakers", "Speakers"),
             ("keynoters", "Keynoters"),
             ("proposals", "Proposals"),
+            ("local_communities", "Local Communities"),
         ],
     )
