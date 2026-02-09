@@ -182,25 +182,51 @@ def test_recap_view_redirects_when_shortlist_not_visible(rf, mocker):
 # --- review_recap_compute_analysis_view tests ---
 
 
-def test_compute_analysis_view_returns_submissions_and_clusters(rf, mocker):
+def _mock_analysis_deps(mocker, cache_return=None):
+    """Mock the lazy-imported dependencies used in the compute analysis view."""
+    mock_cache = mocker.patch("django.core.cache.cache.get", return_value=cache_return)
+    mock_task = mocker.patch("reviews.tasks.compute_recap_analysis.apply_async")
+    mock_check = mocker.patch("pycon.tasks.check_pending_heavy_processing_work.delay")
+    mocker.patch(
+        "reviews.similar_talks._get_cache_key",
+        return_value="recap_analysis:conf_test:abc123",
+    )
+    return mock_cache, mock_task, mock_check
+
+
+def test_compute_analysis_view_returns_cached_result(rf, mocker):
     user, conference, review_session, submissions = _create_recap_setup()
     sub1, sub2 = submissions
 
-    mocker.patch(
-        "reviews.similar_talks.compute_similar_talks",
-        return_value={
-            sub1.id: [{"id": sub2.id, "title": str(sub2.title), "similarity": 75.0}],
-            sub2.id: [],
-        },
-    )
-    mocker.patch(
-        "reviews.similar_talks.compute_topic_clusters",
-        return_value={
-            "topics": [{"name": "ML", "count": 2, "keywords": ["ml"], "submissions": []}],
+    cached_data = {
+        "submissions_list": [
+            {
+                "id": sub1.id,
+                "title": str(sub1.title),
+                "type": sub1.type.name,
+                "speaker": sub1.speaker.display_name,
+                "similar": [
+                    {"id": sub2.id, "title": str(sub2.title), "similarity": 75.0}
+                ],
+            },
+            {
+                "id": sub2.id,
+                "title": str(sub2.title),
+                "type": sub2.type.name,
+                "speaker": sub2.speaker.display_name,
+                "similar": [],
+            },
+        ],
+        "topic_clusters": {
+            "topics": [
+                {"name": "ML", "count": 2, "keywords": ["ml"], "submissions": []}
+            ],
             "outliers": [],
             "submission_topics": {},
         },
-    )
+    }
+
+    mock_cache, mock_task, _ = _mock_analysis_deps(mocker, cache_return=cached_data)
 
     request = rf.get("/")
     request.user = user
@@ -211,77 +237,76 @@ def test_compute_analysis_view_returns_submissions_and_clusters(rf, mocker):
     assert response.status_code == 200
     data = json.loads(response.content)
 
-    # Verify submissions_list structure
     assert len(data["submissions_list"]) == 2
-    # sub1 has higher similarity (75%) so should be first
     assert data["submissions_list"][0]["id"] == sub1.id
-    assert data["submissions_list"][0]["similar"] == [
-        {"id": sub2.id, "title": str(sub2.title), "similarity": 75.0}
-    ]
-    assert data["submissions_list"][1]["id"] == sub2.id
-    assert data["submissions_list"][1]["similar"] == []
-
-    # Each submission entry has required fields
-    for entry in data["submissions_list"]:
-        assert "id" in entry
-        assert "title" in entry
-        assert "type" in entry
-        assert "speaker" in entry
-        assert "similar" in entry
-
-    # Verify topic_clusters is passed through
     assert data["topic_clusters"]["topics"][0]["name"] == "ML"
-    assert data["topic_clusters"]["outliers"] == []
+
+    # Task should NOT have been dispatched since cache was hit
+    mock_task.assert_not_called()
 
 
-def test_compute_analysis_view_passes_recompute_flag(rf, mocker):
-    mock_similar = mocker.patch(
-        "reviews.similar_talks.compute_similar_talks",
-        return_value={},
-    )
-    mock_clusters = mocker.patch(
-        "reviews.similar_talks.compute_topic_clusters",
-        return_value={"topics": [], "outliers": [], "submission_topics": {}},
-    )
-
+def test_compute_analysis_view_dispatches_task_on_cache_miss(rf, mocker):
     user, conference, review_session, submissions = _create_recap_setup()
 
-    request = rf.get("/?recompute=1")
-    request.user = user
-
-    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
-    admin.review_recap_compute_analysis_view(request, review_session.id)
-
-    _, kwargs = mock_similar.call_args
-    assert kwargs["force_recompute"] is True
-
-    _, kwargs = mock_clusters.call_args
-    assert kwargs["force_recompute"] is True
-
-
-def test_compute_analysis_view_no_recompute_by_default(rf, mocker):
-    mock_similar = mocker.patch(
-        "reviews.similar_talks.compute_similar_talks",
-        return_value={},
-    )
-    mock_clusters = mocker.patch(
-        "reviews.similar_talks.compute_topic_clusters",
-        return_value={"topics": [], "outliers": [], "submission_topics": {}},
-    )
-
-    user, conference, review_session, submissions = _create_recap_setup()
+    _, mock_task, mock_check = _mock_analysis_deps(mocker, cache_return=None)
 
     request = rf.get("/")
     request.user = user
 
     admin = ReviewSessionAdmin(ReviewSession, AdminSite())
-    admin.review_recap_compute_analysis_view(request, review_session.id)
+    response = admin.review_recap_compute_analysis_view(request, review_session.id)
 
-    _, kwargs = mock_similar.call_args
-    assert kwargs["force_recompute"] is False
+    assert response.status_code == 200
+    data = json.loads(response.content)
+    assert data == {"status": "processing"}
 
-    _, kwargs = mock_clusters.call_args
-    assert kwargs["force_recompute"] is False
+    mock_task.assert_called_once_with(
+        args=[conference.id],
+        kwargs={"force_recompute": False},
+        queue="heavy_processing",
+    )
+
+    mock_check.assert_called_once()
+
+
+def test_compute_analysis_view_dispatches_task_with_recompute(rf, mocker):
+    user, conference, review_session, submissions = _create_recap_setup()
+
+    _, mock_task, _ = _mock_analysis_deps(mocker, cache_return=None)
+
+    request = rf.get("/?recompute=1")
+    request.user = user
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    response = admin.review_recap_compute_analysis_view(request, review_session.id)
+
+    assert response.status_code == 200
+    data = json.loads(response.content)
+    assert data == {"status": "processing"}
+
+    mock_task.assert_called_once()
+    call_kwargs = mock_task.call_args
+    assert call_kwargs[1]["kwargs"]["force_recompute"] is True
+
+
+def test_compute_analysis_view_recompute_skips_cache(rf, mocker):
+    user, conference, review_session, submissions = _create_recap_setup()
+
+    cached_data = {"submissions_list": [], "topic_clusters": {"topics": []}}
+    mock_cache, mock_task, _ = _mock_analysis_deps(mocker, cache_return=cached_data)
+
+    request = rf.get("/?recompute=1")
+    request.user = user
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    response = admin.review_recap_compute_analysis_view(request, review_session.id)
+
+    data = json.loads(response.content)
+    assert data == {"status": "processing"}
+
+    # Cache should NOT have been checked when recompute=1
+    mock_cache.assert_not_called()
+    mock_task.assert_called_once()
 
 
 def test_compute_analysis_view_permission_denied_for_non_reviewer(rf):

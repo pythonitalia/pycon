@@ -570,6 +570,70 @@
     section.style.display = '';
   }
 
+  var pollTimer = null;
+  var pollStartTime = null;
+  var POLL_INTERVAL = 3000;
+  var POLL_TIMEOUT = 120000;
+
+  function stopPolling() {
+    if (pollTimer) {
+      clearTimeout(pollTimer);
+      pollTimer = null;
+    }
+    pollStartTime = null;
+  }
+
+  function handleResult(data, recompute) {
+    loading.style.display = 'none';
+    btn.style.display = 'none';
+    recomputeBtn.style.display = '';
+    recomputeBtn.disabled = false;
+    recomputeBtn.textContent = 'Recompute (ignore cache)';
+
+    renderTopicClusters(data.topic_clusters);
+    renderSimilarTalks(data.submissions_list);
+  }
+
+  function pollForResults(recompute) {
+    if (pollStartTime && (Date.now() - pollStartTime) > POLL_TIMEOUT) {
+      stopPolling();
+      loading.style.display = 'none';
+      var activeBtn = recompute ? recomputeBtn : btn;
+      activeBtn.disabled = false;
+      activeBtn.textContent = recompute ? 'Recompute (ignore cache)' : 'Compute Topic Clusters & Similar Talks';
+      errorDiv.textContent = 'Analysis is taking longer than expected. Please try again later.';
+      errorDiv.style.display = '';
+      return;
+    }
+
+    var url = recompute ? computeUrl + '?recompute=1' : computeUrl;
+
+    fetch(url, {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(function(response) {
+      if (!response.ok) throw new Error('Server error: ' + response.status);
+      return response.json();
+    })
+    .then(function(data) {
+      if (data.status === 'processing') {
+        pollTimer = setTimeout(function() { pollForResults(false); }, POLL_INTERVAL);
+        return;
+      }
+      stopPolling();
+      handleResult(data, recompute);
+    })
+    .catch(function(err) {
+      stopPolling();
+      loading.style.display = 'none';
+      var activeBtn = recompute ? recomputeBtn : btn;
+      activeBtn.disabled = false;
+      activeBtn.textContent = recompute ? 'Recompute (ignore cache)' : 'Compute Topic Clusters & Similar Talks';
+      errorDiv.textContent = 'Failed to compute analysis: ' + err.message;
+      errorDiv.style.display = '';
+    });
+  }
+
   function fetchAnalysis(recompute) {
     var url = recompute ? computeUrl + '?recompute=1' : computeUrl;
     var activeBtn = recompute ? recomputeBtn : btn;
@@ -587,14 +651,12 @@
       return response.json();
     })
     .then(function(data) {
-      loading.style.display = 'none';
-      btn.style.display = 'none';
-      recomputeBtn.style.display = '';
-      recomputeBtn.disabled = false;
-      recomputeBtn.textContent = 'Recompute (ignore cache)';
-
-      renderTopicClusters(data.topic_clusters);
-      renderSimilarTalks(data.submissions_list);
+      if (data.status === 'processing') {
+        pollStartTime = Date.now();
+        pollTimer = setTimeout(function() { pollForResults(false); }, POLL_INTERVAL);
+        return;
+      }
+      handleResult(data, recompute);
     })
     .catch(function(err) {
       loading.style.display = 'none';
