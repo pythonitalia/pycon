@@ -13,7 +13,6 @@ from django.utils.safestring import mark_safe
 
 from reviews.adapters import get_review_adapter
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
-from reviews.similar_talks import compute_similar_talks, compute_topic_clusters
 from submissions.models import Submission, SubmissionTag
 from users.admin_mixins import ConferencePermissionMixin
 
@@ -451,6 +450,8 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         conference = review_session.conference
         accepted_submissions = self._get_accepted_submissions(conference)
         force_recompute = request.GET.get("recompute") == "1"
+
+        from reviews.similar_talks import compute_similar_talks, compute_topic_clusters
 
         similar_talks = compute_similar_talks(
             accepted_submissions,
