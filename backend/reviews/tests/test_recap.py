@@ -183,14 +183,22 @@ def test_recap_view_redirects_when_shortlist_not_visible(rf, mocker):
 # --- review_recap_compute_analysis_view tests ---
 
 
-def _mock_analysis_deps(mocker, cache_return=None):
+def _mock_analysis_deps(mocker, cache_return=None, computing_task_id=None):
     """Mock the lazy-imported dependencies used in the compute analysis view."""
+
+    def cache_get_side_effect(key):
+        if ":computing" in key:
+            return computing_task_id
+        return cache_return
+
     mock_cache_get = mocker.patch(
-        "django.core.cache.cache.get", return_value=cache_return
+        "django.core.cache.cache.get", side_effect=cache_get_side_effect
     )
     mock_cache_add = mocker.patch(
         "django.core.cache.cache.add", return_value=True
     )
+    mocker.patch("django.core.cache.cache.set")
+    mocker.patch("django.core.cache.cache.delete")
     mock_task = mocker.patch("reviews.tasks.compute_recap_analysis.apply_async")
     mock_check = mocker.patch("pycon.tasks.check_pending_heavy_processing_work.delay")
     return mock_cache_get, mock_cache_add, mock_task, mock_check
@@ -312,8 +320,10 @@ def test_compute_analysis_view_recompute_skips_cache(rf, mocker):
     data = json.loads(response.content)
     assert data == {"status": "processing"}
 
-    # Cache should NOT have been checked when recompute=1
-    mock_cache_get.assert_not_called()
+    # With recompute=1, cache.get should only be called for the computing key,
+    # not for the result cache
+    for call in mock_cache_get.call_args_list:
+        assert ":computing" in call.args[0]
     mock_task.assert_called_once()
 
 
@@ -471,3 +481,101 @@ def test_task_handles_missing_conference(mocker):
 
     assert result is None
     mock_similar.assert_not_called()
+
+
+@pytest.mark.django_db
+@override_settings(CACHES=LOCMEM_CACHE)
+def test_task_handles_missing_conference_cleans_up_lock(mocker):
+    from django.core.cache import cache
+
+    from reviews.tasks import compute_recap_analysis
+
+    cache_key = "recap_analysis:conf_999999:key"
+    computing_key = f"{cache_key}:computing"
+    cache.set(computing_key, "some-task-id")
+
+    mocker.patch("reviews.similar_talks.compute_similar_talks")
+
+    result = compute_recap_analysis(999999, cache_key)
+
+    assert result is None
+    # Verify computing lock was cleaned up on DoesNotExist
+    assert cache.get(computing_key) is None
+
+
+def test_compute_analysis_view_clears_stale_lock_and_dispatches(rf, mocker):
+    user, conference, review_session, submissions = _create_recap_setup()
+
+    def cache_get_side_effect(key):
+        if ":computing" in key:
+            return "stale-task-id-123"
+        return None
+
+    mocker.patch("django.core.cache.cache.get", side_effect=cache_get_side_effect)
+    mocker.patch("django.core.cache.cache.add", return_value=True)
+    mocker.patch("django.core.cache.cache.set")
+    mock_cache_delete = mocker.patch("django.core.cache.cache.delete")
+    mock_task = mocker.patch("reviews.tasks.compute_recap_analysis.apply_async")
+    mock_check = mocker.patch("pycon.tasks.check_pending_heavy_processing_work.delay")
+
+    # Mock AsyncResult to report task as finished
+    mock_async_result_cls = mocker.patch("celery.result.AsyncResult")
+    mock_async_result_cls.return_value.state = "SUCCESS"
+
+    request = rf.get("/")
+    request.user = user
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    response = admin.review_recap_compute_analysis_view(request, review_session.id)
+
+    data = json.loads(response.content)
+    assert data == {"status": "processing"}
+
+    # Stale lock should have been deleted
+    mock_cache_delete.assert_called()
+    # New task should have been dispatched
+    mock_task.assert_called_once()
+    mock_check.assert_called_once()
+
+
+def test_compute_analysis_view_keeps_active_task_lock(rf, mocker):
+    user, conference, review_session, submissions = _create_recap_setup()
+
+    def cache_get_side_effect(key):
+        if ":computing" in key:
+            return "active-task-id-456"
+        return None
+
+    mocker.patch("django.core.cache.cache.get", side_effect=cache_get_side_effect)
+    mocker.patch("django.core.cache.cache.add", return_value=False)
+    mocker.patch("django.core.cache.cache.set")
+    mock_cache_delete = mocker.patch("django.core.cache.cache.delete")
+    mock_task = mocker.patch("reviews.tasks.compute_recap_analysis.apply_async")
+    mock_check = mocker.patch("pycon.tasks.check_pending_heavy_processing_work.delay")
+
+    # Mock AsyncResult to report task as still running
+    mock_async_result_cls = mocker.patch("celery.result.AsyncResult")
+    mock_async_result_cls.return_value.state = "STARTED"
+
+    request = rf.get("/")
+    request.user = user
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    response = admin.review_recap_compute_analysis_view(request, review_session.id)
+
+    data = json.loads(response.content)
+    assert data == {"status": "processing"}
+
+    # Lock should NOT have been deleted (task still active)
+    mock_cache_delete.assert_not_called()
+    # No new task should be dispatched
+    mock_task.assert_not_called()
+    mock_check.assert_not_called()
+
+
+def test_error_cache_ttl_is_shorter_than_result_ttl():
+    from reviews.tasks import ERROR_CACHE_TTL, RESULT_CACHE_TTL
+
+    assert ERROR_CACHE_TTL == 120  # 2 minutes
+    assert RESULT_CACHE_TTL == 86400  # 24 hours
+    assert ERROR_CACHE_TTL < RESULT_CACHE_TTL

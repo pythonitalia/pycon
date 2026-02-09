@@ -27,6 +27,7 @@ def get_accepted_submissions(conference):
         )
         .select_related("speaker", "type", "audience_level")
         .prefetch_related("languages")
+        .order_by("id")
     )
 
 
@@ -473,12 +474,27 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         # Use cache.add as a lock to prevent duplicate task dispatch.
         # Short TTL so lock auto-expires if the worker is killed before cleanup.
         computing_key = f"{combined_cache_key}:computing"
-        if cache.add(computing_key, True, timeout=300):
-            compute_recap_analysis.apply_async(
+
+        # Check for stale lock from a crashed/finished task
+        existing_task_id = cache.get(computing_key)
+        if existing_task_id:
+            from celery.result import AsyncResult
+
+            if AsyncResult(existing_task_id).state in (
+                "SUCCESS",
+                "FAILURE",
+                "REVOKED",
+            ):
+                cache.delete(computing_key)
+
+        if cache.add(computing_key, "pending", timeout=300):
+            result = compute_recap_analysis.apply_async(
                 args=[conference.id, combined_cache_key],
                 kwargs={"force_recompute": force_recompute},
                 queue="heavy_processing",
             )
+            # Store task ID so subsequent requests can detect stale locks
+            cache.set(computing_key, result.id, timeout=300)
             check_pending_heavy_processing_work.delay()
 
         return JsonResponse({"status": "processing"})

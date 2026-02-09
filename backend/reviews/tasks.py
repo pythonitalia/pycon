@@ -4,6 +4,9 @@ from pycon.celery import app
 
 logger = logging.getLogger(__name__)
 
+RESULT_CACHE_TTL = 60 * 60 * 24  # 24 hours
+ERROR_CACHE_TTL = 60 * 2  # 2 minutes
+
 
 @app.task
 def compute_recap_analysis(conference_id, combined_cache_key, force_recompute=False):
@@ -22,6 +25,7 @@ def compute_recap_analysis(conference_id, combined_cache_key, force_recompute=Fa
         logger.error(
             "Conference %s not found for recap analysis", conference_id
         )
+        cache.delete(f"{combined_cache_key}:computing")
         return
 
     accepted_submissions = list(get_accepted_submissions(conference))
@@ -65,7 +69,7 @@ def compute_recap_analysis(conference_id, combined_cache_key, force_recompute=Fa
             "topic_clusters": topic_clusters,
         }
 
-        cache.set(combined_cache_key, result, 60 * 60 * 24)
+        cache.set(combined_cache_key, result, RESULT_CACHE_TTL)
 
         return result
     except Exception:
@@ -75,7 +79,7 @@ def compute_recap_analysis(conference_id, combined_cache_key, force_recompute=Fa
         cache.set(
             combined_cache_key,
             {"status": "error", "message": "Analysis failed. Please try again."},
-            60 * 2,
+            ERROR_CACHE_TTL,
         )
         raise
     finally:

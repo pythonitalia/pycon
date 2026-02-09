@@ -573,11 +573,11 @@
   var pollTimer = null;
   var pollStartTime = null;
   var pollAttempt = 0;
-  var POLL_TIMEOUT = 180000;
+  var POLL_TIMEOUT = 360000; // 6 minutes – must exceed backend lock TTL (300s)
 
   function getNextPollInterval() {
-    // Exponential backoff: 1s, 2s, 3s, 5s, 5s, 5s...
-    var intervals = [1000, 2000, 3000, 5000];
+    // Exponential backoff: 1s, 2s, 3s, 5s, 10s, 15s, 15s...
+    var intervals = [1000, 2000, 3000, 5000, 10000, 15000];
     return intervals[Math.min(pollAttempt, intervals.length - 1)];
   }
 
