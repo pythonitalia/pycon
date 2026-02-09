@@ -6,24 +6,25 @@ logger = logging.getLogger(__name__)
 
 
 @app.task
-def compute_recap_analysis(conference_id, force_recompute=False):
+def compute_recap_analysis(conference_id, combined_cache_key, force_recompute=False):
     from django.core.cache import cache
 
+    from conferences.models import Conference
     from reviews.admin import get_accepted_submissions
     from reviews.similar_talks import (
-        _get_cache_key,
         compute_similar_talks,
         compute_topic_clusters,
     )
 
-    from conferences.models import Conference
+    try:
+        conference = Conference.objects.get(id=conference_id)
+    except Conference.DoesNotExist:
+        logger.error(
+            "Conference %s not found for recap analysis", conference_id
+        )
+        return
 
-    conference = Conference.objects.get(id=conference_id)
     accepted_submissions = list(get_accepted_submissions(conference))
-
-    combined_cache_key = _get_cache_key(
-        "recap_analysis", conference_id, accepted_submissions
-    )
 
     try:
         similar_talks = compute_similar_talks(
@@ -72,6 +73,8 @@ def compute_recap_analysis(conference_id, force_recompute=False):
         cache.set(
             combined_cache_key,
             {"status": "error", "message": "Analysis failed. Please try again."},
-            60 * 5,
+            60 * 2,
         )
         raise
+    finally:
+        cache.delete(f"{combined_cache_key}:computing")

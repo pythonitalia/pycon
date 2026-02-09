@@ -470,13 +470,15 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             if cached_result is not None:
                 return JsonResponse(cached_result)
 
-        # Dispatch the Celery task to the heavy_processing queue
-        compute_recap_analysis.apply_async(
-            args=[conference.id],
-            kwargs={"force_recompute": force_recompute},
-            queue="heavy_processing",
-        )
-        check_pending_heavy_processing_work.delay()
+        # Use cache.add as a lock to prevent duplicate task dispatch
+        computing_key = f"{combined_cache_key}:computing"
+        if cache.add(computing_key, True, timeout=600):
+            compute_recap_analysis.apply_async(
+                args=[conference.id, combined_cache_key],
+                kwargs={"force_recompute": force_recompute},
+                queue="heavy_processing",
+            )
+            check_pending_heavy_processing_work.delay()
 
         return JsonResponse({"status": "processing"})
 
