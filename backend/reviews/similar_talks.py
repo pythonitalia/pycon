@@ -253,7 +253,9 @@ def _get_cache_key(prefix: str, conference_id: int, submissions) -> str:
     return f"{prefix}:conf_{conference_id}:{content_hash.hexdigest()}"
 
 
-def compute_similar_talks(submissions, top_n=5, conference_id=None):
+def compute_similar_talks(
+    submissions, top_n=5, conference_id=None, force_recompute=False
+):
     """
     Compute similar talks for each submission based on embeddings.
 
@@ -261,6 +263,7 @@ def compute_similar_talks(submissions, top_n=5, conference_id=None):
         submissions: A list of Submission objects
         top_n: Number of similar talks to return for each submission
         conference_id: Optional conference ID for cache key
+        force_recompute: Skip cache and recompute fresh results
 
     Returns:
         A dictionary mapping submission IDs to lists of similar submission IDs
@@ -276,9 +279,10 @@ def compute_similar_talks(submissions, top_n=5, conference_id=None):
     cache_key = None
     if conference_id:
         cache_key = _get_cache_key("similar_talks", conference_id, submissions_list)
-        cached_result = cache.get(cache_key)
-        if cached_result is not None:
-            return cached_result
+        if not force_recompute:
+            cached_result = cache.get(cache_key)
+            if cached_result is not None:
+                return cached_result
 
     model = get_embedding_model()
 
@@ -309,7 +313,9 @@ def compute_similar_talks(submissions, top_n=5, conference_id=None):
     return similar_talks
 
 
-def compute_topic_clusters(submissions, min_topic_size=3, conference_id=None):
+def compute_topic_clusters(
+    submissions, min_topic_size=3, conference_id=None, force_recompute=False
+):
     """
     Compute topic clusters for submissions using BERTopic.
 
@@ -317,6 +323,7 @@ def compute_topic_clusters(submissions, min_topic_size=3, conference_id=None):
         submissions: A list of Submission objects
         min_topic_size: Minimum number of talks per cluster
         conference_id: Optional conference ID for cache key
+        force_recompute: Skip cache and recompute fresh results
 
     Returns:
         A dictionary with:
@@ -334,9 +341,10 @@ def compute_topic_clusters(submissions, min_topic_size=3, conference_id=None):
     cache_key = None
     if conference_id:
         cache_key = _get_cache_key("topic_clusters_v4", conference_id, submissions_list)
-        cached_result = cache.get(cache_key)
-        if cached_result is not None:
-            return cached_result
+        if not force_recompute:
+            cached_result = cache.get(cache_key)
+            if cached_result is not None:
+                return cached_result
 
     model = get_embedding_model()
     texts = [get_embedding_text(s) for s in submissions_list]

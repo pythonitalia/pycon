@@ -434,12 +434,15 @@
   {% endfor %}
 
   <!-- Compute Analysis Button -->
-  <div class="recap-section" style="text-align: center;">
+  <div id="analysis-controls" class="recap-section" style="text-align: center;">
     <button type="button" id="compute-analysis-btn" class="button" style="padding: 10px 30px; font-size: 16px; cursor: pointer;">
       Compute Topic Clusters &amp; Similar Talks
     </button>
+    <button type="button" id="recompute-analysis-btn" class="button" style="padding: 10px 30px; font-size: 16px; cursor: pointer; display: none;">
+      Recompute (ignore cache)
+    </button>
     <div id="analysis-loading" style="display: none; margin-top: 15px;">
-      <span style="color: var(--body-quiet-color, #666);">Computing analysis (this may take a moment on first run)...</span>
+      <span style="color: var(--body-quiet-color, #666);">Computing analysis (this may take a moment)...</span>
     </div>
     <div id="analysis-error" style="display: none; margin-top: 15px; color: #c0392b;"></div>
   </div>
@@ -470,6 +473,7 @@
 <script>
 (function() {
   const btn = document.getElementById('compute-analysis-btn');
+  const recomputeBtn = document.getElementById('recompute-analysis-btn');
   const loading = document.getElementById('analysis-loading');
   const errorDiv = document.getElementById('analysis-error');
   const computeUrl = '{{ compute_analysis_url }}';
@@ -566,13 +570,16 @@
     section.style.display = '';
   }
 
-  btn.addEventListener('click', function() {
-    btn.disabled = true;
-    btn.textContent = 'Computing...';
+  function fetchAnalysis(recompute) {
+    var url = recompute ? computeUrl + '?recompute=1' : computeUrl;
+    var activeBtn = recompute ? recomputeBtn : btn;
+
+    activeBtn.disabled = true;
+    activeBtn.textContent = recompute ? 'Recomputing...' : 'Computing...';
     loading.style.display = '';
     errorDiv.style.display = 'none';
 
-    fetch(computeUrl, {
+    fetch(url, {
       headers: { 'X-Requested-With': 'XMLHttpRequest' }
     })
     .then(function(response) {
@@ -582,18 +589,24 @@
     .then(function(data) {
       loading.style.display = 'none';
       btn.style.display = 'none';
+      recomputeBtn.style.display = '';
+      recomputeBtn.disabled = false;
+      recomputeBtn.textContent = 'Recompute (ignore cache)';
 
       renderTopicClusters(data.topic_clusters);
       renderSimilarTalks(data.submissions_list);
     })
     .catch(function(err) {
       loading.style.display = 'none';
-      btn.disabled = false;
-      btn.textContent = 'Compute Topic Clusters & Similar Talks';
+      activeBtn.disabled = false;
+      activeBtn.textContent = recompute ? 'Recompute (ignore cache)' : 'Compute Topic Clusters & Similar Talks';
       errorDiv.textContent = 'Failed to compute analysis: ' + err.message;
       errorDiv.style.display = '';
     });
-  });
+  }
+
+  btn.addEventListener('click', function() { fetchAnalysis(false); });
+  recomputeBtn.addEventListener('click', function() { fetchAnalysis(true); });
 })();
 </script>
 {% endblock %}

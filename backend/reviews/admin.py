@@ -447,13 +447,20 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
         conference = review_session.conference
         accepted_submissions = self._get_accepted_submissions(conference)
+        force_recompute = request.GET.get("recompute") == "1"
 
         similar_talks = compute_similar_talks(
-            accepted_submissions, top_n=5, conference_id=conference.id
+            accepted_submissions,
+            top_n=5,
+            conference_id=conference.id,
+            force_recompute=force_recompute,
         )
 
         topic_clusters = compute_topic_clusters(
-            accepted_submissions, min_topic_size=3, conference_id=conference.id
+            accepted_submissions,
+            min_topic_size=3,
+            conference_id=conference.id,
+            force_recompute=force_recompute,
         )
 
         # Build submissions list with similar talks, sorted by highest similarity
