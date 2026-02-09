@@ -445,6 +445,9 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         if not review_session.user_can_review(request.user):
             raise PermissionDenied()
 
+        if not review_session.can_see_shortlist_screen:
+            raise PermissionDenied()
+
         conference = review_session.conference
         accepted_submissions = self._get_accepted_submissions(conference)
         force_recompute = request.GET.get("recompute") == "1"
