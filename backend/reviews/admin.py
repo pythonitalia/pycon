@@ -3,6 +3,7 @@ import urllib.parse
 from django import forms
 from django.contrib import admin, messages
 from django.core.exceptions import PermissionDenied
+from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.http.request import HttpRequest
 from django.shortcuts import redirect
@@ -12,7 +13,8 @@ from django.utils.safestring import mark_safe
 
 from reviews.adapters import get_review_adapter
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
-from submissions.models import SubmissionTag
+from reviews.similar_talks import compute_similar_talks, compute_topic_clusters
+from submissions.models import Submission, SubmissionTag
 from users.admin_mixins import ConferencePermissionMixin
 
 
@@ -29,6 +31,76 @@ class AvailableScoreOptionInline(admin.TabularInline):
 def get_all_tags():
     # todo improve :)
     return SubmissionTag.objects.values_list("id", "name")
+
+
+def get_stats_for_submissions(qs):
+    """Get all stats for a queryset of submissions."""
+    total = qs.count()
+
+    def calc_pct(count):
+        return round(count / total * 100, 1) if total > 0 else 0
+
+    def with_pct(counts_dict):
+        return {k: (v, calc_pct(v)) for k, v in counts_dict.items()}
+
+    gender_stats = (
+        qs.values("speaker__gender")
+        .annotate(count=Count("id"))
+        .order_by("speaker__gender")
+    )
+    gender_counts = with_pct(
+        {
+            item["speaker__gender"] or "unknown": item["count"]
+            for item in gender_stats
+        }
+    )
+
+    level_stats = (
+        qs.values("audience_level__name")
+        .annotate(count=Count("id"))
+        .order_by("audience_level__name")
+    )
+    level_counts = with_pct(
+        {item["audience_level__name"]: item["count"] for item in level_stats}
+    )
+
+    language_stats = (
+        qs.values("languages__code")
+        .annotate(count=Count("id"))
+        .order_by("languages__code")
+    )
+    language_counts = with_pct(
+        {item["languages__code"]: item["count"] for item in language_stats}
+    )
+
+    speaker_level_stats = (
+        qs.values("speaker_level")
+        .annotate(count=Count("id"))
+        .order_by("speaker_level")
+    )
+    speaker_level_counts = with_pct(
+        {item["speaker_level"]: item["count"] for item in speaker_level_stats}
+    )
+
+    tag_stats = (
+        qs.values("tags__name")
+        .annotate(count=Count("id"))
+        .exclude(tags__name__isnull=True)
+        .order_by("-count", "tags__name")
+    )
+    tag_counts = [
+        (item["tags__name"], item["count"], calc_pct(item["count"]))
+        for item in tag_stats
+    ]
+
+    return {
+        "total": total,
+        "gender_counts": gender_counts,
+        "level_counts": level_counts,
+        "language_counts": language_counts,
+        "speaker_level_counts": speaker_level_counts,
+        "tag_counts": tag_counts,
+    }
 
 
 class SubmitVoteForm(forms.Form):
@@ -295,10 +367,6 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         return TemplateResponse(request, adapter.shortlist_template, context)
 
     def _get_accepted_submissions(self, conference):
-        from django.db.models import Q
-
-        from submissions.models import Submission
-
         return (
             Submission.objects.filter(conference=conference)
             .filter(
@@ -311,8 +379,6 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         )
 
     def review_recap_view(self, request, review_session_id):
-        from django.db.models import Count
-
         review_session = ReviewSession.objects.get(id=review_session_id)
 
         if not review_session.user_can_review(request.user):
@@ -336,80 +402,6 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         submission_types = list(
             conference.submission_types.values_list("name", flat=True)
         )
-
-        def get_stats_for_submissions(qs):
-            """Helper to get all stats for a queryset of submissions."""
-            total = qs.count()
-
-            def calc_pct(count):
-                return round(count / total * 100, 1) if total > 0 else 0
-
-            def with_pct(counts_dict):
-                return {k: (v, calc_pct(v)) for k, v in counts_dict.items()}
-
-            # Gender stats
-            gender_stats = (
-                qs.values("speaker__gender")
-                .annotate(count=Count("id"))
-                .order_by("speaker__gender")
-            )
-            gender_counts = with_pct(
-                {
-                    item["speaker__gender"] or "unknown": item["count"]
-                    for item in gender_stats
-                }
-            )
-
-            # Audience level stats
-            level_stats = (
-                qs.values("audience_level__name")
-                .annotate(count=Count("id"))
-                .order_by("audience_level__name")
-            )
-            level_counts = with_pct(
-                {item["audience_level__name"]: item["count"] for item in level_stats}
-            )
-
-            # Language stats
-            language_stats = (
-                qs.values("languages__code")
-                .annotate(count=Count("id"))
-                .order_by("languages__code")
-            )
-            language_counts = with_pct(
-                {item["languages__code"]: item["count"] for item in language_stats}
-            )
-
-            # Speaker level stats
-            speaker_level_stats = (
-                qs.values("speaker_level")
-                .annotate(count=Count("id"))
-                .order_by("speaker_level")
-            )
-            speaker_level_counts = with_pct(
-                {item["speaker_level"]: item["count"] for item in speaker_level_stats}
-            )
-
-            # Tag stats
-            tag_stats = (
-                qs.values("tags__name")
-                .annotate(count=Count("id"))
-                .exclude(tags__name__isnull=True)
-                .order_by("-count", "tags__name")
-            )
-            tag_counts = [
-                (item["tags__name"], item["count"], calc_pct(item["count"]))
-                for item in tag_stats
-            ]
-
-            return {
-                "total": total,
-                "gender_counts": gender_counts,
-                "level_counts": level_counts,
-                "language_counts": language_counts,
-                "speaker_level_counts": speaker_level_counts,
-                "tag_counts": tag_counts,
-            }
 
         # Get stats per submission type
         stats_by_type = {}
@@ -448,8 +440,6 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         return TemplateResponse(request, "reviews-recap.html", context)
 
     def review_recap_compute_analysis_view(self, request, review_session_id):
-        from reviews.similar_talks import compute_similar_talks, compute_topic_clusters
-
         review_session = ReviewSession.objects.get(id=review_session_id)
 
         if not review_session.user_can_review(request.user):
