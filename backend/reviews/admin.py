@@ -292,7 +292,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         from django.db.models import Count, Q
         from submissions.models import Submission
 
-        from reviews.similar_talks import compute_similar_talks
+        from reviews.similar_talks import compute_similar_talks, compute_topic_clusters
 
         review_session = ReviewSession.objects.get(id=review_session_id)
 
@@ -416,6 +416,10 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             accepted_submissions, top_n=5, conference_id=conference.id
         )
 
+        topic_clusters = compute_topic_clusters(
+            accepted_submissions, min_topic_size=3, conference_id=conference.id
+        )
+
         submissions_list = [
             {
                 "id": s.id,
@@ -436,6 +440,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             submission_types=submission_types,
             stats_by_type=stats_by_type,
             submissions_list=submissions_list,
+            topic_clusters=topic_clusters,
         )
 
         return TemplateResponse(request, "reviews-recap.html", context)

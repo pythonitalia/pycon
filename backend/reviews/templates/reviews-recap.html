@@ -210,6 +210,92 @@
     color: var(--body-quiet-color, #999);
     font-style: italic;
   }
+
+  /* Topic Clusters Styles */
+  .topic-clusters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+  }
+
+  .topic-card {
+    background: var(--body-bg, #fff);
+    border: 1px solid var(--hairline-color, #ddd);
+    border-radius: 8px;
+    padding: 20px;
+    border-left: 4px solid var(--primary, #417690);
+  }
+
+  .topic-card.outliers {
+    border-left-color: var(--body-quiet-color, #999);
+  }
+
+  .topic-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+  }
+
+  .topic-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--body-fg, #333);
+    margin: 0;
+  }
+
+  .topic-count {
+    background: var(--primary, #417690);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .topic-card.outliers .topic-count {
+    background: var(--body-quiet-color, #999);
+  }
+
+  .topic-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 15px;
+  }
+
+  .keyword-tag {
+    background: var(--darkened-bg, #f0f0f0);
+    color: var(--body-quiet-color, #666);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+
+  .topic-submissions {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .topic-submissions li {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--hairline-color, #eee);
+    font-size: 13px;
+    color: var(--body-fg, #333);
+  }
+
+  .topic-submissions li:last-child {
+    border-bottom: none;
+  }
+
+  .no-topics {
+    color: var(--body-quiet-color, #999);
+    font-style: italic;
+    text-align: center;
+    padding: 40px;
+  }
 </style>
 {% endblock %}
 
@@ -338,6 +424,51 @@
     </div>
   </div>
   {% endfor %}
+
+  <!-- Topic Clusters Section -->
+  {% if topic_clusters.topics or topic_clusters.outliers %}
+  <div class="recap-section">
+    <h2 class="recap-section-title">🎯 Topic Clusters</h2>
+    <div class="topic-clusters-grid">
+      {% for topic in topic_clusters.topics %}
+      <div class="topic-card">
+        <div class="topic-header">
+          <h3 class="topic-title">{{ topic.name }}</h3>
+          <span class="topic-count">{{ topic.count }} talks</span>
+        </div>
+        {% if topic.keywords %}
+        <div class="topic-keywords">
+          {% for keyword in topic.keywords %}
+          <span class="keyword-tag">{{ keyword }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <ul class="topic-submissions">
+          {% for submission in topic.submissions %}
+          <li>{{ submission.title }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% empty %}
+      <div class="no-topics">No topic clusters found. Need more submissions to detect patterns.</div>
+      {% endfor %}
+
+      {% if topic_clusters.outliers %}
+      <div class="topic-card outliers">
+        <div class="topic-header">
+          <h3 class="topic-title">Uncategorized</h3>
+          <span class="topic-count">{{ topic_clusters.outliers|length }} talks</span>
+        </div>
+        <ul class="topic-submissions">
+          {% for submission in topic_clusters.outliers %}
+          <li>{{ submission.title }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
 
   <!-- Similar Talks Section -->
   {% if submissions_list %}

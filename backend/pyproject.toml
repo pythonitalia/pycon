@@ -106,6 +106,8 @@ dependencies = [
     "psycopg[c]==3.2.12",
     "sentence-transformers>=3.0.0",
     "scikit-learn>=1.5.0",
+    "bertopic>=0.16.0",
+    "nltk>=3.8.0",
 ]
 name = "backend"
 version = "0.1.0"
