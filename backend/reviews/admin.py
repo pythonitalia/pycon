@@ -17,6 +17,20 @@ from submissions.models import Submission, SubmissionTag
 from users.admin_mixins import ConferencePermissionMixin
 
 
+def get_accepted_submissions(conference):
+    return (
+        Submission.objects.filter(conference=conference)
+        .filter(
+            Q(pending_status=Submission.STATUS.accepted)
+            | Q(pending_status__isnull=True, status=Submission.STATUS.accepted)
+            | Q(pending_status="", status=Submission.STATUS.accepted)
+        )
+        .select_related("speaker", "type", "audience_level")
+        .prefetch_related("languages")
+        .order_by("id")
+    )
+
+
 class AvailableScoreOptionInline(admin.TabularInline):
     model = AvailableScoreOption
 
@@ -366,16 +380,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         return TemplateResponse(request, adapter.shortlist_template, context)
 
     def _get_accepted_submissions(self, conference):
-        return (
-            Submission.objects.filter(conference=conference)
-            .filter(
-                Q(pending_status=Submission.STATUS.accepted)
-                | Q(pending_status__isnull=True, status=Submission.STATUS.accepted)
-                | Q(pending_status="", status=Submission.STATUS.accepted)
-            )
-            .select_related("speaker", "type", "audience_level")
-            .prefetch_related("languages")
-        )
+        return get_accepted_submissions(conference)
 
     def review_recap_view(self, request, review_session_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
@@ -448,49 +453,51 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             raise PermissionDenied()
 
         conference = review_session.conference
-        accepted_submissions = self._get_accepted_submissions(conference)
+        accepted_submissions = list(self._get_accepted_submissions(conference))
         force_recompute = request.GET.get("recompute") == "1"
 
-        from reviews.similar_talks import compute_similar_talks, compute_topic_clusters
+        from django.core.cache import cache
 
-        similar_talks = compute_similar_talks(
-            accepted_submissions,
-            top_n=5,
-            conference_id=conference.id,
-            force_recompute=force_recompute,
+        from pycon.tasks import check_pending_heavy_processing_work
+        from reviews.cache_keys import get_cache_key
+        from reviews.tasks import compute_recap_analysis
+
+        combined_cache_key = get_cache_key(
+            "recap_analysis", conference.id, accepted_submissions
         )
 
-        topic_clusters = compute_topic_clusters(
-            accepted_submissions,
-            min_topic_size=3,
-            conference_id=conference.id,
-            force_recompute=force_recompute,
-        )
+        if not force_recompute:
+            cached_result = cache.get(combined_cache_key)
+            if cached_result is not None:
+                return JsonResponse(cached_result)
 
-        # Build submissions list with similar talks, sorted by highest similarity
-        submissions_list = sorted(
-            [
-                {
-                    "id": s.id,
-                    "title": str(s.title),
-                    "type": s.type.name,
-                    "speaker": s.speaker.display_name if s.speaker else "Unknown",
-                    "similar": similar_talks.get(s.id, []),
-                }
-                for s in accepted_submissions
-            ],
-            key=lambda x: max(
-                (item["similarity"] for item in x["similar"]), default=0
-            ),
-            reverse=True,
-        )
+        # Use cache.add as a lock to prevent duplicate task dispatch.
+        # Short TTL so lock auto-expires if the worker is killed before cleanup.
+        computing_key = f"{combined_cache_key}:computing"
 
-        return JsonResponse(
-            {
-                "submissions_list": submissions_list,
-                "topic_clusters": topic_clusters,
-            }
-        )
+        # Check for stale lock from a crashed/finished task
+        existing_task_id = cache.get(computing_key)
+        if existing_task_id:
+            from celery.result import AsyncResult
+
+            if AsyncResult(existing_task_id).state in (
+                "SUCCESS",
+                "FAILURE",
+                "REVOKED",
+            ):
+                cache.delete(computing_key)
+
+        if cache.add(computing_key, "pending", timeout=300):
+            result = compute_recap_analysis.apply_async(
+                args=[conference.id, combined_cache_key],
+                kwargs={"force_recompute": force_recompute},
+                queue="heavy_processing",
+            )
+            # Store task ID so subsequent requests can detect stale locks
+            cache.set(computing_key, result.id, timeout=300)
+            check_pending_heavy_processing_work.delay()
+
+        return JsonResponse({"status": "processing"})
 
     def review_view(self, request, review_session_id, review_item_id):
         review_session = ReviewSession.objects.get(id=review_session_id)

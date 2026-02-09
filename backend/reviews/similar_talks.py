@@ -1,5 +1,4 @@
 import functools
-import hashlib
 import logging
 
 import nltk
@@ -11,6 +10,9 @@ from sentence_transformers import SentenceTransformer
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+
+from reviews.cache_keys import get_cache_key as _get_cache_key
+from reviews.cache_keys import get_embedding_text
 
 logger = logging.getLogger(__name__)
 
@@ -222,18 +224,6 @@ def get_embedding_model():
     return SentenceTransformer("all-MiniLM-L6-v2", token=False)
 
 
-def get_embedding_text(submission) -> str:
-    """Combine title, elevator_pitch, and abstract into a single string for embedding."""
-    title = str(submission.title) if submission.title else ""
-    elevator_pitch = str(submission.elevator_pitch) if submission.elevator_pitch else ""
-    abstract = (
-        str(submission.abstract)
-        if hasattr(submission, "abstract") and submission.abstract
-        else ""
-    )
-    return f"{title}. {elevator_pitch}. {abstract}"
-
-
 def _get_submission_languages(submissions) -> set[str]:
     """Extract all unique language codes from submissions."""
     language_codes = set()
@@ -243,14 +233,6 @@ def _get_submission_languages(submissions) -> set[str]:
             language_codes.add(lang.code.lower())
 
     return language_codes or {"en"}
-
-
-def _get_cache_key(prefix: str, conference_id: int, submissions) -> str:
-    """Generate a cache key based on conference and submission content."""
-    content_hash = hashlib.md5()
-    for s in sorted(submissions, key=lambda x: x.id):
-        content_hash.update(f"{s.id}:{get_embedding_text(s)}".encode())
-    return f"{prefix}:conf_{conference_id}:{content_hash.hexdigest()}"
 
 
 def compute_similar_talks(
