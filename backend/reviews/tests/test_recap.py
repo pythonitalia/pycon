@@ -108,8 +108,8 @@ def test_recap_view_returns_correct_context(rf):
 
 
 def test_recap_view_does_not_call_ml_functions(rf, mocker):
-    mock_similar = mocker.patch("reviews.admin.compute_similar_talks")
-    mock_clusters = mocker.patch("reviews.admin.compute_topic_clusters")
+    mock_similar = mocker.patch("reviews.similar_talks.compute_similar_talks")
+    mock_clusters = mocker.patch("reviews.similar_talks.compute_topic_clusters")
 
     user, conference, review_session, submissions = _create_recap_setup()
 
@@ -187,14 +187,14 @@ def test_compute_analysis_view_returns_submissions_and_clusters(rf, mocker):
     sub1, sub2 = submissions
 
     mocker.patch(
-        "reviews.admin.compute_similar_talks",
+        "reviews.similar_talks.compute_similar_talks",
         return_value={
             sub1.id: [{"id": sub2.id, "title": str(sub2.title), "similarity": 75.0}],
             sub2.id: [],
         },
     )
     mocker.patch(
-        "reviews.admin.compute_topic_clusters",
+        "reviews.similar_talks.compute_topic_clusters",
         return_value={
             "topics": [{"name": "ML", "count": 2, "keywords": ["ml"], "submissions": []}],
             "outliers": [],
@@ -236,11 +236,11 @@ def test_compute_analysis_view_returns_submissions_and_clusters(rf, mocker):
 
 def test_compute_analysis_view_passes_recompute_flag(rf, mocker):
     mock_similar = mocker.patch(
-        "reviews.admin.compute_similar_talks",
+        "reviews.similar_talks.compute_similar_talks",
         return_value={},
     )
     mock_clusters = mocker.patch(
-        "reviews.admin.compute_topic_clusters",
+        "reviews.similar_talks.compute_topic_clusters",
         return_value={"topics": [], "outliers": [], "submission_topics": {}},
     )
 
@@ -261,11 +261,11 @@ def test_compute_analysis_view_passes_recompute_flag(rf, mocker):
 
 def test_compute_analysis_view_no_recompute_by_default(rf, mocker):
     mock_similar = mocker.patch(
-        "reviews.admin.compute_similar_talks",
+        "reviews.similar_talks.compute_similar_talks",
         return_value={},
     )
     mock_clusters = mocker.patch(
-        "reviews.admin.compute_topic_clusters",
+        "reviews.similar_talks.compute_topic_clusters",
         return_value={"topics": [], "outliers": [], "submission_topics": {}},
     )
 
