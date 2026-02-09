@@ -27,17 +27,19 @@ def compute_recap_analysis(conference_id, combined_cache_key, force_recompute=Fa
     accepted_submissions = list(get_accepted_submissions(conference))
 
     try:
+        # Pass conference_id=None to skip individual function caching;
+        # the combined result is cached under combined_cache_key instead.
         similar_talks = compute_similar_talks(
             accepted_submissions,
             top_n=5,
-            conference_id=conference_id,
+            conference_id=None,
             force_recompute=force_recompute,
         )
 
         topic_clusters = compute_topic_clusters(
             accepted_submissions,
             min_topic_size=3,
-            conference_id=conference_id,
+            conference_id=None,
             force_recompute=force_recompute,
         )
 

@@ -183,9 +183,6 @@ def test_recap_view_redirects_when_shortlist_not_visible(rf, mocker):
 # --- review_recap_compute_analysis_view tests ---
 
 
-FAKE_CACHE_KEY = "recap_analysis:conf_test:abc123"
-
-
 def _mock_analysis_deps(mocker, cache_return=None):
     """Mock the lazy-imported dependencies used in the compute analysis view."""
     mock_cache_get = mocker.patch(
@@ -196,10 +193,6 @@ def _mock_analysis_deps(mocker, cache_return=None):
     )
     mock_task = mocker.patch("reviews.tasks.compute_recap_analysis.apply_async")
     mock_check = mocker.patch("pycon.tasks.check_pending_heavy_processing_work.delay")
-    mocker.patch(
-        "reviews.similar_talks._get_cache_key",
-        return_value=FAKE_CACHE_KEY,
-    )
     return mock_cache_get, mock_cache_add, mock_task, mock_check
 
 
@@ -271,11 +264,13 @@ def test_compute_analysis_view_dispatches_task_on_cache_miss(rf, mocker):
     data = json.loads(response.content)
     assert data == {"status": "processing"}
 
-    mock_task.assert_called_once_with(
-        args=[conference.id, FAKE_CACHE_KEY],
-        kwargs={"force_recompute": False},
-        queue="heavy_processing",
-    )
+    mock_task.assert_called_once()
+    call_kwargs = mock_task.call_args
+    assert call_kwargs[1]["args"][0] == conference.id
+    assert isinstance(call_kwargs[1]["args"][1], str)
+    assert call_kwargs[1]["args"][1].startswith("recap_analysis:conf_")
+    assert call_kwargs[1]["kwargs"] == {"force_recompute": False}
+    assert call_kwargs[1]["queue"] == "heavy_processing"
 
     mock_check.assert_called_once()
 

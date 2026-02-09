@@ -458,10 +458,10 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         from django.core.cache import cache
 
         from pycon.tasks import check_pending_heavy_processing_work
-        from reviews.similar_talks import _get_cache_key
+        from reviews.cache_keys import get_cache_key
         from reviews.tasks import compute_recap_analysis
 
-        combined_cache_key = _get_cache_key(
+        combined_cache_key = get_cache_key(
             "recap_analysis", conference.id, accepted_submissions
         )
 
