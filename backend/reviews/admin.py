@@ -17,6 +17,19 @@ from submissions.models import Submission, SubmissionTag
 from users.admin_mixins import ConferencePermissionMixin
 
 
+def get_accepted_submissions(conference):
+    return (
+        Submission.objects.filter(conference=conference)
+        .filter(
+            Q(pending_status=Submission.STATUS.accepted)
+            | Q(pending_status__isnull=True, status=Submission.STATUS.accepted)
+            | Q(pending_status="", status=Submission.STATUS.accepted)
+        )
+        .select_related("speaker", "type", "audience_level")
+        .prefetch_related("languages")
+    )
+
+
 class AvailableScoreOptionInline(admin.TabularInline):
     model = AvailableScoreOption
 
@@ -366,16 +379,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         return TemplateResponse(request, adapter.shortlist_template, context)
 
     def _get_accepted_submissions(self, conference):
-        return (
-            Submission.objects.filter(conference=conference)
-            .filter(
-                Q(pending_status=Submission.STATUS.accepted)
-                | Q(pending_status__isnull=True, status=Submission.STATUS.accepted)
-                | Q(pending_status="", status=Submission.STATUS.accepted)
-            )
-            .select_related("speaker", "type", "audience_level")
-            .prefetch_related("languages")
-        )
+        return get_accepted_submissions(conference)
 
     def review_recap_view(self, request, review_session_id):
         review_session = ReviewSession.objects.get(id=review_session_id)

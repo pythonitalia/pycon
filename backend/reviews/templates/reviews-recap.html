@@ -572,8 +572,14 @@
 
   var pollTimer = null;
   var pollStartTime = null;
-  var POLL_INTERVAL = 3000;
+  var pollAttempt = 0;
   var POLL_TIMEOUT = 120000;
+
+  function getNextPollInterval() {
+    // Exponential backoff: 1s, 2s, 3s, 5s, 5s, 5s...
+    var intervals = [1000, 2000, 3000, 5000];
+    return intervals[Math.min(pollAttempt, intervals.length - 1)];
+  }
 
   function stopPolling() {
     if (pollTimer) {
@@ -581,9 +587,28 @@
       pollTimer = null;
     }
     pollStartTime = null;
+    pollAttempt = 0;
   }
 
-  function handleResult(data, recompute) {
+  function showError(message) {
+    stopPolling();
+    loading.style.display = 'none';
+    btn.disabled = false;
+    btn.textContent = 'Compute Topic Clusters & Similar Talks';
+    recomputeBtn.disabled = false;
+    recomputeBtn.textContent = 'Recompute (ignore cache)';
+    errorDiv.textContent = message;
+    errorDiv.style.display = '';
+  }
+
+  function handleResult(data) {
+    if (data.status === 'error') {
+      showError(data.message || 'Analysis failed. Please try again.');
+      recomputeBtn.style.display = '';
+      btn.style.display = 'none';
+      return;
+    }
+
     loading.style.display = 'none';
     btn.style.display = 'none';
     recomputeBtn.style.display = '';
@@ -594,21 +619,13 @@
     renderSimilarTalks(data.submissions_list);
   }
 
-  function pollForResults(recompute) {
+  function pollForResults() {
     if (pollStartTime && (Date.now() - pollStartTime) > POLL_TIMEOUT) {
-      stopPolling();
-      loading.style.display = 'none';
-      var activeBtn = recompute ? recomputeBtn : btn;
-      activeBtn.disabled = false;
-      activeBtn.textContent = recompute ? 'Recompute (ignore cache)' : 'Compute Topic Clusters & Similar Talks';
-      errorDiv.textContent = 'Analysis is taking longer than expected. Please try again later.';
-      errorDiv.style.display = '';
+      showError('Analysis is taking longer than expected. Please try again later.');
       return;
     }
 
-    var url = recompute ? computeUrl + '?recompute=1' : computeUrl;
-
-    fetch(url, {
+    fetch(computeUrl, {
       headers: { 'X-Requested-With': 'XMLHttpRequest' }
     })
     .then(function(response) {
@@ -617,20 +634,15 @@
     })
     .then(function(data) {
       if (data.status === 'processing') {
-        pollTimer = setTimeout(function() { pollForResults(false); }, POLL_INTERVAL);
+        pollAttempt++;
+        pollTimer = setTimeout(pollForResults, getNextPollInterval());
         return;
       }
       stopPolling();
-      handleResult(data, recompute);
+      handleResult(data);
     })
     .catch(function(err) {
-      stopPolling();
-      loading.style.display = 'none';
-      var activeBtn = recompute ? recomputeBtn : btn;
-      activeBtn.disabled = false;
-      activeBtn.textContent = recompute ? 'Recompute (ignore cache)' : 'Compute Topic Clusters & Similar Talks';
-      errorDiv.textContent = 'Failed to compute analysis: ' + err.message;
-      errorDiv.style.display = '';
+      showError('Failed to compute analysis: ' + err.message);
     });
   }
 
@@ -653,10 +665,11 @@
     .then(function(data) {
       if (data.status === 'processing') {
         pollStartTime = Date.now();
-        pollTimer = setTimeout(function() { pollForResults(false); }, POLL_INTERVAL);
+        pollAttempt = 0;
+        pollTimer = setTimeout(pollForResults, getNextPollInterval());
         return;
       }
-      handleResult(data, recompute);
+      handleResult(data);
     })
     .catch(function(err) {
       loading.style.display = 'none';
