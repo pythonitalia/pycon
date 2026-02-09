@@ -196,6 +196,14 @@
     white-space: nowrap;
   }
 
+  .similarity-score-medium {
+    background: #e67e22;
+  }
+
+  .similarity-score-high {
+    background: #c0392b;
+  }
+
   .submission-type-badge {
     display: inline-block;
     background: var(--darkened-bg, #f0f0f0);
@@ -494,7 +502,7 @@
               {% for similar in submission.similar %}
               <div class="similar-talk-item">
                 <span class="similar-talk-title">{{ similar.title }}</span>
-                <span class="similarity-score">{{ similar.similarity }}%</span>
+                <span class="similarity-score{% if similar.similarity >= 80 %} similarity-score-high{% elif similar.similarity >= 60 %} similarity-score-medium{% endif %}">{{ similar.similarity }}%</span>
               </div>
               {% endfor %}
             {% else %}
