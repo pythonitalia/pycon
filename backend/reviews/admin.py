@@ -470,9 +470,10 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             if cached_result is not None:
                 return JsonResponse(cached_result)
 
-        # Use cache.add as a lock to prevent duplicate task dispatch
+        # Use cache.add as a lock to prevent duplicate task dispatch.
+        # Short TTL so lock auto-expires if the worker is killed before cleanup.
         computing_key = f"{combined_cache_key}:computing"
-        if cache.add(computing_key, True, timeout=600):
+        if cache.add(computing_key, True, timeout=300):
             compute_recap_analysis.apply_async(
                 args=[conference.id, combined_cache_key],
                 kwargs={"force_recompute": force_recompute},
