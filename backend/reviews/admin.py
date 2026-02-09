@@ -420,16 +420,22 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             accepted_submissions, min_topic_size=3, conference_id=conference.id
         )
 
-        submissions_list = [
-            {
-                "id": s.id,
-                "title": str(s.title),
-                "type": s.type.name,
-                "speaker": s.speaker.display_name if s.speaker else "Unknown",
-                "similar": similar_talks.get(s.id, []),
-            }
-            for s in accepted_submissions
-        ]
+        submissions_list = sorted(
+            [
+                {
+                    "id": s.id,
+                    "title": str(s.title),
+                    "type": s.type.name,
+                    "speaker": s.speaker.display_name if s.speaker else "Unknown",
+                    "similar": similar_talks.get(s.id, []),
+                }
+                for s in accepted_submissions
+            ],
+            key=lambda x: max(
+                (item["similarity"] for item in x["similar"]), default=0
+            ),
+            reverse=True,
+        )
 
         context = dict(
             self.admin_site.each_context(request),
