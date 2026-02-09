@@ -1,3 +1,4 @@
+import functools
 import hashlib
 import logging
 
@@ -15,20 +16,11 @@ logger = logging.getLogger(__name__)
 
 CACHE_TIMEOUT = 60 * 60 * 24  # 24 hours
 
-# Lazy-loaded shared model instance
-_embedding_model = None
-_nltk_initialized = False
 
 # Map language codes to NLTK stopword language names
 LANGUAGE_CODE_MAP = {
     "en": "english",
     "it": "italian",
-    "es": "spanish",
-    "fr": "french",
-    "de": "german",
-    "pt": "portuguese",
-    "nl": "dutch",
-    "ru": "russian",
 }
 
 # Conference-specific stopwords (language-agnostic technical terms)
@@ -185,19 +177,14 @@ CONFERENCE_STOPWORDS = {
 }
 
 
+@functools.cache
 def _ensure_nltk_data():
     """Download NLTK stopwords if not already present."""
-    global _nltk_initialized
-    if _nltk_initialized:
-        return
-
     try:
         nltk.data.find("corpora/stopwords")
     except LookupError:
         logger.info("Downloading NLTK stopwords...")
         nltk.download("stopwords", quiet=True)
-
-    _nltk_initialized = True
 
 
 def get_stopwords_for_languages(language_codes: set[str]) -> set[str]:
@@ -229,12 +216,10 @@ def get_stopwords_for_languages(language_codes: set[str]) -> set[str]:
     return stopwords
 
 
+@functools.cache
 def get_embedding_model():
     """Get or create the shared embedding model instance."""
-    global _embedding_model
-    if _embedding_model is None:
-        _embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
-    return _embedding_model
+    return SentenceTransformer("all-MiniLM-L6-v2")
 
 
 def get_embedding_text(submission) -> str:
@@ -254,20 +239,10 @@ def _get_submission_languages(submissions) -> set[str]:
     language_codes = set()
 
     for submission in submissions:
-        if hasattr(submission, "languages"):
-            # Handle ManyToMany relationship
-            try:
-                for lang in submission.languages.all():
-                    if hasattr(lang, "code"):
-                        language_codes.add(lang.code.lower())
-            except (AttributeError, TypeError):
-                pass
+        for lang in submission.languages.all():
+            language_codes.add(lang.code.lower())
 
-    # Default to English if no languages found
-    if not language_codes:
-        language_codes.add("en")
-
-    return language_codes
+    return language_codes or {"en"}
 
 
 def _get_cache_key(prefix: str, conference_id: int, submissions) -> str:
