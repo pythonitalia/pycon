@@ -219,7 +219,7 @@ def get_stopwords_for_languages(language_codes: set[str]) -> set[str]:
 @functools.cache
 def get_embedding_model():
     """Get or create the shared embedding model instance."""
-    return SentenceTransformer("all-MiniLM-L6-v2")
+    return SentenceTransformer("all-MiniLM-L6-v2", token=False)
 
 
 def get_embedding_text(submission) -> str:
