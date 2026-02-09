@@ -3,6 +3,8 @@ import urllib.parse
 from django import forms
 from django.contrib import admin, messages
 from django.core.exceptions import PermissionDenied
+from django.db.models import Count, Q
+from django.http import JsonResponse
 from django.http.request import HttpRequest
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -11,7 +13,8 @@ from django.utils.safestring import mark_safe
 
 from reviews.adapters import get_review_adapter
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
-from submissions.models import SubmissionTag
+from reviews.similar_talks import compute_similar_talks, compute_topic_clusters
+from submissions.models import Submission, SubmissionTag
 from users.admin_mixins import ConferencePermissionMixin
 
 
@@ -28,6 +31,76 @@ class AvailableScoreOptionInline(admin.TabularInline):
 def get_all_tags():
     # todo improve :)
     return SubmissionTag.objects.values_list("id", "name")
+
+
+def get_stats_for_submissions(qs):
+    """Get all stats for a queryset of submissions."""
+    total = qs.count()
+
+    def calc_pct(count):
+        return round(count / total * 100, 1) if total > 0 else 0
+
+    def with_pct(counts_dict):
+        return {k: (v, calc_pct(v)) for k, v in counts_dict.items()}
+
+    gender_stats = (
+        qs.values("speaker__gender")
+        .annotate(count=Count("id"))
+        .order_by("speaker__gender")
+    )
+    gender_counts = with_pct(
+        {
+            item["speaker__gender"] or "unknown": item["count"]
+            for item in gender_stats
+        }
+    )
+
+    level_stats = (
+        qs.values("audience_level__name")
+        .annotate(count=Count("id"))
+        .order_by("audience_level__name")
+    )
+    level_counts = with_pct(
+        {item["audience_level__name"]: item["count"] for item in level_stats}
+    )
+
+    language_stats = (
+        qs.values("languages__code")
+        .annotate(count=Count("id"))
+        .order_by("languages__code")
+    )
+    language_counts = with_pct(
+        {item["languages__code"]: item["count"] for item in language_stats}
+    )
+
+    speaker_level_stats = (
+        qs.values("speaker_level")
+        .annotate(count=Count("id"))
+        .order_by("speaker_level")
+    )
+    speaker_level_counts = with_pct(
+        {item["speaker_level"]: item["count"] for item in speaker_level_stats}
+    )
+
+    tag_stats = (
+        qs.values("tags__name")
+        .annotate(count=Count("id"))
+        .exclude(tags__name__isnull=True)
+        .order_by("-count", "tags__name")
+    )
+    tag_counts = [
+        (item["tags__name"], item["count"], calc_pct(item["count"]))
+        for item in tag_stats
+    ]
+
+    return {
+        "total": total,
+        "gender_counts": gender_counts,
+        "level_counts": level_counts,
+        "language_counts": language_counts,
+        "speaker_level_counts": speaker_level_counts,
+        "tag_counts": tag_counts,
+    }
 
 
 class SubmitVoteForm(forms.Form):
@@ -95,6 +168,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             {
                 "fields": (
                     "go_to_review_screen",
+                    "go_to_shortlist_screen",
                     "go_to_recap_screen",
                 )
             },
@@ -120,6 +194,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     def get_readonly_fields(self, request: HttpRequest, obj):
         fields = [
             "go_to_review_screen",
+            "go_to_shortlist_screen",
             "go_to_recap_screen",
         ]
 
@@ -158,12 +233,28 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 """
         )
 
+    @admin.display(description="Shortlist Screen")
+    def go_to_shortlist_screen(self, obj):
+        if not obj.id:
+            return ""
+
+        if not obj.can_see_shortlist_screen:
+            return "You cannot see the shortlist of this session yet."
+
+        return mark_safe(
+            f"""
+    <a href="{reverse("admin:reviews-shortlist", kwargs={"review_session_id": obj.id})}">
+        Go to shortlist screen
+    </a>
+"""
+        )
+
     @admin.display(description="Recap Screen")
     def go_to_recap_screen(self, obj):
         if not obj.id:
             return ""
 
-        if not obj.can_see_recap_screen:
+        if not obj.can_see_shortlist_screen:
             return "You cannot see the recap of this session yet."
 
         return mark_safe(
@@ -177,9 +268,19 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     def get_urls(self):
         return [
             path(
+                "<int:review_session_id>/review/shortlist/",
+                self.admin_site.admin_view(self.review_shortlist_view),
+                name="reviews-shortlist",
+            ),
+            path(
                 "<int:review_session_id>/review/recap/",
                 self.admin_site.admin_view(self.review_recap_view),
                 name="reviews-recap",
+            ),
+            path(
+                "<int:review_session_id>/review/recap/compute-analysis/",
+                self.admin_site.admin_view(self.review_recap_compute_analysis_view),
+                name="reviews-recap-compute-analysis",
             ),
             path(
                 "<int:review_session_id>/review/start/",
@@ -204,7 +305,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             messages.warning(request, "No new proposal to review.")
             return redirect(
                 reverse(
-                    "admin:reviews-recap",
+                    "admin:reviews-shortlist",
                     kwargs={
                         "review_session_id": review_session_id,
                     },
@@ -221,14 +322,14 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             )
         )
 
-    def review_recap_view(self, request, review_session_id):
+    def review_shortlist_view(self, request, review_session_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
 
         if not review_session.user_can_review(request.user):
             raise PermissionDenied()
 
-        if not review_session.can_see_recap_screen:
-            messages.error(request, "You cannot see the recap of this session yet.")
+        if not review_session.can_see_shortlist_screen:
+            messages.error(request, "You cannot see the shortlist of this session yet.")
             return redirect(
                 reverse(
                     "admin:reviews_reviewsession_change",
@@ -246,24 +347,149 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             ):
                 raise PermissionDenied()
 
-            adapter.process_recap_post(request, review_session)
+            adapter.process_shortlist_post(request, review_session)
             messages.success(request, "Decisions saved.")
 
             return redirect(
                 reverse(
-                    "admin:reviews-recap",
+                    "admin:reviews-shortlist",
                     kwargs={
                         "review_session_id": review_session_id,
                     },
                 )
             )
 
-        items = adapter.get_recap_items_queryset(review_session).all()
-        context = adapter.get_recap_context(
+        items = adapter.get_shortlist_items_queryset(review_session).all()
+        context = adapter.get_shortlist_context(
             request, review_session, items, self.admin_site
         )
 
-        return TemplateResponse(request, adapter.recap_template, context)
+        return TemplateResponse(request, adapter.shortlist_template, context)
+
+    def _get_accepted_submissions(self, conference):
+        return (
+            Submission.objects.filter(conference=conference)
+            .filter(
+                Q(pending_status=Submission.STATUS.accepted)
+                | Q(pending_status__isnull=True, status=Submission.STATUS.accepted)
+                | Q(pending_status="", status=Submission.STATUS.accepted)
+            )
+            .select_related("speaker", "type", "audience_level")
+            .prefetch_related("languages")
+        )
+
+    def review_recap_view(self, request, review_session_id):
+        review_session = ReviewSession.objects.get(id=review_session_id)
+
+        if not review_session.user_can_review(request.user):
+            raise PermissionDenied()
+
+        if not review_session.can_see_shortlist_screen:
+            messages.error(request, "You cannot see the recap of this session yet.")
+            return redirect(
+                reverse(
+                    "admin:reviews_reviewsession_change",
+                    kwargs={
+                        "object_id": review_session_id,
+                    },
+                )
+            )
+
+        conference = review_session.conference
+        accepted_submissions = self._get_accepted_submissions(conference)
+
+        # Get submission types for this conference
+        submission_types = list(
+            conference.submission_types.values_list("name", flat=True)
+        )
+
+        # Get stats per submission type
+        stats_by_type = {}
+        for type_name in submission_types:
+            type_qs = accepted_submissions.filter(type__name=type_name)
+            stats_by_type[type_name] = get_stats_for_submissions(type_qs)
+
+        total_accepted = accepted_submissions.count()
+
+        # Build submissions data for JS to use when rendering analysis results
+        submissions_data = [
+            {
+                "id": s.id,
+                "title": str(s.title),
+                "type": s.type.name,
+                "speaker": s.speaker.display_name if s.speaker else "Unknown",
+            }
+            for s in accepted_submissions
+        ]
+
+        context = dict(
+            self.admin_site.each_context(request),
+            title="Recap",
+            review_session_id=review_session_id,
+            review_session_repr=str(review_session),
+            total_accepted=total_accepted,
+            submission_types=submission_types,
+            stats_by_type=stats_by_type,
+            submissions_data=submissions_data,
+            compute_analysis_url=reverse(
+                "admin:reviews-recap-compute-analysis",
+                kwargs={"review_session_id": review_session_id},
+            ),
+        )
+
+        return TemplateResponse(request, "reviews-recap.html", context)
+
+    def review_recap_compute_analysis_view(self, request, review_session_id):
+        review_session = ReviewSession.objects.get(id=review_session_id)
+
+        if not review_session.user_can_review(request.user):
+            raise PermissionDenied()
+
+        if not review_session.can_see_shortlist_screen:
+            raise PermissionDenied()
+
+        conference = review_session.conference
+        accepted_submissions = self._get_accepted_submissions(conference)
+        force_recompute = request.GET.get("recompute") == "1"
+
+        similar_talks = compute_similar_talks(
+            accepted_submissions,
+            top_n=5,
+            conference_id=conference.id,
+            force_recompute=force_recompute,
+        )
+
+        topic_clusters = compute_topic_clusters(
+            accepted_submissions,
+            min_topic_size=3,
+            conference_id=conference.id,
+            force_recompute=force_recompute,
+        )
+
+        # Build submissions list with similar talks, sorted by highest similarity
+        submissions_list = sorted(
+            [
+                {
+                    "id": s.id,
+                    "title": str(s.title),
+                    "type": s.type.name,
+                    "speaker": s.speaker.display_name if s.speaker else "Unknown",
+                    "similar": similar_talks.get(s.id, []),
+                }
+                for s in accepted_submissions
+            ],
+            key=lambda x: max(
+                (item["similarity"] for item in x["similar"]), default=0
+            ),
+            reverse=True,
+        )
+
+        return JsonResponse(
+            {
+                "submissions_list": submissions_list,
+                "topic_clusters": topic_clusters,
+            }
+        )
 
     def review_view(self, request, review_session_id, review_item_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
@@ -365,7 +591,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 messages.warning(request, "No new proposal to review.")
                 return redirect(
                     reverse(
-                        "admin:reviews-recap",
+                        "admin:reviews-shortlist",
                         kwargs={
                             "review_session_id": review_session_id,
                         },
