@@ -433,54 +433,25 @@
   </div>
   {% endfor %}
 
-  <!-- Topic Clusters Section -->
-  {% if topic_clusters.topics or topic_clusters.outliers %}
-  <div class="recap-section">
-    <h2 class="recap-section-title">🎯 Topic Clusters</h2>
-    <div class="topic-clusters-grid">
-      {% for topic in topic_clusters.topics %}
-      <div class="topic-card">
-        <div class="topic-header">
-          <h3 class="topic-title">{{ topic.name }}</h3>
-          <span class="topic-count">{{ topic.count }} talks</span>
-        </div>
-        {% if topic.keywords %}
-        <div class="topic-keywords">
-          {% for keyword in topic.keywords %}
-          <span class="keyword-tag">{{ keyword }}</span>
-          {% endfor %}
-        </div>
-        {% endif %}
-        <ul class="topic-submissions">
-          {% for submission in topic.submissions %}
-          <li>{{ submission.title }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-      {% empty %}
-      <div class="no-topics">No topic clusters found. Need more submissions to detect patterns.</div>
-      {% endfor %}
-
-      {% if topic_clusters.outliers %}
-      <div class="topic-card outliers">
-        <div class="topic-header">
-          <h3 class="topic-title">Uncategorized</h3>
-          <span class="topic-count">{{ topic_clusters.outliers|length }} talks</span>
-        </div>
-        <ul class="topic-submissions">
-          {% for submission in topic_clusters.outliers %}
-          <li>{{ submission.title }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-      {% endif %}
+  <!-- Compute Analysis Button -->
+  <div class="recap-section" style="text-align: center;">
+    <button type="button" id="compute-analysis-btn" class="button" style="padding: 10px 30px; font-size: 16px; cursor: pointer;">
+      Compute Topic Clusters &amp; Similar Talks
+    </button>
+    <div id="analysis-loading" style="display: none; margin-top: 15px;">
+      <span style="color: var(--body-quiet-color, #666);">Computing analysis (this may take a moment on first run)...</span>
     </div>
+    <div id="analysis-error" style="display: none; margin-top: 15px; color: #c0392b;"></div>
   </div>
-  {% endif %}
 
-  <!-- Similar Talks Section -->
-  {% if submissions_list %}
-  <div class="similar-talks-section recap-section">
+  <!-- Topic Clusters Section (populated by JS) -->
+  <div id="topic-clusters-section" class="recap-section" style="display: none;">
+    <h2 class="recap-section-title">🎯 Topic Clusters</h2>
+    <div id="topic-clusters-content" class="topic-clusters-grid"></div>
+  </div>
+
+  <!-- Similar Talks Section (populated by JS) -->
+  <div id="similar-talks-section" class="similar-talks-section recap-section" style="display: none;">
     <h2 class="recap-section-title">🔗 Similar Talks</h2>
     <table class="similar-talks-table">
       <thead>
@@ -491,29 +462,138 @@
           <th style="width: 35%;">Similar Talks</th>
         </tr>
       </thead>
-      <tbody>
-        {% for submission in submissions_list %}
-        <tr>
-          <td><strong>{{ submission.title }}</strong></td>
-          <td><span class="submission-type-badge">{{ submission.type }}</span></td>
-          <td>{{ submission.speaker }}</td>
-          <td>
-            {% if submission.similar %}
-              {% for similar in submission.similar %}
-              <div class="similar-talk-item">
-                <span class="similar-talk-title">{{ similar.title }}</span>
-                <span class="similarity-score{% if similar.similarity >= 80 %} similarity-score-high{% elif similar.similarity >= 60 %} similarity-score-medium{% endif %}">{{ similar.similarity }}%</span>
-              </div>
-              {% endfor %}
-            {% else %}
-              <span class="no-similar">No similar talks found</span>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
+      <tbody id="similar-talks-body"></tbody>
     </table>
   </div>
-  {% endif %}
 </div>
+
+<script>
+(function() {
+  const btn = document.getElementById('compute-analysis-btn');
+  const loading = document.getElementById('analysis-loading');
+  const errorDiv = document.getElementById('analysis-error');
+  const computeUrl = '{{ compute_analysis_url }}';
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function renderTopicClusters(data) {
+    const container = document.getElementById('topic-clusters-content');
+    const section = document.getElementById('topic-clusters-section');
+    let html = '';
+
+    if (!data.topics || (!data.topics.length && !data.outliers.length)) {
+      html = '<div class="no-topics">No topic clusters found. Need more submissions to detect patterns.</div>';
+    } else {
+      for (const topic of data.topics) {
+        html += '<div class="topic-card">';
+        html += '<div class="topic-header">';
+        html += '<h3 class="topic-title">' + escapeHtml(topic.name) + '</h3>';
+        html += '<span class="topic-count">' + topic.count + ' talks</span>';
+        html += '</div>';
+
+        if (topic.keywords && topic.keywords.length) {
+          html += '<div class="topic-keywords">';
+          for (const kw of topic.keywords) {
+            html += '<span class="keyword-tag">' + escapeHtml(kw) + '</span>';
+          }
+          html += '</div>';
+        }
+
+        html += '<ul class="topic-submissions">';
+        for (const sub of topic.submissions) {
+          html += '<li>' + escapeHtml(sub.title) + '</li>';
+        }
+        html += '</ul></div>';
+      }
+
+      if (data.outliers && data.outliers.length) {
+        html += '<div class="topic-card outliers">';
+        html += '<div class="topic-header">';
+        html += '<h3 class="topic-title">Uncategorized</h3>';
+        html += '<span class="topic-count">' + data.outliers.length + ' talks</span>';
+        html += '</div>';
+        html += '<ul class="topic-submissions">';
+        for (const sub of data.outliers) {
+          html += '<li>' + escapeHtml(sub.title) + '</li>';
+        }
+        html += '</ul></div>';
+      }
+    }
+
+    container.innerHTML = html;
+    section.style.display = '';
+  }
+
+  function renderSimilarTalks(submissionsList) {
+    const tbody = document.getElementById('similar-talks-body');
+    const section = document.getElementById('similar-talks-section');
+
+    if (!submissionsList || !submissionsList.length) {
+      return;
+    }
+
+    let html = '';
+    for (const sub of submissionsList) {
+      html += '<tr>';
+      html += '<td><strong>' + escapeHtml(sub.title) + '</strong></td>';
+      html += '<td><span class="submission-type-badge">' + escapeHtml(sub.type) + '</span></td>';
+      html += '<td>' + escapeHtml(sub.speaker) + '</td>';
+      html += '<td>';
+
+      if (sub.similar && sub.similar.length) {
+        for (const sim of sub.similar) {
+          let scoreClass = 'similarity-score';
+          if (sim.similarity >= 80) scoreClass += ' similarity-score-high';
+          else if (sim.similarity >= 60) scoreClass += ' similarity-score-medium';
+
+          html += '<div class="similar-talk-item">';
+          html += '<span class="similar-talk-title">' + escapeHtml(sim.title) + '</span>';
+          html += '<span class="' + scoreClass + '">' + sim.similarity + '%</span>';
+          html += '</div>';
+        }
+      } else {
+        html += '<span class="no-similar">No similar talks found</span>';
+      }
+
+      html += '</td></tr>';
+    }
+
+    tbody.innerHTML = html;
+    section.style.display = '';
+  }
+
+  btn.addEventListener('click', function() {
+    btn.disabled = true;
+    btn.textContent = 'Computing...';
+    loading.style.display = '';
+    errorDiv.style.display = 'none';
+
+    fetch(computeUrl, {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(function(response) {
+      if (!response.ok) throw new Error('Server error: ' + response.status);
+      return response.json();
+    })
+    .then(function(data) {
+      loading.style.display = 'none';
+      btn.style.display = 'none';
+
+      renderTopicClusters(data.topic_clusters);
+      renderSimilarTalks(data.submissions_list);
+    })
+    .catch(function(err) {
+      loading.style.display = 'none';
+      btn.disabled = false;
+      btn.textContent = 'Compute Topic Clusters & Similar Talks';
+      errorDiv.textContent = 'Failed to compute analysis: ' + err.message;
+      errorDiv.style.display = '';
+    });
+  });
+})();
+</script>
 {% endblock %}

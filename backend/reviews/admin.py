@@ -3,6 +3,7 @@ import urllib.parse
 from django import forms
 from django.contrib import admin, messages
 from django.core.exceptions import PermissionDenied
+from django.http import JsonResponse
 from django.http.request import HttpRequest
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -205,6 +206,11 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 name="reviews-recap",
             ),
             path(
+                "<int:review_session_id>/review/recap/compute-analysis/",
+                self.admin_site.admin_view(self.review_recap_compute_analysis_view),
+                name="reviews-recap-compute-analysis",
+            ),
+            path(
                 "<int:review_session_id>/review/start/",
                 self.admin_site.admin_view(self.review_start_view),
                 name="reviews-start",
@@ -288,11 +294,24 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
         return TemplateResponse(request, adapter.shortlist_template, context)
 
-    def review_recap_view(self, request, review_session_id):
-        from django.db.models import Count, Q
+    def _get_accepted_submissions(self, conference):
+        from django.db.models import Q
+
         from submissions.models import Submission
 
-        from reviews.similar_talks import compute_similar_talks, compute_topic_clusters
+        return (
+            Submission.objects.filter(conference=conference)
+            .filter(
+                Q(pending_status=Submission.STATUS.accepted)
+                | Q(pending_status__isnull=True, status=Submission.STATUS.accepted)
+                | Q(pending_status="", status=Submission.STATUS.accepted)
+            )
+            .select_related("speaker", "type", "audience_level")
+            .prefetch_related("languages")
+        )
+
+    def review_recap_view(self, request, review_session_id):
+        from django.db.models import Count
 
         review_session = ReviewSession.objects.get(id=review_session_id)
 
@@ -311,19 +330,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             )
 
         conference = review_session.conference
-
-        # Get accepted submissions (using pending_status if set, otherwise status)
-        # This matches the shortlist sidebar logic: pending_status or status
-        accepted_submissions = (
-            Submission.objects.filter(conference=conference)
-            .filter(
-                Q(pending_status=Submission.STATUS.accepted)
-                | Q(pending_status__isnull=True, status=Submission.STATUS.accepted)
-                | Q(pending_status="", status=Submission.STATUS.accepted)
-            )
-            .select_related("speaker", "type", "audience_level")
-            .prefetch_related("languages")
-        )
+        accepted_submissions = self._get_accepted_submissions(conference)
 
         # Get submission types for this conference
         submission_types = list(
@@ -412,6 +419,45 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
         total_accepted = accepted_submissions.count()
 
+        # Build submissions data for JS to use when rendering analysis results
+        submissions_data = [
+            {
+                "id": s.id,
+                "title": str(s.title),
+                "type": s.type.name,
+                "speaker": s.speaker.display_name if s.speaker else "Unknown",
+            }
+            for s in accepted_submissions
+        ]
+
+        context = dict(
+            self.admin_site.each_context(request),
+            title="Recap",
+            review_session_id=review_session_id,
+            review_session_repr=str(review_session),
+            total_accepted=total_accepted,
+            submission_types=submission_types,
+            stats_by_type=stats_by_type,
+            submissions_data=submissions_data,
+            compute_analysis_url=reverse(
+                "admin:reviews-recap-compute-analysis",
+                kwargs={"review_session_id": review_session_id},
+            ),
+        )
+
+        return TemplateResponse(request, "reviews-recap.html", context)
+
+    def review_recap_compute_analysis_view(self, request, review_session_id):
+        from reviews.similar_talks import compute_similar_talks, compute_topic_clusters
+
+        review_session = ReviewSession.objects.get(id=review_session_id)
+
+        if not review_session.user_can_review(request.user):
+            raise PermissionDenied()
+
+        conference = review_session.conference
+        accepted_submissions = self._get_accepted_submissions(conference)
+
         similar_talks = compute_similar_talks(
             accepted_submissions, top_n=5, conference_id=conference.id
         )
@@ -420,6 +466,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             accepted_submissions, min_topic_size=3, conference_id=conference.id
         )
 
+        # Build submissions list with similar talks, sorted by highest similarity
         submissions_list = sorted(
             [
                 {
@@ -437,19 +484,12 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             reverse=True,
         )
 
-        context = dict(
-            self.admin_site.each_context(request),
-            title="Recap",
-            review_session_id=review_session_id,
-            review_session_repr=str(review_session),
-            total_accepted=total_accepted,
-            submission_types=submission_types,
-            stats_by_type=stats_by_type,
-            submissions_list=submissions_list,
-            topic_clusters=topic_clusters,
+        return JsonResponse(
+            {
+                "submissions_list": submissions_list,
+                "topic_clusters": topic_clusters,
+            }
         )
-
-        return TemplateResponse(request, "reviews-recap.html", context)
 
     def review_view(self, request, review_session_id, review_item_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
