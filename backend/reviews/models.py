@@ -55,7 +55,7 @@ class ReviewSession(TimeStampedModel):
         return self.user_reviews.exists()
 
     @property
-    def can_see_recap_screen(self):
+    def can_see_shortlist_screen(self):
         if self.is_proposals_review:
             return True
 

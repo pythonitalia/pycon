@@ -185,7 +185,7 @@ def test_grants_review_scores(rf, scores, avg):
     )
 
     adapter = get_review_adapter(review_session)
-    items = adapter.get_recap_items_queryset(review_session).all()
+    items = adapter.get_shortlist_items_queryset(review_session).all()
     grant_to_check = next(item for item in items if item.id == grant_1.id)
 
     assert grant_to_check.id == grant_1.id
@@ -298,8 +298,8 @@ def test_grants_review_std_dev(rf, scores, expected_std_dev):
     request.user = users[5]
 
     adapter = get_review_adapter(review_session)
-    items = adapter.get_recap_items_queryset(review_session).all()
-    context_data = adapter.get_recap_context(
+    items = adapter.get_shortlist_items_queryset(review_session).all()
+    context_data = adapter.get_shortlist_context(
         request, review_session, items, AdminSite()
     )
     items = context_data["items"]
@@ -355,7 +355,7 @@ def test_review_start_view_when_no_items_are_left(rf, mocker):
     assert response.status_code == 302
     assert (
         response.url
-        == f"/admin/reviews/reviewsession/{review_session.id}/review/recap/"
+        == f"/admin/reviews/reviewsession/{review_session.id}/review/shortlist/"
     )
     mock_messages.warning.assert_called_once_with(request, "No new proposal to review.")
 
@@ -456,7 +456,7 @@ def test_save_review_grants_updates_grant_and_creates_reimbursements(rf):
     request.user = user
 
     adapter = get_review_adapter(review_session)
-    adapter.process_recap_post(request, review_session)
+    adapter.process_shortlist_post(request, review_session)
 
     # Refresh grants from database
     grant_1.refresh_from_db()
@@ -564,7 +564,7 @@ def test_save_review_grants_update_grants_status_to_rejected_removes_reimburseme
     request.user = user
 
     adapter = get_review_adapter(review_session)
-    adapter.process_recap_post(request, review_session)
+    adapter.process_shortlist_post(request, review_session)
 
     grant_1.refresh_from_db()
 
@@ -639,7 +639,7 @@ def test_save_review_grants_modify_reimbursements(rf):
     request.user = user
 
     adapter = get_review_adapter(review_session)
-    adapter.process_recap_post(request, review_session)
+    adapter.process_shortlist_post(request, review_session)
 
     grant_1.refresh_from_db()
 
@@ -719,7 +719,7 @@ def test_save_review_grants_waiting_list_does_not_create_reimbursements(rf):
     request.user = user
 
     adapter = get_review_adapter(review_session)
-    adapter.process_recap_post(request, review_session)
+    adapter.process_shortlist_post(request, review_session)
 
     # Refresh grants from database
     grant_1.refresh_from_db()
@@ -785,8 +785,8 @@ def test_save_review_grants_two_times_does_not_create_duplicate_log_entries(rf):
     request.user = user
 
     adapter = get_review_adapter(review_session)
-    adapter.process_recap_post(request, review_session)  # First save
-    adapter.process_recap_post(request, review_session)  # Second save
+    adapter.process_shortlist_post(request, review_session)  # First save
+    adapter.process_shortlist_post(request, review_session)  # Second save
 
     grant_1.refresh_from_db()
 
@@ -806,7 +806,7 @@ def test_save_review_grants_two_times_does_not_create_duplicate_log_entries(rf):
 # --- ProposalsReviewAdapter Tests ---
 
 
-def test_proposals_review_get_recap_context(rf):
+def test_proposals_review_get_shortlist_context(rf):
     user = UserFactory(is_staff=True, is_superuser=True)
     conference = ConferenceFactory()
 
@@ -825,8 +825,8 @@ def test_proposals_review_get_recap_context(rf):
     request.user = user
 
     adapter = get_review_adapter(review_session)
-    items = adapter.get_recap_items_queryset(review_session).all()
-    context = adapter.get_recap_context(request, review_session, items, AdminSite())
+    items = adapter.get_shortlist_items_queryset(review_session).all()
+    context = adapter.get_shortlist_context(request, review_session, items, AdminSite())
 
     assert "items" in context
     assert "grants" in context
@@ -841,7 +841,9 @@ def test_proposals_review_get_recap_context(rf):
     assert context["speaker_submission_counts"][str(submission.speaker_id)] == 1
 
 
-def test_proposals_review_get_recap_context_with_multiple_submissions_per_speaker(rf):
+def test_proposals_review_get_shortlist_context_with_multiple_submissions_per_speaker(
+    rf,
+):
     user = UserFactory(is_staff=True, is_superuser=True)
     conference = ConferenceFactory()
 
@@ -867,8 +869,8 @@ def test_proposals_review_get_recap_context_with_multiple_submissions_per_speake
     request.user = user
 
     adapter = get_review_adapter(review_session)
-    items = adapter.get_recap_items_queryset(review_session).all()
-    context = adapter.get_recap_context(request, review_session, items, AdminSite())
+    items = adapter.get_shortlist_items_queryset(review_session).all()
+    context = adapter.get_shortlist_context(request, review_session, items, AdminSite())
 
     assert "speaker_submission_counts" in context
     # Speaker with 3 submissions should have count of 3
@@ -877,7 +879,7 @@ def test_proposals_review_get_recap_context_with_multiple_submissions_per_speake
     assert context["speaker_submission_counts"][str(single_speaker.id)] == 1
 
 
-def test_proposals_review_process_recap_post(rf):
+def test_proposals_review_process_shortlist_post(rf):
     user = UserFactory(is_staff=True, is_superuser=True)
     conference = ConferenceFactory()
 
@@ -901,7 +903,7 @@ def test_proposals_review_process_recap_post(rf):
     request.user = user
 
     adapter = get_review_adapter(review_session)
-    adapter.process_recap_post(request, review_session)
+    adapter.process_shortlist_post(request, review_session)
 
     submission_1.refresh_from_db()
     submission_2.refresh_from_db()

@@ -1,0 +1,703 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+  &rsaquo; <a href="{% url 'admin:app_list' 'reviews' %}">Reviews</a>
+  &rsaquo; <a href="{% url 'admin:reviews_reviewsession_changelist' %}">Review sessions</a>
+  &rsaquo; <a href="{% url 'admin:reviews_reviewsession_change' review_session_id %}">{{review_session_repr}}</a>
+  &rsaquo; {{title}}
+</div>
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+  .recap-section {
+    margin-bottom: 40px;
+  }
+
+  .recap-section-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid var(--primary, #417690);
+    color: var(--body-fg, #333);
+  }
+
+  .recap-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .recap-card {
+    background: var(--body-bg, #fff);
+    border: 1px solid var(--hairline-color, #ddd);
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .recap-card h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary, #417690);
+    color: var(--body-fg, #333);
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .recap-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .recap-card li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--hairline-color, #eee);
+  }
+
+  .recap-card li:last-child {
+    border-bottom: none;
+  }
+
+  .recap-card .stat-label {
+    color: var(--body-quiet-color, #666);
+  }
+
+  .recap-card .stat-value {
+    font-weight: bold;
+    color: var(--body-fg, #333);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .recap-total {
+    background: var(--primary, #417690);
+    color: #fff;
+    text-align: center;
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+  }
+
+  .recap-total h2 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.9;
+  }
+
+  .recap-total .total-number {
+    font-size: 48px;
+    font-weight: bold;
+    line-height: 1;
+  }
+
+  .recap-total-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .recap-total-card {
+    background: var(--primary, #417690);
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+  }
+
+  .recap-total-card h2 {
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.9;
+  }
+
+  .recap-total-card .total-number {
+    font-size: 36px;
+    font-weight: bold;
+    line-height: 1;
+  }
+
+  .similar-talks-section {
+    margin-top: 40px;
+  }
+
+  .similar-talks-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--body-bg, #fff);
+    border: 1px solid var(--hairline-color, #ddd);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .similar-talks-table th,
+  .similar-talks-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--hairline-color, #eee);
+  }
+
+  .similar-talks-table th {
+    background: var(--primary, #417690);
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .similar-talks-table tr:hover {
+    background: var(--darkened-bg, #f5f5f5);
+  }
+
+  .similar-talks-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .similar-talk-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 13px;
+  }
+
+  .similar-talk-item:not(:last-child) {
+    border-bottom: 1px dashed var(--hairline-color, #ddd);
+    margin-bottom: 4px;
+    padding-bottom: 8px;
+  }
+
+  .similar-talk-title {
+    flex: 1;
+    color: var(--body-fg, #333);
+  }
+
+  .similarity-score {
+    background: var(--primary, #417690);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    margin-left: 10px;
+    white-space: nowrap;
+  }
+
+  .similarity-score-medium {
+    background: #e67e22;
+  }
+
+  .similarity-score-high {
+    background: #c0392b;
+  }
+
+  .submission-type-badge {
+    display: inline-block;
+    background: var(--darkened-bg, #f0f0f0);
+    color: var(--body-quiet-color, #666);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+
+  .no-similar {
+    color: var(--body-quiet-color, #999);
+    font-style: italic;
+  }
+
+  /* Topic Clusters Styles */
+  .topic-clusters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+  }
+
+  .topic-card {
+    background: var(--body-bg, #fff);
+    border: 1px solid var(--hairline-color, #ddd);
+    border-radius: 8px;
+    padding: 20px;
+    border-left: 4px solid var(--primary, #417690);
+  }
+
+  .topic-card.outliers {
+    border-left-color: var(--body-quiet-color, #999);
+  }
+
+  .topic-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+  }
+
+  .topic-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--body-fg, #333);
+    margin: 0;
+  }
+
+  .topic-count {
+    background: var(--primary, #417690);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .topic-card.outliers .topic-count {
+    background: var(--body-quiet-color, #999);
+  }
+
+  .topic-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 15px;
+  }
+
+  .keyword-tag {
+    background: var(--darkened-bg, #f0f0f0);
+    color: var(--body-quiet-color, #666);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+
+  .topic-submissions {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .topic-submissions li {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--hairline-color, #eee);
+    font-size: 13px;
+    color: var(--body-fg, #333);
+  }
+
+  .topic-submissions li:last-child {
+    border-bottom: none;
+  }
+
+  .no-topics {
+    color: var(--body-quiet-color, #999);
+    font-style: italic;
+    text-align: center;
+    padding: 40px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  <!-- Total Cards -->
+  <div class="recap-total-grid">
+    <div class="recap-total-card">
+      <h2>Total Accepted</h2>
+      <div class="total-number">{{ total_accepted }}</div>
+    </div>
+    {% for type_name, stats in stats_by_type.items %}
+    <div class="recap-total-card">
+      <h2>{{ type_name }}s</h2>
+      <div class="total-number">{{ stats.total }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% for type_name, stats in stats_by_type.items %}
+  <div class="recap-section">
+    <h2 class="recap-section-title">{{ type_name }}s ({{ stats.total }})</h2>
+
+    <div class="recap-container">
+      <!-- Gender Stats -->
+      <div class="recap-card">
+        <h3>👤 Gender</h3>
+        <ul>
+          <li>
+            <span class="stat-label">Male</span>
+            <span class="stat-value">{{ stats.gender_counts.male.0|default:0 }} ({{ stats.gender_counts.male.1|default:0 }}%)</span>
+          </li>
+          <li>
+            <span class="stat-label">Female</span>
+            <span class="stat-value">{{ stats.gender_counts.female.0|default:0 }} ({{ stats.gender_counts.female.1|default:0 }}%)</span>
+          </li>
+          <li>
+            <span class="stat-label">Other</span>
+            <span class="stat-value">{{ stats.gender_counts.other.0|default:0 }} ({{ stats.gender_counts.other.1|default:0 }}%)</span>
+          </li>
+          <li>
+            <span class="stat-label">Prefer not to say</span>
+            <span class="stat-value">{{ stats.gender_counts.not_say.0|default:0 }} ({{ stats.gender_counts.not_say.1|default:0 }}%)</span>
+          </li>
+          <li>
+            <span class="stat-label">Unknown</span>
+            <span class="stat-value">{{ stats.gender_counts.unknown.0|default:0 }} ({{ stats.gender_counts.unknown.1|default:0 }}%)</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Audience Level Stats -->
+      <div class="recap-card">
+        <h3>📊 Audience Level</h3>
+        <ul>
+          {% for level_name, count_pct in stats.level_counts.items %}
+          <li>
+            <span class="stat-label">{{ level_name }}</span>
+            <span class="stat-value">{{ count_pct.0 }} ({{ count_pct.1 }}%)</span>
+          </li>
+          {% empty %}
+          <li>
+            <span class="stat-label">No data</span>
+            <span class="stat-value">-</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Language Stats -->
+      <div class="recap-card">
+        <h3>🌍 Language</h3>
+        <ul>
+          {% for lang_code, count_pct in stats.language_counts.items %}
+          <li>
+            <span class="stat-label">
+              {% if lang_code == "en" %}🇬🇧 English{% elif lang_code == "it" %}🇮🇹 Italian{% else %}{{ lang_code }}{% endif %}
+            </span>
+            <span class="stat-value">{{ count_pct.0 }} ({{ count_pct.1 }}%)</span>
+          </li>
+          {% empty %}
+          <li>
+            <span class="stat-label">No data</span>
+            <span class="stat-value">-</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Speaker Level Stats -->
+      <div class="recap-card">
+        <h3>🎤 Speaker Level</h3>
+        <ul>
+          <li>
+            <span class="stat-label">New speaker</span>
+            <span class="stat-value">{{ stats.speaker_level_counts.new.0|default:0 }} ({{ stats.speaker_level_counts.new.1|default:0 }}%)</span>
+          </li>
+          <li>
+            <span class="stat-label">Intermediate experience</span>
+            <span class="stat-value">{{ stats.speaker_level_counts.intermediate.0|default:0 }} ({{ stats.speaker_level_counts.intermediate.1|default:0 }}%)</span>
+          </li>
+          <li>
+            <span class="stat-label">Experienced</span>
+            <span class="stat-value">{{ stats.speaker_level_counts.experienced.0|default:0 }} ({{ stats.speaker_level_counts.experienced.1|default:0 }}%)</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Tags Stats -->
+      <div class="recap-card">
+        <h3>🏷️ Tags</h3>
+        <ul>
+          {% for tag_name, count, pct in stats.tag_counts %}
+          <li>
+            <span class="stat-label">{{ tag_name }}</span>
+            <span class="stat-value">{{ count }} ({{ pct }}%)</span>
+          </li>
+          {% empty %}
+          <li>
+            <span class="stat-label">No tags</span>
+            <span class="stat-value">-</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+  <!-- Compute Analysis Button -->
+  <div id="analysis-controls" class="recap-section" style="text-align: center;">
+    <button type="button" id="compute-analysis-btn" class="button" style="padding: 10px 30px; font-size: 16px; cursor: pointer;">
+      Compute Topic Clusters &amp; Similar Talks
+    </button>
+    <button type="button" id="recompute-analysis-btn" class="button" style="padding: 10px 30px; font-size: 16px; cursor: pointer; display: none;">
+      Recompute (ignore cache)
+    </button>
+    <div id="analysis-loading" style="display: none; margin-top: 15px;">
+      <span style="color: var(--body-quiet-color, #666);">Computing analysis (this may take a moment)...</span>
+    </div>
+    <div id="analysis-error" style="display: none; margin-top: 15px; color: #c0392b;"></div>
+  </div>
+
+  <!-- Topic Clusters Section (populated by JS) -->
+  <div id="topic-clusters-section" class="recap-section" style="display: none;">
+    <h2 class="recap-section-title">🎯 Topic Clusters</h2>
+    <div id="topic-clusters-content" class="topic-clusters-grid"></div>
+  </div>
+
+  <!-- Similar Talks Section (populated by JS) -->
+  <div id="similar-talks-section" class="similar-talks-section recap-section" style="display: none;">
+    <h2 class="recap-section-title">🔗 Similar Talks</h2>
+    <table class="similar-talks-table">
+      <thead>
+        <tr>
+          <th style="width: 35%;">Talk</th>
+          <th style="width: 15%;">Type</th>
+          <th style="width: 15%;">Speaker</th>
+          <th style="width: 35%;">Similar Talks</th>
+        </tr>
+      </thead>
+      <tbody id="similar-talks-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+(function() {
+  const btn = document.getElementById('compute-analysis-btn');
+  const recomputeBtn = document.getElementById('recompute-analysis-btn');
+  const loading = document.getElementById('analysis-loading');
+  const errorDiv = document.getElementById('analysis-error');
+  const computeUrl = '{{ compute_analysis_url }}';
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function renderTopicClusters(data) {
+    const container = document.getElementById('topic-clusters-content');
+    const section = document.getElementById('topic-clusters-section');
+    let html = '';
+
+    if (!data.topics || (!data.topics.length && !data.outliers.length)) {
+      html = '<div class="no-topics">No topic clusters found. Need more submissions to detect patterns.</div>';
+    } else {
+      for (const topic of data.topics) {
+        html += '<div class="topic-card">';
+        html += '<div class="topic-header">';
+        html += '<h3 class="topic-title">' + escapeHtml(topic.name) + '</h3>';
+        html += '<span class="topic-count">' + topic.count + ' talks</span>';
+        html += '</div>';
+
+        if (topic.keywords && topic.keywords.length) {
+          html += '<div class="topic-keywords">';
+          for (const kw of topic.keywords) {
+            html += '<span class="keyword-tag">' + escapeHtml(kw) + '</span>';
+          }
+          html += '</div>';
+        }
+
+        html += '<ul class="topic-submissions">';
+        for (const sub of topic.submissions) {
+          html += '<li>' + escapeHtml(sub.title) + '</li>';
+        }
+        html += '</ul></div>';
+      }
+
+      if (data.outliers && data.outliers.length) {
+        html += '<div class="topic-card outliers">';
+        html += '<div class="topic-header">';
+        html += '<h3 class="topic-title">Uncategorized</h3>';
+        html += '<span class="topic-count">' + data.outliers.length + ' talks</span>';
+        html += '</div>';
+        html += '<ul class="topic-submissions">';
+        for (const sub of data.outliers) {
+          html += '<li>' + escapeHtml(sub.title) + '</li>';
+        }
+        html += '</ul></div>';
+      }
+    }
+
+    container.innerHTML = html;
+    section.style.display = '';
+  }
+
+  function renderSimilarTalks(submissionsList) {
+    const tbody = document.getElementById('similar-talks-body');
+    const section = document.getElementById('similar-talks-section');
+
+    if (!submissionsList || !submissionsList.length) {
+      return;
+    }
+
+    let html = '';
+    for (const sub of submissionsList) {
+      html += '<tr>';
+      html += '<td><strong>' + escapeHtml(sub.title) + '</strong></td>';
+      html += '<td><span class="submission-type-badge">' + escapeHtml(sub.type) + '</span></td>';
+      html += '<td>' + escapeHtml(sub.speaker) + '</td>';
+      html += '<td>';
+
+      if (sub.similar && sub.similar.length) {
+        for (const sim of sub.similar) {
+          let scoreClass = 'similarity-score';
+          if (sim.similarity >= 80) scoreClass += ' similarity-score-high';
+          else if (sim.similarity >= 60) scoreClass += ' similarity-score-medium';
+
+          html += '<div class="similar-talk-item">';
+          html += '<span class="similar-talk-title">' + escapeHtml(sim.title) + '</span>';
+          html += '<span class="' + scoreClass + '">' + sim.similarity + '%</span>';
+          html += '</div>';
+        }
+      } else {
+        html += '<span class="no-similar">No similar talks found</span>';
+      }
+
+      html += '</td></tr>';
+    }
+
+    tbody.innerHTML = html;
+    section.style.display = '';
+  }
+
+  var pollTimer = null;
+  var pollStartTime = null;
+  var pollAttempt = 0;
+  var POLL_TIMEOUT = 360000; // 6 minutes – must exceed backend lock TTL (300s)
+
+  function getNextPollInterval() {
+    // Exponential backoff: 1s, 2s, 3s, 5s, 10s, 15s, 15s...
+    var intervals = [1000, 2000, 3000, 5000, 10000, 15000];
+    return intervals[Math.min(pollAttempt, intervals.length - 1)];
+  }
+
+  function stopPolling() {
+    if (pollTimer) {
+      clearTimeout(pollTimer);
+      pollTimer = null;
+    }
+    pollStartTime = null;
+    pollAttempt = 0;
+  }
+
+  function showError(message) {
+    stopPolling();
+    loading.style.display = 'none';
+    btn.disabled = false;
+    btn.textContent = 'Compute Topic Clusters & Similar Talks';
+    recomputeBtn.disabled = false;
+    recomputeBtn.textContent = 'Recompute (ignore cache)';
+    errorDiv.textContent = message;
+    errorDiv.style.display = '';
+  }
+
+  function handleResult(data) {
+    if (data.status === 'error') {
+      showError(data.message || 'Analysis failed. Please try again.');
+      recomputeBtn.style.display = '';
+      btn.style.display = 'none';
+      return;
+    }
+
+    loading.style.display = 'none';
+    btn.style.display = 'none';
+    recomputeBtn.style.display = '';
+    recomputeBtn.disabled = false;
+    recomputeBtn.textContent = 'Recompute (ignore cache)';
+
+    renderTopicClusters(data.topic_clusters);
+    renderSimilarTalks(data.submissions_list);
+  }
+
+  function pollForResults() {
+    if (pollStartTime && (Date.now() - pollStartTime) > POLL_TIMEOUT) {
+      showError('Analysis is taking longer than expected. Please try again later.');
+      return;
+    }
+
+    fetch(computeUrl, {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(function(response) {
+      if (!response.ok) throw new Error('Server error: ' + response.status);
+      return response.json();
+    })
+    .then(function(data) {
+      if (data.status === 'processing') {
+        pollAttempt++;
+        pollTimer = setTimeout(pollForResults, getNextPollInterval());
+        return;
+      }
+      stopPolling();
+      handleResult(data);
+    })
+    .catch(function(err) {
+      showError('Failed to compute analysis: ' + err.message);
+    });
+  }
+
+  function fetchAnalysis(recompute) {
+    var url = recompute ? computeUrl + '?recompute=1' : computeUrl;
+    var activeBtn = recompute ? recomputeBtn : btn;
+
+    activeBtn.disabled = true;
+    activeBtn.textContent = recompute ? 'Recomputing...' : 'Computing...';
+    loading.style.display = '';
+    errorDiv.style.display = 'none';
+
+    fetch(url, {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(function(response) {
+      if (!response.ok) throw new Error('Server error: ' + response.status);
+      return response.json();
+    })
+    .then(function(data) {
+      if (data.status === 'processing') {
+        pollStartTime = Date.now();
+        pollAttempt = 0;
+        pollTimer = setTimeout(pollForResults, getNextPollInterval());
+        return;
+      }
+      handleResult(data);
+    })
+    .catch(function(err) {
+      loading.style.display = 'none';
+      activeBtn.disabled = false;
+      activeBtn.textContent = recompute ? 'Recompute (ignore cache)' : 'Compute Topic Clusters & Similar Talks';
+      errorDiv.textContent = 'Failed to compute analysis: ' + err.message;
+      errorDiv.style.display = '';
+    });
+  }
+
+  btn.addEventListener('click', function() { fetchAnalysis(false); });
+  recomputeBtn.addEventListener('click', function() { fetchAnalysis(true); });
+
+  // Auto-load cached results on page load (check only, don't trigger computation)
+  fetch(computeUrl + '?check=1', {
+    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+  })
+  .then(function(response) {
+    if (!response.ok) return;
+    return response.json();
+  })
+  .then(function(data) {
+    if (!data || data.status === 'processing' || data.status === 'error' || data.status === 'empty') return;
+    handleResult(data);
+  })
+  .catch(function() {
+    // Silently ignore errors on auto-load
+  });
+})();
+</script>
+{% endblock %}
