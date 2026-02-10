@@ -174,10 +174,7 @@ def test_recap_view_redirects_when_shortlist_not_visible(rf, mocker):
     response = admin.review_recap_view(request, review_session.id)
 
     assert response.status_code == 302
-    assert (
-        response.url
-        == f"/admin/reviews/reviewsession/{review_session.id}/change/"
-    )
+    assert response.url == f"/admin/reviews/reviewsession/{review_session.id}/change/"
 
 
 # --- review_recap_compute_analysis_view tests ---
@@ -194,9 +191,7 @@ def _mock_analysis_deps(mocker, cache_return=None, computing_task_id=None):
     mock_cache_get = mocker.patch(
         "django.core.cache.cache.get", side_effect=cache_get_side_effect
     )
-    mock_cache_add = mocker.patch(
-        "django.core.cache.cache.add", return_value=True
-    )
+    mock_cache_add = mocker.patch("django.core.cache.cache.add", return_value=True)
     mocker.patch("django.core.cache.cache.set")
     mocker.patch("django.core.cache.cache.delete")
     mock_task = mocker.patch("reviews.tasks.compute_recap_analysis.apply_async")
@@ -571,6 +566,56 @@ def test_compute_analysis_view_keeps_active_task_lock(rf, mocker):
     # No new task should be dispatched
     mock_task.assert_not_called()
     mock_check.assert_not_called()
+
+
+def test_compute_analysis_view_check_only_returns_empty_on_cache_miss(rf, mocker):
+    user, conference, review_session, submissions = _create_recap_setup()
+
+    _, _, mock_task, mock_check = _mock_analysis_deps(mocker, cache_return=None)
+
+    request = rf.get("/?check=1")
+    request.user = user
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    response = admin.review_recap_compute_analysis_view(request, review_session.id)
+
+    data = json.loads(response.content)
+    assert data == {"status": "empty"}
+
+    # Task should NOT be dispatched in check-only mode
+    mock_task.assert_not_called()
+    mock_check.assert_not_called()
+
+
+def test_compute_analysis_view_check_only_returns_cached_result(rf, mocker):
+    user, conference, review_session, submissions = _create_recap_setup()
+    sub1, sub2 = submissions
+
+    cached_data = {
+        "submissions_list": [
+            {
+                "id": sub1.id,
+                "title": str(sub1.title),
+                "type": sub1.type.name,
+                "speaker": sub1.speaker.display_name,
+                "similar": [],
+            },
+        ],
+        "topic_clusters": {"topics": [], "outliers": [], "submission_topics": {}},
+    }
+
+    _, _, mock_task, _ = _mock_analysis_deps(mocker, cache_return=cached_data)
+
+    request = rf.get("/?check=1")
+    request.user = user
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    response = admin.review_recap_compute_analysis_view(request, review_session.id)
+
+    data = json.loads(response.content)
+    assert data["submissions_list"][0]["id"] == sub1.id
+
+    mock_task.assert_not_called()
 
 
 def test_error_cache_ttl_is_shorter_than_result_ttl():

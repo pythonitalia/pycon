@@ -682,6 +682,22 @@
 
   btn.addEventListener('click', function() { fetchAnalysis(false); });
   recomputeBtn.addEventListener('click', function() { fetchAnalysis(true); });
+
+  // Auto-load cached results on page load (check only, don't trigger computation)
+  fetch(computeUrl + '?check=1', {
+    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+  })
+  .then(function(response) {
+    if (!response.ok) return;
+    return response.json();
+  })
+  .then(function(data) {
+    if (!data || data.status === 'processing' || data.status === 'error' || data.status === 'empty') return;
+    handleResult(data);
+  })
+  .catch(function() {
+    // Silently ignore errors on auto-load
+  });
 })();
 </script>
 {% endblock %}

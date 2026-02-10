@@ -62,10 +62,7 @@ def get_stats_for_submissions(qs):
         .order_by("speaker__gender")
     )
     gender_counts = with_pct(
-        {
-            item["speaker__gender"] or "unknown": item["count"]
-            for item in gender_stats
-        }
+        {item["speaker__gender"] or "unknown": item["count"] for item in gender_stats}
     )
 
     level_stats = (
@@ -87,9 +84,7 @@ def get_stats_for_submissions(qs):
     )
 
     speaker_level_stats = (
-        qs.values("speaker_level")
-        .annotate(count=Count("id"))
-        .order_by("speaker_level")
+        qs.values("speaker_level").annotate(count=Count("id")).order_by("speaker_level")
     )
     speaker_level_counts = with_pct(
         {item["speaker_level"]: item["count"] for item in speaker_level_stats}
@@ -455,6 +450,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         conference = review_session.conference
         accepted_submissions = list(self._get_accepted_submissions(conference))
         force_recompute = request.GET.get("recompute") == "1"
+        check_only = request.GET.get("check") == "1"
 
         from django.core.cache import cache
 
@@ -470,6 +466,9 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             cached_result = cache.get(combined_cache_key)
             if cached_result is not None:
                 return JsonResponse(cached_result)
+
+        if check_only:
+            return JsonResponse({"status": "empty"})
 
         # Use cache.add as a lock to prevent duplicate task dispatch.
         # Short TTL so lock auto-expires if the worker is killed before cleanup.
