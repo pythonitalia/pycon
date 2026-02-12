@@ -212,6 +212,53 @@ def test_cannot_get_draft_news_article(
     assert response["data"]["newsArticle"] is None
 
 
+def test_cannot_get_draft_base_article_even_if_translation_is_live(
+    graphql_client,
+    locale,
+):
+    """
+    Test that a draft base article cannot be fetched even if a translation exists that is live.
+    This ensures the live=True filter is applied to the initial queryset.
+    """
+    user = UserFactory(full_name="marco world")
+    parent = GenericPageFactory()
+    # Create a draft base article (live=False)
+    article = NewsArticleFactory(
+        title="Article 1",
+        parent=parent,
+        owner=user,
+        slug="slug",
+        first_published_at=None,
+        live=False,
+    )
+    SiteFactory(hostname="pycon", port=80, root_page=parent)
+
+    # Create a live Italian translation
+    it_article = article.copy_for_translation(locale=locale("it"))
+    it_article.title = "Article Italian"
+    it_article.save_revision().publish()
+
+    query = """query NewsArticle(
+        $hostname: String!,
+        $slug: String!,
+        $language: String!
+    ) {
+        newsArticle(hostname: $hostname, slug: $slug, language: $language) {
+            id
+            title
+            authorFullname
+        }
+    }"""
+
+    # Even though the Italian translation is live, the base article is draft
+    # so it should not be fetchable
+    response = graphql_client.query(
+        query, variables={"hostname": "pycon", "slug": article.slug, "language": "it"}
+    )
+
+    assert response["data"]["newsArticle"] is None
+
+
 def test_get_news_article_another_locale(
     graphql_client,
     locale,
