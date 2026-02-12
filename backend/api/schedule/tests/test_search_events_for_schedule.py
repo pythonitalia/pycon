@@ -61,6 +61,14 @@ def test_search(
         speaker__name="John Doe",
     )
 
+    submission_2 = SubmissionFactory(
+        conference=conference,
+        status=Submission.STATUS.proposed,
+        pending_status=Submission.STATUS.accepted,
+        title=LazyI18nString({"en": "TDD talk", "it": ""}),
+        speaker__name="John Doe",
+    )
+
     SubmissionFactory(
         conference=conference,
         status=Submission.STATUS.accepted,
@@ -91,10 +99,13 @@ def test_search(
     assert not response.get("errors")
     data = response["data"]
 
-    assert len(data["searchEventsForSchedule"]["results"]) == 2
+    assert len(data["searchEventsForSchedule"]["results"]) == 3
     assert {"__typename": "Submission", "id": str(submission_1.hashid)} in data[
         "searchEventsForSchedule"
     ]["results"]
     assert {"__typename": "Keynote", "id": str(keynote_1.id)} in data[
+        "searchEventsForSchedule"
+    ]["results"]
+    assert {"__typename": "Submission", "id": str(submission_2.hashid)} in data[
         "searchEventsForSchedule"
     ]["results"]
