@@ -19,7 +19,10 @@ def search_events_for_schedule(
 ) -> SearchEventsForScheduleResult:
     proposals = (
         SubmissionModel.objects.for_conference(conference_id)
-        .accepted()
+        .filter(
+            Q(status=SubmissionModel.STATUS.accepted)
+            | Q(pending_status=SubmissionModel.STATUS.accepted)
+        )
         .filter(
             Q(title__icontains=query)
             | Q(speaker__full_name__icontains=query)
