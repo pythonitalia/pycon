@@ -20,15 +20,19 @@ on:
         description: "The event-id of the slash command"
         required: true
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
           ref: ${{ github.ref }}
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v34
         with:
           node-version: 20
           registry-url: "https://registry.npmjs.org"
