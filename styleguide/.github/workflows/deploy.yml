@@ -84,8 +84,6 @@ jobs:
           pnpm version $new_version-rc${{ steps.metadata.outputs.commit }} --no-git-tag-version
       - name: Build & Publish
         id: release
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           pnpm publish --tag ${{ fromJSON('["pr", "latest"]')[github.ref == 'refs/heads/main'] }} --no-git-checks
           new_version=$(node -e "console.log(require('./package.json').version);")
