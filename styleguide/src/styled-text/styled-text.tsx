@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import React from "react";
 type Props = {
-  baseTextSize?: 1 | 2;
+  baseTextSize?: 1 | 2 | 3;
   children?: React.ReactNode;
   dangerouslySetInnerHTML?: {
     __html: string;
@@ -25,6 +25,8 @@ export const StyledText = ({
             baseTextSize === 1,
           "prose-p:text-md prose-p:leading-7 prose-p:text-grey-900  prose-li:text-md prose-li:leading-7 prose-li:text-grey-900":
             baseTextSize === 2,
+          "prose-p:text-base prose-p:leading-4 prose-p:text-grey-900  prose-li:text-base prose-li:leading-4 prose-li:text-grey-900":
+            baseTextSize === 3,
         },
         // h styles
         "prose-h2:font-semibold prose-h2:text-3md prose-h2:leading-8 prose-h2:lg:text-xl prose-h2:lg:leading-11 prose-h2:text-grey-900",

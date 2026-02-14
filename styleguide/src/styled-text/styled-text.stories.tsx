@@ -11,7 +11,7 @@ export default {
     baseTextSize: {
       control: {
         type: "select",
-        options: [1, 2],
+        options: [1, 2, 3],
       },
     },
   },
