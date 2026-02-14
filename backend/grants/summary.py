@@ -1,6 +1,7 @@
 from collections import defaultdict
 
-from django.db.models import Count, Exists, OuterRef, Sum
+from django.db.models import Case, Count, DecimalField, Exists, OuterRef, Sum, When
+from django.db.models.functions import Coalesce
 
 from conferences.models.conference import Conference
 from countries import countries
@@ -26,10 +27,12 @@ class GrantSummary:
         """
         statuses = Grant.Status.choices
         conference = Conference.objects.get(id=conference_id)
-        filtered_grants = Grant.objects.for_conference(conference)
+        filtered_grants = Grant.objects.for_conference(conference).annotate(
+            current_or_pending_status=Coalesce("pending_status", "status")
+        )
 
         grants_by_country = filtered_grants.values(
-            "departure_country", "pending_status"
+            "departure_country", "current_or_pending_status"
         ).annotate(total=Count("id"))
 
         (
@@ -99,6 +102,7 @@ class GrantSummary:
         totals_per_continent = {}
 
         for data in grants_by_country:
+            current_or_pending_status: str = data["current_or_pending_status"]
             country = countries.get(code=data["departure_country"])
             continent = country.continent.name if country else "Unknown"
             country_name = f"{country.name} {country.emoji}" if country else "Unknown"
@@ -108,13 +112,13 @@ class GrantSummary:
             if key not in summary:
                 summary[key] = {status[0]: 0 for status in statuses}
 
-            summary[key][data["pending_status"]] += data["total"]
-            status_totals[data["pending_status"]] += data["total"]
+            summary[key][current_or_pending_status] += data["total"]
+            status_totals[current_or_pending_status] += data["total"]
 
             # Update continent totals
             if continent not in totals_per_continent:
                 totals_per_continent[continent] = {status[0]: 0 for status in statuses}
-            totals_per_continent[continent][data["pending_status"]] += data["total"]
+            totals_per_continent[continent][current_or_pending_status] += data["total"]
 
         return summary, status_totals, totals_per_continent
 
@@ -123,7 +127,7 @@ class GrantSummary:
         Aggregates grant data by country type and status.
         """
         country_type_data = filtered_grants.values(
-            "country_type", "pending_status"
+            "country_type", "current_or_pending_status"
         ).annotate(total=Count("id"))
         country_type_summary = defaultdict(
             lambda: {status[0]: 0 for status in statuses}
@@ -131,9 +135,9 @@ class GrantSummary:
 
         for data in country_type_data:
             country_type = data["country_type"]
-            pending_status = data["pending_status"]
+            current_or_pending_status: str = data["current_or_pending_status"]
             total = data["total"]
-            country_type_summary[country_type][pending_status] += total
+            country_type_summary[country_type][current_or_pending_status] += total
 
         return dict(country_type_summary)
 
@@ -141,35 +145,50 @@ class GrantSummary:
         """
         Aggregates grant data by gender and status.
         """
-        gender_data = filtered_grants.values("gender", "pending_status").annotate(
-            total=Count("id")
-        )
+        gender_data = filtered_grants.values(
+            "gender", "current_or_pending_status"
+        ).annotate(total=Count("id"))
         gender_summary = defaultdict(lambda: {status[0]: 0 for status in statuses})
 
         for data in gender_data:
             gender = data["gender"] if data["gender"] else ""
-            pending_status = data["pending_status"]
+            current_or_pending_status: str = data["current_or_pending_status"]
             total = data["total"]
-            gender_summary[gender][pending_status] += total
+            gender_summary[gender][current_or_pending_status] += total
 
         return dict(gender_summary)
 
     def _aggregate_financial_data_by_status(self, filtered_grants, statuses):
         """
-        Aggregates financial data (total amounts) by grant status.
+        Aggregates financial data (total amounts) by grant status
+        using conditional aggregation in a single query.
         """
-        financial_summary = {status[0]: 0 for status in statuses}
-        overall_total = 0
+        reimbursements = GrantReimbursement.objects.filter(
+            grant__in=filtered_grants
+        ).annotate(
+            current_or_pending_status=Coalesce("grant__pending_status", "grant__status")
+        )
 
-        for status in statuses:
-            grants_for_status = filtered_grants.filter(pending_status=status[0])
-            reimbursements = GrantReimbursement.objects.filter(
-                grant__in=grants_for_status
+        aggregations: dict[str, Sum] = {
+            status_value: Sum(
+                Case(
+                    When(current_or_pending_status=status_value, then="granted_amount"),
+                    default=0,
+                    output_field=DecimalField(),
+                )
             )
-            total = reimbursements.aggregate(total=Sum("granted_amount"))["total"] or 0
-            financial_summary[status[0]] = total
-            if status[0] in self.BUDGET_STATUSES:
-                overall_total += total
+            for status_value, _ in statuses
+        }
+        result = reimbursements.aggregate(**aggregations)
+
+        financial_summary: dict[str, int] = {
+            status_value: int(result[status_value] or 0) for status_value, _ in statuses
+        }
+        overall_total: int = sum(
+            amount
+            for status_value, amount in financial_summary.items()
+            if status_value in self.BUDGET_STATUSES
+        )
 
         return financial_summary, overall_total
 
@@ -177,12 +196,24 @@ class GrantSummary:
         """
         Aggregates grant data by reimbursement category and status.
         """
-        category_summary = defaultdict(lambda: {status[0]: 0 for status in statuses})
-        reimbursements = GrantReimbursement.objects.filter(grant__in=filtered_grants)
-        for r in reimbursements:
-            category = r.category.category
-            status = r.grant.pending_status
-            category_summary[category][status] += 1
+        category_data = (
+            GrantReimbursement.objects.filter(grant__in=filtered_grants)
+            .annotate(
+                current_or_pending_status=Coalesce(
+                    "grant__pending_status", "grant__status"
+                )
+            )
+            .values("category__category", "current_or_pending_status")
+            .annotate(total=Count("id"))
+        )
+        category_summary: dict[str, dict[str, int]] = defaultdict(
+            lambda: {status[0]: 0 for status in statuses}
+        )
+        for data in category_data:
+            category: str = data["category__category"]
+            current_or_pending_status: str = data["current_or_pending_status"]
+            total: int = data["total"]
+            category_summary[category][current_or_pending_status] += total
         return dict(category_summary)
 
     def _aggregate_data_by_grant_type(self, filtered_grants, statuses):
@@ -190,16 +221,16 @@ class GrantSummary:
         Aggregates grant data by grant_type and status.
         """
         grant_type_data = filtered_grants.values(
-            "grant_type", "pending_status"
+            "grant_type", "current_or_pending_status"
         ).annotate(total=Count("id"))
         grant_type_summary = defaultdict(lambda: {status[0]: 0 for status in statuses})
 
         for data in grant_type_data:
             grant_types = data["grant_type"]
-            pending_status = data["pending_status"]
+            current_or_pending_status: str = data["current_or_pending_status"]
             total = data["total"]
             for grant_type in grant_types:
-                grant_type_summary[grant_type][pending_status] += total
+                grant_type_summary[grant_type][current_or_pending_status] += total
 
         return dict(grant_type_summary)
 
@@ -224,13 +255,13 @@ class GrantSummary:
 
         proposed_speaker_data = (
             filtered_grants.filter(is_proposed_speaker=True)
-            .values("pending_status")
+            .values("current_or_pending_status")
             .annotate(total=Count("id"))
         )
 
         confirmed_speaker_data = (
             filtered_grants.filter(is_confirmed_speaker=True)
-            .values("pending_status")
+            .values("current_or_pending_status")
             .annotate(total=Count("id"))
         )
 
@@ -239,14 +270,18 @@ class GrantSummary:
         )
 
         for data in proposed_speaker_data:
-            pending_status = data["pending_status"]
+            current_or_pending_status: str = data["current_or_pending_status"]
             total = data["total"]
-            speaker_status_summary["proposed_speaker"][pending_status] += total
+            speaker_status_summary["proposed_speaker"][current_or_pending_status] += (
+                total
+            )
 
         for data in confirmed_speaker_data:
-            pending_status = data["pending_status"]
+            current_or_pending_status: str = data["current_or_pending_status"]
             total = data["total"]
-            speaker_status_summary["confirmed_speaker"][pending_status] += total
+            speaker_status_summary["confirmed_speaker"][current_or_pending_status] += (
+                total
+            )
 
         return dict(speaker_status_summary)
 
@@ -263,13 +298,13 @@ class GrantSummary:
         for field in requested_needs_summary.keys():
             field_data = (
                 filtered_grants.filter(**{field: True})
-                .values("pending_status")
+                .values("current_or_pending_status")
                 .annotate(total=Count("id"))
             )
             for data in field_data:
-                pending_status = data["pending_status"]
+                current_or_pending_status: str = data["current_or_pending_status"]
                 total = data["total"]
-                requested_needs_summary[field][pending_status] += total
+                requested_needs_summary[field][current_or_pending_status] += total
 
         return requested_needs_summary
 
@@ -278,14 +313,14 @@ class GrantSummary:
         Aggregates grant data by occupation and status.
         """
         occupation_data = filtered_grants.values(
-            "occupation", "pending_status"
+            "occupation", "current_or_pending_status"
         ).annotate(total=Count("id"))
         occupation_summary = defaultdict(lambda: {status[0]: 0 for status in statuses})
 
         for data in occupation_data:
             occupation = data["occupation"]
-            pending_status = data["pending_status"]
+            current_or_pending_status: str = data["current_or_pending_status"]
             total = data["total"]
-            occupation_summary[occupation][pending_status] += total
+            occupation_summary[occupation][current_or_pending_status] += total
 
         return dict(occupation_summary)
