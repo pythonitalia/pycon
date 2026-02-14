@@ -32,7 +32,7 @@ jobs:
         with:
           persist-credentials: false
           ref: ${{ github.ref }}
-      - uses: actions/setup-node@4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           registry-url: "https://registry.npmjs.org"
