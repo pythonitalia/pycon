@@ -37,7 +37,8 @@ export const MyProposalsTable = ({ submissions }: Props) => {
     <Table
       cols={4}
       rowGetter={(row) => {
-        const inSchedule = row.scheduleItems.length > 0;
+        const isAccepted = row.status === "accepted";
+        const inSchedule = isAccepted && row.scheduleItems.length > 0;
         return [
           <div>
             <EventTag type={row.type.name.toLowerCase()} />
