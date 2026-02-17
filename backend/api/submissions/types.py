@@ -128,6 +128,10 @@ class Submission:
         return self.schedule_items.all()
 
     @strawberry.field
+    def has_schedule_items(self, info: Info) -> bool:
+        return self.schedule_items.exists()
+
+    @strawberry.field
     def multilingual_elevator_pitch(self, info: Info) -> MultiLingualString | None:
         return MultiLingualString.create(self.elevator_pitch)
 

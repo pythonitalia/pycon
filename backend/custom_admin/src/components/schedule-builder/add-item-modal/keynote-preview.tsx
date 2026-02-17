@@ -31,6 +31,13 @@ export const KeynotePreview = ({
   return (
     <li className="p-2 bg-slate-300 odd:bg-slate-200">
       <strong>{keynote.title}</strong>
+
+      {keynote.hasScheduleItems && (
+        <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-2 py-1 my-2 rounded text-sm">
+          ⚠️ This keynote has already been added to the schedule
+        </div>
+      )}
+
       <InfoRecap
         info={[
           { label: "Type", value: "Keynote" },
