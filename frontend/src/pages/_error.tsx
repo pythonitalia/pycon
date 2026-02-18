@@ -1,8 +1,9 @@
-import { Heading, Page, Section } from "@python-italia/pycon-styleguide";
+import { Heading, Page, Section, Text } from "@python-italia/pycon-styleguide";
 import * as Sentry from "@sentry/nextjs";
 
 import type { GetStaticProps } from "next";
 import NextErrorComponent from "next/error";
+import { FormattedMessage } from "react-intl";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
@@ -10,26 +11,27 @@ import { prefetchSharedQueries } from "~/helpers/prefetch";
 const ErrorPage = ({ statusCode }) => (
   <Page>
     <Section>
-      <Heading size={4}>Ops {statusCode}</Heading>
+      <Heading size={4}>
+        <FormattedMessage id="errorPage.title" />
+      </Heading>
+      <Text size={2}>
+        <FormattedMessage
+          id="errorPage.body"
+          values={{
+            reportLink: (
+              <a href="https://github.com/pythonitalia/pycon/issues">
+                <FormattedMessage id="errorPage.reportLink" />
+              </a>
+            ),
+          }}
+        />
+      </Text>
+      <img
+        src="/images/ernesto.jpg"
+        alt="Ernesto thinking about pineapple pizza"
+        style={{ maxWidth: "100%", marginTop: "1rem" }}
+      />
     </Section>
-
-    <video
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        height: "100vh",
-        width: "100vw",
-        zIndex: -1,
-        pointerEvents: "none",
-        objectFit: "cover",
-        opacity: 0.5,
-      }}
-      src="/videos/sad.mp4"
-      autoPlay={true}
-      muted={true}
-      loop={true}
-    />
   </Page>
 );
 
