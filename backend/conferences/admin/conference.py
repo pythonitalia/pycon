@@ -9,6 +9,7 @@ from django.forms import BaseInlineFormSet
 from django.forms.models import ModelForm
 from django.shortcuts import redirect, render
 from django.urls import path, reverse
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from ordered_model.admin import (
     OrderedInlineModelAdminMixin,
@@ -114,7 +115,7 @@ class ConferenceAdmin(
         "code",
     )
     list_filter = ("organizer",)
-    readonly_fields = ("created", "modified")
+    readonly_fields = ("created", "modified", "schedule_builder_link")
     filter_horizontal = (
         "topics",
         "languages",
@@ -127,6 +128,7 @@ class ConferenceAdmin(
             "Details",
             {
                 "fields": (
+                    "schedule_builder_link",
                     "organizer",
                     "name",
                     "code",
@@ -188,6 +190,13 @@ class ConferenceAdmin(
         ("YouTube", {"fields": ("video_title_template", "video_description_template")}),
     )
     inlines = [DeadlineInline, DurationInline, SponsorLevelInline, IncludedEventInline]
+
+    @admin.display(description="Schedule Builder")
+    def schedule_builder_link(self, obj):
+        if not obj.pk:
+            return "Save the conference first to access the schedule builder."
+        url = reverse("admin:schedule_builder", kwargs={"object_id": obj.pk})
+        return format_html('<a href="{}" class="button">Open Schedule Builder</a>', url)
 
     def get_urls(self):
         return [

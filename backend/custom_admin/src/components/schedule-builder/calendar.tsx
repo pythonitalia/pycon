@@ -85,6 +85,7 @@ export const Calendar = ({ day }: Props) => {
                   item={item}
                   rooms={rooms}
                   rowStart={rowStart}
+                  date={date}
                 />
               ))}
             </Fragment>
