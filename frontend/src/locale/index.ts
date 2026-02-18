@@ -1162,6 +1162,11 @@ The sooner you buy your ticket, the more you save!`,
       "The form will open on {date}. Please watch our socials for updates and any changes.",
     "requestInvitationLetter.formClosed":
       "The form is closed. If you have any questions, please contact us.",
+
+    "errorPage.title": "Something went wrong",
+    "errorPage.body":
+      "An unexpected error occurred. If this keeps happening, please {reportLink}! In the meantime, here's Ernesto thinking about pineapple pizza 🍕",
+    "errorPage.reportLink": "report the issue",
   },
   it: {
     titleTemplate: "%s | PyCon Italia",
@@ -2350,6 +2355,11 @@ Clicca sulla casella per cambiare. Se lasciato vuoto, presumeremo che tu sia dis
       "Di norma registriamo tutti i talk e li pubblichiamo successivamente sul nostro canale YouTube. Se non desideri che il tuo intervento venga registrato, seleziona questa opzione. Nota: il talk sarà comunque trasmesso in streaming.",
     "cfp.doNotRecordCheckboxLabel":
       "Confermo di non voler che il mio talk venga registrato. Comprendo che non verrà caricato sul canale YouTube di Python Italia e che non sarà possibile recuperarlo in futuro.",
+
+    "errorPage.title": "Qualcosa è andato storto",
+    "errorPage.body":
+      "Si è verificato un errore inaspettato. Se continua a succedere, {reportLink}! Nel frattempo, ecco Ernesto che pensa alla pizza con l'ananas 🍕",
+    "errorPage.reportLink": "segnala il problema",
   },
 };
 
