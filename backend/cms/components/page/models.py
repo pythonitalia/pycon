@@ -1,3 +1,4 @@
+from cms.components.page.blocks.communities_section import CommunitiesSection
 from cms.components.page.blocks.dynamic_content_display_section import (
     DynamicContentDisplaySection,
 )
@@ -41,6 +42,7 @@ class BodyBlock(blocks.StreamBlock):
     live_streaming_section = LiveStreamingSection()
     homepage_hero = HomepageHero()
     dynamic_content_display_section = DynamicContentDisplaySection()
+    communities_section = CommunitiesSection()
 
 
 class GenericPage(CustomHeadlessMixin, Page):
