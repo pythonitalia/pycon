@@ -9,6 +9,7 @@ class DynamicContentDisplaySectionSource(enum.Enum):
     speakers = "speakers"
     keynoters = "keynoters"
     proposals = "proposals"
+    communities = "communities"
 
 
 @register_page_block()
