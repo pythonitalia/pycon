@@ -56,7 +56,7 @@ export const CommunitiesSection = ({ title, communities }: Props) => {
           }
 
           return (
-            <MultiplePartsCard>
+            <MultiplePartsCard key={community.name}>
               <CardPart>
                 <Heading size={4}>{community.name}</Heading>
               </CardPart>
