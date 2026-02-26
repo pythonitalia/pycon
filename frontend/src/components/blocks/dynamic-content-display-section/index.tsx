@@ -5,7 +5,6 @@ import {
   queryKeynotesSection,
 } from "~/types";
 import { KeynotersContent } from "./keynoters-content";
-import { LocalCommunitiesContent } from "./local-communities-content";
 import { ProposalsContent } from "./proposals-content";
 import { SpeakersContent } from "./speakers-content";
 
@@ -24,9 +23,6 @@ export const DynamicContentDisplaySection = ({
       )}
       {source === DynamicContentDisplaySectionSource.Proposals && (
         <ProposalsContent />
-      )}
-      {source === DynamicContentDisplaySectionSource.LocalCommunities && (
-        <LocalCommunitiesContent />
       )}
     </Fragment>
   );
@@ -59,9 +55,6 @@ DynamicContentDisplaySection.dataFetching = (client, language, block) => {
           language,
         }),
       ];
-    }
-    case DynamicContentDisplaySectionSource.LocalCommunities: {
-      return [];
     }
   }
 
