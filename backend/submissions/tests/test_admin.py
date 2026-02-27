@@ -3,7 +3,9 @@ from conferences.tests.factories import ConferenceFactory
 from notifications.tests.factories import EmailTemplateFactory
 from notifications.models import EmailTemplateIdentifier, SentEmail
 import pytest
+from schedule.tests.factories import ScheduleItemFactory
 from submissions.admin import (
+    SubmissionAdmin,
     apply_and_notify_status_change,
     send_proposal_in_waiting_list_email_action,
     send_proposal_rejected_email_action,
@@ -12,6 +14,25 @@ from submissions.models import Submission
 from submissions.tests.factories import SubmissionFactory
 
 pytestmark = pytest.mark.django_db
+
+
+def test_is_scheduled_returns_true_when_submission_has_schedule_items():
+    submission = SubmissionFactory()
+    ScheduleItemFactory(
+        submission=submission,
+        conference=submission.conference,
+        type="submission",
+    )
+
+    admin = SubmissionAdmin(model=Submission, admin_site=None)
+    assert admin.is_scheduled(submission) is True
+
+
+def test_is_scheduled_returns_false_when_submission_has_no_schedule_items():
+    submission = SubmissionFactory()
+
+    admin = SubmissionAdmin(model=Submission, admin_site=None)
+    assert admin.is_scheduled(submission) is False
 
 
 def test_send_proposal_rejected_email_action(rf, mocker):

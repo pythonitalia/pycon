@@ -222,6 +222,7 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "speaker_display_name",
         "type",
         "status",
+        "is_scheduled",
         "conference",
         "open_submission",
         "inline_tags",
@@ -307,6 +308,15 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         return ", ".join([tag.name for tag in obj.tags.all()])
 
     @admin.display(
+        description="Scheduled",
+        boolean=True,
+    )
+    def is_scheduled(self, obj):
+        # Use bool() on all() to utilize prefetch_related data instead of exists()
+        # which would issue an additional query
+        return bool(obj.schedule_items.all())
+
+    @admin.display(
         description="Open",
     )
     def open_submission(self, obj):  # pragma: no cover
@@ -318,7 +328,7 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related("tags")
+        return super().get_queryset(request).prefetch_related("tags", "schedule_items")
 
     class Media:
         js = ["admin/js/jquery.init.js"]
