@@ -60,11 +60,15 @@ export const CommunitiesSection = ({ title, communities }: Props) => {
               <CardPart>
                 <Heading size={4}>{community.name}</Heading>
               </CardPart>
-              <CardPart background="milk">
+              <CardPart background="milk" fullHeight={true}>
                 {community.logo && (
                   <>
                     <VerticalStack alignItems="center" gap="small">
-                      <img src={community.logo} alt={community.name} />
+                      <img
+                        src={community.logo}
+                        alt={community.name}
+                        width={128}
+                      />
                     </VerticalStack>
                     <Spacer size="small" />
                   </>
