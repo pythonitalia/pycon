@@ -15,6 +15,7 @@ resource "aws_iam_role_policy" "server" {
 }
 
 data "aws_iam_policy_document" "server_assume_role" {
+  # allow ecs
   statement {
     effect = "Allow"
 
@@ -23,6 +24,16 @@ data "aws_iam_policy_document" "server_assume_role" {
       identifiers = ["ec2.amazonaws.com", "ecs-tasks.amazonaws.com", "ecs.amazonaws.com"]
     }
 
+    actions = ["sts:AssumeRole"]
+  }
+
+  # allow lambda
+  statement {
+    effect = "Allow"
+    principals {
+      type = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
     actions = ["sts:AssumeRole"]
   }
 }
