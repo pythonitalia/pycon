@@ -25,6 +25,7 @@ from users.admin_mixins import ConferencePermissionMixin
 
 
 from .models import (
+    SubmissionCoSpeaker,
     ProposalMaterial,
     Submission,
     SubmissionComment,
@@ -213,6 +214,12 @@ class ProposalMaterialInline(admin.TabularInline):
     autocomplete_fields = ("file",)
 
 
+class CoSpeakerInline(admin.TabularInline):
+    model = SubmissionCoSpeaker
+    extra = 0
+    autocomplete_fields = ("user",)
+
+
 @admin.register(Submission)
 class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     resource_class = SubmissionResource
@@ -276,7 +283,7 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         send_proposal_in_waiting_list_email_action,
     ]
     autocomplete_fields = ("speaker",)
-    inlines = [ProposalMaterialInline]
+    inlines = [ProposalMaterialInline, CoSpeakerInline]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         extra_context = extra_context or {}
