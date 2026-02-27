@@ -15,7 +15,11 @@ from custom_admin.audit import (
     create_change_admin_log_entry,
 )
 from grants.models import Grant as GrantModel
-from grants.tasks import get_name, notify_new_grant_reply_slack
+from grants.tasks import (
+    create_and_send_grant_voucher,
+    get_name,
+    notify_new_grant_reply_slack,
+)
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from participants.models import Participant
 from privacy_policy.record import record_privacy_policy_acceptance
@@ -351,5 +355,8 @@ class GrantMutation:
 
         admin_url = request.build_absolute_uri(grant.get_admin_url())
         notify_new_grant_reply_slack.delay(grant_id=grant.id, admin_url=admin_url)
+
+        if grant.status == GrantModel.Status.confirmed:
+            create_and_send_grant_voucher.delay(grant_id=grant.id)
 
         return Grant.from_model(grant)
