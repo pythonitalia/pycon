@@ -20,7 +20,7 @@ def cms_page(
     if not site:
         return SiteNotFoundError(message=f"Site `{hostname}` not found")
 
-    page = GenericPageModel.objects.in_site(site).filter(slug=slug).first()
+    page = GenericPageModel.objects.in_site(site).filter(slug=slug, live=True).first()
 
     if not page:
         return None
