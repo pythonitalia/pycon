@@ -57,14 +57,18 @@ export const CommunitiesSection = ({ title, communities }: Props) => {
 
           return (
             <MultiplePartsCard key={community.name}>
-              <CardPart>
+              <CardPart shrink={false}>
                 <Heading size={4}>{community.name}</Heading>
               </CardPart>
-              <CardPart background="milk">
+              <CardPart background="milk" fullHeight={true}>
                 {community.logo && (
                   <>
                     <VerticalStack alignItems="center" gap="small">
-                      <img src={community.logo} alt={community.name} />
+                      <img
+                        src={community.logo}
+                        alt={community.name}
+                        width={128}
+                      />
                     </VerticalStack>
                     <Spacer size="small" />
                   </>
@@ -72,7 +76,7 @@ export const CommunitiesSection = ({ title, communities }: Props) => {
 
                 <StyledHTMLText text={community.description} baseTextSize={2} />
               </CardPart>
-              <CardPart background="milk">
+              <CardPart background="milk" shrink={false}>
                 <VerticalStack alignItems="center" gap="small">
                   <SocialLinks hoverColor="green" socials={socialLinks} />
                 </VerticalStack>
