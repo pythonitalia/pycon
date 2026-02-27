@@ -135,6 +135,23 @@ fragment Blocks on Block {
     id
     source
   }
+
+  ... on CommunitiesSection {
+    id
+    title
+    communities {
+      name
+      description
+      logo
+      bannerPhoto
+      bannerBackgroundColor
+      mastodonUrl
+      facebookUrl
+      instagramUrl
+      linkedinUrl
+      twitterUrl
+    }
+  }
 }
 
 fragment CTAInfo on CTA {

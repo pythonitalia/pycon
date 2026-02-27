@@ -5,6 +5,7 @@ import { TextSection } from "~/components/blocks/text-section";
 import type { Block } from "~/types";
 
 import { CheckoutSection } from "../blocks/checkout-section";
+import { CommunitiesSection } from "../blocks/communities-section";
 import { DynamicContentDisplaySection } from "../blocks/dynamic-content-display-section";
 import { HomeIntroSection } from "../blocks/home-intro-section";
 import { HomepageHero } from "../blocks/homepage-hero";
@@ -38,6 +39,7 @@ const REGISTRY: Registry = {
   LiveStreamingSection,
   HomepageHero,
   DynamicContentDisplaySection,
+  CommunitiesSection,
 };
 
 type Props = {
