@@ -672,8 +672,14 @@ class RoomAdmin(OrderedModelAdmin):
     list_display = (
         "name",
         "type",
+        "attendees_total_capacity",
     )
     list_filter = ("type",)
+    fields = (
+        "name",
+        "type",
+        "attendees_total_capacity",
+    )
 
 
 class DayRoomThroughModelInline(OrderedTabularInline):
