@@ -54,6 +54,12 @@ export const CommunitiesSection = ({ title, communities }: Props) => {
               link: community.twitterUrl,
             });
           }
+          if (community.websiteUrl) {
+            socialLinks.push({
+              icon: "website",
+              link: community.websiteUrl,
+            });
+          }
 
           return (
             <MultiplePartsCard key={community.name}>
