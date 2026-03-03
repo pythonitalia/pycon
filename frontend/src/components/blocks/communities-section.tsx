@@ -56,7 +56,7 @@ export const CommunitiesSection = ({ title, communities }: Props) => {
           }
           if (community.websiteUrl) {
             socialLinks.push({
-              icon: "website",
+              icon: "web",
               link: community.websiteUrl,
             });
           }
