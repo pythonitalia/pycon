@@ -16,6 +16,7 @@ class Community:
     instagram_url: str | None
     linkedin_url: str | None
     twitter_url: str | None
+    website_url: str | None
 
     @classmethod
     def from_block(cls, block) -> Self:
@@ -40,6 +41,7 @@ class Community:
             instagram_url=block["instagram_url"],
             linkedin_url=block["linkedin_url"],
             twitter_url=block["twitter_url"],
+            website_url=block["website_url"],
         )
 
 

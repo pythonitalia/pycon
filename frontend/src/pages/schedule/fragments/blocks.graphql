@@ -150,6 +150,7 @@ fragment Blocks on Block {
       instagramUrl
       linkedinUrl
       twitterUrl
+      websiteUrl
     }
   }
 }
