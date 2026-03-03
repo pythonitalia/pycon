@@ -56,13 +56,13 @@ def book_schedule_item(info: Info, id: strawberry.ID) -> BookScheduleItemResult:
     ):
         return UserNeedsConferenceTicket()
 
-    if schedule_item.attendees_total_capacity is None:
+    if schedule_item.actual_attendees_total_capacity is None:
         return ScheduleItemNotBookable()
 
     if schedule_item.attendees.filter(user_id=user_id).exists():
         return UserIsAlreadyBooked()
 
-    if schedule_item.attendees.count() >= schedule_item.attendees_total_capacity:
+    if schedule_item.attendees.count() >= schedule_item.actual_attendees_total_capacity:
         return ScheduleItemIsFull()
 
     ScheduleItemAttendee.objects.create(schedule_item=schedule_item, user_id=user_id)

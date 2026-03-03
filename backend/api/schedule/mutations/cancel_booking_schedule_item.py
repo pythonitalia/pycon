@@ -30,7 +30,7 @@ def cancel_booking_schedule_item(
     schedule_item = ScheduleItem.objects.get(id=id)
     user_id = info.context.request.user.id
 
-    if schedule_item.attendees_total_capacity is None:
+    if schedule_item.actual_attendees_total_capacity is None:
         return ScheduleItemNotBookable()
 
     if not schedule_item.attendees.filter(user_id=user_id).exists():

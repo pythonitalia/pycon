@@ -341,7 +341,7 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                     "link_to",
                     "slido_url",
                     "talk_manager",
-                    'livestreaming_room',
+                    "livestreaming_room",
                 )
             },
         ),
@@ -398,6 +398,9 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         "invitation_link",
     )
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("rooms")
+
     def get_urls(self):
         return [
             path(
@@ -420,9 +423,9 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         export_data = csv_format.export_data(data)
         date_str = timezone.now().strftime("%Y-%m-%d")
         response = HttpResponse(export_data, content_type=csv_format.get_content_type())
-        response[
-            "Content-Disposition"
-        ] = f'attachment; filename="{schedule_item.slug}-attendees-{date_str}.csv"'
+        response["Content-Disposition"] = (
+            f'attachment; filename="{schedule_item.slug}-attendees-{date_str}.csv"'
+        )
         return response
 
     def email_speakers(self, request):
@@ -482,10 +485,10 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         return TemplateResponse(request, "email-speakers.html", context)
 
     def spaces_left(self, obj):
-        if obj.attendees_total_capacity is None:
+        if obj.actual_attendees_total_capacity is None:
             return None
 
-        return obj.attendees_total_capacity - obj.attendees.count()
+        return obj.actual_attendees_total_capacity - obj.attendees.count()
 
     def save_form(self, request, form, change):
         if form.cleaned_data["new_slot"]:
@@ -672,8 +675,14 @@ class RoomAdmin(OrderedModelAdmin):
     list_display = (
         "name",
         "type",
+        "attendees_total_capacity",
     )
     list_filter = ("type",)
+    fields = (
+        "name",
+        "type",
+        "attendees_total_capacity",
+    )
 
 
 class DayRoomThroughModelInline(OrderedTabularInline):
