@@ -398,6 +398,9 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         "invitation_link",
     )
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("rooms")
+
     def get_urls(self):
         return [
             path(

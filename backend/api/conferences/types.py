@@ -270,11 +270,15 @@ class Conference:
 
     @strawberry.field
     def talks(self, info: Info) -> list[ScheduleItem]:
-        return self.schedule_items.filter(type=ScheduleItemModel.TYPES.submission).all()
+        return (
+            self.schedule_items.filter(type=ScheduleItemModel.TYPES.submission)
+            .prefetch_related("rooms")
+            .all()
+        )
 
     @strawberry.field
     def talk(self, info: Info, slug: str) -> ScheduleItem | None:
-        return self.schedule_items.filter(slug=slug).first()
+        return self.schedule_items.filter(slug=slug).prefetch_related("rooms").first()
 
     @strawberry.field
     def ranking(self, info: Info, topic: strawberry.ID) -> RankRequest | None:
