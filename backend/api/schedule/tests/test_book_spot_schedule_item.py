@@ -2,6 +2,7 @@ import datetime
 
 from schedule.tests.factories import (
     DayFactory,
+    RoomFactory,
     ScheduleItemAttendeeFactory,
     ScheduleItemFactory,
     SlotFactory,
@@ -182,6 +183,72 @@ def test_user_cannot_book_any_event(graphql_client, user, simple_schedule_item, 
     assert (
         response["data"]["bookScheduleItem"]["__typename"] == "ScheduleItemNotBookable"
     )
+
+    assert not ScheduleItemAttendee.objects.filter(
+        schedule_item=schedule_item, user_id=user.id
+    ).exists()
+
+
+def test_user_book_with_limited_capacity_from_room(
+    graphql_client, user, simple_schedule_item, mocker
+):
+    mocker.patch(
+        "api.schedule.mutations.book_schedule_item.user_has_admission_ticket",
+        return_value=True,
+    )
+
+    graphql_client.force_login(user)
+
+    schedule_item = simple_schedule_item
+    schedule_item.rooms.add(RoomFactory(attendees_total_capacity=10))
+    schedule_item.attendees_total_capacity = None
+    schedule_item.save()
+
+    ScheduleItemAttendeeFactory.create_batch(2, schedule_item=schedule_item)
+
+    response = graphql_client.query(
+        """mutation($id: ID!) {
+        bookScheduleItem(id: $id) {
+            __typename
+        }
+    }""",
+        variables={"id": schedule_item.id},
+    )
+
+    assert response["data"]["bookScheduleItem"]["__typename"] == "ScheduleItem"
+
+    assert ScheduleItemAttendee.objects.filter(
+        schedule_item=schedule_item, user_id=user.id
+    ).exists()
+
+
+def test_user_book_full_item_from_room(
+    graphql_client, user, simple_schedule_item, mocker
+):
+    mocker.patch(
+        "api.schedule.mutations.book_schedule_item.user_has_admission_ticket",
+        return_value=True,
+    )
+
+    graphql_client.force_login(user)
+
+    schedule_item = simple_schedule_item
+    schedule_item.rooms.add(RoomFactory(attendees_total_capacity=10))
+    schedule_item.attendees_total_capacity = None
+    schedule_item.save()
+
+    ScheduleItemAttendeeFactory.create_batch(11, schedule_item=schedule_item)
+
+    response = graphql_client.query(
+        """mutation($id: ID!) {
+        bookScheduleItem(id: $id) {
+            __typename
+        }
+    }""",
+        variables={"id": schedule_item.id},
+    )
+
+    assert response["data"]["bookScheduleItem"]["__typename"] == "ScheduleItemIsFull"
 
     assert not ScheduleItemAttendee.objects.filter(
         schedule_item=schedule_item, user_id=user.id

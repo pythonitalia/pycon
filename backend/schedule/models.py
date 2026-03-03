@@ -31,6 +31,14 @@ class Room(models.Model):
 
     name = models.CharField(_("name"), max_length=100)
     type = models.CharField(_("type"), choices=TYPES, max_length=10, default=TYPES.talk)
+    attendees_total_capacity = models.PositiveIntegerField(
+        _("default attendees total capacity"),
+        null=True,
+        blank=True,
+        help_text=_(
+            "Maximum capacity for this room. Leave blank to not limit attendees."
+        ),
+    )
 
     def __str__(self):
         return self.name
@@ -317,6 +325,13 @@ class ScheduleItem(TimeStampedModel):
     )
 
     objects = ScheduleItemQuerySet().as_manager()
+
+    @cached_property
+    def actual_attendees_total_capacity(self):
+        if self.attendees_total_capacity:
+            return self.attendees_total_capacity
+        rooms = self.rooms.all()
+        return rooms[0].attendees_total_capacity if rooms else None
 
     @cached_property
     def speakers(self):

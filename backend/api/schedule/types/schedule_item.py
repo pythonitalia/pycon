@@ -30,9 +30,9 @@ class ScheduleItem:
     duration: int | None
     highlight_color: str | None
     language: Language
-    audience_level: Annotated[
-        "AudienceLevel", strawberry.lazy("api.conferences.types")
-    ] | None
+    audience_level: (
+        Annotated["AudienceLevel", strawberry.lazy("api.conferences.types")] | None
+    )
     youtube_video_id: str | None
     link_to: str
 
@@ -45,21 +45,21 @@ class ScheduleItem:
 
     @strawberry.field
     def has_limited_capacity(self) -> bool:
-        return self.attendees_total_capacity is not None
+        return self.actual_attendees_total_capacity is not None
 
     @strawberry.field
     def has_spaces_left(self) -> bool:
-        if self.attendees_total_capacity is None:
+        if self.actual_attendees_total_capacity is None:
             return True
 
-        return self.attendees_total_capacity - self.attendees.count() > 0
+        return self.actual_attendees_total_capacity - self.attendees.count() > 0
 
     @strawberry.field
     def spaces_left(self) -> int:
-        if self.attendees_total_capacity is None:
+        if self.actual_attendees_total_capacity is None:
             return 0
 
-        return self.attendees_total_capacity - self.attendees.count()
+        return self.actual_attendees_total_capacity - self.attendees.count()
 
     @strawberry.field
     def user_has_spot(self, info) -> bool:
@@ -124,7 +124,7 @@ class ScheduleItem:
 
         return info.context.request.build_absolute_uri(self.image.url)
 
-    @strawberry.field(name='slidoUrl')
+    @strawberry.field(name="slidoUrl")
     def _slido_url(self, info) -> str:
         if self.slido_url:
             return self.slido_url
