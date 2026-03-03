@@ -14,6 +14,7 @@ class Community(blocks.StructBlock):
     instagram_url = blocks.URLBlock(required=False)
     linkedin_url = blocks.URLBlock(required=False)
     twitter_url = blocks.URLBlock(required=False)
+    website_url = blocks.URLBlock(required=False)
 
 
 class CommunitiesSection(blocks.StructBlock):
