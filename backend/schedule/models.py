@@ -328,7 +328,7 @@ class ScheduleItem(TimeStampedModel):
 
     @cached_property
     def actual_attendees_total_capacity(self):
-        if self.attendees_total_capacity:
+        if self.attendees_total_capacity is not None:
             return self.attendees_total_capacity
         rooms = self.rooms.all()
         return rooms[0].attendees_total_capacity if rooms else None
