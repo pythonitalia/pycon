@@ -222,6 +222,7 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         "speaker_display_name",
         "type",
         "status",
+        "is_scheduled",
         "conference",
         "open_submission",
         "inline_tags",
@@ -307,6 +308,16 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         return ", ".join([tag.name for tag in obj.tags.all()])
 
     @admin.display(
+        description="Scheduled",
+    )
+    def is_scheduled(self, obj):
+        schedule_items = obj.schedule_items.all()
+        if not schedule_items:
+            return "-"
+        times = [item.start.strftime("%Y-%m-%d %H:%M") for item in schedule_items]
+        return ", ".join(times)
+
+    @admin.display(
         description="Open",
     )
     def open_submission(self, obj):  # pragma: no cover
@@ -318,7 +329,9 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related("tags")
+        return super().get_queryset(request).prefetch_related(
+            "tags", "schedule_items__slot__day"
+        )
 
     class Media:
         js = ["admin/js/jquery.init.js"]
