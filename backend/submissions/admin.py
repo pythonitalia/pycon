@@ -309,12 +309,13 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
 
     @admin.display(
         description="Scheduled",
-        boolean=True,
     )
     def is_scheduled(self, obj):
-        # Use bool() on all() to utilize prefetch_related data instead of exists()
-        # which would issue an additional query
-        return bool(obj.schedule_items.all())
+        schedule_items = obj.schedule_items.all()
+        if not schedule_items:
+            return "-"
+        times = [item.start.strftime("%Y-%m-%d %H:%M") for item in schedule_items]
+        return ", ".join(times)
 
     @admin.display(
         description="Open",
@@ -328,7 +329,9 @@ class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related("tags", "schedule_items")
+        return super().get_queryset(request).prefetch_related(
+            "tags", "schedule_items__slot__day"
+        )
 
     class Media:
         js = ["admin/js/jquery.init.js"]

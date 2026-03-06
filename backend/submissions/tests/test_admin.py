@@ -16,23 +16,24 @@ from submissions.tests.factories import SubmissionFactory
 pytestmark = pytest.mark.django_db
 
 
-def test_is_scheduled_returns_true_when_submission_has_schedule_items():
+def test_is_scheduled_returns_datetime_when_submission_has_schedule_items():
     submission = SubmissionFactory()
-    ScheduleItemFactory(
+    schedule_item = ScheduleItemFactory(
         submission=submission,
         conference=submission.conference,
         type="submission",
     )
 
     admin = SubmissionAdmin(model=Submission, admin_site=None)
-    assert admin.is_scheduled(submission) is True
+    expected_time = schedule_item.start.strftime("%Y-%m-%d %H:%M")
+    assert admin.is_scheduled(submission) == expected_time
 
 
-def test_is_scheduled_returns_false_when_submission_has_no_schedule_items():
+def test_is_scheduled_returns_dash_when_submission_has_no_schedule_items():
     submission = SubmissionFactory()
 
     admin = SubmissionAdmin(model=Submission, admin_site=None)
-    assert admin.is_scheduled(submission) is False
+    assert admin.is_scheduled(submission) == "-"
 
 
 def test_send_proposal_rejected_email_action(rf, mocker):
