@@ -5,6 +5,7 @@ import pytest
 
 from conferences.tests.factories import ConferenceFactory, DeadlineFactory
 from grants.tasks import (
+    create_and_send_grant_voucher,
     send_grant_reply_approved_email,
     send_grant_reply_rejected_email,
     send_grant_reply_waiting_list_email,
@@ -466,3 +467,109 @@ def test_send_grant_waiting_list_email_missing_deadline():
 
     with pytest.raises(ValueError, match="missing grants_waiting_list_update deadline"):
         send_grant_reply_waiting_list_email(grant_id=grant.id)
+
+
+def test_create_and_send_grant_voucher(mocker, sent_emails):
+    from conferences.models.conference_voucher import ConferenceVoucher
+    from notifications.models import EmailTemplateIdentifier
+    from notifications.tests.factories import EmailTemplateFactory
+
+    mock_create_voucher = mocker.patch(
+        "grants.tasks.create_conference_voucher",
+    )
+    mock_conference_voucher = mocker.MagicMock()
+    mock_conference_voucher.id = 123
+    mock_create_voucher.return_value = mock_conference_voucher
+
+    mock_send_email = mocker.patch(
+        "grants.tasks.send_conference_voucher_email",
+    )
+
+    user = UserFactory(
+        full_name="Marco Acierno",
+        email="marco@placeholder.it",
+    )
+    grant = GrantFactory(user=user)
+
+    EmailTemplateFactory(
+        conference=grant.conference,
+        identifier=EmailTemplateIdentifier.voucher_code,
+    )
+
+    create_and_send_grant_voucher(grant_id=grant.id)
+
+    mock_create_voucher.assert_called_once_with(
+        conference=grant.conference,
+        user=user,
+        voucher_type=ConferenceVoucher.VoucherType.GRANT,
+    )
+    mock_send_email.delay.assert_called_once_with(conference_voucher_id=123)
+
+
+def test_create_and_send_grant_voucher_user_already_has_voucher(mocker):
+    from conferences.models.conference_voucher import ConferenceVoucher
+    from conferences.tests.factories import ConferenceVoucherFactory
+
+    mock_create_voucher = mocker.patch(
+        "grants.tasks.create_conference_voucher",
+    )
+    mock_send_email = mocker.patch(
+        "grants.tasks.send_conference_voucher_email",
+    )
+
+    user = UserFactory(
+        full_name="Marco Acierno",
+        email="marco@placeholder.it",
+    )
+    grant = GrantFactory(user=user)
+
+    # Create an existing voucher for this user and conference
+    ConferenceVoucherFactory(
+        conference=grant.conference,
+        user=user,
+        voucher_type=ConferenceVoucher.VoucherType.SPEAKER,
+    )
+
+    create_and_send_grant_voucher(grant_id=grant.id)
+
+    # Should not create a new voucher
+    mock_create_voucher.assert_not_called()
+    mock_send_email.delay.assert_not_called()
+
+
+def test_create_and_send_grant_voucher_upgrades_co_speaker_voucher(mocker):
+    from conferences.models.conference_voucher import ConferenceVoucher
+    from conferences.tests.factories import ConferenceVoucherFactory
+
+    mock_create_voucher = mocker.patch(
+        "grants.tasks.create_conference_voucher",
+    )
+    mock_send_email = mocker.patch(
+        "grants.tasks.send_conference_voucher_email",
+    )
+
+    user = UserFactory(
+        full_name="Marco Acierno",
+        email="marco@placeholder.it",
+    )
+    grant = GrantFactory(user=user)
+
+    # Create an existing co-speaker voucher for this user and conference
+    existing_voucher = ConferenceVoucherFactory(
+        conference=grant.conference,
+        user=user,
+        voucher_type=ConferenceVoucher.VoucherType.CO_SPEAKER,
+    )
+
+    create_and_send_grant_voucher(grant_id=grant.id)
+
+    # Should not create a new voucher but should upgrade the existing one
+    mock_create_voucher.assert_not_called()
+
+    existing_voucher.refresh_from_db()
+    assert existing_voucher.voucher_type == ConferenceVoucher.VoucherType.GRANT
+
+    # Should send email with the upgraded voucher
+    mock_send_email.delay.assert_called_once_with(
+        conference_voucher_id=existing_voucher.id
+    )

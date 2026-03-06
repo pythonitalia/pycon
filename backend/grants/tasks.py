@@ -5,6 +5,9 @@ from urllib.parse import urljoin
 from django.conf import settings
 from django.utils import timezone
 
+from conferences.models.conference_voucher import ConferenceVoucher
+from conferences.tasks import send_conference_voucher_email
+from conferences.vouchers import create_conference_voucher
 from grants.models import Grant
 from integrations import slack
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
@@ -182,3 +185,47 @@ def _new_send_grant_email(
 
     grant.applicant_reply_sent_at = timezone.now()
     grant.save()
+
+
+@app.task
+def create_and_send_grant_voucher(grant_id: int):
+    """
+    Creates a voucher for a confirmed grant and sends an email to the grantee.
+    This is triggered when a grant is confirmed by the user.
+    """
+    grant = Grant.objects.get(id=grant_id)
+    conference = grant.conference
+    user = grant.user
+
+    # Check if user already has a voucher for this conference
+    existing_voucher = (
+        ConferenceVoucher.objects.for_conference(conference).for_user(user).first()
+    )
+
+    if existing_voucher:
+        # If user has a co-speaker voucher, upgrade it to a grant voucher
+        if existing_voucher.voucher_type == ConferenceVoucher.VoucherType.CO_SPEAKER:
+            logger.info(
+                "User %s already has a co-speaker voucher for conference %s, "
+                "upgrading to grant voucher",
+                user.id,
+                conference.id,
+            )
+            existing_voucher.voucher_type = ConferenceVoucher.VoucherType.GRANT
+            existing_voucher.save(update_fields=["voucher_type"])
+            send_conference_voucher_email.delay(conference_voucher_id=existing_voucher.id)
+        else:
+            logger.info(
+                "User %s already has a voucher for conference %s, not creating a new one",
+                user.id,
+                conference.id,
+            )
+        return
+
+    conference_voucher = create_conference_voucher(
+        conference=conference,
+        user=user,
+        voucher_type=ConferenceVoucher.VoucherType.GRANT,
+    )
+
+    send_conference_voucher_email.delay(conference_voucher_id=conference_voucher.id)

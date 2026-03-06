@@ -122,3 +122,29 @@ def test_call_notify_new_grant_reply(graphql_client, user, mocker):
 
     assert response["data"]["sendGrantReply"]["__typename"] == "Grant"
     mock_publisher.delay.assert_called_once_with(grant_id=grant.id, admin_url=ANY)
+
+
+def test_create_voucher_when_grant_is_confirmed(graphql_client, user, mocker):
+    graphql_client.force_login(user)
+    grant = GrantFactory(user_id=user.id, status=Grant.Status.waiting_for_confirmation)
+    mock_voucher_task = mocker.patch(
+        "api.grants.mutations.create_and_send_grant_voucher"
+    )
+
+    response = _send_grant_reply(graphql_client, grant, status="confirmed")
+
+    assert response["data"]["sendGrantReply"]["__typename"] == "Grant"
+    mock_voucher_task.delay.assert_called_once_with(grant_id=grant.id)
+
+
+def test_voucher_not_created_when_grant_is_refused(graphql_client, user, mocker):
+    graphql_client.force_login(user)
+    grant = GrantFactory(user_id=user.id, status=Grant.Status.waiting_for_confirmation)
+    mock_voucher_task = mocker.patch(
+        "api.grants.mutations.create_and_send_grant_voucher"
+    )
+
+    response = _send_grant_reply(graphql_client, grant, status="refused")
+
+    assert response["data"]["sendGrantReply"]["__typename"] == "Grant"
+    mock_voucher_task.delay.assert_not_called()
