@@ -72,6 +72,16 @@ export const JobBoardLayout = ({
               <Text size={2} color="grey-500">
                 {jobListing.company}
               </Text>
+              <Spacer size="small" />
+              {jobListing.applyUrl && (
+                <Button
+                  target="_blank"
+                  href={jobListing.applyUrl}
+                  variant="secondary"
+                >
+                  <FormattedMessage id="jobboard.applyNow" />
+                </Button>
+              )}
               <Spacer size="large" />
               <Article>
                 <StyledHTMLText
