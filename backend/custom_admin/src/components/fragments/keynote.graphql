@@ -5,4 +5,5 @@ fragment KeynoteFragment on Keynote {
     id
     fullName
   }
+  hasScheduleItems
 }

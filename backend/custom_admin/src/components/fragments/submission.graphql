@@ -22,4 +22,5 @@ fragment SubmissionFragment on Submission {
       speakerAvailabilities
     }
   }
+  hasScheduleItems
 }

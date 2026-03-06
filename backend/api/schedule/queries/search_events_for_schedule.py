@@ -34,6 +34,7 @@ def search_events_for_schedule(
             "audience_level",
             "languages",
             "speaker",
+            "schedule_items",
         )
         .all()[:5]
     )

@@ -43,6 +43,11 @@ export const ProposalPreview = ({ proposal }: Props) => {
 
   return (
     <li className="p-2 bg-slate-300 odd:bg-slate-200">
+      {proposal.hasScheduleItems && (
+        <div className="mb-2 p-2 bg-yellow-100 border border-yellow-400 text-yellow-800 rounded text-sm">
+          This proposal has already been added to the schedule
+        </div>
+      )}
       <div className="flex items-start justify-between gap-2">
         <div>
           <strong>{proposal.title}</strong>
