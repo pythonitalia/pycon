@@ -12,10 +12,8 @@ import {
 import type { Icon } from "@python-italia/pycon-styleguide/dist/icons/types";
 import type { Color } from "@python-italia/pycon-styleguide/dist/types";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FormattedMessage } from "react-intl";
-
-import Router from "next/router";
 
 import { useCurrentLanguage } from "~/locale/context";
 import { useLogoutMutation, useMyProfileQuery } from "~/types";
@@ -23,7 +21,7 @@ import { useLogoutMutation, useMyProfileQuery } from "~/types";
 import { createHref } from "../link";
 import { MetaTags } from "../meta-tags";
 import { Modal } from "../modal";
-import { useLoginState } from "../profile/hooks";
+import { setLoginState } from "../profile/hooks";
 
 type Action = {
   id: string;
@@ -39,32 +37,17 @@ type Action = {
 export const ProfilePageHandler = () => {
   const [showLogoutModal, openLogoutModal] = useState(false);
   const [logout, { loading: isLoggingOut }] = useLogoutMutation();
-  const [loggedIn, setLoginState] = useLoginState();
   const language = useCurrentLanguage();
 
-  const { error, data: profileData } = useMyProfileQuery({
+  const { data: profileData } = useMyProfileQuery({
     variables: {
       conferenceCode: process.env.conferenceCode,
     },
   });
 
-  useEffect(() => {
-    const loginUrl = "/login";
-
-    if (error) {
-      setLoginState(false);
-
-      Router.push("/login", loginUrl);
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (!loggedIn) {
-      const loginUrl = "/login";
-      setLoginState(false);
-      Router.push("/login", loginUrl);
-    }
-  }, []);
+  // Auth errors are handled by the Apollo client error link in create-client.ts
+  // which checks for "User not logged in" or "Not authenticated" errors
+  // and redirects to /login. No need for redundant client-side checks.
 
   const { name, fullName } = profileData.me;
 
