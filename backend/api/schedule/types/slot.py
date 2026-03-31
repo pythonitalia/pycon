@@ -34,7 +34,7 @@ class ScheduleSlot:
             return self.hour < now.time() < end
 
     @strawberry.field
-    def end_hour(self, info: Info) -> time:
+    def end_hour(self) -> time:
         return (
             datetime.combine(timezone.datetime.today(), self.hour)
             + timedelta(minutes=self.duration)

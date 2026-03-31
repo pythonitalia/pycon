@@ -1,8 +1,9 @@
 from graphql import GraphQLError
 import time
 import time_machine
-from types import SimpleNamespace
+from unittest.mock import MagicMock
 import pytest
+from strawberry.types import Info as StrawberryInfo
 from api.extensions import RateLimit
 from django.test import override_settings
 from django.core.cache import cache
@@ -37,12 +38,9 @@ def test_parsing_rate_limit(value, expected_output):
     }
 )
 def test_removes_obsolete_history_records():
-    info = SimpleNamespace(
-        field_name="field_name",
-        context=SimpleNamespace(
-            request=SimpleNamespace(user=SimpleNamespace(id=1)),
-        ),
-    )
+    info = MagicMock(spec=StrawberryInfo)
+    info.field_name = "field_name"
+    info.context.request.user.id = 1
 
     rate_limit = RateLimit(rate="10/m")
 
@@ -65,12 +63,9 @@ def test_removes_obsolete_history_records():
     }
 )
 def test_blocks_too_many_requests():
-    info = SimpleNamespace(
-        field_name="field_name",
-        context=SimpleNamespace(
-            request=SimpleNamespace(user=SimpleNamespace(id=1)),
-        ),
-    )
+    info = MagicMock(spec=StrawberryInfo)
+    info.field_name = "field_name"
+    info.context.request.user.id = 1
 
     rate_limit = RateLimit(rate="10/m")
 
