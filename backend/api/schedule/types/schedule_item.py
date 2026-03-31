@@ -62,7 +62,7 @@ class ScheduleItem:
         return self.actual_attendees_total_capacity - self.attendees.count()
 
     @strawberry.field
-    def user_has_spot(self, info) -> bool:
+    def user_has_spot(self, info: Info) -> bool:
         user_id = info.context.request.user.id
         return self.attendees.filter(user_id=user_id).exists()
 
@@ -114,18 +114,18 @@ class ScheduleItem:
         return Keynote.from_django_model(self.keynote, info)
 
     @strawberry.field
-    def rooms(self, info) -> list[Room]:
+    def rooms(self, info: Info) -> list[Room]:
         return self.rooms.all()
 
     @strawberry.field
-    def image(self, info) -> str | None:
+    def image(self, info: Info) -> str | None:
         if not self.image:
             return None
 
         return info.context.request.build_absolute_uri(self.image.url)
 
     @strawberry.field(name="slidoUrl")
-    def _slido_url(self, info) -> str:
+    def _slido_url(self, info: Info) -> str:
         if self.slido_url:
             return self.slido_url
 

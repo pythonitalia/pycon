@@ -4,6 +4,7 @@ from typing import Self
 import strawberry
 from strawberry import ID
 
+from api.context import Info
 from sponsors.models import SponsorLevel as SponsorLevelModel
 
 
@@ -13,11 +14,11 @@ class Sponsor:
     name: str
 
     @strawberry.field
-    def link(self, info) -> str:
+    def link(self, info: Info) -> str:
         return self.link
 
     @strawberry.field
-    def image(self, info) -> str:
+    def image(self, info: Info) -> str:
         if not self.image:
             return ""
 

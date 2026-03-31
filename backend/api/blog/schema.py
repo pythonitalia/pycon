@@ -10,7 +10,7 @@ from .types import Post as PostType
 @strawberry.type
 class BlogQuery:
     @strawberry.field
-    def blog_posts(self, info) -> list[PostType]:
+    def blog_posts(self, info: Info) -> list[PostType]:
         return [
             PostType(
                 id=post.id,

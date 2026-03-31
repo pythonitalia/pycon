@@ -40,7 +40,7 @@ class Day:
         return list(self.slots.all())
 
     @strawberry.field
-    def running_events(self, info) -> list[ScheduleItem]:
+    def running_events(self, info: Info) -> list[ScheduleItem]:
         current_slot = self.slots.filter(
             hour__lte=timezone.now().astimezone(self.conference.timezone)
         ).last()

@@ -2,6 +2,8 @@ from typing import Optional
 
 import strawberry
 
+from api.context import Info
+
 
 @strawberry.type
 class JobListing:
@@ -14,7 +16,7 @@ class JobListing:
     apply_url: str
 
     @strawberry.field
-    def company_logo(self, info) -> Optional[str]:
+    def company_logo(self, info: Info) -> Optional[str]:
         if not self.company_logo_url:
             return None
 

@@ -166,15 +166,15 @@ class Submission:
         )
 
     @strawberry.field
-    def id(self, info) -> strawberry.ID:
+    def id(self, info: Info) -> strawberry.ID:
         return self.hashid
 
     @strawberry.field
-    def can_edit(self, info) -> bool:
+    def can_edit(self, info: Info) -> bool:
         return self.can_edit(info.context.request)
 
     @strawberry.field
-    def my_vote(self, info) -> VoteType | None:
+    def my_vote(self, info: Info) -> VoteType | None:
         request = info.context.request
 
         if not request.user.is_authenticated:
@@ -189,15 +189,15 @@ class Submission:
             return None
 
     @strawberry.field
-    def languages(self, info) -> list[Language] | None:
+    def languages(self, info: Info) -> list[Language] | None:
         return self.languages.all()
 
     @strawberry.field
-    def tags(self, info) -> list[SubmissionTag] | None:
+    def tags(self, info: Info) -> list[SubmissionTag] | None:
         return self.tags.all()
 
     @strawberry.field
-    def materials(self, info) -> list[ProposalMaterial]:
+    def materials(self, info: Info) -> list[ProposalMaterial]:
         return [
             ProposalMaterial.from_django(material)
             for material in self.materials.order_by("created").all()

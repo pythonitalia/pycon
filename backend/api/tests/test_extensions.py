@@ -1,8 +1,7 @@
 from graphql import GraphQLError
 import time
 import time_machine
-from unittest.mock import Mock
-from api.context import Info
+from types import SimpleNamespace
 import pytest
 from api.extensions import RateLimit
 from django.test import override_settings
@@ -38,11 +37,12 @@ def test_parsing_rate_limit(value, expected_output):
     }
 )
 def test_removes_obsolete_history_records():
-    info = Info(context=Mock())
-    info.field_name = "field_name"
-    info.context.request = Mock()
-    info.context.request.user = Mock()
-    info.context.request.user.id = 1
+    info = SimpleNamespace(
+        field_name="field_name",
+        context=SimpleNamespace(
+            request=SimpleNamespace(user=SimpleNamespace(id=1)),
+        ),
+    )
 
     rate_limit = RateLimit(rate="10/m")
 
@@ -65,16 +65,18 @@ def test_removes_obsolete_history_records():
     }
 )
 def test_blocks_too_many_requests():
-    info = Info(context=Mock())
-    info.field_name = "field_name"
-    info.context.request = Mock()
-    info.context.request.user = Mock()
-    info.context.request.user.id = 1
+    info = SimpleNamespace(
+        field_name="field_name",
+        context=SimpleNamespace(
+            request=SimpleNamespace(user=SimpleNamespace(id=1)),
+        ),
+    )
 
     rate_limit = RateLimit(rate="10/m")
 
-    with time_machine.travel("2021-01-01 00:01:00", tick=False), pytest.raises(
-        GraphQLError
+    with (
+        time_machine.travel("2021-01-01 00:01:00", tick=False),
+        pytest.raises(GraphQLError),
     ):
         current_time = time.time()
 

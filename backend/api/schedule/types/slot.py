@@ -1,6 +1,9 @@
 from enum import Enum
-from django.utils import timezone
 from datetime import datetime, time, timedelta
+
+from django.utils import timezone
+
+from api.context import Info
 from api.schedule.types.schedule_item import ScheduleItem
 
 
@@ -31,12 +34,12 @@ class ScheduleSlot:
             return self.hour < now.time() < end
 
     @strawberry.field
-    def end_hour(self, info) -> time:
+    def end_hour(self, info: Info) -> time:
         return (
             datetime.combine(timezone.datetime.today(), self.hour)
             + timedelta(minutes=self.duration)
         ).time()
 
     @strawberry.field
-    def items(self, info) -> list[ScheduleItem]:
+    def items(self, info: Info) -> list[ScheduleItem]:
         return self.items.all()

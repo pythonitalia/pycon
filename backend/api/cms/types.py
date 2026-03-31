@@ -1,5 +1,7 @@
 import strawberry
 from strawberry import ID
+
+from api.context import Info
 from api.pages.types import Page
 
 from ..helpers.i18n import make_localized_resolver
@@ -25,5 +27,5 @@ class Menu:
     title: str = strawberry.field(resolver=make_localized_resolver("title"))
 
     @strawberry.field
-    def links(self, info) -> list[MenuLink]:
+    def links(self, info: Info) -> list[MenuLink]:
         return self.links.all()

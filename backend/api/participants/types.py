@@ -1,11 +1,12 @@
 from typing import TYPE_CHECKING, Annotated
 
-from submissions.models import Submission as SubmissionModel
-from strawberry.scalars import JSON
 import strawberry
 from strawberry import ID
+from strawberry.scalars import JSON
 
+from api.context import Info
 from api.submissions.permissions import CanSeeSubmissionPrivateFields
+from submissions.models import Submission as SubmissionModel
 
 if TYPE_CHECKING:
     from api.submissions.types import Submission
@@ -35,7 +36,7 @@ class Participant:
 
     @strawberry.field
     def proposals(
-        self, info
+        self, info: Info
     ) -> list[Annotated["Submission", strawberry.lazy("api.submissions.types")]]:
         return SubmissionModel.objects.for_conference(self._conference_id).filter(
             speaker_id=self._user_id,
@@ -43,21 +44,21 @@ class Participant:
         )
 
     @strawberry.field
-    def speaker_availabilities(self, info) -> JSON | None:
+    def speaker_availabilities(self, info: Info) -> JSON | None:
         if not CanSeeSubmissionPrivateFields().has_permission(self, info):
             return None
 
         return self._speaker_availabilities
 
     @strawberry.field
-    def speaker_level(self, info) -> str | None:
+    def speaker_level(self, info: Info) -> str | None:
         if not CanSeeSubmissionPrivateFields().has_permission(self, info):
             return None
 
         return self._speaker_level
 
     @strawberry.field
-    def previous_talk_video(self, info) -> str | None:
+    def previous_talk_video(self, info: Info) -> str | None:
         if not CanSeeSubmissionPrivateFields().has_permission(self, info):
             return None
 
