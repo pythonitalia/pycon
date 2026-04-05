@@ -270,7 +270,7 @@ requires-dist = [
     { name = "scikit-learn", specifier = ">=1.5.0" },
     { name = "sentence-transformers", specifier = ">=3.0.0" },
     { name = "sentry-sdk", specifier = ">=2.14.0" },
-    { name = "strawberry-graphql", specifier = "==0.312.2" },
+    { name = "strawberry-graphql", specifier = "==0.312.4" },
     { name = "stripe", specifier = "==10.5.0" },
     { name = "tinycss2", specifier = ">=1.4.0" },
     { name = "tzdata", specifier = ">=2024.1" },
@@ -3103,7 +3103,7 @@ wheels = [
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.312.2"
+version = "0.312.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cross-web" },
@@ -3112,9 +3112,9 @@ dependencies = [
     { name = "python-dateutil" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/33/90/ffc198d3691fbcdaff3751552a9e360e3cfb0c80577fe6326724008178a5/strawberry_graphql-0.312.2.tar.gz", hash = "sha256:e545681441842a64203bb78010e6a56737340da5022864da3df58602a718fb2b", size = 215123, upload-time = "2026-03-25T16:57:46.546Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/53/e0/8e34606616b012b0a1612fcdf4d8f01705ddce11499dcbb5be130d451206/strawberry_graphql-0.312.4.tar.gz", hash = "sha256:02b2610ebe39fa6846511090630c5007f6ef4174e2003cb1aa914eddbbc9e0c9", size = 215575, upload-time = "2026-04-05T12:03:13.051Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/69/6d/f22f1cc6c2faf4307c96f8f2a58a031ebf42a8ee0f9fa046bf6304f3dc0e/strawberry_graphql-0.312.2-py3-none-any.whl", hash = "sha256:fac534323c9fe57600c3ce6f64d02e6bd0a0b8c5e865ef07c061060fc9a46923", size = 312679, upload-time = "2026-03-25T16:57:47.89Z" },
+    { url = "https://files.pythonhosted.org/packages/53/6d/bea257760cfb733b1fee6e50db68f244db6b54a87feb044d7a9955b5b289/strawberry_graphql-0.312.4-py3-none-any.whl", hash = "sha256:3021e290ccd04f3361b0c83829a2a8ec7b6baca94d1475df43d54ac4294ebf5a", size = 313189, upload-time = "2026-04-05T12:03:14.936Z" },
 ]
 
 [[package]]
