@@ -681,13 +681,14 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         return ""
 
     @admin.display(description="Total")
-    def total_amount_display(self, obj):
-        return f"{obj.total_allocated_amount:.2f}"
+    def total_amount_display(self, obj: Grant) -> str:
+        return f"{obj.total_allocated_amount:.0f}"
 
     @admin.display(description="Included reimbursements")
     def approved_amounts_display(self, obj: Grant) -> str:
         text = ", ".join(
-            f"{r.category.name}: {r.granted_amount}" for r in obj.reimbursements.all()
+            f"{r.category.name}: {r.granted_amount:.0f}"
+            for r in obj.reimbursements.all()
         )
         return text or "—"
 
