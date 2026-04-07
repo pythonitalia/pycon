@@ -654,7 +654,7 @@ Click the box to change. If left empty, we will assume you are available.`,
     "orderConfirmation.cardMessage":
       "If you paid by card, click the button below and try again",
     "orderConfirmation.bankMessage":
-      "If you paid via bank transfer, contact us at {email} with your order code {code} once the transfer is done so we can confirm it when we receive the transfer.",
+      "If you paid via bank transfer, please note that bank transfers are processed manually and it may take up to a week for your order to be marked as paid. Once the transfer is done, contact us at {email} with your order code {code} to help us confirm it faster.",
     "orderConfirmation.manage": "Click here to manage the order",
     "orderConfirmation.home": "Homepage",
     "orderConfirmation.pendingManage": "Try another card or retry",
@@ -1440,7 +1440,7 @@ The sooner you buy your ticket, the more you save!`,
       "Il tuo ordine è ancora pending e non confermato!",
     "orderConfirmation.cardMessage":
       "Se hai pagato con carta, clicca il pulsante per riprovare",
-    "orderConfirmation.bankMessage": `Se hai pagato con bonifico bancario, contattaci a {email} con il tuo codice {code} appena il bonifico è stato eseguito e confermeremo l'ordine il prima possibile.`,
+    "orderConfirmation.bankMessage": `Se hai pagato con bonifico bancario, tieni presente che i bonifici vengono elaborati manualmente e potrebbe essere necessaria fino a una settimana affinché il tuo ordine venga contrassegnato come pagato. Una volta effettuato il bonifico, contattaci a {email} con il tuo codice {code} per aiutarci a confermarlo più velocemente.`,
     "orderConfirmation.tryAgain": "Prova a creare un nuovo ordine",
     "orderConfirmation.tickets": "Biglietti",
     "order.soldout": "Sold out",
