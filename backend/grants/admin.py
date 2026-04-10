@@ -4,7 +4,6 @@ from typing import Dict, List, Optional
 
 from django.contrib import admin, messages
 from django.contrib.admin import SimpleListFilter
-from django.db import transaction
 from django.db.models import Exists, OuterRef
 from django.db.models.query import QuerySet
 from django.urls import reverse
@@ -15,6 +14,7 @@ from import_export.fields import Field
 from import_export.resources import ModelResource
 
 from conferences.models.conference_voucher import ConferenceVoucher
+from conferences.vouchers import create_conference_voucher
 from countries import countries
 from countries.filters import CountryFilter
 from custom_admin.admin import (
@@ -48,6 +48,7 @@ from .models import (
 )
 
 logger = logging.getLogger(__name__)
+
 
 EXPORT_GRANTS_FIELDS = (
     "name",
@@ -297,20 +298,20 @@ def send_reply_email_waiting_list_update(modeladmin, request, queryset):
 
 @admin.action(description="Create grant vouchers")
 @validate_single_conference_selection
-@transaction.atomic
 def create_grant_vouchers(modeladmin, request, queryset):
-    conference = queryset.first().conference
-    existing_vouchers_by_user_id = {
-        voucher.user_id: voucher
-        for voucher in ConferenceVoucher.objects.for_conference(conference).filter(
-            user_id__in=queryset.values_list("user_id", flat=True),
-        )
-    }
+    grants_ordered = list(queryset.order_by("id").select_related("user", "conference"))
+    conference_id = grants_ordered[0].conference_id if grants_ordered else None
+    user_ids = {g.user_id for g in grants_ordered if g.user_id}
 
-    vouchers_to_create = []
-    vouchers_to_update = []
+    existing_by_user: Dict[int, ConferenceVoucher] = {}
+    if conference_id is not None and user_ids:
+        for voucher in ConferenceVoucher.objects.filter(
+            conference_id=conference_id,
+            user_id__in=user_ids,
+        ):
+            existing_by_user[voucher.user_id] = voucher
 
-    for grant in queryset.order_by("id"):
+    for grant in grants_ordered:
         if grant.status != Grant.Status.confirmed:
             messages.error(
                 request,
@@ -319,33 +320,44 @@ def create_grant_vouchers(modeladmin, request, queryset):
             )
             continue
 
-        existing_voucher = existing_vouchers_by_user_id.get(grant.user_id)
+        if not grant.user_id:
+            messages.error(
+                request,
+                f"Grant for {grant.name} has no user linked; can't create a voucher.",
+            )
+            continue
 
-        if not existing_voucher:
+        existing = existing_by_user.get(grant.user_id)
+
+        if not existing:
+            new_voucher = create_conference_voucher(
+                conference=grant.conference,
+                user=grant.user,
+                voucher_type=ConferenceVoucher.VoucherType.GRANT,
+            )
+            existing_by_user[grant.user_id] = new_voucher
             create_addition_admin_log_entry(
                 request.user,
                 grant,
                 change_message="Created voucher for this grant.",
             )
-
-            vouchers_to_create.append(
-                ConferenceVoucher(
-                    conference_id=grant.conference_id,
-                    user_id=grant.user_id,
-                    voucher_code=ConferenceVoucher.generate_code(),
-                    voucher_type=ConferenceVoucher.VoucherType.GRANT,
-                )
-            )
             continue
 
-        if existing_voucher.voucher_type == ConferenceVoucher.VoucherType.CO_SPEAKER:
+        if existing.voucher_type in (
+            ConferenceVoucher.VoucherType.GRANT,
+            ConferenceVoucher.VoucherType.SPEAKER,
+        ):
+            continue
+
+        if existing.voucher_type == ConferenceVoucher.VoucherType.CO_SPEAKER:
             messages.warning(
                 request,
-                f"Grant for {grant.name} already has a Co-Speaker voucher. Upgrading to a Grant voucher.",
+                f"Grant for {grant.name} already has a Co-Speaker voucher. "
+                "Upgrading to a Grant voucher.",
             )
             create_change_admin_log_entry(
                 request.user,
-                existing_voucher,
+                existing,
                 change_message="Upgraded Co-Speaker voucher to Grant voucher.",
             )
             create_change_admin_log_entry(
@@ -353,11 +365,9 @@ def create_grant_vouchers(modeladmin, request, queryset):
                 grant,
                 change_message="Updated existing Co-Speaker voucher to grant.",
             )
-            existing_voucher.voucher_type = ConferenceVoucher.VoucherType.GRANT
-            vouchers_to_update.append(existing_voucher)
-
-    ConferenceVoucher.objects.bulk_create(vouchers_to_create, ignore_conflicts=True)
-    ConferenceVoucher.objects.bulk_update(vouchers_to_update, ["voucher_type"])
+            existing.voucher_type = ConferenceVoucher.VoucherType.GRANT
+            existing.voucher_email_sent_at = None
+            existing.save(update_fields=["voucher_type", "voucher_email_sent_at"])
 
     messages.success(request, "Vouchers created!")
 

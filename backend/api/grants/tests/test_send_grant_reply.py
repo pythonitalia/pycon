@@ -75,16 +75,24 @@ def test_user_cannot_reply_if_status_is_rejected(graphql_client, user):
     )
 
 
-def test_status_is_updated_when_reply_is_confirmed(graphql_client, user):
+def test_status_is_updated_when_reply_is_confirmed(
+    graphql_client, user, mocker, django_capture_on_commit_callbacks
+):
     graphql_client.force_login(user)
     grant = GrantFactory(user_id=user.id, status=Grant.Status.waiting_for_confirmation)
+    mock_voucher = mocker.patch(
+        "api.grants.mutations.create_and_send_voucher_to_grantee"
+    )
 
-    response = _send_grant_reply(graphql_client, grant, status="confirmed")
+    with django_capture_on_commit_callbacks(execute=True):
+        response = _send_grant_reply(graphql_client, grant, status="confirmed")
 
     assert response["data"]["sendGrantReply"]["__typename"] == "Grant"
 
     grant.refresh_from_db()
     assert grant.status == Grant.Status.confirmed
+
+    mock_voucher.delay.assert_called_once_with(grant_id=grant.id)
 
     # Verify audit log entry was created correctly
     assert LogEntry.objects.filter(
@@ -94,9 +102,12 @@ def test_status_is_updated_when_reply_is_confirmed(graphql_client, user):
     ).exists()
 
 
-def test_status_is_updated_when_reply_is_refused(graphql_client, user):
+def test_status_is_updated_when_reply_is_refused(graphql_client, user, mocker):
     graphql_client.force_login(user)
     grant = GrantFactory(user_id=user.id, status=Grant.Status.waiting_for_confirmation)
+    mock_voucher = mocker.patch(
+        "api.grants.mutations.create_and_send_voucher_to_grantee"
+    )
 
     response = _send_grant_reply(graphql_client, grant, status="refused")
 
@@ -104,6 +115,9 @@ def test_status_is_updated_when_reply_is_refused(graphql_client, user):
 
     grant.refresh_from_db()
     assert grant.status == Grant.Status.refused
+
+    # Verify voucher was not sent
+    mock_voucher.delay.assert_not_called()
 
     # Verify audit log entry was created correctly
     assert LogEntry.objects.filter(

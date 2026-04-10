@@ -10,9 +10,9 @@ from django.utils import timezone
 from conferences.models.conference_voucher import ConferenceVoucher
 from conferences.tests.factories import ConferenceFactory, ConferenceVoucherFactory
 from grants.admin import (
-    confirm_pending_status,
     GrantAdmin,
     GrantReimbursementAdmin,
+    confirm_pending_status,
     create_grant_vouchers,
     mark_rejected_and_send_email,
     reset_pending_status_back_to_status,
@@ -305,6 +305,7 @@ def test_send_reply_email_waiting_list_update(rf, mocker, admin_user):
 
 def test_create_grant_vouchers(rf, mocker, admin_user):
     mock_messages = mocker.patch("grants.admin.messages")
+    mocker.patch("conferences.vouchers.create_voucher", return_value={"id": 999})
 
     conference = ConferenceFactory()
 
@@ -357,6 +358,7 @@ def test_create_grant_vouchers_with_existing_voucher_is_reused(
     rf, mocker, admin_user, type
 ):
     mock_messages = mocker.patch("grants.admin.messages")
+    mocker.patch("conferences.vouchers.create_voucher", return_value={"id": 999})
 
     conference = ConferenceFactory()
 
@@ -407,6 +409,7 @@ def test_create_grant_vouchers_with_voucher_from_other_conf_is_ignored(
     rf, mocker, type, admin_user
 ):
     mock_messages = mocker.patch("grants.admin.messages")
+    mocker.patch("conferences.vouchers.create_voucher", return_value={"id": 999})
 
     conference = ConferenceFactory()
     other_conference = ConferenceFactory()
@@ -461,6 +464,7 @@ def test_create_grant_vouchers_with_voucher_from_other_conf_is_ignored(
 
 def test_create_grant_vouchers_co_speaker_voucher_is_upgraded(rf, mocker, admin_user):
     mock_messages = mocker.patch("grants.admin.messages")
+    mocker.patch("conferences.vouchers.create_voucher", return_value={"id": 999})
 
     conference = ConferenceFactory()
 
@@ -506,6 +510,7 @@ def test_create_grant_vouchers_co_speaker_voucher_is_upgraded(rf, mocker, admin_
 
 def test_create_grant_vouchers_only_for_confirmed_grants(rf, mocker, admin_user):
     mock_messages = mocker.patch("grants.admin.messages")
+    mocker.patch("conferences.vouchers.create_voucher", return_value={"id": 999})
     conference = ConferenceFactory()
     grant_1 = GrantFactory(
         status=Grant.Status.refused,

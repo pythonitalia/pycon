@@ -45,7 +45,6 @@ class EmailTemplateIdentifier(models.TextChoices):
         "grant_waiting_list_update",
         _("Grant waiting list update"),
     )
-    grant_voucher_code = "grant_voucher_code", _("Grant voucher code")
 
     sponsorship_brochure = "sponsorship_brochure", _("Sponsorship brochure")
 
@@ -154,14 +153,6 @@ class EmailTemplate(TimeStampedModel):
             "conference_name",
             "body",
             "subject",
-        ],
-        EmailTemplateIdentifier.grant_voucher_code: [
-            *BASE_PLACEHOLDERS,
-            "conference_name",
-            "voucher_code",
-            "user_name",
-            "has_approved_accommodation",
-            "visa_page_link",
         ],
         EmailTemplateIdentifier.sponsorship_brochure: [
             *BASE_PLACEHOLDERS,

@@ -60,3 +60,26 @@ def test_send_conference_voucher_email(voucher_type, sent_emails):
     assert conference_voucher.voucher_email_sent_at == datetime(
         2020, 10, 10, 10, 0, 0, tzinfo=timezone.utc
     )
+
+
+def test_send_conference_voucher_email_sends_again_when_already_sent(sent_emails):
+    user = UserFactory(full_name="Remind Me")
+    conference_voucher = ConferenceVoucherFactory(
+        user=user,
+        voucher_type=ConferenceVoucher.VoucherType.SPEAKER,
+        voucher_code="REM123",
+        voucher_email_sent_at=datetime(2020, 1, 1, tzinfo=timezone.utc),
+    )
+    EmailTemplateFactory(
+        conference=conference_voucher.conference,
+        identifier=EmailTemplateIdentifier.voucher_code,
+    )
+
+    with time_machine.travel("2020-06-01 12:00:00Z", tick=False):
+        send_conference_voucher_email(conference_voucher_id=conference_voucher.id)
+
+    assert sent_emails().count() == 1
+    conference_voucher.refresh_from_db()
+    assert conference_voucher.voucher_email_sent_at == datetime(
+        2020, 6, 1, 12, 0, 0, tzinfo=timezone.utc
+    )

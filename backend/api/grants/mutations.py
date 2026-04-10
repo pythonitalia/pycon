@@ -15,7 +15,11 @@ from custom_admin.audit import (
     create_change_admin_log_entry,
 )
 from grants.models import Grant as GrantModel
-from grants.tasks import get_name, notify_new_grant_reply_slack
+from grants.tasks import (
+    create_and_send_voucher_to_grantee,
+    get_name,
+    notify_new_grant_reply_slack,
+)
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from participants.models import Participant
 from privacy_policy.record import record_privacy_policy_acceptance
@@ -342,8 +346,16 @@ class GrantMutation:
         if grant.status in (GrantModel.Status.pending, GrantModel.Status.rejected):
             return SendGrantReplyError(message="You cannot reply to this grant")
 
+        old_status = grant.status
         grant.status = input.status.to_grant_status()
         grant.save()
+
+        if old_status != grant.status and grant.status == GrantModel.Status.confirmed:
+            transaction.on_commit(
+                lambda gid=grant.id: create_and_send_voucher_to_grantee.delay(
+                    grant_id=gid
+                )
+            )
 
         create_change_admin_log_entry(
             request.user, grant, f"Grantee has replied with status {grant.status}."

@@ -1,14 +1,11 @@
 from django.utils import timezone
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from grants.tasks import get_name
-import logging
 from pycon.celery import app
-
-logger = logging.getLogger(__name__)
 
 
 @app.task
-def send_conference_voucher_email(conference_voucher_id):
+def send_conference_voucher_email(conference_voucher_id: int) -> None:
     from conferences.models import ConferenceVoucher
 
     conference_voucher = ConferenceVoucher.objects.get(id=conference_voucher_id)
@@ -31,4 +28,4 @@ def send_conference_voucher_email(conference_voucher_id):
     )
 
     conference_voucher.voucher_email_sent_at = timezone.now()
-    conference_voucher.save()
+    conference_voucher.save(update_fields=["voucher_email_sent_at"])
