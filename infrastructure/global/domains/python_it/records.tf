@@ -214,6 +214,14 @@ resource "aws_route53_record" "venice_python_it_cname" {
   ttl     = "3600"
 }
 
+resource "aws_route53_record" "genova_python_it_a" {
+  zone_id = aws_route53_zone.pythonit.id
+  name    = "genova.python.it"
+  type    = "CNAME"
+  records = ["pyzena.github.io"]
+  ttl     = "3600"
+}
+
 resource "aws_route53_record" "testcommunity_cname" {
   zone_id = aws_route53_zone.pythonit.id
   name    = "testcommunity.python.it"
