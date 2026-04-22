@@ -1,5 +1,6 @@
 import {
   Button,
+  Container,
   Grid,
   GridColumn,
   Heading,
@@ -9,7 +10,7 @@ import {
   StyledText,
   Text,
 } from "@python-italia/pycon-styleguide";
-import { LiveIcon } from "@python-italia/pycon-styleguide/icons";
+import { ArrowIcon, LiveIcon } from "@python-italia/pycon-styleguide/icons";
 import { SnakeWithPopcorn } from "@python-italia/pycon-styleguide/illustrations";
 import { isAfter, isBefore, parseISO } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
@@ -20,6 +21,7 @@ import { compile } from "~/helpers/markdown";
 import { useCurrentLanguage } from "~/locale/context";
 
 import { Fragment } from "react";
+import { createHref } from "~/components/link";
 import { TableItemHeader } from "~/components/table-item-header";
 import type { ProposalMaterial, TalkQuery } from "~/types";
 import { ParticipantInfoSection } from "../participant-info-section";
@@ -63,6 +65,28 @@ const isEventLive = (startTime: string, endTime: string) => {
   return isAfter(now, utcStart) && isBefore(now, utcEnd);
 };
 
+const BackToScheduleLink = () => {
+  const language = useCurrentLanguage();
+
+  return (
+    <Link
+      href={createHref({
+        path: "/schedule",
+        locale: language,
+      })}
+    >
+      <div className="flex items-center gap-2">
+        <div className="rotate-90">
+          <ArrowIcon />
+        </div>
+        <Text decoration="underline" size={2} weight="strong">
+          <FormattedMessage id="schedule.backToSchedule" />
+        </Text>
+      </div>
+    </Link>
+  );
+};
+
 export const ScheduleEventDetail = ({
   id,
   slug,
@@ -102,6 +126,10 @@ export const ScheduleEventDetail = ({
 
   return (
     <>
+      <Container>
+        <Spacer size="large" />
+        <BackToScheduleLink />
+      </Container>
       <Section illustration="snakeHead">
         <EventTag type={type} />
         <Spacer size="2md" />
@@ -224,6 +252,10 @@ export const ScheduleEventDetail = ({
           ))}
         </Section>
       )}
+      <Container>
+        <BackToScheduleLink />
+        <Spacer size="large" />
+      </Container>
     </>
   );
 };
