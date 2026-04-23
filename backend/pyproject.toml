@@ -72,7 +72,7 @@ dependencies = [
     "Werkzeug>=1.0.1,<4.0.0",
     "django-import-export<4.0.0,>=3.2.0",
     "dal-admin-filters==1.1.0",
-    "django-markdownify==0.9.5",
+    "django-markdownify==0.9.6",
     "django-imagekit==5.0.0",
     "pillow==10.4.0",
     "redis[hiredis]==5.0.2",
