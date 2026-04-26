@@ -147,7 +147,7 @@ services:
       test: ["CMD", "redis-cli", "ping"]
 
   clamav:
-    image: clamav/clamav:1.2.3-47
+    image: clamav/clamav:stable
     platform: linux/amd64
     networks: [pycon_net]
     restart: unless-stopped
