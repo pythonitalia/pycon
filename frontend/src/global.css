@@ -60,6 +60,3 @@ body:has(.brochure-page) {
 .badge-tower-right {
   transform: translate(5%, 60px);
 }
-.badge-tagline-quote {
-  font-weight: 400;
-}
