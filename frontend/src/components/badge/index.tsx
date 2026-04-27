@@ -156,27 +156,7 @@ export const Badge = ({
             }}
             className="!text-[13px] [&>span]:text-[13px] badge-tagline"
           >
-            <Balancer>
-              <span
-                style={{
-                  color: BADGE_TYPE_TO_COLOR[role],
-                  opacity: tagline ? 1 : 0,
-                }}
-                className="badge-tagline-quote"
-              >
-                “
-              </span>
-              {tagline.substring(0, 250)}
-              <span
-                style={{
-                  color: BADGE_TYPE_TO_COLOR[role],
-                  opacity: tagline ? 1 : 0,
-                }}
-                className="badge-tagline-quote"
-              >
-                ”
-              </span>
-            </Balancer>
+            <Balancer>{tagline.substring(0, 250)}</Balancer>
           </div>
         </div>
         <div
