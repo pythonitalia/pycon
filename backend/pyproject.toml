@@ -105,7 +105,7 @@ dependencies = [
     "opencv-python-headless>=4.10.0.84",
     "psycopg[c]==3.2.12",
     "sentence-transformers>=3.0.0",
-    "scikit-learn>=1.5.0",
+    "scikit-learn>=1.8.0",
     "bertopic>=0.16.0",
     "nltk>=3.9.4",
 ]
