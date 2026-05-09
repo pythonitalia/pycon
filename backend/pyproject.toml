@@ -44,10 +44,11 @@ known-first-party = [
 [project]
 requires-python = ">=3.13.5"
 dependencies = [
-    "django==5.2.8",
+    "django==6.0.5",
     "django-environ==0.10.0",
     "django-model-utils==5.0.0",
-    "django-timezone-field==7.0",
+    "django-timezone-field>=7.1,<8.0",
+    "django-tasks>=0.8,<0.13",
     "certifi==2024.7.4",
     "chardet==5.2.0",
     "idna==3.7",
@@ -64,7 +65,7 @@ dependencies = [
     "countries<1.0.0,>=0.2.0",
     "django-ses==4.1.1",
     "hashids<2.0.0,>=1.2.0",
-    "django-autocomplete-light==3.9.4",
+    "django-autocomplete-light==4.0.0",
     "django-queryinspect<2.0.0,>=1.1.0",
     "lxml==6.1.0",
     "unidecode<2.0.0,>=1.1.1",

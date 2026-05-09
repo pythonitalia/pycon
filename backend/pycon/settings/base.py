@@ -379,6 +379,12 @@ WAGTAILSEARCH_BACKENDS = {
     }
 }
 
+TASKS = {
+    "default": {
+        "BACKEND": "django_tasks.backends.immediate.ImmediateBackend",
+    }
+}
+
 WAGTAIL_SITE_NAME = "cms"
 WAGTAIL_I18N_ENABLED = True
 
