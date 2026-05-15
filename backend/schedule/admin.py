@@ -1,7 +1,7 @@
 from django.db import transaction
 from custom_admin.admin import validate_single_conference_selection
 from import_export.resources import ModelResource
-from django.db.models import Prefetch
+from django.db.models import Count, Prefetch
 from typing import Dict
 from django import forms
 from django.contrib import admin, messages
@@ -317,6 +317,7 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         "talk_manager",
         "type",
         "submission",
+        "attendees_count",
     )
     list_filter = ("conference", "status", "type")
     ordering = ("conference", "slot")
@@ -399,7 +400,12 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related("rooms")
+        return (
+            super()
+            .get_queryset(request)
+            .prefetch_related("rooms")
+            .annotate(attendees_count_annotation=Count("attendees", distinct=True))
+        )
 
     def get_urls(self):
         return [
@@ -484,11 +490,11 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
         return TemplateResponse(request, "email-speakers.html", context)
 
-    def spaces_left(self, obj):
+    def spaces_left(self, obj: ScheduleItem) -> int | None:
         if obj.actual_attendees_total_capacity is None:
             return None
 
-        return obj.actual_attendees_total_capacity - obj.attendees.count()
+        return obj.actual_attendees_total_capacity - obj.attendees_count_annotation
 
     def save_form(self, request, form, change):
         if form.cleaned_data["new_slot"]:
@@ -503,10 +509,18 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
         return return_value
 
-    def speakers_names(self, obj):
+    def speakers_names(self, obj: ScheduleItem) -> str:
         return ", ".join([speaker.display_name for speaker in obj.speakers])
 
-    def invitation_link(self, obj):
+    @admin.display(description="Attendees")
+    def attendees_count(self, obj: ScheduleItem) -> str:
+        count = obj.attendees_count_annotation
+        capacity = obj.actual_attendees_total_capacity
+        if capacity is None:
+            return str(count)
+        return f"{count} / {capacity}"
+
+    def invitation_link(self, obj: ScheduleItem) -> str:
         return f"https://pycon.it/schedule/invitation/{obj.submission.hashid}"
 
 
