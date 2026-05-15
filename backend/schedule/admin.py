@@ -494,7 +494,7 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         if obj.actual_attendees_total_capacity is None:
             return None
 
-        return obj.actual_attendees_total_capacity - obj.attendees.count()
+        return obj.actual_attendees_total_capacity - obj.attendees_count_annotation
 
     def save_form(self, request, form, change):
         if form.cleaned_data["new_slot"]:
