@@ -50,7 +50,7 @@ WORKDIR ${FUNCTION_DIR}
 
 RUN npm install -g pnpm
 
-COPY custom_admin/package.json custom_admin/pnpm-lock.yaml ./
+COPY custom_admin/package.json custom_admin/pnpm-lock.yaml custom_admin/pnpm-workspace.yaml ./
 
 RUN pnpm install
 
