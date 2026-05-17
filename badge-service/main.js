@@ -6,17 +6,17 @@ const fs = require("node:fs");
 const archiver = require("archiver");
 
 const EMPTY_BADGES_COUNT = {
-  ATTENDEE: 70,
-  SPEAKER: 25,
+  ATTENDEE: 50,
+  SPEAKER: 20,
   STAFF: 20,
-  SPONSOR: 30,
+  SPONSOR: 20 + 45,
   KEYNOTER: 6,
-  DJANGO_GIRLS: 25,
+  DJANGO_GIRLS: 30,
 };
 
 const getAllQuestions = async () => {
   const request = await fetch(
-    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2025/questions/",
+    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2026/questions/",
     {
       headers: {
         Authorization: `Token ${process.env.PRETIX_API_TOKEN}`,
@@ -46,7 +46,7 @@ const getConferenceRoleForTicketData = async (orderPosition) => {
         }`,
       variables: {
         ticketData: JSON.stringify(orderPosition),
-        conferenceCode: "pycon2025",
+        conferenceCode: "pycon2026",
       },
     }),
   });
@@ -56,7 +56,7 @@ const getConferenceRoleForTicketData = async (orderPosition) => {
 
 const getAllOrderPositions = async () => {
   let next =
-    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2025/checkinlists/59/positions/";
+    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2026/checkinlists/72/positions/";
   const positions = [];
   while (next) {
     const request = await fetch(next, {
@@ -91,6 +91,8 @@ const createEmptyBadgeOrderPositions = () => {
   fs.rmSync("generated-badges", { recursive: true });
   fs.mkdirSync("generated-badges");
 
+  const allBadgesCreated = [];
+
   const allOrderPositions = [
     ...(await getAllOrderPositions()),
     ...createEmptyBadgeOrderPositions(),
@@ -106,6 +108,7 @@ const createEmptyBadgeOrderPositions = () => {
 
   const browser = await puppeteer.launch({
     headless: "new",
+    args: ["--no-sandbox"],
   });
   const page = await browser.newPage();
   let counter = 0;
@@ -135,17 +138,24 @@ const createEmptyBadgeOrderPositions = () => {
 
     const answers = orderPosition.answers;
     let pronouns =
-      answers.find((a) => a.question === pronounsQuestion.id)?.answer ?? "";
+      answers.find((a) => a.question_identifier === "SMZHLTGP")?.answer ?? "";
 
     if (pronouns === "--") {
       pronouns = "";
     }
 
     const tagline =
-      answers.find((a) => a.question === taglineQuestion.id)?.answer ?? "";
+      answers.find((a) => a.question_identifier === "83HY8DTB")?.answer ?? "";
 
     const { role, ticketHashid } =
       await getConferenceRoleForTicketData(orderPosition);
+
+    if (side === "front") {
+      allBadgesCreated.push({
+        name: orderPosition.attendee_name,
+        role,
+      });
+    }
     return {
       name: orderPosition.attendee_name,
       pronouns,
@@ -216,6 +226,11 @@ const createEmptyBadgeOrderPositions = () => {
 
     counter = counter + 1;
   }
+
+  fs.writeFileSync(
+    "badges-created.json",
+    JSON.stringify(allBadgesCreated, null, 2),
+  );
 
   await browser.close();
   archive.finalize();
