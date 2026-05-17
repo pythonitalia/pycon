@@ -14,20 +14,13 @@ const EMPTY_BADGES_COUNT = {
   DJANGO_GIRLS: 30,
 };
 
-const getAllQuestions = async () => {
-  const request = await fetch(
-    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2026/questions/",
-    {
-      headers: {
-        Authorization: `Token ${process.env.PRETIX_API_TOKEN}`,
-      },
-    },
-  );
-  const response = await request.json();
-  return response.results;
-};
+const CACHED_ORDER_POSITIONS = {};
 
 const getConferenceRoleForTicketData = async (orderPosition) => {
+  if (CACHED_ORDER_POSITIONS[orderPosition.id]) {
+    return CACHED_ORDER_POSITIONS[orderPosition.id];
+  }
+
   const request = await fetch("https://admin.pycon.it/graphql", {
     method: "POST",
     headers: {
@@ -51,7 +44,9 @@ const getConferenceRoleForTicketData = async (orderPosition) => {
     }),
   });
   const response = await request.json();
-  return response.data.conferenceRoleForTicketData;
+  CACHED_ORDER_POSITIONS[orderPosition.id] =
+    response.data.conferenceRoleForTicketData;
+  return CACHED_ORDER_POSITIONS[orderPosition.id];
 };
 
 const getAllOrderPositions = async () => {
