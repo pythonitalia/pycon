@@ -6,28 +6,21 @@ const fs = require("node:fs");
 const archiver = require("archiver");
 
 const EMPTY_BADGES_COUNT = {
-  ATTENDEE: 70,
-  SPEAKER: 25,
+  ATTENDEE: 50,
+  SPEAKER: 20,
   STAFF: 20,
-  SPONSOR: 30,
+  SPONSOR: 20 + 45,
   KEYNOTER: 6,
-  DJANGO_GIRLS: 25,
+  DJANGO_GIRLS: 30,
 };
 
-const getAllQuestions = async () => {
-  const request = await fetch(
-    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2025/questions/",
-    {
-      headers: {
-        Authorization: `Token ${process.env.PRETIX_API_TOKEN}`,
-      },
-    },
-  );
-  const response = await request.json();
-  return response.results;
-};
+const CACHED_ORDER_POSITIONS = {};
 
 const getConferenceRoleForTicketData = async (orderPosition) => {
+  if (CACHED_ORDER_POSITIONS[orderPosition.id]) {
+    return CACHED_ORDER_POSITIONS[orderPosition.id];
+  }
+
   const request = await fetch("https://admin.pycon.it/graphql", {
     method: "POST",
     headers: {
@@ -46,17 +39,19 @@ const getConferenceRoleForTicketData = async (orderPosition) => {
         }`,
       variables: {
         ticketData: JSON.stringify(orderPosition),
-        conferenceCode: "pycon2025",
+        conferenceCode: "pycon2026",
       },
     }),
   });
   const response = await request.json();
-  return response.data.conferenceRoleForTicketData;
+  CACHED_ORDER_POSITIONS[orderPosition.id] =
+    response.data.conferenceRoleForTicketData;
+  return CACHED_ORDER_POSITIONS[orderPosition.id];
 };
 
 const getAllOrderPositions = async () => {
   let next =
-    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2025/checkinlists/59/positions/";
+    "https://tickets.pycon.it/api/v1/organizers/python-italia/events/pyconit2026/checkinlists/72/positions/";
   const positions = [];
   while (next) {
     const request = await fetch(next, {
@@ -88,24 +83,19 @@ const createEmptyBadgeOrderPositions = () => {
 };
 
 (async () => {
-  fs.rmSync("generated-badges", { recursive: true });
+  fs.rmSync("generated-badges", { recursive: true, force: true });
   fs.mkdirSync("generated-badges");
+
+  const allBadgesCreated = [];
 
   const allOrderPositions = [
     ...(await getAllOrderPositions()),
     ...createEmptyBadgeOrderPositions(),
   ];
 
-  const questions = await getAllQuestions();
-
-  const pronounsQuestion = questions.find((q) => q.identifier === "SMZHLTGP");
-  const taglineQuestion = questions.find((q) => q.identifier === "83HY8DTB");
-
-  assert(pronounsQuestion);
-  assert(taglineQuestion);
-
   const browser = await puppeteer.launch({
     headless: "new",
+    args: ["--no-sandbox"],
   });
   const page = await browser.newPage();
   let counter = 0;
@@ -135,17 +125,24 @@ const createEmptyBadgeOrderPositions = () => {
 
     const answers = orderPosition.answers;
     let pronouns =
-      answers.find((a) => a.question === pronounsQuestion.id)?.answer ?? "";
+      answers.find((a) => a.question_identifier === "SMZHLTGP")?.answer ?? "";
 
     if (pronouns === "--") {
       pronouns = "";
     }
 
     const tagline =
-      answers.find((a) => a.question === taglineQuestion.id)?.answer ?? "";
+      answers.find((a) => a.question_identifier === "83HY8DTB")?.answer ?? "";
 
     const { role, ticketHashid } =
       await getConferenceRoleForTicketData(orderPosition);
+
+    if (side === "front") {
+      allBadgesCreated.push({
+        name: orderPosition.attendee_name,
+        role,
+      });
+    }
     return {
       name: orderPosition.attendee_name,
       pronouns,
@@ -189,10 +186,12 @@ const createEmptyBadgeOrderPositions = () => {
 
   for (const group of chunk(allOrderPositions, 4)) {
     for (const side of ["front", "back"]) {
-      const item1 = await createBadgeData(group[0], side);
-      const item2 = await createBadgeData(group[1], side);
-      const item3 = await createBadgeData(group[2], side);
-      const item4 = await createBadgeData(group[3], side);
+      const [item1, item2, item3, item4] = await Promise.all([
+        createBadgeData(group[0], side),
+        createBadgeData(group[1], side),
+        createBadgeData(group[2], side),
+        createBadgeData(group[3], side),
+      ]);
 
       const badgeData =
         side === "front"
@@ -216,6 +215,11 @@ const createEmptyBadgeOrderPositions = () => {
 
     counter = counter + 1;
   }
+
+  fs.writeFileSync(
+    "badges-created.json",
+    JSON.stringify(allBadgesCreated, null, 2),
+  );
 
   await browser.close();
   archive.finalize();
