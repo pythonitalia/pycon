@@ -88,7 +88,7 @@ const createEmptyBadgeOrderPositions = () => {
 };
 
 (async () => {
-  fs.rmSync("generated-badges", { recursive: true });
+  fs.rmSync("generated-badges", { recursive: true, force: true });
   fs.mkdirSync("generated-badges");
 
   const allBadgesCreated = [];
@@ -97,14 +97,6 @@ const createEmptyBadgeOrderPositions = () => {
     ...(await getAllOrderPositions()),
     ...createEmptyBadgeOrderPositions(),
   ];
-
-  const questions = await getAllQuestions();
-
-  const pronounsQuestion = questions.find((q) => q.identifier === "SMZHLTGP");
-  const taglineQuestion = questions.find((q) => q.identifier === "83HY8DTB");
-
-  assert(pronounsQuestion);
-  assert(taglineQuestion);
 
   const browser = await puppeteer.launch({
     headless: "new",
@@ -199,10 +191,12 @@ const createEmptyBadgeOrderPositions = () => {
 
   for (const group of chunk(allOrderPositions, 4)) {
     for (const side of ["front", "back"]) {
-      const item1 = await createBadgeData(group[0], side);
-      const item2 = await createBadgeData(group[1], side);
-      const item3 = await createBadgeData(group[2], side);
-      const item4 = await createBadgeData(group[3], side);
+      const [item1, item2, item3, item4] = await Promise.all([
+        createBadgeData(group[0], side),
+        createBadgeData(group[1], side),
+        createBadgeData(group[2], side),
+        createBadgeData(group[3], side),
+      ]);
 
       const badgeData =
         side === "front"
