@@ -452,34 +452,48 @@
           });
       });
 
-      const filterByStatusInputs = [...document.querySelectorAll('input[name="filter-by-status"]')];
-      filterByStatusInputs.forEach(
-          filterByStatusInput => {
-              filterByStatusInput.addEventListener('change', e => {
-                  e.preventDefault();
+      const getCheckedValues = (name) =>
+          [...document.querySelectorAll(`input[name="${name}"]`)]
+              .filter(i => i.checked)
+              .map(i => i.value);
 
-                  const filterValue = e.target.value;
-                  const visibleStatuses = filterByStatusInputs.filter(
-                      input => input.checked
-                  ).map(
-                      input => input.value
-                  );
+      // An empty checked list means the filter group is ignored (show all).
+      const matchesFilter = (checkedValues, rowValue) =>
+          checkedValues.length === 0 || checkedValues.includes(rowValue);
 
-                  document.querySelectorAll('.grant-item').forEach(
-                      grantRow => {
-                          const grantId = parseInt(grantRow.id.split('-')[1], 10);
-                          const grantData = grantsById[grantId];
+      const applyFilters = () => {
+          const visibleStatuses = getCheckedValues('filter-by-status');
+          const visibleNeedsFunds = getCheckedValues('filter-needs-funds-for-travel');
+          const visibleNeedVisa = getCheckedValues('filter-need-visa');
+          const visibleNeedAccommodation = getCheckedValues('filter-need-accommodation');
+          const visibleCountryTypes = getCheckedValues('filter-country-type');
 
-                          if (visibleStatuses.includes(grantData.originalStatus)) {
-                              grantRow.classList.remove('hidden')
-                          } else {
-                              grantRow.classList.add('hidden')
-                          }
-                      }
-                  );
-              });
-          }
-      );
+          document.querySelectorAll('.grant-item').forEach(grantRow => {
+              const matches =
+                  matchesFilter(visibleStatuses, grantRow.dataset.originalStatus) &&
+                  matchesFilter(visibleNeedsFunds, grantRow.dataset.needsFundsForTravel) &&
+                  matchesFilter(visibleNeedVisa, grantRow.dataset.needVisa) &&
+                  matchesFilter(visibleNeedAccommodation, grantRow.dataset.needAccommodation) &&
+                  matchesFilter(visibleCountryTypes, grantRow.dataset.countryType);
+
+              grantRow.classList.toggle('hidden', !matches);
+          });
+      };
+
+      [
+          'input[name="filter-by-status"]',
+          'input[name="filter-needs-funds-for-travel"]',
+          'input[name="filter-need-visa"]',
+          'input[name="filter-need-accommodation"]',
+          'input[name="filter-country-type"]',
+      ].forEach(selector => {
+          document.querySelectorAll(selector).forEach(input => {
+              input.addEventListener('change', applyFilters);
+          });
+      });
+
+      // Sync visible rows with any restored checkbox state (e.g. bfcache back-nav).
+      applyFilters();
 
 
 
@@ -663,6 +677,56 @@
           {% endfor %}
         </div>
       </div>
+      <div class="opt-filter">
+        <h3>Needs funds for travel:</h3>
+        <div>
+          <label>
+            <input checked type="checkbox" name="filter-needs-funds-for-travel" value="true" />
+            <span>Yes</span>
+          </label>
+          <label>
+            <input checked type="checkbox" name="filter-needs-funds-for-travel" value="false" />
+            <span>No</span>
+          </label>
+        </div>
+      </div>
+      <div class="opt-filter">
+        <h3>Need visa:</h3>
+        <div>
+          <label>
+            <input checked type="checkbox" name="filter-need-visa" value="true" />
+            <span>Yes</span>
+          </label>
+          <label>
+            <input checked type="checkbox" name="filter-need-visa" value="false" />
+            <span>No</span>
+          </label>
+        </div>
+      </div>
+      <div class="opt-filter">
+        <h3>Need accommodation:</h3>
+        <div>
+          <label>
+            <input checked type="checkbox" name="filter-need-accommodation" value="true" />
+            <span>Yes</span>
+          </label>
+          <label>
+            <input checked type="checkbox" name="filter-need-accommodation" value="false" />
+            <span>No</span>
+          </label>
+        </div>
+      </div>
+      <div class="opt-filter">
+        <h3>Country type:</h3>
+        <div>
+          {% for ct in country_type_choices %}
+          <label>
+            <input checked type="checkbox" name="filter-country-type" value="{{ ct.0 }}" />
+            <span>{{ ct.1 }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
     </div>
     <div class="module filtered" id="changelist">
       <div class="changelist-form-container">
@@ -753,6 +817,10 @@
                 data-num-of-votes="{{ item.userreview_set.count }}"
                 data-score="{{ item.score|default_if_none:'-999' }}"
                 data-std-dev="{{ item.std_dev|default_if_none:'-1' }}"
+                data-needs-funds-for-travel="{{ item.needs_funds_for_travel|yesno:'true,false' }}"
+                data-need-visa="{{ item.need_visa|yesno:'true,false' }}"
+                data-need-accommodation="{{ item.need_accommodation|yesno:'true,false' }}"
+                data-country-type="{{ item.country_type|default:'' }}"
               >
                 <td>{{ forloop.counter }}</td>
                 <td class="results-item">
