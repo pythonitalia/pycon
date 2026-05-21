@@ -857,13 +857,13 @@ def test_proposals_review_get_shortlist_context_with_multiple_submissions_per_sp
 
     # Create a speaker with multiple submissions
     speaker = UserFactory()
-    submission_1 = SubmissionFactory(conference=conference, speaker=speaker)
-    submission_2 = SubmissionFactory(conference=conference, speaker=speaker)
-    submission_3 = SubmissionFactory(conference=conference, speaker=speaker)
+    SubmissionFactory(conference=conference, speaker=speaker)
+    SubmissionFactory(conference=conference, speaker=speaker)
+    SubmissionFactory(conference=conference, speaker=speaker)
 
     # Create another speaker with only one submission
     single_speaker = UserFactory()
-    single_submission = SubmissionFactory(conference=conference, speaker=single_speaker)
+    SubmissionFactory(conference=conference, speaker=single_speaker)
 
     request = rf.get("/")
     request.user = user
@@ -944,6 +944,98 @@ def test_proposals_review_get_review_context(rf):
     assert context["proposal"].id == submission.id
     assert context["proposal_id"] == submission.id
     assert context["review_session_id"] == review_session.id
+
+
+# --- GrantsReviewAdapter Tests ---
+
+
+def test_grants_review_get_shortlist_context_includes_country_type_choices(rf):
+    user = UserFactory(is_staff=True, is_superuser=True)
+    conference = ConferenceFactory()
+
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.GRANTS,
+        status=ReviewSession.Status.COMPLETED,
+    )
+
+    request = rf.get("/")
+    request.user = user
+
+    adapter = get_review_adapter(review_session)
+    items = adapter.get_shortlist_items_queryset(review_session).all()
+    context = adapter.get_shortlist_context(request, review_session, items, AdminSite())
+
+    assert "country_type_choices" in context
+    values = [ct[0] for ct in context["country_type_choices"]]
+    assert Grant.CountryType.italy in values
+    assert Grant.CountryType.europe in values
+    assert Grant.CountryType.extra_eu in values
+    # Sentinel for grants with no departure_country (country_type is null)
+    assert "" in values
+
+
+def test_grants_review_get_shortlist_context_grant_with_no_departure_country(rf):
+    """Grant with departure_country=None has country_type=None, which must map
+    to the empty-string sentinel in country_type_choices so the template filter
+    value='""' matches data-country-type=""."""
+    user = UserFactory(is_staff=True, is_superuser=True)
+    conference = ConferenceFactory()
+
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.GRANTS,
+        status=ReviewSession.Status.COMPLETED,
+    )
+    grant = GrantFactory(
+        conference=conference,
+        departure_country=None,
+        departure_city=None,
+    )
+
+    request = rf.get("/")
+    request.user = user
+
+    adapter = get_review_adapter(review_session)
+    items = adapter.get_shortlist_items_queryset(review_session).all()
+    context = adapter.get_shortlist_context(request, review_session, items, AdminSite())
+
+    grant_item = next(item for item in context["items"] if item.id == grant.id)
+    assert grant_item.country_type is None
+
+    # The template renders {{ item.country_type|default:'' }} which produces "".
+    # Confirm the Unknown sentinel in the choices list uses the same empty string.
+    sentinel_values = [
+        ct[0] for ct in context["country_type_choices"] if ct[1] == "Unknown"
+    ]
+    assert sentinel_values == [""]
+
+
+def test_grants_review_get_shortlist_context_needs_funds_for_travel(rf):
+    """needs_funds_for_travel is rendered via |yesno:'true,false' in the template.
+    Verify the queryset correctly exposes the boolean so the template filter
+    can produce the 'true'/'false' strings matched by the JS checkboxes."""
+    user = UserFactory(is_staff=True, is_superuser=True)
+    conference = ConferenceFactory()
+
+    review_session = ReviewSessionFactory(
+        conference=conference,
+        session_type=ReviewSession.SessionType.GRANTS,
+        status=ReviewSession.Status.COMPLETED,
+    )
+    grant_needs_funds = GrantFactory(conference=conference, needs_funds_for_travel=True)
+    grant_no_funds = GrantFactory(conference=conference, needs_funds_for_travel=False)
+
+    request = rf.get("/")
+    request.user = user
+
+    adapter = get_review_adapter(review_session)
+    items = adapter.get_shortlist_items_queryset(review_session).all()
+    context = adapter.get_shortlist_context(request, review_session, items, AdminSite())
+
+    items_by_id = {item.id: item for item in context["items"]}
+    assert items_by_id[grant_needs_funds.id].needs_funds_for_travel is True
+    assert items_by_id[grant_no_funds.id].needs_funds_for_travel is False
 
 
 def test_get_review_adapter_with_invalid_session_type():

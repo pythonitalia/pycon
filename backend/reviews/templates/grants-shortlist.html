@@ -457,6 +457,10 @@
               .filter(i => i.checked)
               .map(i => i.value);
 
+      // An empty checked list means the filter group is ignored (show all).
+      const matchesFilter = (checkedValues, rowValue) =>
+          checkedValues.length === 0 || checkedValues.includes(rowValue);
+
       const applyFilters = () => {
           const visibleStatuses = getCheckedValues('filter-by-status');
           const visibleNeedsFunds = getCheckedValues('filter-needs-funds-for-travel');
@@ -466,11 +470,11 @@
 
           document.querySelectorAll('.grant-item').forEach(grantRow => {
               const matches =
-                  visibleStatuses.includes(grantRow.dataset.originalStatus) &&
-                  visibleNeedsFunds.includes(grantRow.dataset.needsFundsForTravel) &&
-                  visibleNeedVisa.includes(grantRow.dataset.needVisa) &&
-                  visibleNeedAccommodation.includes(grantRow.dataset.needAccommodation) &&
-                  visibleCountryTypes.includes(grantRow.dataset.countryType);
+                  matchesFilter(visibleStatuses, grantRow.dataset.originalStatus) &&
+                  matchesFilter(visibleNeedsFunds, grantRow.dataset.needsFundsForTravel) &&
+                  matchesFilter(visibleNeedVisa, grantRow.dataset.needVisa) &&
+                  matchesFilter(visibleNeedAccommodation, grantRow.dataset.needAccommodation) &&
+                  matchesFilter(visibleCountryTypes, grantRow.dataset.countryType);
 
               grantRow.classList.toggle('hidden', !matches);
           });
@@ -487,6 +491,9 @@
               input.addEventListener('change', applyFilters);
           });
       });
+
+      // Sync visible rows with any restored checkbox state (e.g. bfcache back-nav).
+      applyFilters();
 
 
 
@@ -718,10 +725,6 @@
             <span>{{ ct.1 }}</span>
           </label>
           {% endfor %}
-          <label>
-            <input checked type="checkbox" name="filter-country-type" value="" />
-            <span>Unknown</span>
-          </label>
         </div>
       </div>
     </div>
@@ -803,10 +806,6 @@
                     status: "{{ item.current_or_pending_status }}",
                     originalStatus: "{{ item.current_or_pending_status }}",
                     numOfVotes: {{item.userreview_set.count}},
-                    needsFundsForTravel: "{{ item.needs_funds_for_travel|yesno:'true,false' }}",
-                    needVisa: "{{ item.need_visa|yesno:'true,false' }}",
-                    needAccommodation: "{{ item.need_accommodation|yesno:'true,false' }}",
-                    countryType: "{{ item.country_type|default:'' }}",
                 };
               </script>
               <tr

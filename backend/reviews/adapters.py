@@ -467,7 +467,7 @@ class GrantsReviewAdapter:
             all_reimbursement_categories=GrantReimbursementCategory.objects.for_conference(
                 conference=review_session.conference
             ),
-            country_type_choices=Grant.CountryType.choices,
+            country_type_choices=[*Grant.CountryType.choices, ("", "Unknown")],
             review_session=review_session,
             title="Shortlist",
         )
