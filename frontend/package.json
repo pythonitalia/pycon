@@ -25,7 +25,7 @@
     "@graphql-codegen/typescript-react-apollo": "^4.3.2",
     "@neshca/cache-handler": "^1.9.0",
     "@python-italia/pycon-styleguide": "0.1.210",
-    "@sentry/nextjs": "^9.42.0",
+    "@sentry/nextjs": "^10.49.0",
     "@vercel/analytics": "^1.1.1",
     "@vercel/og": "^0.6.5",
     "@vercel/speed-insights": "^1.0.12",
