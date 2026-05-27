@@ -347,7 +347,7 @@ class ScheduleItem(TimeStampedModel):
         speakers.extend(
             [speaker.user for speaker in self.additional_speakers.order_by("id").all()]
         )
-        return speakers
+        return [speaker for speaker in speakers if speaker is not None]
 
     def clean(self):
         if self.type == ScheduleItem.TYPES.submission and not self.submission:
