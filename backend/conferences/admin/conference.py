@@ -132,6 +132,7 @@ class ConferenceAdmin(
                     "organizer",
                     "name",
                     "code",
+                    "hostname",
                     "logo",
                     "location",
                     "introduction",
