@@ -3,6 +3,7 @@ from logging import getLogger
 from api.permissions import IsAuthenticated
 from django.conf import settings
 
+from django.db.models import Prefetch
 from django.urls import reverse
 from api.billing.types import BillingAddress
 from api.visa.types import InvitationLetterRequest
@@ -26,6 +27,8 @@ from participants.models import Participant as ParticipantModel
 from api.helpers.ids import encode_hashid
 from badges.roles import ConferenceRole, get_conference_roles_for_user
 from association_membership.models import Membership
+from api.schedule.types import ScheduleItem
+from schedule.models import Room, ScheduleItem as ScheduleItemModel
 from schedule.models import ScheduleItemStar as ScheduleItemStarModel
 from submissions.models import Submission as SubmissionModel
 from billing.models import BillingAddress as BillingAddressModel
@@ -110,6 +113,22 @@ class User:
             schedule_item__conference__code=conference, user_id=self.id
         ).values_list("schedule_item_id", flat=True)
         return stars
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    def booked_schedule_items(self, info: Info, conference: str) -> list[ScheduleItem]:
+        return list(
+            ScheduleItemModel.objects.filter(
+                conference__code=conference,
+                attendees__user_id=self.id,
+                slot__isnull=False,
+            )
+            .distinct()
+            .select_related("slot", "slot__day", "language")
+            .prefetch_related(
+                Prefetch("rooms", queryset=Room.objects.only("id", "name", "type"))
+            )
+            .order_by("slot__day__day", "slot__hour")
+        )
 
     @strawberry.field
     def grant(self, info: Info, conference: str) -> Grant | None:

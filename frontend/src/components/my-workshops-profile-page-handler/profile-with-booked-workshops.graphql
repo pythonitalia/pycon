@@ -1,0 +1,17 @@
+query MyProfileWithBookedWorkshops($conference: String!) {
+  me {
+    id
+    bookedScheduleItems(conference: $conference) {
+      id
+      title
+      slug
+      type
+      start
+      end
+      rooms {
+        id
+        name
+      }
+    }
+  }
+}
