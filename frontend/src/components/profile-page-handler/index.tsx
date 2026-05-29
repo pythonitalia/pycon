@@ -120,6 +120,16 @@ export const ProfilePageHandler = () => {
       iconBackground: "purple",
     },
     {
+      id: "workshops",
+      link: createHref({
+        path: "/profile/my-workshops",
+        locale: language,
+      }),
+      label: <FormattedMessage id="profile.myWorkshops" />,
+      icon: "drink",
+      iconBackground: "coral",
+    },
+    {
       id: "grants",
       link: createHref({
         path: "/profile/my-grant",

@@ -271,6 +271,15 @@ Failing to notify us may impact your eligibility for financial aid at future eve
     "profile.myOrders.title": "My Orders",
     "profile.myProposals.title": "My Proposals",
     "profile.myTickets.title": "My Tickets",
+    "profile.myWorkshops.title": "My Workshops",
+    "profile.myWorkshops": "My Workshops",
+    "profile.myWorkshops.noWorkshops.heading":
+      "You have not booked any workshops yet",
+    "profile.myWorkshops.noWorkshops.body":
+      "Browse the schedule and book a seat for workshops with limited capacity.",
+    "profile.myWorkshops.browseSchedule": "Browse schedule",
+    "profile.myWorkshops.viewWorkshop": "View workshop",
+    "profile.myWorkshops.room": "Room: {room}",
 
     "home.title": "Home",
     "home.deadline.begins": "Begins",
@@ -1440,7 +1449,8 @@ The sooner you buy your ticket, the more you save!`,
       "Il tuo ordine è ancora pending e non confermato!",
     "orderConfirmation.cardMessage":
       "Se hai pagato con carta, clicca il pulsante per riprovare",
-    "orderConfirmation.bankMessage": `Se hai pagato con bonifico bancario, tieni presente che i bonifici vengono elaborati manualmente e potrebbe essere necessaria fino a una settimana affinché il tuo ordine venga contrassegnato come pagato. Una volta effettuato il bonifico, contattaci a {email} con il tuo codice {code} per aiutarci a confermarlo più velocemente.`,
+    "orderConfirmation.bankMessage":
+      "Se hai pagato con bonifico bancario, tieni presente che i bonifici vengono elaborati manualmente e potrebbe essere necessaria fino a una settimana affinché il tuo ordine venga contrassegnato come pagato. Una volta effettuato il bonifico, contattaci a {email} con il tuo codice {code} per aiutarci a confermarlo più velocemente.",
     "orderConfirmation.tryAgain": "Prova a creare un nuovo ordine",
     "orderConfirmation.tickets": "Biglietti",
     "order.soldout": "Sold out",
@@ -2136,6 +2146,15 @@ Usa il pulsante 'Gestisci' nella pagina per confermare o rifiutare il grant. Hai
     "profile.myOrders.title": "I miei ordini",
     "profile.myProposals.title": "Le mie proposte",
     "profile.myTickets.title": "I miei biglietti",
+    "profile.myWorkshops.title": "I miei workshop",
+    "profile.myWorkshops": "I miei workshop",
+    "profile.myWorkshops.noWorkshops.heading":
+      "Non hai ancora prenotato nessun workshop",
+    "profile.myWorkshops.noWorkshops.body":
+      "Sfoglia il programma e prenota un posto per i workshop con posti limitati.",
+    "profile.myWorkshops.browseSchedule": "Vai al programma",
+    "profile.myWorkshops.viewWorkshop": "Vedi workshop",
+    "profile.myWorkshops.room": "Sala: {room}",
 
     "homepage.eventPreviewCard.time": "{start} - {end}",
     "homepage.schedulePreviewSection.goToSchedule": "Apri Programma",
