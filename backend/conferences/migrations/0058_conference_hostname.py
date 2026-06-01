@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='conference',
             name='hostname',
-            field=models.CharField(blank=True, default='', max_length=255, verbose_name='hostname'),
+            field=models.CharField(blank=True, default='', max_length=255, unique=True, verbose_name='hostname'),
         ),
     ]
