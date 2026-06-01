@@ -9,7 +9,7 @@ def set_conference_hostnames(apps, schema_editor):
     hostname_mapping = {
         "pycon2026": "2026.pycon.it",
         "pycon2025": "2025.pycon.it",
-        "2024": "2024.pycon.it",
+        "pycon2024": "2024.pycon.it",
         "pycon2023": "2023.pycon.it",
         "pycon12": "2022.pycon.it",
         "pycon11": "2020.pycon.it",
