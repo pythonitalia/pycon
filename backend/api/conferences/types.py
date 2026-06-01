@@ -154,6 +154,7 @@ class Conference:
         resolver=make_localized_resolver("introduction")
     )
     code: str
+    hostname: str
     start: datetime
     end: datetime
     map: Map | None = strawberry.field(resolver=resolve_map)

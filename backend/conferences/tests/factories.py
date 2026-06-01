@@ -26,6 +26,7 @@ class ConferenceFactory(DjangoModelFactory):
     organizer = factory.SubFactory(OrganizerFactory)
     name = LanguageFactory("name")
     code = factory.Sequence(lambda n: "code{}".format(n))
+    hostname = factory.Sequence(lambda n: "conference{}.example.com".format(n))
     introduction = LanguageFactory("sentence")
 
     start = factory.Faker("past_datetime", tzinfo=UTC)

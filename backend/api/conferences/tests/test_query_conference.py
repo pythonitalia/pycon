@@ -19,6 +19,19 @@ def _query_conference(graphql_client, conference):
     return graphql_client.query(query, variables={"code": conference.code})
 
 
+def test_query_conference_hostname(graphql_client):
+    conference = ConferenceFactory(hostname="pycon.it")
+
+    query = """query($code: String!) {
+        conference(code: $code) {
+            hostname
+        }
+    }"""
+
+    result = graphql_client.query(query, variables={"code": conference.code})
+    assert result["data"]["conference"]["hostname"] == "pycon.it"
+
+
 def test_query_conference_current_day(graphql_client):
     conference = ConferenceFactory()
     DayFactory(conference=conference, day=timezone.datetime(2020, 10, 10))
