@@ -1,3 +1,4 @@
+import { Badge, Button, Card, Flex, Text } from "@radix-ui/themes";
 import type { Language } from "../../../types";
 import type { SubmissionFragmentFragment } from "../../fragments/submission.generated";
 import type { AvailabilityValue } from "../../utils/availability";
@@ -7,19 +8,13 @@ import { useAddItemModal } from "./context";
 import { useCreateScheduleItemMutation } from "./create-schedule-item.generated";
 import { InfoRecap } from "./info-recap";
 
-const AVAILABILITY_STYLES: Record<
+const AVAILABILITY_BADGE: Record<
   AvailabilityValue,
-  { label: string; className: string }
+  { label: string; color: "green" | "blue" | "red" }
 > = {
-  preferred: {
-    label: "Preferred",
-    className: "bg-green-200 text-green-900 font-semibold",
-  },
-  available: { label: "Available", className: "bg-blue-100 text-blue-900" },
-  unavailable: {
-    label: "Unavailable",
-    className: "bg-red-200 text-red-900 font-semibold",
-  },
+  preferred: { label: "Preferred", color: "green" },
+  available: { label: "Available", color: "blue" },
+  unavailable: { label: "Unavailable", color: "red" },
 };
 
 type Props = {
@@ -42,22 +37,24 @@ export const ProposalPreview = ({ proposal }: Props) => {
     : undefined;
 
   return (
-    <li className="p-2 bg-slate-300 odd:bg-slate-200">
-      <div className="flex items-start justify-between gap-2">
+    <Card>
+      <Flex align="start" justify="between" gap="2">
         <div>
-          <strong>{proposal.title}</strong>
+          <Text as="div" weight="bold">
+            {proposal.title}
+          </Text>
           {proposal.italianTitle !== proposal.title && (
-            <div>{proposal.italianTitle}</div>
+            <Text as="div" color="gray">
+              {proposal.italianTitle}
+            </Text>
           )}
         </div>
         {slotAvailability && (
-          <span
-            className={`shrink-0 text-xs px-2 py-0.5 rounded ${AVAILABILITY_STYLES[slotAvailability].className}`}
-          >
-            {AVAILABILITY_STYLES[slotAvailability].label}
-          </span>
+          <Badge color={AVAILABILITY_BADGE[slotAvailability].color}>
+            {AVAILABILITY_BADGE[slotAvailability].label}
+          </Badge>
         )}
-      </div>
+      </Flex>
 
       <InfoRecap
         info={[
@@ -67,7 +64,7 @@ export const ProposalPreview = ({ proposal }: Props) => {
         ]}
       />
       <AddActions proposal={proposal} />
-    </li>
+    </Card>
   );
 };
 
@@ -94,17 +91,16 @@ const AddActions = ({ proposal }: { proposal: SubmissionFragmentFragment }) => {
   };
 
   return (
-    <div>
+    <Flex gap="2" wrap="wrap">
       {languages.map((language) => (
-        <button
+        <Button
           type="button"
-          onClick={(e) => onCreate(language)}
-          className="btn mr-3"
+          onClick={() => onCreate(language)}
           key={language.id}
         >
           Add to schedule in {language.name}
-        </button>
+        </Button>
       ))}
-    </div>
+    </Flex>
   );
 };

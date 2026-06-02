@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { DataList } from "@radix-ui/themes";
 
 type Props = {
   info: {
@@ -9,13 +9,13 @@ type Props = {
 
 export const InfoRecap = ({ info }: Props) => {
   return (
-    <div className="my-3 grid grid-cols-[100px_1fr]">
+    <DataList.Root my="3" size="2">
       {info.map(({ label, value }) => (
-        <Fragment key={label}>
-          <strong>{label}</strong>
-          <span>{value}</span>
-        </Fragment>
+        <DataList.Item key={label}>
+          <DataList.Label minWidth="100px">{label}</DataList.Label>
+          <DataList.Value>{value}</DataList.Value>
+        </DataList.Item>
       ))}
-    </div>
+    </DataList.Root>
   );
 };

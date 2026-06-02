@@ -1,3 +1,4 @@
+import { Button, Card, Text } from "@radix-ui/themes";
 import type { KeynoteFragmentFragment } from "../../fragments/keynote.generated";
 import { useCurrentConference } from "../../utils/conference";
 import { useAddItemModal } from "./context";
@@ -29,8 +30,10 @@ export const KeynotePreview = ({
   };
 
   return (
-    <li className="p-2 bg-slate-300 odd:bg-slate-200">
-      <strong>{keynote.title}</strong>
+    <Card>
+      <Text as="div" weight="bold">
+        {keynote.title}
+      </Text>
       <InfoRecap
         info={[
           { label: "Type", value: "Keynote" },
@@ -40,9 +43,9 @@ export const KeynotePreview = ({
           },
         ]}
       />
-      <button type="button" onClick={onAddToSchedule} className="btn">
+      <Button type="button" onClick={onAddToSchedule}>
         Add to schedule
-      </button>
-    </li>
+      </Button>
+    </Card>
   );
 };
