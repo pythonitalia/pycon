@@ -1,5 +1,6 @@
 import {
   Button,
+  Callout,
   Flex,
   Heading,
   Select,
@@ -19,25 +20,40 @@ export const AddCustomEvent = () => {
   const { data, close } = useAddItemModal();
   const { conferenceId } = useCurrentConference();
   const [createScheduleItem] = useCreateScheduleItemMutation();
+  const [error, setError] = useState<string | null>(null);
 
   const onCreate = async ({ title, type, rooms }: CreateArgs) => {
-    await createScheduleItem({
-      variables: {
-        input: {
-          conferenceId,
-          type: type,
-          title: title,
-          slotId: data.slot.id,
-          rooms: rooms.map((room) => room.id),
-          languageId: null,
+    setError(null);
+    try {
+      const { errors } = await createScheduleItem({
+        variables: {
+          input: {
+            conferenceId,
+            type: type,
+            title: title,
+            slotId: data.slot.id,
+            rooms: rooms.map((room) => room.id),
+            languageId: null,
+          },
         },
-      },
-    });
-    close();
+      });
+      if (errors?.length) {
+        setError("Could not add to the schedule. Please try again.");
+        return;
+      }
+      close();
+    } catch {
+      setError("Could not add to the schedule. Please try again.");
+    }
   };
 
   return (
     <Flex direction="column" gap="4">
+      {error && (
+        <Callout.Root color="red" size="1">
+          <Callout.Text>{error}</Callout.Text>
+        </Callout.Root>
+      )}
       <CustomDefinedOptions onCreate={onCreate} />
       <CustomByHand onCreate={onCreate} />
     </Flex>
@@ -164,7 +180,7 @@ const CustomByHand = ({
         </Text>
         <Select.Root value={type || undefined} onValueChange={setType}>
           <Select.Trigger placeholder="Choose one" />
-          <Select.Content>
+          <Select.Content position="popper">
             {TYPE_OPTIONS.map((option) => (
               <Select.Item key={option.value} value={option.value}>
                 {option.label}
