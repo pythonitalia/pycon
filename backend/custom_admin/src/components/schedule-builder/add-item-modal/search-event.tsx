@@ -49,9 +49,11 @@ export const SearchEvent = () => {
         value={searchQuery}
       />
       {loading && <Text color="gray">Searching events</Text>}
-      {!loading && data?.searchEvents.results.length === 0 && (
-        <Text color="gray">No events found</Text>
-      )}
+      {!loading &&
+        debouncedSearch &&
+        data?.searchEvents.results.length === 0 && (
+          <Text color="gray">No events found</Text>
+        )}
       {debouncedSearch && data?.searchEvents.results.length > 0 && (
         <Flex direction="column" gap="2">
           {data.searchEvents.results.map((event) => {
@@ -62,6 +64,8 @@ export const SearchEvent = () => {
             if (event.__typename === "Keynote") {
               return <KeynotePreview key={event.id} keynote={event} />;
             }
+
+            return null;
           })}
         </Flex>
       )}

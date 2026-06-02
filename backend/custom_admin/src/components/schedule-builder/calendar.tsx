@@ -30,7 +30,7 @@ export const Calendar = ({ day }: Props) => {
         <Heading size="7" color="ruby">
           {date}
         </Heading>
-        <Button variant="ghost" onClick={openDayInAdmin}>
+        <Button type="button" variant="ghost" onClick={openDayInAdmin}>
           Edit day in admin
         </Button>
       </span>
