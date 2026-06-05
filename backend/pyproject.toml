@@ -93,7 +93,7 @@ dependencies = [
     "tzdata>=2024.1",
     "wagtail-factories==4.4.0",
     "google-auth-oauthlib>=1.2.1",
-    "PyJWT>=2.8.0",
+    "PyJWT>=2.13.0",
     "cryptography>=46.0.7",
     "openai>=1.52.0",
     "pydantic>=2.13.3",
