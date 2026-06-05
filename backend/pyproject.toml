@@ -57,7 +57,7 @@ dependencies = [
     "whitenoise==6.7.0",
     "django-ordered-model==3.5",
     "uwsgi==2.0.30",
-    "django-storages==1.14.4",
+    "django-storages==1.14.6",
     "sentry-sdk>=2.14.0",
     "boto3==1.43.9",
     "pycountry<20.0,>=19.8",
