@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+import { Button, Heading } from "@radix-ui/themes";
+import { Fragment } from "react";
 
 import { useDjangoAdminEditor } from "../shared/django-admin-editor-modal/context";
 import { formatHour } from "../utils/time";
@@ -26,10 +27,12 @@ export const Calendar = ({ day }: Props) => {
   return (
     <div className="mb-6">
       <span className="sticky top-0 flex items-center gap-3 z-[100] bg-white">
-        <h1 className="text-red-900 text-3xl">{date}</h1>
-        <button type="button" className="underline" onClick={openDayInAdmin}>
+        <Heading size="7" color="ruby">
+          {date}
+        </Heading>
+        <Button type="button" variant="ghost" onClick={openDayInAdmin}>
           Edit day in admin
-        </button>
+        </Button>
       </span>
       <div
         className="grid gap-1"

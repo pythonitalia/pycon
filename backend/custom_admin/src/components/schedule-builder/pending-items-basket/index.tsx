@@ -1,4 +1,6 @@
+import { IconButton, Text } from "@radix-ui/themes";
 import clsx from "clsx";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useDrop } from "react-dnd";
 
@@ -76,9 +78,9 @@ export const PendingItemsBasket = () => {
               },
             )}
           >
-            <span className="font-bold opacity-50 uppercase select-none">
+            <Text weight="bold" color="gray" className="uppercase select-none">
               Drop here to unassign from slot
-            </span>
+            </Text>
           </div>
           <div
             ref={itemsRef}
@@ -177,17 +179,16 @@ const ScrollButton = ({
   }
 
   return (
-    <div
+    <IconButton
       onClick={scroll}
-      className={clsx(
-        "absolute shadow-md p-6 cursor-pointer top-1/2 bg-white rounded-full select-none",
-        {
-          "-translate-y-1/2 -translate-x-1/2 left-0": direction === "backwards",
-          "-translate-y-1/2 translate-x-1/2 right-0": direction === "forwards",
-        },
-      )}
+      radius="full"
+      size="3"
+      className={clsx("absolute top-1/2 z-10 shadow-md", {
+        "-translate-y-1/2 -translate-x-1/2 left-0": direction === "backwards",
+        "-translate-y-1/2 translate-x-1/2 right-0": direction === "forwards",
+      })}
     >
-      {direction === "backwards" ? "👈" : "👉"}
-    </div>
+      {direction === "backwards" ? <ChevronLeft /> : <ChevronRight />}
+    </IconButton>
   );
 };

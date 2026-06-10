@@ -1,3 +1,4 @@
+import { Text } from "@radix-ui/themes";
 import clsx from "clsx";
 import { useDrop } from "react-dnd";
 
@@ -84,8 +85,9 @@ export const Placeholder = ({
         gridRowEnd: rowEnd,
       }}
     >
-      {isMovingItemLoading && <span>Please wait</span>}
-      {!isMovingItemLoading && <span>Drop / Add</span>}
+      <Text size="2" color="gray">
+        {isMovingItemLoading ? "Please wait" : "Drop / Add"}
+      </Text>
       <PlusIcon />
     </div>
   );

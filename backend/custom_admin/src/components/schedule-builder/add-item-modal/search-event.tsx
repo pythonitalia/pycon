@@ -1,3 +1,4 @@
+import { Flex, Heading, Text, TextField } from "@radix-ui/themes";
 import { useEffect, useRef, useState } from "react";
 
 import { useCurrentConference } from "../../utils/conference";
@@ -29,52 +30,45 @@ export const SearchEvent = () => {
 
   useEffect(() => {
     if (debouncedSearch) {
-      console.log("running search", debouncedSearch);
-
       runSearch({
         variables: {
           conferenceId,
           query: debouncedSearch,
         },
       });
-    } else {
     }
   }, [debouncedSearch]);
 
   return (
-    <>
-      <div className="mb-2">
-        <strong>Search proposal / keynote</strong>
-      </div>
-      <div>
-        <input
-          ref={searchInputRef}
-          onChange={changeSearch}
-          className="w-full p-3 border"
-          type="text"
-          placeholder="Search"
-          value={searchQuery}
-        />
-      </div>
-      <div>
-        {loading && <span>Searching events</span>}
-        {!loading && data?.searchEvents.results.length === 0 && (
-          <span>No events found</span>
+    <Flex direction="column" gap="2">
+      <Heading size="3">Search proposal / keynote</Heading>
+      <TextField.Root
+        ref={searchInputRef}
+        onChange={changeSearch}
+        placeholder="Search"
+        value={searchQuery}
+      />
+      {loading && <Text color="gray">Searching events</Text>}
+      {!loading &&
+        debouncedSearch &&
+        data?.searchEvents.results.length === 0 && (
+          <Text color="gray">No events found</Text>
         )}
-        {debouncedSearch && data?.searchEvents.results.length > 0 && (
-          <ul>
-            {data.searchEvents.results.map((event) => {
-              if (event.__typename === "Submission") {
-                return <ProposalPreview key={event.id} proposal={event} />;
-              }
+      {debouncedSearch && data?.searchEvents.results.length > 0 && (
+        <Flex direction="column" gap="2">
+          {data.searchEvents.results.map((event) => {
+            if (event.__typename === "Submission") {
+              return <ProposalPreview key={event.id} proposal={event} />;
+            }
 
-              if (event.__typename === "Keynote") {
-                return <KeynotePreview key={event.id} keynote={event} />;
-              }
-            })}
-          </ul>
-        )}
-      </div>
-    </>
+            if (event.__typename === "Keynote") {
+              return <KeynotePreview key={event.id} keynote={event} />;
+            }
+
+            return null;
+          })}
+        </Flex>
+      )}
+    </Flex>
   );
 };
