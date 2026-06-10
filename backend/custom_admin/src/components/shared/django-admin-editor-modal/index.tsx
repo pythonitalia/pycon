@@ -1,7 +1,7 @@
 import { useApolloClient } from "@apollo/client";
-import { useEffect, useMemo, useState } from "react";
+import { Dialog, VisuallyHidden } from "@radix-ui/themes";
+import { useMemo, useState } from "react";
 
-import { Modal } from "../modal";
 import { DjangoAdminEditorContext, useDjangoAdminEditor } from "./context";
 
 export const DjangoAdminEditorProvider = ({ children }) => {
@@ -49,12 +49,13 @@ export const DjangoAdminEditorModal = () => {
   const itemUrl = `${baseUrl}/admin${url}`;
 
   return (
-    <Modal onClose={onClose} isOpen={isOpen}>
-      <iframe
-        title="Admin view"
-        src={itemUrl}
-        className="w-[90vw] h-[90vh] z-[100]"
-      />
-    </Modal>
+    <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <Dialog.Content maxWidth="90vw" width="90vw">
+        <VisuallyHidden>
+          <Dialog.Title>Admin view</Dialog.Title>
+        </VisuallyHidden>
+        <iframe title="Admin view" src={itemUrl} className="w-full h-[85vh]" />
+      </Dialog.Content>
+    </Dialog.Root>
   );
 };
