@@ -12,7 +12,20 @@
     opacity: 0;
     animation: rt-fade-out 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-  z-index: 30;
+  /* Must beat the schedule grid's z-[100] sticky headers: .radix-themes
+     creates no stacking context, so the grid competes with portals at the
+     body level. 500 matches the old shared Modal overlay. */
+  z-index: 500;
+}
+
+/* Portalled popper content (Select, DropdownMenu, Popover, Tooltip) has no
+   z-index in Radix Themes and relies on DOM order, so it paints below the
+   dialog overlay once that has an explicit z-index. The popper wrapper copies
+   the content's computed z-index, so a class rule here is enough. */
+.rt-PopperContent,
+.rt-SelectContent,
+.rt-TooltipContent {
+  z-index: 510;
 }
 
 .rt-BaseDialogContent {
