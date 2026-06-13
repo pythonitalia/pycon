@@ -1,0 +1,18 @@
+---
+import "../custom-styles.css";
+import { LandingRoot } from "../components/landing/root";
+---
+<html>
+    <head>
+        <title>PyCon Italia Admin</title>
+    </head>
+
+    <body class="text-sm">
+        <LandingRoot
+            groups="{{ groups | to_json_for_prop }}"
+            quickLinks="{{ quick_links | to_json_for_prop }}"
+            allApps="{{ all_apps | to_json_for_prop }}"
+            breadcrumbs="{{ breadcrumbs | to_json_for_prop }}"
+            client:only />
+    </body>
+</html>

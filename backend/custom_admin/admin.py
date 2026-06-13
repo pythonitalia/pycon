@@ -7,11 +7,14 @@ from django.contrib import admin
 from django.urls import path
 
 from custom_admin.audit import create_change_admin_log_entry
+from custom_admin.index import install as install_custom_index
 
 SITE_NAME = "PyCon Italia"
 
 admin.site.site_header = SITE_NAME
 admin.site.site_title = SITE_NAME
+
+install_custom_index()
 
 
 class CustomIndexLinks(admin.ModelAdmin):
