@@ -40,13 +40,8 @@ export const DjangoAdminEditorModal = () => {
     });
   };
 
-  if (!url) {
-    return null;
-  }
-
   const baseUrl =
     document.location.ancestorOrigins?.[0] || document.location.origin;
-  const itemUrl = `${baseUrl}/admin${url}`;
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -54,7 +49,16 @@ export const DjangoAdminEditorModal = () => {
         <VisuallyHidden>
           <Dialog.Title>Admin view</Dialog.Title>
         </VisuallyHidden>
-        <iframe title="Admin view" src={itemUrl} className="w-full h-[85vh]" />
+        {/* url is null while the dialog animates closed; keep Dialog.Root
+            mounted so Radix can finish closing and restore body pointer
+            events — unmounting it while open leaves the page unclickable. */}
+        {url && (
+          <iframe
+            title="Admin view"
+            src={`${baseUrl}/admin${url}`}
+            className="w-full h-[85vh]"
+          />
+        )}
       </Dialog.Content>
     </Dialog.Root>
   );

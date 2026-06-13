@@ -220,7 +220,11 @@ export const ScheduleItemCard = ({
   };
 
   return (
-    <Card ref={dragRef} size="1" style={{ opacity, cursor: "grab" }}>
+    <Card
+      ref={dragRef}
+      size="1"
+      style={{ opacity, cursor: "grab", height: "100%" }}
+    >
       <Flex direction="column" gap="1" align="start">
         {availability === "unavailable" && (
           <Flex align="center" gap="1">
