@@ -81,7 +81,7 @@ export const RichEditor = ({
   });
 
   return (
-    <div className="border">
+    <div className="border rounded-md overflow-hidden bg-white text-gray-900">
       <MenuBar hide={hide} editor={editor} />
       <EditorContent editor={editor} className="prose max-w-none p-4" />
     </div>

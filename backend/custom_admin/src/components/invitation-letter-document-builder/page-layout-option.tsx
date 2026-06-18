@@ -1,4 +1,4 @@
-import { Text } from "@radix-ui/themes";
+import { Flex, Text } from "@radix-ui/themes";
 import { useLocalData } from "./local-state";
 import { MarginInput } from "./margin-input";
 
@@ -8,12 +8,14 @@ export const PageLayoutOptions = () => {
   const pageLayout = getPageLayout();
 
   return (
-    <div>
-      <Text>Layout options for all pages</Text>
+    <Flex direction="column" gap="3">
+      <Text size="2" weight="medium">
+        Layout options for all pages
+      </Text>
       <MarginInput
         value={pageLayout.margin}
         onChange={(margin) => setPageLayoutProperty("margin", margin)}
       />
-    </div>
+    </Flex>
   );
 };

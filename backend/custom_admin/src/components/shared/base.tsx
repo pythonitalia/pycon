@@ -11,6 +11,7 @@ type Props = {
   children: React.ReactNode;
   widget?: boolean;
   args?: Record<string, any>;
+  appearance?: "inherit" | "light" | "dark";
 };
 
 const client = new ApolloClient({
@@ -18,9 +19,15 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-export const Base = ({ children, args = {}, widget = false }: Props) => {
+export const Base = ({
+  children,
+  args = {},
+  widget = false,
+  appearance,
+}: Props) => {
   return (
     <Theme
+      appearance={appearance}
       className={clsx({
         "is-widget-theme": widget,
       })}

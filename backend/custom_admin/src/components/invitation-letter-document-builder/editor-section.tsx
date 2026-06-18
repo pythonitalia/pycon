@@ -1,17 +1,17 @@
 import {
   AlertDialog,
+  Box,
   Button,
   Dialog,
   Flex,
   Heading,
+  IconButton,
   Text,
   TextField,
 } from "@radix-ui/themes";
-import { Box } from "@radix-ui/themes";
 import { MoveDown, MoveUp, Pencil, Trash } from "lucide-react";
 import { RichEditor } from "../shared/rich-editor";
 import { HideNode } from "../shared/rich-editor/menu-bar";
-import { Spacer } from "../shared/spacer";
 import { useLocalData } from "./local-state";
 import { RunningElementsOptions } from "./running-elements-options";
 
@@ -42,24 +42,40 @@ export const EditorSection = ({
 
   return (
     <Box>
-      <Flex align="center" gap="3">
-        {isPage && <EditableTitle value={title} onRename={onRename} />}
-        {!isPage && <Heading size="2">{title}</Heading>}
-        {isPage && (
-          <Button variant="ghost" onClick={onMoveUp}>
-            <MoveUp size={16} />
-          </Button>
+      <Flex align="center" justify="between" gap="3" mb="3">
+        {isPage ? (
+          <EditableTitle value={title} onRename={onRename} />
+        ) : (
+          <Heading size="3">{title}</Heading>
         )}
         {isPage && (
-          <Button variant="ghost" onClick={onMoveDown}>
-            <MoveDown size={16} />
-          </Button>
+          <Flex align="center" gap="1">
+            <IconButton
+              variant="ghost"
+              color="gray"
+              onClick={onMoveUp}
+              aria-label="Move page up"
+            >
+              <MoveUp size={16} />
+            </IconButton>
+            <IconButton
+              variant="ghost"
+              color="gray"
+              onClick={onMoveDown}
+              aria-label="Move page down"
+            >
+              <MoveDown size={16} />
+            </IconButton>
+            <RemovePage onRemove={onRemove} />
+          </Flex>
         )}
-        {isPage && <RemovePage onRemove={onRemove} />}
       </Flex>
-      {!isPage && <RunningElementsOptions pageId={pageId} />}
 
-      <Spacer size={3} />
+      {!isPage && (
+        <Box mb="3">
+          <RunningElementsOptions pageId={pageId} />
+        </Box>
+      )}
 
       <RichEditor
         hide={[HideNode.buttonNode, HideNode.link]}
@@ -74,9 +90,9 @@ const RemovePage = ({ onRemove }: { onRemove: () => void }) => {
   return (
     <AlertDialog.Root>
       <AlertDialog.Trigger>
-        <Button color="crimson" variant="ghost">
+        <IconButton color="crimson" variant="ghost" aria-label="Remove page">
           <Trash size={16} />
-        </Button>
+        </IconButton>
       </AlertDialog.Trigger>
 
       <AlertDialog.Content maxWidth="450px">
