@@ -2,6 +2,7 @@ import { Flex, Spinner } from "@radix-ui/themes";
 import { Suspense } from "react";
 import { Base } from "../shared/base";
 import { DjangoAdminLayout } from "../shared/django-admin-layout";
+import { useAdminTheme } from "../shared/use-admin-theme";
 import { InvitationLetterBuilder } from "./builder";
 import { LocalStateProvider } from "./local-state";
 
@@ -9,8 +10,11 @@ export const InvitationLetterDocumentBuilderRoot = ({
   documentId,
   breadcrumbs,
 }) => {
+  const appearance = useAdminTheme();
+
   return (
     <Base
+      appearance={appearance}
       args={{
         documentId,
         breadcrumbs,
