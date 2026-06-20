@@ -304,6 +304,50 @@ def test_cannot_fetch_draft_pages(graphql_client, locale):
     assert response["data"]["cmsPage"] is None
 
 
+def test_cannot_fetch_draft_base_page_even_if_translation_is_live(graphql_client, locale):
+    """
+    Test that a draft base page cannot be fetched even if a translation exists that is live.
+    This ensures the live=True filter is applied to the initial queryset.
+    """
+    parent = GenericPageFactory()
+    # Create a draft base page (live=False)
+    page = GenericPageFactory(
+        slug="bubble-tea",
+        locale=locale("en"),
+        parent=parent,
+        title="Bubble",
+        body__0__text_section__title__value="I've Got a Lovely Bunch of Coconuts",
+        live=False,
+    )
+
+    SiteFactory(hostname="pycon", port=80, root_page=parent)
+
+    # Create a live Italian translation
+    it_page = page.copy_for_translation(locale=locale("it"))
+    it_page.title = "Bubble Italian"
+    it_page.save_revision().publish()
+
+    query = """
+    query Page ($hostname: String!, $language: String!, $slug: String!) {
+        cmsPage(hostname: $hostname, language: $language, slug: $slug){
+            ...on GenericPage {
+                title
+                slug
+            }
+        }
+    }
+    """
+
+    # Even though the Italian translation is live, the base page is draft
+    # so it should not be fetchable
+    response = graphql_client.query(
+        query, variables={"hostname": "pycon", "slug": "bubble-tea", "language": "it"}
+    )
+
+    assert not response.get("errors")
+    assert response["data"]["cmsPage"] is None
+
+
 def test_page_for_unknown_locale(graphql_client, locale):
     parent = GenericPageFactory()
     page = GenericPageFactory(

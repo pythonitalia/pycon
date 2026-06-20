@@ -11,7 +11,7 @@ def news_article(hostname: str, slug: str, language: str) -> NewsArticle | None:
     if not site:
         raise ValueError(f"Site {hostname} not found")
 
-    article = NewsArticleModel.objects.in_site(site).filter(slug=slug).first()
+    article = NewsArticleModel.objects.in_site(site).filter(slug=slug, live=True).first()
 
     if not article:
         return None
