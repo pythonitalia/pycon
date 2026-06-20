@@ -308,11 +308,12 @@ class ScheduleItemAdminForm(forms.ModelForm):
 @admin.register(ScheduleItem)
 class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     list_display = (
-        "conference",
         "title",
+        "conference",
         "status",
         "language",
         "slot",
+        "rooms_list",
         "speakers_names",
         "talk_manager",
         "type",
@@ -511,6 +512,10 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
     def speakers_names(self, obj: ScheduleItem) -> str:
         return ", ".join([speaker.display_name for speaker in obj.speakers])
+
+    @admin.display(description="Rooms")
+    def rooms_list(self, obj: ScheduleItem) -> str:
+        return ", ".join([room.name for room in obj.rooms.all()])
 
     @admin.display(description="Attendees")
     def attendees_count(self, obj: ScheduleItem) -> str:

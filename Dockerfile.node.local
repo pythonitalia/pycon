@@ -6,13 +6,12 @@ RUN apt-get update -y
 
 RUN apt-get install -y python3 python3-pip
 
-RUN npm install -g pnpm; \
-    pnpm --version; \
-    pnpm setup; \
-    mkdir -p /usr/local/share/pnpm &&\
-    export PNPM_HOME="/usr/local/share/pnpm" &&\
-    export PATH="$PNPM_HOME:$PATH"; \
-    pnpm bin -g
+ENV PNPM_HOME="/usr/local/share/pnpm"
+ENV PATH="/usr/local/share/pnpm/bin:$PATH"
+
+RUN npm install -g pnpm && \
+    mkdir -p /usr/local/share/pnpm/bin && \
+    pnpm --version
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 

@@ -104,7 +104,7 @@ const Invitation = () => {
 
   const invitation = data?.scheduleInvitation;
   const hasSentAnswer =
-    invitation?.option !== ScheduleInvitationOption.NoAnswer ?? false;
+    invitation?.option !== ScheduleInvitationOption.NoAnswer;
 
   useEffect(() => {
     if (invitation) {

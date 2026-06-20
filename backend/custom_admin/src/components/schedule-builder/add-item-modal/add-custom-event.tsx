@@ -1,3 +1,12 @@
+import {
+  Button,
+  Callout,
+  Flex,
+  Heading,
+  Select,
+  Text,
+  TextField,
+} from "@radix-ui/themes";
 import { useState } from "react";
 
 import type { Room } from "../../../types";
@@ -5,44 +14,57 @@ import { useCurrentConference } from "../../utils/conference";
 import { useAddItemModal } from "./context";
 import { useCreateScheduleItemMutation } from "./create-schedule-item.generated";
 
+type CreateArgs = { title: string; type: string; rooms: Room[] };
+
 export const AddCustomEvent = () => {
   const { data, close } = useAddItemModal();
   const { conferenceId } = useCurrentConference();
   const [createScheduleItem] = useCreateScheduleItemMutation();
+  const [error, setError] = useState<string | null>(null);
 
-  const onCreate = async ({
-    title,
-    type,
-    rooms,
-  }: {
-    title: string;
-    type: string;
-    rooms: Room[];
-  }) => {
-    await createScheduleItem({
-      variables: {
-        input: {
-          conferenceId,
-          type: type,
-          title: title,
-          slotId: data.slot.id,
-          rooms: rooms.map((room) => room.id),
-          languageId: null,
+  const onCreate = async ({ title, type, rooms }: CreateArgs) => {
+    setError(null);
+    try {
+      const { errors } = await createScheduleItem({
+        variables: {
+          input: {
+            conferenceId,
+            type: type,
+            title: title,
+            slotId: data.slot.id,
+            rooms: rooms.map((room) => room.id),
+            languageId: null,
+          },
         },
-      },
-    });
-    close();
+      });
+      if (errors?.length) {
+        setError("Could not add to the schedule. Please try again.");
+        return;
+      }
+      close();
+    } catch {
+      setError("Could not add to the schedule. Please try again.");
+    }
   };
 
   return (
-    <div>
+    <Flex direction="column" gap="4">
+      {error && (
+        <Callout.Root color="red" size="1">
+          <Callout.Text>{error}</Callout.Text>
+        </Callout.Root>
+      )}
       <CustomDefinedOptions onCreate={onCreate} />
       <CustomByHand onCreate={onCreate} />
-    </div>
+    </Flex>
   );
 };
 
-const CustomDefinedOptions = ({ onCreate }) => {
+const CustomDefinedOptions = ({
+  onCreate,
+}: {
+  onCreate: (args: CreateArgs) => void;
+}) => {
   const {
     data: {
       day: { rooms },
@@ -52,9 +74,9 @@ const CustomDefinedOptions = ({ onCreate }) => {
   const allRooms = rooms;
 
   return (
-    <>
-      <strong>Add Custom from list</strong>
-      <ul className="my-2">
+    <Flex direction="column" gap="2">
+      <Heading size="3">Add custom from list</Heading>
+      <Flex direction="column" gap="1">
         <Option onClick={onCreate} type="break" rooms={allTalkRooms}>
           Room change
         </Option>
@@ -79,29 +101,52 @@ const CustomDefinedOptions = ({ onCreate }) => {
         <Option onClick={onCreate} type="announcements" rooms={allRooms}>
           Closing
         </Option>
-      </ul>
-    </>
+      </Flex>
+    </Flex>
   );
 };
 
-const Option = ({ children, type, rooms, onClick }) => {
+const Option = ({
+  children,
+  type,
+  rooms,
+  onClick,
+}: {
+  children: string;
+  type: string;
+  rooms: Room[];
+  onClick: (args: CreateArgs) => void;
+}) => {
   return (
-    <li
-      onClick={() => {
-        onClick({
-          title: children,
-          type,
-          rooms,
-        });
-      }}
-      className="p-2 bg-slate-300 odd:bg-slate-200 cursor-pointer hover:bg-slate-400"
+    <Button
+      variant="soft"
+      color="gray"
+      style={{ justifyContent: "flex-start" }}
+      onClick={() => onClick({ title: children, type, rooms })}
     >
       {children}
-    </li>
+    </Button>
   );
 };
 
-const CustomByHand = ({ onCreate }) => {
+const TYPE_OPTIONS = [
+  { value: "talk", label: "Talk" },
+  { value: "training", label: "Training" },
+  { value: "keynote", label: "Keynote" },
+  { value: "panel", label: "Panel" },
+  { value: "registration", label: "Registration" },
+  { value: "announcements", label: "Announcements" },
+  { value: "break", label: "Break" },
+  { value: "social", label: "Social" },
+  { value: "recruiting", label: "Recruiting" },
+  { value: "custom", label: "Custom" },
+];
+
+const CustomByHand = ({
+  onCreate,
+}: {
+  onCreate: (args: CreateArgs) => void;
+}) => {
   const {
     data: { room: selectedRoom },
   } = useAddItemModal();
@@ -117,51 +162,41 @@ const CustomByHand = ({ onCreate }) => {
   };
 
   return (
-    <>
-      <strong>Create custom by hand</strong>
-      <div className="my-2 grid gap-2 grid-cols-[50px_1fr] items-center">
-        <label htmlFor="title">
-          <strong>Title</strong>
-        </label>
-        <input
-          id="title"
-          className="p-2 border"
-          type="text"
+    <Flex direction="column" gap="2">
+      <Heading size="3">Create custom by hand</Heading>
+      <Flex align="center" gap="3">
+        <Text weight="bold" style={{ width: 50 }}>
+          Title
+        </Text>
+        <TextField.Root
+          style={{ flex: 1 }}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <label htmlFor="type">
-          <strong>Type</strong>
-        </label>
-        <select
-          id="type"
-          className="p-2 border"
-          value={type}
-          onChange={(e) => setType(e.target.selectedOptions[0].value)}
-        >
-          <option value="" disabled>
-            Choose one
-          </option>
-          <option value="talk">Talk</option>
-          <option value="training">Training</option>
-          <option value="keynote">Keynote</option>
-          <option value="panel">Panel</option>
-          <option value="registration">Registration</option>
-          <option value="announcements">Announcements</option>
-          <option value="break">Break</option>
-          <option value="social">Social</option>
-          <option value="recruiting">Recruiting</option>
-          <option value="custom">Custom</option>
-        </select>
-      </div>
-      <button
+      </Flex>
+      <Flex align="center" gap="3">
+        <Text weight="bold" style={{ width: 50 }}>
+          Type
+        </Text>
+        <Select.Root value={type || undefined} onValueChange={setType}>
+          <Select.Trigger placeholder="Choose one" />
+          <Select.Content position="popper">
+            {TYPE_OPTIONS.map((option) => (
+              <Select.Item key={option.value} value={option.value}>
+                {option.label}
+              </Select.Item>
+            ))}
+          </Select.Content>
+        </Select.Root>
+      </Flex>
+      <Button
         type="button"
         disabled={!title || type === ""}
         onClick={create}
-        className="btn w-full mt-3"
+        mt="2"
       >
         Create
-      </button>
-    </>
+      </Button>
+    </Flex>
   );
 };

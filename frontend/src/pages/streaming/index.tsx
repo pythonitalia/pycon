@@ -3,12 +3,12 @@ import { getApolloClient } from "~/apollo/client";
 import { PageHandler } from "~/components/page-handler";
 import { getProps } from "~/components/page-handler/page-static-props";
 
-export const HotelsPage = ({ blocksProps, isPreview, previewData }) => {
+export const StreamingPage = ({ blocksProps, isPreview, previewData }) => {
   return (
     <PageHandler
       isPreview={isPreview}
       previewData={previewData}
-      slug="hotels"
+      slug="streaming"
       blocksProps={blocksProps}
     />
   );
@@ -21,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     {
       ...context,
       params: {
-        slug: "hotels",
+        slug: "streaming",
       },
     },
     client,
@@ -29,4 +29,4 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   );
 };
 
-export default HotelsPage;
+export default StreamingPage;

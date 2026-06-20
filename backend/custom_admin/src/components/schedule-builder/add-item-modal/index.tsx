@@ -1,32 +1,28 @@
-import { Modal } from "../../shared/modal";
+import { Dialog, Flex } from "@radix-ui/themes";
 import { AddCustomEvent } from "./add-custom-event";
 import { useAddItemModal } from "./context";
 import { SearchEvent } from "./search-event";
 
 export const AddItemModal = () => {
-  const { isOpen, close } = useAddItemModal();
-
-  if (!isOpen) {
-    return null;
-  }
+  const { isOpen, close, data } = useAddItemModal();
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={close}
-      className="p-3 max-w-3xl w-full max-h-[700px] overflow-scroll"
-    >
-      <div className="">
-        <h2 className="text-xl">Add event to schedule</h2>
-        <ul>
-          <li className="mt-2">
+    <Dialog.Root open={isOpen} onOpenChange={(open) => !open && close()}>
+      <Dialog.Content maxWidth="768px">
+        <Dialog.Title>Add event to schedule</Dialog.Title>
+        <Dialog.Description size="2" mb="4" color="gray">
+          Search an existing proposal or keynote, or create a custom event for
+          this slot.
+        </Dialog.Description>
+        {/* data is null while the dialog animates closed; guard so children
+            (which read data.day/slot/room) never dereference null. */}
+        {data && (
+          <Flex direction="column" gap="5">
             <SearchEvent />
-          </li>
-          <li className="mt-5">
             <AddCustomEvent />
-          </li>
-        </ul>
-      </div>
-    </Modal>
+          </Flex>
+        )}
+      </Dialog.Content>
+    </Dialog.Root>
   );
 };

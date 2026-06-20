@@ -168,8 +168,7 @@ export const VotingPage = () => {
 
   const isVotingClosed =
     votingMetadata && !votingMetadata?.conference?.isVotingOpen;
-  const userCannotVote =
-    loading || (cannotVoteErrors ?? false) || (!!error ?? false);
+  const userCannotVote = loading || (cannotVoteErrors ?? false) || !!error;
   const votingDeadline = votingMetadata?.conference?.isVotingOpen
     ? votingMetadata?.conference.votingDeadline?.end
     : undefined;

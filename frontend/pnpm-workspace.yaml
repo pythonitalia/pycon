@@ -1,0 +1,12 @@
+allowBuilds:
+  '@biomejs/biome': true
+  '@sentry/cli': true
+  core-js-pure: true
+  sharp: true
+  unrs-resolver: true
+minimumReleaseAgeExclude:
+  - date-fns@4.3.0
+  - react-hook-form@7.76.1
+overrides:
+  "@types/react": "19.0.1"
+  "@types/react-dom": "19.0.2"

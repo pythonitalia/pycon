@@ -25,9 +25,9 @@ export const SpeakersContent = () => {
   });
 
   const submissionsBySpeaker = Object.groupBy(
-    submissions.toSorted((a, b) =>
-      a.speaker.fullName.localeCompare(b.speaker.fullName),
-    ),
+    submissions
+      .filter((submission) => submission.speaker?.participant?.id)
+      .toSorted((a, b) => a.speaker.fullName.localeCompare(b.speaker.fullName)),
     (submission) => submission.speaker.participant.id,
   );
 

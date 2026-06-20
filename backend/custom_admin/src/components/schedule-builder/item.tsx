@@ -1,10 +1,13 @@
 import { useDrag } from "react-dnd";
 
-import { Button, Tooltip } from "@radix-ui/themes";
+import { Badge, Button, Card, Flex, Text, Tooltip } from "@radix-ui/themes";
 import type { ScheduleItemFragmentFragment } from "../fragments/schedule-item.generated";
 import { useDjangoAdminEditor } from "../shared/django-admin-editor-modal/context";
 import type { AvailabilityValue } from "../utils/availability";
-import { getSlotAvailabilityKey } from "../utils/availability";
+import {
+  AVAILABILITY_META,
+  getSlotAvailabilityKey,
+} from "../utils/availability";
 import { convertHoursToMinutes } from "../utils/time";
 
 // Only the primary speaker's availability is checked. Co-speakers are not asked
@@ -20,20 +23,11 @@ function getSpeakerAvailability(
   return availabilities[getSlotAvailabilityKey(date, slotHour)] ?? null;
 }
 
-const AVAILABILITY_BADGE: Record<
-  AvailabilityValue,
-  { bg: string; text: string; label: string }
-> = {
-  preferred: { bg: "#dcfce7", text: "#15803d", label: "★ Preferred" },
-  available: { bg: "#dbeafe", text: "#1d4ed8", label: "✓ Available" },
-  unavailable: { bg: "#fee2e2", text: "#b91c1c", label: "✗ Unavailable" },
-};
-
 function AvailabilityBadge({
   value,
 }: { value: AvailabilityValue | undefined }) {
   if (!value) return <span style={{ color: "#9ca3af", fontSize: 11 }}>—</span>;
-  const { bg, text, label } = AVAILABILITY_BADGE[value];
+  const { bg, text, glyph, label } = AVAILABILITY_META[value];
   return (
     <span
       style={{
@@ -46,7 +40,7 @@ function AvailabilityBadge({
         whiteSpace: "nowrap",
       }}
     >
-      {label}
+      {glyph} {label}
     </span>
   );
 }
@@ -157,7 +151,7 @@ export const Item = ({
             .slice(currentSlotIndex, endingSlotIndex)
             .reduce((acc, s) => acc + 1, 0),
       }}
-      className="z-50 bg-slate-200"
+      className="z-50"
     >
       <ScheduleItemCard
         item={item}
@@ -226,42 +220,59 @@ export const ScheduleItemCard = ({
   };
 
   return (
-    <ul className="bg-slate-200 p-3" ref={dragRef}>
-      {availability === "unavailable" && (
-        <li className="mb-2 flex items-center gap-1.5 bg-amber-100 text-amber-800 border border-amber-300 text-xs font-semibold px-2 py-1 rounded">
-          <span>⚠ Speaker unavailable</span>
-          <Tooltip
-            content={
-              <AvailabilityTooltipContent availabilities={availabilities} />
-            }
-          >
-            <span
-              className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-amber-400 text-amber-900 cursor-help leading-none"
-              style={{ fontSize: 9, fontStyle: "italic", fontFamily: "serif" }}
+    <Card
+      ref={dragRef}
+      size="1"
+      style={{ opacity, cursor: "grab", height: "100%" }}
+    >
+      <Flex direction="column" gap="1" align="start">
+        {availability === "unavailable" && (
+          <Flex align="center" gap="1">
+            <Badge color="amber" variant="soft">
+              ⚠ Speaker unavailable
+            </Badge>
+            <Tooltip
+              content={
+                <AvailabilityTooltipContent availabilities={availabilities} />
+              }
             >
-              i
-            </span>
-          </Tooltip>
-        </li>
-      )}
-      <li>
-        [{item.type} - {duration || "??"} mins]
-      </li>
-      <li>{item.status}</li>
-      <li className="pt-2">
-        <strong>{item.title}</strong>
-      </li>
-      {item.speakers.length > 0 && (
-        <li>
-          <SpeakerNames item={item} />
-        </li>
-      )}
-      <li className="pt-2">
-        <span>[TM: {item.talkManager?.fullname}]</span>
-      </li>
-      <li className="pt-2">
-        <Button onClick={openEditLink}>Edit</Button>
-      </li>
-    </ul>
+              <span
+                className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-amber-400 text-amber-900 cursor-help leading-none"
+                style={{
+                  fontSize: 9,
+                  fontStyle: "italic",
+                  fontFamily: "serif",
+                }}
+              >
+                i
+              </span>
+            </Tooltip>
+          </Flex>
+        )}
+        <Flex align="center" gap="2">
+          <Badge variant="soft">{item.type}</Badge>
+          <Text size="1" color="gray">
+            {duration || "??"} mins
+          </Text>
+        </Flex>
+        <Text size="1" color="gray">
+          {item.status}
+        </Text>
+        <Text size="2" weight="bold">
+          {item.title}
+        </Text>
+        {item.speakers.length > 0 && (
+          <Text size="1">
+            <SpeakerNames item={item} />
+          </Text>
+        )}
+        <Text size="1" color="gray">
+          TM: {item.talkManager?.fullname}
+        </Text>
+        <Button size="1" variant="soft" mt="1" onClick={openEditLink}>
+          Edit
+        </Button>
+      </Flex>
+    </Card>
   );
 };
