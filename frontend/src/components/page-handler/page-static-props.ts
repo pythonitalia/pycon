@@ -3,6 +3,7 @@ import type { GetStaticProps } from "next";
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { blocksDataFetching } from "~/components/blocks-renderer";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import {
   type PagePreviewQuery,
   type PageQuery,

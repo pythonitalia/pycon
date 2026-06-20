@@ -7,6 +7,7 @@ import { FormattedMessage } from "react-intl";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 
 const ErrorPage = ({ statusCode }) => (
   <Page>
@@ -35,10 +36,10 @@ const ErrorPage = ({ statusCode }) => (
   </Page>
 );
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getStaticProps: GetStaticProps = async () => {
   const client = getApolloClient();
 
-  await Promise.all([prefetchSharedQueries(client, locale)]);
+  await Promise.all([prefetchSharedQueries(client, DEFAULT_LOCALE)]);
 
   return addApolloState(client, {
     props: {},
@@ -46,11 +47,8 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
 };
 
 export const getInitialProps = async (contextData) => {
-  // In case this is running in a serverless function, await this in order to give Sentry
-  // time to send the error before the lambda exits
   await Sentry.captureUnderscoreErrorException(contextData);
 
-  // This will contain the status code of the response
   return NextErrorComponent.getInitialProps(contextData);
 };
 

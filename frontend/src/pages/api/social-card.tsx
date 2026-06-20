@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 
 import { createClient } from "~/apollo/create-client";
 import { Logo } from "~/components/logo";
-import type { Language } from "~/locale/languages";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import { querySocialCard } from "~/types";
 
 export const config = {
@@ -13,17 +13,16 @@ export const config = {
 };
 
 const getDays = ({ start, end }: { start: string; end: string }) => {
-  // assuming the same month
   const startDate = new Date(start);
   const endDate = new Date(end);
 
   return `${startDate.getUTCDate()} - ${endDate.getUTCDate()}`;
 };
 
-const getMonth = ({ end }: { end: string }, language: Language) => {
+const getMonth = ({ end }: { end: string }) => {
   const endDate = new Date(end);
 
-  const formatter = new Intl.DateTimeFormat(language, {
+  const formatter = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
     month: "long",
   });
 
@@ -62,9 +61,6 @@ const handler = async (req: NextRequest) => {
   const { data } = await querySocialCard(client, {
     code: process.env.conferenceCode,
   });
-  const { searchParams } = new URL(req.url);
-
-  const language = searchParams.get("lang") as Language;
 
   return new ImageResponse(
     <div
@@ -138,7 +134,7 @@ const handler = async (req: NextRequest) => {
               textTransform: "uppercase",
             }}
           >
-            {getMonth(data.conference, language)} {getYear(data.conference)}
+            {getMonth(data.conference)} {getYear(data.conference)}
           </div>
           <div
             style={{

@@ -21,7 +21,7 @@ import { Alert } from "~/components/alert";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
-import type { Language } from "~/locale/languages";
+import { DEFAULT_LOCALE, type Language } from "~/locale/languages";
 import NotFoundPage from "~/pages/404";
 import {
   ScheduleInvitationOption,
@@ -287,7 +287,6 @@ const Invitation = () => {
 export const getServerSideProps: GetServerSideProps = async ({
   req,
   params,
-  locale,
 }) => {
   const identityToken = req.cookies.pythonitalia_sessionid;
   if (!identityToken) {
@@ -304,9 +303,9 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   try {
     await Promise.all([
-      prefetchSharedQueries(client, locale),
+      prefetchSharedQueries(client, DEFAULT_LOCALE),
       queryGetScheduleInvitation(client, {
-        language: locale,
+        language: DEFAULT_LOCALE,
         submissionId,
       }),
     ]);

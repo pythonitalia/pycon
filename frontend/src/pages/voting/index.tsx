@@ -26,6 +26,7 @@ import { VotingCard } from "~/components/voting-card";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import {
   queryVotingMetadata,
   useVotingMetadataQuery,
@@ -426,11 +427,11 @@ export const VotingPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getStaticProps: GetStaticProps = async () => {
   const client = getApolloClient();
 
   await Promise.all([
-    prefetchSharedQueries(client, locale),
+    prefetchSharedQueries(client, DEFAULT_LOCALE),
     queryVotingMetadata(client, {
       conference: process.env.conferenceCode,
     }),

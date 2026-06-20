@@ -18,11 +18,22 @@ import {
   ModalStateContext,
 } from "~/components/modal/context";
 import messages from "~/locale";
-import { LocaleProvider, useCurrentLanguage } from "~/locale/context";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 
 import "../global.css";
 
 const intlCache = createIntlCache();
+
+const intl = createIntl(
+  {
+    locale: DEFAULT_LOCALE,
+    messages: {
+      ...messages[DEFAULT_LOCALE],
+      ...getMessagesForLocale(DEFAULT_LOCALE),
+    },
+  },
+  intlCache,
+);
 
 const MyApp = (props) => {
   const { Component, pageProps, router, err } = props;
@@ -31,7 +42,6 @@ const MyApp = (props) => {
     props?: ModalProps[keyof ModalProps];
   }>({ modalId: null });
   const apolloClient = getApolloClient(props.pageProps[APOLLO_STATE_PROP_NAME]);
-  const locale = useCurrentLanguage();
 
   const setCurrentModal = <T extends ModalID>(
     modalId: T,
@@ -58,17 +68,6 @@ const MyApp = (props) => {
     [modalData, setCurrentModal],
   );
 
-  const intl = createIntl(
-    {
-      locale,
-      messages: {
-        ...messages[locale],
-        ...getMessagesForLocale(locale),
-      },
-    },
-    intlCache,
-  );
-
   if (router.pathname === "/badge") {
     return (
       <div className="flex">
@@ -79,24 +78,22 @@ const MyApp = (props) => {
   return (
     <ApolloProvider client={apolloClient}>
       <RawIntlProvider value={intl}>
-        <LocaleProvider lang={locale}>
-          <SpeedInsights />
-          <div className="flex flex-col min-h-screen">
-            <ErrorBoundary>
-              <ModalStateContext.Provider value={modalContext}>
-                <Header />
+        <SpeedInsights />
+        <div className="flex flex-col min-h-screen">
+          <ErrorBoundary>
+            <ModalStateContext.Provider value={modalContext}>
+              <Header />
 
-                <div>
-                  <Component {...pageProps} err={err} />
-                  <ModalRenderer />
-                  <Analytics />
-                </div>
+              <div>
+                <Component {...pageProps} err={err} />
+                <ModalRenderer />
+                <Analytics />
+              </div>
 
-                <Footer />
-              </ModalStateContext.Provider>
-            </ErrorBoundary>
-          </div>
-        </LocaleProvider>
+              <Footer />
+            </ModalStateContext.Provider>
+          </ErrorBoundary>
+        </div>
       </RawIntlProvider>
     </ApolloProvider>
   );

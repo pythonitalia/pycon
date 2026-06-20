@@ -8,6 +8,7 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Tickets } from "~/components/tickets-page/tickets";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import { CheckoutCategory, queryCurrentUser, queryTickets } from "~/types";
 
 export const PersonalTicketsPage = ({ cartCookie }) => {
@@ -41,21 +42,14 @@ export const PersonalTicketsPage = ({ cartCookie }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  locale,
-}) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const client = getApolloClient(null, req.cookies);
 
   await Promise.all([
-    prefetchSharedQueries(client, locale),
+    prefetchSharedQueries(client, DEFAULT_LOCALE),
     queryTickets(client, {
       conference: process.env.conferenceCode,
-      language: "it",
-    }),
-    queryTickets(client, {
-      conference: process.env.conferenceCode,
-      language: "en",
+      language: DEFAULT_LOCALE,
     }),
   ]);
 

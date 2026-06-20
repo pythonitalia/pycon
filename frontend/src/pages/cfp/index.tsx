@@ -16,6 +16,7 @@ import { Introduction } from "~/components/cfp-introduction";
 import { CfpSendSubmission } from "~/components/cfp-send-submission";
 import { MetaTags } from "~/components/meta-tags";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import {
   queryCfpForm,
   queryIsCfpOpen,

@@ -4,14 +4,15 @@ import type { NextRequest } from "next/server";
 
 import { createClient } from "~/apollo/create-client";
 import { TitleSubtitleCard } from "~/components/social-card-images/title-subtitle-card";
-import { queryTalk } from "~/types";
+import { DEFAULT_LOCALE } from "~/locale/languages";
+import { queryNewsArticle } from "~/types";
 
 export const config = {
   runtime: "edge",
   unstable_allowDynamic: ["/node_modules/.pnpm/**"],
 };
 
-export const handler = async (req: NextRequest) => {
+const handler = async (req: NextRequest) => {
   const regularFont = fetch(
     new URL(
       "./social-card-font/GeneralSans-Regular.otf",
@@ -25,30 +26,32 @@ export const handler = async (req: NextRequest) => {
     ),
   ).then((res) => res.arrayBuffer());
 
-  const [regularFontData, semiBoldFontData] = await Promise.all([
-    regularFont,
-    semiBoldFont,
-  ]);
   const client = createClient();
   const { searchParams } = new URL(req.url);
 
-  const language = searchParams.get("lang");
   const slug = searchParams.get("slug");
 
-  const {
-    data: { conference },
-  } = await queryTalk(client, {
-    slug,
-    language,
-    code: process.env.conferenceCode,
-  });
-  const talk = conference?.talk;
+  const [
+    regularFontData,
+    semiBoldFontData,
+    {
+      data: { newsArticle },
+    },
+  ] = await Promise.all([
+    regularFont,
+    semiBoldFont,
+    queryNewsArticle(client, {
+      slug,
+      language: DEFAULT_LOCALE,
+      hostname: process.env.cmsHostname,
+    }),
+  ]);
 
-  const title = talk.title;
-  const speakers = talk.speakers.map((speaker) => speaker.fullName).join(", ");
+  const title = newsArticle?.title;
+  const excerpt = newsArticle?.excerpt;
 
   return new ImageResponse(
-    <TitleSubtitleCard title={title} subtitle={speakers} tag="keynote" />,
+    <TitleSubtitleCard title={title} subtitle={excerpt} />,
     {
       width: 1200,
       height: 630,

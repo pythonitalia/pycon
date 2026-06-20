@@ -6,6 +6,7 @@ import type { GetServerSideProps } from "next";
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { GrantForm } from "~/components/grant-form";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import {
   type UpdateGrantInput,
   queryCurrentUser,

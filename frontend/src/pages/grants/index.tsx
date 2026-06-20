@@ -10,6 +10,7 @@ import { MetaTags } from "~/components/meta-tags";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import {
   DeadlineStatus,
   queryCurrentUser,
@@ -86,10 +87,7 @@ export const GrantsPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  locale,
-}) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const identityToken = req.cookies.pythonitalia_sessionid;
   if (!identityToken) {
     return {

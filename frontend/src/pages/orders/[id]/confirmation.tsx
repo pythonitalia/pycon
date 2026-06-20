@@ -19,6 +19,7 @@ import { Alert } from "~/components/alert";
 import { PageLoading } from "~/components/page-loading";
 import { useLoginState } from "~/components/profile/hooks";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import { useOrderQuery } from "~/types";
 
 const OrderCanceled = () => (
@@ -133,10 +134,10 @@ export const OrderConfirmationPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getStaticProps: GetStaticProps = async () => {
   const client = getApolloClient();
 
-  await prefetchSharedQueries(client, locale);
+  await prefetchSharedQueries(client, DEFAULT_LOCALE);
 
   return addApolloState(client, {
     props: {},

@@ -2,16 +2,14 @@ import type { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import {
   queryCountries,
   queryMyProfileWithGrant,
   queryParticipantData,
 } from "~/types";
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  locale,
-}) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const identityToken = req.cookies.pythonitalia_sessionid;
   if (!identityToken) {
     return {
@@ -26,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   try {
     await Promise.all([
-      prefetchSharedQueries(client, locale),
+      prefetchSharedQueries(client, DEFAULT_LOCALE),
       queryCountries(client),
       queryMyProfileWithGrant(client, {
         conference: process.env.conferenceCode,

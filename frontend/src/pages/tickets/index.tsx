@@ -18,11 +18,10 @@ import { createHref } from "~/components/link";
 import { AvailableProductsLandingSection } from "~/components/tickets-page/available-products-landing-section";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import { queryTickets } from "~/types";
 
 export const TicketsPage = () => {
-  const language = useCurrentLanguage();
   return (
     <TicketsPageWrapper>
       {({ tickets }) => (
@@ -47,7 +46,6 @@ export const TicketsPage = () => {
                   label: <FormattedMessage id="tickets.buyTicketsCta" />,
                   link: createHref({
                     path: "/tickets/personal/",
-                    locale: language,
                   }),
                 }}
               >
@@ -67,7 +65,6 @@ export const TicketsPage = () => {
                   label: <FormattedMessage id="tickets.buyTicketsCta" />,
                   link: createHref({
                     path: "/tickets/business/",
-                    locale: language,
                   }),
                 }}
               >
@@ -90,18 +87,14 @@ export const TicketsPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getStaticProps: GetStaticProps = async () => {
   const client = getApolloClient();
 
   await Promise.all([
-    prefetchSharedQueries(client, locale),
+    prefetchSharedQueries(client, DEFAULT_LOCALE),
     queryTickets(client, {
       conference: process.env.conferenceCode,
-      language: "it",
-    }),
-    queryTickets(client, {
-      conference: process.env.conferenceCode,
-      language: "en",
+      language: DEFAULT_LOCALE,
     }),
   ]);
 

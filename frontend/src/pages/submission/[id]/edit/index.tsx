@@ -14,6 +14,7 @@ import {
 } from "~/components/cfp-form";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import {
   queryCfpForm,
   queryGetSubmission,
@@ -120,7 +121,6 @@ export const EditSubmissionPage = () => {
 export const getServerSideProps: GetServerSideProps = async ({
   req,
   params,
-  locale,
 }) => {
   const identityToken = req.cookies.pythonitalia_sessionid;
   if (!identityToken) {
@@ -136,7 +136,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   const client = getApolloClient(null, req.cookies);
   try {
     await Promise.all([
-      prefetchSharedQueries(client, locale),
+      prefetchSharedQueries(client, DEFAULT_LOCALE),
       queryIsCfpOpen(client, {
         conference: process.env.conferenceCode,
       }),
@@ -151,7 +151,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       }),
       queryGetSubmission(client, {
         id,
-        language: locale,
+        language: DEFAULT_LOCALE,
       }),
     ]);
   } catch (e) {

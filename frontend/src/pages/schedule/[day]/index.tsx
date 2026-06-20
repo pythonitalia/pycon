@@ -13,7 +13,7 @@ import { ScheduleView } from "~/components/schedule-view";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useCurrentLanguage } from "~/locale/context";
-import type { Language } from "~/locale/languages";
+import { DEFAULT_LOCALE, type Language } from "~/locale/languages";
 import {
   type ScheduleQuery,
   querySchedule,
@@ -21,10 +21,7 @@ import {
   useScheduleQuery,
 } from "~/types";
 
-export const getDayUrl = (day: string, language: Language | null = null) => {
-  if (language) {
-    return `/${language}/schedule/${day}`;
-  }
+export const getDayUrl = (day: string) => {
   return `/schedule/${day}`;
 };
 
@@ -110,14 +107,14 @@ const PageContent = ({ data, day, changeDay }: PageContentProps) => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getStaticProps: GetStaticProps = async () => {
   const client = getApolloClient();
 
   await Promise.all([
-    prefetchSharedQueries(client, locale),
+    prefetchSharedQueries(client, DEFAULT_LOCALE),
     querySchedule(client, {
       code: process.env.conferenceCode,
-      language: locale,
+      language: DEFAULT_LOCALE,
     }),
   ]);
 
@@ -141,20 +138,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
     code: process.env.conferenceCode,
   });
 
-  const paths = [
-    ...days.map((day) => ({
-      params: {
-        day: day.day,
-      },
-      locale: "en",
-    })),
-    ...days.map((day) => ({
-      params: {
-        day: day.day,
-      },
-      locale: "it",
-    })),
-  ];
+  const paths = days.map((day) => ({
+    params: {
+      day: day.day,
+    },
+  }));
 
   return {
     paths,

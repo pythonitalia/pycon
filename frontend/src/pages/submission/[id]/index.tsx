@@ -15,6 +15,7 @@ import { createHref } from "~/components/link";
 import { ScheduleEventDetail } from "~/components/schedule-event-detail";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import NotFoundPage from "~/pages/404";
 import { getType } from "~/pages/event/[slug]";
 import {
@@ -141,13 +142,12 @@ export const SubmissionPage = () => {
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
-  locale,
   params,
 }) => {
   const client = getApolloClient(null, req.cookies);
 
   const [_, englishSubmission, italianSubmission] = await Promise.all([
-    prefetchSharedQueries(client, locale),
+    prefetchSharedQueries(client, DEFAULT_LOCALE),
     queryIsVotingClosed(client, {
       conference: process.env.conferenceCode,
     }),

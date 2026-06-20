@@ -6,6 +6,7 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { CheckoutPageHandler } from "~/components/checkout-page-handler";
 import { TicketsPageWrapper } from "~/components/tickets-page/wrapper";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import { queryCurrentUser, queryTickets } from "~/types";
 
 export const TicketsCheckoutPage = ({ cartCookie }) => {
@@ -22,10 +23,7 @@ export const TicketsCheckoutPage = ({ cartCookie }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  locale,
-}) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const identityToken = req.cookies.pythonitalia_sessionid;
   if (!identityToken) {
     return {
@@ -40,14 +38,10 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   try {
     await Promise.all([
-      prefetchSharedQueries(client, locale),
+      prefetchSharedQueries(client, DEFAULT_LOCALE),
       queryTickets(client, {
         conference: process.env.conferenceCode,
-        language: "it",
-      }),
-      queryTickets(client, {
-        conference: process.env.conferenceCode,
-        language: "en",
+        language: DEFAULT_LOCALE,
       }),
       queryCurrentUser(client, {
         conference: process.env.conferenceCode,

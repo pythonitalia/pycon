@@ -12,16 +12,12 @@ type Props = {
   useDefaultSocialCard?: boolean;
 };
 
-const getSocialCardURL = (
-  asPath: string,
-  useDefaultSocialCard: boolean,
-  locale: string,
-) => {
+const getSocialCardURL = (asPath: string, useDefaultSocialCard: boolean) => {
   if (useDefaultSocialCard) {
-    return `${process.env.NEXT_PUBLIC_SITE_URL}api/${locale}/social-card`;
+    return `${process.env.NEXT_PUBLIC_SITE_URL}api/social-card`;
   }
 
-  return `${process.env.NEXT_PUBLIC_SITE_URL}api/${locale}/${asPath.substring(
+  return `${process.env.NEXT_PUBLIC_SITE_URL}api/${asPath.substring(
     1,
   )}/social-card`;
 };
@@ -33,8 +29,8 @@ export const MetaTags = ({
   children,
 }: React.PropsWithChildren<Props>) => {
   const language = useCurrentLanguage();
-  const { asPath, locale } = useRouter();
-  const socialCard = getSocialCardURL(asPath, useDefaultSocialCard, locale);
+  const { asPath } = useRouter();
+  const socialCard = getSocialCardURL(asPath, useDefaultSocialCard);
 
   const titleTemplate = messages[language].titleTemplate;
 

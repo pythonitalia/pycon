@@ -2,10 +2,10 @@ import type { GetServerSideProps } from "next";
 
 import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import { queryParticipantPublicProfile } from "~/types";
 
 export const getServerSideProps: GetServerSideProps = async ({
-  locale,
   req,
   params,
 }) => {
@@ -13,11 +13,11 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   try {
     const [_, participantQuery] = await Promise.all([
-      prefetchSharedQueries(client, locale),
+      prefetchSharedQueries(client, DEFAULT_LOCALE),
       queryParticipantPublicProfile(client, {
         conference: process.env.conferenceCode,
         id: params.hashid as string,
-        language: locale,
+        language: DEFAULT_LOCALE,
       }),
     ]);
 

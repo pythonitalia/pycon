@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 
 import { createClient } from "~/apollo/create-client";
 import { TitleSubtitleCard } from "~/components/social-card-images/title-subtitle-card";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import { queryTalk } from "~/types";
 
 export const config = {
@@ -28,7 +29,6 @@ export const handler = async (req: NextRequest) => {
   const client = createClient();
   const { searchParams } = new URL(req.url);
 
-  const language = searchParams.get("lang");
   const slug = searchParams.get("slug");
 
   const [
@@ -42,7 +42,7 @@ export const handler = async (req: NextRequest) => {
     semiBoldFont,
     queryTalk(client, {
       slug,
-      language,
+      language: DEFAULT_LOCALE,
       code: process.env.conferenceCode,
     }),
   ]);

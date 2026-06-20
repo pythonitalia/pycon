@@ -23,6 +23,7 @@ import { PageLoading } from "~/components/page-loading";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentLanguage } from "~/locale/context";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 import NotFoundPage from "~/pages/404";
 import {
   Status as GrantStatus,
@@ -284,10 +285,7 @@ const GrantReply = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  locale,
-}) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const identityToken = req.cookies.pythonitalia_sessionid;
   if (!identityToken) {
     return {
@@ -302,7 +300,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   try {
     await Promise.all([
-      prefetchSharedQueries(client, locale),
+      prefetchSharedQueries(client, DEFAULT_LOCALE),
       queryGrantDeadline(client, {
         conference: process.env.conferenceCode,
       }),
