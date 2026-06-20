@@ -3,7 +3,6 @@ import urllib.parse
 from django import forms
 from django.contrib import admin, messages
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
 from django.http.request import HttpRequest
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -12,22 +11,8 @@ from django.utils.safestring import mark_safe
 
 from reviews.adapters import get_all_review_adapters_extra_urls, get_review_adapter
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
-from submissions.models import Submission, SubmissionTag
+from submissions.models import SubmissionTag
 from users.admin_mixins import ConferencePermissionMixin
-
-
-def get_accepted_submissions(conference):
-    return (
-        Submission.objects.filter(conference=conference)
-        .filter(
-            Q(pending_status=Submission.STATUS.accepted)
-            | Q(pending_status__isnull=True, status=Submission.STATUS.accepted)
-            | Q(pending_status="", status=Submission.STATUS.accepted)
-        )
-        .select_related("speaker", "type", "audience_level")
-        .prefetch_related("languages")
-        .order_by("id")
-    )
 
 
 class AvailableScoreOptionInline(admin.TabularInline):
@@ -199,6 +184,9 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         if not obj.can_see_shortlist_screen:
             return "You cannot see the recap of this session yet."
 
+        if obj.session_type != ReviewSession.SessionType.PROPOSALS:
+            return "Recap is not supported for this session type."
+
         return mark_safe(
             f"""
     <a href="{reverse("admin:reviews-recap", kwargs={"review_session_id": obj.id})}">
@@ -307,9 +295,6 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
         return TemplateResponse(request, adapter.shortlist_template, context)
 
-    def _get_accepted_submissions(self, conference):
-        return get_accepted_submissions(conference)
-
     def review_recap_view(self, request, review_session_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
 
@@ -328,7 +313,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             )
 
         adapter = get_review_adapter(review_session)
-        context = adapter.get_recap_context(request, review_session)
+        context = adapter.get_recap_context(request, review_session, self.admin_site)
         return TemplateResponse(request, adapter.recap_template, context)
 
     def review_view(self, request, review_session_id, review_item_id):

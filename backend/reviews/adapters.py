@@ -1,5 +1,9 @@
 from __future__ import annotations
+from django.core.cache import cache
 
+from pycon.tasks import check_pending_heavy_processing_work
+from reviews.cache_keys import get_cache_key
+from reviews.tasks import compute_recap_analysis
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.urls import path
@@ -39,6 +43,20 @@ if TYPE_CHECKING:
     from django.db.models import QuerySet
 
     from users.models import User
+
+
+def get_accepted_submissions(conference):
+    return (
+        Submission.objects.filter(conference=conference)
+        .filter(
+            Q(pending_status=Submission.STATUS.accepted)
+            | Q(pending_status__isnull=True, status=Submission.STATUS.accepted)
+            | Q(pending_status="", status=Submission.STATUS.accepted)
+        )
+        .select_related("speaker", "type", "audience_level")
+        .prefetch_related("languages")
+        .order_by("id")
+    )
 
 
 def get_stats_for_submissions(qs):
@@ -184,7 +202,7 @@ class ReviewAdapter(Protocol):
         ...
 
     def get_recap_context(
-        self, request: HttpRequest, review_session: ReviewSession
+        self, request: HttpRequest, review_session: ReviewSession, admin_site: AdminSite
     ) -> dict[str, Any]:
         """Return template context for the recap view."""
         ...
@@ -443,11 +461,11 @@ class ProposalsReviewAdapter:
         return unvoted_item.id if unvoted_item else None
 
     def get_recap_context(
-        self, request: HttpRequest, review_session: ReviewSession
+        self, request: HttpRequest, review_session: ReviewSession, admin_site: AdminSite
     ) -> dict[str, Any]:
         review_session_id = review_session.id
         conference = review_session.conference
-        accepted_submissions = self._get_accepted_submissions(conference)
+        accepted_submissions = get_accepted_submissions(conference)
 
         # Get submission types for this conference
         submission_types = list(
@@ -474,7 +492,7 @@ class ProposalsReviewAdapter:
         ]
 
         return dict(
-            self.admin_site.each_context(request),
+            admin_site.each_context(request),
             title="Recap",
             review_session_id=review_session_id,
             review_session_repr=str(review_session),
@@ -506,15 +524,9 @@ class ProposalsReviewAdapter:
             raise PermissionDenied()
 
         conference = review_session.conference
-        accepted_submissions = list(self._get_accepted_submissions(conference))
+        accepted_submissions = list(get_accepted_submissions(conference))
         force_recompute = request.GET.get("recompute") == "1"
         check_only = request.GET.get("check") == "1"
-
-        from django.core.cache import cache
-
-        from pycon.tasks import check_pending_heavy_processing_work
-        from reviews.cache_keys import get_cache_key
-        from reviews.tasks import compute_recap_analysis
 
         combined_cache_key = get_cache_key(
             "recap_analysis", conference.id, accepted_submissions
