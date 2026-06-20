@@ -930,8 +930,4 @@ def get_review_adapter(review_session: ReviewSession) -> ReviewAdapter:
 
 
 def get_all_review_adapters_extra_urls() -> list:
-    return [
-        path
-        for path in _PROPOSALS_ADAPTER.get_extra_urls()
-        + _GRANTS_ADAPTER.get_extra_urls()
-    ]
+    return _PROPOSALS_ADAPTER.get_extra_urls() + _GRANTS_ADAPTER.get_extra_urls()
