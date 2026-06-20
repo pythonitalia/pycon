@@ -67,7 +67,7 @@ dependencies = [
     "django-queryinspect<2.0.0,>=1.1.0",
     "lxml==6.1.0",
     "unidecode<2.0.0,>=1.1.1",
-    "strawberry-graphql==0.315.7",
+    "strawberry-graphql==0.318.1",
     "Werkzeug>=1.0.1,<4.0.0",
     "django-import-export<4.0.0,>=3.2.0",
     "dal-admin-filters==1.1.0",
