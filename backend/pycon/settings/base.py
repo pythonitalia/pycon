@@ -95,7 +95,6 @@ INSTALLED_APPS = [
     "languages.apps.LanguagesConfig",
     "submissions.apps.SubmissionsConfig",
     "voting.apps.VotingConfig",
-    "blog.apps.BlogConfig",
     "pages.apps.PagesConfig",
     "sponsors.apps.SponsorsConfig",
     "cms.apps.CMSConfig",
