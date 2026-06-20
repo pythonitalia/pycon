@@ -3,7 +3,6 @@ import strawberry
 from api.participants.mutations import ParticipantMutations
 from .users.mutations import UsersMutations
 from .files_upload.schema import FilesUploadMutation
-from .blog.schema import BlogQuery
 from .checklist.query import ChecklistQuery
 from .conferences.schema import ConferenceQuery
 from .countries.schema import CountryQuery
@@ -33,7 +32,6 @@ from .visa.mutation import VisaMutation
 @strawberry.type
 class Query(
     ConferenceQuery,
-    BlogQuery,
     SubmissionsQuery,
     PagesQuery,
     CountryQuery,
