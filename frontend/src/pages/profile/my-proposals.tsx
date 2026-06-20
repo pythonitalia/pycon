@@ -6,7 +6,7 @@ import { queryMyProfileWithSubmissions } from "~/types";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
-  locale,
+  locale = "en",
 }) => {
   const identityToken = req.cookies.pythonitalia_sessionid;
   if (!identityToken) {

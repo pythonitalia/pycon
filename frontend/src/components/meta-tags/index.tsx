@@ -33,8 +33,8 @@ export const MetaTags = ({
   children,
 }: React.PropsWithChildren<Props>) => {
   const language = useCurrentLanguage();
-  const { asPath, locale } = useRouter();
-  const socialCard = getSocialCardURL(asPath, useDefaultSocialCard, locale);
+  const { asPath } = useRouter();
+  const socialCard = getSocialCardURL(asPath, useDefaultSocialCard, language);
 
   const titleTemplate = messages[language].titleTemplate;
 

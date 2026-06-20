@@ -29,26 +29,5 @@ query Header($code: String!) {
         }
       }
     }
-
-    conferenceMenuIt: menu(identifier: "conference-nav") {
-      links {
-        text: title(language: "it")
-        link: href(language: "it")
-
-        page {
-          slug(language: "it")
-        }
-      }
-    }
-    programMenuIt: menu(identifier: "program-nav") {
-      links {
-        text: title(language: "it")
-        link: href(language: "it")
-
-        page {
-          slug(language: "it")
-        }
-      }
-    }
   }
 }

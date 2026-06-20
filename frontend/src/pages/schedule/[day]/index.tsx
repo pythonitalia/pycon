@@ -110,7 +110,7 @@ const PageContent = ({ data, day, changeDay }: PageContentProps) => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getStaticProps: GetStaticProps = async ({ locale = "en" }) => {
   const client = getApolloClient();
 
   await Promise.all([
@@ -141,20 +141,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
     code: process.env.conferenceCode,
   });
 
-  const paths = [
-    ...days.map((day) => ({
-      params: {
-        day: day.day,
-      },
-      locale: "en",
-    })),
-    ...days.map((day) => ({
-      params: {
-        day: day.day,
-      },
-      locale: "it",
-    })),
-  ];
+  const paths = days.map((day) => ({
+    params: {
+      day: day.day,
+    },
+  }));
 
   return {
     paths,

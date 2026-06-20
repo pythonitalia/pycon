@@ -14,7 +14,7 @@ export const getProps = async (
   {
     preview,
     previewData,
-    locale,
+    locale = "en",
     params,
   }: {
     preview: boolean;
@@ -22,7 +22,7 @@ export const getProps = async (
       contentType: string;
       token: string;
     };
-    locale: string;
+    locale?: string;
     params: {
       slug?: string;
     };

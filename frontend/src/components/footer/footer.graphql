@@ -7,11 +7,5 @@ query Footer($code: String!) {
         link: href(language: "en")
       }
     }
-    footerIt: menu(identifier: "footer") {
-      links {
-        text: title(language: "it")
-        link: href(language: "it")
-      }
-    }
   }
 }

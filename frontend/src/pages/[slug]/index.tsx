@@ -24,38 +24,18 @@ export { getStaticProps } from "~/components/page-handler/page-static-props";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const client = getApolloClient();
-  const [
-    {
-      data: { cmsPages: italianPages },
-    },
-    {
-      data: { cmsPages: englishPages },
-    },
-  ] = await Promise.all([
-    queryAllPages(client, {
-      hostname: process.env.cmsHostname,
-      language: "it",
-    }),
-    queryAllPages(client, {
-      hostname: process.env.cmsHostname,
-      language: "en",
-    }),
-  ]);
+  const {
+    data: { cmsPages: englishPages },
+  } = await queryAllPages(client, {
+    hostname: process.env.cmsHostname,
+    language: "en",
+  });
 
-  const paths = [
-    ...italianPages.map((page) => ({
-      params: {
-        slug: page.slug,
-      },
-      locale: "it",
-    })),
-    ...englishPages.map((page) => ({
-      params: {
-        slug: page.slug,
-      },
-      locale: "en",
-    })),
-  ];
+  const paths = englishPages.map((page) => ({
+    params: {
+      slug: page.slug,
+    },
+  }));
 
   return {
     paths,

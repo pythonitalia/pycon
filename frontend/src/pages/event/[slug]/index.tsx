@@ -55,7 +55,10 @@ export const TalkPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
+export const getStaticProps: GetStaticProps = async ({
+  locale = "en",
+  params,
+}) => {
   const slug = params.slug as string;
   const client = getApolloClient();
 
@@ -90,20 +93,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
     code: process.env.conferenceCode,
   });
 
-  const paths = [
-    ...talks.map((talk) => ({
-      params: {
-        slug: talk.slug,
-      },
-      locale: "en",
-    })),
-    ...talks.map((talk) => ({
-      params: {
-        slug: talk.slug,
-      },
-      locale: "it",
-    })),
-  ];
+  const paths = talks.map((talk) => ({
+    params: {
+      slug: talk.slug,
+    },
+  }));
 
   return {
     paths,

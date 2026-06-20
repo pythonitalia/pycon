@@ -51,10 +51,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     prefetchSharedQueries(client, locale),
     queryTickets(client, {
       conference: process.env.conferenceCode,
-      language: "it",
-    }),
-    queryTickets(client, {
-      conference: process.env.conferenceCode,
       language: "en",
     }),
   ]);

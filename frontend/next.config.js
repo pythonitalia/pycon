@@ -15,11 +15,6 @@ const {
 
 const nextConfig = {
   output: "standalone",
-  i18n: {
-    locales: ["default", "en", "it"],
-    defaultLocale: "default",
-    localeDetection: false,
-  },
   trailingSlash: false,
   cacheHandler:
     process.env.VERCEL_ENV === "preview"

@@ -1,15 +1,12 @@
 import { NavBar } from "@python-italia/pycon-styleguide";
 import type { Action } from "@python-italia/pycon-styleguide/dist/navbar/types";
-import React, { useEffect, useState } from "react";
-
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 import { useLoginState } from "~/components/profile/hooks";
 import { getTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import { useHeaderQuery } from "~/types";
 
-import { createHref } from "../link";
 import { Logo, MobileLogo } from "../logo";
 
 export const Header = () => {
@@ -21,21 +18,13 @@ export const Header = () => {
       code: process.env.conferenceCode!,
     },
   });
-  const { route, query } = useRouter();
 
   useEffect(() => {
     setIsReady(true);
   }, []);
 
   const {
-    conference: {
-      conferenceMenuEn,
-      programMenuEn,
-      conferenceMenuIt,
-      programMenuIt,
-      isRunning,
-      currentDay,
-    },
+    conference: { conferenceMenuEn, programMenuEn, isRunning, currentDay },
   } = data || { conference: {} };
   // const hasSomethingLive = currentDay?.rooms?.some(
   //   (room) => !!room.streamingUrl,
@@ -65,19 +54,8 @@ export const Header = () => {
     },
   ];
 
-  const conferenceMenu =
-    language === "it" ? conferenceMenuIt : conferenceMenuEn;
-  const programMenu = language === "it" ? programMenuIt : programMenuEn;
-
-  const mainLinks = conferenceMenu?.links ?? [];
-  const secondaryLinks = programMenu?.links ?? [];
-
-  const languageSwitchHref = createHref({
-    path: route,
-    params: query,
-    locale: language === "it" ? "en" : "it",
-    external: false,
-  });
+  const mainLinks = conferenceMenuEn?.links ?? [];
+  const secondaryLinks = programMenuEn?.links ?? [];
 
   return (
     <header>
@@ -87,10 +65,6 @@ export const Header = () => {
         actions={actions}
         logo={Logo}
         mobileLogo={MobileLogo}
-        bottomBarLink={{
-          text: getTranslatedMessage("header.switchLanguage", language),
-          link: languageSwitchHref,
-        }}
       />
     </header>
   );

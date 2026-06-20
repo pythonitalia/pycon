@@ -7,7 +7,6 @@ import { FormattedMessage } from "react-intl";
 
 import { useRouter } from "next/router";
 
-import { useCurrentLanguage } from "~/locale/context";
 import { useFooterQuery } from "~/types";
 
 import { FooterLogo } from "../icons/footer-logo";
@@ -22,22 +21,18 @@ export const Footer = () => {
   });
   const { pathname } = useRouter();
 
-  const language = useCurrentLanguage();
-
   const openNewsletter = () => {
     setModal("newsletter");
   };
 
   const conference = data?.conference;
-  const footerEn = conference?.footerEn;
-  const footerIt = conference?.footerIt;
 
   const menu: {
     links: {
       text: string;
       link: string;
     }[];
-  } = (language === "en" ? footerEn : footerIt) ?? { links: [] };
+  } = conference?.footerEn ?? { links: [] };
 
   return (
     <>

@@ -5,7 +5,7 @@ import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { queryParticipantPublicProfile } from "~/types";
 
 export const getServerSideProps: GetServerSideProps = async ({
-  locale,
+  locale = "en",
   req,
   params,
 }) => {

@@ -84,12 +84,12 @@ export const NewsArticlePage = ({
 
 export const getStaticProps: GetStaticProps = async ({
   params,
-  locale,
+  locale = "en",
   preview,
   previewData,
 }: {
   params: { slug: string };
-  locale: string;
+  locale?: string;
   preview: boolean;
   previewData: any;
 }) => {
@@ -130,38 +130,18 @@ export const getStaticProps: GetStaticProps = async ({
 export const getStaticPaths: GetStaticPaths = async () => {
   const client = getApolloClient();
 
-  const [
-    {
-      data: { newsArticles: italianNewsArticles },
-    },
-    {
-      data: { newsArticles: englishNewsArticles },
-    },
-  ] = await Promise.all([
-    queryAllNewsArticles(client, {
-      language: "it",
-      hostname: process.env.cmsHostname,
-    }),
-    queryAllNewsArticles(client, {
-      language: "en",
-      hostname: process.env.cmsHostname,
-    }),
-  ]);
+  const {
+    data: { newsArticles: englishNewsArticles },
+  } = await queryAllNewsArticles(client, {
+    language: "en",
+    hostname: process.env.cmsHostname,
+  });
 
-  const paths = [
-    ...italianNewsArticles.map((blogPost) => ({
-      params: {
-        slug: blogPost.slug,
-      },
-      locale: "it",
-    })),
-    ...englishNewsArticles.map((blogPost) => ({
-      params: {
-        slug: blogPost.slug,
-      },
-      locale: "en",
-    })),
-  ];
+  const paths = englishNewsArticles.map((blogPost) => ({
+    params: {
+      slug: blogPost.slug,
+    },
+  }));
 
   return {
     paths,

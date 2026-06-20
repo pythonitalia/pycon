@@ -78,7 +78,10 @@ const KeynotePage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
+export const getStaticProps: GetStaticProps = async ({
+  locale = "en",
+  params,
+}) => {
   const slug = params.slug as string;
   const client = getApolloClient();
 
@@ -106,15 +109,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const client = getApolloClient();
   const {
     data: {
-      conference: { keynotes: italianKeynotes },
-    },
-  } = await queryAllKeynotes(client, {
-    conference: process.env.conferenceCode,
-    language: "it",
-  });
-
-  const {
-    data: {
       conference: { keynotes: englishKeynotes },
     },
   } = await queryAllKeynotes(client, {
@@ -122,20 +116,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
     language: "en",
   });
 
-  const paths = [
-    ...englishKeynotes.map((keynote) => ({
-      params: {
-        slug: keynote.slug,
-      },
-      locale: "en",
-    })),
-    ...italianKeynotes.map((keynote) => ({
-      params: {
-        slug: keynote.slug,
-      },
-      locale: "it",
-    })),
-  ];
+  const paths = englishKeynotes.map((keynote) => ({
+    params: {
+      slug: keynote.slug,
+    },
+  }));
 
   return {
     paths,

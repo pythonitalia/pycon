@@ -4,7 +4,7 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { queryAllJobListings } from "~/types";
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getStaticProps: GetStaticProps = async ({ locale = "en" }) => {
   const client = getApolloClient();
 
   await Promise.all([
@@ -28,20 +28,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
     conference: process.env.conferenceCode,
   });
 
-  const paths = [
-    ...jobListings.map((page) => ({
-      params: {
-        id: page.id,
-      },
-      locale: "it",
-    })),
-    ...jobListings.map((page) => ({
-      params: {
-        id: page.id,
-      },
-      locale: "en",
-    })),
-  ];
+  const paths = jobListings.map((page) => ({
+    params: {
+      id: page.id,
+    },
+  }));
 
   return {
     paths,

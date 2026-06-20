@@ -287,7 +287,7 @@ const Invitation = () => {
 export const getServerSideProps: GetServerSideProps = async ({
   req,
   params,
-  locale,
+  locale = "en",
 }) => {
   const identityToken = req.cookies.pythonitalia_sessionid;
   if (!identityToken) {
