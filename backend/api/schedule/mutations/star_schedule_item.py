@@ -5,7 +5,7 @@ from schedule.models import ScheduleItemStar
 import strawberry
 
 
-@strawberry.field(permission_classes=[IsAuthenticated])
+@strawberry.mutation(permission_classes=[IsAuthenticated])
 def star_schedule_item(info: Info, id: strawberry.ID) -> OperationSuccess:
     user_id = info.context.request.user.id
 
