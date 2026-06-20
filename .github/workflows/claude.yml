@@ -44,7 +44,6 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_OAUTH_TOKEN }}
           assignee_trigger: "pythonitaliabot2"
-          reviewer_trigger: "pythonitaliabot2"
           claude_args: |
-            --model claude-opus-4-5-20251101
+            --model claude-opus-4-8
             --allowedTools "Bash(pip *),Bash(uv *),Bash(gh api:*),Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"
