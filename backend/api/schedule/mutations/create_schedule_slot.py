@@ -16,7 +16,7 @@ class CreateScheduleSlotInput:
     type: str
 
 
-@strawberry.field(permission_classes=[CanEditSchedule])
+@strawberry.mutation(permission_classes=[CanEditSchedule])
 def create_schedule_slot(info: Info, input: CreateScheduleSlotInput) -> Day:
     conference_id = input.conference_id
     day = DayModel.objects.for_conference(conference_id).get(id=input.day_id)
