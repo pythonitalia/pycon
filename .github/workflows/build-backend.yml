@@ -20,8 +20,6 @@ jobs:
           aws-access-key-id: ${{ secrets.aws_access_key_id }}
           aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
           aws-region: eu-central-1
-      - name: Set up QEMU dependency
-        uses: docker/setup-qemu-action@v3
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
       - name: Set up Docker Buildx
@@ -36,6 +34,6 @@ jobs:
           provenance: false
           push: true
           tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:arm-${{ inputs.githash }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:buildcache
+          cache-to: type=registry,ref=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/pythonit/pycon-backend:buildcache,mode=max,image-manifest=true,oci-mediatypes=true
           platforms: linux/arm64
