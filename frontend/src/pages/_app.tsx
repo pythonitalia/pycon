@@ -1,7 +1,6 @@
 import { ApolloProvider } from "@apollo/client";
 import { getMessagesForLocale } from "@python-italia/pycon-styleguide";
 import "@python-italia/pycon-styleguide/custom-style";
-import va from "@vercel/analytics";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { useMemo, useState } from "react";
@@ -37,11 +36,6 @@ const MyApp = (props) => {
     modalId: T,
     props?: ModalProps[T],
   ) => {
-    if (modalId !== null) {
-      va.track("open-modal", {
-        modalId,
-      });
-    }
     setCurrentModalData({
       modalId,
       props,
