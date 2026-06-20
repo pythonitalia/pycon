@@ -1,7 +1,8 @@
 from __future__ import annotations
+
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
-
+from django.urls import path
 from typing import TYPE_CHECKING, Any, Protocol
 
 from django.contrib.postgres.expressions import ArraySubquery
@@ -123,6 +124,10 @@ class ReviewAdapter(Protocol):
         """Template name for the recap view."""
         ...
 
+    def get_extra_urls(self) -> list:
+        """Return extra URLs for the review session."""
+        ...
+
     def get_shortlist_items_queryset(
         self,
         review_session: ReviewSession,
@@ -199,6 +204,15 @@ class ProposalsReviewAdapter:
     @property
     def recap_template(self) -> str:
         return "proposals-recap.html"
+
+    def get_extra_urls(self) -> list:
+        return [
+            path(
+                "<int:review_session_id>/review/proposals-recap/compute-analysis/",
+                self.review_recap_compute_analysis_view,
+                name="reviews-proposals-recap-compute-analysis",
+            )
+        ]
 
     def get_shortlist_items_queryset(
         self,
@@ -469,7 +483,7 @@ class ProposalsReviewAdapter:
             stats_by_type=stats_by_type,
             submissions_data=submissions_data,
             compute_analysis_url=reverse(
-                "admin:reviews-recap-compute-analysis",
+                "admin:reviews-proposals-recap-compute-analysis",
                 kwargs={"review_session_id": review_session_id},
             ),
         )
@@ -553,6 +567,9 @@ class GrantsReviewAdapter:
     @property
     def review_template(self) -> str:
         return "grant-review.html"
+
+    def get_extra_urls(self) -> list:
+        return []
 
     def get_shortlist_items_queryset(
         self,
@@ -898,3 +915,11 @@ def get_review_adapter(review_session: ReviewSession) -> ReviewAdapter:
         return _GRANTS_ADAPTER
 
     raise ValueError(f"Unknown review session type: {review_session.session_type}")
+
+
+def get_all_review_adapters_extra_urls() -> list:
+    return [
+        path
+        for path in _PROPOSALS_ADAPTER.get_extra_urls()
+        + _GRANTS_ADAPTER.get_extra_urls()
+    ]

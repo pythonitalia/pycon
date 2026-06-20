@@ -10,7 +10,7 @@ from django.template.response import TemplateResponse
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
 
-from reviews.adapters import get_review_adapter
+from reviews.adapters import get_all_review_adapters_extra_urls, get_review_adapter
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
 from submissions.models import Submission, SubmissionTag
 from users.admin_mixins import ConferencePermissionMixin
@@ -208,33 +208,32 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         )
 
     def get_urls(self):
-        return [
-            path(
-                "<int:review_session_id>/review/shortlist/",
-                self.admin_site.admin_view(self.review_shortlist_view),
-                name="reviews-shortlist",
-            ),
-            path(
-                "<int:review_session_id>/review/recap/",
-                self.admin_site.admin_view(self.review_recap_view),
-                name="reviews-recap",
-            ),
-            path(
-                "<int:review_session_id>/review/recap/compute-analysis/",
-                self.admin_site.admin_view(self.review_recap_compute_analysis_view),
-                name="reviews-recap-compute-analysis",
-            ),
-            path(
-                "<int:review_session_id>/review/start/",
-                self.admin_site.admin_view(self.review_start_view),
-                name="reviews-start",
-            ),
-            path(
-                "<int:review_session_id>/review/<int:review_item_id>/",
-                self.admin_site.admin_view(self.review_view),
-                name="reviews-vote-view",
-            ),
-        ] + super().get_urls()
+        return (
+            [
+                path(
+                    "<int:review_session_id>/review/shortlist/",
+                    self.admin_site.admin_view(self.review_shortlist_view),
+                    name="reviews-shortlist",
+                ),
+                path(
+                    "<int:review_session_id>/review/recap/",
+                    self.admin_site.admin_view(self.review_recap_view),
+                    name="reviews-recap",
+                ),
+                path(
+                    "<int:review_session_id>/review/start/",
+                    self.admin_site.admin_view(self.review_start_view),
+                    name="reviews-start",
+                ),
+                path(
+                    "<int:review_session_id>/review/<int:review_item_id>/",
+                    self.admin_site.admin_view(self.review_view),
+                    name="reviews-vote-view",
+                ),
+            ]
+            + get_all_review_adapters_extra_urls()
+            + super().get_urls()
+        )
 
     def review_start_view(self, request, review_session_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
