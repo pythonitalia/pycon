@@ -104,6 +104,10 @@ dependencies = [
     "opencv-python-headless>=4.10.0.84",
     "psycopg[c]==3.2.12",
     "sentence-transformers>=3.0.0",
+    # Declared directly so [tool.uv.sources] binds torch to the CPU index
+    # (sources only apply to direct deps). Otherwise it's transitive via
+    # sentence-transformers. See [tool.uv.sources] below.
+    "torch>=2.12.1",
     "scikit-learn>=1.5.0",
     "bertopic>=0.16.0",
     "nltk>=3.9.4",
@@ -135,3 +139,15 @@ dev = [
     "typer>=0.12.3",
     "django-debug-toolbar>=5.0.1",
 ]
+
+# Pull torch from the CPU-only PyTorch index. torch 2.12 declares CUDA deps
+# for all Linux platforms (incl. arm64), which the universal lock would
+# otherwise install — adding ~2.7GB of unusable nvidia/cuda wheels to the
+# image. The +cpu wheels declare no nvidia deps. See #4672.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
