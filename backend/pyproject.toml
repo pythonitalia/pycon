@@ -28,7 +28,6 @@ known-first-party = [
     "cms",
     "sponsors",
     "pages",
-    "blog",
     "voting",
     "submissions",
     "languages",
