@@ -24,7 +24,7 @@ const handleLocale = (req: NextRequest) => {
   return NextResponse.redirect(url);
 };
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const isLoggedIn = req.cookies.has("pythonitalia_sessionid");
 
   const shouldHandleLocale =

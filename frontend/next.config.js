@@ -4,7 +4,6 @@ const { withSentryConfig } = require("@sentry/nextjs");
 const {
   CONFERENCE_CODE,
   API_URL,
-  API_TOKEN,
   NEXT_PUBLIC_VERCEL_URL,
   API_URL_SERVER,
   CMS_HOSTNAME,
@@ -120,9 +119,6 @@ const nextConfig = {
 
     return rewrites;
   },
-  serverRuntimeConfig: {
-    API_TOKEN: API_TOKEN,
-  },
   env: {
     API_URL: API_URL,
     conferenceCode: CONFERENCE_CODE || "pycon-demo",
@@ -134,11 +130,11 @@ const nextConfig = {
         : "http://localhost:3000/",
   },
   images: {
-    domains: [
-      "pastaporto-cdn.pycon.it",
-      "cdn.pycon.it",
-      "localhost",
-      "pycon-backend",
+    remotePatterns: [
+      { hostname: "pastaporto-cdn.pycon.it" },
+      { hostname: "cdn.pycon.it" },
+      { hostname: "localhost" },
+      { hostname: "pycon-backend" },
     ],
   },
 };

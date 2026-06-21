@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.14.1",
+    "@fortedigital/nextjs-cache-handler": "^3.2.0",
     "@graphql-codegen/add": "^5.0.3",
     "@graphql-codegen/cli": "^2.16.5",
     "@graphql-codegen/fragment-matcher": "^3.3.3",
@@ -22,7 +23,6 @@
     "@graphql-codegen/typescript": "^2.8.8",
     "@graphql-codegen/typescript-operations": "^2.5.13",
     "@graphql-codegen/typescript-react-apollo": "^4.4.2",
-    "@neshca/cache-handler": "^1.9.0",
     "@python-italia/pycon-styleguide": "0.1.210",
     "@sentry/nextjs": "^9.47.1",
     "@xstate/react": "^3.2.2",
@@ -48,7 +48,7 @@
     "react-select": "^5.10.2",
     "react-use-form-state": "^0.13.2",
     "react-wrap-balancer": "^1.1.1",
-    "redis": "^4.7.1",
+    "redis": "^6.0.0",
     "xstate": "^4.38.3",
     "yup": "^0.29.3"
   },
