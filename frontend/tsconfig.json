@@ -25,6 +25,18 @@
       ],
       "@python-italia/pycon-styleguide/config-parts": [
         "./node_modules/@python-italia/pycon-styleguide/dist/config-parts"
+      ],
+      "@python-italia/pycon-styleguide/dist/types": [
+        "./node_modules/@python-italia/pycon-styleguide/dist/types"
+      ],
+      "@python-italia/pycon-styleguide/dist/icons/types": [
+        "./node_modules/@python-italia/pycon-styleguide/dist/icons/types"
+      ],
+      "@python-italia/pycon-styleguide/dist/illustrations/types": [
+        "./node_modules/@python-italia/pycon-styleguide/dist/illustrations/types"
+      ],
+      "@python-italia/pycon-styleguide/dist/navbar/types": [
+        "./node_modules/@python-italia/pycon-styleguide/dist/navbar/types"
       ]
     },
     "incremental": true
