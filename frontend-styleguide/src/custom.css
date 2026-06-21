@@ -1,0 +1,138 @@
+:root {
+  --screen-sides-width: max(calc(100vw - 1280px), 32px);
+  --screen-side-width: calc(var(--screen-sides-width) / 2);
+}
+
+p a {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.dotted-underline {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: theme("colors.purple.light");
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+.wavy-underline {
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: theme("colors.blue.light");
+}
+
+.carousel-container {
+  --per-page: 1;
+  --tw-translate-x: calc(var(--current-index) * -100% / var(--per-page));
+}
+
+@screen md {
+  .carousel-container {
+    --per-page: 4;
+    --index: max(
+      0,
+      min(var(--current-index), calc(var(--total-count) - var(--per-page)))
+    );
+    --tw-translate-x: calc(var(--index) * -100% / var(--per-page));
+  }
+}
+
+.schedule-head {
+  @apply grid gap-1 bg-black border-black border-b-4;
+  grid-template-columns: repeat(var(--days), 1fr);
+}
+
+.schedule-head-mc {
+  grid-template-columns: 1fr;
+}
+
+.schedule-grid {
+  @apply grid gap-1 bg-black;
+
+  grid-template-rows: repeat(var(--rows), 10px);
+  grid-template-columns: 80px 1fr;
+}
+
+@screen md {
+  .schedule-head,
+  .schedule-grid,
+  .schedule-head-mc {
+    grid-template-columns: 80px repeat(var(--days), 1fr);
+  }
+}
+
+@font-face {
+  font-family: "GeneralSans-Variable";
+  src: url("../fonts/GeneralSans-Variable.woff2") format("woff2"),
+    url("../fonts/GeneralSans-Variable.woff") format("woff"),
+    url("../fonts/GeneralSans-Variable.ttf") format("truetype");
+  font-weight: 200 700;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "JetBrainsMono";
+  src: url("../fonts/JetBrainsMono.ttf") format("truetype");
+  font-weight: 200 700;
+  font-display: swap;
+  font-style: normal;
+}
+
+.navbar-actionitem {
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-property: width, background-color;
+  transform: translateZ(0);
+}
+
+.navbar-actionitem-text {
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
+}
+
+.grid-section--item {
+  @apply opacity-30;
+}
+
+.grid-section--item a.inline-flex {
+  @apply opacity-0 -z-1;
+  transition-property: opacity, color, background-color;
+}
+
+.grid-section--current-item {
+  @apply opacity-100;
+}
+
+.grid-section--current-item a.inline-flex {
+  @apply opacity-100 z-0;
+}
+
+.multiple-parts-card-collection
+  .multiparts-card-wrapper
+  + .multiparts-card-wrapper
+  .multiparts-card-content {
+  border-top-width: 0px;
+}
+
+.slider-grid .multiparts-card-wrapper {
+  height: 100%;
+}
+
+.input-number:hover .input-number-label {
+  display: block;
+}
+
+.input-number-wrapper:hover.has-value .active-element {
+  display: block;
+}
+
+.input-number-wrapper:hover .input-number:not(:hover) .active-element {
+  display: none;
+}
+
+/* typography custom styles */
+.prose b {
+  font-weight: 600;
+}
