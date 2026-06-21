@@ -47,6 +47,7 @@
     "react-qr-code": "^2.2.0",
     "react-select": "^5.10.2",
     "react-use-form-state": "^0.13.2",
+    "react-use-sync-scroll": "^0.1.0",
     "react-wrap-balancer": "^1.1.1",
     "redis": "^6.0.0",
     "xstate": "^4.38.3",

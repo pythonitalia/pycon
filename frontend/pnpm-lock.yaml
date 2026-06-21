@@ -110,6 +110,9 @@ importers:
       react-use-form-state:
         specifier: ^0.13.2
         version: 0.13.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react-use-sync-scroll:
+        specifier: ^0.1.0
+        version: 0.1.0(react@19.2.7)
       react-wrap-balancer:
         specifier: ^1.1.1
         version: 1.1.1(react@19.2.7)
@@ -4292,6 +4295,12 @@ packages:
     peerDependencies:
       react: ^16.8.0
       react-dom: ^16.8.0
+
+  react-use-sync-scroll@0.1.0:
+    resolution: {integrity: sha512-/cQs8NNRYdnkc6B1GVu1qnHtl6UHi9ABw8m4v4YGQTF0lQCzdsM6/M6lObFOSkKc7DUPoDawjtFn/ZqhfKC1qQ==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+    peerDependencies:
+      react: '>=16.8'
 
   react-use@17.6.0:
     resolution: {integrity: sha512-OmedEScUMKFfzn1Ir8dBxiLLSOzhKe/dPZwVxcujweSj45aNM7BEGPb9BEVIgVEqEXx6f3/TsXzwIktNgUR02g==}
@@ -9994,6 +10003,10 @@ snapshots:
     dependencies:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
+
+  react-use-sync-scroll@0.1.0(react@19.2.7):
+    dependencies:
+      react: 19.2.7
 
   react-use@17.6.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
