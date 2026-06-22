@@ -108,7 +108,7 @@ dependencies = [
     # (sources only apply to direct deps). Otherwise it's transitive via
     # sentence-transformers. See [tool.uv.sources] below.
     "torch>=2.12.1",
-    "scikit-learn>=1.5.0",
+    "scikit-learn>=1.9.0",
     "bertopic>=0.16.0",
     "nltk>=3.9.4",
 ]
