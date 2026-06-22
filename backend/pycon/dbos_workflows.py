@@ -10,6 +10,10 @@ from __future__ import annotations
 
 from dbos import DBOS
 
+# Explicit, stable workflow name so external enqueuers (DBOSClient) reference it
+# by string without depending on the function's location.
+HEALTHCHECK_WORKFLOW_NAME = "healthcheck"
+
 
 def _perform_check() -> str:
     """The unit of work the healthcheck performs.
@@ -27,7 +31,7 @@ def healthcheck_step() -> str:
     return _perform_check()
 
 
-@DBOS.workflow()
+@DBOS.workflow(name=HEALTHCHECK_WORKFLOW_NAME)
 def healthcheck() -> str:
     """Run one step and return its result."""
     result = healthcheck_step()

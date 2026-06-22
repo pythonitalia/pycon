@@ -128,6 +128,9 @@ INSTALLED_APPS = [
     "billing.apps.BillingConfig",
     "privacy_policy.apps.PrivacyPolicyConfig",
     "visa.apps.VisaConfig",
+    # Project package, registered as an app so its project-level management
+    # commands (e.g. dbos_worker) are discoverable. It has no models.
+    "pycon",
 ]
 
 MIDDLEWARE = [

@@ -13,6 +13,10 @@ from __future__ import annotations
 from dbos import DBOSClient, DBOSConfig
 from django.conf import settings
 
+# Name of the database-backed queue the worker dequeues from and the web tier
+# enqueues onto. Centralised so producer and consumer cannot drift.
+DBOS_QUEUE_NAME = "dbos_default"
+
 
 def build_dbos_config() -> DBOSConfig:
     """Build the DBOSConfig from Django settings.
