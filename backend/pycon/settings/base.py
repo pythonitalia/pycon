@@ -128,6 +128,9 @@ INSTALLED_APPS = [
     "billing.apps.BillingConfig",
     "privacy_policy.apps.PrivacyPolicyConfig",
     "visa.apps.VisaConfig",
+    # Project package, registered as an app so its project-level management
+    # commands (e.g. dbos_worker) are discoverable. It has no models.
+    "pycon",
 ]
 
 MIDDLEWARE = [
@@ -402,6 +405,17 @@ WAGTAIL_HEADLESS_PREVIEW = {
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
 CELERY_TASK_IGNORE_RESULT = True
+
+# DBOS (durable workflows). Runs alongside Celery; stores workflow state in a
+# separate `dbos` database on the existing Postgres server. The dedicated
+# `dbos_worker` management command launches DBOS with this config. See SPEC.md.
+# NOTE: this URL uses the SQLAlchemy `postgresql://` scheme, not django-environ's
+# `psql://` used by DATABASE_URL.
+DBOS_APP_NAME = env("DBOS_APP_NAME", default="pycon")
+DBOS_SYSTEM_DATABASE_URL = env("DBOS_SYSTEM_DATABASE_URL", default="")
+# Kept low on purpose: the single Postgres instance is shared with Django,
+# Celery and the DBOS web client. See SPEC.md connection-budget note.
+DBOS_SYS_DB_POOL_SIZE = env.int("DBOS_SYS_DB_POOL_SIZE", default=5)
 
 AWS_STORAGE_BUCKET_NAME = env("AWS_MEDIA_BUCKET", default=None)
 AWS_REGION_NAME = AWS_SES_REGION_NAME = AWS_S3_REGION_NAME = env(

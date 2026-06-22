@@ -84,6 +84,7 @@ dependencies = [
     "wagtail==7.3.2",
     "wagtail-localize==1.13",
     "celery==5.6.3",
+    "dbos==2.24.0",
     "wagtail-headless-preview==0.8.0",
     "Jinja2>=3.1.6",
     "icalendar>=5.0.11",
