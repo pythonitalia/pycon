@@ -58,7 +58,7 @@ dependencies = [
     "uwsgi==2.0.30",
     "django-storages==1.14.6",
     "sentry-sdk>=2.14.0",
-    "boto3==1.43.9",
+    "boto3==1.43.34",
     "pycountry<20.0,>=19.8",
     "countries<1.0.0,>=0.2.0",
     "django-ses==4.1.1",
