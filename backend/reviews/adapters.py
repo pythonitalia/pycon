@@ -1,5 +1,12 @@
 from __future__ import annotations
+from django.core.cache import cache
 
+from pycon.tasks import check_pending_heavy_processing_work
+from reviews.cache_keys import get_cache_key
+from reviews.tasks import compute_recap_analysis
+from django.core.exceptions import PermissionDenied
+from django.http import JsonResponse
+from django.urls import path
 from typing import TYPE_CHECKING, Any, Protocol
 
 from django.contrib.postgres.expressions import ArraySubquery
@@ -38,6 +45,85 @@ if TYPE_CHECKING:
     from users.models import User
 
 
+def get_accepted_submissions(conference):
+    return (
+        Submission.objects.filter(conference=conference)
+        .filter(
+            Q(pending_status=Submission.STATUS.accepted)
+            | Q(pending_status__isnull=True, status=Submission.STATUS.accepted)
+            | Q(pending_status="", status=Submission.STATUS.accepted)
+        )
+        .select_related("speaker", "type", "audience_level")
+        .prefetch_related("languages")
+        .order_by("id")
+    )
+
+
+def get_stats_for_submissions(qs):
+    """Get all stats for a queryset of submissions."""
+    total = qs.count()
+
+    def calc_pct(count):
+        return round(count / total * 100, 1) if total > 0 else 0
+
+    def with_pct(counts_dict):
+        return {k: (v, calc_pct(v)) for k, v in counts_dict.items()}
+
+    gender_stats = (
+        qs.values("speaker__gender")
+        .annotate(count=Count("id"))
+        .order_by("speaker__gender")
+    )
+    gender_counts = with_pct(
+        {item["speaker__gender"] or "unknown": item["count"] for item in gender_stats}
+    )
+
+    level_stats = (
+        qs.values("audience_level__name")
+        .annotate(count=Count("id"))
+        .order_by("audience_level__name")
+    )
+    level_counts = with_pct(
+        {item["audience_level__name"]: item["count"] for item in level_stats}
+    )
+
+    language_stats = (
+        qs.values("languages__code")
+        .annotate(count=Count("id"))
+        .order_by("languages__code")
+    )
+    language_counts = with_pct(
+        {item["languages__code"]: item["count"] for item in language_stats}
+    )
+
+    speaker_level_stats = (
+        qs.values("speaker_level").annotate(count=Count("id")).order_by("speaker_level")
+    )
+    speaker_level_counts = with_pct(
+        {item["speaker_level"]: item["count"] for item in speaker_level_stats}
+    )
+
+    tag_stats = (
+        qs.values("tags__name")
+        .annotate(count=Count("id"))
+        .exclude(tags__name__isnull=True)
+        .order_by("-count", "tags__name")
+    )
+    tag_counts = [
+        (item["tags__name"], item["count"], calc_pct(item["count"]))
+        for item in tag_stats
+    ]
+
+    return {
+        "total": total,
+        "gender_counts": gender_counts,
+        "level_counts": level_counts,
+        "language_counts": language_counts,
+        "speaker_level_counts": speaker_level_counts,
+        "tag_counts": tag_counts,
+    }
+
+
 class ReviewAdapter(Protocol):
     """Protocol defining the interface for review type adapters."""
 
@@ -49,6 +135,15 @@ class ReviewAdapter(Protocol):
     @property
     def review_template(self) -> str:
         """Template name for the individual review view."""
+        ...
+
+    @property
+    def recap_template(self) -> str:
+        """Template name for the recap view."""
+        ...
+
+    def get_extra_urls(self) -> list:
+        """Return extra URLs for the review session."""
         ...
 
     def get_shortlist_items_queryset(
@@ -106,6 +201,12 @@ class ReviewAdapter(Protocol):
         """Return values dict for creating/updating a user review."""
         ...
 
+    def get_recap_context(
+        self, request: HttpRequest, review_session: ReviewSession, admin_site: AdminSite
+    ) -> dict[str, Any]:
+        """Return template context for the recap view."""
+        ...
+
 
 class ProposalsReviewAdapter:
     """Adapter for handling Proposals (Submissions) reviews."""
@@ -117,6 +218,19 @@ class ProposalsReviewAdapter:
     @property
     def review_template(self) -> str:
         return "proposal-review.html"
+
+    @property
+    def recap_template(self) -> str:
+        return "proposals-recap.html"
+
+    def get_extra_urls(self) -> list:
+        return [
+            path(
+                "<int:review_session_id>/review/proposals-recap/compute-analysis/",
+                self.review_recap_compute_analysis_view,
+                name="reviews-proposals-recap-compute-analysis",
+            )
+        ]
 
     def get_shortlist_items_queryset(
         self,
@@ -346,6 +460,52 @@ class ProposalsReviewAdapter:
         unvoted_item = qs.first()
         return unvoted_item.id if unvoted_item else None
 
+    def get_recap_context(
+        self, request: HttpRequest, review_session: ReviewSession, admin_site: AdminSite
+    ) -> dict[str, Any]:
+        review_session_id = review_session.id
+        conference = review_session.conference
+        accepted_submissions = get_accepted_submissions(conference)
+
+        # Get submission types for this conference
+        submission_types = list(
+            conference.submission_types.values_list("name", flat=True)
+        )
+
+        # Get stats per submission type
+        stats_by_type = {}
+        for type_name in submission_types:
+            type_qs = accepted_submissions.filter(type__name=type_name)
+            stats_by_type[type_name] = get_stats_for_submissions(type_qs)
+
+        total_accepted = accepted_submissions.count()
+
+        # Build submissions data for JS to use when rendering analysis results
+        submissions_data = [
+            {
+                "id": s.id,
+                "title": str(s.title),
+                "type": s.type.name,
+                "speaker": s.speaker.display_name if s.speaker else "Unknown",
+            }
+            for s in accepted_submissions
+        ]
+
+        return dict(
+            admin_site.each_context(request),
+            title="Recap",
+            review_session_id=review_session_id,
+            review_session_repr=str(review_session),
+            total_accepted=total_accepted,
+            submission_types=submission_types,
+            stats_by_type=stats_by_type,
+            submissions_data=submissions_data,
+            compute_analysis_url=reverse(
+                "admin:reviews-proposals-recap-compute-analysis",
+                kwargs={"review_session_id": review_session_id},
+            ),
+        )
+
     def get_user_review_filter(self, review_item_id: int) -> dict[str, Any]:
         """Return filter kwargs for finding a user's proposal review."""
         return {"proposal_id": review_item_id}
@@ -353,6 +513,60 @@ class ProposalsReviewAdapter:
     def get_user_review_create_values(self, review_item_id: int) -> dict[str, Any]:
         """Return values for creating a proposal review."""
         return {"proposal_id": review_item_id}
+
+    def review_recap_compute_analysis_view(self, request, review_session_id):
+        review_session = ReviewSession.objects.get(id=review_session_id)
+
+        if not review_session.user_can_review(request.user):
+            raise PermissionDenied()
+
+        if not review_session.can_see_shortlist_screen:
+            raise PermissionDenied()
+
+        conference = review_session.conference
+        accepted_submissions = list(get_accepted_submissions(conference))
+        force_recompute = request.GET.get("recompute") == "1"
+        check_only = request.GET.get("check") == "1"
+
+        combined_cache_key = get_cache_key(
+            "recap_analysis", conference.id, accepted_submissions
+        )
+
+        if not force_recompute:
+            cached_result = cache.get(combined_cache_key)
+            if cached_result is not None:
+                return JsonResponse(cached_result)
+
+        if check_only:
+            return JsonResponse({"status": "empty"})
+
+        # Use cache.add as a lock to prevent duplicate task dispatch.
+        # Short TTL so lock auto-expires if the worker is killed before cleanup.
+        computing_key = f"{combined_cache_key}:computing"
+
+        # Check for stale lock from a crashed/finished task
+        existing_task_id = cache.get(computing_key)
+        if existing_task_id:
+            from celery.result import AsyncResult
+
+            if AsyncResult(existing_task_id).state in (
+                "SUCCESS",
+                "FAILURE",
+                "REVOKED",
+            ):
+                cache.delete(computing_key)
+
+        if cache.add(computing_key, "pending", timeout=300):
+            result = compute_recap_analysis.apply_async(
+                args=[conference.id, combined_cache_key],
+                kwargs={"force_recompute": force_recompute},
+                queue="heavy_processing",
+            )
+            # Store task ID so subsequent requests can detect stale locks
+            cache.set(computing_key, result.id, timeout=300)
+            check_pending_heavy_processing_work.delay()
+
+        return JsonResponse({"status": "processing"})
 
 
 class GrantsReviewAdapter:
@@ -365,6 +579,9 @@ class GrantsReviewAdapter:
     @property
     def review_template(self) -> str:
         return "grant-review.html"
+
+    def get_extra_urls(self) -> list:
+        return []
 
     def get_shortlist_items_queryset(
         self,
@@ -710,3 +927,7 @@ def get_review_adapter(review_session: ReviewSession) -> ReviewAdapter:
         return _GRANTS_ADAPTER
 
     raise ValueError(f"Unknown review session type: {review_session.session_type}")
+
+
+def get_all_review_adapters_extra_urls() -> list:
+    return _PROPOSALS_ADAPTER.get_extra_urls() + _GRANTS_ADAPTER.get_extra_urls()
