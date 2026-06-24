@@ -2,7 +2,6 @@ import strawberry
 from strawberry import ID
 
 from api.context import Info
-from api.pages.types import Page
 
 from ..helpers.i18n import make_localized_resolver
 
@@ -19,7 +18,6 @@ class MenuLink:
     href: str = strawberry.field(resolver=make_localized_resolver("href"))
     title: str = strawberry.field(resolver=make_localized_resolver("title"))
     is_primary: bool
-    page: Page | None
 
 
 @strawberry.type
