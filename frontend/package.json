@@ -24,7 +24,7 @@
     "@graphql-codegen/typescript-operations": "^2.5.13",
     "@graphql-codegen/typescript-react-apollo": "^4.4.2",
     "@python-italia/pycon-styleguide": "0.1.210",
-    "@sentry/nextjs": "^9.47.1",
+    "@sentry/nextjs": "^10.65.0",
     "@vercel/og": "^0.11.1",
     "@xstate/react": "^3.2.2",
     "clsx": "^1.2.1",
