@@ -3,12 +3,12 @@
 Spec: [specs/generic-form-system.md](../../specs/generic-form-system.md) · Plan: [plan.md](plan.md)
 Stack: PR1 → PR2 → PR3 → (PR4 ∥ PR5) · PR5 needs PR3 **deployed to staging** (codegen), not just merged.
 
-## PR1 — `generic_forms` app core (`generic-forms/01-app`)
-- [ ] **T1.1** App skeleton + `Form`/`FormQuestion`/`FormAnswer` + DB constraints + migration + INSTALLED_APPS. Verify: `pytest generic_forms`, `makemigrations --check`.
-- [ ] **T1.2** Freeze-on-answer in model (`clean`/`save`/`delete`): type/options/required + delete blocked once answered; label/order/active free. Verify: model tests.
-- [ ] **T1.3** `validate_answers()` (returns `{question_id: [errors]}` — same shape as the PR3 wire field) + envelope `wrap/unwrap` (version dispatch). Verify: accept/reject per type.
-- [ ] **T1.4** Admin: FormAdmin + FormQuestionInline (freeze-aware readonly), read-only FormAnswerAdmin. Verify: admin tests + manual create-all-types.
-- [ ] **▣ CHECKPOINT 1** — full pytest + ruff + mypy green; PR1 opened; human review.
+## PR1 — `generic_forms` app core (`generic-forms/01-app`) — **PR #4705**
+- [x] **T1.1** App skeleton + `Form`/`FormQuestion`/`FormAnswer` + DB constraints + migration + INSTALLED_APPS. (b885f5d0e)
+- [x] **T1.2** Freeze-on-answer in model: type/options/required/form + delete blocked once answered (pre_delete signal); label/order/active free. (3dfe2ee76)
+- [x] **T1.3** `validate_answers()` + envelope `wrap/unwrap`. (43bb587d5)
+- [x] **T1.4** Admin: FormAdmin + FormQuestionInline (freeze via model validation errors — readonly deviation documented in plan), read-only FormAnswerAdmin incl. delete block. (f9c2a273d)
+- [x] **▣ CHECKPOINT 1** — 48 app tests, full suite 1191 green, ruff clean; adversarial review (3 lenses) applied (455525748); PR #4705 open. **Human review pending. Manual admin eyeball pending.**
 
 ## PR2 — GraphQL query (`generic-forms/02-graphql-query`)
 - [ ] **T2.1** `api/generic_forms/types.py` (FormType, FormQuestionType, enums, options) + `Conference.form(purpose)` (mirror `deadline()`); active-only ordered; null when unconfigured. Verify: `pytest api/generic_forms`.
