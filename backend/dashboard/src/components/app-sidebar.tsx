@@ -1,6 +1,10 @@
 import { Link } from "@inertiajs/react";
 import { LayoutDashboard } from "lucide-react";
 
+import {
+  type ConferenceData,
+  ConferenceSwitcher,
+} from "@/components/conference-switcher";
 import { NavUser, type NavUserData } from "@/components/nav-user";
 
 import {
@@ -17,32 +21,26 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
-export function AppSidebar({ user }: { user: NavUserData }) {
+export function AppSidebar({
+  conferences,
+  selectedConference,
+  user,
+}: {
+  conferences: ConferenceData[];
+  selectedConference: ConferenceData | null;
+  user: NavUserData;
+}) {
+  const dashboardUrl = selectedConference
+    ? `/dashboard/${encodeURIComponent(selectedConference.code)}`
+    : "/dashboard";
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild size="lg" tooltip="PyCon Italia 2026">
-              <Link aria-label="PyCon Italia 2026" href="/dashboard">
-                <div
-                  aria-hidden="true"
-                  className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sm font-semibold text-sidebar-primary-foreground tabular-nums"
-                >
-                  26
-                </div>
-                <div className="grid flex-1 text-left text-sm/4">
-                  <div className="truncate font-semibold">
-                    PyCon Italia 2026
-                  </div>
-                  <div className="truncate text-xs text-muted-foreground">
-                    Python Italia
-                  </div>
-                </div>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <ConferenceSwitcher
+          conferences={conferences}
+          selectedConference={selectedConference}
+        />
       </SidebarHeader>
 
       <SidebarContent>
@@ -52,7 +50,7 @@ export function AppSidebar({ user }: { user: NavUserData }) {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive tooltip="Dashboard">
-                  <Link href="/dashboard">
+                  <Link href={dashboardUrl}>
                     <LayoutDashboard aria-hidden="true" />
                     <span>Dashboard</span>
                   </Link>

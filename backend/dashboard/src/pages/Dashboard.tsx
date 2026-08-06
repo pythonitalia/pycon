@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
+import type { ConferenceData } from "@/components/conference-switcher";
 import type { NavUserData } from "@/components/nav-user";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -8,11 +9,23 @@ import {
 } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-export default function Dashboard({ user }: { user: NavUserData }) {
+export default function Dashboard({
+  conferences,
+  selectedConference,
+  user,
+}: {
+  conferences: ConferenceData[];
+  selectedConference: ConferenceData | null;
+  user: NavUserData;
+}) {
   return (
     <TooltipProvider>
       <SidebarProvider className="antialiased">
-        <AppSidebar user={user} />
+        <AppSidebar
+          conferences={conferences}
+          selectedConference={selectedConference}
+          user={user}
+        />
         <SidebarInset className="isolate min-h-dvh">
           <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger />

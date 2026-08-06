@@ -3,19 +3,21 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views.decorators.csrf import csrf_exempt
+from wagtail import urls as wagtail_urls
+from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.documents import urls as wagtaildocs_urls
 
 from api.schema import schema
 from api.views import GraphQLView
+from dashboard.views import dashboard_index
 from dashboard.views import login as dashboard_login
 from pycon.views import disabled_view
 from submissions.views import SubmissionAutocomplete
-from wagtail.admin import urls as wagtailadmin_urls
-from wagtail.documents import urls as wagtaildocs_urls
-from wagtail import urls as wagtail_urls
 
 urlpatterns = [
     path("dashboard/login", dashboard_login, name="dashboard-login"),
-    path("dashboard", include("dashboard.urls")),
+    path("dashboard", dashboard_index, name="dashboard"),
+    path("dashboard/", include("dashboard.urls")),
     path(
         "admin/_/submission-autocomplete",
         SubmissionAutocomplete.as_view(),
