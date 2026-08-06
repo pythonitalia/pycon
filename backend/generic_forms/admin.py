@@ -35,15 +35,24 @@ class FormAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     inlines = [FormQuestionInline]
 
+    def get_readonly_fields(self, request, obj=None):
+        if obj and obj.answers.exists():
+            return ("conference", "purpose")
+        return ()
+
 
 @admin.register(FormAnswer)
 class FormAnswerAdmin(admin.ModelAdmin):
     list_display = ("form", "user", "created")
     list_filter = ("form__conference", "form__purpose")
-    autocomplete_fields = ("user",)
 
     def has_add_permission(self, request):
         return False
 
     def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        # deleting answers would unfreeze the form's questions and silently
+        # destroy an applicant's submission
         return False

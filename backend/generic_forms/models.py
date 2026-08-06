@@ -1,5 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
 
@@ -18,6 +20,38 @@ class Form(TimeStampedModel):
     )
     purpose = models.CharField(max_length=32, choices=Purpose.choices)
     name = models.CharField(max_length=200)
+
+    # Frozen once any answer exists: moving a form to another conference or
+    # purpose would re-contextualize the stored answers.
+    FROZEN_FIELDS = ("conference_id", "purpose")
+
+    def save(self, *args, **kwargs):
+        self._check_frozen_fields()
+        super().save(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        self._check_frozen_fields()
+
+    def _check_frozen_fields(self):
+        if self._state.adding:
+            return
+
+        stored = Form.objects.filter(pk=self.pk).first()
+        if stored is None:
+            return
+
+        changed = [
+            field
+            for field in self.FROZEN_FIELDS
+            if getattr(stored, field) != getattr(self, field)
+        ]
+        if changed and stored.answers.exists():
+            fields = ", ".join(field.removesuffix("_id") for field in changed)
+            raise ValidationError(
+                f"The form already has answers; these fields cannot be "
+                f"changed: {fields}."
+            )
 
     def __str__(self):
         return f"{self.name} ({self.purpose}, {self.conference.name})"
@@ -59,29 +93,63 @@ class FormQuestion(TimeStampedModel):
     # Fields that define what an answer means; frozen once any answer exists
     # so stored answers always match their questions. label/description/order/
     # active stay editable (deactivate instead of delete).
+    # Enforced in save()/clean() and a pre_delete signal: QuerySet.update()
+    # and bulk_update() bypass both, so they must never be used on this model.
+    # The exists()-then-write window is not locked; a first answer racing an
+    # edit is accepted as a non-issue at this scale.
     FROZEN_FIELDS = ("form_id", "question_type", "options", "required")
+    CHOICE_TYPES = (QuestionType.SELECT, QuestionType.MULTI_SELECT)
 
     def clean(self):
         super().clean()
+        self._validate_options()
         self._check_frozen_fields()
 
     def save(self, *args, **kwargs):
+        self._validate_options()
         self._check_frozen_fields()
         super().save(*args, **kwargs)
 
-    def delete(self, *args, **kwargs):
-        if self.form.answers.exists():
-            raise ValidationError(
-                "This question cannot be deleted because the form already has "
-                "answers. Deactivate it instead."
-            )
-        return super().delete(*args, **kwargs)
-
-    def _check_frozen_fields(self):
-        if not self.pk:
+    def _validate_options(self):
+        if self.question_type not in self.CHOICE_TYPES:
+            if self.options:
+                raise ValidationError(
+                    {"options": "Only select questions can have options."}
+                )
             return
 
-        stored = FormQuestion.objects.get(pk=self.pk)
+        if not isinstance(self.options, list) or not self.options:
+            raise ValidationError(
+                {"options": "Select questions need a non-empty list of options."}
+            )
+
+        for option in self.options:
+            if (
+                not isinstance(option, dict)
+                or not isinstance(option.get("id"), str)
+                or not option["id"]
+                or not isinstance(option.get("label"), str)
+                or not option["label"]
+            ):
+                raise ValidationError(
+                    {
+                        "options": 'Every option must be {"id": "...", '
+                        '"label": "..."} with non-empty strings.'
+                    }
+                )
+
+        ids = [option["id"] for option in self.options]
+        if len(ids) != len(set(ids)):
+            raise ValidationError({"options": "Option ids must be unique."})
+
+    def _check_frozen_fields(self):
+        if self._state.adding:
+            return
+
+        stored = FormQuestion.objects.filter(pk=self.pk).first()
+        if stored is None:
+            return
+
         changed = [
             field
             for field in self.FROZEN_FIELDS
@@ -128,3 +196,15 @@ class FormAnswer(TimeStampedModel):
                 name="unique_form_answer_per_user",
             )
         ]
+
+
+# pre_delete (not FormQuestion.delete) so QuerySet.delete() and cascades are
+# guarded too. Forms with answers cannot cascade here: FormAnswer.form is
+# PROTECT, so only questions of unanswered forms ever reach deletion.
+@receiver(pre_delete, sender=FormQuestion)
+def block_deleting_answered_questions(sender, instance, **kwargs):
+    if instance.form.answers.exists():
+        raise ValidationError(
+            "This question cannot be deleted because the form already has "
+            "answers. Deactivate it instead."
+        )

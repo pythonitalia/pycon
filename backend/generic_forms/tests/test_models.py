@@ -126,3 +126,67 @@ def test_new_question_can_be_added_to_answered_form():
     question = _answered_question()
 
     FormQuestionFactory(form=question.form)
+
+
+def test_new_question_can_be_saved_with_an_explicit_pk():
+    form = FormFactory()
+
+    FormQuestion(
+        pk=987654,
+        form=form,
+        label="Explicit pk",
+        question_type=FormQuestion.QuestionType.TEXT,
+    ).save()
+
+    assert FormQuestion.objects.filter(pk=987654).exists()
+
+
+def test_queryset_delete_cannot_remove_questions_from_an_answered_form():
+    question = _answered_question()
+
+    with pytest.raises(ValidationError, match="deleted"):
+        FormQuestion.objects.filter(pk=question.pk).delete()
+
+
+def test_select_options_must_be_a_list_of_id_label_dicts():
+    with pytest.raises(ValidationError, match="options"):
+        FormQuestionFactory(
+            question_type=FormQuestion.QuestionType.SELECT,
+            options=["vegan", 42],
+        )
+
+
+def test_select_options_cannot_be_empty():
+    with pytest.raises(ValidationError, match="options"):
+        FormQuestionFactory(question_type=FormQuestion.QuestionType.SELECT, options=[])
+
+
+def test_option_ids_must_be_unique():
+    with pytest.raises(ValidationError, match="options"):
+        FormQuestionFactory(
+            question_type=FormQuestion.QuestionType.MULTI_SELECT,
+            options=[{"id": "a", "label": "A"}, {"id": "a", "label": "Again"}],
+        )
+
+
+def test_non_choice_questions_cannot_have_options():
+    with pytest.raises(ValidationError, match="options"):
+        FormQuestionFactory(
+            question_type=FormQuestion.QuestionType.TEXT,
+            options=[{"id": "a", "label": "A"}],
+        )
+
+
+def test_form_conference_and_purpose_are_frozen_once_answered():
+    answer = FormAnswerFactory(form__purpose=Form.Purpose.GRANT)
+
+    answer.form.purpose = Form.Purpose.GENERIC
+    with pytest.raises(ValidationError, match="purpose"):
+        answer.form.save()
+
+
+def test_form_name_stays_editable_once_answered():
+    answer = FormAnswerFactory()
+
+    answer.form.name = "Renamed"
+    answer.form.save()

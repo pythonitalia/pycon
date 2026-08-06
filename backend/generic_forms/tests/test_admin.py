@@ -43,3 +43,19 @@ def test_form_answers_are_read_only_in_admin(admin_request):
     assert (
         answer_admin.has_change_permission(admin_request, FormAnswerFactory()) is False
     )
+    assert answer_admin.has_delete_permission(admin_request) is False
+    assert (
+        answer_admin.has_delete_permission(admin_request, FormAnswerFactory()) is False
+    )
+
+
+def test_form_conference_and_purpose_become_readonly_once_answered(admin_request):
+    form_admin = site._registry[Form]
+
+    assert form_admin.get_readonly_fields(admin_request, FormFactory()) == ()
+
+    answer = FormAnswerFactory()
+    assert form_admin.get_readonly_fields(admin_request, answer.form) == (
+        "conference",
+        "purpose",
+    )
