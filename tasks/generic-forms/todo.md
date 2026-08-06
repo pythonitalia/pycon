@@ -10,9 +10,9 @@ Stack: PR1 → PR2 → PR3 → (PR4 ∥ PR5) · PR5 needs PR3 **deployed to stag
 - [x] **T1.4** Admin: FormAdmin + FormQuestionInline (freeze via model validation errors — readonly deviation documented in plan), read-only FormAnswerAdmin incl. delete block. (f9c2a273d)
 - [x] **▣ CHECKPOINT 1** — 48 app tests, full suite 1191 green, ruff clean; adversarial review (3 lenses) applied (455525748); PR #4705 open. **Human review pending. Manual admin eyeball pending.**
 
-## PR2 — GraphQL query (`generic-forms/02-graphql-query`)
-- [ ] **T2.1** `api/generic_forms/types.py` (FormType, FormQuestionType, enums, options) + `Conference.form(purpose)` (mirror `deadline()`); active-only ordered; null when unconfigured. Verify: `pytest api/generic_forms`.
-- [ ] **▣ CHECKPOINT 2** — suite green; schema diff additive; PR2 opened.
+## PR2 — GraphQL query (`generic-forms/02-graphql-query`) — **PR #4707**
+- [x] **T2.1** `api/generic_forms/types.py` (Form, FormQuestion, FormQuestionOption, FormPurpose/FormQuestionType enums) + `Conference.form(purpose)`; active-only ordered; null when unconfigured. 7 tests.
+- [x] **▣ CHECKPOINT 2** — full suite 1197 green; additive-only schema change; PR #4707 open (stacked on #4705).
 
 ## PR3 — grants backend (`generic-forms/03-grants-backend`)
 - [ ] **T3.1** `Grant.form_answer` OneToOne (SET_NULL) + `blank=True` on the 4 required soft columns (`why`, `python_usage`, `been_to_other_events`, `occupation`); one migration. Columns stay NOT NULL — mutations must never pass `None`.
