@@ -66,6 +66,16 @@ class Form(TimeStampedModel):
         ]
 
 
+def _is_valid_option(option) -> bool:
+    return (
+        isinstance(option, dict)
+        and isinstance(option.get("id"), str)
+        and option["id"] != ""
+        and isinstance(option.get("label"), str)
+        and option["label"] != ""
+    )
+
+
 class FormQuestion(TimeStampedModel):
     class QuestionType(models.TextChoices):
         TEXT = "text", _("Text")
@@ -123,20 +133,13 @@ class FormQuestion(TimeStampedModel):
                 {"options": "Select questions need a non-empty list of options."}
             )
 
-        for option in self.options:
-            if (
-                not isinstance(option, dict)
-                or not isinstance(option.get("id"), str)
-                or not option["id"]
-                or not isinstance(option.get("label"), str)
-                or not option["label"]
-            ):
-                raise ValidationError(
-                    {
-                        "options": 'Every option must be {"id": "...", '
-                        '"label": "..."} with non-empty strings.'
-                    }
-                )
+        if not all(_is_valid_option(option) for option in self.options):
+            raise ValidationError(
+                {
+                    "options": 'Every option must be {"id": "...", '
+                    '"label": "..."} with non-empty strings.'
+                }
+            )
 
         ids = [option["id"] for option in self.options]
         if len(ids) != len(set(ids)):
