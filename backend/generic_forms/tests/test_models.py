@@ -54,7 +54,7 @@ def test_question_type_is_frozen_once_form_has_answers():
     question = _answered_question(question_type=FormQuestion.QuestionType.TEXT)
 
     question.question_type = FormQuestion.QuestionType.TEXTAREA
-    with pytest.raises(ValidationError, match="question_type"):
+    with pytest.raises(ValidationError, match="cannot be changed: question_type"):
         question.save()
 
 
@@ -65,7 +65,7 @@ def test_options_are_frozen_once_form_has_answers():
     )
 
     question.options = [{"id": "b", "label": "B"}]
-    with pytest.raises(ValidationError, match="options"):
+    with pytest.raises(ValidationError, match="cannot be changed: options"):
         question.save()
 
 
@@ -73,7 +73,7 @@ def test_required_is_frozen_once_form_has_answers():
     question = _answered_question(required=False)
 
     question.required = True
-    with pytest.raises(ValidationError, match="required"):
+    with pytest.raises(ValidationError, match="cannot be changed: required"):
         question.save()
 
 
@@ -81,7 +81,7 @@ def test_question_cannot_move_to_another_form_once_answered():
     question = _answered_question()
 
     question.form = FormFactory()
-    with pytest.raises(ValidationError, match="form"):
+    with pytest.raises(ValidationError, match="cannot be changed: form"):
         question.save()
 
 
@@ -110,7 +110,9 @@ def test_label_description_order_active_stay_editable_once_answered():
 def test_question_cannot_be_deleted_once_form_has_answers():
     question = _answered_question()
 
-    with pytest.raises(ValidationError, match="deleted"):
+    with pytest.raises(
+        ValidationError, match="cannot be deleted because the form already has answers"
+    ):
         question.delete()
 
 
@@ -144,12 +146,14 @@ def test_new_question_can_be_saved_with_an_explicit_pk():
 def test_queryset_delete_cannot_remove_questions_from_an_answered_form():
     question = _answered_question()
 
-    with pytest.raises(ValidationError, match="deleted"):
+    with pytest.raises(
+        ValidationError, match="cannot be deleted because the form already has answers"
+    ):
         FormQuestion.objects.filter(pk=question.pk).delete()
 
 
 def test_select_options_must_be_a_list_of_id_label_dicts():
-    with pytest.raises(ValidationError, match="options"):
+    with pytest.raises(ValidationError, match="Every option must be"):
         FormQuestionFactory(
             question_type=FormQuestion.QuestionType.SELECT,
             options=["vegan", 42],
@@ -157,12 +161,12 @@ def test_select_options_must_be_a_list_of_id_label_dicts():
 
 
 def test_select_options_cannot_be_empty():
-    with pytest.raises(ValidationError, match="options"):
+    with pytest.raises(ValidationError, match="non-empty list of options"):
         FormQuestionFactory(question_type=FormQuestion.QuestionType.SELECT, options=[])
 
 
 def test_option_ids_must_be_unique():
-    with pytest.raises(ValidationError, match="options"):
+    with pytest.raises(ValidationError, match="Option ids must be unique"):
         FormQuestionFactory(
             question_type=FormQuestion.QuestionType.MULTI_SELECT,
             options=[{"id": "a", "label": "A"}, {"id": "a", "label": "Again"}],
@@ -170,7 +174,7 @@ def test_option_ids_must_be_unique():
 
 
 def test_non_choice_questions_cannot_have_options():
-    with pytest.raises(ValidationError, match="options"):
+    with pytest.raises(ValidationError, match="Only select questions can have options"):
         FormQuestionFactory(
             question_type=FormQuestion.QuestionType.TEXT,
             options=[{"id": "a", "label": "A"}],
@@ -181,7 +185,7 @@ def test_form_conference_and_purpose_are_frozen_once_answered():
     answer = FormAnswerFactory(form__purpose=Form.Purpose.GRANT)
 
     answer.form.purpose = Form.Purpose.GENERIC
-    with pytest.raises(ValidationError, match="purpose"):
+    with pytest.raises(ValidationError, match="cannot be changed: purpose"):
         answer.form.save()
 
 
