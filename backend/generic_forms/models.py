@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
@@ -54,6 +55,45 @@ class FormQuestion(TimeStampedModel):
     max_length = models.PositiveIntegerField(null=True, blank=True)
     order = models.PositiveIntegerField(default=0)
     active = models.BooleanField(default=True)
+
+    # Fields that define what an answer means; frozen once any answer exists
+    # so stored answers always match their questions. label/description/order/
+    # active stay editable (deactivate instead of delete).
+    FROZEN_FIELDS = ("form_id", "question_type", "options", "required")
+
+    def clean(self):
+        super().clean()
+        self._check_frozen_fields()
+
+    def save(self, *args, **kwargs):
+        self._check_frozen_fields()
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.form.answers.exists():
+            raise ValidationError(
+                "This question cannot be deleted because the form already has "
+                "answers. Deactivate it instead."
+            )
+        return super().delete(*args, **kwargs)
+
+    def _check_frozen_fields(self):
+        if not self.pk:
+            return
+
+        stored = FormQuestion.objects.get(pk=self.pk)
+        changed = [
+            field
+            for field in self.FROZEN_FIELDS
+            if getattr(stored, field) != getattr(self, field)
+        ]
+        if changed and stored.form.answers.exists():
+            fields = ", ".join(field.removesuffix("_id") for field in changed)
+            raise ValidationError(
+                f"The form already has answers; these fields cannot be "
+                f"changed: {fields}. Add a new question or deactivate this "
+                f"one instead."
+            )
 
     def __str__(self):
         return self.label
