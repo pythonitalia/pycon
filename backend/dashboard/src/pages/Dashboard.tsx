@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
+import type { NavUserData } from "@/components/nav-user";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
@@ -7,11 +8,11 @@ import {
 } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-export default function Dashboard() {
+export default function Dashboard({ user }: { user: NavUserData }) {
   return (
     <TooltipProvider>
       <SidebarProvider className="antialiased">
-        <AppSidebar />
+        <AppSidebar user={user} />
         <SidebarInset className="isolate min-h-dvh">
           <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger />
