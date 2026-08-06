@@ -1,6 +1,12 @@
 from users.tests.factories import UserFactory
 from django.contrib.admin.models import LogEntry
 from conferences.tests.factories import ConferenceFactory
+from generic_forms.models import Form, FormAnswer, FormQuestion
+from generic_forms.tests.factories import (
+    FormAnswerFactory,
+    FormFactory,
+    FormQuestionFactory,
+)
 from grants.tests.factories import GrantFactory
 import pytest
 from participants.models import Participant
@@ -8,7 +14,19 @@ from participants.models import Participant
 pytestmark = pytest.mark.django_db
 
 
-def _update_grant(graphql_client, grant, **kwargs):
+SOFT_FIELD_KEYS = [
+    "ageGroup",
+    "gender",
+    "occupation",
+    "pythonUsage",
+    "communityContribution",
+    "beenToOtherEvents",
+    "why",
+    "notes",
+]
+
+
+def _update_grant(graphql_client, grant, exclude=None, **kwargs):
     query = """
     mutation updateGrant($input: UpdateGrantInput!){
         updateGrant(input: $input) {
@@ -46,6 +64,7 @@ def _update_grant(graphql_client, grant, **kwargs):
                     validationParticipantFacebookUrl: participantFacebookUrl
                     validationparticipantMastodonHandle: participantMastodonHandle
                     nonFieldErrors
+                    answersErrors
                 }
             }
         }
@@ -86,6 +105,8 @@ def _update_grant(graphql_client, grant, **kwargs):
         "conference": grant.conference.code,
         "instance": grant.id,
     }
+    for key in exclude or []:
+        variables.pop(key, None)
 
     response = graphql_client.query(query, variables={"input": variables})
 
@@ -296,3 +317,91 @@ def test_cannot_update_grant_with_empty_values_if_needs_funds_for_travel(
     assert response["data"]["updateGrant"]["errors"]["validationNationality"] == [
         "nationality: Cannot be empty"
     ]
+
+
+def _grant_form(conference):
+    form = FormFactory(conference=conference, purpose=Form.Purpose.GRANT)
+    why = FormQuestionFactory(
+        form=form,
+        label="Why do you need a grant?",
+        question_type=FormQuestion.QuestionType.TEXTAREA,
+        required=True,
+    )
+    return form, why
+
+
+def test_update_grant_with_answers_creates_and_links_form_answer(graphql_client, user):
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(active_grants=True)
+    grant = GrantFactory(user=user, conference=conference)
+    original_why = grant.why
+    form, why = _grant_form(conference)
+
+    response = _update_grant(
+        graphql_client,
+        grant,
+        exclude=SOFT_FIELD_KEYS,
+        answers={str(why.pk): "Updated motivation"},
+    )
+
+    assert response["data"]["updateGrant"]["__typename"] == "Grant"
+    grant.refresh_from_db()
+    assert grant.form_answer is not None
+    assert grant.form_answer.answers == {
+        "version": 1,
+        "answers": {str(why.pk): "Updated motivation"},
+    }
+    # legacy soft columns are untouched by the answers path
+    assert grant.why == original_why
+
+
+def test_update_grant_with_answers_updates_the_existing_form_answer(
+    graphql_client, user
+):
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(active_grants=True)
+    grant = GrantFactory(user=user, conference=conference)
+    form, why = _grant_form(conference)
+    existing = FormAnswerFactory(
+        form=form,
+        user=user,
+        answers={"version": 1, "answers": {str(why.pk): "Old"}},
+    )
+
+    response = _update_grant(
+        graphql_client,
+        grant,
+        exclude=SOFT_FIELD_KEYS,
+        answers={str(why.pk): "New"},
+    )
+
+    assert response["data"]["updateGrant"]["__typename"] == "Grant"
+    assert FormAnswer.objects.count() == 1
+    existing.refresh_from_db()
+    assert existing.answers == {"version": 1, "answers": {str(why.pk): "New"}}
+    grant.refresh_from_db()
+    assert grant.form_answer == existing
+
+
+def test_update_grant_with_invalid_answers_changes_nothing(graphql_client, user):
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(active_grants=True)
+    grant = GrantFactory(user=user, conference=conference)
+    original_name = grant.name
+    _form, why = _grant_form(conference)
+
+    response = _update_grant(
+        graphql_client,
+        grant,
+        name="Changed name",
+        exclude=SOFT_FIELD_KEYS,
+        answers={},
+    )
+
+    assert response["data"]["updateGrant"]["__typename"] == "GrantErrors"
+    assert response["data"]["updateGrant"]["errors"]["answersErrors"] == {
+        str(why.pk): ["This question is required."]
+    }
+    grant.refresh_from_db()
+    assert grant.name == original_name
+    assert grant.form_answer is None
