@@ -1,0 +1,40 @@
+name: Dashboard
+
+on:
+  pull_request:
+    paths:
+      - "backend/dashboard/**"
+      - "backend/Dockerfile"
+      - ".github/workflows/dashboard.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: backend/dashboard
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10
+          run_install: false
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: pnpm
+          cache-dependency-path: backend/dashboard/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build dashboard
+        run: pnpm build

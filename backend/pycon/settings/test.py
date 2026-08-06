@@ -1,5 +1,5 @@
 from .base import *  # noqa
-from .base import INSTALLED_APPS, MIDDLEWARE, env
+from .base import CROSS_INERTIA, INSTALLED_APPS, MIDDLEWARE, env, root
 
 IS_RUNNING_TESTS = True
 
@@ -46,6 +46,11 @@ CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
 
 PASSWORD_HASHERS = ("django.contrib.auth.hashers.MD5PasswordHasher",)
+
+CROSS_INERTIA = {
+    **CROSS_INERTIA,
+    "MANIFEST_PATH": root("dashboard/tests/vite-manifest.json"),
+}
 
 CELERY_BROKER_URL = env("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")

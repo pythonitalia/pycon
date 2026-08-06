@@ -66,7 +66,7 @@ WORKDIR ${FUNCTION_DIR}/dashboard
 
 COPY dashboard/package.json dashboard/pnpm-lock.yaml ./
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm --ignore-workspace install --frozen-lockfile
 
 COPY dashboard/ ./
 

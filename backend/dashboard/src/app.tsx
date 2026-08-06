@@ -2,6 +2,7 @@ import { createInertiaApp } from "@inertiajs/react";
 import { createRoot } from "react-dom/client";
 
 import Dashboard from "./pages/Dashboard";
+import "./styles.css";
 
 const pages = { Dashboard };
 
