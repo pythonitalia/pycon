@@ -46,7 +46,7 @@ def test_missing_required_answer_is_an_error():
 
     errors = validate_answers(form, {})
 
-    assert "required" in errors[str(question.pk)][0].lower()
+    assert errors == {str(question.pk): ["This question is required."]}
 
 
 def test_empty_string_fails_required():
@@ -55,7 +55,7 @@ def test_empty_string_fails_required():
 
     errors = validate_answers(form, {str(question.pk): ""})
 
-    assert "required" in errors[str(question.pk)][0].lower()
+    assert errors == {str(question.pk): ["This question is required."]}
 
 
 def test_optional_question_can_be_omitted():
@@ -77,7 +77,7 @@ def test_unknown_question_id_is_an_error():
 
     errors = validate_answers(form, {"9999": "hello"})
 
-    assert "9999" in errors
+    assert errors == {"9999": ["Unknown or inactive question."]}
 
 
 def test_inactive_question_id_is_an_error():
@@ -86,7 +86,7 @@ def test_inactive_question_id_is_an_error():
 
     errors = validate_answers(form, {str(question.pk): "hello"})
 
-    assert str(question.pk) in errors
+    assert errors == {str(question.pk): ["Unknown or inactive question."]}
 
 
 def test_text_answer_must_be_a_string():
@@ -95,7 +95,7 @@ def test_text_answer_must_be_a_string():
 
     errors = validate_answers(form, {str(question.pk): 123})
 
-    assert str(question.pk) in errors
+    assert errors == {str(question.pk): ["Invalid value: expected text."]}
 
 
 def test_text_answer_respects_max_length():
@@ -104,7 +104,7 @@ def test_text_answer_respects_max_length():
 
     errors = validate_answers(form, {str(question.pk): "too long"})
 
-    assert "5" in errors[str(question.pk)][0]
+    assert errors == {str(question.pk): ["Cannot be longer than 5 characters."]}
 
 
 def test_select_answer_must_be_a_known_option():
@@ -113,7 +113,7 @@ def test_select_answer_must_be_a_known_option():
 
     errors = validate_answers(form, {str(question.pk): "carnivore"})
 
-    assert str(question.pk) in errors
+    assert errors == {str(question.pk): ["Invalid option."]}
 
 
 def test_multi_select_must_be_a_list():
@@ -124,7 +124,9 @@ def test_multi_select_must_be_a_list():
 
     errors = validate_answers(form, {str(question.pk): "vegan"})
 
-    assert str(question.pk) in errors
+    assert errors == {
+        str(question.pk): ["Invalid value: expected a list of option ids."]
+    }
 
 
 def test_multi_select_rejects_non_string_items_without_crashing():
@@ -135,7 +137,9 @@ def test_multi_select_rejects_non_string_items_without_crashing():
 
     errors = validate_answers(form, {str(question.pk): [["vegan"]]})
 
-    assert str(question.pk) in errors
+    assert errors == {
+        str(question.pk): ["Invalid value: expected a list of option ids."]
+    }
 
 
 def test_non_dict_answers_return_a_global_error():
@@ -154,7 +158,7 @@ def test_multi_select_rejects_a_single_unknown_item():
 
     errors = validate_answers(form, {str(question.pk): ["vegan", "carnivore"]})
 
-    assert str(question.pk) in errors
+    assert errors == {str(question.pk): ["Invalid options: carnivore."]}
 
 
 def test_boolean_answer_must_be_a_bool():
@@ -163,7 +167,7 @@ def test_boolean_answer_must_be_a_bool():
 
     errors = validate_answers(form, {str(question.pk): "yes"})
 
-    assert str(question.pk) in errors
+    assert errors == {str(question.pk): ["Invalid value: expected true or false."]}
 
 
 def test_url_answer_must_be_a_valid_url():
@@ -172,7 +176,7 @@ def test_url_answer_must_be_a_valid_url():
 
     errors = validate_answers(form, {str(question.pk): "not a url"})
 
-    assert str(question.pk) in errors
+    assert errors == {str(question.pk): ["Invalid URL."]}
 
 
 def test_multiple_errors_are_collected_per_call():
@@ -182,8 +186,10 @@ def test_multiple_errors_are_collected_per_call():
 
     errors = validate_answers(form, {str(boolean.pk): "yes"})
 
-    assert str(required.pk) in errors
-    assert str(boolean.pk) in errors
+    assert errors == {
+        str(required.pk): ["This question is required."],
+        str(boolean.pk): ["Invalid value: expected true or false."],
+    }
 
 
 def test_wrap_and_unwrap_answers_round_trip():
@@ -205,9 +211,9 @@ def test_unwrap_answers_treats_empty_envelope_as_no_answers():
 
 
 def test_unwrap_answers_rejects_malformed_envelopes():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Malformed answers envelope"):
         unwrap_answers(["not", "a", "dict"])
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="missing answers map"):
         unwrap_answers({"version": 1})
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="missing answers map"):
         unwrap_answers({"version": 1, "answers": "not a dict"})
