@@ -17,6 +17,7 @@ cov.xml
 **/__pycache__/**
 .pdm-python
 **/.pytest_cache/**
+assets/build/
 Dockerfile
 **/_dist/**
 **/backend/media

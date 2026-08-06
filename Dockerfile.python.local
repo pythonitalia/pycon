@@ -1,5 +1,7 @@
 ARG FUNCTION_DIR="/home/app/"
 
+FROM node:24-slim AS node-stage
+
 FROM python:3.13.5
 
 RUN apt update -y && apt install -y ffmpeg libsm6 libxext6
@@ -10,6 +12,13 @@ RUN mkdir -p ${FUNCTION_DIR}
 WORKDIR ${FUNCTION_DIR}
 
 RUN pip install uv==0.5.5
+
+COPY --from=node-stage /usr/local/bin/node /usr/local/bin/node
+COPY --from=node-stage /usr/local/lib/node_modules /usr/local/lib/node_modules
+
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
+    ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx && \
+    npm install --global pnpm
 
 RUN mkdir -p ${FUNCTION_DIR}/assets
 

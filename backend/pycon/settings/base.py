@@ -51,6 +51,8 @@ if SENTRY_DSN:
 
 INSTALLED_APPS = [
     "users",
+    "dashboard",
+    "cross_inertia.django",
     # CMS parts
     "cms.components.base",
     "cms.components.home",
@@ -139,6 +141,7 @@ MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "cross_inertia.django.InertiaMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # "qinspect.middleware.QueryInspectMiddleware",
@@ -230,6 +233,17 @@ STATICFILES_DIRS = [root("assets")]
 
 STATIC_URL = "/django-static/"
 STATIC_ROOT = root("static")
+
+CROSS_INERTIA = {
+    "LAYOUT": "dashboard.html",
+    "VITE_ENTRY": "src/app.tsx",
+    "VITE_PORT": 5173,
+    "VITE_HOST": "localhost",
+    "VITE_COMMAND": "pnpm --dir dashboard dev --host 0.0.0.0",
+    "MANIFEST_PATH": root("assets/build/.vite/manifest.json"),
+    "ASSET_URL_PREFIX": f"{STATIC_URL.rstrip('/')}/build",
+    "SSR_ENABLED": False,
+}
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = root("media")

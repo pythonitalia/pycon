@@ -13,6 +13,7 @@ from wagtail.documents import urls as wagtaildocs_urls
 from wagtail import urls as wagtail_urls
 
 urlpatterns = [
+    path("dashboard", include("dashboard.urls")),
     path(
         "admin/_/submission-autocomplete",
         SubmissionAutocomplete.as_view(),

@@ -100,6 +100,7 @@ ENV/
 .idea/
 
 backend/media/
+backend/assets/build/
 
 node_modules/
 
