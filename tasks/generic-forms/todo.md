@@ -20,10 +20,10 @@ Stack: PR1 → PR2 → PR3 → (PR4 ∥ PR5) · PR5 needs PR3 **deployed to stag
 - [x] **T3.3** `Grant.formAnswers` + tests. Gotcha found: `me.grant` returns `from_model()` DETACHED instance (not the model) — `from_model` now attaches `form_answer` for the resolver. (pushed)
 - [x] **▣ CHECKPOINT 3** — full suite 1205 green; legacy shape regression-proven; PR #4709 open. **After merge: deploy to staging (workflow_dispatch) for PR5 codegen.**
 
-## PR4 — admin display + export (`generic-forms/04-admin`)
-- [ ] **T4.1** GrantAdmin readonly Q/A display (`format_html`), empty state, no N+1. Verify: `pytest grants/tests/test_admin.py` + manual.
-- [ ] **T4.2** `GrantResource` dynamic columns via `get_export_resource_kwargs` → `__init__` fields append (3.3.9 verified path, incl. export-form preview); historical export unchanged. Verify: resource tests.
-- [ ] **▣ CHECKPOINT 4** — suite green; manual CSV export; PR4 opened.
+## PR4 — admin display + export (`generic-forms/04-admin`) — **PR opened**
+- [x] **T4.1** GrantAdmin readonly Q/A display via `display_answers` helper (`format_html`), empty state; shared helpers in generic_forms/services.
+- [x] **T4.2** `GrantResource` dynamic columns — implementation note: fields added in `before_export` (runs pre-headers, conference already resolved there) + `export_field` override, NOT `get_export_resource_kwargs` (dehydrate_method is name-only, no per-question closures); `select_related("form_answer")` on export queryset. Historical export unchanged (tested).
+- [x] **▣ CHECKPOINT 4** — full suite 1214 green; PR opened. **Manual CSV export eyeball pending.**
 
 ## PR5 — frontend (`generic-forms/05-frontend`) — start only after PR3 on staging
 - [ ] **T5.1** `dynamic-form/` component + fragment + codegen; 6 types via styleguide + InputWrapper (mirror invitation-letter-form); errors from `answersErrors` map; component test. Verify: `pnpm codegen && pnpm test && pnpm build`.
