@@ -14,11 +14,11 @@ Stack: PR1 → PR2 → PR3 → (PR4 ∥ PR5) · PR5 needs PR3 **deployed to stag
 - [x] **T2.1** `api/generic_forms/types.py` (Form, FormQuestion, FormQuestionOption, FormPurpose/FormQuestionType enums) + `Conference.form(purpose)`; active-only ordered; null when unconfigured. 7 tests.
 - [x] **▣ CHECKPOINT 2** — full suite 1197 green; additive-only schema change; PR #4707 open (stacked on #4705).
 
-## PR3 — grants backend (`generic-forms/03-grants-backend`)
-- [ ] **T3.1** `Grant.form_answer` OneToOne (SET_NULL) + `blank=True` on the 4 required soft columns (`why`, `python_usage`, `been_to_other_events`, `occupation`); one migration. Columns stay NOT NULL — mutations must never pass `None`.
-- [ ] **T3.2** Mutations + tests (TDD): 8 soft fields optional + optional `answers: JSON`; legacy soft-field checks run only when `answers` absent (structured-field validation unchanged on both paths); errors via `answers_errors: JSON` **direct assignment** (dotted paths impossible — verified); FormAnswer `update_or_create` in existing transaction; `None`→`""` coalescing on create; setattr skip-list on update. Named tests: **answers-only payload (exact PR5 shape)**, legacy-shape regression, invalid→atomic rollback, no-form-configured rejected, deadline-closed unchanged, update-no-duplicate.
-- [ ] **T3.3** `Grant.formAnswers: JSON|null` on GraphQL type + query test (`me.grant.formAnswers`).
-- [ ] **▣ CHECKPOINT 3** — suite green; back-compat verified both directions; PR3 opened; **after merge: deploy to staging (workflow_dispatch) for PR5 codegen**.
+## PR3 — grants backend (`generic-forms/03-grants-backend`) — **PR #4709**
+- [x] **T3.1** `Grant.form_answer` OneToOne (SET_NULL) + `blank=True` on 4 soft columns; migration 0032. (9d140ff3b)
+- [x] **T3.2** Mutations + tests: 8 soft fields optional + `answers: JSON`; path-split validation; `answersErrors` JSON via direct assignment; FormAnswer update_or_create in transaction; None→"" coalescing; skip-list on update. Named tests incl. exact-PR5-payload + legacy regression. (8146fb875)
+- [x] **T3.3** `Grant.formAnswers` + tests. Gotcha found: `me.grant` returns `from_model()` DETACHED instance (not the model) — `from_model` now attaches `form_answer` for the resolver. (pushed)
+- [x] **▣ CHECKPOINT 3** — full suite 1205 green; legacy shape regression-proven; PR #4709 open. **After merge: deploy to staging (workflow_dispatch) for PR5 codegen.**
 
 ## PR4 — admin display + export (`generic-forms/04-admin`)
 - [ ] **T4.1** GrantAdmin readonly Q/A display (`format_html`), empty state, no N+1. Verify: `pytest grants/tests/test_admin.py` + manual.
