@@ -270,9 +270,9 @@ SendGrantReplyResult = Annotated[
 
 
 def _persist_form_answer(
-    input: SendGrantInput | UpdateGrantInput, conference: Conference, user: User
+    answers: dict | None, conference: Conference, user: User
 ) -> FormAnswer | None:
-    if input.answers is None:
+    if answers is None:
         return None
 
     # validate() already guaranteed the form exists
@@ -280,7 +280,7 @@ def _persist_form_answer(
     form_answer, _ = FormAnswer.objects.update_or_create(
         form=form,
         user_id=user.id,
-        defaults={"answers": wrap_answers(input.answers)},
+        defaults={"answers": wrap_answers(answers)},
     )
     return form_answer
 
@@ -320,7 +320,9 @@ class GrantMutation:
                 "departure_country": input.departure_country,
                 "nationality": input.nationality,
                 "departure_city": input.departure_city,
-                "form_answer": _persist_form_answer(input, conference, request.user),
+                "form_answer": _persist_form_answer(
+                    input.answers, conference, request.user
+                ),
             }
         )
 
@@ -389,7 +391,7 @@ class GrantMutation:
 
         if uses_answers:
             instance.form_answer = _persist_form_answer(
-                input, instance.conference, request.user
+                input.answers, instance.conference, request.user
             )
 
         instance.save()
