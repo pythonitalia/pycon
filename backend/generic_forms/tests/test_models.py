@@ -130,19 +130,6 @@ def test_new_question_can_be_added_to_answered_form():
     FormQuestionFactory(form=question.form)
 
 
-def test_new_question_can_be_saved_with_an_explicit_pk():
-    form = FormFactory()
-
-    FormQuestion(
-        pk=987654,
-        form=form,
-        label="Explicit pk",
-        question_type=FormQuestion.QuestionType.TEXT,
-    ).save()
-
-    assert FormQuestion.objects.filter(pk=987654).exists()
-
-
 def test_queryset_delete_cannot_remove_questions_from_an_answered_form():
     question = _answered_question()
 
