@@ -128,6 +128,7 @@ INSTALLED_APPS = [
     "billing.apps.BillingConfig",
     "privacy_policy.apps.PrivacyPolicyConfig",
     "visa.apps.VisaConfig",
+    "generic_forms.apps.GenericFormsConfig",
 ]
 
 MIDDLEWARE = [
