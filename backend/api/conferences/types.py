@@ -12,6 +12,8 @@ from django.utils import timezone, translation
 from strawberry import ID
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
+from api.generic_forms.types import Form as GenericForm
+from api.generic_forms.types import FormPurpose
 from api.languages.types import Language
 from api.pretix.query import get_conference_tickets, get_voucher
 from api.pretix.types import TicketItem, Voucher
@@ -196,6 +198,10 @@ class Conference:
     @strawberry.field
     def deadline(self, info: Info, type: str) -> Deadline | None:
         return self.deadlines.filter(type=type).first()
+
+    @strawberry.field
+    def form(self, info: Info, purpose: FormPurpose) -> GenericForm | None:
+        return self.forms.filter(purpose=purpose).first()
 
     @strawberry.field
     def audience_levels(self, info: Info) -> list[AudienceLevel]:
