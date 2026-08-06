@@ -45,6 +45,8 @@ class FormAdmin(admin.ModelAdmin):
 class FormAnswerAdmin(admin.ModelAdmin):
     list_display = ("form", "user", "created")
     list_filter = ("form__conference", "form__purpose")
+    # Form.__str__ renders the conference name
+    list_select_related = ("form__conference", "user")
 
     def has_add_permission(self, request):
         return False
