@@ -13,16 +13,27 @@ def wrap_answers(answers: dict) -> dict:
 
 
 def unwrap_answers(envelope: dict) -> dict:
+    if not isinstance(envelope, dict):
+        raise ValueError("Malformed answers envelope.")
+    if envelope == {}:
+        # a FormAnswer created without going through wrap_answers
+        return {}
     version = envelope.get("version")
     if version != ANSWERS_VERSION:
         raise ValueError(f"Unknown answers version: {version}")
-    return envelope["answers"]
+    answers = envelope.get("answers")
+    if not isinstance(answers, dict):
+        raise ValueError("Malformed answers envelope: missing answers map.")
+    return answers
 
 
 def validate_answers(form: Form, answers: dict) -> dict[str, list[str]]:
     """Validate a flat {question_id: value} map against the form's active
     questions. Returns {question_id: [error messages]}; empty dict when valid.
     """
+    if not isinstance(answers, dict):
+        return {"__all__": ["Invalid answers format."]}
+
     errors: dict[str, list[str]] = defaultdict(list)
     questions = {
         str(question.pk): question for question in form.questions.filter(active=True)
@@ -69,8 +80,10 @@ def _validate_value(question: FormQuestion, value) -> list[str]:
         return []
 
     if question_type == types.MULTI_SELECT:
-        if not isinstance(value, list):
-            return ["Invalid value: expected a list of options."]
+        if not isinstance(value, list) or not all(
+            isinstance(item, str) for item in value
+        ):
+            return ["Invalid value: expected a list of option ids."]
         invalid = [item for item in value if item not in _option_ids(question)]
         if invalid:
             return ["Invalid options: " + ", ".join(map(str, invalid)) + "."]

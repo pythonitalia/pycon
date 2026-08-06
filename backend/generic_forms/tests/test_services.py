@@ -127,6 +127,25 @@ def test_multi_select_must_be_a_list():
     assert str(question.pk) in errors
 
 
+def test_multi_select_rejects_non_string_items_without_crashing():
+    form = FormFactory()
+    question = _question(
+        FormQuestion.QuestionType.MULTI_SELECT, form=form, options=OPTIONS
+    )
+
+    errors = validate_answers(form, {str(question.pk): [["vegan"]]})
+
+    assert str(question.pk) in errors
+
+
+def test_non_dict_answers_return_a_global_error():
+    form = FormFactory()
+
+    errors = validate_answers(form, ["not", "a", "dict"])
+
+    assert errors == {"__all__": ["Invalid answers format."]}
+
+
 def test_multi_select_rejects_a_single_unknown_item():
     form = FormFactory()
     question = _question(
@@ -179,3 +198,16 @@ def test_wrap_and_unwrap_answers_round_trip():
 def test_unwrap_answers_rejects_unknown_versions():
     with pytest.raises(ValueError, match="version"):
         unwrap_answers({"version": 2, "answers": {}})
+
+
+def test_unwrap_answers_treats_empty_envelope_as_no_answers():
+    assert unwrap_answers({}) == {}
+
+
+def test_unwrap_answers_rejects_malformed_envelopes():
+    with pytest.raises(ValueError):
+        unwrap_answers(["not", "a", "dict"])
+    with pytest.raises(ValueError):
+        unwrap_answers({"version": 1})
+    with pytest.raises(ValueError):
+        unwrap_answers({"version": 1, "answers": "not a dict"})
