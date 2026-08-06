@@ -99,3 +99,44 @@ def _validate_value(question: FormQuestion, value) -> list[str]:
 
 def _option_ids(question: FormQuestion) -> set[str]:
     return {option["id"] for option in question.options}
+
+
+def display_answer_value(question: FormQuestion | None, value) -> str:
+    """Human-readable rendering of a stored answer value (admin, exports)."""
+    if value is None:
+        return ""
+    if question is None:
+        return str(value)
+
+    types = FormQuestion.QuestionType
+    if question.question_type == types.BOOLEAN:
+        return "Yes" if value else "No"
+
+    option_labels = {option["id"]: option["label"] for option in question.options}
+    if question.question_type == types.SELECT:
+        return option_labels.get(value, str(value))
+    if question.question_type == types.MULTI_SELECT:
+        return ", ".join(option_labels.get(item, str(item)) for item in value)
+
+    return str(value)
+
+
+def display_answers(form_answer) -> list[tuple[str, str]]:
+    """(question label, human-readable value) pairs for the answered
+    questions, in question order. Answers to questions that no longer exist
+    are appended as "Question <id>".
+    """
+    # copy: unwrap returns the stored dict and we pop from it below
+    answers = dict(unwrap_answers(form_answer.answers))
+    pairs = []
+
+    for question in form_answer.form.questions.all():
+        question_id = str(question.pk)
+        if question_id in answers:
+            value = display_answer_value(question, answers.pop(question_id))
+            pairs.append((question.label, value))
+
+    for question_id, value in answers.items():
+        pairs.append((f"Question {question_id}", display_answer_value(None, value)))
+
+    return pairs
