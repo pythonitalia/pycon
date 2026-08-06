@@ -14,10 +14,9 @@ from participants.models import Participant
 pytestmark = pytest.mark.django_db
 
 
+# gender and occupation stay structured (grants summary aggregates them)
 SOFT_FIELD_KEYS = [
     "ageGroup",
-    "gender",
-    "occupation",
     "pythonUsage",
     "communityContribution",
     "beenToOtherEvents",
@@ -405,3 +404,47 @@ def test_update_grant_with_invalid_answers_changes_nothing(graphql_client, user)
     grant.refresh_from_db()
     assert grant.name == original_name
     assert grant.form_answer is None
+
+
+def test_update_grant_with_answers_still_updates_gender_and_occupation(
+    graphql_client, user
+):
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(active_grants=True)
+    grant = GrantFactory(user=user, conference=conference, gender="female")
+    _form, why = _grant_form(conference)
+
+    response = _update_grant(
+        graphql_client,
+        grant,
+        exclude=SOFT_FIELD_KEYS,
+        gender="other",
+        occupation="student",
+        answers={str(why.pk): "Updated motivation"},
+    )
+
+    assert response["data"]["updateGrant"]["__typename"] == "Grant"
+    grant.refresh_from_db()
+    assert grant.gender == "other"
+    assert grant.occupation == "student"
+
+
+def test_update_grant_with_answers_tolerates_omitted_gender_and_occupation(
+    graphql_client, user
+):
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(active_grants=True)
+    grant = GrantFactory(user=user, conference=conference)
+    _form, why = _grant_form(conference)
+
+    response = _update_grant(
+        graphql_client,
+        grant,
+        exclude=SOFT_FIELD_KEYS + ["gender", "occupation"],
+        answers={str(why.pk): "Updated motivation"},
+    )
+
+    assert response["data"]["updateGrant"]["__typename"] == "Grant"
+    grant.refresh_from_db()
+    assert grant.gender == ""
+    assert grant.occupation == ""

@@ -29,13 +29,12 @@ from privacy_policy.record import record_privacy_policy_acceptance
 from users.models import User
 
 # Soft questions live in the generic form once a conference configures one;
-# these legacy input fields are then omitted by the frontend and must never
-# be written to their (NOT NULL) Grant columns as None.
-SOFT_INPUT_FIELDS = frozenset(
+# these legacy input fields are then omitted by the frontend and the answers
+# path never writes them. gender and occupation are NOT here: the grants
+# summary aggregates their columns, so they stay structured inputs.
+DYNAMIC_QUESTION_FIELDS = frozenset(
     {
         "age_group",
-        "gender",
-        "occupation",
         "python_usage",
         "been_to_other_events",
         "community_contribution",
@@ -43,6 +42,10 @@ SOFT_INPUT_FIELDS = frozenset(
         "notes",
     }
 )
+
+# Optional string inputs whose Grant columns are NOT NULL; omitted values
+# are stored as empty strings, never None.
+OMITTABLE_STRING_FIELDS = DYNAMIC_QUESTION_FIELDS | {"gender", "occupation"}
 
 
 @strawberry.type
@@ -379,13 +382,13 @@ class GrantMutation:
             return errors
 
         uses_answers = input.answers is not None
-        skip_fields = {"answers"} | (SOFT_INPUT_FIELDS if uses_answers else set())
+        skip_fields = {"answers"} | (DYNAMIC_QUESTION_FIELDS if uses_answers else set())
 
         for attr, value in asdict(input).items():
             if attr in skip_fields:
                 continue
-            if attr in SOFT_INPUT_FIELDS and value is None:
-                # soft columns are NOT NULL
+            if attr in OMITTABLE_STRING_FIELDS and value is None:
+                # these columns are NOT NULL
                 value = ""
             setattr(instance, attr, value)
 

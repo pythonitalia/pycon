@@ -14,10 +14,10 @@ from privacy_policy.models import PrivacyPolicyAcceptanceRecord
 pytestmark = pytest.mark.django_db
 
 
+# the soft questions that move into the generic form; gender and
+# occupation stay structured (grants summary aggregates their columns)
 SOFT_FIELD_KEYS = [
     "ageGroup",
-    "gender",
-    "occupation",
     "pythonUsage",
     "communityContribution",
     "beenToOtherEvents",
@@ -430,6 +430,8 @@ def test_send_grant_with_answers_and_no_legacy_soft_fields(
             graphql_client,
             conference,
             exclude=SOFT_FIELD_KEYS,
+            gender="male",
+            occupation="developer",
             answers={str(why.pk): "I need support to attend", str(diet.pk): "vegan"},
         )
 
@@ -444,6 +446,34 @@ def test_send_grant_with_answers_and_no_legacy_soft_fields(
     }
     assert grant.why == ""
     assert grant.python_usage == ""
+    # gender/occupation stay structured: the grants summary aggregates them
+    assert grant.gender == "male"
+    assert grant.occupation == "developer"
+
+
+def test_send_grant_with_answers_tolerates_omitted_gender_and_occupation(
+    graphql_client, user, django_capture_on_commit_callbacks, sent_emails
+):
+    """Defensive: NOT NULL columns must never see None from a sparse payload."""
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(active_grants=True)
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.grant_application_confirmation,
+    )
+    _form, why, _diet = _grant_form(conference)
+
+    with django_capture_on_commit_callbacks(execute=True):
+        response = _send_grant(
+            graphql_client,
+            conference,
+            exclude=SOFT_FIELD_KEYS + ["gender", "occupation"],
+            answers={str(why.pk): "I need support to attend"},
+        )
+
+    assert response["data"]["sendGrant"]["__typename"] == "Grant"
+    grant = Grant.objects.get(id=response["data"]["sendGrant"]["id"])
+    assert grant.gender == ""
     assert grant.occupation == ""
 
 
