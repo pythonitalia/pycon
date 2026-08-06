@@ -9,9 +9,17 @@ from django.utils import timezone
 
 from conferences.models.conference_voucher import ConferenceVoucher
 from conferences.tests.factories import ConferenceFactory, ConferenceVoucherFactory
+from generic_forms.models import Form, FormQuestion
+from generic_forms.services import wrap_answers
+from generic_forms.tests.factories import (
+    FormAnswerFactory,
+    FormFactory,
+    FormQuestionFactory,
+)
 from grants.admin import (
     GrantAdmin,
     GrantReimbursementAdmin,
+    GrantResource,
     confirm_pending_status,
     create_grant_vouchers,
     mark_rejected_and_send_email,
@@ -797,17 +805,6 @@ def test_save_grant_in_admin_logs_audit_log_entry_for_pending_status_change(
 
 
 def test_dynamic_answers_shows_labels_and_formatted_values():
-    from django.contrib.admin.sites import site
-
-    from generic_forms.models import Form, FormQuestion
-    from generic_forms.services import wrap_answers
-    from generic_forms.tests.factories import (
-        FormAnswerFactory,
-        FormFactory,
-        FormQuestionFactory,
-    )
-    from grants.admin import GrantAdmin
-
     grant = GrantFactory()
     form = FormFactory(conference=grant.conference, purpose=Form.Purpose.GRANT)
     why = FormQuestionFactory(
@@ -833,7 +830,7 @@ def test_dynamic_answers_shows_labels_and_formatted_values():
     )
     grant.save()
 
-    html = str(GrantAdmin(Grant, site).dynamic_answers(grant))
+    html = str(GrantAdmin(Grant, AdminSite()).dynamic_answers(grant))
 
     assert "Why do you need it?" in html
     assert "My motivation" in html
@@ -842,31 +839,20 @@ def test_dynamic_answers_shows_labels_and_formatted_values():
 
 
 def test_dynamic_answers_has_an_empty_state_for_legacy_grants():
-    from django.contrib.admin.sites import site
-
-    from grants.admin import GrantAdmin
-
     grant = GrantFactory()
 
-    assert str(GrantAdmin(Grant, site).dynamic_answers(grant)) == "No dynamic answers"
+    assert (
+        str(GrantAdmin(Grant, AdminSite()).dynamic_answers(grant))
+        == "No dynamic answers"
+    )
 
 
 def _export_grants(conference):
-    from grants.admin import GrantResource
-
     queryset = Grant.objects.filter(conference=conference).order_by("id")
     return GrantResource().export(queryset=queryset)
 
 
 def test_export_includes_one_column_per_form_question():
-    from generic_forms.models import Form, FormQuestion
-    from generic_forms.services import wrap_answers
-    from generic_forms.tests.factories import (
-        FormAnswerFactory,
-        FormFactory,
-        FormQuestionFactory,
-    )
-
     conference = ConferenceFactory()
     form = FormFactory(conference=conference, purpose=Form.Purpose.GRANT)
     why = FormQuestionFactory(
