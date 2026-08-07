@@ -47,8 +47,8 @@ class PartInfo:
 
 
 class WetransferProcessing:
-    def __init__(self, wetransfer_to_s3_transfer_request: VideosImportRequest) -> None:
-        self.wetransfer_to_s3_transfer_request = wetransfer_to_s3_transfer_request
+    def __init__(self, videos_import_request: VideosImportRequest) -> None:
+        self.videos_import_request = videos_import_request
         self.imported_files = []
         self.merged_file = None
 
@@ -62,10 +62,10 @@ class WetransferProcessing:
         parts_info = self.determine_parts_info(self.transfer_total_size)
 
         logger.info(
-            "Total size to download %s bytes, file parts %s for wetransfer_to_s3_transfer_request %s",
+            "Total size to download %s bytes, file parts %s for videos_import_request %s",
             self.transfer_total_size,
             parts_info,
-            self.wetransfer_to_s3_transfer_request.id,
+            self.videos_import_request.id,
         )
 
         self.has_multiple_parts = len(parts_info) > 1
@@ -126,12 +126,12 @@ class WetransferProcessing:
 
     def save_file_to_s3(self, filename: str, file_data: BytesIO):
         logger.info(
-            "Uploading file %s to S3 for wetransfer_to_s3_transfer_request %s",
+            "Uploading file %s to S3 for videos_import_request %s",
             filename,
-            self.wetransfer_to_s3_transfer_request.id,
+            self.videos_import_request.id,
         )
 
-        conference = self.wetransfer_to_s3_transfer_request.conference
+        conference = self.videos_import_request.conference
         remote_path = f"conference-videos/{conference.code}/{filename}"
         if is_s3_storage(self.storage):
             config = TransferConfig(
@@ -167,8 +167,8 @@ class WetransferProcessing:
             parts_paths.append(filename)
 
         logger.info(
-            "Finished downloading all parts for wetransfer_to_s3_transfer_request %s",
-            self.wetransfer_to_s3_transfer_request.id,
+            "Finished downloading all parts for videos_import_request %s",
+            self.videos_import_request.id,
         )
         return parts_paths
 
@@ -178,13 +178,13 @@ class WetransferProcessing:
             return
 
         logger.info(
-            "Merging parts for wetransfer_to_s3_transfer_request %s",
-            self.wetransfer_to_s3_transfer_request.id,
+            "Merging parts for videos_import_request %s",
+            self.videos_import_request.id,
         )
 
         self.merged_file = tempfile.NamedTemporaryFile(
             "wb",
-            prefix=f"wetransfer_{self.wetransfer_to_s3_transfer_request.id}",
+            prefix=f"videos_import_{self.videos_import_request.id}",
             suffix=self.extension,
             delete=False,
         )
@@ -200,20 +200,20 @@ class WetransferProcessing:
         while True:
             if attempts > 3:
                 raise Exception(
-                    f"Failed to download part {str(part_info)} for wetransfer_to_s3_transfer_request {self.wetransfer_to_s3_transfer_request.id}"
+                    f"Failed to download part {str(part_info)} for videos_import_request {self.videos_import_request.id}"
                 )
 
             part_file = tempfile.NamedTemporaryFile(
                 "wb",
-                prefix=f"wetransfer_{self.wetransfer_to_s3_transfer_request.id}.part{part_info.part_number}",
+                prefix=f"videos_import_{self.videos_import_request.id}.part{part_info.part_number}",
                 suffix=self.extension,
                 delete=False,
             )
 
             logger.info(
-                "Downloading part %s for wetransfer_to_s3_transfer_request %s. Destination = %s. Attempt = %s",
+                "Downloading part %s for videos_import_request %s. Destination = %s. Attempt = %s",
                 str(part_info),
-                self.wetransfer_to_s3_transfer_request.id,
+                self.videos_import_request.id,
                 part_file.name,
                 attempts,
             )
@@ -230,20 +230,20 @@ class WetransferProcessing:
 
             if part_disk_size != part_info.size:
                 logger.warning(
-                    "Downloaded part %s size does not match the expected size %s (file size %s) for wetransfer_to_s3_transfer_request %s. Trying again",
+                    "Downloaded part %s size does not match the expected size %s (file size %s) for videos_import_request %s. Trying again",
                     str(part_info),
                     part_info.size,
                     part_disk_size,
-                    self.wetransfer_to_s3_transfer_request.id,
+                    self.videos_import_request.id,
                 )
                 attempts += 1
                 os.remove(part_file.name)
                 continue
 
             logger.info(
-                "Downloaded part %s for wetransfer_to_s3_transfer_request %s",
+                "Downloaded part %s for videos_import_request %s",
                 str(part_info),
-                self.wetransfer_to_s3_transfer_request.id,
+                self.videos_import_request.id,
             )
             return part_file.name
 
@@ -275,7 +275,7 @@ class WetransferProcessing:
         return int(head_response.headers["Content-Length"])
 
     def get_download_link(self) -> str:
-        wetransfer_url = self.wetransfer_to_s3_transfer_request.source_url
+        wetransfer_url = self.videos_import_request.source_url
         parsed_wetransfer_url = urlparse(wetransfer_url)
         hostname = parsed_wetransfer_url.hostname
         _, _, transfer_id, security_hash = parsed_wetransfer_url.path.split("/")

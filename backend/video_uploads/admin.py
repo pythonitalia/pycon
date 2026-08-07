@@ -3,17 +3,17 @@ from django.contrib import admin
 from django.db import transaction
 
 from pycon.tasks import check_pending_heavy_processing_work
-from video_uploads.tasks import process_wetransfer_to_s3_transfer_request
+from video_uploads.tasks import process_videos_import_request
 from video_uploads.models import VideosImportRequest
 
 
-def queue_wetransfer_to_s3_transfer_request(request_obj):
+def queue_videos_import_request(request_obj):
     request_obj.status = VideosImportRequest.Status.QUEUED
     request_obj.failed_reason = ""
     request_obj.save(update_fields=["status", "failed_reason"])
 
     def _on_commit():
-        process_wetransfer_to_s3_transfer_request.apply_async(
+        process_videos_import_request.apply_async(
             args=[request_obj.id], queue="heavy_processing"
         )
         check_pending_heavy_processing_work.delay()
@@ -23,7 +23,7 @@ def queue_wetransfer_to_s3_transfer_request(request_obj):
 
 def retry_transfer(modeladmin, request, queryset):
     for obj in queryset.exclude(status=VideosImportRequest.Status.DONE):
-        queue_wetransfer_to_s3_transfer_request(obj)
+        queue_videos_import_request(obj)
 
 
 @admin.register(VideosImportRequest)
@@ -77,9 +77,7 @@ class VideosImportRequestAdmin(admin.ModelAdmin):
     def save_form(self, request, form, change):
         result = super().save_form(request, form, change)
         if "_start_transfer" in form.data:
-            transaction.on_commit(
-                lambda: queue_wetransfer_to_s3_transfer_request(form.instance)
-            )
+            transaction.on_commit(lambda: queue_videos_import_request(form.instance))
         return result
 
     def start_import(self, obj):

@@ -1,16 +1,14 @@
 import pytest
 from video_uploads.models import VideosImportRequest
-from video_uploads.admin import queue_wetransfer_to_s3_transfer_request, retry_transfer
+from video_uploads.admin import queue_videos_import_request, retry_transfer
 from video_uploads.tests.factories import VideosImportRequestFactory
 
 pytestmark = pytest.mark.django_db
 
 
-def test_queue_wetransfer_to_s3_transfer_request(
-    mocker, django_capture_on_commit_callbacks
-):
-    mock_process_wetransfer_to_s3_transfer_request = mocker.patch(
-        "video_uploads.admin.process_wetransfer_to_s3_transfer_request"
+def test_queue_videos_import_request(mocker, django_capture_on_commit_callbacks):
+    mock_process_videos_import_request = mocker.patch(
+        "video_uploads.admin.process_videos_import_request"
     )
     mock_check_pending_heavy_processing_work = mocker.patch(
         "video_uploads.admin.check_pending_heavy_processing_work"
@@ -19,14 +17,14 @@ def test_queue_wetransfer_to_s3_transfer_request(
     request = VideosImportRequestFactory()
 
     with django_capture_on_commit_callbacks(execute=True):
-        queue_wetransfer_to_s3_transfer_request(request)
+        queue_videos_import_request(request)
 
     request.refresh_from_db()
 
     assert request.status == VideosImportRequest.Status.QUEUED
     assert request.failed_reason == ""
 
-    mock_process_wetransfer_to_s3_transfer_request.apply_async.assert_called_once_with(
+    mock_process_videos_import_request.apply_async.assert_called_once_with(
         args=[request.id], queue="heavy_processing"
     )
     mock_check_pending_heavy_processing_work.delay.assert_called_once()

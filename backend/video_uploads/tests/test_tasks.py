@@ -1,25 +1,25 @@
 import pytest
 from video_uploads.models import VideosImportRequest
-from video_uploads.tasks import process_wetransfer_to_s3_transfer_request
+from video_uploads.tasks import process_videos_import_request
 from video_uploads.tests.factories import VideosImportRequestFactory
 
 pytestmark = pytest.mark.django_db
 
 
-def test_process_wetransfer_s3_request_ignores_non_queued_requests():
+def test_process_videos_import_request_ignores_non_queued_requests():
     request = VideosImportRequestFactory(
         source_url="https://wetransfer.com/downloads/fake_transfer_id/fake_security_code",
         status=VideosImportRequest.Status.PENDING,
     )
 
-    process_wetransfer_to_s3_transfer_request(request.id)
+    process_videos_import_request(request.id)
 
     request.refresh_from_db()
 
     assert request.status == VideosImportRequest.Status.PENDING
 
 
-def test_process_wetransfer_s3_request_reports_exceptions(mocker):
+def test_process_videos_import_request_reports_exceptions(mocker):
     mocker.patch(
         "video_uploads.transfer.WetransferProcessing.run",
         side_effect=Exception("Fake exception"),
@@ -30,7 +30,7 @@ def test_process_wetransfer_s3_request_reports_exceptions(mocker):
         status=VideosImportRequest.Status.QUEUED,
     )
 
-    process_wetransfer_to_s3_transfer_request(request.id)
+    process_videos_import_request(request.id)
 
     request.refresh_from_db()
 
@@ -38,7 +38,7 @@ def test_process_wetransfer_s3_request_reports_exceptions(mocker):
     assert request.failed_reason == "Fake exception"
 
 
-def test_process_wetransfer_s3_request_copies_imported_files_on_success(mocker):
+def test_process_videos_import_request_copies_imported_files_on_success(mocker):
     mocker.patch(
         "video_uploads.transfer.WetransferProcessing.run",
         return_value=[
@@ -52,7 +52,7 @@ def test_process_wetransfer_s3_request_copies_imported_files_on_success(mocker):
         status=VideosImportRequest.Status.QUEUED,
     )
 
-    process_wetransfer_to_s3_transfer_request(request.id)
+    process_videos_import_request(request.id)
 
     request.refresh_from_db()
 
