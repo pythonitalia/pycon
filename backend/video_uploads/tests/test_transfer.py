@@ -1,3 +1,4 @@
+import logging
 from pycon.constants import GB, MB
 import pytest
 from io import BytesIO
@@ -371,6 +372,129 @@ def test_drive_downloads_large_files_in_ranged_parts(
     for sent in media_requests:
         assert sent.headers["Range"].startswith("bytes=")
         assert sent.headers["Authorization"] == "Bearer drive-token"
+
+
+DRIVE_FOLDER_MIME = "application/vnd.google-apps.folder"
+
+
+def mock_drive_folder_listing(requests_mock, pages_by_folder_id):
+    """Answer the Drive listing endpoint based on the folder named in ?q= ."""
+    # requests_mock lowercases parsed query strings, so match on that.
+    pages_by_folder_id = {
+        folder_id.lower(): pages for folder_id, pages in pages_by_folder_id.items()
+    }
+
+    def listing(request, context):
+        query = request.qs["q"][0]
+        folder_id = query.split("'")[1]
+        pages = pages_by_folder_id[folder_id]
+        page_token = request.qs.get("pagetoken", [None])[0]
+        page_index = 0 if page_token is None else int(page_token)
+
+        payload = {"files": pages[page_index]}
+        if page_index + 1 < len(pages):
+            payload["nextPageToken"] = str(page_index + 1)
+
+        return payload
+
+    return requests_mock.get(DRIVE_FILES_URL, json=listing)
+
+
+def test_drive_imports_a_folder_recursively(requests_mock, drive_credential, caplog):
+    from django.core.files.storage import storages
+
+    storage = storages["default"]
+    caplog.set_level(logging.INFO, logger="video_uploads.transfer")
+
+    mock_drive_auth(requests_mock)
+    mock_drive_folder_listing(
+        requests_mock,
+        {
+            "FOLDER_ID": [
+                # first page
+                [
+                    {
+                        "id": "F1",
+                        "name": "keynote.mp4",
+                        "mimeType": "video/mp4",
+                        "size": "5",
+                    },
+                    {"id": "SUB", "name": "day2", "mimeType": DRIVE_FOLDER_MIME},
+                ],
+                # second page, reached through nextPageToken
+                [
+                    {
+                        "id": "F2",
+                        "name": "lightning.mp4",
+                        "mimeType": "video/mp4",
+                        "size": "5",
+                    },
+                    {
+                        "id": "DOC",
+                        "name": "Running order",
+                        "mimeType": "application/vnd.google-apps.document",
+                    },
+                    {
+                        "id": "LINK",
+                        "name": "shortcut to talk",
+                        "mimeType": "application/vnd.google-apps.shortcut",
+                    },
+                ],
+            ],
+            "SUB": [
+                [
+                    {
+                        "id": "F3",
+                        "name": "closing.mp4",
+                        "mimeType": "video/mp4",
+                        "size": "5",
+                    }
+                ]
+            ],
+        },
+    )
+
+    for file_id in ["F1", "F2", "F3"]:
+        requests_mock.get(f"{DRIVE_FILES_URL}/{file_id}?alt=media", content=b"video")
+
+    request = VideosImportRequestFactory(
+        source_url="https://drive.google.com/drive/folders/FOLDER_ID",
+        status=VideosImportRequest.Status.QUEUED,
+    )
+
+    imported_files = GoogleDriveProcessing(request).run()
+
+    assert set(imported_files) == {
+        "keynote.mp4",
+        "lightning.mp4",
+        "day2/closing.mp4",
+    }
+
+    conference_code = request.conference.code
+    out = storage.listdir(f"conference-videos/{conference_code}/")
+    assert set(out[1]) == {"keynote.mp4", "lightning.mp4"}
+
+    nested = storage.listdir(f"conference-videos/{conference_code}/day2")
+    assert nested[1] == ["closing.mp4"]
+
+    skipped = [
+        record.getMessage() for record in caplog.records if "Skipping" in record.message
+    ]
+    assert len(skipped) == 2
+    assert any("Running order" in message for message in skipped)
+    assert any("shortcut to talk" in message for message in skipped)
+
+
+def test_drive_imports_an_empty_folder(requests_mock, drive_credential):
+    mock_drive_auth(requests_mock)
+    mock_drive_folder_listing(requests_mock, {"EMPTY_ID": [[]]})
+
+    request = VideosImportRequestFactory(
+        source_url="https://drive.google.com/drive/folders/EMPTY_ID",
+        status=VideosImportRequest.Status.QUEUED,
+    )
+
+    assert GoogleDriveProcessing(request).run() == []
 
 
 def test_drive_refuses_to_import_a_google_native_file(requests_mock, drive_credential):

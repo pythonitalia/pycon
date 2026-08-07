@@ -16,6 +16,7 @@ from google_api.sdk import (
     DRIVE_API_URL,
     drive_file_metadata,
     drive_headers,
+    drive_list_files_in_folder,
     get_drive_credentials,
 )
 from pycon.storages import CustomS3Boto3Storage
@@ -405,6 +406,8 @@ class GoogleDriveProcessing(BaseTransferProcessing):
 
         with self.executor() as executor:
             match resource.kind:
+                case DriveResourceKind.FOLDER:
+                    return self.import_folder(resource.id, executor)
                 case DriveResourceKind.FILE:
                     return self.import_file(resource.id, executor)
 
@@ -426,6 +429,37 @@ class GoogleDriveProcessing(BaseTransferProcessing):
 
         return self.import_drive_file(metadata, metadata["name"], executor)
 
+    def import_folder(self, folder_id: str, executor: ThreadPoolExecutor) -> list[str]:
+        imported_files = []
+
+        for metadata, relative_path in self.walk_folder(folder_id, ""):
+            imported_files.extend(
+                self.import_drive_file(metadata, relative_path, executor)
+            )
+
+        return imported_files
+
+    def walk_folder(self, folder_id: str, prefix: str):
+        """Yield (metadata, path relative to the shared folder) for every file."""
+        for item in drive_list_files_in_folder(folder_id=folder_id):
+            path = f"{prefix}{item['name']}"
+
+            if item["mimeType"] == DRIVE_FOLDER_MIME_TYPE:
+                yield from self.walk_folder(item["id"], f"{path}/")
+                continue
+
+            if is_google_native(item):
+                logger.info(
+                    "Skipping %s (%s), it has no downloadable content, "
+                    "for videos_import_request %s",
+                    path,
+                    item["mimeType"],
+                    self.videos_import_request.id,
+                )
+                continue
+
+            yield item, path
+
     def import_drive_file(
         self, metadata: dict, filename: str, executor: ThreadPoolExecutor
     ) -> list[str]:
@@ -437,6 +471,9 @@ class GoogleDriveProcessing(BaseTransferProcessing):
         )
 
         return self.import_blob(executor)
+
+
+DRIVE_FOLDER_MIME_TYPE = "application/vnd.google-apps.folder"
 
 
 def is_google_native(metadata: dict) -> bool:
