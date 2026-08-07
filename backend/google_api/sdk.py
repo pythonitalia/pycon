@@ -113,20 +113,15 @@ def drive_file_metadata(*, file_id: str, credentials: Credentials) -> dict:
 @count_quota("drive", 1)
 def drive_list_files_in_folder(*, folder_id: str, credentials: Credentials):
     headers = drive_headers(credentials)
-    page_token = None
+    params = {
+        "q": f"'{folder_id}' in parents and trashed = false",
+        "fields": "nextPageToken,files(id,name,mimeType,size)",
+        "pageSize": DRIVE_LIST_PAGE_SIZE,
+        "supportsAllDrives": "true",
+        "includeItemsFromAllDrives": "true",
+    }
 
     while True:
-        params = {
-            "q": f"'{folder_id}' in parents and trashed = false",
-            "fields": "nextPageToken,files(id,name,mimeType,size)",
-            "pageSize": DRIVE_LIST_PAGE_SIZE,
-            "supportsAllDrives": "true",
-            "includeItemsFromAllDrives": "true",
-        }
-
-        if page_token:
-            params["pageToken"] = page_token
-
         response = requests.get(
             f"{DRIVE_API_URL}/files", params=params, headers=headers
         )
@@ -138,6 +133,8 @@ def drive_list_files_in_folder(*, folder_id: str, credentials: Credentials):
         page_token = payload.get("nextPageToken")
         if not page_token:
             return
+
+        params["pageToken"] = page_token
 
 
 @count_quota("youtube", 1600)

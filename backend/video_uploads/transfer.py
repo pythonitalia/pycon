@@ -115,7 +115,6 @@ class BaseTransferProcessing:
 
     def __init__(self, videos_import_request: VideosImportRequest) -> None:
         self.videos_import_request = videos_import_request
-        self.imported_files = []
         self.merged_file = None
 
     def run(self) -> list[str]:
@@ -393,6 +392,18 @@ class WetransferProcessing(BaseTransferProcessing):
         return direct_link_filename, ext
 
 
+GOOGLE_APPS_MIME_PREFIX = "application/vnd.google-apps."
+DRIVE_FOLDER_MIME_TYPE = f"{GOOGLE_APPS_MIME_PREFIX}folder"
+
+
+def is_google_native(metadata: dict) -> bool:
+    """Docs, Sheets, Slides and shortcuts have no bytes to download.
+
+    Folders are google-apps types too, so callers must rule them out first.
+    """
+    return metadata.get("mimeType", "").startswith(GOOGLE_APPS_MIME_PREFIX)
+
+
 class GoogleDriveProcessing(BaseTransferProcessing):
     def __init__(self, videos_import_request: VideosImportRequest) -> None:
         super().__init__(videos_import_request)
@@ -421,7 +432,7 @@ class GoogleDriveProcessing(BaseTransferProcessing):
                     case DriveResourceKind.FOLDER:
                         return self.import_folder(resource.id, executor)
                     case DriveResourceKind.FILE:
-                        return self.import_file(resource.id, executor)
+                        return self.import_file_by_id(resource.id, executor)
         except requests.HTTPError as e:
             raise self.readable_drive_error(e) from e
 
@@ -450,7 +461,9 @@ class GoogleDriveProcessing(BaseTransferProcessing):
         with self.credentials_lock:
             return drive_headers(self.credentials)
 
-    def import_file(self, file_id: str, executor: ThreadPoolExecutor) -> list[str]:
+    def import_file_by_id(
+        self, file_id: str, executor: ThreadPoolExecutor
+    ) -> list[str]:
         metadata = drive_file_metadata(file_id=file_id)
 
         if is_google_native(metadata):
@@ -460,15 +473,13 @@ class GoogleDriveProcessing(BaseTransferProcessing):
                 f"a regular file and share that instead."
             )
 
-        return self.import_drive_file(metadata, metadata["name"], executor)
+        return self.import_file(metadata, metadata["name"], executor)
 
     def import_folder(self, folder_id: str, executor: ThreadPoolExecutor) -> list[str]:
         imported_files = []
 
         for metadata, relative_path in self.walk_folder(folder_id, ""):
-            imported_files.extend(
-                self.import_drive_file(metadata, relative_path, executor)
-            )
+            imported_files.extend(self.import_file(metadata, relative_path, executor))
 
         return imported_files
 
@@ -493,7 +504,7 @@ class GoogleDriveProcessing(BaseTransferProcessing):
 
             yield item, path
 
-    def import_drive_file(
+    def import_file(
         self, metadata: dict, filename: str, executor: ThreadPoolExecutor
     ) -> list[str]:
         self.filename = filename
@@ -504,14 +515,6 @@ class GoogleDriveProcessing(BaseTransferProcessing):
         )
 
         return self.import_blob(executor)
-
-
-DRIVE_FOLDER_MIME_TYPE = "application/vnd.google-apps.folder"
-
-
-def is_google_native(metadata: dict) -> bool:
-    """Docs, Sheets, Slides and shortcuts have no bytes to download."""
-    return metadata.get("mimeType", "").startswith("application/vnd.google-apps.")
 
 
 PROCESSING_CLASSES_BY_HOSTNAME = {
@@ -529,7 +532,7 @@ def get_processing_class(source_url: str) -> type[BaseTransferProcessing]:
     except KeyError:
         raise UnsupportedVideoImportUrlError(
             f"Unsupported import URL: {hostname or source_url} is not a supported "
-            f"provider. Use a WeTransfer link."
+            f"provider. Use a WeTransfer or a Google Drive link."
         ) from None
 
 
