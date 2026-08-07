@@ -7,8 +7,24 @@ from video_uploads.admin import (
     retry_transfer,
 )
 from video_uploads.tests.factories import VideosImportRequestFactory
+from video_uploads.transfer import (
+    PROCESSING_CLASSES_BY_HOSTNAME,
+    GoogleDriveProcessing,
+    WetransferProcessing,
+)
 
 pytestmark = pytest.mark.django_db
+
+# get_processing_class hand-writes the provider names into its error message, so
+# that message can silently go stale when a provider is added (it once named only
+# WeTransfer, months after Drive shipped). This table is the test's own,
+# independent statement of "what an organizer must be told", and the
+# exhaustiveness assertion below turns registering a provider without listing it
+# here into a test failure.
+PROVIDER_NAMES_ORGANIZERS_MUST_SEE = {
+    WetransferProcessing: "wetransfer",
+    GoogleDriveProcessing: "google drive",
+}
 
 
 def test_queue_videos_import_request(mocker, django_capture_on_commit_callbacks):
@@ -46,7 +62,90 @@ def test_admin_form_rejects_unsupported_source_url():
     )
 
     assert not form.is_valid()
-    assert "example.com" in str(form.errors["source_url"])
+    # only source_url is at fault, and it fails once: a second stacked error
+    # would mean our check ran on top of a value Django had already rejected
+    assert form.errors.keys() == {"source_url"}
+    (error,) = form.errors["source_url"]
+
+    # the organizer needs to see which host was refused, not just "invalid URL"
+    assert "example.com" in error
+
+
+def test_unsupported_source_url_error_names_every_supported_provider():
+    conference = ConferenceFactory()
+
+    form = VideosImportRequestAdminForm(
+        data={
+            "conference": conference.id,
+            "source_url": "https://example.com/some-video.mp4",
+        }
+    )
+
+    assert not form.is_valid()
+
+    (error,) = form.errors["source_url"]
+    registered_providers = set(PROCESSING_CLASSES_BY_HOSTNAME.values())
+
+    assert registered_providers == set(PROVIDER_NAMES_ORGANIZERS_MUST_SEE), (
+        "PROCESSING_CLASSES_BY_HOSTNAME gained or lost a provider. Add it to "
+        "PROVIDER_NAMES_ORGANIZERS_MUST_SEE, and update the error message in "
+        "get_processing_class so organizers are told they can use it."
+    )
+
+    for provider in registered_providers:
+        expected_name = PROVIDER_NAMES_ORGANIZERS_MUST_SEE[provider]
+        assert expected_name in error.lower(), (
+            f"{provider.__name__} is a supported provider but the rejection "
+            f"message never mentions {expected_name!r}, so an organizer holding "
+            f"such a link is told to go elsewhere. Message was: {error!r}"
+        )
+
+
+@pytest.mark.parametrize(
+    "source_url,refused_hostname",
+    [
+        (
+            "https://wetransfer.com.evil.example/downloads/id/hash",
+            "wetransfer.com.evil.example",
+        ),
+        (
+            "https://drive.google.com.evil.example/file/d/FILE_ID/view",
+            "drive.google.com.evil.example",
+        ),
+        (
+            "https://evil.example/wetransfer.com/downloads/id/hash",
+            "evil.example",
+        ),
+        (
+            "https://drive.google.com@evil.example/file/d/FILE_ID/view",
+            "evil.example",
+        ),
+        (
+            "https://notwetransfer.com/downloads/id/hash",
+            "notwetransfer.com",
+        ),
+        (
+            "https://drive.google.com@169.254.169.254/latest/meta-data/",
+            "169.254.169.254",
+        ),
+    ],
+)
+def test_admin_form_rejects_hosts_that_only_look_like_a_provider(
+    source_url, refused_hostname
+):
+    conference = ConferenceFactory()
+
+    form = VideosImportRequestAdminForm(
+        data={"conference": conference.id, "source_url": source_url}
+    )
+
+    assert not form.is_valid()
+
+    (error,) = form.errors["source_url"]
+
+    # the message must name the host actually parsed out of the URL, otherwise a
+    # lookalike host reads to the organizer as if the real provider was refused
+    assert refused_hostname in error
 
 
 def test_admin_form_accepts_wetransfer_source_url():
