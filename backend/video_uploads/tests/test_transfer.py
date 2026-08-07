@@ -5,8 +5,10 @@ from video_uploads.models import VideosImportRequest
 from video_uploads.tests.factories import VideosImportRequestFactory
 import zipfile
 
+from google_api.models import GoogleCloudOAuthCredential, GoogleCloudToken
 from video_uploads.transfer import (
     DriveResourceKind,
+    GoogleDriveProcessing,
     UnsupportedVideoImportUrlError,
     WetransferProcessing,
     get_processing_class,
@@ -224,6 +226,179 @@ def test_transfer_process_via_s3_and_multi_parts(requests_mock, mocker):
     assert (
         upload_mock_call_args[2]
         == f"conference-videos/{request.conference.code}/fake-download-link.txt"
+    )
+
+
+DRIVE_TOKEN_URL = "https://oauth2.googleapis.com/token"
+DRIVE_FILES_URL = "https://www.googleapis.com/drive/v3/files"
+
+
+@pytest.fixture
+def drive_credential(admin_user):
+    credential = GoogleCloudOAuthCredential.objects.create()
+    GoogleCloudToken.objects.create(
+        oauth_credential=credential,
+        token="stale-token",
+        refresh_token="refresh-token",
+        admin_user=admin_user,
+    )
+    return credential
+
+
+def mock_drive_auth(requests_mock):
+    requests_mock.post(
+        DRIVE_TOKEN_URL,
+        json={
+            "access_token": "drive-token",
+            "expires_in": 3600,
+            "token_type": "Bearer",
+        },
+    )
+
+
+def test_drive_imports_a_single_file(requests_mock, drive_credential):
+    from django.core.files.storage import storages
+
+    storage = storages["default"]
+    content = b"fake drive video"
+
+    mock_drive_auth(requests_mock)
+    requests_mock.get(
+        f"{DRIVE_FILES_URL}/FILE_ID",
+        json={
+            "id": "FILE_ID",
+            "name": "talk.mp4",
+            "size": str(len(content)),
+            "mimeType": "video/mp4",
+        },
+    )
+    media_mock = requests_mock.get(
+        f"{DRIVE_FILES_URL}/FILE_ID?alt=media", content=content
+    )
+
+    request = VideosImportRequestFactory(
+        source_url="https://drive.google.com/file/d/FILE_ID/view",
+        status=VideosImportRequest.Status.QUEUED,
+    )
+
+    imported_files = GoogleDriveProcessing(request).run()
+
+    assert imported_files == ["talk.mp4"]
+    assert media_mock.last_request.headers["Authorization"] == "Bearer drive-token"
+
+    out = storage.listdir(f"conference-videos/{request.conference.code}/")
+    assert out[1] == ["talk.mp4"]
+
+
+def test_drive_unzips_a_zip_file(requests_mock, drive_credential):
+    from django.core.files.storage import storages
+
+    storage = storages["default"]
+
+    zip_buffer = BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.mkdir("__MACOSX")
+        zf.writestr("file1.txt", "content of file1")
+        zf.writestr("__MACOSX/file3.txt", "junk")
+        zf.writestr(".DS_Store", "junk")
+        zf.writestr("nested/file.txt", "content of nested")
+
+    content = zip_buffer.getvalue()
+
+    mock_drive_auth(requests_mock)
+    requests_mock.get(
+        f"{DRIVE_FILES_URL}/ZIP_ID",
+        json={
+            "id": "ZIP_ID",
+            "name": "videos.zip",
+            "size": str(len(content)),
+            "mimeType": "application/zip",
+        },
+    )
+    requests_mock.get(f"{DRIVE_FILES_URL}/ZIP_ID?alt=media", content=content)
+
+    request = VideosImportRequestFactory(
+        source_url="https://drive.google.com/file/d/ZIP_ID/view",
+        status=VideosImportRequest.Status.QUEUED,
+    )
+
+    imported_files = GoogleDriveProcessing(request).run()
+
+    assert set(imported_files) == {"file1.txt", "nested/file.txt"}
+
+    out = storage.listdir(f"conference-videos/{request.conference.code}/")
+    assert out[1] == ["file1.txt"]
+
+
+def test_drive_downloads_large_files_in_ranged_parts(
+    requests_mock, mocker, drive_credential
+):
+    mock_getsize = mocker.patch("video_uploads.transfer.os.path.getsize")
+    mock_getsize.return_value = 500 * GB / 8
+
+    mock_storages = mocker.patch("video_uploads.transfer.storages")
+    mock_storages.__getitem__.return_value.bucket_name = "bucket-name"
+    mocker.patch("video_uploads.transfer.is_s3_storage", return_value=True)
+    mocker.patch("video_uploads.transfer.boto3")
+    mocker.patch("video_uploads.transfer.subprocess")
+
+    mock_drive_auth(requests_mock)
+    requests_mock.get(
+        f"{DRIVE_FILES_URL}/BIG_ID",
+        json={
+            "id": "BIG_ID",
+            "name": "big.mp4",
+            "size": str(500 * GB),
+            "mimeType": "video/mp4",
+        },
+    )
+    requests_mock.get(f"{DRIVE_FILES_URL}/BIG_ID?alt=media", content=b"chunk")
+
+    request = VideosImportRequestFactory(
+        source_url="https://drive.google.com/file/d/BIG_ID/view",
+        status=VideosImportRequest.Status.QUEUED,
+    )
+
+    GoogleDriveProcessing(request).run()
+
+    media_requests = [
+        sent
+        for sent in requests_mock.request_history
+        if sent.qs.get("alt") == ["media"]
+    ]
+
+    assert len(media_requests) == 8
+    for sent in media_requests:
+        assert sent.headers["Range"].startswith("bytes=")
+        assert sent.headers["Authorization"] == "Bearer drive-token"
+
+
+def test_drive_refuses_to_import_a_google_native_file(requests_mock, drive_credential):
+    mock_drive_auth(requests_mock)
+    requests_mock.get(
+        f"{DRIVE_FILES_URL}/DOC_ID",
+        json={
+            "id": "DOC_ID",
+            "name": "Notes",
+            "mimeType": "application/vnd.google-apps.document",
+        },
+    )
+
+    request = VideosImportRequestFactory(
+        source_url="https://drive.google.com/file/d/DOC_ID/view",
+        status=VideosImportRequest.Status.QUEUED,
+    )
+
+    with pytest.raises(Exception) as exc:
+        GoogleDriveProcessing(request).run()
+
+    assert "Google-native" in str(exc.value)
+
+
+def test_get_processing_class_selects_google_drive_for_drive_urls():
+    assert (
+        get_processing_class("https://drive.google.com/file/d/FILE_ID/view")
+        is GoogleDriveProcessing
     )
 
 

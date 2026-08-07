@@ -9,8 +9,15 @@ from dataclasses import dataclass
 from enum import Enum
 import os
 import tempfile
+import threading
 import requests
 from urllib.parse import parse_qs, unquote, urlparse
+from google_api.sdk import (
+    DRIVE_API_URL,
+    drive_file_metadata,
+    drive_headers,
+    get_drive_credentials,
+)
 from pycon.storages import CustomS3Boto3Storage
 from pycon.constants import GB, MB
 from video_uploads.models import VideosImportRequest
@@ -384,9 +391,63 @@ class WetransferProcessing(BaseTransferProcessing):
         return direct_link_filename, ext
 
 
+class GoogleDriveProcessing(BaseTransferProcessing):
+    def __init__(self, videos_import_request: VideosImportRequest) -> None:
+        super().__init__(videos_import_request)
+        self.credentials = None
+        self.credentials_lock = threading.Lock()
+
+    def run(self) -> list[str]:
+        self.setup()
+        self.credentials = get_drive_credentials()
+
+        resource = parse_drive_url(self.videos_import_request.source_url)
+
+        with self.executor() as executor:
+            match resource.kind:
+                case DriveResourceKind.FILE:
+                    return self.import_file(resource.id, executor)
+
+    def download_headers(self) -> dict:
+        # Parts download in parallel and a token can expire mid-transfer, so
+        # every attempt asks for headers again under a lock.
+        with self.credentials_lock:
+            return drive_headers(self.credentials)
+
+    def import_file(self, file_id: str, executor: ThreadPoolExecutor) -> list[str]:
+        metadata = drive_file_metadata(file_id=file_id)
+
+        if is_google_native(metadata):
+            raise Exception(
+                f"{metadata['name']} is a Google-native file "
+                f"({metadata['mimeType']}) and cannot be downloaded. Export it to "
+                f"a regular file and share that instead."
+            )
+
+        return self.import_drive_file(metadata, metadata["name"], executor)
+
+    def import_drive_file(
+        self, metadata: dict, filename: str, executor: ThreadPoolExecutor
+    ) -> list[str]:
+        self.filename = filename
+        _, self.extension = os.path.splitext(metadata["name"])
+        self.transfer_total_size = int(metadata["size"])
+        self.download_link = (
+            f"{DRIVE_API_URL}/files/{metadata['id']}?alt=media&supportsAllDrives=true"
+        )
+
+        return self.import_blob(executor)
+
+
+def is_google_native(metadata: dict) -> bool:
+    """Docs, Sheets, Slides and shortcuts have no bytes to download."""
+    return metadata.get("mimeType", "").startswith("application/vnd.google-apps.")
+
+
 PROCESSING_CLASSES_BY_HOSTNAME = {
     "wetransfer.com": WetransferProcessing,
     "www.wetransfer.com": WetransferProcessing,
+    "drive.google.com": GoogleDriveProcessing,
 }
 
 
