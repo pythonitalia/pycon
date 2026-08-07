@@ -531,8 +531,7 @@ def get_processing_class(source_url: str) -> type[BaseTransferProcessing]:
         return PROCESSING_CLASSES_BY_HOSTNAME[hostname]
     except KeyError:
         raise UnsupportedVideoImportUrlError(
-            f"Unsupported import URL: {hostname or source_url} is not a supported "
-            f"provider. Use a WeTransfer or a Google Drive link."
+            f"Unsupported import URL: {hostname or source_url} is not a supported provider."
         ) from None
 
 
