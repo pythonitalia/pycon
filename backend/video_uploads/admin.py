@@ -1,3 +1,4 @@
+from django import forms
 from django.utils.safestring import mark_safe
 from django.contrib import admin
 from django.db import transaction
@@ -5,6 +6,7 @@ from django.db import transaction
 from pycon.tasks import check_pending_heavy_processing_work
 from video_uploads.tasks import process_videos_import_request
 from video_uploads.models import VideosImportRequest
+from video_uploads.transfer import UnsupportedVideoImportUrlError, get_processing_class
 
 
 def queue_videos_import_request(request_obj):
@@ -26,8 +28,25 @@ def retry_transfer(modeladmin, request, queryset):
         queue_videos_import_request(obj)
 
 
+class VideosImportRequestAdminForm(forms.ModelForm):
+    class Meta:
+        model = VideosImportRequest
+        fields = ["conference", "source_url"]
+
+    def clean_source_url(self):
+        source_url = self.cleaned_data["source_url"]
+
+        try:
+            get_processing_class(source_url)
+        except UnsupportedVideoImportUrlError as e:
+            raise forms.ValidationError(str(e)) from e
+
+        return source_url
+
+
 @admin.register(VideosImportRequest)
 class VideosImportRequestAdmin(admin.ModelAdmin):
+    form = VideosImportRequestAdminForm
     list_display = [
         "conference",
         "status",

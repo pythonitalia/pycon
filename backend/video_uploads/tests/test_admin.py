@@ -1,6 +1,11 @@
 import pytest
+from conferences.tests.factories import ConferenceFactory
 from video_uploads.models import VideosImportRequest
-from video_uploads.admin import queue_videos_import_request, retry_transfer
+from video_uploads.admin import (
+    VideosImportRequestAdminForm,
+    queue_videos_import_request,
+    retry_transfer,
+)
 from video_uploads.tests.factories import VideosImportRequestFactory
 
 pytestmark = pytest.mark.django_db
@@ -28,6 +33,49 @@ def test_queue_videos_import_request(mocker, django_capture_on_commit_callbacks)
         args=[request.id], queue="heavy_processing"
     )
     mock_check_pending_heavy_processing_work.delay.assert_called_once()
+
+
+def test_admin_form_rejects_unsupported_source_url():
+    conference = ConferenceFactory()
+
+    form = VideosImportRequestAdminForm(
+        data={
+            "conference": conference.id,
+            "source_url": "https://example.com/some-video.mp4",
+        }
+    )
+
+    assert not form.is_valid()
+    assert "example.com" in str(form.errors["source_url"])
+
+
+def test_admin_form_accepts_wetransfer_source_url():
+    conference = ConferenceFactory()
+
+    form = VideosImportRequestAdminForm(
+        data={
+            "conference": conference.id,
+            "source_url": "https://wetransfer.com/downloads/fake_id/fake_hash",
+        }
+    )
+
+    assert form.is_valid(), form.errors
+
+
+def test_admin_add_view_accepts_wetransfer_source_url(admin_superuser, http_client):
+    conference = ConferenceFactory()
+    http_client.force_login(admin_superuser)
+
+    response = http_client.post(
+        "/admin/video_uploads/videosimportrequest/add/",
+        {
+            "conference": conference.id,
+            "source_url": "https://wetransfer.com/downloads/fake_id/fake_hash",
+        },
+    )
+
+    assert response.status_code == 302
+    assert VideosImportRequest.objects.count() == 1
 
 
 def test_retry_transfer():
