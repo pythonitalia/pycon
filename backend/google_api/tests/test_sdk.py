@@ -9,13 +9,126 @@ from google_api.models import (
 from google_api.exceptions import NoGoogleCloudQuotaLeftError
 from google_api.sdk import (
     count_quota,
+    drive_file_metadata,
+    drive_list_files_in_folder,
     get_available_credentials,
+    get_drive_credentials,
     youtube_videos_insert,
     youtube_videos_set_thumbnail,
 )
 import pytest
 
 pytestmark = pytest.mark.django_db
+
+GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
+
+
+@pytest.fixture
+def drive_credential(admin_user):
+    stored_credential = GoogleCloudOAuthCredential.objects.create()
+    GoogleCloudToken.objects.create(
+        oauth_credential=stored_credential,
+        token="stale-token",
+        refresh_token="refresh-token",
+        admin_user=admin_user,
+    )
+    return stored_credential
+
+
+def mock_token_refresh(requests_mock):
+    return requests_mock.post(
+        GOOGLE_TOKEN_URL,
+        json={
+            "access_token": "refreshed-token",
+            "expires_in": 3600,
+            "token_type": "Bearer",
+        },
+    )
+
+
+def test_get_drive_credentials_refreshes_the_stored_token(
+    requests_mock, drive_credential
+):
+    mock_token_refresh(requests_mock)
+
+    credentials = get_drive_credentials()
+
+    assert credentials.token == "refreshed-token"
+
+
+def test_drive_file_metadata_sends_the_refreshed_bearer_token(
+    requests_mock, drive_credential
+):
+    mock_token_refresh(requests_mock)
+    metadata_mock = requests_mock.get(
+        "https://www.googleapis.com/drive/v3/files/file123",
+        json={
+            "id": "file123",
+            "name": "talk.mp4",
+            "size": "1024",
+            "mimeType": "video/mp4",
+        },
+    )
+
+    metadata = drive_file_metadata(file_id="file123")
+
+    assert metadata["name"] == "talk.mp4"
+    assert (
+        metadata_mock.last_request.headers["Authorization"] == "Bearer refreshed-token"
+    )
+    assert metadata_mock.last_request.qs["supportsalldrives"] == ["true"]
+    assert drive_credential.usedrequestquota_set.filter(service="drive").count() == 1
+
+
+def test_drive_list_files_in_folder_follows_pagination(requests_mock, drive_credential):
+    mock_token_refresh(requests_mock)
+    requests_mock.get(
+        "https://www.googleapis.com/drive/v3/files",
+        [
+            {
+                "json": {
+                    "files": [{"id": "1", "name": "a.mp4", "mimeType": "video/mp4"}],
+                    "nextPageToken": "page-2",
+                }
+            },
+            {
+                "json": {
+                    "files": [{"id": "2", "name": "b.mp4", "mimeType": "video/mp4"}]
+                }
+            },
+        ],
+    )
+
+    files = list(drive_list_files_in_folder(folder_id="folder123"))
+
+    assert [file["id"] for file in files] == ["1", "2"]
+
+
+def test_drive_list_files_in_folder_queries_only_the_folder_children(
+    requests_mock, drive_credential
+):
+    mock_token_refresh(requests_mock)
+    listing_mock = requests_mock.get(
+        "https://www.googleapis.com/drive/v3/files", json={"files": []}
+    )
+
+    list(drive_list_files_in_folder(folder_id="folder123"))
+
+    query = listing_mock.last_request.qs["q"][0]
+    assert "'folder123' in parents" in query
+    assert "trashed = false" in query
+
+
+def test_drive_helpers_fail_when_no_credential_has_drive_quota(admin_user):
+    stored_credential = GoogleCloudOAuthCredential.objects.create(
+        quota_limit_for_drive=0
+    )
+    GoogleCloudToken.objects.create(
+        oauth_credential=stored_credential, token="token", admin_user=admin_user
+    )
+
+    with pytest.raises(NoGoogleCloudQuotaLeftError):
+        drive_file_metadata(file_id="file123")
 
 
 def test_get_available_credentials(admin_user):

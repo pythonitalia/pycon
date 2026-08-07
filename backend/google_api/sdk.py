@@ -1,12 +1,20 @@
 import inspect
+import requests
 from google_api.exceptions import NoGoogleCloudQuotaLeftError
 from google_api.models import GoogleCloudOAuthCredential, UsedRequestQuota
 from googleapiclient.discovery import build
 from apiclient.http import MediaFileUpload
+from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 
 
-GOOGLE_CLOUD_SCOPES = ["https://www.googleapis.com/auth/youtube"]
+GOOGLE_CLOUD_SCOPES = [
+    "https://www.googleapis.com/auth/youtube",
+    "https://www.googleapis.com/auth/drive.readonly",
+]
+
+DRIVE_API_URL = "https://www.googleapis.com/drive/v3"
+DRIVE_LIST_PAGE_SIZE = 1000
 
 
 def get_available_credentials(service, min_quota):
@@ -65,6 +73,71 @@ def count_quota(service: str, quota: int):
         return wrapped
 
     return wrapper
+
+
+def refreshed(credentials: Credentials) -> Credentials:
+    """Credentials rebuilt from a stored token carry no expiry, so google-auth
+    treats them as expired and credentials.token is the stale stored value.
+    googleapiclient refreshes lazily on its own; direct requests calls must not.
+    """
+    if not credentials.valid:
+        credentials.refresh(Request())
+
+    return credentials
+
+
+def drive_headers(credentials: Credentials) -> dict:
+    return {"Authorization": f"Bearer {refreshed(credentials).token}"}
+
+
+@count_quota("drive", 1)
+def get_drive_credentials(*, credentials: Credentials) -> Credentials:
+    """Refreshed credentials for callers that drive their own Drive requests."""
+    return refreshed(credentials)
+
+
+@count_quota("drive", 1)
+def drive_file_metadata(*, file_id: str, credentials: Credentials) -> dict:
+    response = requests.get(
+        f"{DRIVE_API_URL}/files/{file_id}",
+        params={
+            "fields": "id,name,size,mimeType",
+            "supportsAllDrives": "true",
+        },
+        headers=drive_headers(credentials),
+    )
+    response.raise_for_status()
+    return response.json()
+
+
+@count_quota("drive", 1)
+def drive_list_files_in_folder(*, folder_id: str, credentials: Credentials):
+    headers = drive_headers(credentials)
+    page_token = None
+
+    while True:
+        params = {
+            "q": f"'{folder_id}' in parents and trashed = false",
+            "fields": "nextPageToken,files(id,name,mimeType,size)",
+            "pageSize": DRIVE_LIST_PAGE_SIZE,
+            "supportsAllDrives": "true",
+            "includeItemsFromAllDrives": "true",
+        }
+
+        if page_token:
+            params["pageToken"] = page_token
+
+        response = requests.get(
+            f"{DRIVE_API_URL}/files", params=params, headers=headers
+        )
+        response.raise_for_status()
+        payload = response.json()
+
+        yield from payload.get("files", [])
+
+        page_token = payload.get("nextPageToken")
+        if not page_token:
+            return
 
 
 @count_quota("youtube", 1600)
