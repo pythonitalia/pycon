@@ -3,7 +3,7 @@ import logging
 from django.utils import timezone
 from django.db import transaction
 
-from video_uploads.transfer import WetransferProcessing
+from video_uploads.transfer import get_processing_class
 from video_uploads.models import VideosImportRequest
 from pycon.celery import app
 from pycon.celery_utils import OnlyOneAtTimeTask
@@ -33,7 +33,8 @@ def process_videos_import_request(request_id):
     videos_import_request = VideosImportRequest.objects.get(id=request_id)
 
     try:
-        processing = WetransferProcessing(videos_import_request)
+        processing_class = get_processing_class(videos_import_request.source_url)
+        processing = processing_class(videos_import_request)
         imported_files = processing.run()
 
         videos_import_request.status = VideosImportRequest.Status.DONE

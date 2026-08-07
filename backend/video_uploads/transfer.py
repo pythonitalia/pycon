@@ -46,19 +46,38 @@ class PartInfo:
         return f"Part {self.part_number} ({self.byte_start}-{self.last_byte})"
 
 
-class WetransferProcessing:
+class UnsupportedVideoImportUrlError(Exception):
+    pass
+
+
+class BaseTransferProcessing:
+    """Shared machinery to import one or more blobs into the conference storage.
+
+    Subclasses resolve the source link and enumerate the files to import, then
+    hand each one to import_blob by setting download_link, filename, extension
+    and transfer_total_size.
+    """
+
     def __init__(self, videos_import_request: VideosImportRequest) -> None:
         self.videos_import_request = videos_import_request
         self.imported_files = []
         self.merged_file = None
 
     def run(self) -> list[str]:
+        raise NotImplementedError
+
+    def setup(self):
         self.storage = storages["default"]
         self.s3_client = self._get_s3_client()
-        self.download_link = self.get_download_link()
-        self.filename, self.extension = self.get_filename_and_extension()
 
-        self.transfer_total_size = self.get_file_total_size()
+    def executor(self) -> ThreadPoolExecutor:
+        return ThreadPoolExecutor(max_workers=os.cpu_count() * 2)
+
+    def download_headers(self) -> dict:
+        """Headers sent with every ranged download request, merged with Range."""
+        return {}
+
+    def import_blob(self, executor: ThreadPoolExecutor) -> list[str]:
         parts_info = self.determine_parts_info(self.transfer_total_size)
 
         logger.info(
@@ -70,18 +89,13 @@ class WetransferProcessing:
 
         self.has_multiple_parts = len(parts_info) > 1
 
-        max_workers = os.cpu_count() * 2
-
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            parts = self.download_file(parts_info, executor)
-            self.merge_parts(parts)
-            try:
-                with open(self.merged_file.name, "rb") as full_file:
-                    imported_files = self.process_downloaded_file(full_file, executor)
-            finally:
-                self.cleanup()
-
-        return imported_files
+        parts = self.download_file(parts_info, executor)
+        self.merge_parts(parts)
+        try:
+            with open(self.merged_file.name, "rb") as full_file:
+                return self.process_downloaded_file(full_file, executor)
+        finally:
+            self.cleanup()
 
     def process_downloaded_file(
         self, full_file: BufferedReader, executor: ThreadPoolExecutor
@@ -152,6 +166,7 @@ class WetransferProcessing:
     def cleanup(self):
         if self.merged_file:
             os.remove(self.merged_file.name)
+            self.merged_file = None
 
     def download_file(
         self, parts_info: list[PartInfo], executor: ThreadPoolExecutor
@@ -218,8 +233,10 @@ class WetransferProcessing:
                 attempts,
             )
 
+            headers = {**self.download_headers(), **part_info.http_range_header}
+
             with requests.get(
-                self.download_link, headers=part_info.http_range_header, stream=True
+                self.download_link, headers=headers, stream=True
             ) as response:
                 response.raise_for_status()
                 shutil.copyfileobj(response.raw, part_file, length=512 * MB)
@@ -274,6 +291,26 @@ class WetransferProcessing:
         head_response = requests.head(self.download_link)
         return int(head_response.headers["Content-Length"])
 
+    def _get_s3_client(self):
+        if not is_s3_storage(self.storage):
+            return None
+
+        client_config = botocore.config.Config(
+            max_pool_connections=100,
+        )
+        return boto3.client("s3", config=client_config)
+
+
+class WetransferProcessing(BaseTransferProcessing):
+    def run(self) -> list[str]:
+        self.setup()
+        self.download_link = self.get_download_link()
+        self.filename, self.extension = self.get_filename_and_extension()
+        self.transfer_total_size = self.get_file_total_size()
+
+        with self.executor() as executor:
+            return self.import_blob(executor)
+
     def get_download_link(self) -> str:
         wetransfer_url = self.videos_import_request.source_url
         parsed_wetransfer_url = urlparse(wetransfer_url)
@@ -300,14 +337,23 @@ class WetransferProcessing:
         _, ext = os.path.splitext(direct_link_filename)
         return direct_link_filename, ext
 
-    def _get_s3_client(self):
-        if not is_s3_storage(self.storage):
-            return None
 
-        client_config = botocore.config.Config(
-            max_pool_connections=100,
-        )
-        return boto3.client("s3", config=client_config)
+PROCESSING_CLASSES_BY_HOSTNAME = {
+    "wetransfer.com": WetransferProcessing,
+    "www.wetransfer.com": WetransferProcessing,
+}
+
+
+def get_processing_class(source_url: str) -> type[BaseTransferProcessing]:
+    hostname = urlparse(source_url).hostname or ""
+
+    try:
+        return PROCESSING_CLASSES_BY_HOSTNAME[hostname]
+    except KeyError:
+        raise UnsupportedVideoImportUrlError(
+            f"Unsupported import URL: {hostname or source_url} is not a supported "
+            f"provider. Use a WeTransfer link."
+        ) from None
 
 
 def is_file_allowed(file_info: zipfile.ZipInfo) -> bool:

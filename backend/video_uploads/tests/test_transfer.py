@@ -5,7 +5,11 @@ from video_uploads.models import VideosImportRequest
 from video_uploads.tests.factories import VideosImportRequestFactory
 import zipfile
 
-from video_uploads.transfer import WetransferProcessing
+from video_uploads.transfer import (
+    UnsupportedVideoImportUrlError,
+    WetransferProcessing,
+    get_processing_class,
+)
 
 pytestmark = pytest.mark.django_db
 
@@ -219,6 +223,47 @@ def test_transfer_process_via_s3_and_multi_parts(requests_mock, mocker):
         upload_mock_call_args[2]
         == f"conference-videos/{request.conference.code}/fake-download-link.txt"
     )
+
+
+def test_get_processing_class_selects_wetransfer_for_wetransfer_urls():
+    assert (
+        get_processing_class(
+            "https://wetransfer.com/downloads/fake_transfer_id/fake_security_code"
+        )
+        is WetransferProcessing
+    )
+
+
+def test_get_processing_class_rejects_unsupported_urls():
+    with pytest.raises(UnsupportedVideoImportUrlError) as exc:
+        get_processing_class("https://example.com/some-video.mp4")
+
+    assert "example.com" in str(exc.value)
+
+
+def test_wetransfer_download_sends_no_authorization_header(requests_mock):
+    content = b"fake file content"
+
+    requests_mock.post(
+        "https://wetransfer.com/api/v4/transfers/fake_transfer_id/download",
+        json={"direct_link": "https://wetransfer.com/fake-download-link.txt"},
+    )
+    requests_mock.head(
+        "https://wetransfer.com/fake-download-link.txt",
+        headers={"Content-Length": str(len(content))},
+    )
+    requests_mock.get("https://wetransfer.com/fake-download-link.txt", content=content)
+
+    request = VideosImportRequestFactory(
+        source_url="https://wetransfer.com/downloads/fake_transfer_id/fake_security_code",
+        status=VideosImportRequest.Status.QUEUED,
+    )
+
+    WetransferProcessing(request).run()
+
+    assert requests_mock.request_history
+    for sent_request in requests_mock.request_history:
+        assert "Authorization" not in sent_request.headers
 
 
 def test_transfer_process_retries_downloading_parts(requests_mock, mocker):
