@@ -1,8 +1,8 @@
 from pycon.constants import GB, MB
 import pytest
 from io import BytesIO
-from video_uploads.models import WetransferToS3TransferRequest
-from video_uploads.tests.factories import WetransferToS3TransferRequestFactory
+from video_uploads.models import VideosImportRequest
+from video_uploads.tests.factories import VideosImportRequestFactory
 import zipfile
 
 from video_uploads.transfer import WetransferProcessing
@@ -33,9 +33,9 @@ def test_transfer_process_with_single_file(requests_mock):
         "https://wetransfer.com/fake-download-link.txt", content=content
     )
 
-    request = WetransferToS3TransferRequestFactory(
-        wetransfer_url="https://wetransfer.com/downloads/fake_transfer_id/fake_security_code",
-        status=WetransferToS3TransferRequest.Status.QUEUED,
+    request = VideosImportRequestFactory(
+        source_url="https://wetransfer.com/downloads/fake_transfer_id/fake_security_code",
+        status=VideosImportRequest.Status.QUEUED,
     )
 
     process = WetransferProcessing(request)
@@ -90,9 +90,9 @@ def test_transfer_process_with_zip(requests_mock):
         headers={"Content-Length": str(len(content))},
     )
 
-    request = WetransferToS3TransferRequestFactory(
-        wetransfer_url="https://wetransfer.com/downloads/fake_transfer_id/fake_security_code",
-        status=WetransferToS3TransferRequest.Status.QUEUED,
+    request = VideosImportRequestFactory(
+        source_url="https://wetransfer.com/downloads/fake_transfer_id/fake_security_code",
+        status=VideosImportRequest.Status.QUEUED,
     )
 
     process = WetransferProcessing(request)
@@ -116,9 +116,9 @@ def test_transfer_process_fails_with_expired_link(requests_mock):
         status_code=403,
     )
 
-    request = WetransferToS3TransferRequestFactory(
-        wetransfer_url="https://wetransfer.com/downloads/fake_transfer_id/fake_security_code",
-        status=WetransferToS3TransferRequest.Status.QUEUED,
+    request = VideosImportRequestFactory(
+        source_url="https://wetransfer.com/downloads/fake_transfer_id/fake_security_code",
+        status=VideosImportRequest.Status.QUEUED,
     )
 
     process = WetransferProcessing(request)
@@ -129,7 +129,7 @@ def test_transfer_process_fails_with_expired_link(requests_mock):
 
 
 def test_transfer_determinate_num_parts_rules():
-    process = WetransferProcessing(WetransferToS3TransferRequestFactory())
+    process = WetransferProcessing(VideosImportRequestFactory())
     assert process._determinate_total_num_of_parts(1) == 1
     assert process._determinate_total_num_of_parts(10 * GB) == 4
     assert process._determinate_total_num_of_parts(50 * GB) == 8
@@ -137,7 +137,7 @@ def test_transfer_determinate_num_parts_rules():
 
 
 def test_transfer_determine_parts_info():
-    process = WetransferProcessing(WetransferToS3TransferRequestFactory())
+    process = WetransferProcessing(VideosImportRequestFactory())
     parts = process.determine_parts_info(100 * MB)
 
     assert len(parts) == 1
@@ -166,7 +166,7 @@ def test_transfer_determine_parts_info():
 
 
 def test_transfer_cleanup():
-    process = WetransferProcessing(WetransferToS3TransferRequestFactory())
+    process = WetransferProcessing(VideosImportRequestFactory())
     process.cleanup()
 
 
@@ -192,9 +192,9 @@ def test_transfer_process_via_s3_and_multi_parts(requests_mock, mocker):
         "https://wetransfer.com/fake-download-link.txt", content=b"fake file content"
     )
 
-    request = WetransferToS3TransferRequestFactory(
-        wetransfer_url="https://wetransfer.com/downloads/fake_transfer_id/fake_security_code",
-        status=WetransferToS3TransferRequest.Status.QUEUED,
+    request = VideosImportRequestFactory(
+        source_url="https://wetransfer.com/downloads/fake_transfer_id/fake_security_code",
+        status=VideosImportRequest.Status.QUEUED,
     )
 
     process = WetransferProcessing(request)
@@ -243,9 +243,9 @@ def test_transfer_process_retries_downloading_parts(requests_mock, mocker):
         "https://wetransfer.com/fake-download-link.txt", content=b"fake file content"
     )
 
-    request = WetransferToS3TransferRequestFactory(
-        wetransfer_url="https://wetransfer.com/downloads/fake_transfer_id/fake_security_code",
-        status=WetransferToS3TransferRequest.Status.QUEUED,
+    request = VideosImportRequestFactory(
+        source_url="https://wetransfer.com/downloads/fake_transfer_id/fake_security_code",
+        status=VideosImportRequest.Status.QUEUED,
     )
 
     process = WetransferProcessing(request)

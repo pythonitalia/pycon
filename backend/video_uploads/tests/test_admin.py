@@ -1,7 +1,7 @@
 import pytest
-from video_uploads.models import WetransferToS3TransferRequest
+from video_uploads.models import VideosImportRequest
 from video_uploads.admin import queue_wetransfer_to_s3_transfer_request, retry_transfer
-from video_uploads.tests.factories import WetransferToS3TransferRequestFactory
+from video_uploads.tests.factories import VideosImportRequestFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -16,14 +16,14 @@ def test_queue_wetransfer_to_s3_transfer_request(
         "video_uploads.admin.check_pending_heavy_processing_work"
     )
 
-    request = WetransferToS3TransferRequestFactory()
+    request = VideosImportRequestFactory()
 
     with django_capture_on_commit_callbacks(execute=True):
         queue_wetransfer_to_s3_transfer_request(request)
 
     request.refresh_from_db()
 
-    assert request.status == WetransferToS3TransferRequest.Status.QUEUED
+    assert request.status == VideosImportRequest.Status.QUEUED
     assert request.failed_reason == ""
 
     mock_process_wetransfer_to_s3_transfer_request.apply_async.assert_called_once_with(
@@ -33,11 +33,11 @@ def test_queue_wetransfer_to_s3_transfer_request(
 
 
 def test_retry_transfer():
-    obj1, obj2 = WetransferToS3TransferRequestFactory.create_batch(2)
-    retry_transfer(None, None, WetransferToS3TransferRequest.objects.all())
+    obj1, obj2 = VideosImportRequestFactory.create_batch(2)
+    retry_transfer(None, None, VideosImportRequest.objects.all())
 
     obj1.refresh_from_db()
     obj2.refresh_from_db()
 
-    assert obj1.status == WetransferToS3TransferRequest.Status.QUEUED
-    assert obj2.status == WetransferToS3TransferRequest.Status.QUEUED
+    assert obj1.status == VideosImportRequest.Status.QUEUED
+    assert obj2.status == VideosImportRequest.Status.QUEUED

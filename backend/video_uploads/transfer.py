@@ -12,7 +12,7 @@ import requests
 from urllib.parse import unquote, urlparse
 from pycon.storages import CustomS3Boto3Storage
 from pycon.constants import GB, MB
-from video_uploads.models import WetransferToS3TransferRequest
+from video_uploads.models import VideosImportRequest
 import boto3
 import botocore
 from boto3.s3.transfer import TransferConfig
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 def is_s3_storage(storage):
-    return type(storage) == CustomS3Boto3Storage
+    return type(storage) is CustomS3Boto3Storage
 
 
 @dataclass
@@ -47,9 +47,7 @@ class PartInfo:
 
 
 class WetransferProcessing:
-    def __init__(
-        self, wetransfer_to_s3_transfer_request: WetransferToS3TransferRequest
-    ) -> None:
+    def __init__(self, wetransfer_to_s3_transfer_request: VideosImportRequest) -> None:
         self.wetransfer_to_s3_transfer_request = wetransfer_to_s3_transfer_request
         self.imported_files = []
         self.merged_file = None
@@ -277,7 +275,7 @@ class WetransferProcessing:
         return int(head_response.headers["Content-Length"])
 
     def get_download_link(self) -> str:
-        wetransfer_url = self.wetransfer_to_s3_transfer_request.wetransfer_url
+        wetransfer_url = self.wetransfer_to_s3_transfer_request.source_url
         parsed_wetransfer_url = urlparse(wetransfer_url)
         hostname = parsed_wetransfer_url.hostname
         _, _, transfer_id, security_hash = parsed_wetransfer_url.path.split("/")
