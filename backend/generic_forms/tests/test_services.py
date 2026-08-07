@@ -1,7 +1,13 @@
 import pytest
 
 from generic_forms.models import FormQuestion
-from generic_forms.services import unwrap_answers, validate_answers, wrap_answers
+from generic_forms.services import (
+    display_answer_value,
+    display_answers,
+    unwrap_answers,
+    validate_answers,
+    wrap_answers,
+)
 from generic_forms.tests.factories import FormFactory, FormQuestionFactory
 
 pytestmark = pytest.mark.django_db
@@ -217,3 +223,57 @@ def test_unwrap_answers_rejects_malformed_envelopes():
         unwrap_answers({"version": 1})
     with pytest.raises(ValueError, match="missing answers map"):
         unwrap_answers({"version": 1, "answers": "not a dict"})
+
+
+def test_display_answer_value_formats_by_question_type():
+    select = FormQuestionFactory(
+        question_type=FormQuestion.QuestionType.SELECT, options=OPTIONS
+    )
+    multi = FormQuestionFactory(
+        question_type=FormQuestion.QuestionType.MULTI_SELECT, options=OPTIONS
+    )
+    boolean = FormQuestionFactory(question_type=FormQuestion.QuestionType.BOOLEAN)
+    text = FormQuestionFactory(question_type=FormQuestion.QuestionType.TEXT)
+
+    assert display_answer_value(select, "vegan") == "Vegan"
+    assert display_answer_value(select, "unknown-id") == "unknown-id"
+    assert display_answer_value(multi, ["vegan", "veggie"]) == "Vegan, Veggie"
+    assert display_answer_value(boolean, True) == "Yes"
+    assert display_answer_value(boolean, False) == "No"
+    assert display_answer_value(text, "hello") == "hello"
+    assert display_answer_value(text, None) == ""
+
+
+def test_display_answers_pairs_labels_with_values_in_question_order():
+    from generic_forms.tests.factories import FormAnswerFactory
+
+    form = FormFactory()
+    second = FormQuestionFactory(form=form, label="Second", order=1)
+    first = FormQuestionFactory(
+        form=form,
+        label="First",
+        order=0,
+        question_type=FormQuestion.QuestionType.BOOLEAN,
+    )
+    FormQuestionFactory(form=form, label="Unanswered", order=2)
+    inactive = FormQuestionFactory(
+        form=form, label="Deactivated", order=3, active=False
+    )
+    answer = FormAnswerFactory(
+        form=form,
+        answers=wrap_answers(
+            {
+                str(second.pk): "text answer",
+                str(first.pk): True,
+                str(inactive.pk): "historical",
+                "9999": "orphan",
+            }
+        ),
+    )
+
+    assert display_answers(answer) == [
+        ("First", "Yes"),
+        ("Second", "text answer"),
+        ("Deactivated", "historical"),
+        ("Question 9999", "orphan"),
+    ]
