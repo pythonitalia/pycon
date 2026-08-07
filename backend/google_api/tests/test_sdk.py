@@ -176,6 +176,42 @@ def test_count_quota(admin_user):
         assert used_quota.used_at == datetime.datetime.now(tz=datetime.timezone.utc)
 
 
+def test_count_quota_reuses_the_credentials_it_is_given(admin_user):
+    """A caller making several calls for one job keeps them on one account."""
+    already_in_use = GoogleCloudOAuthCredential.objects.create(client_id="in-use")
+    GoogleCloudToken.objects.create(
+        oauth_credential=already_in_use,
+        client_id="in-use",
+        token="token-in-use",
+        admin_user=admin_user,
+    )
+    # left with more quota, so it would win the lookup if one happened
+    idle = GoogleCloudOAuthCredential.objects.create(client_id="idle")
+    GoogleCloudToken.objects.create(
+        oauth_credential=idle,
+        client_id="idle",
+        token="token-idle",
+        admin_user=admin_user,
+    )
+    UsedRequestQuota.objects.create(credentials=idle, cost=1, service="youtube")
+
+    @count_quota("youtube", 1000)
+    def test_function(*, credentials):
+        return credentials
+
+    passed_in = get_available_credentials("youtube", 1000)
+    returned = test_function(credentials=passed_in)
+
+    assert returned is passed_in
+    # the quota is still charged, to the account that actually did the work
+    assert (
+        GoogleCloudOAuthCredential.objects.get_by_client_id(passed_in.client_id)
+        .usedrequestquota_set.filter(cost=1000)
+        .count()
+        == 1
+    )
+
+
 def test_count_quota_with_generator_function(admin_user):
     stored_credential = GoogleCloudOAuthCredential.objects.create()
     GoogleCloudToken.objects.create(

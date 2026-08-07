@@ -414,6 +414,10 @@ class GoogleDriveProcessing(BaseTransferProcessing):
         self.setup()
 
         try:
+            # Resolved once and passed to every later Drive call: a folder
+            # shared with one Google account is invisible to another, so an
+            # import that switched account midway would fail with a puzzling
+            # 403 on files the organizer can see.
             self.credentials = get_drive_credentials()
         except NoGoogleCloudQuotaLeftError as e:
             # The exception carries no message, and an empty failed_reason
@@ -464,7 +468,7 @@ class GoogleDriveProcessing(BaseTransferProcessing):
     def import_file_by_id(
         self, file_id: str, executor: ThreadPoolExecutor
     ) -> list[str]:
-        metadata = drive_file_metadata(file_id=file_id)
+        metadata = drive_file_metadata(file_id=file_id, credentials=self.credentials)
 
         if is_google_native(metadata):
             raise Exception(
@@ -485,7 +489,9 @@ class GoogleDriveProcessing(BaseTransferProcessing):
 
     def walk_folder(self, folder_id: str, prefix: str):
         """Yield (metadata, path relative to the shared folder) for every file."""
-        for item in drive_list_files_in_folder(folder_id=folder_id):
+        for item in drive_list_files_in_folder(
+            folder_id=folder_id, credentials=self.credentials
+        ):
             path = f"{prefix}{item['name']}"
 
             if item["mimeType"] == DRIVE_FOLDER_MIME_TYPE:

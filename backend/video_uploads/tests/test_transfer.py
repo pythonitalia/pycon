@@ -1,4 +1,5 @@
 import logging
+from urllib.parse import parse_qs
 from pycon.constants import GB, MB
 import pytest
 from io import BytesIO
@@ -254,6 +255,76 @@ def mock_drive_auth(requests_mock):
             "expires_in": 3600,
             "token_type": "Bearer",
         },
+    )
+
+
+def test_drive_uses_one_google_account_for_the_whole_import(requests_mock, admin_user):
+    """Every Drive call in one import must run as the same Google account.
+
+    Metadata, folder listing and the byte download each used to resolve their
+    own credential, so an import could straddle two accounts. A file shared
+    with only one of them then failed with a confusing 403.
+    """
+    # the first account has just enough quota for a single call, so the second
+    # lookup would fall through to the other account
+    running_out = GoogleCloudOAuthCredential.objects.create(
+        client_id="client-running-out", quota_limit_for_drive=1
+    )
+    GoogleCloudToken.objects.create(
+        oauth_credential=running_out,
+        client_id="client-running-out",
+        token="stale-a",
+        refresh_token="refresh-a",
+        admin_user=admin_user,
+    )
+    spare = GoogleCloudOAuthCredential.objects.create(
+        client_id="client-spare", quota_limit_for_drive=10_000
+    )
+    GoogleCloudToken.objects.create(
+        oauth_credential=spare,
+        client_id="client-spare",
+        token="stale-b",
+        refresh_token="refresh-b",
+        admin_user=admin_user,
+    )
+
+    def issue_token_for_the_refreshing_account(request, context):
+        client_id = parse_qs(request.text)["client_id"][0]
+        return {
+            "access_token": f"token-for-{client_id}",
+            "expires_in": 3600,
+            "token_type": "Bearer",
+        }
+
+    requests_mock.post(DRIVE_TOKEN_URL, json=issue_token_for_the_refreshing_account)
+    requests_mock.get(
+        f"{DRIVE_FILES_URL}/FILE_ID",
+        json={
+            "id": "FILE_ID",
+            "name": "talk.mp4",
+            "size": "16",
+            "mimeType": "video/mp4",
+        },
+    )
+    requests_mock.get(
+        f"{DRIVE_FILES_URL}/FILE_ID?alt=media", content=b"fake drive video"
+    )
+
+    request = VideosImportRequestFactory(
+        source_url="https://drive.google.com/file/d/FILE_ID/view",
+        status=VideosImportRequest.Status.QUEUED,
+    )
+
+    GoogleDriveProcessing(request).run()
+
+    accounts_used = {
+        sent.headers["Authorization"]
+        for sent in requests_mock.request_history
+        if sent.url.startswith(DRIVE_FILES_URL)
+    }
+
+    assert len(accounts_used) == 1, (
+        f"the import spanned more than one Google account: {sorted(accounts_used)}"
     )
 
 

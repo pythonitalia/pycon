@@ -50,10 +50,15 @@ def count_quota(service: str, quota: int):
         )
 
     def wrapper(func):
+        # Callers that make several calls for one piece of work pass the
+        # credentials they already hold, so every call runs as the same Google
+        # account. Left out, each call picks its own account and the work can
+        # straddle two of them. The quota is charged either way.
         if inspect.isgeneratorfunction(func):
 
-            def wrapped(*args, **kwargs):
-                credentials = get_available_credentials(service, quota)
+            def wrapped(*args, credentials=None, **kwargs):
+                if credentials is None:
+                    credentials = get_available_credentials(service, quota)
                 try:
                     for value in func(*args, credentials=credentials, **kwargs):
                         yield value
@@ -62,8 +67,9 @@ def count_quota(service: str, quota: int):
 
         else:
 
-            def wrapped(*args, **kwargs):
-                credentials = get_available_credentials(service, quota)
+            def wrapped(*args, credentials=None, **kwargs):
+                if credentials is None:
+                    credentials = get_available_credentials(service, quota)
                 try:
                     ret_value = func(*args, credentials=credentials, **kwargs)
                 finally:
