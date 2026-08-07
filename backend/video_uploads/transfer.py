@@ -6,10 +6,11 @@ from django.core.files.storage import storages
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
+from enum import Enum
 import os
 import tempfile
 import requests
-from urllib.parse import unquote, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 from pycon.storages import CustomS3Boto3Storage
 from pycon.constants import GB, MB
 from video_uploads.models import VideosImportRequest
@@ -48,6 +49,51 @@ class PartInfo:
 
 class UnsupportedVideoImportUrlError(Exception):
     pass
+
+
+class DriveResourceKind(Enum):
+    FILE = "file"
+    FOLDER = "folder"
+
+
+@dataclass
+class DriveResource:
+    kind: DriveResourceKind
+    id: str
+
+
+def parse_drive_url(source_url: str) -> DriveResource:
+    parsed_url = urlparse(source_url)
+
+    if parsed_url.hostname != "drive.google.com":
+        raise UnsupportedVideoImportUrlError(
+            f"Unsupported Google Drive URL: {source_url}"
+        )
+
+    path_segments = [segment for segment in parsed_url.path.split("/") if segment]
+
+    # /file/d/<id>/view, /file/d/<id>/edit, /file/d/<id>
+    if path_segments[:2] == ["file", "d"] and len(path_segments) > 2:
+        return DriveResource(kind=DriveResourceKind.FILE, id=path_segments[2])
+
+    # /drive/folders/<id>, /drive/u/0/folders/<id>
+    if "folders" in path_segments:
+        folders_at = path_segments.index("folders")
+        if folders_at + 1 < len(path_segments):
+            return DriveResource(
+                kind=DriveResourceKind.FOLDER, id=path_segments[folders_at + 1]
+            )
+
+    # /open?id=<id>
+    if path_segments[:1] == ["open"]:
+        file_id = parse_qs(parsed_url.query).get("id", [""])[0]
+        if file_id:
+            return DriveResource(kind=DriveResourceKind.FILE, id=file_id)
+
+    raise UnsupportedVideoImportUrlError(
+        f"Unsupported Google Drive URL: {source_url}. Use a file link "
+        f"(/file/d/<id>/view) or a folder link (/drive/folders/<id>)."
+    )
 
 
 class BaseTransferProcessing:

@@ -6,9 +6,11 @@ from video_uploads.tests.factories import VideosImportRequestFactory
 import zipfile
 
 from video_uploads.transfer import (
+    DriveResourceKind,
     UnsupportedVideoImportUrlError,
     WetransferProcessing,
     get_processing_class,
+    parse_drive_url,
 )
 
 pytestmark = pytest.mark.django_db
@@ -223,6 +225,52 @@ def test_transfer_process_via_s3_and_multi_parts(requests_mock, mocker):
         upload_mock_call_args[2]
         == f"conference-videos/{request.conference.code}/fake-download-link.txt"
     )
+
+
+@pytest.mark.parametrize(
+    "url,expected_id",
+    [
+        ("https://drive.google.com/file/d/FILE_ID/view", "FILE_ID"),
+        ("https://drive.google.com/file/d/FILE_ID/view?usp=sharing", "FILE_ID"),
+        ("https://drive.google.com/file/d/FILE_ID/edit", "FILE_ID"),
+        ("https://drive.google.com/file/d/FILE_ID", "FILE_ID"),
+        ("https://drive.google.com/open?id=FILE_ID", "FILE_ID"),
+    ],
+)
+def test_parse_drive_url_reads_file_links(url, expected_id):
+    resource = parse_drive_url(url)
+
+    assert resource.kind == DriveResourceKind.FILE
+    assert resource.id == expected_id
+
+
+@pytest.mark.parametrize(
+    "url,expected_id",
+    [
+        ("https://drive.google.com/drive/folders/FOLDER_ID", "FOLDER_ID"),
+        ("https://drive.google.com/drive/folders/FOLDER_ID?usp=sharing", "FOLDER_ID"),
+        ("https://drive.google.com/drive/u/0/folders/FOLDER_ID", "FOLDER_ID"),
+    ],
+)
+def test_parse_drive_url_reads_folder_links(url, expected_id):
+    resource = parse_drive_url(url)
+
+    assert resource.kind == DriveResourceKind.FOLDER
+    assert resource.id == expected_id
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://drive.google.com/",
+        "https://drive.google.com/file/d/",
+        "https://drive.google.com/open",
+        "https://example.com/file/d/FILE_ID/view",
+    ],
+)
+def test_parse_drive_url_rejects_unrecognised_links(url):
+    with pytest.raises(UnsupportedVideoImportUrlError):
+        parse_drive_url(url)
 
 
 def test_get_processing_class_selects_wetransfer_for_wetransfer_urls():
