@@ -12,6 +12,7 @@ import tempfile
 import threading
 import requests
 from urllib.parse import parse_qs, unquote, urlparse
+from google_api.exceptions import NoGoogleCloudQuotaLeftError
 from google_api.sdk import (
     DRIVE_API_URL,
     drive_file_metadata,
@@ -400,16 +401,48 @@ class GoogleDriveProcessing(BaseTransferProcessing):
 
     def run(self) -> list[str]:
         self.setup()
-        self.credentials = get_drive_credentials()
+
+        try:
+            self.credentials = get_drive_credentials()
+        except NoGoogleCloudQuotaLeftError as e:
+            # The exception carries no message, and an empty failed_reason
+            # leaves the organizer with nothing to act on.
+            raise Exception(
+                "No Google account with Drive access is available. Authorize a "
+                "Google account with the Drive scope from the admin, under "
+                "Google Cloud OAuth Credentials, then retry the import."
+            ) from e
 
         resource = parse_drive_url(self.videos_import_request.source_url)
 
-        with self.executor() as executor:
-            match resource.kind:
-                case DriveResourceKind.FOLDER:
-                    return self.import_folder(resource.id, executor)
-                case DriveResourceKind.FILE:
-                    return self.import_file(resource.id, executor)
+        try:
+            with self.executor() as executor:
+                match resource.kind:
+                    case DriveResourceKind.FOLDER:
+                        return self.import_folder(resource.id, executor)
+                    case DriveResourceKind.FILE:
+                        return self.import_file(resource.id, executor)
+        except requests.HTTPError as e:
+            raise self.readable_drive_error(e) from e
+
+    def readable_drive_error(self, error: requests.HTTPError) -> Exception:
+        status_code = error.response.status_code if error.response is not None else None
+
+        match status_code:
+            case 401 | 403:
+                return Exception(
+                    f"Google denied access to this Drive item (HTTP {status_code}). "
+                    f"The connected Google account may predate the Drive scope: "
+                    f"re-authorize it from the admin, and check the file or folder "
+                    f"is shared with it."
+                )
+            case 404:
+                return Exception(
+                    "This Drive file or folder was not found. Check the link, and "
+                    "that it is shared with the connected Google account."
+                )
+
+        return error
 
     def download_headers(self) -> dict:
         # Parts download in parallel and a token can expire mid-transfer, so

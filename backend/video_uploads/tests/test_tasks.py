@@ -38,6 +38,20 @@ def test_process_videos_import_request_reports_exceptions(mocker):
     assert request.failed_reason == "Fake exception"
 
 
+def test_process_videos_import_request_fails_readably_without_drive_credentials():
+    request = VideosImportRequestFactory(
+        source_url="https://drive.google.com/file/d/FILE_ID/view",
+        status=VideosImportRequest.Status.QUEUED,
+    )
+
+    process_videos_import_request(request.id)
+
+    request.refresh_from_db()
+
+    assert request.status == VideosImportRequest.Status.FAILED
+    assert "authorize" in request.failed_reason.lower()
+
+
 def test_process_videos_import_request_copies_imported_files_on_success(mocker):
     mocker.patch(
         "video_uploads.transfer.WetransferProcessing.run",

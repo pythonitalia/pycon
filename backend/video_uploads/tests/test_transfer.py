@@ -519,6 +519,55 @@ def test_drive_refuses_to_import_a_google_native_file(requests_mock, drive_crede
     assert "Google-native" in str(exc.value)
 
 
+@pytest.mark.parametrize("status_code", [401, 403])
+def test_drive_reports_permission_errors_readably(
+    requests_mock, drive_credential, status_code
+):
+    mock_drive_auth(requests_mock)
+    requests_mock.get(f"{DRIVE_FILES_URL}/FILE_ID", status_code=status_code, json={})
+
+    request = VideosImportRequestFactory(
+        source_url="https://drive.google.com/file/d/FILE_ID/view",
+        status=VideosImportRequest.Status.QUEUED,
+    )
+
+    with pytest.raises(Exception) as exc:
+        GoogleDriveProcessing(request).run()
+
+    assert "re-authorize" in str(exc.value).lower()
+
+
+def test_drive_reports_missing_files_readably(requests_mock, drive_credential):
+    mock_drive_auth(requests_mock)
+    requests_mock.get(f"{DRIVE_FILES_URL}/GONE_ID", status_code=404, json={})
+
+    request = VideosImportRequestFactory(
+        source_url="https://drive.google.com/file/d/GONE_ID/view",
+        status=VideosImportRequest.Status.QUEUED,
+    )
+
+    with pytest.raises(Exception) as exc:
+        GoogleDriveProcessing(request).run()
+
+    assert "not found" in str(exc.value).lower()
+    assert "shared" in str(exc.value).lower()
+
+
+def test_drive_reports_a_missing_drive_credential_readably(db):
+    request = VideosImportRequestFactory(
+        source_url="https://drive.google.com/file/d/FILE_ID/view",
+        status=VideosImportRequest.Status.QUEUED,
+    )
+
+    with pytest.raises(Exception) as exc:
+        GoogleDriveProcessing(request).run()
+
+    message = str(exc.value)
+    assert message
+    assert "authorize" in message.lower()
+    assert "drive" in message.lower()
+
+
 def test_get_processing_class_selects_google_drive_for_drive_urls():
     assert (
         get_processing_class("https://drive.google.com/file/d/FILE_ID/view")
