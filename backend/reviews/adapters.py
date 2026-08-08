@@ -26,6 +26,7 @@ from custom_admin.audit import (
     create_change_admin_log_entry,
     create_deletion_admin_log_entry,
 )
+from generic_forms.services import display_answers
 from grants.models import Grant, GrantReimbursement, GrantReimbursementCategory
 from participants.models import Participant
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
@@ -621,7 +622,7 @@ class GrantsReviewAdapter:
         )
         comment = request.GET.get("comment", user_review.comment if user_review else "")
 
-        grant = Grant.objects.get(id=review_item_id)
+        grant = Grant.objects.select_related("form_answer__form").get(id=review_item_id)
         previous_grants = Grant.objects.filter(
             user_id=grant.user_id,
             conference__organizer_id=grant.conference.organizer_id,
@@ -630,6 +631,9 @@ class GrantsReviewAdapter:
         return dict(
             admin_site.each_context(request),
             grant=grant,
+            grant_answers=(
+                display_answers(grant.form_answer) if grant.form_answer_id else []
+            ),
             has_sent_proposal=Submission.objects.non_cancelled()
             .filter(
                 speaker_id=grant.user_id,

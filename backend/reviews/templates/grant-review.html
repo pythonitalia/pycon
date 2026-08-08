@@ -218,31 +218,48 @@
     <fieldset class="module aligned">
         <h2>Answers</h2>
 
+        {% for label, value in grant_answers %}
+            <div class="review-row">
+                <strong>{{ label }}</strong>
+                <div>{{ value|linebreaksbr }}</div>
+            </div>
+        {% endfor %}
 
-        <div class="review-row">
-            <strong>Why are you asking for a grant?</strong>
-            <div>{{ grant.why|linebreaksbr }}</div>
-        </div>
+        {# legacy columns; empty for grants submitted through the generic form #}
+        {% if grant.why %}
+            <div class="review-row">
+                <strong>Why are you asking for a grant?</strong>
+                <div>{{ grant.why|linebreaksbr }}</div>
+            </div>
+        {% endif %}
 
-        <div class="review-row">
-            <strong>How do they use python</strong>
-            <div>{{ grant.python_usage|linebreaksbr }}</div>
-        </div>
+        {% if grant.python_usage %}
+            <div class="review-row">
+                <strong>How do they use python</strong>
+                <div>{{ grant.python_usage|linebreaksbr }}</div>
+            </div>
+        {% endif %}
 
-        <div class="review-row">
-            <strong>Have they been to other events?</strong>
-            <div>{{ grant.been_to_other_events|linebreaksbr }}</div>
-        </div>
+        {% if grant.been_to_other_events %}
+            <div class="review-row">
+                <strong>Have they been to other events?</strong>
+                <div>{{ grant.been_to_other_events|linebreaksbr }}</div>
+            </div>
+        {% endif %}
 
-        <div class="review-row">
-            <strong>Community contribution</strong>
-            <div>{{ grant.community_contribution|linebreaksbr }}</div>
-        </div>
+        {% if grant.community_contribution %}
+            <div class="review-row">
+                <strong>Community contribution</strong>
+                <div>{{ grant.community_contribution|linebreaksbr }}</div>
+            </div>
+        {% endif %}
 
-        <div class="review-row">
-            <strong>Notes</strong>
-            <div>{{ grant.notes|linebreaksbr }}</div>
-        </div>
+        {% if grant.notes %}
+            <div class="review-row">
+                <strong>Notes</strong>
+                <div>{{ grant.notes|linebreaksbr }}</div>
+            </div>
+        {% endif %}
 
     </fieldset>
 

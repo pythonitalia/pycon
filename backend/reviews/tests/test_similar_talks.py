@@ -1,7 +1,6 @@
 from unittest.mock import MagicMock, patch
 
 import numpy as np
-import pytest
 
 from reviews.similar_talks import (
     compute_similar_talks,
@@ -9,7 +8,9 @@ from reviews.similar_talks import (
 )
 
 
-def _make_submission(id, title="Test Talk", elevator_pitch="A pitch", abstract="Abstract"):
+def _make_submission(
+    id, title="Test Talk", elevator_pitch="A pitch", abstract="Abstract"
+):
     """Create a mock submission object."""
     sub = MagicMock()
     sub.id = id
@@ -37,11 +38,13 @@ class TestComputeSimilarTalks:
     def test_returns_similar_talks(self, mock_cache, mock_model):
         mock_cache.get.return_value = None
 
-        embeddings = np.array([
-            [1.0, 0.0, 0.0],
-            [0.9, 0.1, 0.0],
-            [0.0, 0.0, 1.0],
-        ])
+        embeddings = np.array(
+            [
+                [1.0, 0.0, 0.0],
+                [0.9, 0.1, 0.0],
+                [0.0, 0.0, 1.0],
+            ]
+        )
         mock_model.return_value.encode.return_value = embeddings
 
         subs = [
@@ -99,7 +102,11 @@ class TestComputeTopicClusters:
         mock_model.assert_not_called()
 
     def test_uses_cache(self, mock_cache, mock_model):
-        cached = {"topics": [{"name": "Cached"}], "outliers": [], "submission_topics": {}}
+        cached = {
+            "topics": [{"name": "Cached"}],
+            "outliers": [],
+            "submission_topics": {},
+        }
         mock_cache.get.return_value = cached
 
         subs = [_make_submission(i) for i in range(5)]
