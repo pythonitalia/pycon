@@ -558,5 +558,5 @@ def cleanup_string(string: str) -> str:
         "NFKD", "".join(char for char in string if char.isprintable())
     ).lower()
     new_string = re.sub(r"\s+", " ", new_string)
-    new_string = re.replace("-", " ")
+    new_string = new_string.replace("-", " ")
     return new_string.strip()
