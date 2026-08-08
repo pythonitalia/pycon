@@ -7,7 +7,7 @@ from generic_forms.models import Form, FormAnswer, FormQuestion
 class FormQuestionInline(admin.TabularInline):
     model = FormQuestion
     form = FormQuestionInlineForm
-    extra = 1
+    extra = 0
     fields = (
         "label",
         "description",
