@@ -627,7 +627,7 @@ def test_video_uploaded_path_matcher(
     event_ord_speakers.refresh_from_db()
 
     assert event_1.video_uploaded_path == "conf/video-2/2-Opening.mp4"
-    assert event_2.video_uploaded_path == "conf/video-1/1-Kim Kitsuragi.mp4"
+    assert event_2.video_uploaded_path == "conf/video-1/1-Kim-Kitsuragi.mp4"
     assert event_3.video_uploaded_path == "conf/video-2/5-Klaasje, Harrier Du Bois.mp4"
     assert event_klaasje_alone.video_uploaded_path == "conf/video-2/12-Klaasje.mp4"
     assert keynote_schedule.video_uploaded_path == "conf/9-Anwesha Das.mp4"
