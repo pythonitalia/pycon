@@ -2,7 +2,7 @@ from model_utils.models import TimeStampedModel
 from django.db import models
 
 
-class WetransferToS3TransferRequest(TimeStampedModel):
+class VideosImportRequest(TimeStampedModel):
     class Status(models.TextChoices):
         PENDING = "pending"
         QUEUED = "queued"
@@ -15,7 +15,7 @@ class WetransferToS3TransferRequest(TimeStampedModel):
         on_delete=models.CASCADE,
         verbose_name="conference",
     )
-    wetransfer_url = models.URLField("WeTransfer URL", max_length=2048)
+    source_url = models.URLField("Source URL", max_length=2048)
     status = models.CharField(
         max_length=10,
         choices=Status.choices,
