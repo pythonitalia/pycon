@@ -6,19 +6,15 @@ mutation UpdateGrant($input: UpdateGrantInput!) {
       id
       name
       fullName
-      ageGroup
       gender
       occupation
       grantType
-      pythonUsage
-      communityContribution
-      beenToOtherEvents
       needsFundsForTravel
       needVisa
-      notes
       departureCountry
       nationality
       departureCity
+      formAnswers
     }
 
     ... on GrantErrors {
@@ -29,15 +25,9 @@ mutation UpdateGrant($input: UpdateGrantInput!) {
         validationGender: gender
         validationGrantType: grantType
         validationOccupation: occupation
-        validationAgeGroup: ageGroup
-        validationPythonUsage: pythonUsage
-        validationCommunityContribution: communityContribution
-        validationBeenToOtherEvents: beenToOtherEvents
         validationNeedsFundsForTravel: needsFundsForTravel
         validationNeedVisa: needVisa
         validationNeedAccommodation: needAccommodation
-        validationWhy: why
-        validationNotes: notes
         validationDepartureCountry: departureCountry
         validationNationality: nationality
         validationDepartureCity: departureCity
@@ -49,6 +39,7 @@ mutation UpdateGrant($input: UpdateGrantInput!) {
         validationParticipantFacebookUrl: participantFacebookUrl
         validationParticipantMastodonHandle: participantMastodonHandle
         nonFieldErrors
+        answersErrors
       }
     }
   }

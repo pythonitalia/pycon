@@ -17,19 +17,22 @@ import {
   Textarea,
 } from "@python-italia/pycon-styleguide";
 import type React from "react";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
 import { Alert } from "~/components/alert";
+import {
+  DynamicForm,
+  type DynamicFormAnswers,
+} from "~/components/dynamic-form";
 import { useCountries } from "~/helpers/use-countries";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import {
-  type AgeGroup,
-  type Grant,
   type GrantType,
+  type MyGrantQuery,
   type Occupation,
   type SendGrantInput,
   type SendGrantMutation,
@@ -46,7 +49,6 @@ import {
   PublicProfileCard,
 } from "../public-profile-card";
 import {
-  AGE_GROUPS_OPTIONS,
   GENDER_OPTIONS,
   GRANT_TYPE_OPTIONS,
   OCCUPATION_OPTIONS,
@@ -55,18 +57,12 @@ import {
 export type GrantFormFields = ParticipantFormFields & {
   name: string;
   fullName: string;
-  ageGroup: AgeGroup;
   gender: string;
   occupation: Occupation;
   grantType: GrantType[];
-  pythonUsage: string;
-  communityContribution: string;
-  beenToOtherEvents: string;
   needsFundsForTravel: string;
   needVisa: string;
   needAccommodation: string;
-  why: string;
-  notes: string;
   departureCountry: string;
   nationality: string;
   departureCity: string;
@@ -117,7 +113,7 @@ export const GrantSendForm = () => {
 
 type GrantFormProps = {
   conference: string;
-  grant?: Grant | null;
+  grant?: NonNullable<MyGrantQuery["me"]>["grant"] | null;
   onSubmit: (input: SendGrantInput | UpdateGrantInput) => void;
   loading: boolean;
   error: ApolloError | null;
@@ -137,7 +133,7 @@ export const GrantForm = ({
 
   const {
     data: {
-      conference: { deadline },
+      conference: { deadline, form },
     },
   } = useGrantDeadlineQuery({
     variables: {
@@ -159,7 +155,8 @@ export const GrantForm = ({
       withIds: true,
     },
   );
-  const { textarea, select, checkbox, text } = formOptions;
+  const { select, checkbox, text } = formOptions;
+  const [answers, setAnswers] = useState<DynamicFormAnswers>({});
 
   const dateFormatter = new Intl.DateTimeFormat(language, {
     day: "numeric",
@@ -173,14 +170,6 @@ export const GrantForm = ({
       formState.setField("fullName", user.fullName);
       formState.setField("name", user.name);
       formState.setField("gender", user.gender);
-      if (user.dateBirth) {
-        const age =
-          new Date().getFullYear() - new Date(user.dateBirth).getFullYear();
-        formState.setField(
-          "ageGroup",
-          AGE_GROUPS_OPTIONS.find((option) => option.isAgeInRange?.(age)).value,
-        );
-      }
     }
   }, [user]);
 
@@ -191,10 +180,6 @@ export const GrantForm = ({
       formState.setField("gender", grant.gender);
       formState.setField("grantType", grant.grantType);
       formState.setField("occupation", grant.occupation);
-      formState.setField("ageGroup", grant.ageGroup);
-      formState.setField("pythonUsage", grant.pythonUsage);
-      formState.setField("communityContribution", grant.communityContribution);
-      formState.setField("beenToOtherEvents", grant.beenToOtherEvents);
       formState.setField(
         "needsFundsForTravel",
         grant.needsFundsForTravel.toString(),
@@ -204,11 +189,10 @@ export const GrantForm = ({
         "needAccommodation",
         grant.needAccommodation.toString(),
       );
-      formState.setField("why", grant.why);
-      formState.setField("notes", grant.notes);
       formState.setField("departureCountry", grant.departureCountry);
       formState.setField("nationality", grant.nationality);
       formState.setField("departureCity", grant.departureCity);
+      setAnswers((grant.formAnswers as DynamicFormAnswers) ?? {});
 
       formState.setField("acceptedPrivacyPolicy", true);
     }
@@ -247,23 +231,18 @@ export const GrantForm = ({
       e.preventDefault();
       onSubmit({
         conference,
-        ageGroup: formState.values.ageGroup,
         fullName: formState.values.fullName,
         name: formState.values.name,
         gender: formState.values.gender,
-        beenToOtherEvents: formState.values.beenToOtherEvents,
-        notes: formState.values.notes,
         grantType: formState.values.grantType,
         needsFundsForTravel: formState.values.needsFundsForTravel === "true",
-        why: formState.values.why,
         departureCountry: formState.values.departureCountry,
         nationality: formState.values.nationality,
         departureCity: formState.values.departureCity,
         occupation: formState.values.occupation,
-        pythonUsage: formState.values.pythonUsage,
-        communityContribution: formState.values.communityContribution,
         needVisa: formState.values.needVisa === "true",
         needAccommodation: formState.values.needAccommodation === "true",
+        answers,
         participantWebsite: formState.values.participantWebsite,
         participantBio: formState.values.participantBio,
         participantTwitterHandle: formState.values.participantTwitterHandle,
@@ -273,7 +252,7 @@ export const GrantForm = ({
         participantMastodonHandle: formState.values.participantMastodonHandle,
       });
     },
-    [formState.values],
+    [formState.values, answers],
   );
 
   const getErrors = (
@@ -288,6 +267,16 @@ export const GrantForm = ({
       }
 
       return (grantData.mutationOp as any).errors[errorKey];
+    }
+
+    return [];
+  };
+
+  const getAnswerErrors = (questionId: string): string[] => {
+    if (grantData?.mutationOp.__typename === "GrantErrors") {
+      return (
+        (grantData.mutationOp as any).errors.answersErrors?.[questionId] ?? []
+      );
     }
 
     return [];
@@ -327,6 +316,15 @@ export const GrantForm = ({
     return (
       <Alert variant="info">
         <FormattedMessage id="global.loading" />
+      </Alert>
+    );
+  }
+
+  if (!form) {
+    // without the form we cannot collect the answers; never submit without
+    return (
+      <Alert variant="alert">
+        <FormattedMessage id="grants.form.notAvailable" />
       </Alert>
     );
   }
@@ -389,30 +387,6 @@ export const GrantForm = ({
                 placeholder={inputPlaceholderText}
                 errors={getErrors("nationality")}
               />
-            </InputWrapper>
-
-            <InputWrapper
-              required={true}
-              title={<FormattedMessage id="grants.form.fields.ageGroup" />}
-              description={
-                <FormattedMessage id="grants.form.fields.ageGroup.description" />
-              }
-            >
-              <Select
-                {...select("ageGroup")}
-                required={true}
-                errors={getErrors("ageGroup")}
-              >
-                {AGE_GROUPS_OPTIONS.map(({ value, disabled, messageId }) => (
-                  <FormattedMessage id={messageId} key={messageId}>
-                    {(msg) => (
-                      <option disabled={disabled} value={value}>
-                        {msg}
-                      </option>
-                    )}
-                  </FormattedMessage>
-                ))}
-              </Select>
             </InputWrapper>
 
             <InputWrapper
@@ -530,23 +504,6 @@ export const GrantForm = ({
                 </FormattedMessage>
               </Select>
             </InputWrapper>
-
-            <InputWrapper
-              required={true}
-              title={<FormattedMessage id="grants.form.fields.why" />}
-              description={
-                <FormattedMessage id="grants.form.fields.why.description" />
-              }
-            >
-              <Textarea
-                {...textarea("why")}
-                rows={2}
-                required={true}
-                placeholder={inputPlaceholderText}
-                errors={getErrors("why")}
-                maxLength={1000}
-              />
-            </InputWrapper>
           </Grid>
         </CardPart>
       </MultiplePartsCard>
@@ -640,67 +597,15 @@ export const GrantForm = ({
       <Spacer size="medium" />
       <MultiplePartsCard>
         <CardPart contentAlign="left">
-          <Heading size={3}>
-            <FormattedMessage id="grants.form.youAndPython" />
-          </Heading>
+          <Heading size={3}>{form.name}</Heading>
         </CardPart>
         <CardPart contentAlign="left" background="milk">
-          <Grid cols={1}>
-            <InputWrapper
-              required={true}
-              title={<FormattedMessage id="grants.form.fields.pythonUsage" />}
-              description={
-                <FormattedMessage id="grants.form.fields.pythonUsage.description" />
-              }
-            >
-              <Textarea
-                {...textarea("pythonUsage")}
-                rows={2}
-                required={true}
-                placeholder={inputPlaceholderText}
-                errors={getErrors("pythonUsage")}
-                maxLength={700}
-              />
-            </InputWrapper>
-
-            <InputWrapper
-              required={true}
-              title={
-                <FormattedMessage id="grants.form.fields.beenToOtherEvents" />
-              }
-              description={
-                <FormattedMessage id="grants.form.fields.beenToOtherEvents.description" />
-              }
-            >
-              <Textarea
-                {...textarea("beenToOtherEvents")}
-                rows={2}
-                required={true}
-                errors={getErrors("beenToOtherEvents")}
-                placeholder={inputPlaceholderText}
-                maxLength={500}
-              />
-            </InputWrapper>
-
-            <InputWrapper
-              required={false}
-              title={
-                <FormattedMessage id="grants.form.fields.communityContribution" />
-              }
-              description={
-                <FormattedMessage id="grants.form.fields.communityContribution.description" />
-              }
-            >
-              <Textarea
-                {...textarea("communityContribution")}
-                rows={2}
-                required={false}
-                errors={getErrors("communityContribution")}
-                placeholder={inputPlaceholderText}
-                maxLength={900}
-              />
-            </InputWrapper>
-          </Grid>
+          <DynamicForm
+            form={form}
+            answers={answers}
+            onChange={setAnswers}
+            getErrors={getAnswerErrors}
+          />
         </CardPart>
       </MultiplePartsCard>
 
@@ -731,20 +636,6 @@ export const GrantForm = ({
                   </FormattedMessage>
                 ))}
               </Select>
-            </InputWrapper>
-
-            <InputWrapper
-              title={<FormattedMessage id="grants.form.fields.notes" />}
-              description={
-                <FormattedMessage id="grants.form.fields.notes.description" />
-              }
-            >
-              <Textarea
-                {...textarea("notes")}
-                errors={getErrors("notes")}
-                placeholder={inputPlaceholderText}
-                maxLength={350}
-              />
             </InputWrapper>
           </Grid>
         </CardPart>

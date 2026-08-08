@@ -724,6 +724,8 @@ Click the box to change. If left empty, we will assume you are available.`,
     "grants.form.needToBeLoggedIn":
       "Login or create an account to send a grant",
     "grants.form.title": "Request a grant",
+    "grants.form.notAvailable":
+      "The grant form is not available yet. Please check back later!",
     "grants.form.description": `Welcome to the PyCon Italia Grant Application Form!
 
 As we’ve had many applications in the past and operate with a limited budget, we kindly ask you to take a moment to tell us about yourself and the reasons you're seeking a grant. Your insights are valuable to us. There’s no wrong answer, and a thoughtful response can truly make a difference.
@@ -1519,6 +1521,8 @@ The sooner you buy your ticket, the more you save!`,
     "grants.form.needToBeLoggedIn":
       "Devi effettuare l'accesso per chiedere un grant",
     "grants.form.title": "Chiedi un grant",
+    "grants.form.notAvailable":
+      "Il form per i grant non è ancora disponibile. Riprova più tardi!",
     "grants.form.description": `Questo è il modulo di domanda per il grant di PyCon Italia!
 
 Avendo ricevuto molte domande in passato e operando con un budget limitato, ti chiediamo di dedicare un momento per raccontarci di te e le ragioni per cui stai cercando un grant. Le tue riflessioni sono preziose per noi. Non esiste una risposta sbagliata, e una risposta ben ponderata può fare davvero la differenza.

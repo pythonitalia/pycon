@@ -10,18 +10,13 @@ query MyGrant($conference: String!) {
       gender
       grantType
       occupation
-      ageGroup
-      pythonUsage
-      communityContribution
-      beenToOtherEvents
       needsFundsForTravel
       needVisa
       needAccommodation
-      why
-      notes
       departureCountry
       nationality
       departureCity
+      formAnswers
     }
   }
 }
