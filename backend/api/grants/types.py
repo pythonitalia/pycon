@@ -4,7 +4,9 @@ from datetime import datetime
 from typing import Optional
 
 import strawberry
+from strawberry.scalars import JSON
 
+from generic_forms.services import unwrap_answers
 from grants.models import Grant as GrantModel
 
 Status = strawberry.enum(GrantModel.Status)
@@ -36,9 +38,18 @@ class Grant:
     departure_city: Optional[str]
     applicant_reply_deadline: Optional[datetime]
 
+    @strawberry.field
+    def form_answers(self) -> JSON | None:
+        # root is either the Django model (mutations return it directly)
+        # or a from_model()-built instance, which attaches form_answer below
+        form_answer = getattr(self, "form_answer", None)
+        if form_answer is None:
+            return None
+        return unwrap_answers(form_answer.answers)
+
     @classmethod
     def from_model(cls, grant: GrantModel) -> Grant:
-        return cls(
+        instance = cls(
             id=grant.id,
             status=Status(grant.status),
             name=grant.name,
@@ -60,3 +71,6 @@ class Grant:
             departure_city=grant.departure_city,
             applicant_reply_deadline=grant.applicant_reply_deadline,
         )
+        # not a declared strawberry field; read by the form_answers resolver
+        instance.form_answer = grant.form_answer
+        return instance
