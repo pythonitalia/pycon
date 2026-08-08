@@ -539,7 +539,7 @@ def test_video_uploaded_path_matcher(
     mocker.patch(
         "conferences.admin.conference.walk_conference_videos_folder",
         return_value=[
-            "conf/video-1/1-Kim Kitsuragi.mp4",
+            "conf/video-1/1-Kim-Kitsuragi.mp4",
             "conf/video-2/2-Opening.mp4",
             "conf/video-2/5-Klaasje, Harrier Du Bois.mp4",
             "conf/video-2/2-Harrier Du Bois, Klaasje.mp4",
