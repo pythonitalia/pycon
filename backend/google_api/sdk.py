@@ -6,7 +6,9 @@ from googleapiclient.discovery import build
 from apiclient.http import MediaFileUpload
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
+import logging
 
+logger = logging.getLogger(__name__)
 
 GOOGLE_CLOUD_SCOPES = [
     "https://www.googleapis.com/auth/youtube",
@@ -133,6 +135,8 @@ def drive_list_files_in_folder(*, folder_id: str, credentials: Credentials):
         )
         response.raise_for_status()
         payload = response.json()
+
+        logger.info("List files in folder %s", folder_id)
 
         yield from payload.get("files", [])
 
