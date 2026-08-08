@@ -517,12 +517,12 @@ class GoogleDriveProcessing(BaseTransferProcessing):
         return imported_files
 
     def walk_folder(self, folder_id: str, prefix: str):
+        """Yield (metadata, path relative to the shared folder) for every file."""
         logger.info(
             "Walking folder %s for videos_import_request %s",
             folder_id,
             self.videos_import_request.id,
         )
-        """Yield (metadata, path relative to the shared folder) for every file."""
         for item in drive_list_files_in_folder(
             folder_id=folder_id, credentials=self.credentials
         ):
