@@ -131,7 +131,16 @@ class BaseTransferProcessing:
         """Headers sent with every ranged download request, merged with Range."""
         return {}
 
+    @property
+    def blob_directory(self) -> str:
+        """Folder holding the blob being imported, empty at the import root."""
+        directory = os.path.dirname(self.filename)
+        return f"{directory}/" if directory else ""
+
     def import_blob(self, executor: ThreadPoolExecutor) -> list[str]:
+        logger.info(
+            "Importing blob for videos_import_request %s", self.videos_import_request.id
+        )
         parts_info = self.determine_parts_info(self.transfer_total_size)
 
         logger.info(
@@ -187,10 +196,16 @@ class BaseTransferProcessing:
         return all_filenames
 
     def process_zip_file_obj(self, zip_ref: zipfile.ZipFile, filename: str):
-        with zip_ref.open(filename) as file_obj:
-            self.save_file_to_s3(filename, file_obj)
+        # A zip is a container: its entries belong where the zip itself sits,
+        # so a zip imported from a subfolder keeps that subfolder. Without
+        # this, two subfolders shipping the same entry name overwrite one
+        # another. A zip at the root has no prefix, as before.
+        remote_filename = f"{self.blob_directory}{filename}"
 
-        return filename
+        with zip_ref.open(filename) as file_obj:
+            self.save_file_to_s3(remote_filename, file_obj)
+
+        return remote_filename
 
     def save_file_to_s3(self, filename: str, file_data: BytesIO):
         logger.info(
@@ -411,6 +426,10 @@ class GoogleDriveProcessing(BaseTransferProcessing):
         self.credentials_lock = threading.Lock()
 
     def run(self) -> list[str]:
+        logger.info(
+            "Running Google Drive processing for videos_import_request %s",
+            self.videos_import_request.id,
+        )
         self.setup()
 
         try:
@@ -468,6 +487,11 @@ class GoogleDriveProcessing(BaseTransferProcessing):
     def import_file_by_id(
         self, file_id: str, executor: ThreadPoolExecutor
     ) -> list[str]:
+        logger.info(
+            "Importing file by id %s for videos_import_request %s",
+            file_id,
+            self.videos_import_request.id,
+        )
         metadata = drive_file_metadata(file_id=file_id, credentials=self.credentials)
 
         if is_google_native(metadata):
@@ -480,6 +504,11 @@ class GoogleDriveProcessing(BaseTransferProcessing):
         return self.import_file(metadata, metadata["name"], executor)
 
     def import_folder(self, folder_id: str, executor: ThreadPoolExecutor) -> list[str]:
+        logger.info(
+            "Importing folder %s for videos_import_request %s",
+            folder_id,
+            self.videos_import_request.id,
+        )
         imported_files = []
 
         for metadata, relative_path in self.walk_folder(folder_id, ""):
@@ -488,6 +517,11 @@ class GoogleDriveProcessing(BaseTransferProcessing):
         return imported_files
 
     def walk_folder(self, folder_id: str, prefix: str):
+        logger.info(
+            "Walking folder %s for videos_import_request %s",
+            folder_id,
+            self.videos_import_request.id,
+        )
         """Yield (metadata, path relative to the shared folder) for every file."""
         for item in drive_list_files_in_folder(
             folder_id=folder_id, credentials=self.credentials
@@ -508,11 +542,21 @@ class GoogleDriveProcessing(BaseTransferProcessing):
                 )
                 continue
 
+            logger.info(
+                "Yielding item %s for videos_import_request %s",
+                item,
+                self.videos_import_request.id,
+            )
             yield item, path
 
     def import_file(
         self, metadata: dict, filename: str, executor: ThreadPoolExecutor
     ) -> list[str]:
+        logger.info(
+            "Importing file %s for videos_import_request %s",
+            filename,
+            self.videos_import_request.id,
+        )
         self.filename = filename
         _, self.extension = os.path.splitext(metadata["name"])
         self.transfer_total_size = int(metadata["size"])

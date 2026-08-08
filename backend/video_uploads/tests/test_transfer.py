@@ -402,6 +402,88 @@ def test_drive_unzips_a_zip_file(requests_mock, drive_credential):
     assert out[1] == ["file1.txt"]
 
 
+def build_zip(entries: dict) -> bytes:
+    buffer = BytesIO()
+    with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for name, content in entries.items():
+            zf.writestr(name, content)
+    return buffer.getvalue()
+
+
+def test_drive_keeps_zip_contents_inside_the_folder_holding_the_zip(
+    requests_mock, drive_credential
+):
+    """A zip is a container, so its entries land where the zip itself lives.
+
+    Two days of talks can each ship a recording.mp4 inside their own zip;
+    dropping the folder prefix would silently overwrite one with the other.
+    """
+    from django.core.files.storage import storages
+
+    storage = storages["default"]
+
+    day1_zip = build_zip({"recording.mp4": "day one", "extra/notes.txt": "one"})
+    day2_zip = build_zip({"recording.mp4": "day two"})
+
+    mock_drive_auth(requests_mock)
+    mock_drive_folder_listing(
+        requests_mock,
+        {
+            "FOLDER_ID": [
+                [
+                    {"id": "DAY1", "name": "day1", "mimeType": DRIVE_FOLDER_MIME},
+                    {"id": "DAY2", "name": "day2", "mimeType": DRIVE_FOLDER_MIME},
+                ]
+            ],
+            "DAY1": [
+                [
+                    {
+                        "id": "ZIP1",
+                        "name": "videos.zip",
+                        "mimeType": "application/zip",
+                        "size": str(len(day1_zip)),
+                    }
+                ]
+            ],
+            "DAY2": [
+                [
+                    {
+                        "id": "ZIP2",
+                        "name": "videos.zip",
+                        "mimeType": "application/zip",
+                        "size": str(len(day2_zip)),
+                    }
+                ]
+            ],
+        },
+    )
+
+    requests_mock.get(f"{DRIVE_FILES_URL}/ZIP1?alt=media", content=day1_zip)
+    requests_mock.get(f"{DRIVE_FILES_URL}/ZIP2?alt=media", content=day2_zip)
+
+    request = VideosImportRequestFactory(
+        source_url="https://drive.google.com/drive/folders/FOLDER_ID",
+        status=VideosImportRequest.Status.QUEUED,
+    )
+
+    imported_files = GoogleDriveProcessing(request).run()
+
+    assert set(imported_files) == {
+        "day1/recording.mp4",
+        "day1/extra/notes.txt",
+        "day2/recording.mp4",
+    }
+
+    conference_code = request.conference.code
+    root = f"conference-videos/{conference_code}"
+
+    # the two same-named recordings must both survive, one per day
+    assert storage.open(f"{root}/day1/recording.mp4").read() == b"day one"
+    assert storage.open(f"{root}/day2/recording.mp4").read() == b"day two"
+    # paths nested inside the zip keep their own structure under the prefix
+    assert storage.open(f"{root}/day1/extra/notes.txt").read() == b"one"
+
+
 def test_drive_downloads_large_files_in_ranged_parts(
     requests_mock, mocker, drive_credential
 ):
