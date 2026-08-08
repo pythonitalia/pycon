@@ -7,6 +7,7 @@ from django.conf import settings
 from django.utils import timezone
 
 DAILY_YOUTUBE_QUOTA = 10_000
+DAILY_DRIVE_QUOTA = 10_000
 
 
 class GoogleCloudOAuthCredentialQuerySet(models.QuerySet):
@@ -52,6 +53,7 @@ class GoogleCloudOAuthCredential(models.Model):
     auth_provider_x509_cert_url = models.URLField()
 
     quota_limit_for_youtube = models.IntegerField(default=DAILY_YOUTUBE_QUOTA)
+    quota_limit_for_drive = models.IntegerField(default=DAILY_DRIVE_QUOTA)
 
     objects = GoogleCloudOAuthCredentialQuerySet.as_manager()
 

@@ -1,19 +1,21 @@
+from django import forms
 from django.utils.safestring import mark_safe
 from django.contrib import admin
 from django.db import transaction
 
 from pycon.tasks import check_pending_heavy_processing_work
-from video_uploads.tasks import process_wetransfer_to_s3_transfer_request
-from video_uploads.models import WetransferToS3TransferRequest
+from video_uploads.tasks import process_videos_import_request
+from video_uploads.models import VideosImportRequest
+from video_uploads.transfer import UnsupportedVideoImportUrlError, get_processing_class
 
 
-def queue_wetransfer_to_s3_transfer_request(request_obj):
-    request_obj.status = WetransferToS3TransferRequest.Status.QUEUED
+def queue_videos_import_request(request_obj):
+    request_obj.status = VideosImportRequest.Status.QUEUED
     request_obj.failed_reason = ""
     request_obj.save(update_fields=["status", "failed_reason"])
 
     def _on_commit():
-        process_wetransfer_to_s3_transfer_request.apply_async(
+        process_videos_import_request.apply_async(
             args=[request_obj.id], queue="heavy_processing"
         )
         check_pending_heavy_processing_work.delay()
@@ -22,18 +24,35 @@ def queue_wetransfer_to_s3_transfer_request(request_obj):
 
 
 def retry_transfer(modeladmin, request, queryset):
-    for obj in queryset.exclude(status=WetransferToS3TransferRequest.Status.DONE):
-        queue_wetransfer_to_s3_transfer_request(obj)
+    for obj in queryset.exclude(status=VideosImportRequest.Status.DONE):
+        queue_videos_import_request(obj)
 
 
-@admin.register(WetransferToS3TransferRequest)
-class WetransferToS3TransferRequestAdmin(admin.ModelAdmin):
+class VideosImportRequestAdminForm(forms.ModelForm):
+    class Meta:
+        model = VideosImportRequest
+        fields = ["conference", "source_url"]
+
+    def clean_source_url(self):
+        source_url = self.cleaned_data["source_url"]
+
+        try:
+            get_processing_class(source_url)
+        except UnsupportedVideoImportUrlError as e:
+            raise forms.ValidationError(str(e)) from e
+
+        return source_url
+
+
+@admin.register(VideosImportRequest)
+class VideosImportRequestAdmin(admin.ModelAdmin):
+    form = VideosImportRequestAdminForm
     list_display = [
         "conference",
         "status",
-        "wetransfer_url",
+        "source_url",
     ]
-    search_fields = ["conference", "wetransfer_url"]
+    search_fields = ["conference", "source_url"]
     list_filter = ["conference"]
     ordering = ["-created"]
     date_hierarchy = "created"
@@ -54,7 +73,7 @@ class WetransferToS3TransferRequestAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "conference",
-                    "wetransfer_url",
+                    "source_url",
                     "start_import",
                 )
             },
@@ -77,21 +96,19 @@ class WetransferToS3TransferRequestAdmin(admin.ModelAdmin):
     def save_form(self, request, form, change):
         result = super().save_form(request, form, change)
         if "_start_transfer" in form.data:
-            transaction.on_commit(
-                lambda: queue_wetransfer_to_s3_transfer_request(form.instance)
-            )
+            transaction.on_commit(lambda: queue_videos_import_request(form.instance))
         return result
 
     def start_import(self, obj):
-        if obj.status == WetransferToS3TransferRequest.Status.PENDING:
+        if obj.status == VideosImportRequest.Status.PENDING:
             return mark_safe(
                 '<input type="submit" name="_start_transfer" value="Start import" />'
             )
         return "Already started or done."
 
     def get_readonly_fields(self, request, obj=None):
-        if obj and obj.status == WetransferToS3TransferRequest.Status.DONE:
-            return self.readonly_fields + ["conference", "wetransfer_url"]
+        if obj and obj.status == VideosImportRequest.Status.DONE:
+            return self.readonly_fields + ["conference", "source_url"]
         return super().get_readonly_fields(request, obj)
 
     def list_imported_files(self, obj):
@@ -99,6 +116,6 @@ class WetransferToS3TransferRequestAdmin(admin.ModelAdmin):
             return
 
         html = f"""<ul style="margin: 0;">
-            {"".join(f'<li>{file}</li>' for file in obj.imported_files)}
+            {"".join(f"<li>{file}</li>" for file in obj.imported_files)}
         </ul>"""
         return mark_safe(html)
