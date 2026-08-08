@@ -1,12 +1,22 @@
 import inspect
+import requests
 from google_api.exceptions import NoGoogleCloudQuotaLeftError
 from google_api.models import GoogleCloudOAuthCredential, UsedRequestQuota
 from googleapiclient.discovery import build
 from apiclient.http import MediaFileUpload
+from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
+import logging
 
+logger = logging.getLogger(__name__)
 
-GOOGLE_CLOUD_SCOPES = ["https://www.googleapis.com/auth/youtube"]
+GOOGLE_CLOUD_SCOPES = [
+    "https://www.googleapis.com/auth/youtube",
+    "https://www.googleapis.com/auth/drive.readonly",
+]
+
+DRIVE_API_URL = "https://www.googleapis.com/drive/v3"
+DRIVE_LIST_PAGE_SIZE = 1000
 
 
 def get_available_credentials(service, min_quota):
@@ -42,10 +52,15 @@ def count_quota(service: str, quota: int):
         )
 
     def wrapper(func):
+        # Callers that make several calls for one piece of work pass the
+        # credentials they already hold, so every call runs as the same Google
+        # account. Left out, each call picks its own account and the work can
+        # straddle two of them. The quota is charged either way.
         if inspect.isgeneratorfunction(func):
 
-            def wrapped(*args, **kwargs):
-                credentials = get_available_credentials(service, quota)
+            def wrapped(*args, credentials=None, **kwargs):
+                if credentials is None:
+                    credentials = get_available_credentials(service, quota)
                 try:
                     for value in func(*args, credentials=credentials, **kwargs):
                         yield value
@@ -54,8 +69,9 @@ def count_quota(service: str, quota: int):
 
         else:
 
-            def wrapped(*args, **kwargs):
-                credentials = get_available_credentials(service, quota)
+            def wrapped(*args, credentials=None, **kwargs):
+                if credentials is None:
+                    credentials = get_available_credentials(service, quota)
                 try:
                     ret_value = func(*args, credentials=credentials, **kwargs)
                 finally:
@@ -65,6 +81,70 @@ def count_quota(service: str, quota: int):
         return wrapped
 
     return wrapper
+
+
+def refreshed(credentials: Credentials) -> Credentials:
+    """Credentials rebuilt from a stored token carry no expiry, so google-auth
+    treats them as expired and credentials.token is the stale stored value.
+    googleapiclient refreshes lazily on its own; direct requests calls must not.
+    """
+    if not credentials.valid:
+        credentials.refresh(Request())
+
+    return credentials
+
+
+def drive_headers(credentials: Credentials) -> dict:
+    return {"Authorization": f"Bearer {refreshed(credentials).token}"}
+
+
+@count_quota("drive", 1)
+def get_drive_credentials(*, credentials: Credentials) -> Credentials:
+    """Refreshed credentials for callers that drive their own Drive requests."""
+    return refreshed(credentials)
+
+
+@count_quota("drive", 1)
+def drive_file_metadata(*, file_id: str, credentials: Credentials) -> dict:
+    response = requests.get(
+        f"{DRIVE_API_URL}/files/{file_id}",
+        params={
+            "fields": "id,name,size,mimeType",
+            "supportsAllDrives": "true",
+        },
+        headers=drive_headers(credentials),
+    )
+    response.raise_for_status()
+    return response.json()
+
+
+@count_quota("drive", 1)
+def drive_list_files_in_folder(*, folder_id: str, credentials: Credentials):
+    headers = drive_headers(credentials)
+    params = {
+        "q": f"'{folder_id}' in parents and trashed = false",
+        "fields": "nextPageToken,files(id,name,mimeType,size)",
+        "pageSize": DRIVE_LIST_PAGE_SIZE,
+        "supportsAllDrives": "true",
+        "includeItemsFromAllDrives": "true",
+    }
+
+    while True:
+        response = requests.get(
+            f"{DRIVE_API_URL}/files", params=params, headers=headers
+        )
+        response.raise_for_status()
+        payload = response.json()
+
+        logger.info("List files in folder %s", folder_id)
+
+        yield from payload.get("files", [])
+
+        page_token = payload.get("nextPageToken")
+        if not page_token:
+            return
+
+        params["pageToken"] = page_token
 
 
 @count_quota("youtube", 1600)
