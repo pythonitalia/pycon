@@ -1,10 +1,12 @@
 from django.contrib import admin
 
+from generic_forms.forms import FormQuestionInlineForm
 from generic_forms.models import Form, FormAnswer, FormQuestion
 
 
 class FormQuestionInline(admin.TabularInline):
     model = FormQuestion
+    form = FormQuestionInlineForm
     extra = 1
     fields = (
         "label",
