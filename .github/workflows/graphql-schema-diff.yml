@@ -1,0 +1,35 @@
+name: GraphQL schema diff
+
+on:
+  pull_request:
+    paths:
+      - "backend/schema.graphql"
+      - ".github/workflows/graphql-schema-diff.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  schema-diff:
+    name: GraphQL Inspector
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Compare schema with base branch
+        run: >-
+          npx --yes
+          --package=@graphql-inspector/cli@6.0.8
+          --package=graphql@16.14.2
+          graphql-inspector diff
+          "git:origin/${{ github.base_ref }}:backend/schema.graphql"
+          backend/schema.graphql
