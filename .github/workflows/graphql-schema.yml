@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "backend/**"
+      - ".github/scripts/fetch-graphql-schema.cjs"
       - ".github/workflows/graphql-schema.yml"
 
 permissions:
@@ -29,6 +30,16 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Install GraphQL Inspector
+        run: >-
+          npm install
+          --prefix "$RUNNER_TEMP/graphql-inspector"
+          --ignore-scripts
+          --no-save
+          --package-lock=false
+          @graphql-inspector/cli@6.0.8
+          graphql@16.14.2
+
       - name: Install uv
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
         with:
@@ -50,12 +61,16 @@ jobs:
           CELERY_BROKER_URL: ""
           CELERY_RESULT_BACKEND: ""
 
+      - name: Fetch production schema
+        run: >-
+          node .github/scripts/fetch-graphql-schema.cjs
+          https://admin.pycon.it/graphql
+          /tmp/production-schema.graphql
+        env:
+          NODE_PATH: ${{ runner.temp }}/graphql-inspector/node_modules
+
       - name: Compare schema with production
         run: >-
-          npx --yes
-          --package=@graphql-inspector/cli@6.0.8
-          --package=graphql@16.14.2
-          graphql-inspector diff
-          https://admin.pycon.it/graphql
+          "$RUNNER_TEMP/graphql-inspector/node_modules/.bin/graphql-inspector" diff
+          /tmp/production-schema.graphql
           backend/schema.graphql
-          --left-header "Content-Type: application/json"
