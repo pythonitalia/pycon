@@ -4,16 +4,14 @@ on:
   pull_request:
     paths:
       - "backend/**"
-      - ".github/scripts/fetch-graphql-schema.cjs"
       - ".github/workflows/graphql-schema.yml"
 
 permissions:
   contents: read
 
 jobs:
-  schema-diff:
-    name: GraphQL Inspector
-    if: github.event.pull_request.head.repo.full_name == github.repository
+  schema:
+    name: Generated schema is up to date
     runs-on: ubuntu-24.04
 
     steps:
@@ -25,20 +23,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13.5"
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: "24"
-
-      - name: Install GraphQL Inspector
-        run: >-
-          npm install
-          --prefix "$RUNNER_TEMP/graphql-inspector"
-          --ignore-scripts
-          --no-save
-          --package-lock=false
-          @graphql-inspector/cli@6.0.8
-          graphql@16.14.2
 
       - name: Install uv
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
@@ -61,23 +45,5 @@ jobs:
           CELERY_BROKER_URL: ""
           CELERY_RESULT_BACKEND: ""
 
-      - name: Upload generated schema
-        uses: actions/upload-artifact@v4
-        with:
-          name: graphql-schema
-          path: backend/schema.graphql
-          retention-days: 1
-
-      - name: Fetch production schema
-        run: >-
-          node .github/scripts/fetch-graphql-schema.cjs
-          https://admin.pycon.it/graphql
-          /tmp/production-schema.graphql
-        env:
-          NODE_PATH: ${{ runner.temp }}/graphql-inspector/node_modules
-
-      - name: Compare schema with production
-        run: >-
-          "$RUNNER_TEMP/graphql-inspector/node_modules/.bin/graphql-inspector" diff
-          /tmp/production-schema.graphql
-          backend/schema.graphql
+      - name: Check committed schema
+        run: git diff --exit-code -- backend/schema.graphql
