@@ -2,6 +2,7 @@ name: GraphQL schema diff
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, edited]
     paths:
       - "backend/schema.graphql"
       - ".github/workflows/graphql-schema-diff.yml"
