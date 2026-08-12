@@ -26,11 +26,21 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Load base schema
+        id: base-schema
+        run: |
+          if git show "${{ github.event.pull_request.base.sha }}:backend/schema.graphql" > "$RUNNER_TEMP/base-schema.graphql"; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::The base commit has no committed GraphQL schema; skipping the initial baseline."
+          fi
+
       - name: Compare schema with base branch
+        if: steps.base-schema.outputs.available == 'true'
         run: >-
           npx --yes
           --package=@graphql-inspector/cli@6.0.8
           --package=graphql@16.14.2
           graphql-inspector diff
-          "git:origin/${{ github.base_ref }}:backend/schema.graphql"
+          "$RUNNER_TEMP/base-schema.graphql"
           backend/schema.graphql
