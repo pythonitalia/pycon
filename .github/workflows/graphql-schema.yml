@@ -61,6 +61,13 @@ jobs:
           CELERY_BROKER_URL: ""
           CELERY_RESULT_BACKEND: ""
 
+      - name: Upload generated schema
+        uses: actions/upload-artifact@v4
+        with:
+          name: graphql-schema
+          path: backend/schema.graphql
+          retention-days: 1
+
       - name: Fetch production schema
         run: >-
           node .github/scripts/fetch-graphql-schema.cjs
