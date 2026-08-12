@@ -8,8 +8,6 @@ on:
 
 permissions:
   contents: read
-  checks: write
-  pull-requests: read
 
 jobs:
   schema-diff:
@@ -26,6 +24,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13.5"
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
 
       - name: Install uv
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
@@ -49,11 +51,11 @@ jobs:
           CELERY_RESULT_BACKEND: ""
 
       - name: Compare schema with production
-        uses: graphql-hive/graphql-inspector@ea2e18d7a8e561c6f37b9f3c03af6dd0b48de004
-        with:
-          name: GraphQL schema
-          schema: backend/schema.graphql
-          endpoint: https://admin.pycon.it/graphql
-          annotations: false
-          fail-on-breaking: true
-          experimental_merge: false
+        run: >-
+          npx --yes
+          --package=@graphql-inspector/cli@6.0.8
+          --package=graphql@16.14.2
+          graphql-inspector diff
+          https://admin.pycon.it/graphql
+          backend/schema.graphql
+          --left-header "Content-Type: application/json"
