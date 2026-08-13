@@ -112,7 +112,7 @@ type BillingAddress {
   pec: String!
 }
 
-union Block = HomeIntroSection | SponsorsSection | CheckoutSection | SchedulePreviewSection | HomepageHero | SliderCardsSection | CommunitiesSection | SocialsSection | LiveStreamingSection | TextSection | SpecialGuestSection | KeynotersSection | DynamicContentDisplaySection | InformationSection | NewsGridSection | CMSMap
+union Block = CMSMap | HomeIntroSection | NewsGridSection | CheckoutSection | CommunitiesSection | DynamicContentDisplaySection | HomepageHero | InformationSection | KeynotersSection | LiveStreamingSection | SchedulePreviewSection | SliderCardsSection | SocialsSection | SpecialGuestSection | SponsorsSection | TextSection
 
 enum BodyTextSize {
   TEXT_1
