@@ -1,8 +1,10 @@
-import strawberry
+import strawberry_django
+from schedule import models
+from strawberry import auto
 
 
-@strawberry.type
+@strawberry_django.type(models.Room)
 class Room:
-    id: strawberry.ID
-    name: str
+    id: auto
+    name: auto
     type: str

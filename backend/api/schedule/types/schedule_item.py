@@ -1,4 +1,13 @@
 from api.context import Info
+from api.schedule.optimization import (
+    ATTENDEES_COUNT_ANNOTATION,
+    CAPACITY_ANNOTATION,
+    USER_HAS_SPOT_ANNOTATION,
+    attendees_count_annotation,
+    capacity_annotation,
+    schedule_item_speakers,
+    user_has_spot_annotation,
+)
 from api.participants.types import Participant
 from participants.models import Participant as ParticipantModel
 from typing import TYPE_CHECKING
@@ -9,32 +18,47 @@ from typing import Annotated
 from api.schedule.types.schedule_item_user import ScheduleItemUser
 from api.submissions.types import Submission
 import strawberry
+import strawberry_django
+from schedule import models
+from strawberry import auto
 from api.schedule.types.room import Room
 
 if TYPE_CHECKING:  # pragma: no cover
     from api.conferences.types import AudienceLevel, Conference, Keynote
 
 
-@strawberry.type
+def _capacity(schedule_item) -> int | None:
+    if CAPACITY_ANNOTATION in schedule_item.__dict__:
+        return getattr(schedule_item, CAPACITY_ANNOTATION)
+    return schedule_item.actual_attendees_total_capacity
+
+
+def _attendees_count(schedule_item) -> int:
+    if ATTENDEES_COUNT_ANNOTATION in schedule_item.__dict__:
+        return getattr(schedule_item, ATTENDEES_COUNT_ANNOTATION)
+    return schedule_item.attendees.count()
+
+
+@strawberry_django.type(models.ScheduleItem)
 class ScheduleItem:
-    id: strawberry.ID
+    id: auto
     conference: Annotated["Conference", strawberry.lazy("api.conferences.types")]
-    title: str
+    title: auto
     start: datetime
     end: datetime
-    status: str
+    status: auto
     submission: Submission | None
     slug: str
-    description: str
+    description: auto
     type: str
-    duration: int | None
+    duration: auto
     highlight_color: str | None
     language: Language
     audience_level: (
         Annotated["AudienceLevel", strawberry.lazy("api.conferences.types")] | None
     )
     youtube_video_id: str | None
-    link_to: str
+    link_to: auto
 
     abstract: str
     elevator_pitch: str
@@ -43,26 +67,45 @@ class ScheduleItem:
     )
     livestreaming_room: Room | None
 
-    @strawberry.field
+    @strawberry_django.field(
+        annotate={CAPACITY_ANNOTATION: capacity_annotation},
+    )
     def has_limited_capacity(self) -> bool:
-        return self.actual_attendees_total_capacity is not None
+        return _capacity(self) is not None
 
-    @strawberry.field
+    @strawberry_django.field(
+        annotate={
+            ATTENDEES_COUNT_ANNOTATION: attendees_count_annotation,
+            CAPACITY_ANNOTATION: capacity_annotation,
+        },
+    )
     def has_spaces_left(self) -> bool:
-        if self.actual_attendees_total_capacity is None:
+        capacity = _capacity(self)
+        if capacity is None:
             return True
 
-        return self.actual_attendees_total_capacity - self.attendees.count() > 0
+        return capacity - _attendees_count(self) > 0
 
-    @strawberry.field
+    @strawberry_django.field(
+        annotate={
+            ATTENDEES_COUNT_ANNOTATION: attendees_count_annotation,
+            CAPACITY_ANNOTATION: capacity_annotation,
+        },
+    )
     def spaces_left(self) -> int:
-        if self.actual_attendees_total_capacity is None:
+        capacity = _capacity(self)
+        if capacity is None:
             return 0
 
-        return self.actual_attendees_total_capacity - self.attendees.count()
+        return capacity - _attendees_count(self)
 
-    @strawberry.field
+    @strawberry_django.field(
+        annotate={USER_HAS_SPOT_ANNOTATION: user_has_spot_annotation},
+    )
     def user_has_spot(self, info: Info) -> bool:
+        if USER_HAS_SPOT_ANNOTATION in self.__dict__:
+            return getattr(self, USER_HAS_SPOT_ANNOTATION)
+
         user_id = info.context.request.user.id
         return self.attendees.filter(user_id=user_id).exists()
 
@@ -83,12 +126,14 @@ class ScheduleItem:
             participants_data = {
                 participant.user_id: participant
                 for participant in ParticipantModel.objects.filter(
-                    user_id__in=[speaker.id for speaker in self.speakers],
+                    user_id__in=[
+                        speaker.id for speaker in schedule_item_speakers(self)
+                    ],
                     conference_id=self.conference_id,
                 )
             }
 
-        for speaker in self.speakers:
+        for speaker in schedule_item_speakers(self):
             speakers.append(
                 ScheduleItemUser(
                     id=speaker.id,

@@ -8,6 +8,9 @@ from api.schedule.types.schedule_item import ScheduleItem
 
 
 import strawberry
+import strawberry_django
+from schedule import models
+from strawberry import auto
 
 
 @strawberry.enum
@@ -17,11 +20,11 @@ class ScheduleSlotType(Enum):
     BREAK = "break"
 
 
-@strawberry.type
+@strawberry_django.type(models.Slot)
 class ScheduleSlot:
-    id: strawberry.ID
-    hour: time
-    duration: int
+    id: auto
+    hour: auto
+    duration: auto
     type: ScheduleSlotType
 
     @strawberry.field

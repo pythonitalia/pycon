@@ -2,16 +2,19 @@ from api.context import Info
 from schedule.models import ScheduleItem as ScheduleItemModel
 from api.schedule.types.schedule_item import ScheduleItem
 from django.utils import timezone
-from datetime import date, timedelta
+from datetime import timedelta
 from api.schedule.types.day_room import DayRoom
 from api.schedule.types.slot import ScheduleSlot
 import strawberry
+import strawberry_django
+from schedule import models
+from strawberry import auto
 
 
-@strawberry.type
+@strawberry_django.type(models.Day)
 class Day:
-    id: strawberry.ID
-    day: date
+    id: auto
+    day: auto
 
     @strawberry.field
     def random_events(self, limit: int = 4) -> list[ScheduleItem]:
