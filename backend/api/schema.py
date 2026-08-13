@@ -1,4 +1,5 @@
 import strawberry
+from strawberry_django.optimizer import DjangoOptimizerExtension
 
 from api.participants.mutations import ParticipantMutations
 from .users.mutations import UsersMutations
@@ -70,4 +71,8 @@ class Mutation(
     pass
 
 
-schema = strawberry.Schema(query=Query, mutation=Mutation)
+schema = strawberry.Schema(
+    query=Query,
+    mutation=Mutation,
+    extensions=[DjangoOptimizerExtension],
+)

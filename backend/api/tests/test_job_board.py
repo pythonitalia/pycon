@@ -25,13 +25,14 @@ def _query_job_board(client, conference):
 
 
 @mark.django_db
-def test_query_job_board(rf, graphql_client):
+def test_query_job_board(rf, graphql_client, django_assert_num_queries):
     listing = JobListingFactory()
     JobListingFactory(conference=ConferenceFactory())
 
     request = rf.get("/")
 
-    resp = _query_job_board(graphql_client, conference=listing.conference.code)
+    with django_assert_num_queries(1):
+        resp = _query_job_board(graphql_client, conference=listing.conference.code)
 
     assert len(resp["data"]["jobListings"]) == 1
 
