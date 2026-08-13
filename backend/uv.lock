@@ -273,7 +273,7 @@ requires-dist = [
     { name = "scikit-learn", specifier = ">=1.5.0" },
     { name = "sentence-transformers", specifier = ">=3.0.0" },
     { name = "sentry-sdk", specifier = ">=2.14.0" },
-    { name = "strawberry-graphql", specifier = "==0.318.1" },
+    { name = "strawberry-graphql", specifier = "==0.324.0" },
     { name = "stripe", specifier = "==10.5.0" },
     { name = "tinycss2", specifier = ">=1.4.0" },
     { name = "torch", specifier = ">=2.12.1", index = "https://download.pytorch.org/whl/cpu" },
@@ -3092,7 +3092,7 @@ wheels = [
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.318.1"
+version = "0.324.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cross-web" },
@@ -3101,9 +3101,9 @@ dependencies = [
     { name = "python-dateutil" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/55/3f/21dec16d4088d1f8141885e5a04da3b732f5c294d1a334174d1391a3139e/strawberry_graphql-0.318.1.tar.gz", hash = "sha256:8eb21d16f8847d156e445fd3b9d9fb0ac40a2646accea4cb7ac9ef5aad03265b", size = 226803 }
+sdist = { url = "https://files.pythonhosted.org/packages/6b/f9/7e121f55c93864cbedf2bbcf8920e2456da3adf05d9f3eef101db6633fec/strawberry_graphql-0.324.0.tar.gz", hash = "sha256:4eb6decf0c33524374f24e07ff6d1915da26655a49fa6f656544c293404e2d35", size = 235911 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f6/66/5913d3ba9dc693db71f6381fdb623727680dd17bd2c701175a9b6b86cb1e/strawberry_graphql-0.318.1-py3-none-any.whl", hash = "sha256:9199c84bd249e9ea339c5b38b2b857e225924e4eb3114c406789d86e6f457bb6", size = 329398 },
+    { url = "https://files.pythonhosted.org/packages/bc/56/52b78a3e8de057aadc42f61c82727a914fbb95accc6aae1b5ff0d54e43c9/strawberry_graphql-0.324.0-py3-none-any.whl", hash = "sha256:08c8b3256a1c909c7721f3c1d8e161ac40505ca14991c39d8492898b17e77b6d", size = 338683 },
 ]
 
 [[package]]
