@@ -1,0 +1,1836 @@
+directive @oneOf on INPUT_OBJECT
+
+type Accordion {
+  title: String!
+  body: String!
+  isOpen: Boolean!
+}
+
+enum AgeGroup {
+  range_under_18
+  range_18_24
+  range_25_34
+  range_35_44
+  range_45_54
+  range_55_64
+  range_more_than_65
+}
+
+type AlreadySubscribed {
+  message: String!
+}
+
+type Answer {
+  answer: String!
+  options: [String!]
+}
+
+input AnswerInput {
+  answer: String!
+  question: ID!
+  options: [ID!] = null
+}
+
+type AnswerInputError {
+  answer: [String!]!
+  question: [String!]!
+  options: [String!]!
+  nonFieldErrors: [String!]!
+}
+
+type Attendee {
+  fullName: String!
+  email: String!
+}
+
+type AttendeeName {
+  parts: JSON!
+  scheme: String!
+}
+
+input AttendeeNameInput {
+  parts: JSON!
+  scheme: String!
+}
+
+type AttendeeNameInputError {
+  givenName: [String!]!
+  familyName: [String!]!
+  nonFieldErrors: [String!]!
+}
+
+type AttendeeTicket {
+  id: ID!
+  hashid: ID!
+  attendeeName: AttendeeName
+  attendeeEmail: String
+  secret: String!
+  variation: ID
+  item: TicketItem!
+  role: ConferenceRole
+}
+
+type AudienceLevel {
+  id: ID!
+  name: String!
+}
+
+union AvailableCards = SimpleTextCard | PriceCard
+
+type BadgeScan {
+  id: ID!
+  notes: String!
+  attendee: Attendee!
+  created: DateTime!
+}
+
+type BadgeScanExport {
+  id: ID!
+  url: String!
+}
+
+type BadgeScanPaginated {
+  pageInfo: PageInfo!
+  items: [BadgeScan!]!
+}
+
+union BadgeScanScanError = BadgeScan | ScanError
+
+type BillingAddress {
+  id: ID!
+  isBusiness: Boolean!
+  companyName: String!
+  userGivenName: String!
+  userFamilyName: String!
+  zipCode: String!
+  city: String!
+  address: String!
+  country: String!
+  vatId: String!
+  fiscalCode: String!
+  sdi: String!
+  pec: String!
+}
+
+union Block = NewsGridSection | CommunitiesSection | SliderCardsSection | SponsorsSection | SchedulePreviewSection | TextSection | DynamicContentDisplaySection | SpecialGuestSection | LiveStreamingSection | InformationSection | CheckoutSection | SocialsSection | KeynotersSection | HomepageHero | HomeIntroSection | CMSMap
+
+enum BodyTextSize {
+  TEXT_1
+  TEXT_2
+}
+
+union BookScheduleItemResult = ScheduleItem | ScheduleItemIsFull | UserNeedsConferenceTicket | UserIsAlreadyBooked | ScheduleItemNotBookable
+
+type CMSMap {
+  id: ID!
+  latitude: Decimal!
+  longitude: Decimal!
+  link: String!
+  zoom: Int!
+  image(width: Int! = 1280, height: Int! = 400): String!
+}
+
+type CTA {
+  label: String!
+  link: String!
+}
+
+union CancelBookingScheduleItemResult = ScheduleItem | UserIsNotBooked | ScheduleItemNotBookable
+
+input ChangeScheduleItemSlotInput {
+  conferenceId: ID!
+  scheduleItemId: ID!
+  newSlotId: ID
+  rooms: [ID!]!
+}
+
+type ChecklistItem {
+  id: ID!
+  text: String!
+}
+
+enum CheckoutCategory {
+  TICKETS
+  SOCIAL_EVENTS
+  TOURS
+  GADGETS
+  MEMBERSHIP
+}
+
+type CheckoutSection {
+  id: ID!
+  visibleCategories: [CheckoutCategory!]!
+}
+
+type CheckoutSession {
+  stripeSessionId: String!
+}
+
+type CommunitiesSection {
+  id: ID!
+  title: String!
+  communities: [Community!]!
+}
+
+type Community {
+  name: String!
+  description: String!
+  logo: String
+  bannerPhoto: String
+  bannerBackgroundColor: String
+  mastodonUrl: String
+  facebookUrl: String
+  instagramUrl: String
+  linkedinUrl: String
+  twitterUrl: String
+  websiteUrl: String
+}
+
+type Conference {
+  id: ID!
+  name(language: String = null): String!
+  introduction(language: String = null): String!
+  code: String!
+  hostname: String!
+  start: DateTime!
+  end: DateTime!
+  map: Map
+  pretixEventUrl: String!
+  voucher(code: String!): Voucher
+  timezone: String!
+  tickets(language: String!, showUnavailableTickets: Boolean! = false): [TicketItem!]!
+  deadlines: [Deadline!]!
+  isCFPOpen: Boolean!
+  isVotingOpen: Boolean!
+  isVotingClosed: Boolean!
+  deadline(type: String!): Deadline
+  form(purpose: FormPurpose!): Form
+  audienceLevels: [AudienceLevel!]!
+  topics: [Topic!]!
+  languages: [Language!]!
+  durations: [Duration!]!
+  submissionTypes: [SubmissionType!]!
+  proposalTags: [SubmissionTag!]!
+  submissions: [Submission!]
+  events: [Event!]!
+  faqs: [FAQ!]!
+  sponsorsByLevel: [SponsorsByLevel!]!
+  copy(key: String!, language: String = null): String
+  menu(identifier: String!): Menu
+  keynotes: [Keynote!]!
+  keynote(slug: String!): Keynote
+  talks: [ScheduleItem!]!
+  talk(slug: String!): ScheduleItem
+  ranking(topic: ID!): RankRequest
+  days: [Day!]!
+  currentDay: Day
+  isRunning: Boolean!
+  sponsorBenefits: [SponsorBenefit!]!
+  sponsorLevels: [SponsorLevel!]!
+  sponsorSpecialOptions: [SponsorSpecialOption!]!
+}
+
+enum ConferenceRole {
+  ATTENDEE
+  STAFF
+  SPEAKER
+  SPONSOR
+  KEYNOTER
+  DJANGO_GIRLS
+}
+
+type Country {
+  code: String!
+  name: String!
+}
+
+type CreateOrderErrors {
+  errors: Createordererrors!
+}
+
+input CreateOrderInput {
+  email: String!
+  locale: String!
+  paymentProvider: String!
+  invoiceInformation: InvoiceInformation!
+  tickets: [CreateOrderTicket!]!
+}
+
+type CreateOrderResult {
+  paymentUrl: String!
+}
+
+union CreateOrderResultCreateOrderErrors = CreateOrderResult | CreateOrderErrors
+
+input CreateOrderTicket {
+  ticketId: String!
+  attendeeName: AttendeeNameInput!
+  attendeeEmail: String!
+  variation: String = null
+  answers: [CreateOrderTicketAnswer!] = null
+  voucher: String = null
+}
+
+input CreateOrderTicketAnswer {
+  questionId: String!
+  value: String!
+}
+
+type CreateOrderTicketErrors {
+  attendeeName: AttendeeNameInputError!
+  attendeeEmail: [String!]!
+}
+
+input CreateScheduleItemInput {
+  conferenceId: ID!
+  type: String!
+  slotId: ID!
+  rooms: [ID!]!
+  languageId: ID = null
+  proposalId: ID = null
+  keynoteId: ID = null
+  title: String = ""
+}
+
+input CreateScheduleSlotInput {
+  conferenceId: ID!
+  dayId: ID!
+  duration: Int!
+  type: String!
+}
+
+type Createordererrors {
+  invoiceInformation: InvoiceInformationErrors!
+  tickets: [CreateOrderTicketErrors!]!
+  nonFieldErrors: [String!]!
+}
+
+type CustomerPortalResponse {
+  billingPortalUrl: String!
+}
+
+union CustomerPortalResult = CustomerPortalResponse | NoSubscription | NotSubscribedViaStripe
+
+"""Date (isoformat)"""
+scalar Date
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+type Day {
+  id: ID!
+  day: Date!
+  randomEvents(limit: Int! = 4): [ScheduleItem!]!
+  slots(room: ID = null): [ScheduleSlot!]!
+  runningEvents: [ScheduleItem!]!
+  rooms: [DayRoom!]!
+}
+
+type DayRoom {
+  id: ID!
+  name: String!
+  type: String!
+  streamingUrl: String!
+  slidoUrl: String!
+}
+
+type Deadline {
+  id: ID!
+  type: String!
+  name(language: String = null): String!
+  description(language: String = null): String!
+  start: DateTime!
+  end: DateTime!
+  status: DeadlineStatus!
+}
+
+enum DeadlineStatus {
+  IN_THE_FUTURE
+  HAPPENING_NOW
+  IN_THE_PAST
+}
+
+"""Decimal (fixed-point)"""
+scalar Decimal
+
+type Duration {
+  id: ID!
+  conference: Conference!
+  name: String!
+  duration: Int!
+  notes: String!
+  allowedSubmissionTypes: [SubmissionType!]!
+}
+
+type DynamicContentDisplaySection {
+  id: ID!
+  source: DynamicContentDisplaySectionSource!
+}
+
+enum DynamicContentDisplaySectionSource {
+  speakers
+  keynoters
+  proposals
+}
+
+type EmailAlreadyUsed {
+  message: String!
+}
+
+type Event {
+  id: ID!
+  conference: Conference!
+  title(language: String = null): String!
+  slug(language: String = null): String!
+  content(language: String = null): String!
+  map: Map
+  image: String
+  locationName: String
+  start: DateTime!
+  end: DateTime!
+}
+
+type FAQ {
+  id: ID!
+  question(language: String = null): String!
+  answer(language: String = null): String!
+}
+
+type File {
+  id: ID!
+  url: String!
+  virus: Boolean
+  mimeType: String
+}
+
+type FileUploadRequest {
+  id: ID!
+  uploadUrl: String!
+  fields: String!
+}
+
+input FinalizeUploadInput {
+  fileId: ID!
+}
+
+type Form {
+  id: ID!
+  name: String!
+  questions: [FormQuestion!]!
+}
+
+type FormNotAvailable {
+  message: String!
+}
+
+enum FormPurpose {
+  GRANT
+  GENERIC
+}
+
+type FormQuestion {
+  id: ID!
+  label: String!
+  description: String!
+  questionType: FormQuestionType!
+  required: Boolean!
+  maxLength: Int
+  options: [FormQuestionOption!]!
+}
+
+type FormQuestionOption {
+  id: String!
+  label: String!
+}
+
+enum FormQuestionType {
+  TEXT
+  TEXTAREA
+  SELECT
+  MULTI_SELECT
+  BOOLEAN
+  URL
+}
+
+type GenericPage {
+  id: ID!
+  title: String!
+  searchDescription: String!
+  slug: String!
+  body: [Block!]!
+}
+
+type GenericPagePreview {
+  genericPage: GenericPage!
+}
+
+union GenericPagePreviewNewsArticlePreview = GenericPagePreview | NewsArticlePreview
+
+union GenericPageSiteNotFoundError = GenericPage | SiteNotFoundError
+
+type Grant {
+  id: ID!
+  status: Status!
+  name: String!
+  fullName: String!
+  ageGroup: AgeGroup
+  gender: String!
+  occupation: Occupation!
+  grantType: [GrantType!]!
+  pythonUsage: String!
+  communityContribution: String!
+  beenToOtherEvents: String!
+  needsFundsForTravel: Boolean!
+  needVisa: Boolean!
+  needAccommodation: Boolean!
+  why: String!
+  notes: String!
+  departureCountry: String
+  nationality: String
+  departureCity: String
+  applicantReplyDeadline: DateTime
+  formAnswers: JSON
+}
+
+type GrantErrors {
+  errors: Granterrors!
+}
+
+enum GrantType {
+  diversity
+  unemployed
+  speaker
+}
+
+type Granterrors {
+  instance: [String!]!
+  name: [String!]!
+  fullName: [String!]!
+  conference: [String!]!
+  ageGroup: [String!]!
+  gender: [String!]!
+  occupation: [String!]!
+  grantType: [String!]!
+  pythonUsage: [String!]!
+  communityContribution: [String!]!
+  beenToOtherEvents: [String!]!
+  needsFundsForTravel: [String!]!
+  needVisa: [String!]!
+  needAccommodation: [String!]!
+  why: [String!]!
+  notes: [String!]!
+  departureCountry: [String!]!
+  nationality: [String!]!
+  departureCity: [String!]!
+  nonFieldErrors: [String!]!
+  participantBio: [String!]!
+  participantWebsite: [String!]!
+  participantTwitterHandle: [String!]!
+  participantInstagramHandle: [String!]!
+  participantLinkedinUrl: [String!]!
+  participantFacebookUrl: [String!]!
+  participantMastodonHandle: [String!]!
+  answersErrors: JSON!
+}
+
+type HomeIntroSection {
+  id: ID!
+  pretitle: String!
+  title: String!
+}
+
+type HomepageHero {
+  id: ID!
+  city: HomepageHeroCity
+}
+
+enum HomepageHeroCity {
+  FLORENCE
+  BOLOGNA
+}
+
+type InformationSection {
+  id: ID!
+  title: String!
+  body: String!
+  illustration: String!
+  backgroundColor: String!
+  countdownToDatetime: DateTime
+  countdownToDeadline: String
+  cta: CTA
+}
+
+type InvitationLetterAlreadyRequested {
+  message: String!
+}
+
+type InvitationLetterDocument {
+  id: ID!
+  dynamicDocument: InvitationLetterDocumentStructure!
+}
+
+type InvitationLetterDocumentNotEditable {
+  message: String!
+}
+
+type InvitationLetterDocumentPage {
+  id: ID!
+  title: String!
+  content: String!
+}
+
+type InvitationLetterDocumentPageLayout {
+  margin: String!
+}
+
+type InvitationLetterDocumentRunningPart {
+  content: String!
+  align: String!
+  margin: String!
+}
+
+type InvitationLetterDocumentStructure {
+  header: InvitationLetterDocumentRunningPart!
+  footer: InvitationLetterDocumentRunningPart!
+  pageLayout: InvitationLetterDocumentPageLayout!
+  pages: [InvitationLetterDocumentPage!]!
+}
+
+enum InvitationLetterOnBehalfOf {
+  SELF
+  OTHER
+}
+
+type InvitationLetterRequest {
+  id: ID!
+  status: InvitationLetterRequestStatus!
+}
+
+enum InvitationLetterRequestStatus {
+  PENDING
+  SENT
+  REJECTED
+}
+
+input InvoiceInformation {
+  isBusiness: Boolean!
+  company: String
+  givenName: String!
+  familyName: String!
+  street: String!
+  zipcode: String!
+  city: String!
+  country: String!
+  vatId: String!
+  fiscalCode: String!
+  pec: String = null
+  sdi: String = null
+}
+
+type InvoiceInformationErrors {
+  company: [String!]!
+  givenName: [String!]!
+  familyName: [String!]!
+  street: [String!]!
+  zipcode: [String!]!
+  city: [String!]!
+  country: [String!]!
+  vatId: [String!]!
+  fiscalCode: [String!]!
+  pec: [String!]!
+  sdi: [String!]!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf).
+"""
+scalar JSON @specifiedBy(url: "https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf")
+
+type JobListing {
+  id: ID!
+  title: String!
+  slug: String!
+  description: String!
+  company: String!
+  applyUrl: String!
+  companyLogo: String
+}
+
+type Keynote {
+  id: ID!
+  title(language: String = null): String!
+  description(language: String = null): String!
+  slug(language: String = null): String!
+  topic: Topic
+  speakers: [ScheduleItemUser!]!
+  start: DateTime
+  end: DateTime
+  rooms: [Room!]!
+  youtubeVideoId: String
+}
+
+type KeynotersSection {
+  id: ID!
+  title: String!
+  cta: CTA
+}
+
+type Language {
+  id: ID!
+  code: String!
+  name: String!
+}
+
+type LiveStreamingSection {
+  id: ID!
+}
+
+type LoginErrors {
+  errors: Loginerrors!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+union LoginResult = LoginSuccess | LoginErrors | WrongEmailOrPassword
+
+type LoginSuccess {
+  user: User!
+}
+
+type Loginerrors {
+  email: [String!]!
+  password: [String!]!
+}
+
+type Map {
+  id: ID!
+  latitude: Decimal!
+  longitude: Decimal!
+  link: String
+  image(width: Int = 1280, height: Int = 400, zoom: Int = 15): String!
+}
+
+type Menu {
+  title(language: String = null): String!
+  links: [MenuLink!]!
+}
+
+type MenuLink {
+  href(language: String = null): String!
+  title(language: String = null): String!
+  isPrimary: Boolean!
+  page: Page
+}
+
+input MultiLingualInput {
+  en: String! = ""
+  it: String! = ""
+}
+
+type MultiLingualString {
+  it: String!
+  en: String!
+}
+
+type Mutation {
+  updateSubmission(input: UpdateSubmissionInput!): UpdateSubmissionOutput!
+  sendSubmission(input: SendSubmissionInput!): SendSubmissionOutput!
+  sendVote(input: SendVoteInput!): SendVoteOutput!
+  createOrder(conference: String!, input: CreateOrderInput!): CreateOrderResultCreateOrderErrors!
+  sendGrant(input: SendGrantInput!): SendGrantResult!
+  updateGrant(input: UpdateGrantInput!): UpdateGrantResult!
+  sendGrantReply(input: SendGrantReplyInput!): SendGrantReplyResult!
+  subscribeToNewsletter(input: SubscribeToNewsletterInput!): SubscribeToNewsletterOutput!
+  bookScheduleItem(id: ID!): BookScheduleItemResult!
+  cancelBookingScheduleItem(id: ID!): CancelBookingScheduleItemResult!
+  starScheduleItem(id: ID!): OperationSuccess!
+  unstarScheduleItem(id: ID!): OperationSuccess!
+  updateScheduleInvitation(input: UpdateScheduleInvitationInput!): ScheduleInvitationNotFoundScheduleInvitation!
+  changeScheduleItemSlot(input: ChangeScheduleItemSlotInput!): [ScheduleSlot!]!
+  createScheduleItem(input: CreateScheduleItemInput!): ScheduleSlot!
+  createScheduleSlot(input: CreateScheduleSlotInput!): Day!
+  updateAttendeeTicket(conference: String!, input: UpdateAttendeeTicketInput!, language: String! = "en"): UpdateAttendeeTicketResult!
+  registerVolunteerDevice(deviceToken: String!, platform: Platform!): Boolean!
+  uploadFile(input: UploadFileInput!): UploadFileOutput!
+  finalizeUpload(input: FinalizeUploadInput!): File!
+  scanBadge(input: ScanBadgeInput!): BadgeScanScanError!
+  updateBadgeScan(input: UpdateBadgeScanInput!): BadgeScanScanError!
+  exportBadgeScans(conferenceCode: String!): BadgeScanExport!
+  updateParticipant(input: UpdateParticipantInput!): UpdateParticipantResult!
+  login(input: LoginInput!): LoginResult!
+  register(input: RegisterInput!): RegisterResult!
+  updateProfile(input: UpdateProfileInput!): UpdateProfileResult!
+  resetPassword(input: ResetPasswordInput!): ResetPasswordResult!
+  requestResetPassword(email: String!): RequestResetPasswordResult!
+  logout: OperationSuccess!
+  manageUserSubscription: CustomerPortalResult!
+  subscribeUserToAssociation: SubscribeUserResult!
+  sendSponsorLead(input: SendSponsorLeadInput!): SendSponsorLeadOutput!
+  updateInvitationLetterDocument(input: UpdateInvitationLetterDocumentInput!): UpdateInvitationLetterDocumentResult!
+  requestInvitationLetter(input: RequestInvitationLetterInput!): RequestInvitationLetterResult!
+}
+
+type NewsArticle {
+  id: ID!
+  title: String!
+  slug: String!
+  excerpt: String!
+  body: String!
+  publishedAt: DateTime
+  authorFullname: String!
+}
+
+type NewsArticlePreview {
+  newsArticle: NewsArticle!
+}
+
+type NewsGridSection {
+  id: ID!
+}
+
+type NewsletterSubscribeResult {
+  status: NewsletterSubscriptionResult!
+}
+
+enum NewsletterSubscriptionResult {
+  SUBSCRIBED
+  WAITING_CONFIRMATION
+  UNABLE_TO_SUBSCRIBE
+  OPT_IN_FORM_REQUIRED
+}
+
+type NoAdmissionTicket {
+  message: String!
+}
+
+type NoSubscription {
+  message: String!
+}
+
+type NotFound {
+  message: String!
+}
+
+type NotSubscribedViaStripe {
+  message: String!
+}
+
+type Notification {
+  id: ID!
+  title: String!
+  body: String!
+  sentAt: DateTime!
+}
+
+enum Occupation {
+  developer
+  student
+  researcher
+  unemployed
+  other
+}
+
+type OperationResult {
+  ok: Boolean!
+}
+
+type OperationSuccess {
+  ok: Boolean!
+}
+
+type Option {
+  id: ID!
+  name: String!
+}
+
+type Page {
+  id: ID!
+  title(language: String = null): String!
+  slug(language: String = null): String!
+  content(language: String = null): String!
+  excerpt: String
+  image: String
+}
+
+type PageInfo {
+  totalPages: Int!
+  totalItems: Int!
+  pageSize: Int!
+}
+
+type Participant {
+  id: ID!
+  bio: String!
+  website: String!
+  photoId: String
+  publicProfile: Boolean!
+  twitterHandle: String!
+  instagramHandle: String!
+  linkedinUrl: String!
+  facebookUrl: String!
+  mastodonHandle: String!
+  fullname: String!
+  proposals: [Submission!]!
+  speakerAvailabilities: JSON
+  speakerLevel: String
+  previousTalkVideo: String
+  photo(size: String! = "default"): String
+}
+
+input ParticipantAvatarInput {
+  filename: String!
+  conferenceCode: String!
+}
+
+enum Platform {
+  ANDROID
+  IOS
+}
+
+type PretixOrder {
+  code: String!
+  status: PretixOrderStatus!
+  total: String!
+  url: String!
+  email: String!
+}
+
+enum PretixOrderStatus {
+  PENDING
+  PAID
+  EXPIRED
+  CANCELED
+}
+
+type PriceCard {
+  title: String!
+  body: String!
+  price: String!
+  priceTier: String!
+  cta: CTA
+}
+
+type ProductVariation {
+  id: ID!
+  value: String!
+  description: String!
+  active: Boolean!
+  defaultPrice: String!
+  quantityLeft: Int
+  soldOut: Boolean
+}
+
+type ProposalMaterial {
+  id: ID!
+  name: String!
+  url: String
+  fileId: String
+  fileUrl: String
+  fileMimeType: String
+}
+
+type ProposalMaterialErrors {
+  fileId: [String!]!
+  url: [String!]!
+  id: [String!]!
+}
+
+input ProposalMaterialInput {
+  filename: String!
+  proposalId: ID!
+  conferenceCode: String!
+}
+
+type Query {
+  conference(code: String!): Conference!
+  submission(id: ID!): Submission
+  submissions(code: String!, languages: [String!] = null, voted: Boolean = null, tags: [String!] = null, types: [String!] = null, audienceLevels: [String!] = null, page: Int = 1, pageSize: Int = 50, onlyAccepted: Boolean! = false): SubmissionPaginated
+  submissionTags: [SubmissionTag!]!
+  votingTags(conference: String!): [SubmissionTag!]!
+  pages(code: String!): [Page!]!
+  page(code: String!, slug: String!): Page
+  countries: [Country!]!
+  country(code: String! = ""): Country!
+  order(conferenceCode: String!, code: String!): PretixOrder
+  jobListings(conference: String!): [JobListing!]!
+  jobListing(slug: String!): JobListing
+  scheduleInvitation(submissionId: ID!): ScheduleInvitation
+  unassignedScheduleItems(conferenceId: ID!): [ScheduleItem!]!
+  searchEventsForSchedule(conferenceId: ID!, query: String!): SearchEventsForScheduleResult!
+  notifications: [Notification!]!
+  checklist: [ChecklistItem!]!
+  participant(id: ID!, conference: String!): Participant
+  ticketIdToHashid(ticketId: ID!, conferenceCode: String!): String
+  conferenceRoleForTicketData(conferenceCode: String!, rawTicketData: String!): TicketDataConferenceRole!
+  badgeScan(id: ID!): BadgeScan
+  badgeScans(conferenceCode: String!, page: Int = 1, pageSize: Int! = 100): BadgeScanPaginated!
+  me: User!
+  cmsPage(hostname: String!, slug: String!, language: String!): GenericPageSiteNotFoundError
+  cmsPages(hostname: String!, language: String!): [GenericPage!]!
+  newsArticles(hostname: String!, language: String!): [NewsArticle!]!
+  newsArticle(hostname: String!, slug: String!, language: String!): NewsArticle
+  pagePreview(contentType: String!, token: String!): GenericPagePreviewNewsArticlePreview
+  invitationLetterDocument(id: ID!): InvitationLetterDocument
+}
+
+type Question {
+  id: ID!
+  name: String!
+  required: Boolean
+  hidden: Boolean!
+  options: [Option!]
+  answer: Answer
+}
+
+type RankRequest {
+  isPublic: Boolean!
+  rankedSubmissions: [RankSubmission!]!
+  stats: [RankStat!]!
+}
+
+type RankStat {
+  id: ID!
+  type: String!
+  name: String!
+  value: Int!
+}
+
+type RankSubmission {
+  submission: Submission!
+  rank: Int!
+  score: Decimal!
+}
+
+type RegisterErrors {
+  errors: Registererrors!
+}
+
+input RegisterInput {
+  fullname: String!
+  email: String!
+  password: String!
+}
+
+union RegisterResult = RegisterSuccess | RegisterErrors | EmailAlreadyUsed
+
+type RegisterSuccess {
+  user: User!
+}
+
+type Registererrors {
+  fullname: [String!]!
+  email: [String!]!
+  password: [String!]!
+}
+
+type RequestInvitationLetterErrors {
+  errors: Requestinvitationlettererrors!
+}
+
+input RequestInvitationLetterInput {
+  conference: String!
+  onBehalfOf: InvitationLetterOnBehalfOf!
+  email: String!
+  fullName: String!
+  nationality: String!
+  address: String!
+  passportNumber: String!
+  embassyName: String!
+  dateOfBirth: Date!
+}
+
+union RequestInvitationLetterResult = InvitationLetterRequest | RequestInvitationLetterErrors | NoAdmissionTicket | InvitationLetterAlreadyRequested | FormNotAvailable
+
+union RequestResetPasswordResult = OperationSuccess
+
+type Requestinvitationlettererrors {
+  conference: [String!]!
+  onBehalfOf: [String!]!
+  email: [String!]!
+  fullName: [String!]!
+  dateOfBirth: [String!]!
+  nationality: [String!]!
+  address: [String!]!
+  passportNumber: [String!]!
+  embassyName: [String!]!
+}
+
+type ResetPasswordErrors {
+  errors: Resetpassworderrors!
+}
+
+input ResetPasswordInput {
+  token: String!
+  newPassword: String!
+}
+
+union ResetPasswordResult = ResetPasswordErrors | OperationSuccess
+
+type Resetpassworderrors {
+  token: [String!]!
+  newPassword: [String!]!
+}
+
+type Room {
+  id: ID!
+  name: String!
+  type: String!
+}
+
+input ScanBadgeInput {
+  url: String!
+  conferenceCode: String!
+}
+
+type ScanError {
+  message: String!
+}
+
+type ScheduleInvitation {
+  id: ID!
+  option: ScheduleInvitationOption!
+  notes: String!
+  title: String!
+  submission: Submission!
+  dates: [ScheduleInvitationDate!]!
+}
+
+type ScheduleInvitationDate {
+  id: ID!
+  start: DateTime!
+  end: DateTime!
+  duration: Int!
+}
+
+type ScheduleInvitationNotFound {
+  message: String!
+}
+
+union ScheduleInvitationNotFoundScheduleInvitation = ScheduleInvitationNotFound | ScheduleInvitation
+
+enum ScheduleInvitationOption {
+  NO_ANSWER
+  CONFIRM
+  MAYBE
+  REJECT
+  CANT_ATTEND
+}
+
+type ScheduleItem {
+  id: ID!
+  conference: Conference!
+  title: String!
+  start: DateTime!
+  end: DateTime!
+  status: String!
+  submission: Submission
+  slug: String!
+  description: String!
+  type: String!
+  duration: Int
+  highlightColor: String
+  language: Language!
+  audienceLevel: AudienceLevel
+  youtubeVideoId: String
+  linkTo: String!
+  abstract: String!
+  elevatorPitch: String!
+  talkManager: ScheduleItemUser
+  livestreamingRoom: Room
+  hasLimitedCapacity: Boolean!
+  hasSpacesLeft: Boolean!
+  spacesLeft: Int!
+  userHasSpot: Boolean!
+  userIsTalkManager: Boolean!
+  speakers: [ScheduleItemUser!]!
+  keynote: Keynote
+  rooms: [Room!]!
+  image: String
+  slidoUrl: String!
+}
+
+type ScheduleItemIsFull {
+  message: String!
+}
+
+type ScheduleItemNotBookable {
+  message: String!
+}
+
+type ScheduleItemUser {
+  id: ID!
+  fullname: String!
+  fullName: String!
+  participant: Participant
+}
+
+type SchedulePreviewSection {
+  id: ID!
+  title: String!
+  primaryCta: CTA
+  secondaryCta: CTA
+}
+
+type ScheduleSlot {
+  id: ID!
+  hour: Time!
+  duration: Int!
+  type: ScheduleSlotType!
+  isLive: Boolean!
+  endHour: Time!
+  items: [ScheduleItem!]!
+}
+
+enum ScheduleSlotType {
+  DEFAULT
+  FREE_TIME
+  BREAK
+}
+
+type SearchEventsForScheduleResult {
+  results: [SubmissionKeynote!]!
+}
+
+input SendGrantInput {
+  name: String!
+  fullName: String!
+  conference: ID!
+  grantType: [GrantType!]!
+  needsFundsForTravel: Boolean!
+  needVisa: Boolean!
+  needAccommodation: Boolean!
+  nationality: String!
+  participantBio: String!
+  participantWebsite: String!
+  participantTwitterHandle: String!
+  participantInstagramHandle: String!
+  participantLinkedinUrl: String!
+  participantFacebookUrl: String!
+  participantMastodonHandle: String!
+  ageGroup: AgeGroup = null
+  gender: String = null
+  occupation: Occupation = null
+  pythonUsage: String = null
+  beenToOtherEvents: String = null
+  communityContribution: String = null
+  why: String = null
+  notes: String = null
+  departureCountry: String = null
+  departureCity: String = null
+  answers: JSON = null
+}
+
+type SendGrantReplyError {
+  message: String!
+}
+
+input SendGrantReplyInput {
+  instance: ID!
+  status: StatusOption
+}
+
+union SendGrantReplyResult = Grant | SendGrantReplyError
+
+union SendGrantResult = Grant | GrantErrors
+
+input SendSponsorLeadInput {
+  fullname: String!
+  email: String!
+  company: String!
+  conferenceCode: String!
+  consentToContactViaEmail: Boolean! = false
+}
+
+type SendSponsorLeadInputErrors {
+  errors: Sendsponsorleadinput!
+}
+
+union SendSponsorLeadOutput = OperationResult | SendSponsorLeadInputErrors
+
+type SendSubmissionErrors {
+  errors: Sendsubmissionerrors!
+}
+
+input SendSubmissionInput {
+  conference: ID!
+  title: MultiLingualInput!
+  abstract: MultiLingualInput!
+  languages: [ID!]!
+  type: ID!
+  duration: ID!
+  elevatorPitch: MultiLingualInput!
+  notes: String!
+  audienceLevel: ID!
+  shortSocialSummary: String!
+  speakerBio: String!
+  speakerPhoto: String!
+  speakerWebsite: String!
+  speakerLevel: String!
+  previousTalkVideo: String!
+  speakerTwitterHandle: String!
+  speakerInstagramHandle: String!
+  speakerLinkedinUrl: String!
+  speakerFacebookUrl: String!
+  speakerMastodonHandle: String!
+  speakerAvailabilities: JSON!
+  topic: ID = null
+  tags: [ID!]! = []
+  doNotRecord: Boolean! = false
+}
+
+union SendSubmissionOutput = Submission | SendSubmissionErrors
+
+type SendVoteErrors {
+  errors: Sendvoteerrorserrors!
+}
+
+input SendVoteInput {
+  value: Int!
+  submission: ID!
+}
+
+union SendVoteOutput = VoteType | SendVoteErrors
+
+type Sendsponsorleadinput {
+  fullname: [String!]!
+  email: [String!]!
+  company: [String!]!
+  conferenceCode: [String!]!
+  nonFieldErrors: [String!]!
+}
+
+type Sendsubmissionerrors {
+  instance: [String!]!
+  title: [String!]!
+  abstract: [String!]!
+  topic: [String!]!
+  languages: [String!]!
+  conference: [String!]!
+  type: [String!]!
+  duration: [String!]!
+  elevatorPitch: [String!]!
+  notes: [String!]!
+  audienceLevel: [String!]!
+  tags: [String!]!
+  shortSocialSummary: [String!]!
+  materials: [ProposalMaterialErrors!]!
+  speakerBio: [String!]!
+  speakerPhoto: [String!]!
+  speakerWebsite: [String!]!
+  speakerLevel: [String!]!
+  previousTalkVideo: [String!]!
+  speakerTwitterHandle: [String!]!
+  speakerInstagramHandle: [String!]!
+  speakerLinkedinUrl: [String!]!
+  speakerFacebookUrl: [String!]!
+  speakerMastodonHandle: [String!]!
+  nonFieldErrors: [String!]!
+}
+
+type Sendvoteerrorserrors {
+  value: [String!]!
+  submission: [String!]!
+  nonFieldErrors: [String!]!
+}
+
+type SimpleTextCard {
+  title: String!
+  body: String!
+  cta: CTA
+}
+
+type SiteNotFoundError {
+  message: String!
+}
+
+type SliderCardsSection {
+  id: ID!
+  title: String!
+  spacing: Spacing!
+  snakeBackground: Boolean!
+  cards: [AvailableCards!]!
+}
+
+type SocialsSection {
+  id: ID!
+  label: String!
+  hashtag: String!
+}
+
+enum Spacing {
+  XL
+  _3XL
+}
+
+type SpecialGuestSection {
+  id: ID!
+  title: String!
+  guestName: String!
+  guestJobTitle: String!
+  eventDate: Date!
+  cta: CTA
+  guestPhoto: String!
+}
+
+type Sponsor {
+  id: ID!
+  name: String!
+  link: String!
+  image: String!
+}
+
+type SponsorBenefit {
+  name: String!
+  category: String!
+  description: String!
+}
+
+type SponsorLevel {
+  name: String!
+  price: Decimal!
+  slots: Int
+  benefits: [SponsorLevelBenefit!]!
+}
+
+type SponsorLevelBenefit {
+  category: String!
+  name: String!
+  value: String!
+  description: String!
+}
+
+type SponsorSpecialOption {
+  name: String!
+  price: Decimal!
+  description: String!
+}
+
+type SponsorsByLevel {
+  level: String!
+  sponsors: [Sponsor!]!
+  highlightColor: String
+}
+
+type SponsorsSection {
+  id: ID!
+  title: String!
+  body: String!
+  cta: CTA
+  layout: SponsorsSectionLayout!
+}
+
+enum SponsorsSectionLayout {
+  SIDE_BY_SIDE
+  VERTICAL
+}
+
+enum Status {
+  pending
+  rejected
+  approved
+  waiting_list
+  waiting_list_maybe
+  waiting_for_confirmation
+  refused
+  confirmed
+  did_not_attend
+}
+
+enum StatusOption {
+  confirmed
+  refused
+}
+
+type Submission {
+  conference: Conference!
+  title(language: String!): String!
+  slug: String!
+  status: String!
+  speakerLevel: String
+  previousTalkVideo: String
+  shortSocialSummary: String
+  topic: Topic
+  type: SubmissionType
+  duration: Duration
+  audienceLevel: AudienceLevel
+  notes: String
+  doNotRecord: Boolean
+  scheduleItems: [ScheduleItem!]!
+  multilingualElevatorPitch: MultiLingualString
+  multilingualAbstract: MultiLingualString
+  multilingualTitle: MultiLingualString
+  elevatorPitch(language: String!): String
+  abstract(language: String!): String
+  speaker: SubmissionSpeaker
+  id: ID!
+  canEdit: Boolean!
+  myVote: VoteType
+  languages: [Language!]
+  tags: [SubmissionTag!]
+  materials: [ProposalMaterial!]!
+}
+
+union SubmissionKeynote = Submission | Keynote
+
+input SubmissionMaterialInput {
+  name: String!
+  id: ID = null
+  url: String = null
+  fileId: String = null
+}
+
+type SubmissionPaginated {
+  pageInfo: PageInfo!
+  items: [Submission!]!
+}
+
+type SubmissionSpeaker {
+  id: ID!
+  fullName: String!
+  gender: String!
+  participant: Participant
+}
+
+type SubmissionTag {
+  id: ID!
+  name: String!
+}
+
+type SubmissionType {
+  id: ID!
+  name: String!
+  isRecordable: Boolean!
+}
+
+type SubscribeToNewsletterErrors {
+  errors: Subscribetonewslettererrors!
+}
+
+input SubscribeToNewsletterInput {
+  email: String!
+  conferenceCode: String!
+}
+
+union SubscribeToNewsletterOutput = NewsletterSubscribeResult | SubscribeToNewsletterErrors
+
+union SubscribeUserResult = CheckoutSession | AlreadySubscribed
+
+type Subscribetonewslettererrors {
+  email: [String!]!
+  conferenceCode: [String!]!
+  nonFieldErrors: [String!]!
+}
+
+type TextSection {
+  id: ID!
+  title: String!
+  isMainTitle: Boolean!
+  subtitle: String!
+  body: String!
+  bodyTextSize: BodyTextSize!
+  illustration: String!
+  accordions: [Accordion!]!
+  cta: CTA
+}
+
+type TicketDataConferenceRole {
+  role: ConferenceRole!
+  ticketHashid: String!
+}
+
+type TicketItem {
+  id: ID!
+  name: String!
+  admission: Boolean!
+  language: String
+  description: String
+  active: Boolean
+  defaultPrice: String
+  category: String
+  categoryInternalName: String
+  taxRate: Float
+  variations: [ProductVariation!]
+  availableFrom: String
+  availableUntil: String
+  questions: [Question!]
+  quantityLeft: Int
+  soldOut: Boolean
+  type: TicketType
+}
+
+type TicketReassigned {
+  id: ID!
+  attendeeEmail: String
+}
+
+enum TicketType {
+  STANDARD
+  BUSINESS
+  ASSOCIATION
+  SOCIAL_EVENT
+}
+
+"""Time (isoformat)"""
+scalar Time
+
+type Topic {
+  id: ID!
+  name: String!
+}
+
+type UpdateAttendeeTicketErrors {
+  errors: Updateattendeeticketerrors!
+}
+
+input UpdateAttendeeTicketInput {
+  id: ID!
+  attendeeName: AttendeeNameInput!
+  attendeeEmail: String!
+  answers: [AnswerInput!] = null
+}
+
+union UpdateAttendeeTicketResult = TicketReassigned | AttendeeTicket | UpdateAttendeeTicketErrors
+
+input UpdateBadgeScanInput {
+  id: String!
+  notes: String!
+}
+
+input UpdateGrantInput {
+  instance: ID!
+  name: String!
+  fullName: String!
+  conference: ID!
+  grantType: [GrantType!]!
+  needsFundsForTravel: Boolean!
+  needVisa: Boolean!
+  needAccommodation: Boolean!
+  nationality: String!
+  participantBio: String!
+  participantWebsite: String!
+  participantTwitterHandle: String!
+  participantInstagramHandle: String!
+  participantLinkedinUrl: String!
+  participantFacebookUrl: String!
+  participantMastodonHandle: String!
+  ageGroup: AgeGroup = null
+  gender: String = null
+  occupation: Occupation = null
+  pythonUsage: String = null
+  beenToOtherEvents: String = null
+  communityContribution: String = null
+  why: String = null
+  notes: String = null
+  departureCountry: String = null
+  departureCity: String = null
+  answers: JSON = null
+}
+
+union UpdateGrantResult = Grant | GrantErrors
+
+input UpdateInvitationLetterDocumentInput {
+  id: ID!
+  dynamicDocument: UpdateInvitationLetterDocumentStructureInput!
+}
+
+input UpdateInvitationLetterDocumentPageInput {
+  id: ID!
+  title: String!
+  content: String!
+}
+
+input UpdateInvitationLetterDocumentPageLayoutInput {
+  margin: String!
+}
+
+union UpdateInvitationLetterDocumentResult = InvitationLetterDocument | InvitationLetterDocumentNotEditable | NotFound
+
+input UpdateInvitationLetterDocumentRunningPartInput {
+  content: String!
+  align: String!
+  margin: String!
+}
+
+input UpdateInvitationLetterDocumentStructureInput {
+  header: UpdateInvitationLetterDocumentRunningPartInput!
+  footer: UpdateInvitationLetterDocumentRunningPartInput!
+  pageLayout: UpdateInvitationLetterDocumentPageLayoutInput!
+  pages: [UpdateInvitationLetterDocumentPageInput!]!
+}
+
+type UpdateParticipantErrors {
+  errors: Updateparticipanterrors!
+}
+
+input UpdateParticipantInput {
+  conference: String!
+  bio: String!
+  publicProfile: Boolean!
+  photo: String!
+  website: String!
+  speakerLevel: String!
+  previousTalkVideo: String!
+  twitterHandle: String!
+  instagramHandle: String!
+  linkedinUrl: String!
+  facebookUrl: String!
+  mastodonHandle: String!
+}
+
+union UpdateParticipantResult = Participant | UpdateParticipantErrors
+
+type UpdateProfileErrors {
+  errors: Updateprofileerrors!
+}
+
+input UpdateProfileInput {
+  name: String!
+  fullName: String!
+  gender: String!
+  openToRecruiting: Boolean!
+  openToNewsletter: Boolean!
+  dateBirth: Date = null
+  country: String!
+}
+
+union UpdateProfileResult = UpdateProfileErrors | User
+
+input UpdateScheduleInvitationInput {
+  submissionId: ID!
+  option: ScheduleInvitationOption!
+  notes: String!
+}
+
+input UpdateSubmissionInput {
+  instance: ID!
+  title: MultiLingualInput!
+  abstract: MultiLingualInput!
+  languages: [ID!]!
+  type: ID!
+  duration: ID!
+  elevatorPitch: MultiLingualInput!
+  notes: String!
+  audienceLevel: ID!
+  shortSocialSummary: String!
+  speakerBio: String!
+  speakerPhoto: String!
+  speakerWebsite: String!
+  speakerLevel: String!
+  previousTalkVideo: String!
+  speakerTwitterHandle: String!
+  speakerInstagramHandle: String!
+  speakerLinkedinUrl: String!
+  speakerFacebookUrl: String!
+  speakerMastodonHandle: String!
+  speakerAvailabilities: JSON!
+  topic: ID = null
+  tags: [ID!]! = []
+  materials: [SubmissionMaterialInput!]! = []
+  doNotRecord: Boolean! = false
+}
+
+union UpdateSubmissionOutput = Submission | SendSubmissionErrors
+
+type Updateattendeeticketerrors {
+  id: [String!]!
+  attendeeName: AttendeeNameInputError!
+  attendeeEmail: [String!]!
+  answers: [AnswerInputError!]!
+}
+
+type Updateparticipanterrors {
+  bio: [String!]!
+  photo: [String!]!
+  website: [String!]!
+  level: [String!]!
+  twitterHandle: [String!]!
+  instagramHandle: [String!]!
+  linkedinUrl: [String!]!
+  facebookUrl: [String!]!
+  mastodonHandle: [String!]!
+}
+
+type Updateprofileerrors {
+  name: [String!]!
+  fullName: [String!]!
+  gender: [String!]!
+  openToRecruiting: [String!]!
+  openToNewsletter: [String!]!
+  dateBirth: [String!]!
+  country: [String!]!
+}
+
+input UploadFileInput @oneOf {
+  proposalMaterial: ProposalMaterialInput
+  participantAvatar: ParticipantAvatarInput
+}
+
+union UploadFileOutput = FileUploadRequest
+
+type User {
+  id: ID!
+  email: String!
+  fullname: String!
+  fullName: String!
+  name: String!
+  username: String!
+  gender: String!
+  openToRecruiting: Boolean!
+  openToNewsletter: Boolean!
+  dateBirth: Date
+  country: String!
+  isStaff: Boolean!
+  hashid: String!
+  conferenceRoles(conferenceCode: String!): [ConferenceRole!]!
+  userScheduleFavouritesCalendarUrl(conference: String!): String
+  starredScheduleItems(conference: String!): [ID!]!
+  bookedScheduleItems(conference: String!): [ScheduleItem!]!
+  grant(conference: String!): Grant
+  participant(conference: String!): Participant
+  orders(conference: String!): [PretixOrder!]!
+  tickets(conference: String!, language: String!): [AttendeeTicket!]!
+  hasAdmissionTicket(conference: String!): Boolean!
+  submissions(conference: String!): [Submission!]!
+  canEditSchedule: Boolean!
+  isPythonItaliaMember: Boolean!
+  billingAddresses(conference: String!): [BillingAddress!]!
+  invitationLetterRequest(conference: String!): InvitationLetterRequest
+}
+
+type UserIsAlreadyBooked {
+  message: String!
+}
+
+type UserIsNotBooked {
+  message: String!
+}
+
+type UserNeedsConferenceTicket {
+  message: String!
+}
+
+type VoteType {
+  id: ID!
+  value: Int!
+  submission: Submission!
+}
+
+type Voucher {
+  id: ID!
+  code: String!
+  validUntil: DateTime
+  value: String!
+  items: [ID!]!
+  allItems: Boolean!
+  redeemed: Int!
+  maxUsages: Int!
+  priceMode: String!
+  variationId: ID
+}
+
+type WrongEmailOrPassword {
+  message: String!
+}
