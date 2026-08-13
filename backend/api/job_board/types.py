@@ -1,11 +1,11 @@
 import strawberry_django
-from job_board.models import JobListing as JobListingModel
+from job_board import models
 from strawberry import auto
 
 from api.context import Info
 
 
-@strawberry_django.type(JobListingModel)
+@strawberry_django.type(models.JobListing)
 class JobListing:
     id: auto
     title: auto

@@ -1,12 +1,12 @@
 import strawberry_django
-from pages.models import Page as PageModel
+from pages import models
 from strawberry import auto
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.images import resolve_image
 
 
-@strawberry_django.type(PageModel)
+@strawberry_django.type(models.Page)
 class Page:
     id: auto
     title: str = strawberry_django.field(
