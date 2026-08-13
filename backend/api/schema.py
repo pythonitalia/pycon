@@ -11,7 +11,6 @@ from .job_board.schema import JobBoardQuery
 from .newsletters.schema import NewsletterMutations
 from .orders.mutations import OrdersMutations
 from .orders.query import OrdersQuery
-from .pages.schema import PagesQuery
 from .pretix.mutations import AttendeeTicketMutation
 from .schedule.schema import ScheduleQuery, ScheduleMutations
 from .submissions.mutations import SubmissionsMutations
@@ -33,7 +32,6 @@ from .visa.mutation import VisaMutation
 class Query(
     ConferenceQuery,
     SubmissionsQuery,
-    PagesQuery,
     CountryQuery,
     OrdersQuery,
     JobBoardQuery,
