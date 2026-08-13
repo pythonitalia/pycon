@@ -23,21 +23,22 @@ from api.conferences.types import DeadlineStatus
 pytestmark = mark.django_db
 
 
-def test_get_conference_info(graphql_client):
+def test_get_conference_info(graphql_client, django_assert_num_queries):
     conference = ConferenceFactory()
-    resp = graphql_client.query(
-        """
-        query($code: String!) {
-            conference(code: $code) {
-                id
-                code
-                name
-                introduction
+    with django_assert_num_queries(1):
+        resp = graphql_client.query(
+            """
+            query($code: String!) {
+                conference(code: $code) {
+                    id
+                    code
+                    name
+                    introduction
+                }
             }
-        }
-        """,
-        variables={"code": conference.code},
-    )
+            """,
+            variables={"code": conference.code},
+        )
 
     assert "errors" not in resp
     assert {
@@ -345,6 +346,7 @@ def test_query_conference_languages(graphql_client, language):
 
 def test_get_conference_durations(
     graphql_client,
+    django_assert_num_queries,
 ):
     talk_type = SubmissionTypeFactory(name="talk")
     tutorial_type = SubmissionTypeFactory(name="tutorial")
@@ -356,25 +358,26 @@ def test_get_conference_durations(
 
     conference = d1.conference
 
-    resp = graphql_client.query(
-        """
-        query($code: String!) {
-            conference(code: $code) {
-                durations {
-                    id
-                    name
-                    duration
-                    notes
-                    allowedSubmissionTypes {
+    with django_assert_num_queries(3):
+        resp = graphql_client.query(
+            """
+            query($code: String!) {
+                conference(code: $code) {
+                    durations {
                         id
                         name
+                        duration
+                        notes
+                        allowedSubmissionTypes {
+                            id
+                            name
+                        }
                     }
                 }
             }
-        }
-        """,
-        variables={"code": conference.code},
-    )
+            """,
+            variables={"code": conference.code},
+        )
 
     assert "errors" not in resp
     assert {
@@ -654,23 +657,26 @@ def test_can_see_submissions_if_they_have_sent_one(graphql_client):
     assert len(response["data"]["conference"]["submissions"]) == 2
 
 
-def test_get_conference_voucher_with_invalid_code(graphql_client, requests_mock):
+def test_get_conference_voucher_with_invalid_code(
+    graphql_client, requests_mock, django_assert_num_queries
+):
     conference = ConferenceFactory()
 
     requests_mock.get(
         "https://pretix/api/organizers/base-pretix-organizer-id/events/base-pretix-event-id/extended-vouchers/test/",
         status_code=404,
     )
-    response = graphql_client.query(
-        """query($code: String!, $voucherCode: String!) {
-            conference(code: $code) {
-                voucher(code: $voucherCode) {
-                    id
+    with django_assert_num_queries(1):
+        response = graphql_client.query(
+            """query($code: String!, $voucherCode: String!) {
+                conference(code: $code) {
+                    voucher(code: $voucherCode) {
+                        id
+                    }
                 }
-            }
-        }""",
-        variables={"code": conference.code, "voucherCode": "test"},
-    )
+            }""",
+            variables={"code": conference.code, "voucherCode": "test"},
+        )
 
     assert response["data"]["conference"]["voucher"] is None
 

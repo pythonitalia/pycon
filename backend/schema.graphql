@@ -196,6 +196,7 @@ type Conference {
   end: DateTime!
   map: Map
   pretixEventUrl: String!
+  durations: [Duration!]!
   voucher(code: String!): Voucher
   timezone: String!
   tickets(language: String!, showUnavailableTickets: Boolean! = false): [TicketItem!]!
@@ -208,7 +209,6 @@ type Conference {
   audienceLevels: [AudienceLevel!]!
   topics: [Topic!]!
   languages: [Language!]!
-  durations: [Duration!]!
   submissionTypes: [SubmissionType!]!
   proposalTags: [SubmissionTag!]!
   submissions: [Submission!]
@@ -1140,6 +1140,7 @@ type ScheduleItem {
   elevatorPitch: String!
   talkManager: ScheduleItemUser
   livestreamingRoom: Room
+  rooms: [Room!]!
   hasLimitedCapacity: Boolean!
   hasSpacesLeft: Boolean!
   spacesLeft: Int!
@@ -1147,7 +1148,6 @@ type ScheduleItem {
   userIsTalkManager: Boolean!
   speakers: [ScheduleItemUser!]!
   keynote: Keynote
-  rooms: [Room!]!
   image: String
   slidoUrl: String!
 }
@@ -1179,9 +1179,9 @@ type ScheduleSlot {
   hour: Time!
   duration: Int!
   type: ScheduleSlotType!
+  items: [ScheduleItem!]!
   isLive: Boolean!
   endHour: Time!
-  items: [ScheduleItem!]!
 }
 
 enum ScheduleSlotType {

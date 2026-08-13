@@ -1,6 +1,11 @@
 from datetime import date, datetime, time
 
-from conferences.tests.factories import ConferenceFactory
+from conferences.tests.factories import (
+    ConferenceFactory,
+    KeynoteFactory,
+    KeynoteSpeakerFactory,
+)
+from participants.tests.factories import ParticipantFactory
 from schedule.tests.factories import (
     DayFactory,
     RoomFactory,
@@ -93,9 +98,8 @@ def test_days_item_sorted(graphql_client):
     day = DayFactory(conference=conference, day=date(2020, 4, 2))
 
     slot = SlotFactory(day=day, hour=time(8, 45), duration=60)
-    slot_2 = SlotFactory(day=day, hour=time(9, 45), duration=60)
-    ScheduleItemFactory(conference=conference, slot=slot, type="custom")
-    ScheduleItemFactory(conference=conference, slot=slot_2, image=None, type="talk")
+    ScheduleItemFactory(conference=conference, slot=slot, type="talk")
+    ScheduleItemFactory(conference=conference, slot=slot, image=None, type="custom")
 
     resp = graphql_client.query(
         """
@@ -118,8 +122,7 @@ def test_days_item_sorted(graphql_client):
     assert "errors" not in resp
     slots = resp["data"]["conference"]["days"][0]["slots"]
 
-    assert slots[0]["items"][0]["type"] == "custom"
-    assert slots[1]["items"][0]["type"] == "talk"
+    assert [item["type"] for item in slots[0]["items"]] == ["custom", "talk"]
 
 
 @mark.django_db
@@ -201,33 +204,89 @@ def test_filter_days_by_room_not_found(graphql_client):
     assert len(resp["data"]["conference"]["days"][0]["slots"]) == 0
 
 
+@mark.django_db
+def test_anonymous_user_does_not_have_schedule_spot(graphql_client):
+    conference = ConferenceFactory()
+    day = DayFactory(conference=conference)
+    slot = SlotFactory(day=day, hour=time(8, 45), duration=60)
+    ScheduleItemFactory(
+        conference=conference,
+        slot=slot,
+        submission=None,
+        type="custom",
+    )
+
+    resp = graphql_client.query(
+        """
+        query($code: String!) {
+            conference(code: $code) {
+                days {
+                    slots {
+                        items {
+                            userHasSpot
+                        }
+                    }
+                }
+            }
+        }
+        """,
+        variables={"code": conference.code},
+    )
+
+    assert "errors" not in resp
+    assert resp["data"]["conference"]["days"][0]["slots"][0]["items"] == [
+        {"userHasSpot": False}
+    ]
+
+
 @mark.parametrize("item_count", [1, 4])
+@mark.parametrize("item_source", ["submission", "keynote"])
 @mark.django_db
 def test_schedule_capacity_query_is_constant(
-    graphql_client, django_assert_num_queries, item_count
+    graphql_client, django_assert_num_queries, item_count, item_source
 ):
     conference = ConferenceFactory(
         start=datetime(2020, 4, 2, tzinfo=UTC),
         end=datetime(2020, 4, 2, tzinfo=UTC),
     )
     day = DayFactory(conference=conference, day=date(2020, 4, 2))
-    slot = SlotFactory(day=day, hour=time(8, 45), duration=60)
-    room = RoomFactory(attendees_total_capacity=20)
-    items = [
-        ScheduleItemFactory(
-            conference=conference,
-            slot=slot,
-            submission=None,
-            type="custom",
-            rooms=[room],
-        )
-        for _ in range(item_count)
+    slots = [
+        SlotFactory(day=day, hour=time(8 + index, 45), duration=60)
+        for index in range(item_count)
     ]
+    room = RoomFactory(attendees_total_capacity=20)
+    items = []
+    speakers = []
+    for index in range(item_count):
+        if item_source == "keynote":
+            keynote = KeynoteFactory(conference=conference)
+            speaker = KeynoteSpeakerFactory(keynote=keynote).user
+            item = ScheduleItemFactory(
+                conference=conference,
+                slot=slots[index],
+                type="keynote",
+                submission=None,
+                keynote=keynote,
+                rooms=[room],
+            )
+        else:
+            item = ScheduleItemFactory(
+                conference=conference,
+                slot=slots[index],
+                type="submission",
+                rooms=[room],
+            )
+            speaker = item.submission.speaker
+
+        ParticipantFactory(conference=conference, user=speaker)
+        items.append(item)
+        speakers.append(speaker)
     user = UserFactory()
     ScheduleItemAttendeeFactory(schedule_item=items[0], user=user)
     graphql_client.force_login(user)
 
-    with django_assert_num_queries(11):
+    expected_queries = 12 if item_source == "keynote" else 10
+    with django_assert_num_queries(expected_queries):
         resp = graphql_client.query(
             """
             query($code: String!, $language: String!) {
@@ -298,7 +357,11 @@ def test_schedule_capacity_query_is_constant(
         )
 
     assert "errors" not in resp
-    schedule_items = resp["data"]["conference"]["days"][0]["slots"][0]["items"]
+    schedule_items = [
+        item
+        for slot in resp["data"]["conference"]["days"][0]["slots"]
+        for item in slot["items"]
+    ]
     capacity_fields = {
         "id",
         "hasLimitedCapacity",
@@ -326,3 +389,9 @@ def test_schedule_capacity_query_is_constant(
         }
         for item in items[1:]
     ]
+    assert [schedule_item["speakers"][0]["id"] for schedule_item in schedule_items] == [
+        str(speaker.id) for speaker in speakers
+    ]
+    assert all(
+        schedule_item["speakers"][0]["participant"] for schedule_item in schedule_items
+    )

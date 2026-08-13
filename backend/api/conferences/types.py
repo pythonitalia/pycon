@@ -16,7 +16,6 @@ from api.generic_forms.types import FormPurpose
 from api.languages.types import Language
 from api.pretix.query import get_conference_tickets, get_voucher
 from api.pretix.types import TicketItem, Voucher
-from api.schedule.optimization import schedule_days_prefetch, schedule_item_speakers
 from api.schedule.types import Room, ScheduleItem, ScheduleItemUser
 from api.sponsors.types import (
     SponsorBenefit,
@@ -140,25 +139,29 @@ class Keynote:
 
 @strawberry_django.type(conference_models.Conference)
 class Conference:
-    id: auto
+    id: strawberry.auto
 
-    name: str = strawberry.field(resolver=make_localized_resolver("name"))
-    introduction: str = strawberry.field(
-        resolver=make_localized_resolver("introduction")
+    name: str = strawberry_django.field(
+        resolver=make_localized_resolver("name"), only=["name"]
     )
-    code: auto
-    hostname: auto
+    introduction: str = strawberry_django.field(
+        resolver=make_localized_resolver("introduction"), only=["introduction"]
+    )
+    code: strawberry.auto
+    hostname: strawberry.auto
     start: datetime
     end: datetime
     map: Map | None = strawberry.field(resolver=resolve_map)
 
-    pretix_event_url: auto
+    pretix_event_url: strawberry.auto
 
-    @strawberry.field
+    @strawberry_django.field(
+        only=["pretix_organizer_id", "pretix_event_id"],
+    )
     def voucher(self, info: Info, code: str) -> Voucher | None:
         return get_voucher(self, code)
 
-    @strawberry.field
+    @strawberry_django.field(only=["timezone"])
     def timezone(self, info: Info) -> str:
         return str(self.timezone)
 
@@ -206,9 +209,7 @@ class Conference:
     def languages(self, info: Info) -> list[Language]:
         return self.languages.all()
 
-    @strawberry.field
-    def durations(self, info: Info) -> list["Duration"]:
-        return self.durations.all()
+    durations: list["Duration"]
 
     @strawberry.field
     def submission_types(self, info: Info) -> list[SubmissionType]:
@@ -271,9 +272,9 @@ class Conference:
             .all()
         )
 
-    @strawberry.field
+    @strawberry_django.field
     def talk(self, info: Info, slug: str) -> ScheduleItem | None:
-        return self.schedule_items.filter(slug=slug).prefetch_related("rooms").first()
+        return self.schedule_items.filter(slug=slug)
 
     @strawberry.field
     def ranking(self, info: Info, topic: strawberry.ID) -> RankRequest | None:
@@ -295,25 +296,9 @@ class Conference:
             stats=rank_request.stats.all(),
         )
 
-    @strawberry_django.field(prefetch_related=[schedule_days_prefetch])
+    @strawberry_django.field
     def days(self, info: Info) -> list[Day]:
-        days = list(self.days.all())
-        all_speakers = [
-            speaker.id
-            for day in days
-            for slot in day.slots.all()
-            for item in slot.items.all()
-            for speaker in schedule_item_speakers(item)
-        ]
-        info.context._participants_data = {
-            participant.user_id: participant
-            for participant in ParticipantModel.objects.for_conference(self.id)
-            .filter(user_id__in=all_speakers)
-            .prefetch_related("user")
-            .all()
-        }
-
-        return days
+        return self.days.all()
 
     @strawberry.field
     def current_day(self, info: Info) -> Day | None:

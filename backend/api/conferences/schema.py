@@ -7,6 +7,6 @@ from conferences import models
 
 @strawberry.type
 class ConferenceQuery:
-    @strawberry_django.field(prefetch_related=["durations"])
+    @strawberry_django.field
     def conference(self, code: str) -> Conference:
         return models.Conference.objects.filter(code=code)

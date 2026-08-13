@@ -144,23 +144,29 @@ def test_abstract_shows_keynote_description(graphql_client, user):
     }
 
 
-def test_fetch_schedule_talk(simple_schedule_item, graphql_client, user):
+def test_fetch_schedule_talk(
+    simple_schedule_item, graphql_client, user, django_assert_num_queries
+):
     graphql_client.force_login(user)
 
     schedule_item = simple_schedule_item
-    response = graphql_client.query(
-        """query($slug: String!, $code: String!) {
-            conference(code: $code) {
-                talk(slug: $slug) {
-                    youtubeVideoId
-                    userHasSpot
-                    hasSpacesLeft
-                    spacesLeft
+    with django_assert_num_queries(4):
+        response = graphql_client.query(
+            """query($slug: String!, $code: String!) {
+                conference(code: $code) {
+                    talk(slug: $slug) {
+                        youtubeVideoId
+                        userHasSpot
+                        hasSpacesLeft
+                        spacesLeft
+                    }
                 }
-            }
-        }""",
-        variables={"slug": schedule_item.slug, "code": schedule_item.conference.code},
-    )
+            }""",
+            variables={
+                "slug": schedule_item.slug,
+                "code": schedule_item.conference.code,
+            },
+        )
 
     assert response["data"]["conference"]["talk"] == {
         "youtubeVideoId": "AbCdEfGhIjK",
