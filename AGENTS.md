@@ -92,6 +92,8 @@ When working in `backend/api`:
   example `job_board_models` and `conference_models`.
 - Do not alias individual Django models with a `Model` suffix or GraphQL types
   with a `Type` suffix solely to avoid naming conflicts.
+- Use `strawberry.auto` instead of importing `auto` directly from Strawberry.
+- Use `strawberry.ID` instead of importing `ID` directly from Strawberry.
 - Preserve existing GraphQL schema names when migrating types to Strawberry
   Django.
 

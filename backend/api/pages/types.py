@@ -1,6 +1,6 @@
+import strawberry
 import strawberry_django
 from pages import models
-from strawberry import auto
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.images import resolve_image
@@ -8,7 +8,7 @@ from ..helpers.images import resolve_image
 
 @strawberry_django.type(models.Page)
 class Page:
-    id: auto
+    id: strawberry.auto
     title: str = strawberry_django.field(
         resolver=make_localized_resolver("title"), only=["title"]
     )
@@ -22,6 +22,4 @@ class Page:
         resolver=lambda root: getattr(root, "excerpt", None),
         disable_optimization=True,
     )
-    image: str | None = strawberry_django.field(
-        resolver=resolve_image, only=["image"]
-    )
+    image: str | None = strawberry_django.field(resolver=resolve_image, only=["image"])

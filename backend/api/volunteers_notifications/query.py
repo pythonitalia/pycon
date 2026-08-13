@@ -1,14 +1,13 @@
 from datetime import datetime
 
 import strawberry
-from strawberry import ID
 
 from volunteers_notifications.models import Notification as NotificationModel
 
 
 @strawberry.type
 class Notification:
-    id: ID
+    id: strawberry.ID
     title: str
     body: str
     sent_at: datetime

@@ -7,9 +7,10 @@ from api.participants.types import Participant
 from api.schedule.types.day import Day
 
 import strawberry
+import strawberry_django
+from conferences import models as conference_models
 from django.conf import settings
 from django.utils import timezone, translation
-from strawberry import ID
 from api.cms.types import FAQ, Menu
 from api.events.types import Event
 from api.generic_forms.types import Form as GenericForm
@@ -39,16 +40,16 @@ from ..helpers.maps import Map, resolve_map
 from ..permissions import CanSeeSubmissions, IsStaffPermission
 
 
-@strawberry.type
+@strawberry_django.type(conference_models.AudienceLevel)
 class AudienceLevel:
-    id: strawberry.ID
-    name: str
+    id: strawberry.auto
+    name: strawberry.auto
 
 
-@strawberry.type
+@strawberry_django.type(conference_models.Topic)
 class Topic:
-    id: strawberry.ID
-    name: str
+    id: strawberry.auto
+    name: strawberry.auto
 
     @classmethod
     def from_django_model(cls, instance):
@@ -74,7 +75,7 @@ class Deadline:
 
 @strawberry.type
 class Keynote:
-    id: ID
+    id: strawberry.ID
     title: str = strawberry.field(resolver=make_localized_resolver("title"))
     description: str = strawberry.field(resolver=make_localized_resolver("description"))
     slug: str = strawberry.field(resolver=make_localized_resolver("slug"))
@@ -87,7 +88,7 @@ class Keynote:
 
     def __init__(
         self,
-        id: ID,
+        id: strawberry.ID,
         title: str,
         description: str,
         slug: str,
@@ -443,14 +444,11 @@ class Conference:
         ]
 
 
-@strawberry.type
+@strawberry_django.type(conference_models.Duration)
 class Duration:
-    id: strawberry.ID
+    id: strawberry.auto
     conference: Conference
-    name: str
-    duration: int
-    notes: str
-
-    @strawberry.field
-    def allowed_submission_types(self, info: Info) -> list[SubmissionType]:
-        return self.allowed_submission_types.all()
+    name: strawberry.auto
+    duration: strawberry.auto
+    notes: strawberry.auto
+    allowed_submission_types: list[SubmissionType]
