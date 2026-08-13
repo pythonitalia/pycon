@@ -1,5 +1,3 @@
-from typing import Optional
-
 import strawberry_django
 from job_board.models import JobListing as JobListingModel
 from strawberry import auto
@@ -17,7 +15,7 @@ class JobListing:
     apply_url: auto
 
     @strawberry_django.field(only=["company_logo"])
-    def company_logo(self, info: Info) -> Optional[str]:
+    def company_logo(self, info: Info) -> str | None:
         if not self.company_logo:
             return None
 
