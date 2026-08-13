@@ -185,6 +185,7 @@ dependencies = [
     { name = "sentence-transformers" },
     { name = "sentry-sdk" },
     { name = "strawberry-graphql" },
+    { name = "strawberry-graphql-django" },
     { name = "stripe" },
     { name = "tinycss2" },
     { name = "torch" },
@@ -274,6 +275,7 @@ requires-dist = [
     { name = "sentence-transformers", specifier = ">=3.0.0" },
     { name = "sentry-sdk", specifier = ">=2.14.0" },
     { name = "strawberry-graphql", specifier = "==0.324.0" },
+    { name = "strawberry-graphql-django", specifier = "==0.87.0" },
     { name = "stripe", specifier = "==10.5.0" },
     { name = "tinycss2", specifier = ">=1.4.0" },
     { name = "torch", specifier = ">=2.12.1", index = "https://download.pytorch.org/whl/cpu" },
@@ -3104,6 +3106,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/6b/f9/7e121f55c93864cbedf2bbcf8920e2456da3adf05d9f3eef101db6633fec/strawberry_graphql-0.324.0.tar.gz", hash = "sha256:4eb6decf0c33524374f24e07ff6d1915da26655a49fa6f656544c293404e2d35", size = 235911 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bc/56/52b78a3e8de057aadc42f61c82727a914fbb95accc6aae1b5ff0d54e43c9/strawberry_graphql-0.324.0-py3-none-any.whl", hash = "sha256:08c8b3256a1c909c7721f3c1d8e161ac40505ca14991c39d8492898b17e77b6d", size = 338683 },
+]
+
+[[package]]
+name = "strawberry-graphql-django"
+version = "0.87.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asgiref" },
+    { name = "django" },
+    { name = "strawberry-graphql" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3c/62/c23180ccb871fcaf335bb0bb12ce3e6df265c0216cc399e42451b994470d/strawberry_graphql_django-0.87.0.tar.gz", hash = "sha256:f1d703b4f79218cd856deed4db4e966020fdebb08e83c32a3eb1566225e57721", size = 96318 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/27/4f/966c71c1bcc88ec22e378d0adf68d9c191966a8c3fb91e518a1ce6988a3f/strawberry_graphql_django-0.87.0-py3-none-any.whl", hash = "sha256:2c403d7f77464d477d864391d42cd23246de47e3b60f4856d77424efb3521a77", size = 120629 },
 ]
 
 [[package]]

@@ -1,16 +1,27 @@
-from typing import Optional
-
-import strawberry
+import strawberry_django
+from pages import models
+from strawberry import auto
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.images import resolve_image
 
 
-@strawberry.type
+@strawberry_django.type(models.Page)
 class Page:
-    id: strawberry.ID
-    title: str = strawberry.field(resolver=make_localized_resolver("title"))
-    slug: str = strawberry.field(resolver=make_localized_resolver("slug"))
-    content: str = strawberry.field(resolver=make_localized_resolver("content"))
-    excerpt: Optional[str]
-    image: Optional[str] = strawberry.field(resolver=resolve_image)
+    id: auto
+    title: str = strawberry_django.field(
+        resolver=make_localized_resolver("title"), only=["title"]
+    )
+    slug: str = strawberry_django.field(
+        resolver=make_localized_resolver("slug"), only=["slug"]
+    )
+    content: str = strawberry_django.field(
+        resolver=make_localized_resolver("content"), only=["content"]
+    )
+    excerpt: str | None = strawberry_django.field(
+        resolver=lambda root: getattr(root, "excerpt", None),
+        disable_optimization=True,
+    )
+    image: str | None = strawberry_django.field(
+        resolver=resolve_image, only=["image"]
+    )

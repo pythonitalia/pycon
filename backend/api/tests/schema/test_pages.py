@@ -31,6 +31,7 @@ def _get_image_url(request, image):
 def test_query_pages(
     rf,
     graphql_client,
+    django_assert_num_queries,
 ):
     conference_1 = ConferenceFactory(code="pycon11")
     conference_2 = ConferenceFactory(code="pycon10")
@@ -40,7 +41,8 @@ def test_query_pages(
 
     request = rf.get("/")
 
-    resp = _query_pages(graphql_client, conference_code=conference_1.code)
+    with django_assert_num_queries(1):
+        resp = _query_pages(graphql_client, conference_code=conference_1.code)
 
     assert not resp.get("errors")
 
