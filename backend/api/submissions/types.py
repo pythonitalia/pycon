@@ -25,7 +25,7 @@ if TYPE_CHECKING:
     from api.submissions.mutations import SendSubmissionErrors
 
 
-def private_field() -> StrawberryField:
+def private_field(name: str) -> StrawberryField:
     """Field that can only be seen by admin and the submitter"""
 
     def resolver(self, info: Info):
@@ -33,7 +33,7 @@ def private_field() -> StrawberryField:
             return getattr(self, info.python_name)
         return None
 
-    return strawberry.field(resolver=resolver)
+    return strawberry_django.field(resolver=resolver, only=[name])
 
 
 @strawberry_django.type(models.SubmissionType)
@@ -104,55 +104,58 @@ class ProposalMaterial:
         )
 
 
-@strawberry.type
+@strawberry_django.type(models.Submission)
 class Submission:
     conference: Annotated["Conference", strawberry.lazy("api.conferences.types")]
     title: str
-    slug: str
-    status: str
-    speaker_level: str | None = private_field()
-    previous_talk_video: str | None = private_field()
-    short_social_summary: str | None = private_field()
+    slug: strawberry.auto
+    status: strawberry.auto
+    speaker_level: str | None = private_field("speaker_level")
+    previous_talk_video: str | None = private_field("previous_talk_video")
+    short_social_summary: str | None = private_field("short_social_summary")
     topic: Annotated["Topic", strawberry.lazy("api.conferences.types")] | None
     type: SubmissionType | None
     duration: Annotated["Duration", strawberry.lazy("api.conferences.types")] | None
     audience_level: (
         Annotated["AudienceLevel", strawberry.lazy("api.conferences.types")] | None
     )
-    notes: str | None = private_field()
-    do_not_record: bool | None = private_field()
+    notes: str | None = private_field("notes")
+    do_not_record: bool | None = private_field("do_not_record")
 
-    @strawberry.field
+    @strawberry_django.field
     def schedule_items(
         self, info: Info
     ) -> list[Annotated["ScheduleItem", strawberry.lazy("api.schedule.types")]]:
         return self.schedule_items.all()
 
-    @strawberry.field
+    @strawberry_django.field(only=["elevator_pitch"])
     def multilingual_elevator_pitch(self, info: Info) -> MultiLingualString | None:
         return MultiLingualString.create(self.elevator_pitch)
 
-    @strawberry.field
+    @strawberry_django.field(only=["abstract"])
     def multilingual_abstract(self, info: Info) -> MultiLingualString | None:
         return MultiLingualString.create(self.abstract)
 
-    @strawberry.field
+    @strawberry_django.field(only=["title"])
     def multilingual_title(self, info: Info) -> MultiLingualString | None:
         return MultiLingualString.create(self.title)
 
-    @strawberry.field
+    @strawberry_django.field(only=["title"])
     def title(self, language: str) -> str:
         return self.title.localize(language)
 
-    @strawberry.field()
+    @strawberry_django.field(only=["elevator_pitch"])
     def elevator_pitch(self, language: str, info: Info) -> str | None:
         return self.elevator_pitch.localize(language)
 
-    @strawberry.field()
+    @strawberry_django.field(only=["abstract"])
     def abstract(self, language: str, info: Info) -> str | None:
         return self.abstract.localize(language)
 
-    @strawberry.field
+    @strawberry_django.field(
+        only=["conference_id"],
+        select_related=["speaker"],
+    )
     def speaker(self, info: Info) -> SubmissionSpeaker | None:
         if not CanSeeSubmissionRestrictedFields().has_permission(
             self, info, is_speaker_data=True
@@ -166,11 +169,11 @@ class Submission:
             _conference_id=self.conference_id,
         )
 
-    @strawberry.field
+    @strawberry_django.field(only=["id"])
     def id(self, info: Info) -> strawberry.ID:
         return self.hashid
 
-    @strawberry.field
+    @strawberry_django.field(only=["speaker_id"])
     def can_edit(self, info: Info) -> bool:
         return self.can_edit(info.context.request)
 
@@ -189,11 +192,11 @@ class Submission:
         except voting_models.Vote.DoesNotExist:
             return None
 
-    @strawberry.field
+    @strawberry_django.field
     def languages(self, info: Info) -> list[Language] | None:
         return self.languages.all()
 
-    @strawberry.field
+    @strawberry_django.field
     def tags(self, info: Info) -> list[SubmissionTag] | None:
         return self.tags.all()
 
