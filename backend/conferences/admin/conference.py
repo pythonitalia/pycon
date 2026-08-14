@@ -18,7 +18,7 @@ from ordered_model.admin import (
     OrderedTabularInline,
 )
 from itertools import permutations
-from unicodedata import normalize
+from unicodedata import combining, normalize
 from conferences.models import ConferenceVoucher
 from schedule.models import ScheduleItem
 from sponsors.models import SponsorLevel
@@ -307,7 +307,7 @@ class ConferenceAdmin(
         conference = Conference.objects.get(pk=object_id)
         all_events = (
             conference.schedule_items.select_related(
-                "submission__speaker", "keynote", "language"
+                "submission__speaker", "keynote", "language", "slot__day"
             )
             .prefetch_related(
                 "additional_speakers__user",
@@ -315,6 +315,22 @@ class ConferenceAdmin(
             )
             .all()
         )
+        # files are numbered by talk day (D1 = first day with talks),
+        # days with only workshops/trainings don't count
+        talk_days = (
+            conference.days.filter(
+                slots__items__type__in=[
+                    ScheduleItem.TYPES.submission,
+                    ScheduleItem.TYPES.talk,
+                    ScheduleItem.TYPES.keynote,
+                    ScheduleItem.TYPES.panel,
+                ]
+            )
+            .order_by("day")
+            .values_list("day", flat=True)
+            .distinct()
+        )
+        day_numbers = {day: number for number, day in enumerate(talk_days, start=1)}
 
         cache_key = f"{conference.code}:video-upload-files-cache"
         files = cache.get(cache_key)
@@ -332,7 +348,9 @@ class ConferenceAdmin(
         used_files = set()
 
         for event in all_events:
-            video_uploaded_path = self.match_event_to_video_file(event, files)
+            video_uploaded_path = self.match_event_to_video_file(
+                event, files, day_numbers
+            )
             event.video_uploaded_path = video_uploaded_path
             event.save(update_fields=["video_uploaded_path"])
 
@@ -361,15 +379,27 @@ class ConferenceAdmin(
                 messages.WARNING,
             )
 
-    def match_event_to_video_file(self, event, files):
+    def match_event_to_video_file(self, event, files, day_numbers):
         possible_file_names = []
 
         def best_name(speaker):
             return cleanup_string(speaker.full_name.strip() or speaker.name.strip())
 
-        normalized_files = [
-            (cleanup_string(video_file), video_file) for video_file in files
-        ]
+        event_day = None
+        if event.slot_id:
+            event_day = day_numbers.get(event.slot.day.day)
+
+        # when both the event and the file have a known conference day,
+        # a mismatch means the file belongs to another day's event
+        normalized_files = []
+        for video_file in files:
+            normalized_video_file = cleanup_string(video_file)
+            file_day = extract_day_from_video_path(normalized_video_file)
+
+            if event_day and file_day and event_day != file_day:
+                continue
+
+            normalized_files.append((normalized_video_file, video_file))
 
         all_speakers_names = [best_name(speaker) for speaker in event.speakers]
 
@@ -418,7 +448,24 @@ class ConferenceAdmin(
                 if possible_file_name in video_file:
                     return original_video_file
 
+        # multi-speaker talks are sometimes uploaded with the name
+        # of only one of the speakers
+        if count_speakers > 1:
+            for video_file, original_video_file in normalized_files:
+                if "," in video_file:
+                    continue
+
+                if any(name in video_file for name in all_speakers_names):
+                    return original_video_file
+
         return ""
+
+
+def extract_day_from_video_path(normalized_video_path: str) -> int | None:
+    match = re.search(r"/d(\d+)/", normalized_video_path) or re.search(
+        r"\bday (\d+)\b", normalized_video_path
+    )
+    return int(match.group(1)) if match else None
 
 
 def walk_conference_videos_folder(storage, base_path):
@@ -566,6 +613,7 @@ def cleanup_string(string: str) -> str:
     new_string = normalize(
         "NFKD", "".join(char for char in string if char.isprintable())
     ).lower()
-    new_string = new_string.replace("-", " ")
+    new_string = "".join(char for char in new_string if not combining(char))
+    new_string = new_string.replace("-", " ").replace("_", " ")
     new_string = re.sub(r"\s+", " ", new_string)
     return new_string.strip()
