@@ -52,15 +52,19 @@ class SubmissionSpeaker:
     id: strawberry.ID
     full_name: str
     gender: str
-    _conference_id: strawberry.Private[str]
+    _conference_id: strawberry.Private[int]
 
     @strawberry_django.field
     def participant(
         self,
         info: Info,
     ) -> Annotated["Participant", strawberry.lazy("api.participants.types")] | None:
-        if info.context._participants_data is not None:
-            return info.context._participants_data.get(self.id)
+        participants_by_conference = info.context._participants_data
+        if participants_by_conference is not None:
+            participants_data = participants_by_conference.get(self._conference_id)
+            user_id = int(self.id)
+            if participants_data is not None and user_id in participants_data:
+                return participants_data[user_id]
 
         return participant_models.Participant.objects.for_conference(
             self._conference_id

@@ -173,30 +173,6 @@ class ScheduleItem:
         ],
     )
     def speakers(self, info: Info) -> list[ScheduleItemUser]:
-        speakers = []
-
-        participants_data = info.context._participants_data
-        if participants_data is None:
-            schedule_items = models.ScheduleItem.objects.filter(
-                conference_id=self.conference_id
-            )
-            submission_speakers = schedule_items.values("submission__speaker_id")
-            keynote_speakers = schedule_items.values("keynote__speakers__user_id")
-            additional_speakers = schedule_items.values("additional_speakers__user_id")
-            participants_data = {
-                participant.user_id: participant
-                for participant in participant_models.Participant.objects.filter(
-                    conference_id=self.conference_id
-                )
-                .filter(
-                    django_models.Q(user_id__in=submission_speakers)
-                    | django_models.Q(user_id__in=keynote_speakers)
-                    | django_models.Q(user_id__in=additional_speakers)
-                )
-                .select_related("user")
-            }
-            info.context._participants_data = participants_data
-
         schedule_item_speakers = []
         if self.submission_id:
             schedule_item_speakers.append(self.submission.speaker)
@@ -209,7 +185,42 @@ class ScheduleItem:
         schedule_item_speakers.extend(
             speaker.user for speaker in self.additional_speakers.all()
         )
+        speaker_ids = {
+            speaker.id for speaker in schedule_item_speakers if speaker is not None
+        }
 
+        participants_by_conference = info.context._participants_data
+        if participants_by_conference is None:
+            participants_by_conference = {}
+            info.context._participants_data = participants_by_conference
+
+        participants_data = participants_by_conference.setdefault(
+            self.conference_id, {}
+        )
+        if not speaker_ids.issubset(participants_data):
+            participants_data.update({speaker_id: None for speaker_id in speaker_ids})
+            schedule_items = models.ScheduleItem.objects.filter(
+                conference_id=self.conference_id
+            )
+            submission_speakers = schedule_items.values("submission__speaker_id")
+            keynote_speakers = schedule_items.values("keynote__speakers__user_id")
+            additional_speakers = schedule_items.values("additional_speakers__user_id")
+            participants_data.update(
+                {
+                    participant.user_id: participant
+                    for participant in participant_models.Participant.objects.filter(
+                        conference_id=self.conference_id
+                    )
+                    .filter(
+                        django_models.Q(user_id__in=submission_speakers)
+                        | django_models.Q(user_id__in=keynote_speakers)
+                        | django_models.Q(user_id__in=additional_speakers)
+                    )
+                    .select_related("user")
+                }
+            )
+
+        speakers = []
         for speaker in schedule_item_speakers:
             if speaker is None:
                 continue

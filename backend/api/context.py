@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from typing import Any, Dict, Optional, TypeAlias
+from typing import Any
 
 from django.http.request import HttpRequest
 from strawberry.types import Info as StrawberryInfo
 
+from participants.models import Participant
 from voting.models.vote import Vote
 
 
@@ -11,9 +12,9 @@ from voting.models.vote import Vote
 class Context:
     request: HttpRequest
     response: Any
-    _user_can_vote: Optional[bool] = None
-    _participants_data: Optional[Any] = None
-    _my_votes: Optional[Dict[int, Vote]] = None
+    _user_can_vote: bool | None = None
+    _participants_data: dict[int, dict[int, Participant | None]] | None = None
+    _my_votes: dict[int, Vote] | None = None
 
 
-Info: TypeAlias = StrawberryInfo[Context, Any]
+type Info = StrawberryInfo[Context, Any]

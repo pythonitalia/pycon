@@ -1,6 +1,7 @@
 import pytest
 
 from conferences.tests.factories import (
+    ConferenceFactory,
     DurationFactory,
     KeynoteFactory,
     KeynoteSpeakerFactory,
@@ -52,6 +53,40 @@ query SearchEvents($conferenceId: ID!, $query: String!) {
         speakers {
           id
           fullName
+        }
+      }
+    }
+  }
+}
+"""
+
+
+MULTI_CONFERENCE_SEARCH_EVENTS_QUERY = """
+query SearchEvents($firstConferenceId: ID!, $secondConferenceId: ID!) {
+  first: searchEventsForSchedule(
+    conferenceId: $firstConferenceId
+    query: "Shared"
+  ) {
+    results {
+      ... on Submission {
+        speaker {
+          participant {
+            speakerAvailabilities
+          }
+        }
+      }
+    }
+  }
+  second: searchEventsForSchedule(
+    conferenceId: $secondConferenceId
+    query: "Shared"
+  ) {
+    results {
+      ... on Submission {
+        speaker {
+          participant {
+            speakerAvailabilities
+          }
         }
       }
     }
@@ -151,7 +186,7 @@ def test_frontend_search_events_query(
         )
 
     assert "errors" not in response
-    assert response["data"] == {
+    expected_data = {
         "searchEvents": {
             "results": [
                 *[
@@ -201,6 +236,63 @@ def test_frontend_search_events_query(
                 ],
             ]
         }
+    }
+    response["data"]["searchEvents"]["results"].sort(key=lambda result: result["id"])
+    expected_data["searchEvents"]["results"].sort(key=lambda result: result["id"])
+    assert response["data"] == expected_data
+
+
+def test_frontend_search_events_query_keeps_participants_scoped_by_conference(
+    admin_graphql_api_client,
+    admin_superuser,
+    django_assert_num_queries,
+):
+    conferences = [ConferenceFactory(), ConferenceFactory()]
+    speaker = UserFactory(full_name="Shared Speaker")
+
+    for index, conference in enumerate(conferences, start=1):
+        ParticipantFactory(
+            conference=conference,
+            user=speaker,
+            speaker_availabilities={"conference": index},
+        )
+        SubmissionFactory(
+            conference=conference,
+            speaker=speaker,
+            status=Submission.STATUS.accepted,
+            title=LazyI18nString({"en": f"Shared Talk {index}", "it": ""}),
+        )
+
+    admin_graphql_api_client.force_login(admin_superuser)
+    with django_assert_num_queries(10):
+        response = admin_graphql_api_client.query(
+            MULTI_CONFERENCE_SEARCH_EVENTS_QUERY,
+            variables={
+                "firstConferenceId": str(conferences[0].id),
+                "secondConferenceId": str(conferences[1].id),
+            },
+        )
+
+    assert "errors" not in response
+    assert response["data"] == {
+        "first": {
+            "results": [
+                {
+                    "speaker": {
+                        "participant": {"speakerAvailabilities": {"conference": 1}}
+                    }
+                }
+            ]
+        },
+        "second": {
+            "results": [
+                {
+                    "speaker": {
+                        "participant": {"speakerAvailabilities": {"conference": 2}}
+                    }
+                }
+            ]
+        },
     }
 
 

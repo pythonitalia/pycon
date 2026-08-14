@@ -13,7 +13,7 @@ from submissions.models import Submission as SubmissionModel
 
 @strawberry.type
 class SearchEventsForScheduleResult:
-    conference_id: strawberry.Private[strawberry.ID]
+    conference_id: strawberry.Private[int]
     proposals: strawberry.Private[QuerySet[SubmissionModel]]
     keynotes: strawberry.Private[QuerySet[KeynoteModel]]
 
@@ -27,11 +27,17 @@ class SearchEventsForScheduleResult:
             Q(user_id__in=self.proposals.values("speaker_id"))
             | Q(user_id__in=self.keynotes.values("speakers__user_id"))
         )
-        participants_data = info.context._participants_data or {}
+        participants_by_conference = info.context._participants_data
+        if participants_by_conference is None:
+            participants_by_conference = {}
+            info.context._participants_data = participants_by_conference
+
+        participants_data = participants_by_conference.setdefault(
+            self.conference_id, {}
+        )
         participants_data.update(
             {participant.user_id: participant for participant in participants}
         )
-        info.context._participants_data = participants_data
 
         # The mixed union has to become a list here, so optimize each queryset
         # before Strawberry loses the opportunity to inspect its model type.
@@ -71,7 +77,7 @@ def search_events_for_schedule(
     )
 
     return SearchEventsForScheduleResult(
-        conference_id=conference_id,
+        conference_id=int(conference_id),
         proposals=proposals,
         keynotes=keynotes,
     )
