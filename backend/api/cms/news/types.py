@@ -1,26 +1,22 @@
 import datetime
-from typing import Self
+
 import strawberry
+import strawberry_django
+
+from cms.components.news import models
 
 
-@strawberry.type
+@strawberry_django.type(models.NewsArticle)
 class NewsArticle:
-    id: strawberry.ID
-    title: str
-    slug: str
-    excerpt: str
-    body: str
-    published_at: datetime.datetime | None
-    author_fullname: str
+    id: strawberry.auto
+    title: strawberry.auto
+    slug: strawberry.auto
+    excerpt: strawberry.auto
+    body: str = strawberry_django.field(only=["body"])
+    published_at: datetime.datetime | None = strawberry_django.field(
+        field_name="first_published_at"
+    )
 
-    @classmethod
-    def from_model(cls, model) -> Self:
-        return cls(
-            id=model.id,
-            title=model.title,
-            slug=model.slug,
-            excerpt=model.excerpt,
-            body=model.body,
-            published_at=model.first_published_at,
-            author_fullname=model.owner.display_name if model.owner_id else "",
-        )
+    @strawberry_django.field(select_related=["owner"])
+    def author_fullname(self) -> str:
+        return self.owner.display_name if self.owner_id else ""

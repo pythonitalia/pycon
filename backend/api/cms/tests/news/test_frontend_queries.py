@@ -61,7 +61,7 @@ def test_all_news_articles_frontend_query(
 
     SiteFactory(hostname="pycon", port=80, root_page=parent)
 
-    with django_assert_num_queries(7):
+    with django_assert_num_queries(3):
         response = graphql_client.query(
             ALL_NEWS_ARTICLES_QUERY,
             variables={"hostname": "pycon", "language": "en"},
