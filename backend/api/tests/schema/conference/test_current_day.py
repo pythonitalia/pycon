@@ -122,7 +122,7 @@ def test_frontend_live_streaming_query_returns_latest_running_events(
         slido_url="https://slido.example/current",
     )
 
-    expected_queries = 10 if item_count == 1 else 15
+    expected_queries = 9 if item_count == 1 else 8
     with django_assert_num_queries(expected_queries):
         resp = graphql_client.query(
             LIVE_STREAMING_QUERY,
@@ -176,7 +176,7 @@ def test_frontend_live_streaming_query_falls_back_from_recruiting_slot(
         slido_url="https://slido.example/recruiting",
     )
 
-    with django_assert_num_queries(11):
+    with django_assert_num_queries(10):
         resp = graphql_client.query(
             LIVE_STREAMING_QUERY,
             variables={"code": conference.code},

@@ -236,7 +236,7 @@ class ScheduleItem:
 
         return info.context.request.build_absolute_uri(self.image.url)
 
-    @strawberry.field(name="slidoUrl")
+    @strawberry_django.field(name="slidoUrl", only=["slido_url", "slot_id"])
     def _slido_url(self, info: Info) -> str:
         if self.slido_url:
             return self.slido_url
