@@ -1,37 +1,38 @@
-from api.context import Info
-from participants.models import Participant as ParticipantModel
 from datetime import datetime
-from api.participants.types import Participant
-from api.schedule.types.day import Day
 
 import strawberry
 import strawberry_django
-from conferences import models as conference_models
 from django.conf import settings
 from django.utils import timezone, translation
+
 from api.cms.types import FAQ, Menu
+from api.context import Info
 from api.events.types import Event
 from api.generic_forms.types import Form as GenericForm
 from api.generic_forms.types import FormPurpose
 from api.languages.types import Language
+from api.participants.types import Participant
 from api.pretix.query import get_conference_tickets, get_voucher
 from api.pretix.types import TicketItem, Voucher
 from api.schedule.types import Room, ScheduleItem, ScheduleItemUser
+from api.schedule.types.day import Day
 from api.sponsors.types import (
     SponsorBenefit,
     SponsorLevel,
     SponsorLevelBenefit,
-    SponsorSpecialOption,
     SponsorsByLevel,
+    SponsorSpecialOption,
 )
 from api.submissions.types import Submission, SubmissionTag, SubmissionType
 from api.voting.types import RankRequest
 from cms.models import GenericCopy
+from conferences import models as conference_models
 from conferences.models.deadline import DeadlineStatus
+from participants.models import Participant as ParticipantModel
 from schedule.models import ScheduleItem as ScheduleItemModel
+from sponsors import models as sponsor_models
 from submissions.models import Submission as SubmissionModel
 from voting.models import RankRequest as RankRequestModel
-from sponsors.models import SponsorLevel as SponsorLevelModel
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
@@ -236,11 +237,9 @@ class Conference:
     def faqs(self, info: Info) -> list[FAQ]:
         return self.faqs.all()
 
-    @strawberry.field
-    def sponsors_by_level(self, info: Info) -> list[SponsorsByLevel]:
-        levels = self.sponsor_levels.all().order_by("order")
-
-        return [SponsorsByLevel.from_model(level) for level in levels]
+    @strawberry_django.field
+    def sponsors_by_level(self) -> list[SponsorsByLevel]:
+        return self.sponsor_levels.all()
 
     @strawberry.field
     def copy(self, info: Info, key: str, language: str | None = None) -> str | None:
@@ -327,7 +326,7 @@ class Conference:
     @strawberry.field
     def sponsor_levels(self) -> list[SponsorLevel]:
         levels = (
-            SponsorLevelModel.objects.filter(conference=self)
+            sponsor_models.SponsorLevel.objects.filter(conference=self)
             .prefetch_related(
                 "sponsorlevelbenefit_set",
                 "sponsorlevelbenefit_set__benefit",

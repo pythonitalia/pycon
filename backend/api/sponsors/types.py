@@ -1,22 +1,19 @@
 from decimal import Decimal
-from typing import Self
 
 import strawberry
+import strawberry_django
 
 from api.context import Info
-from sponsors.models import SponsorLevel as SponsorLevelModel
+from sponsors import models
 
 
-@strawberry.type
+@strawberry_django.type(models.Sponsor)
 class Sponsor:
-    id: strawberry.ID
-    name: str
+    id: strawberry.auto
+    name: strawberry.auto
+    link: strawberry.auto
 
-    @strawberry.field
-    def link(self, info: Info) -> str:
-        return self.link
-
-    @strawberry.field
+    @strawberry_django.field(only=["image"])
     def image(self, info: Info) -> str:
         if not self.image:
             return ""
@@ -24,18 +21,11 @@ class Sponsor:
         return info.context.request.build_absolute_uri(self.image_optimized.url)
 
 
-@strawberry.type
+@strawberry_django.type(models.SponsorLevel)
 class SponsorsByLevel:
-    level: str
+    level: str = strawberry_django.field(field_name="name")
     sponsors: list[Sponsor]
     highlight_color: str | None
-
-    @classmethod
-    def from_model(cls, level: SponsorLevelModel) -> Self:
-        sponsors = [sponsor for sponsor in level.sponsors.all()]
-        return cls(
-            level=level.name, sponsors=sponsors, highlight_color=level.highlight_color
-        )
 
 
 @strawberry.type
