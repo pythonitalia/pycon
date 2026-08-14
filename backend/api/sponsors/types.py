@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 import strawberry
 import strawberry_django
 
@@ -35,20 +33,31 @@ class SponsorBenefit:
     description: str = strawberry_django.field(only=["description"])
 
 
-@strawberry.type
+@strawberry_django.type(models.SponsorLevelBenefit)
 class SponsorLevelBenefit:
-    category: str
-    name: str
-    value: str
-    description: str
+    category: str = strawberry_django.field(
+        resolver=lambda self: self.benefit.category,
+        select_related=["benefit"],
+    )
+    name: str = strawberry_django.field(
+        resolver=lambda self: self.benefit.name,
+        select_related=["benefit"],
+    )
+    value: str = strawberry_django.field(only=["value"])
+    description: str = strawberry_django.field(
+        resolver=lambda self: self.benefit.description,
+        select_related=["benefit"],
+    )
 
 
-@strawberry.type
+@strawberry_django.type(models.SponsorLevel)
 class SponsorLevel:
-    name: str
-    price: Decimal
+    name: strawberry.auto
+    price: strawberry.auto
     slots: int | None
-    benefits: list[SponsorLevelBenefit]
+    benefits: list[SponsorLevelBenefit] = strawberry_django.field(
+        field_name="sponsorlevelbenefit_set"
+    )
 
 
 @strawberry_django.type(models.SponsorSpecialOption)
