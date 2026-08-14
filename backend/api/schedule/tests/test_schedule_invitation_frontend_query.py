@@ -64,7 +64,7 @@ def test_schedule_invitation_frontend_query(
     )
     graphql_client.force_login(user)
 
-    with django_assert_num_queries(8):
+    with django_assert_num_queries(4):
         response = graphql_client.query(
             SCHEDULE_INVITATION_QUERY,
             variables={"language": "en", "submissionId": submission.hashid},
