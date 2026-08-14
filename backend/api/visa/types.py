@@ -1,6 +1,9 @@
 from enum import Enum
-from visa.models import InvitationLetterRequestStatus as InvitationLetterRequestStatusDB
+
 import strawberry
+import strawberry_django
+
+from visa import models
 
 
 @strawberry.enum
@@ -17,26 +20,22 @@ class InvitationLetterRequestStatus(Enum):
 
 
 def _convert_request_status_to_public(status):
-    if status == InvitationLetterRequestStatusDB.REJECTED:
+    if status == models.InvitationLetterRequestStatus.REJECTED:
         return InvitationLetterRequestStatus.REJECTED
 
-    if status == InvitationLetterRequestStatusDB.SENT:
+    if status == models.InvitationLetterRequestStatus.SENT:
         return InvitationLetterRequestStatus.SENT
 
     return InvitationLetterRequestStatus.PENDING
 
 
-@strawberry.type
+@strawberry_django.type(models.InvitationLetterRequest, only=["status"])
 class InvitationLetterRequest:
-    id: strawberry.ID
-    status: InvitationLetterRequestStatus
+    id: strawberry.auto
 
-    @classmethod
-    def from_model(cls, instance):
-        return cls(
-            id=instance.id,
-            status=_convert_request_status_to_public(instance.status),
-        )
+    @strawberry_django.field
+    def status(self) -> InvitationLetterRequestStatus:
+        return _convert_request_status_to_public(self.status)
 
 
 @strawberry.type
