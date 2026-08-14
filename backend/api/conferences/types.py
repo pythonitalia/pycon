@@ -29,7 +29,7 @@ from cms.models import GenericCopy
 from conferences import models as conference_models
 from conferences.models.deadline import DeadlineStatus
 from participants.models import Participant as ParticipantModel
-from schedule.models import ScheduleItem as ScheduleItemModel
+from schedule import models as schedule_models
 from sponsors import models as sponsor_models
 from submissions.models import Submission as SubmissionModel
 from voting.models import RankRequest as RankRequestModel
@@ -263,12 +263,10 @@ class Conference:
     def keynote(self, info: Info, slug: str) -> Keynote | None:
         return self.keynotes.by_slug(slug)
 
-    @strawberry.field
-    def talks(self, info: Info) -> list[ScheduleItem]:
-        return (
-            self.schedule_items.filter(type=ScheduleItemModel.TYPES.submission)
-            .prefetch_related("rooms")
-            .all()
+    @strawberry_django.field
+    def talks(self) -> list[ScheduleItem]:
+        return self.schedule_items.filter(
+            type=schedule_models.ScheduleItem.TYPES.submission
         )
 
     @strawberry_django.field
