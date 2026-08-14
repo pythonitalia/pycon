@@ -19,8 +19,35 @@ class SearchEventsForScheduleResult:
 
     @strawberry.field
     def results(self, info: Info) -> list[Submission | Keynote]:
+        # The mixed union has to become a list here, so optimize each queryset
+        # before Strawberry loses the opportunity to inspect its model type.
+        # Keep title explicit because the frontend selects its resolver twice
+        # under different aliases. Always prefetch keynote speakers so their
+        # IDs can share the participant batch even when a participant is absent.
+        proposals = list(
+            optimize(
+                self.proposals,
+                info,
+                store=OptimizerStore.with_hints(only=["title", "speaker_id"]),
+            )
+        )
+        keynotes = list(
+            optimize(
+                self.keynotes,
+                info,
+                store=OptimizerStore.with_hints(prefetch_related=["speakers"]),
+            )
+        )
+
         # Participant deliberately has no reverse User relation, so batch the
         # speakers from both sides of the union into the shared request cache.
+        speaker_ids = {proposal.speaker_id for proposal in proposals}
+        speaker_ids.update(
+            speaker.user_id
+            for keynote in keynotes
+            for speaker in keynote.speakers.all()
+            if speaker.user_id
+        )
         participants = participant_models.Participant.objects.filter(
             conference_id=self.conference_id,
         ).filter(
@@ -35,22 +62,12 @@ class SearchEventsForScheduleResult:
         participants_data = participants_by_conference.setdefault(
             self.conference_id, {}
         )
+        participants_data.update({speaker_id: None for speaker_id in speaker_ids})
         participants_data.update(
             {participant.user_id: participant for participant in participants}
         )
 
-        # The mixed union has to become a list here, so optimize each queryset
-        # before Strawberry loses the opportunity to inspect its model type.
-        # Keep title explicit because the frontend selects its resolver twice
-        # under different aliases.
-        return [
-            *optimize(
-                self.proposals,
-                info,
-                store=OptimizerStore.with_hints(only=["title"]),
-            ),
-            *optimize(self.keynotes, info),
-        ]
+        return [*proposals, *keynotes]
 
 
 @strawberry.field(permission_classes=[CanEditSchedule])

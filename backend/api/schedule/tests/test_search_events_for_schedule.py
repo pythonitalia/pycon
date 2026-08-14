@@ -118,6 +118,7 @@ def _search_events_for_schedule(client, **input):
     ("event_count", "expected_queries"),
     [(1, 9), (4, 9)],
 )
+@pytest.mark.parametrize("has_participant", [True, False])
 def test_frontend_search_events_query(
     admin_graphql_api_client,
     admin_superuser,
@@ -125,6 +126,7 @@ def test_frontend_search_events_query(
     django_assert_num_queries,
     event_count,
     expected_queries,
+    has_participant,
 ):
     conference = conference_with_schedule_setup
     duration = DurationFactory(
@@ -138,11 +140,12 @@ def test_frontend_search_events_query(
 
     for index in range(event_count):
         speaker = UserFactory(full_name=f"Proposal Speaker {index + 1}")
-        ParticipantFactory(
-            conference=conference,
-            user=speaker,
-            speaker_availabilities={"day": index + 1},
-        )
+        if has_participant:
+            ParticipantFactory(
+                conference=conference,
+                user=speaker,
+                speaker_availabilities={"day": index + 1},
+            )
         submission = SubmissionFactory(
             conference=conference,
             duration=duration,
@@ -160,10 +163,11 @@ def test_frontend_search_events_query(
         submissions.append(submission)
 
         keynote_speaker = UserFactory(full_name=f"Keynote Speaker {index + 1}")
-        ParticipantFactory(
-            conference=conference,
-            user=keynote_speaker,
-        )
+        if has_participant:
+            ParticipantFactory(
+                conference=conference,
+                user=keynote_speaker,
+            )
         keynote = KeynoteFactory(
             conference=conference,
             title=LazyI18nString(
@@ -212,11 +216,15 @@ def test_frontend_search_events_query(
                         "speaker": {
                             "id": str(submission.speaker_id),
                             "fullName": submission.speaker.full_name,
-                            "participant": {
-                                "speakerAvailabilities": {
-                                    "day": index + 1,
+                            "participant": (
+                                {
+                                    "speakerAvailabilities": {
+                                        "day": index + 1,
+                                    }
                                 }
-                            },
+                                if has_participant
+                                else None
+                            ),
                         },
                     }
                     for index, submission in enumerate(submissions)
