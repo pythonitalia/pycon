@@ -50,9 +50,7 @@ class SearchEventsForScheduleResult:
         )
         participants = participant_models.Participant.objects.filter(
             conference_id=self.conference_id,
-        ).filter(
-            Q(user_id__in=self.proposals.values("speaker_id"))
-            | Q(user_id__in=self.keynotes.values("speakers__user_id"))
+            user_id__in=speaker_ids,
         )
         participants_by_conference = info.context._participants_data
         if participants_by_conference is None:
