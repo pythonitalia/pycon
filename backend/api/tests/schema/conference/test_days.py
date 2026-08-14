@@ -267,6 +267,7 @@ def test_schedule_capacity_query_is_constant(
         if item_source == "keynote":
             keynote = KeynoteFactory(conference=conference)
             speaker = KeynoteSpeakerFactory(keynote=keynote).user
+            KeynoteSpeakerFactory(keynote=keynote, user=None)
             item = ScheduleItemFactory(
                 conference=conference,
                 slot=slots[index],
