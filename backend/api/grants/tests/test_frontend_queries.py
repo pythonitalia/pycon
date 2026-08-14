@@ -60,7 +60,7 @@ def test_frontend_my_grant_query(graphql_client, django_assert_num_queries, user
     )
     grant.save()
 
-    with django_assert_num_queries(4):
+    with django_assert_num_queries(3):
         response = graphql_client.query(
             MY_GRANT_QUERY,
             variables={"conference": grant.conference.code},
