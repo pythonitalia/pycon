@@ -73,79 +73,70 @@ class Deadline:
     status: DeadlineStatusType
 
 
-@strawberry.type
+def _keynote_schedule_item(keynote):
+    return min(keynote.schedule_items.all(), key=lambda item: item.pk, default=None)
+
+
+@strawberry_django.type(conference_models.Keynote)
 class Keynote:
-    id: strawberry.ID
-    title: str = strawberry.field(resolver=make_localized_resolver("title"))
-    description: str = strawberry.field(resolver=make_localized_resolver("description"))
-    slug: str = strawberry.field(resolver=make_localized_resolver("slug"))
+    id: strawberry.auto
+    title: str = strawberry_django.field(
+        resolver=make_localized_resolver("title"), only=["title"]
+    )
+    description: str = strawberry_django.field(
+        resolver=make_localized_resolver("description"), only=["description"]
+    )
+    slug: str = strawberry_django.field(
+        resolver=make_localized_resolver("slug"), only=["slug"]
+    )
     topic: Topic | None
-    speakers: list[ScheduleItemUser]
-    start: datetime | None
-    end: datetime | None
-    rooms: list[Room]
-    youtube_video_id: str | None
 
-    def __init__(
-        self,
-        id: strawberry.ID,
-        title: str,
-        description: str,
-        slug: str,
-        topic: Topic | None,
-        speakers: list[ScheduleItemUser],
-        start: datetime | None,
-        end: datetime | None,
-        rooms: list[Room],
-        youtube_video_id: str | None,
-    ):
-        self.id = id
-        self.title = title
-        self.description = description
-        self.slug = slug
-        self.topic = topic
-        self.speakers = speakers
-        self.start = start
-        self.end = end
-        self.rooms = rooms
-        self.youtube_video_id = youtube_video_id
-
-    @classmethod
-    def from_django_model(cls, instance, info):
+    # Keep model instances here: values()/values_list() bypass Django's prefetch
+    # cache. A narrower custom Prefetch is only worthwhile if profiling shows it.
+    @strawberry_django.field(prefetch_related=["speakers__user"])
+    def speakers(self, info: Info) -> list[ScheduleItemUser]:
+        keynote_speakers = [
+            speaker for speaker in self.speakers.all() if speaker.user_id
+        ]
         participants_data = info.context._participants_data
         if not participants_data:
             participants_data = {
                 participant.user_id: participant
                 for participant in ParticipantModel.objects.filter(
-                    user_id__in=instance.speakers.values_list("user_id"),
-                    conference_id=instance.conference_id,
+                    user_id__in=[speaker.user_id for speaker in keynote_speakers],
+                    conference_id=self.conference_id,
                 ).all()
             }
 
-        schedule_item = instance.schedule_items.all().first()
+        return [
+            ScheduleItemUser(
+                id=speaker.user_id,
+                fullname=speaker.user.full_name,
+                full_name=speaker.user.full_name,
+                participant=Participant.from_model(participants_data[speaker.user_id]),
+            )
+            for speaker in keynote_speakers
+        ]
 
-        return cls(
-            id=instance.id,
-            title=instance.title,
-            description=instance.description,
-            slug=instance.slug,
-            topic=Topic.from_django_model(instance.topic) if instance.topic else None,
-            speakers=[
-                ScheduleItemUser(
-                    id=speaker.user_id,
-                    fullname=speaker.user.full_name,
-                    full_name=speaker.user.full_name,
-                    participant=Participant.from_model(
-                        participants_data[speaker.user_id]
-                    ),
-                )
-                for speaker in instance.speakers.all()
-            ],
-            start=schedule_item.start if schedule_item else None,
-            end=schedule_item.end if schedule_item else None,
-            rooms=schedule_item.rooms.all() if schedule_item else [],
-            youtube_video_id=schedule_item.youtube_video_id if schedule_item else None,
-        )
+    @strawberry_django.field(prefetch_related=["schedule_items"])
+    def start(self) -> datetime | None:
+        schedule_item = _keynote_schedule_item(self)
+        return schedule_item.start if schedule_item else None
+
+    @strawberry_django.field(prefetch_related=["schedule_items"])
+    def end(self) -> datetime | None:
+        schedule_item = _keynote_schedule_item(self)
+        return schedule_item.end if schedule_item else None
+
+    @strawberry_django.field(prefetch_related=["schedule_items__rooms"])
+    def rooms(self) -> list[Room]:
+        schedule_item = _keynote_schedule_item(self)
+        return schedule_item.rooms.all() if schedule_item else []
+
+    @strawberry_django.field(prefetch_related=["schedule_items"])
+    def youtube_video_id(self) -> str | None:
+        schedule_item = _keynote_schedule_item(self)
+        return schedule_item.youtube_video_id if schedule_item else None
 
 
 @strawberry.type
@@ -265,16 +256,13 @@ class Conference:
             self.menus.filter(identifier=identifier).prefetch_related("links").first()
         )
 
-    @strawberry.field
+    @strawberry_django.field
     def keynotes(self, info: Info) -> list[Keynote]:
-        return [
-            Keynote.from_django_model(keynote, info) for keynote in self.keynotes.all()
-        ]
+        return self.keynotes.all()
 
-    @strawberry.field
+    @strawberry_django.field
     def keynote(self, info: Info, slug: str) -> Keynote | None:
-        keynote = self.keynotes.by_slug(slug).first()
-        return Keynote.from_django_model(keynote, info) if keynote else None
+        return self.keynotes.by_slug(slug)
 
     @strawberry.field
     def talks(self, info: Info) -> list[ScheduleItem]:

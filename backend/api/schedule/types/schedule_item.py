@@ -106,12 +106,10 @@ class ScheduleItem:
     def keynote(
         self, info: Info
     ) -> Annotated["Keynote", strawberry.lazy("api.conferences.types")] | None:
-        from api.conferences.types import Keynote
-
         if not self.keynote_id:
             return None
 
-        return Keynote.from_django_model(self.keynote, info)
+        return self.keynote
 
     @strawberry.field
     def rooms(self, info: Info) -> list[Room]:

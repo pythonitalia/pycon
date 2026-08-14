@@ -48,9 +48,4 @@ def search_events_for_schedule(
     for proposal in proposals:
         proposal.__strawberry_definition__ = Submission.__strawberry_definition__
 
-    return SearchEventsForScheduleResult(
-        results=[
-            *proposals,
-            *[Keynote.from_django_model(keynote, info) for keynote in keynotes],
-        ]
-    )
+    return SearchEventsForScheduleResult(results=[*proposals, *keynotes])
