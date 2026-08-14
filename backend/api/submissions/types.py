@@ -78,25 +78,30 @@ class MultiLingualString:
         )
 
 
-@strawberry.type
+@strawberry_django.type(models.ProposalMaterial)
 class ProposalMaterial:
-    id: strawberry.ID
-    name: str
-    url: str | None
-    file_id: str | None
-    file_url: str | None
-    file_mime_type: str | None
+    id: strawberry.auto
+    name: strawberry.auto
+    url: strawberry.auto
+    file_id: str | None = strawberry_django.field(only=["file_id"])
 
     @classmethod
-    def from_django(cls, material):
-        return cls(
-            id=material.id,
-            name=material.name,
-            url=material.url,
-            file_id=material.file_id,
-            file_url=material.file.url if material.file_id else None,
-            file_mime_type=material.file.mime_type if material.file_id else None,
-        )
+    def get_queryset(cls, queryset, info: Info):
+        return queryset.order_by("created")
+
+    @strawberry_django.field(
+        only=["file_id", "file__file"],
+        select_related=["file"],
+    )
+    def file_url(self) -> str | None:
+        return self.file.url if self.file_id else None
+
+    @strawberry_django.field(
+        only=["file_id", "file__mime_type"],
+        select_related=["file"],
+    )
+    def file_mime_type(self) -> str | None:
+        return self.file.mime_type if self.file_id else None
 
 
 @strawberry_django.type(models.Submission)
@@ -193,12 +198,9 @@ class Submission:
     def tags(self, info: Info) -> list[SubmissionTag] | None:
         return self.tags.all()
 
-    @strawberry.field
-    def materials(self, info: Info) -> list[ProposalMaterial]:
-        return [
-            ProposalMaterial.from_django(material)
-            for material in self.materials.order_by("created").all()
-        ]
+    @strawberry_django.field
+    def materials(self) -> list[ProposalMaterial]:
+        return self.materials.all()
 
 
 @strawberry.type
