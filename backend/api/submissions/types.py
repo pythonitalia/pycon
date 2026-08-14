@@ -54,18 +54,15 @@ class SubmissionSpeaker:
     gender: str
     _conference_id: strawberry.Private[str]
 
-    @strawberry.field
+    @strawberry_django.field
     def participant(
-        self, info: Info
+        self,
     ) -> Annotated["Participant", strawberry.lazy("api.participants.types")] | None:
-        from api.participants.types import Participant
-
-        participant = (
-            participant_models.Participant.objects.for_conference(self._conference_id)
-            .filter(user_id=self.id)
-            .first()
+        return participant_models.Participant.objects.for_conference(
+            self._conference_id
+        ).filter(
+            user_id=self.id,
         )
-        return Participant.from_model(participant) if participant else None
 
 
 @strawberry.type
