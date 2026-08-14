@@ -1,7 +1,8 @@
-from api.cms.utils import get_site_by_host
 import strawberry
+
 from api.cms.news.types import NewsArticle
-from cms.components.news.models import NewsArticle as NewsArticleModel
+from api.cms.utils import get_site_by_host
+from cms.components.news import models
 
 
 @strawberry.field
@@ -11,7 +12,9 @@ def news_article(hostname: str, slug: str, language: str) -> NewsArticle | None:
     if not site:
         raise ValueError(f"Site {hostname} not found")
 
-    article = NewsArticleModel.objects.in_site(site).filter(slug=slug, live=True).first()
+    article = (
+        models.NewsArticle.objects.in_site(site).filter(slug=slug, live=True).first()
+    )
 
     if not article:
         return None
@@ -25,4 +28,4 @@ def news_article(hostname: str, slug: str, language: str) -> NewsArticle | None:
     if not translated_article:
         return None
 
-    return NewsArticle.from_model(translated_article)
+    return translated_article

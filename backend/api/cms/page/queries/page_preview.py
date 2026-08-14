@@ -1,11 +1,11 @@
-from typing import Union
-from api.cms.news.types import NewsArticle
-from api.cms.page.types import GenericPage
 import strawberry
 from django.contrib.contenttypes.models import ContentType
 from wagtail_headless_preview.models import PagePreview
-from cms.components.page.models import GenericPage as GenericPageModel
-from cms.components.news.models import NewsArticle as NewsArticleModel
+
+from api.cms.news.types import NewsArticle
+from api.cms.page.types import GenericPage
+from cms.components.news import models as news_models
+from cms.components.page import models as page_models
 
 
 @strawberry.type
@@ -21,7 +21,7 @@ class NewsArticlePreview:
 @strawberry.field
 def page_preview(
     content_type: str, token: str
-) -> Union[GenericPagePreview, NewsArticlePreview] | None:
+) -> GenericPagePreview | NewsArticlePreview | None:
     app_label, model = content_type.split(".")
     content_type = ContentType.objects.filter(app_label=app_label, model=model).first()
 
@@ -41,7 +41,7 @@ def page_preview(
         page.id = 0
 
     match page:
-        case GenericPageModel():
+        case page_models.GenericPage():
             return GenericPagePreview(generic_page=GenericPage.from_model(page))
-        case NewsArticleModel():
-            return NewsArticlePreview(news_article=NewsArticle.from_model(page))
+        case news_models.NewsArticle():
+            return NewsArticlePreview(news_article=page)
