@@ -1,18 +1,41 @@
 import datetime
 
+import pytest
+
+from conferences.tests.factories import ConferenceFactory
+from schedule.models import ScheduleItem
 from schedule.tests.factories import (
     DayFactory,
+    RoomFactory,
     ScheduleItemAttendeeFactory,
     ScheduleItemFactory,
     SlotFactory,
 )
 from submissions.tests.factories import SubmissionFactory
 from users.tests.factories import UserFactory
-import pytest
-
-from schedule.models import ScheduleItem
 
 pytestmark = pytest.mark.django_db
+
+
+BOOKED_SCHEDULE_ITEMS_QUERY = """
+query MyProfileWithBookedWorkshops($conference: String!) {
+  me {
+    id
+    bookedScheduleItems(conference: $conference) {
+      id
+      title
+      slug
+      type
+      start
+      end
+      rooms {
+        id
+        name
+      }
+    }
+  }
+}
+"""
 
 
 def _bookable_schedule_item(attendees_total_capacity: int = 30):
@@ -32,6 +55,75 @@ def _bookable_schedule_item(attendees_total_capacity: int = 30):
             duration=30,
         ),
     )
+
+
+@pytest.mark.parametrize(
+    ("item_count", "expected_queries"),
+    [(1, 7), (4, 16)],
+)
+def test_frontend_booked_schedule_items_query(
+    graphql_client,
+    user,
+    django_assert_num_queries,
+    item_count,
+    expected_queries,
+):
+    conference = ConferenceFactory()
+    day = DayFactory(
+        day=datetime.date(2020, 10, 10),
+        conference=conference,
+    )
+    rooms = [RoomFactory(name="Main"), RoomFactory(name="Workshop")]
+    schedule_items = []
+
+    for index in range(item_count):
+        submission = SubmissionFactory(conference=conference)
+        schedule_item = ScheduleItemFactory(
+            status=ScheduleItem.STATUS.confirmed,
+            submission=submission,
+            title=f"Workshop {index + 1}",
+            slug=f"workshop-{index + 1}",
+            type=ScheduleItem.TYPES.training,
+            conference=conference,
+            attendees_total_capacity=30,
+            slot=SlotFactory(
+                day=day,
+                hour=datetime.time(10 + index, 0),
+                duration=30,
+            ),
+            rooms=rooms,
+        )
+        ScheduleItemAttendeeFactory(schedule_item=schedule_item, user=user)
+        schedule_items.append(schedule_item)
+
+    graphql_client.force_login(user)
+
+    with django_assert_num_queries(expected_queries):
+        response = graphql_client.query(
+            BOOKED_SCHEDULE_ITEMS_QUERY,
+            variables={"conference": conference.code},
+        )
+
+    assert "errors" not in response
+    assert response["data"] == {
+        "me": {
+            "id": str(user.id),
+            "bookedScheduleItems": [
+                {
+                    "id": str(schedule_item.id),
+                    "title": schedule_item.title,
+                    "slug": schedule_item.slug,
+                    "type": ScheduleItem.TYPES.training,
+                    "start": schedule_item.start.isoformat(),
+                    "end": schedule_item.end.isoformat(),
+                    "rooms": [
+                        {"id": str(room.id), "name": room.name} for room in rooms
+                    ],
+                }
+                for schedule_item in schedule_items
+            ],
+        }
+    }
 
 
 def test_get_booked_schedule_items(graphql_client, user):
