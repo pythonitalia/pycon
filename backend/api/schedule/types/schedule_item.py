@@ -196,14 +196,8 @@ class ScheduleItem:
                     id=speaker.id,
                     fullname=speaker.fullname,
                     full_name=speaker.full_name,
-                    participant=next(
-                        (
-                            participant
-                            for participant in speaker.participants.all()
-                            if participant.conference_id == self.conference_id
-                        ),
-                        None,
-                    ),
+                    _user=speaker,
+                    _conference_id=self.conference_id,
                 )
             )
 

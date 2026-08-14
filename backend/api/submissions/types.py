@@ -10,8 +10,8 @@ from api.utils import validate_url
 from api.voting.types import VoteType
 from files_upload import models as file_models
 from i18n.strings import LazyI18nString
-from participants import models as participant_models
 from submissions import models
+from users import models as user_models
 from voting import models as voting_models
 
 from .permissions import CanSeeSubmissionPrivateFields, CanSeeSubmissionRestrictedFields
@@ -52,13 +52,21 @@ class SubmissionSpeaker:
     id: strawberry.ID
     full_name: str
     gender: str
-    _participant: strawberry.Private[participant_models.Participant | None]
+    _user: strawberry.Private[user_models.User]
+    _conference_id: strawberry.Private[int]
 
     @strawberry_django.field
     def participant(
         self,
     ) -> Annotated["Participant", strawberry.lazy("api.participants.types")] | None:
-        return self._participant
+        return next(
+            (
+                participant
+                for participant in self._user.participants.all()
+                if participant.conference_id == self._conference_id
+            ),
+            None,
+        )
 
 
 @strawberry.type
@@ -161,14 +169,8 @@ class Submission:
             id=self.speaker_id,
             full_name=self.speaker.full_name,
             gender=self.speaker.gender,
-            _participant=next(
-                (
-                    participant
-                    for participant in self.speaker.participants.all()
-                    if participant.conference_id == self.conference_id
-                ),
-                None,
-            ),
+            _user=self.speaker,
+            _conference_id=self.conference_id,
         )
 
     @strawberry_django.field(only=["id"])

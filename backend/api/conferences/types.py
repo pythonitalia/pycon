@@ -105,14 +105,8 @@ class Keynote:
                 id=speaker.user_id,
                 fullname=speaker.user.full_name,
                 full_name=speaker.user.full_name,
-                participant=next(
-                    (
-                        participant
-                        for participant in speaker.user.participants.all()
-                        if participant.conference_id == self.conference_id
-                    ),
-                    None,
-                ),
+                _user=speaker.user,
+                _conference_id=self.conference_id,
             )
             for speaker in keynote_speakers
         ]
