@@ -28,11 +28,11 @@ class SponsorsByLevel:
     highlight_color: str | None
 
 
-@strawberry.type
+@strawberry_django.type(models.SponsorBenefit)
 class SponsorBenefit:
-    name: str
-    category: str
-    description: str
+    name: str = strawberry_django.field(only=["name"])
+    category: str = strawberry_django.field(only=["category"])
+    description: str = strawberry_django.field(only=["description"])
 
 
 @strawberry.type
@@ -51,8 +51,8 @@ class SponsorLevel:
     benefits: list[SponsorLevelBenefit]
 
 
-@strawberry.type
+@strawberry_django.type(models.SponsorSpecialOption)
 class SponsorSpecialOption:
-    name: str
-    price: Decimal
-    description: str
+    name: strawberry.auto
+    price: strawberry.auto
+    description: strawberry.auto

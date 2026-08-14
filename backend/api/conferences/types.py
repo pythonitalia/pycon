@@ -316,18 +316,9 @@ class Conference:
         now = timezone.now()
         return self.start <= now <= self.end
 
-    @strawberry.field
+    @strawberry_django.field
     def sponsor_benefits(self) -> list[SponsorBenefit]:
-        benefits = self.sponsor_benefits.order_by("order").all()
-
-        return [
-            SponsorBenefit(
-                name=benefit.name,
-                category=benefit.category,
-                description=benefit.description,
-            )
-            for benefit in benefits
-        ]
+        return self.sponsor_benefits.order_by("order").all()
 
     @strawberry.field
     def sponsor_levels(self) -> list[SponsorLevel]:
@@ -358,18 +349,9 @@ class Conference:
             for level in levels
         ]
 
-    @strawberry.field
+    @strawberry_django.field
     def sponsor_special_options(self) -> list[SponsorSpecialOption]:
-        options = self.sponsor_special_options.order_by("order").all()
-
-        return [
-            SponsorSpecialOption(
-                name=option.name,
-                description=option.description,
-                price=option.price,
-            )
-            for option in options
-        ]
+        return self.sponsor_special_options.order_by("order").all()
 
 
 @strawberry_django.type(conference_models.Duration)
