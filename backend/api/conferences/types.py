@@ -25,7 +25,7 @@ from api.sponsors.types import (
 )
 from api.submissions.types import Submission, SubmissionTag, SubmissionType
 from api.voting.types import RankRequest
-from cms.models import GenericCopy
+from cms import models as cms_models
 from conferences import models as conference_models
 from conferences.models.deadline import DeadlineStatus
 from participants.models import Participant as ParticipantModel
@@ -243,17 +243,15 @@ class Conference:
 
     @strawberry.field
     def copy(self, info: Info, key: str, language: str | None = None) -> str | None:
-        copy = GenericCopy.objects.filter(conference=self, key=key).first()
+        copy = cms_models.GenericCopy.objects.filter(conference=self, key=key).first()
 
         language = language or translation.get_language() or settings.LANGUAGE_CODE
 
         return copy.content.localize(language) if copy else None
 
-    @strawberry.field
-    def menu(self, info: Info, identifier: str) -> Menu | None:
-        return (
-            self.menus.filter(identifier=identifier).prefetch_related("links").first()
-        )
+    @strawberry_django.field
+    def menu(self, identifier: str) -> Menu | None:
+        return self.menus.filter(identifier=identifier)
 
     @strawberry_django.field
     def keynotes(self, info: Info) -> list[Keynote]:
