@@ -19,7 +19,7 @@ from api.submissions.types import Submission
 from api.visa.types import InvitationLetterRequest
 from association_membership.models import Membership
 from badges.roles import ConferenceRole, get_conference_roles_for_user
-from billing.models import BillingAddress as BillingAddressModel
+from billing import models as billing_models
 from conferences.models import Conference
 from grants import models as grant_models
 from participants import models as participant_models
@@ -29,12 +29,7 @@ from schedule.models import Room
 from schedule.models import ScheduleItem as ScheduleItemModel
 from schedule.models import ScheduleItemStar as ScheduleItemStarModel
 from submissions.models import Submission as SubmissionModel
-from visa.models import (
-    InvitationLetterRequest as InvitationLetterRequestModel,
-)
-from visa.models import (
-    InvitationLetterRequestOnBehalfOf,
-)
+from visa import models as visa_models
 
 PRETIX_ORDERS_STATUS_ORDER = [
     PretixOrderStatus.PAID,
@@ -188,29 +183,20 @@ class User:
     def is_python_italia_member(self) -> bool:
         return Membership.objects.active().of_user(self.id).exists()
 
-    @strawberry.field
+    @strawberry_django.field
     def billing_addresses(self, conference: str) -> list[BillingAddress]:
-        return [
-            BillingAddress.from_django_model(billing_address)
-            for billing_address in BillingAddressModel.objects.of_user(self.id)
-            .for_conference_code(conference)
-            .all()
-        ]
+        return billing_models.BillingAddress.objects.of_user(
+            self.id
+        ).for_conference_code(conference)
 
-    @strawberry.field
+    @strawberry_django.field
     def invitation_letter_request(
         self, conference: str
     ) -> InvitationLetterRequest | None:
-        invitation_letter_request = (
-            InvitationLetterRequestModel.objects.for_conference_code(conference)
-            .of_user(self.id)
-            .filter(on_behalf_of=InvitationLetterRequestOnBehalfOf.SELF)
-            .first()
-        )
         return (
-            InvitationLetterRequest.from_model(invitation_letter_request)
-            if invitation_letter_request
-            else None
+            visa_models.InvitationLetterRequest.objects.for_conference_code(conference)
+            .of_user(self.id)
+            .filter(on_behalf_of=visa_models.InvitationLetterRequestOnBehalfOf.SELF)
         )
 
     @classmethod
