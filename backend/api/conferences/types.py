@@ -239,8 +239,8 @@ class Conference:
             )
         ).select_related("audience_level", "duration", "type", "topic")
 
-    @strawberry.field
-    def events(self, info: Info) -> list[Event]:
+    @strawberry_django.field
+    def events(self) -> list[Event]:
         return self.events.all()
 
     @strawberry.field
