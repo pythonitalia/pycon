@@ -91,8 +91,7 @@ class Keynote:
     )
     topic: Topic | None
 
-    # Keep model instances here: values()/values_list() bypass Django's prefetch
-    # cache. A narrower custom Prefetch is only worthwhile if profiling shows it.
+    # Keep model instances so Django can use the prefetched users and participants.
     @strawberry_django.field(
         only=["conference_id"],
         prefetch_related=["speakers__user__participants"],
