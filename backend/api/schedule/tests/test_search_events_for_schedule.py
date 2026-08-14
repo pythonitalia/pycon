@@ -62,7 +62,11 @@ query SearchEvents($conferenceId: ID!, $query: String!) {
 
 
 MULTI_CONFERENCE_SEARCH_EVENTS_QUERY = """
-query SearchEvents($firstConferenceId: ID!, $secondConferenceId: ID!) {
+query SearchEvents(
+  $firstConferenceId: ID!
+  $secondConferenceId: ID!
+  $uncachedSubmissionId: ID!
+) {
   first: searchEventsForSchedule(
     conferenceId: $firstConferenceId
     query: "Shared"
@@ -74,6 +78,13 @@ query SearchEvents($firstConferenceId: ID!, $secondConferenceId: ID!) {
             speakerAvailabilities
           }
         }
+      }
+    }
+  }
+  uncachedSubmission: submission(id: $uncachedSubmissionId) {
+    speaker {
+      participant {
+        speakerAvailabilities
       }
     }
   }
@@ -271,13 +282,27 @@ def test_frontend_search_events_query_keeps_participants_scoped_by_conference(
             title=LazyI18nString({"en": f"Shared Talk {index}", "it": ""}),
         )
 
+    uncached_speaker = UserFactory(full_name="Uncached Speaker")
+    ParticipantFactory(
+        conference=conferences[1],
+        user=uncached_speaker,
+        speaker_availabilities={"uncached": True},
+    )
+    uncached_submission = SubmissionFactory(
+        conference=conferences[1],
+        speaker=uncached_speaker,
+        status=Submission.STATUS.accepted,
+        title=LazyI18nString({"en": "Unmatched Talk", "it": ""}),
+    )
+
     admin_graphql_api_client.force_login(admin_superuser)
-    with django_assert_num_queries(10):
+    with django_assert_num_queries(13):
         response = admin_graphql_api_client.query(
             MULTI_CONFERENCE_SEARCH_EVENTS_QUERY,
             variables={
                 "firstConferenceId": str(conferences[0].id),
                 "secondConferenceId": str(conferences[1].id),
+                "uncachedSubmissionId": uncached_submission.hashid,
             },
         )
 
@@ -291,6 +316,9 @@ def test_frontend_search_events_query_keeps_participants_scoped_by_conference(
                     }
                 }
             ]
+        },
+        "uncachedSubmission": {
+            "speaker": {"participant": {"speakerAvailabilities": {"uncached": True}}}
         },
         "second": {
             "results": [
