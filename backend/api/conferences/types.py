@@ -295,11 +295,11 @@ class Conference:
     def days(self, info: Info) -> list[Day]:
         return self.days.all()
 
-    @strawberry.field
-    def current_day(self, info: Info) -> Day | None:
+    @strawberry_django.field
+    def current_day(self) -> Day | None:
         start = timezone.now().replace(hour=0, minute=0, second=0)
         end = start.replace(hour=23, minute=59, second=59)
-        return self.days.filter(day__gte=start, day__lte=end).first()
+        return self.days.filter(day__gte=start, day__lte=end)
 
     @strawberry.field
     def is_running(self, info: Info) -> bool:
