@@ -26,7 +26,7 @@ class SearchEventsForScheduleResult:
                 self.proposals,
                 info,
                 store=OptimizerStore.with_hints(only=["title", "speaker_id"]),
-            )
+            )[:5]
         )
         keynotes = list(optimize(self.keynotes, info))
 
@@ -48,7 +48,7 @@ def search_events_for_schedule(
             | Q(speaker__full_name__icontains=query)
             | Q(speaker__name__icontains=query)
         )
-        .all()[:5]
+        .all()
     )
     keynotes = (
         KeynoteModel.objects.for_conference(conference_id)
