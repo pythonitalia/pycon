@@ -11,7 +11,6 @@ from api.events.types import Event
 from api.generic_forms.types import Form as GenericForm
 from api.generic_forms.types import FormPurpose
 from api.languages.types import Language
-from api.participants.types import Participant
 from api.pretix.query import get_conference_tickets, get_voucher
 from api.pretix.types import TicketItem, Voucher
 from api.schedule.types import Room, ScheduleItem, ScheduleItemUser
@@ -28,7 +27,7 @@ from api.voting.types import RankRequest
 from cms import models as cms_models
 from conferences import models as conference_models
 from conferences.models.deadline import DeadlineStatus
-from participants.models import Participant as ParticipantModel
+from participants import models as participant_models
 from schedule import models as schedule_models
 from sponsors import models as sponsor_models
 from submissions.models import Submission as SubmissionModel
@@ -101,7 +100,7 @@ class Keynote:
         if not participants_data:
             participants_data = {
                 participant.user_id: participant
-                for participant in ParticipantModel.objects.filter(
+                for participant in participant_models.Participant.objects.filter(
                     user_id__in=[speaker.user_id for speaker in keynote_speakers],
                     conference_id=self.conference_id,
                 ).all()
@@ -112,7 +111,7 @@ class Keynote:
                 id=speaker.user_id,
                 fullname=speaker.user.full_name,
                 full_name=speaker.user.full_name,
-                participant=Participant.from_model(participants_data[speaker.user_id]),
+                participant=participants_data[speaker.user_id],
             )
             for speaker in keynote_speakers
         ]

@@ -1,19 +1,19 @@
-from api.context import Info
-from api.participants.types import Participant
-from participants.models import Participant as ParticipantModel
-from typing import TYPE_CHECKING
-from api.languages.types import Language
-from api.permissions import IsStaffPermission
 from datetime import datetime
-from typing import Annotated
-from api.schedule.types.schedule_item_user import ScheduleItemUser
-from api.submissions.types import Submission
+from typing import TYPE_CHECKING, Annotated
+
 import strawberry
 import strawberry_django
 from django.db import models as django_models
 from django.db.models.functions import Coalesce
-from schedule import models
+
+from api.context import Info
+from api.languages.types import Language
+from api.permissions import IsStaffPermission
 from api.schedule.types.room import Room
+from api.schedule.types.schedule_item_user import ScheduleItemUser
+from api.submissions.types import Submission
+from participants import models as participant_models
+from schedule import models
 
 if TYPE_CHECKING:  # pragma: no cover
     from api.conferences.types import AudienceLevel, Conference, Keynote
@@ -179,7 +179,7 @@ class ScheduleItem:
             additional_speakers = schedule_items.values("additional_speakers__user_id")
             participants_data = {
                 participant.user_id: participant
-                for participant in ParticipantModel.objects.filter(
+                for participant in participant_models.Participant.objects.filter(
                     conference_id=self.conference_id
                 )
                 .filter(
@@ -213,9 +213,7 @@ class ScheduleItem:
                     id=speaker.id,
                     fullname=speaker.fullname,
                     full_name=speaker.full_name,
-                    participant=Participant.from_model(participants_data[speaker.id])
-                    if speaker.id in participants_data
-                    else None,
+                    participant=participants_data.get(speaker.id),
                 )
             )
 

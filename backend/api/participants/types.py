@@ -85,7 +85,3 @@ class Participant:
             return self.photo_small_url
 
         return self.photo_url
-
-    @classmethod
-    def from_model(cls, instance: models.Participant) -> models.Participant:
-        return instance

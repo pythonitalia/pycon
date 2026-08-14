@@ -23,7 +23,7 @@ from badges.roles import ConferenceRole, get_conference_roles_for_user
 from billing.models import BillingAddress as BillingAddressModel
 from conferences.models import Conference
 from grants.models import Grant as GrantModel
-from participants.models import Participant as ParticipantModel
+from participants import models as participant_models
 from pretix import user_has_admission_ticket
 from pycon.signing import sign_path
 from schedule.models import Room
@@ -146,7 +146,7 @@ class User:
 
     @strawberry_django.field
     def participant(self, info: Info, conference: str) -> Participant | None:
-        return ParticipantModel.objects.filter(
+        return participant_models.Participant.objects.filter(
             user_id=self.id,
             conference__code=conference,
         )
