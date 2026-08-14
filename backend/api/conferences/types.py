@@ -1,6 +1,4 @@
 from api.context import Info
-from django.db.models import Case, When, Value, IntegerField
-from django.db.models import Prefetch
 from participants.models import Participant as ParticipantModel
 from datetime import datetime
 from api.participants.types import Participant
@@ -139,27 +137,31 @@ class Keynote:
         return schedule_item.youtube_video_id if schedule_item else None
 
 
-@strawberry.type
+@strawberry_django.type(conference_models.Conference)
 class Conference:
-    id: strawberry.ID
+    id: strawberry.auto
 
-    name: str = strawberry.field(resolver=make_localized_resolver("name"))
-    introduction: str = strawberry.field(
-        resolver=make_localized_resolver("introduction")
+    name: str = strawberry_django.field(
+        resolver=make_localized_resolver("name"), only=["name"]
     )
-    code: str
-    hostname: str
+    introduction: str = strawberry_django.field(
+        resolver=make_localized_resolver("introduction"), only=["introduction"]
+    )
+    code: strawberry.auto
+    hostname: strawberry.auto
     start: datetime
     end: datetime
     map: Map | None = strawberry.field(resolver=resolve_map)
 
-    pretix_event_url: str
+    pretix_event_url: strawberry.auto
 
-    @strawberry.field
+    @strawberry_django.field(
+        only=["pretix_organizer_id", "pretix_event_id"],
+    )
     def voucher(self, info: Info, code: str) -> Voucher | None:
         return get_voucher(self, code)
 
-    @strawberry.field
+    @strawberry_django.field(only=["timezone"])
     def timezone(self, info: Info) -> str:
         return str(self.timezone)
 
@@ -207,9 +209,7 @@ class Conference:
     def languages(self, info: Info) -> list[Language]:
         return self.languages.all()
 
-    @strawberry.field
-    def durations(self, info: Info) -> list["Duration"]:
-        return self.durations.all()
+    durations: list["Duration"]
 
     @strawberry.field
     def submission_types(self, info: Info) -> list[SubmissionType]:
@@ -272,9 +272,9 @@ class Conference:
             .all()
         )
 
-    @strawberry.field
+    @strawberry_django.field
     def talk(self, info: Info, slug: str) -> ScheduleItem | None:
-        return self.schedule_items.filter(slug=slug).prefetch_related("rooms").first()
+        return self.schedule_items.filter(slug=slug)
 
     @strawberry.field
     def ranking(self, info: Info, topic: strawberry.ID) -> RankRequest | None:
@@ -296,74 +296,9 @@ class Conference:
             stats=rank_request.stats.all(),
         )
 
-    @strawberry.field
+    @strawberry_django.field
     def days(self, info: Info) -> list[Day]:
-        days = list(
-            self.days.order_by("day")
-            .prefetch_related(
-                "slots",
-                "slots__day",
-                "slots__day__added_rooms",
-                "slots__day__added_rooms__room",
-                Prefetch(
-                    "slots__items",
-                    queryset=(
-                        ScheduleItemModel.objects.for_conference(self.id)
-                        .annotate(
-                            order=Case(
-                                When(type="custom", then=Value(1)),
-                                When(type="break", then=Value(1)),
-                                When(type="talk", then=Value(2)),
-                                When(type="panel", then=Value(3)),
-                                default=Value(4),
-                                output_field=IntegerField(),
-                            )
-                        )
-                        .order_by("order")
-                        .prefetch_related(
-                            "audience_level",
-                            "language",
-                            "rooms",
-                            "additional_speakers",
-                            "additional_speakers__user",
-                            "language",
-                            "submission",
-                            "submission__type",
-                            "submission__tags",
-                            "submission__duration",
-                            "submission__audience_level",
-                            "submission__speaker",
-                            "submission__languages",
-                            "submission__schedule_items",
-                            "keynote",
-                            "keynote__schedule_items",
-                            "keynote__schedule_items__rooms",
-                            "keynote__schedule_items__slot",
-                            "keynote__schedule_items__slot__day",
-                            "keynote__speakers",
-                            "keynote__speakers__user",
-                        )
-                    ),
-                ),
-            )
-            .all()
-        )
-        all_speakers = [
-            speaker.id
-            for day in days
-            for slot in day.slots.all()
-            for item in slot.items.all()
-            for speaker in item.speakers
-        ]
-        info.context._participants_data = {
-            participant.user_id: participant
-            for participant in ParticipantModel.objects.for_conference(self.id)
-            .filter(user_id__in=all_speakers)
-            .prefetch_related("user")
-            .all()
-        }
-
-        return days
+        return self.days.all()
 
     @strawberry.field
     def current_day(self, info: Info) -> Day | None:

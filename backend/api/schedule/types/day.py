@@ -2,16 +2,18 @@ from api.context import Info
 from schedule.models import ScheduleItem as ScheduleItemModel
 from api.schedule.types.schedule_item import ScheduleItem
 from django.utils import timezone
-from datetime import date, timedelta
+from datetime import timedelta
 from api.schedule.types.day_room import DayRoom
 from api.schedule.types.slot import ScheduleSlot
 import strawberry
+import strawberry_django
+from schedule import models
 
 
-@strawberry.type
+@strawberry_django.type(models.Day)
 class Day:
-    id: strawberry.ID
-    day: date
+    id: strawberry.auto
+    day: strawberry.auto
 
     @strawberry.field
     def random_events(self, limit: int = 4) -> list[ScheduleItem]:
@@ -31,13 +33,13 @@ class Day:
             .order_by("?")[:limit]
         )
 
-    @strawberry.field
+    @strawberry_django.field
     def slots(
         self, info: Info, room: strawberry.ID | None = None
     ) -> list[ScheduleSlot]:
         if room:
-            return list(self.slots.filter(items__rooms__id=room))
-        return list(self.slots.all())
+            return self.slots.filter(items__rooms__id=room)
+        return self.slots.all()
 
     @strawberry.field
     def running_events(self, info: Info) -> list[ScheduleItem]:
@@ -59,7 +61,7 @@ class Day:
 
         return [item for item in current_slot.items.all()]
 
-    @strawberry.field
+    @strawberry_django.field(prefetch_related=["added_rooms__room"])
     def rooms(self) -> list[DayRoom]:
         added_rooms = self.added_rooms.all()
         return [

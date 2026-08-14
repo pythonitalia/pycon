@@ -1,12 +1,12 @@
-from api.context import Info
 from api.conferences.types import Conference
 import strawberry
+import strawberry_django
 
-from conferences.models import Conference as ConferenceModel
+from conferences import models
 
 
 @strawberry.type
 class ConferenceQuery:
-    @strawberry.field
-    def conference(self, info: Info, code: str) -> Conference:
-        return ConferenceModel.objects.prefetch_related("durations").get(code=code)
+    @strawberry_django.field
+    def conference(self, code: str) -> Conference:
+        return models.Conference.objects.filter(code=code)

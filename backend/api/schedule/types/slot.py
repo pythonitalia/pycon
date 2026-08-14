@@ -3,11 +3,12 @@ from datetime import datetime, time, timedelta
 
 from django.utils import timezone
 
-from api.context import Info
 from api.schedule.types.schedule_item import ScheduleItem
 
 
 import strawberry
+import strawberry_django
+from schedule import models
 
 
 @strawberry.enum
@@ -17,11 +18,11 @@ class ScheduleSlotType(Enum):
     BREAK = "break"
 
 
-@strawberry.type
+@strawberry_django.type(models.Slot)
 class ScheduleSlot:
-    id: strawberry.ID
-    hour: time
-    duration: int
+    id: strawberry.auto
+    hour: strawberry.auto
+    duration: strawberry.auto
     type: ScheduleSlotType
 
     @strawberry.field
@@ -40,6 +41,4 @@ class ScheduleSlot:
             + timedelta(minutes=self.duration)
         ).time()
 
-    @strawberry.field
-    def items(self, info: Info) -> list[ScheduleItem]:
-        return self.items.all()
+    items: list[ScheduleItem]
