@@ -773,6 +773,104 @@ def test_video_uploaded_path_matcher_with_day_signal(rf, mocker):
     assert admin.message_user.call_count == 1
 
 
+def test_video_uploaded_path_matcher_same_speaker_twice_in_a_day(rf, mocker):
+    conference = ConferenceFactory(code="pycon2026")
+    day_1 = DayFactory(conference=conference, day=date(2026, 5, 28))
+
+    ozge = UserFactory(name="Özge", full_name="Özge Çinko")
+
+    # "4-" listed before "2-" on purpose: assignment must follow the
+    # position number in the file name, not the storage listing order
+    mocker.patch(
+        "conferences.admin.conference.walk_conference_videos_folder",
+        return_value=[
+            "conference-videos/pycon2026/LASAGNA/D1/4-Ozge Cinko.mp4",
+            "conference-videos/pycon2026/LASAGNA/D1/2-Ozge Cinko.mp4",
+        ],
+    )
+
+    afternoon_event = ScheduleItemFactory(
+        conference=conference,
+        title="Afternoon talk",
+        type=ScheduleItem.TYPES.talk,
+        submission__speaker=ozge,
+        slot=SlotFactory(day=day_1, hour=time(14, 50), duration=45),
+    )
+    morning_event = ScheduleItemFactory(
+        conference=conference,
+        title="Morning talk",
+        type=ScheduleItem.TYPES.talk,
+        submission__speaker=ozge,
+        slot=SlotFactory(day=day_1, hour=time(11, 40), duration=45),
+    )
+
+    admin = ConferenceAdmin(
+        model=conference.__class__,
+        admin_site=AdminSite(),
+    )
+    admin.message_user = mocker.Mock()
+
+    request = rf.post("/", data={"run_matcher": "1"})
+    ret = admin.map_videos(request, conference.id)
+
+    assert ret.status_code == 302
+
+    morning_event.refresh_from_db()
+    afternoon_event.refresh_from_db()
+
+    assert (
+        morning_event.video_uploaded_path
+        == "conference-videos/pycon2026/LASAGNA/D1/2-Ozge Cinko.mp4"
+    )
+    assert (
+        afternoon_event.video_uploaded_path
+        == "conference-videos/pycon2026/LASAGNA/D1/4-Ozge Cinko.mp4"
+    )
+    assert admin.message_user.mock_calls[0].args[1] == "Matched 2 videos to events."
+    assert admin.message_user.call_count == 1
+
+
+def test_map_videos_page_hides_events_without_videos(rf, admin_user, mocker):
+    render = mocker.patch("conferences.admin.conference.render")
+    conference = ConferenceFactory()
+
+    visible_titles = ["A nice talk", "A keynote", "A panel", "Lightning Talks"]
+    hidden_titles = ["A training", "Registration", "Coffee break", "Recruiting Room"]
+
+    for title, type in zip(
+        visible_titles + hidden_titles,
+        [
+            ScheduleItem.TYPES.talk,
+            ScheduleItem.TYPES.keynote,
+            ScheduleItem.TYPES.panel,
+            ScheduleItem.TYPES.custom,
+            ScheduleItem.TYPES.training,
+            ScheduleItem.TYPES.registration,
+            "break",
+            ScheduleItem.TYPES.recruiting,
+        ],
+    ):
+        ScheduleItemFactory(
+            conference=conference,
+            title=title,
+            type=type,
+            submission=None,
+        )
+
+    admin = ConferenceAdmin(
+        model=conference.__class__,
+        admin_site=AdminSite(),
+    )
+
+    request = rf.get("/")
+    request.user = admin_user
+    admin.map_videos(request, conference.id)
+
+    context = render.call_args.args[2]
+    shown_titles = [event.title for event in context["events"]]
+    assert sorted(shown_titles) == sorted(visible_titles)
+
+
 def test_storage_walk_conference_videos_folder(mocker):
     mock_storage = mocker.Mock()
     mock_storage.listdir.side_effect = [
