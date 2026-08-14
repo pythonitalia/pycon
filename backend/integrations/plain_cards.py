@@ -4,7 +4,10 @@ from grants.models import Grant
 
 def create_grant_card(request, user, conference):
     grant = (
-        Grant.objects.of_user(user).for_conference(conference).first()
+        Grant.objects.of_user(user)
+        .for_conference(conference)
+        .prefetch_related("reimbursements__category")
+        .first()
         if user
         else None
     )

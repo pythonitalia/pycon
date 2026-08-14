@@ -345,6 +345,7 @@ def process_schedule_items_videos_to_upload():
                 last_attempt_at__lt=timezone.now() - timezone.timedelta(hours=1),
             )
         )
+        .select_related("schedule_item")
         .to_upload()
         .order_by("last_attempt_at")
     )

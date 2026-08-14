@@ -254,6 +254,28 @@ def test_total_grantee_reimbursement_amount_excludes_ticket():
     assert grant.total_grantee_reimbursement_amount == Decimal("700")
 
 
+def test_total_grantee_reimbursement_amount_batches_categories(
+    django_assert_num_queries,
+):
+    grant = GrantFactory()
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__travel=True,
+        granted_amount=Decimal("500"),
+    )
+    GrantReimbursementFactory(
+        grant=grant,
+        category__conference=grant.conference,
+        category__accommodation=True,
+        granted_amount=Decimal("200"),
+    )
+    grant = Grant.objects.get(pk=grant.pk)
+
+    with django_assert_num_queries(2):
+        assert grant.total_grantee_reimbursement_amount == Decimal("700")
+
+
 def test_total_grantee_reimbursement_amount_with_only_ticket():
     grant = GrantFactory()
     GrantReimbursementFactory(

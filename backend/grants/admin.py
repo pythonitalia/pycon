@@ -760,7 +760,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         qs = (
             super()
             .get_queryset(request)
-            .select_related("user")
+            .select_related("user", "conference")
             .prefetch_related("reimbursements__category")
             .annotate(
                 is_proposed_speaker=Exists(

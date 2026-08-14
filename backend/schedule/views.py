@@ -16,17 +16,23 @@ from django.views.decorators.cache import never_cache
 def user_schedule_item_favourites_calendar(request, conference_id, hash_user_id):
     conference = Conference.objects.get(id=conference_id)
     user_id = decode_hashid(hash_user_id, salt=settings.USER_ID_HASH_SALT, min_length=6)
-    starred_schedule_items = ScheduleItem.objects.prefetch_related(
-        "submission",
-        "keynote",
-        "language",
-        "slot",
-        "rooms",
-        "additional_speakers__user",
-    ).filter(
-        id__in=ScheduleItemStar.objects.for_conference(conference)
-        .of_user(user_id)
-        .values_list("schedule_item_id", flat=True)
+    starred_schedule_items = (
+        ScheduleItem.objects.select_related(
+            "submission__speaker",
+            "keynote",
+            "language",
+            "slot__day",
+        )
+        .prefetch_related(
+            "rooms",
+            "additional_speakers__user",
+            "keynote__speakers__user",
+        )
+        .filter(
+            id__in=ScheduleItemStar.objects.for_conference(conference)
+            .of_user(user_id)
+            .values_list("schedule_item_id", flat=True)
+        )
     )
 
     conference_name = conference.name.localize("en")
