@@ -3,6 +3,7 @@ from datetime import datetime
 import strawberry
 import strawberry_django
 from django.conf import settings
+from django.db.models import prefetch_related_objects
 from django.utils import timezone, translation
 
 from api.cms.types import FAQ, Menu
@@ -26,12 +27,12 @@ from api.submissions.types import Submission, SubmissionTag, SubmissionType
 from api.voting.types import RankRequest
 from cms import models as cms_models
 from conferences import models as conference_models
-from conferences.models.deadline import DeadlineStatus
+from conferences.models import deadline as deadline_models
 from participants import models as participant_models
 from schedule import models as schedule_models
 from sponsors import models as sponsor_models
-from submissions.models import Submission as SubmissionModel
-from voting.models import RankRequest as RankRequestModel
+from submissions import models as submission_models
+from voting import models as voting_models
 
 from ..helpers.i18n import make_localized_resolver
 from ..helpers.maps import Map, resolve_map
@@ -57,18 +58,22 @@ class Topic:
         )
 
 
-DeadlineStatusType = strawberry.enum(DeadlineStatus)
+DeadlineStatus = strawberry.enum(deadline_models.DeadlineStatus)
 
 
-@strawberry.type
+@strawberry_django.type(conference_models.Deadline)
 class Deadline:
-    id: strawberry.ID
-    type: str
-    name: str = strawberry.field(resolver=make_localized_resolver("name"))
-    description: str = strawberry.field(resolver=make_localized_resolver("description"))
-    start: datetime
-    end: datetime
-    status: DeadlineStatusType
+    id: strawberry.auto
+    type: str = strawberry_django.field(only=["type"])
+    name: str = strawberry_django.field(
+        resolver=make_localized_resolver("name"), only=["name"]
+    )
+    description: str = strawberry_django.field(
+        resolver=make_localized_resolver("description"), only=["description"]
+    )
+    start: datetime = strawberry_django.field(only=["start"])
+    end: datetime = strawberry_django.field(only=["end"])
+    status: DeadlineStatus = strawberry_django.field(only=["start", "end"])
 
 
 def _keynote_schedule_item(keynote):
@@ -173,8 +178,8 @@ class Conference:
             self, language=language, show_unavailable_tickets=show_unavailable_tickets
         )
 
-    @strawberry.field
-    def deadlines(self, info: Info) -> list[Deadline]:
+    @strawberry_django.field
+    def deadlines(self) -> list[Deadline]:
         return self.deadlines.order_by("start").all()
 
     @strawberry.field(name="isCFPOpen")
@@ -189,9 +194,15 @@ class Conference:
     def is_voting_closed(self, info: Info) -> bool:
         return self.is_voting_closed
 
-    @strawberry.field
-    def deadline(self, info: Info, type: str) -> Deadline | None:
-        return self.deadlines.filter(type=type).first()
+    # Strawberry resolves each aliased field separately. Django's prefetch cache
+    # makes this a no-op after the first alias, avoiding one query per deadline.
+    @strawberry_django.field
+    def deadline(self, type: str) -> Deadline | None:
+        prefetch_related_objects([self], "deadlines")
+        return next(
+            (deadline for deadline in self.deadlines.all() if deadline.type == type),
+            None,
+        )
 
     @strawberry.field
     def form(self, info: Info, purpose: FormPurpose) -> GenericForm | None:
@@ -223,8 +234,8 @@ class Conference:
     def submissions(self, info: Info) -> list[Submission] | None:
         return self.submissions.filter(
             status__in=(
-                SubmissionModel.STATUS.proposed,
-                SubmissionModel.STATUS.accepted,
+                submission_models.Submission.STATUS.proposed,
+                submission_models.Submission.STATUS.accepted,
             )
         ).select_related("audience_level", "duration", "type", "topic")
 
@@ -272,7 +283,7 @@ class Conference:
 
     @strawberry.field
     def ranking(self, info: Info, topic: strawberry.ID) -> RankRequest | None:
-        rank_request = RankRequestModel.objects.filter(conference=self).first()
+        rank_request = voting_models.RankRequest.objects.filter(conference=self).first()
         if not rank_request:
             return None
 

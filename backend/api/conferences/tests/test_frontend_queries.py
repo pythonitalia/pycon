@@ -46,7 +46,7 @@ def test_frontend_information_section_query(
         for month, deadline_type in enumerate(("cfp", "voting", "grants"), start=1)
     }
 
-    with django_assert_num_queries(4):
+    with django_assert_num_queries(2):
         response = graphql_client.query(
             INFORMATION_SECTION_QUERY,
             variables={"code": conference.code},
