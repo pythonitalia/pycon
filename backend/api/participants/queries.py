@@ -1,29 +1,27 @@
 import json
-from django.conf import settings
+
 import strawberry
+import strawberry_django
+from django.conf import settings
 from strawberry.tools import create_type
+
 import pretix
-from api.participants.types import Participant
-from participants.models import Participant as ParticipantModel
 from api.context import Info
 from api.helpers.ids import decode_hashid, encode_hashid
+from api.participants.types import Participant
 from api.permissions import HasTokenPermission
 from badges.roles import ConferenceRole, get_conference_roles_for_ticket_data
-from users.models import User
 from conferences.models import Conference
+from participants import models as participant_models
+from users.models import User
 
 
-@strawberry.field
+@strawberry_django.field
 def participant(info: Info, id: strawberry.ID, conference: str) -> Participant | None:
     decoded_id = decode_hashid(id, salt=settings.USER_ID_HASH_SALT, min_length=6)
-    participant = ParticipantModel.objects.filter(
+    return participant_models.Participant.objects.filter(
         conference__code=conference, id=decoded_id
-    ).first()
-
-    if not participant:
-        return None
-
-    return Participant.from_model(participant)
+    )
 
 
 @strawberry.field
@@ -41,7 +39,7 @@ def ticket_id_to_hashid(ticket_id: strawberry.ID, conference_code: str) -> str |
     if not attendee_user:
         return None
 
-    participant = ParticipantModel.objects.filter(
+    participant = participant_models.Participant.objects.filter(
         conference=conference, user=attendee_user
     ).first()
     return participant.hashid if participant else None

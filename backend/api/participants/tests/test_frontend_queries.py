@@ -4,7 +4,6 @@ from participants.tests.factories import ParticipantFactory
 from submissions.models import Submission
 from submissions.tests.factories import SubmissionFactory
 
-
 PARTICIPANT_PUBLIC_PROFILE_QUERY = """
     query ParticipantPublicProfile(
         $id: ID!
@@ -169,8 +168,7 @@ def test_frontend_public_participant_query(
         status=Submission.STATUS.accepted,
     )
 
-    expected_queries = 3 + proposal_count
-    with django_assert_num_queries(expected_queries):
+    with django_assert_num_queries(3):
         response = graphql_client.query(
             PARTICIPANT_PUBLIC_PROFILE_QUERY,
             variables={
@@ -195,7 +193,7 @@ def test_frontend_edit_profile_participant_query(
     participant = ParticipantFactory(public_profile=True)
     graphql_client.force_login(participant.user)
 
-    with django_assert_num_queries(4):
+    with django_assert_num_queries(3):
         response = graphql_client.query(
             MY_EDIT_PROFILE_QUERY,
             variables={"conference": participant.conference.code},
