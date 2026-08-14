@@ -52,25 +52,13 @@ class SubmissionSpeaker:
     id: strawberry.ID
     full_name: str
     gender: str
-    _conference_id: strawberry.Private[int]
+    _participant: strawberry.Private[participant_models.Participant | None]
 
     @strawberry_django.field
     def participant(
         self,
-        info: Info,
     ) -> Annotated["Participant", strawberry.lazy("api.participants.types")] | None:
-        participants_by_conference = info.context._participants_data
-        if participants_by_conference is not None:
-            participants_data = participants_by_conference.get(self._conference_id)
-            user_id = int(self.id)
-            if participants_data is not None and user_id in participants_data:
-                return participants_data[user_id]
-
-        return participant_models.Participant.objects.for_conference(
-            self._conference_id
-        ).filter(
-            user_id=self.id,
-        )
+        return self._participant
 
 
 @strawberry.type
@@ -161,6 +149,7 @@ class Submission:
     @strawberry_django.field(
         only=["conference_id", "status"],
         select_related=["speaker"],
+        prefetch_related=["speaker__participants"],
     )
     def speaker(self, info: Info) -> SubmissionSpeaker | None:
         if not CanSeeSubmissionRestrictedFields().has_permission(
@@ -172,7 +161,14 @@ class Submission:
             id=self.speaker_id,
             full_name=self.speaker.full_name,
             gender=self.speaker.gender,
-            _conference_id=self.conference_id,
+            _participant=next(
+                (
+                    participant
+                    for participant in self.speaker.participants.all()
+                    if participant.conference_id == self.conference_id
+                ),
+                None,
+            ),
         )
 
     @strawberry_django.field(only=["id"])

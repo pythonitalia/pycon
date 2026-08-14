@@ -27,7 +27,6 @@ from api.voting.types import RankRequest
 from cms import models as cms_models
 from conferences import models as conference_models
 from conferences.models import deadline as deadline_models
-from participants import models as participant_models
 from schedule import models as schedule_models
 from submissions import models as submission_models
 from voting import models as voting_models
@@ -96,43 +95,25 @@ class Keynote:
     # cache. A narrower custom Prefetch is only worthwhile if profiling shows it.
     @strawberry_django.field(
         only=["conference_id"],
-        prefetch_related=["speakers__user"],
+        prefetch_related=["speakers__user__participants"],
     )
-    def speakers(self, info: Info) -> list[ScheduleItemUser]:
+    def speakers(self) -> list[ScheduleItemUser]:
         keynote_speakers = [
             speaker for speaker in self.speakers.all() if speaker.user_id
         ]
-        participants_by_conference = info.context._participants_data
-        if participants_by_conference is None:
-            participants_by_conference = {}
-            info.context._participants_data = participants_by_conference
-
-        participants_data = participants_by_conference.setdefault(
-            self.conference_id, {}
-        )
-        missing_user_ids = [
-            speaker.user_id
-            for speaker in keynote_speakers
-            if speaker.user_id not in participants_data
-        ]
-        if missing_user_ids:
-            participants_data.update({user_id: None for user_id in missing_user_ids})
-            participants_data.update(
-                {
-                    participant.user_id: participant
-                    for participant in participant_models.Participant.objects.filter(
-                        user_id__in=missing_user_ids,
-                        conference_id=self.conference_id,
-                    ).all()
-                }
-            )
-
         return [
             ScheduleItemUser(
                 id=speaker.user_id,
                 fullname=speaker.user.full_name,
                 full_name=speaker.user.full_name,
-                participant=participants_data[speaker.user_id],
+                participant=next(
+                    (
+                        participant
+                        for participant in speaker.user.participants.all()
+                        if participant.conference_id == self.conference_id
+                    ),
+                    None,
+                ),
             )
             for speaker in keynote_speakers
         ]

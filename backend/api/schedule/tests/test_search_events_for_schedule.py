@@ -1,6 +1,4 @@
 import pytest
-from django.db import connection
-from django.test.utils import CaptureQueriesContext
 
 from conferences.tests.factories import (
     ConferenceFactory,
@@ -9,7 +7,6 @@ from conferences.tests.factories import (
     KeynoteSpeakerFactory,
 )
 from i18n.strings import LazyI18nString
-from participants import models as participant_models
 from participants.tests.factories import ParticipantFactory
 from submissions.models import Submission
 from submissions.tests.factories import SubmissionFactory, SubmissionTypeFactory
@@ -68,7 +65,6 @@ MULTI_CONFERENCE_SEARCH_EVENTS_QUERY = """
 query SearchEvents(
   $firstConferenceId: ID!
   $secondConferenceId: ID!
-  $uncachedSubmissionId: ID!
 ) {
   first: searchEventsForSchedule(
     conferenceId: $firstConferenceId
@@ -84,13 +80,6 @@ query SearchEvents(
       }
     }
   }
-  uncachedSubmission: submission(id: $uncachedSubmissionId) {
-    speaker {
-      participant {
-        speakerAvailabilities
-      }
-    }
-  }
   second: searchEventsForSchedule(
     conferenceId: $secondConferenceId
     query: "Shared"
@@ -98,32 +87,6 @@ query SearchEvents(
     results {
       ... on Submission {
         speaker {
-          participant {
-            speakerAvailabilities
-          }
-        }
-      }
-    }
-  }
-}
-"""
-
-
-CACHED_PARTICIPANT_SEARCH_EVENTS_QUERY = """
-query SearchEvents($code: String!, $conferenceId: ID!) {
-  conference(code: $code) {
-    keynotes {
-      speakers {
-        participant {
-          speakerAvailabilities
-        }
-      }
-    }
-  }
-  searchEventsForSchedule(conferenceId: $conferenceId, query: "Cached") {
-    results {
-      ... on Keynote {
-        speakers {
           participant {
             speakerAvailabilities
           }
@@ -156,7 +119,7 @@ def _search_events_for_schedule(client, **input):
 
 @pytest.mark.parametrize(
     ("event_count", "expected_queries"),
-    [(1, 9), (4, 9)],
+    [(1, 10), (4, 10)],
 )
 @pytest.mark.parametrize("has_participant", [True, False])
 def test_frontend_search_events_query(
@@ -311,27 +274,13 @@ def test_frontend_search_events_query_keeps_participants_scoped_by_conference(
             title=LazyI18nString({"en": f"Shared Talk {index}", "it": ""}),
         )
 
-    uncached_speaker = UserFactory(full_name="Uncached Speaker")
-    ParticipantFactory(
-        conference=conferences[1],
-        user=uncached_speaker,
-        speaker_availabilities={"uncached": True},
-    )
-    uncached_submission = SubmissionFactory(
-        conference=conferences[1],
-        speaker=uncached_speaker,
-        status=Submission.STATUS.accepted,
-        title=LazyI18nString({"en": "Unmatched Talk", "it": ""}),
-    )
-
     admin_graphql_api_client.force_login(admin_superuser)
-    with django_assert_num_queries(13):
+    with django_assert_num_queries(10):
         response = admin_graphql_api_client.query(
             MULTI_CONFERENCE_SEARCH_EVENTS_QUERY,
             variables={
                 "firstConferenceId": str(conferences[0].id),
                 "secondConferenceId": str(conferences[1].id),
-                "uncachedSubmissionId": uncached_submission.hashid,
             },
         )
 
@@ -346,9 +295,6 @@ def test_frontend_search_events_query_keeps_participants_scoped_by_conference(
                 }
             ]
         },
-        "uncachedSubmission": {
-            "speaker": {"participant": {"speakerAvailabilities": {"uncached": True}}}
-        },
         "second": {
             "results": [
                 {
@@ -358,42 +304,6 @@ def test_frontend_search_events_query_keeps_participants_scoped_by_conference(
                 }
             ]
         },
-    }
-
-
-def test_frontend_search_events_query_reuses_cached_participants(
-    admin_graphql_api_client,
-    admin_superuser,
-):
-    conference = ConferenceFactory()
-    keynote = KeynoteFactory(
-        conference=conference,
-        title=LazyI18nString({"en": "Cached Keynote", "it": ""}),
-    )
-    speaker = KeynoteSpeakerFactory(keynote=keynote).user
-    ParticipantFactory(
-        conference=conference,
-        user=speaker,
-        speaker_availabilities={"cached": True},
-    )
-
-    admin_graphql_api_client.force_login(admin_superuser)
-    with CaptureQueriesContext(connection) as queries:
-        response = admin_graphql_api_client.query(
-            CACHED_PARTICIPANT_SEARCH_EVENTS_QUERY,
-            variables={
-                "code": conference.code,
-                "conferenceId": str(conference.id),
-            },
-        )
-
-    participant_table = participant_models.Participant._meta.db_table
-    assert sum(f'FROM "{participant_table}"' in query["sql"] for query in queries) == 1
-    assert "errors" not in response
-    participant = {"participant": {"speakerAvailabilities": {"cached": True}}}
-    assert response["data"] == {
-        "conference": {"keynotes": [{"speakers": [participant]}]},
-        "searchEventsForSchedule": {"results": [{"speakers": [participant]}]},
     }
 
 

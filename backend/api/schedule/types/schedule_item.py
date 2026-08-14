@@ -12,7 +12,6 @@ from api.permissions import IsStaffPermission
 from api.schedule.types.room import Room
 from api.schedule.types.schedule_item_user import ScheduleItemUser
 from api.submissions.types import Submission
-from participants import models as participant_models
 from schedule import models
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -168,43 +167,12 @@ class ScheduleItem:
         only=["conference_id"],
         select_related=["submission__speaker"],
         prefetch_related=[
-            "keynote__speakers__user",
-            "additional_speakers__user",
+            "submission__speaker__participants",
+            "keynote__speakers__user__participants",
+            "additional_speakers__user__participants",
         ],
     )
-    def speakers(self, info: Info) -> list[ScheduleItemUser]:
-        participants_by_conference = info.context._participants_data
-        if participants_by_conference is None:
-            participants_by_conference = {}
-            info.context._participants_data = participants_by_conference
-
-        participants_data = participants_by_conference.setdefault(
-            self.conference_id, {}
-        )
-        loaded_conferences = info.context._schedule_participants_loaded_conferences
-        if self.conference_id not in loaded_conferences:
-            schedule_items = models.ScheduleItem.objects.filter(
-                conference_id=self.conference_id
-            )
-            submission_speakers = schedule_items.values("submission__speaker_id")
-            keynote_speakers = schedule_items.values("keynote__speakers__user_id")
-            additional_speakers = schedule_items.values("additional_speakers__user_id")
-            participants_data.update(
-                {
-                    participant.user_id: participant
-                    for participant in participant_models.Participant.objects.filter(
-                        conference_id=self.conference_id
-                    )
-                    .filter(
-                        django_models.Q(user_id__in=submission_speakers)
-                        | django_models.Q(user_id__in=keynote_speakers)
-                        | django_models.Q(user_id__in=additional_speakers)
-                    )
-                    .select_related("user")
-                }
-            )
-            loaded_conferences.add(self.conference_id)
-
+    def speakers(self) -> list[ScheduleItemUser]:
         schedule_item_speakers = []
         if self.submission_id:
             schedule_item_speakers.append(self.submission.speaker)
@@ -228,7 +196,14 @@ class ScheduleItem:
                     id=speaker.id,
                     fullname=speaker.fullname,
                     full_name=speaker.full_name,
-                    participant=participants_data.get(speaker.id),
+                    participant=next(
+                        (
+                            participant
+                            for participant in speaker.participants.all()
+                            if participant.conference_id == self.conference_id
+                        ),
+                        None,
+                    ),
                 )
             )
 

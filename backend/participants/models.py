@@ -38,7 +38,7 @@ class Participant(models.Model):
         null=False,
         blank=False,
         verbose_name=_("user"),
-        related_name="+",
+        related_name="participants",
     )
 
     public_profile = models.BooleanField(_("public profile"), default=False)
