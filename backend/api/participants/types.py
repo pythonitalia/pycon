@@ -1,94 +1,91 @@
 from typing import TYPE_CHECKING, Annotated
 
 import strawberry
+import strawberry_django
 from strawberry.scalars import JSON
 
 from api.context import Info
 from api.submissions.permissions import CanSeeSubmissionPrivateFields
-from submissions.models import Submission as SubmissionModel
+from participants import models
+from submissions import models as submission_models
 
 if TYPE_CHECKING:
     from api.submissions.types import Submission
 
 
-@strawberry.type
+@strawberry_django.type(models.Participant)
 class Participant:
     id: strawberry.ID
-    bio: str
-    website: str
-    _photo: strawberry.Private[str]
-    _photo_small: strawberry.Private[str]
+
+    @strawberry_django.field(only=["id"])
+    def id(self) -> strawberry.ID:
+        return self.hashid
+
+    bio: strawberry.auto
+    website: strawberry.auto
+
     photo_id: str | None
-    public_profile: bool
-    twitter_handle: str
-    instagram_handle: str
-    linkedin_url: str
-    facebook_url: str
-    mastodon_handle: str
-    fullname: str
 
-    _speaker_level: strawberry.Private[str]
-    _previous_talk_video: strawberry.Private[str]
-    _conference_id: strawberry.Private[int]
-    _user_id: strawberry.Private[int]
-    _speaker_availabilities: strawberry.Private[int]
+    @strawberry_django.field(only=["photo_file_id"])
+    def photo_id(self) -> str | None:
+        return str(self.photo_file_id) if self.photo_file_id else None
 
-    @strawberry.field
+    public_profile: strawberry.auto
+    twitter_handle: strawberry.auto
+    instagram_handle: strawberry.auto
+    linkedin_url: strawberry.auto
+    facebook_url: strawberry.auto
+    mastodon_handle: strawberry.auto
+
+    @strawberry_django.field(
+        only=["user__full_name"],
+        select_related=["user"],
+    )
+    def fullname(self) -> str:
+        return self.user.fullname
+
+    @strawberry_django.field(only=["conference_id", "user_id"])
     def proposals(
-        self, info: Info
+        self,
     ) -> list[Annotated["Submission", strawberry.lazy("api.submissions.types")]]:
-        return SubmissionModel.objects.for_conference(self._conference_id).filter(
-            speaker_id=self._user_id,
-            status=SubmissionModel.STATUS.accepted,
+        return submission_models.Submission.objects.for_conference(
+            self.conference_id
+        ).filter(
+            speaker_id=self.user_id,
+            status=submission_models.Submission.STATUS.accepted,
         )
 
-    @strawberry.field
+    @strawberry_django.field(only=["speaker_availabilities", "user_id"])
     def speaker_availabilities(self, info: Info) -> JSON | None:
         if not CanSeeSubmissionPrivateFields().has_permission(self, info):
             return None
 
-        return self._speaker_availabilities
+        return self.speaker_availabilities
 
-    @strawberry.field
+    @strawberry_django.field(only=["speaker_level", "user_id"])
     def speaker_level(self, info: Info) -> str | None:
         if not CanSeeSubmissionPrivateFields().has_permission(self, info):
             return None
 
-        return self._speaker_level
+        return self.speaker_level
 
-    @strawberry.field
+    @strawberry_django.field(only=["previous_talk_video", "user_id"])
     def previous_talk_video(self, info: Info) -> str | None:
         if not CanSeeSubmissionPrivateFields().has_permission(self, info):
             return None
 
-        return self._previous_talk_video
+        return self.previous_talk_video
 
-    @strawberry.field
+    @strawberry_django.field(
+        only=["photo", "photo_file__file"],
+        select_related=["photo_file"],
+    )
     def photo(self, size: str = "default") -> str | None:
         if size == "small":
-            return self._photo_small
+            return self.photo_small_url
 
-        return self._photo
+        return self.photo_url
 
     @classmethod
-    def from_model(cls, instance):
-        return cls(
-            id=instance.hashid,
-            fullname=instance.user.fullname,
-            _photo=instance.photo_url,
-            _photo_small=instance.photo_small_url,
-            photo_id=instance.photo_file_id,
-            bio=instance.bio,
-            website=instance.website,
-            public_profile=instance.public_profile,
-            twitter_handle=instance.twitter_handle,
-            instagram_handle=instance.instagram_handle,
-            linkedin_url=instance.linkedin_url,
-            facebook_url=instance.facebook_url,
-            mastodon_handle=instance.mastodon_handle,
-            _speaker_availabilities=instance.speaker_availabilities or {},
-            _conference_id=instance.conference_id,
-            _user_id=instance.user_id,
-            _speaker_level=instance.speaker_level,
-            _previous_talk_video=instance.previous_talk_video,
-        )
+    def from_model(cls, instance: models.Participant) -> models.Participant:
+        return instance

@@ -1,37 +1,41 @@
 from datetime import date
 from logging import getLogger
-from api.permissions import IsAuthenticated
-from django.conf import settings
 
+import strawberry
+import strawberry_django
+from django.conf import settings
 from django.db.models import Prefetch
 from django.urls import reverse
-from api.billing.types import BillingAddress
-from api.visa.types import InvitationLetterRequest
-from visa.models import (
-    InvitationLetterRequest as InvitationLetterRequestModel,
-    InvitationLetterRequestOnBehalfOf,
-)
-from pretix import user_has_admission_ticket
-from pycon.signing import sign_path
-import strawberry
 from strawberry.types import Info
 
+from api.billing.types import BillingAddress
 from api.grants.types import Grant
+from api.helpers.ids import encode_hashid
 from api.participants.types import Participant
+from api.permissions import IsAuthenticated
 from api.pretix.query import get_user_orders, get_user_tickets
 from api.pretix.types import AttendeeTicket, PretixOrder, PretixOrderStatus
+from api.schedule.types import ScheduleItem
 from api.submissions.types import Submission
+from api.visa.types import InvitationLetterRequest
+from association_membership.models import Membership
+from badges.roles import ConferenceRole, get_conference_roles_for_user
+from billing.models import BillingAddress as BillingAddressModel
 from conferences.models import Conference
 from grants.models import Grant as GrantModel
 from participants.models import Participant as ParticipantModel
-from api.helpers.ids import encode_hashid
-from badges.roles import ConferenceRole, get_conference_roles_for_user
-from association_membership.models import Membership
-from api.schedule.types import ScheduleItem
-from schedule.models import Room, ScheduleItem as ScheduleItemModel
+from pretix import user_has_admission_ticket
+from pycon.signing import sign_path
+from schedule.models import Room
+from schedule.models import ScheduleItem as ScheduleItemModel
 from schedule.models import ScheduleItemStar as ScheduleItemStarModel
 from submissions.models import Submission as SubmissionModel
-from billing.models import BillingAddress as BillingAddressModel
+from visa.models import (
+    InvitationLetterRequest as InvitationLetterRequestModel,
+)
+from visa.models import (
+    InvitationLetterRequestOnBehalfOf,
+)
 
 logger = getLogger(__name__)
 
@@ -140,13 +144,12 @@ class User:
         )
         return Grant.from_model(grant) if grant else None
 
-    @strawberry.field
+    @strawberry_django.field
     def participant(self, info: Info, conference: str) -> Participant | None:
-        participant = ParticipantModel.objects.filter(
+        return ParticipantModel.objects.filter(
             user_id=self.id,
             conference__code=conference,
-        ).first()
-        return Participant.from_model(participant) if participant else None
+        )
 
     @strawberry.field
     def orders(self, info: Info, conference: str) -> list[PretixOrder]:

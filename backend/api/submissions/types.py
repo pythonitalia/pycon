@@ -1,27 +1,25 @@
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
-from files_upload import models as file_models
-from api.utils import validate_url
-from participants import models as participant_models
 import strawberry
 import strawberry_django
-from strawberry.types.field import StrawberryField
 from strawberry.types import Info
-from submissions import models
+from strawberry.types.field import StrawberryField
 
 from api.languages.types import Language
+from api.utils import validate_url
 from api.voting.types import VoteType
+from files_upload import models as file_models
 from i18n.strings import LazyI18nString
-
+from participants import models as participant_models
+from submissions import models
 from voting import models as voting_models
 
 from .permissions import CanSeeSubmissionPrivateFields, CanSeeSubmissionRestrictedFields
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from api.conferences.types import Conference, Topic, Duration, AudienceLevel
-    from api.schedule.types import ScheduleItem
+    from api.conferences.types import AudienceLevel, Conference, Duration, Topic
     from api.participants.types import Participant
+    from api.schedule.types import ScheduleItem
     from api.submissions.mutations import SendSubmissionErrors
 
 
@@ -122,11 +120,9 @@ class Submission:
     notes: str | None = private_field("notes")
     do_not_record: bool | None = private_field("do_not_record")
 
-    @strawberry_django.field
-    def schedule_items(
-        self, info: Info
-    ) -> list[Annotated["ScheduleItem", strawberry.lazy("api.schedule.types")]]:
-        return self.schedule_items.all()
+    schedule_items: list[
+        Annotated["ScheduleItem", strawberry.lazy("api.schedule.types")]
+    ]
 
     @strawberry_django.field(only=["elevator_pitch"])
     def multilingual_elevator_pitch(self, info: Info) -> MultiLingualString | None:
@@ -231,13 +227,15 @@ class SubmissionMaterialInput:
             except ValueError:
                 errors.add_error("id", "Invalid material id")
 
-        if self.file_id:
-            if not file_models.File.objects.filter(
+        if (
+            self.file_id
+            and not file_models.File.objects.filter(
                 id=self.file_id,
                 uploaded_by_id=submission.speaker_id,
                 type=file_models.File.Type.PROPOSAL_MATERIAL,
-            ).exists():
-                errors.add_error("file_id", "File not found")
+            ).exists()
+        ):
+            errors.add_error("file_id", "File not found")
 
         if self.url:
             if len(self.url) > 2048:
