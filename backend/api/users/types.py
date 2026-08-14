@@ -1,5 +1,4 @@
 from datetime import date
-from logging import getLogger
 
 import strawberry
 import strawberry_django
@@ -22,7 +21,7 @@ from association_membership.models import Membership
 from badges.roles import ConferenceRole, get_conference_roles_for_user
 from billing.models import BillingAddress as BillingAddressModel
 from conferences.models import Conference
-from grants.models import Grant as GrantModel
+from grants import models as grant_models
 from participants import models as participant_models
 from pretix import user_has_admission_ticket
 from pycon.signing import sign_path
@@ -36,8 +35,6 @@ from visa.models import (
 from visa.models import (
     InvitationLetterRequestOnBehalfOf,
 )
-
-logger = getLogger(__name__)
 
 PRETIX_ORDERS_STATUS_ORDER = [
     PretixOrderStatus.PAID,
@@ -134,15 +131,12 @@ class User:
             .order_by("slot__day__day", "slot__hour")
         )
 
-    @strawberry.field
-    def grant(self, info: Info, conference: str) -> Grant | None:
-        grant = GrantModel.objects.filter(
-            user_id=self.id, conference__code=conference
-        ).first()
-        logger.info(
-            "Grant: user_id: %s, conference: %s, grant: %s", self.id, conference, grant
+    @strawberry_django.field
+    def grant(self, conference: str) -> Grant | None:
+        return grant_models.Grant.objects.filter(
+            user_id=self.id,
+            conference__code=conference,
         )
-        return Grant.from_model(grant) if grant else None
 
     @strawberry_django.field
     def participant(self, info: Info, conference: str) -> Participant | None:

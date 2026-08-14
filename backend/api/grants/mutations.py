@@ -1,6 +1,6 @@
 from dataclasses import asdict
 from enum import Enum
-from typing import Annotated, Optional, Union
+from typing import Annotated
 
 import strawberry
 from django.db import transaction
@@ -17,7 +17,7 @@ from custom_admin.audit import (
 )
 from generic_forms.models import Form, FormAnswer
 from generic_forms.services import validate_answers, wrap_answers
-from grants.models import Grant as GrantModel
+from grants import models as grant_models
 from grants.tasks import (
     create_and_send_voucher_to_grantee,
     get_name,
@@ -196,7 +196,7 @@ class SendGrantInput(BaseGrantInput):
     def validate(self, conference: Conference, user: User) -> GrantErrors | None:
         errors = super().validate(conference=conference, user=user)
 
-        if GrantModel.objects.of_user(user).for_conference(conference).exists():
+        if grant_models.Grant.objects.of_user(user).for_conference(conference).exists():
             errors.add_error("non_field_errors", "Grant already submitted!")
 
         return errors.if_has_errors
@@ -239,11 +239,11 @@ class UpdateGrantInput(BaseGrantInput):
 
 
 SendGrantResult = Annotated[
-    Union[Grant, GrantErrors], strawberry.union(name="SendGrantResult")
+    Grant | GrantErrors, strawberry.union(name="SendGrantResult")
 ]
 
 UpdateGrantResult = Annotated[
-    Union[Grant, GrantErrors], strawberry.union(name="UpdateGrantResult")
+    Grant | GrantErrors, strawberry.union(name="UpdateGrantResult")
 ]
 
 
@@ -252,14 +252,14 @@ class StatusOption(Enum):
     confirmed = "confirmed"
     refused = "refused"
 
-    def to_grant_status(self) -> GrantModel.Status:
-        return GrantModel.Status(self.name)
+    def to_grant_status(self) -> grant_models.Grant.Status:
+        return grant_models.Grant.Status(self.name)
 
 
 @strawberry.input
 class SendGrantReplyInput:
     instance: strawberry.ID
-    status: Optional[StatusOption]
+    status: StatusOption | None
 
 
 @strawberry.type
@@ -268,7 +268,7 @@ class SendGrantReplyError:
 
 
 SendGrantReplyResult = Annotated[
-    Union[Grant, SendGrantReplyError], strawberry.union(name="SendGrantReplyResult")
+    Grant | SendGrantReplyError, strawberry.union(name="SendGrantReplyResult")
 ]
 
 
@@ -300,33 +300,29 @@ class GrantMutation:
         if errors := input.validate(conference=conference, user=request.user):
             return errors
 
-        instance = GrantModel.objects.create(
-            **{
-                "user_id": request.user.id,
-                "conference": conference,
-                "name": input.name,
-                "full_name": input.full_name,
-                # soft columns are NOT NULL; on the answers path they are
-                # omitted from the input and stored empty
-                "age_group": input.age_group or "",
-                "gender": input.gender or "",
-                "occupation": input.occupation or "",
-                "grant_type": input.grant_type,
-                "python_usage": input.python_usage or "",
-                "been_to_other_events": input.been_to_other_events or "",
-                "community_contribution": input.community_contribution or "",
-                "needs_funds_for_travel": input.needs_funds_for_travel,
-                "need_visa": input.need_visa,
-                "need_accommodation": input.need_accommodation,
-                "why": input.why or "",
-                "notes": input.notes or "",
-                "departure_country": input.departure_country,
-                "nationality": input.nationality,
-                "departure_city": input.departure_city,
-                "form_answer": _persist_form_answer(
-                    input.answers, conference, request.user
-                ),
-            }
+        instance = grant_models.Grant.objects.create(
+            user_id=request.user.id,
+            conference=conference,
+            name=input.name,
+            full_name=input.full_name,
+            # soft columns are NOT NULL; on the answers path they are
+            # omitted from the input and stored empty
+            age_group=input.age_group or "",
+            gender=input.gender or "",
+            occupation=input.occupation or "",
+            grant_type=input.grant_type,
+            python_usage=input.python_usage or "",
+            been_to_other_events=input.been_to_other_events or "",
+            community_contribution=input.community_contribution or "",
+            needs_funds_for_travel=input.needs_funds_for_travel,
+            need_visa=input.need_visa,
+            need_accommodation=input.need_accommodation,
+            why=input.why or "",
+            notes=input.notes or "",
+            departure_country=input.departure_country,
+            nationality=input.nationality,
+            departure_city=input.departure_city,
+            form_answer=_persist_form_answer(input.answers, conference, request.user),
         )
 
         record_privacy_policy_acceptance(
@@ -362,8 +358,6 @@ class GrantMutation:
 
         create_addition_admin_log_entry(request.user, instance, "Grant created.")
 
-        # hack because we return django models
-        instance.__strawberry_definition__ = Grant.__strawberry_definition__
         return instance
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -371,7 +365,7 @@ class GrantMutation:
     def update_grant(self, info: Info, input: UpdateGrantInput) -> UpdateGrantResult:
         request = info.context.request
 
-        instance = GrantModel.objects.get(id=input.instance)
+        instance = grant_models.Grant.objects.get(id=input.instance)
         if not instance.can_edit(request.user):
             return GrantErrors.with_error(
                 "non_field_errors", "You cannot edit this grant"
@@ -415,7 +409,6 @@ class GrantMutation:
             },
         )
 
-        instance.__strawberry_definition__ = Grant.__strawberry_definition__
         return instance
 
     @strawberry.mutation(permission_classes=[IsAuthenticated])
@@ -424,19 +417,25 @@ class GrantMutation:
     ) -> SendGrantReplyResult:
         request = info.context.request
 
-        grant = GrantModel.objects.get(id=input.instance)
+        grant = grant_models.Grant.objects.get(id=input.instance)
         if not grant.can_edit(request.user):
             return SendGrantReplyError(message="You cannot reply to this grant")
 
         # Can't modify the status if the grant is still pending or was already rejected
-        if grant.status in (GrantModel.Status.pending, GrantModel.Status.rejected):
+        if grant.status in (
+            grant_models.Grant.Status.pending,
+            grant_models.Grant.Status.rejected,
+        ):
             return SendGrantReplyError(message="You cannot reply to this grant")
 
         old_status = grant.status
         grant.status = input.status.to_grant_status()
         grant.save()
 
-        if old_status != grant.status and grant.status == GrantModel.Status.confirmed:
+        if (
+            old_status != grant.status
+            and grant.status == grant_models.Grant.Status.confirmed
+        ):
             transaction.on_commit(
                 lambda gid=grant.id: create_and_send_voucher_to_grantee.delay(
                     grant_id=gid
@@ -450,4 +449,4 @@ class GrantMutation:
         admin_url = request.build_absolute_uri(grant.get_admin_url())
         notify_new_grant_reply_slack.delay(grant_id=grant.id, admin_url=admin_url)
 
-        return Grant.from_model(grant)
+        return grant
