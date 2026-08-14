@@ -1,18 +1,19 @@
 from typing import Annotated
-from submissions.models import Submission as SubmissionModel
 
-from files_upload.models import File
+from files_upload import models as file_models
 from api.utils import validate_url
-from participants.models import Participant as ParticipantModel
+from participants import models as participant_models
 import strawberry
+import strawberry_django
 from strawberry.types.field import StrawberryField
 from strawberry.types import Info
+from submissions import models
 
 from api.languages.types import Language
 from api.voting.types import VoteType
 from i18n.strings import LazyI18nString
 
-from voting.models import Vote
+from voting import models as voting_models
 
 from .permissions import CanSeeSubmissionPrivateFields, CanSeeSubmissionRestrictedFields
 from typing import TYPE_CHECKING
@@ -35,17 +36,17 @@ def private_field() -> StrawberryField:
     return strawberry.field(resolver=resolver)
 
 
-@strawberry.type
+@strawberry_django.type(models.SubmissionType)
 class SubmissionType:
-    id: strawberry.ID
-    name: str
-    is_recordable: bool
+    id: strawberry.auto
+    name: strawberry.auto
+    is_recordable: strawberry.auto
 
 
-@strawberry.type
+@strawberry_django.type(models.SubmissionTag)
 class SubmissionTag:
-    id: strawberry.ID
-    name: str
+    id: strawberry.auto
+    name: strawberry.auto
 
 
 @strawberry.type
@@ -62,7 +63,7 @@ class SubmissionSpeaker:
         from api.participants.types import Participant
 
         participant = (
-            ParticipantModel.objects.for_conference(self._conference_id)
+            participant_models.Participant.objects.for_conference(self._conference_id)
             .filter(user_id=self.id)
             .first()
         )
@@ -185,7 +186,7 @@ class Submission:
 
         try:
             return self.votes.get(user_id=request.user.id)
-        except Vote.DoesNotExist:
+        except voting_models.Vote.DoesNotExist:
             return None
 
     @strawberry.field
@@ -218,7 +219,7 @@ class SubmissionMaterialInput:
     file_id: str | None = None
 
     def validate(
-        self, errors: "SendSubmissionErrors", submission: SubmissionModel
+        self, errors: "SendSubmissionErrors", submission: models.Submission
     ) -> "SendSubmissionErrors":
         if self.id:
             try:
@@ -228,10 +229,10 @@ class SubmissionMaterialInput:
                 errors.add_error("id", "Invalid material id")
 
         if self.file_id:
-            if not File.objects.filter(
+            if not file_models.File.objects.filter(
                 id=self.file_id,
                 uploaded_by_id=submission.speaker_id,
-                type=File.Type.PROPOSAL_MATERIAL,
+                type=file_models.File.Type.PROPOSAL_MATERIAL,
             ).exists():
                 errors.add_error("file_id", "File not found")
 

@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING, Annotated
 
 import strawberry
-from strawberry import ID
 from strawberry.scalars import JSON
 
 from api.context import Info
@@ -14,7 +13,7 @@ if TYPE_CHECKING:
 
 @strawberry.type
 class Participant:
-    id: ID
+    id: strawberry.ID
     bio: str
     website: str
     _photo: strawberry.Private[str]

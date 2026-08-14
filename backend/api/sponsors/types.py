@@ -2,7 +2,6 @@ from decimal import Decimal
 from typing import Self
 
 import strawberry
-from strawberry import ID
 
 from api.context import Info
 from sponsors.models import SponsorLevel as SponsorLevelModel
@@ -10,7 +9,7 @@ from sponsors.models import SponsorLevel as SponsorLevelModel
 
 @strawberry.type
 class Sponsor:
-    id: ID
+    id: strawberry.ID
     name: str
 
     @strawberry.field
