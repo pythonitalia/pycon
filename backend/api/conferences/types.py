@@ -19,7 +19,6 @@ from api.schedule.types.day import Day
 from api.sponsors.types import (
     SponsorBenefit,
     SponsorLevel,
-    SponsorLevelBenefit,
     SponsorsByLevel,
     SponsorSpecialOption,
 )
@@ -30,7 +29,6 @@ from conferences import models as conference_models
 from conferences.models import deadline as deadline_models
 from participants import models as participant_models
 from schedule import models as schedule_models
-from sponsors import models as sponsor_models
 from submissions import models as submission_models
 from voting import models as voting_models
 
@@ -320,34 +318,9 @@ class Conference:
     def sponsor_benefits(self) -> list[SponsorBenefit]:
         return self.sponsor_benefits.order_by("order").all()
 
-    @strawberry.field
+    @strawberry_django.field
     def sponsor_levels(self) -> list[SponsorLevel]:
-        levels = (
-            sponsor_models.SponsorLevel.objects.filter(conference=self)
-            .prefetch_related(
-                "sponsorlevelbenefit_set",
-                "sponsorlevelbenefit_set__benefit",
-            )
-            .order_by("order")
-        )
-
-        return [
-            SponsorLevel(
-                name=level.name,
-                price=level.price,
-                slots=level.slots,
-                benefits=[
-                    SponsorLevelBenefit(
-                        name=level_benefit.benefit.name,
-                        category=level_benefit.benefit.category,
-                        value=level_benefit.value,
-                        description=level_benefit.benefit.description,
-                    )
-                    for level_benefit in level.sponsorlevelbenefit_set.all()
-                ],
-            )
-            for level in levels
-        ]
+        return self.sponsor_levels.order_by("order").all()
 
     @strawberry_django.field
     def sponsor_special_options(self) -> list[SponsorSpecialOption]:

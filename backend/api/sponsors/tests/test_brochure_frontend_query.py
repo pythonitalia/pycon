@@ -96,7 +96,7 @@ def test_brochure_frontend_query(graphql_client, django_assert_num_queries):
         for index in range(2)
     ]
 
-    with django_assert_num_queries(6):
+    with django_assert_num_queries(5):
         response = graphql_client.query(
             BROCHURE_QUERY,
             variables={"conferenceCode": conference.code},
