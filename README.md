@@ -29,8 +29,10 @@ You will find the services at the following ports:
 Everything you need to get started is already configured
 and will work out of the box.
 
-If you need to work with our Stripe or Pretix integration, you will have to ask
-on Slack which secret key you need and why you need it.
+If you need to work with Stripe or the hosted Pretix instance, ask on Slack
+which secret key you need and why you need it. Local Pretix development does
+not require shared credentials; see
+[`backend/dashboard/README.md`](backend/dashboard/README.md#local-setup).
 
 Once given, create a `.env` file at the project root with inside:
 

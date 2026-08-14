@@ -4,7 +4,6 @@ x-defaults:
     NODE_ENV: "development"
     ENV: "local"
     CONFERENCE_CODE: ${CONFERENCE_CODE:-pycon2023}
-    PRETIX_API: https://tickets.pycon.it/api/v1/
     PLAIN_API: https://core-api.uk.plain.com/graphql/v1
     SECRET_KEY: secret-key
     API_URL: /graphql
@@ -26,6 +25,9 @@ x-defaults:
     CELERY_RESULT_BACKEND: redis://redis:6379/10
     CLAMAV_HOST: clamav
     CLAMAV_PORT: 3310
+    PRETIX_API: ${LOCAL_PRETIX_API:-http://pretix/api/v1/}
+    PRETIX_API_HOST: ${LOCAL_PRETIX_API_HOST:-localhost:8345}
+    PRETIX_API_TOKEN: ${LOCAL_PRETIX_API_TOKEN:-local-dashboard-api-token}
 
 services:
   backend:
@@ -114,6 +116,71 @@ services:
       interval: 5s
       timeout: 5s
 
+  pretix:
+    profiles: [pretix]
+    build:
+      context: ./pretix
+    networks: [pycon_net]
+    restart: unless-stopped
+    depends_on:
+      pretix-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8345:80"
+    volumes:
+      - pycon-pretix-data:/data
+    environment:
+      DATA_DIR: /data
+      DJANGO_SETTINGS_MODULE: production_settings
+      PRETIX_CELERY_BACKEND: redis://redis:6379/13
+      PRETIX_CELERY_BROKER: redis://redis:6379/12
+      PRETIX_DATABASE_BACKEND: postgresql
+      PRETIX_DATABASE_HOST: pretix-db
+      PRETIX_DATABASE_NAME: pretix
+      PRETIX_DATABASE_PASSWORD: pretix
+      PRETIX_DATABASE_PORT: 5432
+      PRETIX_DATABASE_USER: pretix
+      PRETIX_DJANGO_SECRET: local-pretix-secret-key
+      PRETIX_LOCALE_DEFAULT: en
+      PRETIX_LOCALE_TIMEZONE: Europe/Rome
+      PRETIX_PRETIX_CURRENCY: EUR
+      PRETIX_PRETIX_INSTANCE_NAME: PyCon Italia local
+      PRETIX_PRETIX_URL: http://localhost:8345
+      PRETIX_PYCON_MEDIA_BUCKET_NAME: ""
+      PRETIX_REDIS_LOCATION: redis://redis:6379/11
+      PRETIX_REDIS_SESSIONS: "false"
+      PYCON_LOCAL_PRETIX_TOKEN: ${LOCAL_PRETIX_API_TOKEN:-local-dashboard-api-token}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl --fail --silent --header 'Host: localhost:8345' http://127.0.0.1/healthcheck/ > /dev/null",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 120s
+
+  pretix-db:
+    profiles: [pretix]
+    image: postgres:14.5
+    networks: [pycon_net]
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:15502:5432"
+    volumes:
+      - pycon-pretix-db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: pretix
+      POSTGRES_PASSWORD: pretix
+      POSTGRES_USER: pretix
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pretix"]
+      interval: 5s
+      timeout: 5s
+
   frontend:
     build:
       context: ./frontend
@@ -161,3 +228,5 @@ networks:
 
 volumes:
   pycon-backend-db-data:
+  pycon-pretix-data:
+  pycon-pretix-db-data:
