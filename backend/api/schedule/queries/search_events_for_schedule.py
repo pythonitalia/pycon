@@ -48,10 +48,6 @@ class SearchEventsForScheduleResult:
             for speaker in keynote.speakers.all()
             if speaker.user_id
         )
-        participants = participant_models.Participant.objects.filter(
-            conference_id=self.conference_id,
-            user_id__in=speaker_ids,
-        )
         participants_by_conference = info.context._participants_data
         if participants_by_conference is None:
             participants_by_conference = {}
@@ -60,9 +56,18 @@ class SearchEventsForScheduleResult:
         participants_data = participants_by_conference.setdefault(
             self.conference_id, {}
         )
-        participants_data.update({speaker_id: None for speaker_id in speaker_ids})
+        missing_speaker_ids = speaker_ids - participants_data.keys()
         participants_data.update(
-            {participant.user_id: participant for participant in participants}
+            {speaker_id: None for speaker_id in missing_speaker_ids}
+        )
+        participants_data.update(
+            {
+                participant.user_id: participant
+                for participant in participant_models.Participant.objects.filter(
+                    conference_id=self.conference_id,
+                    user_id__in=missing_speaker_ids,
+                )
+            }
         )
 
         return [*proposals, *keynotes]

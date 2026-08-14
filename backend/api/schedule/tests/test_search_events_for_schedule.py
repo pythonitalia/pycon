@@ -1,4 +1,6 @@
 import pytest
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 
 from conferences.tests.factories import (
     ConferenceFactory,
@@ -7,6 +9,7 @@ from conferences.tests.factories import (
     KeynoteSpeakerFactory,
 )
 from i18n.strings import LazyI18nString
+from participants import models as participant_models
 from participants.tests.factories import ParticipantFactory
 from submissions.models import Submission
 from submissions.tests.factories import SubmissionFactory, SubmissionTypeFactory
@@ -95,6 +98,32 @@ query SearchEvents(
     results {
       ... on Submission {
         speaker {
+          participant {
+            speakerAvailabilities
+          }
+        }
+      }
+    }
+  }
+}
+"""
+
+
+CACHED_PARTICIPANT_SEARCH_EVENTS_QUERY = """
+query SearchEvents($code: String!, $conferenceId: ID!) {
+  conference(code: $code) {
+    keynotes {
+      speakers {
+        participant {
+          speakerAvailabilities
+        }
+      }
+    }
+  }
+  searchEventsForSchedule(conferenceId: $conferenceId, query: "Cached") {
+    results {
+      ... on Keynote {
+        speakers {
           participant {
             speakerAvailabilities
           }
@@ -329,6 +358,42 @@ def test_frontend_search_events_query_keeps_participants_scoped_by_conference(
                 }
             ]
         },
+    }
+
+
+def test_frontend_search_events_query_reuses_cached_participants(
+    admin_graphql_api_client,
+    admin_superuser,
+):
+    conference = ConferenceFactory()
+    keynote = KeynoteFactory(
+        conference=conference,
+        title=LazyI18nString({"en": "Cached Keynote", "it": ""}),
+    )
+    speaker = KeynoteSpeakerFactory(keynote=keynote).user
+    ParticipantFactory(
+        conference=conference,
+        user=speaker,
+        speaker_availabilities={"cached": True},
+    )
+
+    admin_graphql_api_client.force_login(admin_superuser)
+    with CaptureQueriesContext(connection) as queries:
+        response = admin_graphql_api_client.query(
+            CACHED_PARTICIPANT_SEARCH_EVENTS_QUERY,
+            variables={
+                "code": conference.code,
+                "conferenceId": str(conference.id),
+            },
+        )
+
+    participant_table = participant_models.Participant._meta.db_table
+    assert sum(f'FROM "{participant_table}"' in query["sql"] for query in queries) == 1
+    assert "errors" not in response
+    participant = {"participant": {"speakerAvailabilities": {"cached": True}}}
+    assert response["data"] == {
+        "conference": {"keynotes": [{"speakers": [participant]}]},
+        "searchEventsForSchedule": {"results": [{"speakers": [participant]}]},
     }
 
 
