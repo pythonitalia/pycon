@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.db import models
+from django.db.models import prefetch_related_objects
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
@@ -307,10 +308,12 @@ class Grant(TimeStampedModel):
     @property
     def total_grantee_reimbursement_amount(self) -> Decimal:
         """Return total reimbursement excluding ticket."""
+        reimbursements = list(self.reimbursements.all())
+        prefetch_related_objects(reimbursements, "category")
         return sum(
             (
                 r.granted_amount
-                for r in self.reimbursements.all()
+                for r in reimbursements
                 if r.category.category != GrantReimbursementCategory.Category.TICKET
             ),
             start=Decimal(0),

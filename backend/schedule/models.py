@@ -5,7 +5,7 @@ from conferences.querysets import ConferenceQuerySetMixin
 
 from django.core import exceptions
 from django.db import models
-from django.db.models import Case, When
+from django.db.models import Case, When, prefetch_related_objects
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -341,11 +341,18 @@ class ScheduleItem(TimeStampedModel):
             speakers.append(self.submission.speaker)
 
         if self.keynote_id:
-            for speaker_keynote in self.keynote.speakers.order_by("id").all():
+            keynote_speakers = list(self.keynote.speakers.all())
+            prefetch_related_objects(keynote_speakers, "user")
+            for speaker_keynote in sorted(
+                keynote_speakers, key=lambda speaker: speaker.id
+            ):
                 speakers.append(speaker_keynote.user)
 
+        additional_speakers = list(self.additional_speakers.all())
+        prefetch_related_objects(additional_speakers, "user")
         speakers.extend(
-            [speaker.user for speaker in self.additional_speakers.order_by("id").all()]
+            speaker.user
+            for speaker in sorted(additional_speakers, key=lambda speaker: speaker.id)
         )
         return [speaker for speaker in speakers if speaker is not None]
 

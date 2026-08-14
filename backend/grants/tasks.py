@@ -78,7 +78,7 @@ def create_and_send_voucher_to_grantee(*, grant_id: int) -> None:
 @app.task
 def send_grant_reply_approved_email(*, grant_id: int, is_reminder: bool) -> None:
     logger.info("Sending Reply APPROVED email for Grant %s", grant_id)
-    grant = Grant.objects.get(id=grant_id)
+    grant = Grant.objects.prefetch_related("reimbursements__category").get(id=grant_id)
 
     total_amount = grant.total_grantee_reimbursement_amount
     ticket_only = grant.has_ticket_only()

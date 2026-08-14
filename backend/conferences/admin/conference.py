@@ -283,7 +283,9 @@ class ConferenceAdmin(
         return render(request, "admin/videos_upload/map_videos.html", context)
 
     def save_manual_changes(self, request, object_id, data):
-        all_events = ScheduleItem.objects.filter(conference_id=object_id)
+        all_events = ScheduleItem.objects.select_related(
+            "submission", "keynote", "language"
+        ).filter(conference_id=object_id)
 
         for event in all_events:
             key_name = f"video_uploaded_path_{event.id}"
@@ -303,9 +305,16 @@ class ConferenceAdmin(
 
     def run_video_uploaded_path_matcher(self, request, object_id, ignore_cache):
         conference = Conference.objects.get(pk=object_id)
-        all_events = conference.schedule_items.prefetch_related(
-            "submission", "additional_speakers"
-        ).all()
+        all_events = (
+            conference.schedule_items.select_related(
+                "submission__speaker", "keynote", "language"
+            )
+            .prefetch_related(
+                "additional_speakers__user",
+                "keynote__speakers__user",
+            )
+            .all()
+        )
 
         cache_key = f"{conference.code}:video-upload-files-cache"
         files = cache.get(cache_key)
