@@ -1,9 +1,10 @@
-from api.permissions import IsAuthenticated
-from api.context import Info
 from datetime import date
-from typing import Annotated, Union, Optional
+from typing import Annotated
+
 import strawberry
 
+from api.context import Info
+from api.permissions import IsAuthenticated
 from api.types import BaseErrorType
 from api.users.types import User
 
@@ -30,7 +31,7 @@ class UpdateProfileInput:
     gender: str
     open_to_recruiting: bool
     open_to_newsletter: bool
-    date_birth: Optional[date] = None
+    date_birth: date | None = None
     country: str
 
     def validate(self):
@@ -51,7 +52,7 @@ class UpdateProfileInput:
 
 
 UpdateProfileResult = Annotated[
-    Union[UpdateProfileErrors, User], strawberry.union(name="UpdateProfileResult")
+    UpdateProfileErrors | User, strawberry.union(name="UpdateProfileResult")
 ]
 
 
@@ -80,4 +81,4 @@ def update_profile(info: Info, input: UpdateProfileInput) -> UpdateProfileResult
         ]
     )
 
-    return User.from_django_model(user)
+    return user

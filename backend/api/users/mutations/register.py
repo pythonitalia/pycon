@@ -1,16 +1,15 @@
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
-import strawberry
-from django.contrib.auth import (
-    authenticate,
-    login as django_login,
-)
+from typing import Annotated
 
-from api.users.types import User
+import strawberry
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as django_login
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+
 from api.context import Info
 from api.types import BaseErrorType
-from users.models import User as UserModel
-from typing import Annotated, Union
+from api.users.types import User
+from users import models
 
 
 @strawberry.type
@@ -64,7 +63,7 @@ class RegisterInput:
 
 
 RegisterResult = Annotated[
-    Union[RegisterSuccess, RegisterErrors, EmailAlreadyUsed],
+    RegisterSuccess | RegisterErrors | EmailAlreadyUsed,
     strawberry.union(name="RegisterResult"),
 ]
 
@@ -74,18 +73,18 @@ def register(info: Info, input: RegisterInput) -> RegisterResult:
     if validation_result := input.validate():
         return validation_result
 
-    user_email = UserModel.objects.normalize_email(input.email)
-    if UserModel.objects.filter(email=user_email).exists():
+    user_email = models.User.objects.normalize_email(input.email)
+    if models.User.objects.filter(email=user_email).exists():
         return EmailAlreadyUsed()
 
-    user = UserModel.objects.create_user(
+    user = models.User.objects.create_user(
         email=input.email,
         password=input.password,
         full_name=input.fullname,
     )
     user = authenticate(email=user_email, password=input.password)
     if not user:
-        raise Exception("Something went wrong")
+        raise RuntimeError("Something went wrong")
 
     django_login(info.context.request, user)
-    return RegisterSuccess(user=User.from_django_model(user))
+    return RegisterSuccess(user=user)
