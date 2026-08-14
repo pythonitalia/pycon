@@ -1,25 +1,17 @@
-from api.context import Info
+import strawberry
 from django.db import transaction
-from api.schedule.types import (
-    ScheduleInvitationOption,
-)
-from submissions.models import Submission
-from schedule.models import (
-    ScheduleItem,
-)
-from typing import Union
-from api.permissions import IsAuthenticated
-from api.schedule.types import (
-    ScheduleInvitation,
-)
-from api.submissions.permissions import IsSubmissionSpeakerOrStaff
 
+from api.context import Info
+from api.permissions import IsAuthenticated
+from api.schedule.types import ScheduleInvitation, ScheduleInvitationOption
+from api.submissions.permissions import IsSubmissionSpeakerOrStaff
+from schedule import models as schedule_models
 from schedule.tasks import (
     create_and_send_voucher_to_speaker,
     notify_new_schedule_invitation_answer_slack,
     send_schedule_invitation_plain_message,
 )
-import strawberry
+from submissions import models as submission_models
 
 
 @strawberry.input
@@ -37,8 +29,8 @@ class ScheduleInvitationNotFound:
 @strawberry.mutation(permission_classes=[IsAuthenticated])
 def update_schedule_invitation(
     info: Info, input: UpdateScheduleInvitationInput
-) -> Union[ScheduleInvitationNotFound, ScheduleInvitation]:
-    submission = Submission.objects.get_by_hashid(input.submission_id)
+) -> ScheduleInvitationNotFound | ScheduleInvitation:
+    submission = submission_models.Submission.objects.get_by_hashid(input.submission_id)
 
     if not IsSubmissionSpeakerOrStaff().has_object_permission(info, submission):
         return ScheduleInvitationNotFound()
@@ -47,11 +39,11 @@ def update_schedule_invitation(
     # since currently we do not schedule the same talk to appear multiple times
     # in the future this needs to be fixed :)
     schedule_item = (
-        ScheduleItem.objects.filter(
+        schedule_models.ScheduleItem.objects.filter(
             submission_id=submission.id,
             conference_id=submission.conference_id,
         )
-        .exclude(status=ScheduleItem.STATUS.cancelled)
+        .exclude(status=schedule_models.ScheduleItem.STATUS.cancelled)
         .first()
     )
 
@@ -64,14 +56,14 @@ def update_schedule_invitation(
 
     if not status_changed and schedule_item.speaker_invitation_notes == new_notes:
         # If nothing changed, do nothing
-        return ScheduleInvitation.from_django_model(schedule_item)
+        return schedule_item
 
     with transaction.atomic():
         schedule_item.status = new_status
         schedule_item.speaker_invitation_notes = new_notes
         schedule_item.save()
 
-    if status_changed and new_status == ScheduleItem.STATUS.confirmed:
+    if status_changed and new_status == schedule_models.ScheduleItem.STATUS.confirmed:
         create_and_send_voucher_to_speaker.delay(schedule_item.id)
 
     request = info.context.request
@@ -90,4 +82,4 @@ def update_schedule_invitation(
             schedule_item_id=schedule_item.id,
             message=new_notes,
         )
-    return ScheduleInvitation.from_django_model(schedule_item)
+    return schedule_item

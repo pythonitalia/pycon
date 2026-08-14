@@ -1,8 +1,8 @@
-from submissions.tests.factories import SubmissionFactory
-from schedule.tests.factories import DayFactory, ScheduleItemFactory, SlotFactory
 from pytest import mark
 
 from schedule.models import ScheduleItem
+from schedule.tests.factories import DayFactory, ScheduleItemFactory, SlotFactory
+from submissions.tests.factories import SubmissionFactory
 
 pytestmark = mark.django_db
 
@@ -52,6 +52,7 @@ def test_update_invitation_answer(
         updateScheduleInvitation(input: $input) {
             __typename
             ... on ScheduleInvitation {
+                id
                 option
                 notes
             }
@@ -69,6 +70,7 @@ def test_update_invitation_answer(
     assert not response.get("errors")
     assert response["data"]["updateScheduleInvitation"] == {
         "__typename": "ScheduleInvitation",
+        "id": submission.hashid,
         "option": option,
         "notes": "notes",
     }
