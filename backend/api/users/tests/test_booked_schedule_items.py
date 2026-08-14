@@ -59,7 +59,7 @@ def _bookable_schedule_item(attendees_total_capacity: int = 30):
 
 @pytest.mark.parametrize(
     ("item_count", "expected_queries"),
-    [(1, 7), (4, 16)],
+    [(1, 4), (4, 4)],
 )
 def test_frontend_booked_schedule_items_query(
     graphql_client,

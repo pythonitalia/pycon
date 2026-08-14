@@ -73,8 +73,14 @@ class ScheduleItem:
     id: strawberry.auto
     conference: Annotated["Conference", strawberry.lazy("api.conferences.types")]
     title: strawberry.auto
-    start: datetime
-    end: datetime
+    start: datetime = strawberry_django.field(
+        only=["slot__day__day", "slot__hour"],
+        select_related=["slot__day"],
+    )
+    end: datetime = strawberry_django.field(
+        only=["duration", "slot__day__day", "slot__duration", "slot__hour"],
+        select_related=["slot__day"],
+    )
     status: strawberry.auto
     submission: Submission | None
     slug: str

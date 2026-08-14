@@ -1,6 +1,5 @@
 import strawberry
 import strawberry_django
-from django.db.models import Prefetch
 from django.urls import reverse
 from strawberry.types import Info
 
@@ -111,13 +110,6 @@ class User:
                 slot__isnull=False,
             )
             .distinct()
-            .select_related("slot", "slot__day", "language")
-            .prefetch_related(
-                Prefetch(
-                    "rooms",
-                    queryset=schedule_models.Room.objects.only("id", "name", "type"),
-                )
-            )
             .order_by("slot__day__day", "slot__hour")
         )
 
