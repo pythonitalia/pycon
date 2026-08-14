@@ -1,18 +1,18 @@
-from users.models import User as UserModel
 import logging
+from typing import Annotated
+
 import strawberry
-from django.contrib.auth import (
-    authenticate,
-    login as django_login,
-)
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as django_login
+from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from api.users.types import User
+
 from api.context import Info
 from api.types import BaseErrorType
-from django.core.exceptions import ValidationError
-from typing import Annotated, Union
+from api.users.types import User
+from users import models
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 @strawberry.type
@@ -58,7 +58,7 @@ class LoginInput:
 
 
 LoginResult = Annotated[
-    Union[LoginSuccess, LoginErrors, WrongEmailOrPassword],
+    LoginSuccess | LoginErrors | WrongEmailOrPassword,
     strawberry.union(name="LoginResult"),
 ]
 
@@ -70,7 +70,7 @@ def login(info: Info, input: LoginInput) -> LoginResult:
 
     logger.info("Login attempt for email=%s", input.email)
 
-    email = UserModel.objects.normalize_email(input.email)
+    email = models.User.objects.normalize_email(input.email)
     password = input.password
 
     user = authenticate(email=email, password=password)
@@ -80,4 +80,4 @@ def login(info: Info, input: LoginInput) -> LoginResult:
 
     django_login(info.context.request, user)
     logger.info("Login completed with success for email=%s", input.email)
-    return LoginSuccess(user=User.from_django_model(user))
+    return LoginSuccess(user=user)
