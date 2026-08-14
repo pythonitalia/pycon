@@ -1,11 +1,11 @@
-import strawberry
+import strawberry_django
 
 from api.cms.news.types import NewsArticle
 from api.cms.utils import get_site_by_host
 from cms.components.news import models
 
 
-@strawberry.field
+@strawberry_django.field
 def news_article(hostname: str, slug: str, language: str) -> NewsArticle | None:
     site = get_site_by_host(hostname)
 
@@ -19,13 +19,6 @@ def news_article(hostname: str, slug: str, language: str) -> NewsArticle | None:
     if not article:
         return None
 
-    translated_article = (
-        article.get_translations(inclusive=True)
-        .filter(locale__language_code=language, live=True)
-        .first()
+    return article.get_translations(inclusive=True).filter(
+        locale__language_code=language, live=True
     )
-
-    if not translated_article:
-        return None
-
-    return translated_article
