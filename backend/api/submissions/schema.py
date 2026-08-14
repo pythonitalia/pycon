@@ -1,29 +1,27 @@
 import random
-from api.context import Info
-from api.submissions.permissions import CanSeeSubmissionRestrictedFields
 
-from voting.helpers import check_if_user_can_vote
 import strawberry
+import strawberry_django
 
+from api.context import Info
 from api.permissions import CanSeeSubmissions, IsAuthenticated
+from api.submissions.permissions import CanSeeSubmissionRestrictedFields
 from api.types import Paginated
-from conferences.models import Conference as ConferenceModel
-from submissions.models import (
-    Submission as SubmissionModel,
-    SubmissionTag as SubmissionTagModel,
-)
-from voting.models.vote import Vote
+from conferences import models as conference_models
+from submissions import models as submission_models
+from voting import models as voting_models
+from voting.helpers import check_if_user_can_vote
 
 from .types import Submission, SubmissionTag
 
 
 @strawberry.type
 class SubmissionsQuery:
-    @strawberry.field
+    @strawberry_django.field
     def submission(self, info: Info, id: strawberry.ID) -> Submission | None:
         try:
-            submission = SubmissionModel.objects.get_by_hashid(id)
-        except SubmissionModel.DoesNotExist:
+            submission = submission_models.Submission.objects.get_by_hashid(id)
+        except submission_models.Submission.DoesNotExist:
             return None
         except IndexError:
             return None
@@ -33,7 +31,7 @@ class SubmissionsQuery:
         ):
             return None
 
-        return submission
+        return submission_models.Submission.objects.filter(id=submission.id)
 
     @strawberry.field()
     def submissions(
@@ -60,7 +58,7 @@ class SubmissionsQuery:
 
         request = info.context.request
         user = request.user
-        conference = ConferenceModel.objects.filter(code=code).first()
+        conference = conference_models.Conference.objects.filter(code=code).first()
 
         if not only_accepted and not IsAuthenticated().has_permission(conference, info):
             raise PermissionError("User not logged in")
@@ -84,9 +82,9 @@ class SubmissionsQuery:
         )
 
         if only_accepted:
-            qs = qs.filter(status=SubmissionModel.STATUS.accepted)
+            qs = qs.filter(status=submission_models.Submission.STATUS.accepted)
         else:
-            qs = qs.filter(status=SubmissionModel.STATUS.proposed)
+            qs = qs.filter(status=submission_models.Submission.STATUS.proposed)
 
         if languages:
             qs = qs.filter(languages__code__in=languages)
@@ -115,7 +113,10 @@ class SubmissionsQuery:
 
         info.context._my_votes = {
             vote.submission_id: vote
-            for vote in Vote.objects.filter(user_id=user.id, submission__in=submissions)
+            for vote in voting_models.Vote.objects.filter(
+                user_id=user.id,
+                submission__in=submissions,
+            )
         }
 
         return Paginated.paginate_list(
@@ -127,17 +128,19 @@ class SubmissionsQuery:
 
     @strawberry.field
     def submission_tags(self, info: Info) -> list[SubmissionTag]:
-        return SubmissionTagModel.objects.order_by("name").all()
+        return submission_models.SubmissionTag.objects.order_by("name").all()
 
     @strawberry.field
     def voting_tags(self, info: Info, conference: str) -> list[SubmissionTag]:
         used_tags = (
-            SubmissionModel.objects.filter(
+            submission_models.Submission.objects.filter(
                 conference__code=conference,
             )
             .values_list("tags__id", flat=True)
             .distinct()
         )
         return (
-            SubmissionTagModel.objects.filter(id__in=used_tags).order_by("name").all()
+            submission_models.SubmissionTag.objects.filter(id__in=used_tags)
+            .order_by("name")
+            .all()
         )

@@ -131,7 +131,7 @@ def test_submission_frontend_query(
     tag = submission.tags.get()
     graphql_client.force_login(user)
 
-    with django_assert_num_queries(13):
+    with django_assert_num_queries(10):
         response = graphql_client.query(
             SUBMISSION_QUERY,
             variables={"id": submission.hashid, "language": "en"},
