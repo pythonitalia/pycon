@@ -14,6 +14,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { dashboardUrl } from "@/dashboard-url";
 
 export type ConferenceData = {
   code: string;
@@ -102,9 +103,7 @@ export function ConferenceSwitcher({
                 className="gap-2 p-2"
                 key={conference.code}
               >
-                <Link
-                  href={`/dashboard/${encodeURIComponent(conference.code)}`}
-                >
+                <Link href={dashboardUrl(conference.code)}>
                   <div
                     aria-hidden="true"
                     className="flex size-6 shrink-0 items-center justify-center rounded-md border text-xs font-medium tabular-nums"
