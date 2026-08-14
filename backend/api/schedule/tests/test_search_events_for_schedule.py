@@ -81,7 +81,7 @@ def _search_events_for_schedule(client, **input):
 
 @pytest.mark.parametrize(
     ("event_count", "expected_queries"),
-    [(1, 16), (4, 31)],
+    [(1, 9), (4, 9)],
 )
 def test_frontend_search_events_query(
     admin_graphql_api_client,

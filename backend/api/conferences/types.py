@@ -94,13 +94,16 @@ class Keynote:
 
     # Keep model instances here: values()/values_list() bypass Django's prefetch
     # cache. A narrower custom Prefetch is only worthwhile if profiling shows it.
-    @strawberry_django.field(prefetch_related=["speakers__user"])
+    @strawberry_django.field(
+        only=["conference_id"],
+        prefetch_related=["speakers__user"],
+    )
     def speakers(self, info: Info) -> list[ScheduleItemUser]:
         keynote_speakers = [
             speaker for speaker in self.speakers.all() if speaker.user_id
         ]
         participants_data = info.context._participants_data
-        if not participants_data:
+        if participants_data is None:
             participants_data = {
                 participant.user_id: participant
                 for participant in participant_models.Participant.objects.filter(
@@ -108,6 +111,7 @@ class Keynote:
                     conference_id=self.conference_id,
                 ).all()
             }
+            info.context._participants_data = participants_data
 
         return [
             ScheduleItemUser(

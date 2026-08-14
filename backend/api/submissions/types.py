@@ -57,7 +57,11 @@ class SubmissionSpeaker:
     @strawberry_django.field
     def participant(
         self,
+        info: Info,
     ) -> Annotated["Participant", strawberry.lazy("api.participants.types")] | None:
+        if info.context._participants_data is not None:
+            return info.context._participants_data.get(self.id)
+
         return participant_models.Participant.objects.for_conference(
             self._conference_id
         ).filter(
@@ -151,7 +155,7 @@ class Submission:
         return self.abstract.localize(language)
 
     @strawberry_django.field(
-        only=["conference_id"],
+        only=["conference_id", "status"],
         select_related=["speaker"],
     )
     def speaker(self, info: Info) -> SubmissionSpeaker | None:
@@ -190,9 +194,9 @@ class Submission:
         except voting_models.Vote.DoesNotExist:
             return None
 
-    @strawberry_django.field
+    @strawberry_django.field(prefetch_related=["languages"])
     def languages(self, info: Info) -> list[Language] | None:
-        return self.languages.all()
+        return list(self.languages.all())
 
     @strawberry_django.field
     def tags(self, info: Info) -> list[SubmissionTag] | None:
