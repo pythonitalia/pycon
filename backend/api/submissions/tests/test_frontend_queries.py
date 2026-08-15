@@ -113,7 +113,7 @@ DYNAMIC_CONTENT_PROPOSALS_QUERY = (
 
 @pytest.mark.parametrize(
     ("submission_count", "expected_queries"),
-    [(1, 16), (4, 19)],
+    [(1, 14), (4, 14)],
 )
 def test_voting_submissions_frontend_query(
     graphql_client,
@@ -148,7 +148,7 @@ def test_voting_submissions_frontend_query(
 
 @pytest.mark.parametrize(
     ("submission_count", "expected_queries"),
-    [(1, 12), (4, 21)],
+    [(1, 6), (4, 6)],
 )
 def test_dynamic_content_proposals_frontend_query(
     graphql_client,

@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Annotated
 
 import strawberry
 import strawberry_django
+from django.db.models import Prefetch
 from strawberry.types import Info
 from strawberry.types.field import StrawberryField
 
@@ -181,28 +182,34 @@ class Submission:
     def can_edit(self, info: Info) -> bool:
         return self.can_edit(info.context.request)
 
-    @strawberry.field
+    @strawberry_django.field(
+        prefetch_related=lambda info: Prefetch(
+            "votes",
+            queryset=(
+                voting_models.Vote.objects.filter(
+                    user_id=info.context.request.user.id,
+                )
+                if info.context.request.user.is_authenticated
+                else voting_models.Vote.objects.none()
+            ),
+        )
+    )
     def my_vote(self, info: Info) -> VoteType | None:
         request = info.context.request
 
         if not request.user.is_authenticated:
             return None
 
-        if info.context._my_votes is not None:
-            return info.context._my_votes.get(self.id)
-
-        try:
-            return self.votes.get(user_id=request.user.id)
-        except voting_models.Vote.DoesNotExist:
-            return None
+        return next(
+            (vote for vote in self.votes.all() if vote.user_id == request.user.id),
+            None,
+        )
 
     @strawberry_django.field(prefetch_related=["languages"])
     def languages(self, info: Info) -> list[Language] | None:
         return list(self.languages.all())
 
-    @strawberry_django.field
-    def tags(self, info: Info) -> list[SubmissionTag] | None:
-        return self.tags.all()
+    tags: list[SubmissionTag] | None = strawberry_django.field()
 
     @strawberry_django.field
     def materials(self) -> list[ProposalMaterial]:

@@ -2,6 +2,7 @@ import random
 
 import strawberry
 import strawberry_django
+from django.db.models import Case, IntegerField, When
 
 from api.context import Info
 from api.permissions import CanSeeSubmissions, IsAuthenticated
@@ -9,7 +10,6 @@ from api.submissions.permissions import CanSeeSubmissionRestrictedFields
 from api.types import Paginated
 from conferences import models as conference_models
 from submissions import models as submission_models
-from voting import models as voting_models
 from voting.helpers import check_if_user_can_vote
 
 from .types import Submission, SubmissionTag
@@ -72,14 +72,7 @@ class SubmissionsQuery:
         ):
             raise PermissionError("You need to have a ticket to see submissions")
 
-        qs = conference.submissions.prefetch_related(
-            "type",
-            "duration",
-            "schedule_items",
-            "languages",
-            "audience_level",
-            "tags",
-        )
+        qs = conference.submissions.all()
 
         if only_accepted:
             qs = qs.filter(status=submission_models.Submission.STATUS.accepted)
@@ -103,21 +96,31 @@ class SubmissionsQuery:
         if audience_levels:
             qs = qs.filter(audience_level__id__in=audience_levels)
 
-        qs = qs.order_by("id").distinct()
+        submission_ids = list(
+            qs.order_by("id").distinct().values_list("id", flat=True)
+        )
+        random.Random(user.id).shuffle(submission_ids)
 
-        all_submissions = list(qs)
-        random.Random(user.id).shuffle(all_submissions)
+        total_items = len(submission_ids)
+        page_submission_ids = submission_ids[
+            (page - 1) * page_size : page * page_size
+        ]
+        submissions = conference.submissions.filter(id__in=page_submission_ids)
+        if not only_accepted:
+            # This relation is used by a permission check, so it is invisible to
+            # Strawberry Django's selection-based optimizer.
+            submissions = submissions.prefetch_related("schedule_items")
 
-        total_items = len(all_submissions)
-        submissions = list(all_submissions[(page - 1) * page_size : page * page_size])
-
-        info.context._my_votes = {
-            vote.submission_id: vote
-            for vote in voting_models.Vote.objects.filter(
-                user_id=user.id,
-                submission__in=submissions,
+        if page_submission_ids:
+            submissions = submissions.order_by(
+                Case(
+                    *(
+                        When(id=submission_id, then=position)
+                        for position, submission_id in enumerate(page_submission_ids)
+                    ),
+                    output_field=IntegerField(),
+                )
             )
-        }
 
         return Paginated.paginate_list(
             items=submissions,
