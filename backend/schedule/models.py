@@ -156,6 +156,7 @@ class ScheduleItemSentForVideoUpload(TimeStampedModel):
     last_attempt_at = models.DateTimeField(_("Last attempt at"), null=True, blank=True)
     video_uploaded = models.BooleanField(_("Video uploaded"), default=False)
     thumbnail_uploaded = models.BooleanField(_("Thumbnail uploaded"), default=False)
+    emails_scheduled = models.BooleanField(_("Emails scheduled"), default=False)
     failed_reason = models.TextField(
         _("Failed reason"),
         blank=True,
