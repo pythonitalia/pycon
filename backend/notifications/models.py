@@ -217,7 +217,7 @@ class EmailTemplate(TimeStampedModel):
         recipient: User | None = None,
         recipient_email: str | None = None,
         placeholders: dict = None,
-        status: "SentEmail.Status" | None = None,
+        status: "SentEmail.Status" = None,
     ):
         if not recipient and not recipient_email:
             raise ValueError("Either recipient or recipient_email must be provided")
