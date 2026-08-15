@@ -264,3 +264,87 @@ def test_email_template_system_templates_filter():
 
     assert EmailTemplate.objects.system_templates().count() == 1
     assert EmailTemplate.objects.system_templates().first().id == email_template.id
+
+
+def test_draft_email_template_to_recipient_email(
+    mocker, django_capture_on_commit_callbacks
+):
+    email_template = EmailTemplateFactory(
+        subject="Subject {{ test }}",
+        body="Body {{ test }}",
+        preview_text="Preview {{ test }}",
+        reply_to="replyto@example.com",
+    )
+
+    mock_send_pending_email = mocker.patch(
+        "notifications.tasks.send_pending_email.delay"
+    )
+
+    with django_capture_on_commit_callbacks(execute=True):
+        sent_email = email_template.draft_email(
+            recipient_email="example@example.com",
+            placeholders={
+                "test": "abc",
+            },
+        )
+
+    # drafts are only queued once the action in the admin is used
+    mock_send_pending_email.assert_not_called()
+
+    assert sent_email.status == SentEmail.Status.draft
+    assert sent_email.sent_at is None
+    assert sent_email.recipient is None
+    assert sent_email.recipient_email == "example@example.com"
+
+    assert sent_email.subject == "Subject abc"
+    assert "Body abc" in sent_email.body
+    assert sent_email.preview_text == "Preview abc"
+    assert sent_email.reply_to == "replyto@example.com"
+
+
+def test_draft_email_template_to_recipient_user():
+    user = UserFactory()
+    email_template = EmailTemplateFactory(
+        subject="Subject {{ test }}",
+        body="Body {{ test }}",
+        preview_text="Preview {{ test }}",
+    )
+
+    sent_email = email_template.draft_email(
+        recipient=user,
+        placeholders={
+            "test": "abc",
+        },
+    )
+
+    assert sent_email.status == SentEmail.Status.draft
+    assert sent_email.recipient == user
+    assert sent_email.recipient_email == user.email
+    assert sent_email.subject == "Subject abc"
+
+
+def test_draft_email_requires_a_recipient():
+    email_template = EmailTemplateFactory()
+
+    with pytest.raises(
+        ValueError, match="Either recipient or recipient_email must be provided"
+    ):
+        email_template.draft_email(placeholders={})
+
+    assert not SentEmail.objects.exists()
+
+
+def test_send_email_creates_a_pending_email(mocker, django_capture_on_commit_callbacks):
+    email_template = EmailTemplateFactory()
+
+    mock_send_pending_email = mocker.patch(
+        "notifications.tasks.send_pending_email.delay"
+    )
+
+    with django_capture_on_commit_callbacks(execute=True):
+        email_template.send_email(recipient_email="example@example.com")
+
+    sent_email = SentEmail.objects.get(email_template=email_template)
+
+    assert sent_email.status == SentEmail.Status.pending
+    mock_send_pending_email.assert_called_once_with(sent_email.id)
