@@ -2,9 +2,10 @@ import { createInertiaApp } from "@inertiajs/react";
 import { createRoot } from "react-dom/client";
 
 import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
 import "./styles.css";
 
-const pages = { Dashboard };
+const pages = { Dashboard, Login };
 
 createInertiaApp({
   resolve: (name) => {

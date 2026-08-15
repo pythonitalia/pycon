@@ -1,9 +1,12 @@
 import { Link } from "@inertiajs/react";
 import { LayoutDashboard } from "lucide-react";
 
+import { NavUser, type NavUserData } from "@/components/nav-user";
+
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -14,7 +17,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
-export function AppSidebar() {
+export function AppSidebar({ user }: { user: NavUserData }) {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -59,6 +62,10 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter>
+        <NavUser user={user} />
+      </SidebarFooter>
 
       <SidebarRail />
     </Sidebar>
