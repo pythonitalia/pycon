@@ -1,4 +1,3 @@
-from users.system_user import get_system_user_id
 from django.utils import timezone
 from django.db import transaction
 from django.db.models import Q, UniqueConstraint
@@ -273,11 +272,8 @@ class EmailTemplate(TimeStampedModel):
         recipient: User | None = None,
         recipient_email: str | None = None,
         placeholders: dict = None,
-        actor_id: int | None = None,
     ):
         from notifications.tasks import send_pending_email
-
-        actor_id = actor_id or get_system_user_id()
 
         sent_email = self._prepare_email(
             status=SentEmail.Status.pending,
@@ -285,9 +281,7 @@ class EmailTemplate(TimeStampedModel):
             recipient_email=recipient_email,
             placeholders=placeholders,
         )
-        transaction.on_commit(
-            lambda: send_pending_email.delay(sent_email.id, actor_id=actor_id)
-        )
+        transaction.on_commit(lambda: send_pending_email.delay(sent_email.id))
 
     @property
     def is_custom(self):
