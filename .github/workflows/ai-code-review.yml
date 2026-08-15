@@ -27,7 +27,7 @@ jobs:
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
         id: setup-uv
         with:
-          version: "0.5.5"
+          version: "0.12.5"
           enable-cache: true
       - name: Find existing Claude bot comment
         id: find-comment

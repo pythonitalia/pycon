@@ -30,7 +30,7 @@ RUN apt-get update -y && apt-get install -y \
 RUN mkdir -p ${FUNCTION_DIR}
 WORKDIR ${FUNCTION_DIR}
 
-RUN pip install uv==0.5.5
+COPY --from=ghcr.io/astral-sh/uv:0.12.5 /uv /uvx /usr/local/bin/
 
 COPY pyproject.toml uv.lock ./
 
