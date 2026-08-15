@@ -220,7 +220,7 @@ resource "aws_ecs_task_definition" "worker" {
       essential         = true
 
       command = [
-        "/home/app/.venv/bin/celery", "-A", "pycon", "worker", "-l", "info", "-E"
+        "bin/celery", "-A", "pycon", "worker", "-l", "info", "-E"
       ]
 
       environment = local.env_vars
@@ -261,7 +261,7 @@ resource "aws_ecs_task_definition" "worker" {
       essential         = false
 
       command = [
-        "/home/app/.venv/bin/python", "manage.py", "migrate"
+        "bin/python", "manage.py", "migrate"
       ]
 
       environment = local.env_vars
@@ -312,7 +312,7 @@ resource "aws_ecs_task_definition" "beat" {
       essential         = true
 
       command = [
-        "/home/app/.venv/bin/celery", "-A", "pycon", "beat", "-l", "info"
+        "bin/celery", "-A", "pycon", "beat", "-l", "info"
       ]
 
       environment = local.env_vars

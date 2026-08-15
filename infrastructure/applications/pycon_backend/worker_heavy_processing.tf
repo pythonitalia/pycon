@@ -24,7 +24,7 @@ resource "aws_ecs_task_definition" "heavy_processing_worker" {
       essential         = true
 
       command = [
-        "/home/app/.venv/bin/celery", "-A", "pycon", "worker", "-l", "info", "-Q", "heavy_processing", "--hostname", "heavyprocessing@%h", "-E"
+        "celery", "-A", "pycon", "worker", "-l", "info", "-Q", "heavy_processing", "--hostname", "heavyprocessing@%h", "-E"
       ]
 
       environment = local.env_vars
