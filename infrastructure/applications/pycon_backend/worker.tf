@@ -220,7 +220,7 @@ resource "aws_ecs_task_definition" "worker" {
       essential         = true
 
       command = [
-        "bin/celery", "-A", "pycon", "worker", "-l", "info", "-E"
+        "celery", "-A", "pycon", "worker", "-l", "info", "-E"
       ]
 
       environment = local.env_vars
@@ -312,7 +312,7 @@ resource "aws_ecs_task_definition" "beat" {
       essential         = true
 
       command = [
-        "bin/celery", "-A", "pycon", "beat", "-l", "info"
+        "celery", "-A", "pycon", "beat", "-l", "info"
       ]
 
       environment = local.env_vars
