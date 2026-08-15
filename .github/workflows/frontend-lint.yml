@@ -15,15 +15,15 @@ jobs:
       run:
         working-directory: ./frontend
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
         name: Install pnpm
         with:
           version: 9
           run_install: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: '18'
+          node-version: '23.9.0'
           cache: 'pnpm'
           cache-dependency-path: 'frontend/pnpm-lock.yaml'
       - name: Setup Biome

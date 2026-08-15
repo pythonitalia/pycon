@@ -141,9 +141,7 @@ class Command(BaseCommand):
             topic, _ = Topic.objects.get_or_create(name=topic_name)
             conference.topics.add(topic)
 
-        en, _ = Language.objects.get_or_create(
-            code="en", defaults={"name": "English"}
-        )
+        en, _ = Language.objects.get_or_create(code="en", defaults={"name": "English"})
         conference.languages.add(en)
 
         for st_name in ["talk", "tutorial"]:
@@ -192,7 +190,9 @@ class Command(BaseCommand):
         # Create some speakers with multiple submissions to test the
         # "speaker has multiple talks" feature
         multi_submission_speakers = []
-        num_multi_speakers = min(3, count // 4)  # ~25% of submissions from repeat speakers
+        num_multi_speakers = min(
+            3, count // 4
+        )  # ~25% of submissions from repeat speakers
         for i in range(num_multi_speakers):
             speaker = User.objects.create_user(
                 email=f"multi-speaker-{uuid.uuid4().hex[:8]}@example.org",
@@ -258,17 +258,13 @@ class Command(BaseCommand):
                 speaker=speaker,
                 title=LazyI18nString({"en": title}),
                 abstract=LazyI18nString({"en": f"Abstract for {title}"}),
-                elevator_pitch=LazyI18nString(
-                    {"en": f"A talk about {title.lower()}"}
-                ),
+                elevator_pitch=LazyI18nString({"en": f"A talk about {title.lower()}"}),
                 notes=f"Speaker notes for {title}",
                 type=submission_type,
                 duration=duration,
                 topic=topic,
                 audience_level=audience_level,
-                speaker_level=random.choice(
-                    [c[0] for c in Submission.SPEAKER_LEVELS]
-                ),
+                speaker_level=random.choice([c[0] for c in Submission.SPEAKER_LEVELS]),
                 status="proposed",
             )
             submission.languages.add(en)
@@ -315,12 +311,18 @@ class Command(BaseCommand):
                 occupation=random.choice(occupations),
                 grant_type=random.sample(grant_types, k=random.randint(1, 2)),
                 python_usage=f"I use Python for {random.choice(['web dev', 'data science', 'automation', 'ML', 'teaching'])}.",
-                been_to_other_events=random.choice(["Yes, PyCon US", "No", "EuroPython 2023"]),
+                been_to_other_events=random.choice(
+                    ["Yes, PyCon US", "No", "EuroPython 2023"]
+                ),
                 needs_funds_for_travel=random.choice([True, False]),
                 why=f"I want to attend because {random.choice(['I want to learn', 'I want to network', 'I want to speak', 'I love Python'])}.",
                 departure_country=random.choice(["IT", "DE", "FR", "US", "GB", "ES"]),
-                departure_city=random.choice(["Rome", "Berlin", "Paris", "New York", "London", "Madrid"]),
-                nationality=random.choice(["Italian", "German", "French", "American", "British", "Spanish"]),
+                departure_city=random.choice(
+                    ["Rome", "Berlin", "Paris", "New York", "London", "Madrid"]
+                ),
+                nationality=random.choice(
+                    ["Italian", "German", "French", "American", "British", "Spanish"]
+                ),
             )
             grants.append(grant)
 
@@ -338,7 +340,9 @@ class Command(BaseCommand):
 
         score_options = self._create_score_options(review_session)
 
-        self.stdout.write(f"Creating {num_submissions} submissions (some speakers will have multiple talks)...")
+        self.stdout.write(
+            f"Creating {num_submissions} submissions (some speakers will have multiple talks)..."
+        )
         submissions = self._create_submissions(conference, num_submissions)
 
         self.stdout.write(f"Creating reviews for {len(submissions)} submissions...")
@@ -359,9 +363,7 @@ class Command(BaseCommand):
 
         review_session.status = "reviewing"
         review_session.save()
-        self.stdout.write(
-            f"  Proposals review session ready (ID: {review_session.id})"
-        )
+        self.stdout.write(f"  Proposals review session ready (ID: {review_session.id})")
 
     def _create_grants_review(self, conference, reviewers, num_grants):
         self.stdout.write("\n--- Grants Review Session ---")

@@ -1,30 +1,30 @@
-from typing import Annotated
-from submissions.models import Submission as SubmissionModel
+from typing import TYPE_CHECKING, Annotated
 
-from files_upload.models import File
-from api.utils import validate_url
-from participants.models import Participant as ParticipantModel
 import strawberry
-from strawberry.types.field import StrawberryField
+import strawberry_django
+from django.db.models import Prefetch
 from strawberry.types import Info
+from strawberry.types.field import StrawberryField
 
 from api.languages.types import Language
+from api.utils import validate_url
 from api.voting.types import VoteType
+from files_upload import models as file_models
 from i18n.strings import LazyI18nString
-
-from voting.models import Vote
+from submissions import models
+from users import models as user_models
+from voting import models as voting_models
 
 from .permissions import CanSeeSubmissionPrivateFields, CanSeeSubmissionRestrictedFields
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from api.conferences.types import Conference, Topic, Duration, AudienceLevel
-    from api.schedule.types import ScheduleItem
+    from api.conferences.types import AudienceLevel, Conference, Duration, Topic
     from api.participants.types import Participant
+    from api.schedule.types import ScheduleItem
     from api.submissions.mutations import SendSubmissionErrors
 
 
-def private_field() -> StrawberryField:
+def private_field(name: str) -> StrawberryField:
     """Field that can only be seen by admin and the submitter"""
 
     def resolver(self, info: Info):
@@ -32,20 +32,20 @@ def private_field() -> StrawberryField:
             return getattr(self, info.python_name)
         return None
 
-    return strawberry.field(resolver=resolver)
+    return strawberry_django.field(resolver=resolver, only=[name])
 
 
-@strawberry.type
+@strawberry_django.type(models.SubmissionType)
 class SubmissionType:
-    id: strawberry.ID
-    name: str
-    is_recordable: bool
+    id: strawberry.auto
+    name: strawberry.auto
+    is_recordable: strawberry.auto
 
 
-@strawberry.type
+@strawberry_django.type(models.SubmissionTag)
 class SubmissionTag:
-    id: strawberry.ID
-    name: str
+    id: strawberry.auto
+    name: strawberry.auto
 
 
 @strawberry.type
@@ -53,20 +53,21 @@ class SubmissionSpeaker:
     id: strawberry.ID
     full_name: str
     gender: str
-    _conference_id: strawberry.Private[str]
+    _user: strawberry.Private[user_models.User]
+    _conference_id: strawberry.Private[int]
 
-    @strawberry.field
+    @strawberry_django.field
     def participant(
-        self, info: Info
+        self,
     ) -> Annotated["Participant", strawberry.lazy("api.participants.types")] | None:
-        from api.participants.types import Participant
-
-        participant = (
-            ParticipantModel.objects.for_conference(self._conference_id)
-            .filter(user_id=self.id)
-            .first()
+        return next(
+            (
+                participant
+                for participant in self._user.participants.all()
+                if participant.conference_id == self._conference_id
+            ),
+            None,
         )
-        return Participant.from_model(participant) if participant else None
 
 
 @strawberry.type
@@ -82,76 +83,83 @@ class MultiLingualString:
         )
 
 
-@strawberry.type
+@strawberry_django.type(models.ProposalMaterial)
 class ProposalMaterial:
-    id: strawberry.ID
-    name: str
-    url: str | None
-    file_id: str | None
-    file_url: str | None
-    file_mime_type: str | None
+    id: strawberry.auto
+    name: strawberry.auto
+    url: strawberry.auto
+    file_id: str | None = strawberry_django.field(only=["file_id"])
 
     @classmethod
-    def from_django(cls, material):
-        return cls(
-            id=material.id,
-            name=material.name,
-            url=material.url,
-            file_id=material.file_id,
-            file_url=material.file.url if material.file_id else None,
-            file_mime_type=material.file.mime_type if material.file_id else None,
-        )
+    def get_queryset(cls, queryset, info: Info):
+        return queryset.order_by("created")
+
+    @strawberry_django.field(
+        only=["file_id", "file__file"],
+        select_related=["file"],
+    )
+    def file_url(self) -> str | None:
+        return self.file.url if self.file_id else None
+
+    @strawberry_django.field(
+        only=["file_id", "file__mime_type"],
+        select_related=["file"],
+    )
+    def file_mime_type(self) -> str | None:
+        return self.file.mime_type if self.file_id else None
 
 
-@strawberry.type
+@strawberry_django.type(models.Submission)
 class Submission:
     conference: Annotated["Conference", strawberry.lazy("api.conferences.types")]
     title: str
-    slug: str
-    status: str
-    speaker_level: str | None = private_field()
-    previous_talk_video: str | None = private_field()
-    short_social_summary: str | None = private_field()
+    slug: strawberry.auto
+    status: strawberry.auto
+    speaker_level: str | None = private_field("speaker_level")
+    previous_talk_video: str | None = private_field("previous_talk_video")
+    short_social_summary: str | None = private_field("short_social_summary")
     topic: Annotated["Topic", strawberry.lazy("api.conferences.types")] | None
     type: SubmissionType | None
     duration: Annotated["Duration", strawberry.lazy("api.conferences.types")] | None
     audience_level: (
         Annotated["AudienceLevel", strawberry.lazy("api.conferences.types")] | None
     )
-    notes: str | None = private_field()
-    do_not_record: bool | None = private_field()
+    notes: str | None = private_field("notes")
+    do_not_record: bool | None = private_field("do_not_record")
 
-    @strawberry.field
-    def schedule_items(
-        self, info: Info
-    ) -> list[Annotated["ScheduleItem", strawberry.lazy("api.schedule.types")]]:
-        return self.schedule_items.all()
+    schedule_items: list[
+        Annotated["ScheduleItem", strawberry.lazy("api.schedule.types")]
+    ]
 
-    @strawberry.field
+    @strawberry_django.field(only=["elevator_pitch"])
     def multilingual_elevator_pitch(self, info: Info) -> MultiLingualString | None:
         return MultiLingualString.create(self.elevator_pitch)
 
-    @strawberry.field
+    @strawberry_django.field(only=["abstract"])
     def multilingual_abstract(self, info: Info) -> MultiLingualString | None:
         return MultiLingualString.create(self.abstract)
 
-    @strawberry.field
+    @strawberry_django.field(only=["title"])
     def multilingual_title(self, info: Info) -> MultiLingualString | None:
         return MultiLingualString.create(self.title)
 
-    @strawberry.field
+    @strawberry_django.field(only=["title"])
     def title(self, language: str) -> str:
         return self.title.localize(language)
 
-    @strawberry.field()
+    @strawberry_django.field(only=["elevator_pitch"])
     def elevator_pitch(self, language: str, info: Info) -> str | None:
         return self.elevator_pitch.localize(language)
 
-    @strawberry.field()
+    @strawberry_django.field(only=["abstract"])
     def abstract(self, language: str, info: Info) -> str | None:
         return self.abstract.localize(language)
 
-    @strawberry.field
+    @strawberry_django.field(
+        only=["conference_id", "status"],
+        select_related=["speaker"],
+        prefetch_related=["speaker__participants"],
+    )
     def speaker(self, info: Info) -> SubmissionSpeaker | None:
         if not CanSeeSubmissionRestrictedFields().has_permission(
             self, info, is_speaker_data=True
@@ -162,46 +170,50 @@ class Submission:
             id=self.speaker_id,
             full_name=self.speaker.full_name,
             gender=self.speaker.gender,
+            _user=self.speaker,
             _conference_id=self.conference_id,
         )
 
-    @strawberry.field
+    @strawberry_django.field(only=["id"])
     def id(self, info: Info) -> strawberry.ID:
         return self.hashid
 
-    @strawberry.field
+    @strawberry_django.field(only=["speaker_id"])
     def can_edit(self, info: Info) -> bool:
         return self.can_edit(info.context.request)
 
-    @strawberry.field
+    @strawberry_django.field(
+        prefetch_related=lambda info: Prefetch(
+            "votes",
+            queryset=(
+                voting_models.Vote.objects.filter(
+                    user_id=info.context.request.user.id,
+                )
+                if info.context.request.user.is_authenticated
+                else voting_models.Vote.objects.none()
+            ),
+        )
+    )
     def my_vote(self, info: Info) -> VoteType | None:
         request = info.context.request
 
         if not request.user.is_authenticated:
             return None
 
-        if info.context._my_votes is not None:
-            return info.context._my_votes.get(self.id)
+        return next(
+            (vote for vote in self.votes.all() if vote.user_id == request.user.id),
+            None,
+        )
 
-        try:
-            return self.votes.get(user_id=request.user.id)
-        except Vote.DoesNotExist:
-            return None
-
-    @strawberry.field
+    @strawberry_django.field(prefetch_related=["languages"])
     def languages(self, info: Info) -> list[Language] | None:
-        return self.languages.all()
+        return list(self.languages.all())
 
-    @strawberry.field
-    def tags(self, info: Info) -> list[SubmissionTag] | None:
-        return self.tags.all()
+    tags: list[SubmissionTag] | None = strawberry_django.field()
 
-    @strawberry.field
-    def materials(self, info: Info) -> list[ProposalMaterial]:
-        return [
-            ProposalMaterial.from_django(material)
-            for material in self.materials.order_by("created").all()
-        ]
+    @strawberry_django.field
+    def materials(self) -> list[ProposalMaterial]:
+        return self.materials.all()
 
 
 @strawberry.type
@@ -218,7 +230,7 @@ class SubmissionMaterialInput:
     file_id: str | None = None
 
     def validate(
-        self, errors: "SendSubmissionErrors", submission: SubmissionModel
+        self, errors: "SendSubmissionErrors", submission: models.Submission
     ) -> "SendSubmissionErrors":
         if self.id:
             try:
@@ -227,13 +239,15 @@ class SubmissionMaterialInput:
             except ValueError:
                 errors.add_error("id", "Invalid material id")
 
-        if self.file_id:
-            if not File.objects.filter(
+        if (
+            self.file_id
+            and not file_models.File.objects.filter(
                 id=self.file_id,
                 uploaded_by_id=submission.speaker_id,
-                type=File.Type.PROPOSAL_MATERIAL,
-            ).exists():
-                errors.add_error("file_id", "File not found")
+                type=file_models.File.Type.PROPOSAL_MATERIAL,
+            ).exists()
+        ):
+            errors.add_error("file_id", "File not found")
 
         if self.url:
             if len(self.url) > 2048:

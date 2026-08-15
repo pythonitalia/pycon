@@ -24,13 +24,14 @@ FROM base AS build-stage
 
 ARG FUNCTION_DIR
 
-RUN apt-get update -y && apt-get install -y \
-    gcc git
+RUN apt-get update -y && apt-get install -y gcc git
 
 RUN mkdir -p ${FUNCTION_DIR}
 WORKDIR ${FUNCTION_DIR}
 
-RUN pip install uv==0.5.5
+COPY --from=ghcr.io/astral-sh/uv:0.12.5 /uv /uvx /usr/local/bin/
+ENV UV_PROJECT_ENVIRONMENT=/opt/venv
+ENV PATH="/opt/venv/bin:${PATH}"
 
 COPY pyproject.toml uv.lock ./
 
@@ -38,7 +39,7 @@ RUN uv sync --no-dev
 
 COPY . ./
 
-RUN .venv/bin/python manage.py graphql_schema
+RUN python manage.py graphql_schema
 
 # Build custom admin components
 
@@ -81,13 +82,16 @@ ENV NLTK_DATA=/home/app/nltk_data
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/widgets/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/widgets/
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/_astro ${FUNCTION_DIR}/custom_admin/static/_astro/
-COPY --chown=app:app --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
+COPY --chown=app:app --from=build-stage /opt/venv /opt/venv
 
 COPY --chown=app:app . ${FUNCTION_DIR}
 COPY ./entrypoint.sh /entrypoint.sh
 
-RUN mkdir -p assets && .venv/bin/python manage.py collectstatic --noinput
+ENV UV_PROJECT_ENVIRONMENT=/opt/venv
+ENV PATH="/opt/venv/bin:${PATH}"
 
-ENV PGSSLCERT /tmp/postgresql.crt
+RUN mkdir -p assets && python manage.py collectstatic --noinput
+
+ENV PGSSLCERT=/tmp/postgresql.crt
 
 ENTRYPOINT ["/entrypoint.sh"]

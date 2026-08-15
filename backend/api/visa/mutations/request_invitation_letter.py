@@ -1,23 +1,22 @@
-from django.db import transaction
 from datetime import date
 from typing import Annotated
+
+import strawberry
+from django.db import transaction
+
+from api.conferences.types import Conference
+from api.context import Context
+from api.extensions import RateLimit
+from api.permissions import IsAuthenticated
 from api.types import BaseErrorType, FormNotAvailable, NoAdmissionTicket
 from api.utils import validate_email
 from api.visa.types import InvitationLetterOnBehalfOf, InvitationLetterRequest
-from api.extensions import RateLimit
-from visa.tasks import notify_new_invitation_letter_request_on_slack
+from conferences import models as conference_models
 from conferences.models.deadline import Deadline
-from privacy_policy.record import record_privacy_policy_acceptance
-from visa.models import (
-    InvitationLetterRequest as InvitationLetterRequestModel,
-    InvitationLetterRequestOnBehalfOf,
-)
-from api.permissions import IsAuthenticated
-from api.context import Context
-from api.conferences.types import Conference
-from conferences.models import Conference as ConferenceModel
 from pretix import user_has_admission_ticket
-import strawberry
+from privacy_policy.record import record_privacy_policy_acceptance
+from visa import models as visa_models
+from visa.tasks import notify_new_invitation_letter_request_on_slack
 
 MAX_LENGTH_FIELDS = {
     "email": 254,
@@ -119,7 +118,9 @@ RequestInvitationLetterResult = Annotated[
 def request_invitation_letter(
     info: strawberry.Info[Context], input: RequestInvitationLetterInput
 ) -> RequestInvitationLetterResult:
-    conference = ConferenceModel.objects.filter(code=input.conference).first()
+    conference = conference_models.Conference.objects.filter(
+        code=input.conference
+    ).first()
 
     if errors := input.validate(conference):
         return errors
@@ -140,27 +141,31 @@ def request_invitation_letter(
             return NoAdmissionTicket()
 
         if (
-            InvitationLetterRequestModel.objects.for_conference(conference)
+            visa_models.InvitationLetterRequest.objects.for_conference(conference)
             .of_user(user)
             .filter(
-                on_behalf_of=InvitationLetterRequestOnBehalfOf.SELF,
+                on_behalf_of=visa_models.InvitationLetterRequestOnBehalfOf.SELF,
             )
             .exists()
         ):
             return InvitationLetterAlreadyRequested()
 
     with transaction.atomic():
-        invitation_letter, created = InvitationLetterRequestModel.objects.get_or_create(
-            conference=conference,
-            requester=user,
-            on_behalf_of=InvitationLetterRequestOnBehalfOf(input.on_behalf_of.name),
-            full_name=input.full_name,
-            email_address=input.email,
-            nationality=input.nationality,
-            address=input.address,
-            date_of_birth=input.date_of_birth,
-            passport_number=input.passport_number,
-            embassy_name=input.embassy_name,
+        invitation_letter, created = (
+            visa_models.InvitationLetterRequest.objects.get_or_create(
+                conference=conference,
+                requester=user,
+                on_behalf_of=visa_models.InvitationLetterRequestOnBehalfOf(
+                    input.on_behalf_of.name
+                ),
+                full_name=input.full_name,
+                email_address=input.email,
+                nationality=input.nationality,
+                address=input.address,
+                date_of_birth=input.date_of_birth,
+                passport_number=input.passport_number,
+                embassy_name=input.embassy_name,
+            )
         )
 
         if created:
@@ -176,4 +181,4 @@ def request_invitation_letter(
                 )
             )
 
-    return InvitationLetterRequest.from_model(invitation_letter)
+    return invitation_letter

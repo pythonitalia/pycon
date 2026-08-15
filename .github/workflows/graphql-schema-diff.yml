@@ -1,0 +1,46 @@
+name: GraphQL schema diff
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+    paths:
+      - "backend/schema.graphql"
+      - ".github/workflows/graphql-schema-diff.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  schema-diff:
+    name: GraphQL Inspector
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Load base schema
+        id: base-schema
+        run: |
+          if git show "${{ github.event.pull_request.base.sha }}:backend/schema.graphql" > "$RUNNER_TEMP/base-schema.graphql"; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::The base commit has no committed GraphQL schema; skipping the initial baseline."
+          fi
+
+      - name: Compare schema with base branch
+        if: steps.base-schema.outputs.available == 'true'
+        run: >-
+          npx --yes
+          --package=@graphql-inspector/cli@6.0.8
+          --package=graphql@16.14.2
+          graphql-inspector diff
+          "$RUNNER_TEMP/base-schema.graphql"
+          backend/schema.graphql

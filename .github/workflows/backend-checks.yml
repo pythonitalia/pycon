@@ -15,7 +15,7 @@ jobs:
         working-directory: backend
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13.5"
@@ -23,7 +23,7 @@ jobs:
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
         id: setup-uv
         with:
-          version: "0.5.5"
+          version: "0.12.5"
           enable-cache: true
 
       - name: Install python dependencies

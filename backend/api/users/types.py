@@ -1,39 +1,29 @@
-from datetime import date
-from logging import getLogger
-from api.permissions import IsAuthenticated
-from django.conf import settings
-
-from django.db.models import Prefetch
-from django.urls import reverse
-from api.billing.types import BillingAddress
-from api.visa.types import InvitationLetterRequest
-from visa.models import (
-    InvitationLetterRequest as InvitationLetterRequestModel,
-    InvitationLetterRequestOnBehalfOf,
-)
-from pretix import user_has_admission_ticket
-from pycon.signing import sign_path
 import strawberry
+import strawberry_django
+from django.urls import reverse
 from strawberry.types import Info
 
+from api.billing.types import BillingAddress
 from api.grants.types import Grant
 from api.participants.types import Participant
+from api.permissions import IsAuthenticated
 from api.pretix.query import get_user_orders, get_user_tickets
 from api.pretix.types import AttendeeTicket, PretixOrder, PretixOrderStatus
-from api.submissions.types import Submission
-from conferences.models import Conference
-from grants.models import Grant as GrantModel
-from participants.models import Participant as ParticipantModel
-from api.helpers.ids import encode_hashid
-from badges.roles import ConferenceRole, get_conference_roles_for_user
-from association_membership.models import Membership
 from api.schedule.types import ScheduleItem
-from schedule.models import Room, ScheduleItem as ScheduleItemModel
-from schedule.models import ScheduleItemStar as ScheduleItemStarModel
-from submissions.models import Submission as SubmissionModel
-from billing.models import BillingAddress as BillingAddressModel
-
-logger = getLogger(__name__)
+from api.submissions.types import Submission
+from api.visa.types import InvitationLetterRequest
+from association_membership import models as association_membership_models
+from badges.roles import ConferenceRole, get_conference_roles_for_user
+from billing import models as billing_models
+from conferences import models as conference_models
+from grants import models as grant_models
+from participants import models as participant_models
+from pretix import user_has_admission_ticket
+from pycon.signing import sign_path
+from schedule import models as schedule_models
+from submissions import models as submission_models
+from users import models as user_models
+from visa import models as visa_models
 
 PRETIX_ORDERS_STATUS_ORDER = [
     PretixOrderStatus.PAID,
@@ -48,44 +38,43 @@ class OperationSuccess:
     ok: bool
 
 
-@strawberry.type
+@strawberry_django.type(user_models.User)
 class User:
-    id: strawberry.ID
-    email: str
-    fullname: str
-    full_name: str
-    name: str
-    username: str
-    gender: str
-    open_to_recruiting: bool
-    open_to_newsletter: bool
-    date_birth: date | None
-    country: str
-    is_staff: bool
+    id: strawberry.auto
+    email: strawberry.auto
+    fullname: str = strawberry_django.field(only=["full_name"])
+    full_name: strawberry.auto
+    name: strawberry.auto
+    username: str = strawberry_django.field(only=["username"])
+    gender: strawberry.auto
+    open_to_recruiting: strawberry.auto
+    open_to_newsletter: strawberry.auto
+    date_birth: strawberry.auto
+    country: strawberry.auto
+    is_staff: strawberry.auto
 
-    @strawberry.field
-    def hashid(self, info: Info) -> str:
-        return encode_hashid(
-            int(self.id), salt=settings.USER_ID_HASH_SALT, min_length=6
-        )
+    @strawberry_django.field(only=["id"])
+    def hashid(self) -> str:
+        return self.user_hashid()
 
-    @strawberry.field
-    def conference_roles(
-        self, info: Info, conference_code: str
-    ) -> list[ConferenceRole]:
-        conference = Conference.objects.get(code=conference_code)
+    @strawberry_django.field(only=["id", "email"])
+    def conference_roles(self, conference_code: str) -> list[ConferenceRole]:
+        conference = conference_models.Conference.objects.get(code=conference_code)
         return get_conference_roles_for_user(
             conference=conference,
             user_id=self.id,
             user_email=self.email,
         )
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
+    @strawberry_django.field(
+        only=["id"],
+        permission_classes=[IsAuthenticated],
+    )
     def user_schedule_favourites_calendar_url(
         self, info: Info, conference: str
     ) -> str | None:
         conference_id = (
-            Conference.objects.filter(code=conference)
+            conference_models.Conference.objects.filter(code=conference)
             .values_list("id", flat=True)
             .first()
         )
@@ -99,74 +88,64 @@ class User:
                     "user-schedule-favourites-calendar",
                     kwargs={
                         "conference_id": conference_id,
-                        "hash_user_id": self.hashid(info),
+                        "hash_user_id": self.user_hashid(),
                     },
                 )
             )
         )
 
-    @strawberry.field
-    def starred_schedule_items(
-        self, info: Info, conference: str
-    ) -> list[strawberry.ID]:
-        stars = ScheduleItemStarModel.objects.filter(
+    @strawberry_django.field(only=["id"])
+    def starred_schedule_items(self, conference: str) -> list[strawberry.ID]:
+        stars = schedule_models.ScheduleItemStar.objects.filter(
             schedule_item__conference__code=conference, user_id=self.id
         ).values_list("schedule_item_id", flat=True)
         return stars
 
-    @strawberry.field(permission_classes=[IsAuthenticated])
-    def booked_schedule_items(self, info: Info, conference: str) -> list[ScheduleItem]:
-        return list(
-            ScheduleItemModel.objects.filter(
+    @strawberry_django.field(permission_classes=[IsAuthenticated])
+    def booked_schedule_items(self, conference: str) -> list[ScheduleItem]:
+        return (
+            schedule_models.ScheduleItem.objects.filter(
                 conference__code=conference,
                 attendees__user_id=self.id,
                 slot__isnull=False,
             )
             .distinct()
-            .select_related("slot", "slot__day", "language")
-            .prefetch_related(
-                Prefetch("rooms", queryset=Room.objects.only("id", "name", "type"))
-            )
             .order_by("slot__day__day", "slot__hour")
         )
 
-    @strawberry.field
-    def grant(self, info: Info, conference: str) -> Grant | None:
-        grant = GrantModel.objects.filter(
-            user_id=self.id, conference__code=conference
-        ).first()
-        logger.info(
-            "Grant: user_id: %s, conference: %s, grant: %s", self.id, conference, grant
-        )
-        return Grant.from_model(grant) if grant else None
-
-    @strawberry.field
-    def participant(self, info: Info, conference: str) -> Participant | None:
-        participant = ParticipantModel.objects.filter(
+    @strawberry_django.field
+    def grant(self, conference: str) -> Grant | None:
+        return grant_models.Grant.objects.filter(
             user_id=self.id,
             conference__code=conference,
-        ).first()
-        return Participant.from_model(participant) if participant else None
+        )
+
+    @strawberry_django.field
+    def participant(self, conference: str) -> Participant | None:
+        return participant_models.Participant.objects.filter(
+            user_id=self.id,
+            conference__code=conference,
+        )
 
     @strawberry.field
-    def orders(self, info: Info, conference: str) -> list[PretixOrder]:
-        conference = Conference.objects.get(code=conference)
+    def orders(self, conference: str) -> list[PretixOrder]:
+        conference = conference_models.Conference.objects.get(code=conference)
         return sorted(
             get_user_orders(conference, self.email),
             key=lambda order: PRETIX_ORDERS_STATUS_ORDER.index(order.status),
         )
 
     @strawberry.field
-    def tickets(
-        self, info: Info, conference: str, language: str
-    ) -> list[AttendeeTicket]:
-        conference = Conference.objects.get(code=conference)
+    def tickets(self, conference: str, language: str) -> list[AttendeeTicket]:
+        conference = conference_models.Conference.objects.get(code=conference)
         attendee_tickets = get_user_tickets(conference, self.email, language)
         return [ticket for ticket in attendee_tickets]
 
-    @strawberry.field
+    @strawberry_django.field(only=["email"])
     def has_admission_ticket(self, conference: str) -> bool:
-        conference = Conference.objects.filter(code=conference).first()
+        conference = conference_models.Conference.objects.filter(
+            code=conference
+        ).first()
 
         if not conference:
             return False
@@ -177,58 +156,36 @@ class User:
             event_slug=conference.pretix_event_id,
         )
 
-    @strawberry.field
-    def submissions(self, info: Info, conference: str) -> list[Submission]:
-        return SubmissionModel.objects.filter(
+    @strawberry_django.field(only=["id"])
+    def submissions(self, conference: str) -> list[Submission]:
+        return submission_models.Submission.objects.filter(
             speaker_id=self.id, conference__code=conference
         )
 
-    @strawberry.field
+    @strawberry_django.field(only=["is_staff"])
     def can_edit_schedule(self) -> bool:
         return self.is_staff
 
-    @strawberry.field
+    @strawberry_django.field(only=["id"])
     def is_python_italia_member(self) -> bool:
-        return Membership.objects.active().of_user(self.id).exists()
+        return (
+            association_membership_models.Membership.objects.active()
+            .of_user(self.id)
+            .exists()
+        )
 
-    @strawberry.field
+    @strawberry_django.field
     def billing_addresses(self, conference: str) -> list[BillingAddress]:
-        return [
-            BillingAddress.from_django_model(billing_address)
-            for billing_address in BillingAddressModel.objects.of_user(self.id)
-            .for_conference_code(conference)
-            .all()
-        ]
+        return billing_models.BillingAddress.objects.of_user(
+            self.id
+        ).for_conference_code(conference)
 
-    @strawberry.field
+    @strawberry_django.field
     def invitation_letter_request(
         self, conference: str
     ) -> InvitationLetterRequest | None:
-        invitation_letter_request = (
-            InvitationLetterRequestModel.objects.for_conference_code(conference)
-            .of_user(self.id)
-            .filter(on_behalf_of=InvitationLetterRequestOnBehalfOf.SELF)
-            .first()
-        )
         return (
-            InvitationLetterRequest.from_model(invitation_letter_request)
-            if invitation_letter_request
-            else None
-        )
-
-    @classmethod
-    def from_django_model(cls, user):
-        return cls(
-            id=user.id,
-            email=user.email,
-            fullname=user.full_name,
-            full_name=user.full_name,
-            name=user.name,
-            username=user.username,
-            gender=user.gender,
-            open_to_recruiting=user.open_to_recruiting,
-            open_to_newsletter=user.open_to_newsletter,
-            date_birth=user.date_birth,
-            country=user.country,
-            is_staff=user.is_staff,
+            visa_models.InvitationLetterRequest.objects.for_conference_code(conference)
+            .of_user(self.id)
+            .filter(on_behalf_of=visa_models.InvitationLetterRequestOnBehalfOf.SELF)
         )

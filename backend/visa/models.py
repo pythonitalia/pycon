@@ -133,7 +133,12 @@ class InvitationLetterRequest(TimeStampedModel):
 
     @cached_property
     def user_grant(self):
-        return Grant.objects.for_conference(self.conference).of_user(self.user).first()
+        return (
+            Grant.objects.for_conference(self.conference)
+            .of_user(self.user)
+            .prefetch_related("reimbursements__category")
+            .first()
+        )
 
     @property
     def has_grant(self):

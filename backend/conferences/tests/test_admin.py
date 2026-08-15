@@ -1,6 +1,10 @@
+from datetime import date, time
+
 from schedule.tests.factories import (
+    DayFactory,
     ScheduleItemAdditionalSpeakerFactory,
     ScheduleItemFactory,
+    SlotFactory,
 )
 from submissions.tests.factories import SubmissionFactory
 from conferences.tests.factories import (
@@ -539,7 +543,7 @@ def test_video_uploaded_path_matcher(
     mocker.patch(
         "conferences.admin.conference.walk_conference_videos_folder",
         return_value=[
-            "conf/video-1/1-Kim Kitsuragi.mp4",
+            "conf/video-1/1-Kim-Kitsuragi.mp4",
             "conf/video-2/2-Opening.mp4",
             "conf/video-2/5-Klaasje, Harrier Du Bois.mp4",
             "conf/video-2/2-Harrier Du Bois, Klaasje.mp4",
@@ -627,7 +631,7 @@ def test_video_uploaded_path_matcher(
     event_ord_speakers.refresh_from_db()
 
     assert event_1.video_uploaded_path == "conf/video-2/2-Opening.mp4"
-    assert event_2.video_uploaded_path == "conf/video-1/1-Kim Kitsuragi.mp4"
+    assert event_2.video_uploaded_path == "conf/video-1/1-Kim-Kitsuragi.mp4"
     assert event_3.video_uploaded_path == "conf/video-2/5-Klaasje, Harrier Du Bois.mp4"
     assert event_klaasje_alone.video_uploaded_path == "conf/video-2/12-Klaasje.mp4"
     assert keynote_schedule.video_uploaded_path == "conf/9-Anwesha Das.mp4"
@@ -643,6 +647,228 @@ def test_video_uploaded_path_matcher(
         "Some files were not used: conf/video-2/5-Testing Name.mp4"
         == admin.message_user.mock_calls[1].args[1]
     )
+
+
+def test_video_uploaded_path_matcher_with_day_signal(rf, mocker):
+    conference = ConferenceFactory(code="pycon2026")
+    # workshops only on the first day: videos are numbered by talk day,
+    # so D1 in the uploaded files is the second conference day
+    workshops_day = DayFactory(conference=conference, day=date(2026, 5, 27))
+    day_1 = DayFactory(conference=conference, day=date(2026, 5, 28))
+    day_2 = DayFactory(conference=conference, day=date(2026, 5, 29))
+    day_3 = DayFactory(conference=conference, day=date(2026, 5, 30))
+
+    marco = UserFactory(name="Marco", full_name="Marco Santoni")
+    igor = UserFactory(name="Igor", full_name="Igor Saggese")
+    marc_andre = UserFactory(name="Marc-André", full_name="Marc-André Lemburg")
+    trainer = UserFactory(name="Trainer", full_name="Some Trainer")
+
+    mocker.patch(
+        "conferences.admin.conference.walk_conference_videos_folder",
+        return_value=[
+            "conference-videos/pycon2026/SPAGHETTI/D1/02 - igor-saggese.mp4",
+            "conference-videos/pycon2026/SPAGHETTI/D2/03 - igor-saggese.mp4",
+            "conference-videos/pycon2026/TORTELLINI/D1/05 - lightning_talks_day_1.mp4",
+            "conference-videos/pycon2026/TORTELLINI/D2/04 - lightning_talks_day_2.mp4",
+            "conference-videos/pycon2026/TORTELLINI/D3/05 - lightning_talks_day_3.mp4",
+            "conference-videos/pycon2026/TORTELLINI/D3/01 - marc-andre-lemburg.mp4",
+        ],
+    )
+
+    def slot_for(day):
+        return SlotFactory(day=day, hour=time(10, 0), duration=45)
+
+    workshop_event = ScheduleItemFactory(
+        conference=conference,
+        title="Workshop",
+        type=ScheduleItem.TYPES.training,
+        submission__speaker=trainer,
+        slot=slot_for(workshops_day),
+    )
+
+    multi_speaker_event = ScheduleItemFactory(
+        conference=conference,
+        title="Talk with two speakers",
+        type=ScheduleItem.TYPES.talk,
+        submission__speaker=marco,
+        slot=slot_for(day_1),
+    )
+    ScheduleItemAdditionalSpeakerFactory(scheduleitem=multi_speaker_event, user=igor)
+
+    igor_solo_event = ScheduleItemFactory(
+        conference=conference,
+        title="Igor solo talk",
+        type=ScheduleItem.TYPES.talk,
+        submission__speaker=igor,
+        slot=slot_for(day_2),
+    )
+
+    lightning_talks_events = [
+        ScheduleItemFactory(
+            conference=conference,
+            title="Lightning Talks",
+            type=ScheduleItem.TYPES.custom,
+            submission=None,
+            slot=slot_for(day),
+        )
+        for day in (day_1, day_2, day_3)
+    ]
+
+    marc_andre_event = ScheduleItemFactory(
+        conference=conference,
+        title="Accented speaker talk",
+        type=ScheduleItem.TYPES.talk,
+        submission__speaker=marc_andre,
+        slot=slot_for(day_3),
+    )
+
+    admin = ConferenceAdmin(
+        model=conference.__class__,
+        admin_site=AdminSite(),
+    )
+    admin.message_user = mocker.Mock()
+
+    request = rf.post("/", data={"run_matcher": "1"})
+    ret = admin.map_videos(request, conference.id)
+
+    assert ret.status_code == 302
+
+    workshop_event.refresh_from_db()
+    multi_speaker_event.refresh_from_db()
+    igor_solo_event.refresh_from_db()
+    marc_andre_event.refresh_from_db()
+    for event in lightning_talks_events:
+        event.refresh_from_db()
+
+    assert workshop_event.video_uploaded_path == ""
+    # the file is named after only one of the two speakers,
+    # the day disambiguates it from igor's solo talk
+    assert (
+        multi_speaker_event.video_uploaded_path
+        == "conference-videos/pycon2026/SPAGHETTI/D1/02 - igor-saggese.mp4"
+    )
+    assert (
+        igor_solo_event.video_uploaded_path
+        == "conference-videos/pycon2026/SPAGHETTI/D2/03 - igor-saggese.mp4"
+    )
+    assert (
+        lightning_talks_events[0].video_uploaded_path
+        == "conference-videos/pycon2026/TORTELLINI/D1/05 - lightning_talks_day_1.mp4"
+    )
+    assert (
+        lightning_talks_events[1].video_uploaded_path
+        == "conference-videos/pycon2026/TORTELLINI/D2/04 - lightning_talks_day_2.mp4"
+    )
+    assert (
+        lightning_talks_events[2].video_uploaded_path
+        == "conference-videos/pycon2026/TORTELLINI/D3/05 - lightning_talks_day_3.mp4"
+    )
+    assert (
+        marc_andre_event.video_uploaded_path
+        == "conference-videos/pycon2026/TORTELLINI/D3/01 - marc-andre-lemburg.mp4"
+    )
+
+    assert admin.message_user.mock_calls[0].args[1] == "Matched 6 videos to events."
+    # every file was matched exactly once: no reuse or unused warnings
+    assert admin.message_user.call_count == 1
+
+
+def test_video_uploaded_path_matcher_same_speaker_twice_in_a_day(rf, mocker):
+    conference = ConferenceFactory(code="pycon2026")
+    day_1 = DayFactory(conference=conference, day=date(2026, 5, 28))
+
+    ozge = UserFactory(name="Özge", full_name="Özge Çinko")
+
+    # "4-" listed before "2-" on purpose: assignment must follow the
+    # position number in the file name, not the storage listing order
+    mocker.patch(
+        "conferences.admin.conference.walk_conference_videos_folder",
+        return_value=[
+            "conference-videos/pycon2026/LASAGNA/D1/4-Ozge Cinko.mp4",
+            "conference-videos/pycon2026/LASAGNA/D1/2-Ozge Cinko.mp4",
+        ],
+    )
+
+    afternoon_event = ScheduleItemFactory(
+        conference=conference,
+        title="Afternoon talk",
+        type=ScheduleItem.TYPES.talk,
+        submission__speaker=ozge,
+        slot=SlotFactory(day=day_1, hour=time(14, 50), duration=45),
+    )
+    morning_event = ScheduleItemFactory(
+        conference=conference,
+        title="Morning talk",
+        type=ScheduleItem.TYPES.talk,
+        submission__speaker=ozge,
+        slot=SlotFactory(day=day_1, hour=time(11, 40), duration=45),
+    )
+
+    admin = ConferenceAdmin(
+        model=conference.__class__,
+        admin_site=AdminSite(),
+    )
+    admin.message_user = mocker.Mock()
+
+    request = rf.post("/", data={"run_matcher": "1"})
+    ret = admin.map_videos(request, conference.id)
+
+    assert ret.status_code == 302
+
+    morning_event.refresh_from_db()
+    afternoon_event.refresh_from_db()
+
+    assert (
+        morning_event.video_uploaded_path
+        == "conference-videos/pycon2026/LASAGNA/D1/2-Ozge Cinko.mp4"
+    )
+    assert (
+        afternoon_event.video_uploaded_path
+        == "conference-videos/pycon2026/LASAGNA/D1/4-Ozge Cinko.mp4"
+    )
+    assert admin.message_user.mock_calls[0].args[1] == "Matched 2 videos to events."
+    assert admin.message_user.call_count == 1
+
+
+def test_map_videos_page_hides_events_without_videos(rf, admin_user, mocker):
+    render = mocker.patch("conferences.admin.conference.render")
+    conference = ConferenceFactory()
+
+    visible_titles = ["A nice talk", "A keynote", "A panel", "Lightning Talks"]
+    hidden_titles = ["A training", "Registration", "Coffee break", "Recruiting Room"]
+
+    for title, type in zip(
+        visible_titles + hidden_titles,
+        [
+            ScheduleItem.TYPES.talk,
+            ScheduleItem.TYPES.keynote,
+            ScheduleItem.TYPES.panel,
+            ScheduleItem.TYPES.custom,
+            ScheduleItem.TYPES.training,
+            ScheduleItem.TYPES.registration,
+            "break",
+            ScheduleItem.TYPES.recruiting,
+        ],
+    ):
+        ScheduleItemFactory(
+            conference=conference,
+            title=title,
+            type=type,
+            submission=None,
+        )
+
+    admin = ConferenceAdmin(
+        model=conference.__class__,
+        admin_site=AdminSite(),
+    )
+
+    request = rf.get("/")
+    request.user = admin_user
+    admin.map_videos(request, conference.id)
+
+    context = render.call_args.args[2]
+    shown_titles = [event.title for event in context["events"]]
+    assert sorted(shown_titles) == sorted(visible_titles)
 
 
 def test_storage_walk_conference_videos_folder(mocker):

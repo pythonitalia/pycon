@@ -22,9 +22,7 @@ def compute_recap_analysis(conference_id, combined_cache_key, force_recompute=Fa
     try:
         conference = Conference.objects.get(id=conference_id)
     except Conference.DoesNotExist:
-        logger.error(
-            "Conference %s not found for recap analysis", conference_id
-        )
+        logger.error("Conference %s not found for recap analysis", conference_id)
         cache.delete(f"{combined_cache_key}:computing")
         return
 
@@ -58,9 +56,7 @@ def compute_recap_analysis(conference_id, combined_cache_key, force_recompute=Fa
                 }
                 for s in accepted_submissions
             ],
-            key=lambda x: max(
-                (item["similarity"] for item in x["similar"]), default=0
-            ),
+            key=lambda x: max((item["similarity"] for item in x["similar"]), default=0),
             reverse=True,
         )
 

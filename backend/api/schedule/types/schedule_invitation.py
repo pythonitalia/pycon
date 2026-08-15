@@ -2,27 +2,21 @@ from datetime import datetime
 from enum import Enum
 
 import strawberry
+import strawberry_django
 
 from api.submissions.types import Submission
-from schedule.models import ScheduleItem as ScheduleItemModel
+from schedule import models
 
 
-@strawberry.type
+@strawberry_django.type(models.ScheduleItem)
 class ScheduleInvitationDate:
-    id: strawberry.ID
+    id: strawberry.auto
     start: datetime
     end: datetime
-    duration: int
 
-    @classmethod
-    def from_django(cls, schedule_item):
-        duration = schedule_item.duration or schedule_item.slot.duration
-        return cls(
-            id=schedule_item.id,
-            start=schedule_item.start,
-            end=schedule_item.end,
-            duration=duration,
-        )
+    @strawberry_django.field
+    def duration(self) -> int:
+        return self.duration or self.slot.duration
 
 
 @strawberry.enum
@@ -33,20 +27,16 @@ class ScheduleInvitationOption(Enum):
     REJECT = "reject"
     CANT_ATTEND = "cant_attend"
 
-    def to_schedule_item_status(self):
-        return MAP_OPTION_TO_ITEM_STATUS.get(self)
-
-    @staticmethod
-    def from_schedule_item_status(schedule_item_status: str):
-        return MAP_ITEM_STATUS_TO_OPTION.get(schedule_item_status)
+    def to_schedule_item_status(self) -> str:
+        return MAP_OPTION_TO_ITEM_STATUS[self]
 
 
 MAP_OPTION_TO_ITEM_STATUS = {
-    ScheduleInvitationOption.CONFIRM: ScheduleItemModel.STATUS.confirmed,
-    ScheduleInvitationOption.MAYBE: ScheduleItemModel.STATUS.maybe,
-    ScheduleInvitationOption.REJECT: ScheduleItemModel.STATUS.rejected,
-    ScheduleInvitationOption.CANT_ATTEND: ScheduleItemModel.STATUS.cant_attend,
-    ScheduleInvitationOption.NO_ANSWER: ScheduleItemModel.STATUS.waiting_confirmation,
+    ScheduleInvitationOption.CONFIRM: models.ScheduleItem.STATUS.confirmed,
+    ScheduleInvitationOption.MAYBE: models.ScheduleItem.STATUS.maybe,
+    ScheduleInvitationOption.REJECT: models.ScheduleItem.STATUS.rejected,
+    ScheduleInvitationOption.CANT_ATTEND: models.ScheduleItem.STATUS.cant_attend,
+    ScheduleInvitationOption.NO_ANSWER: models.ScheduleItem.STATUS.waiting_confirmation,
 }
 
 MAP_ITEM_STATUS_TO_OPTION = {
@@ -54,22 +44,23 @@ MAP_ITEM_STATUS_TO_OPTION = {
 }
 
 
-@strawberry.type
+@strawberry_django.type(models.ScheduleItem)
 class ScheduleInvitation:
-    id: strawberry.ID
-    option: ScheduleInvitationOption
-    notes: str
-    title: str
+    id: strawberry.ID = strawberry_django.field(
+        resolver=lambda self: self.submission.hashid,
+        select_related=["submission"],
+    )
+    option: ScheduleInvitationOption = strawberry_django.field(
+        resolver=lambda self: MAP_ITEM_STATUS_TO_OPTION[self.status],
+        only=["status"],
+    )
+    notes: str = strawberry_django.field(field_name="speaker_invitation_notes")
+    title: strawberry.auto
     submission: Submission
-    dates: list[ScheduleInvitationDate]
 
-    @classmethod
-    def from_django_model(cls, instance):
-        return cls(
-            id=instance.submission.hashid,
-            title=instance.title,
-            option=ScheduleInvitationOption.from_schedule_item_status(instance.status),
-            notes=instance.speaker_invitation_notes,
-            submission=instance.submission,
-            dates=[ScheduleInvitationDate.from_django(instance)],
-        )
+    @strawberry_django.field(
+        only=["duration", "slot__duration", "slot__hour", "slot__day__day"],
+        select_related=["slot__day"],
+    )
+    def dates(self) -> list[ScheduleInvitationDate]:
+        return [self]

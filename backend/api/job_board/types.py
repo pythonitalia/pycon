@@ -1,55 +1,22 @@
-from typing import Optional
-
 import strawberry
+import strawberry_django
+from job_board import models
 
 from api.context import Info
 
 
-@strawberry.type
+@strawberry_django.type(models.JobListing)
 class JobListing:
-    id: strawberry.ID
-    title: str
-    slug: str
-    description: str
-    company: str
-    company_logo_url: strawberry.Private[Optional[str]]
-    apply_url: str
+    id: strawberry.auto
+    title: strawberry.auto
+    slug: strawberry.auto
+    description: strawberry.auto
+    company: strawberry.auto
+    apply_url: strawberry.auto
 
-    @strawberry.field
-    def company_logo(self, info: Info) -> Optional[str]:
-        if not self.company_logo_url:
+    @strawberry_django.field(only=["company_logo"])
+    def company_logo(self, info: Info) -> str | None:
+        if not self.company_logo:
             return None
 
-        return info.context.request.build_absolute_uri(self.company_logo_url)
-
-    def __init__(
-        self,
-        id: str,
-        title: str,
-        slug: str,
-        description: str,
-        company: str,
-        company_logo_url: Optional[str],
-        apply_url: str,
-    ) -> None:
-        self.id = id
-        self.title = title
-        self.slug = slug
-        self.description = description
-        self.company = company
-        self.company_logo_url = company_logo_url
-        self.apply_url = apply_url
-
-    @classmethod
-    def from_django_model(cls, instance):
-        return cls(
-            id=instance.id,
-            title=instance.title,
-            slug=instance.slug,
-            description=instance.description,
-            company=instance.company,
-            company_logo_url=instance.company_logo.url
-            if instance.company_logo
-            else None,
-            apply_url=instance.apply_url,
-        )
+        return info.context.request.build_absolute_uri(self.company_logo.url)

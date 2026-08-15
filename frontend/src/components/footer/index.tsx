@@ -3,7 +3,6 @@ import {
   Heading,
   Text,
 } from "@python-italia/pycon-styleguide";
-import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useRouter } from "next/router";
@@ -29,21 +28,16 @@ export const Footer = () => {
     setModal("newsletter");
   };
 
-  const {
-    conference: { footerEn, footerIt },
-  } = data || {
-    conference: {
-      footerEn: { links: [] },
-      footerIt: { links: [] },
-    },
-  };
+  const conference = data?.conference;
+  const footerEn = conference?.footerEn;
+  const footerIt = conference?.footerIt;
 
   const menu: {
     links: {
       text: string;
       link: string;
     }[];
-  } = language === "en" ? footerEn : footerIt;
+  } = (language === "en" ? footerEn : footerIt) ?? { links: [] };
 
   return (
     <>

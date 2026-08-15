@@ -1,15 +1,16 @@
 import re
-from api.context import Info
+from typing import Annotated
+
 import strawberry
 from strawberry.tools import create_type
+
+from api.context import Info
 from api.permissions import IsAuthenticated
 from api.types import BaseErrorType
 from conferences.models.conference import Conference
-from participants.models import Participant as ParticipantModel
+from participants import models as participant_models
 
 from .types import Participant
-from typing import Annotated, Union
-
 
 FACEBOOK_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?facebook\.com\/")
 LINKEDIN_LINK_MATCH = re.compile(r"^http(s)?:\/\/(www\.)?linkedin\.com\/")
@@ -81,7 +82,7 @@ class UpdateParticipantInput:
 
 
 UpdateParticipantResult = Annotated[
-    Union[Participant, UpdateParticipantErrors],
+    Participant | UpdateParticipantErrors,
     strawberry.union(name="UpdateParticipantResult"),
 ]
 
@@ -97,7 +98,7 @@ def update_participant(
 
     conference = Conference.objects.get(code=input.conference)
 
-    participant, _ = ParticipantModel.objects.update_or_create(
+    participant, _ = participant_models.Participant.objects.update_or_create(
         user_id=request.user.id,
         conference=conference,
         defaults={
@@ -114,7 +115,7 @@ def update_participant(
             "mastodon_handle": input.mastodon_handle,
         },
     )
-    return Participant.from_model(participant)
+    return participant
 
 
 ParticipantMutations = create_type("ParticipantMutations", (update_participant,))

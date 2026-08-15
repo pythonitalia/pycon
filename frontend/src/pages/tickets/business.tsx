@@ -67,7 +67,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     console.debug("User not logged in");
   }
 
-  const cartCookie = req.cookies["tickets-cart-v6"];
+  const cartCookie = req.cookies["tickets-cart-v6"] ?? null;
   return addApolloState(
     client,
     {

@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.db import models
+from django.db.models import prefetch_related_objects
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
@@ -130,7 +131,7 @@ class Grant(TimeStampedModel):
         _("Age group"), max_length=20, choices=AgeGroup.choices, blank=True
     )
     occupation = models.CharField(
-        _("occupation"), choices=Occupation.choices, max_length=10
+        _("occupation"), choices=Occupation.choices, max_length=10, blank=True
     )
 
     # Your Grant Section
@@ -158,11 +159,13 @@ class Grant(TimeStampedModel):
     need_visa = models.BooleanField(_("Need visa/invitation letter?"), default=False)
     need_accommodation = models.BooleanField(_("Need accommodation"), default=False)
 
-    why = models.TextField(_("Why are you asking for a grant?"))
+    why = models.TextField(_("Why are you asking for a grant?"), blank=True)
 
     # You and Python Section
-    python_usage = models.TextField(_("How do they use python"))
-    been_to_other_events = models.TextField(_("Have they been to other events?"))
+    python_usage = models.TextField(_("How do they use python"), blank=True)
+    been_to_other_events = models.TextField(
+        _("Have they been to other events?"), blank=True
+    )
     community_contribution = models.TextField(_("Community contribution"), blank=True)
 
     # Optional Information Section
@@ -174,6 +177,17 @@ class Grant(TimeStampedModel):
     linkedin_url = models.URLField(_("LinkedIn url"), max_length=2048, blank=True)
     mastodon_handle = models.CharField(
         _("Mastodon handle"), max_length=2048, blank=True
+    )
+
+    # Dynamic form answers (generic_forms); soft questions live here for
+    # conferences using the generic form. The columns above stay for
+    # historical grants.
+    form_answer = models.OneToOneField(
+        "generic_forms.FormAnswer",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="grant",
     )
 
     # Grant Management and Processing
@@ -294,10 +308,12 @@ class Grant(TimeStampedModel):
     @property
     def total_grantee_reimbursement_amount(self) -> Decimal:
         """Return total reimbursement excluding ticket."""
+        reimbursements = list(self.reimbursements.all())
+        prefetch_related_objects(reimbursements, "category")
         return sum(
             (
                 r.granted_amount
-                for r in self.reimbursements.all()
+                for r in reimbursements
                 if r.category.category != GrantReimbursementCategory.Category.TICKET
             ),
             start=Decimal(0),

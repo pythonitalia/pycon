@@ -8,12 +8,19 @@ from django.db.models import Exists, OuterRef
 from django.db.models.query import QuerySet
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.html import format_html, format_html_join
 from django.utils.safestring import mark_safe
 from import_export.admin import ExportMixin
 from import_export.fields import Field
 from import_export.resources import ModelResource
 
 from conferences.models.conference_voucher import ConferenceVoucher
+from generic_forms.models import Form
+from generic_forms.services import (
+    display_answer_value,
+    display_answers,
+    unwrap_answers,
+)
 from conferences.vouchers import create_conference_voucher
 from countries import countries
 from countries.filters import CountryFilter
@@ -147,6 +154,11 @@ class GrantResource(ModelResource):
     def dehydrate_grant_admin_link(self, obj: Grant):
         return f"https://admin.pycon.it/admin/grants/grant/?q={'+'.join(obj.full_name.split(' '))}"  # noqa: E501
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # dynamic per-question export columns, filled by before_export
+        self._question_fields = {}
+
     def before_export(self, queryset: QuerySet, *args, **kwargs):
         super().before_export(queryset, *args, **kwargs)
         conference_id = queryset.values_list("conference_id").first()
@@ -163,7 +175,32 @@ class GrantResource(ModelResource):
             self.USERS_SUBMISSIONS.setdefault(submission.speaker_id, [])
             self.USERS_SUBMISSIONS[submission.speaker_id].append(submission)
 
+        self._add_form_question_fields(conference_id)
+
         return queryset
+
+    def _add_form_question_fields(self, conference_id):
+        # one column per question of the conference's grant form (the export
+        # is single-conference); before_export runs before headers are built
+        form = Form.objects.filter(
+            conference_id=conference_id, purpose=Form.Purpose.GRANT
+        ).first()
+        if form is None:
+            return
+
+        for question in form.questions.all():
+            key = f"form_question_{question.pk}"
+            self.fields[key] = Field(column_name=question.label)
+            self._question_fields[key] = question
+
+    def export_field(self, field, obj):
+        question = self._question_fields.get(self.get_field_name(field))
+        if question is not None:
+            if obj.form_answer_id is None:
+                return ""
+            answers = unwrap_answers(obj.form_answer.answers)
+            return display_answer_value(question, answers.get(str(question.pk)))
+        return super().export_field(field, obj)
 
     class Meta:
         model = Grant
@@ -525,6 +562,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     ]
     autocomplete_fields = ("user",)
     inlines = [GrantReimbursementInline]
+    readonly_fields = ("dynamic_answers",)
 
     fieldsets = (
         (
@@ -570,10 +608,26 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
                     "been_to_other_events",
                     "community_contribution",
                     "notes",
+                    "dynamic_answers",
                 )
             },
         ),
     )
+
+    @admin.display(description="Dynamic form answers")
+    def dynamic_answers(self, obj):
+        if obj.form_answer_id is None:
+            return "No dynamic answers"
+        pairs = display_answers(obj.form_answer)
+        if not pairs:
+            return "No dynamic answers"
+        return format_html(
+            "<dl>{}</dl>",
+            format_html_join("", "<dt><strong>{}</strong></dt><dd>{}</dd>", pairs),
+        )
+
+    def get_export_queryset(self, request):
+        return super().get_export_queryset(request).select_related("form_answer")
 
     def save_model(self, request, obj, form, change):
         """
@@ -706,7 +760,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
         qs = (
             super()
             .get_queryset(request)
-            .select_related("user")
+            .select_related("user", "conference")
             .prefetch_related("reimbursements__category")
             .annotate(
                 is_proposed_speaker=Exists(

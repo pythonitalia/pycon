@@ -12,7 +12,6 @@ from typing import Annotated, Union, Optional
 
 from privacy_policy.record import record_privacy_policy_acceptance
 import strawberry
-from strawberry import ID
 from strawberry.types import Info
 
 from api.permissions import IsAuthenticated
@@ -202,15 +201,15 @@ class BaseSubmissionInput:
 
 @strawberry.input
 class SendSubmissionInput(BaseSubmissionInput):
-    conference: ID
+    conference: strawberry.ID
     title: MultiLingualInput
     abstract: MultiLingualInput
-    languages: list[ID]
-    type: ID
-    duration: ID
+    languages: list[strawberry.ID]
+    type: strawberry.ID
+    duration: strawberry.ID
     elevator_pitch: MultiLingualInput
     notes: str
-    audience_level: ID
+    audience_level: strawberry.ID
     short_social_summary: str
 
     speaker_bio: str
@@ -225,22 +224,22 @@ class SendSubmissionInput(BaseSubmissionInput):
     speaker_mastodon_handle: str
     speaker_availabilities: JSON
 
-    topic: Optional[ID] = strawberry.field(default=None)
-    tags: list[ID] = strawberry.field(default_factory=list)
+    topic: Optional[strawberry.ID] = strawberry.field(default=None)
+    tags: list[strawberry.ID] = strawberry.field(default_factory=list)
     do_not_record: bool = strawberry.field(default=False)
 
 
 @strawberry.input
 class UpdateSubmissionInput(BaseSubmissionInput):
-    instance: ID
+    instance: strawberry.ID
     title: MultiLingualInput
     abstract: MultiLingualInput
-    languages: list[ID]
-    type: ID
-    duration: ID
+    languages: list[strawberry.ID]
+    type: strawberry.ID
+    duration: strawberry.ID
     elevator_pitch: MultiLingualInput
     notes: str
-    audience_level: ID
+    audience_level: strawberry.ID
     short_social_summary: str
 
     speaker_bio: str
@@ -255,8 +254,8 @@ class UpdateSubmissionInput(BaseSubmissionInput):
     speaker_mastodon_handle: str
     speaker_availabilities: JSON
 
-    topic: Optional[ID] = strawberry.field(default=None)
-    tags: list[ID] = strawberry.field(default_factory=list)
+    topic: Optional[strawberry.ID] = strawberry.field(default=None)
+    tags: list[strawberry.ID] = strawberry.field(default_factory=list)
     materials: list[SubmissionMaterialInput] = strawberry.field(default_factory=list)
     do_not_record: bool = strawberry.field(default=False)
 

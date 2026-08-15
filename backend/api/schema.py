@@ -1,9 +1,9 @@
 import strawberry
+from strawberry_django.optimizer import DjangoOptimizerExtension
 
 from api.participants.mutations import ParticipantMutations
 from .users.mutations import UsersMutations
 from .files_upload.schema import FilesUploadMutation
-from .blog.schema import BlogQuery
 from .checklist.query import ChecklistQuery
 from .conferences.schema import ConferenceQuery
 from .countries.schema import CountryQuery
@@ -33,7 +33,6 @@ from .visa.mutation import VisaMutation
 @strawberry.type
 class Query(
     ConferenceQuery,
-    BlogQuery,
     SubmissionsQuery,
     PagesQuery,
     CountryQuery,
@@ -72,4 +71,8 @@ class Mutation(
     pass
 
 
-schema = strawberry.Schema(query=Query, mutation=Mutation)
+schema = strawberry.Schema(
+    query=Query,
+    mutation=Mutation,
+    extensions=[DjangoOptimizerExtension],
+)

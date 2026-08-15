@@ -1,23 +1,17 @@
-from decimal import Decimal
-from typing import Self
-
 import strawberry
-from strawberry import ID
+import strawberry_django
 
 from api.context import Info
-from sponsors.models import SponsorLevel as SponsorLevelModel
+from sponsors import models
 
 
-@strawberry.type
+@strawberry_django.type(models.Sponsor)
 class Sponsor:
-    id: ID
-    name: str
+    id: strawberry.auto
+    name: strawberry.auto
+    link: strawberry.auto
 
-    @strawberry.field
-    def link(self, info: Info) -> str:
-        return self.link
-
-    @strawberry.field
+    @strawberry_django.field(only=["image"])
     def image(self, info: Info) -> str:
         if not self.image:
             return ""
@@ -25,45 +19,49 @@ class Sponsor:
         return info.context.request.build_absolute_uri(self.image_optimized.url)
 
 
-@strawberry.type
+@strawberry_django.type(models.SponsorLevel)
 class SponsorsByLevel:
-    level: str
+    level: str = strawberry_django.field(field_name="name")
     sponsors: list[Sponsor]
     highlight_color: str | None
 
-    @classmethod
-    def from_model(cls, level: SponsorLevelModel) -> Self:
-        sponsors = [sponsor for sponsor in level.sponsors.all()]
-        return cls(
-            level=level.name, sponsors=sponsors, highlight_color=level.highlight_color
-        )
 
-
-@strawberry.type
+@strawberry_django.type(models.SponsorBenefit)
 class SponsorBenefit:
-    name: str
-    category: str
-    description: str
+    name: str = strawberry_django.field(only=["name"])
+    category: str = strawberry_django.field(only=["category"])
+    description: str = strawberry_django.field(only=["description"])
 
 
-@strawberry.type
+@strawberry_django.type(models.SponsorLevelBenefit)
 class SponsorLevelBenefit:
-    category: str
-    name: str
-    value: str
-    description: str
+    category: str = strawberry_django.field(
+        resolver=lambda self: self.benefit.category,
+        select_related=["benefit"],
+    )
+    name: str = strawberry_django.field(
+        resolver=lambda self: self.benefit.name,
+        select_related=["benefit"],
+    )
+    value: str = strawberry_django.field(only=["value"])
+    description: str = strawberry_django.field(
+        resolver=lambda self: self.benefit.description,
+        select_related=["benefit"],
+    )
 
 
-@strawberry.type
+@strawberry_django.type(models.SponsorLevel)
 class SponsorLevel:
-    name: str
-    price: Decimal
+    name: strawberry.auto
+    price: strawberry.auto
     slots: int | None
-    benefits: list[SponsorLevelBenefit]
+    benefits: list[SponsorLevelBenefit] = strawberry_django.field(
+        field_name="sponsorlevelbenefit_set"
+    )
 
 
-@strawberry.type
+@strawberry_django.type(models.SponsorSpecialOption)
 class SponsorSpecialOption:
-    name: str
-    price: Decimal
-    description: str
+    name: strawberry.auto
+    price: strawberry.auto
+    description: strawberry.auto

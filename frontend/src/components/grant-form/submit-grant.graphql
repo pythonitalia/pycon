@@ -14,15 +14,9 @@ mutation SendGrant($input: SendGrantInput!) {
         validationGender: gender
         validationGrantType: grantType
         validationOccupation: occupation
-        validationAgeGroup: ageGroup
-        validationPythonUsage: pythonUsage
-        validationCommunityContribution: communityContribution
-        validationBeenToOtherEvents: beenToOtherEvents
         validationNeedsFundsForTravel: needsFundsForTravel
         validationNeedVisa: needVisa
         validationNeedAccommodation: needAccommodation
-        validationWhy: why
-        validationNotes: notes
         validationDepartureCountry: departureCountry
         validationParticipantBio: participantBio
         validationParticipantWebsite: participantWebsite
@@ -32,6 +26,7 @@ mutation SendGrant($input: SendGrantInput!) {
         validationParticipantFacebookUrl: participantFacebookUrl
         validationParticipantMastodonHandle: participantMastodonHandle
         nonFieldErrors
+        answersErrors
       }
     }
   }

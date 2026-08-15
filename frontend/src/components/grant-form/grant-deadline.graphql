@@ -7,5 +7,8 @@ query GrantDeadline($conference: String!) {
       end
       status
     }
+    form(purpose: GRANT) {
+      ...DynamicFormData
+    }
   }
 }

@@ -404,7 +404,12 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         return (
             super()
             .get_queryset(request)
-            .prefetch_related("rooms")
+            .select_related("submission__speaker")
+            .prefetch_related(
+                "rooms",
+                "additional_speakers__user",
+                "keynote__speakers__user",
+            )
             .annotate(attendees_count_annotation=Count("attendees", distinct=True))
         )
 

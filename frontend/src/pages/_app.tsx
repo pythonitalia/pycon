@@ -1,9 +1,6 @@
 import { ApolloProvider } from "@apollo/client";
 import { getMessagesForLocale } from "@python-italia/pycon-styleguide";
 import "@python-italia/pycon-styleguide/custom-style";
-import va from "@vercel/analytics";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { useMemo, useState } from "react";
 import { RawIntlProvider, createIntl, createIntlCache } from "react-intl";
 
@@ -37,11 +34,6 @@ const MyApp = (props) => {
     modalId: T,
     props?: ModalProps[T],
   ) => {
-    if (modalId !== null) {
-      va.track("open-modal", {
-        modalId,
-      });
-    }
     setCurrentModalData({
       modalId,
       props,
@@ -80,7 +72,6 @@ const MyApp = (props) => {
     <ApolloProvider client={apolloClient}>
       <RawIntlProvider value={intl}>
         <LocaleProvider lang={locale}>
-          <SpeedInsights />
           <div className="flex flex-col min-h-screen">
             <ErrorBoundary>
               <ModalStateContext.Provider value={modalContext}>
@@ -89,7 +80,6 @@ const MyApp = (props) => {
                 <div>
                   <Component {...pageProps} err={err} />
                   <ModalRenderer />
-                  <Analytics />
                 </div>
 
                 <Footer />

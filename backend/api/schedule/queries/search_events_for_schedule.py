@@ -1,16 +1,36 @@
-from api.context import Info
-from django.db.models import Q
-from api.permissions import CanEditSchedule
-from api.conferences.types import Keynote
-from api.submissions.types import Submission
 import strawberry
-from submissions.models import Submission as SubmissionModel
+from django.db.models import Q, QuerySet
+from strawberry_django.optimizer import OptimizerStore, optimize
+
+from api.conferences.types import Keynote
+from api.context import Info
+from api.permissions import CanEditSchedule
+from api.submissions.types import Submission
 from conferences.models import Keynote as KeynoteModel
+from submissions.models import Submission as SubmissionModel
 
 
 @strawberry.type
 class SearchEventsForScheduleResult:
-    results: list[Submission | Keynote]
+    proposals: strawberry.Private[QuerySet[SubmissionModel]]
+    keynotes: strawberry.Private[QuerySet[KeynoteModel]]
+
+    @strawberry.field
+    def results(self, info: Info) -> list[Submission | Keynote]:
+        # The mixed union has to become a list here, so optimize each queryset
+        # before Strawberry loses the opportunity to inspect its model type.
+        # Keep title explicit because the frontend selects its resolver twice
+        # under different aliases.
+        proposals = list(
+            optimize(
+                self.proposals,
+                info,
+                store=OptimizerStore.with_hints(only=["title", "speaker_id"]),
+            )[:5]
+        )
+        keynotes = list(optimize(self.keynotes, info))
+
+        return [*proposals, *keynotes]
 
 
 @strawberry.field(permission_classes=[CanEditSchedule])
@@ -28,29 +48,15 @@ def search_events_for_schedule(
             | Q(speaker__full_name__icontains=query)
             | Q(speaker__name__icontains=query)
         )
-        .prefetch_related(
-            "duration",
-            "type",
-            "audience_level",
-            "languages",
-            "speaker",
-        )
-        .all()[:5]
+        .all()
     )
     keynotes = (
         KeynoteModel.objects.for_conference(conference_id)
         .filter(Q(title__icontains=query) | Q(speakers__name__icontains=query))
-        .prefetch_related("schedule_items")
         .all()
     )
 
-    proposals = list(proposals)
-    for proposal in proposals:
-        proposal.__strawberry_definition__ = Submission.__strawberry_definition__
-
     return SearchEventsForScheduleResult(
-        results=[
-            *proposals,
-            *[Keynote.from_django_model(keynote, info) for keynote in keynotes],
-        ]
+        proposals=proposals,
+        keynotes=keynotes,
     )

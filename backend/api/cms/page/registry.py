@@ -27,7 +27,7 @@ def get_block_union():
     import glob
 
     # Import all blocks to register them
-    for file_ in glob.glob("api/cms/*/blocks/*.py"):
+    for file_ in sorted(glob.glob("api/cms/*/blocks/*.py")):
         module_path = file_.replace("/", ".").replace(".py", "")
         importlib.import_module(module_path)
 

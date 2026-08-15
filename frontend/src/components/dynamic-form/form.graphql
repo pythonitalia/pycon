@@ -1,0 +1,16 @@
+fragment DynamicFormData on Form {
+  id
+  name
+  questions {
+    id
+    label
+    description
+    questionType
+    required
+    maxLength
+    options {
+      id
+      label
+    }
+  }
+}

@@ -33,6 +33,7 @@ from custom_admin.audit import (
     create_change_admin_log_entry,
     create_deletion_admin_log_entry,
 )
+from generic_forms.services import display_answers
 from grants.models import Grant, GrantReimbursement, GrantReimbursementCategory
 from participants.models import Participant
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
@@ -722,7 +723,16 @@ class GrantsReviewAdapter:
             if key.startswith("notes-")
         }
 
-        grants = list(review_session.conference.grants.filter(id__in=decisions.keys()))
+        grants = list(
+            review_session.conference.grants.filter(
+                id__in=decisions.keys()
+            ).prefetch_related(
+                Prefetch(
+                    "reimbursements",
+                    queryset=GrantReimbursement.objects.select_related("category"),
+                )
+            )
+        )
 
         # Track grants with pending status changes for audit logging
         grants_with_pending_status_changes = {}
@@ -742,13 +752,14 @@ class GrantsReviewAdapter:
                 grants_with_pending_status_changes[grant.id] = original_pending_status
 
             # Handle reimbursement deletions
-            if grant.reimbursements.exists():
+            reimbursements = list(grant.reimbursements.all())
+            if reimbursements:
                 approved_reimbursement_categories = (
                     approved_reimbursement_categories_decisions.get(grant.id, [])
                 )
                 if decision != Grant.Status.approved:
                     # Delete all reimbursements if not approved
-                    for reimbursement in grant.reimbursements.all():
+                    for reimbursement in reimbursements:
                         create_deletion_admin_log_entry(
                             request.user,
                             grant,
@@ -757,16 +768,21 @@ class GrantsReviewAdapter:
                         reimbursement.delete()
                 else:
                     # Only keep those in current approved categories
-                    to_delete = grant.reimbursements.exclude(
-                        category_id__in=approved_reimbursement_categories
-                    )
+                    to_delete = [
+                        reimbursement
+                        for reimbursement in reimbursements
+                        if reimbursement.category_id
+                        not in approved_reimbursement_categories
+                    ]
                     for reimbursement in to_delete:
                         create_deletion_admin_log_entry(
                             request.user,
                             grant,
                             change_message=f"[Review Session] Reimbursement removed: {reimbursement.category.name}.",
                         )
-                    to_delete.delete()
+                    GrantReimbursement.objects.filter(
+                        id__in=[reimbursement.id for reimbursement in to_delete]
+                    ).delete()
 
         # Save grants and create audit logs
         for grant in grants:
@@ -838,7 +854,7 @@ class GrantsReviewAdapter:
         )
         comment = request.GET.get("comment", user_review.comment if user_review else "")
 
-        grant = Grant.objects.get(id=review_item_id)
+        grant = Grant.objects.select_related("form_answer__form").get(id=review_item_id)
         previous_grants = Grant.objects.filter(
             user_id=grant.user_id,
             conference__organizer_id=grant.conference.organizer_id,
@@ -847,6 +863,9 @@ class GrantsReviewAdapter:
         return dict(
             admin_site.each_context(request),
             grant=grant,
+            grant_answers=(
+                display_answers(grant.form_answer) if grant.form_answer_id else []
+            ),
             has_sent_proposal=Submission.objects.non_cancelled()
             .filter(
                 speaker_id=grant.user_id,

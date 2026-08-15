@@ -7,12 +7,46 @@ from grants.tests.factories import GrantFactory
 from notifications.models import EmailTemplateIdentifier
 from notifications.tests.factories import EmailTemplateFactory
 from participants.models import Participant
+from generic_forms.models import Form, FormAnswer, FormQuestion
+from generic_forms.tests.factories import FormFactory, FormQuestionFactory
 from privacy_policy.models import PrivacyPolicyAcceptanceRecord
 
 pytestmark = pytest.mark.django_db
 
 
-def _send_grant(client, conference, conference_code=None, **kwargs):
+# the soft questions that move into the generic form; gender and
+# occupation stay structured (grants summary aggregates their columns)
+SOFT_FIELD_KEYS = [
+    "ageGroup",
+    "pythonUsage",
+    "communityContribution",
+    "beenToOtherEvents",
+    "why",
+    "notes",
+]
+
+
+def _grant_form(conference):
+    form = FormFactory(conference=conference, purpose=Form.Purpose.GRANT)
+    why = FormQuestionFactory(
+        form=form,
+        label="Why do you need a grant?",
+        question_type=FormQuestion.QuestionType.TEXTAREA,
+        required=True,
+    )
+    diet = FormQuestionFactory(
+        form=form,
+        label="Diet",
+        question_type=FormQuestion.QuestionType.SELECT,
+        options=[
+            {"id": "vegan", "label": "Vegan"},
+            {"id": "veggie", "label": "Veggie"},
+        ],
+    )
+    return form, why, diet
+
+
+def _send_grant(client, conference, conference_code=None, exclude=None, **kwargs):
     grant = GrantFactory.build(conference=conference)
     document = """
         mutation SendGrant($input: SendGrantInput!) {
@@ -51,6 +85,7 @@ def _send_grant(client, conference, conference_code=None, **kwargs):
                         validationParticipantFacebookUrl: participantFacebookUrl
                         validationParticipantMastodonHandle: participantMastodonHandle
                         nonFieldErrors
+                        answersErrors
                     }
                 }
             }
@@ -86,6 +121,8 @@ def _send_grant(client, conference, conference_code=None, **kwargs):
     }
 
     variables = {**defaults, **kwargs}
+    for key in exclude or []:
+        variables.pop(key, None)
 
     response = client.query(document, variables={"input": variables})
 
@@ -374,3 +411,111 @@ def test_submit_grant_with_existing_participant(graphql_client, user):
     participant.refresh_from_db()
     assert participant.bio == "my bio"
     assert participant.website == "https://sushi.com"
+
+
+def test_send_grant_with_answers_and_no_legacy_soft_fields(
+    graphql_client, user, django_capture_on_commit_callbacks, sent_emails
+):
+    """The exact post-cutover frontend payload: answers map, no soft fields."""
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(active_grants=True)
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.grant_application_confirmation,
+    )
+    form, why, diet = _grant_form(conference)
+
+    with django_capture_on_commit_callbacks(execute=True):
+        response = _send_grant(
+            graphql_client,
+            conference,
+            exclude=SOFT_FIELD_KEYS,
+            gender="male",
+            occupation="developer",
+            answers={str(why.pk): "I need support to attend", str(diet.pk): "vegan"},
+        )
+
+    assert response["data"]["sendGrant"]["__typename"] == "Grant"
+    grant = Grant.objects.get(id=response["data"]["sendGrant"]["id"])
+    assert grant.form_answer is not None
+    assert grant.form_answer.form == form
+    assert grant.form_answer.user_id == user.id
+    assert grant.form_answer.answers == {
+        "version": 1,
+        "answers": {str(why.pk): "I need support to attend", str(diet.pk): "vegan"},
+    }
+    assert grant.why == ""
+    assert grant.python_usage == ""
+    # gender/occupation stay structured: the grants summary aggregates them
+    assert grant.gender == "male"
+    assert grant.occupation == "developer"
+
+
+def test_send_grant_with_answers_tolerates_omitted_gender_and_occupation(
+    graphql_client, user, django_capture_on_commit_callbacks, sent_emails
+):
+    """Defensive: NOT NULL columns must never see None from a sparse payload."""
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(active_grants=True)
+    EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.grant_application_confirmation,
+    )
+    _form, why, _diet = _grant_form(conference)
+
+    with django_capture_on_commit_callbacks(execute=True):
+        response = _send_grant(
+            graphql_client,
+            conference,
+            exclude=SOFT_FIELD_KEYS + ["gender", "occupation"],
+            answers={str(why.pk): "I need support to attend"},
+        )
+
+    assert response["data"]["sendGrant"]["__typename"] == "Grant"
+    grant = Grant.objects.get(id=response["data"]["sendGrant"]["id"])
+    assert grant.gender == ""
+    assert grant.occupation == ""
+
+
+def test_send_grant_with_invalid_answers_returns_per_question_errors(
+    graphql_client, user
+):
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(active_grants=True)
+    _form, why, diet = _grant_form(conference)
+
+    response = _send_grant(
+        graphql_client,
+        conference,
+        exclude=SOFT_FIELD_KEYS,
+        answers={str(diet.pk): "carnivore"},
+    )
+
+    assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
+    assert response["data"]["sendGrant"]["errors"]["answersErrors"] == {
+        str(why.pk): ["This question is required."],
+        str(diet.pk): ["Invalid option."],
+    }
+    assert Grant.objects.count() == 0
+    assert FormAnswer.objects.count() == 0
+
+
+def test_send_grant_with_answers_but_no_form_configured_is_rejected(
+    graphql_client, user
+):
+    graphql_client.force_login(user)
+    conference = ConferenceFactory(active_grants=True)
+
+    response = _send_grant(
+        graphql_client,
+        conference,
+        exclude=SOFT_FIELD_KEYS,
+        answers={"1": "hello"},
+    )
+
+    assert response["data"]["sendGrant"]["__typename"] == "GrantErrors"
+    assert response["data"]["sendGrant"]["errors"]["nonFieldErrors"] == [
+        "The grants form is not configured for this conference"
+    ]
+    assert Grant.objects.count() == 0
+    assert FormAnswer.objects.count() == 0

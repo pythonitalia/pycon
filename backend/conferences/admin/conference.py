@@ -17,8 +17,9 @@ from ordered_model.admin import (
     OrderedStackedInline,
     OrderedTabularInline,
 )
+from collections import defaultdict
 from itertools import permutations
-from unicodedata import normalize
+from unicodedata import combining, normalize
 from conferences.models import ConferenceVoucher
 from schedule.models import ScheduleItem
 from sponsors.models import SponsorLevel
@@ -266,6 +267,14 @@ class ConferenceAdmin(
 
         all_events = (
             ScheduleItem.objects.filter(conference_id=object_id)
+            .exclude(
+                type__in=[
+                    ScheduleItem.TYPES.training,
+                    ScheduleItem.TYPES.registration,
+                    "break",
+                    ScheduleItem.TYPES.recruiting,
+                ]
+            )
             .prefetch_related(
                 "slot__day",
                 "submission",
@@ -283,7 +292,9 @@ class ConferenceAdmin(
         return render(request, "admin/videos_upload/map_videos.html", context)
 
     def save_manual_changes(self, request, object_id, data):
-        all_events = ScheduleItem.objects.filter(conference_id=object_id)
+        all_events = ScheduleItem.objects.select_related(
+            "submission", "keynote", "language"
+        ).filter(conference_id=object_id)
 
         for event in all_events:
             key_name = f"video_uploaded_path_{event.id}"
@@ -303,9 +314,55 @@ class ConferenceAdmin(
 
     def run_video_uploaded_path_matcher(self, request, object_id, ignore_cache):
         conference = Conference.objects.get(pk=object_id)
-        all_events = conference.schedule_items.prefetch_related(
-            "submission", "additional_speakers"
-        ).all()
+        all_events = (
+            conference.schedule_items.select_related(
+                "submission__speaker", "keynote", "language", "slot__day"
+            )
+            .prefetch_related(
+                "additional_speakers__user",
+                "keynote__speakers__user",
+            )
+            .all()
+        )
+        # files are numbered by talk day (D1 = first day with talks),
+        # days with only workshops/trainings don't count
+        talk_days = (
+            conference.days.filter(
+                slots__items__type__in=[
+                    ScheduleItem.TYPES.submission,
+                    ScheduleItem.TYPES.talk,
+                    ScheduleItem.TYPES.keynote,
+                    ScheduleItem.TYPES.panel,
+                ]
+            )
+            .order_by("day")
+            .values_list("day", flat=True)
+            .distinct()
+        )
+        day_numbers = {day: number for number, day in enumerate(talk_days, start=1)}
+
+        # when the same speakers appear multiple times in the same day,
+        # rank their events by schedule order so they can be matched
+        # to the files numbered by running order
+        events_by_speakers_and_day = defaultdict(list)
+        for event in all_events:
+            if not event.slot_id or not event.speakers:
+                continue
+
+            key = (
+                frozenset(speaker.id for speaker in event.speakers),
+                event.slot.day.day,
+            )
+            events_by_speakers_and_day[key].append(event)
+
+        same_day_order = {}
+        for events in events_by_speakers_and_day.values():
+            if len(events) < 2:
+                continue
+
+            events.sort(key=lambda event: event.slot.hour)
+            for order, event in enumerate(events):
+                same_day_order[event.id] = order
 
         cache_key = f"{conference.code}:video-upload-files-cache"
         files = cache.get(cache_key)
@@ -323,7 +380,9 @@ class ConferenceAdmin(
         used_files = set()
 
         for event in all_events:
-            video_uploaded_path = self.match_event_to_video_file(event, files)
+            video_uploaded_path = self.match_event_to_video_file(
+                event, files, day_numbers, same_day_order.get(event.id)
+            )
             event.video_uploaded_path = video_uploaded_path
             event.save(update_fields=["video_uploaded_path"])
 
@@ -352,15 +411,27 @@ class ConferenceAdmin(
                 messages.WARNING,
             )
 
-    def match_event_to_video_file(self, event, files):
+    def match_event_to_video_file(self, event, files, day_numbers, same_day_order):
         possible_file_names = []
 
         def best_name(speaker):
             return cleanup_string(speaker.full_name.strip() or speaker.name.strip())
 
-        normalized_files = [
-            (cleanup_string(video_file), video_file) for video_file in files
-        ]
+        event_day = None
+        if event.slot_id:
+            event_day = day_numbers.get(event.slot.day.day)
+
+        # when both the event and the file have a known conference day,
+        # a mismatch means the file belongs to another day's event
+        normalized_files = []
+        for video_file in files:
+            normalized_video_file = cleanup_string(video_file)
+            file_day = extract_day_from_video_path(normalized_video_file)
+
+            if event_day and file_day and event_day != file_day:
+                continue
+
+            normalized_files.append((normalized_video_file, video_file))
 
         all_speakers_names = [best_name(speaker) for speaker in event.speakers]
 
@@ -399,17 +470,48 @@ class ConferenceAdmin(
             if exact_match_found:
                 return exact_match_found
 
+        matches = []
         for video_file, original_video_file in normalized_files:
             is_multi_speakers_video = "," in video_file
 
             if is_multi_speakers_video and single_speaker:
                 continue
 
-            for possible_file_name in possible_file_names:
-                if possible_file_name in video_file:
-                    return original_video_file
+            if any(name in video_file for name in possible_file_names):
+                matches.append(original_video_file)
 
-        return ""
+        # multi-speaker talks are sometimes uploaded with the name
+        # of only one of the speakers
+        if not matches and count_speakers > 1:
+            matches = [
+                original_video_file
+                for video_file, original_video_file in normalized_files
+                if "," not in video_file
+                and any(name in video_file for name in all_speakers_names)
+            ]
+
+        if not matches:
+            return ""
+
+        if same_day_order is None or len(matches) == 1:
+            return matches[0]
+
+        # same speakers multiple times in the same day: files are numbered
+        # by running order, assign them following the schedule order
+        matches.sort(key=video_file_position)
+        return matches[min(same_day_order, len(matches) - 1)]
+
+
+def video_file_position(video_path: str) -> int:
+    match = re.match(r"(\d+)", Path(video_path).name)
+    return int(match.group(1)) if match else 0
+
+
+def extract_day_from_video_path(normalized_video_path: str) -> int | None:
+    match = re.search(r"/d(\d+)/", normalized_video_path) or re.search(
+        r"\bday (\d+)\b", normalized_video_path
+    )
+    return int(match.group(1)) if match else None
 
 
 def walk_conference_videos_folder(storage, base_path):
@@ -557,5 +659,7 @@ def cleanup_string(string: str) -> str:
     new_string = normalize(
         "NFKD", "".join(char for char in string if char.isprintable())
     ).lower()
+    new_string = "".join(char for char in new_string if not combining(char))
+    new_string = new_string.replace("-", " ").replace("_", " ")
     new_string = re.sub(r"\s+", " ", new_string)
     return new_string.strip()

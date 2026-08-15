@@ -1,62 +1,54 @@
-from __future__ import annotations
-
-from datetime import datetime
-from typing import Optional
-
 import strawberry
+import strawberry_django
+from strawberry.scalars import JSON
 
-from grants.models import Grant as GrantModel
+from generic_forms.services import unwrap_answers
+from grants import models
 
-Status = strawberry.enum(GrantModel.Status)
-AgeGroup = strawberry.enum(GrantModel.AgeGroup)
-Occupation = strawberry.enum(GrantModel.Occupation)
-GrantType = strawberry.enum(GrantModel.GrantType)
+Status = strawberry.enum(models.Grant.Status)
+AgeGroup = strawberry.enum(models.Grant.AgeGroup)
+Occupation = strawberry.enum(models.Grant.Occupation)
+GrantType = strawberry.enum(models.Grant.GrantType)
 
 
-@strawberry.type
+@strawberry_django.type(
+    models.Grant,
+    only=["status", "pending_status", "country_type"],
+)
 class Grant:
-    id: strawberry.ID
+    id: strawberry.auto
     status: Status
-    name: str
-    full_name: str
-    age_group: Optional[AgeGroup]
-    gender: str
+    name: strawberry.auto
+    full_name: strawberry.auto
+
+    age_group: AgeGroup | None
+
+    @strawberry_django.field(only=["age_group"])
+    def age_group(self) -> AgeGroup | None:
+        return AgeGroup(self.age_group) if self.age_group else None
+
+    gender: strawberry.auto
     occupation: Occupation
     grant_type: list[GrantType]
-    python_usage: str
-    community_contribution: str
-    been_to_other_events: str
-    needs_funds_for_travel: bool
-    need_visa: bool
-    need_accommodation: bool
-    why: str
-    notes: str
-    departure_country: Optional[str]
-    nationality: Optional[str]
-    departure_city: Optional[str]
-    applicant_reply_deadline: Optional[datetime]
+    python_usage: strawberry.auto
+    community_contribution: strawberry.auto
+    been_to_other_events: strawberry.auto
+    needs_funds_for_travel: strawberry.auto
+    need_visa: strawberry.auto
+    need_accommodation: strawberry.auto
+    why: strawberry.auto
+    notes: strawberry.auto
+    departure_country: strawberry.auto
+    nationality: strawberry.auto
+    departure_city: strawberry.auto
+    applicant_reply_deadline: strawberry.auto
 
-    @classmethod
-    def from_model(cls, grant: GrantModel) -> Grant:
-        return cls(
-            id=grant.id,
-            status=Status(grant.status),
-            name=grant.name,
-            full_name=grant.full_name,
-            age_group=AgeGroup(grant.age_group) if grant.age_group else None,
-            gender=grant.gender,
-            occupation=Occupation(grant.occupation),
-            grant_type=[GrantType(g) for g in grant.grant_type],
-            python_usage=grant.python_usage,
-            community_contribution=grant.community_contribution,
-            been_to_other_events=grant.been_to_other_events,
-            needs_funds_for_travel=grant.needs_funds_for_travel,
-            need_visa=grant.need_visa,
-            need_accommodation=grant.need_accommodation,
-            why=grant.why,
-            notes=grant.notes,
-            departure_country=grant.departure_country,
-            nationality=grant.nationality,
-            departure_city=grant.departure_city,
-            applicant_reply_deadline=grant.applicant_reply_deadline,
-        )
+    @strawberry_django.field(
+        only=["form_answer_id", "form_answer__answers"],
+        select_related=["form_answer"],
+    )
+    def form_answers(self) -> JSON | None:
+        if self.form_answer_id is None:
+            return None
+
+        return unwrap_answers(self.form_answer.answers)

@@ -9,9 +9,17 @@ from django.utils import timezone
 
 from conferences.models.conference_voucher import ConferenceVoucher
 from conferences.tests.factories import ConferenceFactory, ConferenceVoucherFactory
+from generic_forms.models import Form, FormQuestion
+from generic_forms.services import wrap_answers
+from generic_forms.tests.factories import (
+    FormAnswerFactory,
+    FormFactory,
+    FormQuestionFactory,
+)
 from grants.admin import (
     GrantAdmin,
     GrantReimbursementAdmin,
+    GrantResource,
     confirm_pending_status,
     create_grant_vouchers,
     mark_rejected_and_send_email,
@@ -794,3 +802,96 @@ def test_save_grant_in_admin_logs_audit_log_entry_for_pending_status_change(
         object_id=grant.id,
         change_message="Pending status changed from 'pending' to 'confirmed'.",
     ).exists()
+
+
+def test_dynamic_answers_shows_labels_and_formatted_values():
+    grant = GrantFactory()
+    form = FormFactory(conference=grant.conference, purpose=Form.Purpose.GRANT)
+    why = FormQuestionFactory(
+        form=form,
+        label="Why do you need it?",
+        question_type=FormQuestion.QuestionType.TEXTAREA,
+        order=0,
+    )
+    diet = FormQuestionFactory(
+        form=form,
+        label="Diet",
+        question_type=FormQuestion.QuestionType.MULTI_SELECT,
+        options=[
+            {"id": "vegan", "label": "Vegan"},
+            {"id": "veggie", "label": "Veggie"},
+        ],
+        order=1,
+    )
+    grant.form_answer = FormAnswerFactory(
+        form=form,
+        user=grant.user,
+        answers=wrap_answers({str(why.pk): "My motivation", str(diet.pk): ["vegan"]}),
+    )
+    grant.save()
+
+    html = str(GrantAdmin(Grant, AdminSite()).dynamic_answers(grant))
+
+    assert "Why do you need it?" in html
+    assert "My motivation" in html
+    assert "Diet" in html
+    assert "Vegan" in html
+
+
+def test_dynamic_answers_has_an_empty_state_for_legacy_grants():
+    grant = GrantFactory()
+
+    assert (
+        str(GrantAdmin(Grant, AdminSite()).dynamic_answers(grant))
+        == "No dynamic answers"
+    )
+
+
+def _export_grants(conference):
+    queryset = Grant.objects.filter(conference=conference).order_by("id")
+    return GrantResource().export(queryset=queryset)
+
+
+def test_export_includes_one_column_per_form_question():
+    conference = ConferenceFactory()
+    form = FormFactory(conference=conference, purpose=Form.Purpose.GRANT)
+    why = FormQuestionFactory(
+        form=form,
+        label="Why do you need it?",
+        question_type=FormQuestion.QuestionType.TEXTAREA,
+        order=0,
+    )
+    boolean = FormQuestionFactory(
+        form=form,
+        label="First time?",
+        question_type=FormQuestion.QuestionType.BOOLEAN,
+        order=1,
+    )
+    answered = GrantFactory(conference=conference)
+    answered.form_answer = FormAnswerFactory(
+        form=form,
+        user=answered.user,
+        answers=wrap_answers({str(why.pk): "My motivation", str(boolean.pk): True}),
+    )
+    answered.save()
+    GrantFactory(conference=conference)  # legacy grant, no FormAnswer
+
+    dataset = _export_grants(conference)
+
+    assert "Why do you need it?" in dataset.headers
+    assert "First time?" in dataset.headers
+    rows = dataset.dict
+    assert rows[0]["Why do you need it?"] == "My motivation"
+    assert rows[0]["First time?"] == "Yes"
+    assert rows[1]["Why do you need it?"] == ""
+    assert rows[1]["First time?"] == ""
+
+
+def test_export_without_a_form_has_no_extra_columns():
+    conference = ConferenceFactory()
+    GrantFactory(conference=conference)
+
+    dataset = _export_grants(conference)
+
+    assert "Why do you need it?" not in dataset.headers
+    assert "created" in dataset.headers

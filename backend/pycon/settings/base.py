@@ -95,7 +95,6 @@ INSTALLED_APPS = [
     "languages.apps.LanguagesConfig",
     "submissions.apps.SubmissionsConfig",
     "voting.apps.VotingConfig",
-    "blog.apps.BlogConfig",
     "pages.apps.PagesConfig",
     "sponsors.apps.SponsorsConfig",
     "cms.apps.CMSConfig",
@@ -129,6 +128,7 @@ INSTALLED_APPS = [
     "billing.apps.BillingConfig",
     "privacy_policy.apps.PrivacyPolicyConfig",
     "visa.apps.VisaConfig",
+    "generic_forms.apps.GenericFormsConfig",
 ]
 
 MIDDLEWARE = [

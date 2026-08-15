@@ -1,31 +1,34 @@
 import strawberry
-from strawberry import ID
+import strawberry_django
 
-from api.context import Info
 from api.pages.types import Page
+from cms import models
 
 from ..helpers.i18n import make_localized_resolver
 
 
 @strawberry.type
 class FAQ:
-    id: ID
+    id: strawberry.ID
     question: str = strawberry.field(resolver=make_localized_resolver("question"))
     answer: str = strawberry.field(resolver=make_localized_resolver("answer"))
 
 
-@strawberry.type
+@strawberry_django.type(models.MenuLink)
 class MenuLink:
-    href: str = strawberry.field(resolver=make_localized_resolver("href"))
-    title: str = strawberry.field(resolver=make_localized_resolver("title"))
-    is_primary: bool
+    href: str = strawberry_django.field(
+        resolver=make_localized_resolver("href"), only=["href"]
+    )
+    title: str = strawberry_django.field(
+        resolver=make_localized_resolver("title"), only=["title"]
+    )
+    is_primary: strawberry.auto
     page: Page | None
 
 
-@strawberry.type
+@strawberry_django.type(models.Menu)
 class Menu:
-    title: str = strawberry.field(resolver=make_localized_resolver("title"))
-
-    @strawberry.field
-    def links(self, info: Info) -> list[MenuLink]:
-        return self.links.all()
+    title: str = strawberry_django.field(
+        resolver=make_localized_resolver("title"), only=["title"]
+    )
+    links: list[MenuLink]
