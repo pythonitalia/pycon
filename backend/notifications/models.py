@@ -284,6 +284,7 @@ class EmailTemplate(TimeStampedModel):
 
 class SentEmail(TimeStampedModel):
     class Status(models.TextChoices):
+        draft = "draft", _("Draft")
         pending = "pending", _("Pending")
         sent = "sent", _("Sent")
         failed = "failed", _("Failed")

@@ -15,6 +15,8 @@ from django.utils.safestring import mark_safe
 
 from notifications.models import EmailTemplate, SentEmail, SentEmailEvent
 from django.forms import Textarea
+from django.db.models import QuerySet
+from notifications.tasks import send_pending_email
 
 
 class SentEmailEventInline(admin.TabularInline):
@@ -146,6 +148,7 @@ class SentEmailAdmin(admin.ModelAdmin):
     ordering = ["-sent_at"]
     autocomplete_fields = ["recipient"]
     inlines = [SentEmailEventInline]
+    actions = ["send_email"]
 
     def email_template_display_name(self, obj):
         if obj.email_template.is_custom:
@@ -182,3 +185,14 @@ class SentEmailAdmin(admin.ModelAdmin):
             qs = qs.filter(email_template__is_system_template=False)
 
         return qs
+
+    def send_email(self, request: HttpRequest, queryset: QuerySet[SentEmail]):
+        affected_emails = queryset.filter(status=SentEmail.Status.draft)
+        for sent_email in affected_emails:
+            sent_email.status = SentEmail.Status.pending
+            sent_email.save(update_fields=["status"])
+            send_pending_email.delay(sent_email.id)
+
+        self.message_user(
+            request, f"Emails sent successfully: {affected_emails.count()}"
+        )
