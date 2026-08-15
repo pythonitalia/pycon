@@ -190,16 +190,14 @@ class SentEmailAdmin(admin.ModelAdmin):
 
     @transaction.atomic
     def send_email(self, request: HttpRequest, queryset: QuerySet[SentEmail]):
-        affected_emails = list(
-            queryset.filter(
-                status__in=[
-                    SentEmail.Status.draft,
-                    SentEmail.Status.pending,
-                    SentEmail.Status.failed,
-                ]
-            )
-        )
-        affected_emails_ids = [sent_email.id for sent_email in affected_emails]
+        queryset = queryset.filter(
+            status__in=[
+                SentEmail.Status.draft,
+                SentEmail.Status.pending,
+                SentEmail.Status.failed,
+            ]
+        ).select_for_update(skip_locked=True)
+        affected_emails_ids = [sent_email.id for sent_email in queryset]
 
         affected_emails_count = queryset.filter(id__in=affected_emails_ids).update(
             status=SentEmail.Status.pending
