@@ -15,36 +15,75 @@ on:
 jobs:
   claude:
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude'))) ||
-      (github.event_name == 'pull_request' && github.event.action == 'review_requested')
+      contains(fromJSON('["marcoacierno","estyxx"]'), github.actor) &&
+      (
+        (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+        (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+        (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+        (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude'))) ||
+        (github.event_name == 'pull_request' && github.event.action == 'review_requested')
+      )
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
     permissions:
       contents: write
       pull-requests: write
       issues: write
       id-token: write
       actions: read
+
+    services:
+      postgres:
+        image: postgres:14.5
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:7.2.3
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+
+    # Exported into every shell Claude spawns, so `uv run pytest` works with no setup.
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+      CACHE_URL: redis://localhost:6379/0
+      CELERY_BROKER_URL: redis://localhost:6379/1
+      CELERY_RESULT_BACKEND: redis://localhost:6379/2
+      MEDIA_FILES_STORAGE_BACKEND: django.core.files.storage.FileSystemStorage
+      STRIPE_SECRET_API_KEY: fake-key
+      STRIPE_SUBSCRIPTION_PRICE_ID: ""
+      STRIPE_WEBHOOK_SIGNATURE_SECRET: ""
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13.5"
       - name: Install uv
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
         id: setup-uv
         with:
           version: "0.12.5"
           enable-cache: true
+      - name: Install python dependencies
+        working-directory: backend
+        run: uv sync
       - name: Run Claude
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_OAUTH_TOKEN }}
           assignee_trigger: "pythonitaliabot2"
           claude_args: |
-            --model claude-opus-4-8
-            --effort high
-            --allowedTools "Edit,Write,Bash(git:*),Bash(uv:*),Bash(pip:*),Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr list:*),Bash(gh pr comment:*),Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh search:*)"
+            --model claude-opus-5-0
+            --effort xhigh
+            --append-system-prompt "CI MODE. You are running in GitHub Actions against a plain checkout, not a developer laptop. Ignore the 'run everything inside docker exec pycon-backend-1' instructions in AGENTS.md: there is no Docker container here. Backend dependencies are already installed with 'uv sync' in ./backend, and Postgres and Redis are running with DATABASE_URL and CELERY_* already exported. Verify backend changes with: cd backend && uv run pytest <paths> -x -q (add '-n auto' for the full suite), uv run mypy ., uv tool run ruff@0.12.5 check, uv tool run ruff@0.12.5 format --check. Always prefix Python tooling with 'uv run' or 'uv tool run' - bare python, pytest, mypy and ruff are not on PATH and are not permitted. Run the tests covering your change before you report back, and quote the real output."
+            --allowedTools "Edit,Write,Bash(cd:*),Bash(git:*),Bash(uv:*),Bash(pip:*),Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr list:*),Bash(gh pr comment:*),Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh search:*)"
