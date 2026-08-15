@@ -26,9 +26,9 @@ def test_subscribe_user_to_association(
     }"""
 
     with patch(
-        "api.association_membership.mutations.subscribe_user_to_association.stripe.checkout.Session.create",
+        "association_membership.api.mutations.subscribe_user_to_association.stripe.checkout.Session.create",
     ) as mock_create_session, patch(
-        "api.association_membership.mutations.subscribe_user_to_association.stripe.Customer.create"
+        "association_membership.api.mutations.subscribe_user_to_association.stripe.Customer.create"
     ) as mock_customers_create:
         mock_customers_create.return_value.id = "cus_created"
         mock_create_session.return_value.id = "cs_xxx"
@@ -59,7 +59,7 @@ def test_subscribe_user_to_association_with_existing_canceled_subscription(
     }"""
 
     with patch(
-        "api.association_membership.mutations.subscribe_user_to_association.stripe.checkout.Session.create",
+        "association_membership.api.mutations.subscribe_user_to_association.stripe.checkout.Session.create",
     ) as mock_create:
         mock_create.return_value.id = "cs_xxx"
         response = graphql_client.query(query, variables={})

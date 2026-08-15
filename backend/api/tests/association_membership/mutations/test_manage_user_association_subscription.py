@@ -28,7 +28,7 @@ def test_manage_user_subscription(graphql_client):
     }"""
 
     with patch(
-        "api.association_membership.mutations.manage_user_subscription.stripe.billing_portal.Session.create",
+        "association_membership.api.mutations.manage_user_subscription.stripe.billing_portal.Session.create",
     ) as mock_create:
         mock_create.return_value.url = (
             "https://stripe.com/stripe_test_customer_portal/cus_test_12345"

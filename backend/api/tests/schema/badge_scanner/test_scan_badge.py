@@ -56,7 +56,7 @@ def test_works_when_user_is_logged_in(user, graphql_client, mocker):
     graphql_client.force_login(user)
 
     get_order_position_mock = mocker.patch(
-        "api.badge_scanner.mutation.pretix.get_order_position",
+        "badge_scanner.api.mutation.pretix.get_order_position",
         return_value={
             "attendee_name": "Test User",
             "attendee_email": "barko@marco.pizza",
@@ -100,7 +100,7 @@ def test_works_when_user_is_logged_in_but_no_user_on_service(
     graphql_client.force_login(user)
 
     get_order_position_mock = mocker.patch(
-        "api.badge_scanner.mutation.pretix.get_order_position",
+        "badge_scanner.api.mutation.pretix.get_order_position",
         return_value={
             "attendee_name": "Test User",
             "attendee_email": "barko@marco.pizza",

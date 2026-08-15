@@ -17,7 +17,7 @@ from django.utils import timezone
 from pytest import mark
 import zoneinfo
 
-from api.conferences.types import DeadlineStatus
+from conferences.api.types import DeadlineStatus
 
 
 pytestmark = mark.django_db

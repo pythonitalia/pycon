@@ -9,7 +9,7 @@ from countries import countries
 import strawberry
 from django.conf import settings
 from django.core.cache import cache
-from api.pretix.types import (
+from pretix.api.types import (
     AttendeeNameInput,
     AttendeeNameInputError,
     UpdateAttendeeTicketInput,

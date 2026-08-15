@@ -6,7 +6,7 @@ def test_calls_get_order(graphql_client, user, mocker):
 
     graphql_client.force_login(user)
 
-    get_order_mock = mocker.patch("api.pretix.query.pretix.get_order")
+    get_order_mock = mocker.patch("pretix.api.query.pretix.get_order")
     get_order_mock.return_value = {
         "code": "abc",
         "status": "p",
@@ -35,7 +35,7 @@ def test_calls_returns_none(graphql_client, user, mocker):
 
     graphql_client.force_login(user)
 
-    get_order_mock = mocker.patch("api.pretix.query.pretix.get_order")
+    get_order_mock = mocker.patch("pretix.api.query.pretix.get_order")
     get_order_mock.return_value = None
 
     response = graphql_client.query(
@@ -58,7 +58,7 @@ def test_calls_returns_none_when_email_is_different(graphql_client, user, mocker
 
     graphql_client.force_login(user)
 
-    get_order_mock = mocker.patch("api.pretix.query.pretix.get_order")
+    get_order_mock = mocker.patch("pretix.api.query.pretix.get_order")
     get_order_mock.return_value = {
         "code": "abc",
         "status": "p",
