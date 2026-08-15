@@ -199,4 +199,6 @@ class SentEmailAdmin(admin.ModelAdmin):
 
         affected_emails_count = affected_emails.update(status=SentEmail.Status.pending)
 
-        self.message_user(request, f"Emails sent successfully: {affected_emails_count}")
+        self.message_user(
+            request, f"Emails queued for sending: {affected_emails_count}"
+        )
