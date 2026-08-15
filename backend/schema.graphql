@@ -542,11 +542,23 @@ type HomeIntroSection {
 type HomepageHero {
   id: ID!
   city: HomepageHeroCity
+  variant: HomepageHeroVariant!
+  title: String!
+  subtitle: String!
+  body: String!
+  highlight: String!
+  primaryCta: CTA
+  secondaryCta: CTA
 }
 
 enum HomepageHeroCity {
   FLORENCE
   BOLOGNA
+}
+
+enum HomepageHeroVariant {
+  ILLUSTRATION_ONLY
+  OVERLAY
 }
 
 type InformationSection {

@@ -6,6 +6,7 @@ from cms.components.page.blocks.slider_cards_section import (
     SliderCardsSection,
 )
 from cms.components.page.models import BodyBlock
+from cms.components.base.blocks.cta import CTA
 from cms.components.base.blocks.map import Map
 from wagtail_factories import (
     CharBlockFactory,
@@ -56,7 +57,18 @@ class SimpleTextCardFactory(StructBlockFactory):
         p = factory.Faker("text", max_nb_chars=300)
 
 
+class CTAFactory(StructBlockFactory):
+    label = factory.SubFactory(CharBlockFactory)
+    link = factory.SubFactory(CharBlockFactory)
+
+    class Meta:
+        model = CTA
+
+
 class HomepageHeroFactory(StructBlockFactory):
+    primary_cta = factory.SubFactory(CTAFactory)
+    secondary_cta = factory.SubFactory(CTAFactory)
+
     class Meta:
         model = HomepageHero
 
