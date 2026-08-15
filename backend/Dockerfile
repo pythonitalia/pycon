@@ -24,13 +24,13 @@ FROM base AS build-stage
 
 ARG FUNCTION_DIR
 
-RUN apt-get update -y && apt-get install -y \
-    gcc git
+RUN apt-get update -y && apt-get install -y gcc git
 
 RUN mkdir -p ${FUNCTION_DIR}
 WORKDIR ${FUNCTION_DIR}
 
 COPY --from=ghcr.io/astral-sh/uv:0.12.5 /uv /uvx /usr/local/bin/
+ENV UV_PROJECT_ENVIRONMENT=/opt/venv
 
 COPY pyproject.toml uv.lock ./
 
@@ -81,10 +81,13 @@ ENV NLTK_DATA=/home/app/nltk_data
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/widgets/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/widgets/
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/_astro ${FUNCTION_DIR}/custom_admin/static/_astro/
-COPY --chown=app:app --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
+COPY --chown=app:app --from=build-stage /opt/venv /opt/venv
 
 COPY --chown=app:app . ${FUNCTION_DIR}
 COPY ./entrypoint.sh /entrypoint.sh
+
+ENV UV_PROJECT_ENVIRONMENT=/opt/venv
+ENV PATH="/opt/venv/bin:${PATH}"
 
 RUN mkdir -p assets && .venv/bin/python manage.py collectstatic --noinput
 
