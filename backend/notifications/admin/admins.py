@@ -69,7 +69,7 @@ class EmailTemplateAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         fields = super().get_readonly_fields(request, obj)
 
         if obj:
-            fields = fields + ["conference", "is_system_template", "identifier"]
+            fields = fields + ["conference", "is_system_template"]
 
         return fields
 

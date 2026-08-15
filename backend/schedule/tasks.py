@@ -10,7 +10,7 @@ from integrations import plain
 from pretix import user_has_admission_ticket
 from django.utils import timezone
 from grants.tasks import get_name
-from notifications.models import EmailTemplate, EmailTemplateIdentifier
+from notifications.models import EmailTemplate, EmailTemplateIdentifier, SentEmail
 from urllib.parse import urljoin
 from django.conf import settings
 import logging
@@ -263,6 +263,7 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
     schedule_item = sent_for_video_upload.schedule_item
     remote_video_path = schedule_item.video_uploaded_path
     video_id = None
+    conference = schedule_item.conference
 
     if not sent_for_video_upload.video_uploaded:
         logger.info("Uploading video for schedule_item_id=%s", schedule_item.id)
@@ -332,6 +333,35 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
     cleanup_local_files(schedule_item.id)
 
     logger.info("Video uploaded for schedule_item_id=%s", schedule_item.id)
+
+    all_speakers = schedule_item.speakers
+    emails_qs = SentEmail.objects.for_conference(schedule_item.conference).filter(
+        email_template__identifier=EmailTemplateIdentifier.speaker_video_recording_uploaded
+    )
+    total_emails_scheduled = emails_qs.filter(
+        recipient__in=[speaker.id for speaker in all_speakers]
+    ).count()
+
+    if total_emails_scheduled != len(all_speakers):
+        for speaker in all_speakers:
+            if emails_qs.filter(recipient__id=speaker.id).exists():
+                continue
+
+            email_template = EmailTemplate.objects.for_conference(
+                conference
+            ).get_by_identifier(
+                EmailTemplateIdentifier.speaker_video_recording_uploaded
+            )
+            email_template.draft_email(
+                recipient=speaker,
+                placeholders={
+                    "user_name": get_name(speaker, "there"),
+                    "video_recording_url": f"https://www.youtube.com/watch?v={video_id}",
+                    "schedule_item_title": schedule_item.title,
+                    "schedule_item_type": schedule_item.type,
+                },
+            )
+
     sent_for_video_upload.status = ScheduleItemSentForVideoUpload.Status.completed
     sent_for_video_upload.save(update_fields=["status"])
 
