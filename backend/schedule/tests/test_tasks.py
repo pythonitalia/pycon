@@ -33,7 +33,7 @@ from submissions.tests.factories import SubmissionFactory
 import time_machine
 from users.tests.factories import UserFactory
 from schedule.models import ScheduleItem, ScheduleItemSentForVideoUpload
-from notifications.models import EmailTemplateIdentifier
+from notifications.models import EmailTemplateIdentifier, SentEmail
 
 import pytest
 
@@ -69,18 +69,24 @@ def test_send_schedule_invitation_email(sent_emails):
     # Verify that the correct email template was used and email was sent
     emails_sent = sent_emails()
     assert emails_sent.count() == 1
-    
+
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.proposal_scheduled
+    assert (
+        sent_email.email_template.identifier
+        == EmailTemplateIdentifier.proposal_scheduled
+    )
     assert sent_email.email_template.conference == schedule_item.conference
     assert sent_email.recipient == user
-    
+
     # Verify placeholders were processed correctly
     assert sent_email.placeholders["proposal_title"] == "Title Submission"
     assert sent_email.placeholders["conference_name"] == "Conf"
-    assert sent_email.placeholders["invitation_url"] == f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}"
+    assert (
+        sent_email.placeholders["invitation_url"]
+        == f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}"
+    )
     assert sent_email.placeholders["speaker_name"] == "Marco Acierno"
-    assert sent_email.placeholders["is_reminder"] == False
+    assert sent_email.placeholders["is_reminder"] is False
 
     schedule_item.refresh_from_db()
 
@@ -116,18 +122,24 @@ def test_send_schedule_invitation_email_reminder(sent_emails):
     # Verify that the correct email template was used and email was sent
     emails_sent = sent_emails()
     assert emails_sent.count() == 1
-    
+
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.proposal_scheduled
+    assert (
+        sent_email.email_template.identifier
+        == EmailTemplateIdentifier.proposal_scheduled
+    )
     assert sent_email.email_template.conference == schedule_item.conference
     assert sent_email.recipient == user
-    
+
     # Verify placeholders were processed correctly
     assert sent_email.placeholders["proposal_title"] == "Title Submission"
     assert sent_email.placeholders["conference_name"] == "Conf"
-    assert sent_email.placeholders["invitation_url"] == f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}"
+    assert (
+        sent_email.placeholders["invitation_url"]
+        == f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}"
+    )
     assert sent_email.placeholders["speaker_name"] == "Marco Acierno"
-    assert sent_email.placeholders["is_reminder"] == True
+    assert sent_email.placeholders["is_reminder"] is True
 
 
 @override_settings(FRONTEND_URL="https://frontend/")
@@ -144,7 +156,7 @@ def test_send_submission_time_slot_changed_email(sent_emails):
         conference__name=LazyI18nString({"en": "Conf"}),
         type=ScheduleItem.TYPES.talk,
     )
-    
+
     EmailTemplateFactory(
         conference=schedule_item.conference,
         identifier=EmailTemplateIdentifier.proposal_scheduled_time_changed,
@@ -155,16 +167,22 @@ def test_send_submission_time_slot_changed_email(sent_emails):
     # Verify that the correct email template was used and email was sent
     emails_sent = sent_emails()
     assert emails_sent.count() == 1
-    
+
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.proposal_scheduled_time_changed
+    assert (
+        sent_email.email_template.identifier
+        == EmailTemplateIdentifier.proposal_scheduled_time_changed
+    )
     assert sent_email.email_template.conference == schedule_item.conference
     assert sent_email.recipient == schedule_item.submission.speaker
-    
+
     # Verify placeholders were processed correctly
     assert sent_email.placeholders["proposal_title"] == "Title Submission"
     assert sent_email.placeholders["speaker_name"] == "Marco Acierno"
-    assert sent_email.placeholders["invitation_url"] == f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}"
+    assert (
+        sent_email.placeholders["invitation_url"]
+        == f"https://frontend/schedule/invitation/{schedule_item.submission.hashid}"
+    )
     assert sent_email.placeholders["conference_name"] == "Conf"
 
 
@@ -214,7 +232,7 @@ def test_send_speaker_communication_email_to_speakers_without_ticket(
         name="Marco",
         username="marco",
     )
-    
+
     EmailTemplateFactory(
         conference=conference,
         identifier=EmailTemplateIdentifier.speaker_communication,
@@ -235,18 +253,23 @@ def test_send_speaker_communication_email_to_speakers_without_ticket(
 
     # Verify that the correct email template was used and email was sent
     emails_sent = sent_emails()
-    
+
     if not has_ticket:
         assert emails_sent.count() == 1
-        
+
         sent_email = emails_sent.first()
-        assert sent_email.email_template.identifier == EmailTemplateIdentifier.speaker_communication
+        assert (
+            sent_email.email_template.identifier
+            == EmailTemplateIdentifier.speaker_communication
+        )
         assert sent_email.email_template.conference == conference
         assert sent_email.recipient == user
-        
+
         # Verify placeholders were processed correctly
         assert sent_email.placeholders["user_name"] == "Marco Acierno"
-        assert sent_email.placeholders["conference_name"] == conference.name.localize("en")
+        assert sent_email.placeholders["conference_name"] == conference.name.localize(
+            "en"
+        )
         assert sent_email.placeholders["body"] == "test body"
         assert sent_email.placeholders["subject"] == "test subject"
     else:
@@ -265,7 +288,7 @@ def test_send_speaker_communication_email_to_everyone(
         username="marco",
     )
     conference = ConferenceFactory()
-    
+
     EmailTemplateFactory(
         conference=conference,
         identifier=EmailTemplateIdentifier.speaker_communication,
@@ -287,12 +310,15 @@ def test_send_speaker_communication_email_to_everyone(
     # Verify that the correct email template was used and email was sent
     emails_sent = sent_emails()
     assert emails_sent.count() == 1
-    
+
     sent_email = emails_sent.first()
-    assert sent_email.email_template.identifier == EmailTemplateIdentifier.speaker_communication
+    assert (
+        sent_email.email_template.identifier
+        == EmailTemplateIdentifier.speaker_communication
+    )
     assert sent_email.email_template.conference == conference
     assert sent_email.recipient == user
-    
+
     # Verify placeholders were processed correctly
     assert sent_email.placeholders["user_name"] == "Marco Acierno"
     assert sent_email.placeholders["body"] == "test body"
@@ -499,6 +525,11 @@ def test_upload_schedule_item_video_flow(mocker):
         schedule_item__conference__video_title_template="{{ title }}",
         schedule_item__conference__video_description_template="{{ abstract }}",
     )
+    EmailTemplateFactory(
+        conference=sent_for_upload.schedule_item.conference,
+        identifier=EmailTemplateIdentifier.speaker_video_recording_uploaded,
+    )
+
     upload_schedule_item_video(
         sent_for_video_upload_state_id=sent_for_upload.id,
     )
@@ -582,6 +613,11 @@ def test_upload_schedule_item_with_only_thumbnail_to_upload(mocker):
         schedule_item__conference__video_title_template="{{ title }}",
         schedule_item__conference__video_description_template="{{ abstract }}",
     )
+    EmailTemplateFactory(
+        conference=sent_for_upload.schedule_item.conference,
+        identifier=EmailTemplateIdentifier.speaker_video_recording_uploaded,
+    )
+
     upload_schedule_item_video(
         sent_for_video_upload_state_id=sent_for_upload.id,
     )
@@ -599,6 +635,236 @@ def test_upload_schedule_item_with_only_thumbnail_to_upload(mocker):
 
     sent_for_upload.schedule_item.refresh_from_db()
     assert sent_for_upload.schedule_item.youtube_video_id == "vid_10"
+
+
+def _sent_for_upload_ready_to_notify(**kwargs):
+    """
+    A job where the video and the thumbnail are already on YouTube, so the only
+    thing left for `upload_schedule_item_video` to do is drafting the emails.
+    """
+    return ScheduleItemSentForVideoUploadFactory(
+        last_attempt_at=None,
+        status=ScheduleItemSentForVideoUpload.Status.pending,
+        video_uploaded=True,
+        thumbnail_uploaded=True,
+        schedule_item__youtube_video_id="vid_123",
+        schedule_item__title="Test Title",
+        **kwargs,
+    )
+
+
+def test_upload_schedule_item_video_drafts_an_email_to_each_speaker(sent_emails):
+    speaker = UserFactory(full_name="Marco Acierno", email="marco@placeholder.it")
+    co_speaker = UserFactory(full_name="Ester Beltrami", email="ester@placeholder.it")
+
+    sent_for_upload = _sent_for_upload_ready_to_notify(
+        schedule_item__type=ScheduleItem.TYPES.talk,
+        schedule_item__submission=None,
+    )
+    schedule_item = sent_for_upload.schedule_item
+
+    ScheduleItemAdditionalSpeakerFactory(scheduleitem=schedule_item, user=speaker)
+    ScheduleItemAdditionalSpeakerFactory(scheduleitem=schedule_item, user=co_speaker)
+
+    EmailTemplateFactory(
+        conference=schedule_item.conference,
+        identifier=EmailTemplateIdentifier.speaker_video_recording_uploaded,
+    )
+
+    upload_schedule_item_video(sent_for_video_upload_state_id=sent_for_upload.id)
+
+    drafts = sent_emails()
+    assert drafts.count() == 2
+    assert set(drafts.values_list("recipient_id", flat=True)) == {
+        speaker.id,
+        co_speaker.id,
+    }
+
+    for draft in drafts:
+        assert draft.status == SentEmail.Status.draft
+        assert draft.conference == schedule_item.conference
+        assert (
+            draft.email_template.identifier
+            == EmailTemplateIdentifier.speaker_video_recording_uploaded
+        )
+
+    draft = drafts.get(recipient=speaker)
+    assert draft.placeholders == {
+        "user_name": "Marco Acierno",
+        "video_recording_url": "https://www.youtube.com/watch?v=vid_123",
+        "schedule_item_title": "Test Title",
+        "schedule_item_type": "Talk",
+    }
+
+    sent_for_upload.refresh_from_db()
+    assert sent_for_upload.emails_scheduled
+    assert sent_for_upload.status == ScheduleItemSentForVideoUpload.Status.completed
+
+
+def test_upload_schedule_item_video_drafts_one_email_per_speaker(sent_emails):
+    """The same person can be both the proposal speaker and an additional speaker."""
+    speaker = UserFactory(full_name="Marco Acierno", email="marco@placeholder.it")
+
+    sent_for_upload = _sent_for_upload_ready_to_notify(
+        schedule_item__type=ScheduleItem.TYPES.submission,
+        schedule_item__submission__speaker=speaker,
+    )
+    ScheduleItemAdditionalSpeakerFactory(
+        scheduleitem=sent_for_upload.schedule_item, user=speaker
+    )
+
+    EmailTemplateFactory(
+        conference=sent_for_upload.schedule_item.conference,
+        identifier=EmailTemplateIdentifier.speaker_video_recording_uploaded,
+    )
+
+    upload_schedule_item_video(sent_for_video_upload_state_id=sent_for_upload.id)
+
+    assert sent_emails().count() == 1
+
+
+def test_upload_schedule_item_video_notifies_the_speaker_of_each_of_their_talks(
+    sent_emails,
+):
+    speaker = UserFactory(full_name="Marco Acierno", email="marco@placeholder.it")
+    conference = ConferenceFactory()
+
+    template = EmailTemplateFactory(
+        conference=conference,
+        identifier=EmailTemplateIdentifier.speaker_video_recording_uploaded,
+    )
+
+    for title in ("First Talk", "Second Talk"):
+        sent_for_upload = _sent_for_upload_ready_to_notify(
+            schedule_item__conference=conference,
+            schedule_item__type=ScheduleItem.TYPES.talk,
+            schedule_item__submission=None,
+        )
+        sent_for_upload.schedule_item.title = title
+        sent_for_upload.schedule_item.save(update_fields=["title"])
+        ScheduleItemAdditionalSpeakerFactory(
+            scheduleitem=sent_for_upload.schedule_item, user=speaker
+        )
+
+        upload_schedule_item_video(sent_for_video_upload_state_id=sent_for_upload.id)
+
+    drafts = sent_emails().filter(email_template=template, recipient=speaker)
+    assert drafts.count() == 2
+    assert {draft.placeholders["schedule_item_title"] for draft in drafts} == {
+        "First Talk",
+        "Second Talk",
+    }
+
+
+def test_upload_schedule_item_video_does_not_draft_emails_twice(sent_emails):
+    speaker = UserFactory(full_name="Marco Acierno", email="marco@placeholder.it")
+
+    sent_for_upload = _sent_for_upload_ready_to_notify(
+        emails_scheduled=True,
+        schedule_item__type=ScheduleItem.TYPES.talk,
+        schedule_item__submission=None,
+    )
+    ScheduleItemAdditionalSpeakerFactory(
+        scheduleitem=sent_for_upload.schedule_item, user=speaker
+    )
+
+    EmailTemplateFactory(
+        conference=sent_for_upload.schedule_item.conference,
+        identifier=EmailTemplateIdentifier.speaker_video_recording_uploaded,
+    )
+
+    upload_schedule_item_video(sent_for_video_upload_state_id=sent_for_upload.id)
+
+    assert sent_emails().count() == 0
+
+    sent_for_upload.refresh_from_db()
+    assert sent_for_upload.status == ScheduleItemSentForVideoUpload.Status.completed
+
+
+def test_upload_schedule_item_video_completes_when_there_are_no_speakers(sent_emails):
+    """Breaks, socials and registration items have no speakers to notify."""
+    sent_for_upload = _sent_for_upload_ready_to_notify(
+        schedule_item__type=ScheduleItem.TYPES.social,
+        schedule_item__submission=None,
+    )
+    EmailTemplateFactory(
+        conference=sent_for_upload.schedule_item.conference,
+        identifier=EmailTemplateIdentifier.speaker_video_recording_uploaded,
+    )
+
+    upload_schedule_item_video(sent_for_video_upload_state_id=sent_for_upload.id)
+
+    assert sent_emails().count() == 0
+
+    sent_for_upload.refresh_from_db()
+    assert sent_for_upload.status == ScheduleItemSentForVideoUpload.Status.completed
+    assert sent_for_upload.failed_reason == ""
+
+
+def test_upload_schedule_item_video_drafts_email_with_the_uploaded_video_id(
+    mocker, sent_emails
+):
+    file_content = BytesIO(b"File")
+    file_content.name = "test.mp4"
+    file_content.seek(0)
+
+    conferencevideos_storage = storages["default"]
+    conferencevideos_storage.save(
+        "videos/test.mp4",
+        InMemoryUploadedFile(
+            file=file_content,
+            field_name="file_field",
+            name="test.txt",
+            content_type="text/plain",
+            size=file_content.getbuffer().nbytes,
+            charset="utf-8",
+            content_type_extra=None,
+        ),
+    )
+
+    mocker.patch(
+        "schedule.tasks.youtube_videos_insert",
+        autospec=True,
+        return_value=[{"id": "vid_from_youtube"}],
+    )
+    mocker.patch("schedule.tasks.youtube_videos_set_thumbnail", autospec=True)
+    mocker.patch(
+        "schedule.video_upload.cv2.VideoCapture.read",
+        return_value=(True, np.array([1])),
+    )
+
+    speaker = UserFactory(full_name="Marco Acierno", email="marco@placeholder.it")
+    sent_for_upload = ScheduleItemSentForVideoUploadFactory(
+        last_attempt_at=None,
+        status=ScheduleItemSentForVideoUpload.Status.pending,
+        video_uploaded=False,
+        thumbnail_uploaded=False,
+        schedule_item__type=ScheduleItem.TYPES.talk,
+        schedule_item__submission=None,
+        schedule_item__title="Test Title",
+        schedule_item__description="Test Description",
+        schedule_item__video_uploaded_path=conferencevideos_storage.path(
+            "videos/test.mp4"
+        ),
+        schedule_item__conference__video_title_template="{{ title }}",
+        schedule_item__conference__video_description_template="{{ abstract }}",
+    )
+    ScheduleItemAdditionalSpeakerFactory(
+        scheduleitem=sent_for_upload.schedule_item, user=speaker
+    )
+
+    EmailTemplateFactory(
+        conference=sent_for_upload.schedule_item.conference,
+        identifier=EmailTemplateIdentifier.speaker_video_recording_uploaded,
+    )
+
+    upload_schedule_item_video(sent_for_video_upload_state_id=sent_for_upload.id)
+
+    draft = sent_emails().get(recipient=speaker)
+    assert (
+        draft.placeholders["video_recording_url"]
+        == "https://www.youtube.com/watch?v=vid_from_youtube"
+    )
 
 
 @pytest.mark.parametrize(

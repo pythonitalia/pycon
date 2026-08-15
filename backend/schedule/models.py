@@ -337,7 +337,7 @@ class ScheduleItem(TimeStampedModel):
 
     @cached_property
     def speakers(self) -> list[User]:
-        speakers = set()
+        speakers = []
 
         if self.submission_id:
             speakers.append(self.submission.speaker)
@@ -356,7 +356,9 @@ class ScheduleItem(TimeStampedModel):
             speaker.user
             for speaker in sorted(additional_speakers, key=lambda speaker: speaker.id)
         )
-        return list([speaker for speaker in speakers if speaker is not None])
+        return list(
+            dict.fromkeys(speaker for speaker in speakers if speaker is not None)
+        )
 
     def clean(self):
         if self.type == ScheduleItem.TYPES.submission and not self.submission:
