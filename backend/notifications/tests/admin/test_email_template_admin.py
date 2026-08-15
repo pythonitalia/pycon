@@ -50,6 +50,7 @@ def test_cannot_edit_essential_fields_on_existing_object(rf):
 
     assert "conference" in readonly_fields
     assert "is_system_template" in readonly_fields
+    assert "identifier" in readonly_fields
 
 
 def test_can_edit_essential_fields_on_new_objects(rf):

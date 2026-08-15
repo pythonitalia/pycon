@@ -293,10 +293,9 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
     else:
         logger.info("Video already uploaded for schedule_item_id=%s", schedule_item.id)
 
-    if not sent_for_video_upload.thumbnail_uploaded:
-        video_id = video_id or schedule_item.youtube_video_id
-        assert video_id, "Video marked as uploaded but Video ID is missing"
+    assert video_id, "Video marked as uploaded but Video ID is missing"
 
+    if not sent_for_video_upload.thumbnail_uploaded:
         logger.info("Extracting thumbnail for schedule_item_id=%s", schedule_item.id)
 
         thumbnail_path = extract_video_thumbnail(

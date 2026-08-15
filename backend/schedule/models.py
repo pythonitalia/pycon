@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Optional
+from users.models import User
 from conferences.querysets import ConferenceQuerySetMixin
 
 from django.core import exceptions
@@ -335,8 +336,8 @@ class ScheduleItem(TimeStampedModel):
         return room.attendees_total_capacity if room else None
 
     @cached_property
-    def speakers(self):
-        speakers = []
+    def speakers(self) -> list[User]:
+        speakers = set()
 
         if self.submission_id:
             speakers.append(self.submission.speaker)
@@ -355,7 +356,7 @@ class ScheduleItem(TimeStampedModel):
             speaker.user
             for speaker in sorted(additional_speakers, key=lambda speaker: speaker.id)
         )
-        return [speaker for speaker in speakers if speaker is not None]
+        return list([speaker for speaker in speakers if speaker is not None])
 
     def clean(self):
         if self.type == ScheduleItem.TYPES.submission and not self.submission:
