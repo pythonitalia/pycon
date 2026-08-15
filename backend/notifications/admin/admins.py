@@ -191,13 +191,18 @@ class SentEmailAdmin(admin.ModelAdmin):
     @transaction.atomic
     def send_email(self, request: HttpRequest, queryset: QuerySet[SentEmail]):
         affected_emails_ids = list(
-            queryset.filter(status=SentEmail.Status.draft).values_list("id", flat=True)
+            queryset.filter(
+                status__in=[SentEmail.Status.draft, SentEmail.Status.pending]
+            ).values_list("id", flat=True)
         )
 
-        for sent_email_id in affected_emails_ids:
-            transaction.on_commit(
-                functools.partial(send_pending_email.delay, sent_email_id)
-            )
+        def _submit_emails_for_sending(affected_emails_ids: list[int]):
+            for sent_email_id in affected_emails_ids:
+                send_pending_email.delay(sent_email_id)
+
+        transaction.on_commit(
+            functools.partial(_submit_emails_for_sending, affected_emails_ids)
+        )
 
         affected_emails_count = queryset.filter(id__in=affected_emails_ids).update(
             status=SentEmail.Status.pending
