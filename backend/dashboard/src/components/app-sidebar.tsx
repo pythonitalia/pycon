@@ -6,7 +6,6 @@ import {
   ConferenceSwitcher,
 } from "@/components/conference-switcher";
 import { NavUser, type NavUserData } from "@/components/nav-user";
-
 import {
   Sidebar,
   SidebarContent,
@@ -18,24 +17,28 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
 } from "@/components/ui/sidebar";
+import { dashboardUrl as buildDashboardUrl } from "@/dashboard-url";
 
 export function AppSidebar({
+  comparisonCodes,
   conferences,
   selectedConference,
   user,
 }: {
+  comparisonCodes: string[];
   conferences: ConferenceData[];
   selectedConference: ConferenceData | null;
   user: NavUserData;
 }) {
   const dashboardUrl = selectedConference
-    ? `/dashboard/${encodeURIComponent(selectedConference.code)}`
+    ? buildDashboardUrl(selectedConference.code, {
+        comparisonCodes,
+      })
     : "/dashboard";
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="offcanvas" variant="inset">
       <SidebarHeader>
         <ConferenceSwitcher
           conferences={conferences}
@@ -64,8 +67,6 @@ export function AppSidebar({
       <SidebarFooter>
         <NavUser user={user} />
       </SidebarFooter>
-
-      <SidebarRail />
     </Sidebar>
   );
 }

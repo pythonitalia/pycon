@@ -63,8 +63,14 @@ type LoginResponse = {
 export function LoginForm({
   className,
   nextUrl,
+  privacyPolicyUrl,
+  resetPasswordUrl,
   ...props
-}: React.ComponentProps<"div"> & { nextUrl: string }) {
+}: React.ComponentProps<"div"> & {
+  nextUrl: string;
+  privacyPolicyUrl: string;
+  resetPasswordUrl: string;
+}) {
   const [errors, setErrors] = useState<LoginErrors>({
     email: [],
     password: [],
@@ -179,7 +185,7 @@ export function LoginForm({
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
                   <a
-                    href="/reset-password"
+                    href={resetPasswordUrl}
                     className="ml-auto text-sm underline-offset-4 hover:underline"
                   >
                     Forgot your password?
@@ -210,7 +216,7 @@ export function LoginForm({
                   errors={errors.form.map((message) => ({ message }))}
                 />
                 <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="/signup">Sign up</a>
+                  Dashboard access is limited to staff accounts.
                 </FieldDescription>
               </Field>
             </FieldGroup>
@@ -218,9 +224,7 @@ export function LoginForm({
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our{" "}
-        <a href="/terms-of-service">Terms of Service</a> and{" "}
-        <a href="/privacy-policy">Privacy Policy</a>.
+        Read the <a href={privacyPolicyUrl}>Privacy Policy</a>.
       </FieldDescription>
     </div>
   );

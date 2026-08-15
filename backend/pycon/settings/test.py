@@ -1,4 +1,4 @@
-from .base import *  # noqa
+from .base import *  # noqa: F403
 from .base import CROSS_INERTIA, INSTALLED_APPS, MIDDLEWARE, env, root
 
 IS_RUNNING_TESTS = True
@@ -20,6 +20,9 @@ MAILCHIMP_DC = "us5"
 MAILCHIMP_LIST_ID = "12345678ab"
 
 PRETIX_API = "https://pretix/api/"
+PRETIX_API_HOST = ""
+PRETIX_API_TOKEN = None
+DASHBOARD_REQUIRE_STAFF = False
 
 STORAGES = {
     "default": {

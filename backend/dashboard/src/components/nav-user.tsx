@@ -20,6 +20,7 @@ export type NavUserData = {
   name: string;
   email: string;
   avatar: string | null;
+  profileUrl: string;
 };
 
 function getInitials(name: string) {
@@ -99,7 +100,7 @@ export function NavUser({ user }: { user: NavUserData }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <a href="/profile">
+              <a href={user.profileUrl}>
                 <BadgeCheckIcon />
                 Account
               </a>

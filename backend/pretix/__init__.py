@@ -1,7 +1,7 @@
 from api.utils import validate_email
 import logging
 from typing import Any, Dict, List, Optional
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit, urlunsplit
 from django.utils.dateparse import parse_datetime
 import requests
 from api.types import BaseErrorType
@@ -43,6 +43,13 @@ def get_api_url(conference: Conference, endpoint: str) -> str:
     )
 
 
+def _pretix_headers() -> Dict[str, str]:
+    headers = {"Authorization": f"Token {settings.PRETIX_API_TOKEN}"}
+    if settings.PRETIX_API_HOST:
+        headers["Host"] = settings.PRETIX_API_HOST
+    return headers
+
+
 def _pretix_request(
     conference: Conference,
     url: str,
@@ -50,11 +57,12 @@ def _pretix_request(
     method="get",
     **kwargs,
 ):
+    kwargs.setdefault("timeout", settings.PRETIX_API_TIMEOUT)
     return requests.request(
         method,
         url,
         params=qs or {},
-        headers={"Authorization": f"Token {settings.PRETIX_API_TOKEN}"},
+        headers=_pretix_headers(),
         **kwargs,
     )
 
@@ -165,19 +173,34 @@ def _get_paginated(
         response = requests.get(
             url,
             params=qs,
-            headers={"Authorization": f"Token {settings.PRETIX_API_TOKEN}"},
+            headers=_pretix_headers(),
+            timeout=settings.PRETIX_API_TIMEOUT,
         )
 
         response.raise_for_status()
 
         data = response.json()
         url = data.get("next")
+        qs = None
+
+        if url and settings.PRETIX_API_HOST:
+            api_url = urlsplit(settings.PRETIX_API)
+            next_url = urlsplit(url)
+            url = urlunsplit(
+                (
+                    api_url.scheme,
+                    api_url.netloc,
+                    next_url.path,
+                    next_url.query,
+                    next_url.fragment,
+                )
+            )
 
         yield from (order for order in data["results"])
 
 
-def get_orders(conference: Conference):
-    return _get_paginated(conference, "orders")
+def get_orders(conference: Conference, params: dict[str, Any] | None = None):
+    return _get_paginated(conference, "orders", params)
 
 
 def get_all_order_positions(
@@ -191,11 +214,10 @@ def get_invoices(conference: Conference):
 
 
 def get_items(conference: Conference, params: Optional[Dict[str, Any]] = None):
-    response = pretix(conference, "items", params)
-    response.raise_for_status()
-
-    data = response.json()
-    return {str(result["id"]): result for result in data["results"]}
+    return {
+        str(result["id"]): result
+        for result in _get_paginated(conference, "items", params)
+    }
 
 
 def cache_pretix(name: str):

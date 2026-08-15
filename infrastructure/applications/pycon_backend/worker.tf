@@ -77,6 +77,26 @@ locals {
       value = module.common_secrets.value.pretix_api_token
     },
     {
+      name  = "DASHBOARD_REQUIRE_STAFF",
+      value = "true"
+    },
+    {
+      name  = "DASHBOARD_MAX_COMPARISON_CONFERENCES",
+      value = "2"
+    },
+    {
+      name  = "DASHBOARD_PRETIX_CACHE_TIMEOUT",
+      value = "900"
+    },
+    {
+      name  = "DASHBOARD_PRETIX_ERROR_CACHE_TIMEOUT",
+      value = "60"
+    },
+    {
+      name  = "PRETIX_API_TIMEOUT",
+      value = "10"
+    },
+    {
       name  = "MAILCHIMP_SECRET_KEY",
       value = module.common_secrets.value.mailchimp_secret_key
     },

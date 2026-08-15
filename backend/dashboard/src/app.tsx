@@ -8,6 +8,7 @@ import "./styles.css";
 const pages = { Dashboard, Login };
 
 createInertiaApp({
+  title: (title) => (title ? `${title} · Dashboard` : "Dashboard"),
   resolve: (name) => {
     const page = pages[name as keyof typeof pages];
 
