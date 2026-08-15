@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+repo_root="$(cd -- "${script_dir}/.." && pwd)"
+stage="${1:-}"
+
+stages=(cfp-open review ticket-sales conference-week post-event)
+
+if [[ ! " ${stages[*]} " =~ " ${stage} " ]]; then
+  echo "Usage: ./scripts/seed-dashboard-stage <stage>"
+  echo "Stages: ${stages[*]}"
+  exit 2
+fi
+
+cd "${repo_root}"
+
+echo "Starting the local Pretix profile..."
+docker compose --profile pretix up -d --wait pretix
+docker compose up -d --wait backend
+
+echo "Resetting the dashboard-only Pretix event..."
+docker compose exec -T \
+  -e DASHBOARD_SEED_ACTION=reset \
+  pretix pretix shell < "${repo_root}/pretix/dev/dashboard_seed.py"
+
+echo "Seeding the ${stage} conference and Pretix stage..."
+docker compose exec -T \
+  -e DJANGO_SETTINGS_MODULE=pycon.settings.dev \
+  -e DASHBOARD_STAGE="${stage}" \
+  backend uv run python manage.py shell \
+  < "${repo_root}/backend/dashboard/dev/seed_stage.py"
+
+echo "Applying the historical Pretix order dates..."
+docker compose exec -T \
+  -e DASHBOARD_SEED_ACTION=apply-order-dates \
+  pretix pretix shell < "${repo_root}/pretix/dev/dashboard_seed.py"
+
+docker compose exec -T \
+  -e DJANGO_SETTINGS_MODULE=pycon.settings.dev \
+  backend uv run python manage.py shell \
+  -c "from django.core.cache import cache; cache.clear()"
+
+echo
+echo "Dashboard: http://localhost:8000/dashboard/dashboard-local"
+echo "Pretix:    http://localhost:8345/control/ (admin@localhost / admin)"
