@@ -1459,6 +1459,7 @@ type Submission {
   notes: String
   doNotRecord: Boolean
   scheduleItems: [ScheduleItem!]!
+  tags: [SubmissionTag!]
   multilingualElevatorPitch: MultiLingualString
   multilingualAbstract: MultiLingualString
   multilingualTitle: MultiLingualString
@@ -1469,7 +1470,6 @@ type Submission {
   canEdit: Boolean!
   myVote: VoteType
   languages: [Language!]
-  tags: [SubmissionTag!]
   materials: [ProposalMaterial!]!
 }
 
