@@ -172,7 +172,6 @@ class EmailTemplate(TimeStampedModel):
         ],
         EmailTemplateIdentifier.speaker_video_recording_uploaded: [
             *BASE_PLACEHOLDERS,
-            "conference_name",
             "user_name",
             "video_recording_url",
             "schedule_item_title",
