@@ -29,7 +29,7 @@ def test_subscribe_to_newsletter(graphql_client):
     """
 
     with patch(
-        "api.newsletters.mutations.subscribe_to_newsletter.subscribe"
+        "newsletters.api.mutations.subscribe_to_newsletter.subscribe"
     ) as mock_subscription:
         mock_subscription.return_value = SubscriptionResult.SUBSCRIBED
 
@@ -71,7 +71,7 @@ def test_subscribe_to_newsletter_fails_on_api_side(graphql_client, exception):
     """
 
     with patch(
-        "api.newsletters.mutations.subscribe_to_newsletter.subscribe"
+        "newsletters.api.mutations.subscribe_to_newsletter.subscribe"
     ) as mock_subscription:
         mock_subscription.side_effect = exception
 
@@ -104,7 +104,7 @@ def test_subscribe_to_newsletter_with_invalid_email_fails(graphql_client, email)
     """
 
     with patch(
-        "api.newsletters.mutations.subscribe_to_newsletter.subscribe"
+        "newsletters.api.mutations.subscribe_to_newsletter.subscribe"
     ) as mock_subscription:
         mock_subscription.return_value = SubscriptionResult.SUBSCRIBED
 
@@ -142,7 +142,7 @@ def test_subscribe_to_newsletter_with_invalid_conference_code(
     """
 
     with patch(
-        "api.newsletters.mutations.subscribe_to_newsletter.subscribe"
+        "newsletters.api.mutations.subscribe_to_newsletter.subscribe"
     ) as mock_subscription:
         mock_subscription.return_value = SubscriptionResult.SUBSCRIBED
         resp = graphql_client.query(query, variables={"input": variables})

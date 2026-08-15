@@ -3,8 +3,8 @@ from typing import Optional
 from api.context import Info
 import strawberry
 from api.permissions import IsAuthenticated
-from api.pretix.query import get_order
-from api.pretix.types import PretixOrder
+from pretix.api.query import get_order
+from pretix.api.types import PretixOrder
 from conferences.models import Conference
 
 

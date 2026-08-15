@@ -1,12 +1,12 @@
 from conferences.tests.factories import ConferenceFactory
 from pytest import mark
 
-from api.pretix.types import TicketItem
+from pretix.api.types import TicketItem
 
 
 @mark.django_db
 def test_returns_tickets(graphql_client, mocker):
-    get_tickets_mock = mocker.patch("api.conferences.types.get_conference_tickets")
+    get_tickets_mock = mocker.patch("conferences.api.types.get_conference_tickets")
     get_tickets_mock.return_value = [
         TicketItem(
             name="Example Ticket",
@@ -47,7 +47,7 @@ def test_returns_tickets(graphql_client, mocker):
 
 @mark.django_db
 def test_is_business(graphql_client, mocker):
-    get_tickets_mock = mocker.patch("api.conferences.types.get_conference_tickets")
+    get_tickets_mock = mocker.patch("conferences.api.types.get_conference_tickets")
     get_tickets_mock.return_value = [
         TicketItem(
             name="Business Ticket",

@@ -1,4 +1,4 @@
-from api.voting.types import VoteValues
+from voting.api.types import VoteValues
 
 
 def test_get_enum_member_from_int():

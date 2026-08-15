@@ -1,4 +1,4 @@
-from api.pretix.types import AttendeeNameInput
+from pretix.api.types import AttendeeNameInput
 from conferences.tests.factories import ConferenceFactory
 import pytest
 from django.test import override_settings
