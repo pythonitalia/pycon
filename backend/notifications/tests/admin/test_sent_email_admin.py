@@ -119,23 +119,81 @@ def test_send_email_action(rf, admin_user, django_capture_on_commit_callbacks, m
     sent_email = SentEmailFactory(status=SentEmail.Status.sent)
     failed_email = SentEmailFactory(status=SentEmail.Status.failed)
 
-    qs = SentEmail.objects.filter(status=SentEmail.Status.draft)
-
     with django_capture_on_commit_callbacks(execute=True):
-        admin.send_email(request, qs)
+        admin.send_email(request, SentEmail.objects.all())
 
-    assert SentEmail.objects.filter(status=SentEmail.Status.draft).count() == 0
+    # drafts, pending and failed emails are all (re)queued for sending
+    queued_ids = {call.args[0] for call in mock_send_pending_email.call_args_list}
+    assert queued_ids == {
+        draft_email_1.id,
+        draft_email_2.id,
+        pending_email.id,
+        failed_email.id,
+    }
+    assert mock_send_pending_email.call_count == 4
 
-    mock_send_pending_email.assert_has_calls(
-        [
-            mocker.call(draft_email_1.id),
-            mocker.call(draft_email_2.id),
-        ]
-    )
+    for email in (draft_email_1, draft_email_2, pending_email, failed_email):
+        email.refresh_from_db()
+        assert email.status == SentEmail.Status.pending
 
-    pending_email.refresh_from_db()
-    assert pending_email.status == SentEmail.Status.pending
+    # already sent emails are never touched
     sent_email.refresh_from_db()
     assert sent_email.status == SentEmail.Status.sent
-    failed_email.refresh_from_db()
-    assert failed_email.status == SentEmail.Status.failed
+
+    admin.message_user.assert_called_once_with(request, "Emails queued for sending: 4")
+
+
+def test_send_email_action_with_a_status_filtered_queryset(
+    rf, admin_user, django_capture_on_commit_callbacks, mocker
+):
+    """The changelist queryset carries the active list_filter, so the action
+    receives a queryset already narrowed to a single status."""
+    mock_send_pending_email = mocker.patch(
+        "notifications.admin.admins.send_pending_email.delay"
+    )
+    admin = SentEmailAdmin(
+        model=SentEmail,
+        admin_site=AdminSite(),
+    )
+    admin.message_user = mocker.Mock()
+
+    request = rf.post("/")
+    request.user = admin_user
+
+    draft_email = SentEmailFactory(status=SentEmail.Status.draft)
+
+    with django_capture_on_commit_callbacks(execute=True):
+        admin.send_email(
+            request, SentEmail.objects.filter(status=SentEmail.Status.draft)
+        )
+
+    mock_send_pending_email.assert_called_once_with(draft_email.id)
+
+    draft_email.refresh_from_db()
+    assert draft_email.status == SentEmail.Status.pending
+
+
+def test_send_email_action_keeps_queueing_after_a_broker_failure(
+    rf, admin_user, django_capture_on_commit_callbacks, mocker
+):
+    mock_send_pending_email = mocker.patch(
+        "notifications.admin.admins.send_pending_email.delay",
+        side_effect=[Exception("broker is down"), None],
+    )
+    admin = SentEmailAdmin(
+        model=SentEmail,
+        admin_site=AdminSite(),
+    )
+    admin.message_user = mocker.Mock()
+
+    request = rf.post("/")
+    request.user = admin_user
+
+    SentEmailFactory(status=SentEmail.Status.draft)
+    SentEmailFactory(status=SentEmail.Status.draft)
+
+    with django_capture_on_commit_callbacks(execute=True):
+        admin.send_email(request, SentEmail.objects.all())
+
+    # the first publish blowing up must not strand the remaining emails
+    assert mock_send_pending_email.call_count == 2

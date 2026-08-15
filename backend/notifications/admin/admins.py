@@ -1,5 +1,7 @@
 import functools
+import logging
 from django.db import transaction
+from django.utils import timezone
 from typing import Any
 from django.http import HttpResponseRedirect
 from django.http.request import HttpRequest
@@ -19,6 +21,8 @@ from notifications.models import EmailTemplate, SentEmail, SentEmailEvent
 from django.forms import Textarea
 from django.db.models import QuerySet
 from notifications.tasks import send_pending_email
+
+logger = logging.getLogger(__name__)
 
 
 class SentEmailEventInline(admin.TabularInline):
@@ -115,6 +119,17 @@ class EmailTemplateAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         return reverse("admin:view-email-template", args=(obj.id,))
 
 
+def _submit_emails_for_sending(sent_emails_ids: list[int]) -> None:
+    for sent_email_id in sent_emails_ids:
+        try:
+            send_pending_email.delay(sent_email_id)
+        except Exception:
+            logger.exception(
+                "Could not queue sent_email_id=%s, leaving it pending",
+                sent_email_id,
+            )
+
+
 @admin.register(SentEmail)
 class SentEmailAdmin(admin.ModelAdmin):
     list_display = [
@@ -190,7 +205,7 @@ class SentEmailAdmin(admin.ModelAdmin):
 
     @transaction.atomic
     def send_email(self, request: HttpRequest, queryset: QuerySet[SentEmail]):
-        queryset = (
+        affected_emails_ids = list(
             queryset.filter(
                 status__in=[
                     SentEmail.Status.draft,
@@ -202,15 +217,14 @@ class SentEmailAdmin(admin.ModelAdmin):
             .values_list("id", flat=True)
         )
 
-        affected_emails_count = queryset.update(status=SentEmail.Status.pending)
-
-        def _submit_emails_for_sending(affected_emails_ids: list[int]):
-            for sent_email_id in affected_emails_ids:
-                send_pending_email.delay(sent_email_id, actor_id=request.user.id)
+        SentEmail.objects.filter(id__in=affected_emails_ids).update(
+            status=SentEmail.Status.pending,
+            modified=timezone.now(),
+        )
 
         transaction.on_commit(
-            functools.partial(_submit_emails_for_sending, list(queryset))
+            functools.partial(_submit_emails_for_sending, affected_emails_ids)
         )
         self.message_user(
-            request, f"Emails queued for sending: {affected_emails_count}"
+            request, f"Emails queued for sending: {len(affected_emails_ids)}"
         )
