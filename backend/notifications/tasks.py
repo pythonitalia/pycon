@@ -1,3 +1,5 @@
+from custom_admin.audit import create_change_admin_log_entry
+from users.models import User
 from django.db import transaction
 
 import logging
@@ -30,7 +32,7 @@ def send_pending_email_failed(self, exc, task_id, args, kwargs, einfo):
     on_failure=send_pending_email_failed,
 )
 @transaction.atomic()
-def send_pending_email(self, sent_email_id: int):
+def send_pending_email(self, sent_email_id: int, *, actor_id: int | None = None):
     logger.info(
         "Sending sent_email=%s (attempt=%s of %s)",
         sent_email_id,
@@ -52,6 +54,13 @@ def send_pending_email(self, sent_email_id: int):
 
     message_id = send_email(sent_email, email_backend_connection)
     sent_email.mark_as_sent(message_id)
+
+    if actor_id:
+        create_change_admin_log_entry(
+            User.objects.get(id=actor_id),
+            sent_email,
+            "Sent the email",
+        )
 
     logger.info(
         "Email sent_email_id=%s sent with message_id=%s",

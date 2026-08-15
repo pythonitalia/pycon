@@ -190,24 +190,28 @@ class SentEmailAdmin(admin.ModelAdmin):
 
     @transaction.atomic
     def send_email(self, request: HttpRequest, queryset: QuerySet[SentEmail]):
-        affected_emails_ids = list(
+        affected_emails = list(
             queryset.filter(
-                status__in=[SentEmail.Status.draft, SentEmail.Status.pending]
-            ).values_list("id", flat=True)
+                status__in=[
+                    SentEmail.Status.draft,
+                    SentEmail.Status.pending,
+                    SentEmail.Status.failed,
+                ]
+            )
         )
-
-        def _submit_emails_for_sending(affected_emails_ids: list[int]):
-            for sent_email_id in affected_emails_ids:
-                send_pending_email.delay(sent_email_id)
-
-        transaction.on_commit(
-            functools.partial(_submit_emails_for_sending, affected_emails_ids)
-        )
+        affected_emails_ids = [sent_email.id for sent_email in affected_emails]
 
         affected_emails_count = queryset.filter(id__in=affected_emails_ids).update(
             status=SentEmail.Status.pending
         )
 
+        def _submit_emails_for_sending(affected_emails_ids: list[int]):
+            for sent_email_id in affected_emails_ids:
+                send_pending_email.delay(sent_email_id, actor_id=request.user.id)
+
+        transaction.on_commit(
+            functools.partial(_submit_emails_for_sending, affected_emails_ids)
+        )
         self.message_user(
             request, f"Emails queued for sending: {affected_emails_count}"
         )

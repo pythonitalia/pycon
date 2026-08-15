@@ -1,3 +1,4 @@
+from users.system_user import get_system_user_id
 from django.utils import timezone
 from django.db import transaction
 from django.db.models import Q, UniqueConstraint
@@ -214,10 +215,10 @@ class EmailTemplate(TimeStampedModel):
     def _prepare_email(
         self,
         *,
+        status: "SentEmail.Status",
         recipient: User | None = None,
         recipient_email: str | None = None,
         placeholders: dict = None,
-        status: "SentEmail.Status" = None,
     ):
         if not recipient and not recipient_email:
             raise ValueError("Either recipient or recipient_email must be provided")
@@ -236,7 +237,7 @@ class EmailTemplate(TimeStampedModel):
             )
 
         return SentEmail.objects.create(
-            status=status or SentEmail.Status.draft,
+            status=status,
             email_template=self,
             conference=self.conference,
             from_email=from_email,
@@ -260,6 +261,7 @@ class EmailTemplate(TimeStampedModel):
         placeholders: dict = None,
     ):
         return self._prepare_email(
+            status=SentEmail.Status.draft,
             recipient=recipient,
             recipient_email=recipient_email,
             placeholders=placeholders,
@@ -271,8 +273,11 @@ class EmailTemplate(TimeStampedModel):
         recipient: User | None = None,
         recipient_email: str | None = None,
         placeholders: dict = None,
+        actor_id: int | None = None,
     ):
         from notifications.tasks import send_pending_email
+
+        actor_id = actor_id or get_system_user_id()
 
         sent_email = self._prepare_email(
             status=SentEmail.Status.pending,
@@ -280,7 +285,9 @@ class EmailTemplate(TimeStampedModel):
             recipient_email=recipient_email,
             placeholders=placeholders,
         )
-        transaction.on_commit(lambda: send_pending_email.delay(sent_email.id))
+        transaction.on_commit(
+            lambda: send_pending_email.delay(sent_email.id, actor_id=actor_id)
+        )
 
     @property
     def is_custom(self):
