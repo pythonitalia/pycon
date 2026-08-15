@@ -129,6 +129,17 @@ fragment Blocks on Block {
   ... on HomepageHero {
     id
     city
+    title
+    location
+    dates
+    subtitle
+    highlight
+    primaryCta {
+      ...CTAInfo
+    }
+    secondaryCta {
+      ...CTAInfo
+    }
   }
 
   ... on DynamicContentDisplaySection {

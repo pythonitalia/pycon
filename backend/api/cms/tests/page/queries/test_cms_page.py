@@ -70,6 +70,82 @@ def test_page(graphql_client, locale):
     }
 
 
+def test_page_homepage_hero_copy(graphql_client, locale):
+    parent = GenericPageFactory()
+    page = GenericPageFactory(
+        slug="bubble-tea",
+        locale=locale("en"),
+        parent=parent,
+        title="Bubble",
+        body__0__homepage_hero__city="bologna",
+        body__0__homepage_hero__title="PyCon Italia 2027",
+        body__0__homepage_hero__location="Bologna",
+        body__0__homepage_hero__dates="May 27 - 30, 2027",
+        body__0__homepage_hero__subtitle="Four days of talks, tutorials and community",
+        body__0__homepage_hero__highlight="1,000+ attendees",
+        body__0__homepage_hero__primary_cta__label="Buy your ticket",
+        body__0__homepage_hero__primary_cta__link="/tickets",
+        body__0__homepage_hero__secondary_cta__label="See the programme",
+        body__0__homepage_hero__secondary_cta__link="/schedule",
+        body__1__homepage_hero__city="bologna",
+    )
+    page.save_revision().publish()
+    SiteFactory(hostname="pycon", port=80, root_page=parent)
+    query = """
+    query Page ($hostname: String!, $language: String!, $slug: String!) {
+        cmsPage(hostname: $hostname, language: $language, slug: $slug){
+            ...on GenericPage {
+                body {
+                    ... on HomepageHero {
+                        city
+                        title
+                        location
+                        dates
+                        subtitle
+                        highlight
+                        primaryCta {
+                            label
+                            link
+                        }
+                        secondaryCta {
+                            label
+                            link
+                        }
+                    }
+                }
+            }
+        }
+    }
+    """
+
+    response = graphql_client.query(
+        query, variables={"hostname": "pycon", "slug": "bubble-tea", "language": "en"}
+    )
+
+    assert response["data"]["cmsPage"]["body"] == [
+        {
+            "city": "BOLOGNA",
+            "title": "PyCon Italia 2027",
+            "location": "Bologna",
+            "dates": "May 27 - 30, 2027",
+            "subtitle": "Four days of talks, tutorials and community",
+            "highlight": "1,000+ attendees",
+            "primaryCta": {"label": "Buy your ticket", "link": "/tickets"},
+            "secondaryCta": {"label": "See the programme", "link": "/schedule"},
+        },
+        {
+            "city": "BOLOGNA",
+            "title": "",
+            "location": "",
+            "dates": "",
+            "subtitle": "",
+            "highlight": "",
+            "primaryCta": None,
+            "secondaryCta": None,
+        },
+    ]
+
+
 def test_page_with_ticket_restriction_and_ticket_returns_content(
     graphql_client, locale, user, mock_has_ticket
 ):

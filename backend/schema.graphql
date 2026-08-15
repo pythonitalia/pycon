@@ -542,6 +542,13 @@ type HomeIntroSection {
 type HomepageHero {
   id: ID!
   city: HomepageHeroCity
+  title: String!
+  location: String!
+  dates: String!
+  subtitle: String!
+  highlight: String!
+  primaryCta: CTA
+  secondaryCta: CTA
 }
 
 enum HomepageHeroCity {
