@@ -36,6 +36,7 @@ services:
     restart: unless-stopped
     command: sh -c "export DJANGO_SETTINGS_MODULE=pycon.settings.dev &&
       uv sync &&
+      pnpm --dir dashboard install --frozen-lockfile &&
       uv run python manage.py migrate &&
       uv run python manage.py create_admin &&
       touch /.ready &&
@@ -49,9 +50,11 @@ services:
     stdin_open: true
     ports:
       - 8000:8000
+      - 5173:5173
     volumes:
       - ./backend:/home/app/
       - /.venv/
+      - /home/app/dashboard/node_modules/
     environment:
       <<: *pycon_backend_envs
     env_file:

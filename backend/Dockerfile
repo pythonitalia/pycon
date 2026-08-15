@@ -60,6 +60,18 @@ COPY custom_admin/ .
 
 RUN ADMIN_GRAPHQL_URL=schema.graphql pnpm codegen && pnpm build
 
+# Build the Inertia dashboard
+
+WORKDIR ${FUNCTION_DIR}/dashboard
+
+COPY dashboard/package.json dashboard/pnpm-lock.yaml ./
+
+RUN pnpm --ignore-workspace install --frozen-lockfile
+
+COPY dashboard/ ./
+
+RUN pnpm build
+
 # Runtime stage
 
 FROM base AS runtime-stage
@@ -81,6 +93,7 @@ ENV NLTK_DATA=/home/app/nltk_data
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/widgets/*.html ${FUNCTION_DIR}/custom_admin/templates/astro/widgets/
 COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/dist/_astro ${FUNCTION_DIR}/custom_admin/static/_astro/
+COPY --chown=app:app --from=js-stage ${FUNCTION_DIR}/assets/build ${FUNCTION_DIR}/assets/build/
 COPY --chown=app:app --from=build-stage ${FUNCTION_DIR}/.venv ${FUNCTION_DIR}/.venv
 
 COPY --chown=app:app . ${FUNCTION_DIR}
