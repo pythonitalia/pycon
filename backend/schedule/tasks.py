@@ -262,7 +262,7 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
 
     schedule_item = sent_for_video_upload.schedule_item
     remote_video_path = schedule_item.video_uploaded_path
-    video_id = None
+    video_id = schedule_item.youtube_video_id
     conference = schedule_item.conference
 
     if not sent_for_video_upload.video_uploaded:
@@ -343,17 +343,15 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
         )
         .values_list("recipient__id", flat=True)
     )
+    email_template = EmailTemplate.objects.for_conference(conference).get_by_identifier(
+        EmailTemplateIdentifier.speaker_video_recording_uploaded
+    )
 
     if len(emails_scheduled) != len(all_speakers):
         for speaker in all_speakers:
             if speaker.id in emails_scheduled:
                 continue
 
-            email_template = EmailTemplate.objects.for_conference(
-                conference
-            ).get_by_identifier(
-                EmailTemplateIdentifier.speaker_video_recording_uploaded
-            )
             email_template.draft_email(
                 recipient=speaker,
                 placeholders={
