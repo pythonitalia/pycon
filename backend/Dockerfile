@@ -31,6 +31,7 @@ WORKDIR ${FUNCTION_DIR}
 
 COPY --from=ghcr.io/astral-sh/uv:0.12.5 /uv /uvx /usr/local/bin/
 ENV UV_PROJECT_ENVIRONMENT=/opt/venv
+ENV PATH="/opt/venv/bin:${PATH}"
 
 COPY pyproject.toml uv.lock ./
 
@@ -38,7 +39,7 @@ RUN uv sync --no-dev
 
 COPY . ./
 
-RUN .venv/bin/python manage.py graphql_schema
+RUN python manage.py graphql_schema
 
 # Build custom admin components
 
@@ -89,7 +90,7 @@ COPY ./entrypoint.sh /entrypoint.sh
 ENV UV_PROJECT_ENVIRONMENT=/opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 
-RUN mkdir -p assets && .venv/bin/python manage.py collectstatic --noinput
+RUN mkdir -p assets && python manage.py collectstatic --noinput
 
 ENV PGSSLCERT=/tmp/postgresql.crt
 
