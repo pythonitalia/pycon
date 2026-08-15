@@ -1,3 +1,4 @@
+from django.db import transaction
 from typing import Any
 from django.http import HttpResponseRedirect
 from django.http.request import HttpRequest
@@ -186,13 +187,13 @@ class SentEmailAdmin(admin.ModelAdmin):
 
         return qs
 
+    @transaction.atomic
     def send_email(self, request: HttpRequest, queryset: QuerySet[SentEmail]):
         affected_emails = queryset.filter(status=SentEmail.Status.draft)
-        for sent_email in affected_emails:
-            sent_email.status = SentEmail.Status.pending
-            sent_email.save(update_fields=["status"])
-            send_pending_email.delay(sent_email.id)
 
-        self.message_user(
-            request, f"Emails sent successfully: {affected_emails.count()}"
-        )
+        for sent_email in affected_emails:
+            transaction.on_commit(lambda: send_pending_email.delay(sent_email.id))
+
+        affected_emails_count = affected_emails.update(status=SentEmail.Status.pending)
+
+        self.message_user(request, f"Emails sent successfully: {affected_emails_count}")
