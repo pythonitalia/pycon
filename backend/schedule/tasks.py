@@ -335,16 +335,18 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
     logger.info("Video uploaded for schedule_item_id=%s", schedule_item.id)
 
     all_speakers = schedule_item.speakers
-    emails_qs = SentEmail.objects.for_conference(schedule_item.conference).filter(
-        email_template__identifier=EmailTemplateIdentifier.speaker_video_recording_uploaded
+    emails_scheduled = list(
+        SentEmail.objects.for_conference(schedule_item.conference)
+        .filter(
+            email_template__identifier=EmailTemplateIdentifier.speaker_video_recording_uploaded,
+            recipient__in=[speaker.id for speaker in all_speakers],
+        )
+        .values_list("recipient__id", flat=True)
     )
-    total_emails_scheduled = emails_qs.filter(
-        recipient__in=[speaker.id for speaker in all_speakers]
-    ).count()
 
-    if total_emails_scheduled != len(all_speakers):
+    if len(emails_scheduled) != len(all_speakers):
         for speaker in all_speakers:
-            if emails_qs.filter(recipient__id=speaker.id).exists():
+            if speaker.id in emails_scheduled:
                 continue
 
             email_template = EmailTemplate.objects.for_conference(
