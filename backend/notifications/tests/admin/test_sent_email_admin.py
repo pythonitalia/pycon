@@ -102,7 +102,7 @@ def test_email_template_display_name():
 
 def test_send_email_action(rf, admin_user, django_capture_on_commit_callbacks, mocker):
     mock_send_pending_email = mocker.patch(
-        "notifications.admin.admins.send_pending_email"
+        "notifications.admin.admins.send_pending_email.delay"
     )
     admin = SentEmailAdmin(
         model=SentEmail,

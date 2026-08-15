@@ -193,7 +193,9 @@ class SentEmailAdmin(admin.ModelAdmin):
         affected_emails = queryset.filter(status=SentEmail.Status.draft)
 
         for sent_email in affected_emails:
-            transaction.on_commit(functools.partial(send_pending_email, sent_email.id))
+            transaction.on_commit(
+                functools.partial(send_pending_email.delay, sent_email.id)
+            )
 
         affected_emails_count = affected_emails.update(status=SentEmail.Status.pending)
 
