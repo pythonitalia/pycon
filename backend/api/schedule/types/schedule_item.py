@@ -12,7 +12,6 @@ from api.permissions import IsStaffPermission
 from api.schedule.types.room import Room
 from api.schedule.types.schedule_item_user import ScheduleItemUser
 from api.submissions.types import Submission
-from participants import models as participant_models
 from schedule import models
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -168,35 +167,12 @@ class ScheduleItem:
         only=["conference_id"],
         select_related=["submission__speaker"],
         prefetch_related=[
-            "keynote__speakers__user",
-            "additional_speakers__user",
+            "submission__speaker__participants",
+            "keynote__speakers__user__participants",
+            "additional_speakers__user__participants",
         ],
     )
-    def speakers(self, info: Info) -> list[ScheduleItemUser]:
-        speakers = []
-
-        participants_data = info.context._participants_data
-        if participants_data is None:
-            schedule_items = models.ScheduleItem.objects.filter(
-                conference_id=self.conference_id
-            )
-            submission_speakers = schedule_items.values("submission__speaker_id")
-            keynote_speakers = schedule_items.values("keynote__speakers__user_id")
-            additional_speakers = schedule_items.values("additional_speakers__user_id")
-            participants_data = {
-                participant.user_id: participant
-                for participant in participant_models.Participant.objects.filter(
-                    conference_id=self.conference_id
-                )
-                .filter(
-                    django_models.Q(user_id__in=submission_speakers)
-                    | django_models.Q(user_id__in=keynote_speakers)
-                    | django_models.Q(user_id__in=additional_speakers)
-                )
-                .select_related("user")
-            }
-            info.context._participants_data = participants_data
-
+    def speakers(self) -> list[ScheduleItemUser]:
         schedule_item_speakers = []
         if self.submission_id:
             schedule_item_speakers.append(self.submission.speaker)
@@ -210,6 +186,7 @@ class ScheduleItem:
             speaker.user for speaker in self.additional_speakers.all()
         )
 
+        speakers = []
         for speaker in schedule_item_speakers:
             if speaker is None:
                 continue
@@ -219,7 +196,8 @@ class ScheduleItem:
                     id=speaker.id,
                     fullname=speaker.fullname,
                     full_name=speaker.full_name,
-                    participant=participants_data.get(speaker.id),
+                    _user=speaker,
+                    _conference_id=self.conference_id,
                 )
             )
 

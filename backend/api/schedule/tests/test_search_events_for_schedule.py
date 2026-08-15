@@ -1,6 +1,7 @@
 import pytest
 
 from conferences.tests.factories import (
+    ConferenceFactory,
     DurationFactory,
     KeynoteFactory,
     KeynoteSpeakerFactory,
@@ -60,6 +61,43 @@ query SearchEvents($conferenceId: ID!, $query: String!) {
 """
 
 
+MULTI_CONFERENCE_SEARCH_EVENTS_QUERY = """
+query SearchEvents(
+  $firstConferenceId: ID!
+  $secondConferenceId: ID!
+) {
+  first: searchEventsForSchedule(
+    conferenceId: $firstConferenceId
+    query: "Shared"
+  ) {
+    results {
+      ... on Submission {
+        speaker {
+          participant {
+            speakerAvailabilities
+          }
+        }
+      }
+    }
+  }
+  second: searchEventsForSchedule(
+    conferenceId: $secondConferenceId
+    query: "Shared"
+  ) {
+    results {
+      ... on Submission {
+        speaker {
+          participant {
+            speakerAvailabilities
+          }
+        }
+      }
+    }
+  }
+}
+"""
+
+
 def _search_events_for_schedule(client, **input):
     return client.query(
         """query SearchEventsForSchedule($conferenceId: ID!, $query: String!) {
@@ -81,8 +119,9 @@ def _search_events_for_schedule(client, **input):
 
 @pytest.mark.parametrize(
     ("event_count", "expected_queries"),
-    [(1, 16), (4, 31)],
+    [(1, 10), (4, 10)],
 )
+@pytest.mark.parametrize("has_participant", [True, False])
 def test_frontend_search_events_query(
     admin_graphql_api_client,
     admin_superuser,
@@ -90,6 +129,7 @@ def test_frontend_search_events_query(
     django_assert_num_queries,
     event_count,
     expected_queries,
+    has_participant,
 ):
     conference = conference_with_schedule_setup
     duration = DurationFactory(
@@ -103,11 +143,12 @@ def test_frontend_search_events_query(
 
     for index in range(event_count):
         speaker = UserFactory(full_name=f"Proposal Speaker {index + 1}")
-        ParticipantFactory(
-            conference=conference,
-            user=speaker,
-            speaker_availabilities={"day": index + 1},
-        )
+        if has_participant:
+            ParticipantFactory(
+                conference=conference,
+                user=speaker,
+                speaker_availabilities={"day": index + 1},
+            )
         submission = SubmissionFactory(
             conference=conference,
             duration=duration,
@@ -125,10 +166,11 @@ def test_frontend_search_events_query(
         submissions.append(submission)
 
         keynote_speaker = UserFactory(full_name=f"Keynote Speaker {index + 1}")
-        ParticipantFactory(
-            conference=conference,
-            user=keynote_speaker,
-        )
+        if has_participant:
+            ParticipantFactory(
+                conference=conference,
+                user=keynote_speaker,
+            )
         keynote = KeynoteFactory(
             conference=conference,
             title=LazyI18nString(
@@ -151,7 +193,7 @@ def test_frontend_search_events_query(
         )
 
     assert "errors" not in response
-    assert response["data"] == {
+    expected_data = {
         "searchEvents": {
             "results": [
                 *[
@@ -177,11 +219,15 @@ def test_frontend_search_events_query(
                         "speaker": {
                             "id": str(submission.speaker_id),
                             "fullName": submission.speaker.full_name,
-                            "participant": {
-                                "speakerAvailabilities": {
-                                    "day": index + 1,
+                            "participant": (
+                                {
+                                    "speakerAvailabilities": {
+                                        "day": index + 1,
+                                    }
                                 }
-                            },
+                                if has_participant
+                                else None
+                            ),
                         },
                     }
                     for index, submission in enumerate(submissions)
@@ -201,6 +247,63 @@ def test_frontend_search_events_query(
                 ],
             ]
         }
+    }
+    response["data"]["searchEvents"]["results"].sort(key=lambda result: result["id"])
+    expected_data["searchEvents"]["results"].sort(key=lambda result: result["id"])
+    assert response["data"] == expected_data
+
+
+def test_frontend_search_events_query_keeps_participants_scoped_by_conference(
+    admin_graphql_api_client,
+    admin_superuser,
+    django_assert_num_queries,
+):
+    conferences = [ConferenceFactory(), ConferenceFactory()]
+    speaker = UserFactory(full_name="Shared Speaker")
+
+    for index, conference in enumerate(conferences, start=1):
+        ParticipantFactory(
+            conference=conference,
+            user=speaker,
+            speaker_availabilities={"conference": index},
+        )
+        SubmissionFactory(
+            conference=conference,
+            speaker=speaker,
+            status=Submission.STATUS.accepted,
+            title=LazyI18nString({"en": f"Shared Talk {index}", "it": ""}),
+        )
+
+    admin_graphql_api_client.force_login(admin_superuser)
+    with django_assert_num_queries(10):
+        response = admin_graphql_api_client.query(
+            MULTI_CONFERENCE_SEARCH_EVENTS_QUERY,
+            variables={
+                "firstConferenceId": str(conferences[0].id),
+                "secondConferenceId": str(conferences[1].id),
+            },
+        )
+
+    assert "errors" not in response
+    assert response["data"] == {
+        "first": {
+            "results": [
+                {
+                    "speaker": {
+                        "participant": {"speakerAvailabilities": {"conference": 1}}
+                    }
+                }
+            ]
+        },
+        "second": {
+            "results": [
+                {
+                    "speaker": {
+                        "participant": {"speakerAvailabilities": {"conference": 2}}
+                    }
+                }
+            ]
+        },
     }
 
 

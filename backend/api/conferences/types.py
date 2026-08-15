@@ -27,7 +27,6 @@ from api.voting.types import RankRequest
 from cms import models as cms_models
 from conferences import models as conference_models
 from conferences.models import deadline as deadline_models
-from participants import models as participant_models
 from schedule import models as schedule_models
 from submissions import models as submission_models
 from voting import models as voting_models
@@ -92,29 +91,22 @@ class Keynote:
     )
     topic: Topic | None
 
-    # Keep model instances here: values()/values_list() bypass Django's prefetch
-    # cache. A narrower custom Prefetch is only worthwhile if profiling shows it.
-    @strawberry_django.field(prefetch_related=["speakers__user"])
-    def speakers(self, info: Info) -> list[ScheduleItemUser]:
+    # Keep model instances so Django can use the prefetched users and participants.
+    @strawberry_django.field(
+        only=["conference_id"],
+        prefetch_related=["speakers__user__participants"],
+    )
+    def speakers(self) -> list[ScheduleItemUser]:
         keynote_speakers = [
             speaker for speaker in self.speakers.all() if speaker.user_id
         ]
-        participants_data = info.context._participants_data
-        if not participants_data:
-            participants_data = {
-                participant.user_id: participant
-                for participant in participant_models.Participant.objects.filter(
-                    user_id__in=[speaker.user_id for speaker in keynote_speakers],
-                    conference_id=self.conference_id,
-                ).all()
-            }
-
         return [
             ScheduleItemUser(
                 id=speaker.user_id,
                 fullname=speaker.user.full_name,
                 full_name=speaker.user.full_name,
-                participant=participants_data[speaker.user_id],
+                _user=speaker.user,
+                _conference_id=self.conference_id,
             )
             for speaker in keynote_speakers
         ]

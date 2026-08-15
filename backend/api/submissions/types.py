@@ -10,8 +10,8 @@ from api.utils import validate_url
 from api.voting.types import VoteType
 from files_upload import models as file_models
 from i18n.strings import LazyI18nString
-from participants import models as participant_models
 from submissions import models
+from users import models as user_models
 from voting import models as voting_models
 
 from .permissions import CanSeeSubmissionPrivateFields, CanSeeSubmissionRestrictedFields
@@ -52,16 +52,20 @@ class SubmissionSpeaker:
     id: strawberry.ID
     full_name: str
     gender: str
-    _conference_id: strawberry.Private[str]
+    _user: strawberry.Private[user_models.User]
+    _conference_id: strawberry.Private[int]
 
     @strawberry_django.field
     def participant(
         self,
     ) -> Annotated["Participant", strawberry.lazy("api.participants.types")] | None:
-        return participant_models.Participant.objects.for_conference(
-            self._conference_id
-        ).filter(
-            user_id=self.id,
+        return next(
+            (
+                participant
+                for participant in self._user.participants.all()
+                if participant.conference_id == self._conference_id
+            ),
+            None,
         )
 
 
@@ -151,8 +155,9 @@ class Submission:
         return self.abstract.localize(language)
 
     @strawberry_django.field(
-        only=["conference_id"],
+        only=["conference_id", "status"],
         select_related=["speaker"],
+        prefetch_related=["speaker__participants"],
     )
     def speaker(self, info: Info) -> SubmissionSpeaker | None:
         if not CanSeeSubmissionRestrictedFields().has_permission(
@@ -164,6 +169,7 @@ class Submission:
             id=self.speaker_id,
             full_name=self.speaker.full_name,
             gender=self.speaker.gender,
+            _user=self.speaker,
             _conference_id=self.conference_id,
         )
 
@@ -190,9 +196,9 @@ class Submission:
         except voting_models.Vote.DoesNotExist:
             return None
 
-    @strawberry_django.field
+    @strawberry_django.field(prefetch_related=["languages"])
     def languages(self, info: Info) -> list[Language] | None:
-        return self.languages.all()
+        return list(self.languages.all())
 
     @strawberry_django.field
     def tags(self, info: Info) -> list[SubmissionTag] | None:

@@ -1,11 +1,14 @@
 from datetime import date, datetime, time
 
+from pytest import mark
+
 from conferences.tests.factories import (
     ConferenceFactory,
     KeynoteFactory,
     KeynoteSpeakerFactory,
 )
 from participants.tests.factories import ParticipantFactory
+from pycon.constants import UTC
 from schedule.tests.factories import (
     DayFactory,
     RoomFactory,
@@ -14,8 +17,6 @@ from schedule.tests.factories import (
     SlotFactory,
 )
 from users.tests.factories import UserFactory
-from pytest import mark
-from pycon.constants import UTC
 
 
 @mark.django_db
@@ -241,9 +242,14 @@ def test_anonymous_user_does_not_have_schedule_spot(graphql_client):
 
 @mark.parametrize("item_count", [1, 4])
 @mark.parametrize("item_source", ["submission", "keynote"])
+@mark.parametrize("has_participant", [True, False])
 @mark.django_db
 def test_schedule_capacity_query_is_constant(
-    graphql_client, django_assert_num_queries, item_count, item_source
+    graphql_client,
+    django_assert_num_queries,
+    item_count,
+    item_source,
+    has_participant,
 ):
     conference = ConferenceFactory(
         start=datetime(2020, 4, 2, tzinfo=UTC),
@@ -261,6 +267,7 @@ def test_schedule_capacity_query_is_constant(
         if item_source == "keynote":
             keynote = KeynoteFactory(conference=conference)
             speaker = KeynoteSpeakerFactory(keynote=keynote).user
+            KeynoteSpeakerFactory(keynote=keynote, user=None)
             item = ScheduleItemFactory(
                 conference=conference,
                 slot=slots[index],
@@ -278,7 +285,8 @@ def test_schedule_capacity_query_is_constant(
             )
             speaker = item.submission.speaker
 
-        ParticipantFactory(conference=conference, user=speaker)
+        if has_participant:
+            ParticipantFactory(conference=conference, user=speaker)
         items.append(item)
         speakers.append(speaker)
     user = UserFactory()
@@ -393,5 +401,6 @@ def test_schedule_capacity_query_is_constant(
         str(speaker.id) for speaker in speakers
     ]
     assert all(
-        schedule_item["speakers"][0]["participant"] for schedule_item in schedule_items
+        bool(schedule_item["speakers"][0]["participant"]) is has_participant
+        for schedule_item in schedule_items
     )
