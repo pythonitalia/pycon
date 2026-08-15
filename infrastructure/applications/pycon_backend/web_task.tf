@@ -9,7 +9,7 @@ resource "aws_ecs_task_definition" "web" {
       essential         = true
 
       command = [
-        "/home/app/.venv/bin/gunicorn", "-w", "5", "-b", "0.0.0.0:8000", "pycon.wsgi"
+        "gunicorn", "-w", "5", "-b", "0.0.0.0:8000", "pycon.wsgi"
       ]
 
       dockerLabels = {
