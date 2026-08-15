@@ -98,3 +98,44 @@ def test_email_template_display_name():
     visible_name = admin.email_template_display_name(sent_email)
 
     assert visible_name == sent_email.email_template.get_identifier_display()
+
+
+def test_send_email_action(rf, admin_user, django_capture_on_commit_callbacks, mocker):
+    mock_send_pending_email = mocker.patch(
+        "notifications.admin.admins.send_pending_email"
+    )
+    admin = SentEmailAdmin(
+        model=SentEmail,
+        admin_site=AdminSite(),
+    )
+    admin.message_user = mocker.Mock()
+
+    request = rf.post("/")
+    request.user = admin_user
+
+    draft_email_1 = SentEmailFactory(status=SentEmail.Status.draft)
+    draft_email_2 = SentEmailFactory(status=SentEmail.Status.draft)
+    pending_email = SentEmailFactory(status=SentEmail.Status.pending)
+    sent_email = SentEmailFactory(status=SentEmail.Status.sent)
+    failed_email = SentEmailFactory(status=SentEmail.Status.failed)
+
+    qs = SentEmail.objects.filter(status=SentEmail.Status.draft)
+
+    with django_capture_on_commit_callbacks(execute=True):
+        admin.send_email(request, qs)
+
+    assert SentEmail.objects.filter(status=SentEmail.Status.draft).count() == 0
+
+    mock_send_pending_email.assert_has_calls(
+        [
+            mocker.call(draft_email_1.id),
+            mocker.call(draft_email_2.id),
+        ]
+    )
+
+    pending_email.refresh_from_db()
+    assert pending_email.status == SentEmail.Status.pending
+    sent_email.refresh_from_db()
+    assert sent_email.status == SentEmail.Status.sent
+    failed_email.refresh_from_db()
+    assert failed_email.status == SentEmail.Status.failed
