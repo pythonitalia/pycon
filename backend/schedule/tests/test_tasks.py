@@ -739,9 +739,8 @@ def test_upload_schedule_item_video_notifies_the_speaker_of_each_of_their_talks(
             schedule_item__conference=conference,
             schedule_item__type=ScheduleItem.TYPES.talk,
             schedule_item__submission=None,
+            schedule_item__title=title,
         )
-        sent_for_upload.schedule_item.title = title
-        sent_for_upload.schedule_item.save(update_fields=["title"])
         ScheduleItemAdditionalSpeakerFactory(
             scheduleitem=sent_for_upload.schedule_item, user=speaker
         )

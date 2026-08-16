@@ -751,6 +751,7 @@ class ScheduleItemSentForVideoUploadAdmin(admin.ModelAdmin):
         "status",
         "video_uploaded",
         "thumbnail_uploaded",
+        "emails_scheduled",
         "attempts",
         "last_attempt_at",
     )

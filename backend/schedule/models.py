@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Optional
-from users.models import User
 from conferences.querysets import ConferenceQuerySetMixin
 
 from django.core import exceptions
@@ -19,6 +18,11 @@ from conferences.models import Conference, Keynote
 from helpers.unique_slugify import unique_slugify
 from pycon.constants import COLORS
 from submissions.models import Submission
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from users.models import User
 
 
 @dataclass
@@ -336,7 +340,7 @@ class ScheduleItem(TimeStampedModel):
         return room.attendees_total_capacity if room else None
 
     @cached_property
-    def speakers(self) -> list[User]:
+    def speakers(self) -> list["User"]:
         speakers = []
 
         if self.submission_id:

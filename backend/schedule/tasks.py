@@ -264,7 +264,6 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
     schedule_item = sent_for_video_upload.schedule_item
     remote_video_path = schedule_item.video_uploaded_path
     video_id = schedule_item.youtube_video_id
-    conference = schedule_item.conference
 
     if not sent_for_video_upload.video_uploaded:
         logger.info("Uploading video for schedule_item_id=%s", schedule_item.id)
@@ -333,6 +332,7 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
     cleanup_local_files(schedule_item.id)
 
     if not sent_for_video_upload.emails_scheduled:
+        conference = schedule_item.conference
         all_speakers = schedule_item.speakers
         email_template = EmailTemplate.objects.for_conference(
             conference
