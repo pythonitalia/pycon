@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Q
 from conferences.tasks import send_conference_voucher_email
 from conferences.vouchers import create_conference_voucher
@@ -262,7 +263,7 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
 
     schedule_item = sent_for_video_upload.schedule_item
     remote_video_path = schedule_item.video_uploaded_path
-    video_id = None
+    video_id = schedule_item.youtube_video_id
 
     if not sent_for_video_upload.video_uploaded:
         logger.info("Uploading video for schedule_item_id=%s", schedule_item.id)
@@ -292,10 +293,9 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
     else:
         logger.info("Video already uploaded for schedule_item_id=%s", schedule_item.id)
 
-    if not sent_for_video_upload.thumbnail_uploaded:
-        video_id = video_id or schedule_item.youtube_video_id
-        assert video_id, "Video marked as uploaded but Video ID is missing"
+    assert video_id, "Video marked as uploaded but Video ID is missing"
 
+    if not sent_for_video_upload.thumbnail_uploaded:
         logger.info("Extracting thumbnail for schedule_item_id=%s", schedule_item.id)
 
         thumbnail_path = extract_video_thumbnail(
@@ -331,7 +331,29 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
 
     cleanup_local_files(schedule_item.id)
 
-    logger.info("Video uploaded for schedule_item_id=%s", schedule_item.id)
+    if not sent_for_video_upload.emails_scheduled:
+        conference = schedule_item.conference
+        all_speakers = schedule_item.speakers
+        email_template = EmailTemplate.objects.for_conference(
+            conference
+        ).get_by_identifier(EmailTemplateIdentifier.speaker_video_recording_uploaded)
+
+        with transaction.atomic():
+            for speaker in all_speakers:
+                email_template.draft_email(
+                    recipient=speaker,
+                    placeholders={
+                        "user_name": get_name(speaker, "there"),
+                        "video_recording_url": f"https://www.youtube.com/watch?v={video_id}",
+                        "schedule_item_title": schedule_item.title,
+                        "schedule_item_type": schedule_item.get_type_display(),
+                    },
+                )
+
+            sent_for_video_upload.emails_scheduled = True
+            sent_for_video_upload.save(update_fields=["emails_scheduled"])
+
+    logger.info("Workflow completed for schedule_item_id=%s", schedule_item.id)
     sent_for_video_upload.status = ScheduleItemSentForVideoUpload.Status.completed
     sent_for_video_upload.save(update_fields=["status"])
 

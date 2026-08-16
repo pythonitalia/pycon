@@ -53,6 +53,11 @@ class EmailTemplateIdentifier(models.TextChoices):
         _("Visa invitation letter download"),
     )
 
+    speaker_video_recording_uploaded = (
+        "speaker_video_recording_uploaded",
+        _("Speaker: Video recording uploaded"),
+    )
+
     custom = "custom", _("Custom")
 
 
@@ -164,6 +169,13 @@ class EmailTemplate(TimeStampedModel):
             "invitation_letter_download_url",
             "has_grant",
             "user_name",
+        ],
+        EmailTemplateIdentifier.speaker_video_recording_uploaded: [
+            *BASE_PLACEHOLDERS,
+            "user_name",
+            "video_recording_url",
+            "schedule_item_title",
+            "schedule_item_type",
         ],
     }
 
