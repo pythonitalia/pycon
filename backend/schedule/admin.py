@@ -176,7 +176,6 @@ def _send_invitations(
         submission__isnull=False,
         type__in=[
             ScheduleItem.TYPES.talk,
-            ScheduleItem.TYPES.submission,
             ScheduleItem.TYPES.training,
         ],
     )

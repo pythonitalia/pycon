@@ -20,7 +20,7 @@ def test_star_schedule_item(
         status=ScheduleItem.STATUS.confirmed,
         speaker_invitation_notes="notes",
         submission=submission,
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=submission.conference,
         slot=SlotFactory(
             day=DayFactory(
@@ -57,7 +57,7 @@ def test_unstar_schedule_item(
         status=ScheduleItem.STATUS.confirmed,
         speaker_invitation_notes="notes",
         submission=submission,
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=submission.conference,
         slot=SlotFactory(
             day=DayFactory(
