@@ -9,7 +9,7 @@ from schedule.tests.factories import DayFactory, ScheduleItemFactory, SlotFactor
 from submissions.tests.factories import SubmissionFactory
 
 SCHEDULE_INVITATION_QUERY = """
-    query GetScheduleInvitation($submissionId: ID!, $language: String!) {
+    query GetScheduleInvitation($submissionId: ID!) {
       scheduleInvitation(submissionId: $submissionId) {
         id
         option
@@ -17,7 +17,7 @@ SCHEDULE_INVITATION_QUERY = """
         title
         submission {
           id
-          title(language: $language)
+          title(language: "en")
           duration {
             id
             duration
@@ -67,7 +67,7 @@ def test_schedule_invitation_frontend_query(
     with django_assert_num_queries(4):
         response = graphql_client.query(
             SCHEDULE_INVITATION_QUERY,
-            variables={"language": "en", "submissionId": submission.hashid},
+            variables={"submissionId": submission.hashid},
         )
 
     assert "errors" not in response

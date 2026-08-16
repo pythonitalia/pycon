@@ -11,7 +11,6 @@ import {
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 
-import { useCurrentLanguage } from "~/locale/context";
 import {
   type Cta,
   type SponsorsSectionLayout,
@@ -29,7 +28,6 @@ type Props = {
 };
 
 export const SponsorsSection = ({ title, body, cta }: Props) => {
-  const language = useCurrentLanguage();
   const {
     data: { conference },
   } = useSponsorsSectionQuery({
@@ -70,7 +68,6 @@ export const SponsorsSection = ({ title, body, cta }: Props) => {
                     variant="secondary"
                     href={createHref({
                       path: cta.link,
-                      locale: language,
                     })}
                     size="small"
                   >

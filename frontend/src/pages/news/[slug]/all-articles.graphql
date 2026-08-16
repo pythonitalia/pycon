@@ -1,5 +1,5 @@
-query AllNewsArticles($hostname: String!, $language: String!) {
-  newsArticles(hostname: $hostname, language: $language) {
+query AllNewsArticles($hostname: String!) {
+  newsArticles(hostname: $hostname, language: "en") {
     id
     slug
   }

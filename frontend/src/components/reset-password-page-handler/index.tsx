@@ -16,7 +16,6 @@ import router from "next/router";
 
 import { PASSWORD_MIN_LENGTH } from "~/helpers/constants";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
 import { useResetPasswordMutation } from "~/types";
 
 import { createHref } from "../link";
@@ -29,7 +28,6 @@ type FormFields = {
 };
 
 export const ResetPasswordPageHandler = () => {
-  const language = useCurrentLanguage();
   const formRef = useRef<HTMLFormElement>(undefined);
   const passwordMismatchMessage = useTranslatedMessage(
     "signup.passwordMismatch",
@@ -65,7 +63,6 @@ export const ResetPasswordPageHandler = () => {
       router.push(
         createHref({
           path: "/reset-password/password-changed",
-          locale: language,
         }),
       );
     }

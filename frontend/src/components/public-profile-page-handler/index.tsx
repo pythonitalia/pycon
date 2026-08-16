@@ -19,21 +19,18 @@ import {
 } from "~/types";
 
 import { FormattedMessage } from "react-intl";
-import { useCurrentLanguage } from "~/locale/context";
 import { createHref } from "../link";
 import { ParticipantInfoSection } from "../participant-info-section";
 import { ScheduleItemList } from "../schedule-view/schedule-list";
 
 export const PublicProfilePageHandler = () => {
   const router = useRouter();
-  const language = useCurrentLanguage();
   const {
     data: { participant },
   } = useParticipantPublicProfileQuery({
     variables: {
       id: router.query.hashid as string,
       conference: process.env.conferenceCode,
-      language,
     },
   });
 
@@ -67,7 +64,6 @@ const ProposalCard = ({
 }: {
   proposal: ParticipantPublicProfileQueryResult["data"]["participant"]["proposals"][0];
 }) => {
-  const language = useCurrentLanguage();
   return (
     <MultiplePartsCard>
       <CardPart contentAlign="left">
@@ -91,7 +87,6 @@ const ProposalCard = ({
               proposal.scheduleItems.length > 0
                 ? `/event/${proposal.scheduleItems[0].slug}`
                 : `/submission/${proposal.id}`,
-            locale: language,
           })}
         >
           <Heading color="none" size={4}>

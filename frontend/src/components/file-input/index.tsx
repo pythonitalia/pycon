@@ -14,7 +14,6 @@ import {
   getTranslatedMessage,
   useTranslatedMessage,
 } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
 import { useFinalizeUploadMutation, useUploadFileMutation } from "~/types";
 
 const MAX_UPLOAD_SIZE_IN_MB = 10 * 1024 * 1024;
@@ -44,7 +43,6 @@ export const FileInput = ({
 }) => {
   const conferenceCode = process.env.conferenceCode;
   const canvas = useRef<HTMLCanvasElement>(undefined);
-  const language = useCurrentLanguage();
 
   const [uploadFile] = useUploadFileMutation();
   const [finalizeUpload] = useFinalizeUploadMutation();
@@ -75,7 +73,7 @@ export const FileInput = ({
 
     if (file.size > MAX_UPLOAD_SIZE_IN_MB) {
       resetInput();
-      setError(getTranslatedMessage("fileInput.fileSize", language));
+      setError(getTranslatedMessage("fileInput.fileSize"));
 
       setSelectedFile(null);
       return;
@@ -145,7 +143,7 @@ export const FileInput = ({
       const response = data.uploadFile;
 
       if (errors || response.__typename !== "FileUploadRequest") {
-        setError(getTranslatedMessage("fileInput.uploadFailed", language));
+        setError(getTranslatedMessage("fileInput.uploadFailed"));
         return;
       }
 
@@ -163,7 +161,7 @@ export const FileInput = ({
       });
 
       if (uploadRequest.status !== 204) {
-        setError(getTranslatedMessage("fileInput.uploadFailed", language));
+        setError(getTranslatedMessage("fileInput.uploadFailed"));
         return;
       }
 
@@ -180,10 +178,7 @@ export const FileInput = ({
         name: file.name,
       });
     } catch (e) {
-      const baseMessage = getTranslatedMessage(
-        "fileInput.uploadFailed",
-        language,
-      );
+      const baseMessage = getTranslatedMessage("fileInput.uploadFailed");
       setError(`${baseMessage}: ${e.message}`);
     } finally {
       setIsUploading(false);

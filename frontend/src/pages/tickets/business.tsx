@@ -41,21 +41,13 @@ export const BusinessTicketsPage = ({ cartCookie }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  locale,
-}) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const client = getApolloClient(null, req.cookies);
 
   await Promise.all([
-    prefetchSharedQueries(client, locale),
+    prefetchSharedQueries(client),
     queryTickets(client, {
       conference: process.env.conferenceCode,
-      language: "it",
-    }),
-    queryTickets(client, {
-      conference: process.env.conferenceCode,
-      language: "en",
     }),
   ]);
 

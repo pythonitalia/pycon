@@ -10,7 +10,6 @@ import {
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
-import { useCurrentLanguage } from "~/locale/context";
 import {
   MyProfileWithTicketsDocument,
   type MyProfileWithTicketsQuery,
@@ -53,7 +52,6 @@ export const CustomizeTicketModal = ({
   ticket,
   showBadgePreview,
 }: Props & CustomizeTicketModalProps) => {
-  const language = useCurrentLanguage();
   const [updateTicket, { loading: updatingTicket, error: updateTicketError }] =
     useUpdateTicketMutation();
 
@@ -92,7 +90,6 @@ export const CustomizeTicketModal = ({
     const response = await updateTicket({
       variables: {
         conference: process.env.conferenceCode,
-        language: language,
         input: {
           id: updatedProductUserInformation.id,
           attendeeName: {
@@ -261,7 +258,6 @@ export const CustomizeTicketModal = ({
               <Link
                 href={createHref({
                   path: "/profile/edit",
-                  locale: language,
                 })}
                 target="_blank"
               >

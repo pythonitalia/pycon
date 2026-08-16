@@ -15,7 +15,6 @@ import { useFormState } from "react-use-form-state";
 
 import { useRouter } from "next/router";
 
-import { useCurrentLanguage } from "~/locale/context";
 import { useRequestPasswordResetMutation } from "~/types";
 
 import { createHref } from "../link";
@@ -27,7 +26,6 @@ type FormFields = {
 };
 
 export const RequestResetPasswordPageHandler = () => {
-  const language = useCurrentLanguage();
   const formRef = useRef<HTMLFormElement>(undefined);
   const router = useRouter();
   const [formState, { email }] = useFormState<FormFields>(
@@ -59,7 +57,6 @@ export const RequestResetPasswordPageHandler = () => {
         router.push(
           createHref({
             path: "/reset-password/success",
-            locale: language,
           }),
         );
       }
@@ -90,7 +87,6 @@ export const RequestResetPasswordPageHandler = () => {
                       <Link
                         href={createHref({
                           path: "/login",
-                          locale: language,
                         })}
                       >
                         <Text

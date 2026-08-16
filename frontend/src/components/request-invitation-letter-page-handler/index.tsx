@@ -8,7 +8,6 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 import { MetaTags } from "~/components/meta-tags";
-import { useCurrentLanguage } from "~/locale/context";
 import {
   DeadlineStatus,
   type InvitationLetterRequest,
@@ -19,7 +18,6 @@ import { InvitationLetterForm } from "./invitation-letter-form";
 import { InvitationLetterRequestStatusCallout } from "./invitation-letter-request-status-callout";
 
 export const RequestInvitationLetterPageHandler = () => {
-  const language = useCurrentLanguage();
   const {
     data: {
       conference: { invitationLetterRequestDeadline },
@@ -49,7 +47,6 @@ export const RequestInvitationLetterPageHandler = () => {
         <Link
           href={createHref({
             path: "/visa",
-            locale: language,
           })}
         >
           <Text color="none" weight="strong" decoration="underline" size={2}>
@@ -94,8 +91,7 @@ const FormClosed = ({
 );
 
 const FormOpeningSoon = ({ date }) => {
-  const language = useCurrentLanguage();
-  const formatter = new Intl.DateTimeFormat(language, {
+  const formatter = new Intl.DateTimeFormat("en", {
     year: "numeric",
     month: "long",
     day: "numeric",

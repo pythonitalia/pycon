@@ -5,7 +5,7 @@ fragment ConferenceProducts on Conference {
   timeZone: timezone
   pretixEventUrl
 
-  tickets(language: $language) {
+  tickets(language: "en") {
     id
     language
     name

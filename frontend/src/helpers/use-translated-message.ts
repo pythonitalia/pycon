@@ -1,21 +1,13 @@
-import type { Language } from "~/locale/languages";
-
 import { messages } from "../locale";
-import { useCurrentLanguage } from "../locale/context";
 
-export const useTranslatedMessage = (id: keyof (typeof messages)["en"]) => {
-  const language = useCurrentLanguage();
-  return getTranslatedMessage(id, language);
-};
+export const useTranslatedMessage = (id: keyof typeof messages) =>
+  getTranslatedMessage(id);
 
-export const getTranslatedMessage = (
-  id: keyof (typeof messages)["en"],
-  language: Language,
-): string => {
-  const message = messages[language][id];
+export const getTranslatedMessage = (id: keyof typeof messages): string => {
+  const message = messages[id];
 
   if (!message) {
-    console.warn(`Message with ${id} not found for language ${language}`);
+    console.warn(`Message with ${id} not found`);
   }
 
   return message;

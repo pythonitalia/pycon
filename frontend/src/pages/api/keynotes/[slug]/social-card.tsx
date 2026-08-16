@@ -39,7 +39,6 @@ export const handler = async (req: NextRequest) => {
     data: { conference },
   } = await queryTalk(client, {
     slug,
-    language,
     code: process.env.conferenceCode,
   });
   const talk = conference?.talk;

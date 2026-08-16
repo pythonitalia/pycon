@@ -22,7 +22,6 @@ import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { PASSWORD_MIN_LENGTH } from "~/helpers/constants";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
 import { useSignupMutation } from "~/types";
 
 import { createHref } from "../link";
@@ -48,7 +47,6 @@ const getErrorMessageIfAny = (typename?: string) => {
 };
 
 export const SignupPageHandler = () => {
-  const language = useCurrentLanguage();
   const passwordMismatchMessage = useTranslatedMessage(
     "signup.passwordMismatch",
   );
@@ -145,7 +143,6 @@ export const SignupPageHandler = () => {
                       <Link
                         href={createHref({
                           path: "/login",
-                          locale: language,
                         })}
                       >
                         <Text
@@ -255,7 +252,6 @@ export const SignupPageHandler = () => {
                             <Link
                               href={createHref({
                                 path: "/privacy-policy",
-                                locale: language,
                               })}
                             >
                               <Text

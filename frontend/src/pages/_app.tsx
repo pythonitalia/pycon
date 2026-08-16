@@ -15,7 +15,6 @@ import {
   ModalStateContext,
 } from "~/components/modal/context";
 import messages from "~/locale";
-import { LocaleProvider, useCurrentLanguage } from "~/locale/context";
 
 import "../global.css";
 
@@ -28,7 +27,6 @@ const MyApp = (props) => {
     props?: ModalProps[keyof ModalProps];
   }>({ modalId: null });
   const apolloClient = getApolloClient(props.pageProps[APOLLO_STATE_PROP_NAME]);
-  const locale = useCurrentLanguage();
 
   const setCurrentModal = <T extends ModalID>(
     modalId: T,
@@ -52,10 +50,10 @@ const MyApp = (props) => {
 
   const intl = createIntl(
     {
-      locale,
+      locale: "en",
       messages: {
-        ...messages[locale],
-        ...getMessagesForLocale(locale),
+        ...messages,
+        ...getMessagesForLocale("en"),
       },
     },
     intlCache,
@@ -71,22 +69,20 @@ const MyApp = (props) => {
   return (
     <ApolloProvider client={apolloClient}>
       <RawIntlProvider value={intl}>
-        <LocaleProvider lang={locale}>
-          <div className="flex flex-col min-h-screen">
-            <ErrorBoundary>
-              <ModalStateContext.Provider value={modalContext}>
-                <Header />
+        <div className="flex flex-col min-h-screen">
+          <ErrorBoundary>
+            <ModalStateContext.Provider value={modalContext}>
+              <Header />
 
-                <div>
-                  <Component {...pageProps} err={err} />
-                  <ModalRenderer />
-                </div>
+              <div>
+                <Component {...pageProps} err={err} />
+                <ModalRenderer />
+              </div>
 
-                <Footer />
-              </ModalStateContext.Provider>
-            </ErrorBoundary>
-          </div>
-        </LocaleProvider>
+              <Footer />
+            </ModalStateContext.Provider>
+          </ErrorBoundary>
+        </div>
       </RawIntlProvider>
     </ApolloProvider>
   );

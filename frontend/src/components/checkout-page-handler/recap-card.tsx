@@ -6,7 +6,6 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
 import type { TicketItem } from "~/types";
 
 import { calculateProductPrice } from "../tickets-page/review/prices";
@@ -58,8 +57,7 @@ type RecapItemProps = {
 };
 
 const RecapItem = ({ selectedProductInfo, product }: RecapItemProps) => {
-  const lang = useCurrentLanguage();
-  const moneyFormatter = new Intl.NumberFormat(lang, {
+  const moneyFormatter = new Intl.NumberFormat("en", {
     style: "currency",
     currency: "EUR",
   });

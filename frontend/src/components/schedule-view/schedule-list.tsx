@@ -14,7 +14,6 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
 
 import { isItemVisible } from ".";
 import { createHref } from "../link";
@@ -95,13 +94,12 @@ export const ScheduleItemList = ({
   toggleEventFavorite: (item: Item) => void;
   currentDay: string;
 }) => {
-  const language = useCurrentLanguage();
   const italianLanguageText = useTranslatedMessage("talk.language.it");
   const englishLanguageText = useTranslatedMessage("talk.language.en");
   const allRoomsText = useTranslatedMessage("scheduleView.allRooms");
   const translatedRoomText = useTranslatedMessage("schedule.room");
 
-  const hourFormatter = new Intl.DateTimeFormat(language, {
+  const hourFormatter = new Intl.DateTimeFormat("en", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -117,7 +115,6 @@ export const ScheduleItemList = ({
         hoverColor: "coral",
         href: createHref({
           path: itemUrl,
-          locale: language,
           external:
             item.linkTo?.startsWith("http://") ||
             item.linkTo?.startsWith("https://"),

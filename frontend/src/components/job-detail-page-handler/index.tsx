@@ -2,7 +2,6 @@ import React from "react";
 
 import { useRouter } from "next/router";
 
-import { useCurrentLanguage } from "~/locale/context";
 import { useAllJobListingsQuery } from "~/types";
 
 import { JobBoardLayout } from "../job-board-layout";

@@ -13,8 +13,8 @@ pytestmark = pytest.mark.django_db
 SUBMISSION_ACCORDION_FRAGMENT = """
     fragment submissionAccordion on Submission {
       id
-      title(language: $language)
-      elevatorPitch(language: $language)
+      title(language: "en")
+      elevatorPitch(language: "en")
       type {
         name
       }
@@ -52,7 +52,6 @@ VOTING_SUBMISSIONS_QUERY = (
     """
     query VotingSubmissions(
       $conference: String!
-      $language: String!
       $languages: [String!]
       $voted: Boolean
       $tags: [String!]
@@ -88,7 +87,6 @@ DYNAMIC_CONTENT_PROPOSALS_QUERY = (
     """
     query DynamicContentDisplaySectionProposals(
       $code: String!
-      $language: String!
     ) {
       submissions(code: $code, onlyAccepted: true, pageSize: 300) {
         items {
@@ -135,7 +133,7 @@ def test_voting_submissions_frontend_query(
     with django_assert_num_queries(expected_queries):
         response = graphql_client.query(
             VOTING_SUBMISSIONS_QUERY,
-            variables={"conference": conference.code, "language": "en"},
+            variables={"conference": conference.code},
         )
 
     assert "errors" not in response
@@ -175,7 +173,7 @@ def test_dynamic_content_proposals_frontend_query(
     with django_assert_num_queries(expected_queries):
         response = graphql_client.query(
             DYNAMIC_CONTENT_PROPOSALS_QUERY,
-            variables={"code": conference.code, "language": "en"},
+            variables={"code": conference.code},
         )
 
     assert "errors" not in response

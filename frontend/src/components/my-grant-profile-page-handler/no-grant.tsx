@@ -7,7 +7,6 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
 import { DeadlineStatus, type MyProfileWithSubmissionsQuery } from "~/types";
 
 import { createHref } from "../link";
@@ -18,7 +17,6 @@ type Props = {
 
 export const NoGrant = ({ deadline }: Props) => {
   const deadlineStatus = deadline?.status;
-  const language = useCurrentLanguage();
 
   return (
     <Container size="medium" center={false} noPadding>
@@ -48,7 +46,6 @@ export const NoGrant = ({ deadline }: Props) => {
           <Button
             href={createHref({
               path: "/grants-info",
-              locale: language,
             })}
             variant="secondary"
           >

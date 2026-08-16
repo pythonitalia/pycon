@@ -12,7 +12,6 @@ import {
 import React from "react";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
 import {
   type Cta,
   queryKeynotesSection,
@@ -27,11 +26,9 @@ type Props = {
   cta: Cta | null;
 };
 export const KeynotersSection = ({ title, cta }: Props) => {
-  const language = useCurrentLanguage();
   const { data } = useKeynotesSectionQuery({
     variables: {
       code: process.env.conferenceCode,
-      language,
     },
   });
 
@@ -65,7 +62,6 @@ export const KeynotersSection = ({ title, cta }: Props) => {
             <Button
               href={createHref({
                 path: cta.link,
-                locale: language,
               })}
             >
               {cta.label}
@@ -77,11 +73,10 @@ export const KeynotersSection = ({ title, cta }: Props) => {
   );
 };
 
-KeynotersSection.dataFetching = (client, language) => {
+KeynotersSection.dataFetching = (client) => {
   return [
     queryKeynotesSection(client, {
       code: process.env.conferenceCode,
-      language: language,
     }),
   ];
 };

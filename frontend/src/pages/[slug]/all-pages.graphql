@@ -1,5 +1,5 @@
-query AllPages($hostname: String!, $language: String!) {
-  cmsPages(hostname: $hostname, language: $language) {
+query AllPages($hostname: String!) {
+  cmsPages(hostname: $hostname, language: "en") {
     id
     slug
   }

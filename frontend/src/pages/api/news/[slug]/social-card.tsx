@@ -42,7 +42,6 @@ const handler = async (req: NextRequest) => {
     semiBoldFont,
     queryNewsArticle(client, {
       slug,
-      language,
       hostname: process.env.cmsHostname,
     }),
   ]);

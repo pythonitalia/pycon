@@ -8,7 +8,6 @@ import {
 import { addDays, eachDayOfInterval, format, parseISO } from "date-fns";
 import { Fragment } from "react";
 import { FormattedMessage } from "react-intl";
-import { useCurrentLanguage } from "~/locale/context";
 import type { CfpFormQuery } from "~/types";
 
 const CHOICES = ["available", "preferred", "unavailable"];
@@ -24,14 +23,13 @@ export const AvailabilitySection = ({
   speakerAvailabilities,
   onChangeAvailability,
 }: Props) => {
-  const language = useCurrentLanguage();
   const {
     conference: { start, end },
   } = conferenceData;
   const parsedStart = addDays(parseISO(start), 1);
   const parsedEnd = parseISO(end);
   const daysBetween = eachDayOfInterval({ start: parsedStart, end: parsedEnd });
-  const dateFormatter = new Intl.DateTimeFormat(language, {
+  const dateFormatter = new Intl.DateTimeFormat("en", {
     day: "2-digit",
     month: "long",
   });

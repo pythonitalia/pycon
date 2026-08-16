@@ -10,7 +10,6 @@ import {
 import { FormattedMessage } from "react-intl";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 
-import { useCurrentLanguage } from "~/locale/context";
 import { DeadlineStatus, Status as GrantStatus } from "~/types";
 import type { MyProfileWithGrantQuery } from "~/types";
 
@@ -31,11 +30,9 @@ const grantManageableStatuses = [
 ];
 
 export const MyGrant = ({ grant, deadline }: Props) => {
-  const language = useCurrentLanguage();
-
   const canManageGrant = grantManageableStatuses.includes(grant.status);
 
-  const dateFormatter = new Intl.DateTimeFormat(language, {
+  const dateFormatter = new Intl.DateTimeFormat("en", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -57,7 +54,6 @@ export const MyGrant = ({ grant, deadline }: Props) => {
               <Button
                 href={createHref({
                   path: "/grants/edit",
-                  locale: language,
                 })}
                 size="small"
                 variant="secondary"
@@ -81,10 +77,7 @@ export const MyGrant = ({ grant, deadline }: Props) => {
                   values={{
                     replyDeadline: (
                       <Text size={2} as="span" weight="strong">
-                        {formatDeadlineDateTime(
-                          grant.applicantReplyDeadline,
-                          language,
-                        )}
+                        {formatDeadlineDateTime(grant.applicantReplyDeadline)}
                       </Text>
                     ),
                   }}
@@ -97,7 +90,6 @@ export const MyGrant = ({ grant, deadline }: Props) => {
                 <Button
                   href={createHref({
                     path: "/grants/reply",
-                    locale: language,
                   })}
                   size="small"
                   variant="secondary"

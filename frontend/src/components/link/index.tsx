@@ -3,12 +3,10 @@ import type { ParsedUrlQuery } from "querystring";
 export const createHref = ({
   path,
   params,
-  locale,
   external,
 }: {
   path: string;
   params?: ParsedUrlQuery;
-  locale: string;
   external?: boolean;
 }) => {
   if (external) {
@@ -37,7 +35,5 @@ export const createHref = ({
     .map(([key, value]) => `${key}=${value}`)
     .join("&");
 
-  return `/${locale}${resolvedPath}${
-    queryParams.length > 0 ? `?${queryParams}` : ""
-  }`;
+  return `${resolvedPath}${queryParams.length > 0 ? `?${queryParams}` : ""}`;
 };

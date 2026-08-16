@@ -19,7 +19,6 @@ import { FormattedMessage } from "react-intl";
 
 import { useRouter } from "next/router";
 
-import { useCurrentLanguage } from "~/locale/context";
 import { getDayUrl } from "~/pages/schedule/[day]";
 import {
   type ScheduleQuery,
@@ -50,7 +49,6 @@ export const ScheduleView = ({
   const setCurrentModal = useSetCurrentModal();
   const router = useRouter();
   const [isLoggedIn] = useLoginState();
-  const language = useCurrentLanguage();
   const [liveSlot, setLiveSlot] = useState<Slot | null>(null);
 
   const {
@@ -299,7 +297,7 @@ export const ScheduleView = ({
     );
     params.append("view", viewMode);
 
-    const currentUrl = getDayUrl(currentDay, language);
+    const currentUrl = getDayUrl(currentDay);
     router.replace(`${currentUrl}?${params.toString()}`, undefined, {
       shallow: true,
     });
@@ -363,7 +361,7 @@ export const ScheduleView = ({
             selected: d.day === currentDay,
           }))}
           onClick={changeDay}
-          language={language}
+          language="en"
         >
           <div className="shrink-0 my-3 pl-4 md:pr-4 flex md:items-center md:justify-end">
             <div className="hidden md:block">

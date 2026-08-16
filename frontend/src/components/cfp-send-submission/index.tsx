@@ -3,7 +3,6 @@ import React from "react";
 import { useRouter } from "next/router";
 
 import { CfpForm, type CfpFormFields } from "~/components/cfp-form";
-import { useCurrentLanguage } from "~/locale/context";
 import {
   type SendSubmissionMutation,
   readMeSubmissionsQueryCache,
@@ -14,7 +13,6 @@ import {
 export const CfpSendSubmission = () => {
   const code = process.env.conferenceCode;
   const router = useRouter();
-  const language = useCurrentLanguage();
 
   const [sendSubmission, { loading, error, data }] = useSendSubmissionMutation({
     update(cache, { data: updateData }) {
@@ -22,7 +20,6 @@ export const CfpSendSubmission = () => {
         cache,
         variables: {
           conference: code,
-          language,
         },
       });
 
@@ -34,7 +31,6 @@ export const CfpSendSubmission = () => {
         cache,
         variables: {
           conference: code,
-          language,
         },
         data: {
           me: {
@@ -78,7 +74,6 @@ export const CfpSendSubmission = () => {
           speakerAvailabilities: input.speakerAvailabilities,
           doNotRecord: input.doNotRecord,
         },
-        language,
       },
     });
 

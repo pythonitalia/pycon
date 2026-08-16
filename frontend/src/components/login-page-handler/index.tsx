@@ -19,7 +19,6 @@ import { useRouter } from "next/router";
 
 import { MetaTags } from "~/components/meta-tags";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
 import { type LoginMutation, useLoginMutation } from "~/types";
 
 import { createHref } from "../link";
@@ -36,7 +35,6 @@ const cleanRedirectUrl = (url: string) =>
 
 export const LoginPageHandler = () => {
   const router = useRouter();
-  const language = useCurrentLanguage();
   const [loggedIn, setLoggedIn] = useLoginState();
   const formRef = useRef<HTMLFormElement>(undefined);
 
@@ -107,7 +105,6 @@ export const LoginPageHandler = () => {
                       <Link
                         href={createHref({
                           path: "/signup",
-                          locale: language,
                         })}
                       >
                         <Text
@@ -188,7 +185,6 @@ export const LoginPageHandler = () => {
                 <BasicButton
                   href={createHref({
                     path: "/reset-password",
-                    locale: language,
                   })}
                 >
                   <FormattedMessage id="login.recoverPassword" />

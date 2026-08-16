@@ -2,7 +2,7 @@
 #import "./fragments/keynote.graphql"
 #import "./fragments/schedule-slot.graphql"
 
-query Schedule($code: String!, $language: String!) {
+query Schedule($code: String!) {
   conference(code: $code) {
     id
     timezone

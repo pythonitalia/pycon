@@ -18,7 +18,6 @@ import {
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
 import {
   InvitationLetterOnBehalfOf,
   type InvitationLetterRequest,
@@ -61,7 +60,6 @@ export const InvitationLetterForm = ({
   hasAdmissionTicket: boolean;
   invitationLetterRequest?: InvitationLetterRequest;
 }) => {
-  const language = useCurrentLanguage();
   const [formState, { checkbox, radio, text, textarea, email, date }] =
     useFormState<InvitationLetterFormFields>({
       onBehalfOf: InvitationLetterOnBehalfOf.Self,
@@ -356,7 +354,6 @@ export const InvitationLetterForm = ({
                         target="_blank"
                         href={createHref({
                           path: "/privacy-policy",
-                          locale: language,
                         })}
                       >
                         Privacy Policy

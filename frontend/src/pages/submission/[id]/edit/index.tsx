@@ -13,7 +13,6 @@ import {
   type SubmissionStructure,
 } from "~/components/cfp-form";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
 import {
   queryCfpForm,
   queryGetSubmission,
@@ -28,7 +27,6 @@ export const EditSubmissionPage = () => {
   const code = process.env.conferenceCode;
   const router = useRouter();
   const id = router.query.id as string;
-  const language = useCurrentLanguage();
 
   const [
     updateSubmission,
@@ -40,7 +38,7 @@ export const EditSubmissionPage = () => {
   ] = useUpdateSubmissionMutation();
 
   const { error: submissionError, data: submissionData } =
-    useGetSubmissionQuery({ variables: { id, language } });
+    useGetSubmissionQuery({ variables: { id } });
 
   const onSubmit = async (input: CfpFormFields) => {
     const response = await updateSubmission({
@@ -78,7 +76,6 @@ export const EditSubmissionPage = () => {
             })),
           doNotRecord: input.doNotRecord,
         },
-        language,
       },
     });
 
@@ -120,7 +117,6 @@ export const EditSubmissionPage = () => {
 export const getServerSideProps: GetServerSideProps = async ({
   req,
   params,
-  locale,
 }) => {
   const identityToken = req.cookies.pythonitalia_sessionid;
   if (!identityToken) {
@@ -136,7 +132,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   const client = getApolloClient(null, req.cookies);
   try {
     await Promise.all([
-      prefetchSharedQueries(client, locale),
+      prefetchSharedQueries(client),
       queryIsCfpOpen(client, {
         conference: process.env.conferenceCode,
       }),
@@ -151,7 +147,6 @@ export const getServerSideProps: GetServerSideProps = async ({
       }),
       queryGetSubmission(client, {
         id,
-        language: locale,
       }),
     ]);
   } catch (e) {

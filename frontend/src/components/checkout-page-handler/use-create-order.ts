@@ -2,7 +2,6 @@ import type React from "react";
 
 import { useCreateOrderMutation } from "~/types";
 
-import { useCurrentLanguage } from "~/locale/context";
 import type { SelectedProducts } from "../tickets-page/types";
 import { useCart } from "../tickets-page/use-cart";
 
@@ -10,7 +9,6 @@ export const useCreateOrder = ({ userEmail }) => {
   const code = process.env.conferenceCode;
   const { state } = useCart();
   const [createOrder, { loading, data }] = useCreateOrderMutation();
-  const language = useCurrentLanguage();
 
   const onCreateOrder = async (
     event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
@@ -52,7 +50,7 @@ export const useCreateOrder = ({ userEmail }) => {
           paymentProvider: method,
           tickets: orderTickets,
           email: userEmail,
-          locale: language,
+          locale: "en",
           invoiceInformation: {
             isBusiness: state.invoiceInformation.isBusiness,
             company: state.invoiceInformation.companyName,

@@ -22,10 +22,7 @@ export const TicketsCheckoutPage = ({ cartCookie }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  locale,
-}) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const identityToken = req.cookies.pythonitalia_sessionid;
   if (!identityToken) {
     return {
@@ -40,14 +37,9 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   try {
     await Promise.all([
-      prefetchSharedQueries(client, locale),
+      prefetchSharedQueries(client),
       queryTickets(client, {
         conference: process.env.conferenceCode,
-        language: "it",
-      }),
-      queryTickets(client, {
-        conference: process.env.conferenceCode,
-        language: "en",
       }),
       queryCurrentUser(client, {
         conference: process.env.conferenceCode,

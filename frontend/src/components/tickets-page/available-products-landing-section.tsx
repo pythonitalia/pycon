@@ -11,7 +11,6 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { compile } from "~/helpers/markdown";
-import { useCurrentLanguage } from "~/locale/context";
 import { type TicketItem, TicketType } from "~/types";
 
 import { createHref } from "../link";
@@ -21,7 +20,6 @@ type Props = {
 };
 
 export const AvailableProductsLandingSection = ({ tickets }: Props) => {
-  const language = useCurrentLanguage();
   const membership = tickets.find(
     (ticket) => !ticket.admission && ticket.type === TicketType.Association,
   );
@@ -55,7 +53,6 @@ export const AvailableProductsLandingSection = ({ tickets }: Props) => {
                 size="small"
                 href={createHref({
                   path: "/social-events",
-                  locale: language,
                 })}
                 variant="secondary"
               >

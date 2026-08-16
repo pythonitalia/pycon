@@ -9,7 +9,7 @@ query Header($code: String!) {
         streamingUrl
       }
     }
-    conferenceMenuEn: menu(identifier: "conference-nav") {
+    conferenceMenu: menu(identifier: "conference-nav") {
       links {
         text: title(language: "en")
         link: href(language: "en")
@@ -19,34 +19,13 @@ query Header($code: String!) {
         }
       }
     }
-    programMenuEn: menu(identifier: "program-nav") {
+    programMenu: menu(identifier: "program-nav") {
       links {
         text: title(language: "en")
         link: href(language: "en")
 
         page {
           slug(language: "en")
-        }
-      }
-    }
-
-    conferenceMenuIt: menu(identifier: "conference-nav") {
-      links {
-        text: title(language: "it")
-        link: href(language: "it")
-
-        page {
-          slug(language: "it")
-        }
-      }
-    }
-    programMenuIt: menu(identifier: "program-nav") {
-      links {
-        text: title(language: "it")
-        link: href(language: "it")
-
-        page {
-          slug(language: "it")
         }
       }
     }

@@ -7,14 +7,11 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
-
 import { createHref } from "../link";
 import { LoginFlowLayout } from "../login-flow-layout";
 import { MetaTags } from "../meta-tags";
 
 export const ResetPasswordSuccessPageHandler = () => {
-  const language = useCurrentLanguage();
   return (
     <Page endSeparator={false}>
       <FormattedMessage id="resetPasswordSuccess.title">
@@ -37,7 +34,6 @@ export const ResetPasswordSuccessPageHandler = () => {
         <BasicButton
           href={createHref({
             path: "/login",
-            locale: language,
           })}
         >
           <FormattedMessage id="requestResetPassword.backToLogin.login" />

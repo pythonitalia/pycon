@@ -13,7 +13,6 @@ import { useFormState } from "react-use-form-state";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
 
-import { useCurrentLanguage } from "~/locale/context";
 import {
   MyProfileWithTicketsDocument,
   type MyProfileWithTicketsQuery,
@@ -40,7 +39,6 @@ export const ReassignTicketModal = ({
   ticket,
 }: Props & ReassignTicketModalProps) => {
   const [formState, { email }] = useFormState<Form>();
-  const language = useCurrentLanguage();
 
   const [updateTicket, { loading: updatingTicket, error: updateTicketError }] =
     useUpdateTicketMutation({
@@ -50,7 +48,6 @@ export const ReassignTicketModal = ({
             query: MyProfileWithTicketsDocument,
             variables: {
               conference: process.env.conferenceCode,
-              language: language,
             },
           });
           const ticketId = data.updateAttendeeTicket.id;
@@ -64,7 +61,6 @@ export const ReassignTicketModal = ({
             },
             variables: {
               conference: process.env.conferenceCode,
-              language: language,
             },
           });
           onClose();
@@ -89,7 +85,6 @@ export const ReassignTicketModal = ({
     updateTicket({
       variables: {
         conference: process.env.conferenceCode,
-        language: language,
         input: {
           id: ticket.id,
           attendeeName: {

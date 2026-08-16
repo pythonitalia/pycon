@@ -13,7 +13,6 @@ import React, { useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
-import { useCurrentLanguage } from "~/locale/context";
 import { useSendSponsorLeadMutation } from "~/types";
 
 import { createHref } from "../link";
@@ -28,7 +27,6 @@ type SponsorLeadForm = {
 };
 export const SponsorLeadModal = ({ onClose }) => {
   const formRef = useRef<HTMLFormElement>(undefined);
-  const language = useCurrentLanguage();
   const [sendSponsorLeadMutation, { loading, data, error }] =
     useSendSponsorLeadMutation();
   const [formState, { email, text, checkbox }] = useFormState<SponsorLeadForm>({
@@ -169,7 +167,6 @@ export const SponsorLeadModal = ({ onClose }) => {
                         target="_blank"
                         href={createHref({
                           path: "/privacy-policy",
-                          locale: language,
                         })}
                       >
                         Privacy Policy

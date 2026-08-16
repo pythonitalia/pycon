@@ -2,7 +2,6 @@ import { Heading, Link, Spacer, Text } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
-import { useCurrentLanguage } from "~/locale/context";
 
 import { Fragment } from "react";
 import { useIsClient } from "~/helpers/use-is-client";
@@ -10,7 +9,6 @@ import { createHref } from "../link";
 
 export const Introduction = ({ deadline }: { deadline?: string }) => {
   const isClient = useIsClient();
-  const language = useCurrentLanguage();
 
   return (
     <Fragment>
@@ -27,7 +25,7 @@ export const Introduction = ({ deadline }: { deadline?: string }) => {
             values={{
               deadline: (
                 <Text size={2} as="span" weight="strong">
-                  {formatDeadlineDateTime(deadline, language)}
+                  {formatDeadlineDateTime(deadline)}
                 </Text>
               ),
             }}
@@ -40,7 +38,6 @@ export const Introduction = ({ deadline }: { deadline?: string }) => {
       <Link
         href={createHref({
           path: "/call-for-proposals",
-          locale: language,
         })}
       >
         <Text color="none" weight="strong" decoration="underline" size={2}>

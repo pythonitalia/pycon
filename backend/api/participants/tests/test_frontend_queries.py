@@ -8,7 +8,6 @@ PARTICIPANT_PUBLIC_PROFILE_QUERY = """
     query ParticipantPublicProfile(
         $id: ID!
         $conference: String!
-        $language: String!
     ) {
         participant(id: $id, conference: $conference) {
             id
@@ -24,7 +23,7 @@ PARTICIPANT_PUBLIC_PROFILE_QUERY = """
             mastodonHandle
             proposals {
                 id
-                title(language: $language)
+                title(language: "en")
                 type {
                     id
                     name
@@ -87,7 +86,7 @@ PARTICIPANT_PUBLIC_PROFILE_QUERY = """
 
     fragment SubmissionFragment on Submission {
         id
-        title(language: $language)
+        title(language: "en")
         duration {
             id
             duration
@@ -174,7 +173,6 @@ def test_frontend_public_participant_query(
             variables={
                 "id": participant.hashid,
                 "conference": participant.conference.code,
-                "language": "en",
             },
         )
 

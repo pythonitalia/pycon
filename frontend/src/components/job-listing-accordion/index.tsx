@@ -13,22 +13,18 @@ import { FormattedMessage } from "react-intl";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-import { useCurrentLanguage } from "~/locale/context";
 import type { JobListing } from "~/types";
 
 import { createHref } from "../link";
 
 export const JobListingAccordion = ({ job }: { job: JobListing }) => {
-  const language = useCurrentLanguage();
   const { push, replace, pathname } = useRouter();
   const url = `/jobs/${job.id}`;
 
   const onOpenJob = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
     const func = pathname === "/jobs/[id]" ? replace : push;
-    func("/jobs/[id]", url, {
-      locale: language,
-    });
+    func("/jobs/[id]", url, {});
   };
 
   return (
@@ -38,7 +34,6 @@ export const JobListingAccordion = ({ job }: { job: JobListing }) => {
         noHover={true}
         href={createHref({
           path: url,
-          locale: language,
         })}
       >
         <MultiplePartsCard>

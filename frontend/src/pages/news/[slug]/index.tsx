@@ -17,7 +17,6 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { MetaTags } from "~/components/meta-tags";
 import { usePageOrPreview } from "~/components/page-handler/use-page-or-preview";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
 import {
   type NewsArticleQuery,
   type PagePreviewQuery,
@@ -33,10 +32,9 @@ export const NewsArticlePage = ({
   isPreview: boolean;
   previewData: any;
 }) => {
-  const language = useCurrentLanguage();
   const router = useRouter();
   const slug = router.query.slug as string;
-  const dateFormatter = new Intl.DateTimeFormat(language, {
+  const dateFormatter = new Intl.DateTimeFormat("en", {
     day: "2-digit",
     month: "long",
     year: "numeric",
@@ -84,12 +82,10 @@ export const NewsArticlePage = ({
 
 export const getStaticProps: GetStaticProps = async ({
   params,
-  locale,
   preview,
   previewData,
 }: {
   params: { slug: string };
-  locale: string;
   preview: boolean;
   previewData: any;
 }) => {
@@ -97,7 +93,7 @@ export const getStaticProps: GetStaticProps = async ({
   const client = getApolloClient();
 
   const [_, newsArticleQuery] = await Promise.all([
-    prefetchSharedQueries(client, locale),
+    prefetchSharedQueries(client),
     preview
       ? queryPagePreview(client, {
           contentType: previewData?.contentType,
@@ -106,7 +102,6 @@ export const getStaticProps: GetStaticProps = async ({
       : queryNewsArticle(client, {
           slug,
           hostname: process.env.cmsHostname,
-          language: locale,
         }),
   ]);
 
@@ -130,38 +125,17 @@ export const getStaticProps: GetStaticProps = async ({
 export const getStaticPaths: GetStaticPaths = async () => {
   const client = getApolloClient();
 
-  const [
-    {
-      data: { newsArticles: italianNewsArticles },
-    },
-    {
-      data: { newsArticles: englishNewsArticles },
-    },
-  ] = await Promise.all([
-    queryAllNewsArticles(client, {
-      language: "it",
-      hostname: process.env.cmsHostname,
-    }),
-    queryAllNewsArticles(client, {
-      language: "en",
-      hostname: process.env.cmsHostname,
-    }),
-  ]);
+  const {
+    data: { newsArticles },
+  } = await queryAllNewsArticles(client, {
+    hostname: process.env.cmsHostname,
+  });
 
-  const paths = [
-    ...italianNewsArticles.map((blogPost) => ({
-      params: {
-        slug: blogPost.slug,
-      },
-      locale: "it",
-    })),
-    ...englishNewsArticles.map((blogPost) => ({
-      params: {
-        slug: blogPost.slug,
-      },
-      locale: "en",
-    })),
-  ];
+  const paths = newsArticles.map((blogPost) => ({
+    params: {
+      slug: blogPost.slug,
+    },
+  }));
 
   return {
     paths,

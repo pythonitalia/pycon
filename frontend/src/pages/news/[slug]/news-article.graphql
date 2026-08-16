@@ -1,7 +1,7 @@
 #import "../../fragments/news-article.graphql"
 
-query NewsArticle($hostname: String!, $slug: String!, $language: String!) {
-  newsArticle(hostname: $hostname, slug: $slug, language: $language) {
+query NewsArticle($hostname: String!, $slug: String!) {
+  newsArticle(hostname: $hostname, slug: $slug, language: "en") {
     ...NewsArticleData
   }
 }

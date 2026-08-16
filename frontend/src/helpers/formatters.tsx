@@ -1,5 +1,3 @@
-import { useCurrentLanguage } from "~/locale/context";
-
 type Input = {
   fractionDigits?: number;
 };
@@ -7,8 +5,7 @@ type Input = {
 export const useMoneyFormatter = ({
   fractionDigits = undefined,
 }: Input = {}) => {
-  const language = useCurrentLanguage();
-  return new Intl.NumberFormat(language, {
+  return new Intl.NumberFormat("en", {
     style: "currency",
     currency: "EUR",
     maximumFractionDigits: fractionDigits,

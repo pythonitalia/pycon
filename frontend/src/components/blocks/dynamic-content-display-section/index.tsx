@@ -28,7 +28,7 @@ export const DynamicContentDisplaySection = ({
   );
 };
 
-DynamicContentDisplaySection.dataFetching = (client, language, block) => {
+DynamicContentDisplaySection.dataFetching = (client, block) => {
   const source = block.source;
 
   switch (source) {
@@ -36,7 +36,6 @@ DynamicContentDisplaySection.dataFetching = (client, language, block) => {
       return [
         queryKeynotesSection(client, {
           code: process.env.conferenceCode,
-          language,
         }),
       ];
     }
@@ -44,7 +43,6 @@ DynamicContentDisplaySection.dataFetching = (client, language, block) => {
       return [
         queryDynamicContentDisplaySectionProposals(client, {
           code: process.env.conferenceCode,
-          language,
         }),
       ];
     }
@@ -52,7 +50,6 @@ DynamicContentDisplaySection.dataFetching = (client, language, block) => {
       return [
         queryDynamicContentDisplaySectionProposals(client, {
           code: process.env.conferenceCode,
-          language,
         }),
       ];
     }

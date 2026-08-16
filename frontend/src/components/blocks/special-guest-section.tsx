@@ -15,7 +15,6 @@ import { format } from "date-fns";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
 import type { Cta } from "~/types";
 
 import { createHref } from "../link";
@@ -35,7 +34,6 @@ export const SpecialGuestSection = ({
   guestPhoto,
   cta,
 }: Props) => {
-  const language = useCurrentLanguage();
   return (
     <div className="relative bg-[#151C28] overflow-hidden">
       <BgIllustration />
@@ -90,7 +88,6 @@ export const SpecialGuestSection = ({
                     variant="secondary"
                     href={createHref({
                       path: cta.link,
-                      locale: language,
                     })}
                   >
                     {cta.label}

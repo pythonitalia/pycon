@@ -12,7 +12,6 @@ import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import QRCode from "react-qr-code";
 
-import { useCurrentLanguage } from "~/locale/context";
 import {
   MyProfileWithTicketsDocument,
   type MyProfileWithTicketsQuery,

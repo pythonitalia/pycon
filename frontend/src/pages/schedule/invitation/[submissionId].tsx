@@ -20,8 +20,6 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { Alert } from "~/components/alert";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
-import type { Language } from "~/locale/languages";
 import NotFoundPage from "~/pages/404";
 import {
   ScheduleInvitationOption,
@@ -40,10 +38,10 @@ const EXTRA_NOTES_OPTIONS = [
   ScheduleInvitationOption.Reject,
 ];
 
-const formatDateTime = (datetime: string, language: Language) => {
+const formatDateTime = (datetime: string) => {
   const d = new Date(datetime);
 
-  const formatter = new Intl.DateTimeFormat(language, {
+  const formatter = new Intl.DateTimeFormat("en", {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -55,13 +53,11 @@ const formatDateTime = (datetime: string, language: Language) => {
 };
 
 const Invitation = () => {
-  const language = useCurrentLanguage();
   const router = useRouter();
   const submissionId = router.query.submissionId as string;
   const { data } = useGetScheduleInvitationQuery({
     variables: {
       submissionId,
-      language,
     },
   });
   const [
@@ -122,8 +118,8 @@ const Invitation = () => {
 
   const scheduleDates = invitation.dates.map((date) => ({
     ...date,
-    start: formatDateTime(date.start, language),
-    end: formatDateTime(date.end, language),
+    start: formatDateTime(date.start),
+    end: formatDateTime(date.end),
   }));
 
   const scheduleDate = scheduleDates[0];
@@ -287,7 +283,6 @@ const Invitation = () => {
 export const getServerSideProps: GetServerSideProps = async ({
   req,
   params,
-  locale,
 }) => {
   const identityToken = req.cookies.pythonitalia_sessionid;
   if (!identityToken) {
@@ -304,9 +299,8 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   try {
     await Promise.all([
-      prefetchSharedQueries(client, locale),
+      prefetchSharedQueries(client),
       queryGetScheduleInvitation(client, {
-        language: locale,
         submissionId,
       }),
     ]);

@@ -1,6 +1,5 @@
 import React from "react";
 
-import { useCurrentLanguage } from "~/locale/context";
 import { useAllJobListingsQuery } from "~/types";
 
 import { JobBoardLayout } from "../job-board-layout";

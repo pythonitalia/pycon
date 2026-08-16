@@ -13,7 +13,6 @@ import { FormattedMessage } from "react-intl";
 
 import { useMoneyFormatter } from "~/helpers/formatters";
 import { compile } from "~/helpers/markdown";
-import { useCurrentLanguage } from "~/locale/context";
 import type { TicketItem } from "~/types";
 
 import { useCart } from "../tickets-page/use-cart";
@@ -38,8 +37,7 @@ export const TicketRow = ({
     addProduct,
     removeProduct,
   } = useCart();
-  const lang = useCurrentLanguage();
-  const dateFormatter = new Intl.DateTimeFormat(lang, {
+  const dateFormatter = new Intl.DateTimeFormat("en", {
     day: "2-digit",
     month: "long",
     year: "numeric",

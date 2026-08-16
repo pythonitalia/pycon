@@ -1,12 +1,12 @@
-mutation UpdateSubmission($input: UpdateSubmissionInput!, $language: String!) {
+mutation UpdateSubmission($input: UpdateSubmissionInput!) {
   mutationOp: updateSubmission(input: $input) {
     __typename
 
     ... on Submission {
       id
-      title(language: $language)
-      abstract(language: $language)
-      elevatorPitch(language: $language)
+      title(language: "en")
+      abstract(language: "en")
+      elevatorPitch(language: "en")
       shortSocialSummary
       multilingualTitle {
         it

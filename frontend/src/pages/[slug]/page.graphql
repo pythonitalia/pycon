@@ -1,7 +1,7 @@
 #import "../../fragments/generic-page.graphql"
 
-query Page($hostname: String!, $slug: String!, $language: String!) {
-  cmsPage(hostname: $hostname, slug: $slug, language: $language) {
+query Page($hostname: String!, $slug: String!) {
+  cmsPage(hostname: $hostname, slug: $slug, language: "en") {
     ... on GenericPage {
       ...GenericPageData
     }

@@ -1,9 +1,5 @@
-query NewsArticleSocialCard(
-  $hostname: String!
-  $slug: String!
-  $language: String!
-) {
-  newsArticle(hostname: $hostname, slug: $slug, language: $language) {
+query NewsArticleSocialCard($hostname: String!, $slug: String!) {
+  newsArticle(hostname: $hostname, slug: $slug, language: "en") {
     id
     title
     authorFullname

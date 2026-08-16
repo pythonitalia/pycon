@@ -7,12 +7,9 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
-
 import { createHref } from "../link";
 
 export const NoOrders = () => {
-  const language = useCurrentLanguage();
   return (
     <Container size="small" center={false} noPadding>
       <Heading size={2}>
@@ -27,7 +24,6 @@ export const NoOrders = () => {
         variant="secondary"
         href={createHref({
           path: "/tickets",
-          locale: language,
         })}
       >
         <FormattedMessage id="profile.myTickets.buyTickets" />

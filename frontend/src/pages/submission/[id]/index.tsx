@@ -1,9 +1,4 @@
-import {
-  Button,
-  Page,
-  Text,
-  VerticalStack,
-} from "@python-italia/pycon-styleguide";
+import { Button, Page, VerticalStack } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -14,7 +9,6 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { createHref } from "~/components/link";
 import { ScheduleEventDetail } from "~/components/schedule-event-detail";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
 import NotFoundPage from "~/pages/404";
 import { getType } from "~/pages/event/[slug]";
 import {
@@ -25,37 +19,19 @@ import {
 
 export const SubmissionPage = () => {
   const router = useRouter();
-  const language = useCurrentLanguage();
 
   const id = router.query.id as string;
 
   const {
-    data: { submission: englishSubmission },
+    data: { submission },
   } = useSubmissionQuery({
     errorPolicy: "all",
     variables: {
       id,
-      language: "en",
     },
   });
 
-  const {
-    data: { submission: italianSubmission },
-  } = useSubmissionQuery({
-    errorPolicy: "all",
-    variables: {
-      id,
-      language: "it",
-    },
-  });
-
-  const [viewInLanguage, setViewInLanguage] = React.useState<string>(language);
-  const submission =
-    viewInLanguage === "it" ? italianSubmission : englishSubmission;
-
-  const otherLanguage = viewInLanguage === "it" ? "en" : "it";
-
-  if (!italianSubmission && !englishSubmission) {
+  if (!submission) {
     return <NotFoundPage />;
   }
 
@@ -68,11 +44,7 @@ export const SubmissionPage = () => {
         elevatorPitch={submission.elevatorPitch}
         abstract={submission.abstract}
         tags={submission?.tags.map((tag) => tag.name)}
-        language={
-          submission.languages.length > 1
-            ? viewInLanguage
-            : submission.languages[0].code
-        }
+        language={submission.languages[0].code}
         audienceLevel={submission?.audienceLevel.name}
         startTime={null}
         endTime={null}
@@ -91,47 +63,11 @@ export const SubmissionPage = () => {
                   params: {
                     id: submission.id,
                   },
-                  locale: language,
                 })}
               >
                 <FormattedMessage id="profile.myProposals.edit" />
               </Button>
             ) : null}
-
-            {submission.languages.length > 1 && (
-              <>
-                <Text as="p" size="label3">
-                  <FormattedMessage
-                    id="submission.languageSwitch"
-                    values={{
-                      language: (
-                        <FormattedMessage
-                          id={`talk.language.${otherLanguage}`}
-                        />
-                      ),
-                    }}
-                  />
-                </Text>
-                <Button
-                  size="small"
-                  variant="secondary"
-                  onClick={(_) => {
-                    setViewInLanguage(otherLanguage);
-                  }}
-                >
-                  <FormattedMessage
-                    id="profile.myProposals.viewIn"
-                    values={{
-                      language: (
-                        <FormattedMessage
-                          id={`talk.language.${otherLanguage}`}
-                        />
-                      ),
-                    }}
-                  />
-                </Button>
-              </>
-            )}
           </VerticalStack>
         }
       />
@@ -141,27 +77,21 @@ export const SubmissionPage = () => {
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
-  locale,
   params,
 }) => {
   const client = getApolloClient(null, req.cookies);
 
-  const [_, englishSubmission, italianSubmission] = await Promise.all([
-    prefetchSharedQueries(client, locale),
+  const [_, __, submission] = await Promise.all([
+    prefetchSharedQueries(client),
     queryIsVotingClosed(client, {
       conference: process.env.conferenceCode,
     }),
     querySubmission(client, {
       id: params.id as string,
-      language: "en",
-    }),
-    querySubmission(client, {
-      id: params.id as string,
-      language: "it",
     }),
   ]);
 
-  if (!englishSubmission && !italianSubmission) {
+  if (!submission) {
     return {
       notFound: true,
     };

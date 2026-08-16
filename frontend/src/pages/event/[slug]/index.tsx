@@ -7,19 +7,16 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { MetaTags } from "~/components/meta-tags";
 import { ScheduleEventDetail } from "~/components/schedule-event-detail";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
 import { queryAllTalks, queryTalk, useTalkQuery } from "~/types";
 
 export const TalkPage = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
-  const language = useCurrentLanguage();
   const { data } = useTalkQuery({
     returnPartialData: true,
     variables: {
       code: process.env.conferenceCode,
       slug,
-      language,
     },
   });
 
@@ -55,16 +52,15 @@ export const TalkPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params.slug as string;
   const client = getApolloClient();
 
   const [_, event] = await Promise.all([
-    prefetchSharedQueries(client, locale),
+    prefetchSharedQueries(client),
     queryTalk(client, {
       code: process.env.conferenceCode,
       slug,
-      language: locale,
     }),
   ]);
 
@@ -90,20 +86,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
     code: process.env.conferenceCode,
   });
 
-  const paths = [
-    ...talks.map((talk) => ({
-      params: {
-        slug: talk.slug,
-      },
-      locale: "en",
-    })),
-    ...talks.map((talk) => ({
-      params: {
-        slug: talk.slug,
-      },
-      locale: "it",
-    })),
-  ];
+  const paths = talks.map((talk) => ({
+    params: {
+      slug: talk.slug,
+    },
+  }));
 
   return {
     paths,

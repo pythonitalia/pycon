@@ -29,7 +29,6 @@ import {
 import { useCountries } from "~/helpers/use-countries";
 import { useCurrentUser } from "~/helpers/use-current-user";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
 import {
   type GrantType,
   type MyGrantQuery,
@@ -128,7 +127,6 @@ export const GrantForm = ({
   error: grantError,
   data: grantData,
 }: GrantFormProps) => {
-  const language = useCurrentLanguage();
   const countries = useCountries();
 
   const {
@@ -158,7 +156,7 @@ export const GrantForm = ({
   const { select, checkbox, text } = formOptions;
   const [answers, setAnswers] = useState<DynamicFormAnswers>({});
 
-  const dateFormatter = new Intl.DateTimeFormat(language, {
+  const dateFormatter = new Intl.DateTimeFormat("en", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -292,7 +290,6 @@ export const GrantForm = ({
               <Link
                 href={createHref({
                   path: "/profile/my-grant",
-                  locale: language,
                 })}
               >
                 <Text
@@ -670,7 +667,6 @@ export const GrantForm = ({
                     target="_blank"
                     href={createHref({
                       path: "/privacy-policy",
-                      locale: language,
                     })}
                   >
                     Privacy Policy
@@ -697,7 +693,6 @@ export const GrantForm = ({
                         target="_blank"
                         href={createHref({
                           path: "/privacy-policy",
-                          locale: language,
                         })}
                       >
                         Privacy Policy

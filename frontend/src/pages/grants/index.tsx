@@ -9,7 +9,6 @@ import { GrantSendForm } from "~/components/grant-form";
 import { MetaTags } from "~/components/meta-tags";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
 import {
   DeadlineStatus,
   queryCurrentUser,
@@ -22,19 +21,13 @@ import {
 import ErrorPage from "../_error";
 
 const GrantsComingSoon = ({ start }: { start: string }) => {
-  const language = useCurrentLanguage();
-
   return (
     <div>
       <Text>
         <FormattedMessage
           id="grants.comingSoon"
           values={{
-            start: (
-              <Text weight="strong">
-                {formatDeadlineDateTime(start, language)}
-              </Text>
-            ),
+            start: <Text weight="strong">{formatDeadlineDateTime(start)}</Text>,
           }}
         />
       </Text>
@@ -86,10 +79,7 @@ export const GrantsPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  locale,
-}) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const identityToken = req.cookies.pythonitalia_sessionid;
   if (!identityToken) {
     return {
@@ -113,7 +103,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       queryMyGrant(client, {
         conference: process.env.conferenceCode,
       }),
-      prefetchSharedQueries(client, locale),
+      prefetchSharedQueries(client),
       queryGrantDeadline(client, {
         conference: process.env.conferenceCode,
       }),

@@ -1,4 +1,4 @@
-query MyProfileWithSubmissions($conference: String!, $language: String!) {
+query MyProfileWithSubmissions($conference: String!) {
   me {
     id
     name
@@ -7,7 +7,7 @@ query MyProfileWithSubmissions($conference: String!, $language: String!) {
 
     submissions(conference: $conference) {
       id
-      title(language: $language)
+      title(language: "en")
       status
 
       scheduleItems {

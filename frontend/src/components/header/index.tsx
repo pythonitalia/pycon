@@ -2,40 +2,27 @@ import { NavBar } from "@python-italia/pycon-styleguide";
 import type { Action } from "@python-italia/pycon-styleguide/dist/navbar/types";
 import React, { useEffect, useState } from "react";
 
-import { useRouter } from "next/router";
-
 import { useLoginState } from "~/components/profile/hooks";
 import { getTranslatedMessage } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
 import { useHeaderQuery } from "~/types";
 
-import { createHref } from "../link";
 import { Logo, MobileLogo } from "../logo";
 
 export const Header = () => {
   const [isReady, setIsReady] = useState(false);
   const [loggedIn] = useLoginState();
-  const language = useCurrentLanguage();
   const { data } = useHeaderQuery({
     variables: {
       code: process.env.conferenceCode!,
     },
   });
-  const { route, query } = useRouter();
 
   useEffect(() => {
     setIsReady(true);
   }, []);
 
   const {
-    conference: {
-      conferenceMenuEn,
-      programMenuEn,
-      conferenceMenuIt,
-      programMenuIt,
-      isRunning,
-      currentDay,
-    },
+    conference: { conferenceMenu, programMenu, isRunning, currentDay },
   } = data || { conference: {} };
   // const hasSomethingLive = currentDay?.rooms?.some(
   //   (room) => !!room.streamingUrl,
@@ -44,40 +31,29 @@ export const Header = () => {
   const actions: Action[] = [
     isRunning
       ? {
-          text: getTranslatedMessage("header.streaming", language),
+          text: getTranslatedMessage("header.streaming"),
           icon: "live-circle",
           link: "/streaming",
           background: "red",
           hoverBackground: "red",
         }
       : {
-          text: getTranslatedMessage("header.tickets", language),
+          text: getTranslatedMessage("header.tickets"),
           icon: "tickets",
           link: "/tickets",
         },
     {
       text:
         isReady && loggedIn
-          ? getTranslatedMessage("header.dashboard", language)
-          : getTranslatedMessage("header.login", language),
+          ? getTranslatedMessage("header.dashboard")
+          : getTranslatedMessage("header.login"),
       icon: "user",
       link: isReady && loggedIn ? "/profile" : "/login",
     },
   ];
 
-  const conferenceMenu =
-    language === "it" ? conferenceMenuIt : conferenceMenuEn;
-  const programMenu = language === "it" ? programMenuIt : programMenuEn;
-
   const mainLinks = conferenceMenu?.links ?? [];
   const secondaryLinks = programMenu?.links ?? [];
-
-  const languageSwitchHref = createHref({
-    path: route,
-    params: query,
-    locale: language === "it" ? "en" : "it",
-    external: false,
-  });
 
   return (
     <header>
@@ -87,10 +63,6 @@ export const Header = () => {
         actions={actions}
         logo={Logo}
         mobileLogo={MobileLogo}
-        bottomBarLink={{
-          text: getTranslatedMessage("header.switchLanguage", language),
-          link: languageSwitchHref,
-        }}
       />
     </header>
   );

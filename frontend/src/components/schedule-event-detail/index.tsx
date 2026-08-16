@@ -17,7 +17,6 @@ import type React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { compile } from "~/helpers/markdown";
-import { useCurrentLanguage } from "~/locale/context";
 
 import { Fragment } from "react";
 import { TableItemHeader } from "~/components/table-item-header";
@@ -84,16 +83,15 @@ export const ScheduleEventDetail = ({
   youtubeVideoId,
   materials,
 }: Props) => {
-  const lang = useCurrentLanguage();
   const parsedStartTime = startTime ? parseISO(startTime) : null;
   const parsedEndTime = endTime ? parseISO(endTime) : null;
 
-  const dateFormatter = new Intl.DateTimeFormat(lang, {
+  const dateFormatter = new Intl.DateTimeFormat("en", {
     day: "2-digit",
     month: "long",
     weekday: "long",
   });
-  const hourFormatter = new Intl.DateTimeFormat(lang, {
+  const hourFormatter = new Intl.DateTimeFormat("en", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,

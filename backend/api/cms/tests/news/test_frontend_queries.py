@@ -11,8 +11,8 @@ pytestmark = pytest.mark.django_db
 
 
 ALL_NEWS_ARTICLES_QUERY = """\
-query AllNewsArticles($hostname: String!, $language: String!) {
-  newsArticles(hostname: $hostname, language: $language) {
+query AllNewsArticles($hostname: String!) {
+  newsArticles(hostname: $hostname, language: "en") {
     id
     slug
   }
@@ -21,8 +21,8 @@ query AllNewsArticles($hostname: String!, $language: String!) {
 
 
 NEWS_ARTICLE_QUERY = """\
-query NewsArticle($hostname: String!, $slug: String!, $language: String!) {
-  newsArticle(hostname: $hostname, slug: $slug, language: $language) {
+query NewsArticle($hostname: String!, $slug: String!) {
+  newsArticle(hostname: $hostname, slug: $slug, language: "en") {
     id
     title
     excerpt
@@ -64,7 +64,7 @@ def test_all_news_articles_frontend_query(
     with django_assert_num_queries(3):
         response = graphql_client.query(
             ALL_NEWS_ARTICLES_QUERY,
-            variables={"hostname": "pycon", "language": "en"},
+            variables={"hostname": "pycon"},
         )
 
     assert response == {
@@ -101,7 +101,6 @@ def test_news_article_frontend_query(
             variables={
                 "hostname": "pycon",
                 "slug": article.slug,
-                "language": "en",
             },
         )
 

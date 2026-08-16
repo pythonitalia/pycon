@@ -13,7 +13,6 @@ import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
 
-import { useCurrentLanguage } from "~/locale/context";
 import {
   type MultiLingualInput as MultiLingualInputType,
   type SendSubmissionMutation,
@@ -135,7 +134,6 @@ export const CfpForm = ({
   error: submissionError,
   data: submissionData,
 }: Props) => {
-  const language = useCurrentLanguage();
   const [formState, formOptions] = useFormState<CfpFormFields>(
     {
       title: {
@@ -403,7 +401,6 @@ export const CfpForm = ({
                         target="_blank"
                         href={createHref({
                           path: "/privacy-policy",
-                          locale: language,
                         })}
                       >
                         Privacy Policy
@@ -432,7 +429,6 @@ export const CfpForm = ({
                   <Link
                     href={createHref({
                       path: "/grants-info",
-                      locale: language,
                     })}
                     target="_blank"
                   >

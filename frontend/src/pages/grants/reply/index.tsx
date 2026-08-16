@@ -22,7 +22,6 @@ import { createHref } from "~/components/link";
 import { PageLoading } from "~/components/page-loading";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
 import NotFoundPage from "~/pages/404";
 import {
   Status as GrantStatus,
@@ -64,7 +63,6 @@ const toStatusOption = (status: GrantStatus) => {
 };
 
 const GrantReply = () => {
-  const language = useCurrentLanguage();
   const code = process.env.conferenceCode;
 
   const [formState, { radio }] = useFormState<GrantReplyFrom>({
@@ -157,10 +155,7 @@ const GrantReply = () => {
                 values={{
                   replyDeadline: (
                     <Text size={2} weight="strong">
-                      {formatDeadlineDateTime(
-                        grant?.applicantReplyDeadline,
-                        language,
-                      )}
+                      {formatDeadlineDateTime(grant?.applicantReplyDeadline)}
                     </Text>
                   ),
                 }}
@@ -223,7 +218,6 @@ const GrantReply = () => {
                       target="_blank"
                       href={createHref({
                         path: "/visa/",
-                        locale: language,
                       })}
                     >
                       <Text
@@ -284,10 +278,7 @@ const GrantReply = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  locale,
-}) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const identityToken = req.cookies.pythonitalia_sessionid;
   if (!identityToken) {
     return {
@@ -302,7 +293,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   try {
     await Promise.all([
-      prefetchSharedQueries(client, locale),
+      prefetchSharedQueries(client),
       queryGrantDeadline(client, {
         conference: process.env.conferenceCode,
       }),

@@ -1,14 +1,9 @@
 mutation UpdateTicket(
   $conference: String!
   $input: UpdateAttendeeTicketInput!
-  $language: String!
 ) {
   __typename
-  updateAttendeeTicket(
-    conference: $conference
-    input: $input
-    language: $language
-  ) {
+  updateAttendeeTicket(conference: $conference, input: $input, language: "en") {
     __typename
 
     ... on AttendeeTicket {

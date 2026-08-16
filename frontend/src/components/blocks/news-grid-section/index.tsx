@@ -10,15 +10,11 @@ import {
 import { parseISO } from "date-fns";
 
 import { createHref } from "~/components/link";
-import { useCurrentLanguage } from "~/locale/context";
 import { queryNewsGridSection, useNewsGridSectionQuery } from "~/types";
 
 export const NewsGridSection = () => {
-  const language = useCurrentLanguage();
-
   const { data } = useNewsGridSectionQuery({
     variables: {
-      language,
       hostname: process.env.cmsHostname,
     },
   });
@@ -29,15 +25,15 @@ export const NewsGridSection = () => {
     <Section>
       <Grid cols={3}>
         {posts.map((post) => (
-          <BlogPost key={post.id} post={post} language={language} />
+          <BlogPost key={post.id} post={post} />
         ))}
       </Grid>
     </Section>
   );
 };
 
-const BlogPost = ({ post, language }: { post: any; language: string }) => {
-  const dateFormatter = new Intl.DateTimeFormat(language, {
+const BlogPost = ({ post }: { post: any }) => {
+  const dateFormatter = new Intl.DateTimeFormat("en", {
     day: "2-digit",
     month: "long",
     year: "numeric",
@@ -49,7 +45,6 @@ const BlogPost = ({ post, language }: { post: any; language: string }) => {
       hoverColor="black"
       href={createHref({
         path: `/news/${post.slug}`,
-        locale: language,
       })}
     >
       <MultiplePartsCard>
@@ -73,11 +68,10 @@ const BlogPost = ({ post, language }: { post: any; language: string }) => {
   );
 };
 
-NewsGridSection.dataFetching = (client, language) => {
+NewsGridSection.dataFetching = (client) => {
   return [
     queryNewsGridSection(client, {
       hostname: process.env.cmsHostname,
-      language,
     }),
   ];
 };

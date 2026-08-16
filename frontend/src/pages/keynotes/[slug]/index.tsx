@@ -9,11 +9,9 @@ import { addApolloState, getApolloClient } from "~/apollo/client";
 import { MetaTags } from "~/components/meta-tags";
 import { ScheduleEventDetail } from "~/components/schedule-event-detail";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
 import { queryAllKeynotes, queryKeynote, useKeynoteQuery } from "~/types";
 
 const KeynotePage = () => {
-  const language = useCurrentLanguage();
   const {
     query: { slug },
   } = useRouter();
@@ -36,7 +34,6 @@ const KeynotePage = () => {
     variables: {
       conference: process.env.conferenceCode,
       slug: slug as string,
-      language,
     },
   });
 
@@ -78,16 +75,15 @@ const KeynotePage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params.slug as string;
   const client = getApolloClient();
 
   const [_, keynote] = await Promise.all([
-    prefetchSharedQueries(client, locale),
+    prefetchSharedQueries(client),
     queryKeynote(client, {
       conference: process.env.conferenceCode,
       slug,
-      language: locale,
     }),
   ]);
 
@@ -106,36 +102,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const client = getApolloClient();
   const {
     data: {
-      conference: { keynotes: italianKeynotes },
+      conference: { keynotes },
     },
   } = await queryAllKeynotes(client, {
     conference: process.env.conferenceCode,
-    language: "it",
   });
 
-  const {
-    data: {
-      conference: { keynotes: englishKeynotes },
+  const paths = keynotes.map((keynote) => ({
+    params: {
+      slug: keynote.slug,
     },
-  } = await queryAllKeynotes(client, {
-    conference: process.env.conferenceCode,
-    language: "en",
-  });
-
-  const paths = [
-    ...englishKeynotes.map((keynote) => ({
-      params: {
-        slug: keynote.slug,
-      },
-      locale: "en",
-    })),
-    ...italianKeynotes.map((keynote) => ({
-      params: {
-        slug: keynote.slug,
-      },
-      locale: "it",
-    })),
-  ];
+  }));
 
   return {
     paths,

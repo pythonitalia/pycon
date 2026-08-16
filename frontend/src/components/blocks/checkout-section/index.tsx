@@ -5,7 +5,6 @@ import {
   createCartContext,
 } from "~/components/tickets-page/use-cart";
 import { useCurrentUser } from "~/helpers/use-current-user";
-import { useCurrentLanguage } from "~/locale/context";
 import {
   type CheckoutCategory,
   queryCheckoutSection,
@@ -17,7 +16,6 @@ type Props = {
 };
 
 export const CheckoutSection = ({ visibleCategories }: Props) => {
-  const language = useCurrentLanguage();
   const {
     data: {
       conference,
@@ -26,7 +24,6 @@ export const CheckoutSection = ({ visibleCategories }: Props) => {
   } = useCheckoutSectionQuery({
     variables: {
       conference: process.env.conferenceCode,
-      language: language,
     },
   });
   const [isLoggedIn] = useLoginState();
@@ -49,11 +46,10 @@ export const CheckoutSection = ({ visibleCategories }: Props) => {
   );
 };
 
-CheckoutSection.dataFetching = (client, locale) => {
+CheckoutSection.dataFetching = (client) => {
   return [
     queryCheckoutSection(client, {
       conference: process.env.conferenceCode,
-      language: locale,
     }),
   ];
 };

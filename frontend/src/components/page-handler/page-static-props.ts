@@ -14,7 +14,6 @@ export const getProps = async (
   {
     preview,
     previewData,
-    locale,
     params,
   }: {
     preview: boolean;
@@ -22,7 +21,6 @@ export const getProps = async (
       contentType: string;
       token: string;
     };
-    locale: string;
     params: {
       slug?: string;
     };
@@ -34,10 +32,9 @@ export const getProps = async (
   const slug = params?.slug as string;
 
   const [_, pageDataQuery] = await Promise.all([
-    prefetchSharedQueries(client, locale),
+    prefetchSharedQueries(client),
     !preview
       ? queryPage(client, {
-          language: locale,
           hostname: process.env.cmsHostname,
           slug,
         })
@@ -60,7 +57,6 @@ export const getProps = async (
   const { dataFetching, staticProps } = blocksDataFetching(
     client,
     pageData.body,
-    locale,
   );
 
   await dataFetching;

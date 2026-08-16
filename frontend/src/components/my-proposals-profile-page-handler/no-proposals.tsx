@@ -7,7 +7,6 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
 import { DeadlineStatus, type MyProfileWithSubmissionsQuery } from "~/types";
 
 import { createHref } from "../link";
@@ -17,7 +16,6 @@ type Props = {
 };
 export const NoProposals = ({ deadline }: Props) => {
   const deadlineStatus = deadline.status;
-  const language = useCurrentLanguage();
   return (
     <Container size="small" center={false} noPadding>
       <Heading size={2}>
@@ -41,7 +39,6 @@ export const NoProposals = ({ deadline }: Props) => {
         <Button
           href={createHref({
             path: "/call-for-proposals",
-            locale: language,
           })}
           variant="secondary"
         >
@@ -52,7 +49,6 @@ export const NoProposals = ({ deadline }: Props) => {
         <Button
           href={createHref({
             path: "/tickets",
-            locale: language,
           })}
           variant="secondary"
         >

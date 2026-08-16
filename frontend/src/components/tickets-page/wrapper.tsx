@@ -9,7 +9,6 @@ import { Alert } from "~/components/alert";
 import { MetaTags } from "~/components/meta-tags";
 import { useLoginState } from "~/components/profile/hooks";
 import { useCurrentUser } from "~/helpers/use-current-user";
-import { useCurrentLanguage } from "~/locale/context";
 import {
   type CurrentUserQueryResult,
   type TicketItem,
@@ -32,7 +31,6 @@ type Props = {
 
 export const TicketsPageWrapper = ({ children, cartCookie }: Props) => {
   const code = process.env.conferenceCode;
-  const language = useCurrentLanguage();
   const [isLoggedIn] = useLoginState();
   const { user: me } = useCurrentUser({
     skip: !isLoggedIn,
@@ -41,7 +39,6 @@ export const TicketsPageWrapper = ({ children, cartCookie }: Props) => {
   const { loading, error, data } = useTicketsQuery({
     variables: {
       conference: code,
-      language,
     },
   });
 

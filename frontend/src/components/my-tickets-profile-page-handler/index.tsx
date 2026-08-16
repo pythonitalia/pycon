@@ -2,7 +2,6 @@ import { Grid, Heading, Page, Section } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
 import { DeadlineStatus, useMyProfileWithTicketsQuery } from "~/types";
 
 import { MetaTags } from "../meta-tags";
@@ -15,7 +14,6 @@ const VISIBLE_BADGE_PREVIEW_DEADLINES = [
 ];
 
 export const MyTicketsProfilePageHandler = () => {
-  const language = useCurrentLanguage();
   const {
     data: {
       conference: { badgePreviewDeadline },
@@ -24,7 +22,6 @@ export const MyTicketsProfilePageHandler = () => {
   } = useMyProfileWithTicketsQuery({
     variables: {
       conference: process.env.conferenceCode,
-      language: language,
     },
   });
 

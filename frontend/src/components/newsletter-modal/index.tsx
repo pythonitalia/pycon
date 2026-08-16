@@ -17,7 +17,6 @@ import { useTranslatedMessage } from "~/helpers/use-translated-message";
 import { NewsletterSubscriptionResult, useSubscribeMutation } from "~/types";
 
 import { useFormState } from "react-use-form-state";
-import { useCurrentLanguage } from "~/locale/context";
 import { createHref } from "../link";
 import { Modal } from "../modal";
 
@@ -44,7 +43,6 @@ export const NewsletterModal = ({ onClose }) => {
     hasCompletedSubscription &&
     subscribeToNewsletter?.status ===
       NewsletterSubscriptionResult.UnableToSubscribe;
-  const language = useCurrentLanguage();
 
   const canSubmit =
     formState.values.email.trim() !== "" &&
@@ -137,7 +135,6 @@ export const NewsletterModal = ({ onClose }) => {
                       target="_blank"
                       href={createHref({
                         path: "/privacy-policy",
-                        locale: language,
                       })}
                     >
                       <Text

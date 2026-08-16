@@ -35,10 +35,10 @@ const ErrorPage = ({ statusCode }) => (
   </Page>
 );
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getStaticProps: GetStaticProps = async () => {
   const client = getApolloClient();
 
-  await Promise.all([prefetchSharedQueries(client, locale)]);
+  await Promise.all([prefetchSharedQueries(client)]);
 
   return addApolloState(client, {
     props: {},

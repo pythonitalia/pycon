@@ -18,7 +18,6 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
 
 import { createHref } from "../link";
 import { EventTag } from "../schedule-event-detail/event-tag";
@@ -68,8 +67,6 @@ export const ScheduleEntry = ({
   sameSlotItem: boolean;
   toggleEventFavorite: (item: Item) => void;
 }) => {
-  const language = useCurrentLanguage();
-
   const audienceLevel = item.submission
     ? item.submission.audienceLevel.name
     : item.audienceLevel
@@ -84,7 +81,6 @@ export const ScheduleEntry = ({
         hoverColor: "coral",
         href: createHref({
           path: itemUrl,
-          locale: language,
           external:
             item.linkTo?.startsWith("http://") ||
             item.linkTo?.startsWith("https://"),
@@ -114,7 +110,7 @@ export const ScheduleEntry = ({
 
   const startHour = parseISO(`${day}T${slot.hour}`);
 
-  const hourFormatter = new Intl.DateTimeFormat(language, {
+  const hourFormatter = new Intl.DateTimeFormat("en", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,

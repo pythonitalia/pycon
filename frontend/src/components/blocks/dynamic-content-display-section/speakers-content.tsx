@@ -8,11 +8,9 @@ import {
   Text,
 } from "@python-italia/pycon-styleguide";
 
-import { useCurrentLanguage } from "~/locale/context";
 import { useDynamicContentDisplaySectionProposalsQuery } from "~/types";
 
 export const SpeakersContent = () => {
-  const language = useCurrentLanguage();
   const {
     data: {
       submissions: { items: submissions },
@@ -20,7 +18,6 @@ export const SpeakersContent = () => {
   } = useDynamicContentDisplaySectionProposalsQuery({
     variables: {
       code: process.env.conferenceCode,
-      language,
     },
   });
 

@@ -8,13 +8,10 @@ import {
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
-
 import { createHref } from "../link";
 
 type Props = { email: string };
 export const NoTickets = ({ email }: Props) => {
-  const language = useCurrentLanguage();
   return (
     <Container size="small" center={false} noPadding>
       <Heading size={2}>
@@ -34,7 +31,6 @@ export const NoTickets = ({ email }: Props) => {
       <Button
         href={createHref({
           path: "/tickets",
-          locale: language,
         })}
         variant="secondary"
       >

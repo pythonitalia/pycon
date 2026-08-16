@@ -65,7 +65,7 @@ export const BlocksRenderer = ({ blocks, blocksProps }: Props) => {
   );
 };
 
-export const blocksDataFetching = (client, blocks, language) => {
+export const blocksDataFetching = (client, blocks) => {
   const promises = [];
   const staticProps = {};
 
@@ -78,7 +78,7 @@ export const blocksDataFetching = (client, blocks, language) => {
 
     const dataFetching = component.dataFetching;
     if (dataFetching) {
-      promises.push(...dataFetching(client, language, block));
+      promises.push(...dataFetching(client, block));
     }
 
     const getStaticProps = component.getStaticProps;

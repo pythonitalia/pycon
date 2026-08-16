@@ -10,7 +10,6 @@ import type { Icon } from "@python-italia/pycon-styleguide/dist/icons/types";
 import { FormattedMessage } from "react-intl";
 
 import { compile } from "~/helpers/markdown";
-import { useCurrentLanguage } from "~/locale/context";
 import type { TicketItem } from "~/types";
 
 import { useCart } from "../tickets-page/use-cart";
@@ -27,8 +26,7 @@ export const SocialEventRow = ({ ticket, openByDefault }: Props) => {
     addProduct,
     removeProduct,
   } = useCart();
-  const lang = useCurrentLanguage();
-  const dateFormatter = new Intl.DateTimeFormat(lang, {
+  const dateFormatter = new Intl.DateTimeFormat("en", {
     day: "2-digit",
     month: "long",
     year: "numeric",

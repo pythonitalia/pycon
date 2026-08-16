@@ -25,7 +25,6 @@ import { MetaTags } from "~/components/meta-tags";
 import { VotingCard } from "~/components/voting-card";
 import { formatDeadlineDateTime } from "~/helpers/deadlines";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
-import { useCurrentLanguage } from "~/locale/context";
 import {
   queryVotingMetadata,
   useVotingMetadataQuery,
@@ -68,7 +67,6 @@ const toBoolean = (value: string): boolean | null => {
 
 export const VotingPage = () => {
   const router = useRouter();
-  const language = useCurrentLanguage();
   const [currentFilters, setCurrentFilters] = useState<
     Record<string, string[]>
   >({
@@ -144,7 +142,6 @@ export const VotingPage = () => {
     variables: {
       conference: process.env.conferenceCode,
       page: currentPage,
-      language,
       languages: currentFilters.languages,
       voted: toBoolean(currentFilters.voted?.[0]),
       tags: currentFilters.tags,
@@ -276,7 +273,7 @@ export const VotingPage = () => {
               values={{
                 deadline: (
                   <Text size={2} weight="strong">
-                    {formatDeadlineDateTime(votingDeadline, language)}
+                    {formatDeadlineDateTime(votingDeadline)}
                   </Text>
                 ),
               }}
@@ -426,11 +423,11 @@ export const VotingPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getStaticProps: GetStaticProps = async () => {
   const client = getApolloClient();
 
   await Promise.all([
-    prefetchSharedQueries(client, locale),
+    prefetchSharedQueries(client),
     queryVotingMetadata(client, {
       conference: process.env.conferenceCode,
     }),

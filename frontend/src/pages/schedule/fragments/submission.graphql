@@ -1,6 +1,6 @@
 fragment SubmissionFragment on Submission {
   id
-  title(language: $language)
+  title(language: "en")
 
   duration {
     id

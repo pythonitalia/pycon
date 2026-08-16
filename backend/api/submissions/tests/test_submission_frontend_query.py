@@ -17,13 +17,13 @@ from submissions.tests.factories import (
 )
 
 SUBMISSION_QUERY = """
-    query GetSubmission($id: ID!, $language: String!) {
+    query GetSubmission($id: ID!) {
       submission(id: $id) {
         id
         status
-        title(language: $language)
-        abstract(language: $language)
-        elevatorPitch(language: $language)
+        title(language: "en")
+        abstract(language: "en")
+        elevatorPitch(language: "en")
         shortSocialSummary
         doNotRecord
         multilingualTitle {
@@ -134,7 +134,7 @@ def test_submission_frontend_query(
     with django_assert_num_queries(10):
         response = graphql_client.query(
             SUBMISSION_QUERY,
-            variables={"id": submission.hashid, "language": "en"},
+            variables={"id": submission.hashid},
         )
 
     assert "errors" not in response

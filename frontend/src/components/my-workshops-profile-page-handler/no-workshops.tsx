@@ -7,13 +7,9 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
-
 import { createHref } from "../link";
 
 export const NoWorkshops = () => {
-  const language = useCurrentLanguage();
-
   return (
     <Container size="small" center={false} noPadding>
       <Heading size={2}>
@@ -28,7 +24,6 @@ export const NoWorkshops = () => {
         variant="secondary"
         href={createHref({
           path: "/schedule",
-          locale: language,
         })}
       >
         <FormattedMessage id="profile.myWorkshops.browseSchedule" />

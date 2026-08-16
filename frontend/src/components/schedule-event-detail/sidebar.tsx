@@ -10,7 +10,6 @@ import {
 } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
 import {
   useBookScheduleItemMutation,
   useCancelBookingScheduleItemMutation,
@@ -42,7 +41,6 @@ export const Sidebar = ({
   children,
   rooms,
 }: Props) => {
-  const lang = useCurrentLanguage();
   const [isLoggedIn] = useLoginState();
   const { data: bookingStateData, loading: isLoadingBookingState } =
     useWorkshopBookingStateQuery({
@@ -144,7 +142,6 @@ export const Sidebar = ({
                       <Link
                         href={createHref({
                           path: "/tickets",
-                          locale: lang,
                         })}
                       >
                         <FormattedMessage id="talk.buyATicketCTA" />

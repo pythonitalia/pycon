@@ -1,10 +1,10 @@
-query GetSubmission($id: ID!, $language: String!) {
+query GetSubmission($id: ID!) {
   submission(id: $id) {
     id
     status
-    title(language: $language)
-    abstract(language: $language)
-    elevatorPitch(language: $language)
+    title(language: "en")
+    abstract(language: "en")
+    elevatorPitch(language: "en")
     shortSocialSummary
     doNotRecord
     multilingualTitle {

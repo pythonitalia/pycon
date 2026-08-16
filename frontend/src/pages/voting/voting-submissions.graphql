@@ -2,7 +2,6 @@
 
 query VotingSubmissions(
   $conference: String!
-  $language: String!
   $languages: [String!]
   $voted: Boolean
   $tags: [String!]

@@ -5,7 +5,6 @@ import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { queryParticipantPublicProfile } from "~/types";
 
 export const getServerSideProps: GetServerSideProps = async ({
-  locale,
   req,
   params,
 }) => {
@@ -13,11 +12,10 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   try {
     const [_, participantQuery] = await Promise.all([
-      prefetchSharedQueries(client, locale),
+      prefetchSharedQueries(client),
       queryParticipantPublicProfile(client, {
         conference: process.env.conferenceCode,
         id: params.hashid as string,
-        language: locale,
       }),
     ]);
 

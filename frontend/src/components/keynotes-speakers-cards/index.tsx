@@ -11,7 +11,6 @@ import {
 } from "@python-italia/pycon-styleguide";
 import React from "react";
 import { useTranslatedMessage } from "~/helpers/use-translated-message";
-import { useCurrentLanguage } from "~/locale/context";
 import type { KeynotesSectionQueryResult } from "~/types";
 import { createHref } from "../link";
 
@@ -22,9 +21,8 @@ export const KeynotesSpeakersCards = ({
   keynotes: KeynotesSectionQueryResult["data"]["conference"]["keynotes"];
   justifyContent?: "left" | "center" | "right";
 }) => {
-  const language = useCurrentLanguage();
   const englishText = useTranslatedMessage("global.english");
-  const dateFormatter = new Intl.DateTimeFormat(language, {
+  const dateFormatter = new Intl.DateTimeFormat("en", {
     day: "numeric",
     month: "long",
   });
@@ -37,7 +35,6 @@ export const KeynotesSpeakersCards = ({
           noHover
           href={createHref({
             path: `/keynotes/${keynote.slug}`,
-            locale: language,
           })}
         >
           <SpeakerCard

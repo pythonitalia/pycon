@@ -13,7 +13,6 @@ import {
 } from "~/helpers/use-translated-message";
 import type { TicketItem } from "~/types";
 
-import { useCurrentLanguage } from "~/locale/context";
 import type { ProductState } from "../tickets-page/types";
 
 type Props = {
@@ -35,10 +34,9 @@ export const ProductQuestionnaire = ({
   hideAttendeeEmail = false,
   cols = 3,
 }: Props) => {
-  const language = useCurrentLanguage();
   const answers = productUserInformation.answers;
   const inputPlaceholder = useTranslatedMessage("input.placeholder");
-  const getTranslatedString = (id) => getTranslatedMessage(id, language);
+  const getTranslatedString = (id) => getTranslatedMessage(id);
 
   return (
     <Grid cols={cols} alignItems="end">

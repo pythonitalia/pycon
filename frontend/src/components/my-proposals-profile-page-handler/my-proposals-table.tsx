@@ -10,7 +10,6 @@ import {
 import { parseISO } from "date-fns";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
 import type { MyProfileWithSubmissionsQuery } from "~/types";
 
 import { createHref } from "../link";
@@ -21,13 +20,12 @@ type Props = {
   submissions: MyProfileWithSubmissionsQuery["me"]["submissions"];
 };
 export const MyProposalsTable = ({ submissions }: Props) => {
-  const language = useCurrentLanguage();
-  const dateFormatter = new Intl.DateTimeFormat(language, {
+  const dateFormatter = new Intl.DateTimeFormat("en", {
     day: "2-digit",
     month: "long",
     weekday: "long",
   });
-  const hourFormatter = new Intl.DateTimeFormat(language, {
+  const hourFormatter = new Intl.DateTimeFormat("en", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -46,7 +44,6 @@ export const MyProposalsTable = ({ submissions }: Props) => {
             <Link
               href={createHref({
                 path: `/submission/${row.id}`,
-                locale: language,
               })}
             >
               <Heading color="none" size={4}>
@@ -83,7 +80,6 @@ export const MyProposalsTable = ({ submissions }: Props) => {
               <Button
                 href={createHref({
                   path: `/schedule/invitation/${row.id}`,
-                  locale: language,
                 })}
                 size="small"
                 variant="secondary"
@@ -94,7 +90,6 @@ export const MyProposalsTable = ({ submissions }: Props) => {
             <Button
               href={createHref({
                 path: `/submission/${row.id}/edit`,
-                locale: language,
               })}
               size="small"
               variant="secondary"

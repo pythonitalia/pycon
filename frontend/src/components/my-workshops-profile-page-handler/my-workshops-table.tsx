@@ -9,7 +9,6 @@ import {
 import { parseISO } from "date-fns";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
 import type { MyProfileWithBookedWorkshopsQuery } from "~/types";
 
 import { createHref } from "../link";
@@ -21,13 +20,12 @@ type Props = {
 };
 
 export const MyWorkshopsTable = ({ workshops }: Props) => {
-  const language = useCurrentLanguage();
-  const dateFormatter = new Intl.DateTimeFormat(language, {
+  const dateFormatter = new Intl.DateTimeFormat("en", {
     day: "2-digit",
     month: "long",
     weekday: "long",
   });
-  const hourFormatter = new Intl.DateTimeFormat(language, {
+  const hourFormatter = new Intl.DateTimeFormat("en", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -48,7 +46,6 @@ export const MyWorkshopsTable = ({ workshops }: Props) => {
             <Link
               href={createHref({
                 path: `/event/${workshop.slug}`,
-                locale: language,
               })}
             >
               <Heading color="none" size={4}>
@@ -79,7 +76,6 @@ export const MyWorkshopsTable = ({ workshops }: Props) => {
           <Button
             href={createHref({
               path: `/event/${workshop.slug}`,
-              locale: language,
             })}
             size="small"
             variant="secondary"

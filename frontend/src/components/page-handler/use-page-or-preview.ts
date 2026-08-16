@@ -1,4 +1,3 @@
-import { useCurrentLanguage } from "~/locale/context";
 import {
   useNewsArticleQuery,
   usePagePreviewQuery,
@@ -30,12 +29,9 @@ export const usePageOrPreview = ({
   isPreview: boolean;
   previewData: any;
 }) => {
-  const language = useCurrentLanguage();
-
   const { data: pageData } = useFetch(fetcher)({
     variables: {
       hostname: process.env.cmsHostname,
-      language,
       slug,
     },
     skip: isPreview,

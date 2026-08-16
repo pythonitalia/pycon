@@ -17,7 +17,6 @@ import { FormattedMessage } from "react-intl";
 
 import Router from "next/router";
 
-import { useCurrentLanguage } from "~/locale/context";
 import { useLogoutMutation, useMyProfileQuery } from "~/types";
 
 import { createHref } from "../link";
@@ -40,7 +39,6 @@ export const ProfilePageHandler = () => {
   const [showLogoutModal, openLogoutModal] = useState(false);
   const [logout, { loading: isLoggingOut }] = useLogoutMutation();
   const [loggedIn, setLoginState] = useLoginState();
-  const language = useCurrentLanguage();
 
   const { error, data: profileData } = useMyProfileQuery({
     variables: {
@@ -71,7 +69,7 @@ export const ProfilePageHandler = () => {
   const onLogout = async () => {
     await logout();
     setLoginState(false);
-    window.location.href = `/${language}`;
+    window.location.href = "/";
   };
 
   const isStaffOrSponsor = profileData.me.conferenceRoles.some((role) =>
@@ -83,7 +81,6 @@ export const ProfilePageHandler = () => {
       id: "profile",
       link: createHref({
         path: "/profile/edit",
-        locale: language,
       }),
       label: <FormattedMessage id="profile.myProfile" />,
       icon: "user",
@@ -93,7 +90,6 @@ export const ProfilePageHandler = () => {
       id: "tickets",
       link: createHref({
         path: "/profile/my-tickets",
-        locale: language,
       }),
       label: <FormattedMessage id="profile.myTickets" />,
       icon: "tickets",
@@ -103,7 +99,6 @@ export const ProfilePageHandler = () => {
       id: "proposals",
       link: createHref({
         path: "/profile/my-proposals",
-        locale: language,
       }),
       label: <FormattedMessage id="profile.myProposals" />,
       icon: "email",
@@ -113,7 +108,6 @@ export const ProfilePageHandler = () => {
       id: "orders",
       link: createHref({
         path: "/profile/my-orders",
-        locale: language,
       }),
       label: <FormattedMessage id="profile.myOrders" />,
       icon: "circle",
@@ -123,7 +117,6 @@ export const ProfilePageHandler = () => {
       id: "workshops",
       link: createHref({
         path: "/profile/my-workshops",
-        locale: language,
       }),
       label: <FormattedMessage id="profile.myWorkshops" />,
       icon: "drink",
@@ -133,7 +126,6 @@ export const ProfilePageHandler = () => {
       id: "grants",
       link: createHref({
         path: "/profile/my-grant",
-        locale: language,
       }),
       label: <FormattedMessage id="profile.myGrant" />,
       icon: "star",
@@ -144,7 +136,6 @@ export const ProfilePageHandler = () => {
           id: "sponsors",
           link: createHref({
             path: "/profile/sponsor",
-            locale: language,
           }),
           label: <FormattedMessage id="profile.sponsorSection" />,
           icon: "web",

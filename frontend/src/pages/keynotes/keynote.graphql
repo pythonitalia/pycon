@@ -1,4 +1,4 @@
-query Keynote($conference: String!, $slug: String!, $language: String!) {
+query Keynote($conference: String!, $slug: String!) {
   conference(code: $conference) {
     id
     talk(slug: $slug) {
@@ -7,9 +7,9 @@ query Keynote($conference: String!, $slug: String!, $language: String!) {
     }
     keynote(slug: $slug) {
       id
-      title(language: $language)
-      description(language: $language)
-      slug(language: $language)
+      title(language: "en")
+      description(language: "en")
+      slug(language: "en")
       start
       end
       youtubeVideoId

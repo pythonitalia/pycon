@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import { useFormState } from "react-use-form-state";
-import { useCurrentLanguage } from "~/locale/context";
 import { createHref } from "../link";
 import { useCart } from "../tickets-page/use-cart";
 
@@ -27,7 +26,6 @@ export const PrivacyPolicy = () => {
     updateAcceptedPrivacyPolicy(formState.values.acceptedPrivacyPolicy);
   }, [formState.values]);
 
-  const language = useCurrentLanguage();
   return (
     <div>
       <label htmlFor="acceptedPrivacyPolicy">
@@ -48,7 +46,6 @@ export const PrivacyPolicy = () => {
                     target="_blank"
                     href={createHref({
                       path: "/privacy-policy",
-                      locale: language,
                     })}
                   >
                     <Text

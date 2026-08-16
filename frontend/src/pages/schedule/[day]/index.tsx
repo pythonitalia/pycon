@@ -12,8 +12,6 @@ import { useLoginState } from "~/components/profile/hooks";
 import { ScheduleView } from "~/components/schedule-view";
 import { prefetchSharedQueries } from "~/helpers/prefetch";
 import { useCurrentUser } from "~/helpers/use-current-user";
-import { useCurrentLanguage } from "~/locale/context";
-import type { Language } from "~/locale/languages";
 import {
   type ScheduleQuery,
   querySchedule,
@@ -21,20 +19,11 @@ import {
   useScheduleQuery,
 } from "~/types";
 
-export const getDayUrl = (day: string, language: Language | null = null) => {
-  if (language) {
-    return `/${language}/schedule/${day}`;
-  }
-  return `/schedule/${day}`;
-};
+export const getDayUrl = (day: string) => `/schedule/${day}`;
 
-export const formatDay = (
-  day: string,
-  language: Language,
-  timezone: string,
-) => {
+export const formatDay = (day: string, timezone: string) => {
   const d = new Date(day);
-  const formatter = new Intl.DateTimeFormat(language, {
+  const formatter = new Intl.DateTimeFormat("en", {
     weekday: "long",
     day: "numeric",
     timeZone: timezone,
@@ -44,16 +33,14 @@ export const formatDay = (
 
 const Meta = ({
   day,
-  language,
   timezone,
 }: {
   day: string;
-  language: Language;
   timezone?: string;
 }) => (
   <FormattedMessage
     id="schedule.pageTitle"
-    values={{ day: formatDay(day, language, timezone) }}
+    values={{ day: formatDay(day, timezone) }}
   >
     {(text) => <MetaTags title={text} />}
   </FormattedMessage>
@@ -62,7 +49,6 @@ const Meta = ({
 export const ScheduleDayPage = () => {
   const [loggedIn, _] = useLoginState();
   const code = process.env.conferenceCode;
-  const language = useCurrentLanguage();
 
   const router = useRouter();
   const day = router.query.day as string;
@@ -81,7 +67,6 @@ export const ScheduleDayPage = () => {
   const { data } = useScheduleQuery({
     variables: {
       code,
-      language,
     },
   });
 
@@ -95,29 +80,22 @@ type PageContentProps = {
 };
 
 const PageContent = ({ data, day, changeDay }: PageContentProps) => {
-  const language = useCurrentLanguage();
-
   return (
     <Page endSeparator={false}>
-      <Meta
-        day={day}
-        language={language}
-        timezone={data?.conference.timezone}
-      />
+      <Meta day={day} timezone={data?.conference.timezone} />
 
       <ScheduleView schedule={data} day={day} changeDay={changeDay} />
     </Page>
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getStaticProps: GetStaticProps = async () => {
   const client = getApolloClient();
 
   await Promise.all([
-    prefetchSharedQueries(client, locale),
+    prefetchSharedQueries(client),
     querySchedule(client, {
       code: process.env.conferenceCode,
-      language: locale,
     }),
   ]);
 
@@ -141,20 +119,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
     code: process.env.conferenceCode,
   });
 
-  const paths = [
-    ...days.map((day) => ({
-      params: {
-        day: day.day,
-      },
-      locale: "en",
-    })),
-    ...days.map((day) => ({
-      params: {
-        day: day.day,
-      },
-      locale: "it",
-    })),
-  ];
+  const paths = days.map((day) => ({
+    params: {
+      day: day.day,
+    },
+  }));
 
   return {
     paths,

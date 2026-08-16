@@ -1,7 +1,6 @@
 import { Heading, Page, Section } from "@python-italia/pycon-styleguide";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
 import { useMyProfileWithSubmissionsQuery } from "~/types";
 
 import { MetaTags } from "../meta-tags";
@@ -9,8 +8,6 @@ import { MyProposalsTable } from "./my-proposals-table";
 import { NoProposals } from "./no-proposals";
 
 export const MyProposalsProfilePageHandler = () => {
-  const language = useCurrentLanguage();
-
   const {
     data: {
       me: { submissions },
@@ -19,7 +16,6 @@ export const MyProposalsProfilePageHandler = () => {
   } = useMyProfileWithSubmissionsQuery({
     variables: {
       conference: process.env.conferenceCode,
-      language,
     },
   });
 

@@ -42,7 +42,6 @@ export const handler = async (req: NextRequest) => {
     semiBoldFont,
     queryTalk(client, {
       slug,
-      language,
       code: process.env.conferenceCode,
     }),
   ]);

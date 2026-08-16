@@ -1,4 +1,4 @@
-query MyProfileWithTickets($conference: String!, $language: String!) {
+query MyProfileWithTickets($conference: String!) {
   conference(code: $conference) {
     id
     badgePreviewDeadline: deadline(type: "badge_preview") {
@@ -13,7 +13,7 @@ query MyProfileWithTickets($conference: String!, $language: String!) {
     fullName
     email
 
-    tickets(conference: $conference, language: $language) {
+    tickets(conference: $conference, language: "en") {
       id
       hashid
       attendeeName {

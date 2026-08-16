@@ -16,7 +16,6 @@ import { parseISO } from "date-fns";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
-import { useCurrentLanguage } from "~/locale/context";
 import {
   type Cta,
   type SchedulePreviewSectionQuery,
@@ -36,7 +35,6 @@ export const SchedulePreviewSection = ({
   primaryCta,
   secondaryCta,
 }: Props) => {
-  const language = useCurrentLanguage();
   const {
     data: { conference },
   } = useSchedulePreviewSectionQuery({
@@ -63,7 +61,7 @@ export const SchedulePreviewSection = ({
           date: day.day,
           selected: day.day === selectedDay.day,
         }))}
-        language={language}
+        language="en"
         onClick={(day) => {
           setSelectedDay(days.find((d) => d.day === day));
         }}
@@ -82,7 +80,6 @@ export const SchedulePreviewSection = ({
               variant="secondary"
               href={createHref({
                 path: primaryCta.link,
-                locale: language,
               })}
             >
               {primaryCta.label}
@@ -92,7 +89,6 @@ export const SchedulePreviewSection = ({
             <BasicButton
               href={createHref({
                 path: secondaryCta.link,
-                locale: language,
               })}
             >
               {secondaryCta.label}
@@ -109,12 +105,11 @@ const ScheduleEventPreviewCard = ({
 }: {
   event: SchedulePreviewSectionQuery["conference"]["days"][number]["randomEvents"][number];
 }) => {
-  const language = useCurrentLanguage();
   const audienceLevel =
     event.audienceLevel?.name ?? event.submission?.audienceLevel?.name;
   const photo = event.speakers.find((speaker) => !!speaker.participant?.photo)
     ?.participant?.photo;
-  const hourFormatter = new Intl.DateTimeFormat(language, {
+  const hourFormatter = new Intl.DateTimeFormat("en", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -170,7 +165,6 @@ const ScheduleEventPreviewCard = ({
           <Link
             href={createHref({
               path: `/event/${event.slug}`,
-              locale: language,
             })}
           >
             <Heading color="none" size={4}>
