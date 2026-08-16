@@ -642,15 +642,16 @@ def _sent_for_upload_ready_to_notify(**kwargs):
     A job where the video and the thumbnail are already on YouTube, so the only
     thing left for `upload_schedule_item_video` to do is drafting the emails.
     """
-    return ScheduleItemSentForVideoUploadFactory(
-        last_attempt_at=None,
-        status=ScheduleItemSentForVideoUpload.Status.pending,
-        video_uploaded=True,
-        thumbnail_uploaded=True,
-        schedule_item__youtube_video_id="vid_123",
-        schedule_item__title="Test Title",
+    defaults = {
+        "last_attempt_at": None,
+        "status": ScheduleItemSentForVideoUpload.Status.pending,
+        "video_uploaded": True,
+        "thumbnail_uploaded": True,
+        "schedule_item__youtube_video_id": "vid_123",
+        "schedule_item__title": "Test Title",
         **kwargs,
-    )
+    }
+    return ScheduleItemSentForVideoUploadFactory(**defaults)
 
 
 def test_upload_schedule_item_video_drafts_an_email_to_each_speaker(sent_emails):
