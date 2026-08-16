@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Q
 from conferences.tasks import send_conference_voucher_email
 from conferences.vouchers import create_conference_voucher
@@ -337,19 +338,20 @@ def upload_schedule_item_video(*, sent_for_video_upload_state_id: int):
             conference
         ).get_by_identifier(EmailTemplateIdentifier.speaker_video_recording_uploaded)
 
-        for speaker in all_speakers:
-            email_template.draft_email(
-                recipient=speaker,
-                placeholders={
-                    "user_name": get_name(speaker, "there"),
-                    "video_recording_url": f"https://www.youtube.com/watch?v={video_id}",
-                    "schedule_item_title": schedule_item.title,
-                    "schedule_item_type": schedule_item.get_type_display(),
-                },
-            )
+        with transaction.atomic():
+            for speaker in all_speakers:
+                email_template.draft_email(
+                    recipient=speaker,
+                    placeholders={
+                        "user_name": get_name(speaker, "there"),
+                        "video_recording_url": f"https://www.youtube.com/watch?v={video_id}",
+                        "schedule_item_title": schedule_item.title,
+                        "schedule_item_type": schedule_item.get_type_display(),
+                    },
+                )
 
-        sent_for_video_upload.emails_scheduled = True
-        sent_for_video_upload.save(update_fields=["emails_scheduled"])
+            sent_for_video_upload.emails_scheduled = True
+            sent_for_video_upload.save(update_fields=["emails_scheduled"])
 
     logger.info("Workflow completed for schedule_item_id=%s", schedule_item.id)
     sent_for_video_upload.status = ScheduleItemSentForVideoUpload.Status.completed
