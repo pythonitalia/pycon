@@ -15,8 +15,9 @@ from schedule.admin import (
     send_schedule_invitation_reminder_to_waiting,
     send_schedule_invitation_to_all,
     send_schedule_invitation_to_uninvited,
+    upload_videos_to_youtube,
 )
-from schedule.models import ScheduleItem
+from schedule.models import ScheduleItem, ScheduleItemSentForVideoUpload
 from schedule.tests.factories import (
     ScheduleItemAdditionalSpeakerFactory,
     ScheduleItemFactory,
@@ -698,3 +699,42 @@ def test_mark_as_confirmed_action(rf, mocker):
 
     assert schedule_item.status == ScheduleItem.STATUS.confirmed
     assert unrelated_schedule_item.status == ScheduleItem.STATUS.waiting_confirmation
+
+
+def test_upload_videos_to_youtube_skips_do_not_record_submissions(rf, mocker):
+    mocker.patch("schedule.admin.messages")
+
+    conference = ConferenceFactory()
+    recordable = ScheduleItemFactory(
+        conference=conference,
+        type=ScheduleItem.TYPES.talk,
+        youtube_video_id="",
+        video_uploaded_path="recordable.mp4",
+        submission=SubmissionFactory(conference=conference, do_not_record=False),
+    )
+    do_not_record = ScheduleItemFactory(
+        conference=conference,
+        type=ScheduleItem.TYPES.talk,
+        youtube_video_id="",
+        video_uploaded_path="do-not-record.mp4",
+        submission=SubmissionFactory(conference=conference, do_not_record=True),
+    )
+    without_submission = ScheduleItemFactory(
+        conference=conference,
+        type=ScheduleItem.TYPES.custom,
+        youtube_video_id="",
+        video_uploaded_path="custom.mp4",
+        submission=None,
+    )
+
+    upload_videos_to_youtube(
+        None, rf.get("/"), ScheduleItem.objects.filter(conference=conference)
+    )
+
+    scheduled_ids = set(
+        ScheduleItemSentForVideoUpload.objects.values_list(
+            "schedule_item_id", flat=True
+        )
+    )
+    assert scheduled_ids == {recordable.id, without_submission.id}
+    assert do_not_record.id not in scheduled_ids
