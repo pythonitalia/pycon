@@ -103,7 +103,7 @@ dependencies = [
     "ipython>=8.30.0",
     "weasyprint>=68.0",
     "opencv-python-headless>=4.10.0.84",
-    "psycopg[c]==3.2.12",
+    "psycopg[c]==3.3.4",
     "sentence-transformers>=3.0.0",
     # Declared directly so [tool.uv.sources] binds torch to the CPU index
     # (sources only apply to direct deps). Otherwise it's transitive via
