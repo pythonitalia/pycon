@@ -13,20 +13,12 @@ query Header($code: String!) {
       links {
         text: title(language: "en")
         link: href(language: "en")
-
-        page {
-          slug(language: "en")
-        }
       }
     }
     programMenuEn: menu(identifier: "program-nav") {
       links {
         text: title(language: "en")
         link: href(language: "en")
-
-        page {
-          slug(language: "en")
-        }
       }
     }
 
@@ -34,20 +26,12 @@ query Header($code: String!) {
       links {
         text: title(language: "it")
         link: href(language: "it")
-
-        page {
-          slug(language: "it")
-        }
       }
     }
     programMenuIt: menu(identifier: "program-nav") {
       links {
         text: title(language: "it")
         link: href(language: "it")
-
-        page {
-          slug(language: "it")
-        }
       }
     }
   }
