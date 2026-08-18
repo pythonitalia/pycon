@@ -707,7 +707,7 @@ def test_upload_schedule_item_video_drafts_one_email_per_speaker(sent_emails):
     speaker = UserFactory(full_name="Marco Acierno", email="marco@placeholder.it")
 
     sent_for_upload = _sent_for_upload_ready_to_notify(
-        schedule_item__type=ScheduleItem.TYPES.submission,
+        schedule_item__type=ScheduleItem.TYPES.talk,
         schedule_item__submission__speaker=speaker,
     )
     ScheduleItemAdditionalSpeakerFactory(

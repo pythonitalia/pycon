@@ -6,20 +6,6 @@ from schedule.models import ScheduleItem
 
 
 @mark.django_db
-def test_submission_is_required_if_type_is_submission():
-    schedule_item = ScheduleItemFactory(
-        type=ScheduleItem.TYPES.submission, submission=None, title=""
-    )
-
-    with pytest.raises(exceptions.ValidationError) as e:
-        schedule_item.clean()
-
-    assert "You have to specify a submission when using the type `submission`" in str(
-        e.value
-    )
-
-
-@mark.django_db
 def test_title_cannot_be_blank_if_type_is_custom():
     schedule_item = ScheduleItemFactory(type=ScheduleItem.TYPES.custom, title="")
 

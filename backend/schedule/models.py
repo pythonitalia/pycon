@@ -180,7 +180,6 @@ class ScheduleItemQuerySet(QuerySet, ConferenceQuerySetMixin):
 
 class ScheduleItem(TimeStampedModel):
     TYPES = Choices(
-        ("submission", _("Submission")),
         ("talk", _("Talk")),
         ("training", _("Training")),
         ("keynote", _("Keynote")),
@@ -365,16 +364,6 @@ class ScheduleItem(TimeStampedModel):
         )
 
     def clean(self):
-        if self.type == ScheduleItem.TYPES.submission and not self.submission:
-            raise exceptions.ValidationError(
-                {
-                    "submission": _(
-                        "You have to specify a submission when "
-                        "using the type `submission`"
-                    )
-                }
-            )
-
         if self.type == ScheduleItem.TYPES.custom and not self.title:
             raise exceptions.ValidationError(
                 {"title": _("You have to specify a title when using the type `custom`")}

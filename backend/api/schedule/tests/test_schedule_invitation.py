@@ -22,7 +22,7 @@ def test_fetch_an_invitation(
         status=ScheduleItem.STATUS.confirmed,
         speaker_invitation_notes="notes",
         submission=submission,
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=submission.conference,
         slot=SlotFactory(
             day=DayFactory(
@@ -66,7 +66,7 @@ def test_random_user_cannot_fetch_the_invite(
         status=ScheduleItem.STATUS.confirmed,
         speaker_invitation_notes="notes",
         submission=submission,
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=submission.conference,
         slot=SlotFactory(
             day=DayFactory(
@@ -106,7 +106,7 @@ def test_staff_can_fetch_the_invite(
         status=ScheduleItem.STATUS.confirmed,
         speaker_invitation_notes="notes",
         submission=submission,
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=submission.conference,
         slot=SlotFactory(
             day=DayFactory(
@@ -143,7 +143,7 @@ def test_requires_authentication(
         status=ScheduleItem.STATUS.confirmed,
         speaker_invitation_notes="notes",
         submission=submission,
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=submission.conference,
         slot=SlotFactory(
             day=DayFactory(
