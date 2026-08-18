@@ -101,7 +101,6 @@ INSTALLED_APPS = [
     "events.apps.EventsConfig",
     "grants.apps.GrantsConfig",
     "i18n",
-    "importer",
     "storages",
     "notifications.apps.NotificationsConfig",
     "newsletters.apps.NewslettersConfig",
