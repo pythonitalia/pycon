@@ -30,7 +30,7 @@ def test_get_talk_not_found(graphql_client):
 def test_get_talk_by_slug(graphql_client):
     conference = ConferenceFactory()
 
-    ScheduleItemFactory(conference=conference, type=ScheduleItem.TYPES.submission)
+    ScheduleItemFactory(conference=conference, type=ScheduleItem.TYPES.talk)
     keynote = ScheduleItemFactory(
         conference=conference, type=ScheduleItem.TYPES.keynote
     )

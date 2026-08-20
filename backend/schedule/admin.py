@@ -176,7 +176,6 @@ def _send_invitations(
         submission__isnull=False,
         type__in=[
             ScheduleItem.TYPES.talk,
-            ScheduleItem.TYPES.submission,
             ScheduleItem.TYPES.training,
         ],
     )
@@ -194,8 +193,10 @@ def _send_invitations(
 
 @admin.action(description="Upload videos to YouTube")
 def upload_videos_to_youtube(modeladmin, request, queryset):
-    videos = queryset.filter(youtube_video_id__exact="").exclude(
-        video_uploaded_path__exact=""
+    videos = (
+        queryset.filter(youtube_video_id__exact="")
+        .exclude(video_uploaded_path__exact="")
+        .exclude(submission__do_not_record=True)
     )
 
     sent_for_video_upload_objs = []

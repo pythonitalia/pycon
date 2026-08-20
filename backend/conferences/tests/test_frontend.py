@@ -21,7 +21,7 @@ def test_get_paths_for_keynote():
 def test_get_paths_for_event():
     event = ScheduleItemFactory(
         slug="event-1",
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
     )
 
     assert get_paths(event) == [
@@ -70,7 +70,7 @@ def test_trigger_frontend_revalidate(mocker):
 
     object = ScheduleItemFactory(
         slug="event-1",
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
     )
 
     trigger_frontend_revalidate(conference, object)

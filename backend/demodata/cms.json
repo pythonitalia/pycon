@@ -191,8 +191,7 @@
         "en": "/en/schedule",
         "it": "/en/programma"
       },
-      "is_primary": false,
-      "page": null
+      "is_primary": false
     }
   },
   {
@@ -211,8 +210,7 @@
         "en": "/en/register",
         "it": "/it/registrati"
       },
-      "is_primary": true,
-      "page": null
+      "is_primary": true
     }
   },
   {
@@ -231,8 +229,7 @@
         "en": "/en/schedule",
         "it": "/it/programma"
       },
-      "is_primary": false,
-      "page": null
+      "is_primary": false
     }
   },
   {
@@ -251,8 +248,7 @@
         "en": "/en/where",
         "it": "/it/dove"
       },
-      "is_primary": false,
-      "page": null
+      "is_primary": false
     }
   }
 ]

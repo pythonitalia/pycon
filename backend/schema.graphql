@@ -722,7 +722,6 @@ type MenuLink {
   href(language: String = null): String!
   title(language: String = null): String!
   isPrimary: Boolean!
-  page: Page
 }
 
 input MultiLingualInput {
@@ -846,15 +845,6 @@ type Option {
   name: String!
 }
 
-type Page {
-  id: ID!
-  title(language: String = null): String!
-  slug(language: String = null): String!
-  content(language: String = null): String!
-  excerpt: String
-  image: String
-}
-
 type PageInfo {
   totalPages: Int!
   totalItems: Int!
@@ -950,8 +940,6 @@ type Query {
   submissions(code: String!, languages: [String!] = null, voted: Boolean = null, tags: [String!] = null, types: [String!] = null, audienceLevels: [String!] = null, page: Int = 1, pageSize: Int = 50, onlyAccepted: Boolean! = false): SubmissionPaginated
   submissionTags: [SubmissionTag!]!
   votingTags(conference: String!): [SubmissionTag!]!
-  pages(code: String!): [Page!]!
-  page(code: String!, slug: String!): Page
   countries: [Country!]!
   country(code: String! = ""): Country!
   order(conferenceCode: String!, code: String!): PretixOrder
