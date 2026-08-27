@@ -94,7 +94,7 @@ dependencies = [
     "wagtail-factories==4.4.0",
     "google-auth-oauthlib>=1.2.1",
     "PyJWT>=2.8.0",
-    "cryptography>=48.0.1",
+    "cryptography>=50.0.0",
     "openai>=1.52.0",
     "pydantic>=2.13.3",
     "gunicorn>=23.0.0",
