@@ -2,8 +2,7 @@ export const messages = {
   default: {},
   en: {
     titleTemplate: "%s | PyCon Italia",
-    description:
-      "Join PyCon Italia May 27th to May 30th 2026 in Bologna, Italy!",
+    description: "Join us, June 2 to June 5, 2027, in Bologna, Italy!",
     "global.submit": "Submit",
     "global.pleaseWait": "Please wait",
 
