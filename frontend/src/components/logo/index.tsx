@@ -1,5 +1,3 @@
-import React from "react";
-
 export const Logo = (props: any) => (
   <svg {...props} viewBox="0 0 601 181" fill="none">
     <path d="M422.801 3.82422H3.48535V177.024H422.801V3.82422Z" fill="white" />
