@@ -2,16 +2,13 @@ from urllib.parse import urljoin
 
 from api.context import Info
 from privacy_policy.record import record_privacy_policy_acceptance
-from pretix import CreateOrderErrors
 import strawberry
 from django.conf import settings
 
 from api.permissions import IsAuthenticated
+from api.pretix.types import CreateOrderErrors, CreateOrderInput
 from conferences.models.conference import Conference
-from pretix import (
-    CreateOrderInput,
-    create_order,
-)
+from pretix import create_order
 from pretix.exceptions import PretixError
 from billing.models import BillingAddress as BillingAddressModel
 
