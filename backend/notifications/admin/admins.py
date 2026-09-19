@@ -1,3 +1,7 @@
+import functools
+import logging
+from django.db import transaction
+from django.utils import timezone
 from typing import Any
 from django.http import HttpResponseRedirect
 from django.http.request import HttpRequest
@@ -15,6 +19,10 @@ from django.utils.safestring import mark_safe
 
 from notifications.models import EmailTemplate, SentEmail, SentEmailEvent
 from django.forms import Textarea
+from django.db.models import QuerySet
+from notifications.tasks import send_pending_email
+
+logger = logging.getLogger(__name__)
 
 
 class SentEmailEventInline(admin.TabularInline):
@@ -111,6 +119,17 @@ class EmailTemplateAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         return reverse("admin:view-email-template", args=(obj.id,))
 
 
+def _submit_emails_for_sending(sent_emails_ids: list[int]) -> None:
+    for sent_email_id in sent_emails_ids:
+        try:
+            send_pending_email.delay(sent_email_id)
+        except Exception:
+            logger.exception(
+                "Could not queue sent_email_id=%s, leaving it pending",
+                sent_email_id,
+            )
+
+
 @admin.register(SentEmail)
 class SentEmailAdmin(admin.ModelAdmin):
     list_display = [
@@ -146,6 +165,7 @@ class SentEmailAdmin(admin.ModelAdmin):
     ordering = ["-sent_at"]
     autocomplete_fields = ["recipient"]
     inlines = [SentEmailEventInline]
+    actions = ["send_email"]
 
     def email_template_display_name(self, obj):
         if obj.email_template.is_custom:
@@ -182,3 +202,29 @@ class SentEmailAdmin(admin.ModelAdmin):
             qs = qs.filter(email_template__is_system_template=False)
 
         return qs
+
+    @transaction.atomic
+    def send_email(self, request: HttpRequest, queryset: QuerySet[SentEmail]):
+        affected_emails_ids = list(
+            queryset.filter(
+                status__in=[
+                    SentEmail.Status.draft,
+                    SentEmail.Status.pending,
+                    SentEmail.Status.failed,
+                ]
+            )
+            .select_for_update(skip_locked=True)
+            .values_list("id", flat=True)
+        )
+
+        SentEmail.objects.filter(id__in=affected_emails_ids).update(
+            status=SentEmail.Status.pending,
+            modified=timezone.now(),
+        )
+
+        transaction.on_commit(
+            functools.partial(_submit_emails_for_sending, affected_emails_ids)
+        )
+        self.message_user(
+            request, f"Emails queued for sending: {len(affected_emails_ids)}"
+        )

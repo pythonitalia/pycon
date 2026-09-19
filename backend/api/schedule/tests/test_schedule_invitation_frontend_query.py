@@ -55,7 +55,7 @@ def test_schedule_invitation_frontend_query(
         status=models.ScheduleItem.STATUS.confirmed,
         submission=submission,
         title="Schedule title",
-        type=models.ScheduleItem.TYPES.submission,
+        type=models.ScheduleItem.TYPES.talk,
         slot=SlotFactory(
             day=DayFactory(conference=conference, day=date(2026, 5, 21)),
             duration=30,

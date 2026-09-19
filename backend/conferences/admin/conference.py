@@ -329,7 +329,6 @@ class ConferenceAdmin(
         talk_days = (
             conference.days.filter(
                 slots__items__type__in=[
-                    ScheduleItem.TYPES.submission,
                     ScheduleItem.TYPES.talk,
                     ScheduleItem.TYPES.keynote,
                     ScheduleItem.TYPES.panel,

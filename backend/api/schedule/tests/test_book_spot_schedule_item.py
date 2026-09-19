@@ -23,7 +23,7 @@ def simple_schedule_item():
     return ScheduleItemFactory(
         status=ScheduleItem.STATUS.confirmed,
         submission=submission,
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=submission.conference,
         attendees_total_capacity=30,
         slot=SlotFactory(

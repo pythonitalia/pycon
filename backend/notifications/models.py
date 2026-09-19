@@ -53,6 +53,11 @@ class EmailTemplateIdentifier(models.TextChoices):
         _("Visa invitation letter download"),
     )
 
+    speaker_video_recording_uploaded = (
+        "speaker_video_recording_uploaded",
+        _("Speaker: Video recording uploaded"),
+    )
+
     custom = "custom", _("Custom")
 
 
@@ -165,6 +170,13 @@ class EmailTemplate(TimeStampedModel):
             "has_grant",
             "user_name",
         ],
+        EmailTemplateIdentifier.speaker_video_recording_uploaded: [
+            *BASE_PLACEHOLDERS,
+            "user_name",
+            "video_recording_url",
+            "schedule_item_title",
+            "schedule_item_type",
+        ],
     }
 
     conference = models.ForeignKey(
@@ -211,17 +223,16 @@ class EmailTemplate(TimeStampedModel):
             placeholders=placeholders,
         )
 
-    def send_email(
+    def _prepare_email(
         self,
         *,
+        status: "SentEmail.Status",
         recipient: User | None = None,
         recipient_email: str | None = None,
         placeholders: dict = None,
     ):
         if not recipient and not recipient_email:
             raise ValueError("Either recipient or recipient_email must be provided")
-
-        from notifications.tasks import send_pending_email
 
         recipient_email = recipient_email or recipient.email
 
@@ -236,7 +247,8 @@ class EmailTemplate(TimeStampedModel):
                 or settings.DEFAULT_FROM_EMAIL
             )
 
-        sent_email = SentEmail.objects.create(
+        return SentEmail.objects.create(
+            status=status,
             email_template=self,
             conference=self.conference,
             from_email=from_email,
@@ -252,6 +264,35 @@ class EmailTemplate(TimeStampedModel):
             bcc_addresses=self.bcc_addresses,
         )
 
+    def draft_email(
+        self,
+        *,
+        recipient: User | None = None,
+        recipient_email: str | None = None,
+        placeholders: dict = None,
+    ):
+        return self._prepare_email(
+            status=SentEmail.Status.draft,
+            recipient=recipient,
+            recipient_email=recipient_email,
+            placeholders=placeholders,
+        )
+
+    def send_email(
+        self,
+        *,
+        recipient: User | None = None,
+        recipient_email: str | None = None,
+        placeholders: dict = None,
+    ):
+        from notifications.tasks import send_pending_email
+
+        sent_email = self._prepare_email(
+            status=SentEmail.Status.pending,
+            recipient=recipient,
+            recipient_email=recipient_email,
+            placeholders=placeholders,
+        )
         transaction.on_commit(lambda: send_pending_email.delay(sent_email.id))
 
     @property
@@ -284,6 +325,7 @@ class EmailTemplate(TimeStampedModel):
 
 class SentEmail(TimeStampedModel):
     class Status(models.TextChoices):
+        draft = "draft", _("Draft")
         pending = "pending", _("Pending")
         sent = "sent", _("Sent")
         failed = "failed", _("Failed")

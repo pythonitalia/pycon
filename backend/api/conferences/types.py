@@ -27,7 +27,6 @@ from api.voting.types import RankRequest
 from cms import models as cms_models
 from conferences import models as conference_models
 from conferences.models import deadline as deadline_models
-from schedule import models as schedule_models
 from submissions import models as submission_models
 from voting import models as voting_models
 
@@ -263,9 +262,9 @@ class Conference:
 
     @strawberry_django.field
     def talks(self) -> list[ScheduleItem]:
-        return self.schedule_items.filter(
-            type=schedule_models.ScheduleItem.TYPES.submission
-        )
+        # this used to filter on the `submission` schedule item type, which was
+        # migrated away in schedule/migrations/0041 and no longer exists
+        return self.schedule_items.none()
 
     @strawberry_django.field
     def talk(self, info: Info, slug: str) -> ScheduleItem | None:

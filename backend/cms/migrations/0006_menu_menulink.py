@@ -11,7 +11,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('conferences', '0011_auto_20190921_2340'),
-        ('pages', '0002_auto_20190914_1504'),
         ('cms', '0005_faq'),
     ]
 
@@ -39,7 +38,6 @@ class Migration(migrations.Migration):
                 ('title', i18n.fields.I18nTextField(verbose_name='title')),
                 ('href', i18n.fields.I18nTextField(blank=True, verbose_name='Link url')),
                 ('menu', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='links', to='cms.Menu', verbose_name='menu')),
-                ('page', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='links', to='pages.Page', verbose_name='page')),
             ],
             options={
                 'ordering': ('order',),

@@ -47,7 +47,7 @@ class ScheduleItemFactory(DjangoModelFactory):
     title = factory.Faker("text", max_nb_chars=100)
     slug = factory.Faker("slug")
     description = factory.Faker("text")
-    type = factory.fuzzy.FuzzyChoice(["submission", "custom"])
+    type = factory.fuzzy.FuzzyChoice(["talk", "custom"])
     image = factory.django.ImageField()
 
     @classmethod

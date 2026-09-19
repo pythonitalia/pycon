@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Annotated
 import strawberry
 import strawberry_django
 from django.db import models as django_models
+from django.db.models import Prefetch
 from django.db.models.functions import Coalesce
 
 from api.context import Info
@@ -12,6 +13,7 @@ from api.permissions import IsStaffPermission
 from api.schedule.types.room import Room
 from api.schedule.types.schedule_item_user import ScheduleItemUser
 from api.submissions.types import Submission
+from participants import models as participant_models
 from schedule import models
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -163,13 +165,30 @@ class ScheduleItem:
 
         return self.talk_manager_id == user_id
 
+    # ScheduleItemUser is a DTO, so Strawberry Django cannot propagate the
+    # Participant.photo optimization through it to these reverse relations.
     @strawberry_django.field(
         only=["conference_id"],
         select_related=["submission__speaker"],
         prefetch_related=[
-            "submission__speaker__participants",
-            "keynote__speakers__user__participants",
-            "additional_speakers__user__participants",
+            Prefetch(
+                "submission__speaker__participants",
+                queryset=participant_models.Participant.objects.select_related(
+                    "photo_file"
+                ),
+            ),
+            Prefetch(
+                "keynote__speakers__user__participants",
+                queryset=participant_models.Participant.objects.select_related(
+                    "photo_file"
+                ),
+            ),
+            Prefetch(
+                "additional_speakers__user__participants",
+                queryset=participant_models.Participant.objects.select_related(
+                    "photo_file"
+                ),
+            ),
         ],
     )
     def speakers(self) -> list[ScheduleItemUser]:

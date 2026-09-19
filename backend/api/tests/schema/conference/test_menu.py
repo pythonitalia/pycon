@@ -2,7 +2,6 @@ from pytest import mark
 
 from cms.tests.factories import MenuFactory, MenuLinkFactory
 from conferences.tests.factories import ConferenceFactory
-from pages.tests.factories import PageFactory
 
 
 @mark.django_db
@@ -68,10 +67,7 @@ def test_frontend_header_menus_query_is_constant(
     for identifier in ["conference-nav", "program-nav"]:
         menu = MenuFactory(identifier=identifier, conference=conference)
         for _ in range(link_count):
-            MenuLinkFactory(
-                menu=menu,
-                page=PageFactory(conference=conference),
-            )
+            MenuLinkFactory(menu=menu)
 
     with django_assert_num_queries(9):
         resp = graphql_client.query(
@@ -83,36 +79,24 @@ def test_frontend_header_menus_query_is_constant(
                         links {
                             text: title(language: "en")
                             link: href(language: "en")
-                            page {
-                                slug(language: "en")
-                            }
                         }
                     }
                     programMenuEn: menu(identifier: "program-nav") {
                         links {
                             text: title(language: "en")
                             link: href(language: "en")
-                            page {
-                                slug(language: "en")
-                            }
                         }
                     }
                     conferenceMenuIt: menu(identifier: "conference-nav") {
                         links {
                             text: title(language: "it")
                             link: href(language: "it")
-                            page {
-                                slug(language: "it")
-                            }
                         }
                     }
                     programMenuIt: menu(identifier: "program-nav") {
                         links {
                             text: title(language: "it")
                             link: href(language: "it")
-                            page {
-                                slug(language: "it")
-                            }
                         }
                     }
                 }

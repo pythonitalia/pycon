@@ -261,7 +261,7 @@ resource "aws_ecs_task_definition" "worker" {
       essential         = false
 
       command = [
-        "bin/python", "manage.py", "migrate"
+        "python", "manage.py", "migrate"
       ]
 
       environment = local.env_vars

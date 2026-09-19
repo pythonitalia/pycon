@@ -1,7 +1,6 @@
 import strawberry
 import strawberry_django
 
-from api.pages.types import Page
 from cms import models
 
 from ..helpers.i18n import make_localized_resolver
@@ -23,7 +22,6 @@ class MenuLink:
         resolver=make_localized_resolver("title"), only=["title"]
     )
     is_primary: strawberry.auto
-    page: Page | None
 
 
 @strawberry_django.type(models.Menu)

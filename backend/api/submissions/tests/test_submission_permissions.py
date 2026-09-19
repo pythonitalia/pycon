@@ -137,7 +137,7 @@ def test_accepted_submission_user_can_see_public_and_restricted_fields(
     ScheduleItemFactory(
         submission=submission,
         conference=submission.conference,
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
     )
 
     data = _query(graphql_client, submission)

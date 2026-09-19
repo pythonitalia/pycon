@@ -40,7 +40,7 @@ def test_update_invitation_answer(
 
     schedule_item = ScheduleItemFactory(
         submission=submission,
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=submission.conference,
         slot=SlotFactory(
             day=DayFactory(conference=submission.conference), hour="10:00", duration=30
@@ -113,7 +113,7 @@ def test_saving_the_same_answer_does_not_trigger_event(
         status=ScheduleItem.STATUS.confirmed,
         speaker_invitation_notes="notes",
         submission=submission,
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=submission.conference,
         slot=SlotFactory(
             day=DayFactory(conference=submission.conference), hour="10:00", duration=30
@@ -176,7 +176,7 @@ def test_changing_notes_triggers_a_new_event(
         status=ScheduleItem.STATUS.confirmed,
         speaker_invitation_notes="notes",
         submission=submission,
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=submission.conference,
         slot=SlotFactory(
             day=DayFactory(conference=submission.conference), hour="10:00", duration=30
@@ -236,7 +236,7 @@ def test_random_user_cannot_update_an_invitation(
         status=ScheduleItem.STATUS.waiting_confirmation,
         speaker_invitation_notes="",
         submission=submission,
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=submission.conference,
         slot=SlotFactory(
             day=DayFactory(conference=submission.conference), hour="10:00", duration=30
@@ -319,7 +319,7 @@ def test_requires_authentication(
         status=ScheduleItem.STATUS.waiting_confirmation,
         speaker_invitation_notes="",
         submission=submission,
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=submission.conference,
         slot=SlotFactory(
             day=DayFactory(conference=submission.conference), hour="10:00", duration=30
@@ -371,7 +371,7 @@ def test_staff_can_update_invitation_answer(
 
     schedule_item = ScheduleItemFactory(
         submission=submission,
-        type=ScheduleItem.TYPES.submission,
+        type=ScheduleItem.TYPES.talk,
         conference=submission.conference,
         slot=SlotFactory(
             day=DayFactory(conference=submission.conference), hour="10:00", duration=30

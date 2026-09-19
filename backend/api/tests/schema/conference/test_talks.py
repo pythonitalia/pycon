@@ -6,11 +6,9 @@ from schedule.tests.factories import ScheduleItemFactory
 
 
 @mark.django_db
-def test_get_all_talks(graphql_client):
+def test_get_all_talks_is_always_empty(graphql_client):
     conference = ConferenceFactory()
-    item = ScheduleItemFactory(
-        type=ScheduleItem.TYPES.submission, conference=conference
-    )
+    ScheduleItemFactory(type=ScheduleItem.TYPES.talk, conference=conference)
 
     resp = graphql_client.query(
         """
@@ -26,20 +24,18 @@ def test_get_all_talks(graphql_client):
     )
 
     assert "errors" not in resp
-    assert resp["data"]["conference"]["talks"] == [{"title": item.title}]
+    assert resp["data"]["conference"]["talks"] == []
 
 
 @mark.django_db
-def test_frontend_talks_query_uses_two_queries(
+def test_frontend_talks_query_only_looks_up_the_conference(
     graphql_client, django_assert_num_queries
 ):
     conference = ConferenceFactory()
-    item = ScheduleItemFactory(
-        type=ScheduleItem.TYPES.submission,
-        conference=conference,
-    )
+    ScheduleItemFactory(type=ScheduleItem.TYPES.talk, conference=conference)
 
-    with django_assert_num_queries(2):
+    # talks resolves to an empty queryset, so it never hits the database
+    with django_assert_num_queries(1):
         resp = graphql_client.query(
             """
             query AllTalks($code: String!) {
@@ -56,6 +52,4 @@ def test_frontend_talks_query_uses_two_queries(
         )
 
     assert "errors" not in resp
-    assert resp["data"]["conference"]["talks"] == [
-        {"id": str(item.id), "slug": item.slug}
-    ]
+    assert resp["data"]["conference"]["talks"] == []

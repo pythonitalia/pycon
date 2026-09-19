@@ -19,6 +19,11 @@ from helpers.unique_slugify import unique_slugify
 from pycon.constants import COLORS
 from submissions.models import Submission
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from users.models import User
+
 
 @dataclass
 class SpeakerEntity:
@@ -156,6 +161,7 @@ class ScheduleItemSentForVideoUpload(TimeStampedModel):
     last_attempt_at = models.DateTimeField(_("Last attempt at"), null=True, blank=True)
     video_uploaded = models.BooleanField(_("Video uploaded"), default=False)
     thumbnail_uploaded = models.BooleanField(_("Thumbnail uploaded"), default=False)
+    emails_scheduled = models.BooleanField(_("Emails scheduled"), default=False)
     failed_reason = models.TextField(
         _("Failed reason"),
         blank=True,
@@ -174,7 +180,6 @@ class ScheduleItemQuerySet(QuerySet, ConferenceQuerySetMixin):
 
 class ScheduleItem(TimeStampedModel):
     TYPES = Choices(
-        ("submission", _("Submission")),
         ("talk", _("Talk")),
         ("training", _("Training")),
         ("keynote", _("Keynote")),
@@ -334,7 +339,7 @@ class ScheduleItem(TimeStampedModel):
         return room.attendees_total_capacity if room else None
 
     @cached_property
-    def speakers(self):
+    def speakers(self) -> list["User"]:
         speakers = []
 
         if self.submission_id:
@@ -354,19 +359,11 @@ class ScheduleItem(TimeStampedModel):
             speaker.user
             for speaker in sorted(additional_speakers, key=lambda speaker: speaker.id)
         )
-        return [speaker for speaker in speakers if speaker is not None]
+        return list(
+            dict.fromkeys(speaker for speaker in speakers if speaker is not None)
+        )
 
     def clean(self):
-        if self.type == ScheduleItem.TYPES.submission and not self.submission:
-            raise exceptions.ValidationError(
-                {
-                    "submission": _(
-                        "You have to specify a submission when "
-                        "using the type `submission`"
-                    )
-                }
-            )
-
         if self.type == ScheduleItem.TYPES.custom and not self.title:
             raise exceptions.ValidationError(
                 {"title": _("You have to specify a title when using the type `custom`")}
