@@ -59,7 +59,9 @@ def run_clone(source_code, new_code="pycon2027", workflow_id=None, **kwargs):
     """
 
     async def go():
-        resonate = Resonate(autostart=False, retry_policy=Never())
+        # ``env={}`` hides any ambient RESONATE_URL, so the workflow runs on
+        # the in-process connection instead of a real server.
+        resonate = Resonate(autostart=False, retry_policy=Never(), env={})
         resonate.register(clone_conference, name=CLONE_CONFERENCE)
         resonate.start()
 
