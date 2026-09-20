@@ -1,0 +1,480 @@
+"""Durable workflow that creates a new conference from an existing one.
+
+Setting up the next edition means re-creating, by hand, everything that is
+configuration rather than content: deadlines, durations, sponsor levels and
+their benefits, email templates, menus, copy, forms. The workflow does that in
+one durable run: every step is a Resonate durable child, so a crash (or a
+database hiccup, which Resonate retries) resumes from the step that failed
+instead of leaving a half-built conference behind.
+
+Content produced *during* an edition is never copied: proposals, schedule,
+keynotes, sponsors, grants, vouchers, answers.
+"""
+
+from __future__ import annotations
+
+import json
+from datetime import datetime, timedelta
+from typing import Any
+
+from django.db import transaction
+from resonate.context import Context
+
+from pycon.resonate_app import database_step, get_resonate
+
+resonate = get_resonate()
+
+CLONE_CONFERENCE = "clone_conference"
+
+# Copied verbatim onto the new conference: settings that describe how the
+# organizers work, not what happened at a given edition. Anything tied to one
+# edition (pretix ids, logo, dates, code, hostname) is deliberately absent.
+CONFERENCE_FIELDS_TO_COPY = (
+    "organizer_id",
+    "timezone",
+    "location",
+    "introduction",
+    "latitude",
+    "longitude",
+    "map_link",
+    "slack_new_proposal_channel_id",
+    "slack_new_grant_reply_channel_id",
+    "slack_speaker_invitation_answer_channel_id",
+    "slack_new_sponsor_lead_channel_id",
+    "slack_new_invitation_letter_request_channel_id",
+    "video_title_template",
+    "video_description_template",
+    "youtube_video_bottom_text",
+    "frontend_revalidate_url",
+    "frontend_revalidate_secret",
+    "max_proposals_per_user",
+)
+
+CONFERENCE_TAXONOMIES_TO_COPY = (
+    "topics",
+    "languages",
+    "audience_levels",
+    "submission_types",
+    "proposal_tags",
+)
+
+
+def _i18n_key(value: Any) -> str:
+    """A comparable key for an i18n field value.
+
+    i18n fields cannot be used in ORM lookups (they raise), so models keyed on
+    one are de-duplicated in Python instead.
+    """
+    data = getattr(value, "data", value)
+
+    if isinstance(data, dict):
+        return json.dumps(data, sort_keys=True)
+
+    return str(data)
+
+
+@database_step
+def create_conference(
+    ctx: Context,
+    source_code: str,
+    new_code: str,
+    new_name: str,
+    new_start: datetime,
+    new_end: datetime,
+    new_hostname: str,
+) -> int:
+    """Create the new conference (or return the existing one) and its taxonomies."""
+    from conferences.models import Conference
+
+    with transaction.atomic():
+        source = Conference.objects.get(code=source_code)
+
+        conference, _ = Conference.objects.get_or_create(
+            code=new_code,
+            defaults={
+                "name": new_name,
+                "hostname": new_hostname,
+                "start": new_start,
+                "end": new_end,
+                **{
+                    field: getattr(source, field) for field in CONFERENCE_FIELDS_TO_COPY
+                },
+            },
+        )
+
+        for taxonomy in CONFERENCE_TAXONOMIES_TO_COPY:
+            getattr(conference, taxonomy).set(getattr(source, taxonomy).all())
+
+        return conference.id
+
+
+@database_step
+def copy_deadlines(ctx: Context, source_code: str, conference_id: int) -> int:
+    """Copy deadlines, shifted by the gap between the two editions' start dates."""
+    from conferences.models import Conference, Deadline
+
+    with transaction.atomic():
+        source = Conference.objects.get(code=source_code)
+        conference = Conference.objects.get(id=conference_id)
+
+        if source.start and conference.start:
+            shift = conference.start - source.start
+        else:
+            shift = timedelta()
+
+        copied = 0
+
+        for deadline in source.deadlines.all():
+            _, created = Deadline.objects.get_or_create(
+                conference=conference,
+                type=deadline.type,
+                defaults={
+                    "name": deadline.name,
+                    "description": deadline.description,
+                    "start": deadline.start + shift,
+                    "end": deadline.end + shift,
+                },
+            )
+            copied += int(created)
+
+        return copied
+
+
+@database_step
+def copy_durations(ctx: Context, source_code: str, conference_id: int) -> int:
+    from conferences.models import Conference, Duration
+
+    with transaction.atomic():
+        source = Conference.objects.get(code=source_code)
+        conference = Conference.objects.get(id=conference_id)
+
+        copied = 0
+
+        for duration in source.durations.all():
+            new_duration, created = Duration.objects.get_or_create(
+                conference=conference,
+                name=duration.name,
+                defaults={
+                    "duration": duration.duration,
+                    "notes": duration.notes,
+                },
+            )
+            new_duration.allowed_submission_types.set(
+                duration.allowed_submission_types.all()
+            )
+            copied += int(created)
+
+        return copied
+
+
+@database_step
+def copy_sponsor_benefits(ctx: Context, source_code: str, conference_id: int) -> int:
+    from conferences.models import Conference
+    from sponsors.models import SponsorBenefit
+
+    with transaction.atomic():
+        source = Conference.objects.get(code=source_code)
+        conference = Conference.objects.get(id=conference_id)
+
+        existing = {
+            _i18n_key(benefit.name)
+            for benefit in SponsorBenefit.objects.filter(conference=conference)
+        }
+        copied = 0
+
+        for benefit in source.sponsor_benefits.order_by("order"):
+            if _i18n_key(benefit.name) in existing:
+                continue
+
+            SponsorBenefit.objects.create(
+                conference=conference,
+                name=benefit.name,
+                category=benefit.category,
+                description=benefit.description,
+            )
+            copied += 1
+
+        return copied
+
+
+@database_step
+def copy_sponsor_levels(ctx: Context, source_code: str, conference_id: int) -> int:
+    """Copy sponsor levels and which benefits they include (never the sponsors)."""
+    from conferences.models import Conference
+    from sponsors.models import SponsorBenefit, SponsorLevel, SponsorLevelBenefit
+
+    with transaction.atomic():
+        source = Conference.objects.get(code=source_code)
+        conference = Conference.objects.get(id=conference_id)
+
+        benefits_by_name = {
+            _i18n_key(benefit.name): benefit
+            for benefit in SponsorBenefit.objects.filter(conference=conference)
+        }
+        copied = 0
+
+        for level in source.sponsor_levels.order_by("order"):
+            new_level, created = SponsorLevel.objects.get_or_create(
+                conference=conference,
+                name=level.name,
+                defaults={
+                    "highlight_color": level.highlight_color,
+                    "price": level.price,
+                    "slots": level.slots,
+                },
+            )
+            copied += int(created)
+
+            for level_benefit in SponsorLevelBenefit.objects.filter(
+                sponsor_level=level
+            ):
+                benefit = benefits_by_name.get(_i18n_key(level_benefit.benefit.name))
+
+                if benefit is None:
+                    continue
+
+                SponsorLevelBenefit.objects.get_or_create(
+                    sponsor_level=new_level,
+                    benefit=benefit,
+                    defaults={"value": level_benefit.value},
+                )
+
+        return copied
+
+
+@database_step
+def copy_sponsor_special_options(
+    ctx: Context, source_code: str, conference_id: int
+) -> int:
+    from conferences.models import Conference
+    from sponsors.models import SponsorSpecialOption
+
+    with transaction.atomic():
+        source = Conference.objects.get(code=source_code)
+        conference = Conference.objects.get(id=conference_id)
+
+        copied = 0
+
+        for option in source.sponsor_special_options.order_by("order"):
+            _, created = SponsorSpecialOption.objects.get_or_create(
+                conference=conference,
+                name=option.name,
+                defaults={
+                    "description": option.description,
+                    "price": option.price,
+                },
+            )
+            copied += int(created)
+
+        return copied
+
+
+@database_step
+def copy_email_templates(ctx: Context, source_code: str, conference_id: int) -> int:
+    from conferences.models import Conference
+    from notifications.models import EmailTemplate, EmailTemplateIdentifier
+
+    with transaction.atomic():
+        source = Conference.objects.get(code=source_code)
+        conference = Conference.objects.get(id=conference_id)
+
+        copied = 0
+
+        for template in source.email_templates.all():
+            lookup = {"conference": conference, "identifier": template.identifier}
+
+            # Only custom templates can repeat an identifier, so they are told
+            # apart by name.
+            if template.identifier == EmailTemplateIdentifier.custom:
+                lookup["name"] = template.name
+
+            _, created = EmailTemplate.objects.get_or_create(
+                **lookup,
+                defaults={
+                    "name": template.name,
+                    "reply_to": template.reply_to,
+                    "subject": template.subject,
+                    "preview_text": template.preview_text,
+                    "body": template.body,
+                    "cc_addresses": template.cc_addresses,
+                    "bcc_addresses": template.bcc_addresses,
+                },
+            )
+            copied += int(created)
+
+        return copied
+
+
+@database_step
+def copy_cms_content(ctx: Context, source_code: str, conference_id: int) -> int:
+    """Copy generic copy, FAQs and menus (with their links)."""
+    from cms.models import FAQ, GenericCopy, Menu, MenuLink
+    from conferences.models import Conference
+
+    with transaction.atomic():
+        source = Conference.objects.get(code=source_code)
+        conference = Conference.objects.get(id=conference_id)
+
+        copied = 0
+
+        for copy in source.copy.all():
+            _, created = GenericCopy.objects.get_or_create(
+                conference=conference,
+                key=copy.key,
+                defaults={"content": copy.content},
+            )
+            copied += int(created)
+
+        existing_faqs = {
+            _i18n_key(faq.question) for faq in FAQ.objects.filter(conference=conference)
+        }
+
+        for faq in source.faqs.all():
+            if _i18n_key(faq.question) in existing_faqs:
+                continue
+
+            FAQ.objects.create(
+                conference=conference, question=faq.question, answer=faq.answer
+            )
+            copied += 1
+
+        for menu in source.menus.all():
+            new_menu, created = Menu.objects.get_or_create(
+                conference=conference,
+                identifier=menu.identifier,
+                defaults={"title": menu.title},
+            )
+            copied += int(created)
+
+            existing_links = {_i18n_key(link.title) for link in new_menu.links.all()}
+
+            for link in menu.links.order_by("order"):
+                if _i18n_key(link.title) in existing_links:
+                    continue
+
+                MenuLink.objects.create(
+                    menu=new_menu,
+                    title=link.title,
+                    href=link.href,
+                    is_primary=link.is_primary,
+                )
+                copied += 1
+
+        return copied
+
+
+@database_step
+def copy_forms(ctx: Context, source_code: str, conference_id: int) -> int:
+    """Copy forms and their questions; answers belong to the old edition."""
+    from conferences.models import Conference
+    from generic_forms.models import Form, FormQuestion
+
+    with transaction.atomic():
+        source = Conference.objects.get(code=source_code)
+        conference = Conference.objects.get(id=conference_id)
+
+        copied = 0
+
+        for form in source.forms.all():
+            new_form, created = Form.objects.get_or_create(
+                conference=conference,
+                purpose=form.purpose,
+                name=form.name,
+            )
+            copied += int(created)
+
+            for question in form.questions.all():
+                _, question_created = FormQuestion.objects.get_or_create(
+                    form=new_form,
+                    label=question.label,
+                    defaults={
+                        "description": question.description,
+                        "question_type": question.question_type,
+                        "options": question.options,
+                        "required": question.required,
+                        "max_length": question.max_length,
+                        "order": question.order,
+                        "active": question.active,
+                    },
+                )
+                copied += int(question_created)
+
+        return copied
+
+
+@database_step
+def copy_voting_included_events(
+    ctx: Context, source_code: str, conference_id: int
+) -> int:
+    from conferences.models import Conference
+    from voting.models import IncludedEvent
+
+    with transaction.atomic():
+        source = Conference.objects.get(code=source_code)
+        conference = Conference.objects.get(id=conference_id)
+
+        copied = 0
+
+        for included_event in source.included_voting_events.all():
+            _, created = IncludedEvent.objects.get_or_create(
+                conference=conference,
+                pretix_organizer_id=included_event.pretix_organizer_id,
+                pretix_event_id=included_event.pretix_event_id,
+            )
+            copied += int(created)
+
+        return copied
+
+
+# Everything that only needs the source and the freshly created conference,
+# in the order it is copied. Sponsor levels read the benefits copied just
+# before them, so the order matters.
+COPY_STEPS = (
+    ("deadlines", copy_deadlines),
+    ("durations", copy_durations),
+    ("sponsor_benefits", copy_sponsor_benefits),
+    ("sponsor_levels", copy_sponsor_levels),
+    ("sponsor_special_options", copy_sponsor_special_options),
+    ("email_templates", copy_email_templates),
+    ("cms_content", copy_cms_content),
+    ("forms", copy_forms),
+    ("voting_included_events", copy_voting_included_events),
+)
+
+
+@resonate.register(name=CLONE_CONFERENCE)
+async def clone_conference(
+    ctx: Context,
+    source_code: str,
+    new_code: str,
+    new_name: str,
+    new_start: datetime,
+    new_end: datetime,
+    new_hostname: str,
+) -> dict[str, Any]:
+    """Create ``new_code`` using ``source_code`` as its base.
+
+    Re-running with the same workflow id joins the original run; re-running
+    with a new id against a conference that already exists tops up whatever is
+    missing, since every step only creates what is not there yet.
+    """
+    conference_id: int = await ctx.run(
+        create_conference,
+        source_code,
+        new_code,
+        new_name,
+        new_start,
+        new_end,
+        new_hostname,
+    )
+
+    copied: dict[str, int] = {}
+
+    for name, step in COPY_STEPS:
+        copied[name] = await ctx.run(step, source_code, conference_id)
+
+    return {
+        "conference_id": conference_id,
+        "code": new_code,
+        "copied": copied,
+    }
