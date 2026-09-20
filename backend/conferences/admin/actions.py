@@ -128,11 +128,13 @@ def next_edition_defaults(conference: Conference) -> dict:
 
 @admin.action(description="Create new conference using this one as base")
 def clone_conference(modeladmin, request, queryset):
-    if queryset.count() != 1:
+    selected = list(queryset)
+
+    if len(selected) != 1:
         messages.error(request, "Select the single conference to use as base")
         return None
 
-    source = queryset.get()
+    source = selected[0]
 
     if request.POST.get("apply"):
         form = CloneConferenceForm(request.POST)
@@ -152,8 +154,6 @@ def clone_conference(modeladmin, request, queryset):
             "media": modeladmin.media + form.media,
             "source": source,
             "form": form,
-            "action_name": "clone_conference",
-            "selected": [str(source.pk)],
         },
     )
 
@@ -180,5 +180,3 @@ def start_clone_conference(request, source: Conference, data: dict) -> None:
         f"Creating {data['code']} based on {source.code}. "
         f"Follow the progress in Resonate (workflow {workflow_id}).",
     )
-
-    return None
