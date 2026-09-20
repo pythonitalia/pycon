@@ -27,7 +27,7 @@
         {% csrf_token %}
 
         <input type="hidden" name="_selected_action" value="{{ source.pk }}">
-        <input type="hidden" name="action" value="clone_conference">
+        <input type="hidden" name="action" value="{{ action_name }}">
         <input type="hidden" name="apply" value="1">
 
         <fieldset class="module aligned">

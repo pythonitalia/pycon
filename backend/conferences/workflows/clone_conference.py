@@ -115,6 +115,7 @@ def copy_step(fn: Callable[[Conference, Conference], int]):
             return fn(source, conference)
 
     step.__name__ = fn.__name__
+    step.__qualname__ = fn.__qualname__
     step.__doc__ = fn.__doc__
 
     return database_step(step)
@@ -461,7 +462,9 @@ def copy_voting_included_events(source: Conference, conference: Conference) -> i
 
 # Everything that only needs the source and the freshly created conference,
 # in the order it is copied. Sponsor levels read the benefits copied just
-# before them, so the order matters.
+# before them, so the order matters. The names are what the workflow reports
+# back as its `copied` counts, so they are spelled out rather than derived from
+# the functions: renaming one should not change what callers read.
 COPY_STEPS = (
     ("deadlines", copy_deadlines),
     ("durations", copy_durations),

@@ -140,7 +140,8 @@ def clone_conference(modeladmin, request, queryset):
         form = CloneConferenceForm(request.POST)
 
         if form.is_valid():
-            return start_clone_conference(request, source, form.cleaned_data)
+            start_clone_conference(request, source, form.cleaned_data)
+            return None
     else:
         form = CloneConferenceForm(initial=next_edition_defaults(source))
 
@@ -154,6 +155,9 @@ def clone_conference(modeladmin, request, queryset):
             "media": modeladmin.media + form.media,
             "source": source,
             "form": form,
+            # The page posts back to the changelist, so it has to name the
+            # action; taken from the function so a rename cannot break it.
+            "action_name": clone_conference.__name__,
         },
     )
 
