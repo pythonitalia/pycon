@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, time, timedelta
 
 import pytest
 from asgiref.sync import async_to_sync
@@ -27,6 +27,8 @@ from generic_forms.tests.factories import FormFactory, FormQuestionFactory
 from pycon.constants import UTC
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from notifications.tests.factories import EmailTemplateFactory
+from schedule.models import DayRoomThroughModel, Slot
+from schedule.tests.factories import DayFactory, RoomFactory, SlotFactory
 from sponsors.models import (
     SponsorBenefit,
     SponsorLevel,
@@ -322,3 +324,80 @@ def test_deadlines_are_not_shifted_when_the_source_has_no_dates(source_conferenc
     )
 
     assert deadline.start == start
+
+
+def test_copies_the_days_over_the_new_conference_dates(source_conference):
+    room = RoomFactory(name="Main room")
+    other_room = RoomFactory(name="Second room")
+
+    first_day = DayFactory(conference=source_conference, day=date(2026, 5, 27))
+    DayRoomThroughModel.objects.create(
+        day=first_day, room=room, streaming_url="https://youtube.example/live"
+    )
+    DayRoomThroughModel.objects.create(day=first_day, room=other_room)
+    SlotFactory(day=first_day, hour=time(9, 0), duration=30, type="break")
+    SlotFactory(day=first_day, hour=time(9, 30), duration=45)
+
+    second_day = DayFactory(conference=source_conference, day=date(2026, 5, 28))
+    DayRoomThroughModel.objects.create(day=second_day, room=room)
+
+    result = run_clone(source_conference.code)
+
+    conference = Conference.objects.get(code="pycon2027")
+    days = list(conference.days.order_by("day"))
+
+    # The new edition runs from the 26th to the 30th, one day per date.
+    assert result["copied"]["days"] == 5
+    assert [day.day for day in days] == [
+        date(2027, 5, 26),
+        date(2027, 5, 27),
+        date(2027, 5, 28),
+        date(2027, 5, 29),
+        date(2027, 5, 30),
+    ]
+
+    assert list(days[0].ordered_rooms()) == [room, other_room]
+    assert [(slot.hour, slot.duration, slot.type) for slot in days[0].slots.all()] == [
+        (time(9, 0), 30, "break"),
+        (time(9, 30), 45, Slot.TYPES.default),
+    ]
+
+    assert list(days[1].ordered_rooms()) == [room]
+
+    # The source edition only had two days, the rest stay empty.
+    assert days[2].added_rooms.count() == 0
+    assert days[2].slots.count() == 0
+
+
+def test_does_not_copy_the_streaming_links_of_the_days(source_conference):
+    day = DayFactory(conference=source_conference, day=date(2026, 5, 27))
+    DayRoomThroughModel.objects.create(
+        day=day,
+        room=RoomFactory(),
+        streaming_url="https://youtube.example/live",
+        slido_url="https://slido.example/event",
+    )
+
+    run_clone(source_conference.code)
+
+    new_day = Conference.objects.get(code="pycon2027").days.get(day=date(2027, 5, 26))
+    added_room = new_day.added_rooms.get()
+
+    assert added_room.streaming_url == ""
+    assert added_room.slido_url == ""
+
+
+def test_days_use_the_conference_timezone(source_conference):
+    # 23:30 UTC is already the next day in Rome, where the conference is.
+    run_clone(
+        source_conference.code,
+        new_start=datetime(2027, 5, 25, 23, 30, tzinfo=UTC),
+        new_end=datetime(2027, 5, 26, 23, 30, tzinfo=UTC),
+    )
+
+    conference = Conference.objects.get(code="pycon2027")
+
+    assert [day.day for day in conference.days.order_by("day")] == [
+        date(2027, 5, 26),
+        date(2027, 5, 27),
+    ]
