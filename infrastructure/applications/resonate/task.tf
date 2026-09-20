@@ -15,14 +15,17 @@ resource "aws_ecs_task_definition" "resonate" {
     {
       # The instance is private, so Terraform cannot create the database
       # itself. This runs before the server on every deploy and does nothing
-      # after the first one.
+      # after the first one. It has to end up non-zero when the database is
+      # genuinely not there, or the server's SUCCESS dependency on it would
+      # mean nothing more than "the container ran".
       name              = "create-database"
       image             = "postgres:18-alpine"
       memoryReservation = 10
       essential         = false
 
       command = [
-        "sh", "-c", "createdb ${local.database} || true"
+        "sh", "-c",
+        "createdb ${local.database} 2>/dev/null || psql -d ${local.database} -c 'select 1' >/dev/null"
       ]
 
       environment = [
@@ -114,13 +117,17 @@ resource "aws_ecs_task_definition" "resonate" {
       }
 
       healthCheck = {
-        retries = 3
+        retries = 10
         command = [
           "CMD-SHELL",
           "wget -qO- http://127.0.0.1:8001/health || exit 1"
         ]
         timeout  = 3
         interval = 10
+        # The server spends up to 30 seconds waiting on the database pool
+        # before it gives up, and creates its schema on first boot, so it
+        # needs more room than the default none before checks start counting.
+        startPeriod = 60
       }
 
       stopTimeout = 300
