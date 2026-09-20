@@ -40,10 +40,9 @@ module "pycon_frontend" {
 }
 
 module "resonate" {
-  source          = "./resonate"
-  cluster_id      = module.cluster.cluster_id
+  source = "./resonate"
+  cluster_id = module.cluster.cluster_id
   logs_group_name = module.cluster.logs_group_name
-
   database_settings = module.database.database_settings
 }
 
