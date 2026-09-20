@@ -64,6 +64,25 @@ resource "aws_security_group_rule" "out_clamav" {
   security_group_id = aws_security_group.server.id
 }
 
+resource "aws_security_group_rule" "in_resonate" {
+  type              = "egress"
+  from_port         = 8001
+  to_port           = 8001
+  protocol          = "tcp"
+  source_security_group_id = aws_security_group.server.id
+  security_group_id = aws_security_group.server.id
+}
+
+resource "aws_security_group_rule" "out_resonate" {
+  # needed by fargate to connect to the server with resonate
+  type              = "ingress"
+  from_port         = 8001
+  to_port           = 8001
+  protocol          = "tcp"
+  source_security_group_id = aws_security_group.server.id
+  security_group_id = aws_security_group.server.id
+}
+
 resource "aws_security_group_rule" "web_http" {
   type              = "ingress"
   from_port         = 80

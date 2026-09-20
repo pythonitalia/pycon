@@ -188,6 +188,11 @@ locals {
     {
       name = "SNS_WEBHOOK_SECRET",
       value = module.common_secrets.value.sns_webhook_secret
+    },
+    {
+      # Both the workflows' worker and whoever starts one (the admin) need it.
+      name = "RESONATE_URL",
+      value = "http://${var.server_ip}:8001"
     }
   ]
 }
