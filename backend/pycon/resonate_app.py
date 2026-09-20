@@ -38,6 +38,9 @@ def _build(*, send_only: bool) -> Resonate:
         # Nothing here needs an event loop: connections are opened by
         # ``start()``, so building at import time is safe.
         "autostart": False,
+        # The SDK falls back to reading RESONATE_URL (and friends) from the
+        # environment; hiding it keeps Django settings the only source.
+        "env": {},
     }
 
     if settings.RESONATE_URL:
