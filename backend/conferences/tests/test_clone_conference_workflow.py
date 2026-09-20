@@ -52,7 +52,15 @@ NEW_START = datetime(2027, 5, 26, 9, 0, tzinfo=UTC)
 NEW_END = datetime(2027, 5, 30, 18, 0, tzinfo=UTC)
 
 
-def run_clone(source_code, new_code="pycon2027", workflow_id=None, **kwargs):
+def run_clone(
+    source_code,
+    new_code="pycon2027",
+    workflow_id=None,
+    new_name="PyCon Italia 2027",
+    new_start=NEW_START,
+    new_end=NEW_END,
+    new_hostname="pycon2027.example.com",
+):
     """Run the workflow in-process, on Resonate's local (in-memory) connection.
 
     ``async_to_sync`` (rather than ``asyncio.run``) so the steps' thread
@@ -73,10 +81,10 @@ def run_clone(source_code, new_code="pycon2027", workflow_id=None, **kwargs):
                 clone_conference,
                 source_code=source_code,
                 new_code=new_code,
-                new_name=kwargs.get("new_name", "PyCon Italia 2027"),
-                new_start=kwargs.get("new_start", NEW_START).isoformat(),
-                new_end=kwargs.get("new_end", NEW_END).isoformat(),
-                new_hostname=kwargs.get("new_hostname", "pycon2027.example.com"),
+                new_name=new_name,
+                new_start=new_start.isoformat(),
+                new_end=new_end.isoformat(),
+                new_hostname=new_hostname,
             )
             return await handle.result()
         finally:
