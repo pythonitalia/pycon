@@ -1,20 +1,21 @@
 """Durable workflow that creates a new conference from an existing one.
 
 Setting up the next edition means re-creating, by hand, everything that is
-configuration rather than content: deadlines, durations, sponsor levels and
-their benefits, email templates, menus, copy, forms. The workflow does that in
-one durable run: every step is a Resonate durable child, so a crash (or a
-database hiccup, which Resonate retries) resumes from the step that failed
-instead of leaving a half-built conference behind.
+configuration rather than content: deadlines, durations, the schedule days
+with their rooms and slots, sponsor levels and their benefits, email templates,
+menus, copy, forms. The workflow does that in one durable run: every step is a
+Resonate durable child, so a crash (or a database hiccup, which Resonate
+retries) resumes from the step that failed instead of leaving a half-built
+conference behind.
 
-Content produced *during* an edition is never copied: proposals, schedule,
-keynotes, sponsors, grants, vouchers, answers.
+Content produced *during* an edition is never copied: proposals, the talks
+scheduled into those slots, keynotes, sponsors, grants, vouchers, answers.
 """
 
 from __future__ import annotations
 
 import json
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
 
 from django.db import transaction
@@ -140,6 +141,17 @@ def copy_deadlines(ctx: Context, source_code: str, conference_id: int) -> int:
         return copied
 
 
+def conference_dates(conference) -> list[date]:
+    """Every day the conference runs on, in its own timezone."""
+    if not conference.start or not conference.end:
+        return []
+
+    start = conference.start.astimezone(conference.timezone).date()
+    end = conference.end.astimezone(conference.timezone).date()
+
+    return [start + timedelta(days=offset) for offset in range((end - start).days + 1)]
+
+
 @database_step
 def copy_durations(ctx: Context, source_code: str, conference_id: int) -> int:
     from conferences.models import Conference, Duration
@@ -163,6 +175,51 @@ def copy_durations(ctx: Context, source_code: str, conference_id: int) -> int:
                 duration.allowed_submission_types.all()
             )
             copied += int(created)
+
+        return copied
+
+
+@database_step
+def copy_days(ctx: Context, source_code: str, conference_id: int) -> int:
+    """Lay the schedule out again over the new conference's own dates.
+
+    The new conference gets one day per date it runs on, and each takes the
+    rooms and slots of the source day in the same position, so a conference
+    that opens with a workshop day keeps that shape. Days the source edition
+    did not have are left empty. Streaming and Sli.do links stay with the
+    edition that used them.
+    """
+    from conferences.models import Conference
+    from schedule.models import Day, DayRoomThroughModel, Slot
+
+    with transaction.atomic():
+        source = Conference.objects.get(code=source_code)
+        conference = Conference.objects.get(id=conference_id)
+
+        source_days = list(source.days.order_by("day"))
+        copied = 0
+
+        for position, day_date in enumerate(conference_dates(conference)):
+            day, created = Day.objects.get_or_create(
+                conference=conference, day=day_date
+            )
+            copied += int(created)
+
+            if position >= len(source_days):
+                continue
+
+            source_day = source_days[position]
+
+            for added_room in source_day.added_rooms.order_by("order"):
+                DayRoomThroughModel.objects.get_or_create(day=day, room=added_room.room)
+
+            for slot in source_day.slots.order_by("hour"):
+                Slot.objects.get_or_create(
+                    day=day,
+                    hour=slot.hour,
+                    duration=slot.duration,
+                    type=slot.type,
+                )
 
         return copied
 
@@ -432,6 +489,7 @@ def copy_voting_included_events(
 COPY_STEPS = (
     ("deadlines", copy_deadlines),
     ("durations", copy_durations),
+    ("days", copy_days),
     ("sponsor_benefits", copy_sponsor_benefits),
     ("sponsor_levels", copy_sponsor_levels),
     ("sponsor_special_options", copy_sponsor_special_options),
