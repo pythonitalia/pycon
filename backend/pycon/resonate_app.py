@@ -33,24 +33,19 @@ T = TypeVar("T")
 
 
 def _build(*, send_only: bool) -> Resonate:
-    kwargs: dict[str, Any] = {
-        "group": settings.RESONATE_GROUP,
+    return Resonate(
+        group=settings.RESONATE_GROUP,
+        url=settings.RESONATE_URL or None,
+        # An empty list of sources says this process only creates promises and
+        # never picks work up; ``None`` lets the SDK give it the usual one.
+        sources=[] if send_only else None,
         # Nothing here needs an event loop: connections are opened by
         # ``start()``, so building at import time is safe.
-        "autostart": False,
+        autostart=False,
         # The SDK falls back to reading RESONATE_URL (and friends) from the
         # environment; hiding it keeps Django settings the only source.
-        "env": {},
-    }
-
-    if settings.RESONATE_URL:
-        kwargs["url"] = settings.RESONATE_URL
-
-    if send_only:
-        # No source: this process only creates promises, it never picks work up.
-        kwargs["sources"] = []
-
-    return Resonate(**kwargs)
+        env={},
+    )
 
 
 def get_resonate() -> Resonate:
