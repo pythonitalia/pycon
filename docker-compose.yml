@@ -26,6 +26,7 @@ x-defaults:
     CELERY_RESULT_BACKEND: redis://redis:6379/10
     CLAMAV_HOST: clamav
     CLAMAV_PORT: 3310
+    RESONATE_URL: http://resonate:8001
 
 services:
   backend:
@@ -61,6 +62,28 @@ services:
       interval: 10s
       timeout: 10s
       retries: 10
+
+  resonate-worker:
+    build:
+      context: ./backend
+      dockerfile: ../Dockerfile.python.local
+    networks: [pycon_net]
+    restart: unless-stopped
+    command: sh -c "export DJANGO_SETTINGS_MODULE=pycon.settings.dev &&
+      uv run python manage.py resonate_worker"
+    depends_on:
+      backend:
+        condition: service_healthy
+      resonate:
+        condition: service_healthy
+    tty: true
+    volumes:
+      - ./backend:/home/app/
+      - /.venv/
+    environment:
+      <<: *pycon_backend_envs
+    env_file:
+      - .env
 
   custom-admin:
     build:
