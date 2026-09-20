@@ -71,6 +71,24 @@ To start a workflow from Django (a view, an admin action, a command), use
 `pycon.resonate_app.start_workflow(name, workflow_id, ...)`. The workflow id is
 the idempotency key: creating the same id twice joins the existing run.
 
+Creating the next edition of the conference from the current one:
+
+```
+docker exec pycon-backend-1 uv run python manage.py clone_conference \
+  pycon2026 pycon2027 \
+  --name "PyCon Italia 2027" \
+  --hostname pycon2027.pycon.it \
+  --start 2027-05-26T09:00:00+02:00 \
+  --end 2027-05-30T18:00:00+02:00
+```
+
+It copies configuration only (deadlines, shifted by the new start date;
+durations; sponsor levels, benefits and special options; email templates;
+menus, copy and FAQs; forms and their questions; voting included events).
+Everything produced during an edition -- proposals, schedule, keynotes,
+sponsors, grants, vouchers, answers -- is not copied, and neither are the
+pretix ids or the logo.
+
 ## External repos
 
 Repos used by this project are in separate repositories.
