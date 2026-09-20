@@ -22,6 +22,7 @@ from typing import Any, Callable, TypeVar
 
 from asgiref.sync import sync_to_async
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.db import connections
 from django.utils.module_loading import autodiscover_modules
 from resonate.resonate import Resonate
@@ -59,6 +60,19 @@ def get_resonate() -> Resonate:
     return _resonate
 
 
+def require_server() -> None:
+    """Refuse to run workflows without a Resonate server to run them on.
+
+    Without a URL the SDK falls back to its in-process connection, where a
+    workflow would be created and then never executed by anything.
+    """
+    if not settings.RESONATE_URL:
+        raise ImproperlyConfigured(
+            "RESONATE_URL is not set, so there is no Resonate server to run "
+            "workflows on"
+        )
+
+
 def autodiscover_workflows() -> None:
     """Import every ``workflows`` module so its registrations happen."""
     autodiscover_modules("workflows")
@@ -72,6 +86,8 @@ def start_workflow(name: str, workflow_id: str, *args: Any, **kwargs: Any) -> st
     idempotency key -- creating the same id twice joins the existing run
     instead of starting a second one.
     """
+
+    require_server()
 
     async def _dispatch() -> str:
         client = _build(send_only=True)

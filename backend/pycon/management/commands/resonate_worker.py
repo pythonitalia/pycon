@@ -6,7 +6,7 @@ import signal
 
 from django.core.management.base import BaseCommand
 
-from pycon.resonate_app import autodiscover_workflows, get_resonate
+from pycon.resonate_app import autodiscover_workflows, get_resonate, require_server
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +18,7 @@ class Command(BaseCommand):
         asyncio.run(self._run())
 
     async def _run(self):
+        require_server()
         autodiscover_workflows()
 
         resonate = get_resonate()
