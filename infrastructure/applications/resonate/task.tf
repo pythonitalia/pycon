@@ -2,7 +2,8 @@ locals {
   is_prod = terraform.workspace == "production"
 
   # Resonate keeps its promises on the database instance the backend already
-  # uses, in a database of its own.
+  # uses, in a database of its own. The instance is private, so that database
+  # is not created from here: it has to exist before this runs.
   database = "resonate"
 
   database_url = "postgres://${var.database_settings.username}:${var.database_settings.password}@${var.database_settings.address}:${var.database_settings.port}/${local.database}?sslmode=require"
@@ -13,73 +14,10 @@ resource "aws_ecs_task_definition" "resonate" {
 
   container_definitions = jsonencode([
     {
-      # The instance is private, so Terraform cannot create the database
-      # itself. This runs before the server on every deploy and does nothing
-      # after the first one. It has to end up non-zero when the database is
-      # genuinely not there, or the server's SUCCESS dependency on it would
-      # mean nothing more than "the container ran".
-      name              = "create-database"
-      image             = "postgres:18-alpine"
-      memoryReservation = 10
-      essential         = false
-
-      command = [
-        "sh", "-c",
-        "createdb ${local.database} 2>/dev/null || psql -d ${local.database} -c 'select 1' >/dev/null"
-      ]
-
-      environment = [
-        {
-          name  = "PGHOST"
-          value = var.database_settings.address
-        },
-        {
-          name  = "PGPORT"
-          value = tostring(var.database_settings.port)
-        },
-        {
-          name  = "PGUSER"
-          value = var.database_settings.username
-        },
-        {
-          name  = "PGPASSWORD"
-          value = var.database_settings.password
-        },
-        {
-          # Where to connect to issue the CREATE DATABASE, not what to create.
-          name  = "PGDATABASE"
-          value = var.database_settings.db_name
-        },
-        {
-          name  = "PGSSLMODE"
-          value = "require"
-        }
-      ]
-
-      mountPoints    = []
-      systemControls = []
-
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          "awslogs-group"         = var.logs_group_name
-          "awslogs-region"        = "eu-central-1"
-          "awslogs-stream-prefix" = "resonate-create-database"
-        }
-      }
-    },
-    {
       name              = "resonate"
       image             = "resonatehqio/resonate:v0.9.8"
       memoryReservation = local.is_prod ? 200 : 10
       essential         = true
-
-      dependsOn = [
-        {
-          containerName = "create-database"
-          condition     = "SUCCESS"
-        }
-      ]
 
       environment = [
         {
