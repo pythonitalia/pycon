@@ -97,7 +97,7 @@ dependencies = [
     "cryptography>=48.0.1",
     "openai>=1.52.0",
     "pydantic>=2.13.3",
-    "gunicorn>=23.0.0",
+    "gunicorn==26.2.0",
     "tinycss2>=1.4.0",
     "pypdf>=6.13.3",
     "ipython>=8.30.0",

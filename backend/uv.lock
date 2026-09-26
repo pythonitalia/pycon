@@ -5,10 +5,10 @@ resolution-markers = [
     "python_full_version >= '3.15' and sys_platform == 'win32'",
     "python_full_version >= '3.15' and sys_platform == 'emscripten'",
     "python_full_version >= '3.15' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'",
+    "python_full_version >= '3.15' and sys_platform == 'darwin'",
     "python_full_version < '3.15' and sys_platform == 'win32'",
     "python_full_version < '3.15' and sys_platform == 'emscripten'",
     "python_full_version < '3.15' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'",
-    "python_full_version >= '3.15' and sys_platform == 'darwin'",
     "python_full_version < '3.15' and sys_platform == 'darwin'",
 ]
 
@@ -267,7 +267,7 @@ requires-dist = [
     { name = "google-api-python-client", specifier = ">=2.94.0,<3.0.0" },
     { name = "google-auth", specifier = ">=2.22.0,<3.0.0" },
     { name = "google-auth-oauthlib", specifier = ">=1.2.1" },
-    { name = "gunicorn", specifier = ">=23.0.0" },
+    { name = "gunicorn", specifier = "==26.2.0" },
     { name = "hashids", specifier = ">=1.2.0,<2.0.0" },
     { name = "icalendar", specifier = ">=5.0.11" },
     { name = "idna", specifier = "==3.15" },
