@@ -72,7 +72,7 @@ The project uses Docker Compose for local development with services:
 
 ## Important Notes
 
-- Python version: 3.13.5+ (specified in pyproject.toml)
+- Python version: 3.14.7+ (specified in pyproject.toml)
 - Uses `uv` for Python package management
 - Uses `pnpm` for Node.js package management
 - GraphQL schema auto-generation from Django backend to frontend
