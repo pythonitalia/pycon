@@ -122,7 +122,7 @@ def test_process_invitation_letter_request(requests_mock, mock_ticket_present):
     output = PdfReader(request.invitation_letter.open())
     # 1 page from the static document + 2 pages from the dynamic document + 1 page from the ticket
     assert output.get_num_pages() == 4
-    assert output.pages[0].extract_text() == "Thisisasamplepdf"
+    assert output.pages[0].extract_text() == "This\nis\na\nsample\npdf"
     assert output.pages[1].extract_text() == "page: Italian \nheader\nfooter"
     assert output.pages[2].extract_text() == "page2: \nheader\nfooter"
     assert output.pages[3].extract_text() == "This\nis\na\nsample\nticket\npdf"
