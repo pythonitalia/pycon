@@ -1,6 +1,6 @@
 ARG FUNCTION_DIR="/home/app/"
 
-FROM python:3.13.5
+FROM python:3.14.7
 
 RUN apt update -y && apt install -y ffmpeg libsm6 libxext6
 

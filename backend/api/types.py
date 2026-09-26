@@ -34,7 +34,7 @@ class BaseErrorType:
         self._has_errors = True
 
         if not self.errors:
-            self.errors = self.__annotations__["errors"]()
+            self.errors = type(self).__annotations__["errors"]()
 
         field = self.build_field_name(field)
         parts = field.split(".")
