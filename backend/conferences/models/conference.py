@@ -124,7 +124,9 @@ class Conference(GeoLocalizedModel, TimeFramedModel, TimeStampedModel):
         _("max proposals per user"),
         null=True,
         blank=True,
-        help_text=_("Maximum number of proposals a user can submit. Leave empty for no limit."),
+        help_text=_(
+            "Maximum number of proposals a user can submit. Leave empty for no limit."
+        ),
     )
 
     def get_slack_oauth_token(self):
