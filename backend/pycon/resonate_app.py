@@ -18,7 +18,8 @@ from __future__ import annotations
 
 import asyncio
 import functools
-from typing import Any, Callable, TypeVar
+import inspect
+from typing import Any, Callable, TypeVar, get_type_hints
 
 from asgiref.sync import sync_to_async
 from django.conf import settings
@@ -118,7 +119,37 @@ def database_step(fn: Callable[..., T]) -> Callable[..., Any]:
 
         return await sync_to_async(run, thread_sensitive=True)()
 
+    # Resolve annotations in the step's module so the SDK can reconstruct
+    # persisted values without looking up types in the wrapper's globals.
+    setattr(wrapper, "__signature__", _database_step_signature(fn))
     return wrapper
+
+
+def _database_step_signature(fn: Callable[..., Any]) -> inspect.Signature:
+    signature = inspect.signature(fn)
+    globalns = inspect.unwrap(fn).__globals__
+
+    def resolve(annotation: Any) -> Any:
+        if not isinstance(annotation, str):
+            return annotation
+
+        class StepAnnotation:
+            __annotations__ = {"value": annotation}
+
+        try:
+            hints = get_type_hints(StepAnnotation, globalns, include_extras=True)
+            return hints["value"]
+        except NameError:
+            # Keep type-checking-only annotations unresolved, as the SDK does.
+            return annotation
+
+    return signature.replace(
+        parameters=[
+            parameter.replace(annotation=resolve(parameter.annotation))
+            for parameter in signature.parameters.values()
+        ],
+        return_annotation=resolve(signature.return_annotation),
+    )
 
 
 def _recycle_connections() -> None:
