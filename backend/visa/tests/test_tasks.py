@@ -122,10 +122,10 @@ def test_process_invitation_letter_request(requests_mock, mock_ticket_present):
     output = PdfReader(request.invitation_letter.open())
     # 1 page from the static document + 2 pages from the dynamic document + 1 page from the ticket
     assert output.get_num_pages() == 4
-    assert output.pages[0].extract_text() == "Thisisasamplepdf"
+    assert output.pages[0].extract_text() == "This\nis\na\nsample\npdf"
     assert output.pages[1].extract_text() == "page: Italian \nheader\nfooter"
     assert output.pages[2].extract_text() == "page2: \nheader\nfooter"
-    assert output.pages[3].extract_text() == "Thisisasampleticket pdf"
+    assert output.pages[3].extract_text() == "This\nis\na\nsample\nticket\npdf"
 
 
 @pytest.mark.parametrize(
@@ -184,7 +184,7 @@ def test_process_invitation_letter_request_accomodation_doc_with_no_accommodatio
 
     output = PdfReader(request.invitation_letter.open())
     assert output.get_num_pages() == 1
-    assert output.pages[0].extract_text() == "Thisisasampleticket pdf"
+    assert output.pages[0].extract_text() == "This\nis\na\nsample\nticket\npdf"
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
@@ -200,9 +200,7 @@ def test_process_invitation_letter_request_renders_total_grantee_reimbursement_a
             "footer": {"content": "footer", "margin": "0", "align": "bottom-left"},
             "page_layout": {"margin": "0"},
             "pages": [
-                {
-                    "content": "Reimbursement: {{total_grantee_reimbursement_amount}}"
-                },
+                {"content": "Reimbursement: {{total_grantee_reimbursement_amount}}"},
             ],
         },
     )
@@ -244,7 +242,7 @@ def test_process_invitation_letter_request_renders_total_grantee_reimbursement_a
     output = PdfReader(request.invitation_letter.open())
     assert output.get_num_pages() == 2
     assert output.pages[0].extract_text() == "Reimbursement: 700 \nheader\nfooter"
-    assert output.pages[1].extract_text() == "Thisisasampleticket pdf"
+    assert output.pages[1].extract_text() == "This\nis\na\nsample\nticket\npdf"
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
@@ -303,7 +301,7 @@ def test_process_invitation_letter_request_with_doc_only_for_accommodation(
     output = PdfReader(request.invitation_letter.open())
     assert output.get_num_pages() == 2
     assert output.pages[0].extract_text() == "accommodation details \nheader\nfooter"
-    assert output.pages[1].extract_text() == "Thisisasampleticket pdf"
+    assert output.pages[1].extract_text() == "This\nis\na\nsample\nticket\npdf"
 
 
 @override_settings(PRETIX_API="https://pretix/api/")
