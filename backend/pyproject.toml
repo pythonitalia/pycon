@@ -73,7 +73,7 @@ dependencies = [
     "django-import-export<4.0.0,>=3.2.0",
     "dal-admin-filters==1.1.0",
     "django-markdownify==0.9.5",
-    "django-imagekit==5.0.0",
+    "django-imagekit==6.0.0",
     "pillow==12.2.0",
     "redis[hiredis]==8.1.0",
     "google-api-python-client<3.0.0,>=2.94.0",

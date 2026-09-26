@@ -89,7 +89,7 @@ class GrantErrors(BaseErrorType):
         # add_error() appends to list fields, so the JSON map is set directly
         self._has_errors = True
         if not self.errors:
-            self.errors = self.__annotations__["errors"]()
+            self.errors = type(self).__annotations__["errors"]()
         self.errors.answers_errors = answer_errors
 
 
