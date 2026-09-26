@@ -9,7 +9,7 @@ resource "aws_ecs_task_definition" "web" {
       essential         = true
 
       command = [
-        "gunicorn", "-w", "5", "-b", "0.0.0.0:8000", "pycon.wsgi"
+        "gunicorn", "--preload", "-w", "5", "-b", "0.0.0.0:8000", "pycon.wsgi"
       ]
 
       dockerLabels = {
