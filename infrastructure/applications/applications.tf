@@ -39,6 +39,13 @@ module "pycon_frontend" {
   cf_hosted_zone_id = module.cluster.cf_hosted_zone_id
 }
 
+module "resonate" {
+  source = "./resonate"
+  cluster_id = module.cluster.cluster_id
+  logs_group_name = module.cluster.logs_group_name
+  database_settings = module.database.database_settings
+}
+
 module "clamav" {
   source       = "./clamav"
   cluster_id = module.cluster.cluster_id
