@@ -249,7 +249,7 @@ requires-dist = [
     { name = "certifi", specifier = "==2024.7.4" },
     { name = "chardet", specifier = "==5.2.0" },
     { name = "countries", specifier = ">=0.2.0,<1.0.0" },
-    { name = "cryptography", specifier = ">=48.0.1" },
+    { name = "cryptography", specifier = ">=50.0.0" },
     { name = "dal-admin-filters", specifier = "==1.1.0" },
     { name = "django", specifier = "==5.2.8" },
     { name = "django-autocomplete-light", specifier = "==3.9.4" },
