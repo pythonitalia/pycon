@@ -35,7 +35,11 @@ from conferences.models import (
     Topic,
 )
 from conferences.admin.views import grants_summary
-from .actions import send_voucher_via_email, create_conference_vouchers_on_pretix
+from .actions import (
+    clone_conference,
+    create_conference_vouchers_on_pretix,
+    send_voucher_via_email,
+)
 
 
 def validate_deadlines_form(forms):
@@ -192,6 +196,7 @@ class ConferenceAdmin(
         ("YouTube", {"fields": ("video_title_template", "video_description_template")}),
     )
     inlines = [DeadlineInline, DurationInline, SponsorLevelInline, IncludedEventInline]
+    actions = [clone_conference]
 
     @admin.display(description="Schedule Builder")
     def schedule_builder_link(self, obj):
