@@ -125,10 +125,10 @@ When working in `backend/api`:
 ### Writing tests
 
 - No comments and no docstrings in test files. The test name is the documentation. If a fixture needs explaining, rename the variable; if a class needs a docstring, split it or rename it.
-- Test behaviour, never structure. Do not assert the shape of an OpenSearch query dict, the return value of a private method, or the internals of a filter object. Search behaviour is tested through `OpenSearchTCMixin` against a real index, asserting the ids returned.
+- Test behaviour, never structure.
 - One layer per behaviour. Handler logic is tested through the search class; the view is tested only for what the view adds (status codes, error bodies, scope routing). Do not re-assert search results through the view.
 - A test earns its place only if a plausible bug would fail it and no other test. Before adding one, name that bug. Delete tests that are implied by another test (`x is not None` when another test dereferences `x`; "is accepted" when another test already gets results through the same path).
 - Assert complements together. `exists: true` and `exists: false`, or any pair of opposite directions, share fixtures and live in one test.
-- Use `parameterized.expand` for cases that differ only in inputs. Do not write near-identical test methods. Do not use `self.subTest` unless there is no alternative.
+- Use `pytest.mark.parametrize` for cases that differ only in inputs. Do not write near-identical test methods.
 - Do not add guard tests for pre-existing behaviour the change cannot affect.
 - Extend the existing test module for a feature. Do not create a parallel `*_edge_cases` module or "pin" a test file as unmodifiable.
