@@ -115,7 +115,7 @@ When working in `backend/api`:
 
 ## Comments
 
-- A comment states a constraint the code cannot express and a reader would otherwise undo: an external quirk (OpenSearch, DRF, a library), a non-obvious invariant, a reason not to take the obvious shortcut. Nothing else.
+- A comment states a constraint the code cannot express and a reader would otherwise undo: an external quirk (GraphQL, a library), a non-obvious invariant, a reason not to take the obvious shortcut. Nothing else.
 - Never describe what the code did before, why it changed, or what it replaces. If the comment only makes sense to someone who saw the old code, delete it. It belongs in the commit message. Self-check before finishing: grep the diff for `used to|previously|before|no longer|already|now|instead of|pinned|this PR` in comment lines and delete or rewrite every hit.
 - No ticket IDs, PR numbers, spec or plan file names in code or comments.
 - One or two lines. A longer comment means the code or the name needs work.
