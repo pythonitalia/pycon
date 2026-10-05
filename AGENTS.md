@@ -6,7 +6,7 @@ This file provides guidance to coding agents when working with code in this repo
 
 ### Backend (Django)
 
-- **Local development**: `docker-compose up` (starts all services)
+- **Local development**: `docker compose up` (starts all services)
 - **Run tests**: `cd backend && uv run pytest` or `DJANGO_SETTINGS_MODULE=pycon.settings.test uv run pytest`
 - **Single test**: `cd backend && uv run pytest path/to/test_file.py::test_function`
 - **Lint/format**: `cd backend && uv run ruff check` and `uv run ruff format`
@@ -16,7 +16,7 @@ This file provides guidance to coding agents when working with code in this repo
 
 ### Frontend (Next.js)
 
-- **Local development**: `cd frontend && pnpm dev` (or via docker-compose)
+- **Local development**: `cd frontend && pnpm dev` (or via docker compose)
 - **Build**: `cd frontend && pnpm build`
 - **Tests**: `cd frontend && pnpm test`
 - **GraphQL codegen**: `cd frontend && pnpm codegen` (or `pnpm codegen:watch`)
@@ -101,16 +101,34 @@ When working in `backend/api`:
 
 **IMPORTANT**: When running locally, all Python/Django commands must run inside Docker. The local virtual environment will not work.
 
-Use `docker exec pycon-backend-1` (without `-t` flag for non-interactive/script usage, with `-it` for interactive terminal).
-
-- **Start services**: `docker-compose up` (starts all services)
-- **Run tests**: `docker exec pycon-backend-1 uv run pytest -l -s -vvv`
-- **Single test**: `docker exec pycon-backend-1 uv run pytest path/to/test_file.py::test_function -l -s -vvv`
-- **Lint/format**: `docker exec pycon-backend-1 uv run ruff check` and `docker exec pycon-backend-1 uv run ruff format`
-- **Type checking**: `docker exec pycon-backend-1 uv run mypy .`
-- **Django management**: `docker exec pycon-backend-1 uv run python manage.py <command>`
-- **Migrations**: `docker exec pycon-backend-1 uv run python manage.py makemigrations` and `docker exec pycon-backend-1 uv run python manage.py migrate`
+- **Start services**: `docker compose up` (starts all services)
+- **Run tests**: `docker compose exec backend uv run pytest -l -s -vvv`
+- **Single test**: `docker compose exec backend uv run pytest path/to/test_file.py::test_function -l -s -vvv`
+- **Lint/format**: `docker compose exec backend uv run ruff check` and `docker compose exec backend uv run ruff format`
+- **Type checking**: `docker compose exec backend uv run mypy .`
+- **Django management**: `docker compose exec backend uv run python manage.py <command>`
+- **Migrations**: `docker compose exec backend uv run python manage.py makemigrations` and `docker compose exec backend uv run python manage.py migrate`
 
 **Troubleshooting**: If the backend container is not working:
-1. Restart container: `docker restart pycon-backend-1`
-2. If dependencies changed: Remove `backend/.venv` and rebuild with `docker-compose build --no-cache && docker-compose up`
+1. Restart container: `docker compose restart backend`
+2. If dependencies changed: Remove `backend/.venv` and rebuild with `docker compose build --no-cache && docker compose up`
+
+## Comments
+
+- A comment states a constraint the code cannot express and a reader would otherwise undo: an external quirk (OpenSearch, DRF, a library), a non-obvious invariant, a reason not to take the obvious shortcut. Nothing else.
+- Never describe what the code did before, why it changed, or what it replaces. If the comment only makes sense to someone who saw the old code, delete it. It belongs in the commit message. Self-check before finishing: grep the diff for `used to|previously|before|no longer|already|now|instead of|pinned|this PR` in comment lines and delete or rewrite every hit.
+- No ticket IDs, PR numbers, spec or plan file names in code or comments.
+- One or two lines. A longer comment means the code or the name needs work.
+- No section-divider comments (`# -- foo ---`), no narration (`# increment count`), no docstring that restates the function or class name.
+- Docstrings only on public interfaces: API views, serializers used by the FE, functions exported for other apps. Private helpers get a name, not a docstring.
+
+### Writing tests
+
+- No comments and no docstrings in test files. The test name is the documentation. If a fixture needs explaining, rename the variable; if a class needs a docstring, split it or rename it.
+- Test behaviour, never structure. Do not assert the shape of an OpenSearch query dict, the return value of a private method, or the internals of a filter object. Search behaviour is tested through `OpenSearchTCMixin` against a real index, asserting the ids returned.
+- One layer per behaviour. Handler logic is tested through the search class; the view is tested only for what the view adds (status codes, error bodies, scope routing). Do not re-assert search results through the view.
+- A test earns its place only if a plausible bug would fail it and no other test. Before adding one, name that bug. Delete tests that are implied by another test (`x is not None` when another test dereferences `x`; "is accepted" when another test already gets results through the same path).
+- Assert complements together. `exists: true` and `exists: false`, or any pair of opposite directions, share fixtures and live in one test.
+- Use `parameterized.expand` for cases that differ only in inputs. Do not write near-identical test methods. Do not use `self.subTest` unless there is no alternative.
+- Do not add guard tests for pre-existing behaviour the change cannot affect.
+- Extend the existing test module for a feature. Do not create a parallel `*_edge_cases` module or "pin" a test file as unmodifiable.
