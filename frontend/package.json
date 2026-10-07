@@ -43,7 +43,7 @@
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "react-hook-form": "^7.76.1",
-    "react-intl": "^6.8.9",
+    "react-intl": "^10.1.16",
     "react-intl-formatted-duration": "^4.0.0",
     "react-qr-code": "^2.2.0",
     "react-select": "^5.10.2",
