@@ -127,6 +127,9 @@ INSTALLED_APPS = [
     "privacy_policy.apps.PrivacyPolicyConfig",
     "visa.apps.VisaConfig",
     "generic_forms.apps.GenericFormsConfig",
+    # Project package, registered as an app so its project-level management
+    # commands (e.g. resonate_worker) are discoverable. It has no models.
+    "pycon",
 ]
 
 MIDDLEWARE = [
@@ -401,6 +404,11 @@ WAGTAIL_HEADLESS_PREVIEW = {
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
 CELERY_TASK_IGNORE_RESULT = True
+
+# Resonate (durable workflows). Empty URL keeps the SDK on its in-process
+# local connection, which is what tests use.
+RESONATE_URL = env("RESONATE_URL", default="")
+RESONATE_GROUP = env("RESONATE_GROUP", default="pycon")
 
 AWS_STORAGE_BUCKET_NAME = env("AWS_MEDIA_BUCKET", default=None)
 AWS_REGION_NAME = AWS_SES_REGION_NAME = AWS_S3_REGION_NAME = env(

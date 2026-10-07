@@ -51,6 +51,26 @@ To enable the Django Debug Toolbar, set the `ENABLE_DJANGO_DEBUG_TOOLBAR` variab
 ENABLE_DJANGO_DEBUG_TOOLBAR=true
 ```
 
+## Durable workflows (Resonate)
+
+Long, multi-step operations run as [Resonate](https://www.resonatehq.io/)
+durable workflows, executed by the `resonate-worker` service (`docker-compose
+up` starts it, along with the Resonate server and its UI at
+http://localhost:8005).
+
+Workflows live in `<app>/workflows.py` (or `<app>/workflows/`); they are
+registered against the instance returned by `pycon.resonate_app.get_resonate()`
+and discovered automatically by the worker. Synchronous, ORM-using steps are
+wrapped with `pycon.resonate_app.database_step`.
+
+The worker restarts itself when the code changes, like `runserver` does, so
+editing a workflow is enough to see it run in its new shape. Pass `--no-reload`
+to turn that off; outside `DEBUG` it is off to begin with.
+
+To start a workflow from Django (a view, an admin action, a command), use
+`pycon.resonate_app.start_workflow(name, workflow_id, ...)`. The workflow id is
+the idempotency key: creating the same id twice joins the existing run.
+
 ## External repos
 
 Repos used by this project are in separate repositories.

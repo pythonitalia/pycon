@@ -26,6 +26,7 @@ x-defaults:
     CELERY_RESULT_BACKEND: redis://redis:6379/10
     CLAMAV_HOST: clamav
     CLAMAV_PORT: 3310
+    RESONATE_URL: http://resonate:8001
 
 services:
   backend:
@@ -61,6 +62,28 @@ services:
       interval: 10s
       timeout: 10s
       retries: 10
+
+  resonate-worker:
+    build:
+      context: ./backend
+      dockerfile: ../Dockerfile.python.local
+    networks: [pycon_net]
+    restart: unless-stopped
+    command: sh -c "export DJANGO_SETTINGS_MODULE=pycon.settings.dev &&
+      uv run python manage.py resonate_worker"
+    depends_on:
+      backend:
+        condition: service_healthy
+      resonate:
+        condition: service_healthy
+    tty: true
+    volumes:
+      - ./backend:/home/app/
+      - /.venv/
+    environment:
+      <<: *pycon_backend_envs
+    env_file:
+      - .env
 
   custom-admin:
     build:
@@ -152,9 +175,58 @@ services:
     networks: [pycon_net]
     restart: unless-stopped
 
+  resonate:
+    image: resonatehqio/resonate:v0.9.8
+    networks: [pycon_net]
+    ports:
+      - "8001:8001"
+      - "9090:9090"
+    environment:
+      RESONATE_SERVER__BIND: "0.0.0.0"
+      RESONATE_STORAGE__TYPE: postgres
+      RESONATE_STORAGE__POSTGRES__URL: postgres://resonate:resonate@resonate-db:5432/resonate
+      RESONATE_SERVER__CORS__ALLOW_ORIGINS: "['*']"
+    depends_on:
+      resonate-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8001/health || exit 1"]
+      interval: 5s
+      retries: 10
+      start_period: 30s
+
+  resonate-db:
+    image: postgres:18.6
+    networks: [pycon_net]
+    restart: unless-stopped
+    ports:
+      - "15502:5432"
+    volumes:
+      - resonate-db-data:/var/lib/postgresql
+    environment:
+      POSTGRES_USER: resonate
+      POSTGRES_PASSWORD: resonate
+      POSTGRES_DB: resonate
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U resonate"]
+      interval: 5s
+      timeout: 5s
+
+  resonate-ui:
+    image: ghcr.io/pythonitalia/pycon/resonate-ui:latest
+    networks: [pycon_net]
+    restart: unless-stopped
+    ports:
+      - "8005:80"
+    environment:
+      RESONATE_API_URL: http://resonate:8001
+    depends_on:
+      resonate:
+        condition: service_healthy
 
 networks:
   pycon_net:
 
 volumes:
   pycon-backend-db-data:
+  resonate-db-data:
