@@ -13,7 +13,7 @@
     "codegen:watch": "pnpm run codegen --watch"
   },
   "dependencies": {
-    "@apollo/client": "^3.14.1",
+    "@apollo/client": "^4.2.6",
     "@fortedigital/nextjs-cache-handler": "^3.2.0",
     "@graphql-codegen/add": "^5.0.3",
     "@graphql-codegen/cli": "^2.16.5",
