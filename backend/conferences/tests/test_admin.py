@@ -1,4 +1,4 @@
-from datetime import date, time
+from datetime import date, datetime, time
 
 from schedule.tests.factories import (
     DayFactory,
@@ -25,6 +25,7 @@ from conferences.admin import (
     ConferenceAdmin,
 )
 from conferences.admin.actions import (
+    clone_conference,
     create_conference_vouchers_on_pretix,
     send_voucher_via_email,
 )
@@ -33,7 +34,9 @@ from conferences.admin.conference import (
     walk_conference_videos_folder,
     DeadlineForm,
 )
-from conferences.models import ConferenceVoucher
+from conferences.models import Conference, ConferenceVoucher
+from conferences.workflows import CLONE_CONFERENCE
+from pycon.constants import UTC
 from schedule.models import ScheduleItem
 
 pytestmark = mark.django_db
@@ -941,3 +944,156 @@ def test_save_manual_changes(
     assert event_1.video_uploaded_path == "test"
     assert event_2.video_uploaded_path == "another-2"
     assert event_3.video_uploaded_path == "another-3"
+
+
+def clone_conference_request(rf, admin_superuser, data=None):
+    request = rf.post("/", data or {})
+    request.user = admin_superuser
+    return request
+
+
+def test_clone_conference_action_shows_the_form_with_the_next_edition(
+    rf, admin_superuser
+):
+    conference = ConferenceFactory(
+        code="pycon2026",
+        name="PyCon Italia 2026",
+        hostname="pycon2026.pycon.it",
+        start=datetime(2026, 5, 27, 9, 0, tzinfo=UTC),
+        end=datetime(2026, 5, 31, 18, 0, tzinfo=UTC),
+    )
+
+    response = clone_conference(
+        ConferenceAdmin(Conference, AdminSite()),
+        clone_conference_request(rf, admin_superuser),
+        queryset=Conference.objects.filter(id=conference.id),
+    )
+
+    initial = response.context_data["form"].initial
+
+    assert initial["code"] == "pycon2027"
+    assert initial["name"] == "PyCon Italia 2027"
+    assert initial["hostname"] == "pycon2027.pycon.it"
+    assert initial["start"] == datetime(2027, 5, 27, 9, 0, tzinfo=UTC)
+    assert initial["end"] == datetime(2027, 5, 31, 18, 0, tzinfo=UTC)
+
+
+def test_clone_conference_action_requires_a_single_conference(
+    rf, mocker, admin_superuser
+):
+    mock_messages = mocker.patch("conferences.admin.actions.messages")
+    ConferenceFactory()
+    ConferenceFactory()
+
+    response = clone_conference(
+        ConferenceAdmin(Conference, AdminSite()),
+        clone_conference_request(rf, admin_superuser),
+        queryset=Conference.objects.all(),
+    )
+
+    assert response is None
+    mock_messages.error.assert_called_once()
+
+
+def test_clone_conference_action_starts_the_workflow(rf, mocker, admin_superuser):
+    mocker.patch("conferences.admin.actions.messages")
+    mock_start_workflow = mocker.patch("conferences.admin.actions.start_workflow")
+
+    conference = ConferenceFactory(code="pycon2026")
+
+    response = clone_conference(
+        ConferenceAdmin(Conference, AdminSite()),
+        clone_conference_request(
+            rf,
+            admin_superuser,
+            {
+                "apply": "1",
+                "code": "pycon2027",
+                "name": "PyCon Italia 2027",
+                "hostname": "pycon2027.pycon.it",
+                "start_0": "2027-05-26",
+                "start_1": "09:00:00",
+                "end_0": "2027-05-30",
+                "end_1": "18:00:00",
+            },
+        ),
+        queryset=Conference.objects.filter(id=conference.id),
+    )
+
+    assert response is None
+
+    kwargs = mock_start_workflow.call_args.kwargs
+
+    assert mock_start_workflow.call_args.args[0] == CLONE_CONFERENCE
+    assert mock_start_workflow.call_args.args[1].startswith(
+        "clone-conference-pycon2027"
+    )
+    assert kwargs["source_code"] == "pycon2026"
+    assert kwargs["new_code"] == "pycon2027"
+    assert kwargs["new_name"] == "PyCon Italia 2027"
+    assert kwargs["new_hostname"] == "pycon2027.pycon.it"
+    assert kwargs["new_start"].startswith("2027-05-26T09:00:00")
+    assert kwargs["new_end"].startswith("2027-05-30T18:00:00")
+
+
+def test_clone_conference_action_refuses_an_existing_code(rf, mocker, admin_superuser):
+    mock_start_workflow = mocker.patch("conferences.admin.actions.start_workflow")
+
+    conference = ConferenceFactory(code="pycon2026")
+    ConferenceFactory(code="pycon2027", hostname="taken.pycon.it")
+
+    response = clone_conference(
+        ConferenceAdmin(Conference, AdminSite()),
+        clone_conference_request(
+            rf,
+            admin_superuser,
+            {
+                "apply": "1",
+                "code": "pycon2027",
+                "name": "PyCon Italia 2027",
+                "hostname": "pycon2027.pycon.it",
+                "start_0": "2027-05-26",
+                "start_1": "09:00:00",
+                "end_0": "2027-05-30",
+                "end_1": "18:00:00",
+            },
+        ),
+        queryset=Conference.objects.filter(id=conference.id),
+    )
+
+    assert response.context_data["form"].errors["code"] == [
+        "Conference pycon2027 already exists"
+    ]
+    mock_start_workflow.assert_not_called()
+
+
+def test_clone_conference_action_refuses_a_start_after_the_end(
+    rf, mocker, admin_superuser
+):
+    mock_start_workflow = mocker.patch("conferences.admin.actions.start_workflow")
+
+    conference = ConferenceFactory(code="pycon2026")
+
+    response = clone_conference(
+        ConferenceAdmin(Conference, AdminSite()),
+        clone_conference_request(
+            rf,
+            admin_superuser,
+            {
+                "apply": "1",
+                "code": "pycon2027",
+                "name": "PyCon Italia 2027",
+                "hostname": "pycon2027.pycon.it",
+                "start_0": "2027-05-30",
+                "start_1": "18:00:00",
+                "end_0": "2027-05-26",
+                "end_1": "09:00:00",
+            },
+        ),
+        queryset=Conference.objects.filter(id=conference.id),
+    )
+
+    assert response.context_data["form"].non_field_errors() == [
+        "Start date cannot be after end"
+    ]
+    mock_start_workflow.assert_not_called()
