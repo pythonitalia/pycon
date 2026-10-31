@@ -1,4 +1,4 @@
-nodejs 21.7.3
+nodejs 26.10.0
 terraform 1.3.4
 python    3.14.7
 rust      1.61.0
