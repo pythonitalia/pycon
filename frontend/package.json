@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": "Python Italia",
   "license": "MIT",
+  "packageManager": "pnpm@12.17.0",
   "scripts": {
     "dev": "concurrently \"npm run codegen:watch\" \"next dev --turbopack\"",
     "build": "npm run codegen && next build",

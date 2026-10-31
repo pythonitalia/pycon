@@ -43,13 +43,13 @@ RUN python manage.py graphql_schema
 
 # Build custom admin components
 
-FROM node:23 AS js-stage
+FROM node:26 AS js-stage
 
 ARG FUNCTION_DIR
 
 WORKDIR ${FUNCTION_DIR}
 
-RUN npm install -g pnpm
+RUN npm install -g pnpm@12.17.0
 
 COPY custom_admin/package.json custom_admin/pnpm-lock.yaml custom_admin/pnpm-workspace.yaml ./
 

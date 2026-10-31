@@ -19,11 +19,10 @@ jobs:
       - uses: pnpm/action-setup@v6
         name: Install pnpm
         with:
-          version: 9
           run_install: false
       - uses: actions/setup-node@v6
         with:
-          node-version: '23.9.0'
+          node-version: '26.10.0'
           cache: 'pnpm'
           cache-dependency-path: 'frontend/pnpm-lock.yaml'
       - name: Setup Biome
