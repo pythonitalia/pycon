@@ -18,7 +18,7 @@ export const JobPageHandler = () => {
     <JobBoardLayout
       onMobileShowOnly="jobListings"
       jobListings={jobListings}
-      jobListing={jobListings[0]}
+      jobListing={jobListings?.[0]}
     />
   );
 };
