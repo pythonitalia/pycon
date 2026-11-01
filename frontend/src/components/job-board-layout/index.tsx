@@ -31,41 +31,31 @@ export const JobBoardLayout = ({
   onMobileShowOnly,
 }: Props) => {
   const jobListingContent = jobListing ? (
-    <>
-      <LayoutContent
-        showFrom={onMobileShowOnly === "jobListings" ? "desktop" : "mobile"}
-      >
-        <Heading size={2}>{jobListing.title}</Heading>
-        <Spacer size="small" />
-        <Text size={2} color="grey-500">
-          {jobListing.company}
-        </Text>
-        <Spacer size="small" />
-        {jobListing.applyUrl && (
-          <Button
-            target="_blank"
-            href={jobListing.applyUrl}
-            variant="secondary"
-          >
-            <FormattedMessage id="jobboard.applyNow" />
-          </Button>
-        )}
-        <Spacer size="large" />
-        <Article>
-          <StyledHTMLText baseTextSize={2} text={jobListing.description} />
-        </Article>
-        <Spacer size="xl" />
-        {jobListing.applyUrl && (
-          <Button
-            target="_blank"
-            href={jobListing.applyUrl}
-            variant="secondary"
-          >
-            <FormattedMessage id="jobboard.applyNow" />
-          </Button>
-        )}
-      </LayoutContent>
-    </>
+    <LayoutContent
+      showFrom={onMobileShowOnly === "jobListings" ? "desktop" : "mobile"}
+    >
+      <Heading size={2}>{jobListing.title}</Heading>
+      <Spacer size="small" />
+      <Text size={2} color="grey-500">
+        {jobListing.company}
+      </Text>
+      <Spacer size="small" />
+      {jobListing.applyUrl && (
+        <Button target="_blank" href={jobListing.applyUrl} variant="secondary">
+          <FormattedMessage id="jobboard.applyNow" />
+        </Button>
+      )}
+      <Spacer size="large" />
+      <Article>
+        <StyledHTMLText baseTextSize={2} text={jobListing.description} />
+      </Article>
+      <Spacer size="xl" />
+      {jobListing.applyUrl && (
+        <Button target="_blank" href={jobListing.applyUrl} variant="secondary">
+          <FormattedMessage id="jobboard.applyNow" />
+        </Button>
+      )}
+    </LayoutContent>
   ) : null;
 
   return (
