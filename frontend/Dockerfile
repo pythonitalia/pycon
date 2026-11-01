@@ -1,4 +1,6 @@
-FROM node:23-alpine AS base
+FROM node:26-alpine AS base
+
+ENV PNPM_VERSION=12.17.0
 
 RUN apk add --no-cache curl
 
@@ -8,7 +10,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml* .npmrc* pnpm-workspace.yaml* ./
-RUN corepack enable pnpm && pnpm i --frozen-lockfile
+RUN npm install -g pnpm@${PNPM_VERSION} && pnpm i --frozen-lockfile
 
 FROM base AS builder
 
@@ -24,7 +26,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN corepack enable pnpm
+RUN npm install -g pnpm@${PNPM_VERSION}
 RUN --mount=type=secret,id=sentry_auth_token,env=SENTRY_AUTH_TOKEN \
     pnpm run build
 
