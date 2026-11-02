@@ -3,23 +3,25 @@ import { isToday } from "date-fns";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-import { DEFAULT_LOCALE, VALID_LOCALES } from "~/locale/languages";
+import { DEFAULT_LOCALE } from "~/locale/languages";
 
 import { getApolloClient } from "./apollo/client";
 import { queryScheduleDays } from "./types";
 
 const PUBLIC_FILE = /\.(.*)$/;
 const LOGIN_REDIRECT_URL = ["/cfp", "/grants", "/voting"];
+const REDIRECTED_LOCALES = ["it"];
 
 const handleLocale = (req: NextRequest) => {
-  const locale = getLocale(
-    req.cookies.has("pyconLocale")
-      ? req.cookies.get("pyconLocale")!.value
-      : null,
-  );
-
   const url = req.nextUrl.clone();
-  url.pathname = `${locale}${url.pathname}`;
+  url.pathname = `${DEFAULT_LOCALE}${url.pathname}`;
+
+  return NextResponse.redirect(url);
+};
+
+const redirectToDefaultLocale = (req: NextRequest) => {
+  const url = req.nextUrl.clone();
+  url.locale = DEFAULT_LOCALE;
 
   return NextResponse.redirect(url);
 };
@@ -39,6 +41,10 @@ export async function proxy(req: NextRequest) {
 
   if (shouldHandleLocale) {
     return handleLocale(req);
+  }
+
+  if (REDIRECTED_LOCALES.includes(req.nextUrl.locale)) {
+    return redirectToDefaultLocale(req);
   }
 
   if (LOGIN_REDIRECT_URL.includes(req.nextUrl.pathname) && !isLoggedIn) {
@@ -69,14 +75,6 @@ export async function proxy(req: NextRequest) {
 
   return NextResponse.next();
 }
-
-const getLocale = (cookie: string): string => {
-  if (cookie && VALID_LOCALES.findIndex((e) => e === cookie) !== -1) {
-    return cookie;
-  }
-
-  return DEFAULT_LOCALE;
-};
 
 export const config = {
   matcher: "/:path*",
