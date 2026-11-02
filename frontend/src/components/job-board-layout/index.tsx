@@ -21,7 +21,7 @@ import { MetaTags } from "../meta-tags";
 
 type Props = {
   jobListings: AllJobListingsQueryResult["data"]["jobListings"];
-  jobListing: AllJobListingsQueryResult["data"]["jobListings"][0];
+  jobListing: AllJobListingsQueryResult["data"]["jobListings"][0] | undefined;
   onMobileShowOnly: "jobListings" | "jobListing";
 };
 
@@ -30,6 +30,34 @@ export const JobBoardLayout = ({
   jobListing,
   onMobileShowOnly,
 }: Props) => {
+  const jobListingContent = jobListing ? (
+    <LayoutContent
+      showFrom={onMobileShowOnly === "jobListings" ? "desktop" : "mobile"}
+    >
+      <Heading size={2}>{jobListing.title}</Heading>
+      <Spacer size="small" />
+      <Text size={2} color="grey-500">
+        {jobListing.company}
+      </Text>
+      <Spacer size="small" />
+      {jobListing.applyUrl && (
+        <Button target="_blank" href={jobListing.applyUrl} variant="secondary">
+          <FormattedMessage id="jobboard.applyNow" />
+        </Button>
+      )}
+      <Spacer size="large" />
+      <Article>
+        <StyledHTMLText baseTextSize={2} text={jobListing.description} />
+      </Article>
+      <Spacer size="xl" />
+      {jobListing.applyUrl && (
+        <Button target="_blank" href={jobListing.applyUrl} variant="secondary">
+          <FormattedMessage id="jobboard.applyNow" />
+        </Button>
+      )}
+    </LayoutContent>
+  ) : null;
+
   return (
     <Page endSeparator={false}>
       <FormattedMessage id="jobboard.title">
@@ -62,44 +90,7 @@ export const JobBoardLayout = ({
             </LayoutContent>
           </GridColumn>
           <GridColumn colSpan={8}>
-            <LayoutContent
-              showFrom={
-                onMobileShowOnly === "jobListings" ? "desktop" : "mobile"
-              }
-            >
-              <Heading size={2}>{jobListing.title}</Heading>
-              <Spacer size="small" />
-              <Text size={2} color="grey-500">
-                {jobListing.company}
-              </Text>
-              <Spacer size="small" />
-              {jobListing.applyUrl && (
-                <Button
-                  target="_blank"
-                  href={jobListing.applyUrl}
-                  variant="secondary"
-                >
-                  <FormattedMessage id="jobboard.applyNow" />
-                </Button>
-              )}
-              <Spacer size="large" />
-              <Article>
-                <StyledHTMLText
-                  baseTextSize={2}
-                  text={jobListing.description}
-                />
-              </Article>
-              <Spacer size="xl" />
-              {jobListing.applyUrl && (
-                <Button
-                  target="_blank"
-                  href={jobListing.applyUrl}
-                  variant="secondary"
-                >
-                  <FormattedMessage id="jobboard.applyNow" />
-                </Button>
-              )}
-            </LayoutContent>
+            {jobListingContent}
             <Spacer size="medium" />
           </GridColumn>
         </Grid>
