@@ -1,8 +1,6 @@
 import react from "@astrojs/react";
 import { defineConfig } from "astro/config";
 
-import tailwind from "@astrojs/tailwind";
-
 export default defineConfig({
   vite: {
     logLevel: "info",
@@ -14,11 +12,12 @@ export default defineConfig({
       },
     },
   },
-  integrations: [react(), tailwind()],
+  integrations: [react()],
   build: {
     format: "file",
     assetsPrefix: "/django-static/",
   },
+  compressHTML: true,
   devToolbar: {
     enabled: false,
   },

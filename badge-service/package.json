@@ -13,6 +13,6 @@
     "archiver": "^7.0.1",
     "dotenv": "^16.0.3",
     "lodash.chunk": "^4.2.0",
-    "puppeteer": "^24.8.0"
+    "puppeteer": "^25.16.0"
   }
 }

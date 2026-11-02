@@ -215,7 +215,7 @@ class ProposalMaterialInline(admin.TabularInline):
 
 @admin.register(Submission)
 class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
-    resource_class = SubmissionResource
+    resource_classes = [SubmissionResource]
     form = SubmissionAdminForm
     list_display = (
         "title",
