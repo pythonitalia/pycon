@@ -1,14 +1,13 @@
-import { Color } from "@tiptap/extension-color";
-import Focus from "@tiptap/extension-focus";
-import ListItem from "@tiptap/extension-list-item";
-import Placeholder from "@tiptap/extension-placeholder";
-import Table from "@tiptap/extension-table";
-import TableCell from "@tiptap/extension-table-cell";
-import TableHeader from "@tiptap/extension-table-header";
-import TableRow from "@tiptap/extension-table-row";
+import { ListItem } from "@tiptap/extension-list";
+import {
+  Table,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@tiptap/extension-table";
 import TextAlign from "@tiptap/extension-text-align";
-import TextStyle from "@tiptap/extension-text-style";
-import Underline from "@tiptap/extension-underline";
+import { Color, TextStyle } from "@tiptap/extension-text-style";
+import { Focus, Placeholder } from "@tiptap/extensions";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import clsx from "clsx";
@@ -18,7 +17,7 @@ import { type HideNode, MenuBar } from "./menu-bar";
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
-  TextStyle.configure({ types: [ListItem.name] }),
+  TextStyle,
   StarterKit.configure({
     bulletList: {
       keepMarks: true,
@@ -28,11 +27,11 @@ const extensions = [
       keepMarks: true,
       keepAttributes: false,
     },
+    link: false,
   }),
   TextAlign.configure({
     types: ["heading", "paragraph"],
   }),
-  Underline,
   ButtonNode,
   CustomLink.configure({
     openOnClick: false,
@@ -70,6 +69,7 @@ export const RichEditor = ({
   const editor = useEditor({
     extensions,
     content,
+    shouldRerenderOnTransaction: true,
     onUpdate: ({ editor }) => {
       onUpdate(editor.getHTML());
     },

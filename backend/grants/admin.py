@@ -511,7 +511,7 @@ class GrantReimbursementInline(admin.TabularInline):
 @admin.register(Grant)
 class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
     change_list_template = "admin/grants/grant/change_list.html"
-    resource_class = GrantResource
+    resource_classes = [GrantResource]
     list_display = (
         "user_display_name",
         "country",

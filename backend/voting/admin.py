@@ -43,7 +43,7 @@ class VoteResource(ModelResource):
 
 @admin.register(Vote)
 class VoteAdmin(ExportMixin, admin.ModelAdmin):
-    resource_class = VoteResource
+    resource_classes = [VoteResource]
     form = VoteAdminForm
     readonly_fields = ("created", "modified")
     list_display = ("submission", "user_display_name", "value", "created", "modified")
@@ -126,7 +126,7 @@ class RankSubmissionResource(ModelResource):
 
 @admin.register(RankSubmission)
 class RankSubmissionAdmin(ExportMixin, admin.ModelAdmin):
-    resource_class = RankSubmissionResource
+    resource_classes = [RankSubmissionResource]
     list_display = (
         "tag",
         "position",

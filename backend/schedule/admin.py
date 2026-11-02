@@ -618,7 +618,7 @@ class ScheduleItemAttendeeResource(ModelResource):
 
 @admin.register(ScheduleItemInvitation)
 class ScheduleItemInvitationAdmin(ExportMixin, admin.ModelAdmin):
-    resource_class = ScheduleItemInvitationResource
+    resource_classes = [ScheduleItemInvitationResource]
     list_display = (
         "slot",
         "status",

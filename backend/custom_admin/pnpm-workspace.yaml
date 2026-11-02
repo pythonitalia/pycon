@@ -2,3 +2,6 @@ allowBuilds:
   '@parcel/watcher': true
   esbuild: true
   sharp: true
+overrides:
+  '@graphql-tools/utils@<12.0.2': ^12.0.3
+  minimatch@<11.0.1: ^11.0.1
