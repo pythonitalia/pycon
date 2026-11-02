@@ -66,17 +66,21 @@ export const AvailableProductsLandingSection = ({ tickets }: Props) => {
         </>
       )}
 
-      <Spacer size="small" />
-      <MultiplePartsCard>
-        <CardPart icon="star" iconBackground="blue" contentAlign="left">
-          <Heading size={2}>
-            <FormattedMessage id="tickets.landing.membershipTitle" />
-          </Heading>
-        </CardPart>
-        <CardPart contentAlign="left" background="milk">
-          <Text size={2}>{compile(membership.description).tree}</Text>
-        </CardPart>
-      </MultiplePartsCard>
+      {membership && (
+        <>
+          <Spacer size="small" />
+          <MultiplePartsCard>
+            <CardPart icon="star" iconBackground="blue" contentAlign="left">
+              <Heading size={2}>
+                <FormattedMessage id="tickets.landing.membershipTitle" />
+              </Heading>
+            </CardPart>
+            <CardPart contentAlign="left" background="milk">
+              <Text size={2}>{compile(membership.description).tree}</Text>
+            </CardPart>
+          </MultiplePartsCard>
+        </>
+      )}
     </Section>
   );
 };
