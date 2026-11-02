@@ -9,7 +9,6 @@ import { getTranslatedMessage } from "~/helpers/use-translated-message";
 import { useCurrentLanguage } from "~/locale/context";
 import { useHeaderQuery } from "~/types";
 
-import { createHref } from "../link";
 import { Logo, MobileLogo } from "../logo";
 
 export const Header = () => {
@@ -70,13 +69,6 @@ export const Header = () => {
   const mainLinks = conferenceMenu?.links ?? [];
   const secondaryLinks = programMenu?.links ?? [];
 
-  const languageSwitchHref = createHref({
-    path: route,
-    params: query,
-    locale: language === "it" ? "en" : "it",
-    external: false,
-  });
-
   return (
     <header>
       <NavBar
@@ -85,10 +77,6 @@ export const Header = () => {
         actions={actions}
         logo={Logo}
         mobileLogo={MobileLogo}
-        bottomBarLink={{
-          text: getTranslatedMessage("header.switchLanguage", language),
-          link: languageSwitchHref,
-        }}
       />
     </header>
   );
