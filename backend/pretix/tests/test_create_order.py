@@ -1,15 +1,15 @@
-from api.pretix.types import AttendeeNameInput
-from conferences.tests.factories import ConferenceFactory
-import pytest
-from django.test import override_settings
-
-from pretix import (
+from api.pretix.types import (
+    AttendeeNameInput,
     CreateOrderInput,
     CreateOrderTicket,
     CreateOrderTicketAnswer,
     InvoiceInformation,
-    create_order,
 )
+from conferences.tests.factories import ConferenceFactory
+import pytest
+from django.test import override_settings
+
+from pretix import create_order
 from pretix.exceptions import PretixError
 
 
