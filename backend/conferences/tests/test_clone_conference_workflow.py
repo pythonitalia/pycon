@@ -43,6 +43,18 @@ from sponsors.tests.factories import (
     SponsorSpecialOptionFactory,
 )
 from submissions.tests.factories import SubmissionTypeFactory
+from visa.models import (
+    InvitationLetterAsset,
+    InvitationLetterConferenceConfig,
+    InvitationLetterDocument,
+    InvitationLetterDocumentInclusionPolicy,
+)
+from visa.tests.factories import (
+    InvitationLetterAssetFactory,
+    InvitationLetterConferenceConfigFactory,
+    InvitationLetterDocumentFactory,
+    InvitationLetterDynamicDocumentFactory,
+)
 from voting.models import IncludedEvent
 from voting.tests.factories.included_event import IncludedEventFactory
 
@@ -294,11 +306,59 @@ def test_copies_voting_included_events(source_conference):
     ).exists()
 
 
+def test_copies_the_invitation_letter_config(source_conference):
+    config = InvitationLetterConferenceConfigFactory(conference=source_conference)
+    asset = InvitationLetterAssetFactory(
+        invitation_letter_conference_config=config, identifier="logo"
+    )
+    letter = InvitationLetterDynamicDocumentFactory(
+        invitation_letter_conference_config=config, name="Letter"
+    )
+    hotel = InvitationLetterDocumentFactory(
+        invitation_letter_conference_config=config,
+        name="Hotel booking",
+        inclusion_policy=InvitationLetterDocumentInclusionPolicy.GRANT_ACCOMMODATION,
+    )
+
+    result = run_clone(source_conference.code)
+
+    new_config = InvitationLetterConferenceConfig.objects.get(
+        conference__code="pycon2027"
+    )
+    new_asset = new_config.assets.get()
+    new_letter, new_hotel = new_config.attached_documents.order_by("order")
+
+    assert result["copied"]["invitation_letter_config"] == 4
+    assert new_asset.identifier == "logo"
+    assert new_asset.image.name == asset.image.name
+    assert new_letter.name == "Letter"
+    assert new_letter.dynamic_document == letter.dynamic_document
+    assert not new_letter.document
+    assert new_hotel.name == "Hotel booking"
+    assert (
+        new_hotel.inclusion_policy
+        == InvitationLetterDocumentInclusionPolicy.GRANT_ACCOMMODATION
+    )
+    assert new_hotel.document.name.startswith(
+        "invitation_letter_attached_documents/pycon2027/"
+    )
+    assert new_hotel.document.read() == hotel.document.open("rb").read()
+
+
 def test_running_the_workflow_again_does_not_duplicate_anything(source_conference):
     DeadlineFactory(conference=source_conference, type=Deadline.TYPES.cfp)
     DurationFactory(conference=source_conference, name="Standard")
     SponsorLevelFactory(conference=source_conference, name="Gold")
     GenericCopyFactory(conference=source_conference, key="homepage-intro")
+    invitation_letter_config = InvitationLetterConferenceConfigFactory(
+        conference=source_conference
+    )
+    InvitationLetterAssetFactory(
+        invitation_letter_conference_config=invitation_letter_config
+    )
+    InvitationLetterDocumentFactory(
+        invitation_letter_conference_config=invitation_letter_config, name="Letter"
+    )
 
     first = run_clone(source_conference.code, workflow_id="clone-first-run")
     second = run_clone(source_conference.code, workflow_id="clone-second-run")
@@ -309,6 +369,18 @@ def test_running_the_workflow_again_does_not_duplicate_anything(source_conferenc
     assert Duration.objects.filter(conference__code="pycon2027").count() == 1
     assert SponsorLevel.objects.filter(conference__code="pycon2027").count() == 1
     assert GenericCopy.objects.filter(conference__code="pycon2027").count() == 1
+    assert (
+        InvitationLetterAsset.objects.filter(
+            invitation_letter_conference_config__conference__code="pycon2027"
+        ).count()
+        == 1
+    )
+    assert (
+        InvitationLetterDocument.objects.filter(
+            invitation_letter_conference_config__conference__code="pycon2027"
+        ).count()
+        == 1
+    )
     assert all(count == 0 for count in second["copied"].values())
 
 
