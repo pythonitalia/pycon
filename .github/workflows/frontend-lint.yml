@@ -15,19 +15,19 @@ jobs:
       run:
         working-directory: ./frontend
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
         name: Install pnpm
         with:
           run_install: false
           package_json_file: frontend/package.json
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: '26.10.0'
           cache: 'pnpm'
           cache-dependency-path: 'frontend/pnpm-lock.yaml'
       - name: Setup Biome
-        uses: biomejs/setup-biome@v2
+        uses: biomejs/setup-biome@4c91541eaada48f67d7dbd7833600ce162b68f51 # v2.7.1
         with:
           version: 1.9.4
       - name: Install dependencies

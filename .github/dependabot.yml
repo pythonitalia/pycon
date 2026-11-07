@@ -101,3 +101,16 @@ updates:
     versions:
     - 4.0.1
     - 4.0.2
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: weekly
+    day: monday
+    time: "04:00"
+  cooldown:
+    default-days: 7
+  open-pull-requests-limit: 10
+  groups:
+    github-actions:
+      patterns:
+      - "*"

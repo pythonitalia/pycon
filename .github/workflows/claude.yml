@@ -65,14 +65,14 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           fetch-depth: 1
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: "3.14.7"
       - name: Install uv
-        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         id: setup-uv
         with:
           version: "0.12.5"
@@ -81,11 +81,11 @@ jobs:
         working-directory: backend
         run: uv sync
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
         with:
           run_install: false
           package_json_file: frontend/package.json
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: "26.10.0"
           cache: "pnpm"
@@ -94,7 +94,7 @@ jobs:
         working-directory: frontend
         run: pnpm install
       - name: Run Claude
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@61a9c274fa7110a66dfafc1bbbced03833eb25fe # v1.0.269
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_OAUTH_TOKEN }}
           assignee_trigger: "pythonitaliabot2"
@@ -107,7 +107,7 @@ jobs:
       # actual error lives here. Without this, failures are undiagnosable.
       - name: Upload Claude execution log
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: claude-execution-output
           path: ${{ runner.temp }}/claude-execution-output.json
