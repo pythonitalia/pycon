@@ -3,10 +3,10 @@
 Setting up the next edition means re-creating, by hand, everything that is
 configuration rather than content: deadlines, durations, the schedule days
 with their rooms and slots, sponsor levels and their benefits, email templates,
-menus, copy, forms. The workflow does that in one durable run: every step is a
-Resonate durable child, so a crash (or a database hiccup, which Resonate
-retries) resumes from the step that failed instead of leaving a half-built
-conference behind.
+menus, copy, forms, invitation letter documents. The workflow does that in one
+durable run: every step is a Resonate durable child, so a crash (or a database
+hiccup, which Resonate retries) resumes from the step that failed instead of
+leaving a half-built conference behind.
 
 Content produced *during* an edition is never copied: proposals, the talks
 scheduled into those slots, keynotes, sponsors, grants, vouchers, answers.
@@ -32,6 +32,11 @@ from sponsors.models import (
     SponsorLevel,
     SponsorLevelBenefit,
     SponsorSpecialOption,
+)
+from visa.models import (
+    InvitationLetterAsset,
+    InvitationLetterConferenceConfig,
+    InvitationLetterDocument,
 )
 from voting.models import IncludedEvent
 
@@ -460,6 +465,47 @@ def copy_voting_included_events(source: Conference, conference: Conference) -> i
     return copied
 
 
+@copy_step
+def copy_invitation_letter_config(source: Conference, conference: Conference) -> int:
+    """Copy the invitation letter config with its assets and attached documents.
+
+    Assets and documents point at the source edition's stored files.
+    """
+    source_config = InvitationLetterConferenceConfig.objects.filter(
+        conference=source
+    ).first()
+
+    if source_config is None:
+        return 0
+
+    config, created = InvitationLetterConferenceConfig.objects.get_or_create(
+        conference=conference
+    )
+    copied = int(created)
+
+    for asset in source_config.assets.order_by("id"):
+        _, asset_created = InvitationLetterAsset.objects.get_or_create(
+            invitation_letter_conference_config=config,
+            identifier=asset.identifier,
+            defaults={"image": asset.image.name},
+        )
+        copied += int(asset_created)
+
+    for document in source_config.attached_documents.order_by("order"):
+        _, document_created = InvitationLetterDocument.objects.get_or_create(
+            invitation_letter_conference_config=config,
+            name=document.name,
+            defaults={
+                "inclusion_policy": document.inclusion_policy,
+                "dynamic_document": document.dynamic_document,
+                "document": document.document.name,
+            },
+        )
+        copied += int(document_created)
+
+    return copied
+
+
 # Everything that only needs the source and the freshly created conference,
 # in the order it is copied. Sponsor levels read the benefits copied just
 # before them, so the order matters. The names are what the workflow reports
@@ -476,6 +522,7 @@ COPY_STEPS = (
     ("cms_content", copy_cms_content),
     ("forms", copy_forms),
     ("voting_included_events", copy_voting_included_events),
+    ("invitation_letter_config", copy_invitation_letter_config),
 )
 
 
