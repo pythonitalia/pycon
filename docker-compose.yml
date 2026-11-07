@@ -123,7 +123,7 @@ services:
     ports:
       - "15501:5432"
     volumes:
-      - pycon-backend-db_18-data:/var/lib/postgresql/data
+      - pycon-backend-db_18-data:/var/lib/postgresql
       - ./db-superuser.sql:/docker-entrypoint-initdb.d/db-superuser.sql
     environment:
       POSTGRES_USER: pycon
