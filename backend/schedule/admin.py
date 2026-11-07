@@ -1,5 +1,9 @@
 from django.db import transaction
-from custom_admin.admin import validate_single_conference_selection
+from custom_admin.admin import (
+    HTTPS_URL_FORMFIELD_OVERRIDES,
+    formfield_with_https_urls,
+    validate_single_conference_selection,
+)
 from import_export.resources import ModelResource
 from django.db.models import Count, Prefetch
 from typing import Dict
@@ -281,6 +285,7 @@ class ScheduleItemAdminForm(forms.ModelForm):
 
     class Meta:
         model = ScheduleItem
+        formfield_callback = formfield_with_https_urls
         fields = (
             "conference",
             "type",
@@ -308,6 +313,7 @@ class ScheduleItemAdminForm(forms.ModelForm):
 
 @admin.register(ScheduleItem)
 class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     list_display = (
         "title",
         "conference",
@@ -618,6 +624,7 @@ class ScheduleItemAttendeeResource(ModelResource):
 
 @admin.register(ScheduleItemInvitation)
 class ScheduleItemInvitationAdmin(ExportMixin, admin.ModelAdmin):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     resource_classes = [ScheduleItemInvitationResource]
     list_display = (
         "slot",
@@ -711,6 +718,7 @@ class RoomAdmin(OrderedModelAdmin):
 
 
 class DayRoomThroughModelInline(OrderedTabularInline):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     model = DayRoomThroughModel
     fields = ("room", "order", "move_up_down_links", "streaming_url", "slido_url")
     readonly_fields = (

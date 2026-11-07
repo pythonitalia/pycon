@@ -2,17 +2,23 @@ from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
+from custom_admin.admin import (
+    HTTPS_URL_FORMFIELD_OVERRIDES,
+    formfield_with_https_urls,
+)
 from participants.models import Participant
 
 
 class ParticipantForm(forms.ModelForm):
     class Meta:
         model = Participant
+        formfield_callback = formfield_with_https_urls
         fields = "__all__"
 
 
 @admin.register(Participant)
 class ParticipantAdmin(admin.ModelAdmin):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     form = ParticipantForm
     search_fields = ("user__email", "user__full_name")
     list_display = (
