@@ -6,6 +6,7 @@ from django.http.request import HttpRequest
 from django.shortcuts import redirect
 from django.urls import path, reverse
 from import_export.admin import ImportExportModelAdmin
+from custom_admin.admin import HTTPS_URL_FORMFIELD_OVERRIDES
 from google_api.models import GoogleCloudOAuthCredential, GoogleCloudToken
 import google_auth_oauthlib.flow
 from django.utils.safestring import mark_safe
@@ -14,6 +15,7 @@ from google_api.sdk import GOOGLE_CLOUD_SCOPES
 
 
 class GoogleCloudTokenInline(admin.StackedInline):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     model = GoogleCloudToken
     autocomplete_fields = ("admin_user",)
     extra = 0
@@ -24,6 +26,7 @@ class GoogleCloudTokenInline(admin.StackedInline):
 
 @admin.register(GoogleCloudOAuthCredential)
 class GoogleCloudOAuthCredentialAdmin(ImportExportModelAdmin):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     inlines = [GoogleCloudTokenInline]
 
     def get_list_display(self, request):

@@ -3,6 +3,10 @@ from django.utils.safestring import mark_safe
 from django.contrib import admin
 from django.db import transaction
 
+from custom_admin.admin import (
+    HTTPS_URL_FORMFIELD_OVERRIDES,
+    formfield_with_https_urls,
+)
 from pycon.tasks import check_pending_heavy_processing_work
 from video_uploads.tasks import process_videos_import_request
 from video_uploads.models import VideosImportRequest
@@ -31,6 +35,7 @@ def retry_transfer(modeladmin, request, queryset):
 class VideosImportRequestAdminForm(forms.ModelForm):
     class Meta:
         model = VideosImportRequest
+        formfield_callback = formfield_with_https_urls
         fields = ["conference", "source_url"]
 
     def clean_source_url(self):
@@ -46,6 +51,7 @@ class VideosImportRequestAdminForm(forms.ModelForm):
 
 @admin.register(VideosImportRequest)
 class VideosImportRequestAdmin(admin.ModelAdmin):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     form = VideosImportRequestAdminForm
     list_display = [
         "conference",

@@ -35,6 +35,7 @@ from conferences.models import (
     Topic,
 )
 from conferences.admin.views import grants_summary
+from custom_admin.admin import HTTPS_URL_FORMFIELD_OVERRIDES
 from .actions import (
     clone_conference,
     create_conference_vouchers_on_pretix,
@@ -110,6 +111,7 @@ class ConferenceAdmin(
     OrderedInlineModelAdminMixin,
     admin.ModelAdmin,
 ):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     list_display = (
         "name",
         "code",

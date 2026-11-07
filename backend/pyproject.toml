@@ -126,7 +126,7 @@ text = "MIT"
 dev = [
     "mypy<2.0.0,>=1.2.0",
     "pytest==9.0.3",
-    "pytest-cov==4.1.0",
+    "pytest-cov==7.1.0",
     "pytest-django==4.6.0",
     "factory-boy==3.3.3",
     "pdbpp<1.0.0,>=0.10.3",

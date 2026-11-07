@@ -25,6 +25,7 @@ from conferences.vouchers import create_conference_voucher
 from countries import countries
 from countries.filters import CountryFilter
 from custom_admin.admin import (
+    HTTPS_URL_FORMFIELD_OVERRIDES,
     confirm_pending_status,
     reset_pending_status_back_to_status,
     validate_single_conference_selection,
@@ -71,6 +72,14 @@ EXPORT_GRANTS_FIELDS = (
     "departure_country",
     "conference__code",
     "created",
+    "age_group",
+    "email",
+    "has_sent_submission",
+    "submission_title",
+    "submission_tags",
+    "submission_admin_link",
+    "submission_pycon_link",
+    "grant_admin_link",
 )
 
 
@@ -510,6 +519,7 @@ class GrantReimbursementInline(admin.TabularInline):
 
 @admin.register(Grant)
 class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     change_list_template = "admin/grants/grant/change_list.html"
     resource_classes = [GrantResource]
     list_display = (
@@ -799,6 +809,7 @@ class GrantAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
 
 @admin.register(GrantConfirmPendingStatusProxy)
 class GrantConfirmPendingStatusProxyAdmin(admin.ModelAdmin):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     list_display = (
         "id",
         "full_name",
