@@ -2,6 +2,9 @@ import react from "@astrojs/react";
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
+  server: {
+    allowedHosts: ["custom-admin"],
+  },
   vite: {
     logLevel: "info",
     server: {
