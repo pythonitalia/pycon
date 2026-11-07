@@ -44,9 +44,7 @@ from sponsors.tests.factories import (
 )
 from submissions.tests.factories import SubmissionTypeFactory
 from visa.models import (
-    InvitationLetterAsset,
     InvitationLetterConferenceConfig,
-    InvitationLetterDocument,
     InvitationLetterDocumentInclusionPolicy,
 )
 from visa.tests.factories import (
@@ -339,10 +337,7 @@ def test_copies_the_invitation_letter_config(source_conference):
         new_hotel.inclusion_policy
         == InvitationLetterDocumentInclusionPolicy.GRANT_ACCOMMODATION
     )
-    assert new_hotel.document.name.startswith(
-        "invitation_letter_attached_documents/pycon2027/"
-    )
-    assert new_hotel.document.read() == hotel.document.open("rb").read()
+    assert new_hotel.document.name == hotel.document.name
 
 
 def test_running_the_workflow_again_does_not_duplicate_anything(source_conference):
@@ -369,18 +364,11 @@ def test_running_the_workflow_again_does_not_duplicate_anything(source_conferenc
     assert Duration.objects.filter(conference__code="pycon2027").count() == 1
     assert SponsorLevel.objects.filter(conference__code="pycon2027").count() == 1
     assert GenericCopy.objects.filter(conference__code="pycon2027").count() == 1
-    assert (
-        InvitationLetterAsset.objects.filter(
-            invitation_letter_conference_config__conference__code="pycon2027"
-        ).count()
-        == 1
+    new_invitation_letter_config = InvitationLetterConferenceConfig.objects.get(
+        conference__code="pycon2027"
     )
-    assert (
-        InvitationLetterDocument.objects.filter(
-            invitation_letter_conference_config__conference__code="pycon2027"
-        ).count()
-        == 1
-    )
+    assert new_invitation_letter_config.assets.count() == 1
+    assert new_invitation_letter_config.attached_documents.count() == 1
     assert all(count == 0 for count in second["copied"].values())
 
 
