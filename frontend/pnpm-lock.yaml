@@ -167,8 +167,8 @@ importers:
   .:
     dependencies:
       '@apollo/client':
-        specifier: ^3.14.1
-        version: 3.14.1(@types/react@19.2.17)(graphql-ws@5.12.1(graphql@16.14.0))(graphql@16.14.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^4.3.6
+        version: 4.3.6(graphql-ws@5.12.1(graphql@16.14.0))(graphql@16.14.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rxjs@7.8.2)
       '@fortedigital/nextjs-cache-handler':
         specifier: ^3.2.0
         version: 3.2.0(@redis/client@6.0.0(@opentelemetry/api@1.9.1))(next@16.4.4(@babel/core@7.29.0(supports-color@8.1.1))(@opentelemetry/api@1.9.1)(@types/node@14.18.63)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))
@@ -330,13 +330,14 @@ packages:
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
 
-  '@apollo/client@3.14.1':
-    resolution: {integrity: sha512-SgGX6E23JsZhUdG2anxiyHvEvvN6CUaI4ZfMsndZFeuHPXL3H0IsaiNAhLITSISbeyeYd+CBd9oERXQDdjXWZw==}
+  '@apollo/client@4.3.6':
+    resolution: {integrity: sha512-hGpMGPur4S5KJlWakVIKo5ly7Sp0dx+2yOiVz+gIG8S+D+deZO/Xi9mhSsdMTiGF2q1rAg5nymnQUJsctEAkKg==}
     peerDependencies:
-      graphql: ^15.0.0 || ^16.0.0
+      graphql: ^16.0.0 || ^17.0.0
       graphql-ws: ^5.5.5 || ^6.0.3
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || >=19.0.0-rc
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || >=19.0.0-rc
+      react: ^17.0.0 || ^18.0.0 || >=19.0.0-rc
+      react-dom: ^17.0.0 || ^18.0.0 || >=19.0.0-rc
+      rxjs: ^7.3.0
       subscriptions-transport-ws: ^0.9.0 || ^0.11.0
     peerDependenciesMeta:
       graphql-ws:
@@ -4819,17 +4820,6 @@ packages:
     resolution: {integrity: sha512-pq2bWo9mVD43nbts2wGv17XLiNLya+GklZ8kaDLV2Z08gDCsGpnKn9BFMepvWuHCbyVvY7J5o5+BVvoQbmlJLg==}
     engines: {node: '>=8'}
 
-  rehackt@0.1.0:
-    resolution: {integrity: sha512-7kRDOuLHB87D/JESKxQoRwv4DzbIdwkAGQ7p6QKGdVlY1IZheUnVhlk/4UZlNUVxdAXpyxikE3URsG067ybVzw==}
-    peerDependencies:
-      '@types/react': '*'
-      react: '*'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      react:
-        optional: true
-
   relay-runtime@12.0.0:
     resolution: {integrity: sha512-QU6JKr1tMsry22DXNy9Whsq5rmvwr3LSZiiWV/9+DFpuTWvp+WFhobWMc8TC4OjKFfNhEZy7mOiqUAn5atQtug==}
 
@@ -5210,10 +5200,6 @@ packages:
   swap-case@2.0.2:
     resolution: {integrity: sha512-kc6S2YS/2yXbtkSMunBtKdah4VFETZ8Oh6ONSmSd9bRxhqTrtARUCBUiWXH3xVPpvR7tz2CSnkuXVE42EcGnMw==}
 
-  symbol-observable@4.0.0:
-    resolution: {integrity: sha512-b19dMThMV4HVFynSAM1++gBHAbk2Tc/osgLIBZMKsyqh34jb2e8Os7T6ZW/Bt3pJFdBTd2JwAnAAEQV7rSNvcQ==}
-    engines: {node: '>=0.10'}
-
   synchronous-promise@2.0.17:
     resolution: {integrity: sha512-AsS729u2RHUfEra9xJrE39peJcc2stq2+poBXX8bcM08Y6g9j/i/PUzwNQqkaJde7Ntg1TO7bSREbR5sdosQ+g==}
 
@@ -5336,10 +5322,6 @@ packages:
 
   ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
-
-  ts-invariant@0.10.3:
-    resolution: {integrity: sha512-uivwYcQaxAucv1CzRp2n/QdYPo4ILf9VXgH19zEIjFx2EJufV16P0JtJVpYHy89DItG6Kwj2oIUjrcK5au+4tQ==}
-    engines: {node: '>=8'}
 
   ts-log@2.2.7:
     resolution: {integrity: sha512-320x5Ggei84AxzlXp91QkIGSw5wgaLT6GeAH0KsqDmRZdVWW2OiSeVvElVoatk3f7nicwXlElXsoFkARiGE2yg==}
@@ -5661,17 +5643,11 @@ packages:
     resolution: {integrity: sha512-RNUGiZ/sQ37CkhzKFoedkeMfJM0vNQyaz+wRZJzxdKE7VfDeVKH8bb4rr7XhRLbHJz5hSjoDNwMEIaKhuMZ8gQ==}
     engines: {node: '>=10'}
 
-  zen-observable-ts@1.2.5:
-    resolution: {integrity: sha512-QZWQekv6iB72Naeake9hS1KxHlotfRpe+WGNbNx5/ta+R3DNjVO2bswf63gXlWDcs+EMd7XY8HfVQyP1X6T4Zg==}
-
-  zen-observable@0.8.15:
-    resolution: {integrity: sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ==}
-
 snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@apollo/client@3.14.1(@types/react@19.2.17)(graphql-ws@5.12.1(graphql@16.14.0))(graphql@16.14.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@apollo/client@4.3.6(graphql-ws@5.12.1(graphql@16.14.0))(graphql@16.14.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rxjs@7.8.2)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.14.0)
       '@wry/caches': 1.0.1
@@ -5679,20 +5655,13 @@ snapshots:
       '@wry/trie': 0.5.0
       graphql: 16.14.0
       graphql-tag: 2.12.6(graphql@16.14.0)
-      hoist-non-react-statics: 3.3.2
       optimism: 0.18.1
-      prop-types: 15.8.1
-      rehackt: 0.1.0(@types/react@19.2.17)(react@19.2.7)
-      symbol-observable: 4.0.0
-      ts-invariant: 0.10.3
+      rxjs: 7.8.2
       tslib: 2.8.1
-      zen-observable-ts: 1.2.5
     optionalDependencies:
       graphql-ws: 5.12.1(graphql@16.14.0)
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
-    transitivePeerDependencies:
-      - '@types/react'
 
   '@ardatan/relay-compiler@12.0.0(graphql@16.14.0)(supports-color@8.1.1)':
     dependencies:
@@ -10922,11 +10891,6 @@ snapshots:
 
   regexpp@3.2.0: {}
 
-  rehackt@0.1.0(@types/react@19.2.17)(react@19.2.7):
-    optionalDependencies:
-      '@types/react': 19.2.17
-      react: 19.2.7
-
   relay-runtime@12.0.0:
     dependencies:
       '@babel/runtime': 7.29.2
@@ -11426,8 +11390,6 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  symbol-observable@4.0.0: {}
-
   synchronous-promise@2.0.17: {}
 
   table@6.9.0:
@@ -11534,10 +11496,6 @@ snapshots:
   ts-easing@0.2.0: {}
 
   ts-interface-checker@0.1.13: {}
-
-  ts-invariant@0.10.3:
-    dependencies:
-      tslib: 2.8.1
 
   ts-log@2.2.7: {}
 
@@ -11927,9 +11885,3 @@ snapshots:
       property-expr: 2.0.6
       synchronous-promise: 2.0.17
       toposort: 2.0.2
-
-  zen-observable-ts@1.2.5:
-    dependencies:
-      zen-observable: 0.8.15
-
-  zen-observable@0.8.15: {}
