@@ -467,3 +467,117 @@ def test_page_filter_by_site_and_language(graphql_client, locale):
     assert response["data"] == {
         "cmsPage": {"body": [{"title": "There they are, all standing in a row"}]}
     }
+
+
+HOMEPAGE_HERO_QUERY = """
+query Page ($hostname: String!, $language: String!, $slug: String!) {
+    cmsPage(hostname: $hostname, language: $language, slug: $slug){
+        ...on GenericPage {
+            body {
+                ... on HomepageHero {
+                    city
+                    pretitle
+                    title
+                    subtitle
+                    highlight
+                    illustration
+                    primaryCta {
+                        label
+                        link
+                    }
+                    secondaryCta {
+                        label
+                        link
+                    }
+                }
+            }
+        }
+    }
+}
+"""
+
+
+def test_homepage_hero_with_copy_and_ctas(graphql_client, locale):
+    parent = GenericPageFactory()
+    page = GenericPageFactory(
+        slug="home",
+        locale=locale("en"),
+        parent=parent,
+        title="Home",
+        body__0__homepage_hero__city="bologna",
+        body__0__homepage_hero__pretitle="Bologna, May 27 - 30, 2027",
+        body__0__homepage_hero__title="PyCon Italia 2027",
+        body__0__homepage_hero__subtitle=(
+            "Four days of talks, tutorials and community, in Bologna"
+        ),
+        body__0__homepage_hero__highlight="1,000+ attendees",
+        body__0__homepage_hero__illustration="snakeWithBalloon",
+        body__0__homepage_hero__primary_cta__label="Buy tickets",
+        body__0__homepage_hero__primary_cta__link="/tickets",
+        body__0__homepage_hero__secondary_cta__label="See the programme",
+        body__0__homepage_hero__secondary_cta__link="/schedule",
+    )
+    page.save_revision().publish()
+    SiteFactory(hostname="pycon", port=80, root_page=parent)
+
+    response = graphql_client.query(
+        HOMEPAGE_HERO_QUERY,
+        variables={"hostname": "pycon", "slug": "home", "language": "en"},
+    )
+
+    assert response["data"] == {
+        "cmsPage": {
+            "body": [
+                {
+                    "city": "BOLOGNA",
+                    "pretitle": "Bologna, May 27 - 30, 2027",
+                    "title": "PyCon Italia 2027",
+                    "subtitle": (
+                        "Four days of talks, tutorials and community, in Bologna"
+                    ),
+                    "highlight": "1,000+ attendees",
+                    "illustration": "snakeWithBalloon",
+                    "primaryCta": {"label": "Buy tickets", "link": "/tickets"},
+                    "secondaryCta": {
+                        "label": "See the programme",
+                        "link": "/schedule",
+                    },
+                }
+            ],
+        }
+    }
+
+
+def test_homepage_hero_saved_before_the_copy_fields_existed(graphql_client, locale):
+    parent = GenericPageFactory()
+    page = GenericPageFactory(
+        slug="home",
+        locale=locale("en"),
+        parent=parent,
+        title="Home",
+        body__0__homepage_hero__city="bologna",
+    )
+    page.save_revision().publish()
+    SiteFactory(hostname="pycon", port=80, root_page=parent)
+
+    response = graphql_client.query(
+        HOMEPAGE_HERO_QUERY,
+        variables={"hostname": "pycon", "slug": "home", "language": "en"},
+    )
+
+    assert response["data"] == {
+        "cmsPage": {
+            "body": [
+                {
+                    "city": "BOLOGNA",
+                    "pretitle": "",
+                    "title": "",
+                    "subtitle": "",
+                    "highlight": "",
+                    "illustration": "",
+                    "primaryCta": None,
+                    "secondaryCta": None,
+                }
+            ],
+        }
+    }
