@@ -71,6 +71,14 @@ EXPORT_GRANTS_FIELDS = (
     "departure_country",
     "conference__code",
     "created",
+    "age_group",
+    "email",
+    "has_sent_submission",
+    "submission_title",
+    "submission_tags",
+    "submission_admin_link",
+    "submission_pycon_link",
+    "grant_admin_link",
 )
 
 

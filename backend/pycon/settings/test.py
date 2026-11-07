@@ -10,6 +10,9 @@ if "debug_toolbar" in INSTALLED_APPS:
 if "debug_toolbar.middleware.DebugToolbarMiddleware" in MIDDLEWARE:
     MIDDLEWARE.remove("debug_toolbar.middleware.DebugToolbarMiddleware")
 
+# collectstatic never runs in tests, so STATIC_ROOT does not exist
+MIDDLEWARE.remove("whitenoise.middleware.WhiteNoiseMiddleware")
+
 SECRET_KEY = "this-key-should-only-be-used-for-tests"
 HASHID_DEFAULT_SECRET_SALT = "only-for-tests"
 

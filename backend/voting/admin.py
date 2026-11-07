@@ -82,6 +82,7 @@ EXPORT_RANK_SUBMISSION_FIELDS = (
     "full_name",
     "gender",
     "rank_request__conference__code",
+    "submission__title",
 )
 
 
