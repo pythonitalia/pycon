@@ -20,9 +20,9 @@ jobs:
 
     steps:
       - name: Clone repo
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: tfsec
-        uses: aquasecurity/tfsec-pr-commenter-action@1015a3975c7f1400ee4d9f423a7786a3df9fcbec # v1.2.0
+        uses: aquasecurity/tfsec-pr-commenter-action@7a44c5dcde5dfab737363e391800629e27b6376b # v1.3.1
         with:
           github_token: ${{ github.token }}
 
@@ -30,8 +30,8 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
-      - uses: opentofu/setup-opentofu@9d84900f3238fab8cd84ce47d658d25dd008be2f # v1.0.8
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2.0.2
         with:
           tofu_version: 1.9.0
       - name: OpenTofu Format
