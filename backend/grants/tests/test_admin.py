@@ -33,6 +33,8 @@ from grants.tests.factories import (
     GrantReimbursementFactory,
 )
 from grants.models import Grant, GrantReimbursement
+from i18n.strings import LazyI18nString
+from submissions.tests.factories import SubmissionFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -885,6 +887,22 @@ def test_export_includes_one_column_per_form_question():
     assert rows[0]["First time?"] == "Yes"
     assert rows[1]["Why do you need it?"] == ""
     assert rows[1]["First time?"] == ""
+
+
+def test_export_includes_applicant_and_submission_columns():
+    conference = ConferenceFactory()
+    grant = GrantFactory(conference=conference)
+    SubmissionFactory(
+        conference=conference,
+        speaker=grant.user,
+        title=LazyI18nString({"en": "My talk"}),
+    )
+
+    row = _export_grants(conference).dict[0]
+
+    assert row["email"] == grant.user.email
+    assert row["has_sent_submission"] == "TRUE"
+    assert row["submission_title"] == "My talk"
 
 
 def test_export_without_a_form_has_no_extra_columns():

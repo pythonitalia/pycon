@@ -87,7 +87,7 @@ def process_invitation_letter_request(*, invitation_letter_request_id: int):
 
     pretix_ticket = download_pretix_ticket(invitation_letter_request)
     merger.append(pretix_ticket)
-    merger.compress_identical_objects(remove_identicals=True, remove_orphans=True)
+    merger.compress_identical_objects(remove_duplicates=True, remove_unreferenced=True)
 
     with tempfile.NamedTemporaryFile() as invitation_letter_file:
         merger.write(invitation_letter_file)

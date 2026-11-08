@@ -1,6 +1,8 @@
 from django.contrib import admin
 from ordered_model.admin import OrderedModelAdmin
 
+from custom_admin.admin import HTTPS_URL_FORMFIELD_OVERRIDES
+
 from .models import (
     Sponsor,
     SponsorLead,
@@ -13,6 +15,7 @@ from .models import (
 
 @admin.register(Sponsor)
 class SponsorAdmin(OrderedModelAdmin):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     list_display = ("name", "move_up_down_links")
     list_filter = (
         "levels__conference",
