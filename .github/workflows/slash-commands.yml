@@ -8,7 +8,7 @@ jobs:
   slash-command-dispatch:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/github-script@ffc2c79a5b2490bd33e0a41c1de74b877714d736 # v3.2.0
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         id: get-pr
         with:
           script: |
@@ -25,7 +25,7 @@ jobs:
               core.setFailed(`Request failed with error ${err}`)
             }
       - name: Slash Command Dispatch
-        uses: peter-evans/slash-command-dispatch@40877f718dce0101edfc7aea2b3800cc192f9ed5 # v2.3.0
+        uses: peter-evans/slash-command-dispatch@9bdcd7914ec1b75590b790b844aa3b8eee7c683a # v5.0.2
         with:
           token: ${{ secrets.BOT_TOKEN }}
           reaction-token: ${{ secrets.BOT_TOKEN }}
@@ -40,7 +40,7 @@ jobs:
             ref=${{ fromJSON(steps.get-pr.outputs.result).head.ref }}
       - name: Edit comment with error message
         if: steps.scd.outputs.error-message
-        uses: peter-evans/create-or-update-comment@a35cf36e5301d70b76f316e867e7788a55a31dae # v1.4.5
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
         with:
           comment-id: ${{ github.event.comment.id }}
           body: |
