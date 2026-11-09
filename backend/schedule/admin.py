@@ -1,4 +1,7 @@
+import logging
+
 from django.db import transaction
+from requests import RequestException
 from custom_admin.admin import (
     HTTPS_URL_FORMFIELD_OVERRIDES,
     formfield_with_https_urls,
@@ -46,6 +49,8 @@ from .models import (
     ScheduleItemSentForVideoUpload,
     Slot,
 )
+
+logger = logging.getLogger(__name__)
 
 
 @admin.action(description="Mark Speakers to receive Vouchers")
@@ -541,6 +546,18 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         return f"https://pycon.it/schedule/invitation/{obj.submission.hashid}"
 
 
+def _speaker_has_ticket(schedule_item: ScheduleItem) -> bool | None:
+    try:
+        return user_has_admission_ticket(
+            email=schedule_item.submission.speaker.email,
+            event_organizer=schedule_item.conference.pretix_organizer_id,
+            event_slug=schedule_item.conference.pretix_event_id,
+        )
+    except RequestException:
+        logger.exception("Could not check the speaker ticket on Pretix")
+        return None
+
+
 SCHEDULE_ITEM_INVITATION_FIELDS = [
     "id",
     "title",
@@ -572,11 +589,7 @@ class ScheduleItemInvitationResource(ModelResource):
         if not obj.submission.speaker_id:
             return "<no user>"
 
-        return user_has_admission_ticket(
-            email=obj.submission.speaker.email,
-            event_organizer=obj.conference.pretix_organizer_id,
-            event_slug=obj.conference.pretix_event_id,
-        )
+        return _speaker_has_ticket(obj)
 
     class Meta:
         model = ScheduleItem
@@ -666,15 +679,11 @@ class ScheduleItemInvitationAdmin(ExportMixin, admin.ModelAdmin):
     @admin.display(
         boolean=True,
     )
-    def speaker_has_ticket(self, obj) -> bool:
+    def speaker_has_ticket(self, obj) -> bool | None:
         if not obj.submission.speaker_id:
             return None
 
-        return user_has_admission_ticket(
-            email=obj.submission.speaker.email,
-            event_organizer=obj.conference.pretix_organizer_id,
-            event_slug=obj.conference.pretix_event_id,
-        )
+        return _speaker_has_ticket(obj)
 
     def open_schedule_item(self, obj) -> str:
         url = reverse("admin:schedule_scheduleitem_change", args=[obj.id])

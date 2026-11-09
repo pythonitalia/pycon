@@ -6,6 +6,7 @@ import pytest
 from django.contrib.admin.models import LogEntry
 from django.contrib.admin.sites import AdminSite
 from django.utils import timezone
+from requests import HTTPError
 
 from conferences.models.conference_voucher import ConferenceVoucher
 from conferences.tests.factories import ConferenceFactory, ConferenceVoucherFactory
@@ -311,6 +312,35 @@ def test_send_reply_email_waiting_list_update(rf, mocker, admin_user):
         object_id=grant.id,
         change_message="Sent Waiting List update reply email to applicant.",
     ).exists()
+
+
+def test_create_grant_vouchers_reports_pretix_failures_and_continues(
+    rf, mocker, admin_user
+):
+    mock_messages = mocker.patch("grants.admin.messages")
+    mocker.patch(
+        "conferences.vouchers.create_voucher",
+        side_effect=[HTTPError("Pretix is down"), {"id": 999}],
+    )
+    conference = ConferenceFactory()
+    failed_grant = GrantFactory(status=Grant.Status.confirmed, conference=conference)
+    grant = GrantFactory(status=Grant.Status.confirmed, conference=conference)
+    request = rf.get("/")
+    request.user = admin_user
+
+    create_grant_vouchers(
+        None,
+        request=request,
+        queryset=Grant.objects.filter(conference=conference),
+    )
+
+    assert list(ConferenceVoucher.objects.values_list("user_id", flat=True)) == [
+        grant.user_id
+    ]
+    mock_messages.error.assert_called_once_with(
+        request,
+        f"Could not create a voucher for {failed_grant.name} on Pretix: Pretix is down",
+    )
 
 
 def test_create_grant_vouchers(rf, mocker, admin_user):
@@ -851,7 +881,8 @@ def test_dynamic_answers_has_an_empty_state_for_legacy_grants():
 
 def _export_grants(conference):
     queryset = Grant.objects.filter(conference=conference).order_by("id")
-    return GrantResource().export(queryset=queryset)
+    resource = GrantResource()
+    return resource.export(queryset=queryset, export_fields=resource.get_export_order())
 
 
 def test_export_includes_one_column_per_form_question():

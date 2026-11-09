@@ -49,6 +49,9 @@ def validate_deadlines_form(forms):
         if not form.cleaned_data:
             return
 
+        if form.errors:
+            continue
+
         start = form.cleaned_data["start"]
         end = form.cleaned_data["end"]
         delete = form.cleaned_data["DELETE"]
@@ -73,6 +76,12 @@ class DeadlineForm(ModelForm):
     class Meta:
         model = Deadline
         fields = ["start", "end", "name", "description", "type", "conference"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # TimeFramedModel leaves both dates optional; a deadline needs them.
+        self.fields["start"].required = True
+        self.fields["end"].required = True
 
 
 class DeadlineFormSet(BaseInlineFormSet):

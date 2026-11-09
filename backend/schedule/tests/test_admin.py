@@ -1,3 +1,4 @@
+import re
 from submissions.tests.factories import SubmissionFactory
 from conferences.tests.factories import ConferenceFactory, ConferenceVoucherFactory
 from django.contrib import messages
@@ -10,6 +11,8 @@ from django.utils import timezone
 from conferences.models import ConferenceVoucher
 from schedule.admin import (
     ScheduleItemAdmin,
+    ScheduleItemInvitationAdmin,
+    ScheduleItemInvitationResource,
     mark_as_confirmed_action,
     mark_speakers_to_receive_vouchers,
     send_schedule_invitation_reminder_to_waiting,
@@ -17,7 +20,11 @@ from schedule.admin import (
     send_schedule_invitation_to_uninvited,
     upload_videos_to_youtube,
 )
-from schedule.models import ScheduleItem, ScheduleItemSentForVideoUpload
+from schedule.models import (
+    ScheduleItem,
+    ScheduleItemInvitation,
+    ScheduleItemSentForVideoUpload,
+)
 from schedule.tests.factories import (
     ScheduleItemAdditionalSpeakerFactory,
     ScheduleItemFactory,
@@ -743,3 +750,24 @@ def test_upload_videos_to_youtube_skips_do_not_record_submissions(rf, mocker):
     )
     assert scheduled_ids == {recordable.id, without_submission.id}
     assert do_not_record.id not in scheduled_ids
+
+
+def test_invitation_ticket_status_is_unknown_when_pretix_fails(requests_mock):
+    requests_mock.post(re.compile("attendee-has-ticket"), status_code=500)
+    conference = ConferenceFactory()
+    schedule_item = ScheduleItemFactory(
+        type=ScheduleItem.TYPES.talk,
+        conference=conference,
+        submission=SubmissionFactory(conference=conference),
+    )
+    invitation = ScheduleItemInvitation.objects.get(pk=schedule_item.pk)
+
+    listed = ScheduleItemInvitationAdmin(
+        ScheduleItemInvitation, AdminSite()
+    ).speaker_has_ticket(invitation)
+    exported = ScheduleItemInvitationResource().export(
+        queryset=ScheduleItem.objects.filter(pk=schedule_item.pk)
+    )
+
+    assert listed is None
+    assert exported.dict[0]["speaker_has_ticket"] is None
