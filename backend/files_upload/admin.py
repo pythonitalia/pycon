@@ -20,7 +20,7 @@ class FileAdmin(admin.ModelAdmin):
     list_display = ("id", "file", "created", "uploaded_by")
     search_fields = (
         "file",
-        "uploaded_by",
+        "uploaded_by__email",
         "id",
     )
     list_filter = ("created", "type", "virus", "mime_type")

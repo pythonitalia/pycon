@@ -58,7 +58,7 @@ class VideosImportRequestAdmin(admin.ModelAdmin):
         "status",
         "source_url",
     ]
-    search_fields = ["conference", "source_url"]
+    search_fields = ["conference__code", "source_url"]
     list_filter = ["conference"]
     ordering = ["-created"]
     date_hierarchy = "created"
