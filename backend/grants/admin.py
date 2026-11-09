@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html, format_html_join
 from django.utils.safestring import mark_safe
+from requests import RequestException
 from import_export.admin import ExportMixin
 from import_export.fields import Field
 from import_export.resources import ModelResource
@@ -202,14 +203,22 @@ class GrantResource(ModelResource):
             self.fields[key] = Field(column_name=question.label)
             self._question_fields[key] = question
 
-    def export_field(self, field, obj):
+    def export_field(self, field, instance, **kwargs):
         question = self._question_fields.get(self.get_field_name(field))
         if question is not None:
-            if obj.form_answer_id is None:
+            if instance.form_answer_id is None:
                 return ""
-            answers = unwrap_answers(obj.form_answer.answers)
+            answers = unwrap_answers(instance.form_answer.answers)
             return display_answer_value(question, answers.get(str(question.pk)))
-        return super().export_field(field, obj)
+        return super().export_field(field, instance, **kwargs)
+
+    def get_export_fields(self, selected_fields=None):
+        # The admin's export form lists fields from get_export_order(), which
+        # cannot know the per-conference question columns.
+        export_fields = super().get_export_fields(selected_fields)
+        if selected_fields:
+            export_fields += [self.fields[key] for key in self._question_fields]
+        return export_fields
 
     class Meta:
         model = Grant
@@ -376,11 +385,18 @@ def create_grant_vouchers(modeladmin, request, queryset):
         existing = existing_by_user.get(grant.user_id)
 
         if not existing:
-            new_voucher = create_conference_voucher(
-                conference=grant.conference,
-                user=grant.user,
-                voucher_type=ConferenceVoucher.VoucherType.GRANT,
-            )
+            try:
+                new_voucher = create_conference_voucher(
+                    conference=grant.conference,
+                    user=grant.user,
+                    voucher_type=ConferenceVoucher.VoucherType.GRANT,
+                )
+            except RequestException as e:
+                messages.error(
+                    request,
+                    f"Could not create a voucher for {grant.name} on Pretix: {e}",
+                )
+                continue
             existing_by_user[grant.user_id] = new_voucher
             create_addition_admin_log_entry(
                 request.user,
