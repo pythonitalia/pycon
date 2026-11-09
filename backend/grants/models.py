@@ -233,9 +233,11 @@ class Grant(TimeStampedModel):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._original_status = self.status
-        self._original_pending_status = self.pending_status
-        self._original_country_type = self.country_type
+        # Read through __dict__: touching a deferred field here refetches the
+        # row, which builds another Grant and recurses.
+        self._original_status = self.__dict__.get("status")
+        self._original_pending_status = self.__dict__.get("pending_status")
+        self._original_country_type = self.__dict__.get("country_type")
 
     def __str__(self):
         return f"{self.full_name}"
