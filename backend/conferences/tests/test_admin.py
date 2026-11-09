@@ -154,6 +154,33 @@ def test_start_date_comes_before_end(add_delete_field_to_form):
         validate_deadlines_form(forms)
 
 
+@mark.parametrize(
+    "field,value", [("start", "not a date"), ("end", ""), ("type", "unknown")]
+)
+def test_invalid_deadline_field_is_left_to_its_field_error(
+    field, value, add_delete_field_to_form
+):
+    conference = ConferenceFactory()
+    data = {
+        "start": "2021-11-10 01:43:58",
+        "end": "2022-11-10 01:43:58",
+        "name_0": "en",
+        "name_1": "it",
+        "description_0": "descen",
+        "description_1": "descit",
+        "type": "cfp",
+        "conference": conference.id,
+        "DELETE": False,
+    }
+    data[field] = value
+    form = DeadlineForm(data=data)
+    form.is_valid()
+
+    validate_deadlines_form([form])
+
+    assert field in form.errors
+
+
 def test_can_have_as_many_custom_deadlines_as_we_want(add_delete_field_to_form):
     conference = ConferenceFactory()
     form_1 = DeadlineForm(
