@@ -19,27 +19,54 @@ from __future__ import annotations
 import asyncio
 import functools
 import inspect
+import uuid
 from typing import Any, Callable, TypeVar, get_type_hints
 
+import aiohttp
 from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import connections
 from django.utils.module_loading import autodiscover_modules
+from resonate.connections.sse import SSEConnection
 from resonate.resonate import Resonate
 
 _resonate: Resonate | None = None
+
+
+class WorkerPollConnection(SSEConnection):
+    # The SDK opens its long-lived poll stream with aiohttp's default 5 minute
+    # total timeout, and the bare TimeoutError escapes its reconnect loop.
+    def _ensure_session(self) -> aiohttp.ClientSession:
+        if self._session is None and not self._stopped:
+            self._session = aiohttp.ClientSession(
+                timeout=aiohttp.ClientTimeout(total=None, sock_connect=30)
+            )
+        return super()._ensure_session()
+
 
 T = TypeVar("T")
 
 
 def _build(*, send_only: bool) -> Resonate:
+    pid = uuid.uuid4().hex
+    sources: list[WorkerPollConnection] | None = None
+    if send_only:
+        # An empty list of sources says this process only creates promises and
+        # never picks work up.
+        sources = []
+    elif settings.RESONATE_URL:
+        sources = [
+            WorkerPollConnection(
+                url=settings.RESONATE_URL, pid=pid, group=settings.RESONATE_GROUP
+            )
+        ]
+
     return Resonate(
         group=settings.RESONATE_GROUP,
         url=settings.RESONATE_URL or None,
-        # An empty list of sources says this process only creates promises and
-        # never picks work up; ``None`` lets the SDK give it the usual one.
-        sources=[] if send_only else None,
+        pid=pid,
+        sources=sources,
         # Nothing here needs an event loop: connections are opened by
         # ``start()``, so building at import time is safe.
         autostart=False,
