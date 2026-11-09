@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.postgres",
     "api.apps.ApiConfig",
     "timezone_field",
     "strawberry.django",

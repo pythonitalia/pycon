@@ -64,7 +64,7 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
         .distinct()
     )
 
-    conference = queryset.only("conference_id").first().conference
+    conference = queryset.first().conference
 
     existing_vouchers: dict[int, ConferenceVoucher.VoucherType] = {
         user_id: voucher_type

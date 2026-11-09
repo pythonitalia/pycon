@@ -16,6 +16,11 @@ class SubmissionFilter(AutocompleteFilter):
     field_name = "submission"
     autocomplete_url = "submission-autocomplete"
 
+    def get_queryset_for_field(self, model, name):
+        # dal_admin_filters calls the FK descriptor's get_queryset() without the
+        # `instance` argument Django requires.
+        return model._meta.get_field(name).related_model._base_manager.all()
+
 
 class ConferenceFilter(AutocompleteFilter):
     title = "Conference"

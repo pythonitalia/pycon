@@ -27,7 +27,7 @@ from users.tests.factories import UserFactory
 pytestmark = pytest.mark.django_db
 
 
-def test_mark_speakers_to_receive_vouchers(rf, mocker):
+def test_mark_speakers_to_receive_vouchers(rf, mocker, admin_superuser):
     mocker.patch(
         "conferences.models.conference_voucher.get_random_string",
         side_effect=[
@@ -54,11 +54,16 @@ def test_mark_speakers_to_receive_vouchers(rf, mocker):
         conference=conference,
         submission=None,
     )
+    request = rf.get("/")
+    request.user = admin_superuser
+    changelist = ScheduleItemAdmin(ScheduleItem, AdminSite()).get_changelist_instance(
+        request
+    )
 
     mark_speakers_to_receive_vouchers(
         None,
-        request=rf.get("/"),
-        queryset=ScheduleItem.objects.filter(conference=conference),
+        request=request,
+        queryset=changelist.get_queryset(request).filter(conference=conference),
     )
 
     assert ConferenceVoucher.objects.count() == 2
