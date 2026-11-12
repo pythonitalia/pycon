@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %} {% load i18n %} {% load markdownify %}
-{% load localize countryname get_item %}
+{% load localize countryname get_item scored_votes %}
 {% block extrahead %}
 {{ block.super }}
 <script>
@@ -805,7 +805,7 @@
                     id: {{item.id}},
                     status: "{{ item.current_or_pending_status }}",
                     originalStatus: "{{ item.current_or_pending_status }}",
-                    numOfVotes: {{item.userreview_set.count}},
+                    numOfVotes: {{item.userreview_set.all|scored_votes}},
                 };
               </script>
               <tr
@@ -814,7 +814,7 @@
                 class="grant-item"
                 id="grant-{{ item.id }}"
                 data-type="{{ item.type }}"
-                data-num-of-votes="{{ item.userreview_set.count }}"
+                data-num-of-votes="{{ item.userreview_set.all|scored_votes }}"
                 data-score="{{ item.score|default_if_none:'-999' }}"
                 data-std-dev="{{ item.std_dev|default_if_none:'-1' }}"
                 data-needs-funds-for-travel="{{ item.needs_funds_for_travel|yesno:'true,false' }}"
@@ -918,8 +918,12 @@
                   <ul>
                     {% for reviewer in item.userreview_set.all %}
                     <li>
-                      <strong>{{ reviewer.user.full_name }}</strong> voted
-                      {{ reviewer.score.label }} ({{ reviewer.score.numeric_value }})
+                      <strong>{{ reviewer.user.full_name }}</strong>
+                      {% if reviewer.score_id %}
+                      voted {{ reviewer.score.label }} ({{ reviewer.score.numeric_value }})
+                      {% else %}
+                      Abstained
+                      {% endif %}
                       <br />
                       {{ reviewer.comment }}
                     </li>

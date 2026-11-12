@@ -125,7 +125,7 @@ class UserReview(TimeStampedModel):
         on_delete=models.CASCADE,
         null=True,
     )
-    score = models.ForeignKey(AvailableScoreOption, on_delete=models.PROTECT)
+    score = models.ForeignKey(AvailableScoreOption, on_delete=models.PROTECT, null=True)
     comment = models.TextField(blank=True)
     private_comment = models.TextField(blank=True)
 

@@ -271,6 +271,9 @@
               method="post"
               action="{% url 'admin:reviews-vote-view' review_session_id grant.id %}">
             {% csrf_token %}
+            {% if user_review and not user_review.score_id %}
+                <p>You abstained on this grant. Pick a score to vote instead.</p>
+            {% endif %}
             <div class="score-label">Score</div>
             <div class="available-votes">
                 {% for available_score in available_scores %}
@@ -296,6 +299,7 @@
 
             <div class="actions">
                 <input value="Vote and go to the next" type="submit" name="_next" />
+                <input value="Abstain and go to the next" type="submit" name="_abstain" />
                 <input value="Skip for now" type="submit" name="_skip" />
             </div>
         </div>

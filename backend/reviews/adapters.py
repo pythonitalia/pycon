@@ -332,7 +332,10 @@ class ProposalsReviewAdapter:
             .annotate(
                 votes_received=Count(
                     "userreview",
-                    filter=Q(userreview__review_session_id=review_session.id),
+                    filter=Q(
+                        userreview__review_session_id=review_session.id,
+                        userreview__score__isnull=False,
+                    ),
                 )
             )
             .order_by("votes_received", "?")
@@ -386,7 +389,10 @@ class GrantsReviewAdapter:
                 vote_count=Cast(
                     Count(
                         "userreview",
-                        filter=Q(userreview__review_session_id=review_session_id),
+                        filter=Q(
+                            userreview__review_session_id=review_session_id,
+                            userreview__score__isnull=False,
+                        ),
                     ),
                     output_field=FloatField(),
                 ),
@@ -697,7 +703,10 @@ class GrantsReviewAdapter:
             review_session.conference.grants.annotate(
                 votes_received=Count(
                     "userreview",
-                    filter=Q(userreview__review_session_id=review_session.id),
+                    filter=Q(
+                        userreview__review_session_id=review_session.id,
+                        userreview__score__isnull=False,
+                    ),
                 )
             )
             .exclude(id__in=items_to_exclude)

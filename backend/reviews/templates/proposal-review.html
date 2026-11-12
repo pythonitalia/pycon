@@ -1,6 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load i18n markdownify %}
-{% load localize countryname hostname %}
+{% load localize countryname hostname scored_votes %}
 {% block breadcrumbs %}
 <div class="breadcrumbs">
   <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
@@ -157,13 +157,17 @@ window.addEventListener('load', function() {
   <div class="review-row">
     <strong>Voted by</strong>
     <div>
-      <span>Total votes: {{proposal.userreview_set.count}}</span>
+      <span>Total votes: {{proposal.userreview_set.all|scored_votes}}</span>
       <ul>
         {% for reviewer in proposal.userreview_set.all %}
         <li>
-          <strong>{{reviewer.user.full_name}}</strong> voted
-          {{reviewer.score.label}}
-          ({{reviewer.score.numeric_value}})<br />
+          <strong>{{reviewer.user.full_name}}</strong>
+          {% if reviewer.score_id %}
+          voted {{reviewer.score.label}} ({{reviewer.score.numeric_value}})
+          {% else %}
+          Abstained
+          {% endif %}
+          <br />
           {{reviewer.comment}}
         </li>
         {% empty %}
@@ -241,6 +245,9 @@ window.addEventListener('load', function() {
     action="{% url 'admin:reviews-vote-view' review_session_id proposal_id %}"
   >
     {% csrf_token %}
+    {% if user_review and not user_review.score_id %}
+    <p>You abstained on this proposal. Pick a score to vote instead.</p>
+    {% endif %}
     <div class="score-label">Score</div>
     <div class="available-votes">
       {% for available_score in available_scores %}
@@ -258,6 +265,7 @@ window.addEventListener('load', function() {
 
     <div class="actions">
       <input value="Vote and go to the next" type="submit" name="_next" />
+      <input value="Abstain and go to the next" type="submit" name="_abstain" />
       <input value="Skip for now" type="submit" name="_skip" />
     </div>
 
