@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %} {% load i18n %} {% load markdownify %}
-{% load localize countryname get_item scored_votes %}
+{% load localize countryname get_item %}
 {% block extrahead %}
 {{ block.super }}
 <script>
@@ -805,7 +805,7 @@
                     id: {{item.id}},
                     status: "{{ item.current_or_pending_status }}",
                     originalStatus: "{{ item.current_or_pending_status }}",
-                    numOfVotes: {{item.userreview_set.all|scored_votes}},
+                    numOfVotes: {{ item.vote_count|floatformat:0 }},
                 };
               </script>
               <tr
@@ -814,7 +814,7 @@
                 class="grant-item"
                 id="grant-{{ item.id }}"
                 data-type="{{ item.type }}"
-                data-num-of-votes="{{ item.userreview_set.all|scored_votes }}"
+                data-num-of-votes="{{ item.vote_count|floatformat:0 }}"
                 data-score="{{ item.score|default_if_none:'-999' }}"
                 data-std-dev="{{ item.std_dev|default_if_none:'-1' }}"
                 data-needs-funds-for-travel="{{ item.needs_funds_for_travel|yesno:'true,false' }}"

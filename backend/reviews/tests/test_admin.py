@@ -1,4 +1,3 @@
-from collections.abc import Callable
 from decimal import Decimal
 
 import pytest
@@ -1102,7 +1101,7 @@ def _vote_url(review_session: ReviewSession, item: Submission | Grant) -> str:
     )
 
 
-def _shortlist_url(review_session: ReviewSession, item: Submission | Grant) -> str:
+def _shortlist_url(review_session: ReviewSession) -> str:
     return reverse(
         "admin:reviews-shortlist", kwargs={"review_session_id": review_session.id}
     )
@@ -1165,38 +1164,38 @@ def test_next_item_to_review_does_not_count_abstentions(
 
 
 @pytest.mark.parametrize(
-    "session_type, status, page_url, expected_count",
+    "session_type, status, page, expected_count",
     [
         pytest.param(
             ReviewSession.SessionType.PROPOSALS,
             ReviewSession.Status.REVIEWING,
-            _vote_url,
+            "vote",
             "Total votes: 1",
             id="proposals-vote-page",
         ),
         pytest.param(
             ReviewSession.SessionType.PROPOSALS,
             ReviewSession.Status.REVIEWING,
-            _shortlist_url,
+            "shortlist",
             "numOfVotes: 1,",
             id="proposals-shortlist",
         ),
         pytest.param(
             ReviewSession.SessionType.GRANTS,
             ReviewSession.Status.COMPLETED,
-            _shortlist_url,
+            "shortlist",
             "numOfVotes: 1,",
             id="grants-shortlist",
         ),
     ],
 )
 @pytest.mark.usefixtures("stub_astro_admin_base")
-def test_old_pages_show_abstained_and_count_scored_votes_only(
+def test_review_pages_show_abstained_and_count_scored_votes_only(
     client: Client,
     admin_superuser: User,
     session_type: ReviewSession.SessionType,
     status: ReviewSession.Status,
-    page_url: Callable[[ReviewSession, Submission | Grant], str],
+    page: str,
     expected_count: str,
 ) -> None:
     client.force_login(admin_superuser)
@@ -1219,7 +1218,12 @@ def test_old_pages_show_abstained_and_count_scored_votes_only(
         comment="I know them",
     )
 
-    response = client.get(page_url(review_session, item))
+    url = (
+        _vote_url(review_session, item)
+        if page == "vote"
+        else _shortlist_url(review_session)
+    )
+    response = client.get(url)
 
     content = " ".join(response.content.decode().split())
     assert expected_count in content

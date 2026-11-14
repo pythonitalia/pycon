@@ -1,6 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load i18n markdownify %}
-{% load localize countryname hostname scored_votes %}
+{% load localize countryname hostname %}
 {% block breadcrumbs %}
 <div class="breadcrumbs">
   <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
@@ -157,7 +157,7 @@ window.addEventListener('load', function() {
   <div class="review-row">
     <strong>Voted by</strong>
     <div>
-      <span>Total votes: {{proposal.userreview_set.all|scored_votes}}</span>
+      <span>Total votes: {{ proposal.vote_count }}</span>
       <ul>
         {% for reviewer in proposal.userreview_set.all %}
         <li>

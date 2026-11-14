@@ -582,12 +582,12 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 **adapter.get_user_review_create_values(review_item_id),
             }
 
-            is_abstain = bool(form.cleaned_data.get("_abstain"))
-
             UserReview.objects.update_or_create(
                 **values,
                 defaults={
-                    "score_id": None if is_abstain else form.cleaned_data["score"].id,
+                    "score": None
+                    if form.cleaned_data["_abstain"]
+                    else form.cleaned_data["score"],
                     "comment": form.cleaned_data["comment"],
                     "private_comment": form.cleaned_data["private_comment"],
                 },

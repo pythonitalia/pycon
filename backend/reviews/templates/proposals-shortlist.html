@@ -1,7 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% load i18n %}
 {% load markdownify %}
-{% load localize countryname get_item scored_votes %}
+{% load localize countryname get_item %}
 {% block extrahead %}
 {{ block.super }}
 <script>
@@ -670,7 +670,7 @@
                   originalStatus: "{{ item.current_or_pending_status }}",
                   audienceLevel: {{ item.audience_level.id }},
                   languages: [{% for language in item.languages.all %}"{{language.code}}",{% endfor %}],
-                  numOfVotes: {{item.userreview_set.all|scored_votes}},
+                  numOfVotes: {{ item.vote_count }},
                   submissionType: "{{ item.type.name }}",
                   speakerName: "{{ item.speaker.fullname|escapejs }}",
                   speakerGender: "{{ item.speaker.gender|default:'unknown' }}",
