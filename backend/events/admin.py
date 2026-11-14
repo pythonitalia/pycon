@@ -1,10 +1,13 @@
 from django.contrib import admin
 
+from custom_admin.admin import HTTPS_URL_FORMFIELD_OVERRIDES
+
 from .models import Event
 
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     list_display = ("title", "start", "end", "conference")
     fieldsets = (
         (

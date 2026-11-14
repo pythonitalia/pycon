@@ -2,7 +2,9 @@ from django.urls import reverse
 from grants.tasks import get_name
 from notifications.models import EmailTemplate, EmailTemplateIdentifier
 from custom_admin.admin import (
+    HTTPS_URL_FORMFIELD_OVERRIDES,
     confirm_pending_status,
+    formfield_with_https_urls,
     reset_pending_status_back_to_status,
     validate_single_conference_selection,
 )
@@ -139,6 +141,7 @@ class SubmissionResource(ModelResource):
 class SubmissionAdminForm(forms.ModelForm):
     class Meta:
         model = Submission
+        formfield_callback = formfield_with_https_urls
         fields = [
             "title",
             "slug",
@@ -208,6 +211,7 @@ def send_proposal_in_waiting_list_email_action(modeladmin, request, queryset):
 
 
 class ProposalMaterialInline(admin.TabularInline):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     model = ProposalMaterial
     extra = 0
     autocomplete_fields = ("file",)
@@ -215,6 +219,7 @@ class ProposalMaterialInline(admin.TabularInline):
 
 @admin.register(Submission)
 class SubmissionAdmin(ExportMixin, ConferencePermissionMixin, admin.ModelAdmin):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     resource_classes = [SubmissionResource]
     form = SubmissionAdminForm
     list_display = (
@@ -387,6 +392,7 @@ def apply_and_notify_status_change(modeladmin, request, queryset):
 
 @admin.register(SubmissionConfirmPendingStatusProxy)
 class SubmissionConfirmPendingStatusProxyAdmin(admin.ModelAdmin):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     list_display = (
         "id",
         "title",

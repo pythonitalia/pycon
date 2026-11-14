@@ -568,8 +568,8 @@ def create_order(conference: Conference, order_data: CreateOrderInput) -> Order:
         )
 
         if response.status_code != 200:
-            with sentry_sdk.push_scope() as scope:
-                scope.user = {"email": order_data.email}
+            with sentry_sdk.new_scope() as scope:
+                scope.set_user({"email": order_data.email})
                 scope.set_extra("order-code", data["code"])
                 scope.set_extra("pec", order_data.invoice_information.pec)
                 scope.set_extra(

@@ -309,6 +309,15 @@ def test_sets_country_type_does_nothing_if_unset():
     assert grant.country_type is None
 
 
+def test_deleting_conference_deletes_its_grants():
+    grant = GrantFactory()
+    other_grant = GrantFactory()
+
+    grant.conference.delete()
+
+    assert list(Grant.objects.all()) == [other_grant]
+
+
 def test_pending_status_no_longer_syncs_with_status():
     grant = GrantFactory(
         pending_status=Grant.Status.pending,

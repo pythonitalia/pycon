@@ -35,6 +35,7 @@ from conferences.models import (
     Topic,
 )
 from conferences.admin.views import grants_summary
+from custom_admin.admin import HTTPS_URL_FORMFIELD_OVERRIDES
 from .actions import (
     clone_conference,
     create_conference_vouchers_on_pretix,
@@ -47,6 +48,9 @@ def validate_deadlines_form(forms):
     for form in forms:
         if not form.cleaned_data:
             return
+
+        if form.errors:
+            continue
 
         start = form.cleaned_data["start"]
         end = form.cleaned_data["end"]
@@ -72,6 +76,12 @@ class DeadlineForm(ModelForm):
     class Meta:
         model = Deadline
         fields = ["start", "end", "name", "description", "type", "conference"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # TimeFramedModel leaves both dates optional; a deadline needs them.
+        self.fields["start"].required = True
+        self.fields["end"].required = True
 
 
 class DeadlineFormSet(BaseInlineFormSet):
@@ -110,6 +120,7 @@ class ConferenceAdmin(
     OrderedInlineModelAdminMixin,
     admin.ModelAdmin,
 ):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     list_display = (
         "name",
         "code",

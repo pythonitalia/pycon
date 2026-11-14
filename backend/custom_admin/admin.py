@@ -1,3 +1,4 @@
+from django.db import models
 from django.db.models import F
 from django.contrib import messages
 from functools import wraps
@@ -12,6 +13,16 @@ SITE_NAME = "PyCon Italia"
 
 admin.site.site_header = SITE_NAME
 admin.site.site_title = SITE_NAME
+
+HTTPS_URL_FORMFIELD_OVERRIDES = {models.URLField: {"assume_scheme": "https"}}
+
+
+def formfield_with_https_urls(db_field, **kwargs):
+    # ModelAdmin replaces a form's formfield_callback with its own, so admins
+    # also need HTTPS_URL_FORMFIELD_OVERRIDES
+    if isinstance(db_field, models.URLField):
+        kwargs.setdefault("assume_scheme", "https")
+    return db_field.formfield(**kwargs)
 
 
 class CustomIndexLinks(admin.ModelAdmin):

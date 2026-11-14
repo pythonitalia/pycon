@@ -1,5 +1,12 @@
+import logging
+
 from django.db import transaction
-from custom_admin.admin import validate_single_conference_selection
+from requests import RequestException
+from custom_admin.admin import (
+    HTTPS_URL_FORMFIELD_OVERRIDES,
+    formfield_with_https_urls,
+    validate_single_conference_selection,
+)
 from import_export.resources import ModelResource
 from django.db.models import Count, Prefetch
 from typing import Dict
@@ -43,6 +50,8 @@ from .models import (
     Slot,
 )
 
+logger = logging.getLogger(__name__)
+
 
 @admin.action(description="Mark Speakers to receive Vouchers")
 @validate_single_conference_selection
@@ -60,7 +69,7 @@ def mark_speakers_to_receive_vouchers(modeladmin, request, queryset):
         .distinct()
     )
 
-    conference = queryset.only("conference_id").first().conference
+    conference = queryset.first().conference
 
     existing_vouchers: dict[int, ConferenceVoucher.VoucherType] = {
         user_id: voucher_type
@@ -281,6 +290,7 @@ class ScheduleItemAdminForm(forms.ModelForm):
 
     class Meta:
         model = ScheduleItem
+        formfield_callback = formfield_with_https_urls
         fields = (
             "conference",
             "type",
@@ -308,6 +318,7 @@ class ScheduleItemAdminForm(forms.ModelForm):
 
 @admin.register(ScheduleItem)
 class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     list_display = (
         "title",
         "conference",
@@ -535,6 +546,18 @@ class ScheduleItemAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         return f"https://pycon.it/schedule/invitation/{obj.submission.hashid}"
 
 
+def _speaker_has_ticket(schedule_item: ScheduleItem) -> bool | None:
+    try:
+        return user_has_admission_ticket(
+            email=schedule_item.submission.speaker.email,
+            event_organizer=schedule_item.conference.pretix_organizer_id,
+            event_slug=schedule_item.conference.pretix_event_id,
+        )
+    except RequestException:
+        logger.exception("Could not check the speaker ticket on Pretix")
+        return None
+
+
 SCHEDULE_ITEM_INVITATION_FIELDS = [
     "id",
     "title",
@@ -566,11 +589,7 @@ class ScheduleItemInvitationResource(ModelResource):
         if not obj.submission.speaker_id:
             return "<no user>"
 
-        return user_has_admission_ticket(
-            email=obj.submission.speaker.email,
-            event_organizer=obj.conference.pretix_organizer_id,
-            event_slug=obj.conference.pretix_event_id,
-        )
+        return _speaker_has_ticket(obj)
 
     class Meta:
         model = ScheduleItem
@@ -618,6 +637,7 @@ class ScheduleItemAttendeeResource(ModelResource):
 
 @admin.register(ScheduleItemInvitation)
 class ScheduleItemInvitationAdmin(ExportMixin, admin.ModelAdmin):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     resource_classes = [ScheduleItemInvitationResource]
     list_display = (
         "slot",
@@ -659,15 +679,11 @@ class ScheduleItemInvitationAdmin(ExportMixin, admin.ModelAdmin):
     @admin.display(
         boolean=True,
     )
-    def speaker_has_ticket(self, obj) -> bool:
+    def speaker_has_ticket(self, obj) -> bool | None:
         if not obj.submission.speaker_id:
             return None
 
-        return user_has_admission_ticket(
-            email=obj.submission.speaker.email,
-            event_organizer=obj.conference.pretix_organizer_id,
-            event_slug=obj.conference.pretix_event_id,
-        )
+        return _speaker_has_ticket(obj)
 
     def open_schedule_item(self, obj) -> str:
         url = reverse("admin:schedule_scheduleitem_change", args=[obj.id])
@@ -711,6 +727,7 @@ class RoomAdmin(OrderedModelAdmin):
 
 
 class DayRoomThroughModelInline(OrderedTabularInline):
+    formfield_overrides = HTTPS_URL_FORMFIELD_OVERRIDES
     model = DayRoomThroughModel
     fields = ("room", "order", "move_up_down_links", "streaming_url", "slido_url")
     readonly_fields = (

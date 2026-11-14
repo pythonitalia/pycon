@@ -1,7 +1,9 @@
 import pytest
+from django.contrib.admin.sites import AdminSite
 from conferences.tests.factories import ConferenceFactory
 from video_uploads.models import VideosImportRequest
 from video_uploads.admin import (
+    VideosImportRequestAdmin,
     VideosImportRequestAdminForm,
     queue_videos_import_request,
     retry_transfer,
@@ -9,6 +11,21 @@ from video_uploads.admin import (
 from video_uploads.tests.factories import VideosImportRequestFactory
 
 pytestmark = pytest.mark.django_db
+
+
+def test_search_import_requests_by_conference_code(rf, admin_superuser):
+    request_for_conference = VideosImportRequestFactory(
+        conference=ConferenceFactory(code="pycon2030")
+    )
+    VideosImportRequestFactory(conference=ConferenceFactory(code="europython"))
+    request = rf.get("/")
+    request.user = admin_superuser
+
+    results, _ = VideosImportRequestAdmin(
+        VideosImportRequest, AdminSite()
+    ).get_search_results(request, VideosImportRequest.objects.all(), "pycon2030")
+
+    assert list(results) == [request_for_conference]
 
 
 def test_queue_videos_import_request(mocker, django_capture_on_commit_callbacks):
