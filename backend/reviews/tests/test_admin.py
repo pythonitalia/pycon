@@ -1240,14 +1240,17 @@ def test_review_page_tells_me_i_abstained(
     score = AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
     abstained_item = _make_proposal_or_grant(review_session)
     scored_item = _make_proposal_or_grant(review_session)
+    unreviewed_item = _make_proposal_or_grant(review_session)
     _make_review(review_session, abstained_item, score=None, user=admin_superuser)
     _make_review(review_session, scored_item, score=score, user=admin_superuser)
 
     abstained_page = client.get(_vote_url(review_session, abstained_item))
     scored_page = client.get(_vote_url(review_session, scored_item))
+    unreviewed_page = client.get(_vote_url(review_session, unreviewed_item))
 
     assert "You abstained" in abstained_page.content.decode()
     assert "You abstained" not in scored_page.content.decode()
+    assert "You abstained" not in unreviewed_page.content.decode()
 
 
 def test_get_review_adapter_with_invalid_session_type():
