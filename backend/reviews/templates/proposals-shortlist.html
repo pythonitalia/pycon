@@ -670,7 +670,7 @@
                   originalStatus: "{{ item.current_or_pending_status }}",
                   audienceLevel: {{ item.audience_level.id }},
                   languages: [{% for language in item.languages.all %}"{{language.code}}",{% endfor %}],
-                  numOfVotes: {{item.userreview_set.count}},
+                  numOfVotes: {{ item.vote_count }},
                   submissionType: "{{ item.type.name }}",
                   speakerName: "{{ item.speaker.fullname|escapejs }}",
                   speakerGender: "{{ item.speaker.gender|default:'unknown' }}",
@@ -737,9 +737,13 @@
                   <ul>
                     {% for reviewer in item.userreview_set.all %}
                     <li>
-                      <strong>{{reviewer.user.full_name}}</strong> voted
-                      {{reviewer.score.label}}
-                      ({{reviewer.score.numeric_value}})<br />
+                      <strong>{{reviewer.user.full_name}}</strong>
+                      {% if reviewer.score_id %}
+                      voted {{reviewer.score.label}} ({{reviewer.score.numeric_value}})
+                      {% else %}
+                      Abstained
+                      {% endif %}
+                      <br />
                       {{reviewer.comment}}
                     </li>
                     {% empty %}

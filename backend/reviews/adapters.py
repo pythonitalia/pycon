@@ -139,7 +139,11 @@ class ProposalsReviewAdapter:
                     .values("proposal_id")
                     .annotate(score=Avg("score__numeric_value"))
                     .values("score")
-                )
+                ),
+                vote_count=Count(
+                    "userreview__score",
+                    filter=Q(userreview__review_session_id=review_session_id),
+                ),
             )
             .order_by(F("score").desc(nulls_last=True), "id")
             .prefetch_related(
@@ -238,6 +242,12 @@ class ProposalsReviewAdapter:
         """Return template context for reviewing a single proposal."""
         proposal = (
             Submission.objects.for_conference(review_session.conference_id)
+            .annotate(
+                vote_count=Count(
+                    "userreview__score",
+                    filter=Q(userreview__review_session_id=review_session.id),
+                )
+            )
             .prefetch_related(
                 "rankings",
                 "rankings__tag",
@@ -331,7 +341,7 @@ class ProposalsReviewAdapter:
             .for_conference(review_session.conference_id)
             .annotate(
                 votes_received=Count(
-                    "userreview",
+                    "userreview__score",
                     filter=Q(userreview__review_session_id=review_session.id),
                 )
             )
@@ -385,7 +395,7 @@ class GrantsReviewAdapter:
                 ),
                 vote_count=Cast(
                     Count(
-                        "userreview",
+                        "userreview__score",
                         filter=Q(userreview__review_session_id=review_session_id),
                     ),
                     output_field=FloatField(),
@@ -696,7 +706,7 @@ class GrantsReviewAdapter:
         unvoted_item = (
             review_session.conference.grants.annotate(
                 votes_received=Count(
-                    "userreview",
+                    "userreview__score",
                     filter=Q(userreview__review_session_id=review_session.id),
                 )
             )
