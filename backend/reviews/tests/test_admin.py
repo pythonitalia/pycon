@@ -1,4 +1,5 @@
 from decimal import Decimal
+from typing import Literal
 
 import pytest
 from django.contrib.admin import AdminSite
@@ -1195,7 +1196,7 @@ def test_review_pages_show_abstained_and_count_scored_votes_only(
     admin_superuser: User,
     session_type: ReviewSession.SessionType,
     status: ReviewSession.Status,
-    page: str,
+    page: Literal["vote", "shortlist"],
     expected_count: str,
 ) -> None:
     client.force_login(admin_superuser)
