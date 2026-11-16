@@ -112,13 +112,24 @@ def get_stats_for_submissions(qs):
 
 
 class SubmitVoteForm(forms.Form):
-    score = forms.ModelChoiceField(queryset=AvailableScoreOption.objects.all())
+    score = forms.ModelChoiceField(
+        queryset=AvailableScoreOption.objects.all(), required=False
+    )
     comment = forms.CharField(required=False)
     private_comment = forms.CharField(required=False)
     exclude = forms.MultipleChoiceField(choices=get_all_tags, required=False)
     seen = forms.CharField(required=False)
     _next = forms.CharField(required=False)
+    _abstain = forms.CharField(required=False)
     _skip = forms.CharField(required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if cleaned_data.get("_next") and not cleaned_data.get("score"):
+            self.add_error("score", "Pick a score to vote.")
+
+        return cleaned_data
 
 
 @admin.register(UserReview)
@@ -543,7 +554,7 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 exclude=exclude,
                 seen=seen,
             )
-        elif form.cleaned_data.get("_next"):
+        elif form.cleaned_data.get("_next") or form.cleaned_data.get("_abstain"):
             if not form.is_valid():
                 messages.error(request, "Invalid vote")
                 comment = urllib.parse.quote(form.cleaned_data["comment"])
@@ -574,7 +585,9 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             UserReview.objects.update_or_create(
                 **values,
                 defaults={
-                    "score_id": form.cleaned_data["score"].id,
+                    "score": None
+                    if form.cleaned_data["_abstain"]
+                    else form.cleaned_data["score"],
                     "comment": form.cleaned_data["comment"],
                     "private_comment": form.cleaned_data["private_comment"],
                 },

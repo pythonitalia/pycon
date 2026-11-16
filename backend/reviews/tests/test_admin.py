@@ -1,8 +1,12 @@
 from decimal import Decimal
+from typing import Literal
 
 import pytest
 from django.contrib.admin import AdminSite
 from django.contrib.admin.models import LogEntry
+from django.test import Client
+from django.urls import reverse
+from pytest_mock import MockerFixture
 
 from conferences.tests.factories import ConferenceFactory
 from grants.models import Grant
@@ -13,13 +17,15 @@ from grants.tests.factories import (
 )
 from reviews.adapters import get_review_adapter
 from reviews.admin import ReviewSessionAdmin
-from reviews.models import ReviewSession
+from reviews.models import AvailableScoreOption, ReviewSession, UserReview
 from reviews.tests.factories import (
     AvailableScoreOptionFactory,
     ReviewSessionFactory,
     UserReviewFactory,
 )
+from submissions.models import Submission
 from submissions.tests.factories import SubmissionFactory, SubmissionTagFactory
+from users.models import User
 from users.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
@@ -129,6 +135,13 @@ def test_next_item_to_review_for_submissions_ignores_excluded_tags(iteration):
             ],
             1.0,
         ),
+        (
+            [
+                {"user": 0, "score": 2},
+                {"user": 1, "score": None},
+            ],
+            2.0,
+        ),
         ([], None),
     ],
 )
@@ -157,6 +170,7 @@ def test_grants_review_scores(rf, scores, avg):
         2: AvailableScoreOptionFactory(
             review_session=review_session, numeric_value=2, label="Absolutely"
         ),
+        None: None,
     }
 
     grant_1 = GrantFactory(conference=conference)
@@ -1036,6 +1050,207 @@ def test_grants_review_get_shortlist_context_needs_funds_for_travel(rf):
     items_by_id = {item.id: item for item in context["items"]}
     assert items_by_id[grant_needs_funds.id].needs_funds_for_travel is True
     assert items_by_id[grant_no_funds.id].needs_funds_for_travel is False
+
+
+@pytest.fixture(
+    params=[ReviewSession.SessionType.PROPOSALS, ReviewSession.SessionType.GRANTS],
+    ids=["proposals", "grants"],
+)
+def review_session(request: pytest.FixtureRequest) -> ReviewSession:
+    return ReviewSessionFactory(
+        session_type=request.param, status=ReviewSession.Status.REVIEWING
+    )
+
+
+@pytest.fixture
+def stub_astro_admin_base(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "custom_admin.template_backends.AstroContentLoader.get_contents",
+        return_value="{% block content %}{% endblock %}",
+    )
+
+
+def _make_proposal_or_grant(review_session: ReviewSession) -> Submission | Grant:
+    if review_session.is_proposals_review:
+        return SubmissionFactory(conference=review_session.conference)
+
+    return GrantFactory(conference=review_session.conference)
+
+
+def _make_review(
+    review_session: ReviewSession,
+    item: Submission | Grant,
+    *,
+    score: AvailableScoreOption | None,
+    user: User | None = None,
+    comment: str = "",
+) -> UserReview:
+    item_field = "proposal" if review_session.is_proposals_review else "grant"
+    return UserReviewFactory(
+        review_session=review_session,
+        user=user or UserFactory(),
+        score=score,
+        comment=comment,
+        **{item_field: item},
+    )
+
+
+def _vote_url(review_session: ReviewSession, item: Submission | Grant) -> str:
+    return reverse(
+        "admin:reviews-vote-view",
+        kwargs={"review_session_id": review_session.id, "review_item_id": item.id},
+    )
+
+
+def _shortlist_url(review_session: ReviewSession) -> str:
+    return reverse(
+        "admin:reviews-shortlist", kwargs={"review_session_id": review_session.id}
+    )
+
+
+def test_abstain_saves_empty_score_and_comment_and_item_does_not_come_back(
+    client: Client, admin_superuser: User, review_session: ReviewSession
+) -> None:
+    client.force_login(admin_superuser)
+    score = AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+    item = _make_proposal_or_grant(review_session)
+
+    client.post(
+        _vote_url(review_session, item),
+        {"_abstain": "Abstain", "score": score.id, "comment": "I know them"},
+    )
+
+    review = UserReview.objects.get(review_session=review_session)
+    assert review.user == admin_superuser
+    assert review.score is None
+    assert review.comment == "I know them"
+    adapter = get_review_adapter(review_session)
+    assert adapter.get_next_to_review_item_id(review_session, admin_superuser) is None
+
+
+def test_vote_without_score_saves_nothing_and_vote_with_score_replaces_abstention(
+    client: Client, admin_superuser: User, review_session: ReviewSession
+) -> None:
+    client.force_login(admin_superuser)
+    score = AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+    unvoted_item = _make_proposal_or_grant(review_session)
+    abstained_item = _make_proposal_or_grant(review_session)
+    review = _make_review(
+        review_session, abstained_item, score=None, user=admin_superuser
+    )
+
+    client.post(_vote_url(review_session, unvoted_item), {"_next": "Vote"})
+    client.post(
+        _vote_url(review_session, abstained_item), {"_next": "Vote", "score": score.id}
+    )
+
+    assert list(UserReview.objects.filter(review_session=review_session)) == [review]
+    review.refresh_from_db()
+    assert review.score == score
+
+
+def test_next_item_to_review_does_not_count_abstentions(
+    review_session: ReviewSession,
+) -> None:
+    score = AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+    item_with_abstentions = _make_proposal_or_grant(review_session)
+    item_with_score = _make_proposal_or_grant(review_session)
+    _make_review(review_session, item_with_abstentions, score=None)
+    _make_review(review_session, item_with_abstentions, score=None)
+    _make_review(review_session, item_with_score, score=score)
+
+    adapter = get_review_adapter(review_session)
+    next_item_id = adapter.get_next_to_review_item_id(review_session, UserFactory())
+    assert next_item_id == item_with_abstentions.id
+
+
+@pytest.mark.parametrize(
+    "session_type, status, page, expected_count",
+    [
+        pytest.param(
+            ReviewSession.SessionType.PROPOSALS,
+            ReviewSession.Status.REVIEWING,
+            "vote",
+            "Total votes: 1",
+            id="proposals-vote-page",
+        ),
+        pytest.param(
+            ReviewSession.SessionType.PROPOSALS,
+            ReviewSession.Status.REVIEWING,
+            "shortlist",
+            "numOfVotes: 1,",
+            id="proposals-shortlist",
+        ),
+        pytest.param(
+            ReviewSession.SessionType.GRANTS,
+            ReviewSession.Status.COMPLETED,
+            "shortlist",
+            "numOfVotes: 1,",
+            id="grants-shortlist",
+        ),
+    ],
+)
+@pytest.mark.usefixtures("stub_astro_admin_base")
+def test_review_pages_show_abstained_and_count_scored_votes_only(
+    client: Client,
+    admin_superuser: User,
+    session_type: ReviewSession.SessionType,
+    status: ReviewSession.Status,
+    page: Literal["vote", "shortlist"],
+    expected_count: str,
+) -> None:
+    client.force_login(admin_superuser)
+    review_session = ReviewSessionFactory(session_type=session_type, status=status)
+    score = AvailableScoreOptionFactory(
+        review_session=review_session, numeric_value=2, label="Absolutely"
+    )
+    item = _make_proposal_or_grant(review_session)
+    _make_review(
+        review_session,
+        item,
+        score=score,
+        user=UserFactory(full_name="Scoring Reviewer"),
+    )
+    _make_review(
+        review_session,
+        item,
+        score=None,
+        user=UserFactory(full_name="Passing Reviewer"),
+        comment="I know them",
+    )
+
+    url = (
+        _vote_url(review_session, item)
+        if page == "vote"
+        else _shortlist_url(review_session)
+    )
+    response = client.get(url)
+
+    content = " ".join(response.content.decode().split())
+    assert expected_count in content
+    assert "<strong>Passing Reviewer</strong> Abstained <br /> I know them" in content
+    assert "<strong>Scoring Reviewer</strong> voted Absolutely (2)" in content
+
+
+@pytest.mark.usefixtures("stub_astro_admin_base")
+def test_review_page_tells_me_i_abstained(
+    client: Client, admin_superuser: User, review_session: ReviewSession
+) -> None:
+    client.force_login(admin_superuser)
+    score = AvailableScoreOptionFactory(review_session=review_session, numeric_value=1)
+    abstained_item = _make_proposal_or_grant(review_session)
+    scored_item = _make_proposal_or_grant(review_session)
+    unreviewed_item = _make_proposal_or_grant(review_session)
+    _make_review(review_session, abstained_item, score=None, user=admin_superuser)
+    _make_review(review_session, scored_item, score=score, user=admin_superuser)
+
+    abstained_page = client.get(_vote_url(review_session, abstained_item))
+    scored_page = client.get(_vote_url(review_session, scored_item))
+    unreviewed_page = client.get(_vote_url(review_session, unreviewed_item))
+
+    assert "You abstained" in abstained_page.content.decode()
+    assert "You abstained" not in scored_page.content.decode()
+    assert "You abstained" not in unreviewed_page.content.decode()
 
 
 def test_get_review_adapter_with_invalid_session_type():
