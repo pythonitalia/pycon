@@ -4,6 +4,9 @@ from typing import Literal
 import pytest
 from django.contrib.admin import AdminSite
 from django.contrib.admin.models import LogEntry
+from django.contrib.auth.models import Permission
+from django.core.exceptions import PermissionDenied
+from django.http import Http404
 from django.test import Client
 from django.urls import reverse
 from pytest_mock import MockerFixture
@@ -1264,3 +1267,126 @@ def test_get_review_adapter_with_invalid_session_type():
 
     with pytest.raises(ValueError, match="Unknown review session type"):
         get_review_adapter(review_session)
+
+
+def _make_reviewer(conference, *, can_decide=False):
+    user = UserFactory(is_staff=True, is_superuser=False)
+    user.admin_conferences.add(conference)
+    codenames = ["review_reviewsession", "view_submission"]
+    if can_decide:
+        codenames.append("decision_reviewsession")
+    user.user_permissions.add(*Permission.objects.filter(codename__in=codenames))
+    return user
+
+
+@pytest.mark.parametrize(
+    "screen,template",
+    [
+        ("focus", "astro/review-beta-my-review.html"),
+        ("proposals", "astro/review-beta-my-review.html"),
+        ("shortlist", "astro/review-beta-team-review.html"),
+        ("speakers", "astro/review-beta-team-review.html"),
+    ],
+)
+def test_review_beta_view(rf, screen, template):
+    review_session = ReviewSessionFactory(
+        session_type=ReviewSession.SessionType.PROPOSALS
+    )
+    request = rf.get("/")
+    request.user = _make_reviewer(review_session.conference)
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+    response = admin.review_beta_view(request, review_session.id, screen)
+
+    assert response.status_code == 200
+    assert response.template_name == template
+    assert response.context_data["screen"] == screen
+    assert response.context_data["review_session_id"] == review_session.id
+    assert [item["url"] for item in response.context_data["screens"]] == [
+        f"/admin/reviews/reviewsession/{review_session.id}/beta/{screen_id}/"
+        for screen_id in ["focus", "proposals", "shortlist", "speakers"]
+    ]
+
+
+def test_review_beta_view_can_decide(rf):
+    review_session = ReviewSessionFactory(
+        session_type=ReviewSession.SessionType.PROPOSALS
+    )
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+
+    reviewer_request = rf.get("/")
+    reviewer_request.user = _make_reviewer(review_session.conference)
+    decider_request = rf.get("/")
+    decider_request.user = _make_reviewer(review_session.conference, can_decide=True)
+
+    reviewer_response = admin.review_beta_view(
+        reviewer_request, review_session.id, "shortlist"
+    )
+    decider_response = admin.review_beta_view(
+        decider_request, review_session.id, "shortlist"
+    )
+
+    assert reviewer_response.context_data["can_decide"] is False
+    assert decider_response.context_data["can_decide"] is True
+
+
+@pytest.mark.parametrize("screen", ["focus", "shortlist"])
+def test_review_beta_view_refuses_reviewer_of_another_conference(rf, screen):
+    review_session = ReviewSessionFactory(
+        session_type=ReviewSession.SessionType.PROPOSALS
+    )
+    request = rf.get("/")
+    request.user = _make_reviewer(ConferenceFactory())
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+
+    with pytest.raises(PermissionDenied):
+        admin.review_beta_view(request, review_session.id, screen)
+
+
+@pytest.mark.parametrize(
+    "session_type,screen",
+    [
+        (ReviewSession.SessionType.GRANTS, "focus"),
+        (ReviewSession.SessionType.PROPOSALS, "unknown"),
+    ],
+)
+def test_review_beta_view_not_found(rf, session_type, screen):
+    review_session = ReviewSessionFactory(session_type=session_type)
+    request = rf.get("/")
+    request.user = UserFactory(is_staff=True, is_superuser=True)
+
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+
+    with pytest.raises(Http404):
+        admin.review_beta_view(request, review_session.id, screen)
+
+
+@pytest.mark.parametrize(
+    "session_type,shows_links",
+    [
+        (ReviewSession.SessionType.PROPOSALS, True),
+        (ReviewSession.SessionType.GRANTS, False),
+    ],
+)
+def test_beta_links_in_go_to_fieldset(rf, session_type, shows_links):
+    review_session = ReviewSessionFactory(session_type=session_type)
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+
+    goto_fields = admin.get_fieldsets(rf.get("/"), review_session)[0][1]["fields"]
+
+    assert ("go_to_beta_my_review" in goto_fields) is shows_links
+    assert ("go_to_beta_team_review" in goto_fields) is shows_links
+
+
+def test_beta_links_open_each_area():
+    review_session = ReviewSessionFactory(
+        session_type=ReviewSession.SessionType.PROPOSALS
+    )
+    admin = ReviewSessionAdmin(ReviewSession, AdminSite())
+
+    base_url = f"/admin/reviews/reviewsession/{review_session.id}/beta"
+    assert f'href="{base_url}/focus/"' in admin.go_to_beta_my_review(review_session)
+    assert f'href="{base_url}/shortlist/"' in admin.go_to_beta_team_review(
+        review_session
+    )

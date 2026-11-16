@@ -4,17 +4,29 @@ from django import forms
 from django.contrib import admin, messages
 from django.core.exceptions import PermissionDenied
 from django.db.models import Count, Q
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.http.request import HttpRequest
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
+from django.utils.html import format_html
+from django.utils.text import capfirst
 from django.utils.safestring import mark_safe
 
 from reviews.adapters import get_review_adapter
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
 from submissions.models import Submission, SubmissionTag
 from users.admin_mixins import ConferencePermissionMixin
+
+
+BETA_AREAS = {"my-review": "My review", "team-review": "Team review"}
+BETA_SCREENS = [
+    {"id": "focus", "title": "Focus Mode", "area": "my-review"},
+    {"id": "proposals", "title": "All proposals", "area": "my-review"},
+    {"id": "shortlist", "title": "Shortlist", "area": "team-review"},
+    {"id": "speakers", "title": "Speakers", "area": "team-review"},
+]
+BETA_SCREEN_AREAS = {screen["id"]: screen["area"] for screen in BETA_SCREENS}
 
 
 def get_accepted_submissions(conference):
@@ -182,16 +194,15 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
     ]
 
     def get_fieldsets(self, request: HttpRequest, obj):
-        goto_fieldset = (
-            "Go To",
-            {
-                "fields": (
-                    "go_to_review_screen",
-                    "go_to_shortlist_screen",
-                    "go_to_recap_screen",
-                )
-            },
+        goto_fields = (
+            "go_to_review_screen",
+            "go_to_shortlist_screen",
+            "go_to_recap_screen",
         )
+        if obj and obj.is_proposals_review:
+            goto_fields += ("go_to_beta_my_review", "go_to_beta_team_review")
+
+        goto_fieldset = ("Go To", {"fields": goto_fields})
         config_fieldset = (
             "Config",
             {
@@ -215,6 +226,8 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
             "go_to_review_screen",
             "go_to_shortlist_screen",
             "go_to_recap_screen",
+            "go_to_beta_my_review",
+            "go_to_beta_team_review",
         ]
 
         if obj:
@@ -284,8 +297,36 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 """
         )
 
+    @admin.display(description="My review (beta)")
+    def go_to_beta_my_review(self, obj):
+        return self._beta_link(obj, "focus", "Go to my review (beta)")
+
+    @admin.display(description="Team review (beta)")
+    def go_to_beta_team_review(self, obj):
+        return self._beta_link(obj, "shortlist", "Go to team review (beta)")
+
+    def _beta_link(self, obj, screen, label):
+        if not obj.id or not obj.is_proposals_review:
+            return ""
+
+        url = reverse(
+            "admin:reviews-beta",
+            kwargs={"review_session_id": obj.id, "screen": screen},
+        )
+        return format_html('<a href="{}">{}</a>', url, label)
+
     def get_urls(self):
         return [
+            path(
+                "<int:review_session_id>/beta/",
+                self.admin_site.admin_view(self.review_beta_start_view),
+                name="reviews-beta-start",
+            ),
+            path(
+                "<int:review_session_id>/beta/<slug:screen>/",
+                self.admin_site.admin_view(self.review_beta_view),
+                name="reviews-beta",
+            ),
             path(
                 "<int:review_session_id>/review/shortlist/",
                 self.admin_site.admin_view(self.review_shortlist_view),
@@ -312,6 +353,90 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 name="reviews-vote-view",
             ),
         ] + super().get_urls()
+
+    def review_beta_start_view(self, request, review_session_id):
+        return redirect(
+            reverse(
+                "admin:reviews-beta",
+                kwargs={"review_session_id": review_session_id, "screen": "focus"},
+            )
+        )
+
+    def review_beta_view(self, request, review_session_id, screen):
+        review_session = get_object_or_404(
+            ReviewSession.objects.select_related("conference"), id=review_session_id
+        )
+
+        if not review_session.is_proposals_review or screen not in BETA_SCREEN_AREAS:
+            raise Http404()
+
+        if BETA_SCREEN_AREAS[screen] == "my-review":
+            return self._review_beta_my_review(request, review_session, screen)
+
+        return self._review_beta_team_review(request, review_session, screen)
+
+    def _review_beta_my_review(self, request, review_session, screen):
+        if not review_session.user_can_review(request.user):
+            raise PermissionDenied()
+
+        context = self._build_beta_context(request, review_session, screen)
+        return TemplateResponse(request, "astro/review-beta-my-review.html", context)
+
+    def _review_beta_team_review(self, request, review_session, screen):
+        if not review_session.user_can_review(request.user):
+            raise PermissionDenied()
+
+        context = self._build_beta_context(request, review_session, screen)
+        context["can_decide"] = request.user.has_perm(
+            "reviews.decision_reviewsession", review_session
+        )
+        return TemplateResponse(request, "astro/review-beta-team-review.html", context)
+
+    def _build_beta_context(self, request, review_session, screen):
+        area_title = BETA_AREAS[BETA_SCREEN_AREAS[screen]]
+        screens = [
+            {
+                **beta_screen,
+                "area_title": BETA_AREAS[beta_screen["area"]],
+                "url": reverse(
+                    "admin:reviews-beta",
+                    kwargs={
+                        "review_session_id": review_session.id,
+                        "screen": beta_screen["id"],
+                    },
+                ),
+            }
+            for beta_screen in BETA_SCREENS
+        ]
+
+        return dict(
+            self.admin_site.each_context(request),
+            review_session_id=review_session.id,
+            conference_id=review_session.conference_id,
+            screen=screen,
+            screens=screens,
+            breadcrumbs=self._build_beta_breadcrumbs(review_session, area_title),
+            title=f"{area_title} (beta)",
+        )
+
+    def _build_beta_breadcrumbs(self, review_session, area_title):
+        return [
+            {
+                "title": "Reviews",
+                "url": reverse("admin:app_list", kwargs={"app_label": "reviews"}),
+            },
+            {
+                "title": capfirst(ReviewSession._meta.verbose_name_plural),
+                "url": reverse("admin:reviews_reviewsession_changelist"),
+            },
+            {
+                "title": str(review_session),
+                "url": reverse(
+                    "admin:reviews_reviewsession_change", args=[review_session.id]
+                ),
+            },
+            {"title": f"{area_title} (beta)", "url": None},
+        ]
 
     def review_start_view(self, request, review_session_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
