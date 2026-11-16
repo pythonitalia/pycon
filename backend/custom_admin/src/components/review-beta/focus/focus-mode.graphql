@@ -1,0 +1,116 @@
+fragment ReviewProposalFragment on ReviewProposal {
+  id
+  title {
+    en
+    it
+  }
+  elevatorPitchHtml {
+    en
+    it
+  }
+  abstractHtml {
+    en
+    it
+  }
+  notes
+  tags {
+    id
+    name
+  }
+  type
+  audienceLevel
+  duration
+  languages
+  rankings {
+    tag
+    rank
+    total
+  }
+  websiteUrl
+  adminUrl
+  isMine
+  speaker {
+    id
+    fullName
+    gender
+    country
+    photoUrl
+    bio
+    website
+    twitterHandle
+    instagramHandle
+    mastodonHandle
+    linkedinUrl
+    facebookUrl
+    speakerLevel
+    previousTalkVideo
+    participantAdminUrl
+    grant {
+      status
+      adminUrl
+    }
+    proposalsCount
+    maxProposals
+    otherProposals {
+      id
+      title
+    }
+  }
+  votes {
+    id
+    reviewerName
+    isMine
+    scoreLabel
+    scoreValue
+    comment
+  }
+  myVote {
+    scoreOptionId
+    comment
+  }
+}
+
+query FocusReviewSession($reviewSessionId: ID!) {
+  reviewSession(reviewSessionId: $reviewSessionId) {
+    id
+    scoreOptions {
+      id
+      label
+      numericValue
+    }
+    tags {
+      id
+      name
+    }
+  }
+}
+
+query NextProposalToReview(
+  $reviewSessionId: ID!
+  $excludeTags: [ID!]!
+  $seen: [ID!]!
+) {
+  nextProposalToReview(
+    reviewSessionId: $reviewSessionId
+    excludeTags: $excludeTags
+    seen: $seen
+  )
+}
+
+query ReviewProposal($reviewSessionId: ID!, $proposalId: ID!) {
+  reviewProposal(reviewSessionId: $reviewSessionId, proposalId: $proposalId) {
+    ...ReviewProposalFragment
+  }
+}
+
+mutation VoteProposal($input: VoteProposalInput!) {
+  voteProposal(input: $input) {
+    __typename
+    ... on ReviewProposal {
+      ...ReviewProposalFragment
+    }
+    ... on NotFound {
+      message
+    }
+  }
+}
