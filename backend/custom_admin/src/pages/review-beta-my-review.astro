@@ -1,0 +1,19 @@
+---
+import "../custom-styles.css";
+import { MyReviewRoot } from "../components/review-beta/my-review-root";
+---
+<html>
+    <head>
+        <title>My review (beta)</title>
+    </head>
+
+    <body class="text-sm">
+        <MyReviewRoot
+            reviewSessionId="{{ review_session_id }}"
+            conferenceId="{{ conference_id }}"
+            screen="{{ screen }}"
+            screens="{{ screens | to_json_for_prop }}"
+            breadcrumbs="{{ breadcrumbs | to_json_for_prop }}"
+            client:only />
+    </body>
+</html>
