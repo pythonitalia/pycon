@@ -770,6 +770,12 @@ type Mutation {
   sendSponsorLead(input: SendSponsorLeadInput!): SendSponsorLeadOutput!
   updateInvitationLetterDocument(input: UpdateInvitationLetterDocumentInput!): UpdateInvitationLetterDocumentResult!
   requestInvitationLetter(input: RequestInvitationLetterInput!): RequestInvitationLetterResult!
+  voteProposal(input: VoteProposalInput!): VoteProposalResult!
+}
+
+type MyVote {
+  scoreOptionId: ID
+  comment: String!
 }
 
 type NewsArticle {
@@ -843,6 +849,11 @@ type OperationSuccess {
 type Option {
   id: ID!
   name: String!
+}
+
+type OtherProposal {
+  id: ID!
+  title: String!
 }
 
 type PageInfo {
@@ -962,6 +973,9 @@ type Query {
   newsArticle(hostname: String!, slug: String!, language: String!): NewsArticle
   pagePreview(contentType: String!, token: String!): GenericPagePreviewNewsArticlePreview
   invitationLetterDocument(id: ID!): InvitationLetterDocument
+  reviewSession(reviewSessionId: ID!): ReviewSession!
+  reviewProposal(reviewSessionId: ID!, proposalId: ID!): ReviewProposal
+  nextProposalToReview(reviewSessionId: ID!, excludeTags: [ID!]!, seen: [ID!]!): ID
 }
 
 type Question {
@@ -990,6 +1004,12 @@ type RankSubmission {
   submission: Submission!
   rank: Int!
   score: Decimal!
+}
+
+type Ranking {
+  tag: String!
+  rank: Int!
+  total: Int!
 }
 
 type RegisterErrors {
@@ -1060,6 +1080,68 @@ union ResetPasswordResult = ResetPasswordErrors | OperationSuccess
 type Resetpassworderrors {
   token: [String!]!
   newPassword: [String!]!
+}
+
+type ReviewProposal {
+  id: ID!
+  title: TextInLanguages!
+  elevatorPitchHtml: TextInLanguages!
+  abstractHtml: TextInLanguages!
+  notes: String!
+  tags: [ReviewTag!]!
+  type: String!
+  audienceLevel: String!
+  duration: Int!
+  languages: [String!]!
+  rankings: [Ranking!]!
+  websiteUrl: String!
+  adminUrl: String!
+  isMine: Boolean!
+  speaker: ReviewSpeaker!
+  votes: [ReviewVote!]!
+  myVote: MyVote
+}
+
+type ReviewSession {
+  id: ID!
+  scoreOptions: [ScoreOption!]!
+  tags: [ReviewTag!]!
+}
+
+type ReviewSpeaker {
+  id: ID!
+  fullName: String!
+  gender: String
+  country: String
+  photoUrl: String
+  bio: String
+  website: String
+  twitterHandle: String
+  instagramHandle: String
+  mastodonHandle: String
+  linkedinUrl: String
+  facebookUrl: String
+  speakerLevel: String
+  previousTalkVideo: String
+  participantAdminUrl: String
+  grant: SpeakerGrant
+  proposalsCount: Int!
+  maxProposals: Int
+  otherProposals: [OtherProposal!]!
+}
+
+type ReviewTag {
+  id: ID!
+  name: String!
+}
+
+type ReviewVote {
+  id: ID!
+  reviewerName: String!
+  isMine: Boolean!
+  scoreLabel: String
+  scoreValue: Int
+  comment: String!
 }
 
 type Room {
@@ -1176,6 +1258,12 @@ enum ScheduleSlotType {
   DEFAULT
   FREE_TIME
   BREAK
+}
+
+type ScoreOption {
+  id: ID!
+  label: String!
+  numericValue: Int!
 }
 
 type SearchEventsForScheduleResult {
@@ -1353,6 +1441,11 @@ enum Spacing {
   _3XL
 }
 
+type SpeakerGrant {
+  status: String!
+  adminUrl: String!
+}
+
 type SpecialGuestSection {
   id: ID!
   title: String!
@@ -1510,6 +1603,11 @@ type Subscribetonewslettererrors {
   email: [String!]!
   conferenceCode: [String!]!
   nonFieldErrors: [String!]!
+}
+
+type TextInLanguages {
+  en: String
+  it: String
 }
 
 type TextSection {
@@ -1799,6 +1897,15 @@ type UserIsNotBooked {
 type UserNeedsConferenceTicket {
   message: String!
 }
+
+input VoteProposalInput {
+  reviewSessionId: ID!
+  proposalId: ID!
+  scoreOptionId: ID
+  comment: String!
+}
+
+union VoteProposalResult = ReviewProposal | NotFound
 
 type VoteType {
   id: ID!

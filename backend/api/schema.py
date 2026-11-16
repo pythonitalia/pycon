@@ -27,6 +27,7 @@ from .cms.schema import CMSQuery
 from .sponsors.schema import SponsorsMutation
 from .visa.query import VisaQuery
 from .visa.mutation import VisaMutation
+from .reviews.schema import ReviewsQuery, ReviewsMutations
 
 
 @strawberry.type
@@ -44,6 +45,7 @@ class Query(
     UserQuery,
     CMSQuery,
     VisaQuery,
+    ReviewsQuery,
 ):
     pass
 
@@ -65,6 +67,7 @@ class Mutation(
     AssociationMembershipMutation,
     SponsorsMutation,
     VisaMutation,
+    ReviewsMutations,
 ):
     pass
 
