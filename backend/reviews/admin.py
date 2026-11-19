@@ -3,32 +3,16 @@ import urllib.parse
 from django import forms
 from django.contrib import admin, messages
 from django.core.exceptions import PermissionDenied
-from django.db.models import Count, Q
-from django.http import JsonResponse
 from django.http.request import HttpRequest
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
 
-from reviews.adapters import get_review_adapter
+from reviews.adapters import get_all_review_adapters_extra_urls, get_review_adapter
 from reviews.models import AvailableScoreOption, ReviewSession, UserReview
-from submissions.models import Submission, SubmissionTag
+from submissions.models import SubmissionTag
 from users.admin_mixins import ConferencePermissionMixin
-
-
-def get_accepted_submissions(conference):
-    return (
-        Submission.objects.filter(conference=conference)
-        .filter(
-            Q(pending_status=Submission.STATUS.accepted)
-            | Q(pending_status__isnull=True, status=Submission.STATUS.accepted)
-            | Q(pending_status="", status=Submission.STATUS.accepted)
-        )
-        .select_related("speaker", "type", "audience_level")
-        .prefetch_related("languages")
-        .order_by("id")
-    )
 
 
 class AvailableScoreOptionInline(admin.TabularInline):
@@ -44,71 +28,6 @@ class AvailableScoreOptionInline(admin.TabularInline):
 def get_all_tags():
     # todo improve :)
     return SubmissionTag.objects.values_list("id", "name")
-
-
-def get_stats_for_submissions(qs):
-    """Get all stats for a queryset of submissions."""
-    total = qs.count()
-
-    def calc_pct(count):
-        return round(count / total * 100, 1) if total > 0 else 0
-
-    def with_pct(counts_dict):
-        return {k: (v, calc_pct(v)) for k, v in counts_dict.items()}
-
-    gender_stats = (
-        qs.values("speaker__gender")
-        .annotate(count=Count("id"))
-        .order_by("speaker__gender")
-    )
-    gender_counts = with_pct(
-        {item["speaker__gender"] or "unknown": item["count"] for item in gender_stats}
-    )
-
-    level_stats = (
-        qs.values("audience_level__name")
-        .annotate(count=Count("id"))
-        .order_by("audience_level__name")
-    )
-    level_counts = with_pct(
-        {item["audience_level__name"]: item["count"] for item in level_stats}
-    )
-
-    language_stats = (
-        qs.values("languages__code")
-        .annotate(count=Count("id"))
-        .order_by("languages__code")
-    )
-    language_counts = with_pct(
-        {item["languages__code"]: item["count"] for item in language_stats}
-    )
-
-    speaker_level_stats = (
-        qs.values("speaker_level").annotate(count=Count("id")).order_by("speaker_level")
-    )
-    speaker_level_counts = with_pct(
-        {item["speaker_level"]: item["count"] for item in speaker_level_stats}
-    )
-
-    tag_stats = (
-        qs.values("tags__name")
-        .annotate(count=Count("id"))
-        .exclude(tags__name__isnull=True)
-        .order_by("-count", "tags__name")
-    )
-    tag_counts = [
-        (item["tags__name"], item["count"], calc_pct(item["count"]))
-        for item in tag_stats
-    ]
-
-    return {
-        "total": total,
-        "gender_counts": gender_counts,
-        "level_counts": level_counts,
-        "language_counts": language_counts,
-        "speaker_level_counts": speaker_level_counts,
-        "tag_counts": tag_counts,
-    }
 
 
 class SubmitVoteForm(forms.Form):
@@ -265,6 +184,9 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         if not obj.can_see_shortlist_screen:
             return "You cannot see the recap of this session yet."
 
+        if obj.session_type != ReviewSession.SessionType.PROPOSALS:
+            return "Recap is not supported for this session type."
+
         return mark_safe(
             f"""
     <a href="{reverse("admin:reviews-recap", kwargs={"review_session_id": obj.id})}">
@@ -274,33 +196,32 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
         )
 
     def get_urls(self):
-        return [
-            path(
-                "<int:review_session_id>/review/shortlist/",
-                self.admin_site.admin_view(self.review_shortlist_view),
-                name="reviews-shortlist",
-            ),
-            path(
-                "<int:review_session_id>/review/recap/",
-                self.admin_site.admin_view(self.review_recap_view),
-                name="reviews-recap",
-            ),
-            path(
-                "<int:review_session_id>/review/recap/compute-analysis/",
-                self.admin_site.admin_view(self.review_recap_compute_analysis_view),
-                name="reviews-recap-compute-analysis",
-            ),
-            path(
-                "<int:review_session_id>/review/start/",
-                self.admin_site.admin_view(self.review_start_view),
-                name="reviews-start",
-            ),
-            path(
-                "<int:review_session_id>/review/<int:review_item_id>/",
-                self.admin_site.admin_view(self.review_view),
-                name="reviews-vote-view",
-            ),
-        ] + super().get_urls()
+        return (
+            [
+                path(
+                    "<int:review_session_id>/review/shortlist/",
+                    self.admin_site.admin_view(self.review_shortlist_view),
+                    name="reviews-shortlist",
+                ),
+                path(
+                    "<int:review_session_id>/review/recap/",
+                    self.admin_site.admin_view(self.review_recap_view),
+                    name="reviews-recap",
+                ),
+                path(
+                    "<int:review_session_id>/review/start/",
+                    self.admin_site.admin_view(self.review_start_view),
+                    name="reviews-start",
+                ),
+                path(
+                    "<int:review_session_id>/review/<int:review_item_id>/",
+                    self.admin_site.admin_view(self.review_view),
+                    name="reviews-vote-view",
+                ),
+            ]
+            + get_all_review_adapters_extra_urls()
+            + super().get_urls()
+        )
 
     def review_start_view(self, request, review_session_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
@@ -374,9 +295,6 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
 
         return TemplateResponse(request, adapter.shortlist_template, context)
 
-    def _get_accepted_submissions(self, conference):
-        return get_accepted_submissions(conference)
-
     def review_recap_view(self, request, review_session_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
 
@@ -394,109 +312,9 @@ class ReviewSessionAdmin(ConferencePermissionMixin, admin.ModelAdmin):
                 )
             )
 
-        conference = review_session.conference
-        accepted_submissions = self._get_accepted_submissions(conference)
-
-        # Get submission types for this conference
-        submission_types = list(
-            conference.submission_types.values_list("name", flat=True)
-        )
-
-        # Get stats per submission type
-        stats_by_type = {}
-        for type_name in submission_types:
-            type_qs = accepted_submissions.filter(type__name=type_name)
-            stats_by_type[type_name] = get_stats_for_submissions(type_qs)
-
-        total_accepted = accepted_submissions.count()
-
-        # Build submissions data for JS to use when rendering analysis results
-        submissions_data = [
-            {
-                "id": s.id,
-                "title": str(s.title),
-                "type": s.type.name,
-                "speaker": s.speaker.display_name if s.speaker else "Unknown",
-            }
-            for s in accepted_submissions
-        ]
-
-        context = dict(
-            self.admin_site.each_context(request),
-            title="Recap",
-            review_session_id=review_session_id,
-            review_session_repr=str(review_session),
-            total_accepted=total_accepted,
-            submission_types=submission_types,
-            stats_by_type=stats_by_type,
-            submissions_data=submissions_data,
-            compute_analysis_url=reverse(
-                "admin:reviews-recap-compute-analysis",
-                kwargs={"review_session_id": review_session_id},
-            ),
-        )
-
-        return TemplateResponse(request, "reviews-recap.html", context)
-
-    def review_recap_compute_analysis_view(self, request, review_session_id):
-        review_session = ReviewSession.objects.get(id=review_session_id)
-
-        if not review_session.user_can_review(request.user):
-            raise PermissionDenied()
-
-        if not review_session.can_see_shortlist_screen:
-            raise PermissionDenied()
-
-        conference = review_session.conference
-        accepted_submissions = list(self._get_accepted_submissions(conference))
-        force_recompute = request.GET.get("recompute") == "1"
-        check_only = request.GET.get("check") == "1"
-
-        from django.core.cache import cache
-
-        from pycon.tasks import check_pending_heavy_processing_work
-        from reviews.cache_keys import get_cache_key
-        from reviews.tasks import compute_recap_analysis
-
-        combined_cache_key = get_cache_key(
-            "recap_analysis", conference.id, accepted_submissions
-        )
-
-        if not force_recompute:
-            cached_result = cache.get(combined_cache_key)
-            if cached_result is not None:
-                return JsonResponse(cached_result)
-
-        if check_only:
-            return JsonResponse({"status": "empty"})
-
-        # Use cache.add as a lock to prevent duplicate task dispatch.
-        # Short TTL so lock auto-expires if the worker is killed before cleanup.
-        computing_key = f"{combined_cache_key}:computing"
-
-        # Check for stale lock from a crashed/finished task
-        existing_task_id = cache.get(computing_key)
-        if existing_task_id:
-            from celery.result import AsyncResult
-
-            if AsyncResult(existing_task_id).state in (
-                "SUCCESS",
-                "FAILURE",
-                "REVOKED",
-            ):
-                cache.delete(computing_key)
-
-        if cache.add(computing_key, "pending", timeout=300):
-            result = compute_recap_analysis.apply_async(
-                args=[conference.id, combined_cache_key],
-                kwargs={"force_recompute": force_recompute},
-                queue="heavy_processing",
-            )
-            # Store task ID so subsequent requests can detect stale locks
-            cache.set(computing_key, result.id, timeout=300)
-            check_pending_heavy_processing_work.delay()
-
-        return JsonResponse({"status": "processing"})
+        adapter = get_review_adapter(review_session)
+        context = adapter.get_recap_context(request, review_session, self.admin_site)
+        return TemplateResponse(request, adapter.recap_template, context)
 
     def review_view(self, request, review_session_id, review_item_id):
         review_session = ReviewSession.objects.get(id=review_session_id)
