@@ -1,3 +1,4 @@
+import { FocusMode } from "./focus/focus-mode";
 import { ReviewBetaLayout, ScreenPlaceholder } from "./layout";
 
 export const MyReviewRoot = ({
@@ -11,7 +12,7 @@ export const MyReviewRoot = ({
     <ReviewBetaLayout
       args={{ reviewSessionId, conferenceId, screen, screens, breadcrumbs }}
     >
-      <ScreenPlaceholder />
+      {screen === "focus" ? <FocusMode /> : <ScreenPlaceholder />}
     </ReviewBetaLayout>
   );
 };

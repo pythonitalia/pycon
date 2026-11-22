@@ -1,6 +1,15 @@
 import { Flex, Heading, Link, TabNav } from "@radix-ui/themes";
+import { useEffect, useState } from "react";
 import { useArgs } from "../shared/args";
 import type { Screen } from "./types";
+
+const NAV_ACTIONS_ID = "review-beta-nav-actions";
+
+export const useNavActionsSlot = () => {
+  const [slot, setSlot] = useState<HTMLElement | null>(null);
+  useEffect(() => setSlot(document.getElementById(NAV_ACTIONS_ID)), []);
+  return slot;
+};
 
 export const ReviewBetaNav = () => {
   const { screens, screen: currentScreenId } = useArgs() as {
@@ -37,6 +46,7 @@ export const ReviewBetaNav = () => {
           ))}
         </TabNav.Root>
         <Flex gap="4" align="center">
+          <div id={NAV_ACTIONS_ID} />
           {otherArea && (
             <Link size="2" href={otherArea.url}>
               {otherArea.area_title} →
