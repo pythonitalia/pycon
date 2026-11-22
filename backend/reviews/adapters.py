@@ -39,6 +39,14 @@ if TYPE_CHECKING:
     from users.models import User
 
 
+def _scored_vote_count(review_session_id: int) -> Count:
+    # Counting the score FK skips abstentions, whose score is NULL.
+    return Count(
+        "userreview__score",
+        filter=Q(userreview__review_session_id=review_session_id),
+    )
+
+
 class ReviewAdapter(Protocol):
     """Protocol defining the interface for review type adapters."""
 
@@ -140,10 +148,7 @@ class ProposalsReviewAdapter:
                     .annotate(score=Avg("score__numeric_value"))
                     .values("score")
                 ),
-                vote_count=Count(
-                    "userreview__score",
-                    filter=Q(userreview__review_session_id=review_session_id),
-                ),
+                vote_count=_scored_vote_count(review_session_id),
             )
             .order_by(F("score").desc(nulls_last=True), "id")
             .prefetch_related(
@@ -242,12 +247,7 @@ class ProposalsReviewAdapter:
         """Return template context for reviewing a single proposal."""
         proposal = (
             Submission.objects.for_conference(review_session.conference_id)
-            .annotate(
-                vote_count=Count(
-                    "userreview__score",
-                    filter=Q(userreview__review_session_id=review_session.id),
-                )
-            )
+            .annotate(vote_count=_scored_vote_count(review_session.id))
             .prefetch_related(
                 "rankings",
                 "rankings__tag",
@@ -339,12 +339,7 @@ class ProposalsReviewAdapter:
         qs = (
             Submission.objects.non_cancelled()
             .for_conference(review_session.conference_id)
-            .annotate(
-                votes_received=Count(
-                    "userreview__score",
-                    filter=Q(userreview__review_session_id=review_session.id),
-                )
-            )
+            .annotate(votes_received=_scored_vote_count(review_session.id))
             .order_by("votes_received", "?")
         )
 
@@ -394,10 +389,7 @@ class GrantsReviewAdapter:
                     output_field=FloatField(),
                 ),
                 vote_count=Cast(
-                    Count(
-                        "userreview__score",
-                        filter=Q(userreview__review_session_id=review_session_id),
-                    ),
+                    _scored_vote_count(review_session_id),
                     output_field=FloatField(),
                 ),
                 score=ExpressionWrapper(
@@ -705,10 +697,7 @@ class GrantsReviewAdapter:
 
         unvoted_item = (
             review_session.conference.grants.annotate(
-                votes_received=Count(
-                    "userreview__score",
-                    filter=Q(userreview__review_session_id=review_session.id),
-                )
+                votes_received=_scored_vote_count(review_session.id)
             )
             .exclude(id__in=items_to_exclude)
             .order_by("votes_received", "?")
