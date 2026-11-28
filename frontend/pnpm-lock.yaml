@@ -257,11 +257,11 @@ importers:
         specifier: ^7.76.1
         version: 7.76.1(react@19.2.7)
       react-intl:
-        specifier: ^6.8.9
-        version: 6.8.9(react@19.2.7)(typescript@5.9.3)
+        specifier: ^12.1.6
+        version: 12.1.6(@types/react@19.2.17)(react@19.2.7)
       react-intl-formatted-duration:
         specifier: ^4.0.0
-        version: 4.0.0(intl-messageformat@10.7.7)(react-intl@6.8.9(react@19.2.7)(typescript@5.9.3))(react@19.2.7)
+        version: 4.0.0(intl-messageformat@12.1.4)(react-intl@12.1.6(@types/react@19.2.17)(react@19.2.7))(react@19.2.7)
       react-qr-code:
         specifier: ^2.2.0
         version: 2.2.0(react@19.2.7)
@@ -814,11 +814,20 @@ packages:
   '@formatjs/fast-memoize@2.2.3':
     resolution: {integrity: sha512-3jeJ+HyOfu8osl3GNSL4vVHUuWFXR03Iz9jjgI7RwjG6ysu/Ymdr0JRCPHfF5yGbTE6JCrd63EpvX1/WybYRbA==}
 
+  '@formatjs/fast-memoize@3.1.7':
+    resolution: {integrity: sha512-zXfhLpvA6T7+efdt9JLbBwZ00tT7NsBMDVnDu8rpHeNNv8KfRZAMo2gkG0k9lK/Nzc//3kJ9pImsfuJxk3KhUA==}
+
   '@formatjs/icu-messageformat-parser@2.9.4':
     resolution: {integrity: sha512-Tbvp5a9IWuxUcpWNIW6GlMQYEc4rwNHR259uUFoKWNN1jM9obf9Ul0e+7r7MvFOBNcN+13K7NuKCKqQiAn1QEg==}
 
+  '@formatjs/icu-messageformat-parser@3.5.22':
+    resolution: {integrity: sha512-YuwN+dDKgssfuYwtOyGQD0CSn7K46g9cv1Fp0VgKpjZDDFvv8b8crzP990IcJhRPWHhKzCGsbUSJVIguyyFA5A==}
+
   '@formatjs/icu-skeleton-parser@1.8.8':
     resolution: {integrity: sha512-vHwK3piXwamFcx5YQdCdJxUQ1WdTl6ANclt5xba5zLGDv5Bsur7qz8AD7BevaKxITwpgDeU0u8My3AIibW9ywA==}
+
+  '@formatjs/icu-skeleton-parser@2.1.12':
+    resolution: {integrity: sha512-ca7tZMLpfHX3sUD7hP6gE/qr6Iq89EDd3ZLeRhbsB7r0UD55DGJq+tmFLzrGrnx5StahUevQmQQVtbDRHsfDHA==}
 
   '@formatjs/intl-displaynames@6.8.5':
     resolution: {integrity: sha512-85b+GdAKCsleS6cqVxf/Aw/uBd+20EM0wDpgaxzHo3RIR3bxF4xCJqH/Grbzx8CXurTgDDZHPdPdwJC+May41w==}
@@ -836,6 +845,9 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  '@formatjs/intl@6.1.4':
+    resolution: {integrity: sha512-udBTb6Heg/sleurLkUdPq+T9B7FvhiZ+8EyauSpqkqKPF+S5TUplO/tZmok7JC86Zk+OKhP8rIGi8bYRF9WJaA==}
 
   '@fortedigital/nextjs-cache-handler@3.2.0':
     resolution: {integrity: sha512-psMqiO+uwpQXwkms7qGMNb+Cj5YeLbANAF5SWKNHL1cgGRXcHMNWRJ3zOQ878e3eFVSSn4U84WGkwSHUxrT7nw==}
@@ -3868,6 +3880,9 @@ packages:
   intl-messageformat@10.7.7:
     resolution: {integrity: sha512-F134jIoeYMro/3I0h08D0Yt4N9o9pjddU/4IIxMMURqbAtI2wu70X8hvG1V48W49zXHXv3RKSF/po+0fDfsGjA==}
 
+  intl-messageformat@12.1.4:
+    resolution: {integrity: sha512-JUkmv3cAEyijN3oiRiV3ctel7yVMuUCgfh7Pu8pj1/z6L1DSEPRyhuMaLjVw3pGmGJ5RDH54WVFxfMHZWTwyHw==}
+
   intl-unofficial-duration-unit-format@3.0.0:
     resolution: {integrity: sha512-BFelPGPIboTjbe56JfLFQ5Jfi/lYsk1Dj6Jf1TesIBHqUGxJaYnRa3IYt8L1ak7xQdH0/8sYjgs53Id+VP4lsw==}
     engines: {node: '>=10.0'}
@@ -4715,6 +4730,12 @@ packages:
       intl-messageformat: '>= 2.0'
       react: '>= 16.0'
       react-intl: '>= 4.0'
+
+  react-intl@12.1.6:
+    resolution: {integrity: sha512-cxiqHlRK/JdDW/hMzusEv+LAqhfjUCL1YZAlazE39gT6jT3UrrNi3H50cgsveyUaASW14kNM2izIYMPYsYDCgA==}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      react: '>=18.0.0'
 
   react-intl@6.8.9:
     resolution: {integrity: sha512-TUfj5E7lyUDvz/GtovC9OMh441kBr08rtIbgh3p0R8iF3hVY+V2W9Am7rb8BpJ/29BH1utJOqOOhmvEVh3GfZg==}
@@ -6277,16 +6298,24 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
+  '@formatjs/fast-memoize@3.1.7': {}
+
   '@formatjs/icu-messageformat-parser@2.9.4':
     dependencies:
       '@formatjs/ecma402-abstract': 2.2.4
       '@formatjs/icu-skeleton-parser': 1.8.8
       tslib: 2.8.1
 
+  '@formatjs/icu-messageformat-parser@3.5.22':
+    dependencies:
+      '@formatjs/icu-skeleton-parser': 2.1.12
+
   '@formatjs/icu-skeleton-parser@1.8.8':
     dependencies:
       '@formatjs/ecma402-abstract': 2.2.4
       tslib: 2.8.1
+
+  '@formatjs/icu-skeleton-parser@2.1.12': {}
 
   '@formatjs/intl-displaynames@6.8.5':
     dependencies:
@@ -6315,6 +6344,12 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       typescript: 5.9.3
+
+  '@formatjs/intl@6.1.4':
+    dependencies:
+      '@formatjs/fast-memoize': 3.1.7
+      '@formatjs/icu-messageformat-parser': 3.5.22
+      intl-messageformat: 12.1.4
 
   '@fortedigital/nextjs-cache-handler@3.2.0(@redis/client@6.0.0(@opentelemetry/api@1.9.1))(next@16.4.5(@babel/core@7.29.0(supports-color@8.1.1))(@opentelemetry/api@1.9.1)(@types/node@14.18.63)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))':
     dependencies:
@@ -9951,9 +9986,14 @@ snapshots:
       '@formatjs/icu-messageformat-parser': 2.9.4
       tslib: 2.8.1
 
-  intl-unofficial-duration-unit-format@3.0.0(intl-messageformat@10.7.7):
+  intl-messageformat@12.1.4:
     dependencies:
-      intl-messageformat: 10.7.7
+      '@formatjs/fast-memoize': 3.1.7
+      '@formatjs/icu-messageformat-parser': 3.5.22
+
+  intl-unofficial-duration-unit-format@3.0.0(intl-messageformat@12.1.4):
+    dependencies:
+      intl-messageformat: 12.1.4
 
   invariant@2.2.4:
     dependencies:
@@ -10763,12 +10803,20 @@ snapshots:
     dependencies:
       react: 19.2.7
 
-  react-intl-formatted-duration@4.0.0(intl-messageformat@10.7.7)(react-intl@6.8.9(react@19.2.7)(typescript@5.9.3))(react@19.2.7):
+  react-intl-formatted-duration@4.0.0(intl-messageformat@12.1.4)(react-intl@12.1.6(@types/react@19.2.17)(react@19.2.7))(react@19.2.7):
     dependencies:
-      intl-messageformat: 10.7.7
-      intl-unofficial-duration-unit-format: 3.0.0(intl-messageformat@10.7.7)
+      intl-messageformat: 12.1.4
+      intl-unofficial-duration-unit-format: 3.0.0(intl-messageformat@12.1.4)
       react: 19.2.7
-      react-intl: 6.8.9(react@19.2.7)(typescript@5.9.3)
+      react-intl: 12.1.6(@types/react@19.2.17)(react@19.2.7)
+
+  react-intl@12.1.6(@types/react@19.2.17)(react@19.2.7):
+    dependencies:
+      '@formatjs/icu-messageformat-parser': 3.5.22
+      '@formatjs/intl': 6.1.4
+      '@types/react': 19.2.17
+      intl-messageformat: 12.1.4
+      react: 19.2.7
 
   react-intl@6.8.9(react@19.2.7)(typescript@5.9.3):
     dependencies:
